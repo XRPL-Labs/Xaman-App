@@ -11,3 +11,7 @@ The app connects to the [XUMM platform](https://github.com/XRPL-Labs/xumm-api) f
 ## If you are a developer
 
 If you are a developer and you wish to engage with XUMM users, please take a look at the [XUMM Developer Dashboard](https://apps.xumm.dev/) and [read the docs](https://xumm.readme.io/).
+
+# Suggestions, bugs, etc.:
+
+Please check https://github.com/XRPL-Labs/XUMM-Issue-Tracker for the right location to report / request.    
