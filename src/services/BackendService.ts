@@ -19,6 +19,9 @@ import { ProfileRepository, CounterPartyRepository, CurrencyRepository } from '@
 import { Payload, PayloadType } from '@common/libs/payload';
 import { LoggerService, ApiService, NavigationService, PushNotificationsService } from '@services';
 
+// Locale
+import Localize from '@locale';
+
 class BackendService {
     accounts: string[];
     logger: any;
@@ -191,7 +194,7 @@ class BackendService {
     */
     ping = () => {
         return ApiService.ping
-            .post({ appVersion: DeviceInfo.getReadableVersion() })
+            .post({ appVersion: DeviceInfo.getReadableVersion(), appLanguage: Localize.getCurrentLocale() })
             .then((res: any) => {
                 const { auth, badge, tosAndPrivacyPolicyVersion } = res;
 

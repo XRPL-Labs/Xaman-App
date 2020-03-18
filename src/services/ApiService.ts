@@ -26,6 +26,7 @@ class ApiService {
     debug: boolean;
     requestCounter: number;
     accessToken: string;
+    uniqueDeviceIdentifier: string;
     logger: any;
     increaseIdempotency: () => void;
     [index: string]: any;
@@ -82,6 +83,9 @@ class ApiService {
                         this.idempotencyInt = profile.idempotency;
                     }
                 }
+
+                this.uniqueDeviceIdentifier = DeviceInfo.getUniqueId();
+
                 return resolve();
             } catch (e) {
                 return reject(e);
@@ -112,9 +116,7 @@ class ApiService {
         // first increase Idempotency
         this.increaseIdempotencyInt();
 
-        const uniqueDeviceIdentifier = DeviceInfo.getUniqueId();
-        // user access token
-        const { accessToken, idempotencyInt } = this;
+        const { accessToken, idempotencyInt, uniqueDeviceIdentifier } = this;
         // generate secret
         const secret = await SHA256(`${accessToken}${uniqueDeviceIdentifier}${idempotencyInt}`);
 
