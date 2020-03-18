@@ -64,7 +64,7 @@ matrix:
         - cd android && ./gradlew app:assembleDebug && ./gradlew app:assembleRelease
     - language: objective-c
       os: osx
-      osx_image: xcode10.2
+      osx_image: xcode11.3
       node_js: false
       podfile: ios/Podfile
       before_install:
