@@ -1,0 +1,388 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[SearchBar] renders correctly 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "backgroundColor": "#EDEFF6",
+        "borderRadius": 15,
+        "flexDirection": "row",
+        "height": 86.5,
+        "marginHorizontal": 10,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "alignSelf": "center",
+        "flexDirection": "column",
+        "left": 0,
+        "position": "absolute",
+        "width": 50,
+      }
+    }
+  >
+    <Image
+      resizeMode="contain"
+      source={
+        Object {
+          "uri": "IconSearch",
+        }
+      }
+      style={
+        Array [
+          Object {
+            "height": 31.428571428571427,
+            "width": 31.428571428571427,
+          },
+          undefined,
+        ]
+      }
+    />
+  </View>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <TextInput
+      allowFontScaling={true}
+      autoCapitalize="none"
+      onChangeText={[Function]}
+      placeholder="Please type ..."
+      rejectResponderTermination={true}
+      style={
+        Array [
+          Object {
+            "color": "#3052FF",
+            "flex": 1,
+            "fontFamily": "UbuntuMono-Bold",
+            "fontSize": 34.285714285714285,
+            "fontWeight": "600",
+            "height": "100%",
+            "paddingLeft": 50,
+          },
+          undefined,
+        ]
+      }
+      underlineColorAndroid="rgba(0,0,0,0)"
+      value=""
+    />
+  </View>
+  <View
+    accessible={true}
+    focusable={true}
+    isTVSelectable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "flexDirection": "row",
+        "height": "100%",
+        "justifyContent": "center",
+        "opacity": 1,
+        "position": "absolute",
+        "right": 0,
+        "width": 50,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignSelf": "center",
+          "opacity": 0,
+        }
+      }
+    >
+      <Image
+        resizeMode="contain"
+        source={
+          Object {
+            "uri": "IconX",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "height": 31.428571428571427,
+              "width": 31.428571428571427,
+            },
+            undefined,
+          ]
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`[SearchBar] should clear text 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "backgroundColor": "#EDEFF6",
+        "borderRadius": 15,
+        "flexDirection": "row",
+        "height": 86.5,
+        "marginHorizontal": 10,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "alignSelf": "center",
+        "flexDirection": "column",
+        "left": 0,
+        "position": "absolute",
+        "width": 50,
+      }
+    }
+  >
+    <Image
+      resizeMode="contain"
+      source={
+        Object {
+          "uri": "IconSearch",
+        }
+      }
+      style={
+        Array [
+          Object {
+            "height": 31.428571428571427,
+            "width": 31.428571428571427,
+          },
+          undefined,
+        ]
+      }
+    />
+  </View>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <TextInput
+      allowFontScaling={true}
+      autoCapitalize="none"
+      onChangeText={[Function]}
+      placeholder="Please type ..."
+      rejectResponderTermination={true}
+      style={
+        Array [
+          Object {
+            "color": "#3052FF",
+            "flex": 1,
+            "fontFamily": "UbuntuMono-Bold",
+            "fontSize": 34.285714285714285,
+            "fontWeight": "600",
+            "height": "100%",
+            "paddingLeft": 50,
+          },
+          undefined,
+        ]
+      }
+      underlineColorAndroid="rgba(0,0,0,0)"
+      value=""
+    />
+  </View>
+  <View
+    accessible={true}
+    focusable={true}
+    isTVSelectable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "flexDirection": "row",
+        "height": "100%",
+        "justifyContent": "center",
+        "opacity": 1,
+        "position": "absolute",
+        "right": 0,
+        "width": 50,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignSelf": "center",
+          "opacity": 0,
+        }
+      }
+    >
+      <Image
+        resizeMode="contain"
+        source={
+          Object {
+            "uri": "IconX",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "height": 31.428571428571427,
+              "width": 31.428571428571427,
+            },
+            undefined,
+          ]
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`[SearchBar] should show clear button on text enter 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "backgroundColor": "#EDEFF6",
+        "borderRadius": 15,
+        "flexDirection": "row",
+        "height": 86.5,
+        "marginHorizontal": 10,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "alignSelf": "center",
+        "flexDirection": "column",
+        "left": 0,
+        "position": "absolute",
+        "width": 50,
+      }
+    }
+  >
+    <Image
+      resizeMode="contain"
+      source={
+        Object {
+          "uri": "IconSearch",
+        }
+      }
+      style={
+        Array [
+          Object {
+            "height": 31.428571428571427,
+            "width": 31.428571428571427,
+          },
+          undefined,
+        ]
+      }
+    />
+  </View>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <TextInput
+      allowFontScaling={true}
+      autoCapitalize="none"
+      onChangeText={[Function]}
+      placeholder="Please type ..."
+      rejectResponderTermination={true}
+      style={
+        Array [
+          Object {
+            "color": "#3052FF",
+            "flex": 1,
+            "fontFamily": "UbuntuMono-Bold",
+            "fontSize": 34.285714285714285,
+            "fontWeight": "600",
+            "height": "100%",
+            "paddingLeft": 50,
+          },
+          undefined,
+        ]
+      }
+      underlineColorAndroid="rgba(0,0,0,0)"
+      value="searched text"
+    />
+  </View>
+  <View
+    accessible={true}
+    focusable={true}
+    isTVSelectable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "flexDirection": "row",
+        "height": "100%",
+        "justifyContent": "center",
+        "opacity": 1,
+        "position": "absolute",
+        "right": 0,
+        "width": 50,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignSelf": "center",
+          "opacity": 1,
+        }
+      }
+    >
+      <Image
+        resizeMode="contain"
+        source={
+          Object {
+            "uri": "IconX",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "height": 31.428571428571427,
+              "width": 31.428571428571427,
+            },
+            undefined,
+          ]
+        }
+      />
+    </View>
+  </View>
+</View>
+`;

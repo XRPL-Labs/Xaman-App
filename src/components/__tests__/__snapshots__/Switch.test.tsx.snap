@@ -1,0 +1,107 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[Switch] renders correctly 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "flex": 1,
+      "flexDirection": "row",
+      "justifyContent": "space-between",
+      "paddingBottom": 5,
+      "paddingTop": 5,
+    }
+  }
+>
+  <Text
+    style={
+      Object {
+        "fontSize": 32.14285714285714,
+        "marginLeft": 10,
+      }
+    }
+  />
+  <View
+    style={
+      Object {
+        "alignSelf": "center",
+      }
+    }
+  >
+    <View>
+      <RCTSwitch
+        accessibilityRole="button"
+        onChange={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Array [
+            Object {
+              "height": 31,
+              "width": 51,
+            },
+            Object {
+              "alignSelf": "center",
+            },
+          ]
+        }
+        value={true}
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`[Switch] renders with given label 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "flex": 1,
+      "flexDirection": "row",
+      "justifyContent": "space-between",
+      "paddingBottom": 5,
+      "paddingTop": 5,
+    }
+  }
+>
+  <Text
+    style={
+      Object {
+        "fontSize": 32.14285714285714,
+        "marginLeft": 10,
+      }
+    }
+  >
+    A Label I Am
+  </Text>
+  <View
+    style={
+      Object {
+        "alignSelf": "center",
+      }
+    }
+  >
+    <View>
+      <RCTSwitch
+        accessibilityRole="button"
+        onChange={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Array [
+            Object {
+              "height": 31,
+              "width": 51,
+            },
+            Object {
+              "alignSelf": "center",
+            },
+          ]
+        }
+        value={true}
+      />
+    </View>
+  </View>
+</View>
+`;

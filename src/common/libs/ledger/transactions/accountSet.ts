@@ -1,0 +1,83 @@
+/**
+ * AccountSet transaction Parser
+ */
+
+import { get, isUndefined } from 'lodash';
+import { HexEncoding } from '@common/libs/utils';
+
+import BaseTransaction from './base';
+import Flag from '../parser/common/flag';
+
+/* Types ==================================================================== */
+import { LedgerTransactionType } from '../types';
+
+/* Class ==================================================================== */
+class AccountSet extends BaseTransaction {
+    constructor(tx: LedgerTransactionType) {
+        super(tx);
+
+        // set transaction type if not set
+        if (isUndefined(this.Type)) {
+            this.Type = 'AccountSet';
+        }
+
+        this.fields = this.fields.concat([
+            'ClearFlag',
+            'Domain',
+            'EmailHash',
+            'MessageKey',
+            'SetFlag',
+            'TransferRate',
+            'TickSize',
+        ]);
+    }
+
+    get SetFlag(): string {
+        const intFlag = get(this, ['tx', 'SetFlag'], undefined);
+        if (isUndefined(intFlag)) return undefined;
+        const flag = new Flag(this.Type, intFlag);
+        return flag.parseIndices();
+    }
+
+    get ClearFlag(): string {
+        const intFlag = get(this, ['tx', 'ClearFlag'], undefined);
+        if (isUndefined(intFlag)) return undefined;
+        const flag = new Flag(this.Type, intFlag);
+        return flag.parseIndices();
+    }
+
+    get Domain(): string {
+        const domain = get(this, ['tx', 'Domain'], undefined);
+        if (domain) {
+            return HexEncoding.toString(domain);
+        }
+        return domain;
+    }
+
+    get MessageKey(): string {
+        return get(this, ['tx', 'MessageKey'], undefined);
+    }
+
+    get EmailHash(): string {
+        return get(this, ['tx', 'EmailHash'], undefined);
+    }
+
+    get TransferRate(): number {
+        return get(this, ['tx', 'TransferRate'], undefined);
+    }
+
+    get TickSize(): number {
+        return get(this, ['tx', 'TickSize'], undefined);
+    }
+
+    get WalletLocator(): string {
+        return get(this, ['tx', 'WalletLocator'], undefined);
+    }
+
+    get WalletSize(): number {
+        return get(this, ['tx', 'WalletSize'], undefined);
+    }
+}
+
+/* Export ==================================================================== */
+export default AccountSet;

@@ -1,0 +1,248 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[RadioButton] renders checked correctly 1`] = `
+<View
+  accessible={true}
+  focusable={true}
+  isTVSelectable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#FFFFFF",
+      "borderColor": "#3052FF",
+      "borderRadius": 20,
+      "borderWidth": 3,
+      "color": "#3052FF",
+      "flexDirection": "row",
+      "justifyContent": "center",
+      "left": 0,
+      "marginBottom": 20,
+      "opacity": 1,
+      "padding": 20,
+      "right": 0,
+      "width": "100%",
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "borderColor": "#848DB8",
+            "borderRadius": 12,
+            "borderWidth": 2,
+            "height": 26,
+            "justifyContent": "center",
+            "marginTop": 4,
+            "width": 26,
+          },
+          Object {
+            "borderColor": "#3052FF",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "backgroundColor": "#3052FF",
+            "borderRadius": 8,
+            "color": "#3052FF",
+            "height": 15,
+            "width": 15,
+          }
+        }
+      />
+    </View>
+  </View>
+  <View
+    style={
+      Object {
+        "flex": 6,
+      }
+    }
+  >
+    <Text
+      style={
+        Array [
+          Object {
+            "color": "#000000",
+            "fontFamily": "ProximaNova-Regular",
+            "fontSize": 34.285714285714285,
+          },
+          Object {
+            "fontFamily": "ProximaNova-Extrabld",
+          },
+          Object {
+            "color": "#3052FF",
+          },
+        ]
+      }
+    >
+      label
+    </Text>
+    <Text
+      style={
+        Array [
+          Object {
+            "fontFamily": "ProximaNova-Bold",
+            "fontSize": 30,
+            "marginBottom": 10,
+          },
+          Object {
+            "color": "#3052FF",
+          },
+        ]
+      }
+    >
+      label small
+    </Text>
+    <Text
+      style={
+        Array [
+          Object {
+            "fontFamily": "ProximaNova-Regular",
+            "fontSize": 30,
+          },
+          Object {
+            "color": "#3052FF",
+          },
+        ]
+      }
+    >
+      description
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`[RadioButton] renders correctly 1`] = `
+<View
+  accessible={true}
+  focusable={true}
+  isTVSelectable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#EDEFF6",
+      "borderColor": "#EDEFF6",
+      "borderRadius": 20,
+      "borderWidth": 3,
+      "flexDirection": "row",
+      "justifyContent": "center",
+      "left": 0,
+      "marginBottom": 20,
+      "opacity": 1,
+      "padding": 20,
+      "right": 0,
+      "width": "100%",
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "borderColor": "#848DB8",
+            "borderRadius": 12,
+            "borderWidth": 2,
+            "height": 26,
+            "justifyContent": "center",
+            "marginTop": 4,
+            "width": 26,
+          },
+          null,
+        ]
+      }
+    />
+  </View>
+  <View
+    style={
+      Object {
+        "flex": 6,
+      }
+    }
+  >
+    <Text
+      style={
+        Array [
+          Object {
+            "color": "#000000",
+            "fontFamily": "ProximaNova-Regular",
+            "fontSize": 34.285714285714285,
+          },
+          Object {
+            "fontFamily": "ProximaNova-Extrabld",
+          },
+          Object {
+            "color": "#848DB8",
+          },
+        ]
+      }
+    >
+      label
+    </Text>
+    <Text
+      style={
+        Array [
+          Object {
+            "fontFamily": "ProximaNova-Bold",
+            "fontSize": 30,
+            "marginBottom": 10,
+          },
+          Object {
+            "color": "#848DB8",
+          },
+        ]
+      }
+    >
+      label small
+    </Text>
+    <Text
+      style={
+        Array [
+          Object {
+            "fontFamily": "ProximaNova-Regular",
+            "fontSize": 30,
+          },
+          Object {
+            "color": "#848DB8",
+          },
+        ]
+      }
+    >
+      description
+    </Text>
+  </View>
+</View>
+`;

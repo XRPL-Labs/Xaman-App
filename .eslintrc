@@ -1,0 +1,129 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint",
+      "react-native",
+      "prettier",
+      "jest",
+      "spellcheck"
+    ],
+    "extends": "airbnb",
+    "parserOptions":  {
+      "ecmaVersion": 2017,
+      "sourceType": "module"
+    },
+    "env": {
+      "browser": true,
+      "mocha": true,
+      "node": true,
+      "jest": true
+    },
+    "globals": {
+      "__DEV__": false
+    },
+    "settings": {
+      "import/resolver": {
+        "node": {
+          "extensions": [".js", ".ts", ".tsx", ".ios.js", ".android.js"]
+        }
+      }
+    },
+    "rules": {
+      "prettier/prettier": [0, {
+        "printWidth": 120,
+        "tabWidth": 4,
+        "parser": "flow",
+        "singleQuote": true,
+        "trailingComma": "all"
+      }],
+      "no-useless-constructor": 0,
+      "arrow-body-style": 0,
+      "max-len": [2,120],
+      "curly": [2, "multi-line"],
+      "comma-dangle": [2, "always-multiline"],
+      "class-methods-use-this": ["error", { "exceptMethods": ["startApp", "componentDidMount", "componentWillUnmount", "render"] }],
+      "global-require": 0,
+      "quote-props": 0,
+      "lines-between-class-members": "off",
+      "indent": [2, 4, {"SwitchCase": 1}],
+      "react/jsx-indent": [2, 4],
+      "camelcase": 0,
+      "arrow-parens": 0,
+      "no-confusing-arrow": 0,
+      "no-mixed-operators": 0,
+      "function-paren-newline": 0,
+      "object-curly-newline": 0,
+      "no-bitwise": 0,
+      "no-continue": 0,
+      "no-plusplus": 0,
+      "no-alert": 0,
+      "no-await-in-loop": 0,
+      "no-param-reassign": 0,
+      "no-nested-ternary": 0,
+      "no-restricted-syntax": 0,
+      "no-unused-vars": "off",
+      "no-unused-expressions": ["error" , {"allowShortCircuit": true} ],
+      "@typescript-eslint/no-unused-vars": "error",
+      "new-cap": [2, {
+        "capIsNew": false
+      }],
+      "no-console": ["error", { "allow": ["warn", "error"] }],
+      "operator-linebreak": [
+        "error",
+        "after",
+        {
+          "overrides": {
+            ":": "before",
+            "?": "before"
+          }
+        }
+      ],
+      "react/prop-types": 0,
+      "react/sort-comp": 0,
+      "react/jsx-filename-extension": 0,
+      "react/no-unused-prop-types": 0,
+      "react/no-array-index-key": 0,
+      "react/prefer-stateless-function": 0,
+      "react/require-default-props": 0,
+      "react/jsx-wrap-multilines": 0,
+      "react/jsx-closing-bracket-location": 0,
+      "react/default-props-match-prop-types": 0,
+      "react/jsx-indent-props": 0,
+      "react/jsx-one-expression-per-line": 0,
+      "react/static-property-placement": 0,
+      "import/prefer-default-export": 0,
+      "import/no-unresolved": "off",
+      "import/extensions": ["error", "never", { "packages": "always" }],
+      "import/no-extraneous-dependencies": 0,
+      "react-native/no-unused-styles": 2,
+      "react-native/split-platform-components": 0,
+      "react-native/no-inline-styles": 2,
+      "react-native/no-color-literals": 2,
+      "jest/no-disabled-tests": 1,
+      "jest/no-focused-tests": 2,
+      "jest/no-identical-title": 2,
+      "spellcheck/spell-checker": [1, {
+        "comments": true,
+        "strings": true,
+        "identifiers": true,
+        "lang": "en_US",
+        "skipWords": [
+          "eslint", "redux", "middleware", "destructuring", "async", "lodash", "libs", "Backend", "istanbul", "rehydrate", "linebreak",
+          "decrypt", "Keychain", "passphrase", "nonexist", "js", "Crashlytics", "Analytics", "init", "Onboarding", "middlewares",
+          "firebase", "ios", "const", "renderer", "dev", "fallbacks", "Utils", "sha512", "sha256", "sha1", "fn", "ja", "cn", "auth",
+          "cb", "loggin", "api", "src", "biometric", "Biometry", "rtl", "grey", "Unmount", "passcode", "Selectable", "png", "xrpl", "accountlib",
+          "Prev", "orm", "reselect", "keypair", "readonly", "uuid", "uuidv4", "desc", "sml", "wss", "altnet", "rippletest", "ws", "args",
+          "tx", "namespace", "bignumber", "Xrp", "counterparty", "str", "params", "req", "eg", "param", "timestamp", "idempotency", "Num", "testnet",
+          "utf", "xumm", "netinfo", "uri", "Interactable", "bool", "schemas", "Ious", "upsert", "Trustline", "rpepoch", "unix", "iso8601", "ecrypt",
+          "privatekey", "multisign", "tes", "Reactotron", "resize", "Interitem", "multisigned", "txid", "rgba", "jsx", "uint8", "img", "btn", "pbold",
+          "Devnet", "Mainnet", "Swiper", "calc", "abcdefgh", "cancelable", "uniqBy", "memoize", "Memoized", "html", "len", "fg", "bg", "ctx", "checksum",
+          "ecc", "uniq", "Truthy", "Responder", "ter", "ko", "zh", "mailto", "tabbar", "https", "gcm", "tf", "xlight", "aps", "tec", "barcodes", "Barcode",
+          "txblob", "tos", "gif", "ic", "asf", "ok"
+        ],
+        "skipIfMatch": [
+          "http://[^s]*",
+          "^[-\\w]+\/[-\\w\\.]+$"
+        ]
+      }]
+    }
+  }

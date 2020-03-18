@@ -1,0 +1,460 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[InfoMessage] renders correctly Error 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "alignItems": "center",
+        "alignSelf": "stretch",
+        "borderRadius": 15,
+        "flexDirection": "row",
+        "paddingHorizontal": 20,
+        "paddingVertical": 10,
+      },
+      null,
+      null,
+      Object {
+        "backgroundColor": "#FFF9F9",
+        "borderColor": "#FFF9F9",
+        "tintColor": "#FF5B5B",
+      },
+      null,
+    ]
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "flex": 1,
+          "paddingVertical": 10,
+        },
+      ]
+    }
+  >
+    <Text
+      style={
+        Array [
+          Object {
+            "fontFamily": "ProximaNova-Bold",
+            "fontSize": 30,
+            "textAlign": "center",
+          },
+          null,
+          null,
+          Object {
+            "color": "#FF5B5B",
+          },
+          null,
+          Object {
+            "textAlign": "center",
+          },
+        ]
+      }
+    >
+      label
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`[InfoMessage] renders correctly Info 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "alignItems": "center",
+        "alignSelf": "stretch",
+        "borderRadius": 15,
+        "flexDirection": "row",
+        "paddingHorizontal": 20,
+        "paddingVertical": 10,
+      },
+      Object {
+        "backgroundColor": "#F0F3FF",
+        "borderColor": "#3052FF",
+        "tintColor": "#3052FF",
+      },
+      null,
+      null,
+      null,
+    ]
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "flex": 1,
+          "paddingVertical": 10,
+        },
+      ]
+    }
+  >
+    <Text
+      style={
+        Array [
+          Object {
+            "fontFamily": "ProximaNova-Bold",
+            "fontSize": 30,
+            "textAlign": "center",
+          },
+          Object {
+            "color": "#3052FF",
+          },
+          null,
+          null,
+          null,
+          Object {
+            "textAlign": "center",
+          },
+        ]
+      }
+    >
+      label
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`[InfoMessage] renders correctly Warning 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "alignItems": "center",
+        "alignSelf": "stretch",
+        "borderRadius": 15,
+        "flexDirection": "row",
+        "paddingHorizontal": 20,
+        "paddingVertical": 10,
+      },
+      null,
+      Object {
+        "backgroundColor": "#FFF9ED",
+        "borderColor": "#F8BF4C",
+        "tintColor": "#F8BF4C",
+      },
+      null,
+      null,
+    ]
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "flex": 1,
+          "paddingVertical": 10,
+        },
+      ]
+    }
+  >
+    <Text
+      style={
+        Array [
+          Object {
+            "fontFamily": "ProximaNova-Bold",
+            "fontSize": 30,
+            "textAlign": "center",
+          },
+          null,
+          Object {
+            "color": "#F8BF4C",
+          },
+          null,
+          null,
+          Object {
+            "textAlign": "center",
+          },
+        ]
+      }
+    >
+      label
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`[InfoMessage] should render with icon Error 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "alignItems": "center",
+        "alignSelf": "stretch",
+        "borderRadius": 15,
+        "flexDirection": "row",
+        "paddingHorizontal": 20,
+        "paddingVertical": 10,
+      },
+      null,
+      null,
+      Object {
+        "backgroundColor": "#FFF9F9",
+        "borderColor": "#FFF9F9",
+        "tintColor": "#FF5B5B",
+      },
+      null,
+    ]
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "alignItems": "center",
+          "paddingRight": 10,
+        },
+      ]
+    }
+  >
+    <Image
+      resizeMode="contain"
+      source={
+        Object {
+          "uri": "IconInfo",
+        }
+      }
+      style={
+        Array [
+          Object {
+            "height": 31.428571428571427,
+            "width": 31.428571428571427,
+          },
+          Array [
+            null,
+            null,
+            Object {
+              "tintColor": "#FF5B5B",
+            },
+            null,
+          ],
+        ]
+      }
+    />
+  </View>
+  <View
+    style={
+      Array [
+        Object {
+          "flex": 1,
+          "paddingVertical": 10,
+        },
+      ]
+    }
+  >
+    <Text
+      style={
+        Array [
+          Object {
+            "fontFamily": "ProximaNova-Bold",
+            "fontSize": 30,
+            "textAlign": "center",
+          },
+          null,
+          null,
+          Object {
+            "color": "#FF5B5B",
+          },
+          null,
+          Object {
+            "textAlign": "left",
+          },
+        ]
+      }
+    >
+      label
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`[InfoMessage] should render with icon Info 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "alignItems": "center",
+        "alignSelf": "stretch",
+        "borderRadius": 15,
+        "flexDirection": "row",
+        "paddingHorizontal": 20,
+        "paddingVertical": 10,
+      },
+      Object {
+        "backgroundColor": "#F0F3FF",
+        "borderColor": "#3052FF",
+        "tintColor": "#3052FF",
+      },
+      null,
+      null,
+      null,
+    ]
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "alignItems": "center",
+          "paddingRight": 10,
+        },
+      ]
+    }
+  >
+    <Image
+      resizeMode="contain"
+      source={
+        Object {
+          "uri": "IconInfo",
+        }
+      }
+      style={
+        Array [
+          Object {
+            "height": 31.428571428571427,
+            "width": 31.428571428571427,
+          },
+          Array [
+            Object {
+              "tintColor": "#3052FF",
+            },
+            null,
+            null,
+            null,
+          ],
+        ]
+      }
+    />
+  </View>
+  <View
+    style={
+      Array [
+        Object {
+          "flex": 1,
+          "paddingVertical": 10,
+        },
+      ]
+    }
+  >
+    <Text
+      style={
+        Array [
+          Object {
+            "fontFamily": "ProximaNova-Bold",
+            "fontSize": 30,
+            "textAlign": "center",
+          },
+          Object {
+            "color": "#3052FF",
+          },
+          null,
+          null,
+          null,
+          Object {
+            "textAlign": "left",
+          },
+        ]
+      }
+    >
+      label
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`[InfoMessage] should render with icon Warning 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "alignItems": "center",
+        "alignSelf": "stretch",
+        "borderRadius": 15,
+        "flexDirection": "row",
+        "paddingHorizontal": 20,
+        "paddingVertical": 10,
+      },
+      null,
+      Object {
+        "backgroundColor": "#FFF9ED",
+        "borderColor": "#F8BF4C",
+        "tintColor": "#F8BF4C",
+      },
+      null,
+      null,
+    ]
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "alignItems": "center",
+          "paddingRight": 10,
+        },
+      ]
+    }
+  >
+    <Image
+      resizeMode="contain"
+      source={
+        Object {
+          "uri": "IconInfo",
+        }
+      }
+      style={
+        Array [
+          Object {
+            "height": 31.428571428571427,
+            "width": 31.428571428571427,
+          },
+          Array [
+            null,
+            Object {
+              "tintColor": "#F8BF4C",
+            },
+            null,
+            null,
+          ],
+        ]
+      }
+    />
+  </View>
+  <View
+    style={
+      Array [
+        Object {
+          "flex": 1,
+          "paddingVertical": 10,
+        },
+      ]
+    }
+  >
+    <Text
+      style={
+        Array [
+          Object {
+            "fontFamily": "ProximaNova-Bold",
+            "fontSize": 30,
+            "textAlign": "center",
+          },
+          null,
+          Object {
+            "color": "#F8BF4C",
+          },
+          null,
+          null,
+          Object {
+            "textAlign": "left",
+          },
+        ]
+      }
+    >
+      label
+    </Text>
+  </View>
+</View>
+`;

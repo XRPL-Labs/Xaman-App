@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[Footer] renders correctly 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "alignItems": "center",
+        "justifyContent": "center",
+        "padding": 20,
+        "width": 750,
+      },
+      undefined,
+    ]
+  }
+/>
+`;

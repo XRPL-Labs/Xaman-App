@@ -1,0 +1,97 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[TextAvatar] renders correctly 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "#3BDC96",
+        "borderRadius": 66.5,
+        "height": 66.5,
+        "justifyContent": "center",
+        "width": 66.5,
+      },
+    ]
+  }
+>
+  <Text
+    style={
+      Array [
+        Object {
+          "color": "#FFFFFF",
+          "fontFamily": "UbuntuMono-Regular",
+          "fontSize": 42.857142857142854,
+          "textTransform": "uppercase",
+        },
+      ]
+    }
+  >
+    T
+  </Text>
+</View>
+`;
+
+exports[`[TextAvatar] should render label correctly 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "#3BDC96",
+        "borderRadius": 66.5,
+        "height": 66.5,
+        "justifyContent": "center",
+        "width": 66.5,
+      },
+    ]
+  }
+>
+  <Text
+    style={
+      Array [
+        Object {
+          "color": "#FFFFFF",
+          "fontFamily": "UbuntuMono-Regular",
+          "fontSize": 42.857142857142854,
+          "textTransform": "uppercase",
+        },
+      ]
+    }
+  >
+    L
+  </Text>
+</View>
+`;
+
+exports[`[TextAvatar] should render two label correctly 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "#3BDC96",
+        "borderRadius": 66.5,
+        "height": 66.5,
+        "justifyContent": "center",
+        "width": 66.5,
+      },
+    ]
+  }
+>
+  <Text
+    style={
+      Array [
+        Object {
+          "color": "#FFFFFF",
+          "fontFamily": "UbuntuMono-Regular",
+          "fontSize": 42.857142857142854,
+          "textTransform": "uppercase",
+        },
+      ]
+    }
+  >
+    TL
+  </Text>
+</View>
+`;

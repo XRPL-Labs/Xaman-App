@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">XUMM</string>
+    <string name="default_notification_channel_id">notifications</string>
+    <string name="splash_logo_content_description">splash_logo_image</string>
+    <string name="splash_image_content_description">splash_background_image</string>
+</resources>
