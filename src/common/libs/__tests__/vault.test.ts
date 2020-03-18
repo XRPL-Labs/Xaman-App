@@ -13,8 +13,10 @@ describe('Vault', () => {
     const key = 'mypassphrase';
 
     // encryped entries
-    const iv = 'DB88708ECB905B483668B9568CB14EF8';
-    const cipher = 'aEd2uxceOSc0bofUN3IONg==';
+    const iv = '37d4c2995a8418a508986c79abbdc02e';
+    const cipher = '7AGMM0LHPyP+tXisMrYtKw==';
+
+    const options = { accessible: 'AccessibleWhenUnlockedThisDeviceOnly' };
 
     describe('Create', () => {
         it('should create a vault', async () => {
@@ -35,7 +37,7 @@ describe('Vault', () => {
 
         it('should call setInternetCredentials method on keychain', async () => {
             await Vault.save(name, { iv, cipher }).then(() => {
-                expect(Keychain.setInternetCredentials).toHaveBeenCalledWith(name, iv, cipher);
+                expect(Keychain.setInternetCredentials).toHaveBeenCalledWith(name, iv, cipher, options);
             });
         });
     });

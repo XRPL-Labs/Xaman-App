@@ -18,7 +18,7 @@
     "test:e2e:android": "detox build -c android.emu.release && detox test -c android.emu.release",
     "test:lint": "eslint --ext .tsx,.ts src/",
     "test:unit": "jest",
-    "test": "npm run test:ts && npm run test:lint",
+    "test": "npm run test:ts && npm run test:lint && npm run test:unit",
     "clean": "./scripts/clean.sh",
     "postinstall": "./scripts/post-install.sh",
     "update-snapshots": "npm run test:unit -- -u"

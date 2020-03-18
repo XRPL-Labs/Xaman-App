@@ -7,7 +7,6 @@ describe('Utils', () => {
     const truncated = 'this...ate';
     const testString = 'teststring';
     const testHex = '74657374737472696e67';
-    const byteArray = [116, 101, 115, 116, 115, 116, 114, 105, 110, 103];
 
     describe('Truncate', () => {
         it('should truncate the string', () => {
@@ -22,16 +21,6 @@ describe('Utils', () => {
     });
 
     describe('Hex Encoding', () => {
-        it('should convert hex the byte', () => {
-            const bytes = HexEncoding.toBytes(testHex);
-            expect(bytes).toStrictEqual(byteArray);
-        });
-
-        it('should convert byte to hex', () => {
-            const bytes = HexEncoding.bytesToHex(byteArray);
-            expect(bytes).toBe(testHex);
-        });
-
         it('should convert hex the string', () => {
             const string = HexEncoding.toString(testHex);
             expect(string).toStrictEqual(testString);

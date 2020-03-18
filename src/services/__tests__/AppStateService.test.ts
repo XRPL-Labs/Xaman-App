@@ -1,4 +1,4 @@
-import AppStateService, { NetStateStatus, AppStateStatus } from '../AppStateService';
+import AppStateService, { NetStateStatus } from '../AppStateService';
 
 describe('AppStateService', () => {
     const appStateService = AppStateService;
@@ -18,14 +18,5 @@ describe('AppStateService', () => {
         expect(appStateService.netStatus).toBe(NetStateStatus.Connected);
         appStateService.setNetState(false);
         expect(appStateService.netStatus).toBe(NetStateStatus.Disconnected);
-    });
-
-    it('should set AppState', async () => {
-        appStateService.setAppState('active');
-        expect(appStateService.appState).toBe(AppStateStatus.Active);
-        appStateService.setAppState('inactive');
-        expect(appStateService.appState).toBe(AppStateStatus.Inactive);
-        appStateService.setAppState('background');
-        expect(appStateService.appState).toBe(AppStateStatus.Background);
     });
 });

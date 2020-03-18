@@ -172,6 +172,8 @@ class PushNotificationsService extends EventEmitter {
     handleNotificationOpen = (notificationOpen: RNFirebase.notifications.NotificationOpen) => {
         const { notification } = notificationOpen;
 
+        if (!notification) return;
+
         firebase.notifications().removeDeliveredNotification(notification.notificationId);
 
         if (this.isSignRequest(notification)) {

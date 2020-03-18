@@ -8081,7 +8081,7 @@ react-native-keychain@^4.0.5:
   resolved "https://registry.yarnpkg.com/react-native-keychain/-/react-native-keychain-4.0.5.tgz#6d3aef8f2789fc0dfa8149b8400d82ff77be361a"
   integrity sha512-TbiO8AO055EPjaxIuKxrCEOB4r81uQCVDFbtcs+e4pEOHxf6z3JgDC0UU0poJElKfCh37b+TFRxQhg6DbsYJBA==
 
-react-native-navigation@6.2.0-snapshot.879:
+react-native-navigation@6.2.0-snapshot.880:
   version "6.2.0-snapshot.880"
   resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-6.2.0-snapshot.880.tgz#f6e91e9e699b67a849add624dece4084eb6a0a8a"
   integrity sha512-e0kGPhRRaOpClWwx0BSgiuK1limf6YJcu2vCFmK2bJ06sLd5WXXxFR26FfoimropZcJBxVNntUDFqRcWUnWMsA==

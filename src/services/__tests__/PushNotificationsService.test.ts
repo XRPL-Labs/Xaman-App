@@ -4,9 +4,13 @@ describe('PushNotificationsService', () => {
     const pushNotificationsService = PushNotificationsService;
 
     it('should properly initialize', async () => {
-        const spy = jest.spyOn(pushNotificationsService, 'createNotificationChannel');
+        const spy1 = jest.spyOn(pushNotificationsService, 'prepareNotifications');
+        const spy2 = jest.spyOn(pushNotificationsService, 'createNotificationListeners');
+        const spy3 = jest.spyOn(pushNotificationsService, 'checkInitialNotification');
         await pushNotificationsService.initialize();
-        expect(spy).toBeCalled();
+        expect(spy1).toBeCalled();
+        expect(spy2).toBeCalled();
+        expect(spy3).toBeCalled();
         expect(pushNotificationsService.initialized).toBe(true);
     });
 

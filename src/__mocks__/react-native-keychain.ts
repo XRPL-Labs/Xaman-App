@@ -11,8 +11,8 @@ const getInternetCredentials = jest.fn((alias: any) => {
             password: '',
         },
         vaultname: {
-            username: 'DB88708ECB905B483668B9568CB14EF8', // iv
-            password: 'aEd2uxceOSc0bofUN3IONg==', // encrypted
+            username: '37d4c2995a8418a508986c79abbdc02e', // iv
+            password: '7AGMM0LHPyP+tXisMrYtKw==', // cipher
         },
         nonexist: '',
     };
@@ -23,4 +23,14 @@ const getInternetCredentials = jest.fn((alias: any) => {
 
 const resetInternetCredentials = jest.fn(() => Promise.resolve());
 
-export { setInternetCredentials, getInternetCredentials, resetInternetCredentials };
+const ACCESSIBLE = {
+    WHEN_UNLOCKED: 'AccessibleWhenUnlocked',
+    AFTER_FIRST_UNLOCK: 'AccessibleAfterFirstUnlock',
+    ALWAYS: 'AccessibleAlways',
+    WHEN_PASSCODE_SET_THIS_DEVICE_ONLY: 'AccessibleWhenPasscodeSetThisDeviceOnly',
+    WHEN_UNLOCKED_THIS_DEVICE_ONLY: 'AccessibleWhenUnlockedThisDeviceOnly',
+    AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY: 'AccessibleAfterFirstUnlockThisDeviceOnly',
+    ALWAYS_THIS_DEVICE_ONLY: 'AccessibleAlwaysThisDeviceOnly',
+};
+
+export { setInternetCredentials, getInternetCredentials, resetInternetCredentials, ACCESSIBLE };

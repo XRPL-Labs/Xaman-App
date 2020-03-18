@@ -22,6 +22,9 @@ const firebase = {
         hasPermission: jest.fn(() => Promise.resolve(true)),
         requestPermission: jest.fn(() => Promise.resolve(true)),
         getToken: jest.fn(() => Promise.resolve('token')),
+        ios: {
+            registerForRemoteNotifications: jest.fn(() => Promise.resolve()),
+        },
     })),
     notifications: jest.fn(() => ({
         onNotification: jest.fn(),
