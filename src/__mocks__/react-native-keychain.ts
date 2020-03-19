@@ -1,4 +1,5 @@
 /* eslint-disable  spellcheck/spell-checker */
+/* eslint-disable  max-len */
 
 import { AppConfig } from '../common/constants';
 
@@ -7,8 +8,9 @@ const setInternetCredentials = jest.fn(() => Promise.resolve());
 const getInternetCredentials = jest.fn((alias: any) => {
     const result = {
         [AppConfig.storage.keyName]: {
-            username: '9D00C02555A67596F8270610524E6ACCC4D4F285AA858EB39F75DFED52A4555A', // iv
-            password: '',
+            username: '',
+            password:
+                '1567F58A794600717029077C34A8FAAB9B16B9FFAB174248DD296DA82084EE7921E51DC5757CA655271AF4928263FEC4A36D2139AD02F9CB1BC70F8FD7D38796',
         },
         vaultname: {
             username: '37d4c2995a8418a508986c79abbdc02e', // iv
