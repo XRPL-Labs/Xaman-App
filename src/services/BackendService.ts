@@ -194,7 +194,7 @@ class BackendService {
     */
     ping = () => {
         return ApiService.ping
-            .post({ appVersion: DeviceInfo.getReadableVersion(), appLanguage: Localize.getCurrentLocale() })
+            .post(null, { appVersion: DeviceInfo.getReadableVersion(), appLanguage: Localize.getCurrentLocale() })
             .then((res: any) => {
                 const { auth, badge, tosAndPrivacyPolicyVersion } = res;
 
