@@ -233,7 +233,7 @@
       "otherCurrencies": "Otras monedas",
       "youDonNotHaveOtherCurrency": "No tienes otras monedas",
       "howActivateMyAccount": "¿Cómo puedo activar mi cuenta?",
-      "howActivateMyAccountDesc": "Para evitar la creación de cuentas de spam, el libro mayor de XRP requiere que se depositen al menos 20 XRP en una cuenta para activarlo. El 20 XRP no se pierde: permanecerá en su cuenta, pero no puede gastarlo. Para comenzar a usar su cuenta, asegúrese de realizar un depósito superior a 20 XRP en su cuenta.",
+      "howActivateMyAccountDesc": "Para evitar la creación de cuentas de spam, el libro mayor XRP requiere que se depositen al menos 20 XRP en una cuenta para activarlo. El 20 XRP no se pierde: permanecerá en su cuenta, pero no puede gastarlo. Para comenzar a usar su cuenta, asegúrese de realizar un depósito superior a 20 XRP en su cuenta.",
       "otherCurrenciesDesc": "El libro mayor de XRP también le permite mantener saldos y enviar y recibir monedas que no sean XRP. Estas monedas pueden ser emitidas por otras cuentas en el libro mayor XRP. Si desea poder enviar o recibir una moneda que no sea XRP, deberá confiar en el emisor de la moneda que no sea XRP."
    },
    "events": {
@@ -457,7 +457,7 @@
       "selectedAccountDoNotSupportCurrency": "La cuenta seleccionada no admite la moneda seleccionada.",
       "memoPublicWarning": "La información de la nota será pública para todos",
       "destinationNotExistTooLittleToCreate": "La cuenta de destino no se ha utilizado antes y no tiene ningún saldo. Para activar una cuenta en el libro mayor de XRP, se requiere un depósito inicial de al menos 20 XRP.",
-      "destinationNotExistCreationWarning": "La cuenta de destino no se ha utilizado antes y no tiene ningún saldo. Si continúa enviando a esta cuenta, se utilizarán 20 XRP del {insertar cantidad de envío} para activar la cuenta en el libro mayor de XRP, lo que significa que {insertar cantidad de envío - 20} XRP no será gastable. Estás seguro de que quieres continuar?",
+      "destinationNotExistCreationWarning": "La cuenta de destino no se ha utilizado antes y no tiene ningún saldo. Si continúa enviando a esta cuenta, se usarán 20 XRP del %{cantidad} XRP para activar la cuenta en el libro mayor de XRP, lo que significa que {insertar el envío de la cantidad - 20} XRP no será gastable. Estás seguro de que quieres continuar?",
       "destinationCannotActivateWithIOU": "La cuenta de destino no se ha utilizado antes y no tiene ningún saldo. Para activar una cuenta en el libro mayor de XRP, se debe enviar un depósito inicial de al menos 20 XRP a la cuenta. Las monedas que no sean XRP no se pueden usar para el depósito inicial.",
       "destinationTagIsRequired": "Se requiere la etiqueta de destino para enviar este pago."
    },

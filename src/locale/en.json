@@ -458,7 +458,7 @@
         "selectedAccountDoNotSupportCurrency": "Selected account do not support selected currency.",
         "memoPublicWarning": "Memo info will be public for everyone",
         "destinationNotExistTooLittleToCreate": "The destination account hasn't been used before, and doesn't have any balance. To activate an account on the XRP ledger, a initial deposit of at least 20 XRP is required.",
-        "destinationNotExistCreationWarning": "The destination account hasn't been used before, and doesn't have any balance. If you continue sending to this account, 20 XRP of the {insert amount sending} will be used to activate the account on the XRP ledger, meaning {insert amount sending - 20} XRP will not be spendable. Are you sure you want to continue?",
+        "destinationNotExistCreationWarning": "The destination account hasn't been used before, and doesn't have any balance. If you continue sending to this account, 20 XRP of the %{amount} XRP will be used to activate the account on the XRP ledger, meaning {insert amount sending - 20} XRP will not be spendable. Are you sure you want to continue?",
         "destinationCannotActivateWithIOU": "The destination account hasn't been used before, and doesn't have any balance. To activate an account on the XRP ledger, an initial deposit of at least 20 XRP has to be sent to the account. Non XRP currencies cannot be used for the initial deposit.",
         "destinationTagIsRequired": "The destination tag is required for sending this payment."
     },

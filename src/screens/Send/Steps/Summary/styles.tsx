@@ -96,6 +96,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     amountInput: {
+        padding: 0,
+        margin: 0,
         paddingLeft: 10,
         fontSize: AppFonts.h3.size,
         fontFamily: AppFonts.base.familyMonoBold,
@@ -111,7 +113,7 @@ const styles = StyleSheet.create({
     editButton: {
         backgroundColor: AppColors.grey,
         borderRadius: 8,
-        height: 20,
+        height: 25,
         width: 40,
         justifyContent: 'center',
         alignSelf: 'center',

@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 
 import { AppStyles, AppSizes, AppColors, AppFonts } from '@theme';
 
@@ -11,11 +11,15 @@ const styles = StyleSheet.create({
     },
     rowItem: {
         paddingHorizontal: AppSizes.paddingSml,
-        paddingVertical: AppSizes.paddingSml,
+        paddingTop: AppSizes.paddingSml,
+        paddingBottom: 10,
         borderTopColor: AppColors.grey,
         borderTopWidth: 1,
     },
     amountInput: {
+        padding: 0,
+        margin: 0,
+        paddingTop: Platform.OS === 'ios' ? 20 : 10,
         paddingLeft: 10,
         fontSize: AppFonts.h1.size,
         fontFamily: AppFonts.base.familyMonoBold,

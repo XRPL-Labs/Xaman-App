@@ -319,7 +319,7 @@
       "importExisting": "导入现有帐户",
       "generateNewAccount": "创建一个新账户",
       "confirmPrivateTitle": "确认您的密码",
-      "confirmPrivateDescription": "请提供数字，这是出于您自身的安全：我们希望您确认已将其写下。",
+      "confirmPrivateDescription": "请提供数字，这是出于您的安全：我们希望您确认是否已写下。",
       "invalidSecretNumber": "输入的密码无效",
       "accountSetupCompleted": "帐户设置完成。",
       "YouJustCreatedAccount": "您刚刚创建了一个新的新帐户。",
@@ -457,7 +457,7 @@
       "selectedAccountDoNotSupportCurrency": "所选帐户不支持所选货币。",
       "memoPublicWarning": "备注信息将向所有人公开",
       "destinationNotExistTooLittleToCreate": "目标帐户以前没有使用过，并且没有任何余额。要在XRP分类账上激活帐户，需要至少20 XRP的初始存款。",
-      "destinationNotExistCreationWarning": "目标帐户以前没有使用过，并且没有任何余额。如果您继续发送到该帐户，将使用{插入金额发送}中的20 XRP激活XRP分类帐上的帐户，这意味着{插入金额发送-20} XRP将不可用。你确定你要继续吗？",
+      "destinationNotExistCreationWarning": "目标帐户以前没有使用过，并且没有任何余额。如果您继续发送到该帐户，则％{amount} XRP中的20 XRP将用于激活XRP分类帐上的帐户，这意味着{插入发送金额-20} XRP将不可用。你确定你要继续吗？",
       "destinationCannotActivateWithIOU": "目标帐户以前没有使用过，并且没有任何余额。要在XRP分类帐上激活帐户，必须将至少20 XRP的初始存款发送到该帐户。非XRP货币不能用于初始存款。",
       "destinationTagIsRequired": "发送此付款需要提供目的地标签。"
    },
@@ -471,7 +471,7 @@
    "exchange": {
       "exchanging": "交流中",
       "exchangeRate": "汇率（％{exchangeRate} XRP）",
-      "doYouWantToExchange": "您确定要将％{payAmount}％{payCurrency}交换为％{getAmount}％{getCurrency}吗？",
+      "doYouWantToExchange": "您确定要用％{payAmount}％{payCurrency}交换％{getAmount}％{getCurrency}吗？",
       "successfullyExchanged": "Hooray，已成功将％{payAmount}％{payCurrency}交换为％{getAmount}％{getCurrency}。",
       "failedExchange": "由于缺乏流动性或更新的汇率，目前无法兑换。",
       "errorDuringExchange": "交换期间发生错误：％{error}",
