@@ -339,7 +339,7 @@ class RecipientStep extends Component<Props, State> {
                     }
 
                     // check if the amount will create the account
-                    if (typeof currency === 'string' && parseFloat(amount) > 20) {
+                    if (typeof currency === 'string' && parseFloat(amount) >= 20) {
                         AlertModal({
                             type: 'warning',
                             text: Localize.t('send.destinationNotExistCreationWarning', { amount }),
