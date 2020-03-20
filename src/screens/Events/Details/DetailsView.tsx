@@ -100,7 +100,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 <Text style={[styles.contentText]}>
                     {tx.TransactionResult.success
                         ? Localize.t('events.thisTransactionWasSuccessful')
-                        : Localize.t('events.transactionFailedWithCode', { code: tx.TransactionResult.code })}{' '}
+                        : Localize.t('events.transactionFailedWithCode', { txCode: tx.TransactionResult.code })}{' '}
                     {Localize.t('events.andValidatedInLedger')}
                     <Text style={AppStyles.monoBold}> {tx.LedgerIndex} </Text>
                     {Localize.t('events.onDate')}
