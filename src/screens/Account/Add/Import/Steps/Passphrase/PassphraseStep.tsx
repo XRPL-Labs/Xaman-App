@@ -107,7 +107,7 @@ class PassphraseStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
-                            isDisabled
+                            isDisabled={!passphrase.isValid}
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
                             onPress={() => {
