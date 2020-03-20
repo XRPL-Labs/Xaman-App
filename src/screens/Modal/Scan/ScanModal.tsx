@@ -76,6 +76,10 @@ class ScanView extends Component<Props, State> {
 
     componentDidMount() {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
+
+        setTimeout(() => {
+            this.handlePayloadReference('8b5a9f63-44fb-4892-bf1c-170b80dbea16');
+        }, 1000);
     }
 
     setShouldRead = (value: boolean) => {

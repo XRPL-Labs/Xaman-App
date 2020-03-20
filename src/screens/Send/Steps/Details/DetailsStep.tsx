@@ -27,7 +27,7 @@ import { Images } from '@common/helpers';
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { Button, Spacer, AccordionPicker, Footer } from '@components';
+import { Button, AccordionPicker, Footer } from '@components';
 
 import Localize from '@locale';
 
@@ -299,7 +299,6 @@ class DetailsStep extends Component {
                                     {Localize.t('global.amount')}:
                                 </Text>
                             </View>
-                            <Spacer size={15} />
                             <TextInput
                                 keyboardType="decimal-pad"
                                 onChangeText={this.onAmountChange}

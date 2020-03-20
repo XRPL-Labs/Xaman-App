@@ -342,7 +342,7 @@ class RecipientStep extends Component<Props, State> {
                     if (typeof currency === 'string' && parseFloat(amount) > 20) {
                         AlertModal({
                             type: 'warning',
-                            text: Localize.t('send.destinationNotExistCreationWarning'),
+                            text: Localize.t('send.destinationNotExistCreationWarning', { amount }),
                             buttons: [
                                 {
                                     text: Localize.t('global.back'),
@@ -501,12 +501,11 @@ class RecipientStep extends Component<Props, State> {
         }
 
         return (
-            <View style={[AppStyles.flex8]}>
+            <View style={[AppStyles.flex8, AppStyles.paddingTopSml]}>
                 <SectionList
                     sections={searchText ? this.getSearchResultSource() : this.getDefaultDateSource()}
                     renderItem={this.renderItem}
                     renderSectionHeader={this.renderSectionHeader}
-                    // @ts-ignore
                     keyExtractor={item => item.id}
                 />
             </View>
@@ -520,7 +519,6 @@ class RecipientStep extends Component<Props, State> {
         return (
             <SafeAreaView testID="send-recipient-view" style={[AppStyles.pageContainerFull]}>
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal]}>
-                    {/* Source Account */}
                     <View style={[AppStyles.row]}>
                         <TextInput
                             placeholder={Localize.t('send.enterANameOrAddress')}

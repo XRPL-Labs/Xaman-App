@@ -169,7 +169,7 @@
       "atLeastOneLetter": "하나 이상의 소문자 (az)",
       "atLeastOneSymbol": "하나 이상의 특수 문자 (! @ #,? 등)",
       "atLeastOneUpperCase": "하나 이상의 대문자 (AZ)",
-      "tooManyAttemptLogin": "실패한 로그인 시도가 너무 많습니다.  %{after} 분 후에 다시 시도하십시오.",
+      "tooManyAttemptLogin": "로그인 시도가 너무 많이 실패했습니다.  %{after} 분 후에 다시 시도하십시오.",
       "passcodeAttemptExceed": "비밀번호 시도 횟수를 초과했습니다. 나중에 다시 시도하십시오.",
       "invalidPasscodeLeftAttempt": "유효하지 않은 비밀번호,  %{left} 시도 남음",
       "cannotValidateCurrentTimeWithServer": "서버 시간으로 응용 프로그램 시간을 확인할 수 없습니다. 인터넷에 연결되어 있는지 확인하십시오!",
@@ -194,7 +194,7 @@
    },
    "onboarding": {
       "slideOne": {
-         "title": "XRP 원장의 지불 및 지불 요청"
+         "title": "XRP 원장에 대한 지불 및 지불 요청"
       },
       "slideTwo": {
          "title": "사용자 친화적 액세스",
@@ -202,7 +202,7 @@
       },
       "slideThree": {
          "title": "보안 우선",
-         "desc": "xumm 응용 프로그램 및 플랫폼은 보안을 염두에두고 구축되었습니다. 비밀을 다시 입력하지 말고 자신의 신뢰할 수있는 장치에서 거래에 서명하십시오."
+         "desc": "xumm 애플리케이션 및 플랫폼은 보안을 염두에두고 구축되었습니다. 비밀을 다시 입력하지 말고 자신의 신뢰할 수있는 장치에서 거래에 서명하십시오."
       },
       "slideFour": {
          "title": "보내고 받기",
@@ -222,7 +222,7 @@
    },
    "setupPermissions": {
       "enableNotifications": "푸시 알림을 사용 하시겠습니까?",
-      "permissionDescription": "푸시 알림을 사용하여 사인 요청을 보냅니다."
+      "permissionDescription": "우리는 푸시 알림을 사용하여 사인 요청을 보냅니다."
    },
    "home": {
       "addCurrency": "더하다",
@@ -232,7 +232,7 @@
       "whatAreOtherCurrencies": "다른 통화는 무엇입니까?",
       "otherCurrencies": "다른 통화",
       "youDonNotHaveOtherCurrency": "다른 통화가 없습니다",
-      "howActivateMyAccount": "계정을 활성화하려면 어떻게해야합니까?",
+      "howActivateMyAccount": "계정을 활성화하려면 어떻게합니까?",
       "howActivateMyAccountDesc": "스팸 계정 생성을 방지하려면 XRP 원장에서 계정에 20 개 이상의 XRP를 입금하여 활성화해야합니다. 20 XRP는 손실되지 않습니다. 계정에 남아 있지만 사용할 수는 없습니다. 계정 사용을 시작하려면 20 XRP 이상의 예금이 계정에 입금되어 있는지 확인하십시오.",
       "otherCurrenciesDesc": "XRP 원장을 사용하면 XRP 이외의 통화 잔액을 보유하고주고받을 수 있습니다. 이 통화는 XRP 원장의 다른 계정에서 발행 할 수 있습니다. XRP 이외의 통화를 보내거나 받으려면 XRP 이외의 통화 발행자를 신뢰해야합니다."
    },
@@ -402,7 +402,7 @@
       "destroyAccount": "이 계정을 삭제",
       "upgradingAccessLevelWarning": "액세스 수준을 업그레이드하는 중입니다.이 계정의 개인 키를 가져와야합니다.",
       "downgradingAccessLevelWarning": "액세스 수준을 다운 그레이드하면이 계정의 개인 키가 손실됩니다. 확실합니까 ?",
-      "removeTrustLineWarning": "계정에서이 통화를 삭제하고 있습니다.이 작업을 실행 취소 할 수 없습니다. 확실합니까?",
+      "removeTrustLineWarning": "계정에서이 통화를 삭제하고 있습니다.이 작업은 취소 할 수 없습니다. 확실합니까?",
       "unavailableChangeSecurityLevel": "현재 보안 수준 변경이 불가능합니다",
       "accountDestroyWarning": "귀하의 계정은 영구적으로 삭제됩니다. 확실합니까?",
       "accountMaxLabelLengthError": "계정 라벨은 16 자 미만이어야합니다!",
@@ -415,12 +415,12 @@
       "regularKeyAccountForThisAccountDoesNotImportedWithSignAccess": "이 계정의 일반 키 계정은 서명 액세스 권한으로 가져 오지 않습니다!",
       "currentPassphraseShouldNotBeEmpty": "현재 암호 문구는 비워 둘 수 없습니다!",
       "enteredCurrentPassphraseIsInvalid": "입력 한 현재 비밀번호 문구가 유효하지 않습니다!",
-      "yourAccountPassphraseChangedSuccessfully": "귀하의 계정 암호가 성공적으로 변경되었습니다!",
+      "yourAccountPassphraseChangedSuccessfully": "계정 비밀번호 문구가 성공적으로 변경되었습니다!",
       "currentPassphrase": "현재 비밀번호 문구",
       "newPassphrase": "새로운 비밀번호 문구",
       "regularKeyFor": "에 대한 일반 키",
-      "allDoneYouCanGoToNextStepNow": "모든 작업을 마치면 다음 단계로 넘어갈 수 있습니다",
-      "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이하고있는 것을 알고 있다면 계속하십시오."
+      "allDoneYouCanGoToNextStepNow": "다 끝났으니 다음 단계로 넘어갈 수 있습니다",
+      "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이 무엇을하고 있는지 아는 경우에만 계속하십시오."
    },
    "send": {
       "amountIsBiggerThanYourSpend": "지출 할 수있는 것보다 금액이 큽니다 ( %{spendable})",
@@ -457,7 +457,7 @@
       "selectedAccountDoNotSupportCurrency": "선택한 계정은 선택한 통화를 지원하지 않습니다.",
       "memoPublicWarning": "메모 정보는 모든 사람에게 공개됩니다",
       "destinationNotExistTooLittleToCreate": "대상 계정은 이전에 사용되지 않았으며 잔액이 없습니다. XRP 원장에서 계정을 활성화하려면 최소 20 개의 XRP 입금이 필요합니다.",
-      "destinationNotExistCreationWarning": "대상 계정은 이전에 사용되지 않았으며 잔액이 없습니다. 이 계정으로 계속 전송하면 {삽입 금액 전송}의 20 XRP가 XRP 원장에서 계정을 활성화하는 데 사용됩니다. 즉, {삽입 금액 전송-20} XRP를 사용할 수 없습니다. 정말로 계속하기를 원하십니까?",
+      "destinationNotExistCreationWarning": "대상 계정은 이전에 사용되지 않았으며 잔액이 없습니다. 이 계정으로 계속 전송하면  %{amount} XRP의 20 XRP가 XRP 원장에서 계정을 활성화하는 데 사용되므로 {insert amount sent-20} XRP를 사용할 수 없습니다. 정말로 계속하기를 원하십니까?",
       "destinationCannotActivateWithIOU": "대상 계정은 이전에 사용되지 않았으며 잔액이 없습니다. XRP 원장에서 계정을 활성화하려면 최소 20 개의 XRP 입금을 계정으로 보내야합니다. XRP 이외의 통화는 최초 입금에 사용할 수 없습니다.",
       "destinationTagIsRequired": "이 결제를 보내려면 대상 태그가 필요합니다."
    },

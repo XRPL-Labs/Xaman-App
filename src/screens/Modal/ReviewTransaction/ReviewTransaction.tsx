@@ -632,8 +632,9 @@ class ReviewTransactionModal extends Component<Props, State> {
                                 />
                             </View>
 
-                            <View style={[AppStyles.paddingHorizontalSml]}>{this.renderDetails()}</View>
-                            <Spacer />
+                            <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingVerticalSml]}>
+                                {this.renderDetails()}
+                            </View>
                             <View
                                 style={[
                                     AppStyles.flex1,

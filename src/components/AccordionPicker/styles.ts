@@ -7,7 +7,6 @@ export default StyleSheet.create({
         borderRadius: 15,
         padding: 5,
         backgroundColor: AppColors.light,
-        marginBottom: 15,
     },
     pickerContainerExpanded: {
         backgroundColor: AppColors.white,
