@@ -1,6 +1,6 @@
 {
     "global":{
-        "language": "Language",
+        "language": "Langue",
         "ok": "Ok",
         "next": "Suivant",
         "back": "Précédent",
@@ -490,7 +490,7 @@
         "payloadNotFound": "Charge utile introuvable",
         "invalidPayloadResult": "Résultat de charge utile non valide",
         "payloadAlreadyResolved": "Cette charge utile a déjà été signée ou rejetée. Veuillez répéter le processus qui a généré la demande et analyser la nouvelle demande.",
-        "payloadCouldNotBeUpdated": "La charge utile n'a pas pu être mise à jour",
+        "payloadCouldNotBeUpdated": "La charge utile n'a pas pu être mise à jour.",
         "payloadExpired": "Cette charge utile a expiré. Veuillez répéter le processus qui a généré la demande et analyser la nouvelle demande.",
         "payloadAlreadySigned": "Charge utile déjà signée",
         "invalidOrMissingSignedTransactionBlob": "Objet blob de transaction signé non valide ou manquant",
