@@ -59,7 +59,7 @@ class DetailsStep extends Component {
     };
 
     goNext = () => {
-        const { goNext, currency, source, amount } = this.context;
+        const { goNext, currency, source, amount, setAmount } = this.context;
 
         const bAmount = new BigNumber(amount);
 
@@ -97,6 +97,9 @@ class DetailsStep extends Component {
                 return;
             }
         }
+
+        // last set amount parsed by bignumber
+        setAmount(bAmount.toString(10));
 
         // go to next screen
         goNext();
@@ -327,7 +330,7 @@ class DetailsStep extends Component {
                     <View style={[AppStyles.flex2]}>
                         <Button
                             textStyle={AppStyles.strong}
-                            isDisabled={!amount || amount === '0'}
+                            isDisabled={!amount || parseFloat(amount) === 0}
                             label={Localize.t('global.next')}
                             icon="IconChevronRight"
                             iconPosition="right"

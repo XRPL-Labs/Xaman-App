@@ -27,7 +27,7 @@ if (__DEV__) {
     // debugger config
     Reactotron.configure({
         name: 'XUMM',
-        host: '10.100.11.2',
+        host: '127.0.0.1',
     })
         .useReactNative()
         .connect();
