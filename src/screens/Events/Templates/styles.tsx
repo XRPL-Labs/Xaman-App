@@ -58,6 +58,14 @@ const styles = StyleSheet.create({
         color: AppColors.green,
         tintColor: AppColors.green,
     },
+    orangeColor: {
+        color: AppColors.orange,
+        tintColor: AppColors.orange,
+    },
+    naturalColor: {
+        color: AppColors.greyDark,
+        tintColor: AppColors.greyDark,
+    },
 });
 
 export default styles;

@@ -196,8 +196,9 @@ class TransactionTemplate extends PureComponent<Props, State> {
     renderRightPanel = () => {
         const { item, account } = this.props;
 
+        const incoming = item.Destination?.address === account.address;
+
         if (item.Type === 'Payment') {
-            const incoming = item.Destination.address === account.address;
             return (
                 <Text style={[styles.amount, incoming ? styles.incomingColor : styles.outgoingColor]} numberOfLines={1}>
                     {incoming ? '' : '-'}
@@ -208,17 +209,15 @@ class TransactionTemplate extends PureComponent<Props, State> {
 
         if (item.Type === 'EscrowCreate') {
             return (
-                <Text style={[styles.amount, styles.outgoingColor]} numberOfLines={1}>
+                <Text style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]} numberOfLines={1}>
                     -{item.Amount.value} <Text style={[styles.currency]}>{item.Amount.currency}</Text>
                 </Text>
             );
         }
 
         if (item.Type === 'EscrowFinish') {
-            const incoming = item.Destination.address === account.address;
             return (
-                <Text style={[styles.amount, incoming ? styles.incomingColor : styles.outgoingColor]} numberOfLines={1}>
-                    {incoming ? '' : '-'}
+                <Text style={[styles.amount, incoming ? styles.incomingColor : styles.naturalColor]} numberOfLines={1}>
                     {item.Amount.value} <Text style={[styles.currency]}>{item.Amount.currency}</Text>
                 </Text>
             );
