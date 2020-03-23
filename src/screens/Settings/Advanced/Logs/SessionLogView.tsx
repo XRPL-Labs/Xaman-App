@@ -1,7 +1,7 @@
 /**
  * Session Log Screen
  */
-import flatMap from 'lodash/flatMap';
+import { flatMap, toString } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, FlatList, Platform, Linking, Alert, Clipboard } from 'react-native';
 import { Navigation } from 'react-native-navigation';
@@ -57,7 +57,7 @@ class SessionLogView extends Component<Props, State> {
         try {
             return JSON.stringify(log);
         } catch {
-            return log;
+            return toString(log);
         }
     };
 

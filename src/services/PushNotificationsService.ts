@@ -145,7 +145,11 @@ class PushNotificationsService extends EventEmitter {
 
     /* Handle notifications within the app when app is running in foreground */
     handleNotification = (notification: RNFirebase.notifications.Notification) => {
-        this.logger.debug('New Notification received', notification);
+        this.logger.debug('New Notification received', {
+            data: notification.data,
+            body: notification.body,
+            title: notification.title,
+        });
 
         if (this.isSignRequest(notification)) {
             // show the notification
