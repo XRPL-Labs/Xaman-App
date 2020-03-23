@@ -158,8 +158,8 @@ class SendView extends Component<Props, State> {
                     return l.currency === currency.currency.currency && l.account === currency.currency.issuer;
                 }) !== -1;
 
-            // IF destination has same Trust Line
-            if (haveSameTrustLine) {
+            // IF destination has same Trust Line or it's the issuer
+            if (haveSameTrustLine || currency.currency.issuer === destination.address) {
                 // IF issuer has transfer rate:
                 if (currency.transfer_rate) {
                     // FIXME

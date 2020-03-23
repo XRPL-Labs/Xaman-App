@@ -256,13 +256,15 @@ class EventsView extends Component<Props, State> {
     };
 
     updateDataSource = async (background = false) => {
+        const { filters } = this.state;
+
         if (!background) {
             this.setState({ isLoading: true });
         }
 
-        const pendingPayloads = await this.loadPendingPayloads();
+        await this.loadPendingPayloads();
 
-        const transactions = await this.loadTransactions();
+        await this.loadTransactions();
 
         const { isLoading } = this.state;
 
@@ -270,21 +272,27 @@ class EventsView extends Component<Props, State> {
             this.setState({ isLoading: false });
         }
 
-        this.setState({ dataSource: this.buildDataSource(transactions, pendingPayloads) });
+        this.applyFilters(filters);
+
+        // this.setState({ dataSource: this.buildDataSource(transactions, pendingPayloads) });
     };
 
-    onFilterChange = (filters: FilterProps) => {
+    applyFilters = (filters: FilterProps) => {
         const { account, transactions, pendingPayloads } = this.state;
 
         // check if filters are empty
         let isEmptyFilters = true;
-        Object.keys(filters).map(k => {
-            if (!isUndefined(filters[k])) {
-                isEmptyFilters = false;
-                return false;
-            }
-            return true;
-        });
+
+        if (filters && typeof filters === 'object') {
+            Object.keys(filters).map(k => {
+                if (!isUndefined(filters[k])) {
+                    isEmptyFilters = false;
+                    return false;
+                }
+                return true;
+            });
+        }
+
         if (isEmptyFilters) {
             this.setState({
                 dataSource: this.buildDataSource(transactions, pendingPayloads),
@@ -463,7 +471,7 @@ class EventsView extends Component<Props, State> {
                                 keys.forEach(k => {
                                     f[k] = undefined;
                                 });
-                                this.onFilterChange(f);
+                                this.applyFilters(f);
                             }}
                             roundedSmall
                             style={[styles.optionsButton]}
@@ -569,7 +577,7 @@ class EventsView extends Component<Props, State> {
                                     {},
                                     {
                                         currentFilters: filters,
-                                        onApply: this.onFilterChange,
+                                        onApply: this.applyFilters,
                                     },
                                 );
                             }}
