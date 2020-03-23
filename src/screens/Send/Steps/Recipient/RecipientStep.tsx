@@ -19,12 +19,14 @@ import {
     Alert,
 } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
+
+import { utils as AccountLibUtils } from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
 
 import { AccountRepository, ContactRepository } from '@store/repositories';
 import { ContactSchema } from '@store/schemas/latest';
 
-import { Images, AlertModal } from '@common/helpers';
+import { getAccountInfo, Images, AlertModal } from '@common/helpers';
 
 import { BackendService, LedgerService } from '@services';
 
@@ -78,27 +80,48 @@ class RecipientStep extends Component<Props, State> {
         this.lookupTimeout = null;
     }
 
-    onQRCodeRead = (result: XrplDestination) => {
-        let address = result.to;
-        let tag = result.tag && result.tag;
+    doAccountLookUp = async (result: XrplDestination) => {
+        let address;
+        let tag;
 
         // decode if it's x address
         if (result.to.startsWith('X')) {
-            const decoded = Decode(result.to);
-            address = decoded.account;
-            // @ts-ignore
-            tag = decoded.tag && decoded.tag;
+            try {
+                const decoded = Decode(result.to);
+                address = decoded.account;
+                // @ts-ignore
+                tag = decoded.tag && decoded.tag;
+            } catch {
+                // ignore
+            }
+        } else if (AccountLibUtils.isValidAddress(result.to)) {
+            address = result.to;
+            tag = result.tag;
         }
 
-        this.setState({
-            scanResult: {
-                to: address,
-                tag,
-                xAddress: result.to,
-            },
-        });
+        if (address) {
+            this.setState({
+                searchText: result.to,
+                isSearching: true,
+            });
 
-        this.doLookUp(address);
+            const accountInfo = await getAccountInfo(address);
+
+            this.setState({
+                searchResult: [
+                    {
+                        id: uuidv4(),
+                        name: accountInfo.name || '',
+                        address,
+                        tag,
+                        avatar: Images.IconMoreHorizontal,
+                    },
+                ],
+                isSearching: false,
+            });
+        } else {
+            this.doLookUp(result.to);
+        }
     };
 
     doLookUp = (searchText: string) => {
@@ -172,30 +195,15 @@ class RecipientStep extends Component<Props, State> {
 
     onSearch = (text: string) => {
         // cleanup
-        // const searchText = text.replace(/\s/g, '');
-        const searchText = text;
+        const searchText = text.replace(/\s/g, '');
 
         // check if it's a xrp address
         const possibleAccountAddress = new RegExp(
             /[rX][rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{23,50}/,
         );
 
-        // if it's X address decode it
-        if (possibleAccountAddress.test(searchText) && searchText.startsWith('X')) {
-            // decode if it's x address
-            const decoded = Decode(searchText);
-            if (decoded) {
-                this.setState({
-                    scanResult: {
-                        to: decoded.account,
-                        tag: decoded.tag,
-                        xAddress: searchText,
-                    },
-                });
-                this.doLookUp(decoded.account);
-            } else {
-                this.doLookUp(searchText);
-            }
+        if (possibleAccountAddress.test(searchText)) {
+            this.doAccountLookUp({ to: searchText });
         } else {
             this.doLookUp(searchText);
         }
@@ -529,7 +537,7 @@ class RecipientStep extends Component<Props, State> {
                             value={searchText}
                             showScanner
                             scannerType={StringType.XrplDestination}
-                            onScannerRead={this.onQRCodeRead}
+                            onScannerRead={this.doAccountLookUp}
                         />
                     </View>
 
