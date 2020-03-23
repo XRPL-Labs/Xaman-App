@@ -4,41 +4,54 @@ import { ContactRepository, AccountRepository } from '@store/repositories';
 
 import { BackendService } from '@services';
 
-const getAccountInfo = memoize((address: string) => {
-    return new Promise(resolve => {
-        // check address  book
-        const contact = ContactRepository.findOne({ address });
-        if (!isEmpty(contact)) {
-            return resolve({
-                name: contact.name,
-                source: 'internal:contacts',
-            });
-        }
+export interface AccountInfo {
+    name: string;
+    source: string;
+}
 
-        // check in accounts list
-        const account = AccountRepository.findOne({ address });
-        if (!isEmpty(account)) {
-            return resolve({
-                name: account.label,
-                source: 'internal:accounts',
-            });
-        }
+const getAccountInfo = memoize(
+    (address: string): Promise<AccountInfo> => {
+        return new Promise(resolve => {
+            // check address  book
+            const contact = ContactRepository.findOne({ address });
+            if (!isEmpty(contact)) {
+                return resolve({
+                    name: contact.name,
+                    source: 'internal:contacts',
+                });
+            }
 
-        // check the backend
-        return BackendService.getAddressInfo(address)
-            .then((res: any) => {
-                if (!isEmpty(res)) {
+            // check in accounts list
+            const account = AccountRepository.findOne({ address });
+            if (!isEmpty(account)) {
+                return resolve({
+                    name: account.label,
+                    source: 'internal:accounts',
+                });
+            }
+
+            // check the backend
+            return BackendService.getAddressInfo(address)
+                .then((res: any) => {
+                    if (!isEmpty(res)) {
+                        return resolve({
+                            name: res.name,
+                            source: res.source,
+                        });
+                    }
                     return resolve({
-                        name: res.name,
-                        source: res.source,
+                        name: '',
+                        source: '',
                     });
-                }
-                return resolve({});
-            })
-            .catch(() => {
-                return resolve({});
-            });
-    });
-});
+                })
+                .catch(() => {
+                    return resolve({
+                        name: '',
+                        source: '',
+                    });
+                });
+        });
+    },
+);
 
 export { getAccountInfo };
