@@ -52,7 +52,6 @@ export interface State {
     searchText: string;
     contacts: Results<ContactSchema>;
     searchResult: any[];
-    scanResult: any;
 }
 /* Component ==================================================================== */
 class RecipientStep extends Component<Props, State> {
@@ -70,14 +69,18 @@ class RecipientStep extends Component<Props, State> {
             searchText: '',
             contacts: ContactRepository.getContacts(),
             searchResult: [],
-            scanResult: {
-                to: '',
-                tag: 0,
-                xAddress: undefined,
-            },
         };
 
         this.lookupTimeout = null;
+    }
+
+    componentDidMount() {
+        const { scanResult } = this.context;
+
+        // if scanResult is passed
+        if (scanResult) {
+            this.doAccountLookUp({ to: scanResult.address, tag: scanResult.tag });
+        }
     }
 
     doAccountLookUp = async (result: XrplDestination) => {

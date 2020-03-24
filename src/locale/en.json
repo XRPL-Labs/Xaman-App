@@ -177,6 +177,7 @@
         "changingLanguageNeedsRestartToTakeEffect": "Changing language requires the app to restart. Do you want to restart now?",
         "noAccountConfigured": "No account configured",
         "pleaseAddAccountToSignTheTransaction": "Please add a account to sign the transaction",
+        "pleaseAddAccountToSendPayments": "Please add a account to send payments",
         "doNotRemindMe": "Don't remind me again",
         "invalidPayload": "Invalid payload",
         "unexpectedErrorOccurred": "Unexpected error occurred.",
@@ -190,8 +191,8 @@
         "permissionToUseCamera": "Permission to use camera",
         "weNeedYourPermissionToUseYourCamera": "We need your permission to use your camera",
         "needPermissionToAccessCamera": "Need permission to access Camera.",
-        "pleaseApproveCameraPermission": "Please approve camera permissions"
-
+        "pleaseApproveCameraPermission": "Please approve camera permissions",
+        "scannedAddressIsNotAValidXRPLAddress": "Scanned address is not a valid XRPL address."
     },
     "onboarding":{
         "slideOne": {

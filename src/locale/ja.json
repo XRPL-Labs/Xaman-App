@@ -170,13 +170,14 @@
       "atLeastOneSymbol": "少なくとも1つの特殊文字（！@、？など）",
       "atLeastOneUpperCase": "少なくとも1つの大文字（AZ）",
       "tooManyAttemptLogin": "ログイン試行の失敗が多すぎます。もう一度試してください%{after}分。",
-      "passcodeAttemptExceed": "パスコードの試行回数を超えています。しばらくしてからもう一度お試しください。",
+      "passcodeAttemptExceed": "パスコードの試行回数を超えています。しばらくしてからもう一度お試しください",
       "invalidPasscodeLeftAttempt": "無効なパスコード、 %{left}残りの試行",
       "cannotValidateCurrentTimeWithServer": "サーバー時間でアプリケーション時間を検証できません。インターネットに接続していることを確認してください！",
       "unableOpenReturnURL": "リターンURLを開けません！",
       "changingLanguageNeedsRestartToTakeEffect": "言語を変更するには、アプリを再起動する必要があります。今すぐ再起動しますか？",
       "noAccountConfigured": "アカウントが設定されていません",
       "pleaseAddAccountToSignTheTransaction": "取引に署名するアカウントを追加してください",
+      "pleaseAddAccountToSendPayments": "支払いを送信するためにアカウントを追加してください",
       "doNotRemindMe": "再度通知しない",
       "invalidPayload": "無効なペイロード",
       "unexpectedErrorOccurred": "予期しないエラーが発生しました。",
@@ -190,7 +191,8 @@
       "permissionToUseCamera": "カメラの使用許可",
       "weNeedYourPermissionToUseYourCamera": "カメラを使用するには許可が必要です",
       "needPermissionToAccessCamera": "カメラへのアクセス許可が必要です。",
-      "pleaseApproveCameraPermission": "カメラの許可を承認してください"
+      "pleaseApproveCameraPermission": "カメラの許可を承認してください",
+      "scannedAddressIsNotAValidXRPLAddress": "スキャンされたアドレスは有効なXRPLアドレスではありません。"
    },
    "onboarding": {
       "slideOne": {
@@ -202,11 +204,11 @@
       },
       "slideThree": {
          "title": "セキュリティ第一",
-         "desc": "xummアプリケーションとプラットフォームは、セキュリティを考慮して構築されています。秘密をもう一度入力したり、自分の信頼できるデバイスからトランザクションに署名したりしないでください。"
+         "desc": "xummアプリケーションとプラットフォームは、セキュリティを考慮して構築されています。秘密をもう一度入力したり、信頼できる自分のデバイスからトランザクションに署名したりしないでください。"
       },
       "slideFour": {
          "title": "送受信",
-         "desc": "XRPや他の信頼できるフィアット通貨（IOU）も送受信できます"
+         "desc": "XRPや他の信頼できるフィアット通貨（IOU）も送受信できます。"
       }
    },
    "setupPasscode": {
@@ -218,7 +220,7 @@
    },
    "setupBiometry": {
       "useBiometry": "FaceIDまたは指紋を使用しますか？",
-      "biometryDescription": "アカウントをより安全に保つために、FaceIDまたは指紋の使用を有効にすることができます。"
+      "biometryDescription": "アカウントをより安全に保つために、FaceIDまたは指紋の使用を有効にできます。"
    },
    "setupPermissions": {
       "enableNotifications": "プッシュ通知を有効にしますか？",
@@ -233,7 +235,7 @@
       "otherCurrencies": "その他の通貨",
       "youDonNotHaveOtherCurrency": "他の通貨はありません",
       "howActivateMyAccount": "アカウントを有効にするにはどうすればよいですか？",
-      "howActivateMyAccountDesc": "スパムアカウントの作成を防ぐために、XRP元帳ではアカウントをアクティブにするために少なくとも20 XRPをアカウントに預ける必要があります。 20 XRPは失われません。アカウントに残りますが、使用することはできません。アカウントの使用を開始するには、アカウントに20 XRPを超える入金が行われていることを確認してください。",
+      "howActivateMyAccountDesc": "スパムアカウントの作成を防ぐために、XRP元帳では、アカウントをアクティブにするために少なくとも20 XRPをアカウントに預ける必要があります。 20 XRPは失われません。アカウントに残りますが、使用することはできません。アカウントの使用を開始するには、アカウントに20 XRPを超える入金が行われていることを確認してください。",
       "otherCurrenciesDesc": "XRP元帳では、XRP以外の通貨の残高を保持したり、通貨を送受信したりすることもできます。これらの通貨は、XRP元帳の他のアカウントで発行できます。非XRP通貨を送受信できるようにするには、非XRP通貨の発行者を信頼する必要があります。"
    },
    "events": {
@@ -245,7 +247,7 @@
       "transactionDetails": "取引の詳細",
       "shareTransactionId": "取引IDを共有する",
       "thisTransactionWasSuccessful": "この取引は成功しました",
-      "transactionFailedWithCode": "このトランザクションは、ステータスコードが次のエラーで失敗しました%{txCode}",
+      "transactionFailedWithCode": "このトランザクションは、ステータスコードが失敗して失敗しました%{txCode}",
       "andValidatedInLedger": "元帳で検証済み",
       "onDate": "オン",
       "paymentReceived": "お支払い頂いた",
@@ -336,7 +338,7 @@
       "chooseWisely": "このアカウントに合ったセキュリティレベルを選択してください",
       "passcodeOptionDesc": "これは、毎日の支出に最適です。単に顔を見せ、指をスキャンするか、パスコードを入力するだけで、取引に署名できます。",
       "singWithPasscode": "FaceID /パスコードで署名する",
-      "passphraseOptionDesc": "これは、XRPの長期保存に適していて、トランザクションに署名するためのパスフレーズが必要です",
+      "passphraseOptionDesc": "これは、XRPの長期保存に適していて、トランザクションに署名するためにパスフレーズが必要です",
       "singWithPassphrase": "パスフレーズで署名する",
       "publicAddress": "パブリックアドレス",
       "yourPublicAccoutAddress": "パブリックアカウントのアドレス：",
@@ -391,7 +393,7 @@
       "pleaseChooseAccountLabel": "このアカウントの名前、たとえば「支出」または「貯蓄」を入力してください。",
       "pleaseEnterLabel": "新しいラベルを入力してください",
       "accessLevel": "アクセスレベル",
-      "accessLevelChangeAlert": "読み取り専用モードからフルアクセスモードに変更するには、アカウントのシークレットキーを入力する必要があります",
+      "accessLevelChangeAlert": "読み取り専用モードからフルアクセスモードに変更するには、アカウントの秘密鍵を入力する必要があります",
       "noAccountYet": "まだアカウントがありません",
       "myAccounts": "私のアカウント",
       "getStartedCreateAccount": "最初のアカウントを追加して始めましょう。",
@@ -400,10 +402,10 @@
       "securityLevel": "セキュリティレベル",
       "changePassphrase": "パスフレーズを変更する",
       "destroyAccount": "このアカウントを削除",
-      "upgradingAccessLevelWarning": "アクセスレベルをアップグレードしています。このアカウントの秘密鍵をインポートする必要があります。",
+      "upgradingAccessLevelWarning": "アクセスレベルをアップグレードしています。このアカウントの秘密キーをインポートする必要があります。",
       "downgradingAccessLevelWarning": "アクセスレベルをダウングレードしています。これにより、このアカウントの秘密キーが失われます。本気ですか ？",
       "removeTrustLineWarning": "アカウントからこの通貨を削除しています。この操作を元に戻すことはできません、よろしいですか？",
-      "unavailableChangeSecurityLevel": "現在、セキュリティレベルを変更することはできません",
+      "unavailableChangeSecurityLevel": "セキュリティレベルの変更は現在利用できません",
       "accountDestroyWarning": "アカウントは完全に削除されます。よろしいですか？",
       "accountMaxLabelLengthError": "アカウントラベルは16文字未満にする必要があります。",
       "accountTrustLines": "アカウントTrustLines",

@@ -48,7 +48,8 @@ export enum Steps {
 }
 
 export interface Props {
-    currency: TrustLineSchema;
+    currency?: TrustLineSchema;
+    scanResult?: Destination;
 }
 
 export interface State {
@@ -60,6 +61,7 @@ export interface State {
     currency: TrustLineSchema | string;
     amount: string;
     payment: Payment;
+    scanResult: Destination;
 }
 /* Component ==================================================================== */
 class SendView extends Component<Props, State> {
@@ -83,6 +85,7 @@ class SendView extends Component<Props, State> {
             currency: props.currency || 'XRP',
             amount: '',
             payment: new Payment(),
+            scanResult: props.scanResult || undefined,
         };
     }
 
