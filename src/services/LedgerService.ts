@@ -290,13 +290,13 @@ class LedgerService extends EventEmitter {
             }
 
             // prevent unnecessary requests
-            if (account.lastSync) {
-                const passedSeconds = moment().diff(moment.unix(account.lastSync), 'second');
+            // if (account.lastSync) {
+            //     const passedSeconds = moment().diff(moment.unix(account.lastSync), 'second');
 
-                if (passedSeconds <= 2) {
-                    return;
-                }
-            }
+            //     if (passedSeconds <= 2) {
+            //         return;
+            //     }
+            // }
 
             this.updateAccountInfo(account.address)
                 .then(() => this.updateAccountLines(account.address))

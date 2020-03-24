@@ -71,7 +71,7 @@ class PaymentTemplate extends Component<Props, State> {
     }
 
     static getDerivedStateFromProps(nextProps: Props, prevState: State) {
-        if (nextProps.transaction.Account.address !== prevState.account) {
+        if (nextProps.transaction.Account?.address !== prevState.account) {
             return { account: nextProps.transaction.Account.address };
         }
         return null;
