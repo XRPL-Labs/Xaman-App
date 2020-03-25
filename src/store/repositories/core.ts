@@ -4,14 +4,16 @@ import assign from 'lodash/assign';
 import moment from 'moment';
 
 import DeviceInfo from 'react-native-device-info';
-
 import { SHA512, HMAC256 } from '@common/libs/crypto';
 
+import { AppConfig } from '@common/constants';
+
 import { CoreSchema } from '@store/schemas/latest';
+import { NodeChain } from '@store/types';
 
 import Localize from '@locale';
 
-import { NTPService } from '@services';
+import { getLedgerTime } from '@common/helpers';
 
 import BaseRepository from './base';
 
@@ -44,6 +46,29 @@ class CoreRepository extends BaseRepository {
         } else {
             this.create(object);
         }
+    };
+
+    getDefaultNode = () => {
+        let defaultNode = __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0];
+        let chain = NodeChain.Main;
+
+        const settings = this.getSettings();
+
+        if (settings && settings.defaultNode) {
+            defaultNode = settings.defaultNode;
+        }
+
+        // it is a verified type
+        if (AppConfig.nodes.main.indexOf(defaultNode) > -1) {
+            chain = NodeChain.Main;
+        } else if (AppConfig.nodes.test.indexOf(defaultNode) > -1) {
+            chain = NodeChain.Test;
+        }
+
+        return {
+            node: defaultNode,
+            chain,
+        };
     };
 
     getSettings = (): CoreSchema => {
@@ -80,7 +105,7 @@ class CoreRepository extends BaseRepository {
 
     updateTimeLastUnlocked = async () => {
         try {
-            const now = await NTPService.getTime();
+            const now = await getLedgerTime();
 
             this.saveSettings({
                 lastUnlocked: moment(now).unix(),
@@ -98,7 +123,7 @@ class CoreRepository extends BaseRepository {
             let now;
 
             try {
-                now = await NTPService.getTime();
+                now = await getLedgerTime();
             } catch {
                 return reject(new Error(Localize.t('global.cannotValidateCurrentTimeWithServer')));
             }
@@ -126,7 +151,7 @@ class CoreRepository extends BaseRepository {
             let now;
 
             try {
-                now = await NTPService.getTime();
+                now = await getLedgerTime();
             } catch {
                 return reject(new Error(Localize.t('global.cannotValidateCurrentTimeWithServer')));
             }

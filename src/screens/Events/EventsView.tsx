@@ -256,14 +256,14 @@ class EventsView extends Component<Props, State> {
     };
 
     updateDataSource = async (background = false) => {
-        const { filters } = this.state;
+        const { filters, searchText } = this.state;
 
         if (!background) {
             this.setState({ isLoading: true });
         }
 
+        // update sources
         await this.loadPendingPayloads();
-
         await this.loadTransactions();
 
         const { isLoading } = this.state;
@@ -272,9 +272,12 @@ class EventsView extends Component<Props, State> {
             this.setState({ isLoading: false });
         }
 
-        this.applyFilters(filters);
-
-        // this.setState({ dataSource: this.buildDataSource(transactions, pendingPayloads) });
+        // apply any new search ad filter to the new sources
+        if (searchText) {
+            this.onSearchChange(searchText);
+        } else {
+            this.applyFilters(filters);
+        }
     };
 
     applyFilters = (filters: FilterProps) => {

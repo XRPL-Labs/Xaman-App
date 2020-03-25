@@ -42,11 +42,12 @@ class AppStateService extends EventEmitter {
     }
 
     initialize = () => {
-        return new Promise((resolve, reject) => {
+        /* eslint-disable-next-line */
+        return new Promise(async (resolve, reject) => {
             try {
                 // setup listeners
-                this.setNetInfoListener();
-                this.setAppStateListener();
+                await this.setNetInfoListener();
+                await this.setAppStateListener();
 
                 // we just need to require the lock if user initialized the app the
                 NavigationService.on('setRoot', (root: string) => {
@@ -109,12 +110,18 @@ class AppStateService extends EventEmitter {
      * record net info changes
      */
     setNetInfoListener() {
-        NetInfo.fetch().then(state => {
-            this.setNetState(state.isConnected);
-        });
+        return new Promise(resolve => {
+            NetInfo.fetch()
+                .then(state => {
+                    this.setNetState(state.isConnected);
+                })
+                .finally(() => {
+                    return resolve();
+                });
 
-        NetInfo.addEventListener(state => {
-            this.setNetState(state.isConnected);
+            NetInfo.addEventListener(state => {
+                this.setNetState(state.isConnected);
+            });
         });
     }
 
@@ -122,28 +129,32 @@ class AppStateService extends EventEmitter {
      * record app state changes
      */
     setAppStateListener() {
-        AppState.addEventListener('change', nextAppState => {
-            let appState = AppStateStatus.Active;
-            switch (nextAppState) {
-                case 'inactive':
-                    appState = AppStateStatus.Inactive;
-                    break;
-                case 'active':
-                    appState = AppStateStatus.Active;
-                    break;
-                case 'background':
-                    appState = AppStateStatus.Background;
-                    break;
-                default:
-                    appState = AppStateStatus.Active;
-            }
+        return new Promise(resolve => {
+            AppState.addEventListener('change', nextAppState => {
+                let appState = AppStateStatus.Active;
+                switch (nextAppState) {
+                    case 'inactive':
+                        appState = AppStateStatus.Inactive;
+                        break;
+                    case 'active':
+                        appState = AppStateStatus.Active;
+                        break;
+                    case 'background':
+                        appState = AppStateStatus.Background;
+                        break;
+                    default:
+                        appState = AppStateStatus.Active;
+                }
 
-            if (this.currentAppState !== appState) {
-                this.prevAppState = this.currentAppState;
-                this.currentAppState = appState;
-                // emit the appStateChange event
-                this.emit('appStateChange', this.currentAppState);
-            }
+                if (this.currentAppState !== appState) {
+                    this.prevAppState = this.currentAppState;
+                    this.currentAppState = appState;
+                    // emit the appStateChange event
+                    this.emit('appStateChange', this.currentAppState);
+                }
+            });
+
+            return resolve();
         });
     }
 

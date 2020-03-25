@@ -5,8 +5,6 @@
 import moment from 'moment';
 import { TextEncoder, TextDecoder } from 'text-encoding';
 
-import { NTPService } from '@services';
-
 /* Text Encoding ==================================================================== */
 const TextEncoding = {
     //  string to uint8
@@ -98,7 +96,7 @@ const NormalizeCurrencyCode = (currencyCode: string): string => {
 
 const NormalizeDate = (date: string): string => {
     const momentDate = moment(date);
-    const reference = moment(NTPService.now());
+    const reference = moment();
     const today = reference.clone().startOf('day');
     const yesterday = reference
         .clone()

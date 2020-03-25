@@ -7,7 +7,6 @@ import LinkingService from './LinkingService';
 import SocketService from './SocketService';
 import LedgerService from './LedgerService';
 import BackendService from './BackendService';
-import NTPService from './NTPService';
 
 export {
     LoggerService,
@@ -19,5 +18,4 @@ export {
     SocketService,
     LedgerService,
     BackendService,
-    NTPService,
 };

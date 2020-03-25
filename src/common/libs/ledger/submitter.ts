@@ -149,7 +149,9 @@ class Submitter {
 
                 const submitResult = await LedgerService.submit(this.signedObject.signedTransaction);
 
-                const { error, tx_json, error_exception, engine_result, engine_result_message } = submitResult;
+                const { error, tx_json, error_message, engine_result, engine_result_message } = submitResult;
+
+                this.logger.debug('Submit Result TX:', submitResult);
 
                 // set the transaction id for verification
                 this.transactionId = this.signedObject.id || tx_json.hash;
@@ -167,8 +169,8 @@ class Submitter {
                     return resolve(
                         Object.assign(result, {
                             success: false,
-                            engineResult: 'FAILED',
-                            message: error_exception,
+                            engineResult: error,
+                            message: error_message,
                         }),
                     );
                 }

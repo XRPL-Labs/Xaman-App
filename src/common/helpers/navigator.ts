@@ -151,6 +151,25 @@ const Navigator = {
         });
     },
 
+    startConnectionIssue() {
+        Navigation.setDefaultOptions(defaultOptions);
+
+        return Navigation.setRoot({
+            root: {
+                stack: {
+                    id: AppScreens.ConnectionIssue,
+                    children: [
+                        {
+                            component: {
+                                name: AppScreens.ConnectionIssue,
+                            },
+                        },
+                    ],
+                },
+            },
+        });
+    },
+
     push(nextScreen: any, options = {}, passProps = {}) {
         const currentScreen = NavigationService.getCurrentScreen();
         if (currentScreen !== nextScreen) {

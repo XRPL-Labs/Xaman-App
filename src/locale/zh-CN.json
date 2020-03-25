@@ -177,6 +177,7 @@
       "changingLanguageNeedsRestartToTakeEffect": "更改语言要求应用程序重新启动。您要立即重新启动吗？",
       "noAccountConfigured": "未配置帐户",
       "pleaseAddAccountToSignTheTransaction": "请添加一个帐户以签署交易",
+      "pleaseAddAccountToSendPayments": "请添加一个帐户以发送付款",
       "doNotRemindMe": "不要再提醒我",
       "invalidPayload": "有效载荷无效",
       "unexpectedErrorOccurred": "发生意外错误。",
@@ -190,7 +191,13 @@
       "permissionToUseCamera": "允许使用相机",
       "weNeedYourPermissionToUseYourCamera": "我们需要您的许可才能使用您的相机",
       "needPermissionToAccessCamera": "需要访问摄像头的权限。",
-      "pleaseApproveCameraPermission": "请批准相机权限"
+      "pleaseApproveCameraPermission": "请批准相机权限",
+      "scannedAddressIsNotAValidXRPLAddress": "扫描的地址不是有效的XRPL地址。",
+      "noConnection": "没有关联 ...",
+      "thereIsNoConnectionToTheCurrentXRPLNode": "没有与当前XRPL节点的连接",
+      "UnableToConnectToNode": "无法连接到节点“ %{defaultNode} '",
+      "CheckYourNetworkConnection": "检查您的网络连接",
+      "WeWillKeepTryingButThereMayBeAProblemWithYourInternetConnection": "我们会继续尝试，但是您的互联网连接可能有问题。"
    },
    "onboarding": {
       "slideOne": {
@@ -234,14 +241,14 @@
       "youDonNotHaveOtherCurrency": "您没有其他货币",
       "howActivateMyAccount": "如何激活我的帐户？",
       "howActivateMyAccountDesc": "为了防止创建垃圾邮件帐户，XRP分类帐至少需要将20 XRP存入一个帐户才能激活它。 20 XRP不会丢失：它将保留在您的帐户中，但您不能花掉。要开始使用您的帐户，请确保您的帐户中存入的金额超过20 XRP。",
-      "otherCurrenciesDesc": "XRP分类帐还允许您持有XRP以外的其他货币的余额以及收发货币。这些货币可以由XRP分类帐上的其他帐户发行。如果您希望能够发送或接收非XRP货币，则必须信任非XRP货币的发行者。"
+      "otherCurrenciesDesc": "XRP分类帐还允许您持有XRP以外的其他货币的余额以及发送和接收。这些货币可以由XRP分类帐上的其他帐户发行。如果您希望能够发送或接收非XRP货币，则必须信任非XRP货币的发行者。"
    },
    "events": {
       "noTransaction": "没有交易",
       "shareAccount": "共享帐号地址",
       "transactionType": "交易类型",
       "smallerThan": "<小于",
-      "biggerThan": "<大于",
+      "biggerThan": ">大于",
       "transactionDetails": "交易明细",
       "shareTransactionId": "股份交易编号",
       "thisTransactionWasSuccessful": "此交易成功",
@@ -319,7 +326,7 @@
       "importExisting": "导入现有帐户",
       "generateNewAccount": "创建一个新账户",
       "confirmPrivateTitle": "确认您的密码",
-      "confirmPrivateDescription": "请提供数字，这是出于您的安全：我们希望您确认是否已写下。",
+      "confirmPrivateDescription": "请提供数字，这是出于您自身的安全：我们希望您确认已将其写下。",
       "invalidSecretNumber": "输入的密码无效",
       "accountSetupCompleted": "帐户设置完成。",
       "YouJustCreatedAccount": "您刚刚创建了一个新的新帐户。",
@@ -457,7 +464,7 @@
       "selectedAccountDoNotSupportCurrency": "所选帐户不支持所选货币。",
       "memoPublicWarning": "备注信息将向所有人公开",
       "destinationNotExistTooLittleToCreate": "目标帐户以前没有使用过，并且没有任何余额。要在XRP分类账上激活帐户，需要至少20 XRP的初始存款。",
-      "destinationNotExistCreationWarning": "目标帐户以前没有使用过，并且没有任何余额。如果您继续发送到该帐户，则20 XRP %{amount} XRP将用于激活XRP分类帐上的帐户，这意味着20 XRP将不可用。你确定你要继续吗？",
+      "destinationNotExistCreationWarning": "目标帐户以前没有使用过，并且没有任何余额。如果您继续发送到该帐户，则20 XRP %{amount} XRP将用于在XRP分类帐上激活帐户，这意味着20 XRP将不可用。你确定你要继续吗？",
       "destinationCannotActivateWithIOU": "目标帐户以前没有使用过，并且没有任何余额。要在XRP分类帐上激活帐户，必须将至少20 XRP的初始存款发送到该帐户。非XRP货币不能用于初始存款。",
       "destinationTagIsRequired": "发送此付款需要提供目的地标签。"
    },

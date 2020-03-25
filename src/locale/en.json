@@ -177,6 +177,7 @@
         "changingLanguageNeedsRestartToTakeEffect": "Changing language requires the app to restart. Do you want to restart now?",
         "noAccountConfigured": "No account configured",
         "pleaseAddAccountToSignTheTransaction": "Please add a account to sign the transaction",
+        "pleaseAddAccountToSendPayments": "Please add a account to send payments",
         "doNotRemindMe": "Don't remind me again",
         "invalidPayload": "Invalid payload",
         "unexpectedErrorOccurred": "Unexpected error occurred.",
@@ -190,8 +191,13 @@
         "permissionToUseCamera": "Permission to use camera",
         "weNeedYourPermissionToUseYourCamera": "We need your permission to use your camera",
         "needPermissionToAccessCamera": "Need permission to access Camera.",
-        "pleaseApproveCameraPermission": "Please approve camera permissions"
-
+        "pleaseApproveCameraPermission": "Please approve camera permissions",
+        "scannedAddressIsNotAValidXRPLAddress": "Scanned address is not a valid XRPL address.",
+        "noConnection": "No connection ...",
+        "thereIsNoConnectionToTheCurrentXRPLNode": "There's no connection to the current XRPL node",
+        "UnableToConnectToNode": "Unable to connect to to node '%{defaultNode}'",
+        "CheckYourNetworkConnection": "Check your network connection",
+        "WeWillKeepTryingButThereMayBeAProblemWithYourInternetConnection": "We'll keep trying, but there may be a problem with your internet connection."
     },
     "onboarding":{
         "slideOne": {
@@ -242,7 +248,7 @@
         "shareAccount": "Share account address",
         "transactionType": "Transaction type",
         "smallerThan": "< smaller than",
-        "biggerThan": "< bigger than",
+        "biggerThan": "> bigger than",
         "transactionDetails": "Transaction details",
         "shareTransactionId": "Share transaction ID",
         "thisTransactionWasSuccessful": "This transaction was successful",

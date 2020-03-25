@@ -1,6 +1,6 @@
 {
   "name": "xumm",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -42,10 +42,9 @@
     "react-native-navigation": "6.3.0",
     "react-native-share": "^3.1.1",
     "react-native-touch-id": "^4.4.1",
-    "react-native-udp": "^3.0.0",
     "react-native-webview": "^9.0.1",
     "realm": "^3.6.5",
-    "rippled-ws-client": "^1.2.2",
+    "rippled-ws-client": "^1.3.2",
     "text-encoding": "^0.7.0",
     "uuid": "^7.0.2",
     "xrpl-accountlib": "0.3.6",

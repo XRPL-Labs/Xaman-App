@@ -177,6 +177,7 @@
       "changingLanguageNeedsRestartToTakeEffect": "언어를 변경하려면 앱을 다시 시작해야합니다. 지금 다시 시작 하시겠습니까?",
       "noAccountConfigured": "구성된 계정이 없습니다",
       "pleaseAddAccountToSignTheTransaction": "거래에 서명 할 계정을 추가하십시오",
+      "pleaseAddAccountToSendPayments": "지불을 보내려면 계정을 추가하십시오",
       "doNotRemindMe": "다시 상기시키지 마",
       "invalidPayload": "유효하지 않은 페이로드",
       "unexpectedErrorOccurred": "예상치 못한 오류가 발생했습니다.",
@@ -190,7 +191,13 @@
       "permissionToUseCamera": "카메라 사용 권한",
       "weNeedYourPermissionToUseYourCamera": "카메라를 사용하려면 허가가 필요합니다",
       "needPermissionToAccessCamera": "카메라에 액세스하려면 권한이 필요합니다.",
-      "pleaseApproveCameraPermission": "카메라 권한을 승인하십시오"
+      "pleaseApproveCameraPermission": "카메라 권한을 승인하십시오",
+      "scannedAddressIsNotAValidXRPLAddress": "스캔 한 주소가 유효한 XRPL 주소가 아닙니다.",
+      "noConnection": "연결되지 않음 ...",
+      "thereIsNoConnectionToTheCurrentXRPLNode": "현재 XRPL 노드에 연결되어 있지 않습니다",
+      "UnableToConnectToNode": "'노드에 연결할 수 없습니다 %{defaultNode} '",
+      "CheckYourNetworkConnection": "네트워크 연결을 확인하십시오",
+      "WeWillKeepTryingButThereMayBeAProblemWithYourInternetConnection": "계속 시도하지만 인터넷 연결에 문제가있을 수 있습니다."
    },
    "onboarding": {
       "slideOne": {
@@ -202,7 +209,7 @@
       },
       "slideThree": {
          "title": "보안 우선",
-         "desc": "xumm 애플리케이션 및 플랫폼은 보안을 염두에두고 구축되었습니다. 비밀을 다시 입력하지 말고 자신의 신뢰할 수있는 장치에서 거래에 서명하십시오."
+         "desc": "xumm 응용 프로그램 및 플랫폼은 보안을 염두에두고 구축되었습니다. 비밀을 다시 입력하지 말고 신뢰할 수있는 자신의 장치에서 거래에 서명하십시오."
       },
       "slideFour": {
          "title": "보내고 받기",
@@ -218,11 +225,11 @@
    },
    "setupBiometry": {
       "useBiometry": "FaceID 또는 지문을 사용 하시겠습니까?",
-      "biometryDescription": "계정 보안을 강화하기 위해 FaceID 또는 지문 사용을 활성화 할 수 있습니다."
+      "biometryDescription": "계정을보다 안전하게 유지하기 위해 FaceID 또는 지문 사용을 활성화 할 수 있습니다."
    },
    "setupPermissions": {
       "enableNotifications": "푸시 알림을 사용 하시겠습니까?",
-      "permissionDescription": "우리는 푸시 알림을 사용하여 사인 요청을 보냅니다."
+      "permissionDescription": "푸시 알림을 사용하여 사인 요청을 보냅니다."
    },
    "home": {
       "addCurrency": "더하다",
@@ -232,16 +239,16 @@
       "whatAreOtherCurrencies": "다른 통화는 무엇입니까?",
       "otherCurrencies": "다른 통화",
       "youDonNotHaveOtherCurrency": "다른 통화가 없습니다",
-      "howActivateMyAccount": "계정을 활성화하려면 어떻게합니까?",
+      "howActivateMyAccount": "계정을 활성화하려면 어떻게해야합니까?",
       "howActivateMyAccountDesc": "스팸 계정 생성을 방지하려면 XRP 원장에서 계정에 20 개 이상의 XRP를 입금하여 활성화해야합니다. 20 XRP는 손실되지 않습니다. 계정에 남아 있지만 사용할 수는 없습니다. 계정 사용을 시작하려면 20 XRP 이상의 예금이 계정에 입금되어 있는지 확인하십시오.",
-      "otherCurrenciesDesc": "XRP 원장을 사용하면 XRP 이외의 통화 잔액을 보유하고주고받을 수 있습니다. 이 통화는 XRP 원장의 다른 계정에서 발행 할 수 있습니다. XRP 이외의 통화를 보내거나 받으려면 XRP 이외의 통화 발행자를 신뢰해야합니다."
+      "otherCurrenciesDesc": "XRP 원장을 사용하면 XRP 이외의 통화 잔액을 보유하고주고받을 수 있습니다. 이러한 통화는 XRP 원장의 다른 계정에서 발행 할 수 있습니다. XRP 이외의 통화를 보내거나 받으려면 XRP 이외의 통화 발행자를 신뢰해야합니다."
    },
    "events": {
       "noTransaction": "거래 없음",
       "shareAccount": "계정 주소 공유",
       "transactionType": "거래 유형",
       "smallerThan": "<보다 작다",
-      "biggerThan": "<보다 큼",
+      "biggerThan": ">보다 큼",
       "transactionDetails": "상세 거래 내역",
       "shareTransactionId": "거래 ID 공유",
       "thisTransactionWasSuccessful": "이 거래는 성공적이었습니다",
@@ -325,7 +332,7 @@
       "YouJustCreatedAccount": "새로운 신규 계정을 만들었습니다.",
       "yeahLetsGo": "후 레이, 가자!",
       "enterYourPassphrase": "암호를 입력하십시오",
-      "pleaseEnterSafePassphrase": "기억하기 쉽지만 다른 사람들이 추측 할 수없는 확장 된 길이의 암호를 만드십시오.",
+      "pleaseEnterSafePassphrase": "기억하기 쉽지만 다른 사람이 추측 할 수없는 확장 된 길이의 암호를 작성하십시오.",
       "enterPassphrase": "암호 입력",
       "repeatPassphrase": "비밀번호 문구 반복",
       "passphraseShouldContain": "암호 강도는 최소한 공정해야합니다. 길거나 더 어려운 암호를 사용하십시오 (긴 암호가 더 낫습니다).",
@@ -402,7 +409,7 @@
       "destroyAccount": "이 계정을 삭제",
       "upgradingAccessLevelWarning": "액세스 수준을 업그레이드하는 중입니다.이 계정의 개인 키를 가져와야합니다.",
       "downgradingAccessLevelWarning": "액세스 수준을 다운 그레이드하면이 계정의 개인 키가 손실됩니다. 확실합니까 ?",
-      "removeTrustLineWarning": "계정에서이 통화를 삭제하고 있습니다.이 작업은 취소 할 수 없습니다. 확실합니까?",
+      "removeTrustLineWarning": "계정에서이 통화를 삭제하고 있습니다.이 작업을 실행 취소 할 수 없습니다. 확실합니까?",
       "unavailableChangeSecurityLevel": "현재 보안 수준 변경이 불가능합니다",
       "accountDestroyWarning": "귀하의 계정은 영구적으로 삭제됩니다. 확실합니까?",
       "accountMaxLabelLengthError": "계정 라벨은 16 자 미만이어야합니다!",
@@ -419,7 +426,7 @@
       "currentPassphrase": "현재 비밀번호 문구",
       "newPassphrase": "새로운 비밀번호 문구",
       "regularKeyFor": "에 대한 일반 키",
-      "allDoneYouCanGoToNextStepNow": "다 끝났으니 다음 단계로 넘어갈 수 있습니다",
+      "allDoneYouCanGoToNextStepNow": "모든 작업을 마치면 다음 단계로 넘어갑니다",
       "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이 무엇을하고 있는지 아는 경우에만 계속하십시오."
    },
    "send": {

@@ -15,7 +15,12 @@ import {
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 
-import { StringTypeDetector, StringDecoder, StringType } from 'xumm-string-decode';
+import { AccountRepository } from '@store/repositories';
+import { AccessLevels } from '@store/types';
+
+import { StringTypeDetector, StringDecoder, StringType, XrplDestination } from 'xumm-string-decode';
+import { Decode } from 'xrpl-tagged-address-codec';
+import { utils as AccountLibUtils } from 'xrpl-accountlib';
 
 import { AppScreens } from '@common/constants';
 import { Navigator, Images } from '@common/helpers';
@@ -150,6 +155,56 @@ class ScanView extends Component<Props, State> {
         );
     };
 
+    handleXrplDestination = async (destination: XrplDestination) => {
+        let address;
+        let tag;
+
+        // decode if it's x address
+        if (destination.to.startsWith('X')) {
+            try {
+                const decoded = Decode(destination.to);
+                address = decoded.account;
+                // @ts-ignore
+                tag = decoded.tag && decoded.tag;
+            } catch {
+                // ignore
+            }
+        } else if (AccountLibUtils.isValidAddress(destination.to)) {
+            address = destination.to;
+            tag = destination.tag;
+        }
+
+        // valid address
+        if (address) {
+            const availableAccounts = AccountRepository.getAccounts({ accessLevel: AccessLevels.Full });
+
+            if (availableAccounts.length > 0) {
+                await Navigator.dismissModal();
+
+                const paymentDestination = {
+                    address,
+                    tag,
+                };
+
+                Navigator.push(AppScreens.Transaction.Payment, {}, { scanResult: paymentDestination });
+            } else {
+                Alert.alert(
+                    Localize.t('global.noAccountConfigured'),
+                    Localize.t('global.pleaseAddAccountToSendPayments'),
+                    [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+                    { cancelable: false },
+                );
+            }
+        } else {
+            Alert.alert(
+                Localize.t('global.error'),
+                Localize.t('global.scannedAddressIsNotAValidXRPLAddress'),
+                [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+                { cancelable: false },
+            );
+        }
+    };
+
     handle = (content: any, detected: any) => {
         const { onRead, type } = this.props;
 
@@ -194,6 +249,9 @@ class ScanView extends Component<Props, State> {
                 break;
             case StringType.XrplSignedTransaction:
                 this.handleSignedTransaction(parsed.txblob);
+                break;
+            case StringType.XrplDestination:
+                this.handleXrplDestination(parsed);
                 break;
             default:
                 // nothing found

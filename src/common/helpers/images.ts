@@ -23,6 +23,7 @@ export const Images = {
     ImageBiometric: buildImageSource('ImageBiometric', 'image_biometric'),
     ImageNotifications: buildImageSource('ImageNotifications', 'image_notifications'),
     ImageComplete: buildImageSource('ImageComplete', 'image_complete'),
+    ImageCloudAlert: buildImageSource('ImageCloudAlert', 'image_cloud_alert'),
     // Xumm
     xummLogo: buildImageSource('XummLogo', 'xumm_logo'),
     xummIcon: buildImageSource('XummIcon', 'xumm_icon'),

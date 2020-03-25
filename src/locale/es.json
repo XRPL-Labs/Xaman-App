@@ -177,6 +177,7 @@
       "changingLanguageNeedsRestartToTakeEffect": "Cambiar el idioma requiere que la aplicación se reinicie. ¿Quieres reiniciar ahora?",
       "noAccountConfigured": "No cuenta configurada",
       "pleaseAddAccountToSignTheTransaction": "Agregue una cuenta para firmar la transacción.",
+      "pleaseAddAccountToSendPayments": "Agregue una cuenta para enviar pagos.",
       "doNotRemindMe": "No me lo recuerdes otra vez",
       "invalidPayload": "Carga no válida",
       "unexpectedErrorOccurred": "Ocurrió un error inesperado.",
@@ -190,7 +191,13 @@
       "permissionToUseCamera": "Permiso para usar la cámara",
       "weNeedYourPermissionToUseYourCamera": "Necesitamos su permiso para usar su cámara",
       "needPermissionToAccessCamera": "Necesita permiso para acceder a la cámara.",
-      "pleaseApproveCameraPermission": "Por favor, apruebe los permisos de la cámara"
+      "pleaseApproveCameraPermission": "Por favor, apruebe los permisos de la cámara",
+      "scannedAddressIsNotAValidXRPLAddress": "La dirección escaneada no es una dirección XRPL válida.",
+      "noConnection": "Sin conexión ...",
+      "thereIsNoConnectionToTheCurrentXRPLNode": "No hay conexión con el nodo XRPL actual",
+      "UnableToConnectToNode": "No se puede conectar al nodo ' %{defaultNode} '",
+      "CheckYourNetworkConnection": "Comprueba tu conexión de red",
+      "WeWillKeepTryingButThereMayBeAProblemWithYourInternetConnection": "Seguiremos intentándolo, pero puede haber un problema con su conexión a Internet."
    },
    "onboarding": {
       "slideOne": {
@@ -233,7 +240,7 @@
       "otherCurrencies": "Otras monedas",
       "youDonNotHaveOtherCurrency": "No tienes otras monedas",
       "howActivateMyAccount": "¿Cómo puedo activar mi cuenta?",
-      "howActivateMyAccountDesc": "Para evitar la creación de cuentas de spam, el libro mayor XRP requiere que se depositen al menos 20 XRP en una cuenta para activarlo. El 20 XRP no se pierde: permanecerá en su cuenta, pero no puede gastarlo. Para comenzar a usar su cuenta, asegúrese de realizar un depósito superior a 20 XRP en su cuenta.",
+      "howActivateMyAccountDesc": "Para evitar la creación de cuentas de spam, el libro mayor de XRP requiere que se depositen al menos 20 XRP en una cuenta para activarlo. El 20 XRP no se pierde: permanecerá en su cuenta, pero no puede gastarlo. Para comenzar a usar su cuenta, asegúrese de realizar un depósito superior a 20 XRP en su cuenta.",
       "otherCurrenciesDesc": "El libro mayor de XRP también le permite mantener saldos y enviar y recibir monedas que no sean XRP. Estas monedas pueden ser emitidas por otras cuentas en el libro mayor XRP. Si desea poder enviar o recibir una moneda que no sea XRP, deberá confiar en el emisor de la moneda que no sea XRP."
    },
    "events": {
@@ -241,7 +248,7 @@
       "shareAccount": "Compartir dirección de cuenta",
       "transactionType": "Tipo de transacción",
       "smallerThan": "<más pequeño que",
-      "biggerThan": "<más grande que",
+      "biggerThan": "> más grande que",
       "transactionDetails": "Detalles de la transacción",
       "shareTransactionId": "Compartir ID de transacción",
       "thisTransactionWasSuccessful": "Esta transacción fue exitosa",

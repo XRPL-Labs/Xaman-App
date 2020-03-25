@@ -6,7 +6,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import React, { Component } from 'react';
 import { Results } from 'realm';
-import { isEmpty, flatMap, remove, get, uniqBy, has } from 'lodash';
+import { isEmpty, flatMap, remove, get, uniqBy, has, toNumber } from 'lodash';
 import {
     SafeAreaView,
     View,
@@ -52,7 +52,6 @@ export interface State {
     searchText: string;
     contacts: Results<ContactSchema>;
     searchResult: any[];
-    scanResult: any;
 }
 /* Component ==================================================================== */
 class RecipientStep extends Component<Props, State> {
@@ -70,17 +69,23 @@ class RecipientStep extends Component<Props, State> {
             searchText: '',
             contacts: ContactRepository.getContacts(),
             searchResult: [],
-            scanResult: {
-                to: '',
-                tag: 0,
-                xAddress: undefined,
-            },
         };
 
         this.lookupTimeout = null;
     }
 
-    doAccountLookUp = async (result: XrplDestination) => {
+    componentDidMount() {
+        const { scanResult } = this.context;
+
+        // if scanResult is passed
+        if (scanResult) {
+            this.doAccountLookUp({ to: scanResult.address, tag: scanResult.tag }, true);
+        }
+    }
+
+    doAccountLookUp = async (result: XrplDestination, asDestination?: boolean) => {
+        const { setDestination } = this.context;
+
         let address;
         let tag;
 
@@ -119,6 +124,10 @@ class RecipientStep extends Component<Props, State> {
                 ],
                 isSearching: false,
             });
+
+            if (asDestination) {
+                setDestination({ name: accountInfo.name || '', address, tag: toNumber(tag) || undefined });
+            }
         } else {
             this.doLookUp(result.to);
         }
