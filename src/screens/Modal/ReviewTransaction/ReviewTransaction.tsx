@@ -35,7 +35,7 @@ import { SignedObjectType, SubmitResultType } from '@common/libs/ledger/types';
 import { AppScreens } from '@common/constants';
 import { Images, Navigator, Toast, AlertModal, getNavigationBarHeight } from '@common/helpers';
 
-import { PushNotificationsService } from '@services';
+import { PushNotificationsService, LedgerService } from '@services';
 
 // components
 import { Button, AccordionPicker, Icon, Footer, Spacer } from '@components';
@@ -126,6 +126,9 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     componentDidMount() {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
+
+        // update the accounts details before process the review
+        LedgerService.updateAccountsDetails();
     }
 
     componentDidCatch() {
