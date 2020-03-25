@@ -192,7 +192,12 @@
       "weNeedYourPermissionToUseYourCamera": "Necesitamos su permiso para usar su cámara",
       "needPermissionToAccessCamera": "Necesita permiso para acceder a la cámara.",
       "pleaseApproveCameraPermission": "Por favor, apruebe los permisos de la cámara",
-      "scannedAddressIsNotAValidXRPLAddress": "La dirección escaneada no es una dirección XRPL válida."
+      "scannedAddressIsNotAValidXRPLAddress": "La dirección escaneada no es una dirección XRPL válida.",
+      "noConnection": "Sin conexión ...",
+      "thereIsNoConnectionToTheCurrentXRPLNode": "No hay conexión con el nodo XRPL actual",
+      "UnableToConnectToNode": "No se puede conectar al nodo ' %{defaultNode} '",
+      "CheckYourNetworkConnection": "Comprueba tu conexión de red",
+      "WeWillKeepTryingButThereMayBeAProblemWithYourInternetConnection": "Seguiremos intentándolo, pero puede haber un problema con su conexión a Internet."
    },
    "onboarding": {
       "slideOne": {
@@ -243,7 +248,7 @@
       "shareAccount": "Compartir dirección de cuenta",
       "transactionType": "Tipo de transacción",
       "smallerThan": "<más pequeño que",
-      "biggerThan": "<más grande que",
+      "biggerThan": "> más grande que",
       "transactionDetails": "Detalles de la transacción",
       "shareTransactionId": "Compartir ID de transacción",
       "thisTransactionWasSuccessful": "Esta transacción fue exitosa",
@@ -393,7 +398,7 @@
       "pleaseChooseAccountLabel": "Ingrese un nombre para esta cuenta, por ejemplo, 'Gastos' o 'Ahorros'.",
       "pleaseEnterLabel": "Por favor, introduzca una nueva etiqueta",
       "accessLevel": "Nivel de acceso",
-      "accessLevelChangeAlert": "Cambiar del modo de solo lectura al acceso completo requerirá que ingrese la clave secreta para su cuenta",
+      "accessLevelChangeAlert": "Cambiar del modo de solo lectura al modo de acceso completo requerirá que ingrese la clave secreta para su cuenta",
       "noAccountYet": "No tienes cuenta aún",
       "myAccounts": "Mis cuentas",
       "getStartedCreateAccount": "Comience agregando su primera cuenta.",

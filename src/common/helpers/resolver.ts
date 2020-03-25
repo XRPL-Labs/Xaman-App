@@ -1,8 +1,9 @@
+import moment from 'moment';
 import { memoize, isEmpty } from 'lodash';
 
 import { ContactRepository, AccountRepository } from '@store/repositories';
 
-import { BackendService } from '@services';
+import { BackendService, LedgerService } from '@services';
 
 export interface AccountInfo {
     name: string;
@@ -54,4 +55,17 @@ const getAccountInfo = memoize(
     },
 );
 
-export { getAccountInfo };
+const getLedgerTime = () => {
+    return new Promise((resolve, reject) => {
+        LedgerService.getServerInfo()
+            .then((server_info: any) => {
+                const { info } = server_info;
+                resolve(moment.utc(info.time, 'YYYY-MMM-DD HH:mm:ss.SSS').format());
+            })
+            .catch(() => {
+                reject();
+            });
+    });
+};
+
+export { getAccountInfo, getLedgerTime };

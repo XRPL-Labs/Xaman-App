@@ -192,7 +192,12 @@
       "weNeedYourPermissionToUseYourCamera": "我们需要您的许可才能使用您的相机",
       "needPermissionToAccessCamera": "需要访问摄像头的权限。",
       "pleaseApproveCameraPermission": "请批准相机权限",
-      "scannedAddressIsNotAValidXRPLAddress": "扫描的地址不是有效的XRPL地址。"
+      "scannedAddressIsNotAValidXRPLAddress": "扫描的地址不是有效的XRPL地址。",
+      "noConnection": "没有关联 ...",
+      "thereIsNoConnectionToTheCurrentXRPLNode": "没有与当前XRPL节点的连接",
+      "UnableToConnectToNode": "无法连接到节点“ %{defaultNode} '",
+      "CheckYourNetworkConnection": "检查您的网络连接",
+      "WeWillKeepTryingButThereMayBeAProblemWithYourInternetConnection": "我们会继续尝试，但是您的互联网连接可能有问题。"
    },
    "onboarding": {
       "slideOne": {
@@ -243,7 +248,7 @@
       "shareAccount": "共享帐号地址",
       "transactionType": "交易类型",
       "smallerThan": "<小于",
-      "biggerThan": "<大于",
+      "biggerThan": ">大于",
       "transactionDetails": "交易明细",
       "shareTransactionId": "股份交易编号",
       "thisTransactionWasSuccessful": "此交易成功",
@@ -321,7 +326,7 @@
       "importExisting": "导入现有帐户",
       "generateNewAccount": "创建一个新账户",
       "confirmPrivateTitle": "确认您的密码",
-      "confirmPrivateDescription": "请提供数字，这是出于您的安全：我们希望您确认是否已写下。",
+      "confirmPrivateDescription": "请提供数字，这是出于您自身的安全：我们希望您确认已将其写下。",
       "invalidSecretNumber": "输入的密码无效",
       "accountSetupCompleted": "帐户设置完成。",
       "YouJustCreatedAccount": "您刚刚创建了一个新的新帐户。",
@@ -458,8 +463,8 @@
       "destinationIsProbableIsScam": "目标帐户被标记为高风险",
       "selectedAccountDoNotSupportCurrency": "所选帐户不支持所选货币。",
       "memoPublicWarning": "备注信息将向所有人公开",
-      "destinationNotExistTooLittleToCreate": "目标帐户以前没有使用过，并且没有任何余额。要在XRP分类帐上激活帐户，需要至少20 XRP的初始存款。",
-      "destinationNotExistCreationWarning": "目标帐户以前没有使用过，并且没有任何余额。如果您继续发送到该帐户，则20 XRP %{amount} XRP将用于激活XRP分类帐上的帐户，这意味着20 XRP将不可用。你确定你要继续吗？",
+      "destinationNotExistTooLittleToCreate": "目标帐户以前没有使用过，并且没有任何余额。要在XRP分类账上激活帐户，需要至少20 XRP的初始存款。",
+      "destinationNotExistCreationWarning": "目标帐户以前没有使用过，并且没有任何余额。如果您继续发送到该帐户，则20 XRP %{amount} XRP将用于在XRP分类帐上激活帐户，这意味着20 XRP将不可用。你确定你要继续吗？",
       "destinationCannotActivateWithIOU": "目标帐户以前没有使用过，并且没有任何余额。要在XRP分类帐上激活帐户，必须将至少20 XRP的初始存款发送到该帐户。非XRP货币不能用于初始存款。",
       "destinationTagIsRequired": "发送此付款需要提供目的地标签。"
    },

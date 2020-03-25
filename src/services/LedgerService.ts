@@ -131,6 +131,12 @@ class LedgerService extends EventEmitter {
         return SocketService.send(request);
     };
 
+    getServerInfo = () => {
+        return SocketService.send({
+            command: 'server_info',
+        });
+    };
+
     /**
      * Submit signed transaction to the XRP Ledger
      */

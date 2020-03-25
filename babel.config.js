@@ -15,7 +15,6 @@ module.exports = {
                     zlib: 'browserify-zlib',
                     vm: 'vm-browserify',
                     stream: 'stream-browserify',
-                    dgram: 'react-native-udp',
                     _stream_duplex: 'readable-stream/duplex',
                     _stream_passthrough: 'readable-stream/passthrough',
                     _stream_readable: 'readable-stream/readable',

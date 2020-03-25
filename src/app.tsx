@@ -22,6 +22,8 @@ import * as screens from '@screens';
 // services
 import * as services from '@services';
 
+import { NetStateStatus } from '@services/AppStateService';
+
 export default class Application {
     storage: StorageBackend;
     initialized: boolean;
@@ -75,13 +77,26 @@ export default class Application {
     }
 
     boot = () => {
-        const core = CoreRepository.getSettings();
+        const { SocketService, AppStateService } = services;
 
-        // if app initialized go to main screen
-        if (core && core.initialized) {
-            Navigator.startDefault();
+        if (AppStateService.netStatus === NetStateStatus.Connected) {
+            // first connect to the websocket
+            SocketService.connect()
+                .then(() => {
+                    const core = CoreRepository.getSettings();
+
+                    // if app initialized go to main screen
+                    if (core && core.initialized) {
+                        Navigator.startDefault();
+                    } else {
+                        Navigator.startOnboarding();
+                    }
+                })
+                .catch(() => {
+                    Navigator.startConnectionIssue();
+                });
         } else {
-            Navigator.startOnboarding();
+            Navigator.startConnectionIssue();
         }
     };
 

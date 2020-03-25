@@ -34,7 +34,6 @@ import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.wix.interactable.Interactable;
 import com.cmcewen.blurview.BlurViewPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
-import com.tradle.react.UdpSocketsModule;
 import io.realm.react.RealmReactPackage;
 import org.reactnative.camera.RNCameraPackage;
 import cl.json.RNSharePackage;
@@ -87,7 +86,6 @@ public class MainApplication extends NavigationApplication {
                     new Interactable(),
                     new RealmReactPackage(),
                     new RNCameraPackage(),
-                    new UdpSocketsModule(),
                     new RNSharePackage(),
                     new BlurViewPackage(),
                     new RNCWebViewPackage()

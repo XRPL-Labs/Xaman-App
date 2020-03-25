@@ -7,15 +7,17 @@ import RippledWsClient from 'rippled-ws-client';
 import DeviceInfo from 'react-native-device-info';
 import EventEmitter from 'events';
 
-import { AppConfig } from '@common/constants';
 import { CoreRepository } from '@store/repositories';
 import { NodeChain } from '@store/types';
-import { LoggerService, NavigationService, AppStateService } from '@services';
+import { LoggerService, AppStateService } from '@services';
 
 type BaseCommand = {
     id?: string;
     command: string;
 };
+
+interface ServerInfoPayload extends BaseCommand {}
+
 interface SubscribePayload extends BaseCommand {
     accounts: string[];
 }
@@ -59,6 +61,7 @@ class SocketService extends EventEmitter {
     chain: NodeChain;
     nodeType: 'VERIFIED' | 'CUSTOM';
     connection: any;
+    connectionTimeout: 10;
     origin: string;
     logger: any;
     status: SocketStateStatus;
@@ -95,26 +98,14 @@ class SocketService extends EventEmitter {
     initialize = () => {
         return new Promise((resolve, reject) => {
             try {
-                // listen on navigation change event
-                NavigationService.on('setRoot', (root: string) => {
-                    // we just need to connect to socket when we are in DefaultStack not Onboarding
-                    if (root === 'DefaultStack') {
-                        // get/set default node
-                        this.setDefaultNode();
+                // get/set default node
+                this.setDefaultNode();
 
-                        // connect to the node
-                        this.connect();
-
-                        // listen for net state change
-                        AppStateService.on('netStateChange', (newState: string) => {
-                            if (newState === 'Connected') {
-                                this.reconnect();
-                            } else {
-                                this.close();
-                            }
-                        });
-                        // disconnect from socket if we are connect and not in the DefaultStack root
-                    } else if (this.connection) {
+                // listen for net state change
+                AppStateService.on('netStateChange', (newState: string) => {
+                    if (newState === 'Connected') {
+                        this.reconnect();
+                    } else {
                         this.close();
                     }
                 });
@@ -139,25 +130,11 @@ class SocketService extends EventEmitter {
     }
 
     setDefaultNode() {
-        const coreSettings = CoreRepository.getSettings();
+        const defaultNode = CoreRepository.getDefaultNode();
 
-        // check if node is verified/custom
-        const { defaultNode } = coreSettings;
-
-        // it is a verified type
-        if (AppConfig.nodes.main.indexOf(defaultNode) > -1) {
-            this.chain = NodeChain.Main;
-            this.nodeType = 'VERIFIED';
-        } else if (AppConfig.nodes.test.indexOf(defaultNode) > -1) {
-            this.chain = NodeChain.Test;
-            this.nodeType = 'VERIFIED';
-        } else {
-            this.chain = NodeChain.Unknown;
-            this.nodeType = 'CUSTOM';
-        }
-
-        // set node
-        this.node = defaultNode;
+        this.node = defaultNode.node;
+        this.chain = defaultNode.chain;
+        this.nodeType = 'VERIFIED';
     }
 
     close() {
@@ -165,16 +142,32 @@ class SocketService extends EventEmitter {
         if (this.connection) {
             if (this.connection.getState().online === true) {
                 this.connection.close();
+                this.connection = undefined;
             }
         }
     }
 
     reconnect() {
-        this.logger.debug('Reconnecting socket service...');
-        // close current connection
-        this.close();
-        // reconnect
-        this.connect();
+        /* eslint-disable-next-line */
+        return new Promise((resolve, reject) => {
+            try {
+                this.logger.debug('Reconnecting socket service...');
+                // close current connection
+                this.close();
+                // reconnect
+                this.connect()
+                    .then(() => {
+                        resolve();
+                        return reject();
+                    })
+                    .catch(() => {
+                        return reject();
+                    });
+            } catch (e) {
+                this.logger.error('Reconnect Error', e);
+                return reject();
+            }
+        });
     }
 
     sendPayload = (payload: any) => {
@@ -189,6 +182,7 @@ class SocketService extends EventEmitter {
 
     send(
         payload:
+            | ServerInfoPayload
             | SubscribePayload
             | AccountInfoPayload
             | SubmitPayload
@@ -242,25 +236,47 @@ class SocketService extends EventEmitter {
     }
 
     connect() {
-        try {
-            new RippledWsClient(this.node, this.origin).then((Connection: any) => {
-                this.onConnect(Connection);
+        /* eslint-disable-next-line */
+        return new Promise((resolve, reject) => {
+            // return resolve if we already connected
 
-                Connection.on('error', this.onError);
-                // handle socket errors
-                Connection.on('close', this.onClose);
+            if (this.connection) {
+                if (this.connection.getState().online === true) {
+                    return resolve();
+                }
+            }
 
-                Connection.on('state', (connected: boolean) => {
-                    // if we are connecting again
-                    if (this.status === SocketStateStatus.Disconnected && connected) {
-                        this.emit('connect', Connection);
-                    }
-                    this.status = connected ? SocketStateStatus.Connected : SocketStateStatus.Disconnected;
-                });
-            });
-        } catch (e) {
-            this.logger.error('Socket Error', e);
-        }
+            try {
+                new RippledWsClient(this.node, {
+                    Origin: this.origin,
+                    ConnectTimeout: this.connectionTimeout,
+                    MaxConnectTryCount: 1,
+                })
+                    .then((Connection: any) => {
+                        this.onConnect(Connection);
+
+                        Connection.on('error', this.onError);
+                        // handle socket errors
+                        Connection.on('close', this.onClose);
+
+                        Connection.on('state', (connected: boolean) => {
+                            // if we are connecting again
+                            if (this.status === SocketStateStatus.Disconnected && connected) {
+                                this.emit('connect', Connection);
+                            }
+                            this.status = connected ? SocketStateStatus.Connected : SocketStateStatus.Disconnected;
+                        });
+                        return resolve();
+                    })
+                    .catch((e: any) => {
+                        this.logger.error('Socket connecting Error', e);
+                        return reject();
+                    });
+            } catch (e) {
+                this.logger.error('Socket Error', e);
+                return reject();
+            }
+        });
     }
 }
 
