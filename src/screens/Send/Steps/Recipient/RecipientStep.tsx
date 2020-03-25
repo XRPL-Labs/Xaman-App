@@ -6,7 +6,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import React, { Component } from 'react';
 import { Results } from 'realm';
-import { isEmpty, flatMap, remove, get, uniqBy, has } from 'lodash';
+import { isEmpty, flatMap, remove, get, uniqBy, has, toNumber } from 'lodash';
 import {
     SafeAreaView,
     View,
@@ -79,11 +79,13 @@ class RecipientStep extends Component<Props, State> {
 
         // if scanResult is passed
         if (scanResult) {
-            this.doAccountLookUp({ to: scanResult.address, tag: scanResult.tag });
+            this.doAccountLookUp({ to: scanResult.address, tag: scanResult.tag }, true);
         }
     }
 
-    doAccountLookUp = async (result: XrplDestination) => {
+    doAccountLookUp = async (result: XrplDestination, asDestination?: boolean) => {
+        const { setDestination } = this.context;
+
         let address;
         let tag;
 
@@ -122,6 +124,10 @@ class RecipientStep extends Component<Props, State> {
                 ],
                 isSearching: false,
             });
+
+            if (asDestination) {
+                setDestination({ name: accountInfo.name || '', address, tag: toNumber(tag) || undefined });
+            }
         } else {
             this.doLookUp(result.to);
         }
