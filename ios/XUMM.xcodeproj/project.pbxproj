@@ -835,7 +835,7 @@
 					"\"${PODS_ROOT}/GoogleIDFASupport/Libraries\"",
 					"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)",
 				);
-				MARKETING_VERSION = 0.1.8;
+				MARKETING_VERSION = 0.2.0;
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-DFB_SONARKIT_ENABLED=1",
@@ -908,7 +908,7 @@
 					"\"${PODS_ROOT}/GoogleIDFASupport/Libraries\"",
 					"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)",
 				);
-				MARKETING_VERSION = 0.1.8;
+				MARKETING_VERSION = 0.2.0;
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-DFB_SONARKIT_ENABLED=1",
