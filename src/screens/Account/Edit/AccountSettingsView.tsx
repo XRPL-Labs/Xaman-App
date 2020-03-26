@@ -5,7 +5,7 @@
 import React, { Component, Fragment } from 'react';
 import { Alert, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 
-import { Navigator, Prompt } from '@common/helpers';
+import { Navigator, Prompt, getAccountInfo } from '@common/helpers';
 import { AppScreens } from '@common/constants';
 
 import { AccountRepository } from '@store/repositories';
@@ -68,22 +68,34 @@ class AccountSettingsView extends Component<Props, State> {
                 { text: Localize.t('global.cancel') },
                 {
                     text: Localize.t('global.save'),
-                    onPress: (text: string) => {
-                        if (!text || text === account.label) return;
-
-                        if (text.length > 16) {
-                            Alert.alert(Localize.t('global.error'), Localize.t('account.accountMaxLabelLengthError'));
-                            return;
-                        }
-
-                        AccountRepository.update({
-                            address: account.address,
-                            label: text,
-                        });
-                    },
+                    onPress: this.changeAccountLabel,
                 },
             ],
             { type: 'plain-text', defaultValue: account.label },
+        );
+    };
+
+    changeAccountLabel = (newLabel: string) => {
+        const { account } = this.state;
+
+        if (!newLabel || newLabel === account.label) return;
+
+        if (newLabel.length > 16) {
+            Alert.alert(Localize.t('global.error'), Localize.t('account.accountMaxLabelLengthError'));
+            return;
+        }
+
+        AccountRepository.update({
+            address: account.address,
+            label: newLabel,
+        });
+
+        // update catch for this account
+        getAccountInfo.cache.set(
+            account.address,
+            new Promise(resolve => {
+                resolve({ name: newLabel, source: 'internal:accounts' });
+            }),
         );
     };
 
