@@ -64,24 +64,22 @@ class Payment extends BaseTransaction {
         let destination;
 
         // two effected node
-        if (this.Type === 'Payment') {
-            affectedNodes.forEach((node: any) => {
-                const address = node.ModifiedNode.FinalFields.Account;
-                const balance = node.ModifiedNode.FinalFields.Balance;
+        affectedNodes.forEach((node: any) => {
+            const address = node.ModifiedNode.FinalFields.Account;
+            const balance = node.ModifiedNode.FinalFields.Balance;
 
-                if (this.Source.address === address) {
-                    source = {
-                        address,
-                        balance,
-                    };
-                } else {
-                    destination = {
-                        address,
-                        balance,
-                    };
-                }
-            });
-        }
+            if (this.Source.address === address) {
+                source = {
+                    address,
+                    balance,
+                };
+            } else {
+                destination = {
+                    address,
+                    balance,
+                };
+            }
+        });
 
         return {
             Account: source,

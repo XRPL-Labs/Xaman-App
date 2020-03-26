@@ -191,10 +191,10 @@ class ExchangeView extends Component<Props, State> {
                 this.showResultAlert(
                     Localize.t('global.success'),
                     Localize.t('exchange.successfullyExchanged', {
-                        payAmount: offer.TakerGets.value,
-                        payCurrency: offer.TakerGets.currency,
-                        getAmount: offer.TakerPays.value,
-                        getCurrency: offer.TakerPays.currency,
+                        payAmount: offer.TakerGot.value,
+                        payCurrency: offer.TakerGot.currency,
+                        getAmount: offer.TakerPaid.value,
+                        getCurrency: offer.TakerPaid.currency,
                     }),
                 );
             } else {
@@ -229,12 +229,26 @@ class ExchangeView extends Component<Props, State> {
         const { trustLine } = this.props;
         const { fromCurrency, exchangeRate, paysAmount } = this.state;
 
+        // calculate gets amount
         const getsAmount = new BigNumber(paysAmount)
             .multipliedBy(fromCurrency === 'XRP' ? exchangeRate : 1 / exchangeRate)
             .decimalPlaces(3)
             .toString(10);
 
+        // dismiss keyboard if present
         Keyboard.dismiss();
+
+        // get available balance
+        const availableBalance = this.getAvailableBalance();
+
+        // check if user can spend this much
+        if (parseFloat(paysAmount) > availableBalance) {
+            Alert.alert(
+                Localize.t('global.error'),
+                Localize.t('send.amountIsBiggerThanYourSpend', { spendable: availableBalance }),
+            );
+            return;
+        }
 
         Prompt(
             Localize.t('global.pleaseNote'),
