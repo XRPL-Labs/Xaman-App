@@ -8,7 +8,7 @@ import { StringType, XrplDestination } from 'xumm-string-decode';
 import * as AccountLib from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
 
-import { Navigator, Toast, Prompt } from '@common/helpers';
+import { Navigator, Toast, Prompt, getAccountInfo } from '@common/helpers';
 import { AppScreens } from '@common/constants';
 
 import { ContactRepository } from '@store/repositories';
@@ -103,6 +103,14 @@ class EditContactView extends Component<Props, State> {
             address,
             destinationTag: tag || '',
         });
+
+        // update catch for this account
+        getAccountInfo.cache.set(
+            address,
+            new Promise(resolve => {
+                resolve({ name, source: 'internal:contacts' });
+            }),
+        );
 
         Toast(Localize.t('settings.contactSuccessUpdated'));
 

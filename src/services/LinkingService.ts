@@ -35,14 +35,19 @@ class LinkingService extends EventEmitter {
     initialize = () => {
         return new Promise((resolve, reject) => {
             try {
-                // Listen for deep link as the app is open
-                Linking.addEventListener('url', this.handleDeepLink);
+                // check init notification after moving to default stack
+                NavigationService.on('setRoot', async (root: string) => {
+                    if (root === 'DefaultStack') {
+                        // Listen for deep link as the app is open
+                        Linking.addEventListener('url', this.handleDeepLink);
 
-                // handle if app opens with link
-                Linking.getInitialURL().then(url => {
-                    setTimeout(() => {
-                        this.handleDeepLink({ url });
-                    }, 100);
+                        // handle if app opens with link
+                        Linking.getInitialURL().then(url => {
+                            setTimeout(() => {
+                                this.handleDeepLink({ url });
+                            }, 100);
+                        });
+                    }
                 });
 
                 return resolve();
@@ -55,8 +60,6 @@ class LinkingService extends EventEmitter {
     handleDeepLink = async ({ url }: { url: string }) => {
         // ignore if the app is not initialized or not url
         if (!url) return;
-
-        if (NavigationService.getCurrentRoot() !== 'DefaultStack') return;
 
         // validate the URL
         if (this.singRegex.test(url)) {

@@ -9,7 +9,7 @@ import firebase, { RNFirebase } from 'react-native-firebase';
 
 import { Navigator } from '@common/helpers';
 import { AppScreens } from '@common/constants';
-import { LoggerService } from '@services';
+import { LoggerService, NavigationService } from '@services';
 import { Payload } from '@common/libs/payload';
 
 import Localize from '@locale';
@@ -136,11 +136,16 @@ class PushNotificationsService extends EventEmitter {
     };
 
     /* If the app was launched by a push notification  */
-    checkInitialNotification = async () => {
-        const notificationOpen = await firebase.notifications().getInitialNotification();
-        if (notificationOpen) {
-            this.handleNotificationOpen(notificationOpen);
-        }
+    checkInitialNotification = () => {
+        // check init notification after moving to default stack
+        NavigationService.on('setRoot', async (root: string) => {
+            if (root === 'DefaultStack') {
+                const notificationOpen = await firebase.notifications().getInitialNotification();
+                if (notificationOpen) {
+                    this.handleNotificationOpen(notificationOpen);
+                }
+            }
+        });
     };
 
     /* Handle notifications within the app when app is running in foreground */
