@@ -191,10 +191,10 @@ class ExchangeView extends Component<Props, State> {
                 this.showResultAlert(
                     Localize.t('global.success'),
                     Localize.t('exchange.successfullyExchanged', {
-                        payAmount: offer.TakerGets.value,
-                        payCurrency: offer.TakerGets.currency,
-                        getAmount: offer.TakerPays.value,
-                        getCurrency: offer.TakerPays.currency,
+                        payAmount: offer.TakerGot.value,
+                        payCurrency: offer.TakerGot.currency,
+                        getAmount: offer.TakerPaid.value,
+                        getCurrency: offer.TakerPaid.currency,
                     }),
                 );
             } else {

@@ -1,3 +1,5 @@
+/* eslint-disable no-lonely-if */
+import BigNumber from 'bignumber.js';
 import { get, set, isUndefined } from 'lodash';
 
 import BaseTransaction from './base';
@@ -123,6 +125,106 @@ class OfferCreate extends BaseTransaction {
         });
 
         return foundOrderObject;
+    }
+
+    get TakerGot(): AmountType {
+        const affectedNodes = get(this, ['meta', 'AffectedNodes']);
+
+        if (!affectedNodes) return this.TakerGets;
+
+        const ledgerEntryType = this.TakerGets.currency === 'XRP' ? 'AccountRoot' : 'RippleState';
+        const isIOU = this.TakerGets.currency !== 'XRP';
+
+        let takerGot: AmountType;
+
+        affectedNodes.forEach((node: any) => {
+            const modifiedNode = node.ModifiedNode;
+
+            if (modifiedNode.LedgerEntryType !== ledgerEntryType || takerGot) return;
+
+            if (isIOU) {
+                const balance = new BigNumber(modifiedNode.FinalFields.Balance.value);
+                const prevBalance = new BigNumber(modifiedNode.PreviousFields.Balance.value);
+
+                takerGot = {
+                    currency: modifiedNode.FinalFields.Balance.currency,
+                    value: balance
+                        .minus(prevBalance)
+                        .decimalPlaces(6)
+                        .absoluteValue()
+                        .toString(10),
+                    issuer: modifiedNode.FinalFields.Balance.issuer,
+                };
+            } else {
+                // this will avoid calculating XRP the fee
+                if (modifiedNode.FinalFields.Account !== this.Account.address) {
+                    const balance = new BigNumber(modifiedNode.FinalFields.Balance);
+                    const prevBalance = new BigNumber(modifiedNode.PreviousFields.Balance);
+
+                    takerGot = {
+                        currency: 'XRP',
+                        value: balance
+                            .minus(prevBalance)
+                            .dividedBy(1000000.0)
+                            .absoluteValue()
+                            .decimalPlaces(6)
+                            .toString(10),
+                    };
+                }
+            }
+        });
+
+        return takerGot;
+    }
+
+    get TakerPaid(): AmountType {
+        const affectedNodes = get(this, ['meta', 'AffectedNodes']);
+
+        if (!affectedNodes) return this.TakerPays;
+
+        const ledgerEntryType = this.TakerPays.currency === 'XRP' ? 'AccountRoot' : 'RippleState';
+        const isIOU = this.TakerPays.currency !== 'XRP';
+
+        let takerPaid: AmountType;
+
+        affectedNodes.forEach((node: any) => {
+            const modifiedNode = node.ModifiedNode;
+
+            if (modifiedNode.LedgerEntryType !== ledgerEntryType || takerPaid) return;
+
+            if (isIOU) {
+                const balance = new BigNumber(modifiedNode.FinalFields.Balance.value);
+                const prevBalance = new BigNumber(modifiedNode.PreviousFields.Balance.value);
+
+                takerPaid = {
+                    currency: modifiedNode.FinalFields.Balance.currency,
+                    value: balance
+                        .minus(prevBalance)
+                        .absoluteValue()
+                        .decimalPlaces(6)
+                        .toString(10),
+                    issuer: modifiedNode.FinalFields.Balance.issuer,
+                };
+            } else {
+                // this will avoid calculating XRP the fee
+                if (modifiedNode.FinalFields.Account === this.Account.address) {
+                    const balance = new BigNumber(modifiedNode.FinalFields.Balance);
+                    const prevBalance = new BigNumber(modifiedNode.PreviousFields.Balance);
+
+                    takerPaid = {
+                        currency: 'XRP',
+                        value: balance
+                            .minus(prevBalance)
+                            .absoluteValue()
+                            .dividedBy(1000000.0)
+                            .decimalPlaces(6)
+                            .toString(10),
+                    };
+                }
+            }
+        });
+
+        return takerPaid;
     }
 }
 
