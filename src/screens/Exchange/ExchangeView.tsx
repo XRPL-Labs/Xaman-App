@@ -229,12 +229,26 @@ class ExchangeView extends Component<Props, State> {
         const { trustLine } = this.props;
         const { fromCurrency, exchangeRate, paysAmount } = this.state;
 
+        // calculate gets amount
         const getsAmount = new BigNumber(paysAmount)
             .multipliedBy(fromCurrency === 'XRP' ? exchangeRate : 1 / exchangeRate)
             .decimalPlaces(3)
             .toString(10);
 
+        // dismiss keyboard if present
         Keyboard.dismiss();
+
+        // get available balance
+        const availableBalance = this.getAvailableBalance();
+
+        // check if user can spend this much
+        if (parseFloat(paysAmount) > availableBalance) {
+            Alert.alert(
+                Localize.t('global.error'),
+                Localize.t('send.amountIsBiggerThanYourSpend', { spendable: availableBalance }),
+            );
+            return;
+        }
 
         Prompt(
             Localize.t('global.pleaseNote'),
