@@ -260,7 +260,7 @@ class ApiService {
                     try {
                         jsonRes = await rawRes.json();
                     } catch (error) {
-                        throw new Error(ErrorMessages.invalidJson);
+                        throw ErrorMessages.invalidJson;
                     }
 
                     // TODO: handle normal error with this.handleError()
