@@ -19,6 +19,7 @@ import {
     LayoutChangeEvent,
     LayoutAnimation,
     BackHandler,
+    Keyboard,
 } from 'react-native';
 
 import Interactable from 'react-native-interactable';
@@ -173,6 +174,9 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     onClose = () => {
         const { payload } = this.props;
+
+        // dismiss keyboard if it's present
+        Keyboard.dismiss();
 
         if (payload.meta.generated) {
             Navigator.dismissModal();
