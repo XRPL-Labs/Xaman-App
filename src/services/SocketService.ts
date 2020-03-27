@@ -1,7 +1,6 @@
 /**
  * Socket service
  */
-import { v4 as uuidv4 } from 'uuid';
 import { Platform } from 'react-native';
 import RippledWsClient from 'rippled-ws-client';
 import DeviceInfo from 'react-native-device-info';
@@ -171,11 +170,6 @@ class SocketService extends EventEmitter {
     }
 
     sendPayload = (payload: any) => {
-        // assign id to the payload if not exist
-        if (!Object.prototype.hasOwnProperty.call(payload, 'id')) {
-            Object.assign(payload, { id: uuidv4() });
-        }
-
         this.logger.debug('Sending Socket Payload', payload);
         return this.connection.send(payload);
     };
