@@ -58,7 +58,6 @@ enum SocketStateStatus {
 class SocketService extends EventEmitter {
     node: string;
     chain: NodeChain;
-    nodeType: 'VERIFIED' | 'CUSTOM';
     connection: any;
     connectionTimeout: 10;
     origin: string;
@@ -73,7 +72,6 @@ class SocketService extends EventEmitter {
 
         this.node = null;
         this.chain = null;
-        this.nodeType = null;
         this.connection = null;
         this.origin = `https://xumm.app/#${Platform.OS}/${DeviceInfo.getReadableVersion()}`;
         this.status = SocketStateStatus.Disconnected;
@@ -116,13 +114,12 @@ class SocketService extends EventEmitter {
         });
     };
 
-    onNodeChange(url: string, chain: NodeChain, type: 'VERIFIED' | 'CUSTOM') {
+    onNodeChange(url: string, chain: NodeChain) {
         // if the default node changed
         if (url !== this.node) {
             // change default node
             this.node = url;
             this.chain = chain;
-            this.nodeType = type;
             // reconnect
             this.reconnect();
         }
@@ -133,7 +130,6 @@ class SocketService extends EventEmitter {
 
         this.node = defaultNode.node;
         this.chain = defaultNode.chain;
-        this.nodeType = 'VERIFIED';
     }
 
     close() {

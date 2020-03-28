@@ -36,7 +36,7 @@ import { SignedObjectType, SubmitResultType } from '@common/libs/ledger/types';
 import { AppScreens } from '@common/constants';
 import { Images, Navigator, Toast, AlertModal, getNavigationBarHeight } from '@common/helpers';
 
-import { PushNotificationsService, LedgerService } from '@services';
+import { PushNotificationsService, LedgerService, SocketService } from '@services';
 
 // components
 import { Button, AccordionPicker, Icon, Footer, Spacer } from '@components';
@@ -302,6 +302,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                     // verify transaction
                     const verifyResult = await Submitter.verify(submitResult.transactionId);
 
+                    // change the transaction final status if the transaction settled in the ledger
                     if (verifyResult.success && submitResult.engineResult !== 'tesSUCCESS') {
                         submitResult.engineResult = 'tesSUCCESS';
                     }
@@ -311,13 +312,20 @@ class ReviewTransactionModal extends Component<Props, State> {
                 Object.assign(patch, {
                     dispatched: {
                         to: submitResult.node,
-                        nodeType: submitResult.nodeType,
+                        nodetype: submitResult.nodeType,
                         result: submitResult.engineResult,
                     },
                 });
 
                 this.setState({
                     submitResult,
+                });
+            } else {
+                Object.assign(patch, {
+                    dispatched: {
+                        to: SocketService.node,
+                        nodetype: SocketService.chain,
+                    },
                 });
             }
 
@@ -390,7 +398,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         const { return_url_app } = payload.meta;
 
         if (return_url_app) {
-            Linking.canOpenURL(return_url_app).then(support => {
+            Linking.canOpenURL(return_url_app).then((support) => {
                 if (support) {
                     Linking.openURL(return_url_app);
                 } else {
@@ -628,14 +636,14 @@ class ReviewTransactionModal extends Component<Props, State> {
                                     </Text>
                                 </View>
                                 <AccordionPicker
-                                    ref={r => {
+                                    ref={(r) => {
                                         this.sourcePicker = r;
                                     }}
                                     onSelect={this.onAccountChange}
                                     items={accounts}
                                     renderItem={this.renderAccountItem}
                                     selectedItem={source}
-                                    keyExtractor={i => i.address}
+                                    keyExtractor={(i) => i.address}
                                 />
                             </View>
 
