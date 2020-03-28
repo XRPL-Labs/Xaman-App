@@ -66,15 +66,15 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Scan QR Codes</string>
+	<string>Enabling camera access allows you to use your camera to scan Sign Request QR-codes.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Enabling Face ID allows you quick and secure access to your account.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Enabling location services (when the app is in use) allows us to select the XRPL node closest to you for a faster connection.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Save QRCode To Gallery</string>
+	<string>Enabling access to your Photo Library allows you to store your account QR code for offline use.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Save The QRCode To Gallery</string>
+	<string>Enabling access to your Photo Library allows you to store your account QR code for offline use and read QR codes from pictures.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>UbuntuMono-BoldItalic.ttf</string>
