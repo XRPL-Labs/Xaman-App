@@ -71,15 +71,13 @@ class NodeListView extends Component<Props, State> {
         const nodesCategoryMap = [
             {
                 title: Localize.t('global.mainnet'),
-                category: NodeChain.Main,
-                data: flatMap(AppConfig.nodes.main, n => {
+                data: flatMap(AppConfig.nodes.main, (n) => {
                     return { chain: NodeChain.Main, url: n };
                 }),
             },
             {
                 title: Localize.t('global.testnet'),
-                category: NodeChain.Test,
-                data: flatMap(AppConfig.nodes.test, n => {
+                data: flatMap(AppConfig.nodes.test, (n) => {
                     return { chain: NodeChain.Test, url: n };
                 }),
             },
@@ -88,7 +86,7 @@ class NodeListView extends Component<Props, State> {
         return nodesCategoryMap;
     };
 
-    onItemPress = (item: any, category: string) => {
+    onItemPress = (item: any) => {
         const { coreSettings, dataSource } = this.state;
 
         let currentChain = NodeChain.Main;
@@ -114,11 +112,7 @@ class NodeListView extends Component<Props, State> {
                                 defaultNode: item.url,
                             });
 
-                            SocketService.onNodeChange(
-                                item.url,
-                                item.chain,
-                                category === 'custom' ? 'CUSTOM' : 'VERIFIED',
-                            );
+                            SocketService.onNodeChange(item.url, item.chain);
                         },
                     },
                 ],
@@ -129,7 +123,7 @@ class NodeListView extends Component<Props, State> {
                 defaultNode: item.url,
             });
 
-            SocketService.onNodeChange(item.url, item.chain, category === 'custom' ? 'CUSTOM' : 'VERIFIED');
+            SocketService.onNodeChange(item.url, item.chain);
         }
     };
 
@@ -150,7 +144,7 @@ class NodeListView extends Component<Props, State> {
         return (
             <TouchableHighlight
                 onPress={() => {
-                    this.onItemPress(item, section.category);
+                    this.onItemPress(item);
                 }}
                 underlayColor="rgba(154, 154, 154, 0.25)"
             >

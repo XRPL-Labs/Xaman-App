@@ -131,7 +131,7 @@ class AppStateService extends EventEmitter {
     setAppStateListener() {
         return new Promise(resolve => {
             AppState.addEventListener('change', nextAppState => {
-                let appState = AppStateStatus.Active;
+                let appState;
                 switch (nextAppState) {
                     case 'inactive':
                         appState = AppStateStatus.Inactive;
@@ -160,11 +160,9 @@ class AppStateService extends EventEmitter {
 
     setLockRequireListener() {
         this.on('appStateChange', () => {
-            setTimeout(() => {
-                if (this.prevAppState === AppStateStatus.Background && this.currentAppState === AppStateStatus.Active) {
-                    this.requireLockScreen();
-                }
-            }, 500);
+            if (this.prevAppState === AppStateStatus.Background && this.currentAppState === AppStateStatus.Active) {
+                this.requireLockScreen();
+            }
         });
     }
 }

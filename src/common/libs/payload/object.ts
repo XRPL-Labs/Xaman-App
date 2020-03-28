@@ -3,7 +3,7 @@ import { isString, isObject, has, get } from 'lodash';
 import parserFactory from '@common/libs/ledger/parser';
 import { TransactionJSONType, TransactionsType } from '@common/libs/ledger/types';
 
-import { ApiService, LoggerService } from '@services';
+import { ApiService, LoggerService, SocketService } from '@services';
 
 // locale
 import Localize from '@locale';
@@ -180,7 +180,14 @@ export class Payload {
      */
     reject = () => {
         if (!this.meta.generated) {
-            ApiService.payload.patch(this.meta.uuid, { reject: true }).catch((e: any) => {
+            const rejectPatch = {
+                reject: true,
+                dispatched: {
+                    to: SocketService.node,
+                    nodetype: SocketService.chain,
+                },
+            };
+            ApiService.payload.patch(this.meta.uuid, rejectPatch).catch((e: any) => {
                 logger.debug('Payload patch reject error', e);
             });
         }

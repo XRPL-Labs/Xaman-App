@@ -84,7 +84,7 @@ class Submitter {
     }
 
     static verify = (transactionId?: string): Promise<VerifyResultType> => {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             // wait for ledger close event
             let verified = false;
             const ledgerListener = async () => {
@@ -130,7 +130,7 @@ class Submitter {
                 }
                 return this.signedObject;
             })
-            .catch(e => {
+            .catch((e) => {
                 this.logger.error('Error Prepare transaction', e);
                 throw new Error('Unable prepare the transaction, please try again!');
             });
@@ -139,7 +139,7 @@ class Submitter {
     async submit(): Promise<SubmitResultType> {
         // TODO: handle error
         /* eslint-disable-next-line */
-        return new Promise(async resolve => {
+        return new Promise(async (resolve) => {
             try {
                 this.logger.debug('Submit TX:', this.txJson);
 
@@ -159,7 +159,7 @@ class Submitter {
                 // create default result
                 const result = {
                     node: SocketService.node,
-                    nodeType: SocketService.nodeType,
+                    nodeType: SocketService.chain,
                     transactionId: this.transactionId,
                 };
 
@@ -204,7 +204,7 @@ class Submitter {
                     engineResult: 'telFAILED',
                     message: e.message,
                     node: SocketService.node,
-                    nodeType: SocketService.nodeType,
+                    nodeType: SocketService.chain,
                 });
             }
         });
