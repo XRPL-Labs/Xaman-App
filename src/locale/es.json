@@ -359,7 +359,7 @@
       "neverSharePrivateKey": "Nunca comparta sus números secretos (clave privada) con otra persona. Si lo hace, puede perder el acceso a sus fondos.",
       "secretNumbersOfRow": "Números secretos de fila %{row}",
       "confirmNumbersOfRow": "Confirmar los números de fila %{row}",
-      "pleaseRepeatTheNumbers": "Por favor repita los números",
+      "pleaseRepeatTheNumbers": "Repita los números que recibió y escribió en el paso anterior.",
       "pleaseWriteDownAllNumbers": "Por favor escriba todos los números",
       "goBackClearTheInput": "¿Estás seguro de que quieres volver? (la entrada se borrará por razones de seguridad)",
       "accountType": "Tipo de cuenta",

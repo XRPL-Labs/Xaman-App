@@ -359,7 +359,7 @@
       "neverSharePrivateKey": "비밀 번호 (개인 키)를 다른 사람과 공유하지 마십시오. 그렇게하면 자금에 대한 액세스 권한을 잃을 수 있습니다.",
       "secretNumbersOfRow": "행의 비밀 번호 %{row}",
       "confirmNumbersOfRow": "행 번호 확인 %{row}",
-      "pleaseRepeatTheNumbers": "숫자를 반복하십시오",
+      "pleaseRepeatTheNumbers": "이전 단계에서 받고 기록한 번호를 반복하십시오",
       "pleaseWriteDownAllNumbers": "모든 숫자를 적어주세요",
       "goBackClearTheInput": "돌아가시겠습니까? (보안상의 이유로 입력이 해제됩니다)",
       "accountType": "계정 유형",

@@ -91,7 +91,9 @@ class ConfirmStep extends Component<Props, State> {
                                 row: abcdefgh[currentRow],
                             })}
                         </Text>
-                        <Text style={[AppStyles.p]}>{Localize.t('account.pleaseRepeatTheNumbers')}</Text>
+                        <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
+                            {Localize.t('account.pleaseRepeatTheNumbers')}
+                        </Text>
                     </>
                 ) : (
                     <>

@@ -359,7 +359,7 @@
       "neverSharePrivateKey": "切勿与他人共享您的秘密号码（私钥）。如果这样做，您可能会失去使用资金的权限。",
       "secretNumbersOfRow": "行的秘密号码%{row}",
       "confirmNumbersOfRow": "确认行数%{row}",
-      "pleaseRepeatTheNumbers": "请重复数字",
+      "pleaseRepeatTheNumbers": "请重复您在上一步中收到并写下的号码",
       "pleaseWriteDownAllNumbers": "请写下所有数字",
       "goBackClearTheInput": "您确定要回去吗？ （出于安全原因，输入将被清除）",
       "accountType": "帐户类型",

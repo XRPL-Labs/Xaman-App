@@ -359,7 +359,7 @@
       "neverSharePrivateKey": "シークレットナンバー（秘密キー）を他の人と共有しないでください。実行すると、資金にアクセスできなくなる可能性があります。",
       "secretNumbersOfRow": "行の秘密の番号%{row}",
       "confirmNumbersOfRow": "行数を確認%{row}",
-      "pleaseRepeatTheNumbers": "数字を繰り返してください",
+      "pleaseRepeatTheNumbers": "前のステップで受け取って書き留めた番号を繰り返してください",
       "pleaseWriteDownAllNumbers": "すべての数字を書き留めてください",
       "goBackClearTheInput": "本当に戻りますか？ （入力はセキュリティ上の理由でクリアされます）",
       "accountType": "口座の種類",

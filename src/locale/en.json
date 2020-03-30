@@ -359,7 +359,7 @@
         "neverSharePrivateKey": "Never share your secret numbers (private key) with someone else. If you do you may lose access to your funds.",
         "secretNumbersOfRow": "Secret numbers of row %{row}",
         "confirmNumbersOfRow": "Confirm the numbers of row %{row}",
-        "pleaseRepeatTheNumbers": "Please repeat the numbers",
+        "pleaseRepeatTheNumbers": "Please repeat the numbers you received and wrote down in the previous step",
         "pleaseWriteDownAllNumbers": "Please write down all the numbers",
         "goBackClearTheInput" : "Are you sure you want to go back? \n (input will be cleared for security reasons)",
         "accountType": "Account type",
