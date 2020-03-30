@@ -24,6 +24,7 @@ export interface Props {
 }
 
 export interface State {
+    currentRow: number;
     allFilled: boolean;
 }
 
@@ -35,6 +36,7 @@ class ConfirmStep extends Component<Props, State> {
         super(props);
 
         this.state = {
+            currentRow: 0,
             allFilled: false,
         };
     }
@@ -76,25 +78,17 @@ class ConfirmStep extends Component<Props, State> {
         );
     };
 
-    getCurrentRow = (): number => {
-        if (this.secretNumberInput) {
-            return this.secretNumberInput.getCurrentRow();
-        }
-
-        return 0;
-    };
-
     render() {
-        const { allFilled } = this.state;
+        const { allFilled, currentRow } = this.state;
         const abcdefgh = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
         return (
             <SafeAreaView testID="account-generate-step-view" style={[AppStyles.pageContainerFull]}>
-                {this.getCurrentRow() < 8 ? (
+                {currentRow < 8 ? (
                     <>
                         <Text style={[AppStyles.p, AppStyles.bold]}>
                             {Localize.t('account.confirmNumbersOfRow', {
-                                row: abcdefgh[this.getCurrentRow()],
+                                row: abcdefgh[currentRow],
                             })}
                         </Text>
                         <Text style={[AppStyles.p]}>{Localize.t('account.pleaseRepeatTheNumbers')}</Text>
@@ -109,12 +103,17 @@ class ConfirmStep extends Component<Props, State> {
 
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal, AppStyles.centerAligned]}>
                     <SecretNumberInput
-                        ref={r => {
+                        ref={(r) => {
                             this.secretNumberInput = r;
                         }}
-                        onAllFilled={filled => {
+                        onAllFilled={(filled) => {
                             this.setState({
                                 allFilled: filled,
+                            });
+                        }}
+                        onRowChanged={(row) => {
+                            this.setState({
+                                currentRow: row,
                             });
                         }}
                     />

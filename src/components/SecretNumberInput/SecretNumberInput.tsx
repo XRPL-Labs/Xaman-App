@@ -21,6 +21,7 @@ interface Props {
     currentColumn?: number;
     secretNumbers?: Array<string>;
     readonly?: boolean;
+    onRowChanged?: (row: number) => void;
     onAllFilled?: (filled: boolean) => void;
 }
 
@@ -45,7 +46,7 @@ class SecretNumberInput extends Component<Props, State> {
         let rows = [...Array(ROWS)].map(() => Array(COLUMNS));
         if (props.secretNumbers) {
             rows = [];
-            props.secretNumbers.forEach(row => rows.push(row.split('')));
+            props.secretNumbers.forEach((row) => rows.push(row.split('')));
         }
 
         this.state = {
@@ -93,7 +94,7 @@ class SecretNumberInput extends Component<Props, State> {
     };
 
     goLeft = () => {
-        const { onAllFilled } = this.props;
+        const { onAllFilled, onRowChanged } = this.props;
         const { currentRow, currentColumn } = this.state;
         // we are at first row and column
         if (currentRow === 0 && currentColumn === 0) return;
@@ -110,6 +111,9 @@ class SecretNumberInput extends Component<Props, State> {
                     rowChecksumError: false,
                 },
                 () => {
+                    if (onRowChanged) {
+                        onRowChanged(currentRow - 1);
+                    }
                     if (currentRow === ROWS) {
                         onAllFilled(false);
                     }
@@ -125,7 +129,7 @@ class SecretNumberInput extends Component<Props, State> {
     };
 
     goRight = () => {
-        const { onAllFilled } = this.props;
+        const { onAllFilled, onRowChanged } = this.props;
         const { currentRow, currentColumn, secretNumbers } = this.state;
 
         // we are after last row
@@ -143,6 +147,9 @@ class SecretNumberInput extends Component<Props, State> {
                         rowChecksumError: false,
                     },
                     () => {
+                        if (onRowChanged) {
+                            onRowChanged(currentRow + 1);
+                        }
                         if (currentRow + 1 === ROWS) {
                             onAllFilled(true);
                         }
@@ -216,7 +223,7 @@ class SecretNumberInput extends Component<Props, State> {
     getNumbers = () => {
         const { secretNumbers } = this.state;
         const secretNumber = [] as string[];
-        secretNumbers.forEach(row => secretNumber.push(row.join('')));
+        secretNumbers.forEach((row) => secretNumber.push(row.join('')));
         return secretNumber;
     };
 
