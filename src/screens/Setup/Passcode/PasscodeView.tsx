@@ -4,13 +4,16 @@
 
 import React, { Component } from 'react';
 
-import { SafeAreaView, View, Text, Image, LayoutAnimation } from 'react-native';
+import { SafeAreaView, View, Text, Image, LayoutAnimation, Alert } from 'react-native';
 import TouchID from 'react-native-touch-id';
 
 import { CoreRepository } from '@store/repositories';
+import { BiometryType } from '@store/types';
 import { AppScreens } from '@common/constants';
 import { Images, Navigator } from '@common/helpers';
 import { Button, PinInput, Spacer, Footer, InfoMessage } from '@components';
+
+import { PushNotificationsService } from '@services';
 
 import Localize from '@locale';
 
@@ -54,16 +57,34 @@ class PasscodeSetupView extends Component<Props, State> {
         const { passcode } = this.state;
 
         // save save passcode
-        CoreRepository.setPasscode(passcode);
+        const encryptedPasscode = await CoreRepository.setPasscode(passcode);
 
-        // if biometric auth supported move to page
-        if (this.isBiometricSupported()) {
-            Navigator.push(AppScreens.Setup.Biometric, {
-                topBar: {
-                    visible: false,
-                },
-            });
+        // reload the core settings
+        const coreSettings = CoreRepository.getSettings();
+
+        // check if passcode is saved correctly
+        if (!encryptedPasscode || !coreSettings || coreSettings.passcode !== encryptedPasscode) {
+            Alert.alert('Error', 'Unable to store the passcode, please try again!');
+            return;
         }
+        // if biometric auth supported move to page
+        if (await this.isBiometricSupported()) {
+            Navigator.push(AppScreens.Setup.Biometric);
+            return;
+        }
+
+        // biometric is not supported
+        CoreRepository.saveSettings({ biometricMethod: BiometryType.None });
+
+        // if push notification already granted then go to last part
+        const granted = await PushNotificationsService.checkPermission();
+        if (granted) {
+            Navigator.push(AppScreens.Setup.Finish);
+            return;
+        }
+
+        // go to the next step
+        Navigator.push(AppScreens.Setup.Permissions);
     };
 
     onNext = () => {
@@ -109,18 +130,20 @@ class PasscodeSetupView extends Component<Props, State> {
     };
 
     isBiometricSupported = () => {
-        const optionalConfigObject = {
-            unifiedErrors: false,
-            passcodeFallback: false,
-        };
+        return new Promise((resolve) => {
+            const optionalConfigObject = {
+                unifiedErrors: false,
+                passcodeFallback: false,
+            };
 
-        return TouchID.isSupported(optionalConfigObject)
-            .then(() => {
-                return true;
-            })
-            .catch(() => {
-                return false;
-            });
+            return TouchID.isSupported(optionalConfigObject)
+                .then(() => {
+                    return resolve(true);
+                })
+                .catch(() => {
+                    return resolve(false);
+                });
+        });
     };
 
     onPinEdit = (code: string) => {
@@ -214,7 +237,7 @@ class PasscodeSetupView extends Component<Props, State> {
                     <Spacer size={30} />
                     <PinInput
                         testID="pinInput"
-                        ref={r => {
+                        ref={(r) => {
                             this.pinInput = r;
                         }}
                         obfuscation
