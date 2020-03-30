@@ -14,7 +14,6 @@ import {
     LayoutAnimation,
     ImageBackground,
     InteractionManager,
-    Platform,
 } from 'react-native';
 
 import { Navigation } from 'react-native-navigation';
@@ -157,15 +156,7 @@ class HomeView extends Component<Props, State> {
 
     renderHeader = () => {
         const { account } = this.state;
-        if (Platform.OS === 'ios') {
-            return (
-                <Fragment key="header">
-                    <View style={[AppStyles.flex1, AppStyles.paddingLeft, AppStyles.centerContent]}>
-                        <Image style={[styles.logo]} source={Images.xummLogo} />
-                    </View>
-                </Fragment>
-            );
-        }
+
         return (
             <Fragment key="header">
                 <View style={[AppStyles.flex1, AppStyles.paddingLeft, AppStyles.centerContent]}>
