@@ -35,7 +35,7 @@
       "summary": "Resumen",
       "submit": "Enviar",
       "submitting": "Sumisión",
-      "submitted": "Presentada",
+      "submitted": "Presentado",
       "continue": "Seguir",
       "code": "Código",
       "copy": "Copiar",
@@ -81,7 +81,7 @@
       "warning": "Advertencia",
       "pleaseNote": "tenga en cuenta",
       "unavailable": "Indisponible",
-      "notice": "darse cuenta",
+      "notice": "aviso",
       "error": "Error",
       "critical": "Crítico",
       "success": "Éxito",
@@ -276,7 +276,7 @@
       "availableInFuture": "Estas características estarán disponibles en el futuro.",
       "profileBenefits": "Beneficios del perfil:",
       "personalPage": "Página de pagos personales",
-      "connectMobile": "Ser encontrado por teléfono o correo electrónico",
+      "connectMobile": "Ser encontrado por número de teléfono / correo electrónico",
       "earnBadge": "Desbloquea y gana insignias"
    },
    "settings": {

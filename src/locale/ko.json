@@ -273,10 +273,10 @@
       "canNotFetchTransactions": "계정 거래를 가져올 수 없습니다!"
    },
    "profile": {
-      "availableInFuture": "이 기능은 향후에 제공 될 예정입니다.",
+      "availableInFuture": "이러한 기능은 향후에 제공 될 예정입니다.",
       "profileBenefits": "프로필 혜택 :",
       "personalPage": "개인 결제 페이지",
-      "connectMobile": "전화 mumber / 이메일로 발견",
+      "connectMobile": "전화 번호 / 이메일로 확인",
       "earnBadge": "배지를 잠금 해제하고 획득하십시오"
    },
    "settings": {
@@ -324,7 +324,7 @@
       "addAccount": "계정 추가",
       "addAccountDescription": "기존 계정을 가져 오거나 새 계정을 만듭니다.",
       "importExisting": "기존 계정 가져 오기",
-      "generateNewAccount": "새로운 계정을 생성",
+      "generateNewAccount": "새 계정 생성",
       "confirmPrivateTitle": "비밀 번호 확인",
       "confirmPrivateDescription": "번호는 알려주십시오. 이는 본인의 안전을위한 것입니다. 번호를 적어 두 었음을 확인하십시오.",
       "invalidSecretNumber": "잘못된 비밀 번호 키를 입력했습니다",
@@ -408,7 +408,7 @@
       "changePassphrase": "암호 변경",
       "destroyAccount": "이 계정을 삭제",
       "upgradingAccessLevelWarning": "액세스 수준을 업그레이드하는 중입니다.이 계정의 개인 키를 가져와야합니다.",
-      "downgradingAccessLevelWarning": "액세스 수준을 다운 그레이드하면이 계정의 개인 키가 손실됩니다. 확실합니까 ?",
+      "downgradingAccessLevelWarning": "액세스 수준을 다운 그레이드하면이 계정의 개인 키가 손실됩니다. 확실해 ?",
       "removeTrustLineWarning": "계정에서이 통화를 삭제하고 있습니다.이 작업을 실행 취소 할 수 없습니다. 확실합니까?",
       "unavailableChangeSecurityLevel": "현재 보안 수준 변경이 불가능합니다",
       "accountDestroyWarning": "귀하의 계정은 영구적으로 삭제됩니다. 확실합니까?",
@@ -427,7 +427,7 @@
       "newPassphrase": "새로운 비밀번호 문구",
       "regularKeyFor": "에 대한 일반 키",
       "allDoneYouCanGoToNextStepNow": "모든 작업을 마치면 다음 단계로 넘어갑니다",
-      "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이 무엇을하고 있는지 아는 경우에만 계속하십시오."
+      "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이하고있는 것을 알고 있다면 계속하십시오."
    },
    "send": {
       "amountIsBiggerThanYourSpend": "지출 할 수있는 금액보다 금액이 더 많습니다 ( %{spendable} )",
@@ -464,7 +464,7 @@
       "selectedAccountDoNotSupportCurrency": "선택한 계정은 선택한 통화를 지원하지 않습니다.",
       "memoPublicWarning": "메모 정보는 모든 사람에게 공개됩니다",
       "destinationNotExistTooLittleToCreate": "대상 계정은 이전에 사용되지 않았으며 잔액이 없습니다. XRP 원장에서 계정을 활성화하려면 최소 20 개의 XRP 입금이 필요합니다.",
-      "destinationNotExistCreationWarning": "대상 계정은 이전에 사용되지 않았으며 잔액이 없습니다. 이 계정으로 계속 전송하면 %{amount} XRP 원장에서 계정을 활성화하는 데 XRP가 사용되므로 20 XRP를 사용할 수 없습니다. 정말로 계속하기를 원하십니까?",
+      "destinationNotExistCreationWarning": "대상 계정은 이전에 사용되지 않았으며 잔액이 없습니다. 이 계정으로 계속 전송하면 %{amount} XRP 원장에서 계정을 활성화하는 데 XRP가 사용되므로 20 XRP를 사용할 수 없습니다. 너 정말 계속하고 싶니?",
       "destinationCannotActivateWithIOU": "대상 계정은 이전에 사용되지 않았으며 잔액이 없습니다. XRP 원장에서 계정을 활성화하려면 최소 20 개의 XRP 입금을 계정으로 보내야합니다. XRP 이외의 통화는 최초 입금에 사용할 수 없습니다.",
       "destinationTagIsRequired": "이 결제를 보내려면 대상 태그가 필요합니다."
    },

@@ -273,10 +273,10 @@
         "canNotFetchTransactions": "Can not fetch account transactions!"
     },
     "profile": {
-        "availableInFuture": "This features will be available in the future.",
+        "availableInFuture": "These features will be available in the future.",
         "profileBenefits": "Profile benefits:",
         "personalPage": "Personal payments page",
-        "connectMobile": "Be found by phone mumber / e-mail",
+        "connectMobile": "Be found by phone number / e-mail",
         "earnBadge": "Unlock and earn badges"
     },
     "settings": {
