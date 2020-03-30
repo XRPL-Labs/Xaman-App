@@ -197,7 +197,8 @@
         "thereIsNoConnectionToTheCurrentXRPLNode": "There's no connection to the current XRPL node",
         "UnableToConnectToNode": "Unable to connect to to node '%{defaultNode}'",
         "CheckYourNetworkConnection": "Check your network connection",
-        "WeWillKeepTryingButThereMayBeAProblemWithYourInternetConnection": "We'll keep trying, but there may be a problem with your internet connection."
+        "WeWillKeepTryingButThereMayBeAProblemWithYourInternetConnection": "We'll keep trying, but there may be a problem with your internet connection.",
+        "pressBackAgainToExit": "Press back again to exit"
     },
     "onboarding":{
         "slideOne": {
