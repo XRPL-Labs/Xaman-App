@@ -1,4 +1,4 @@
-import Realm, { ObjectSchema } from 'realm';
+import Realm, { ObjectSchema, Results } from 'realm';
 
 import assign from 'lodash/assign';
 import moment from 'moment';
@@ -72,11 +72,12 @@ class CoreRepository extends BaseRepository {
     };
 
     getSettings = (): CoreSchema => {
-        const settings = Array.from(this.findAll()) as CoreSchema[];
+        const result = this.findAll() as Results<CoreSchema>;
 
         // settings exist
-        if (settings.length > 0) {
-            return settings[0];
+        if (!result.isEmpty()) {
+            const s = result.snapshot();
+            return s[0];
         }
 
         return undefined;
