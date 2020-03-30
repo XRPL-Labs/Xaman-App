@@ -483,7 +483,7 @@
         "successfullyExchanged": "Hooray, successfully exchanged %{payAmount} %{payCurrency} for %{getAmount} %{getCurrency}.",
         "failedExchange": "Cannot exchange right now due to lack of liquidity, or updated exchange rates.",
         "errorDuringExchange": "Error during the exchange: %{error}",
-        "liquidityIsNotEnough": "There is not enought liquidity, cannot exchange right now!",
+        "liquidityIsNotEnough": "There is not enough liquidity, cannot exchange right now!",
         "liquidityIsNotSoMuch": "There's relatively low liquidity. You can still continue, but you may not get the best rate for your entire exchange!"
     },
     "scan":{
