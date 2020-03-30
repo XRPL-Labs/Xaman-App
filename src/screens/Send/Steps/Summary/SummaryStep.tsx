@@ -362,6 +362,7 @@ class SummaryStep extends Component {
                                             this.amountInput = r;
                                         }}
                                         keyboardType="decimal-pad"
+                                        autoCapitalize="words"
                                         onChangeText={this.onAmountChange}
                                         returnKeyType="done"
                                         placeholder="0"

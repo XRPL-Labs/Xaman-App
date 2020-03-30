@@ -247,10 +247,11 @@ class PaymentTemplate extends Component<Props, State> {
                     >
                         <View style={[AppStyles.row, AppStyles.flex1]}>
                             <TextInput
-                                ref={r => {
+                                ref={(r) => {
                                     this.amountInput = r;
                                 }}
                                 keyboardType="decimal-pad"
+                                autoCapitalize="words"
                                 onChangeText={this.onAmountChange}
                                 returnKeyType="done"
                                 placeholder="0"

@@ -144,10 +144,7 @@ class ExchangeView extends Component<Props, State> {
                 ? new BigNumber(exchangeRate).dividedBy(1.02)
                 : new BigNumber(1).dividedBy(exchangeRate).dividedBy(1.02);
 
-        const getsAmount = new BigNumber(paysAmount)
-            .multipliedBy(actualExchangeRate)
-            .decimalPlaces(6)
-            .toString(10);
+        const getsAmount = new BigNumber(paysAmount).multipliedBy(actualExchangeRate).decimalPlaces(6).toString(10);
 
         // create offer transaction
         const offer = new OfferCreate();
@@ -421,7 +418,7 @@ class ExchangeView extends Component<Props, State> {
                             <View style={[AppStyles.row, AppStyles.centerAligned]}>
                                 <Text style={styles.fromAmount}>-</Text>
                                 <TextInput
-                                    ref={r => {
+                                    ref={(r) => {
                                         this.paysAmountInput = r;
                                     }}
                                     autoFocus={false}
@@ -429,6 +426,7 @@ class ExchangeView extends Component<Props, State> {
                                     placeholder="0"
                                     placeholderTextColor={AppColors.red}
                                     keyboardType="decimal-pad"
+                                    autoCapitalize="words"
                                     style={styles.fromAmount}
                                     value={paysAmount}
                                     allowFontScaling
@@ -486,6 +484,7 @@ class ExchangeView extends Component<Props, State> {
                                 <Text style={styles.toAmount}>~</Text>
                                 <TextInput
                                     keyboardType="decimal-pad"
+                                    autoCapitalize="words"
                                     style={styles.toAmount}
                                     placeholderTextColor={AppColors.green}
                                     placeholder="0"

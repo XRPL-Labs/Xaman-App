@@ -286,6 +286,7 @@ class DetailsStep extends Component {
                             </View>
                             <TextInput
                                 keyboardType="decimal-pad"
+                                autoCapitalize="words"
                                 onChangeText={this.onAmountChange}
                                 returnKeyType="done"
                                 placeholder="0"
