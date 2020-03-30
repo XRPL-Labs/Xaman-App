@@ -132,6 +132,11 @@ class Payment extends BaseTransaction {
             amount = get(this, ['meta', 'delivered_amount']);
         }
 
+        // the delivered_amount will be unavailable in old transactions
+        if (amount === 'unavailable') {
+            amount = undefined;
+        }
+
         if (!amount) {
             amount = get(this, ['tx', 'Amount']);
         }
@@ -177,11 +182,7 @@ class Payment extends BaseTransaction {
     }
 
     set TransferRate(rate: number) {
-        const ratePercent = new BigNumber(rate)
-            .dividedBy(1000000)
-            .minus(1000)
-            .dividedBy(10)
-            .toNumber();
+        const ratePercent = new BigNumber(rate).dividedBy(1000000).minus(1000).dividedBy(10).toNumber();
         set(this, ['tx', 'TransferRate'], ratePercent);
     }
 
