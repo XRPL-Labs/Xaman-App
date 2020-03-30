@@ -182,7 +182,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
             case 'SignerListSet':
                 return Localize.t('events.setSignerList');
             case 'OfferCreate':
-                if (item.Flags.ImmediateOrCancel) {
+                if (item.Flags?.ImmediateOrCancel) {
                     return Localize.t('events.exchangedCurrencies');
                 }
                 return Localize.t('events.createOffer');
