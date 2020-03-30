@@ -81,15 +81,9 @@ class DetailsStep extends Component {
 
         // check if balance can cover the transfer fee for non XRP currencies
         if (typeof currency !== 'string') {
-            const rate = new BigNumber(currency.transfer_rate)
-                .dividedBy(1000000)
-                .minus(1000)
-                .dividedBy(10);
+            const rate = new BigNumber(currency.transfer_rate).dividedBy(1000000).minus(1000).dividedBy(10);
 
-            const fee = bAmount
-                .multipliedBy(rate)
-                .dividedBy(100)
-                .decimalPlaces(6);
+            const fee = bAmount.multipliedBy(rate).dividedBy(100).decimalPlaces(6);
             const after = bAmount.plus(fee).toNumber();
 
             if (after > availableBalance) {
@@ -103,20 +97,6 @@ class DetailsStep extends Component {
 
         // go to next screen
         goNext();
-    };
-
-    getAccountReserve = () => {
-        const { currency, source } = this.context;
-
-        // XRP
-        if (typeof currency === 'string') {
-            if (source.balance === 0) {
-                return '';
-            }
-            return `(${source.accountReserve} ${Localize.t('global.reserved')})`;
-        }
-
-        return '';
     };
 
     getAvailableBalance = () => {
@@ -181,6 +161,7 @@ class DetailsStep extends Component {
     };
 
     renderCurrencyItem = (item: any, selected: boolean) => {
+        const { source } = this.context;
         // XRP
         if (typeof item === 'string') {
             return (
@@ -205,7 +186,8 @@ class DetailsStep extends Component {
                                     selected ? AppStyles.colorBlue : AppStyles.colorGreyDark,
                                 ]}
                             >
-                                {Localize.t('global.balance')}: {this.getAvailableBalance()} {this.getAccountReserve()}
+                                {Localize.t('global.balance')}: {source.availableBalance}{' '}
+                                {`(${source.accountReserve} ${Localize.t('global.reserved')})`}
                             </Text>
                         </View>
                     </View>
@@ -274,7 +256,7 @@ class DetailsStep extends Component {
                                 items={accounts}
                                 renderItem={this.renderAccountItem}
                                 selectedItem={source}
-                                keyExtractor={i => i.address}
+                                keyExtractor={(i) => i.address}
                                 containerStyle={{ backgroundColor: AppColors.transparent }}
                             />
                         </View>
@@ -287,10 +269,10 @@ class DetailsStep extends Component {
                             </View>
                             <AccordionPicker
                                 onSelect={this.onCurrencyChange}
-                                items={['XRP', ...filter(source.lines, l => l.balance > 0)]}
+                                items={['XRP', ...filter(source.lines, (l) => l.balance > 0)]}
                                 renderItem={this.renderCurrencyItem}
                                 selectedItem={currency}
-                                keyExtractor={i => (typeof i === 'string' ? i : i.currency.id)}
+                                keyExtractor={(i) => (typeof i === 'string' ? i : i.currency.id)}
                                 containerStyle={{ backgroundColor: AppColors.transparent }}
                             />
                         </View>
