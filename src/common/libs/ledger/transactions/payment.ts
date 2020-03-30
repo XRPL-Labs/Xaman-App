@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { get, set, has, isUndefined, isNumber, toNumber } from 'lodash';
+import { get, set, has, isUndefined, isNumber, toInteger } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
 // import Localize from '@locale';
@@ -106,12 +106,15 @@ class Payment extends BaseTransaction {
             throw new Error(`${destination.address} is not a valid XRP Address`);
         }
 
-        if (destination.tag && !isNumber(destination.tag)) {
-            // try to convert to number
-            destination.tag = toNumber(destination.tag);
-            if (!destination.tag) {
-                throw new Error(`${destination.tag} is not a valid destination tag`);
+        if (destination.tag) {
+            if (!isNumber(destination.tag)) {
+                // try to convert to number
+                set(this, 'tx.DestinationTag', toInteger(destination.tag));
+            } else {
+                set(this, 'tx.DestinationTag', destination.tag);
             }
+        } else {
+            set(this, 'tx.DestinationTag', undefined);
         }
 
         if (has(destination, 'name')) {
@@ -119,7 +122,6 @@ class Payment extends BaseTransaction {
         }
 
         set(this, 'tx.Destination', destination.address);
-        set(this, 'tx.DestinationTag', destination.tag);
     }
 
     // @ts-ignore
@@ -182,8 +184,8 @@ class Payment extends BaseTransaction {
     }
 
     set TransferRate(rate: number) {
-        const ratePercent = new BigNumber(rate).dividedBy(1000000).minus(1000).dividedBy(10).toNumber();
-        set(this, ['tx', 'TransferRate'], ratePercent);
+        const ratePercent = new BigNumber(rate).dividedBy(1000000).minus(1000).dividedBy(10);
+        set(this, ['tx', 'TransferRate'], ratePercent.toNumber());
     }
 
     get TransferRate(): number {
