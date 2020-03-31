@@ -273,7 +273,7 @@
         "canNotFetchTransactions": "Can not fetch account transactions!"
     },
     "profile": {
-        "availableInFuture": "This features will be available in the future.",
+        "availableInFuture": "This feature will be available in the future.",
         "profileBenefits": "Profile benefits:",
         "personalPage": "Personal payments page",
         "connectMobile": "Be found by phone number / e-mail",
