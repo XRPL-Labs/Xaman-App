@@ -429,7 +429,6 @@ class ExchangeView extends Component<Props, State> {
                                     autoCapitalize="words"
                                     style={styles.fromAmount}
                                     value={paysAmount}
-                                    allowFontScaling
                                     returnKeyType="done"
                                 />
                             </View>

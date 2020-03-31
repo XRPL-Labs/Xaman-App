@@ -44,6 +44,7 @@ export default class Button extends Component<Props> {
         iconPosition: 'left',
         iconSize: 20,
         activeOpacity: 0.6,
+        allowFontScaling: false,
     };
 
     renderChildren() {

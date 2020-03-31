@@ -1,7 +1,7 @@
 /**
  * Application class
  */
-import { UIManager, Platform, Alert, NativeModules } from 'react-native';
+import { UIManager, Platform, Alert, Text, TextInput, NativeModules } from 'react-native';
 
 // modules
 import DeviceInfo from 'react-native-device-info';
@@ -108,7 +108,7 @@ export default class Application {
         return new Promise((resolve, reject) => {
             try {
                 const servicesPromise = [] as Array<Promise<any>>;
-                Object.keys(services).map(key => {
+                Object.keys(services).map((key) => {
                     // @ts-ignore
                     const service = services[key];
                     if (typeof service.initialize === 'function') {
@@ -121,7 +121,7 @@ export default class Application {
                     .then(() => {
                         resolve();
                     })
-                    .catch(e => {
+                    .catch((e) => {
                         this.logger.error('initAppServices Error:', e);
                         reject(e);
                     });
@@ -154,7 +154,7 @@ export default class Application {
     registerScreens = () => {
         return new Promise((resolve, reject) => {
             try {
-                Object.keys(screens).map(key => {
+                Object.keys(screens).map((key) => {
                     // @ts-ignore
                     const Screen = screens[key];
                     Navigation.registerComponent(Screen.screenName, () => Screen);
@@ -202,6 +202,14 @@ export default class Application {
                         return resolve();
                     });
                 }
+
+                // Disable accessibility fonts
+                // @ts-ignore
+                Text.defaultProps = {};
+                // @ts-ignore
+                Text.defaultProps.allowFontScaling = false;
+                // @ts-ignore
+                TextInput.defaultProps.allowFontScaling = false;
 
                 return resolve();
             } catch (e) {
