@@ -500,8 +500,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     renderEmptyOverlay = () => {
         return (
-            <>
-                <BlurView style={styles.blurView} blurType="xlight" blurAmount={10} />
+            <BlurView style={styles.blurView} blurType="xlight" blurAmount={10}>
                 <View style={styles.absolute}>
                     <View style={[styles.headerContainer]}>
                         <View style={[AppStyles.row]}>
@@ -550,7 +549,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                         <Spacer size={40} />
                     </View>
                 </View>
-            </>
+            </BlurView>
         );
     };
 

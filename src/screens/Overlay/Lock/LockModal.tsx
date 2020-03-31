@@ -78,7 +78,7 @@ class LockModal extends Component<Props, State> {
                     onUnlock();
                 }
             })
-            .catch(e => {
+            .catch((e) => {
                 this.setState({
                     error: e.toString().replace('Error: ', ''),
                 });
@@ -114,8 +114,7 @@ class LockModal extends Component<Props, State> {
     render() {
         const { error, coreSettings } = this.state;
         return (
-            <>
-                <BlurView style={styles.blurView} blurAmount={20} blurType="light" />
+            <BlurView style={styles.blurView} blurAmount={20} blurType="light">
                 <SafeAreaView style={styles.container}>
                     <View
                         style={[
@@ -140,7 +139,7 @@ class LockModal extends Component<Props, State> {
 
                     <View style={[AppStyles.flex5, AppStyles.flexEnd]}>
                         <SecurePinInput
-                            ref={r => {
+                            ref={(r) => {
                                 this.securePinInput = r;
                             }}
                             virtualKeyboard
@@ -151,7 +150,7 @@ class LockModal extends Component<Props, State> {
                         />
                     </View>
                 </SafeAreaView>
-            </>
+            </BlurView>
         );
     }
 }

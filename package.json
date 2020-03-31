@@ -24,7 +24,7 @@
     "update-snapshots": "npm run test:unit -- -u"
   },
   "dependencies": {
-    "@react-native-community/blur": "^3.4.1",
+    "@react-native-community/blur": "https://github.com/react-native-community/react-native-blur.git#e2075520c709caf3bb8cf8890fcbf9f96939c716",
     "@react-native-community/netinfo": "^5.6.2",
     "bignumber.js": "^9.0.0",
     "fuse.js": "^3.6.1",

@@ -1,8 +1,8 @@
 /* eslint-disable react-native/no-color-literals */
 
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet } from 'react-native';
 
-import { AppSizes, AppColors } from '@theme';
+import { AppSizes } from '@theme';
 
 import { getNavigationBarHeight } from '@common/helpers';
 
@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
         height: AppSizes.screen.height,
         padding: AppSizes.paddingSml,
         paddingBottom: AppSizes.paddingSml + getNavigationBarHeight(),
-        backgroundColor: Platform.OS === 'android' ? AppColors.white : AppColors.transparent,
     },
     logo: {
         width: AppSizes.screen.width * 0.4,

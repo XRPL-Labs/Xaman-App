@@ -1254,6 +1254,12 @@
   dependencies:
     prop-types "^15.5.10"
 
+"@react-native-community/blur@https://github.com/react-native-community/react-native-blur.git#e2075520c709caf3bb8cf8890fcbf9f96939c716":
+  version "3.5.0"
+  resolved "https://github.com/react-native-community/react-native-blur.git#e2075520c709caf3bb8cf8890fcbf9f96939c716"
+  dependencies:
+    prop-types "^15.5.10"
+
 "@react-native-community/cli-debugger-ui@^3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-3.0.0.tgz#d01d08d1e5ddc1633d82c7d84d48fff07bd39416"
