@@ -20,7 +20,6 @@ interface Props {
     testID?: string;
     codeLength: number;
     autoFocus?: boolean;
-    obfuscation?: boolean;
     onFinish?: (code: string) => void;
     onEdit?: (pin: string) => void;
 }
@@ -123,28 +122,24 @@ class PinInput extends Component<Props, State> {
     }
 
     render() {
-        const { obfuscation, codeLength, autoFocus, testID } = this.props;
+        const { codeLength, autoFocus, testID } = this.props;
         const { code } = this.state;
 
         const pins = [];
-        for (let index = 0; index < codeLength; index++) {
-            const id = index;
-            const value = code[id] ? (obfuscation ? '•' : code[id].toString()) : '';
 
+        for (let index = 0; index < codeLength; index++) {
             pins.push(
                 <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => {
                         this.focus();
                     }}
-                    key={id + value}
-                    style={[styles.pinInput, code.length === id && styles.pinInputActive]}
+                    key={index}
+                    style={[styles.pinInput, code.length === index && styles.pinInputActive]}
                 >
-                    {value ? (
-                        <Text adjustsFontSizeToFit style={styles.pinText}>
-                            {value}
-                        </Text>
-                    ) : null}
+                    <Text adjustsFontSizeToFit style={styles.pinText}>
+                        {code.length > index ? '•' : ''}
+                    </Text>
                 </TouchableOpacity>,
             );
         }

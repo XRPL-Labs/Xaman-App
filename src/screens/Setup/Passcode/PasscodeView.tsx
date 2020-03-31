@@ -240,7 +240,6 @@ class PasscodeSetupView extends Component<Props, State> {
                         ref={(r) => {
                             this.pinInput = r;
                         }}
-                        obfuscation
                         autoFocus
                         codeLength={6}
                         onEdit={this.onPinEdit}
