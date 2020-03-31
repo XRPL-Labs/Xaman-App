@@ -1,5 +1,5 @@
-import React, { PureComponent } from 'react';
-import { View, Animated, SafeAreaView, ViewStyle } from 'react-native';
+import React, { Component } from 'react';
+import { View, Animated, SafeAreaView, ViewStyle, InteractionManager } from 'react-native';
 
 // components
 import { Button } from '@components';
@@ -19,37 +19,30 @@ interface Props {
     onFinish: () => void;
 }
 
-export default class Indicator extends PureComponent<Props> {
+interface State {
     currentIndex: number;
-    skipButtonVisibility: Animated.Value;
+}
+
+export default class Indicator extends Component<Props, State> {
+    currentIndex: number;
 
     constructor(props: Props) {
         super(props);
-        this.currentIndex = 1;
-        this.skipButtonVisibility = new Animated.Value(1);
+
+        this.state = {
+            currentIndex: 1,
+        };
     }
 
     componentDidMount() {
-        const { progress, pages } = this.props;
-        progress.addListener(obj => {
-            if (this.currentIndex !== Math.floor(obj.value) + 1) {
-                this.currentIndex = Math.floor(obj.value) + 1;
+        const { progress } = this.props;
 
-                // hide skip button
-                if (this.currentIndex >= pages) {
-                    Animated.timing(this.skipButtonVisibility, {
-                        toValue: 0,
-                        duration: 300,
-                    }).start();
-                } else {
-                    Animated.timing(this.skipButtonVisibility, {
-                        toValue: 1,
-                        duration: 300,
-                    }).start();
-                }
-
-                this.forceUpdate();
-            }
+        InteractionManager.runAfterInteractions(() => {
+            progress.addListener((obj) => {
+                this.setState({
+                    currentIndex: Math.floor(obj.value) + 1,
+                });
+            });
         });
     }
 
@@ -60,8 +53,9 @@ export default class Indicator extends PureComponent<Props> {
 
     renderSkipButton = () => {
         const { pages, scrollTo, onFinish } = this.props;
+        const { currentIndex } = this.state;
 
-        if (this.currentIndex < pages) {
+        if (currentIndex < pages) {
             return (
                 <Button
                     testID="skip-slider"

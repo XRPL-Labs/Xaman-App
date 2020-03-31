@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
 import React, { Component, Children } from 'react';
-import { View, ScrollView, Animated, Platform, ViewStyle } from 'react-native';
+import { View, ScrollView, Animated, ViewStyle } from 'react-native';
 
 import Indicator from './PageIndicator';
 
@@ -19,7 +19,6 @@ interface Props {
     style?: ViewStyle;
     pagingEnabled?: boolean;
     showsHorizontalScrollIndicator?: boolean;
-    showsVerticalScrollIndicator?: boolean;
     scrollEventThrottle?: number;
     scrollsToTop?: boolean;
 
@@ -27,9 +26,6 @@ interface Props {
     indicatorPosition?: 'none' | 'top' | 'right' | 'bottom' | 'left';
 
     startPage?: number;
-
-    horizontal?: boolean;
-    rtl?: boolean;
 
     onLayout?: (event: any) => void;
     onScrollEnd?: (progress: any) => void;
@@ -51,14 +47,14 @@ export default class Slider extends Component<Props, State> {
 
     static defaultProps = {
         pagingEnabled: true,
+        nestedScrollEnabled: true,
         showsHorizontalScrollIndicator: false,
         showsVerticalScrollIndicator: false,
-        scrollEventThrottle: 30,
+        scrollEventThrottle: 25,
         scrollsToTop: false,
         indicatorOpacity: 0.3,
         startPage: 0,
         horizontal: true,
-        rtl: false,
     };
 
     constructor(props: Props) {
@@ -82,15 +78,6 @@ export default class Slider extends Component<Props, State> {
         this.mounted = true;
     }
 
-    componentDidUpdate() {
-        if (this.scrollState === -1) {
-            /* Fix scroll position after layout update */
-            requestAnimationFrame(() => {
-                this.scrollToPage(Math.floor(this.progress), false);
-            });
-        }
-    }
-
     componentWillUnmount() {
         this.mounted = false;
     }
@@ -107,17 +94,14 @@ export default class Slider extends Component<Props, State> {
     };
 
     onScroll = (event: any) => {
-        const { horizontal } = this.props;
-        const { [horizontal ? 'x' : 'y']: offset } = event.nativeEvent.contentOffset;
-        const { [horizontal ? 'width' : 'height']: base, progress } = this.state;
+        const { x: offset } = event.nativeEvent.contentOffset;
+        const { width: base, progress } = this.state;
 
         progress.setValue((this.progress = base ? offset / base : 0));
 
         const discreteProgress = Math.round(this.progress);
 
         if (this.scrollState === 1 && equal(discreteProgress, this.progress)) {
-            this.onScrollEnd();
-
             this.scrollState = -1;
         }
     };
@@ -127,27 +111,11 @@ export default class Slider extends Component<Props, State> {
     };
 
     onScrollEndDrag = () => {
-        const { horizontal } = this.props;
-
-        /* Vertical pagination is not working on android, scroll by hands */
-        if (Platform.OS === 'android' && !horizontal) {
-            this.scrollToPage(Math.round(this.progress));
-        }
-
         this.scrollState = 1;
     };
 
-    onScrollEnd = () => {
-        const { onScrollEnd } = this.props;
-
-        if (typeof onScrollEnd === 'function') {
-            onScrollEnd(Math.round(this.progress));
-        }
-    };
-
     scrollToPage = (page: number, animated = true) => {
-        const { horizontal } = this.props;
-        const { [horizontal ? 'width' : 'height']: base } = this.state;
+        const { width: base } = this.state;
 
         if (animated) {
             this.scrollState = 1;
@@ -155,7 +123,7 @@ export default class Slider extends Component<Props, State> {
 
         if (this.mounted && this.scroll) {
             this.scroll.current.scrollTo({
-                [horizontal ? 'x' : 'y']: page * base,
+                x: page * base,
                 animated,
             });
         }
@@ -172,35 +140,27 @@ export default class Slider extends Component<Props, State> {
     renderPage = (page: any, index: number) => {
         const { width, height } = this.state;
         let { progress } = this.state;
-        const { children, horizontal, rtl } = this.props;
+        const { children } = this.props;
 
         const pages = Children.count(children);
-
-        const pageStyle = horizontal && rtl ? styles.rtl : null;
 
         /* Adjust progress by page index */
         // @ts-ignore
         progress = Animated.add(progress, -index);
 
-        return (
-            <View style={[{ width, height }, pageStyle]}>{React.cloneElement(page, { index, pages, progress })}</View>
-        );
+        return <View style={[{ width, height }]}>{React.cloneElement(page, { index, pages, progress })}</View>;
     };
 
     renderIndicator = (pager: any) => {
-        const { horizontal, rtl } = this.props;
-
         const { indicatorPosition } = pager;
 
         if (indicatorPosition === 'none') {
             return null;
         }
 
-        const indicatorStyle = horizontal && rtl ? styles.rtl : null;
-
         return (
             // @ts-ignore
-            <View style={[styles[indicatorPosition], indicatorStyle]}>
+            <View style={[styles[indicatorPosition]]}>
                 {/* eslint-disable-next-line */}
                 <Indicator {...pager} scrollTo={this.scrollToPage} />
             </View>
@@ -209,14 +169,8 @@ export default class Slider extends Component<Props, State> {
 
     render() {
         const { progress } = this.state;
-        const { horizontal, rtl, onFinish } = this.props;
-        const {
-            style,
-            children,
-            indicatorOpacity,
-            indicatorPosition = horizontal ? 'bottom' : 'right',
-            ...props
-        } = this.props;
+        const { onFinish } = this.props;
+        const { style, children, indicatorOpacity, indicatorPosition = 'bottom', ...props } = this.props;
 
         const pages = Children.count(children);
 
@@ -230,14 +184,12 @@ export default class Slider extends Component<Props, State> {
             });
         };
 
-        const scrollStyle = horizontal && rtl ? styles.rtl : null;
-
         return (
             <View style={[styles.container]}>
                 <ScrollView
                     {...props}
-                    style={[styles.scrollView, style, scrollStyle]}
-                    onLayout={event => this.onLayout(event)}
+                    style={[styles.scrollView, style]}
+                    onLayout={(event) => this.onLayout(event)}
                     onScroll={this.onScroll}
                     onScrollBeginDrag={this.onScrollBeginDrag}
                     onScrollEndDrag={this.onScrollEndDrag}
