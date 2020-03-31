@@ -274,7 +274,7 @@
         "canNotFetchTransactions": "Can not fetch account transactions!"
     },
     "profile": {
-        "availableInFuture": "These features will be available in the future.",
+        "availableInFuture": "These feature will be available in the future.",
         "profileBenefits": "Profile benefits:",
         "personalPage": "Personal payments page",
         "connectMobile": "Be found by phone number / e-mail",
@@ -432,7 +432,7 @@
     },
     "send": {
         "amountIsBiggerThanYourSpend": "Amount is bigger than what you can spend (%{spendable})",
-        "balanceIsNotEnoughForFee": "Balance is not enough to covert the fee (%{fee})",
+        "balanceIsNotEnoughForFee": "Balance is not enough to cover the fee (%{fee})",
         "searchResults": "Search results",
         "noSearchResult": "No search result",
         "noContact": "No contacts",

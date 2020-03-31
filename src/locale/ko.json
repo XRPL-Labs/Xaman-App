@@ -274,7 +274,7 @@
       "canNotFetchTransactions": "계정 거래를 가져올 수 없습니다!"
    },
    "profile": {
-      "availableInFuture": "이러한 기능은 향후에 제공 될 예정입니다.",
+      "availableInFuture": "이 기능은 향후에 제공 될 예정입니다.",
       "profileBenefits": "프로필 혜택 :",
       "personalPage": "개인 결제 페이지",
       "connectMobile": "전화 번호 / 이메일로 확인",
@@ -432,7 +432,7 @@
    },
    "send": {
       "amountIsBiggerThanYourSpend": "지출 할 수있는 금액보다 금액이 더 많습니다 ( %{spendable} )",
-      "balanceIsNotEnoughForFee": "잔액으로 수수료를 감당하기에 충분하지 않습니다 ( %{fee} )",
+      "balanceIsNotEnoughForFee": "잔액이 수수료를 충당하기에 충분하지 않습니다 ( %{fee} )",
       "searchResults": "검색 결과",
       "noSearchResult": "검색 결과가 없습니다",
       "noContact": "연락처 없음",
