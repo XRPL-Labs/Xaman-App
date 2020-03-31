@@ -417,7 +417,7 @@ class SummaryStep extends Component {
                                 onChangeText={this.onDescriptionChange}
                                 placeholder={Localize.t('send.enterPublicMemo')}
                                 inputStyle={styles.inputStyle}
-                                maxLength={20}
+                                maxLength={300}
                                 returnKeyType="done"
                             />
                         </View>
