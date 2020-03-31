@@ -100,12 +100,18 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
     slideUp = () => {
         setTimeout(() => {
-            this.panel.snapTo({ index: 1 });
+            if (this.panel) {
+                this.panel.snapTo({ index: 1 });
+            }
         }, 10);
     };
 
     slideDown = () => {
-        this.panel.snapTo({ index: 0 });
+        setTimeout(() => {
+            if (this.panel) {
+                this.panel.snapTo({ index: 0 });
+            }
+        });
     };
 
     onSnap = (event: any) => {
@@ -273,7 +279,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={r => {
+                    ref={(r) => {
                         this.panel = r;
                     }}
                     animatedNativeDriver

@@ -61,13 +61,17 @@ class ShareAccountModal extends Component<Props, State> {
 
     slideUp = () => {
         setTimeout(() => {
-            this.panel.snapTo({ index: 1 });
+            if (this.panel) {
+                this.panel.snapTo({ index: 1 });
+            }
         }, 10);
     };
 
     slideDown = () => {
         setTimeout(() => {
-            this.panel.snapTo({ index: 0 });
+            if (this.panel) {
+                this.panel.snapTo({ index: 0 });
+            }
         }, 10);
     };
 
@@ -116,7 +120,7 @@ class ShareAccountModal extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={r => {
+                    ref={(r) => {
                         this.panel = r;
                     }}
                     animatedNativeDriver
