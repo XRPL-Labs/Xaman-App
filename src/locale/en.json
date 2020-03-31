@@ -431,7 +431,7 @@
     },
     "send": {
         "amountIsBiggerThanYourSpend": "Amount is bigger than what you can spend (%{spendable})",
-        "balanceIsNotEnoughForFee": "Balance is not enough to covert the fee (%{fee})",
+        "balanceIsNotEnoughForFee": "Balance is not enough to cover the fee (%{fee})",
         "searchResults": "Search results",
         "noSearchResult": "No search result",
         "noContact": "No contacts",
