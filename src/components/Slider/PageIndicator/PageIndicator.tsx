@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { View, Animated, SafeAreaView, ViewStyle, InteractionManager } from 'react-native';
+import React, { PureComponent } from 'react';
+import { View, Animated, SafeAreaView, ViewStyle } from 'react-native';
 
 // components
 import { Button } from '@components';
@@ -23,28 +23,8 @@ interface State {
     currentIndex: number;
 }
 
-export default class Indicator extends Component<Props, State> {
+export default class Indicator extends PureComponent<Props, State> {
     currentIndex: number;
-
-    constructor(props: Props) {
-        super(props);
-
-        this.state = {
-            currentIndex: 1,
-        };
-    }
-
-    componentDidMount() {
-        const { progress } = this.props;
-
-        InteractionManager.runAfterInteractions(() => {
-            progress.addListener((obj) => {
-                this.setState({
-                    currentIndex: Math.floor(obj.value) + 1,
-                });
-            });
-        });
-    }
 
     componentWillUnmount() {
         const { progress } = this.props;
@@ -52,26 +32,12 @@ export default class Indicator extends Component<Props, State> {
     }
 
     renderSkipButton = () => {
-        const { pages, scrollTo, onFinish } = this.props;
-        const { currentIndex } = this.state;
+        const { onFinish } = this.props;
 
-        if (currentIndex < pages) {
-            return (
-                <Button
-                    testID="skip-slider"
-                    label={Localize.t('global.skip')}
-                    rounded
-                    onPress={() => {
-                        scrollTo(pages);
-                    }}
-                    style={[AppStyles.rightSelf]}
-                />
-            );
-        }
         return (
             <Button
                 testID="ready-slider"
-                label={Localize.t('global.ready')}
+                label={Localize.t('global.start')}
                 rounded
                 onPress={onFinish}
                 style={[AppStyles.buttonGreen, AppStyles.rightSelf]}

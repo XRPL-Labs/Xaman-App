@@ -2,6 +2,7 @@
    "global": {
       "language": "语言",
       "ok": "好",
+      "start": "开始",
       "next": "下一个",
       "back": "背部",
       "goBack": "回去",
@@ -428,7 +429,7 @@
       "newPassphrase": "新密码",
       "regularKeyFor": "常规密钥",
       "allDoneYouCanGoToNextStepNow": "全部完成，您可以继续下一步",
-      "disableMasterKeyWarning": "交易将禁用该帐户的私钥。这可能将您锁定在外。仅在完全确定这是您想要的并且知道自己在做什么时，才继续。"
+      "disableMasterKeyWarning": "交易将禁用该帐户的私钥。这可能将您拒之门外。仅在完全确定这是您想要的并且知道自己在做什么时，才继续。"
    },
    "send": {
       "amountIsBiggerThanYourSpend": "金额大于您可以消费的金额（ %{spendable} ）",

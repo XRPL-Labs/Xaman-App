@@ -2,6 +2,7 @@
    "global": {
       "language": "언어",
       "ok": "확인",
+      "start": "스타트",
       "next": "다음",
       "back": "뒤",
       "goBack": "돌아가",
@@ -427,8 +428,8 @@
       "currentPassphrase": "현재 비밀번호 문구",
       "newPassphrase": "새로운 비밀번호 문구",
       "regularKeyFor": "에 대한 일반 키",
-      "allDoneYouCanGoToNextStepNow": "모든 작업을 마치면 다음 단계로 넘어갑니다",
-      "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이하고있는 것을 알고 있다면 계속하십시오."
+      "allDoneYouCanGoToNextStepNow": "모든 작업을 마치면 다음 단계로 넘어갈 수 있습니다",
+      "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이 무엇을하고 있는지 아는 경우에만 계속하십시오."
    },
    "send": {
       "amountIsBiggerThanYourSpend": "지출 할 수있는 금액보다 금액이 더 많습니다 ( %{spendable} )",

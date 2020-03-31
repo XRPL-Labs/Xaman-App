@@ -2,6 +2,7 @@
     "global":{
         "language": "Language",
         "ok": "Ok",
+        "start": "Start",
         "next": "Next",
         "back": "Back",
         "goBack": "Go back",

@@ -2,6 +2,7 @@
    "global": {
       "language": "言語",
       "ok": "OK",
+      "start": "開始",
       "next": "次",
       "back": "バック",
       "goBack": "戻る",
@@ -336,7 +337,7 @@
       "pleaseEnterSafePassphrase": "覚えやすいが、他の人には推測できない長さの長いパスフレーズを作成します。",
       "enterPassphrase": "パスフレーズを入力してください",
       "repeatPassphrase": "パスフレーズを繰り返す",
-      "passphraseShouldContain": "パスフレーズの強度は少なくとも公平である必要があります。長いパスフレーズまたはより難しいパスフレーズを使用してください（長いパスフレーズを使用することをお勧めします）。",
+      "passphraseShouldContain": "パスフレーズの強度は少なくとも公平である必要があります。長いパスフレーズまたはより難しいパスフレーズを使用してください（長いパスフレーズの方が適しています）。",
       "passphraseConfirmNotMatch": "パスフレーズが一致しません",
       "enterValidPassphrase": "有効なパスフレーズを入力してください",
       "chooseSecurityLevel": "セキュリティレベル",
@@ -428,7 +429,7 @@
       "newPassphrase": "新しいパスフレーズ",
       "regularKeyFor": "通常のキー",
       "allDoneYouCanGoToNextStepNow": "すべて完了したら、次のステップに進むことができます",
-      "disableMasterKeyWarning": "トランザクションはアカウントの秘密鍵を無効にします。これはあなたを締め出すかもしれません。これがあなたが望んでいることであると確信していて、あなたがあなたが何をしているのかを知っている場合にのみ続けてください。"
+      "disableMasterKeyWarning": "トランザクションはアカウントの秘密鍵を無効にします。これはあなたを締め出すかもしれません。これがあなたが望んでいることであることが確実であり、あなたが何をしているのかを知っている場合にのみ、続行してください。"
    },
    "send": {
       "amountIsBiggerThanYourSpend": "金額があなたが費やすことができる金額よりも大きい（ %{spendable} ）",
@@ -465,8 +466,8 @@
       "selectedAccountDoNotSupportCurrency": "選択したアカウントは選択した通貨をサポートしていません。",
       "memoPublicWarning": "メモ情報はすべての人に公開されます",
       "destinationNotExistTooLittleToCreate": "移行先のアカウントは以前に使用されておらず、残高もありません。 XRP元帳でアカウントをアクティブ化するには、少なくとも20のXRPの初期預金が必要です。",
-      "destinationNotExistCreationWarning": "移行先のアカウントはこれまでに使用されておらず、残高もありません。このアカウントへの送信を続けると、20 XRPの%{amount} XRPは、XRP元帳のアカウントをアクティブ化するために使用されます。つまり、20 XRPは使用できません。続行してもよろしいですか？",
-      "destinationCannotActivateWithIOU": "移行先のアカウントはこれまでに使用されておらず、残高もありません。 XRP元帳でアカウントをアクティブ化するには、少なくとも20のXRPの初期預金をアカウントに送信する必要があります。 XRP以外の通貨は初回入金には使用できません。",
+      "destinationNotExistCreationWarning": "移行先のアカウントは以前に使用されておらず、残高もありません。このアカウントへの送信を続けると、20 XRPの%{amount} XRPは、XRP元帳のアカウントをアクティブ化するために使用されます。つまり、20 XRPは使用できません。続行してもよろしいですか？",
+      "destinationCannotActivateWithIOU": "移行先のアカウントは以前に使用されておらず、残高もありません。 XRP元帳でアカウントをアクティブ化するには、少なくとも20のXRPの初期預金をアカウントに送信する必要があります。 XRP以外の通貨は初回入金には使用できません。",
       "destinationTagIsRequired": "この支払いを送信するには宛先タグが必要です。"
    },
    "currency": {
