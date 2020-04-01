@@ -47,9 +47,7 @@ const styles = StyleSheet.create({
         marginTop: 8,
         marginRight: 6,
     },
-    iconXumm: {
-        width: 33,
-        height: 14.5,
+    iconEye: {
         tintColor: AppColors.greyDark,
         marginTop: 12,
         marginRight: 3,
@@ -228,6 +226,19 @@ const styles = StyleSheet.create({
     },
     iconAccount: {
         marginRight: 15,
+    },
+    switchAccountButton: {
+        backgroundColor: AppColors.white,
+        borderColor: AppColors.light,
+        paddingHorizontal: 10,
+        alignSelf: 'flex-end',
+    },
+    switchAccountButtonText: {
+        fontSize: AppFonts.small.size,
+        fontFamily: AppFonts.base.familyBold,
+        color: AppColors.blue,
+        paddingLeft: 1,
+        paddingRight: 0,
     },
 });
 
