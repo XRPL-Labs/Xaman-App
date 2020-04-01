@@ -8,7 +8,6 @@ import { filter } from 'lodash';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import {
-    SafeAreaView,
     ScrollView,
     Animated,
     View,
@@ -81,9 +80,15 @@ class DetailsStep extends Component {
 
         // check if balance can cover the transfer fee for non XRP currencies
         if (typeof currency !== 'string') {
-            const rate = new BigNumber(currency.transfer_rate).dividedBy(1000000).minus(1000).dividedBy(10);
+            const rate = new BigNumber(currency.transfer_rate)
+                .dividedBy(1000000)
+                .minus(1000)
+                .dividedBy(10);
 
-            const fee = bAmount.multipliedBy(rate).dividedBy(100).decimalPlaces(6);
+            const fee = bAmount
+                .multipliedBy(rate)
+                .dividedBy(100)
+                .decimalPlaces(6);
             const after = bAmount.plus(fee).toNumber();
 
             if (after > availableBalance) {
@@ -223,7 +228,7 @@ class DetailsStep extends Component {
         const { accounts, source, currency, amount } = this.context;
 
         return (
-            <SafeAreaView testID="send-details-view" style={[styles.container]}>
+            <View testID="send-details-view" style={[styles.container]}>
                 <KeyboardAvoidingView
                     keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0}
                     behavior="padding"
@@ -256,7 +261,7 @@ class DetailsStep extends Component {
                                 items={accounts}
                                 renderItem={this.renderAccountItem}
                                 selectedItem={source}
-                                keyExtractor={(i) => i.address}
+                                keyExtractor={i => i.address}
                                 containerStyle={{ backgroundColor: AppColors.transparent }}
                             />
                         </View>
@@ -269,10 +274,10 @@ class DetailsStep extends Component {
                             </View>
                             <AccordionPicker
                                 onSelect={this.onCurrencyChange}
-                                items={['XRP', ...filter(source.lines, (l) => l.balance > 0)]}
+                                items={['XRP', ...filter(source.lines, l => l.balance > 0)]}
                                 renderItem={this.renderCurrencyItem}
                                 selectedItem={currency}
-                                keyExtractor={(i) => (typeof i === 'string' ? i : i.currency.id)}
+                                keyExtractor={i => (typeof i === 'string' ? i : i.currency.id)}
                                 containerStyle={{ backgroundColor: AppColors.transparent }}
                             />
                         </View>
@@ -299,7 +304,7 @@ class DetailsStep extends Component {
                 </KeyboardAvoidingView>
 
                 {/* Bottom Bar */}
-                <Footer style={[AppStyles.row]}>
+                <Footer style={[AppStyles.row]} safeArea>
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
                         <Button
                             secondary
@@ -324,7 +329,7 @@ class DetailsStep extends Component {
                         />
                     </View>
                 </Footer>
-            </SafeAreaView>
+            </View>
         );
     }
 }
