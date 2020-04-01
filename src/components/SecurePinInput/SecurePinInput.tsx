@@ -266,7 +266,8 @@ class SecurePinInput extends Component<Props, State> {
                             keyboardType="number-pad"
                             onKeyPress={this.onKeyPress}
                             onChangeText={this.handleEdit}
-                            ref={(component) => {
+                            secureTextEntry
+                            ref={component => {
                                 this.input = component;
                             }}
                             value={digits}

@@ -157,7 +157,7 @@ class PinInput extends Component<Props, State> {
         return (
             <View style={[styles.container]}>
                 <TextInput
-                    ref={(r) => {
+                    ref={r => {
                         this.textInput = r;
                     }}
                     testID={testID}
@@ -168,6 +168,7 @@ class PinInput extends Component<Props, State> {
                     returnKeyType="done"
                     autoFocus={autoFocus}
                     autoCorrect={false}
+                    secureTextEntry
                     value={code}
                     // eslint-disable-next-line
                     {...props}
