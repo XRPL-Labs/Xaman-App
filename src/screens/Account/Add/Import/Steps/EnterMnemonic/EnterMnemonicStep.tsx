@@ -105,8 +105,11 @@ class EnterMnemonicStep extends Component<Props, State> {
 
     setValue = (col: number, value: string) => {
         const { words } = this.state;
+
+        const cleanValue = value.replace(/\s/g, '');
+
         this.setState({
-            words: set(words, `[${col}]`, value),
+            words: set(words, `[${col}]`, cleanValue),
         });
     };
 
