@@ -98,8 +98,8 @@ class TransactionTemplate extends PureComponent<Props, State> {
     };
 
     onPress = () => {
-        const { item } = this.props;
-        Navigator.push(AppScreens.Transaction.Details, {}, { tx: item });
+        const { item, account } = this.props;
+        Navigator.push(AppScreens.Transaction.Details, {}, { tx: item, account: account.address });
     };
 
     getIcon = () => {

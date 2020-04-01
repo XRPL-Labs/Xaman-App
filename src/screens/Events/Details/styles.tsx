@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { AppColors, AppFonts } from '@theme';
+import { AppColors, AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({
@@ -51,6 +51,13 @@ const styles = StyleSheet.create({
         lineHeight: 20,
         fontSize: AppFonts.base.size * 0.9,
         color: AppColors.black,
+    },
+    dangerHeader: {
+        alignSelf: 'stretch',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: AppSizes.paddingSml,
+        backgroundColor: AppColors.red,
     },
 });
 

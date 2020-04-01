@@ -199,7 +199,9 @@
       "UnableToConnectToNode": "ノードに接続できません ' %{defaultNode} 」",
       "CheckYourNetworkConnection": "ネットワーク接続を確認する",
       "WeWillKeepTryingButThereMayBeAProblemWithYourInternetConnection": "引き続き試行しますが、インターネット接続に問題がある可能性があります。",
-      "pressBackAgainToExit": "もう一度押すと終了します"
+      "pressBackAgainToExit": "もう一度押すと終了します",
+      "fraudAlert": "詐欺警告",
+      "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "このアカウントは詐欺または詐欺のアドレスとして報告されます。注意して続行してください"
    },
    "onboarding": {
       "slideOne": {
@@ -465,7 +467,7 @@
       "destinationIsProbableIsScam": "移行先のアカウントに高リスクのフラグが付けられています",
       "selectedAccountDoNotSupportCurrency": "選択したアカウントは選択した通貨をサポートしていません。",
       "memoPublicWarning": "メモ情報はすべての人に公開されます",
-      "destinationNotExistTooLittleToCreate": "移行先のアカウントは以前に使用されておらず、残高もありません。 XRP元帳でアカウントをアクティブ化するには、少なくとも20のXRPの初期預金が必要です。",
+      "destinationNotExistTooLittleToCreate": "移行先のアカウントは以前に使用されておらず、残高もありません。 XRP元帳でアカウントを有効にするには、少なくとも20のXRPの初期預金が必要です。",
       "destinationNotExistCreationWarning": "移行先のアカウントは以前に使用されておらず、残高もありません。このアカウントへの送信を続けると、20 XRPの%{amount} XRPは、XRP元帳のアカウントをアクティブ化するために使用されます。つまり、20 XRPは使用できません。続行してもよろしいですか？",
       "destinationCannotActivateWithIOU": "移行先のアカウントは以前に使用されておらず、残高もありません。 XRP元帳でアカウントをアクティブ化するには、少なくとも20のXRPの初期預金をアカウントに送信する必要があります。 XRP以外の通貨は初回入金には使用できません。",
       "destinationTagIsRequired": "この支払いを送信するには宛先タグが必要です。"

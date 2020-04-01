@@ -199,7 +199,9 @@
       "UnableToConnectToNode": "No se puede conectar al nodo ' %{defaultNode} '",
       "CheckYourNetworkConnection": "Comprueba tu conexión de red",
       "WeWillKeepTryingButThereMayBeAProblemWithYourInternetConnection": "Seguiremos intentándolo, pero puede haber un problema con su conexión a Internet.",
-      "pressBackAgainToExit": "Presione de nuevo para salir"
+      "pressBackAgainToExit": "Presione de nuevo para salir",
+      "fraudAlert": "ALERTA DE FRAUDE",
+      "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "Esta cuenta se informa como estafa o dirección fraudulenta. Por favor proceda con precaución"
    },
    "onboarding": {
       "slideOne": {

@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Platform, Linking, Alert } from 'react-native';
+import { View, Text, ScrollView, Platform, Linking, Alert, InteractionManager, TouchableOpacity } from 'react-native';
 
 import Share from 'react-native-share';
 
@@ -13,6 +13,8 @@ import { Navigator, ActionSheet } from '@common/helpers';
 
 import { Header, QRCode, Spacer } from '@components';
 
+import { BackendService } from '@services';
+
 import Localize from '@locale';
 // style
 import { AppStyles } from '@theme';
@@ -21,9 +23,13 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     tx: TransactionsType;
+    account: string;
 }
 
-export interface State {}
+export interface State {
+    scamAlert: boolean;
+    showMemo: boolean;
+}
 
 /* Component ==================================================================== */
 class TransactionDetailsView extends Component<Props, State> {
@@ -37,7 +43,38 @@ class TransactionDetailsView extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
+
+        this.state = {
+            scamAlert: false,
+            showMemo: true,
+        };
     }
+
+    componentDidMount() {
+        InteractionManager.runAfterInteractions(() => {
+            this.checkForScamAlert();
+        });
+    }
+
+    checkForScamAlert = async () => {
+        const { tx, account } = this.props;
+
+        // check for account  scam
+        const incoming = tx.Destination?.address === account;
+
+        if (incoming) {
+            BackendService.getAccountRisk(tx.Account.address)
+                .then((accountRisk: any) => {
+                    if (accountRisk && accountRisk.danger !== 'UNKNOWN') {
+                        this.setState({
+                            scamAlert: true,
+                            showMemo: false,
+                        });
+                    }
+                })
+                .catch(() => {});
+        }
+    };
 
     shareTxLink = () => {
         const { tx } = this.props;
@@ -199,6 +236,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
     renderMemos = () => {
         const { tx } = this.props;
+        const { showMemo, scamAlert } = this.state;
 
         if (!tx.Memos) return null;
 
@@ -206,15 +244,26 @@ class TransactionDetailsView extends Component<Props, State> {
             <>
                 <View style={[AppStyles.hr, AppStyles.marginVerticalSml]} />
                 <Text style={[styles.labelText]}>Memos</Text>
-                <Text style={[styles.contentText]}>
-                    {tx.Memos.map(m => {
-                        let memo = '';
-                        memo += m.type ? `${m.type}\n` : '';
-                        memo += m.format ? `${m.format}\n` : '';
-                        memo += m.data ? `${m.data}\n` : '';
-                        return memo;
-                    })}
-                </Text>
+
+                {showMemo ? (
+                    <Text style={[styles.contentText, scamAlert && AppStyles.colorRed]}>
+                        {tx.Memos.map(m => {
+                            let memo = '';
+                            memo += m.type ? `${m.type}\n` : '';
+                            memo += m.format ? `${m.format}\n` : '';
+                            memo += m.data ? `${m.data}\n` : '';
+                            return memo;
+                        })}
+                    </Text>
+                ) : (
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.setState({ showMemo: true });
+                        }}
+                    >
+                        <Text style={[styles.contentText, AppStyles.colorRed]}>Show Memo</Text>
+                    </TouchableOpacity>
+                )}
             </>
         );
     };
@@ -235,6 +284,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
     render() {
         const { tx } = this.props;
+        const { scamAlert } = this.state;
 
         return (
             <View style={AppStyles.container}>
@@ -253,6 +303,17 @@ class TransactionDetailsView extends Component<Props, State> {
                         },
                     }}
                 />
+
+                {scamAlert && (
+                    <View style={styles.dangerHeader}>
+                        <Text style={[AppStyles.h4, AppStyles.colorWhite]}>{Localize.t('global.fraudAlert')}</Text>
+                        <Text style={[AppStyles.subtext, AppStyles.textCenterAligned, AppStyles.colorWhite]}>
+                            {Localize.t(
+                                'global.thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution',
+                            )}
+                        </Text>
+                    </View>
+                )}
 
                 <ScrollView testID="transaction-details-view" contentContainerStyle={[]}>
                     <View style={styles.qrCodeContainer}>
