@@ -101,8 +101,10 @@ class PasscodeSetupView extends Component<Props, State> {
                 step: 'confirm',
             });
 
-            this.pinInput.clean();
-            this.pinInput.focus();
+            if (this.pinInput) {
+                this.pinInput.clean();
+                this.pinInput.focus();
+            }
         } else {
             this.onFinishStep();
         }
@@ -130,7 +132,7 @@ class PasscodeSetupView extends Component<Props, State> {
     };
 
     isBiometricSupported = () => {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             const optionalConfigObject = {
                 unifiedErrors: false,
                 passcodeFallback: false,
@@ -237,7 +239,7 @@ class PasscodeSetupView extends Component<Props, State> {
                     <Spacer size={30} />
                     <PinInput
                         testID="pinInput"
-                        ref={(r) => {
+                        ref={r => {
                             this.pinInput = r;
                         }}
                         autoFocus

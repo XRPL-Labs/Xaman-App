@@ -133,13 +133,17 @@ class VaultModal extends Component<Props, State> {
             } else {
                 // focus the input
                 setTimeout(() => {
-                    this.securePinInput.focus();
+                    if (this.securePinInput) {
+                        this.securePinInput.focus();
+                    }
                 }, 300);
             }
         } else if (encryptionLevel === EncryptionLevels.Passphrase) {
             // focus the input
             setTimeout(() => {
-                this.passwordInput.focus();
+                if (this.passwordInput) {
+                    this.passwordInput.focus();
+                }
             }, 300);
         }
     }

@@ -160,7 +160,9 @@ class EnterMnemonicStep extends Component<Props, State> {
                         returnKeyType={i + 1 === length ? 'done' : 'next'}
                         onSubmitEditing={() => {
                             if (i + 1 !== length) {
-                                this.inputs[i + 1].focus();
+                                if (this.inputs[i + 1]) {
+                                    this.inputs[i + 1].focus();
+                                }
                             }
                         }}
                         onChangeText={v => {

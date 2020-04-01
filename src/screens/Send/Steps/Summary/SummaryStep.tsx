@@ -243,9 +243,15 @@ class SummaryStep extends Component {
 
         // check if balance can cover the transfer fee for non XRP currencies
         if (typeof currency !== 'string') {
-            const rate = new BigNumber(currency.transfer_rate).dividedBy(1000000).minus(1000).dividedBy(10);
+            const rate = new BigNumber(currency.transfer_rate)
+                .dividedBy(1000000)
+                .minus(1000)
+                .dividedBy(10);
 
-            const fee = bAmount.multipliedBy(rate).dividedBy(100).decimalPlaces(6);
+            const fee = bAmount
+                .multipliedBy(rate)
+                .dividedBy(100)
+                .decimalPlaces(6);
             const after = bAmount.plus(fee).toNumber();
 
             if (after > availableBalance) {
@@ -261,7 +267,9 @@ class SummaryStep extends Component {
 
             if (accountFlags.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
                 Alert.alert(Localize.t('global.warning'), Localize.t('send.destinationTagIsRequired'));
-                this.destinationTagInput.focus();
+                if (this.destinationTagInput) {
+                    this.destinationTagInput.focus();
+                }
                 return;
             }
         }
@@ -306,7 +314,7 @@ class SummaryStep extends Component {
                                 items={accounts}
                                 renderItem={this.renderAccountItem}
                                 selectedItem={source}
-                                keyExtractor={(i) => i.address}
+                                keyExtractor={i => i.address}
                                 containerStyle={{ backgroundColor: AppColors.transparent }}
                             />
                             <Spacer size={20} />
@@ -358,7 +366,7 @@ class SummaryStep extends Component {
                             <View style={AppStyles.row}>
                                 <View style={AppStyles.flex1}>
                                     <RNTextInput
-                                        ref={(r) => {
+                                        ref={r => {
                                             this.amountInput = r;
                                         }}
                                         keyboardType="decimal-pad"
@@ -392,7 +400,7 @@ class SummaryStep extends Component {
                             </View>
                             <Spacer size={15} />
                             <TextInput
-                                ref={(r) => {
+                                ref={r => {
                                     this.destinationTagInput = r;
                                 }}
                                 value={destination.tag?.toString()}

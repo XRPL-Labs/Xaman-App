@@ -144,7 +144,10 @@ class ExchangeView extends Component<Props, State> {
                 ? new BigNumber(exchangeRate).dividedBy(1.02)
                 : new BigNumber(1).dividedBy(exchangeRate).dividedBy(1.02);
 
-        const getsAmount = new BigNumber(paysAmount).multipliedBy(actualExchangeRate).decimalPlaces(6).toString(10);
+        const getsAmount = new BigNumber(paysAmount)
+            .multipliedBy(actualExchangeRate)
+            .decimalPlaces(6)
+            .toString(10);
 
         // create offer transaction
         const offer = new OfferCreate();
@@ -389,7 +392,9 @@ class ExchangeView extends Component<Props, State> {
                         <TouchableOpacity
                             activeOpacity={1}
                             onPress={() => {
-                                this.paysAmountInput.focus();
+                                if (this.paysAmountInput) {
+                                    this.paysAmountInput.focus();
+                                }
                             }}
                             style={[AppStyles.row]}
                         >
@@ -418,7 +423,7 @@ class ExchangeView extends Component<Props, State> {
                             <View style={[AppStyles.row, AppStyles.centerAligned]}>
                                 <Text style={styles.fromAmount}>-</Text>
                                 <TextInput
-                                    ref={(r) => {
+                                    ref={r => {
                                         this.paysAmountInput = r;
                                     }}
                                     autoFocus={false}

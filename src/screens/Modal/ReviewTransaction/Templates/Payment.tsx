@@ -242,12 +242,14 @@ class PaymentTemplate extends Component<Props, State> {
                         activeOpacity={1}
                         style={[AppStyles.row]}
                         onPress={() => {
-                            editableAmount && this.amountInput.focus();
+                            if (editableAmount && this.amountInput) {
+                                this.amountInput.focus();
+                            }
                         }}
                     >
                         <View style={[AppStyles.row, AppStyles.flex1]}>
                             <TextInput
-                                ref={(r) => {
+                                ref={r => {
                                     this.amountInput = r;
                                 }}
                                 keyboardType="decimal-pad"
@@ -267,7 +269,9 @@ class PaymentTemplate extends Component<Props, State> {
                         {editableAmount && (
                             <Button
                                 onPress={() => {
-                                    this.amountInput.focus();
+                                    if (this.amountInput) {
+                                        this.amountInput.focus();
+                                    }
                                 }}
                                 style={styles.editButton}
                                 roundedSmall

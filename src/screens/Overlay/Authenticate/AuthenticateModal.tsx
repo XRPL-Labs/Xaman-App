@@ -88,7 +88,9 @@ class AuthenticateModal extends Component<Props, State> {
 
         // focus the input
         setTimeout(() => {
-            this.securePinInput.focus();
+            if (this.securePinInput) {
+                this.securePinInput.focus();
+            }
         }, 300);
     }
 

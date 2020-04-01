@@ -59,7 +59,9 @@ class ChangePasscodeView extends Component<Props, State> {
 
     focusPinInput = () => {
         setTimeout(() => {
-            this.pinInput.focus();
+            if (this.pinInput) {
+                this.pinInput.focus();
+            }
         }, 100);
     };
 
@@ -74,7 +76,7 @@ class ChangePasscodeView extends Component<Props, State> {
         const { passcode } = CoreRepository.getSettings();
 
         // store the new passcode in the store
-        CoreRepository.setPasscode(newPasscode).then(async (newEncPasscode) => {
+        CoreRepository.setPasscode(newPasscode).then(async newEncPasscode => {
             // reKey all accounts with new passcode
             const accounts = AccountRepository.findBy('encryptionLevel', EncryptionLevels.Passcode) as Results<
                 AccountSchema
@@ -100,7 +102,7 @@ class ChangePasscodeView extends Component<Props, State> {
                         this.pinInput.clean();
                         this.focusPinInput();
                     })
-                    .catch((e) => {
+                    .catch(e => {
                         this.pinInput.clean();
                         Alert.alert(
                             Localize.t('global.error'),
@@ -157,7 +159,7 @@ class ChangePasscodeView extends Component<Props, State> {
                 </View>
                 <View style={[AppStyles.flex8, AppStyles.paddingSml, AppStyles.centerAligned]}>
                     <PinInput
-                        ref={(r) => {
+                        ref={r => {
                             this.pinInput = r;
                         }}
                         autoFocus={false}
