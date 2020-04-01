@@ -11,6 +11,7 @@ exports[`[Footer] renders correctly 1`] = `
         "width": 750,
       },
       undefined,
+      undefined,
     ]
   }
 />
