@@ -135,10 +135,8 @@ class SocketService extends EventEmitter {
     close() {
         // close current connection
         if (this.connection) {
-            if (this.connection.getState().online === true) {
-                this.connection.close();
-                this.connection = undefined;
-            }
+            this.connection.close();
+            this.connection = undefined;
         }
     }
 
@@ -228,14 +226,6 @@ class SocketService extends EventEmitter {
     connect() {
         /* eslint-disable-next-line */
         return new Promise((resolve, reject) => {
-            // return resolve if we already connected
-
-            if (this.connection) {
-                if (this.connection.getState().online === true) {
-                    return resolve();
-                }
-            }
-
             try {
                 new RippledWsClient(this.node, {
                     Origin: this.origin,

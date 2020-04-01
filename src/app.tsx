@@ -41,12 +41,6 @@ export default class Application {
 
         // on app start
         Navigation.events().registerAppLaunchedListener(() => {
-            // if app initialized do not start the services again
-            // boot the app
-            if (this.initialized) {
-                this.boot();
-                return;
-            }
             // all stuff we need to init before boot the app
             const waterfall = [
                 this.configure,
@@ -108,7 +102,7 @@ export default class Application {
         return new Promise((resolve, reject) => {
             try {
                 const servicesPromise = [] as Array<Promise<any>>;
-                Object.keys(services).map((key) => {
+                Object.keys(services).map(key => {
                     // @ts-ignore
                     const service = services[key];
                     if (typeof service.initialize === 'function') {
@@ -121,7 +115,7 @@ export default class Application {
                     .then(() => {
                         resolve();
                     })
-                    .catch((e) => {
+                    .catch(e => {
                         this.logger.error('initAppServices Error:', e);
                         reject(e);
                     });
@@ -154,7 +148,7 @@ export default class Application {
     registerScreens = () => {
         return new Promise((resolve, reject) => {
             try {
-                Object.keys(screens).map((key) => {
+                Object.keys(screens).map(key => {
                     // @ts-ignore
                     const Screen = screens[key];
                     Navigation.registerComponent(Screen.screenName, () => Screen);
