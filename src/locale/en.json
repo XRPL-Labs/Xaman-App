@@ -318,7 +318,7 @@
         "newOldPasscodeNotMatch": "The new pincode and your confirmation are not the same!",
         "passcodeChangedSuccess": "Your pincode change was successfull!",
         "canNotSendLogsByEmail": "An unexpected error occurred, can not sent logs by email!",
-        "logsCopiedToClipboard": "Session Logs  copied to clipboard"
+        "logsCopiedToClipboard": "Session Logs copied to clipboard"
     },
     "account": {
         "addAccount": "Add an account",
@@ -348,7 +348,7 @@
         "publicAddress": "Public address",
         "yourPublicAccoutAddress": "Your public account address:",
         "pleaseConfirmYourAccountAddress": "Please confirm your account address",
-        "hereIsYourPublicKeyConfirm": "Here's derived account address.",
+        "hereIsYourPublicKeyConfirm": "Here's your derived account address.",
         "hereIsYourPublicKey": "Here's your new account. You can receive funds to the generated public account address.",
         "copyAddress": "Copy address",
         "publicKeyCopiedToClipboard": "Account address copied to the clipboard",
@@ -409,7 +409,7 @@
         "destroyAccount": "Delete this account",
         "upgradingAccessLevelWarning": "You are upgrading your access level, You need to import your private key for this account.",
         "downgradingAccessLevelWarning": "You are downgrading your access level. This will cause you to lose your private key for this account. Are you sure?",
-        "removeTrustLineWarning": "You You are removing this currency from your account. This action cannot be undone. Are you sure?",
+        "removeTrustLineWarning": "You are removing this currency from your account. This action cannot be undone. Are you sure?",
         "unavailableChangeSecurityLevel": "Changing Security level is not available right now",
         "accountDestroyWarning":"Your account will be deleted permanently, are you sure?",
         "accountMaxLabelLengthError": "Account label should be less than 16 characters!",
@@ -419,7 +419,7 @@
         "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "Selected account is not activated. To sign this transaction you need to select an activated account!",
         "accountAlreadyExist": "Account already exists!",
         "masterKeyForThisAccountDisableRegularKeyNotFound":"Master key for this account is disabled and regular key account not found in accounts list!",
-        "regularKeyAccountForThisAccountDoesNotImportedWithSignAccess": "Regular Key account for this account was not imported with sign access!",
+        "regularKeyAccountForThisAccountDoesNotImportedWithSignAccess": "Regular Key for this account was not imported with sign access!",
         "currentPassphraseShouldNotBeEmpty": "Current Passphrase should not be empty!",
         "enteredCurrentPassphraseIsInvalid": "Entered current passphrase is invalid!",
         "yourAccountPassphraseChangedSuccessfully": "Your account passphrase changed successfully!",
@@ -427,7 +427,7 @@
         "newPassphrase": "New passphrase",
         "regularKeyFor": "Regular key for",
         "allDoneYouCanGoToNextStepNow": "All done, you can go to the next step",
-        "disableMasterKeyWarning": "the transaction DISABLES the private key for the account. This may lock you out. Only continue if you are absolutely sure this is what you want, and you know what you are doing."
+        "disableMasterKeyWarning": "The transaction DISABLES the private key for the account. This may lock you out. Only continue if you are absolutely sure this is what you want, and you know what you are doing."
     },
     "send": {
         "amountIsBiggerThanYourSpend": "Amount is bigger than what you can spend (%{spendable})",
@@ -449,7 +449,7 @@
         "sendingDone": "Sent successfully!",
         "submittingDone": "Done submitting!",
         "addToContacts":"Add to contacts",
-        "sendingFailed": "Submission failed!",
+        "sendingFailed": "Sending failed!",
         "submitFailed": "Submission failed!",
         "somethingWentWrong": "Something went wrong!",
         "resultCopiedToClipboard":"Result copied to clipboard",
@@ -489,7 +489,7 @@
         "aimAtTheCode": "Aim at the code",
         "pleaseScanXRPAddress": "Please scan XRP address QR",
         "scannedQRIsNotXRPAddress":"Scanned QR code is not a XRP address code!",
-        "theQRIsNotWhatWeExpect": "This Qr code is not what we expect!"
+        "theQRIsNotWhatWeExpect": "This QR code is not what we expect!"
     },
     "payload": {
         "payloadHandledByAnotherClient": "Payload handled by another client",
