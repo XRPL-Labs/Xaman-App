@@ -163,7 +163,7 @@ class SecurePinInput extends Component<Props, State> {
             if (item === 'X') {
                 return (
                     <TouchableHighlight
-                        underlayColor={AppColors.transparent}
+                        underlayColor={AppColors.grey}
                         style={styles.line}
                         key={index}
                         onPress={() => {
@@ -173,7 +173,7 @@ class SecurePinInput extends Component<Props, State> {
                             this.clearInput();
                         }}
                     >
-                        <Icon name="IconChevronLeft" size={30} />
+                        <Icon name="IconChevronLeft" size={35} />
                     </TouchableHighlight>
                 );
             }
@@ -181,7 +181,7 @@ class SecurePinInput extends Component<Props, State> {
                 if (supportBiometric) {
                     return (
                         <TouchableHighlight
-                            underlayColor={AppColors.transparent}
+                            underlayColor={AppColors.grey}
                             style={styles.line}
                             key={index}
                             onPress={() => {
@@ -190,7 +190,7 @@ class SecurePinInput extends Component<Props, State> {
                                 }
                             }}
                         >
-                            <Icon name="IconFingerprint" size={30} />
+                            <Icon name="IconFingerprint" size={35} />
                         </TouchableHighlight>
                     );
                 }
@@ -199,7 +199,7 @@ class SecurePinInput extends Component<Props, State> {
             }
             return (
                 <TouchableHighlight
-                    underlayColor={AppColors.transparent}
+                    underlayColor={AppColors.grey}
                     style={styles.line}
                     activeOpacity={0.7}
                     key={index}

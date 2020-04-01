@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 
 import { SafeAreaView, View, Text, Image, LayoutAnimation, Alert } from 'react-native';
-import TouchID from 'react-native-touch-id';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import { CoreRepository } from '@store/repositories';
 import { BiometryType } from '@store/types';
@@ -133,12 +133,7 @@ class PasscodeSetupView extends Component<Props, State> {
 
     isBiometricSupported = () => {
         return new Promise(resolve => {
-            const optionalConfigObject = {
-                unifiedErrors: false,
-                passcodeFallback: false,
-            };
-
-            return TouchID.isSupported(optionalConfigObject)
+            return FingerprintScanner.isSensorAvailable()
                 .then(() => {
                     return resolve(true);
                 })

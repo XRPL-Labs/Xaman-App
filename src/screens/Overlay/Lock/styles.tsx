@@ -24,8 +24,8 @@ const styles = StyleSheet.create({
         paddingBottom: AppSizes.paddingSml + getNavigationBarHeight(),
     },
     logo: {
-        width: AppSizes.screen.width * 0.4,
-        height: AppSizes.screen.height * 0.1,
+        width: AppSizes.scale(120),
+        height: AppSizes.scale(55),
         resizeMode: 'contain',
     },
     blurView: {

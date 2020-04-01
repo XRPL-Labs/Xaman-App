@@ -13,6 +13,7 @@ export enum AccessLevels {
 export enum BiometryType {
     FaceID = 'FaceID',
     TouchID = 'TouchID',
+    Biometrics = 'Biometrics',
     None = 'None',
 }
 

@@ -6,7 +6,7 @@
 import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Animated, Text, Alert, Platform, Keyboard, KeyboardEvent, LayoutAnimation } from 'react-native';
-import TouchID from 'react-native-touch-id';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import Flag from '@common/libs/ledger/parser/common/flag';
 import { CoreRepository, AccountRepository } from '@store/repositories';
@@ -189,25 +189,22 @@ class VaultModal extends Component<Props, State> {
     requestBiometricAuthenticate = (system: boolean = false) => {
         const { coreSettings } = this.state;
 
-        const optionalConfigObject = {
-            title: Localize.t('global.authenticationRequired'),
-            sensorErrorDescription: Localize.t('global.failed'),
-            cancelText: Localize.t('global.cancel'),
-            fallbackLabel: 'Show Passcode',
-            unifiedErrors: true,
-            passcodeFallback: true,
-        };
-
-        TouchID.authenticate(Localize.t('global.signingTheTransaction'), optionalConfigObject)
+        FingerprintScanner.authenticate({
+            description: Localize.t('global.signingTheTransaction'),
+            fallbackEnabled: true,
+        })
             .then(() => {
                 const { passcode } = coreSettings;
                 this.openVault(passcode);
             })
             .catch((error: any) => {
                 if (system) return;
-                if (error.code !== 'USER_CANCELED') {
+                if (error.code !== 'UserCancel') {
                     Alert.alert(Localize.t('global.error'), Localize.t('global.invalidBiometryAuth'));
                 }
+            })
+            .finally(() => {
+                FingerprintScanner.release();
             });
     };
 

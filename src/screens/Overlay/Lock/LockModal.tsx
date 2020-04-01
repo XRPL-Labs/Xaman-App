@@ -3,8 +3,8 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, SafeAreaView, Image } from 'react-native';
-import TouchID from 'react-native-touch-id';
+import { View, Text, SafeAreaView, Image, Platform } from 'react-native';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import { BlurView } from '@react-native-community/blur';
 
@@ -16,7 +16,7 @@ import { Navigator, Images } from '@common/helpers';
 import { AppScreens } from '@common/constants';
 
 // components
-import { SecurePinInput, Spacer } from '@components';
+import { SecurePinInput } from '@components';
 
 import Localize from '@locale';
 
@@ -68,78 +68,64 @@ class LockModal extends Component<Props, State> {
     }
 
     onPasscodeEntered = (passcode: string) => {
-        const { onUnlock } = this.props;
-
         CoreRepository.checkPasscode(passcode)
-            .then(() => {
-                Navigator.dismissOverlay();
+            .then(this.onUnlock)
+            .catch(e => {
+                this.securePinInput.clearInput();
 
-                if (typeof onUnlock === 'function') {
-                    onUnlock();
-                }
-            })
-            .catch((e) => {
                 this.setState({
                     error: e.toString().replace('Error: ', ''),
                 });
-            })
-            .finally(() => {
-                this.securePinInput.clearInput();
             });
     };
 
-    requestBiometricAuthenticate = () => {
+    onUnlock = () => {
         const { onUnlock } = this.props;
-        const optionalConfigObject = {
-            title: Localize.t('global.authenticationRequired'),
-            sensorErrorDescription: Localize.t('global.failed'),
-            cancelText: Localize.t('global.cancel'),
-            fallbackLabel: 'Show Passcode',
-            unifiedErrors: true,
-            passcodeFallback: true,
-        };
 
-        TouchID.authenticate(Localize.t('global.unlock'), optionalConfigObject)
-            .then(() => {
-                CoreRepository.updateTimeLastUnlocked();
-                Navigator.dismissOverlay();
+        // update last unlocked
+        CoreRepository.updateTimeLastUnlocked();
 
-                if (typeof onUnlock === 'function') {
-                    onUnlock();
-                }
-            })
-            .catch(() => {});
+        // close lock overlay
+        Navigator.dismissOverlay();
+
+        // run any callback
+        if (typeof onUnlock === 'function') {
+            onUnlock();
+        }
+    };
+
+    requestBiometricAuthenticate = () => {
+        FingerprintScanner.authenticate({
+            description: Localize.t('global.unlock'),
+            fallbackEnabled: true,
+        })
+            .then(this.onUnlock)
+            .catch(() => {})
+            .finally(() => {
+                FingerprintScanner.release();
+            });
     };
 
     render() {
         const { error, coreSettings } = this.state;
         return (
-            <BlurView style={styles.blurView} blurAmount={20} blurType="light">
+            <BlurView style={styles.blurView} blurAmount={Platform.OS === 'ios' ? 15 : 20} blurType="light">
                 <SafeAreaView style={styles.container}>
-                    <View
-                        style={[
-                            AppStyles.flex3,
-                            AppStyles.centerAligned,
-                            AppStyles.centerContent,
-                            AppStyles.paddingSml,
-                        ]}
-                    >
+                    <View style={[AppStyles.centerAligned, AppStyles.paddingSml]}>
                         <Image style={styles.logo} source={Images.xummLogo} />
-                        <Spacer size={50} />
+                    </View>
+                    <View style={[AppStyles.centerAligned, AppStyles.paddingSml]}>
                         <Text style={[AppStyles.p, AppStyles.bold]}>
                             {Localize.t('global.pleaseEnterYourPasscode')}
-                        </Text>
-
-                        <Spacer size={20} />
-
-                        <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.colorRed]}>
-                            {error}
                         </Text>
                     </View>
 
                     <View style={[AppStyles.flex5, AppStyles.flexEnd]}>
+                        <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.colorRed]}>
+                            {error}
+                        </Text>
                         <SecurePinInput
-                            ref={(r) => {
+                            ref={r => {
                                 this.securePinInput = r;
                             }}
                             virtualKeyboard

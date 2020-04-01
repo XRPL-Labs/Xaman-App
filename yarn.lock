@@ -1247,13 +1247,6 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
-"@react-native-community/blur@^3.4.1":
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/@react-native-community/blur/-/blur-3.4.1.tgz#dec04c7d60dd6a4fa7e3af3506feefec804728d0"
-  integrity sha512-XhbS230J7BGuoEamjPFZ5jUWDOW16y+vD0Soyq9Iv1qL8R47esGl54bnfUSMH10WhNXrQzvPxkMzap+ONHpE2w==
-  dependencies:
-    prop-types "^15.5.10"
-
 "@react-native-community/blur@https://github.com/react-native-community/react-native-blur.git#e2075520c709caf3bb8cf8890fcbf9f96939c716":
   version "3.5.0"
   resolved "https://github.com/react-native-community/react-native-blur.git#e2075520c709caf3bb8cf8890fcbf9f96939c716"
@@ -8354,6 +8347,11 @@ react-native-device-info@5.5.3:
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-5.5.3.tgz#6652fb46c4602a1dd3a5d6a18d2266ecdf97fec7"
   integrity sha512-bzUVTPHca+FfNco1qaOM1+idoeII8zdpGRsR+RK+DWhwp9utHZWfbkonZZ9XFm/U+i3mirNxt6oaKV+vUMjMzg==
 
+react-native-fingerprint-scanner@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-fingerprint-scanner/-/react-native-fingerprint-scanner-4.0.0.tgz#e091c7f13b7504c4ed7efc825cc138001b4b6d87"
+  integrity sha512-VVSFGZbdVoWhR1YlFBtSjhr4keWY1cbGi0PN4naNqtTiic4zHZPQ85iKsGG0sqN7o4dVHx9VXkrx5n75S0TM5Q==
+
 react-native-firebase@^5.6.0:
   version "5.6.0"
   resolved "https://registry.yarnpkg.com/react-native-firebase/-/react-native-firebase-5.6.0.tgz#6f6123f53cb73477915dd55c55f3e1de91db38d2"
@@ -8387,11 +8385,6 @@ react-native-share@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-3.1.1.tgz#db6bd75318c747fee565f8cc012dd0a846cecca9"
   integrity sha512-3BwSo3lhrUlqqx0LxHF5tyKc927UI6N6pu+o2+agdYjtfdVLeUeyYIjkdYGobcIvviTr4qcr9FJ0AfUCSHvlGQ==
-
-react-native-touch-id@^4.4.1:
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/react-native-touch-id/-/react-native-touch-id-4.4.1.tgz#8b1bb2d04c30bac36bb9696d2d723e719c4a8b08"
-  integrity sha512-1jTl8fC+0fxvqegy/XXTyo6vMvPhjzkoDdaqoYZx0OH8AT250NuXnNPyKktvigIcys3+2acciqOeaCall7lrvg==
 
 react-native-webview@^9.0.1:
   version "9.0.1"
