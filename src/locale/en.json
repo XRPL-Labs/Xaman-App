@@ -366,6 +366,7 @@
         "pleaseRepeatTheNumbers": "Please repeat the numbers",
         "pleaseWriteDownAllNumbers": "Please write down all the numbers",
         "goBackClearTheInput" : "Are you sure you want to go back? \n (input will be cleared for security reasons)",
+        "goBackRefillTheInput" : "Are you sure you want to go back? \n (you have to re-fill all the numbers for security reasons)",
         "accountType": "Account type",
         "secretType": "Secret type",
         "pleaseSelectAccountType": "Please select your account type",

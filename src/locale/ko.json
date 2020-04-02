@@ -365,6 +365,7 @@
       "pleaseRepeatTheNumbers": "숫자를 반복하십시오",
       "pleaseWriteDownAllNumbers": "모든 숫자를 적어주세요",
       "goBackClearTheInput": "돌아가시겠습니까? (보안상의 이유로 입력이 해제됩니다)",
+      "goBackRefillTheInput": "돌아가시겠습니까? (보안상의 이유로 모든 숫자를 다시 채워야 함)",
       "accountType": "계정 유형",
       "secretType": "비밀 유형",
       "pleaseSelectAccountType": "계정 유형을 선택하십시오",
