@@ -118,7 +118,7 @@ class RecipientStep extends Component<Props, State> {
                         name: accountInfo.name || '',
                         address,
                         tag,
-                        avatar: Images.IconMoreHorizontal,
+                        avatar: Images.IconGlobe,
                     },
                 ],
                 isSearching: false,
@@ -173,7 +173,8 @@ class RecipientStep extends Component<Props, State> {
                                         id: uuidv4(),
                                         name: element.alias === element.account ? '' : element.alias,
                                         address: element.account,
-                                        avatar: Images.IconMoreHorizontal,
+                                        avatar: Images.IconGlobe,
+                                        source: element.source,
                                     });
                                 });
                             }
@@ -454,6 +455,35 @@ class RecipientStep extends Component<Props, State> {
     };
 
     renderSectionHeader = ({ section: { title } }: any) => {
+        const { setDestination } = this.context;
+        const { searchResult } = this.state;
+
+        if (title === Localize.t('send.searchResults')) {
+            return (
+                <View style={[AppStyles.row, AppStyles.paddingBottomSml]}>
+                    <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                        <Text style={[AppStyles.p, AppStyles.bold]}>
+                            {title} {searchResult.length > 0 && `(${searchResult.length})`}
+                        </Text>
+                    </View>
+                    <View style={[AppStyles.flex1]}>
+                        <Button
+                            onPress={() => {
+                                this.setState({
+                                    searchText: '',
+                                });
+                                setDestination(undefined);
+                            }}
+                            style={styles.clearSearchButton}
+                            light
+                            roundedMini
+                            label={Localize.t('global.clearSearch')}
+                        />
+                    </View>
+                </View>
+            );
+        }
+
         return (
             <View style={styles.sectionHeader}>
                 <Text style={[AppStyles.p, AppStyles.bold]}>{title}</Text>
@@ -470,6 +500,27 @@ class RecipientStep extends Component<Props, State> {
         }
 
         const selected = item.address === get(destination, 'address') && item.name === get(destination, 'name');
+
+        let tag;
+
+        switch (item.source) {
+            case 'xrplns':
+                tag = (
+                    <View style={[styles.tag, styles.xrplnsTag]}>
+                        <Text style={styles.tagLabel}>Xrplns</Text>
+                    </View>
+                );
+                break;
+            case 'bithomp.com':
+                tag = (
+                    <View style={[styles.tag, styles.bithompTag]}>
+                        <Text style={styles.tagLabel}>Bithomp</Text>
+                    </View>
+                );
+                break;
+            default:
+                break;
+        }
 
         return (
             <TouchableHighlight
@@ -491,9 +542,12 @@ class RecipientStep extends Component<Props, State> {
                         <Image source={item.avatar} style={styles.avatarImage} />
                     </View>
                     <View style={AppStyles.paddingLeftSml}>
-                        <Text style={[styles.title, selected ? styles.selectedText : null]}>
-                            {item.name || 'Unknown'}
-                        </Text>
+                        <View style={AppStyles.row}>
+                            <Text style={[styles.title, selected ? styles.selectedText : null]}>
+                                {item.name || 'Unknown'}
+                            </Text>
+                            {tag && tag}
+                        </View>
                         <Text style={[styles.subtitle, selected ? styles.selectedText : null]}>{item.address}</Text>
                     </View>
                 </View>

@@ -187,7 +187,7 @@ class HomeView extends Component<Props, State> {
                             iconSize={14}
                             iconStyle={AppStyles.imgColorBlue}
                             icon="IconSwitchAccount"
-                            label="Switch account"
+                            label={Localize.t('global.switchAccount')}
                         />
                     </View>
                 )}

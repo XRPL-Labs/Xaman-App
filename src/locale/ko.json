@@ -201,7 +201,9 @@
       "WeWillKeepTryingButThereMayBeAProblemWithYourInternetConnection": "계속 시도하지만 인터넷 연결에 문제가있을 수 있습니다.",
       "pressBackAgainToExit": "다시 누르면 종료",
       "fraudAlert": "사기 경보",
-      "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "이 계정은 사기 또는 사기성 주소로보고됩니다. 주의하여 진행하십시오"
+      "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "이 계정은 사기 또는 사기성 주소로보고됩니다. 주의하여 진행하십시오",
+      "clearSearch": "명확한 검색",
+      "switchAccount": "계정 전환"
    },
    "onboarding": {
       "slideOne": {

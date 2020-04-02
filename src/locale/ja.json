@@ -201,7 +201,9 @@
       "WeWillKeepTryingButThereMayBeAProblemWithYourInternetConnection": "引き続き試行しますが、インターネット接続に問題がある可能性があります。",
       "pressBackAgainToExit": "もう一度押すと終了します",
       "fraudAlert": "詐欺警告",
-      "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "このアカウントは詐欺または詐欺のアドレスとして報告されます。注意して続行してください"
+      "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "このアカウントは詐欺または詐欺のアドレスとして報告されます。注意して続行してください",
+      "clearSearch": "検索をクリア",
+      "switchAccount": "アカウントを切り替える"
    },
    "onboarding": {
       "slideOne": {

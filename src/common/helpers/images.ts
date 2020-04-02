@@ -85,4 +85,5 @@ export const Images = {
     IconRepeat: buildImageSource('IconRepeat', 'icon_repeat'),
     IconKey: buildImageSource('IconKey', 'icon_key'),
     IconSwitchAccount: buildImageSource('IconSwitchAccount', 'icon_switchaccount'),
+    IconGlobe: buildImageSource('IconGlobe', 'icon_globe'),
 };

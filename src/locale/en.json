@@ -201,8 +201,9 @@
         "WeWillKeepTryingButThereMayBeAProblemWithYourInternetConnection": "We'll keep trying, but there may be a problem with your internet connection.",
         "pressBackAgainToExit": "Press back again to exit",
         "fraudAlert": "FRAUD ALERT",
-        "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "This account is reported as scam or fraudulent address. Please proceed with caution"
-
+        "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "This account is reported as scam or fraudulent address. Please proceed with caution",
+        "clearSearch": "Clear search",
+        "switchAccount": "Switch account"
     },
     "onboarding":{
         "slideOne": {

@@ -201,7 +201,9 @@
       "WeWillKeepTryingButThereMayBeAProblemWithYourInternetConnection": "我们会继续尝试，但是您的互联网连接可能有问题。",
       "pressBackAgainToExit": "再按一次退出",
       "fraudAlert": "欺诈警报",
-      "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "此帐户被报告为欺诈或欺诈性地址。请谨慎行事"
+      "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "此帐户被报告为欺诈或欺诈性地址。请谨慎行事",
+      "clearSearch": "清除搜寻",
+      "switchAccount": "切换帐户"
    },
    "onboarding": {
       "slideOne": {
