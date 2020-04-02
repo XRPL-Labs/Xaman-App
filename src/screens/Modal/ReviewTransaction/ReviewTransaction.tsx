@@ -17,7 +17,6 @@ import {
     Image,
     ImageBackground,
     LayoutChangeEvent,
-    LayoutAnimation,
     BackHandler,
     Keyboard,
 } from 'react-native';
@@ -295,8 +294,6 @@ class ReviewTransactionModal extends Component<Props, State> {
 
                 // if submitted then verify
                 if (submitResult.success) {
-                    LayoutAnimation.linear();
-
                     this.setState({ step: 'verifying' });
 
                     // verify transaction
@@ -398,7 +395,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         const { return_url_app } = payload.meta;
 
         if (return_url_app) {
-            Linking.canOpenURL(return_url_app).then((support) => {
+            Linking.canOpenURL(return_url_app).then(support => {
                 if (support) {
                     Linking.openURL(return_url_app);
                 } else {
@@ -635,14 +632,14 @@ class ReviewTransactionModal extends Component<Props, State> {
                                     </Text>
                                 </View>
                                 <AccordionPicker
-                                    ref={(r) => {
+                                    ref={r => {
                                         this.sourcePicker = r;
                                     }}
                                     onSelect={this.onAccountChange}
                                     items={accounts}
                                     renderItem={this.renderAccountItem}
                                     selectedItem={source}
-                                    keyExtractor={(i) => i.address}
+                                    keyExtractor={i => i.address}
                                 />
                             </View>
 

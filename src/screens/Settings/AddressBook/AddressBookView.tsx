@@ -8,7 +8,7 @@ import { Results } from 'realm';
 import React, { Component } from 'react';
 import { Navigation } from 'react-native-navigation';
 
-import { View, Text, SectionList, TouchableHighlight, Image, ImageBackground, LayoutAnimation } from 'react-native';
+import { View, Text, SectionList, TouchableHighlight, Image, ImageBackground } from 'react-native';
 
 import { Images, Navigator } from '@common/helpers';
 import { AppScreens } from '@common/constants';
@@ -56,8 +56,6 @@ class AddressBookView extends Component<Props, State> {
 
     componentDidAppear() {
         const contacts = ContactRepository.getContacts();
-
-        LayoutAnimation.easeInEaseOut();
 
         this.setState({
             contacts,

@@ -13,7 +13,6 @@ import {
     TouchableOpacity,
     ScrollView,
     SafeAreaView,
-    LayoutAnimation,
 } from 'react-native';
 
 import Interactable from 'react-native-interactable';
@@ -131,7 +130,6 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     key={index}
                     style={[styles.listItem, selectedCurrency.name === c.name ? styles.selectedRow : null]}
                     onPress={() => {
-                        LayoutAnimation.easeInEaseOut();
                         this.setState({
                             selectedCurrency: c,
                         });
@@ -167,7 +165,6 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     key={index}
                     style={[styles.listItem, selectedParty.name === c.name ? styles.selectedRow : null]}
                     onPress={() => {
-                        LayoutAnimation.easeInEaseOut();
                         this.setState({
                             selectedParty: c,
                             selectedCurrency: c.currencies[0],
@@ -279,7 +276,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={(r) => {
+                    ref={r => {
                         this.panel = r;
                     }}
                     animatedNativeDriver

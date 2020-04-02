@@ -15,7 +15,6 @@ import {
     TouchableHighlight,
     SectionList,
     ActivityIndicator,
-    LayoutAnimation,
     Alert,
 } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
@@ -138,8 +137,6 @@ class RecipientStep extends Component<Props, State> {
 
         clearTimeout(this.lookupTimeout);
 
-        LayoutAnimation.easeInEaseOut();
-
         this.setState({
             isSearching: true,
             searchText,
@@ -184,8 +181,6 @@ class RecipientStep extends Component<Props, State> {
                     })
                     .catch(() => {})
                     .finally(() => {
-                        LayoutAnimation.spring();
-
                         this.setState({
                             searchResult: uniqBy(searchResult, 'address'),
                             isSearching: false,

@@ -12,7 +12,6 @@ import {
     TextInput,
     Keyboard,
     TouchableOpacity,
-    LayoutAnimation,
     InteractionManager,
 } from 'react-native';
 
@@ -118,8 +117,6 @@ class ExchangeView extends Component<Props, State> {
     switchCurrency = () => {
         const { trustLine } = this.props;
         const { fromCurrency } = this.state;
-
-        LayoutAnimation.spring();
 
         this.setState(
             {

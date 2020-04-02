@@ -6,7 +6,6 @@ import {
     View,
     Text,
     Platform,
-    LayoutAnimation,
     TouchableOpacity,
     NativeSyntheticEvent,
     TextInputKeyPressEventData,
@@ -82,8 +81,6 @@ class PinInput extends Component<Props, State> {
         if (onEdit) {
             onEdit(newCode);
         }
-
-        LayoutAnimation.easeInEaseOut();
 
         this.setState({
             code: newCode,

@@ -11,7 +11,6 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    LayoutAnimation,
     ImageBackground,
     InteractionManager,
 } from 'react-native';
@@ -101,8 +100,6 @@ class HomeView extends Component<Props, State> {
 
     updateUI = (updatedAccount: AccountSchema) => {
         if (updatedAccount.default) {
-            LayoutAnimation.easeInEaseOut();
-
             this.setState({
                 account: updatedAccount,
             });
