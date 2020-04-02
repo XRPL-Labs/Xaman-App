@@ -3,12 +3,13 @@
  */
 
 import React, { Component } from 'react';
-import { View, Animated, Text, TouchableOpacity } from 'react-native';
+import { View, Animated, Text } from 'react-native';
 
 import { Navigator } from '@common/helpers';
 import { AppScreens } from '@common/constants';
 
 // components
+import { Button, Spacer, Icon } from '@components';
 import Localize from '@locale';
 
 // style
@@ -90,97 +91,59 @@ class AlertModal extends Component<Props, State> {
         });
     };
 
-    // renderIcon = () => {
-    //     const { type } = this.props;
-
-    //     switch (type) {
-    //         case 'error':
-    //             return <Icon style={styles.iconError} name="IconInfo" size={50} />;
-    //         case 'info':
-    //             return <Icon style={styles.iconInfo} name="IconInfo" size={50} />;
-    //         case 'warning':
-    //             return <Icon style={styles.iconWarning} name="IconInfo" size={50} />;
-    //         case 'success':
-    //             return <Icon style={styles.iconSuccess} name="IconCheck" size={50} />;
-    //         default:
-    //             return <Icon style={styles.iconSuccess} name="IconCheck" size={50} />;
-    //     }
-    // };
-
-    renderTitle = () => {
-        const { type, title } = this.props;
-
-        let text = '';
-        let headerStyle = styles.headerSuccess;
+    renderIcon = () => {
+        const { type } = this.props;
 
         switch (type) {
             case 'error':
-                text = Localize.t('global.error');
-                headerStyle = styles.headerError;
-                break;
+                return <Icon style={styles.iconError} name="IconInfo" size={60} />;
             case 'info':
-                text = Localize.t('global.info');
-                headerStyle = styles.headerInfo;
-                break;
+                return <Icon style={styles.iconInfo} name="IconInfo" size={60} />;
             case 'warning':
-                text = Localize.t('global.warning');
-                headerStyle = styles.headerWarning;
-                break;
+                return <Icon style={styles.iconWarning} name="IconInfo" size={60} />;
             case 'success':
-                text = Localize.t('global.success');
-                headerStyle = styles.headerSuccess;
-                break;
+                return <Icon style={styles.iconSuccess} name="IconCheck" size={60} />;
             default:
-                break;
+                return <Icon style={styles.iconSuccess} name="IconCheck" size={60} />;
         }
+    };
 
-        if (title) {
-            text = title;
+    renderTitle = () => {
+        const { type } = this.props;
+
+        switch (type) {
+            case 'error':
+                return <Text style={[styles.title, styles.titleError]}>{Localize.t('global.error')}</Text>;
+            case 'info':
+                return <Text style={[styles.title, styles.titleInfo]}>{Localize.t('global.info')}</Text>;
+            case 'warning':
+                return <Text style={[styles.title, styles.titleWarning]}>{Localize.t('global.warning')}</Text>;
+            case 'success':
+                return <Text style={[styles.title, styles.titleSuccess]}>{Localize.t('global.success')}</Text>;
+            default:
+                return <Text style={[styles.title, styles.titleSuccess]}>{Localize.t('global.success')}</Text>;
         }
-
-        return (
-            <View style={[styles.header, { backgroundColor: headerStyle.backgroundColor }]}>
-                <Text style={[styles.title, { color: headerStyle.color }]}>{text}</Text>
-            </View>
-        );
     };
 
     renderButtons = () => {
         const { buttons } = this.props;
 
         if (!buttons) {
-            return (
-                <View style={[styles.footer]}>
-                    <View style={[AppStyles.flex1]}>
-                        <TouchableOpacity onPress={() => this.dismiss()} style={styles.button}>
-                            <Text style={styles.buttonText}>{Localize.t('global.back')}</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            );
+            return <Button onPress={this.dismiss} light label={Localize.t('global.back')} />;
         }
 
         return (
-            <View style={[styles.footer]}>
+            <View style={[AppStyles.row]}>
                 {buttons.map((b: any, index: number) => {
                     return (
-                        <View style={[AppStyles.flex1, index === 0 && buttons.length > 1 && styles.buttonSeparator]}>
-                            <TouchableOpacity
+                        <View style={[AppStyles.flex1, index === 0 && buttons.length > 1 && AppStyles.paddingRightSml]}>
+                            <Button
                                 onPress={() => {
                                     this.dismiss(b.onPress);
                                 }}
-                                style={[styles.button]}
-                            >
-                                <Text
-                                    style={[
-                                        styles.buttonText,
-                                        b.light && styles.buttonTextLight,
-                                        b.type === 'dismiss' && styles.buttonTextDismiss,
-                                    ]}
-                                >
-                                    {b.text}
-                                </Text>
-                            </TouchableOpacity>
+                                light={b.light}
+                                label={b.text}
+                            />
                         </View>
                     );
                 })}
@@ -212,11 +175,17 @@ class AlertModal extends Component<Props, State> {
                 style={[styles.container, { backgroundColor: interpolateColor }]}
             >
                 <Animated.View style={[styles.visibleContent, { transform }]}>
-                    {this.renderTitle()}
+                    <View style={[AppStyles.centerAligned]}>{this.renderIcon()}</View>
 
-                    <View style={[AppStyles.centerAligned, AppStyles.padding]}>
+                    <View style={AppStyles.centerAligned}>{this.renderTitle()}</View>
+
+                    <Spacer size={20} />
+
+                    <View style={AppStyles.centerAligned}>
                         <Text style={styles.subTitle}>{text}</Text>
                     </View>
+
+                    <Spacer size={30} />
 
                     {this.renderButtons()}
                 </Animated.View>
