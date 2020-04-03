@@ -39,6 +39,7 @@ export interface State {
     passphrase: string;
     coreSettings: CoreSchema;
     offsetBottom: number;
+    isSensorAvailable: boolean;
 }
 /* Component ==================================================================== */
 class VaultModal extends Component<Props, State> {
@@ -62,6 +63,7 @@ class VaultModal extends Component<Props, State> {
         this.state = {
             signWith: undefined,
             passphrase: undefined,
+            isSensorAvailable: false,
             coreSettings: CoreRepository.getSettings(),
             offsetBottom: 0,
         };
@@ -126,18 +128,25 @@ class VaultModal extends Component<Props, State> {
 
         // if biometry sets by default switch to biometry for faster result
         if (encryptionLevel === EncryptionLevels.Passcode) {
-            if (coreSettings.biometricMethod !== BiometryType.None) {
-                setTimeout(() => {
-                    this.requestBiometricAuthenticate(true);
-                }, 500);
-            } else {
-                // focus the input
-                setTimeout(() => {
-                    if (this.securePinInput) {
-                        this.securePinInput.focus();
+            FingerprintScanner.isSensorAvailable()
+                .then(() => {
+                    this.setState({
+                        isSensorAvailable: true,
+                    });
+                    if (coreSettings.biometricMethod !== BiometryType.None) {
+                        setTimeout(() => {
+                            this.requestBiometricAuthenticate(true);
+                        }, 500);
+                    } else {
+                        // focus the input
+                        setTimeout(() => {
+                            if (this.securePinInput) {
+                                this.securePinInput.focus();
+                            }
+                        }, 300);
                     }
-                }, 300);
-            }
+                })
+                .catch(() => {});
         } else if (encryptionLevel === EncryptionLevels.Passphrase) {
             // focus the input
             setTimeout(() => {
@@ -245,7 +254,7 @@ class VaultModal extends Component<Props, State> {
     };
 
     renderPasscode = () => {
-        const { coreSettings } = this.state;
+        const { coreSettings, isSensorAvailable } = this.state;
 
         const { biometricMethod } = coreSettings;
 
@@ -263,7 +272,7 @@ class VaultModal extends Component<Props, State> {
                     length={6}
                 />
 
-                {biometricMethod !== BiometryType.None && (
+                {biometricMethod !== BiometryType.None && isSensorAvailable && (
                     <View style={AppStyles.paddingTopSml}>
                         <Button
                             label={`${biometricMethod}`}

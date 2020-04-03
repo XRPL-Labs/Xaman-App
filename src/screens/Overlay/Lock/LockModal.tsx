@@ -31,6 +31,7 @@ export interface Props {
 
 export interface State {
     error: string;
+    isSensorAvailable: boolean;
     coreSettings: CoreSchema;
 }
 /* Component ==================================================================== */
@@ -53,6 +54,7 @@ class LockModal extends Component<Props, State> {
 
         this.state = {
             error: undefined,
+            isSensorAvailable: false,
             coreSettings: CoreRepository.getSettings(),
         };
     }
@@ -60,11 +62,18 @@ class LockModal extends Component<Props, State> {
     componentDidMount() {
         const { coreSettings } = this.state;
 
-        if (coreSettings.biometricMethod !== BiometryType.None) {
-            setTimeout(() => {
-                this.requestBiometricAuthenticate();
-            }, 100);
-        }
+        FingerprintScanner.isSensorAvailable()
+            .then(() => {
+                this.setState({
+                    isSensorAvailable: true,
+                });
+                if (coreSettings.biometricMethod !== BiometryType.None) {
+                    setTimeout(() => {
+                        this.requestBiometricAuthenticate();
+                    }, 100);
+                }
+            })
+            .catch(() => {});
     }
 
     onPasscodeEntered = (passcode: string) => {
@@ -107,7 +116,7 @@ class LockModal extends Component<Props, State> {
     };
 
     render() {
-        const { error, coreSettings } = this.state;
+        const { error, coreSettings, isSensorAvailable } = this.state;
         return (
             <BlurView style={styles.blurView} blurAmount={Platform.OS === 'ios' ? 15 : 20} blurType="light">
                 <SafeAreaView style={styles.container}>
@@ -129,7 +138,7 @@ class LockModal extends Component<Props, State> {
                                 this.securePinInput = r;
                             }}
                             virtualKeyboard
-                            supportBiometric={coreSettings.biometricMethod !== BiometryType.None}
+                            supportBiometric={coreSettings.biometricMethod !== BiometryType.None && isSensorAvailable}
                             onBiometryPress={this.requestBiometricAuthenticate}
                             onInputFinish={this.onPasscodeEntered}
                             length={6}
