@@ -203,7 +203,8 @@
       "fraudAlert": "欺诈警报",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "此帐户被报告为欺诈或欺诈性地址。请谨慎行事",
       "clearSearch": "清除搜寻",
-      "noNameFound": "找不到名字"
+      "noNameFound": "找不到名字",
+      "readMoreInTheFAQ": "在常见问题中阅读更多内容"
    },
    "onboarding": {
       "slideOne": {
@@ -436,7 +437,8 @@
       "allDoneYouCanGoToNextStepNow": "全部完成，您可以继续下一步",
       "disableMasterKeyWarning": "交易将禁用该帐户的私钥。这可能将您拒之门外。仅在完全确定这是您想要的并且知道自己在做什么时，才继续。",
       "switchAccount": "切换帐户",
-      "useMnemonicPassphrase": "使用助记密码"
+      "useMnemonicPassphrase": "使用助记密码",
+      "mnemonicLargeAmountAlert": "如果您导入助记符帐户，并且您的帐户拥有您的储蓄（较大数量的XRP或其他令牌），请考虑在XUMM中创建一个新帐户，以使助记符帐户保持脱机状态。"
    },
    "send": {
       "amountIsBiggerThanYourSpend": "金额大于您可以消费的金额（ %{spendable} ）",

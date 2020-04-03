@@ -203,7 +203,8 @@
       "fraudAlert": "사기 경보",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "이 계정은 사기 또는 사기성 주소로보고됩니다. 주의하여 진행하십시오",
       "clearSearch": "명확한 검색",
-      "noNameFound": "이름을 찾을 수 없습니다"
+      "noNameFound": "이름을 찾을 수 없습니다",
+      "readMoreInTheFAQ": "FAQ에서 더 읽기"
    },
    "onboarding": {
       "slideOne": {
@@ -436,7 +437,8 @@
       "allDoneYouCanGoToNextStepNow": "모든 작업을 마치면 다음 단계로 넘어갈 수 있습니다",
       "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이 무엇을하고 있는지 아는 경우에만 계속하십시오.",
       "switchAccount": "계정 전환",
-      "useMnemonicPassphrase": "니모닉 암호 구 사용"
+      "useMnemonicPassphrase": "니모닉 암호 구 사용",
+      "mnemonicLargeAmountAlert": "니모닉 계정을 가져오고 계정에 저축액 (더 많은 XRP 또는 기타 토큰)이있는 경우 니모닉 계정을 오프라인으로 유지하려면 XUMM에서 새 계정을 만드는 것을 고려하십시오."
    },
    "send": {
       "amountIsBiggerThanYourSpend": "지출 할 수있는 금액보다 금액이 더 많습니다 ( %{spendable} )",

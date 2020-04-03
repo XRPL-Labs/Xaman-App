@@ -203,7 +203,8 @@
       "fraudAlert": "ALERTA DE FRAUDE",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "Esta cuenta se informa como estafa o dirección fraudulenta. Por favor proceda con precaución",
       "clearSearch": "Borrar búsqueda",
-      "noNameFound": "Ningún nombre encontrado"
+      "noNameFound": "Ningún nombre encontrado",
+      "readMoreInTheFAQ": "Lea más en las preguntas frecuentes"
    },
    "onboarding": {
       "slideOne": {
@@ -436,7 +437,8 @@
       "allDoneYouCanGoToNextStepNow": "Todo listo, puedes ir al siguiente paso",
       "disableMasterKeyWarning": "la transacción inhabilita la clave privada para la cuenta. Esto puede bloquearlo. Solo continúe si está absolutamente seguro de que esto es lo que quiere y sabe lo que está haciendo.",
       "switchAccount": "Cambiar cuenta",
-      "useMnemonicPassphrase": "Usar frase de contraseña mnemónica"
+      "useMnemonicPassphrase": "Usar frase de contraseña mnemónica",
+      "mnemonicLargeAmountAlert": "Si importa su cuenta mnemónica y su cuenta retiene sus ahorros (grandes cantidades de XRP u otros tokens) Considere crear una nueva cuenta en XUMM para mantener su cuenta mnemónica fuera de línea."
    },
    "send": {
       "amountIsBiggerThanYourSpend": "La cantidad es mayor de lo que puede gastar ( %{spendable} )",

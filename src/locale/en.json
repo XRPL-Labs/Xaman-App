@@ -203,7 +203,8 @@
         "fraudAlert": "FRAUD ALERT",
         "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "This account is reported as scam or fraudulent address. Please proceed with caution",
         "clearSearch": "Clear search",
-        "noNameFound": "No name found"
+        "noNameFound": "No name found",
+        "readMoreInTheFAQ": "Read more in the FAQ"
     },
     "onboarding":{
         "slideOne": {
@@ -436,7 +437,8 @@
         "allDoneYouCanGoToNextStepNow": "All done, you can go to the next step",
         "disableMasterKeyWarning": "the transaction DISABLES the private key for the account. This may lock you out. Only continue if you are absolutely sure this is what you want, and you know what you are doing.",
         "switchAccount": "Switch account",
-        "useMnemonicPassphrase": "Use mnemonic passphrase"
+        "useMnemonicPassphrase": "Use mnemonic passphrase",
+        "mnemonicLargeAmountAlert": "If you import your mnemonic account and your account holds your savings (larger amounts of XRP or other tokens)\n\nPlease consider creating a new account in XUMM to keep your mnemonic account offline. "
     },
     "send": {
         "amountIsBiggerThanYourSpend": "Amount is bigger than what you can spend (%{spendable})",

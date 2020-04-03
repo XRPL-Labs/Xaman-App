@@ -2,6 +2,7 @@ import AccountType from './AccountType';
 import AccessLevel from './AccessLevel';
 import EnterAddress from './EnterAddress';
 import EnterSeed from './EnterSeed';
+import MnemonicAlert from './MnemonicAlert';
 import EnterMnemonic from './EnterMnemonic';
 import EnterSecretNumbers from './EnterSecretNumbers';
 import ConfirmPublicKey from './ConfirmPublicKey';
@@ -16,6 +17,7 @@ export default {
     EnterAddress,
     EnterSecretNumbers,
     EnterSeed,
+    MnemonicAlert,
     EnterMnemonic,
     ConfirmPublicKey,
     SecurityStep,
