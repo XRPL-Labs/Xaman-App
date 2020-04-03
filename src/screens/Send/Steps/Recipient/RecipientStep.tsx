@@ -111,6 +111,20 @@ class RecipientStep extends Component<Props, State> {
 
             const accountInfo = await getAccountInfo(address);
 
+            let avatar;
+
+            switch (accountInfo.source) {
+                case 'internal:contacts':
+                    avatar = Images.IconProfile;
+                    break;
+                case 'internal:accounts':
+                    avatar = Images.IconAccount;
+                    break;
+                default:
+                    avatar = Images.IconGlobe;
+                    break;
+            }
+
             this.setState({
                 searchResult: [
                     {
@@ -118,7 +132,8 @@ class RecipientStep extends Component<Props, State> {
                         name: accountInfo.name || '',
                         address,
                         tag,
-                        avatar: Images.IconGlobe,
+                        avatar,
+                        source: accountInfo.source.replace('internal:', ''),
                     },
                 ],
                 isSearching: false,
