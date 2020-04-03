@@ -97,13 +97,11 @@ class PaymentTemplate extends Component<Props, State> {
 
             const { lines } = sourceLines;
 
-            // check destination have the same trustLine
-            const haveSameTrustLine =
-                findIndex(lines, (l: any) => {
-                    return l.currency === transaction.Amount.currency && l.account === transaction.Amount.issuer;
-                }) !== -1;
+            const trustLine = lines.filter(
+                (l: any) => l.currency === transaction.Amount.currency && l.account === transaction.Amount.issuer,
+            )[0];
 
-            if (!haveSameTrustLine) {
+            if (!trustLine || parseFloat(trustLine.balance) < parseFloat(transaction.Amount.value)) {
                 if (isPartialPayment) return;
 
                 const PAIR = { issuer: transaction.Amount.issuer, currency: transaction.Amount.currency };
