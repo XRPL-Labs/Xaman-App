@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { findIndex, isEmpty, isEqual } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import React, { Component } from 'react';
 import {
     View,

@@ -155,6 +155,7 @@ class AccountImportView extends Component<Props, State> {
 
         const Step = Steps[currentStep];
 
+        // @ts-ignore
         return <Step goBack={this.goBack} goNext={this.goNext} account={account} />;
     };
 

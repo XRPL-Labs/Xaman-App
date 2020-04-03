@@ -251,7 +251,7 @@ class EnterMnemonicStep extends Component<Props, State> {
 
     render() {
         const { goBack } = this.props;
-        const { words, length, keyboardHeight } = this.state;
+        const { length, keyboardHeight } = this.state;
 
         return (
             <SafeAreaView testID="account-import-enter-mnemonic" style={[AppStyles.container]}>
