@@ -11,7 +11,7 @@ import { ImportSteps } from '@screens/Account/Add/Import';
 
 import Localize from '@locale';
 // components
-import { Button, TextInput, Spacer, Footer } from '@components';
+import { Button, TextInput, InfoMessage, Spacer, Footer } from '@components';
 // style
 import { AppStyles } from '@theme';
 
@@ -80,6 +80,10 @@ class EnterAddressStep extends Component<Props, State> {
                         scannerType={StringType.XrplDestination}
                         onScannerRead={this.onScannerRead}
                     />
+
+                    <Spacer size={20} />
+
+                    <InfoMessage type="info" label={Localize.t('account.importExchangeAddressReadonlyWarning')} />
                 </KeyboardAvoidingView>
 
                 <Footer style={[AppStyles.centerAligned, AppStyles.row]}>
