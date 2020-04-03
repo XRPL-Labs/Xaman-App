@@ -228,14 +228,16 @@ class SecuritySettingsView extends Component<Props, State> {
                         </View>
                     </TouchableOpacity>
 
-                    <View style={styles.row}>
-                        <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('settings.biometricAuthentication')}</Text>
+                    {isSensorAvailable && (
+                        <View style={styles.row}>
+                            <View style={[AppStyles.flex3]}>
+                                <Text style={styles.label}>{Localize.t('settings.biometricAuthentication')}</Text>
+                            </View>
+                            <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                                <Switch checked={biometricEnabled} onChange={this.biometricMethodChange} />
+                            </View>
                         </View>
-                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                            <Switch checked={biometricEnabled} onChange={this.biometricMethodChange} />
-                        </View>
-                    </View>
+                    )}
                 </ScrollView>
             </View>
         );
