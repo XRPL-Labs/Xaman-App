@@ -46,7 +46,7 @@ class SecretNumberInput extends Component<Props, State> {
         let rows = [...Array(ROWS)].map(() => Array(COLUMNS));
         if (props.secretNumbers) {
             rows = [];
-            props.secretNumbers.forEach((row) => rows.push(row.split('')));
+            props.secretNumbers.forEach(row => rows.push(row.split('')));
         }
 
         this.state = {
@@ -223,7 +223,7 @@ class SecretNumberInput extends Component<Props, State> {
     getNumbers = () => {
         const { secretNumbers } = this.state;
         const secretNumber = [] as string[];
-        secretNumbers.forEach((row) => secretNumber.push(row.join('')));
+        secretNumbers.forEach(row => secretNumber.push(row.join('')));
         return secretNumber;
     };
 
@@ -260,7 +260,7 @@ class SecretNumberInput extends Component<Props, State> {
                 <View style={[]}>{this.renderRows()}</View>
                 <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingTopSml]}>
                     <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
-                        <TouchableOpacity activeOpacity={0.8} onPress={this.goLeft} style={[styles.buttonRoundGrey]}>
+                        <TouchableOpacity activeOpacity={0.8} onPress={this.goLeft} style={[styles.buttonRoundBlack]}>
                             <Icon size={25} name="IconChevronLeft" style={[styles.buttonRoundIcon]} />
                         </TouchableOpacity>
                     </View>
@@ -283,7 +283,7 @@ class SecretNumberInput extends Component<Props, State> {
                     </View>
 
                     <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
-                        <TouchableOpacity activeOpacity={0.8} onPress={this.goRight} style={[styles.buttonRoundGrey]}>
+                        <TouchableOpacity activeOpacity={0.8} onPress={this.goRight} style={[styles.buttonRoundBlack]}>
                             <Icon size={25} name="IconChevronRight" style={[styles.buttonRoundIcon]} />
                         </TouchableOpacity>
                     </View>
