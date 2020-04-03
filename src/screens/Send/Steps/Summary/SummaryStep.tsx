@@ -6,7 +6,6 @@ import { has } from 'lodash';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import {
-    SafeAreaView,
     Animated,
     View,
     Image,
@@ -291,7 +290,7 @@ class SummaryStep extends Component {
         const { source, accounts, amount, destination, currency } = this.context;
 
         return (
-            <SafeAreaView testID="send-summary-view" style={[styles.container]}>
+            <View testID="send-summary-view" style={[styles.container]}>
                 <KeyboardAvoidingView
                     keyboardVerticalOffset={Platform.OS === 'ios' ? 130 : 0}
                     behavior="padding"
@@ -432,7 +431,7 @@ class SummaryStep extends Component {
                     </ScrollView>
                 </KeyboardAvoidingView>
                 {/* Bottom Bar */}
-                <Footer style={[AppStyles.row]}>
+                <Footer style={[AppStyles.row]} safeArea>
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
                         <Button secondary label={Localize.t('global.back')} onPress={this.goBack} />
                     </View>
@@ -440,7 +439,7 @@ class SummaryStep extends Component {
                         <Button textStyle={AppStyles.strong} label={Localize.t('global.send')} onPress={this.goNext} />
                     </View>
                 </Footer>
-            </SafeAreaView>
+            </View>
         );
     }
 }

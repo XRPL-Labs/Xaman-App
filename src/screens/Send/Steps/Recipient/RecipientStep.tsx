@@ -7,25 +7,16 @@ import { v4 as uuidv4 } from 'uuid';
 import React, { Component } from 'react';
 import { Results } from 'realm';
 import { isEmpty, flatMap, remove, get, uniqBy, has, toNumber } from 'lodash';
-import {
-    SafeAreaView,
-    View,
-    Text,
-    Image,
-    TouchableHighlight,
-    SectionList,
-    ActivityIndicator,
-    Alert,
-} from 'react-native';
+import { View, Text, Image, TouchableHighlight, SectionList, ActivityIndicator, Alert } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
 
 import { AccountRepository, ContactRepository } from '@store/repositories';
-import { ContactSchema } from '@store/schemas/latest';
+import { ContactSchema, AccountSchema } from '@store/schemas/latest';
 
-import { getAccountInfo, Images, AlertModal } from '@common/helpers';
+import { getAccountInfo, Images, AlertModal, Toast } from '@common/helpers';
 
 import { BackendService, LedgerService } from '@services';
 
@@ -49,6 +40,7 @@ export interface State {
     isSearching: boolean;
     isLoading: boolean;
     searchText: string;
+    accounts: Results<AccountSchema>;
     contacts: Results<ContactSchema>;
     searchResult: any[];
 }
@@ -66,7 +58,8 @@ class RecipientStep extends Component<Props, State> {
             isSearching: false,
             isLoading: false,
             searchText: '',
-            contacts: ContactRepository.getContacts(),
+            accounts: AccountRepository.findAll().snapshot(),
+            contacts: ContactRepository.getContacts().snapshot(),
             searchResult: [],
         };
 
@@ -148,7 +141,7 @@ class RecipientStep extends Component<Props, State> {
     };
 
     doLookUp = (searchText: string) => {
-        const { contacts } = this.state;
+        const { contacts, accounts } = this.state;
 
         clearTimeout(this.lookupTimeout);
 
@@ -172,6 +165,21 @@ class RecipientStep extends Component<Props, State> {
                     address: item.address,
                     tag: item.destinationTag,
                     avatar: Images.IconProfile,
+                });
+            }
+        });
+
+        // search for contacts
+        accounts.forEach(item => {
+            if (
+                item.label.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
+                item.address.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
+            ) {
+                searchResult.push({
+                    id: uuidv4(),
+                    name: item.label,
+                    address: item.address,
+                    avatar: Images.IconAccount,
                 });
             }
         });
@@ -208,7 +216,7 @@ class RecipientStep extends Component<Props, State> {
         }
 
         this.setState({
-            searchResult,
+            searchResult: uniqBy(searchResult, 'address'),
             isSearching: false,
         });
     };
@@ -242,7 +250,7 @@ class RecipientStep extends Component<Props, State> {
         } else {
             dataSource.push({
                 title: Localize.t('send.searchResults'),
-                data: searchResult,
+                data: [...searchResult],
             });
         }
 
@@ -251,13 +259,11 @@ class RecipientStep extends Component<Props, State> {
 
     getDefaultDateSource = () => {
         const { source } = this.context;
-        const { contacts } = this.state;
-
-        const myAccounts = AccountRepository.findAll();
+        const { contacts, accounts } = this.state;
 
         const dataSource = [];
 
-        const myAccountList = remove(Array.from(myAccounts), n => {
+        const myAccountList = remove(Array.from(accounts), n => {
             // remove source account from list
             return n.address !== source.address;
         });
@@ -461,6 +467,9 @@ class RecipientStep extends Component<Props, State> {
 
             // set account info
             setDestinationInfo(destinationInfo);
+        } catch {
+            Toast(Localize.t('send.unableGetRecipientAccountInfoPleaseTryAgain'));
+            return;
         } finally {
             this.setState({ isLoading: false });
         }
@@ -475,7 +484,7 @@ class RecipientStep extends Component<Props, State> {
 
         if (title === Localize.t('send.searchResults')) {
             return (
-                <View style={[AppStyles.row, AppStyles.paddingBottomSml]}>
+                <View style={[styles.sectionHeader, AppStyles.row]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         <Text style={[AppStyles.p, AppStyles.bold]}>
                             {title} {searchResult.length > 0 && `(${searchResult.length})`}
@@ -598,7 +607,7 @@ class RecipientStep extends Component<Props, State> {
         const { searchText, isLoading } = this.state;
 
         return (
-            <SafeAreaView testID="send-recipient-view" style={[AppStyles.pageContainerFull]}>
+            <View testID="send-recipient-view" style={[AppStyles.pageContainerFull]}>
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal]}>
                     <View style={[AppStyles.row]}>
                         <TextInput
@@ -618,7 +627,7 @@ class RecipientStep extends Component<Props, State> {
                 </View>
 
                 {/* Bottom Bar */}
-                <Footer style={[AppStyles.row]}>
+                <Footer style={[AppStyles.row]} safeArea>
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
                         <Button
                             secondary
@@ -640,7 +649,7 @@ class RecipientStep extends Component<Props, State> {
                         />
                     </View>
                 </Footer>
-            </SafeAreaView>
+            </View>
         );
     }
 }

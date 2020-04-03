@@ -478,7 +478,8 @@
       "destinationNotExistTooLittleToCreate": "대상 계정은 이전에 사용되지 않았으며 잔액이 없습니다. XRP 원장에서 계정을 활성화하려면 최소 20 개의 XRP 입금이 필요합니다.",
       "destinationNotExistCreationWarning": "대상 계정은 이전에 사용되지 않았으며 잔액이 없습니다. 이 계정으로 계속 전송하면 %{amount} XRP 원장에서 계정을 활성화하는 데 XRP가 사용되므로 20 XRP를 사용할 수 없습니다. 너 정말 계속하고 싶니?",
       "destinationCannotActivateWithIOU": "대상 계정은 이전에 사용되지 않았으며 잔액이 없습니다. XRP 원장에서 계정을 활성화하려면 최소 20 개의 XRP 입금을 계정으로 보내야합니다. XRP 이외의 통화는 최초 입금에 사용할 수 없습니다.",
-      "destinationTagIsRequired": "이 결제를 보내려면 대상 태그가 필요합니다."
+      "destinationTagIsRequired": "이 결제를 보내려면 대상 태그가 필요합니다.",
+      "unableGetRecipientAccountInfoPleaseTryAgain": "수신자 계정 정보를 얻을 수 없습니다. 다시 시도하십시오."
    },
    "currency": {
       "addCurrency": "통화 추가",

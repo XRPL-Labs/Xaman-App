@@ -478,7 +478,8 @@
       "destinationNotExistTooLittleToCreate": "La cuenta de destino no se ha utilizado antes y no tiene saldo. Para activar una cuenta en el libro mayor XRP, se requiere un depósito inicial de al menos 20 XRP.",
       "destinationNotExistCreationWarning": "La cuenta de destino no se ha utilizado antes y no tiene ningún saldo. Si continúa enviando a esta cuenta, 20 XRP del %{amount} XRP se usará para activar la cuenta en el libro mayor de XRP, lo que significa que 20 XRP no se gastará. Estás seguro de que quieres continuar?",
       "destinationCannotActivateWithIOU": "La cuenta de destino no se ha utilizado antes y no tiene ningún saldo. Para activar una cuenta en el libro mayor de XRP, se debe enviar un depósito inicial de al menos 20 XRP a la cuenta. Las monedas que no sean XRP no se pueden usar para el depósito inicial.",
-      "destinationTagIsRequired": "Se requiere la etiqueta de destino para enviar este pago."
+      "destinationTagIsRequired": "Se requiere la etiqueta de destino para enviar este pago.",
+      "unableGetRecipientAccountInfoPleaseTryAgain": "No se puede obtener la información de la cuenta del destinatario, intente nuevamente."
    },
    "currency": {
       "addCurrency": "Agregar moneda",

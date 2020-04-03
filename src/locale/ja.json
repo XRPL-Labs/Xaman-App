@@ -478,7 +478,8 @@
       "destinationNotExistTooLittleToCreate": "移行先のアカウントは以前に使用されておらず、残高もありません。 XRP元帳でアカウントを有効にするには、少なくとも20のXRPの初期預金が必要です。",
       "destinationNotExistCreationWarning": "移行先のアカウントは以前に使用されておらず、残高もありません。このアカウントへの送信を続けると、20 XRPの%{amount} XRPは、XRP元帳のアカウントをアクティブ化するために使用されます。つまり、20 XRPは使用できません。続行してもよろしいですか？",
       "destinationCannotActivateWithIOU": "移行先のアカウントは以前に使用されておらず、残高もありません。 XRP元帳でアカウントをアクティブ化するには、少なくとも20のXRPの初期預金をアカウントに送信する必要があります。 XRP以外の通貨は初回入金には使用できません。",
-      "destinationTagIsRequired": "この支払いを送信するには宛先タグが必要です。"
+      "destinationTagIsRequired": "この支払いを送信するには宛先タグが必要です。",
+      "unableGetRecipientAccountInfoPleaseTryAgain": "受信者のアカウント情報を取得できません。もう一度お試しください。"
    },
    "currency": {
       "addCurrency": "通貨を追加",
