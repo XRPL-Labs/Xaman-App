@@ -123,7 +123,7 @@ class HomeSettingsModal extends Component<Props, State> {
                             style={[AppStyles.row, AppStyles.centerAligned]}
                         >
                             <Text style={[AppStyles.h5, AppStyles.paddingRightSml, styles.whiteText]}>
-                                {Localize.t('account.switchAccount')}
+                                {Localize.t('account.switchAddAccount')}
                             </Text>
                             <Icon size={30} style={[styles.iconSettings]} name="IconCornerRightUp" />
                         </TouchableOpacity>

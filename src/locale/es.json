@@ -203,7 +203,6 @@
       "fraudAlert": "ALERTA DE FRAUDE",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "Esta cuenta se informa como estafa o dirección fraudulenta. Por favor proceda con precaución",
       "clearSearch": "Borrar búsqueda",
-      "switchAccount": "Cambiar cuenta",
       "noNameFound": "Ningún nombre encontrado"
    },
    "onboarding": {
@@ -401,7 +400,7 @@
       "accountImportCompleted": "¡Importación de cuenta completa!",
       "youJustImportedAccount": "Acabas de agregar tu cuenta",
       "accountSettings": "Editar cuenta",
-      "switchAccount": "Cambiar / agregar cuenta",
+      "switchAddAccount": "Cambiar / agregar cuenta",
       "accountLabel": "Etiqueta de cuenta",
       "pleaseChooseAccountLabel": "Ingrese un nombre para esta cuenta, por ejemplo, 'Gastos' o 'Ahorros'.",
       "pleaseEnterLabel": "Por favor, introduzca una nueva etiqueta",
@@ -435,7 +434,9 @@
       "newPassphrase": "Nueva frase de contraseña",
       "regularKeyFor": "Clave regular para",
       "allDoneYouCanGoToNextStepNow": "Todo listo, puedes ir al siguiente paso",
-      "disableMasterKeyWarning": "la transacción inhabilita la clave privada para la cuenta. Esto puede bloquearlo. Solo continúe si está absolutamente seguro de que esto es lo que quiere y sabe lo que está haciendo."
+      "disableMasterKeyWarning": "la transacción inhabilita la clave privada para la cuenta. Esto puede bloquearlo. Solo continúe si está absolutamente seguro de que esto es lo que quiere y sabe lo que está haciendo.",
+      "switchAccount": "Cambiar cuenta",
+      "useMnemonicPassphrase": "Usar frase de contraseña mnemónica"
    },
    "send": {
       "amountIsBiggerThanYourSpend": "La cantidad es mayor de lo que puede gastar ( %{spendable} )",

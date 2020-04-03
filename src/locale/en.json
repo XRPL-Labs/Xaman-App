@@ -203,7 +203,6 @@
         "fraudAlert": "FRAUD ALERT",
         "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "This account is reported as scam or fraudulent address. Please proceed with caution",
         "clearSearch": "Clear search",
-        "switchAccount": "Switch account",
         "noNameFound": "No name found"
     },
     "onboarding":{
@@ -401,7 +400,7 @@
         "accountImportCompleted": "Account import complete!",
         "youJustImportedAccount": "You just added your account",
         "accountSettings": "Edit account",
-        "switchAccount": "Switch/add account",
+        "switchAddAccount": "Switch/add account",
         "accountLabel": "Account label",
         "pleaseChooseAccountLabel": "Please enter a name for this account, e.g. 'Spending' or 'Savings'.",
         "pleaseEnterLabel": "Please enter new label",
@@ -435,7 +434,9 @@
         "newPassphrase": "New passphrase",
         "regularKeyFor": "Regular key for",
         "allDoneYouCanGoToNextStepNow": "All done, you can go to the next step",
-        "disableMasterKeyWarning": "the transaction DISABLES the private key for the account. This may lock you out. Only continue if you are absolutely sure this is what you want, and you know what you are doing."
+        "disableMasterKeyWarning": "the transaction DISABLES the private key for the account. This may lock you out. Only continue if you are absolutely sure this is what you want, and you know what you are doing.",
+        "switchAccount": "Switch account",
+        "useMnemonicPassphrase": "Use mnemonic passphrase"
     },
     "send": {
         "amountIsBiggerThanYourSpend": "Amount is bigger than what you can spend (%{spendable})",

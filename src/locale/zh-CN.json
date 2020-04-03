@@ -203,7 +203,6 @@
       "fraudAlert": "欺诈警报",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "此帐户被报告为欺诈或欺诈性地址。请谨慎行事",
       "clearSearch": "清除搜寻",
-      "switchAccount": "切换帐户",
       "noNameFound": "找不到名字"
    },
    "onboarding": {
@@ -401,7 +400,7 @@
       "accountImportCompleted": "帐户导入完成！",
       "youJustImportedAccount": "您刚刚添加了帐户",
       "accountSettings": "编辑账户",
-      "switchAccount": "切换/添加帐户",
+      "switchAddAccount": "切换/添加帐户",
       "accountLabel": "帐户标签",
       "pleaseChooseAccountLabel": "请输入该帐户的名称，例如“支出”或“储蓄”。",
       "pleaseEnterLabel": "请输入新标签",
@@ -435,7 +434,9 @@
       "newPassphrase": "新密码",
       "regularKeyFor": "常规密钥",
       "allDoneYouCanGoToNextStepNow": "全部完成，您可以继续下一步",
-      "disableMasterKeyWarning": "交易将禁用该帐户的私钥。这可能将您拒之门外。仅在完全确定这是您想要的并且知道自己在做什么时，才继续。"
+      "disableMasterKeyWarning": "交易将禁用该帐户的私钥。这可能将您拒之门外。仅在完全确定这是您想要的并且知道自己在做什么时，才继续。",
+      "switchAccount": "切换帐户",
+      "useMnemonicPassphrase": "使用助记密码"
    },
    "send": {
       "amountIsBiggerThanYourSpend": "金额大于您可以消费的金额（ %{spendable} ）",

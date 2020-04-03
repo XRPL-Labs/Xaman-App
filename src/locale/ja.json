@@ -203,7 +203,6 @@
       "fraudAlert": "詐欺警告",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "このアカウントは詐欺または詐欺のアドレスとして報告されます。注意して続行してください",
       "clearSearch": "検索をクリア",
-      "switchAccount": "アカウントを切り替える",
       "noNameFound": "名前が見つかりません"
    },
    "onboarding": {
@@ -401,7 +400,7 @@
       "accountImportCompleted": "アカウントのインポートが完了しました！",
       "youJustImportedAccount": "アカウントを追加しました",
       "accountSettings": "アカウントの編集",
-      "switchAccount": "アカウントの切り替え/追加",
+      "switchAddAccount": "アカウントの切り替え/追加",
       "accountLabel": "アカウントラベル",
       "pleaseChooseAccountLabel": "このアカウントの名前を入力してください（「支出」や「普通」など）。",
       "pleaseEnterLabel": "新しいラベルを入力してください",
@@ -435,7 +434,9 @@
       "newPassphrase": "新しいパスフレーズ",
       "regularKeyFor": "通常のキー",
       "allDoneYouCanGoToNextStepNow": "すべて完了したら、次のステップに進むことができます",
-      "disableMasterKeyWarning": "トランザクションはアカウントの秘密鍵を無効にします。これはあなたを締め出すかもしれません。これがあなたが望んでいることであることが確実であり、あなたが何をしているのかを知っている場合にのみ、続行してください。"
+      "disableMasterKeyWarning": "トランザクションはアカウントの秘密鍵を無効にします。これはあなたを締め出すかもしれません。これがあなたが望んでいることであることが確実であり、あなたが何をしているのかを知っている場合にのみ、続行してください。",
+      "switchAccount": "アカウントを切り替える",
+      "useMnemonicPassphrase": "ニーモニックパスフレーズを使用する"
    },
    "send": {
       "amountIsBiggerThanYourSpend": "金額があなたが費やすことができる金額よりも大きい（ %{spendable} ）",
