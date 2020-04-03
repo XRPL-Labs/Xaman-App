@@ -559,7 +559,7 @@ class RecipientStep extends Component<Props, State> {
                     <View style={AppStyles.paddingLeftSml}>
                         <View style={AppStyles.row}>
                             <Text style={[styles.title, selected ? styles.selectedText : null]}>
-                                {item.name || 'Unknown'}
+                                {item.name || Localize.t('global.noNameFound')}
                             </Text>
                             {tag && tag}
                         </View>

@@ -203,7 +203,8 @@
         "fraudAlert": "FRAUD ALERT",
         "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "This account is reported as scam or fraudulent address. Please proceed with caution",
         "clearSearch": "Clear search",
-        "switchAccount": "Switch account"
+        "switchAccount": "Switch account",
+        "noNameFound": "No name found"
     },
     "onboarding":{
         "slideOne": {

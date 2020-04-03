@@ -203,7 +203,8 @@
       "fraudAlert": "詐欺警告",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "このアカウントは詐欺または詐欺のアドレスとして報告されます。注意して続行してください",
       "clearSearch": "検索をクリア",
-      "switchAccount": "アカウントを切り替える"
+      "switchAccount": "アカウントを切り替える",
+      "noNameFound": "名前が見つかりません"
    },
    "onboarding": {
       "slideOne": {
@@ -341,7 +342,7 @@
       "pleaseEnterSafePassphrase": "覚えやすいが、他の人には推測できない長さの長いパスフレーズを作成します。",
       "enterPassphrase": "パスフレーズを入力してください",
       "repeatPassphrase": "パスフレーズを繰り返す",
-      "passphraseShouldContain": "パスフレーズの強度は少なくとも公平である必要があります。長いパスフレーズまたはより難しいパスフレーズを使用してください（長いパスフレーズの方が適しています）。",
+      "passphraseShouldContain": "パスフレーズの強度は少なくとも公平である必要があります。長いパスフレーズまたはより難しいパスフレーズを使用してください（長いパスフレーズを使用することをお勧めします）。",
       "passphraseConfirmNotMatch": "パスフレーズが一致しません",
       "enterValidPassphrase": "有効なパスフレーズを入力してください",
       "chooseSecurityLevel": "セキュリティレベル",

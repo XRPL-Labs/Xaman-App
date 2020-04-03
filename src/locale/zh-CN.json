@@ -203,7 +203,8 @@
       "fraudAlert": "欺诈警报",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "此帐户被报告为欺诈或欺诈性地址。请谨慎行事",
       "clearSearch": "清除搜寻",
-      "switchAccount": "切换帐户"
+      "switchAccount": "切换帐户",
+      "noNameFound": "找不到名字"
    },
    "onboarding": {
       "slideOne": {
@@ -360,7 +361,7 @@
       "publicKeyCopiedToClipboard": "帐户地址已复制到剪贴板",
       "yourPrivateKey": "您的秘密号码",
       "writeDownPrivateKey": "将所有行记录在一张纸上，并将其放在安全的地方！如果您的设备崩溃了，并且您再也没有了密码，那么您的资金将丢失。",
-      "privateKeyRowsDesc": "只有您可以动用您的资金，但您必须确保自己的秘密号码安全。您的秘密由8行（标记为AH）组成，每行包含6位数字。",
+      "privateKeyRowsDesc": "只有您可以动用资金，但您必须确保自己的秘密号码安全。您的秘密由8行（标记为AH）组成，每行包含6位数字。",
       "neverSharePrivateKey": "切勿与他人共享您的秘密号码（私钥）。如果这样做，您可能会失去使用资金的权限。",
       "secretNumbersOfRow": "行的秘密号码%{row}",
       "confirmNumbersOfRow": "确认行数%{row}",

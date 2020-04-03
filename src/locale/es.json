@@ -203,7 +203,8 @@
       "fraudAlert": "ALERTA DE FRAUDE",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "Esta cuenta se informa como estafa o dirección fraudulenta. Por favor proceda con precaución",
       "clearSearch": "Borrar búsqueda",
-      "switchAccount": "Cambiar cuenta"
+      "switchAccount": "Cambiar cuenta",
+      "noNameFound": "Ningún nombre encontrado"
    },
    "onboarding": {
       "slideOne": {
