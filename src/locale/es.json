@@ -367,7 +367,7 @@
       "pleaseRepeatTheNumbers": "Por favor repita los números",
       "pleaseWriteDownAllNumbers": "Por favor escriba todos los números",
       "goBackClearTheInput": "¿Estás seguro de que quieres volver? (la entrada se borrará por razones de seguridad)",
-      "goBackRefillTheInput": "¿Estás seguro de que quieres volver? (tienes que rellenar todos los números por razones de seguridad)",
+      "goBackRefillTheInput": "¿Estás seguro de que quieres volver? (debe rellenar todas las entradas por razones de seguridad)",
       "accountType": "Tipo de cuenta",
       "secretType": "Tipo secreto",
       "pleaseSelectAccountType": "Por favor seleccione su tipo de cuenta",

@@ -2,7 +2,7 @@
  * Import Account/Mnemonic Screen
  */
 
-import { get, set, filter } from 'lodash';
+import { get, set } from 'lodash';
 import React, { Component } from 'react';
 import {
     SafeAreaView,
@@ -98,7 +98,7 @@ class EnterMnemonicStep extends Component<Props, State> {
         const { goNext } = this.props;
         const { words, usePassphrase, passphrase } = this.state;
 
-        if (filter(words, undefined).length < 6) {
+        if (words.filter(Boolean).length < 6) {
             Alert.alert('Error', Localize.t('account.pleaseEnterAllWords'));
             return;
         }
@@ -110,7 +110,7 @@ class EnterMnemonicStep extends Component<Props, State> {
         }
 
         try {
-            const mnemonic = words.join(' ');
+            const mnemonic = words.filter(Boolean).join(' ');
             const account = derive.mnemonic(mnemonic, options);
             goNext('ConfirmPublicKey', { importedAccount: account });
         } catch (e) {

@@ -367,7 +367,7 @@
       "pleaseRepeatTheNumbers": "数字を繰り返してください",
       "pleaseWriteDownAllNumbers": "すべての数字を書き留めてください",
       "goBackClearTheInput": "本当に戻りますか？ （入力はセキュリティ上の理由でクリアされます）",
-      "goBackRefillTheInput": "本当に戻りますか？ （セキュリティ上の理由から、すべての数値を再入力する必要があります）",
+      "goBackRefillTheInput": "本当に戻りますか？ （セキュリティ上の理由から、すべての入力を再入力する必要があります）",
       "accountType": "口座の種類",
       "secretType": "シークレットタイプ",
       "pleaseSelectAccountType": "アカウントの種類を選択してください",

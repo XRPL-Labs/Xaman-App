@@ -367,7 +367,7 @@
       "pleaseRepeatTheNumbers": "请重复数字",
       "pleaseWriteDownAllNumbers": "请写下所有数字",
       "goBackClearTheInput": "您确定要回去吗？ （出于安全原因，输入将被清除）",
-      "goBackRefillTheInput": "您确定要回去吗？ （出于安全原因，您必须重新填写所有数字）",
+      "goBackRefillTheInput": "您确定要回去吗？ （出于安全原因，您必须重新填写所有输入）",
       "accountType": "帐户类型",
       "secretType": "秘密类型",
       "pleaseSelectAccountType": "请选择您的帐户类型",
