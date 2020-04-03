@@ -9,6 +9,7 @@ import Share from 'react-native-share';
 
 import { TransactionsType } from '@common/libs/ledger/types';
 import { AppScreens } from '@common/constants';
+import { NormalizeCurrencyCode } from '@common/libs/utils';
 import { Navigator, ActionSheet } from '@common/helpers';
 
 import { Header, QRCode, Spacer } from '@components';
@@ -153,10 +154,12 @@ class TransactionDetailsView extends Component<Props, State> {
         let content;
 
         content =
-            `${tx.Account.address} offered to pay ${tx.TakerGets.value} ${tx.TakerGets.currency}` +
-            ` in order to receive ${tx.TakerPays.value} ${tx.TakerPays.currency}\n` +
+            `${tx.Account.address} offered to pay ${tx.TakerGets.value} ${NormalizeCurrencyCode(
+                tx.TakerGets.currency,
+            )}` +
+            ` in order to receive ${tx.TakerPays.value} ${NormalizeCurrencyCode(tx.TakerPays.currency)}\n` +
             `The exchange rate for this offer is ${tx.Rate} ` +
-            `${tx.TakerPays.currency}/${tx.TakerGets.currency}`;
+            `${NormalizeCurrencyCode(tx.TakerPays.currency)}/${NormalizeCurrencyCode(tx.TakerGets.currency)}`;
 
         if (tx.OfferSequence) {
             content += `\nThe transaction will also cancel ${tx.tx.Account} 's existing offer ${tx.OfferSequence}`;
@@ -184,9 +187,9 @@ class TransactionDetailsView extends Component<Props, State> {
         if (tx.Destination.tag) {
             content += `\nThe payment has a destination tag: ${tx.Destination.tag}`;
         }
-        content += `\n\nIt was instructed to deliver ${tx.Amount.value} ${tx.Amount.currency}`;
+        content += `\n\nIt was instructed to deliver ${tx.Amount.value} ${NormalizeCurrencyCode(tx.Amount.currency)}`;
         if (tx.tx.SendMax) {
-            content += ` by spending up to ${tx.SendMax.value} ${tx.SendMax.currency}`;
+            content += ` by spending up to ${tx.SendMax.value} ${NormalizeCurrencyCode(tx.SendMax.currency)}`;
         }
         return content;
     };
@@ -195,10 +198,10 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx } = this.props;
 
         if (tx.Limit === 0) {
-            return `It removed TrustLine currency ${tx.Currency} to ${tx.Issuer}`;
+            return `It removed TrustLine currency ${NormalizeCurrencyCode(tx.Currency)} to ${tx.Issuer}`;
         }
         return (
-            `It establishes ${tx.Limit} as the maximum amount of ${tx.Currency} ` +
+            `It establishes ${tx.Limit} as the maximum amount of ${NormalizeCurrencyCode(tx.Currency)} ` +
             `from ${tx.Issuer} that ${tx.Account.address} is willing to hold.`
         );
     };
