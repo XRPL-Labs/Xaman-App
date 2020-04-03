@@ -2,7 +2,7 @@
  * Import Account/Mnemonic Screen
  */
 
-import { get, set, indexOf } from 'lodash';
+import { get, set, filter } from 'lodash';
 import React, { Component } from 'react';
 import {
     SafeAreaView,
@@ -98,7 +98,7 @@ class EnterMnemonicStep extends Component<Props, State> {
         const { goNext } = this.props;
         const { words, usePassphrase, passphrase } = this.state;
 
-        if (indexOf(words, undefined) > -1) {
+        if (filter(words, undefined).length < 6) {
             Alert.alert('Error', Localize.t('account.pleaseEnterAllWords'));
             return;
         }
@@ -332,12 +332,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>
-                        <Button
-                            isDisabled={indexOf(words, undefined) > -1}
-                            textStyle={AppStyles.strong}
-                            label={Localize.t('global.next')}
-                            onPress={this.goNext}
-                        />
+                        <Button textStyle={AppStyles.strong} label={Localize.t('global.next')} onPress={this.goNext} />
                     </View>
                 </Footer>
             </SafeAreaView>

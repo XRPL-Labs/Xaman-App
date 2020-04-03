@@ -389,7 +389,7 @@
         "pleaseProvideAccountAddress": "Please provide your account address \n(Starts with 'r...')",
         "pleaseEnterYourAddress": "Please enter your XRP address",
         "invalidMnemonic": "Invalid mnemonic!",
-        "pleaseEnterAllWords": "Please enter all the words!",
+        "pleaseEnterAllWords": "Please enter all your mnemonic words!",
         "pleaseProvideMnemonic": "Please provide your Mnemonic (24 words) for your account.",
         "pleaseEnterYourMnemonic": "Please enter your Mnemonic",
         "howManyWordsYourMnemonicIs": "How many words does your mnemonic have?",

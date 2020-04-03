@@ -389,7 +389,7 @@
       "pleaseProvideAccountAddress": "アカウントアドレスを入力してください（「r ...」で始まります）",
       "pleaseEnterYourAddress": "XRPアドレスを入力してください",
       "invalidMnemonic": "無効なニーモニック！",
-      "pleaseEnterAllWords": "すべての単語を入力してください！",
+      "pleaseEnterAllWords": "ニーモニックワードをすべて入力してください！",
       "pleaseProvideMnemonic": "アカウントのニーモニック（24ワード）を入力してください。",
       "pleaseEnterYourMnemonic": "ニーモニックを入力してください",
       "howManyWordsYourMnemonicIs": "ニーモニックにはいくつの単語がありますか？",

@@ -389,7 +389,7 @@
       "pleaseProvideAccountAddress": "请提供您的帐户地址（以“ r ...”开头）",
       "pleaseEnterYourAddress": "请输入您的XRP地址",
       "invalidMnemonic": "助记符无效！",
-      "pleaseEnterAllWords": "请输入所有单词！",
+      "pleaseEnterAllWords": "请输入所有助记词！",
       "pleaseProvideMnemonic": "请为您的帐户提供助记符（24个单词）。",
       "pleaseEnterYourMnemonic": "请输入您的助记符",
       "howManyWordsYourMnemonicIs": "您的助记词有多少个字？",
