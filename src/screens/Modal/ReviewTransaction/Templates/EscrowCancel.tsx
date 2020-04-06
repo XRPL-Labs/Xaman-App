@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
 import { EscrowCancel } from '@common/libs/ledger/transactions';
-import { getAccountInfo } from '@common/helpers';
+import { getAccountName } from '@common/helpers';
 
 import Localize from '@locale';
 
@@ -36,7 +36,7 @@ class EscrowCancelTemplate extends Component<Props, State> {
             isLoading: true,
         });
 
-        getAccountInfo(transaction.Owner)
+        getAccountName(transaction.Owner)
             .then((res: any) => {
                 if (!isEmpty(res) && !res.error) {
                     this.setState({

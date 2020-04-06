@@ -4,7 +4,7 @@ import { View, Text } from 'react-native';
 
 import { EscrowCreate } from '@common/libs/ledger/transactions';
 
-import { getAccountInfo } from '@common/helpers';
+import { getAccountName } from '@common/helpers';
 
 import { Spacer } from '@components';
 
@@ -39,7 +39,7 @@ class EscrowCreateTemplate extends Component<Props, State> {
             isLoading: true,
         });
 
-        getAccountInfo(transaction.Destination.address)
+        getAccountName(transaction.Destination.address)
             .then((res: any) => {
                 if (!isEmpty(res) && !res.error) {
                     this.setState({

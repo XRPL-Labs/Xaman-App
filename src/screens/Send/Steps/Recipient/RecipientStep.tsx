@@ -16,7 +16,7 @@ import { Decode } from 'xrpl-tagged-address-codec';
 import { AccountRepository, ContactRepository } from '@store/repositories';
 import { ContactSchema, AccountSchema } from '@store/schemas/latest';
 
-import { getAccountInfo, Images, AlertModal, Toast } from '@common/helpers';
+import { getAccountName, Images, AlertModal, Toast } from '@common/helpers';
 
 import { BackendService, LedgerService } from '@services';
 
@@ -102,7 +102,7 @@ class RecipientStep extends Component<Props, State> {
                 isSearching: true,
             });
 
-            const accountInfo = await getAccountInfo(address);
+            const accountInfo = await getAccountName(address);
 
             let avatar;
 
@@ -321,10 +321,11 @@ class RecipientStep extends Component<Props, State> {
             const destinationInfo = await LedgerService.getAccountInfo(destination.address);
 
             if (has(destinationInfo, 'error')) {
+                // account doesn't exist no need to check account risk
                 if (get(destinationInfo, 'error') === 'actNotFound') {
-                    // account doesn't exist no need to check account risk
                     shouldCheckAccountRisk = false;
 
+                    // account does not exist and cannot activate with IOU
                     if (typeof currency !== 'string') {
                         AlertModal({
                             type: 'warning',
@@ -404,8 +405,8 @@ class RecipientStep extends Component<Props, State> {
                 }
             }
 
+            // check for account risk and scam
             if (shouldCheckAccountRisk) {
-                // check for account risk and scam
                 const accountRisk = await BackendService.getAccountRisk(destination.address);
 
                 if (accountRisk.danger !== 'ERROR' || accountRisk.danger !== 'UNKNOWS') {

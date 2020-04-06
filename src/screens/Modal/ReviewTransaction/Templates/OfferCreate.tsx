@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import isEmpty from 'lodash/isEmpty';
 
 import { OfferCreate } from '@common/libs/ledger/transactions';
-import { getAccountInfo } from '@common/helpers';
+import { getAccountName } from '@common/helpers';
 
 import Localize from '@locale';
 
@@ -34,7 +34,7 @@ class OfferCreateTemplate extends Component<Props, State> {
         const { transaction } = this.props;
 
         if (transaction.TakerGets.issuer) {
-            getAccountInfo(transaction.TakerGets.issuer)
+            getAccountName(transaction.TakerGets.issuer)
                 .then((res: any) => {
                     if (!isEmpty(res)) {
                         this.setState({
@@ -46,7 +46,7 @@ class OfferCreateTemplate extends Component<Props, State> {
         }
 
         if (transaction.TakerPays.issuer) {
-            getAccountInfo(transaction.TakerPays.issuer)
+            getAccountName(transaction.TakerPays.issuer)
                 .then((res: any) => {
                     if (!isEmpty(res)) {
                         this.setState({

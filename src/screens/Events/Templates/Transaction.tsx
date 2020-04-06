@@ -5,7 +5,7 @@ import isEmpty from 'lodash/isEmpty';
 import { TransactionsType } from '@common/libs/ledger/types';
 import { AccountSchema } from '@store/schemas/latest';
 
-import { Navigator, getAccountInfo } from '@common/helpers';
+import { Navigator, getAccountName } from '@common/helpers';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 import { AppScreens } from '@common/constants';
 
@@ -87,7 +87,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
             address,
         });
 
-        getAccountInfo(address)
+        getAccountName(address)
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     this.setState({

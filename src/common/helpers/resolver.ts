@@ -10,7 +10,7 @@ export interface AccountInfo {
     source: string;
 }
 
-const getAccountInfo = memoize(
+const getAccountName = memoize(
     (address: string): Promise<AccountInfo> => {
         return new Promise(resolve => {
             // check address  book
@@ -68,4 +68,4 @@ const getLedgerTime = () => {
     });
 };
 
-export { getAccountInfo, getLedgerTime };
+export { getAccountName, getLedgerTime };

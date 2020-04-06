@@ -8,7 +8,7 @@ import { StringType, XrplDestination } from 'xumm-string-decode';
 import * as AccountLib from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
 
-import { Navigator, Toast, Prompt, getAccountInfo } from '@common/helpers';
+import { Navigator, Toast, Prompt, getAccountName } from '@common/helpers';
 import { AppScreens } from '@common/constants';
 
 import { ContactRepository } from '@store/repositories';
@@ -105,7 +105,7 @@ class EditContactView extends Component<Props, State> {
         });
 
         // update catch for this account
-        getAccountInfo.cache.set(
+        getAccountName.cache.set(
             address,
             new Promise(resolve => {
                 resolve({ name, source: 'internal:contacts' });

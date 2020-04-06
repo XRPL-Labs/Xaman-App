@@ -18,7 +18,7 @@ import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { LedgerService } from '@services';
 import { NormalizeAmount } from '@common/libs/utils';
-import { getAccountInfo } from '@common/helpers';
+import { getAccountName } from '@common/helpers';
 
 import { Button, InfoMessage, Spacer } from '@components';
 
@@ -153,7 +153,7 @@ class PaymentTemplate extends Component<Props, State> {
         });
 
         // fetch destination details
-        getAccountInfo(transaction.Destination.address)
+        getAccountName(transaction.Destination.address)
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     this.setState({

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, Text, ActivityIndicator, Platform } from 'react-native';
 
 import { EscrowFinish } from '@common/libs/ledger/transactions';
-import { getAccountInfo } from '@common/helpers';
+import { getAccountName } from '@common/helpers';
 
 import Localize from '@locale';
 
@@ -37,7 +37,7 @@ class SetRegularKeyTemplate extends Component<Props, State> {
             isLoading: true,
         });
 
-        getAccountInfo(transaction.RegularKey)
+        getAccountName(transaction.RegularKey)
             .then((res: any) => {
                 if (!isEmpty(res) && !res.error) {
                     this.setState({

@@ -6,7 +6,7 @@ import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Alert, KeyboardAvoidingView } from 'react-native';
 
-import { getAccountInfo } from '@common/helpers';
+import { getAccountName } from '@common/helpers';
 // components
 import { Button, TextInput, Spacer, Footer } from '@components';
 
@@ -43,7 +43,7 @@ class LabelStep extends Component<Props, State> {
     componentDidMount() {
         const { account } = this.props;
 
-        getAccountInfo(account.importedAccount.address)
+        getAccountName(account.importedAccount.address)
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     this.setState({

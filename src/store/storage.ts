@@ -8,7 +8,8 @@
 import Realm from 'realm';
 import { sortBy, flatMap } from 'lodash';
 
-import { Keychain } from '@common/helpers';
+import Vault from '@common/libs/vault';
+
 import { AppConfig } from '@common/constants';
 
 import { LoggerService } from '@services';
@@ -168,7 +169,7 @@ export default class Storage {
      */
     async getDefaultConfig(): Promise<Realm.Configuration> {
         // set encryption key
-        return Keychain.getStorageEncryptionKey(this.keyName).then((key: Buffer) => {
+        return Vault.getStorageEncryptionKey(this.keyName).then((key: Buffer) => {
             return {
                 encryptionKey: key,
                 path: this.path,

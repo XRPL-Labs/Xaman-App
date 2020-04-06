@@ -5,7 +5,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import { TrustSet } from '@common/libs/ledger/transactions';
 
-import { getAccountInfo } from '@common/helpers';
+import { getAccountName } from '@common/helpers';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 import Localize from '@locale';
@@ -40,7 +40,7 @@ class TrustSetTemplate extends Component<Props, State> {
             isLoading: true,
         });
 
-        getAccountInfo(transaction.Issuer)
+        getAccountName(transaction.Issuer)
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     this.setState({
