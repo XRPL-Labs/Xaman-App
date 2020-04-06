@@ -80,6 +80,38 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
     },
+    tag: {
+        paddingHorizontal: 5,
+        paddingVertical: 1,
+        borderRadius: 5,
+        marginLeft: 5,
+        alignSelf: 'center',
+    },
+    tagLabel: {
+        color: AppColors.white,
+        fontSize: AppFonts.small.size * 0.7,
+        fontFamily: AppFonts.base.familyBold,
+    },
+    bithompTag: {
+        backgroundColor: AppColors.bithomp,
+    },
+    xrplnsTag: {
+        backgroundColor: AppColors.xrpln,
+    },
+    clearSearchButton: {
+        height: AppSizes.scale(25),
+
+        paddingHorizontal: 10,
+
+        alignSelf: 'flex-end',
+    },
+    clearSearchButtonText: {
+        fontSize: AppFonts.small.size,
+        fontFamily: AppFonts.base.familyBold,
+        color: AppColors.blue,
+        paddingLeft: 1,
+        paddingRight: 0,
+    },
 });
 
 export default styles;

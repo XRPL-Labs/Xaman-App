@@ -60,8 +60,13 @@ class TrustLine extends Realm.Object {
         // });
 
         const counterParty = this.currency.linkingObjects('CounterParty', 'currencies');
-        if (counterParty && counterParty.length > 0) {
-            return counterParty[0];
+        if (!counterParty.isEmpty()) {
+            const item = counterParty[0];
+            return {
+                name: item.name,
+                avatar: item.avatar,
+                domain: item.domain,
+            };
         }
 
         return {

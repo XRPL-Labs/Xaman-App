@@ -3,11 +3,12 @@
  * Subscribe to navigation events
  */
 
-import { last, take } from 'lodash';
-import firebase from 'react-native-firebase';
-
+import { last, take, values } from 'lodash';
 import EventEmitter from 'events';
 
+import { BackHandler, Platform, NativeModules } from 'react-native';
+
+import firebase from 'react-native-firebase';
 import {
     Navigation,
     ComponentDidAppearEvent,
@@ -16,15 +17,17 @@ import {
     ModalDismissedEvent,
 } from 'react-native-navigation';
 
-import { Navigator } from '@common/helpers';
+import { Navigator, Toast } from '@common/helpers';
 import { AppScreens } from '@common/constants';
+
+import Locale from '@locale';
 
 class NavigationService extends EventEmitter {
     prevScreen: string;
     currentRoot: string;
     currentScreen: string;
     overlays: Array<string>;
-    enabled: boolean;
+    backHandlerClickCount: number;
 
     constructor() {
         super();
@@ -33,7 +36,7 @@ class NavigationService extends EventEmitter {
         this.currentRoot = '';
         this.currentScreen = '';
         this.overlays = [];
-        this.enabled = !__DEV__;
+        this.backHandlerClickCount = 0;
     }
 
     initialize = () => {
@@ -65,6 +68,11 @@ class NavigationService extends EventEmitter {
                         });
                     }
                 });
+
+                // set android back handler
+                if (Platform.OS === 'android') {
+                    this.setBackHandlerListener();
+                }
 
                 return resolve();
             } catch (e) {
@@ -98,6 +106,56 @@ class NavigationService extends EventEmitter {
     modalDismissedListener = ({ componentId }: ModalDismissedEvent) => {
         if (componentId !== this.getPrevScreen()) {
             this.setCurrentScreen(this.getPrevScreen());
+        }
+    };
+
+    setBackHandlerListener = () => {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    };
+
+    handleBackButton = () => {
+        // check if we are in main screens and can exit the app
+        const currentScreen = this.getCurrentScreen();
+        const currentOverlay = this.getCurrentOverlay();
+
+        // first check for overlays
+        if (currentOverlay && currentOverlay !== AppScreens.Overlay.Lock) {
+            Navigator.dismissOverlay();
+            return true;
+        }
+
+        // check if we are in main screens and can exit the app
+        const mainScreens = [AppScreens.Onboarding, AppScreens.ConnectionIssue, ...values(AppScreens.TabBar)];
+        if (mainScreens.indexOf(currentScreen) > -1) {
+            // increase back handler click count
+            this.backHandlerClickCount += 1;
+
+            // check if we need to exist the app
+            if (this.backHandlerClickCount < 2) {
+                Toast(Locale.t('global.pressBackAgainToExit'), 2000);
+                // timeout for fade and exit
+                setTimeout(() => {
+                    this.backHandlerClickCount = 0;
+                }, 2000);
+
+                return true;
+            }
+
+            // kill the app
+            this.exitApp();
+
+            return false;
+        }
+
+        return false;
+    };
+
+    exitApp = (soft?: boolean) => {
+        if (soft) {
+            BackHandler.exitApp();
+        } else {
+            const { UtilsModule } = NativeModules;
+            UtilsModule.exitApp();
         }
     };
 

@@ -77,7 +77,13 @@ class Account extends Realm.Object {
         // calculate the spendable amount
         const spendable = this.balance - RESERVER_BASE - this.ownerCount * RESERVER_ITEM;
 
-        return new BigNumber(spendable).decimalPlaces(6).toNumber();
+        const availableBalance = new BigNumber(spendable).decimalPlaces(6).toNumber();
+
+        if (availableBalance < 0) {
+            return 0;
+        }
+
+        return availableBalance;
     }
 
     /**

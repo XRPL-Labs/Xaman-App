@@ -29,7 +29,7 @@ import com.reactnativenavigation.react.NavigationPackage;
 import com.reactnativenavigation.react.NavigationReactNativeHost;
 import com.oblador.keychain.KeychainPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
-import com.rnfingerprint.FingerprintAuthPackage;
+import com.hieuvp.fingerprint.ReactNativeFingerprintScannerPackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.wix.interactable.Interactable;
 import com.cmcewen.blurview.BlurViewPackage;
@@ -81,7 +81,7 @@ public class MainApplication extends NavigationApplication {
                     // Other Dependencies
                     new KeychainPackage(),
                     new RNDeviceInfo(),
-                    new FingerprintAuthPackage(),
+                    new ReactNativeFingerprintScannerPackage(),
                     new NetInfoPackage(),
                     new Interactable(),
                     new RealmReactPackage(),

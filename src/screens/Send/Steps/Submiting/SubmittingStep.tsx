@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Image, LayoutAnimation } from 'react-native';
+import { SafeAreaView, View, Text, Image } from 'react-native';
 
 import { Spacer, Icon } from '@components';
 
@@ -33,10 +33,6 @@ class SubmittingStep extends Component<Props, State> {
 
     render() {
         const { currentStep } = this.context;
-
-        if (currentStep === 'Verifying') {
-            LayoutAnimation.spring();
-        }
 
         return (
             <SafeAreaView style={[styles.container, AppStyles.paddingSml]}>

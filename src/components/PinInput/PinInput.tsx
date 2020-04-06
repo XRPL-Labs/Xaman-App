@@ -6,7 +6,6 @@ import {
     View,
     Text,
     Platform,
-    LayoutAnimation,
     TouchableOpacity,
     NativeSyntheticEvent,
     TextInputKeyPressEventData,
@@ -20,7 +19,6 @@ interface Props {
     testID?: string;
     codeLength: number;
     autoFocus?: boolean;
-    obfuscation?: boolean;
     onFinish?: (code: string) => void;
     onEdit?: (pin: string) => void;
 }
@@ -52,11 +50,23 @@ class PinInput extends Component<Props, State> {
     };
 
     public blur() {
-        this.textInput.blur();
+        setTimeout(() => {
+            if (this.textInput) {
+                this.textInput.blur();
+            }
+        }, 100);
     }
 
     public focus() {
-        this.textInput.focus();
+        // this is a quick fix for android bug
+        // Android: Calling TextInput instance's focus() after keyboard
+        // is closed via back button/submit doesn't bring up keyboard
+        this.textInput.blur();
+        setTimeout(() => {
+            if (this.textInput) {
+                this.textInput.focus();
+            }
+        }, 100);
     }
 
     public clean() {
@@ -71,8 +81,6 @@ class PinInput extends Component<Props, State> {
         if (onEdit) {
             onEdit(newCode);
         }
-
-        LayoutAnimation.easeInEaseOut();
 
         this.setState({
             code: newCode,
@@ -91,41 +99,44 @@ class PinInput extends Component<Props, State> {
     handleEdit(code: string) {
         const { codeLength, onFinish } = this.props;
 
-        this.setPinCode(code);
+        // remove any non digits
+        const cleanCode = code.replace(/[^0-9]/g, '');
 
-        // User filling the last pin ?
-        if (code.length === codeLength) {
-            this.textInput.blur();
+        if (cleanCode) {
+            // limit the input for not more than the requested code length
+            if (cleanCode.length <= codeLength) {
+                this.setPinCode(cleanCode);
+            }
+            // User filling the last pin ?
+            if (cleanCode.length === codeLength) {
+                this.textInput.blur();
 
-            if (onFinish) {
-                onFinish(code);
+                if (onFinish) {
+                    onFinish(cleanCode);
+                }
             }
         }
     }
 
     render() {
-        const { obfuscation, codeLength, autoFocus, testID } = this.props;
+        const { codeLength, autoFocus, testID } = this.props;
         const { code } = this.state;
 
         const pins = [];
-        for (let index = 0; index < codeLength; index++) {
-            const id = index;
-            const value = code[id] ? (obfuscation ? '•' : code[id].toString()) : '';
 
+        for (let index = 0; index < codeLength; index++) {
             pins.push(
                 <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => {
-                        this.textInput.focus();
+                        this.focus();
                     }}
-                    key={id + value}
-                    style={[styles.pinInput, code.length === id && styles.pinInputActive]}
+                    key={index}
+                    style={[styles.pinInput, code.length === index && styles.pinInputActive]}
                 >
-                    {value ? (
-                        <Text adjustsFontSizeToFit style={styles.pinText}>
-                            {value}
-                        </Text>
-                    ) : null}
+                    <Text adjustsFontSizeToFit style={styles.pinText}>
+                        {code.length > index ? '•' : ''}
+                    </Text>
                 </TouchableOpacity>,
             );
         }
@@ -153,6 +164,8 @@ class PinInput extends Component<Props, State> {
                     maxLength={codeLength}
                     returnKeyType="done"
                     autoFocus={autoFocus}
+                    autoCorrect={false}
+                    secureTextEntry
                     value={code}
                     // eslint-disable-next-line
                     {...props}

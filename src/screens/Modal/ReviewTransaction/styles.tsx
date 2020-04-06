@@ -120,7 +120,6 @@ const styles = StyleSheet.create({
         right: 0,
         width: AppSizes.screen.width,
         height: AppSizes.screen.height,
-        backgroundColor: Platform.OS === 'android' ? 'rgba(255,255,255,0.9)' : AppColors.transparent,
     },
     absolute: {
         zIndex: 999999,

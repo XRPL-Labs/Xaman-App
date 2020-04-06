@@ -4,7 +4,8 @@
 
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Alert, Image } from 'react-native';
-import TouchID from 'react-native-touch-id';
+
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import { CoreRepository } from '@store/repositories';
 import { BiometryType } from '@store/types';
@@ -37,26 +38,40 @@ class BiometrySetupView extends Component<Props, State> {
     }
 
     requestAuthenticate = () => {
-        const optionalConfigObject = {
-            title: Localize.t('global.authenticationRequired'),
-            sensorErrorDescription: Localize.t('global.failed'),
-            cancelText: Localize.t('global.cancel'),
-            fallbackLabel: 'Use Passcode',
-            unifiedErrors: false,
-            passcodeFallback: false,
-        };
+        FingerprintScanner.isSensorAvailable()
+            .then(biometryType => {
+                FingerprintScanner.authenticate({
+                    description: Localize.t('global.authenticate'),
+                    fallbackEnabled: true,
+                })
+                    .then(() => {
+                        let type;
 
-        TouchID.authenticate('authenticate to TouchID/FaceID', optionalConfigObject)
-            .then(() => {
-                TouchID.isSupported().then(biometryType => {
-                    if (biometryType === 'FaceID') {
-                        CoreRepository.saveSettings({ biometricMethod: BiometryType.FaceID });
-                    } else {
-                        CoreRepository.saveSettings({ biometricMethod: BiometryType.TouchID });
-                    }
-                });
+                        switch (biometryType) {
+                            case 'Face ID':
+                                type = BiometryType.FaceID;
+                                break;
+                            case 'Touch ID':
+                                type = BiometryType.TouchID;
+                                break;
+                            case 'Biometrics':
+                                type = BiometryType.Biometrics;
+                                break;
 
-                this.nextStep();
+                            default:
+                                type = BiometryType.None;
+                        }
+
+                        CoreRepository.saveSettings({ biometricMethod: type });
+
+                        this.nextStep();
+                    })
+                    .catch(() => {
+                        Alert.alert(Localize.t('global.invalidAuth'), Localize.t('global.invalidBiometryAuth'));
+                    })
+                    .finally(() => {
+                        FingerprintScanner.release();
+                    });
             })
             .catch(() => {
                 Alert.alert(Localize.t('global.invalidAuth'), Localize.t('global.invalidBiometryAuth'));

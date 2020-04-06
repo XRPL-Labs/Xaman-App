@@ -50,14 +50,15 @@ export default StyleSheet.create({
     },
     line: {
         flex: 1,
-        padding: AppSizes.paddingSml,
+        padding: 15,
         alignItems: 'center',
         justifyContent: 'center',
+        borderRadius: 50,
     },
     numText: {
         color: AppColors.black,
         fontFamily: AppFonts.base.family,
-        fontSize: AppFonts.h4.size,
+        fontSize: AppFonts.h3.size,
     },
     bottomWrap: {
         flexDirection: 'row',

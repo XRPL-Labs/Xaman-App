@@ -53,7 +53,7 @@ class AppStateService extends EventEmitter {
                 NavigationService.on('setRoot', (root: string) => {
                     if (root === 'DefaultStack') {
                         // check if the app need to be lock in app startup
-                        this.requireLockScreen();
+                        this.checkLockScreen();
 
                         // this will listen for app state changes and will check if we need to lock the app
                         this.setLockRequireListener();
@@ -66,28 +66,39 @@ class AppStateService extends EventEmitter {
         });
     };
 
-    requireLockScreen = async () => {
+    lockScreen = () => {
+        // lock the app
+        this.locked = true;
+        Navigator.showOverlay(
+            AppScreens.Overlay.Lock,
+            {
+                layout: {
+                    backgroundColor: 'transparent',
+                    componentBackgroundColor: 'transparent',
+                },
+            },
+            {
+                onUnlock: () => {
+                    this.locked = false;
+                },
+            },
+        );
+    };
+
+    checkLockScreen = async () => {
         if (!this.locked) {
             const coreSettings = CoreRepository.getSettings();
-            const passedMinutes = await CoreRepository.getTimeLastUnlocked();
-            if (passedMinutes >= coreSettings.minutesAutoLock) {
-                // lock the app
-                this.locked = true;
-                Navigator.showOverlay(
-                    AppScreens.Overlay.Lock,
-                    {
-                        layout: {
-                            backgroundColor: 'transparent',
-                            componentBackgroundColor: 'transparent',
-                        },
-                    },
-                    {
-                        onUnlock: () => {
-                            this.locked = false;
-                        },
-                    },
-                );
-            }
+            CoreRepository.getTimeLastUnlocked()
+                .then(passedMinutes => {
+                    if (passedMinutes >= coreSettings.minutesAutoLock) {
+                        // lock the app
+                        this.lockScreen();
+                    }
+                })
+                .catch(() => {
+                    // on error lock the screen as well
+                    this.lockScreen();
+                });
         }
     };
 
@@ -161,7 +172,7 @@ class AppStateService extends EventEmitter {
     setLockRequireListener() {
         this.on('appStateChange', () => {
             if (this.prevAppState === AppStateStatus.Background && this.currentAppState === AppStateStatus.Active) {
-                this.requireLockScreen();
+                this.checkLockScreen();
             }
         });
     }

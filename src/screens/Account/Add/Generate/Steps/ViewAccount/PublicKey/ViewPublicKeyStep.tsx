@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Clipboard, ActivityIndicator } from 'react-native';
 
-import { Toast } from '@common/helpers';
+import { Toast, Prompt } from '@common/helpers';
 
 // components
 import { Button, Footer, Spacer } from '@components';
@@ -30,8 +30,28 @@ export interface State {}
 
 /* Component ==================================================================== */
 class ViewPublicKeyStep extends Component<Props, State> {
+    goBack = () => {
+        const { goBack } = this.props;
+
+        Prompt(
+            Localize.t('global.pleaseNote'),
+            Localize.t('account.goBackRefillTheInput'),
+            [
+                {
+                    text: Localize.t('global.goBack'),
+                    onPress: () => {
+                        goBack();
+                    },
+                    style: 'destructive',
+                },
+                { text: Localize.t('global.cancel') },
+            ],
+            { type: 'default' },
+        );
+    };
+
     render() {
-        const { account, goNext, goBack } = this.props;
+        const { account, goNext } = this.props;
         return (
             <SafeAreaView testID="account-generate-step-view-public" style={[AppStyles.pageContainerFull]}>
                 <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.paddingSml]}>
@@ -74,9 +94,7 @@ class ViewPublicKeyStep extends Component<Props, State> {
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            onPress={() => {
-                                goBack();
-                            }}
+                            onPress={this.goBack}
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>

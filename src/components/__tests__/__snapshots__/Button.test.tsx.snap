@@ -181,6 +181,7 @@ exports[`Button Component should render with label 1`] = `
     }
   >
     <Text
+      allowFontScaling={false}
       style={
         Array [
           Object {

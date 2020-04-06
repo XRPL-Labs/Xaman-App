@@ -14,6 +14,7 @@ export default StyleSheet.create({
     title: {
         fontSize: AppFonts.base.size,
         marginLeft: 10,
+        marginRight: 10,
     },
     switch: {
         alignSelf: 'center',

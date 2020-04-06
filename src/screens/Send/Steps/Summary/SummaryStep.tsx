@@ -6,7 +6,6 @@ import { has } from 'lodash';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import {
-    SafeAreaView,
     Animated,
     View,
     Image,
@@ -265,9 +264,11 @@ class SummaryStep extends Component {
             const { account_data } = destinationInfo;
             const accountFlags = new Flag('Account', account_data.Flags).parse();
 
-            if (accountFlags.requireDestinationTag && !destination.tag) {
+            if (accountFlags.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
                 Alert.alert(Localize.t('global.warning'), Localize.t('send.destinationTagIsRequired'));
-                this.destinationTagInput.focus();
+                if (this.destinationTagInput) {
+                    this.destinationTagInput.focus();
+                }
                 return;
             }
         }
@@ -289,7 +290,7 @@ class SummaryStep extends Component {
         const { source, accounts, amount, destination, currency } = this.context;
 
         return (
-            <SafeAreaView testID="send-summary-view" style={[styles.container]}>
+            <View testID="send-summary-view" style={[styles.container]}>
                 <KeyboardAvoidingView
                     keyboardVerticalOffset={Platform.OS === 'ios' ? 130 : 0}
                     behavior="padding"
@@ -368,6 +369,7 @@ class SummaryStep extends Component {
                                             this.amountInput = r;
                                         }}
                                         keyboardType="decimal-pad"
+                                        autoCapitalize="words"
                                         onChangeText={this.onAmountChange}
                                         returnKeyType="done"
                                         placeholder="0"
@@ -422,14 +424,14 @@ class SummaryStep extends Component {
                                 onChangeText={this.onDescriptionChange}
                                 placeholder={Localize.t('send.enterPublicMemo')}
                                 inputStyle={styles.inputStyle}
-                                maxLength={20}
+                                maxLength={300}
                                 returnKeyType="done"
                             />
                         </View>
                     </ScrollView>
                 </KeyboardAvoidingView>
                 {/* Bottom Bar */}
-                <Footer style={[AppStyles.row]}>
+                <Footer style={[AppStyles.row]} safeArea>
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
                         <Button secondary label={Localize.t('global.back')} onPress={this.goBack} />
                     </View>
@@ -437,7 +439,7 @@ class SummaryStep extends Component {
                         <Button textStyle={AppStyles.strong} label={Localize.t('global.send')} onPress={this.goNext} />
                     </View>
                 </Footer>
-            </SafeAreaView>
+            </View>
         );
     }
 }

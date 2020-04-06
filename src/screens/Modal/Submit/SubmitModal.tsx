@@ -5,16 +5,7 @@
  */
 
 import React, { Component, Fragment } from 'react';
-import {
-    View,
-    Text,
-    SafeAreaView,
-    Image,
-    Clipboard,
-    LayoutAnimation,
-    InteractionManager,
-    BackHandler,
-} from 'react-native';
+import { View, Text, SafeAreaView, Image, Clipboard, InteractionManager, BackHandler } from 'react-native';
 
 import { Navigator, Images, Toast } from '@common/helpers';
 import { AppScreens } from '@common/constants';
@@ -89,8 +80,6 @@ class SubmitModal extends Component<Props, State> {
 
         // submitted verify
         if (submitResult.success) {
-            LayoutAnimation.linear();
-
             this.setState({ step: 'verifying', submitResult });
 
             const verifyResult = await Submitter.verify(submitResult.transactionId);

@@ -170,4 +170,9 @@ RCT_EXPORT_METHOD(restartBundle) {
     return;
 }
 
+RCT_EXPORT_METHOD(exitApp)
+{
+    exit(0);
+}
+
 @end

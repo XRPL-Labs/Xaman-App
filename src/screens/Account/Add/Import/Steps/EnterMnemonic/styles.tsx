@@ -16,9 +16,10 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        height: '100%',
-        textAlignVertical: 'top',
-        textAlign: 'center',
+        textAlignVertical: 'center',
+        textAlign: 'left',
+        padding: 0,
+        margin: 0,
         paddingRight: 20,
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.subtext.size,

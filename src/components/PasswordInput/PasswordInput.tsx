@@ -97,13 +97,19 @@ export default class PasswordInput extends Component<Props, State> {
 
         if (autoFocus) {
             setTimeout(() => {
-                this.instance.focus();
+                if (this.instance) {
+                    this.instance.focus();
+                }
             }, 50);
         }
     }
 
     public focus = () => {
-        this.instance.focus();
+        setTimeout(() => {
+            if (this.instance) {
+                this.instance.focus();
+            }
+        }, 50);
     };
 
     toggleSwitch() {
@@ -263,7 +269,7 @@ export default class PasswordInput extends Component<Props, State> {
         return (
             <View style={[styles.inputWrapper, inputWrapperStyle, AppStyles.stretchSelf]}>
                 <TextInput
-                    ref={r => {
+                    ref={(r) => {
                         this.instance = r;
                     }}
                     editable={editable}
@@ -274,7 +280,7 @@ export default class PasswordInput extends Component<Props, State> {
                     multiline={false}
                     underlineColorAndroid="transparent"
                     style={[styles.input, inputStyle]}
-                    onChangeText={text => this.onChangeText(text)}
+                    onChangeText={(text) => this.onChangeText(text)}
                     placeholder={placeholder}
                     selectTextOnFocus={selectTextOnFocus}
                 />

@@ -68,9 +68,8 @@ export default StyleSheet.create({
         borderTopLeftRadius: AppSizes.scale(7),
         borderBottomLeftRadius: AppSizes.scale(7),
     },
-    // eslint-disable-next-line
-    buttonRoundGrey: {
-        backgroundColor: '#D8DCE6',
+    buttonRoundBlack: {
+        backgroundColor: AppColors.black,
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 10,

@@ -19,39 +19,12 @@ interface Props {
     onFinish: () => void;
 }
 
-export default class Indicator extends PureComponent<Props> {
+interface State {
     currentIndex: number;
-    skipButtonVisibility: Animated.Value;
+}
 
-    constructor(props: Props) {
-        super(props);
-        this.currentIndex = 1;
-        this.skipButtonVisibility = new Animated.Value(1);
-    }
-
-    componentDidMount() {
-        const { progress, pages } = this.props;
-        progress.addListener(obj => {
-            if (this.currentIndex !== Math.floor(obj.value) + 1) {
-                this.currentIndex = Math.floor(obj.value) + 1;
-
-                // hide skip button
-                if (this.currentIndex >= pages) {
-                    Animated.timing(this.skipButtonVisibility, {
-                        toValue: 0,
-                        duration: 300,
-                    }).start();
-                } else {
-                    Animated.timing(this.skipButtonVisibility, {
-                        toValue: 1,
-                        duration: 300,
-                    }).start();
-                }
-
-                this.forceUpdate();
-            }
-        });
-    }
+export default class Indicator extends PureComponent<Props, State> {
+    currentIndex: number;
 
     componentWillUnmount() {
         const { progress } = this.props;
@@ -59,25 +32,12 @@ export default class Indicator extends PureComponent<Props> {
     }
 
     renderSkipButton = () => {
-        const { pages, scrollTo, onFinish } = this.props;
+        const { onFinish } = this.props;
 
-        if (this.currentIndex < pages) {
-            return (
-                <Button
-                    testID="skip-slider"
-                    label={Localize.t('global.skip')}
-                    rounded
-                    onPress={() => {
-                        scrollTo(pages);
-                    }}
-                    style={[AppStyles.rightSelf]}
-                />
-            );
-        }
         return (
             <Button
                 testID="ready-slider"
-                label={Localize.t('global.ready')}
+                label={Localize.t('global.start')}
                 rounded
                 onPress={onFinish}
                 style={[AppStyles.buttonGreen, AppStyles.rightSelf]}
