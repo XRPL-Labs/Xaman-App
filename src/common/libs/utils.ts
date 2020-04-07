@@ -3,18 +3,6 @@
  *
  */
 import moment from 'moment';
-import { TextEncoder, TextDecoder } from 'text-encoding';
-
-/* Text Encoding ==================================================================== */
-const TextEncoding = {
-    //  string to uint8
-    /* eslint-disable-next-line */
-    toUnit8: (string: string): Uint8Array => new TextEncoder().encode(string),
-
-    // uint8 to string
-    /* eslint-disable-next-line */
-    toString: (uint8array: Uint8Array): string => new TextDecoder().decode(uint8array),
-};
 
 /* Hex Encoding  ==================================================================== */
 const HexEncoding = {
@@ -114,4 +102,4 @@ const NormalizeDate = (date: string): string => {
 };
 
 /* Export ==================================================================== */
-export { Truncate, NormalizeAmount, NormalizeCurrencyCode, NormalizeDate, TextEncoding, HexEncoding };
+export { Truncate, NormalizeAmount, NormalizeCurrencyCode, NormalizeDate, HexEncoding };
