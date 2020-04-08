@@ -2,11 +2,10 @@
  * Send / Recipient step
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import React, { Component } from 'react';
 import { Results } from 'realm';
 import { isEmpty, flatMap, remove, get, uniqBy, toNumber } from 'lodash';
-import { View, Text, Image, TouchableHighlight, SectionList, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, Image, TouchableHighlight, SectionList, Alert, RefreshControl } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
@@ -27,7 +26,7 @@ import { Button, TextInput, Footer, InfoMessage } from '@components';
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 // context
@@ -42,11 +41,12 @@ export interface State {
     searchText: string;
     accounts: Results<AccountSchema>;
     contacts: Results<ContactSchema>;
-    searchResult: any[];
+    dataSource: any[];
 }
 /* Component ==================================================================== */
 class RecipientStep extends Component<Props, State> {
     lookupTimeout: any;
+    sequence: number;
 
     static contextType = StepsContext;
     context!: React.ContextType<typeof StepsContext>;
@@ -58,12 +58,13 @@ class RecipientStep extends Component<Props, State> {
             isSearching: false,
             isLoading: false,
             searchText: '',
-            accounts: AccountRepository.findAll().snapshot(),
+            accounts: AccountRepository.getAccounts().snapshot(),
             contacts: ContactRepository.getContacts().snapshot(),
-            searchResult: [],
+            dataSource: [],
         };
 
         this.lookupTimeout = null;
+        this.sequence = 0;
     }
 
     componentDidMount() {
@@ -72,6 +73,8 @@ class RecipientStep extends Component<Props, State> {
         // if scanResult is passed
         if (scanResult) {
             this.doAccountLookUp({ to: scanResult.address, tag: scanResult.tag }, true);
+        } else {
+            this.setDefaultDataSource();
         }
     }
 
@@ -119,16 +122,15 @@ class RecipientStep extends Component<Props, State> {
             }
 
             this.setState({
-                searchResult: [
+                dataSource: this.getSearchResultSource([
                     {
-                        id: uuidv4(),
                         name: accountInfo.name || '',
                         address,
                         tag,
                         avatar,
                         source: accountInfo.source.replace('internal:', ''),
                     },
-                ],
+                ]),
                 isSearching: false,
             });
 
@@ -145,55 +147,57 @@ class RecipientStep extends Component<Props, State> {
 
         clearTimeout(this.lookupTimeout);
 
-        this.setState({
-            isSearching: true,
-            searchText,
-        });
+        this.lookupTimeout = setTimeout(() => {
+            // set searching true
+            this.setState({
+                isSearching: true,
+            });
 
-        // create empty search result array
-        const searchResult = [] as any;
+            // increase sequence
+            this.sequence += 1;
+            // get a copy of sequence
+            const { sequence } = this;
 
-        // search for contacts
-        contacts.forEach(item => {
-            if (
-                item.name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
-                item.address.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
-            ) {
-                searchResult.push({
-                    id: uuidv4(),
-                    name: item.name,
-                    address: item.address,
-                    tag: item.destinationTag,
-                    avatar: Images.IconProfile,
-                });
-            }
-        });
+            // create empty search result array
+            const searchResult = [] as any;
 
-        // search for contacts
-        accounts.forEach(item => {
-            if (
-                item.label.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
-                item.address.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
-            ) {
-                searchResult.push({
-                    id: uuidv4(),
-                    name: item.label,
-                    address: item.address,
-                    avatar: Images.IconAccount,
-                });
-            }
-        });
+            // search for contacts
+            contacts.forEach(item => {
+                if (
+                    item.name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
+                    item.address.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
+                ) {
+                    searchResult.push({
+                        name: item.name,
+                        address: item.address,
+                        tag: item.destinationTag,
+                        avatar: Images.IconProfile,
+                    });
+                }
+            });
 
-        // if text length is more than 4 do server lookup
-        if (searchText.length >= 4) {
-            this.lookupTimeout = setTimeout(() => {
+            // search for contacts
+            accounts.forEach(item => {
+                if (
+                    item.label.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
+                    item.address.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
+                ) {
+                    searchResult.push({
+                        name: item.label,
+                        address: item.address,
+                        avatar: Images.IconAccount,
+                    });
+                }
+            });
+
+            // if text length is more than 4 do server lookup
+            if (searchText.length >= 4) {
                 BackendService.lookup(encodeURIComponent(searchText))
                     .then((res: any) => {
                         if (!isEmpty(res) && res.error !== true) {
                             if (!isEmpty(res.matches)) {
                                 res.matches.forEach((element: any) => {
                                     searchResult.push({
-                                        id: uuidv4(),
                                         name: element.alias === element.account ? '' : element.alias,
                                         address: element.account,
                                         avatar: Images.IconGlobe,
@@ -206,59 +210,61 @@ class RecipientStep extends Component<Props, State> {
                     })
                     .catch(() => {})
                     .finally(() => {
-                        this.setState({
-                            searchResult: uniqBy(searchResult, 'address'),
-                            isSearching: false,
-                        });
+                        // this will make sure the latest call will apply
+                        if (sequence === this.sequence) {
+                            this.setState({
+                                dataSource: this.getSearchResultSource(searchResult),
+                                isSearching: false,
+                            });
+                        }
                     });
-            }, 500);
-
-            return;
-        }
-
-        this.setState({
-            searchResult: uniqBy(searchResult, 'address'),
-            isSearching: false,
-        });
+            } else {
+                this.setState({
+                    dataSource: this.getSearchResultSource(searchResult),
+                    isSearching: false,
+                });
+            }
+        }, 500);
     };
 
     onSearch = (text: string) => {
         // cleanup
         const searchText = text.replace(/\s/g, '');
 
-        // check if it's a xrp address
-        const possibleAccountAddress = new RegExp(
-            /[rX][rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{23,50}/,
-        );
+        this.setState({
+            searchText,
+        });
 
-        if (possibleAccountAddress.test(searchText)) {
-            this.doAccountLookUp({ to: searchText });
+        if (searchText && searchText.length > 0) {
+            // check if it's a xrp address
+            const possibleAccountAddress = new RegExp(
+                /[rX][rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{23,50}/,
+            );
+
+            if (possibleAccountAddress.test(searchText)) {
+                this.doAccountLookUp({ to: searchText });
+            } else {
+                this.doLookUp(searchText);
+            }
         } else {
-            this.doLookUp(searchText);
+            this.setDefaultDataSource();
         }
     };
 
-    getSearchResultSource = () => {
-        const { searchResult } = this.state;
-
+    getSearchResultSource = (searchResult: any) => {
         const dataSource = [];
 
-        if (searchResult.length === 0) {
+        if (searchResult.length > 0) {
             dataSource.push({
                 title: Localize.t('send.searchResults'),
-                data: [{ empty: true, title: Localize.t('send.noSearchResult') }],
-            });
-        } else {
-            dataSource.push({
-                title: Localize.t('send.searchResults'),
-                data: [...searchResult],
+                data: uniqBy(searchResult, 'address'),
             });
         }
 
         return dataSource;
     };
 
-    getDefaultDateSource = () => {
+    setDefaultDataSource = () => {
         const { source } = this.context;
         const { contacts, accounts } = this.state;
 
@@ -288,7 +294,6 @@ class RecipientStep extends Component<Props, State> {
                 title: Localize.t('global.contacts'),
                 data: flatMap(contacts, a => {
                     return {
-                        id: uuidv4(),
                         name: a.name,
                         address: a.address,
                         tag: a.destinationTag,
@@ -298,7 +303,9 @@ class RecipientStep extends Component<Props, State> {
             });
         }
 
-        return dataSource;
+        this.setState({
+            dataSource,
+        });
     };
 
     checkAndNext = async () => {
@@ -494,23 +501,27 @@ class RecipientStep extends Component<Props, State> {
 
     renderSectionHeader = ({ section: { title } }: any) => {
         const { setDestination } = this.context;
-        const { searchResult } = this.state;
+        const { dataSource } = this.state;
 
         if (title === Localize.t('send.searchResults')) {
             return (
                 <View style={[styles.sectionHeader, AppStyles.row]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         <Text style={[AppStyles.p, AppStyles.bold]}>
-                            {title} {searchResult.length > 0 && `(${searchResult.length})`}
+                            {title} {dataSource[0].data.length > 0 && `(${dataSource[0].data.length})`}
                         </Text>
                     </View>
                     <View style={[AppStyles.flex1]}>
                         <Button
                             onPress={() => {
+                                // clear search text
                                 this.setState({
                                     searchText: '',
                                 });
+                                // clear the destination if any set
                                 setDestination(undefined);
+                                // set the default source
+                                this.setDefaultDataSource();
                             }}
                             style={styles.clearSearchButton}
                             light
@@ -556,6 +567,13 @@ class RecipientStep extends Component<Props, State> {
                     </View>
                 );
                 break;
+            case 'payid':
+                tag = (
+                    <View style={[styles.tag, styles.payidTag]}>
+                        <Text style={styles.tagLabel}>PayID</Text>
+                    </View>
+                );
+                break;
             default:
                 break;
         }
@@ -574,6 +592,7 @@ class RecipientStep extends Component<Props, State> {
                     }
                 }}
                 underlayColor="#FFF"
+                key={item.id}
             >
                 <View style={[styles.itemRow, selected ? styles.itemSelected : null]}>
                     <View style={styles.avatarContainer}>
@@ -581,7 +600,11 @@ class RecipientStep extends Component<Props, State> {
                     </View>
                     <View style={AppStyles.paddingLeftSml}>
                         <View style={AppStyles.row}>
-                            <Text style={[styles.title, selected ? styles.selectedText : null]}>
+                            <Text
+                                numberOfLines={1}
+                                adjustsFontSizeToFit
+                                style={[styles.title, selected ? styles.selectedText : null]}
+                            >
                                 {item.name || Localize.t('global.noNameFound')}
                             </Text>
                             {tag && tag}
@@ -593,32 +616,46 @@ class RecipientStep extends Component<Props, State> {
         );
     };
 
-    renderContent = () => {
-        const { searchText, isSearching } = this.state;
-
-        if (isSearching) {
-            return (
-                <View style={[AppStyles.flex8, AppStyles.paddingTop]}>
-                    <ActivityIndicator color={AppColors.blue} />
-                </View>
-            );
-        }
+    renderListEmptyComponent = () => {
+        const { setDestination } = this.context;
 
         return (
-            <View style={[AppStyles.flex8, AppStyles.paddingTopSml]}>
-                <SectionList
-                    sections={searchText ? this.getSearchResultSource() : this.getDefaultDateSource()}
-                    renderItem={this.renderItem}
-                    renderSectionHeader={this.renderSectionHeader}
-                    keyExtractor={item => item.id}
-                />
-            </View>
+            <>
+                <View style={[styles.sectionHeader, AppStyles.row]}>
+                    <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                        <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('send.searchResults')}</Text>
+                    </View>
+                    <View style={[AppStyles.flex1]}>
+                        <Button
+                            onPress={() => {
+                                // clear search text
+                                this.setState({
+                                    searchText: '',
+                                });
+                                // clear the destination if any set
+                                setDestination(undefined);
+                                // set the default source
+                                this.setDefaultDataSource();
+                            }}
+                            style={styles.clearSearchButton}
+                            light
+                            roundedMini
+                            label={Localize.t('global.clearSearch')}
+                        />
+                    </View>
+                </View>
+                <View style={AppStyles.paddingVerticalSml}>
+                    <InfoMessage type="warning" label={Localize.t('send.noSearchResult')} />
+                </View>
+            </>
         );
     };
 
     render() {
         const { goBack, destination } = this.context;
-        const { searchText, isLoading } = this.state;
+        const { searchText, isSearching, isLoading, dataSource } = this.state;
+
+        if (!dataSource) return null;
 
         return (
             <View testID="send-recipient-view" style={[AppStyles.pageContainerFull]}>
@@ -637,7 +674,17 @@ class RecipientStep extends Component<Props, State> {
                         />
                     </View>
 
-                    {this.renderContent()}
+                    <View style={[AppStyles.flex8, AppStyles.paddingTopSml]}>
+                        <SectionList
+                            ListEmptyComponent={this.renderListEmptyComponent}
+                            refreshControl={<RefreshControl refreshing={isSearching} />}
+                            extraData={searchText}
+                            sections={dataSource}
+                            renderItem={this.renderItem}
+                            renderSectionHeader={this.renderSectionHeader}
+                            keyExtractor={item => item.address}
+                        />
+                    </View>
                 </View>
 
                 {/* Bottom Bar */}

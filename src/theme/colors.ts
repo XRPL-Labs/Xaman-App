@@ -24,6 +24,7 @@ const colors = {
 
     bithomp: '#3fa3b5',
     xrpln: '#3767CE',
+    payid: '#38D39F',
 };
 
 export default {
