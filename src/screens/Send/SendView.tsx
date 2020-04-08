@@ -9,7 +9,7 @@ import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import { View, Keyboard } from 'react-native';
 
-import { Navigator } from '@common/helpers';
+import { Navigator, AccountInfoType } from '@common/helpers';
 
 import { LedgerService } from '@services';
 import { AppScreens } from '@common/constants';
@@ -57,7 +57,7 @@ export interface State {
     accounts: Results<AccountSchema>;
     source: AccountSchema;
     destination: Destination;
-    destinationInfo: any;
+    destinationInfo: AccountInfoType;
     currency: TrustLineSchema | string;
     amount: string;
     payment: Payment;

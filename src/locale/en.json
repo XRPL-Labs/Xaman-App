@@ -471,6 +471,7 @@
         "enterDescription": "Enter description",
         "enterPublicMemo": "Enter (optional) public memo",
         "enterDestinationTag": "Enter destination tag",
+        "pleaseEnterTheDestinationTag": "Please enter the destination tag",
         "destinationIsConfirmedAsScam": "The destination account is confirmed as SCAM",
         "destinationIsProbableIsScam": "The destination account is flagged as high risk",
         "selectedAccountDoNotSupportCurrency": "Selected account does not support selected currency.",
@@ -479,7 +480,9 @@
         "destinationNotExistCreationWarning": "The destination account hasn't been used before, and doesn't have any balance. If you continue sending to this account, 20 XRP of the %{amount} XRP will be used to activate the account on the XRP ledger, meaning 20 XRP will not be spendable. Are you sure you want to continue?",
         "destinationCannotActivateWithIOU": "The destination account hasn't been used before, and doesn't have any balance. To activate an account on the XRP ledger, an initial deposit of at least 20 XRP has to be sent to the account. Non XRP currencies cannot be used for the initial deposit.",
         "destinationTagIsRequired": "The destination tag is required for sending this payment.",
-        "unableGetRecipientAccountInfoPleaseTryAgain": "Unable to get recipient account info please try again."
+        "unableGetRecipientAccountInfoPleaseTryAgain": "Unable to get recipient account info please try again.",
+        "noDestinationTag": "No destination tag",
+        "thisAddressRequiredDestinationTag": "This address requires a destination tag"
     },
     "currency": {
         "addCurrency": "Add currency",

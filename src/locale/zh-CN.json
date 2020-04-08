@@ -361,7 +361,7 @@
       "publicKeyCopiedToClipboard": "帐户地址已复制到剪贴板",
       "yourPrivateKey": "您的秘密号码",
       "writeDownPrivateKey": "将所有行记录在一张纸上，并将其放在安全的地方！如果您的设备崩溃了，并且您再也没有了密码，那么您的资金将丢失。",
-      "privateKeyRowsDesc": "只有您可以动用资金，但您必须确保自己的秘密号码安全。您的秘密由8行（标记为AH）组成，每行包含6位数字。",
+      "privateKeyRowsDesc": "只有您可以动用您的资金，但您必须确保自己的秘密号码安全。您的秘密由8行（标记为AH）组成，每行包含6位数字。",
       "neverSharePrivateKey": "切勿与他人共享您的秘密号码（私钥）。如果这样做，您可能会失去使用资金的权限。",
       "secretNumbersOfRow": "行的秘密号码%{row}",
       "confirmNumbersOfRow": "确认行数%{row}",
@@ -471,6 +471,7 @@
       "enterDescription": "输入描述",
       "enterPublicMemo": "输入（可选）公共备忘",
       "enterDestinationTag": "输入目的地标签",
+      "pleaseEnterTheDestinationTag": "请输入目的地标签",
       "destinationIsConfirmedAsScam": "目标帐户被确认为SCAM",
       "destinationIsProbableIsScam": "目标帐户被标记为高风险",
       "selectedAccountDoNotSupportCurrency": "所选帐户不支持所选货币。",
@@ -479,7 +480,9 @@
       "destinationNotExistCreationWarning": "目标帐户以前没有使用过，并且没有任何余额。如果您继续发送到该帐户，则20 XRP %{amount} XRP将用于在XRP分类帐上激活帐户，这意味着20 XRP将不可用。你确定你要继续吗？",
       "destinationCannotActivateWithIOU": "目标帐户以前没有使用过，并且没有任何余额。要在XRP分类帐上激活帐户，必须将至少20 XRP的初始存款发送到该帐户。非XRP货币不能用于初始存款。",
       "destinationTagIsRequired": "发送此付款需要提供目的地标签。",
-      "unableGetRecipientAccountInfoPleaseTryAgain": "无法获取收件人帐户信息，请重试。"
+      "unableGetRecipientAccountInfoPleaseTryAgain": "无法获取收件人帐户信息，请重试。",
+      "noDestinationTag": "没有目的地标签",
+      "thisAddressRequiredDestinationTag": "该地址需要目的地标签"
    },
    "currency": {
       "addCurrency": "添加货币",

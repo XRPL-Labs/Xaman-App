@@ -48,6 +48,7 @@ const screens = {
         Alert: 'overlay.Alert',
         ShareAccount: 'overlay.ShareAccount',
         RequestDecline: 'overlay.RequestDecline',
+        EnterDestinationTag: 'overlay.EnterDestinationTag',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',

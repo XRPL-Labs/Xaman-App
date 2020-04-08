@@ -390,7 +390,7 @@
       "pleaseProvideAccountAddress": "Proporcione la dirección de su cuenta (comienza con 'r ...')",
       "pleaseEnterYourAddress": "Por favor ingrese su dirección XRP",
       "invalidMnemonic": "¡Nenemónico inválido!",
-      "pleaseEnterAllWords": "¡Por favor ingrese todas sus palabras mnemotécnicas!",
+      "pleaseEnterAllWords": "¡Por favor ingrese todas sus palabras mnemónicas!",
       "pleaseProvideMnemonic": "Proporcione su Mnemonic (24 palabras) para su cuenta.",
       "pleaseEnterYourMnemonic": "Por favor ingrese su Mnemonic",
       "howManyWordsYourMnemonicIs": "¿Cuántas palabras tiene tu mnemotécnico?",
@@ -471,6 +471,7 @@
       "enterDescription": "Ingrese la descripción",
       "enterPublicMemo": "Introduzca (opcional) memo público",
       "enterDestinationTag": "Ingrese la etiqueta de destino",
+      "pleaseEnterTheDestinationTag": "Por favor, introduzca la etiqueta de destino",
       "destinationIsConfirmedAsScam": "La cuenta de destino se confirma como estafa",
       "destinationIsProbableIsScam": "La cuenta de destino está marcada como de alto riesgo.",
       "selectedAccountDoNotSupportCurrency": "La cuenta seleccionada no admite la moneda seleccionada.",
@@ -479,7 +480,9 @@
       "destinationNotExistCreationWarning": "La cuenta de destino no se ha utilizado antes y no tiene ningún saldo. Si continúa enviando a esta cuenta, 20 XRP del %{amount} XRP se usará para activar la cuenta en el libro mayor de XRP, lo que significa que 20 XRP no se gastará. Estás seguro de que quieres continuar?",
       "destinationCannotActivateWithIOU": "La cuenta de destino no se ha utilizado antes y no tiene ningún saldo. Para activar una cuenta en el libro mayor de XRP, se debe enviar un depósito inicial de al menos 20 XRP a la cuenta. Las monedas que no sean XRP no se pueden usar para el depósito inicial.",
       "destinationTagIsRequired": "Se requiere la etiqueta de destino para enviar este pago.",
-      "unableGetRecipientAccountInfoPleaseTryAgain": "No se puede obtener la información de la cuenta del destinatario, intente nuevamente."
+      "unableGetRecipientAccountInfoPleaseTryAgain": "No se puede obtener la información de la cuenta del destinatario, intente nuevamente.",
+      "noDestinationTag": "Sin etiqueta de destino",
+      "thisAddressRequiredDestinationTag": "Esta dirección requiere una etiqueta de destino"
    },
    "currency": {
       "addCurrency": "Agregar moneda",

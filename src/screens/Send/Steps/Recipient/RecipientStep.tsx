@@ -1,12 +1,11 @@
-/* eslint-disable react/no-unused-state */
-
 /**
- * Generate Account/Finish Screen
+ * Send / Recipient step
  */
+
 import { v4 as uuidv4 } from 'uuid';
 import React, { Component } from 'react';
 import { Results } from 'realm';
-import { isEmpty, flatMap, remove, get, uniqBy, has, toNumber } from 'lodash';
+import { isEmpty, flatMap, remove, get, uniqBy, toNumber } from 'lodash';
 import { View, Text, Image, TouchableHighlight, SectionList, ActivityIndicator, Alert } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
@@ -16,9 +15,10 @@ import { Decode } from 'xrpl-tagged-address-codec';
 import { AccountRepository, ContactRepository } from '@store/repositories';
 import { ContactSchema, AccountSchema } from '@store/schemas/latest';
 
-import { getAccountName, Images, AlertModal, Toast } from '@common/helpers';
+import { AppScreens } from '@common/constants';
+import { getAccountName, getAccountInfo, Navigator, Images, AlertModal, Toast } from '@common/helpers';
 
-import { BackendService, LedgerService } from '@services';
+import { BackendService } from '@services';
 
 // components
 import { Button, TextInput, Footer, InfoMessage } from '@components';
@@ -198,6 +198,7 @@ class RecipientStep extends Component<Props, State> {
                                         address: element.account,
                                         avatar: Images.IconGlobe,
                                         source: element.source,
+                                        tag: element.tag,
                                     });
                                 });
                             }
@@ -308,8 +309,6 @@ class RecipientStep extends Component<Props, State> {
         });
 
         try {
-            let shouldCheckAccountRisk = true;
-
             // check for same destination as source
             if (destination.address === source.address) {
                 Alert.alert(Localize.t('global.error'), Localize.t('send.sourceAndDestinationCannotBeSame'));
@@ -318,156 +317,170 @@ class RecipientStep extends Component<Props, State> {
             }
 
             // check for account exist and potential destination tag required
-            const destinationInfo = await LedgerService.getAccountInfo(destination.address);
+            const destinationInfo = await getAccountInfo(destination.address);
 
-            if (has(destinationInfo, 'error')) {
-                // account doesn't exist no need to check account risk
-                if (get(destinationInfo, 'error') === 'actNotFound') {
-                    shouldCheckAccountRisk = false;
+            // set destination account info
+            setDestinationInfo(destinationInfo);
 
-                    // account does not exist and cannot activate with IOU
-                    if (typeof currency !== 'string') {
-                        AlertModal({
-                            type: 'warning',
-                            text: Localize.t('send.destinationCannotActivateWithIOU'),
-                            buttons: [
-                                {
-                                    text: Localize.t('global.back'),
-                                    onPress: () => {
-                                        setDestination(undefined);
-                                        this.setState({
-                                            searchText: '',
-                                        });
-                                    },
-                                    type: 'dismiss',
-                                    light: false,
+            // account doesn't exist no need to check account risk
+            if (!destinationInfo.exist) {
+                // account does not exist and cannot activate with IOU
+                if (typeof currency !== 'string') {
+                    AlertModal({
+                        type: 'warning',
+                        text: Localize.t('send.destinationCannotActivateWithIOU'),
+                        buttons: [
+                            {
+                                text: Localize.t('global.back'),
+                                onPress: () => {
+                                    setDestination(undefined);
+                                    this.setState({
+                                        searchText: '',
+                                    });
                                 },
-                            ],
-                        });
+                                type: 'dismiss',
+                                light: false,
+                            },
+                        ],
+                    });
 
-                        // don't move to next step
-                        return;
-                    }
+                    // don't move to next step
+                    return;
+                }
 
-                    // check if amount is not covering the creation of account
-                    if (typeof currency === 'string' && parseFloat(amount) < 20) {
-                        AlertModal({
-                            type: 'warning',
-                            text: Localize.t('send.destinationNotExistTooLittleToCreate'),
-                            buttons: [
-                                {
-                                    text: Localize.t('global.back'),
-                                    onPress: () => {
-                                        setDestination(undefined);
-                                        this.setState({
-                                            searchText: '',
-                                        });
-                                    },
-                                    type: 'dismiss',
-                                    light: false,
+                // check if amount is not covering the creation of account
+                if (typeof currency === 'string' && parseFloat(amount) < 20) {
+                    AlertModal({
+                        type: 'warning',
+                        text: Localize.t('send.destinationNotExistTooLittleToCreate'),
+                        buttons: [
+                            {
+                                text: Localize.t('global.back'),
+                                onPress: () => {
+                                    setDestination(undefined);
+                                    this.setState({
+                                        searchText: '',
+                                    });
                                 },
-                            ],
-                        });
+                                type: 'dismiss',
+                                light: false,
+                            },
+                        ],
+                    });
 
-                        // don't move to next step
-                        return;
-                    }
+                    // don't move to next step
+                    return;
+                }
 
-                    // check if the amount will create the account
-                    if (typeof currency === 'string' && parseFloat(amount) >= 20) {
-                        AlertModal({
-                            type: 'warning',
-                            text: Localize.t('send.destinationNotExistCreationWarning', { amount }),
-                            buttons: [
-                                {
-                                    text: Localize.t('global.back'),
-                                    onPress: () => {
-                                        setDestination(undefined);
-                                        this.setState({
-                                            searchText: '',
-                                        });
-                                    },
-                                    type: 'dismiss',
-                                    light: true,
+                // check if the amount will create the account
+                if (typeof currency === 'string' && parseFloat(amount) >= 20) {
+                    AlertModal({
+                        type: 'warning',
+                        text: Localize.t('send.destinationNotExistCreationWarning', { amount }),
+                        buttons: [
+                            {
+                                text: Localize.t('global.back'),
+                                onPress: () => {
+                                    setDestination(undefined);
+                                    this.setState({
+                                        searchText: '',
+                                    });
                                 },
-                                {
-                                    text: Localize.t('global.continue'),
-                                    onPress: goNext,
-                                    type: 'continue',
-                                    light: false,
-                                },
-                            ],
-                        });
+                                type: 'dismiss',
+                                light: true,
+                            },
+                            {
+                                text: Localize.t('global.continue'),
+                                onPress: goNext,
+                                type: 'continue',
+                                light: false,
+                            },
+                        ],
+                    });
 
-                        // don't move to next step
-                        return;
-                    }
+                    // don't move to next step
+                    return;
                 }
             }
 
             // check for account risk and scam
-            if (shouldCheckAccountRisk) {
-                const accountRisk = await BackendService.getAccountRisk(destination.address);
+            if (destinationInfo.risk === 'PROBABLE' || destinationInfo.risk === 'HIGH_PROBABILITY') {
+                AlertModal({
+                    type: 'warning',
+                    text: Localize.t('send.destinationIsProbableIsScam'),
+                    buttons: [
+                        {
+                            text: Localize.t('global.back'),
+                            onPress: () => {
+                                setDestination(undefined);
+                                this.setState({
+                                    searchText: '',
+                                });
+                            },
+                            type: 'dismiss',
+                            light: false,
+                        },
+                        {
+                            text: Localize.t('global.continue'),
+                            onPress: goNext,
+                            type: 'continue',
+                            light: true,
+                        },
+                    ],
+                });
 
-                if (accountRisk.danger !== 'ERROR' || accountRisk.danger !== 'UNKNOWS') {
-                    if (accountRisk.danger === 'PROBABLE' || accountRisk.danger === 'HIGH_PROBABILITY') {
-                        AlertModal({
-                            type: 'warning',
-                            text: Localize.t('send.destinationIsProbableIsScam'),
-                            buttons: [
-                                {
-                                    text: Localize.t('global.back'),
-                                    onPress: () => {
-                                        setDestination(undefined);
-                                        this.setState({
-                                            searchText: '',
-                                        });
-                                    },
-                                    type: 'dismiss',
-                                    light: false,
-                                },
-                                {
-                                    text: Localize.t('global.continue'),
-                                    onPress: goNext,
-                                    type: 'continue',
-                                    light: true,
-                                },
-                            ],
-                        });
-
-                        // don't move to next step
-                        return;
-                    }
-
-                    if (accountRisk.danger === 'CONFIRMED') {
-                        AlertModal({
-                            type: 'error',
-                            title: Localize.t('global.critical'),
-                            text: Localize.t('send.destinationIsConfirmedAsScam'),
-
-                            buttons: [
-                                {
-                                    text: Localize.t('global.back'),
-                                    onPress: () => {
-                                        setDestination(undefined);
-                                        this.setState({
-                                            searchText: '',
-                                        });
-                                    },
-                                    type: 'dismiss',
-                                    light: false,
-                                },
-                            ],
-                        });
-
-                        // don't move to next step
-                        return;
-                    }
-                }
+                // don't move to next step
+                return;
             }
 
-            // set account info
-            setDestinationInfo(destinationInfo);
+            if (destinationInfo.risk === 'CONFIRMED') {
+                AlertModal({
+                    type: 'error',
+                    title: Localize.t('global.critical'),
+                    text: Localize.t('send.destinationIsConfirmedAsScam'),
+
+                    buttons: [
+                        {
+                            text: Localize.t('global.back'),
+                            onPress: () => {
+                                setDestination(undefined);
+                                this.setState({
+                                    searchText: '',
+                                });
+                            },
+                            type: 'dismiss',
+                            light: false,
+                        },
+                    ],
+                });
+
+                // don't move to next step
+                return;
+            }
+
+            if (destinationInfo.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
+                Navigator.showOverlay(
+                    AppScreens.Overlay.EnterDestinationTag,
+                    {
+                        layout: {
+                            backgroundColor: 'transparent',
+                            componentBackgroundColor: 'transparent',
+                        },
+                    },
+                    {
+                        buttonType: 'next',
+                        destination,
+                        onFinish: (destinationTag: string) => {
+                            Object.assign(destination, { tag: destinationTag });
+                            setDestination(destination);
+                            goNext();
+                        },
+                    },
+                );
+
+                // don't move to next step
+                return;
+            }
         } catch {
             Toast(Localize.t('send.unableGetRecipientAccountInfoPleaseTryAgain'));
             return;

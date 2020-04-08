@@ -232,7 +232,7 @@
    },
    "setupBiometry": {
       "useBiometry": "FaceIDまたは指紋を使用しますか？",
-      "biometryDescription": "アカウントをより安全に保つために、FaceIDまたは指紋の使用をアクティブ化できます。"
+      "biometryDescription": "アカウントをより安全に保つには、FaceIDまたは指紋の使用をアクティブ化できます。"
    },
    "setupPermissions": {
       "enableNotifications": "プッシュ通知を有効にしますか？",
@@ -342,7 +342,7 @@
       "pleaseEnterSafePassphrase": "覚えやすいが、他の人には推測できない長さの長いパスフレーズを作成します。",
       "enterPassphrase": "パスフレーズを入力してください",
       "repeatPassphrase": "パスフレーズを繰り返す",
-      "passphraseShouldContain": "パスフレーズの強度は少なくとも公平である必要があります。長いパスフレーズまたはより難しいパスフレーズを使用してください（長いパスフレーズを使用することをお勧めします）。",
+      "passphraseShouldContain": "パスフレーズの強度は少なくとも公平である必要があります。長いパスフレーズまたはより難しいパスフレーズを使用してください（長いパスフレーズの方が適しています）。",
       "passphraseConfirmNotMatch": "パスフレーズが一致しません",
       "enterValidPassphrase": "有効なパスフレーズを入力してください",
       "chooseSecurityLevel": "セキュリティレベル",
@@ -439,7 +439,7 @@
       "switchAccount": "アカウントを切り替える",
       "useMnemonicPassphrase": "ニーモニックパスフレーズを使用する",
       "mnemonicLargeAmountAlert": "アカウントに大きな価値がある（たとえば、貯蓄、大量のXRPまたはその他のトークン）状態でニーモニックアカウントをインポートすることを検討する場合、ニーモニックアカウントをオフラインに保つために、XUMMで新しいアカウントを作成することを検討してください。",
-      "importExchangeAddressReadonlyWarning": "Exchange（預金）アカウントをインポートすることはできません。これを行うと、取引所で自分の残高を追跡できなくなります。読み取り専用アカウントのインポートは、ハードウェアのアカウントのように、これが自分のアクティブなアカウントである場合にのみ機能します。"
+      "importExchangeAddressReadonlyWarning": "Exchange（預金）アカウントをインポートすることはできません。これを行うと、取引所で自分の残高を追跡できなくなります。読み取り専用アカウントのインポートは、これがハードウェアのアカウントのように自分のアクティブなアカウントである場合にのみ機能します"
    },
    "send": {
       "amountIsBiggerThanYourSpend": "金額があなたが費やすことができる金額よりも大きい（ %{spendable} ）",
@@ -471,6 +471,7 @@
       "enterDescription": "説明を入力してください",
       "enterPublicMemo": "公開メモを入力してください（オプション）",
       "enterDestinationTag": "宛先タグを入力してください",
+      "pleaseEnterTheDestinationTag": "宛先タグを入力してください",
       "destinationIsConfirmedAsScam": "宛先アカウントは詐欺として確認されます",
       "destinationIsProbableIsScam": "移行先のアカウントに高リスクのフラグが付けられています",
       "selectedAccountDoNotSupportCurrency": "選択したアカウントは選択した通貨をサポートしていません。",
@@ -479,7 +480,9 @@
       "destinationNotExistCreationWarning": "移行先のアカウントは以前に使用されておらず、残高もありません。このアカウントへの送信を続けると、20 XRPの%{amount} XRPは、XRP元帳のアカウントをアクティブ化するために使用されます。つまり、20 XRPは使用できません。続行してもよろしいですか？",
       "destinationCannotActivateWithIOU": "移行先のアカウントは以前に使用されておらず、残高もありません。 XRP元帳でアカウントをアクティブ化するには、少なくとも20のXRPの初期預金をアカウントに送信する必要があります。 XRP以外の通貨は初回入金には使用できません。",
       "destinationTagIsRequired": "この支払いを送信するには宛先タグが必要です。",
-      "unableGetRecipientAccountInfoPleaseTryAgain": "受信者のアカウント情報を取得できません。もう一度お試しください。"
+      "unableGetRecipientAccountInfoPleaseTryAgain": "受信者のアカウント情報を取得できません。もう一度お試しください。",
+      "noDestinationTag": "宛先タグなし",
+      "thisAddressRequiredDestinationTag": "このアドレスには宛先タグが必要です"
    },
    "currency": {
       "addCurrency": "通貨を追加",

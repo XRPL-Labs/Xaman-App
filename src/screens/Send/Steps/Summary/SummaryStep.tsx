@@ -23,7 +23,8 @@ import { AccountSchema } from '@store/schemas/latest';
 
 import Flag from '@common/libs/ledger/parser/common/flag';
 
-import { Images, Prompt } from '@common/helpers';
+import { AppScreens } from '@common/constants';
+import { Images, Prompt, Navigator } from '@common/helpers';
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
@@ -161,6 +162,28 @@ class SummaryStep extends Component {
         }
     };
 
+    showEnterDestinationTag = () => {
+        const { destination, setDestination } = this.context;
+
+        Navigator.showOverlay(
+            AppScreens.Overlay.EnterDestinationTag,
+            {
+                layout: {
+                    backgroundColor: 'transparent',
+                    componentBackgroundColor: 'transparent',
+                },
+            },
+            {
+                buttonType: 'apply',
+                destination,
+                onFinish: (destinationTag: string) => {
+                    Object.assign(destination, { tag: destinationTag });
+                    setDestination(destination);
+                },
+            },
+        );
+    };
+
     renderAccountItem = (account: AccountSchema, selected: boolean) => {
         return (
             <View style={[styles.pickerItem]}>
@@ -260,17 +283,9 @@ class SummaryStep extends Component {
         }
 
         // check if destination requires the destination tag
-        if (!has(destinationInfo, 'error') && has(destinationInfo, ['account_data', 'Flags'])) {
-            const { account_data } = destinationInfo;
-            const accountFlags = new Flag('Account', account_data.Flags).parse();
-
-            if (accountFlags.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
-                Alert.alert(Localize.t('global.warning'), Localize.t('send.destinationTagIsRequired'));
-                if (this.destinationTagInput) {
-                    this.destinationTagInput.focus();
-                }
-                return;
-            }
+        if (destinationInfo.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
+            Alert.alert(Localize.t('global.warning'), Localize.t('send.destinationTagIsRequired'));
+            return;
         }
 
         // go to next screen
@@ -338,6 +353,30 @@ class SummaryStep extends Component {
                                     </Text>
                                 </View>
                             </View>
+
+                            <Spacer size={20} />
+
+                            <View style={AppStyles.row}>
+                                <View style={AppStyles.flex1}>
+                                    {/* eslint-disable-next-line */}
+                                    <View style={[{ paddingLeft: 10 }]}>
+                                        <Text style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
+                                            {Localize.t('global.destinationTag')}:{' '}
+                                            <Text style={AppStyles.colorBlue}>
+                                                {destination.tag || Localize.t('send.noDestinationTag')}
+                                            </Text>
+                                        </Text>
+                                    </View>
+                                </View>
+                                <Button
+                                    onPress={this.showEnterDestinationTag}
+                                    style={styles.editButton}
+                                    roundedSmall
+                                    iconSize={13}
+                                    light
+                                    icon="IconEdit"
+                                />
+                            </View>
                         </View>
 
                         {/* Currency */}
@@ -391,7 +430,7 @@ class SummaryStep extends Component {
                         </View>
 
                         {/* destination tag */}
-                        <View style={[styles.rowItem]}>
+                        {/* <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
                                     {Localize.t('global.destinationTag')}:
@@ -409,7 +448,7 @@ class SummaryStep extends Component {
                                 keyboardType="number-pad"
                                 returnKeyType="done"
                             />
-                        </View>
+                        </View> */}
 
                         {/* Desc */}
                         <View style={[styles.rowItem]}>
