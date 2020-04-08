@@ -126,27 +126,38 @@ class VaultModal extends Component<Props, State> {
             duration: 350,
         }).start();
 
-        // if biometry sets by default switch to biometry for faster result
         if (encryptionLevel === EncryptionLevels.Passcode) {
             FingerprintScanner.isSensorAvailable()
                 .then(() => {
-                    this.setState({
-                        isSensorAvailable: true,
-                    });
-                    if (coreSettings.biometricMethod !== BiometryType.None) {
-                        setTimeout(() => {
-                            this.requestBiometricAuthenticate(true);
-                        }, 500);
-                    } else {
-                        // focus the input
-                        setTimeout(() => {
-                            if (this.securePinInput) {
-                                this.securePinInput.focus();
+                    this.setState(
+                        {
+                            isSensorAvailable: true,
+                        },
+                        () => {
+                            // if biometry sets by default switch to biometry for faster result
+                            if (coreSettings.biometricMethod !== BiometryType.None) {
+                                setTimeout(() => {
+                                    this.requestBiometricAuthenticate(true);
+                                }, 500);
+                            } else {
+                                // focus the input
+                                setTimeout(() => {
+                                    if (this.securePinInput) {
+                                        this.securePinInput.focus();
+                                    }
+                                }, 300);
                             }
-                        }, 300);
-                    }
+                        },
+                    );
                 })
-                .catch(() => {});
+                .catch(() => {
+                    // focus the input
+                    setTimeout(() => {
+                        if (this.securePinInput) {
+                            this.securePinInput.focus();
+                        }
+                    }, 300);
+                });
         } else if (encryptionLevel === EncryptionLevels.Passphrase) {
             // focus the input
             setTimeout(() => {
@@ -208,7 +219,7 @@ class VaultModal extends Component<Props, State> {
             })
             .catch((error: any) => {
                 if (system) return;
-                if (error.code !== 'UserCancel') {
+                if (error.name !== 'UserCancel') {
                     Alert.alert(Localize.t('global.error'), Localize.t('global.invalidBiometryAuth'));
                 }
             })
