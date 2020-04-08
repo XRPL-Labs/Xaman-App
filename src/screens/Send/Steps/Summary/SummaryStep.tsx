@@ -2,7 +2,6 @@
  * Send Summary Step
  */
 
-import { has } from 'lodash';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import {
@@ -20,8 +19,6 @@ import {
 
 import { CoreRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
-
-import Flag from '@common/libs/ledger/parser/common/flag';
 
 import { AppScreens } from '@common/constants';
 import { Images, Prompt, Navigator } from '@common/helpers';

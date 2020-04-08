@@ -64,6 +64,7 @@ const getAccountName = memoize(
 );
 
 const getAccountInfo = (address: string): Promise<AccountInfoType> => {
+    /* eslint-disable-next-line  */
     return new Promise(async (resolve, reject) => {
         const info = {
             exist: true,
