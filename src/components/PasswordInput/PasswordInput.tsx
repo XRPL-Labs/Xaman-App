@@ -249,6 +249,7 @@ export default class PasswordInput extends Component<Props, State> {
         Animated.timing(this.animatedBarWidth, {
             toValue: absoluteWidth,
             duration: 700,
+            useNativeDriver: false,
         }).start();
 
         return (
@@ -269,7 +270,7 @@ export default class PasswordInput extends Component<Props, State> {
         return (
             <View style={[styles.inputWrapper, inputWrapperStyle, AppStyles.stretchSelf]}>
                 <TextInput
-                    ref={(r) => {
+                    ref={r => {
                         this.instance = r;
                     }}
                     editable={editable}
@@ -280,7 +281,7 @@ export default class PasswordInput extends Component<Props, State> {
                     multiline={false}
                     underlineColorAndroid="transparent"
                     style={[styles.input, inputStyle]}
-                    onChangeText={(text) => this.onChangeText(text)}
+                    onChangeText={text => this.onChangeText(text)}
                     placeholder={placeholder}
                     selectTextOnFocus={selectTextOnFocus}
                 />

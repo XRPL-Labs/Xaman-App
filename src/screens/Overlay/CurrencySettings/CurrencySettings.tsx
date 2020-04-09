@@ -62,10 +62,12 @@ class CurrencySettingsModal extends Component<Props, State> {
             Animated.timing(this.animatedColor, {
                 toValue: 150,
                 duration: 350,
+                useNativeDriver: false,
             }),
             Animated.timing(this.animatedOpacity, {
                 toValue: 1,
                 duration: 200,
+                useNativeDriver: true,
             }),
         ]).start();
     }
@@ -75,10 +77,12 @@ class CurrencySettingsModal extends Component<Props, State> {
             Animated.timing(this.animatedColor, {
                 toValue: 0,
                 duration: 350,
+                useNativeDriver: false,
             }),
             Animated.timing(this.animatedOpacity, {
                 toValue: 0,
                 duration: 200,
+                useNativeDriver: true,
             }),
         ]).start(() => {
             Navigator.dismissOverlay();

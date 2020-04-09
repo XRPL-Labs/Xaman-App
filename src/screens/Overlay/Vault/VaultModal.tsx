@@ -124,6 +124,7 @@ class VaultModal extends Component<Props, State> {
         Animated.timing(this.animatedColor, {
             toValue: 150,
             duration: 350,
+            useNativeDriver: false,
         }).start();
 
         if (encryptionLevel === EncryptionLevels.Passcode) {

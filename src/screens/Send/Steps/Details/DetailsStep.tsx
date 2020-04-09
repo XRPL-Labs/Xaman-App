@@ -54,7 +54,7 @@ class DetailsStep extends Component {
 
         if (height === 0) return;
 
-        Animated.timing(this.gradientHeight, { toValue: height }).start();
+        Animated.timing(this.gradientHeight, { toValue: height, useNativeDriver: false }).start();
     };
 
     goNext = () => {

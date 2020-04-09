@@ -54,7 +54,7 @@ class SummaryStep extends Component {
     setGradientHeight = (event: LayoutChangeEvent) => {
         const { height } = event.nativeEvent.layout;
         if (height === 0) return;
-        Animated.timing(this.gradientHeight, { toValue: height }).start();
+        Animated.timing(this.gradientHeight, { toValue: height, useNativeDriver: false }).start();
     };
 
     onDescriptionChange = (text: string) => {

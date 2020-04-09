@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { requireNativeComponent, ViewStyle } from 'react-native';
 
-const NativeQRCode = requireNativeComponent('QRCode');
+const NativeQRCode: any = requireNativeComponent('QRCode');
 
 /* Types ==================================================================== */
 interface Props {

@@ -51,10 +51,12 @@ class SearchBar extends PureComponent<Props, State> {
         if (value && alpha._value === 0) {
             Animated.spring(alpha, {
                 toValue: 1,
+                useNativeDriver: true,
             }).start();
         } else if (!value) {
             Animated.spring(alpha, {
                 toValue: 0,
+                useNativeDriver: true,
             }).start();
         }
     };

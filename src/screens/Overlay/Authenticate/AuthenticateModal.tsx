@@ -83,6 +83,7 @@ class AuthenticateModal extends Component<Props, State> {
         Animated.timing(this.animatedColor, {
             toValue: 150,
             duration: 350,
+            useNativeDriver: false,
         }).start();
 
         // focus the input

@@ -61,6 +61,7 @@ class AlertModal extends Component<Props, State> {
             Animated.timing(this.animatedColor, {
                 toValue: 150,
                 duration: 350,
+                useNativeDriver: false,
             }),
         ]).start();
     }
@@ -77,6 +78,7 @@ class AlertModal extends Component<Props, State> {
             Animated.timing(this.animatedColor, {
                 toValue: 0,
                 duration: 100,
+                useNativeDriver: false,
             }),
         ]).start(() => {
             Navigator.dismissOverlay();
