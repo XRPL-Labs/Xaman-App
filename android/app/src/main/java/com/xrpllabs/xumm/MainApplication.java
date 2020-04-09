@@ -2,10 +2,12 @@ package com.xrpllabs.xumm;
 
 import android.content.Context;
 
+import com.facebook.react.PackageList;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
-import com.facebook.react.shell.MainReactPackage;
+import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.modules.network.OkHttpClientProvider;
+import com.facebook.soloader.SoLoader;
 
 // Local Libs
 import libs.utils.UtilsPackage;
@@ -13,30 +15,18 @@ import libs.crypto.CryptoPackage;
 import libs.ui.ActionSheetPackage;
 import libs.ui.PromptPackage;
 import libs.ui.QRCodePackage;
-
 import libs.common.HTTPClientFactory;
 
+// External Dependencies
+import com.reactnativenavigation.NavigationApplication;
+import com.reactnativenavigation.react.NavigationReactNativeHost;
 // firebase
-import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import io.invertase.firebase.fabric.crashlytics.RNFirebaseCrashlyticsPackage;
 import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
-
-// External Dependencies
-import com.reactnativenavigation.NavigationApplication;
-import com.reactnativenavigation.react.NavigationPackage;
-import com.reactnativenavigation.react.NavigationReactNativeHost;
-import com.oblador.keychain.KeychainPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
-import com.hieuvp.fingerprint.ReactNativeFingerprintScannerPackage;
-import com.reactnativecommunity.netinfo.NetInfoPackage;
+// Interactable
 import com.wix.interactable.Interactable;
-import com.cmcewen.blurview.BlurViewPackage;
-import com.reactnativecommunity.webview.RNCWebViewPackage;
-import io.realm.react.RealmReactPackage;
-import org.reactnative.camera.RNCameraPackage;
-import cl.json.RNSharePackage;
 
 // PlayService
 import android.content.Intent;
@@ -63,34 +53,25 @@ public class MainApplication extends NavigationApplication {
 
             @Override
             protected List<ReactPackage> getPackages() {
-                return Arrays.<ReactPackage>asList(
-                    new MainReactPackage(),
-                    new NavigationPackage(mReactNativeHost),
-                    // Local Libs
-                    new UtilsPackage(),
-                    new CryptoPackage(),
-                    new ActionSheetPackage(),
-                    new PromptPackage(),
-                    new QRCodePackage(),
-                    // Firebase Dependencies
-                    new RNFirebasePackage(),
-                    new RNFirebaseMessagingPackage(),
-                    new RNFirebaseNotificationsPackage(),
-                    new RNFirebaseCrashlyticsPackage(),
-                    new RNFirebaseAnalyticsPackage(),
-                    // Other Dependencies
-                    new KeychainPackage(),
-                    new RNDeviceInfo(),
-                    new ReactNativeFingerprintScannerPackage(),
-                    new NetInfoPackage(),
-                    new Interactable(),
-                    new RealmReactPackage(),
-                    new RNCameraPackage(),
-                    new RNSharePackage(),
-                    new BlurViewPackage(),
-                    new RNCWebViewPackage()
-                );
+                @SuppressWarnings("UnnecessaryLocalVariable")
+                List<ReactPackage> packages = new PackageList(this).getPackages();
+                // Local Libs
+                packages.add(new UtilsPackage());
+                packages.add(new CryptoPackage());
+                packages.add(new ActionSheetPackage());
+                packages.add(new PromptPackage());
+                packages.add(new QRCodePackage());
+                // Firebase Dependencies
+                packages.add(new RNFirebaseMessagingPackage());
+                packages.add(new RNFirebaseNotificationsPackage());
+                packages.add(new RNFirebaseCrashlyticsPackage());
+                packages.add(new RNFirebaseAnalyticsPackage());
+                // Interactable
+                packages.add(new Interactable());
+                return packages;
             }
+
+            
         };
 
 
@@ -102,17 +83,14 @@ public class MainApplication extends NavigationApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        SoLoader.init(this, /* native exopackage */ false);
         // Update security provider
         upgradeSecurityProvider();
-
         // Replace default http client
         OkHttpClientProvider.setOkHttpClientFactory(new HTTPClientFactory());
-
         // initialize flipper
-        initializeFlipper(this);
+        initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
     }
-
 
     /**
      * Update Security providers
@@ -130,21 +108,25 @@ public class MainApplication extends NavigationApplication {
         });
     }
 
-
     /**
-     * Loads Flipper in React Native templates.
-     *
-     * @param context
-     */
-    private static void initializeFlipper(Context context) {
+    * Loads Flipper in React Native templates. Call this in the onCreate method with something like
+    * initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+    *
+    * @param context
+    * @param reactInstanceManager
+    */
+    private static void initializeFlipper(
+      Context context, ReactInstanceManager reactInstanceManager) {
         if (BuildConfig.DEBUG) {
             try {
                 /*
                 We use reflection here to pick up the class that initializes Flipper,
                 since Flipper library is not available in release mode
                 */
-                Class<?> aClass = Class.forName("com.facebook.flipper.ReactNativeFlipper");
-                aClass.getMethod("initializeFlipper", Context.class).invoke(null, context);
+                Class<?> aClass = Class.forName("com.xrpllabs.xumm.ReactNativeFlipper");
+                aClass
+                    .getMethod("initializeFlipper", Context.class, ReactInstanceManager.class)
+                    .invoke(null, context, reactInstanceManager);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (NoSuchMethodException e) {
@@ -155,7 +137,7 @@ public class MainApplication extends NavigationApplication {
                 e.printStackTrace();
             }
         }
-    }
+  }
 
 }
 
