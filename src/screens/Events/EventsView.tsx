@@ -389,21 +389,25 @@ class EventsView extends Component<Props, State> {
         const payloadFilter = new Fuse(pendingPayloads, {
             keys: ['application.name'],
             shouldSort: false,
+            includeScore: false,
         });
-        const newPendingPayloads = payloadFilter.search(text);
+
+        const newPendingPayloads = flatMap(payloadFilter.search(text), 'item');
 
         const transactionFilter = new Fuse(transactions, {
             keys: [
                 'Account.address',
                 'Destination.address',
                 'Destination.name',
+                'Destination.tag',
                 'Amount.value',
                 'Amount.currency',
                 'Hash',
             ],
             shouldSort: false,
+            includeScore: false,
         });
-        const newTransactions = transactionFilter.search(text);
+        const newTransactions = flatMap(transactionFilter.search(text), 'item');
 
         this.setState({
             searchText: text,
