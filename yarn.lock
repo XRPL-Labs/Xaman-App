@@ -8567,11 +8567,6 @@ react-native-navigation@6.3.0:
     react-lifecycles-compat "2.0.0"
     tslib "1.9.3"
 
-react-native-share@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-3.1.1.tgz#db6bd75318c747fee565f8cc012dd0a846cecca9"
-  integrity sha512-3BwSo3lhrUlqqx0LxHF5tyKc927UI6N6pu+o2+agdYjtfdVLeUeyYIjkdYGobcIvviTr4qcr9FJ0AfUCSHvlGQ==
-
 react-native-webview@^9.0.1:
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-9.0.1.tgz#81ae3aa33e446f1c93586f972092f805ab07b03a"

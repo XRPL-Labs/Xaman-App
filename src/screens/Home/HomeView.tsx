@@ -13,10 +13,10 @@ import {
     ScrollView,
     ImageBackground,
     InteractionManager,
+    Share,
 } from 'react-native';
 
 import { Navigation } from 'react-native-navigation';
-import Share from 'react-native-share';
 
 import { LedgerService } from '@services';
 
@@ -462,11 +462,10 @@ class HomeView extends Component<Props, State> {
                         <Text style={[styles.cardLabel]}>{Localize.t('global.address')}:</Text>
                         <TouchableOpacity
                             onPress={() => {
-                                const shareOptions = {
+                                Share.share({
                                     title: Localize.t('home.shareAccount'),
                                     message: account.address,
-                                };
-                                Share.open(shareOptions).catch(() => {});
+                                }).catch(() => {});
                             }}
                             activeOpacity={0.9}
                             style={[AppStyles.row, styles.cardAddress]}

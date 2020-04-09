@@ -2,9 +2,7 @@
  * Switch Account Overlay
  */
 import React, { Component } from 'react';
-import { Animated, View, Text, TouchableWithoutFeedback } from 'react-native';
-
-import Share from 'react-native-share';
+import { Animated, View, Text, TouchableWithoutFeedback, Share } from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
@@ -88,12 +86,10 @@ class ShareAccountModal extends Component<Props, State> {
 
         this.slideDown();
 
-        const shareOptions = {
+        Share.share({
             title: Localize.t('home.shareAccount'),
             message: account.address,
-        };
-
-        Share.open(shareOptions).catch(() => {});
+        }).catch(() => {});
     };
 
     render() {
@@ -120,7 +116,7 @@ class ShareAccountModal extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={(r) => {
+                    ref={r => {
                         this.panel = r;
                     }}
                     animatedNativeDriver
