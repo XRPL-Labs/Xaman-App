@@ -10,7 +10,7 @@ import * as Keychain from 'react-native-keychain';
 import { AES, randomKey } from '@common/libs/crypto';
 import { HexEncoding } from '@common/libs/utils';
 
-import { LoggerService } from '@services';
+import LoggerService from '@services/LoggerService';
 
 /* Types ==================================================================== */
 export interface VaultEntry {

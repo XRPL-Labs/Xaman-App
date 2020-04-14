@@ -4,10 +4,9 @@
 
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Alert, Keyboard, KeyboardAvoidingView } from 'react-native';
+
 import { XRPL_Account, utils } from 'xrpl-accountlib';
 import { StringType, XrplDestination } from 'xumm-string-decode';
-
-import { ImportSteps } from '@screens/Account/Add/Import';
 
 import Localize from '@locale';
 // components
@@ -15,10 +14,11 @@ import { Button, TextInput, InfoMessage, Spacer, Footer } from '@components';
 // style
 import { AppStyles } from '@theme';
 
+import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
 /* types ==================================================================== */
 export interface Props {
-    goBack: (step?: ImportSteps, settings?: any) => void;
-    goNext: (step: ImportSteps, settings?: any) => void;
+    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
+    goNext: (step: ImportSteps, settings?: AccountObject) => void;
 }
 
 export interface State {

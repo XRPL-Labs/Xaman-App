@@ -11,7 +11,8 @@ import { View, Text, FlatList, TouchableHighlight, Image, ImageBackground } from
 import { Navigation } from 'react-native-navigation';
 
 // helpers
-import { Navigator, Images } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 // import Flag from '@common/libs/ledger/parser/common/flag';
 

@@ -6,7 +6,8 @@ import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Clipboard } from 'react-native';
 
-import { Navigator, Toast } from '@common/helpers';
+import { Toast } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
 
 import { ContactRepository, AccountRepository } from '@store/repositories';
 
@@ -30,7 +31,7 @@ export interface State {}
 /* Component ==================================================================== */
 class ResultStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context!: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
     renderAddToContactButton = () => {
         const { destination } = this.context;

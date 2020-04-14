@@ -15,7 +15,7 @@ import { AccessLevels, EncryptionLevels, BiometryType } from '@store/types';
 
 import Vault from '@common/libs/vault';
 
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 // components

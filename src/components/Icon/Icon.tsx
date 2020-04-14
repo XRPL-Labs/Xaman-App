@@ -9,7 +9,7 @@ import React from 'react';
 import { Image } from 'react-native';
 
 import { AppSizes } from '@theme';
-import { Images } from '@common/helpers';
+import { Images } from '@common/helpers/images';
 
 /* Types ==================================================================== */
 interface Props {

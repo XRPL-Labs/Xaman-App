@@ -53,21 +53,13 @@ class LoggerService {
                     message = '';
                 }
 
+                if (this.isDEV) {
+                    const output = `[${namespace}] ${message}`;
+                    console[level](output, data);
+                }
+
                 // add the log to entries list
                 this.addLogMessage(level, message, data);
-
-                if (this.isDEV) {
-                    // @ts-ignore
-                    if (console.debugger) {
-                        // @ts-ignore
-                        console.debugger.display({
-                            name: namespace.toUpperCase(),
-                            value: data,
-                            preview: message,
-                            important: level === 'error' || level === 'warn',
-                        });
-                    }
-                }
             };
         };
 

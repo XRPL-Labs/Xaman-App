@@ -5,7 +5,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import { TrustSet } from '@common/libs/ledger/transactions';
 
-import { getAccountName } from '@common/helpers';
+import { getAccountName } from '@common/helpers/resolver';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 import Localize from '@locale';

@@ -15,7 +15,9 @@ import {
     InteractionManager,
 } from 'react-native';
 
-import { Navigator, Prompt, Images } from '@common/helpers';
+import { Images } from '@common/helpers/images';
+import { Prompt } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
 
 import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 import { AccountRepository } from '@store/repositories';

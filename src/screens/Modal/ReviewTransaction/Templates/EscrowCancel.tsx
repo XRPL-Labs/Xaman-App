@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
 import { EscrowCancel } from '@common/libs/ledger/transactions';
-import { getAccountName } from '@common/helpers';
+import { getAccountName } from '@common/helpers/resolver';
 
 import Localize from '@locale';
 

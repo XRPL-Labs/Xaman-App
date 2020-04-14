@@ -11,13 +11,21 @@ import { Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
 import { AppScreens } from '@common/constants';
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 
 import { CurrencySchema } from '@store/schemas/latest';
-import { ProfileRepository, CounterPartyRepository, CurrencyRepository } from '@store/repositories';
+
+import ProfileRepository from '@store/repositories/profile';
+import CounterPartyRepository from '@store/repositories/counterParty';
+import CurrencyRepository from '@store/repositories/currency';
 
 import { Payload, PayloadType } from '@common/libs/payload';
-import { LoggerService, ApiService, NavigationService, PushNotificationsService } from '@services';
+
+// services
+import PushNotificationsService from '@services/PushNotificationsService';
+import NavigationService from '@services/NavigationService';
+import ApiService from '@services/ApiService';
+import LoggerService from '@services/LoggerService';
 
 // Locale
 import Localize from '@locale';

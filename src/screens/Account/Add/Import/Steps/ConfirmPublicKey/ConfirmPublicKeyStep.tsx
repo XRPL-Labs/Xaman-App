@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Clipboard } from 'react-native';
 
-import { Toast, Prompt } from '@common/helpers';
+import { Toast, Prompt } from '@common/helpers/interface';
 
 // components
 import { Button, Footer } from '@components';
@@ -13,7 +13,7 @@ import { Button, Footer } from '@components';
 // locale
 import Localize from '@locale';
 
-import { ImportSteps, AccountObject } from '@screens/Account/Add/Import';
+import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
 
 // style
 import { AppStyles } from '@theme';
@@ -22,8 +22,8 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     account: AccountObject;
-    goBack: (step?: ImportSteps, settings?: any) => void;
-    goNext: (step?: ImportSteps, settings?: any) => void;
+    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
+    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
 }
 
 export interface State {}

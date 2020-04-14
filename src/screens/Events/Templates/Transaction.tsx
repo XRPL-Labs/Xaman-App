@@ -2,10 +2,11 @@ import React, { PureComponent } from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
 import isEmpty from 'lodash/isEmpty';
 
-import { TransactionsType } from '@common/libs/ledger/types';
+import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import { AccountSchema } from '@store/schemas/latest';
 
-import { Navigator, getAccountName } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
+import { getAccountName } from '@common/helpers/resolver';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 import { AppScreens } from '@common/constants';
 

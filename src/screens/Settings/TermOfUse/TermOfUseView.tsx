@@ -6,7 +6,9 @@ import React, { Component } from 'react';
 import { SafeAreaView, View, Text, ActivityIndicator, BackHandler } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import { Navigator, getStatusBarHeight } from '@common/helpers';
+import { getStatusBarHeight } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+
 import { AppScreens, AppConfig } from '@common/constants';
 
 import { ProfileRepository } from '@store/repositories';

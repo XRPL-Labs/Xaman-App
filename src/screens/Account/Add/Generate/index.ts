@@ -1,6 +1,3 @@
-import AccountGenerateContainer, { GenerateSteps, AccountObject } from './AccountGenerateView';
-
-/* types ==================================================================== */
-export { GenerateSteps, AccountObject };
+import AccountGenerateContainer from './AccountGenerateView';
 
 export default AccountGenerateContainer;

@@ -15,10 +15,12 @@ import {
     Share,
 } from 'react-native';
 
-import { TransactionsType } from '@common/libs/ledger/types';
+import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import { AppScreens } from '@common/constants';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
-import { Navigator, ActionSheet } from '@common/helpers';
+
+import { ActionSheet } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
 
 import { Header, QRCode, Spacer } from '@components';
 

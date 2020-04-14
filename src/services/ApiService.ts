@@ -8,11 +8,13 @@
 import merge from 'lodash/merge';
 import DeviceInfo from 'react-native-device-info';
 
-import { CoreRepository, ProfileRepository } from '@store/repositories';
+import { ProfileRepository } from '@store/repositories';
+import { CoreSchema } from '@store/schemas/latest';
+
 import { SHA256 } from '@common/libs/crypto';
 import { AppConfig, ErrorMessages, APIConfig } from '@common/constants';
 
-import { LoggerService } from '@services';
+import LoggerService from '@services/LoggerService';
 
 /* Types  ==================================================================== */
 type Methods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
@@ -70,15 +72,13 @@ class ApiService {
         });
     }
 
-    initialize() {
+    initialize(coreSettings: CoreSchema) {
         return new Promise((resolve, reject) => {
             try {
                 // if the app is initialized and the access token set
-                const core = CoreRepository.getSettings();
-                const profile = ProfileRepository.getProfile();
-
-                if (core && profile) {
-                    if (core.initialized && profile.accessToken) {
+                if (coreSettings && coreSettings.initialized) {
+                    const profile = ProfileRepository.getProfile();
+                    if (profile && profile.accessToken) {
                         this.accessToken = profile.accessToken;
                         this.idempotencyInt = profile.idempotency;
                     }
@@ -96,8 +96,8 @@ class ApiService {
     increaseIdempotencyInt = () => {
         this.idempotencyInt += 1;
 
-        // Increase idempotencyInt
-        ProfileRepository.increaseIdempotency();
+        // update idempotency in the database
+        ProfileRepository.updateIdempotency(this.idempotencyInt);
     };
 
     /**

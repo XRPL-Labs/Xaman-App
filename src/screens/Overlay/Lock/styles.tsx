@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 
 import { AppSizes } from '@theme';
 
-import { getNavigationBarHeight } from '@common/helpers';
+import { getNavigationBarHeight } from '@common/helpers/interface';
 
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({

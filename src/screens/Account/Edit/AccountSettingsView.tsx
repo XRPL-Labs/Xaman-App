@@ -5,7 +5,10 @@
 import React, { Component, Fragment } from 'react';
 import { Alert, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 
-import { Navigator, Prompt, getAccountName } from '@common/helpers';
+import { Prompt } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+import { getAccountName } from '@common/helpers/resolver';
+
 import { AppScreens } from '@common/constants';
 
 import { AccountRepository } from '@store/repositories';

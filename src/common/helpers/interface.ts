@@ -11,9 +11,6 @@ import {
     NativeModules,
 } from 'react-native';
 
-import { Navigator } from '@common/helpers';
-import { AppScreens } from '@common/constants';
-
 const IsIPhoneX = (): boolean => {
     const { height, width } = Dimensions.get('window');
     return (
@@ -183,28 +180,6 @@ const Prompt = (title: string, message: string, callbackOrButtons: any, options:
     }
 };
 
-const AlertModal = (options: {
-    type: 'success' | 'info' | 'warning' | 'error';
-    text: string;
-    title?: string;
-    buttons: { text: string; onPress: () => void; type?: 'continue' | 'dismiss'; light?: boolean }[];
-    onDismissed?: () => void;
-}) => {
-    Navigator.showOverlay(
-        AppScreens.Overlay.Alert,
-        {
-            overlay: {
-                handleKeyboardEvents: true,
-            },
-            layout: {
-                backgroundColor: 'transparent',
-                componentBackgroundColor: 'transparent',
-            },
-        },
-        options,
-    );
-};
-
 /* Export ==================================================================== */
 export {
     IsIPhoneX,
@@ -216,5 +191,4 @@ export {
     Toast,
     ActionSheet,
     Prompt,
-    AlertModal,
 };

@@ -27,7 +27,9 @@ import { AccessLevels } from '@store/types';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 // constants
 import { AppScreens } from '@common/constants';
-import { Images, Navigator } from '@common/helpers';
+
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
 
@@ -199,7 +201,10 @@ class HomeView extends Component<Props, State> {
         const { account, privacy } = this.state;
 
         if (account.balance === 0) {
-            if (account.isRegularKey) {
+            // check if account is a regular key to one of xumm accounts
+            const isRegularKey = AccountRepository.isRegularKey(account);
+
+            if (isRegularKey) {
                 const keysForAccounts = AccountRepository.findBy('regularKey', account.address);
 
                 return (

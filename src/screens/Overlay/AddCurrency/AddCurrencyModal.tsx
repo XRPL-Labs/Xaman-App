@@ -17,7 +17,7 @@ import {
 
 import Interactable from 'react-native-interactable';
 
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 import { Payload } from '@common/libs/payload';

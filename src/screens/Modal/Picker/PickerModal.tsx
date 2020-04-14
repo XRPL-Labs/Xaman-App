@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 
 import { AppScreens } from '@common/constants';
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 
 import { Header, Icon } from '@components';
 

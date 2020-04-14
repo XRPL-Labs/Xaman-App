@@ -22,7 +22,7 @@ import {
 
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
-import { Images } from '@common/helpers';
+import { Images } from '@common/helpers/images';
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
@@ -41,7 +41,7 @@ class DetailsStep extends Component {
     gradientHeight: Animated.Value;
 
     static contextType = StepsContext;
-    context!: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
     constructor(props: undefined) {
         super(props);

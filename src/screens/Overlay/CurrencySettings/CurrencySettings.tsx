@@ -12,7 +12,10 @@ import { TrustSet } from '@common/libs/ledger/transactions';
 import Submitter from '@common/libs/ledger/submitter';
 
 import { NormalizeCurrencyCode } from '@common/libs/utils';
-import { Navigator, Prompt } from '@common/helpers';
+
+import { Prompt } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+
 import { AppScreens } from '@common/constants';
 
 // components

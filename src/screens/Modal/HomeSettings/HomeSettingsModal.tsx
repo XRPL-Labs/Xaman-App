@@ -5,7 +5,8 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Image, Text, TouchableOpacity, BackHandler } from 'react-native';
 
-import { Images, Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
 import { Button, Icon } from '@components';

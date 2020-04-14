@@ -6,21 +6,21 @@ import React, { Component } from 'react';
 import { isEqual } from 'lodash';
 import { SafeAreaView, View, Text, Alert } from 'react-native';
 
-import { Prompt } from '@common/helpers';
+import { Prompt } from '@common/helpers/interface';
 import Localize from '@locale';
 // components
 import { Button, SecretNumberInput, Footer } from '@components';
 
-import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate';
-
 // style
 import { AppStyles } from '@theme';
+
+import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate/types';
 
 /* types ==================================================================== */
 export interface Props {
     account: AccountObject;
-    goBack: (step?: GenerateSteps, settings?: any) => void;
-    goNext: (step?: GenerateSteps, settings?: any) => void;
+    goBack: (step?: GenerateSteps, settings?: AccountObject) => void;
+    goNext: (step?: GenerateSteps, settings?: AccountObject) => void;
 }
 
 export interface State {
@@ -105,15 +105,15 @@ class ConfirmStep extends Component<Props, State> {
 
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal, AppStyles.centerAligned]}>
                     <SecretNumberInput
-                        ref={(r) => {
+                        ref={r => {
                             this.secretNumberInput = r;
                         }}
-                        onAllFilled={(filled) => {
+                        onAllFilled={filled => {
                             this.setState({
                                 allFilled: filled,
                             });
                         }}
-                        onRowChanged={(row) => {
+                        onRowChanged={row => {
                             this.setState({
                                 currentRow: row,
                             });

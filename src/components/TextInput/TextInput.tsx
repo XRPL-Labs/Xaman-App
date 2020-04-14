@@ -9,10 +9,11 @@ import React, { Component } from 'react';
 import { View, TouchableHighlight, TextInput, TextInputProps, ViewStyle, TextStyle } from 'react-native';
 
 import { StringType } from 'xumm-string-decode';
-import { Navigator } from '@common/helpers';
+
+import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-import { Icon } from '@components';
+import { Icon } from '@components/Icon';
 
 import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
@@ -86,7 +87,7 @@ class Input extends Component<Props, State> {
         return (
             <View style={[styles.wrapper, containerStyle, focused && activeContainerStyle]}>
                 <TextInput
-                    ref={(r) => {
+                    ref={r => {
                         this.instance = r;
                     }}
                     onFocus={this.onFocus}

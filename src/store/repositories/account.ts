@@ -4,7 +4,7 @@ import Realm, { Results, ObjectSchema } from 'realm';
 import * as AccountLib from 'xrpl-accountlib';
 
 import Vault from '@common/libs/vault';
-import { CoreRepository } from '@store/repositories';
+
 import { AccountSchema } from '@store/schemas/latest';
 
 import { AccessLevels, EncryptionLevels } from '@store/types';
@@ -13,9 +13,10 @@ import BaseRepository from './base';
 /* types  ==================================================================== */
 type AddAccountParams = {
     account: AccountLib.XRPL_Account;
-    passphrase?: string;
+    encryptionKey?: string;
+    encryptionLevel: EncryptionLevels;
+    accessLevel?: AccessLevels;
     label?: string;
-    readonly?: boolean;
 };
 
 // events
@@ -42,7 +43,7 @@ class AccountRepository extends BaseRepository {
      * this will store private key in the vault
      */
     add = (params: AddAccountParams): Promise<AccountSchema> => {
-        const { account, passphrase, label, readonly } = params;
+        const { account, encryptionKey, encryptionLevel, label, accessLevel } = params;
 
         // check if there is any default account if
         // it's upgrading so we don't want to remove the default flag
@@ -55,7 +56,7 @@ class AccountRepository extends BaseRepository {
         }
 
         // if the account is readonly
-        if (readonly) {
+        if (accessLevel === AccessLevels.Readonly) {
             const newAccount = {
                 address: account.address,
                 accessLevel: AccessLevels.Readonly,
@@ -74,9 +75,6 @@ class AccountRepository extends BaseRepository {
 
         // else for sure we have full access
         const { keypair } = account;
-        // if passphrase present use it, instead use Passcode to encrypt the private key
-        // WARNING: passcode should use just for low balance accounts
-        const encryptionKey = passphrase || CoreRepository.getSettings().passcode;
 
         // save the privateKey in the vault
         return Vault.create(keypair.publicKey, keypair.privateKey, encryptionKey).then(() => {
@@ -84,7 +82,7 @@ class AccountRepository extends BaseRepository {
                 publicKey: keypair.publicKey,
                 accessLevel: AccessLevels.Full,
                 address: account.address,
-                encryptionLevel: passphrase ? EncryptionLevels.Passphrase : EncryptionLevels.Passcode,
+                encryptionLevel,
                 default: true,
             } as Partial<AccountSchema>;
 
@@ -127,6 +125,13 @@ class AccountRepository extends BaseRepository {
             return this.query(filters);
         }
         return this.findAll();
+    };
+
+    /**
+     * check if account is a regular key to one of xumm accounts
+     */
+    isRegularKey = (account: AccountSchema) => {
+        return !this.findBy('regularKey', account.address).isEmpty();
     };
 
     /**

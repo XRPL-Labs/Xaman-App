@@ -18,7 +18,7 @@ import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { LedgerService } from '@services';
 import { NormalizeAmount } from '@common/libs/utils';
-import { getAccountName } from '@common/helpers';
+import { getAccountName } from '@common/helpers/resolver';
 
 import { Button, InfoMessage, Spacer } from '@components';
 

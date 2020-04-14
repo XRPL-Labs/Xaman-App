@@ -4,7 +4,7 @@ import { View, Text } from 'react-native';
 import { LedgerService } from '@services';
 
 import { Amount } from '@common/libs/ledger/parser/common';
-import { TransactionsType } from '@common/libs/ledger/types';
+import { TransactionsType } from '@common/libs/ledger/transactions/types';
 
 // components
 // import { Spacer } from '@components';

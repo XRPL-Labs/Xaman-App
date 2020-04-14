@@ -9,7 +9,8 @@ import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import { View, Keyboard } from 'react-native';
 
-import { Navigator, AccountInfoType } from '@common/helpers';
+import { AccountInfoType } from '@common/helpers/resolver';
+import { Navigator } from '@common/helpers/navigator';
 
 import { LedgerService } from '@services';
 import { AppScreens } from '@common/constants';

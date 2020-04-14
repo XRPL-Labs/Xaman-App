@@ -5,19 +5,21 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Alert, KeyboardAvoidingView } from 'react-native';
 import { derive } from 'xrpl-accountlib';
-import { ImportSteps } from '@screens/Account/Add/Import';
 
 import Localize from '@locale';
 // components
 import { Button, TextInput, Spacer, Footer } from '@components';
+
+import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
+
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    goBack: (step?: ImportSteps, settings?: any) => void;
-    goNext: (step?: ImportSteps, settings?: any) => void;
+    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
+    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
 }
 
 export interface State {

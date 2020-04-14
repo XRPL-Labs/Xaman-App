@@ -1,6 +1,6 @@
 import { StyleSheet, Platform } from 'react-native';
 
-import { IsIPhoneX, getStatusBarHeight } from '@common/helpers';
+import { IsIPhoneX, getStatusBarHeight } from '@common/helpers/interface';
 import { AppColors, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */

@@ -8,7 +8,9 @@ import Interactable from 'react-native-interactable';
 
 import { AccountSchema } from '@store/schemas/latest';
 
-import { Navigator, getNavigationBarHeight } from '@common/helpers';
+import { getNavigationBarHeight } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+
 import { AppScreens } from '@common/constants';
 
 // components

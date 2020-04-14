@@ -9,19 +9,23 @@ import EventEmitter from 'events';
 import { BackHandler, Platform, NativeModules } from 'react-native';
 
 import firebase from 'react-native-firebase';
+
 import {
     Navigation,
     ComponentDidAppearEvent,
     BottomTabLongPressedEvent,
     BottomTabPressedEvent,
     ModalDismissedEvent,
+    OptionsModalPresentationStyle,
+    OptionsModalTransitionStyle,
 } from 'react-native-navigation';
 
-import { Navigator, Toast } from '@common/helpers';
+import { Toast } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
 import Locale from '@locale';
 
+/* Service  ==================================================================== */
 class NavigationService extends EventEmitter {
     prevScreen: string;
     currentRoot: string;
@@ -51,21 +55,45 @@ class NavigationService extends EventEmitter {
                 Navigation.events().registerBottomTabLongPressedListener(
                     ({ selectedTabIndex }: BottomTabLongPressedEvent) => {
                         if (selectedTabIndex === 1) {
-                            Navigator.showOverlay(AppScreens.Overlay.SwitchAccount, {
-                                layout: {
-                                    backgroundColor: 'transparent',
-                                    componentBackgroundColor: 'transparent',
-                                },
-                            });
+                            const currentOverlay = this.getCurrentOverlay();
+                            if (currentOverlay !== AppScreens.Overlay.SwitchAccount) {
+                                Navigation.showOverlay({
+                                    component: {
+                                        name: AppScreens.Overlay.SwitchAccount,
+                                        id: AppScreens.Overlay.SwitchAccount,
+                                        options: {
+                                            layout: {
+                                                backgroundColor: 'transparent',
+                                                componentBackgroundColor: 'transparent',
+                                            },
+                                        },
+                                    },
+                                });
+                            }
                         }
                     },
                 );
                 Navigation.events().registerBottomTabPressedListener(({ tabIndex }: BottomTabPressedEvent) => {
                     if (tabIndex === 2) {
-                        Navigator.showModal(AppScreens.Modal.Scan, {
-                            modalTransitionStyle: 'crossDissolve',
-                            modalPresentationStyle: 'fullScreen',
-                        });
+                        const currentScreen = this.getCurrentScreen();
+                        if (currentScreen !== AppScreens.Modal.Scan) {
+                            Navigation.showModal({
+                                stack: {
+                                    children: [
+                                        {
+                                            component: {
+                                                name: AppScreens.Modal.Scan,
+                                                id: AppScreens.Modal.Scan,
+                                                options: {
+                                                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                                                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+                                                },
+                                            },
+                                        },
+                                    ],
+                                },
+                            });
+                        }
                     }
                 });
 
@@ -120,7 +148,10 @@ class NavigationService extends EventEmitter {
 
         // first check for overlays
         if (currentOverlay && currentOverlay !== AppScreens.Overlay.Lock) {
-            Navigator.dismissOverlay();
+            // pull current overlay
+            this.pullCurrentOverlay();
+            // dismiss overlay
+            Navigation.dismissOverlay(currentOverlay);
             return true;
         }
 

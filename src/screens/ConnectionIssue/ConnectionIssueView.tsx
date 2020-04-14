@@ -5,7 +5,9 @@ import { last, remove } from 'lodash';
 import React, { Component } from 'react';
 import { Text, Image, SafeAreaView, View, Alert } from 'react-native';
 
-import { Images, Navigator, Toast } from '@common/helpers';
+import { Images } from '@common/helpers/images';
+import { Toast } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
 
 // constants
 import { AppScreens, AppConfig } from '@common/constants';
@@ -89,7 +91,7 @@ class ConnectionIssueView extends Component<Props, State> {
         });
 
         // set the default node in the socket service
-        SocketService.setDefaultNode();
+        SocketService.setDefaultNode(newNode);
 
         // try to reconnect to the new node
         this.setState(

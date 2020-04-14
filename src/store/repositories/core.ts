@@ -13,7 +13,7 @@ import { NodeChain } from '@store/types';
 
 import Localize from '@locale';
 
-import { getLedgerTime } from '@common/helpers';
+import LedgerService from '@services/LedgerService';
 
 import BaseRepository from './base';
 
@@ -108,7 +108,7 @@ class CoreRepository extends BaseRepository {
 
     updateTimeLastUnlocked = async () => {
         try {
-            const now = await getLedgerTime();
+            const now = await LedgerService.getLedgerTime();
 
             this.saveSettings({
                 lastUnlocked: moment(now).unix(),
@@ -126,7 +126,7 @@ class CoreRepository extends BaseRepository {
             let now;
 
             try {
-                now = await getLedgerTime();
+                now = await LedgerService.getLedgerTime();
             } catch {
                 return reject(new Error(Localize.t('global.cannotValidateCurrentTimeWithServer')));
             }
@@ -154,7 +154,7 @@ class CoreRepository extends BaseRepository {
             let now;
 
             try {
-                now = await getLedgerTime();
+                now = await LedgerService.getLedgerTime();
             } catch {
                 return reject(new Error(Localize.t('global.cannotValidateCurrentTimeWithServer')));
             }

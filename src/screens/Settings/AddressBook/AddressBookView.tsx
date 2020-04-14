@@ -10,7 +10,8 @@ import { Navigation } from 'react-native-navigation';
 
 import { View, Text, SectionList, TouchableHighlight, Image, ImageBackground } from 'react-native';
 
-import { Images, Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
 import { ContactRepository } from '@store/repositories';

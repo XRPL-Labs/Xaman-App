@@ -4,7 +4,7 @@ import { View, Text, Image, TouchableHighlight } from 'react-native';
 import { AccountSchema } from '@store/schemas/latest';
 import { Payload } from '@common/libs/payload';
 
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
 import { AppStyles } from '@theme';

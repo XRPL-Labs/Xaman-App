@@ -1,10 +1,9 @@
 /**
- * Generate Account/View Screen
+ * Import Account/Security step
  */
 
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text } from 'react-native';
-import { ImportSteps } from '@screens/Account/Add/Import';
 
 import { EncryptionLevels } from '@store/types';
 
@@ -14,10 +13,12 @@ import { Button, RadioButton, Footer } from '@components';
 // style
 import { AppStyles } from '@theme';
 
+import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
+
 /* types ==================================================================== */
 export interface Props {
-    goBack: (step?: ImportSteps, settings?: any) => void;
-    goNext: (step?: ImportSteps, settings?: any) => void;
+    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
+    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
 }
 
 export interface State {

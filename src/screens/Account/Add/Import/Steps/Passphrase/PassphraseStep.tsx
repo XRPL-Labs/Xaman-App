@@ -1,10 +1,9 @@
 /**
- * Generate Account/View Screen
+ * Import Account/Passphrase Step
  */
 
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Alert, KeyboardAvoidingView, Platform } from 'react-native';
-import { ImportSteps } from '@screens/Account/Add/Import';
 
 import Localize from '@locale';
 // components
@@ -12,10 +11,12 @@ import { Button, PasswordInput, Footer } from '@components';
 // style
 import { AppStyles } from '@theme';
 
+import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
+
 /* types ==================================================================== */
 export interface Props {
-    goBack: (step?: ImportSteps, settings?: any) => void;
-    goNext: (step?: ImportSteps, settings?: any) => void;
+    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
+    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
 }
 
 export interface State {

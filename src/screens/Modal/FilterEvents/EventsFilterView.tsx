@@ -10,7 +10,7 @@ import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 import { Button, Spacer, Footer } from '@components';
 

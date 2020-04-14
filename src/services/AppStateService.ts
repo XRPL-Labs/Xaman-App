@@ -9,9 +9,12 @@ import NetInfo from '@react-native-community/netinfo';
 import EventEmitter from 'events';
 
 import { AppScreens } from '@common/constants';
-import { Navigator } from '@common/helpers';
-import { CoreRepository } from '@store/repositories';
-import { LoggerService, NavigationService } from '@services';
+import { Navigator } from '@common/helpers/navigator';
+
+import CoreRepository from '@store/repositories/core';
+
+import NavigationService from '@services/NavigationService';
+import LoggerService from '@services/LoggerService';
 
 export enum NetStateStatus {
     Connected = 'Connected',

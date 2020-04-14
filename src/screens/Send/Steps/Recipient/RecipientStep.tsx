@@ -15,7 +15,10 @@ import { AccountRepository, ContactRepository } from '@store/repositories';
 import { ContactSchema, AccountSchema } from '@store/schemas/latest';
 
 import { AppScreens } from '@common/constants';
-import { getAccountName, getAccountInfo, Navigator, Images, AlertModal, Toast } from '@common/helpers';
+import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
+import { Toast } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 
 import { BackendService } from '@services';
 
@@ -49,7 +52,7 @@ class RecipientStep extends Component<Props, State> {
     sequence: number;
 
     static contextType = StepsContext;
-    context!: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
         super(props);
@@ -333,7 +336,7 @@ class RecipientStep extends Component<Props, State> {
             if (!destinationInfo.exist) {
                 // account does not exist and cannot activate with IOU
                 if (typeof currency !== 'string') {
-                    AlertModal({
+                    Navigator.showAlertModal({
                         type: 'warning',
                         text: Localize.t('send.destinationCannotActivateWithIOU'),
                         buttons: [
@@ -357,7 +360,7 @@ class RecipientStep extends Component<Props, State> {
 
                 // check if amount is not covering the creation of account
                 if (typeof currency === 'string' && parseFloat(amount) < 20) {
-                    AlertModal({
+                    Navigator.showAlertModal({
                         type: 'warning',
                         text: Localize.t('send.destinationNotExistTooLittleToCreate'),
                         buttons: [
@@ -381,7 +384,7 @@ class RecipientStep extends Component<Props, State> {
 
                 // check if the amount will create the account
                 if (typeof currency === 'string' && parseFloat(amount) >= 20) {
-                    AlertModal({
+                    Navigator.showAlertModal({
                         type: 'warning',
                         text: Localize.t('send.destinationNotExistCreationWarning', { amount }),
                         buttons: [
@@ -412,7 +415,7 @@ class RecipientStep extends Component<Props, State> {
 
             // check for account risk and scam
             if (destinationInfo.risk === 'PROBABLE' || destinationInfo.risk === 'HIGH_PROBABILITY') {
-                AlertModal({
+                Navigator.showAlertModal({
                     type: 'warning',
                     text: Localize.t('send.destinationIsProbableIsScam'),
                     buttons: [
@@ -441,7 +444,7 @@ class RecipientStep extends Component<Props, State> {
             }
 
             if (destinationInfo.risk === 'CONFIRMED') {
-                AlertModal({
+                Navigator.showAlertModal({
                     type: 'error',
                     title: Localize.t('global.critical'),
                     text: Localize.t('send.destinationIsConfirmedAsScam'),

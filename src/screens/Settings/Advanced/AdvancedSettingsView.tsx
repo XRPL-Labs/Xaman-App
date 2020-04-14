@@ -10,7 +10,7 @@ import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 
 import { AppScreens } from '@common/constants';
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 
 import { Header, Icon } from '@components';
 

@@ -22,7 +22,7 @@ exports[`[Switch] renders correctly 1`] = `
   >
     <View>
       <RCTSwitch
-        accessibilityRole="button"
+        accessibilityRole="switch"
         onChange={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
@@ -66,7 +66,7 @@ exports[`[Switch] renders with given label 1`] = `
   >
     <View>
       <RCTSwitch
-        accessibilityRole="button"
+        accessibilityRole="switch"
         onChange={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}

@@ -3,6 +3,8 @@
  */
 
 import { Results } from 'realm';
+import { find } from 'lodash';
+
 import React, { Component } from 'react';
 import { Animated, View, Text, TouchableWithoutFeedback, TouchableOpacity, Platform, ScrollView } from 'react-native';
 
@@ -11,7 +13,9 @@ import Interactable from 'react-native-interactable';
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
-import { Navigator, getNavigationBarHeight } from '@common/helpers';
+import { getNavigationBarHeight } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+
 import { AppScreens } from '@common/constants';
 
 // components
@@ -55,6 +59,17 @@ class SwitchAccountOverlay extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        this.state = {
+            accounts: undefined,
+            contentHeight: 0,
+            paddingBottom: 0,
+        };
+
+        this.deltaY = new Animated.Value(AppSizes.screen.height);
+        this.onDismiss = () => {};
+    }
+
+    componentDidMount() {
         const accounts = AccountRepository.getAccounts();
 
         let contentHeight = accounts.length * AppSizes.scale(60) + 150 + getNavigationBarHeight();
@@ -70,18 +85,16 @@ class SwitchAccountOverlay extends Component<Props, State> {
             contentHeight = 300;
         }
 
-        this.state = {
-            accounts,
-            contentHeight,
-            paddingBottom,
-        };
-
-        this.deltaY = new Animated.Value(AppSizes.screen.height);
-        this.onDismiss = () => {};
-    }
-
-    componentDidMount() {
-        this.slideUp();
+        this.setState(
+            {
+                accounts,
+                contentHeight,
+                paddingBottom,
+            },
+            () => {
+                this.slideUp();
+            },
+        );
     }
 
     slideUp = () => {
@@ -127,6 +140,12 @@ class SwitchAccountOverlay extends Component<Props, State> {
         this.slideDown();
     };
 
+    isRegularKey = (account: AccountSchema) => {
+        const { accounts } = this.state;
+
+        return find(accounts, { regularKey: account.address });
+    };
+
     renderContent = () => {
         const { accounts } = this.state;
 
@@ -148,7 +167,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
                         <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
                             <Icon size={25} style={[styles.iconAccountActive]} name="IconAccount" />
                             <Text style={[AppStyles.pbold]}>{account.label}</Text>
-                            {account.isRegularKey && (
+                            {this.isRegularKey(account) && (
                                 <View style={[styles.regularKey]}>
                                     <Icon size={12} style={[styles.iconKey]} name="IconKey" />
                                     <Text style={[styles.regularKeyText]}>REGULAR</Text>
@@ -178,7 +197,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
                     <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
                         <Icon size={25} style={[styles.iconAccount]} name="IconAccount" />
                         <Text style={[AppStyles.p]}>{account.label}</Text>
-                        {account.isRegularKey && (
+                        {this.isRegularKey(account) && (
                             <View style={[styles.regularKey]}>
                                 <Icon size={12} style={[styles.iconKey]} name="IconKey" />
                                 <Text style={[styles.regularKeyText]}>REGULAR</Text>
@@ -205,7 +224,10 @@ class SwitchAccountOverlay extends Component<Props, State> {
     };
 
     render() {
-        const { contentHeight, paddingBottom } = this.state;
+        const { accounts, contentHeight, paddingBottom } = this.state;
+
+        if (!accounts) return null;
+
         return (
             <View style={AppStyles.flex1}>
                 <TouchableWithoutFeedback

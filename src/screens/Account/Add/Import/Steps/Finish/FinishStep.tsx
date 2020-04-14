@@ -7,23 +7,23 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, ImageBackground, Text } from 'react-native';
 
-import { Images } from '@common/helpers';
+import { Images } from '@common/helpers/images';
 
 // components
-import { ImportSteps } from '@screens/Account/Add/Import';
 import { Button, Footer } from '@components';
 
 import Localize from '@locale';
 
+import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
+
 // style
 import { AppStyles } from '@theme';
-
 import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    goBack: (step?: ImportSteps, settings?: any) => void;
-    goNext: (step?: ImportSteps, settings?: any) => void;
+    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
+    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
 }
 
 export interface State {}

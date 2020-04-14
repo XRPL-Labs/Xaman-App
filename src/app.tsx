@@ -8,7 +8,7 @@ import DeviceInfo from 'react-native-device-info';
 import { Navigation } from 'react-native-navigation';
 
 // helpers
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 
 // Storage
 import { CoreRepository } from '@store/repositories';
@@ -101,12 +101,13 @@ export default class Application {
     initAppServices = () => {
         return new Promise((resolve, reject) => {
             try {
+                const coreSettings = CoreRepository.getSettings();
                 const servicesPromise = [] as Array<Promise<any>>;
                 Object.keys(services).map(key => {
                     // @ts-ignore
                     const service = services[key];
                     if (typeof service.initialize === 'function') {
-                        servicesPromise.push(service.initialize());
+                        servicesPromise.push(service.initialize(coreSettings));
                     }
                     return servicesPromise;
                 });

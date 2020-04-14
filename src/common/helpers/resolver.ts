@@ -1,9 +1,9 @@
-import moment from 'moment';
 import { memoize, isEmpty, has, get, assign } from 'lodash';
 
 import Flag from '@common/libs/ledger/parser/common/flag';
 
-import { ContactRepository, AccountRepository } from '@store/repositories';
+import AccountRepository from '@store/repositories/account';
+import ContactRepository from '@store/repositories/contact';
 
 import { BackendService, LedgerService } from '@services';
 
@@ -132,17 +132,4 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
     });
 };
 
-const getLedgerTime = () => {
-    return new Promise((resolve, reject) => {
-        LedgerService.getServerInfo()
-            .then((server_info: any) => {
-                const { info } = server_info;
-                resolve(moment.utc(info.time, 'YYYY-MMM-DD HH:mm:ss.SSS').format());
-            })
-            .catch(() => {
-                reject();
-            });
-    });
-};
-
-export { getAccountName, getAccountInfo, getLedgerTime };
+export { getAccountName, getAccountInfo };

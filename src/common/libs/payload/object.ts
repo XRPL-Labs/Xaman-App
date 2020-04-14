@@ -1,9 +1,13 @@
 import { isString, isObject, has, get } from 'lodash';
 
 import parserFactory from '@common/libs/ledger/parser';
-import { TransactionJSONType, TransactionsType } from '@common/libs/ledger/types';
 
-import { ApiService, LoggerService, SocketService } from '@services';
+import { TransactionJSONType } from '@common/libs/ledger/types';
+import { TransactionsType } from '@common/libs/ledger/transactions/types';
+
+import ApiService from '@services/ApiService';
+import LoggerService from '@services/LoggerService';
+import SocketService from '@services/SocketService';
 
 // locale
 import Localize from '@locale';
@@ -24,6 +28,7 @@ import errors from './errors';
 // create logger
 const logger = LoggerService.createLogger('Payload');
 
+/* Payload  ==================================================================== */
 export class Payload {
     meta: MetaType;
     application: ApplicationType;

@@ -23,7 +23,8 @@ import { Decode } from 'xrpl-tagged-address-codec';
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
 
 import { AppScreens } from '@common/constants';
-import { Navigator, Images } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 import { Payload } from '@common/libs/payload';
 
 import Localize from '@locale';

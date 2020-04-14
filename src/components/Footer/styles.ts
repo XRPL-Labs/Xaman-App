@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { IsIPhoneX } from '@common/helpers';
+import { IsIPhoneX } from '@common/helpers/interface';
 import { AppSizes } from '@theme';
 
 const styles = StyleSheet.create({

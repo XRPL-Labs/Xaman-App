@@ -1,12 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import { View, TouchableOpacity, TextInput, Text, ViewStyle, Animated } from 'react-native';
 
-import { Icon } from '@components';
+import { Icon } from '@components/Icon';
 
 import Localize from '@locale';
 
 import { AppSizes, AppColors, AppStyles } from '@theme';
 import styles from './styles';
+
 /* Types ==================================================================== */
 interface Props {
     editable?: boolean;

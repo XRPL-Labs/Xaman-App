@@ -7,7 +7,7 @@ import { SafeAreaView, Alert, View, KeyboardAvoidingView, Keyboard } from 'react
 
 import { AppScreens } from '@common/constants';
 
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 import Vault from '@common/libs/vault';
 
 import { AccountSchema } from '@store/schemas/latest';

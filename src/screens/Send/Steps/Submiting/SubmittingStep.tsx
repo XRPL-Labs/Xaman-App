@@ -7,7 +7,7 @@ import { SafeAreaView, View, Text, Image } from 'react-native';
 
 import { Spacer, Icon } from '@components';
 
-import { Images } from '@common/helpers';
+import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
 
@@ -25,7 +25,7 @@ export interface State {}
 /* Component ==================================================================== */
 class SubmittingStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context!: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
         super(props);

@@ -10,13 +10,14 @@ import EventEmitter from 'events';
 import { map, isEmpty, flatMap, forEach, has, get } from 'lodash';
 
 import { TrustLineSchema } from '@store/schemas/latest';
-import { AccountRepository, CurrencyRepository } from '@store/repositories';
+import AccountRepository from '@store/repositories/account';
+import CurrencyRepository from '@store/repositories/currency';
 
 import { Amount } from '@common/libs/ledger/parser/common';
 import { AccountTxResponse, LedgerMarker } from '@common/libs/ledger/types';
-import parserFactory from '@common/libs/ledger/parser';
 
-import { LoggerService, SocketService } from '@services';
+import SocketService from '@services/SocketService';
+import LoggerService from '@services/LoggerService';
 
 // events
 declare interface LedgerService {
@@ -131,9 +132,30 @@ class LedgerService extends EventEmitter {
         return SocketService.send(request);
     };
 
+
+    /**
+     * get server info
+     */
     getServerInfo = () => {
         return SocketService.send({
             command: 'server_info',
+        });
+    };
+
+
+    /**
+     * get ledger time from server
+     */
+    getLedgerTime = () => {
+        return new Promise((resolve, reject) => {
+            this.getServerInfo()
+                .then((server_info: any) => {
+                    const { info } = server_info;
+                    resolve(moment.utc(info.time, 'YYYY-MMM-DD HH:mm:ss.SSS').format());
+                })
+                .catch(() => {
+                    reject();
+                });
         });
     };
 
@@ -152,12 +174,12 @@ class LedgerService extends EventEmitter {
      */
     transactionHandler() {
         SocketService.onEvent('transaction', (tx: any) => {
-            // parse transaction
-            const transaction = parserFactory(tx);
+            const { transaction } = tx;
+
             this.logger.debug('Transaction Received: ', transaction);
 
             // update account details
-            this.updateAccountsDetails([transaction.Account.address, transaction.Destination?.address]);
+            this.updateAccountsDetails([transaction.Account, transaction.Destination]);
 
             // emit onTransaction event
             this.emit('transaction', transaction);
@@ -227,7 +249,7 @@ class LedgerService extends EventEmitter {
                 })
                 .catch((e: any) => {
                     reject(new Error('Unable get Account info'));
-                    this.logger.error('Unable get Account info', e);
+                    this.logger.warn('Unable get Account info', e);
                 });
         });
     };
@@ -279,7 +301,7 @@ class LedgerService extends EventEmitter {
                 })
                 .catch((e: any) => {
                     reject(new Error('Unable get Account lines'));
-                    this.logger.error('Unable get Account lines', e);
+                    this.logger.warn('Unable get Account lines', e);
                 });
         });
     };
@@ -307,7 +329,7 @@ class LedgerService extends EventEmitter {
             this.updateAccountInfo(account.address)
                 .then(() => this.updateAccountLines(account.address))
                 .catch(e => {
-                    this.logger.error('Account info error: ', e.message);
+                    this.logger.warn('UpdateAccountInfo error: ', e.message);
                 });
 
             // update last sync
@@ -349,7 +371,7 @@ class LedgerService extends EventEmitter {
             command: 'unsubscribe',
             accounts: arrayAccounts,
         }).catch((e: any) => {
-            this.logger.error('Unable to Unsubscribe accounts', e);
+            this.logger.warn('Unable to Unsubscribe accounts', e);
         });
     }
 
@@ -369,7 +391,7 @@ class LedgerService extends EventEmitter {
             command: 'subscribe',
             accounts: arrayAccounts,
         }).catch((e: any) => {
-            this.logger.error('Unable to Subscribe accounts', e);
+            this.logger.warn('Unable to Subscribe accounts', e);
         });
     }
 }

@@ -6,9 +6,13 @@ import RippledWsClient from 'rippled-ws-client';
 import DeviceInfo from 'react-native-device-info';
 import EventEmitter from 'events';
 
-import { CoreRepository } from '@store/repositories';
+import { CoreSchema } from '@store/schemas/latest';
 import { NodeChain } from '@store/types';
-import { LoggerService, AppStateService } from '@services';
+
+import { AppConfig } from '@common/constants';
+
+// import AppStateService from '@services/AppStateService';
+import LoggerService from '@services/LoggerService';
 
 type BaseCommand = {
     id?: string;
@@ -92,20 +96,27 @@ class SocketService extends EventEmitter {
         this.onError = this.onError.bind(this);
     }
 
-    initialize = () => {
+    initialize = (coreSettings: CoreSchema) => {
         return new Promise((resolve, reject) => {
             try {
                 // get/set default node
-                this.setDefaultNode();
+                let defaultNode = __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0];
 
+                if (coreSettings && coreSettings.defaultNode) {
+                    defaultNode = coreSettings.defaultNode;
+                }
+
+                this.setDefaultNode(defaultNode);
+
+                // FIXME: enable me
                 // listen for net state change
-                AppStateService.on('netStateChange', (newState: string) => {
-                    if (newState === 'Connected') {
-                        this.reconnect();
-                    } else {
-                        this.close();
-                    }
-                });
+                // AppStateService.on('netStateChange', (newState: string) => {
+                //     if (newState === 'Connected') {
+                //         this.reconnect();
+                //     } else {
+                //         this.close();
+                //     }
+                // });
 
                 return resolve();
             } catch (e) {
@@ -125,11 +136,18 @@ class SocketService extends EventEmitter {
         }
     }
 
-    setDefaultNode() {
-        const defaultNode = CoreRepository.getDefaultNode();
+    setDefaultNode(node: string) {
+        let chain = NodeChain.Main;
 
-        this.node = defaultNode.node;
-        this.chain = defaultNode.chain;
+        // it is a verified type
+        if (AppConfig.nodes.main.indexOf(node) > -1) {
+            chain = NodeChain.Main;
+        } else if (AppConfig.nodes.test.indexOf(node) > -1) {
+            chain = NodeChain.Test;
+        }
+
+        this.node = node;
+        this.chain = chain;
     }
 
     close() {
@@ -220,7 +238,7 @@ class SocketService extends EventEmitter {
 
     onClose() {
         this.status = SocketStateStatus.Disconnected;
-        this.logger.error('Socket Closed');
+        this.logger.warn('Socket Closed');
     }
 
     connect() {

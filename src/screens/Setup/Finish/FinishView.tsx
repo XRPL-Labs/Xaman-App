@@ -9,7 +9,8 @@ import { View, SafeAreaView, ActivityIndicator, Image, Alert } from 'react-nativ
 import { WebView } from 'react-native-webview';
 
 import { CoreRepository, ProfileRepository } from '@store/repositories';
-import { Images, Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 import { AppScreens, AppConfig } from '@common/constants';
 import { BackendService } from '@services';
 

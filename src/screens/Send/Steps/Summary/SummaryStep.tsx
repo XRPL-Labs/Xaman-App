@@ -21,7 +21,10 @@ import { CoreRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
 import { AppScreens } from '@common/constants';
-import { Images, Prompt, Navigator } from '@common/helpers';
+import { Prompt } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
+
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
@@ -43,7 +46,7 @@ class SummaryStep extends Component {
     destinationTagInput: TextInput;
 
     static contextType = StepsContext;
-    context!: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
     constructor(props: undefined) {
         super(props);

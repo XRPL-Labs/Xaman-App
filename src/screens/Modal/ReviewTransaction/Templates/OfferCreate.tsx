@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import isEmpty from 'lodash/isEmpty';
 
 import { OfferCreate } from '@common/libs/ledger/transactions';
-import { getAccountName } from '@common/helpers';
+import { getAccountName } from '@common/helpers/resolver';
 
 import Localize from '@locale';
 

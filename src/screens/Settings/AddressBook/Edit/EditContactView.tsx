@@ -8,7 +8,10 @@ import { StringType, XrplDestination } from 'xumm-string-decode';
 import * as AccountLib from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
 
-import { Navigator, Toast, Prompt, getAccountName } from '@common/helpers';
+import { Toast, Prompt } from '@common/helpers/interface';
+import { getAccountName } from '@common/helpers/resolver';
+import { Navigator } from '@common/helpers/navigator';
+
 import { AppScreens } from '@common/constants';
 
 import { ContactRepository } from '@store/repositories';

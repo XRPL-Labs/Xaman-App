@@ -33,7 +33,9 @@ import Submitter from '@common/libs/ledger/submitter';
 import { SignedObjectType, SubmitResultType } from '@common/libs/ledger/types';
 
 import { AppScreens } from '@common/constants';
-import { Images, Navigator, Toast, AlertModal, getNavigationBarHeight } from '@common/helpers';
+import { Toast, getNavigationBarHeight } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 
 import { PushNotificationsService, LedgerService, SocketService } from '@services';
 
@@ -223,7 +225,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         // check for asfDisableMaster
         if (payload.transaction.Type === 'AccountSet' && payload.transaction.SetFlag === 'asfDisableMaster') {
-            AlertModal({
+            Navigator.showAlertModal({
                 type: 'warning',
                 text: Localize.t('account.disableMasterKeyWarning'),
                 buttons: [

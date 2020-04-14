@@ -3,7 +3,10 @@ import { assign, has } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
-import { LedgerService, LoggerService, SocketService } from '@services';
+
+import LedgerService from '@services/LedgerService';
+import SocketService from '@services/SocketService';
+import LoggerService from '@services/LoggerService';
 
 import { TransactionJSONType, SignedObjectType, SubmitResultType, VerifyResultType } from './types';
 
@@ -84,7 +87,7 @@ class Submitter {
     }
 
     static verify = (transactionId?: string): Promise<VerifyResultType> => {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             // wait for ledger close event
             let verified = false;
             const ledgerListener = async () => {
@@ -130,7 +133,7 @@ class Submitter {
                 }
                 return this.signedObject;
             })
-            .catch((e) => {
+            .catch(e => {
                 this.logger.error('Error Prepare transaction', e);
                 throw new Error('Unable prepare the transaction, please try again!');
             });
@@ -139,7 +142,7 @@ class Submitter {
     async submit(): Promise<SubmitResultType> {
         // TODO: handle error
         /* eslint-disable-next-line */
-        return new Promise(async (resolve) => {
+        return new Promise(async resolve => {
             try {
                 this.logger.debug('Submit TX:', this.txJson);
 

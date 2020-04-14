@@ -7,7 +7,9 @@ import { flatMap } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, SectionList, TouchableHighlight } from 'react-native';
 
-import { Navigator, Prompt } from '@common/helpers';
+import { Prompt } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+
 import { AppScreens, AppConfig } from '@common/constants';
 
 import { SocketService } from '@services';
@@ -71,13 +73,13 @@ class NodeListView extends Component<Props, State> {
         const nodesCategoryMap = [
             {
                 title: Localize.t('global.mainnet'),
-                data: flatMap(AppConfig.nodes.main, (n) => {
+                data: flatMap(AppConfig.nodes.main, n => {
                     return { chain: NodeChain.Main, url: n };
                 }),
             },
             {
                 title: Localize.t('global.testnet'),
-                data: flatMap(AppConfig.nodes.test, (n) => {
+                data: flatMap(AppConfig.nodes.test, n => {
                     return { chain: NodeChain.Test, url: n };
                 }),
             },

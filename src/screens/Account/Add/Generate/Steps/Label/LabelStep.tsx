@@ -11,7 +11,7 @@ import { Button, Spacer, TextInput, Footer } from '@components';
 // locale
 import Localize from '@locale';
 
-import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate';
+import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate/types';
 
 // style
 import { AppStyles } from '@theme';
@@ -20,8 +20,8 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     account: AccountObject;
-    goBack: (step?: GenerateSteps, settings?: any) => void;
-    goNext: (step?: GenerateSteps, settings?: any) => void;
+    goBack: (step?: GenerateSteps, settings?: AccountObject) => void;
+    goNext: (step?: GenerateSteps, settings?: AccountObject) => void;
 }
 
 export interface State {

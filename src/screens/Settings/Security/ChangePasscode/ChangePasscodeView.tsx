@@ -11,7 +11,7 @@ import { AccountSchema } from '@store/schemas/latest';
 import { EncryptionLevels } from '@store/types';
 
 import Vault from '@common/libs/vault';
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
 
