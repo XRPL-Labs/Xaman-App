@@ -559,7 +559,7 @@ class RecipientStep extends Component<Props, State> {
             case 'xrplns':
                 tag = (
                     <View style={[styles.tag, styles.xrplnsTag]}>
-                        <Text style={styles.tagLabel}>Xrplns</Text>
+                        <Text style={styles.tagLabel}>XRPLNS</Text>
                     </View>
                 );
                 break;

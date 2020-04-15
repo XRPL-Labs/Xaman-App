@@ -361,7 +361,7 @@ class SummaryStep extends Component {
                                     {/* eslint-disable-next-line */}
                                     <View style={[{ paddingLeft: 10 }]}>
                                         <Text style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
-                                            {Localize.t('global.destinationTag')}:{' '}
+                                            {destination.tag && `${Localize.t('global.destinationTag')}: `}
                                             <Text style={AppStyles.colorBlue}>
                                                 {destination.tag || Localize.t('send.noDestinationTag')}
                                             </Text>
