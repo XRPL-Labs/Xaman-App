@@ -1,6 +1,7 @@
 /**
  * Base Ledger transaction parser
  */
+import BigNumber from 'bignumber.js';
 
 import { set, get, has, isUndefined } from 'lodash';
 
@@ -92,21 +93,30 @@ class BaseTransaction {
     };
 
     calculateFee = (netFee: number) => {
-        let baseFee = netFee;
+        let baseFee;
         // 10 drops × (33 + (Fulfillment size in bytes ÷ 16))
         if (this.Type === 'EscrowFinish' && this.Fulfillment) {
-            baseFee = netFee * (33 + Buffer.from(this.Fulfillment).length / 16);
+            baseFee = new BigNumber(netFee).multipliedBy(
+                new BigNumber(Buffer.from(this.Fulfillment).length).dividedBy(16).plus(33),
+            );
         }
-        // 5,000,000 drops
+
         if (this.Type === 'AccountDelete') {
-            baseFee = 5 * 1000000;
+            baseFee = new BigNumber(5).multipliedBy(1000000);
         }
         // 10 drops × (1 + Number of Signatures Provided)
         if (this.Signers.length > 0) {
-            baseFee += netFee * (1 + this.Signers.length);
+            baseFee = new BigNumber(this.Signers.length)
+                .plus(1)
+                .multipliedBy(netFee)
+                .plus(baseFee);
         }
 
-        return baseFee;
+        if (!baseFee) {
+            baseFee = new BigNumber(netFee);
+        }
+
+        return baseFee.toFixed(0, BigNumber.ROUND_UP);
     };
 
     get Type(): string {
