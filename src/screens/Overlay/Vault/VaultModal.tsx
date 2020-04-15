@@ -235,10 +235,8 @@ class VaultModal extends Component<Props, State> {
                 this.openVault(encryptedPasscode);
             })
             .catch(e => {
-                Alert.alert(Localize.t('global.error'), e.toString());
-            })
-            .finally(() => {
                 this.securePinInput.clearInput();
+                Alert.alert(Localize.t('global.error'), e.toString());
             });
     };
 

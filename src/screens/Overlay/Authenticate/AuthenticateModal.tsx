@@ -147,10 +147,8 @@ class AuthenticateModal extends Component<Props, State> {
         CoreRepository.checkPasscode(passcode)
             .then(this.onSuccess)
             .catch(e => {
-                Alert.alert(Localize.t('global.error'), e.toString());
-            })
-            .finally(() => {
                 this.securePinInput.clearInput();
+                Alert.alert(Localize.t('global.error'), e.toString());
             });
     };
 

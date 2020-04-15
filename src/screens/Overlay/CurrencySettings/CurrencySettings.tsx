@@ -1,15 +1,16 @@
 /**
- * Custom Action Sheet Overlay
+ * Currency Settings Overlay
  */
 
 import React, { Component } from 'react';
 import { View, Animated, Text, Image, Alert, InteractionManager } from 'react-native';
 
-import { TrustLineSchema } from '@store/schemas/latest';
+import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 import { AccountRepository } from '@store/repositories';
 
 import { TrustSet } from '@common/libs/ledger/transactions';
 import Submitter from '@common/libs/ledger/submitter';
+import Flag from '@common/libs/ledger/parser/common/flag';
 
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
@@ -29,6 +30,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
+    account: AccountSchema;
     trustLine: TrustLineSchema;
 }
 
@@ -93,21 +95,37 @@ class CurrencySettingsModal extends Component<Props, State> {
     };
 
     removeTrustLine = async (privateKey: string) => {
-        const { trustLine } = this.props;
+        const { trustLine, account } = this.props;
 
         this.setState({
             isLoading: true,
         });
 
-        const newTrustline = new TrustSet();
+        // parse account flags
+        const accountFlags = new Flag('Account', account.flags).parse();
 
-        // @ts-ignore
-        newTrustline.Account = { address: trustLine.linkingObjects('Account', 'lines')[0].address };
-        newTrustline.Flags = [131072]; // tfSetNoRipple
-        newTrustline.Currency = trustLine.currency.currency;
-        newTrustline.Issuer = trustLine.currency.issuer;
-        // this will remove trust line
-        newTrustline.Limit = 0;
+        let transactionFlags = 2097152; // tfClearFreeze
+
+        // If the (own) account DOES HAVE the defaultRipple flag,
+        //  CLEAR the noRipple flag on the Trust Line, so set: tfClearNoRipple
+        if (accountFlags.defaultRipple) {
+            transactionFlags |= 262144;
+        } else {
+            // If the (own) account DOES NOT HAVE the defaultRipple flag SET the tfSetNoRipple flag
+            transactionFlags |= 131072; // tfClearNoRipple
+        }
+
+        const newTrustline = new TrustSet({
+            transaction: {
+                Account: account.address,
+                LimitAmount: {
+                    currency: trustLine.currency.currency,
+                    issuer: trustLine.currency.issuer,
+                    value: 0,
+                },
+                Flags: transactionFlags,
+            },
+        });
 
         const ledgerSubmitter = new Submitter(newTrustline.Json, privateKey);
 

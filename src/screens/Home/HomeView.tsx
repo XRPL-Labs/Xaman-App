@@ -140,6 +140,8 @@ class HomeView extends Component<Props, State> {
     };
 
     showCurrencyOptions = (trustLine: TrustLineSchema) => {
+        const { account } = this.state;
+
         Navigator.showOverlay(
             AppScreens.Overlay.CurrencySettings,
             {
@@ -151,7 +153,7 @@ class HomeView extends Component<Props, State> {
                     componentBackgroundColor: 'transparent',
                 },
             },
-            { trustLine },
+            { trustLine, account },
         );
     };
 

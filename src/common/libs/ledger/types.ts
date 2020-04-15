@@ -21,7 +21,7 @@ export interface LedgerTransactionType {
  */
 export type TransactionJSONType = {
     Account?: string;
-    TransactionType: string;
+    TransactionType?: string;
     Memos?: { Memo: Memo }[];
     Flags?: number;
     Fulfillment?: string;
