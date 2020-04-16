@@ -118,7 +118,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
 
                         const percent = (incomingTxCountWithTag * 100) / accountTXS.transactions.length;
 
-                        if (percent > 75) {
+                        if (percent > 65) {
                             assign(info, { requireDestinationTag: true });
                         }
                     }
