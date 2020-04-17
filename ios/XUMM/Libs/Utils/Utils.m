@@ -1,13 +1,5 @@
-
-//
-//  JailMonkey.m
-//  Trackops
-//
-//  Created by Gant Laborde on 7/19/16.
-//  Copyright © 2016 Facebook. All rights reserved.
-//
-
 #import "Utils.h"
+
 @import UIKit;
 @import Darwin.sys.sysctl;
 
