@@ -256,8 +256,6 @@ dependencies {
         transitive = true
     }
     implementation 'me.leolin:ShortcutBadger:1.1.21@aar'
-    // other dependencies
-    implementation project(':react-native-interactable') 
 }
 
 // Run this once to be able to run the application with BUCK

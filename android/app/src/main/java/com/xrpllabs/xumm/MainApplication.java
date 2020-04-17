@@ -26,8 +26,6 @@ import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import io.invertase.firebase.fabric.crashlytics.RNFirebaseCrashlyticsPackage;
 import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
-// Interactable
-import com.wix.interactable.Interactable;
 
 // PlayService
 import android.content.Intent;
@@ -68,8 +66,7 @@ public class MainApplication extends NavigationApplication {
                 packages.add(new RNFirebaseNotificationsPackage());
                 packages.add(new RNFirebaseCrashlyticsPackage());
                 packages.add(new RNFirebaseAnalyticsPackage());
-                // Interactable
-                packages.add(new Interactable());
+
                 return packages;
             }
 
