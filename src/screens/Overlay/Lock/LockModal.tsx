@@ -12,6 +12,8 @@ import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 import { BiometryType } from '@store/types';
 
+import { AuthenticationService } from '@services';
+
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
@@ -78,7 +80,7 @@ class LockModal extends Component<Props, State> {
     }
 
     onPasscodeEntered = (passcode: string) => {
-        CoreRepository.checkPasscode(passcode)
+        AuthenticationService.checkPasscode(passcode)
             .then(this.onUnlock)
             .catch(e => {
                 this.securePinInput.clearInput();
@@ -91,10 +93,6 @@ class LockModal extends Component<Props, State> {
 
     onUnlock = () => {
         const { onUnlock } = this.props;
-
-        // update last unlocked
-        CoreRepository.updateTimeLastUnlocked();
-
         // close lock overlay
         Navigator.dismissOverlay();
 
@@ -131,7 +129,15 @@ class LockModal extends Component<Props, State> {
                     </View>
 
                     <View style={[AppStyles.flex5, AppStyles.flexEnd]}>
-                        <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.colorRed]}>
+                        <Text
+                            style={[
+                                AppStyles.p,
+                                AppStyles.bold,
+                                AppStyles.textCenterAligned,
+                                AppStyles.colorRed,
+                                AppStyles.paddingSml,
+                            ]}
+                        >
                             {error}
                         </Text>
                         <SecurePinInput

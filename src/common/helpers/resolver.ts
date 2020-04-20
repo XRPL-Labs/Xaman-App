@@ -5,7 +5,8 @@ import Flag from '@common/libs/ledger/parser/common/flag';
 import AccountRepository from '@store/repositories/account';
 import ContactRepository from '@store/repositories/contact';
 
-import { BackendService, LedgerService } from '@services';
+import LedgerService from '@services/LedgerService';
+import BackendService from '@services/BackendService';
 
 export interface AccountNameType {
     name: string;

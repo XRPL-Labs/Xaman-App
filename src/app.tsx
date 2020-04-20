@@ -22,9 +22,7 @@ import * as screens from '@screens';
 // services
 import * as services from '@services';
 
-import { NetStateStatus } from '@services/AppStateService';
-
-export default class Application {
+class Application {
     storage: StorageBackend;
     initialized: boolean;
     logger: any;
@@ -47,7 +45,7 @@ export default class Application {
                 this.registerScreens,
                 this.initializeStorage,
                 this.loadAppLocale,
-                this.initAppServices,
+                this.initServices,
             ];
 
             // run them in waterfall
@@ -71,26 +69,13 @@ export default class Application {
     }
 
     boot = () => {
-        const { SocketService, AppStateService } = services;
+        const core = CoreRepository.getSettings();
 
-        if (AppStateService.netStatus === NetStateStatus.Connected) {
-            // first connect to the websocket
-            SocketService.connect()
-                .then(() => {
-                    const core = CoreRepository.getSettings();
-
-                    // if app initialized go to main screen
-                    if (core && core.initialized) {
-                        Navigator.startDefault();
-                    } else {
-                        Navigator.startOnboarding();
-                    }
-                })
-                .catch(() => {
-                    Navigator.startConnectionIssue();
-                });
+        // if app initialized go to main screen
+        if (core && core.initialized) {
+            Navigator.startDefault();
         } else {
-            Navigator.startConnectionIssue();
+            Navigator.startOnboarding();
         }
     };
 
@@ -98,7 +83,7 @@ export default class Application {
         return this.storage.initialize();
     };
 
-    initAppServices = () => {
+    initServices = () => {
         return new Promise((resolve, reject) => {
             try {
                 const coreSettings = CoreRepository.getSettings();
@@ -117,11 +102,11 @@ export default class Application {
                         resolve();
                     })
                     .catch(e => {
-                        this.logger.error('initAppServices Error:', e);
+                        this.logger.error('initServices Error:', e);
                         reject(e);
                     });
             } catch (e) {
-                this.logger.error('initAppServices Error:', e);
+                this.logger.error('initServices Error:', e);
             }
         });
     };
@@ -213,3 +198,5 @@ export default class Application {
         });
     };
 }
+
+export default new Application();

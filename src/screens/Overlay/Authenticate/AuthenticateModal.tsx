@@ -15,6 +15,8 @@ import { BiometryType } from '@store/types';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
+import { AuthenticationService } from '@services';
+
 // components
 import { SecurePinInput, Button } from '@components';
 
@@ -144,7 +146,7 @@ class AuthenticateModal extends Component<Props, State> {
     };
 
     onPasscodeEntered = (passcode: string) => {
-        CoreRepository.checkPasscode(passcode)
+        AuthenticationService.checkPasscode(passcode)
             .then(this.onSuccess)
             .catch(e => {
                 this.securePinInput.clearInput();

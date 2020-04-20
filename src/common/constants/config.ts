@@ -35,4 +35,10 @@ export default {
             { value: 'zh', title: '中文' },
         ],
     },
+
+    // app theme config
+    theme: {
+        light: 'Light',
+        dark: 'Dark',
+    },
 };

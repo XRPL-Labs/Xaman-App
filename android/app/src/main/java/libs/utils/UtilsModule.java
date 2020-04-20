@@ -98,6 +98,15 @@ public class UtilsModule extends ReactContextBaseJavaModule {
         System.exit(1);
     }
 
+    @ReactMethod
+    public void getElapsedRealtime(Promise promise) {
+        // System time in milliseconds
+        long time = android.os.SystemClock.elapsedRealtime();
+
+        // React Native bridge complains if we try to pass back a long directly
+        promise.resolve(Long.toString(time / 1000));
+    }
+
     private static boolean checkRootMethod1() {
         String buildTags = android.os.Build.TAGS;
         return buildTags != null && buildTags.contains("test-keys");

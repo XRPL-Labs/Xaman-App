@@ -1,6 +1,4 @@
 import Onboarding from './Onboarding';
-// Connection Issue
-import ConnectionIssue from './ConnectionIssue';
 // setup
 import PasscodeSetup from './Setup/Passcode';
 import BiometrySetup from './Setup/Biometry';
@@ -74,8 +72,6 @@ import Placeholder from './Placeholder';
 export {
     // onboarding
     Onboarding,
-    // Connection issue
-    ConnectionIssue,
     // Setup
     PasscodeSetup,
     BiometrySetup,

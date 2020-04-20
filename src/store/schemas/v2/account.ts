@@ -110,7 +110,7 @@ class Account extends Realm.Object {
         /*  eslint-disable-next-line */
         console.log('migrating Account model to v2');
 
-        const newObjects = newRealm.objects(this.schema.name) as Account[];
+        const newObjects = newRealm.objects('Account') as Account[];
 
         for (let i = 0; i < newObjects.length; i++) {
             // set empty destination tag

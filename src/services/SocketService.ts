@@ -13,6 +13,7 @@ import { AppConfig } from '@common/constants';
 
 // import AppStateService from '@services/AppStateService';
 import LoggerService from '@services/LoggerService';
+import NavigationService from '@services/NavigationService';
 
 type BaseCommand = {
     id?: string;
@@ -99,24 +100,34 @@ class SocketService extends EventEmitter {
     initialize = (coreSettings: CoreSchema) => {
         return new Promise((resolve, reject) => {
             try {
-                // get/set default node
-                let defaultNode = __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0];
+                // listen on navigation change event
+                NavigationService.on('setRoot', (root: string) => {
+                    // we just need to connect to socket when we are in DefaultStack not Onboarding
+                    if (root === 'DefaultStack') {
+                        // get/set default node
+                        let defaultNode = __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0];
 
-                if (coreSettings && coreSettings.defaultNode) {
-                    defaultNode = coreSettings.defaultNode;
-                }
+                        if (coreSettings && coreSettings.defaultNode) {
+                            defaultNode = coreSettings.defaultNode;
+                        }
 
-                this.setDefaultNode(defaultNode);
+                        // set default node
+                        this.setDefaultNode(defaultNode);
 
-                // FIXME: enable me
-                // listen for net state change
-                // AppStateService.on('netStateChange', (newState: string) => {
-                //     if (newState === 'Connected') {
-                //         this.reconnect();
-                //     } else {
-                //         this.close();
-                //     }
-                // });
+                        // connect to the node
+                        this.connect();
+
+                        // FIXME: enable me
+                        // listen for net state change
+                        // AppStateService.on('netStateChange', (newState: string) => {
+                        //     if (newState === 'Connected') {
+                        //         this.reconnect();
+                        //     } else {
+                        //         this.close();
+                        //     }
+                        // });
+                    }
+                });
 
                 return resolve();
             } catch (e) {

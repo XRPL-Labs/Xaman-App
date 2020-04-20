@@ -156,7 +156,7 @@ class NavigationService extends EventEmitter {
         }
 
         // check if we are in main screens and can exit the app
-        const mainScreens = [AppScreens.Onboarding, AppScreens.ConnectionIssue, ...values(AppScreens.TabBar)];
+        const mainScreens = [AppScreens.Onboarding, ...values(AppScreens.TabBar)];
         if (mainScreens.indexOf(currentScreen) > -1) {
             // increase back handler click count
             this.backHandlerClickCount += 1;

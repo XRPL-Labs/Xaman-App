@@ -13,6 +13,8 @@ import { EncryptionLevels } from '@store/types';
 import Vault from '@common/libs/vault';
 import { Navigator } from '@common/helpers/navigator';
 
+import { AuthenticationService } from '@services';
+
 import { AppScreens } from '@common/constants';
 
 import { Header, PinInput } from '@components';
@@ -96,7 +98,7 @@ class ChangePasscodeView extends Component<Props, State> {
 
         switch (step) {
             case 'current':
-                CoreRepository.checkPasscode(passcode)
+                AuthenticationService.checkPasscode(passcode)
                     .then(() => {
                         this.setState({ step: 'new', description: Localize.t('settings.enterNewPasscode') });
                         this.pinInput.clean();

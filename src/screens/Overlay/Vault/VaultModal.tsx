@@ -15,6 +15,8 @@ import { AccessLevels, EncryptionLevels, BiometryType } from '@store/types';
 
 import Vault from '@common/libs/vault';
 
+import { AuthenticationService } from '@services';
+
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
@@ -230,7 +232,7 @@ class VaultModal extends Component<Props, State> {
     };
 
     onPasscodeEntered = (passcode: string) => {
-        CoreRepository.checkPasscode(passcode)
+        AuthenticationService.checkPasscode(passcode)
             .then(encryptedPasscode => {
                 this.openVault(encryptedPasscode);
             })

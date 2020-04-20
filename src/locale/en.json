@@ -170,9 +170,10 @@
         "atLeastOneLetter": "At least one lowercase character (a-z)",
         "atLeastOneSymbol": "At least one special character (! @ , ? etc.)",
         "atLeastOneUpperCase": "At least one UPPERCASE character (A-Z)",
-        "tooManyAttemptLogin": "Too many failed login attempts, please try again in %{after} minutes.",
+        "tooManyAttempts": "Too many failed attempts, please try again in %{after} minutes.",
         "passcodeAttemptExceed": "Passcode attempts exceed, please try again later.",
-        "invalidPasscodeLeftAttempt": "Invalid passcode, %{left} attempt(s) left",
+        "invalidPasscode": "Invalid passcode",
+        "autoWipeAlert": "You have incorrectly attempted to unlock the app %{times} times, after 1 more unsuccessful attempt, the app will be reset and all your account data will be lost.",
         "cannotValidateCurrentTimeWithServer" : "Cannot validate application time with server time. Make sure you are connected to the internet!",
         "unableOpenReturnURL": "Unable to open return url!",
         "changingLanguageNeedsRestartToTakeEffect": "Changing language requires the app to restart. Do you want to restart now?",
@@ -325,7 +326,10 @@
         "newOldPasscodeNotMatch": "The new pincode and your confirmation are not the same!",
         "passcodeChangedSuccess": "Your pincode change was successfull!",
         "canNotSendLogsByEmail": "An unexpected error occurred, can not sent logs by email!",
-        "logsCopiedToClipboard": "Session Logs  copied to clipboard"
+        "logsCopiedToClipboard": "Session Logs  copied to clipboard",
+        "additionalSecurity": "Additional security",
+        "eraseData": "Erase data",
+        "eraseDataDescription": "Erase all data after 10 failed passcode attempts"
     },
     "account": {
         "addAccount": "Add an account",

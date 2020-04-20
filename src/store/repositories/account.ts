@@ -211,6 +211,20 @@ class AccountRepository extends BaseRepository {
 
         return true;
     };
+
+    /**
+     * Purge All accounts
+     * WARNING: this will be permanently and cannot be undo
+     */
+    purgePrivateKeys = (): boolean => {
+        // clear the vault
+        const accounts = this.getAccounts({ accessLevel: AccessLevels.Full });
+        accounts.forEach(a => {
+            Vault.purge(a.publicKey);
+        });
+
+        return true;
+    };
 }
 
 export default new AccountRepository();

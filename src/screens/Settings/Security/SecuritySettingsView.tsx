@@ -177,6 +177,12 @@ class SecuritySettingsView extends Component<Props, State> {
         );
     };
 
+    eraseDataChange = (value: boolean) => {
+        CoreRepository.saveSettings({
+            purgeOnBruteForce: value,
+        });
+    };
+
     render() {
         const { biometricEnabled, isSensorAvailable, coreSettings } = this.state;
 
@@ -238,6 +244,17 @@ class SecuritySettingsView extends Component<Props, State> {
                             </View>
                         </View>
                     )}
+
+                    <Text style={styles.descriptionText}>{Localize.t('settings.additionalSecurity')}</Text>
+                    <View style={styles.row}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text style={styles.label}>{Localize.t('settings.eraseData')}</Text>
+                        </View>
+                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Switch checked={coreSettings.purgeOnBruteForce} onChange={this.eraseDataChange} />
+                        </View>
+                    </View>
+                    <Text style={styles.destructionLabel}>{Localize.t('settings.eraseDataDescription')}</Text>
                 </ScrollView>
             </View>
         );

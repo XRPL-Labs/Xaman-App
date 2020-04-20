@@ -4,7 +4,6 @@
 
 const screens = {
     Onboarding: 'app.Onboarding',
-    ConnectionIssue: 'app.ConnectionIssue',
     Setup: {
         Passcode: 'app.Setup.Passcode',
         Biometric: 'app.Setup.Biometric',

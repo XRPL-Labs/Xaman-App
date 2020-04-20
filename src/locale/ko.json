@@ -170,9 +170,10 @@
       "atLeastOneLetter": "하나 이상의 소문자 (az)",
       "atLeastOneSymbol": "하나 이상의 특수 문자 (! @,? 등)",
       "atLeastOneUpperCase": "하나 이상의 대문자 (AZ)",
-      "tooManyAttemptLogin": "로그인 시도가 너무 많이 실패했습니다.에서 다시 시도하십시오. %{after} 의사록.",
+      "tooManyAttempts": "실패한 시도가 너무 많습니다. 다시 시도하십시오 %{after} 의사록.",
       "passcodeAttemptExceed": "비밀번호 시도 횟수를 초과했습니다. 나중에 다시 시도하십시오.",
-      "invalidPasscodeLeftAttempt": "잘못된 비밀번호, %{left} 남은 시도",
+      "invalidPasscode": "잘못된 비밀번호",
+      "autoWipeAlert": "앱 잠금을 잘못 시도했습니다 %{times} 1 회 이상 실패하면 앱이 재설정되고 모든 계정 데이터가 손실됩니다.",
       "cannotValidateCurrentTimeWithServer": "서버 시간으로 응용 프로그램 시간을 확인할 수 없습니다. 인터넷에 연결되어 있는지 확인하십시오!",
       "unableOpenReturnURL": "반환 URL을 열 수 없습니다!",
       "changingLanguageNeedsRestartToTakeEffect": "언어를 변경하려면 앱을 다시 시작해야합니다. 지금 다시 시작 하시겠습니까?",
@@ -216,7 +217,7 @@
       },
       "slideThree": {
          "title": "보안 우선",
-         "desc": "xumm 응용 프로그램 및 플랫폼은 보안을 염두에두고 구축되었습니다. 비밀을 다시 입력하지 말고 자신의 신뢰할 수있는 장치에서 거래에 서명하십시오."
+         "desc": "xumm 응용 프로그램 및 플랫폼은 보안을 염두에두고 구축되었습니다. 비밀을 다시 입력하지 말고 신뢰할 수있는 자신의 장치에서 거래에 서명하십시오."
       },
       "slideFour": {
          "title": "보내고 받기",
@@ -325,13 +326,16 @@
       "newOldPasscodeNotMatch": "새 비밀번호와 확인 내용이 동일하지 않습니다!",
       "passcodeChangedSuccess": "비밀번호 변경이 성공했습니다!",
       "canNotSendLogsByEmail": "예기치 않은 오류가 발생하여 이메일로 로그를 보낼 수 없습니다!",
-      "logsCopiedToClipboard": "클립 보드에 복사 된 세션 로그"
+      "logsCopiedToClipboard": "클립 보드에 복사 된 세션 로그",
+      "additionalSecurity": "추가 보안",
+      "eraseData": "데이터 지우기",
+      "eraseDataDescription": "10 번의 암호 시도 실패 후 모든 데이터 지우기"
    },
    "account": {
       "addAccount": "계정 추가",
       "addAccountDescription": "기존 계정을 가져 오거나 새 계정을 만듭니다.",
       "importExisting": "기존 계정 가져 오기",
-      "generateNewAccount": "새 계정 생성",
+      "generateNewAccount": "새로운 계정을 생성",
       "confirmPrivateTitle": "비밀 번호 확인",
       "confirmPrivateDescription": "번호는 알려주십시오. 이는 본인의 안전을위한 것입니다. 번호를 적어 두 었음을 확인하십시오.",
       "invalidSecretNumber": "잘못된 비밀 번호 키를 입력했습니다",
@@ -412,7 +416,7 @@
       "getStartedCreateAccount": "첫 번째 계정을 추가하여 시작하십시오.",
       "accountIsNotActivated": "계정이 활성화되지 않았습니다!",
       "accountSettingsDescription": "여기에서 계정 설정 또는 계정 레이블을 편집 할 수 있습니다.",
-      "securityLevel": "보안 레벨",
+      "securityLevel": "보안 수준",
       "changePassphrase": "암호 변경",
       "destroyAccount": "이 계정을 삭제",
       "upgradingAccessLevelWarning": "액세스 수준을 업그레이드하는 중입니다.이 계정의 개인 키를 가져와야합니다.",
@@ -435,7 +439,7 @@
       "newPassphrase": "새로운 비밀번호 문구",
       "regularKeyFor": "에 대한 일반 키",
       "allDoneYouCanGoToNextStepNow": "모든 작업을 마치면 다음 단계로 넘어갈 수 있습니다",
-      "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이하고있는 것을 알고 있다면 계속하십시오.",
+      "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이 무엇을하고 있는지 아는 경우에만 계속하십시오.",
       "switchAccount": "계정 전환",
       "useMnemonicPassphrase": "니모닉 암호 구 사용",
       "mnemonicLargeAmountAlert": "계정에 상당한 가치가있는 동안 니모닉 계정 가져 오기를 고려하는 경우 (예 : 저축, 더 많은 양의 XRP 또는 기타 토큰) 니모닉 계정을 오프라인으로 유지하려면 XUMM에 새 계정을 만드는 것을 고려하십시오.",
