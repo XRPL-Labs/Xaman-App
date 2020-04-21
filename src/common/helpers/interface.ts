@@ -60,7 +60,7 @@ const getBottomTabScale = (factor?: number): number => {
     let scale;
     switch (ratio) {
         case 2:
-            scale = 4;
+            scale = 4.5;
             break;
         case 3:
             scale = 6;
