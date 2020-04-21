@@ -11,7 +11,7 @@ import { NodeChain } from '@store/types';
 
 import { AppConfig } from '@common/constants';
 
-// import AppStateService from '@services/AppStateService';
+import AppStateService from '@services/AppStateService';
 import LoggerService from '@services/LoggerService';
 import NavigationService from '@services/NavigationService';
 
@@ -117,15 +117,14 @@ class SocketService extends EventEmitter {
                         // connect to the node
                         this.connect();
 
-                        // FIXME: enable me
                         // listen for net state change
-                        // AppStateService.on('netStateChange', (newState: string) => {
-                        //     if (newState === 'Connected') {
-                        //         this.reconnect();
-                        //     } else {
-                        //         this.close();
-                        //     }
-                        // });
+                        AppStateService.on('netStateChange', (newState: string) => {
+                            if (newState === 'Connected') {
+                                this.reconnect();
+                            } else {
+                                this.close();
+                            }
+                        });
                     }
                 });
 
@@ -210,6 +209,7 @@ class SocketService extends EventEmitter {
         return new Promise((resolve, reject) => {
             // sent tracker
             let sent = false;
+
             if (this.status === SocketStateStatus.Connected) {
                 resolve(this.sendPayload(payload));
                 return;
