@@ -385,7 +385,7 @@ class HomeView extends Component<Props, State> {
                         Navigator.push(AppScreens.Transaction.Payment);
                     }}
                     activeOpacity={0}
-                    isDisabled={account.accessLevel === AccessLevels.Readonly || account.balance === 0}
+                    isDisabled={account.accessLevel === AccessLevels.Readonly || account.availableBalance === 0}
                 />
                 <CustomButton
                     style={[styles.requestButton]}
@@ -502,7 +502,7 @@ class HomeView extends Component<Props, State> {
                             <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
                                 {/* <Image style={[styles.currencyAvatar]} source={Images.IconXrp} /> */}
                                 <Text style={[AppStyles.h5, AppStyles.monoBold, privacy && AppStyles.colorGreyDark]}>
-                                    {privacy ? '••••••••' : account.balance}
+                                    {privacy ? '••••••••' : account.availableBalance}
                                 </Text>
                             </View>
                         </View>

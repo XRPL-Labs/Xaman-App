@@ -191,8 +191,7 @@ class DetailsStep extends Component {
                                     selected ? AppStyles.colorBlue : AppStyles.colorGreyDark,
                                 ]}
                             >
-                                {Localize.t('global.balance')}: {source.availableBalance}{' '}
-                                {`(${source.accountReserve} ${Localize.t('global.reserved')})`}
+                                {Localize.t('global.balance')}: {source.availableBalance}
                             </Text>
                         </View>
                     </View>

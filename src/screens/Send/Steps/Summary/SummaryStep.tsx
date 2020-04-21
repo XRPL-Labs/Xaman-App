@@ -87,20 +87,6 @@ class SummaryStep extends Component {
         setDestination(destination);
     };
 
-    getAccountReserve = () => {
-        const { currency, source } = this.context;
-
-        // XRP
-        if (typeof currency === 'string') {
-            if (source.balance === 0) {
-                return '';
-            }
-            return `(${source.accountReserve} ${Localize.t('global.reserved')})`;
-        }
-
-        return '';
-    };
-
     getAvailableBalance = () => {
         const { currency, source } = this.context;
 
@@ -213,7 +199,7 @@ class SummaryStep extends Component {
                         <View style={[AppStyles.column, AppStyles.centerContent]}>
                             <Text style={[styles.currencyItemLabel]}>XRP</Text>
                             <Text style={[styles.currencyBalance]}>
-                                {Localize.t('global.balance')}: {this.getAvailableBalance()} {this.getAccountReserve()}
+                                {Localize.t('global.balance')}: {this.getAvailableBalance()}
                             </Text>
                         </View>
                     </View>
