@@ -269,11 +269,13 @@ class SocketService extends EventEmitter {
                         Connection.on('close', this.onClose);
 
                         Connection.on('state', (connected: boolean) => {
+                            const reconnected = this.status === SocketStateStatus.Disconnected && connected;
+                            // update current state
+                            this.status = connected ? SocketStateStatus.Connected : SocketStateStatus.Disconnected;
                             // if we are connecting again
-                            if (this.status === SocketStateStatus.Disconnected && connected) {
+                            if (reconnected) {
                                 this.emit('connect', Connection);
                             }
-                            this.status = connected ? SocketStateStatus.Connected : SocketStateStatus.Disconnected;
                         });
                         return resolve();
                     })
