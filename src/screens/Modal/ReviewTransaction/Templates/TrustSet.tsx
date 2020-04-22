@@ -69,7 +69,7 @@ class TrustSetTemplate extends Component<Props, State> {
                             'Loading...'
                         )
                     ) : (
-                        <Text style={styles.value}>{issuerName} </Text>
+                        <Text style={styles.value}> {issuerName || Localize.t('global.noNameFound')} </Text>
                     )}
                 </Text>
                 <View style={[styles.contentBox]}>
@@ -77,7 +77,7 @@ class TrustSetTemplate extends Component<Props, State> {
                         {transaction.Issuer}
                     </Text>
                 </View>
-                <Text style={[styles.label]}>{Localize.t('global.currency')}:</Text>
+                <Text style={[styles.label]}>{Localize.t('global.currency')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={[styles.value]}>{NormalizeCurrencyCode(transaction.Currency)}</Text>
                 </View>

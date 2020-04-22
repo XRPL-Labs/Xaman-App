@@ -66,7 +66,7 @@ class SetRegularKeyTemplate extends Component<Props, State> {
                             'Loading...'
                         )
                     ) : (
-                        <Text style={styles.value}>{regularKeyName || Localize.t('global.unknown')}</Text>
+                        <Text style={styles.value}>{regularKeyName || Localize.t('global.noNameFound')}</Text>
                     )}
                 </Text>
                 <View style={[styles.contentBox]}>

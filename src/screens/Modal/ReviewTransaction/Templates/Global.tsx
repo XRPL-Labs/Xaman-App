@@ -60,7 +60,7 @@ class GlobalTemplate extends Component<Props, State> {
             <>
                 {transaction.Memos && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.memo')}:</Text>
+                        <Text style={[styles.label]}>{Localize.t('global.memo')}</Text>
                         <View style={[styles.contentBox]}>
                             {transaction.Memos.map((m: any) => {
                                 let memo = '';
@@ -77,7 +77,7 @@ class GlobalTemplate extends Component<Props, State> {
                     </>
                 )}
 
-                <Text style={[styles.label]}>{Localize.t('global.fee')}:</Text>
+                <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={styles.value}>{transaction.Fee || networkFee} XRP</Text>
                 </View>

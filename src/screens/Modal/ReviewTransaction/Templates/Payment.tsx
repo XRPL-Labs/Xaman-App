@@ -204,7 +204,7 @@ class PaymentTemplate extends Component<Props, State> {
             <KeyboardAvoidingView keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0} behavior="position">
                 <View style={styles.label}>
                     <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                        {Localize.t('global.to')}:
+                        {Localize.t('global.to')}
                     </Text>
                 </View>
                 <View style={[styles.contentBox, styles.addressContainer]}>
@@ -216,7 +216,7 @@ class PaymentTemplate extends Component<Props, State> {
                                 'Loading...'
                             )
                         ) : (
-                            destinationName || Localize.t('global.unknown')
+                            destinationName || Localize.t('global.noNameFound')
                         )}
                     </Text>
                     <Text selectable numberOfLines={1} style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
@@ -233,7 +233,7 @@ class PaymentTemplate extends Component<Props, State> {
                 </View>
 
                 {/* Amount */}
-                <Text style={[styles.label]}>{Localize.t('global.amount')}:</Text>
+                <Text style={[styles.label]}>{Localize.t('global.amount')}</Text>
 
                 <View style={[styles.contentBox]}>
                     <TouchableOpacity
@@ -247,7 +247,7 @@ class PaymentTemplate extends Component<Props, State> {
                     >
                         <View style={[AppStyles.row, AppStyles.flex1]}>
                             <TextInput
-                                ref={r => {
+                                ref={(r) => {
                                     this.amountInput = r;
                                 }}
                                 keyboardType="decimal-pad"
@@ -295,7 +295,7 @@ class PaymentTemplate extends Component<Props, State> {
                             <>
                                 <Spacer size={Platform.OS === 'ios' ? 15 : 0} />
                                 <InfoMessage
-                                    label={Localize.t('payload.notEnoughtLiquidityToSendThisPayment')}
+                                    label={Localize.t('payload.notEnoughLiquidityToSendThisPayment')}
                                     type="error"
                                 />
                             </>
@@ -304,7 +304,7 @@ class PaymentTemplate extends Component<Props, State> {
 
                 {transaction.invoiceID && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.invoiceID')}:</Text>
+                        <Text style={[styles.label]}>{Localize.t('global.invoiceID')}</Text>
                         <View style={[styles.contentBox]}>
                             <Text style={styles.value}>{transaction.invoiceID}</Text>
                         </View>

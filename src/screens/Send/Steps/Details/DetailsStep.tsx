@@ -81,15 +81,9 @@ class DetailsStep extends Component {
 
         // check if balance can cover the transfer fee for non XRP currencies
         if (typeof currency !== 'string') {
-            const rate = new BigNumber(currency.transfer_rate)
-                .dividedBy(1000000)
-                .minus(1000)
-                .dividedBy(10);
+            const rate = new BigNumber(currency.transfer_rate).dividedBy(1000000).minus(1000).dividedBy(10);
 
-            const fee = bAmount
-                .multipliedBy(rate)
-                .dividedBy(100)
-                .decimalPlaces(6);
+            const fee = bAmount.multipliedBy(rate).dividedBy(100).decimalPlaces(6);
             const after = bAmount.plus(fee).toNumber();
 
             if (after > availableBalance) {
@@ -253,7 +247,7 @@ class DetailsStep extends Component {
                             />
                             <View style={[{ paddingLeft: 10 }]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                                    {Localize.t('global.from')}:
+                                    {Localize.t('global.from')}
                                 </Text>
                             </View>
                             <AccordionPicker
@@ -261,7 +255,7 @@ class DetailsStep extends Component {
                                 items={accounts}
                                 renderItem={this.renderAccountItem}
                                 selectedItem={source}
-                                keyExtractor={i => i.address}
+                                keyExtractor={(i) => i.address}
                                 containerStyle={{ backgroundColor: AppColors.transparent }}
                             />
                         </View>
@@ -269,15 +263,15 @@ class DetailsStep extends Component {
                         <View style={[styles.rowItem]}>
                             <View style={[{ paddingLeft: 10 }]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                                    {Localize.t('global.currency')}:
+                                    {Localize.t('global.currency')}
                                 </Text>
                             </View>
                             <AccordionPicker
                                 onSelect={this.onCurrencyChange}
-                                items={['XRP', ...filter(source.lines, l => l.balance > 0)]}
+                                items={['XRP', ...filter(source.lines, (l) => l.balance > 0)]}
                                 renderItem={this.renderCurrencyItem}
                                 selectedItem={currency}
-                                keyExtractor={i => (typeof i === 'string' ? i : i.currency.id)}
+                                keyExtractor={(i) => (typeof i === 'string' ? i : i.currency.id)}
                                 containerStyle={{ backgroundColor: AppColors.transparent }}
                             />
                         </View>
@@ -286,13 +280,13 @@ class DetailsStep extends Component {
                         <View style={[styles.rowItem]}>
                             <View style={[{ paddingLeft: 10 }]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                                    {Localize.t('global.amount')}:
+                                    {Localize.t('global.amount')}
                                 </Text>
                             </View>
                             <View style={[AppStyles.row]}>
                                 <View style={AppStyles.flex1}>
                                     <TextInput
-                                        ref={r => {
+                                        ref={(r) => {
                                             this.amountInput = r;
                                         }}
                                         keyboardType="decimal-pad"

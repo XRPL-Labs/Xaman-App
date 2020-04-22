@@ -10,6 +10,7 @@ import { Spacer } from '@components';
 
 import Localize from '@locale';
 
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -64,7 +65,7 @@ class EscrowCreateTemplate extends Component<Props, State> {
                     {isLoading ? (
                         'Loading ...'
                     ) : (
-                        <Text style={styles.value}>{destinationName || Localize.t('global.unknown')}</Text>
+                        <Text style={styles.value}>{destinationName || Localize.t('global.noNameFound')}</Text>
                     )}
                 </Text>
                 <View style={[styles.contentBox]}>
@@ -74,9 +75,12 @@ class EscrowCreateTemplate extends Component<Props, State> {
                     <Spacer size={15} />
 
                     {transaction.Destination.tag && (
-                        <Text style={[styles.label]}>
-                            DT: <Text style={styles.value}>{transaction.Destination.tag}</Text>
-                        </Text>
+                        <View style={[styles.destinationAddress]}>
+                            <Text style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
+                                {Localize.t('global.destinationTag')}:{' '}
+                                <Text style={AppStyles.colorBlue}>{transaction.Destination.tag}</Text>
+                            </Text>
+                        </View>
                     )}
                 </View>
 

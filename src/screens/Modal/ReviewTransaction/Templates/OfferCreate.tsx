@@ -64,7 +64,7 @@ class OfferCreateTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.takerGets')}: </Text>
+                <Text style={[styles.label]}>{Localize.t('global.takerGets')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={[styles.amount]}>
                         {`${transaction.TakerGets.value} ${transaction.TakerGets.currency}`}
@@ -73,7 +73,7 @@ class OfferCreateTemplate extends Component<Props, State> {
 
                 {transaction.TakerGets.issuer && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.issuer')}: </Text>
+                        <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
                         <View style={[styles.contentBox]}>
                             {takerGetsIssuerName ? (
                                 <Text style={styles.value}>{takerGetsIssuerName}</Text>
@@ -84,7 +84,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                     </>
                 )}
 
-                <Text style={[styles.label]}>{Localize.t('global.takerPays')}: </Text>
+                <Text style={[styles.label]}>{Localize.t('global.takerPays')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={[styles.amount]}>
                         {`${transaction.TakerPays.value} ${transaction.TakerPays.currency}`}
@@ -93,7 +93,7 @@ class OfferCreateTemplate extends Component<Props, State> {
 
                 {transaction.TakerPays.issuer && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.issuer')}: </Text>
+                        <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
                         <View style={[styles.contentBox]}>
                             {takerPaysIssuerName ? (
                                 <Text style={styles.value}>{takerPaysIssuerName}</Text>
@@ -115,7 +115,7 @@ class OfferCreateTemplate extends Component<Props, State> {
 
                 {transaction.OfferSequence && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.offerSequence')}: </Text>
+                        <Text style={[styles.label]}>{Localize.t('global.offerSequence')}</Text>
                         <View style={[styles.contentBox]}>
                             <Text style={styles.value}>{transaction.OfferSequence}</Text>
                         </View>

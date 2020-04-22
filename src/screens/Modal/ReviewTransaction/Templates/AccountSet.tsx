@@ -44,7 +44,7 @@ class AccountSetTemplate extends Component<Props, State> {
             <>
                 {transaction.Domain && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.domain')}:</Text>
+                        <Text style={[styles.label]}>{Localize.t('global.domain')}</Text>
                         <View style={[styles.contentBox]}>
                             <Text selectable style={[styles.valueSubtext]}>
                                 {transaction.Domain}
@@ -54,7 +54,7 @@ class AccountSetTemplate extends Component<Props, State> {
                 )}
                 {transaction.EmailHash && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.emailHash')}:</Text>
+                        <Text style={[styles.label]}>{Localize.t('global.emailHash')}</Text>
                         <View style={[styles.contentBox]}>
                             <Text selectable style={[styles.valueSubtext]}>
                                 {transaction.EmailHash}
@@ -64,7 +64,7 @@ class AccountSetTemplate extends Component<Props, State> {
                 )}
                 {transaction.MessageKey && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.messageKey')}:</Text>
+                        <Text style={[styles.label]}>{Localize.t('global.messageKey')}</Text>
                         <View style={[styles.contentBox]}>
                             <Text selectable style={[styles.valueSubtext]}>
                                 {transaction.MessageKey}
@@ -74,13 +74,13 @@ class AccountSetTemplate extends Component<Props, State> {
                 )}
                 {transaction.SetFlag && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.setFlag')}:</Text>
+                        <Text style={[styles.label]}>{Localize.t('global.setFlag')}</Text>
                         <View style={[styles.contentBox]}>{this.renderSetFlag()}</View>
                     </>
                 )}
                 {transaction.ClearFlag && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.clearFlag')}:</Text>
+                        <Text style={[styles.label]}>{Localize.t('global.clearFlag')}</Text>
                         <View style={[styles.contentBox]}>
                             <Text selectable style={[styles.valueSubtext]}>
                                 {transaction.ClearFlag}

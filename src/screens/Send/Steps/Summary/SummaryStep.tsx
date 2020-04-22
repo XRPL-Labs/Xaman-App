@@ -251,15 +251,9 @@ class SummaryStep extends Component {
 
         // check if balance can cover the transfer fee for non XRP currencies
         if (typeof currency !== 'string') {
-            const rate = new BigNumber(currency.transfer_rate)
-                .dividedBy(1000000)
-                .minus(1000)
-                .dividedBy(10);
+            const rate = new BigNumber(currency.transfer_rate).dividedBy(1000000).minus(1000).dividedBy(10);
 
-            const fee = bAmount
-                .multipliedBy(rate)
-                .dividedBy(100)
-                .decimalPlaces(6);
+            const fee = bAmount.multipliedBy(rate).dividedBy(100).decimalPlaces(6);
             const after = bAmount.plus(fee).toNumber();
 
             if (after > availableBalance) {
@@ -306,7 +300,7 @@ class SummaryStep extends Component {
                             />
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.from')}:
+                                    {Localize.t('global.from')}
                                 </Text>
                             </View>
                             <AccordionPicker
@@ -314,14 +308,14 @@ class SummaryStep extends Component {
                                 items={accounts}
                                 renderItem={this.renderAccountItem}
                                 selectedItem={source}
-                                keyExtractor={i => i.address}
+                                keyExtractor={(i) => i.address}
                                 containerStyle={{ backgroundColor: AppColors.transparent }}
                             />
                             <Spacer size={20} />
 
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.to')}:
+                                    {Localize.t('global.to')}
                                 </Text>
                             </View>
                             <Spacer size={15} />
@@ -369,7 +363,7 @@ class SummaryStep extends Component {
                         <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.currency')}:
+                                    {Localize.t('global.currency')}
                                 </Text>
                             </View>
                             <Spacer size={15} />
@@ -382,7 +376,7 @@ class SummaryStep extends Component {
                         <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.amount')}:
+                                    {Localize.t('global.amount')}
                                 </Text>
                             </View>
                             <Spacer size={15} />
@@ -390,7 +384,7 @@ class SummaryStep extends Component {
                             <View style={AppStyles.row}>
                                 <View style={AppStyles.flex1}>
                                     <RNTextInput
-                                        ref={r => {
+                                        ref={(r) => {
                                             this.amountInput = r;
                                         }}
                                         keyboardType="decimal-pad"
@@ -415,32 +409,11 @@ class SummaryStep extends Component {
                             </View>
                         </View>
 
-                        {/* destination tag */}
-                        {/* <View style={[styles.rowItem]}>
-                            <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.destinationTag')}:
-                                </Text>
-                            </View>
-                            <Spacer size={15} />
-                            <TextInput
-                                ref={r => {
-                                    this.destinationTagInput = r;
-                                }}
-                                value={destination.tag?.toString()}
-                                onChangeText={this.onDestinationTagChange}
-                                placeholder={Localize.t('send.enterDestinationTag')}
-                                inputStyle={styles.inputStyle}
-                                keyboardType="number-pad"
-                                returnKeyType="done"
-                            />
-                        </View> */}
-
-                        {/* Desc */}
+                        {/* Memo */}
                         <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.memo')}:
+                                    {Localize.t('global.memo')}
                                 </Text>
                             </View>
                             <Spacer size={15} />

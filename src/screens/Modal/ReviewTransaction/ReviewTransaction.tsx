@@ -397,7 +397,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         const { return_url_app } = payload.meta;
 
         if (return_url_app) {
-            Linking.canOpenURL(return_url_app).then(support => {
+            Linking.canOpenURL(return_url_app).then((support) => {
                 if (support) {
                     Linking.openURL(return_url_app);
                 } else {
@@ -592,12 +592,12 @@ class ReviewTransactionModal extends Component<Props, State> {
 
                             {payload.meta.custom_instruction && (
                                 <>
-                                    <Text style={[styles.xummAppLabelText]}>Subject:</Text>
+                                    <Text style={[styles.xummAppLabelText]}>{Localize.t('global.subject')}</Text>
                                     <Text style={[styles.xummAppLabelInfo]}>{payload.meta.custom_instruction}</Text>
                                 </>
                             )}
 
-                            <Text style={[styles.xummAppLabelText]}>{Localize.t('global.type')}:</Text>
+                            <Text style={[styles.xummAppLabelText]}>{Localize.t('global.type')}</Text>
                             <Text style={[styles.xummAppLabelInfo, AppStyles.colorBlue, AppStyles.bold]}>
                                 {this.getTransactionType()}
                             </Text>
@@ -630,18 +630,17 @@ class ReviewTransactionModal extends Component<Props, State> {
                                         {payload.payload.tx_type === 'SignIn' || payload.meta.multisign
                                             ? Localize.t('global.signAs')
                                             : Localize.t('global.signWith')}
-                                        :
                                     </Text>
                                 </View>
                                 <AccordionPicker
-                                    ref={r => {
+                                    ref={(r) => {
                                         this.sourcePicker = r;
                                     }}
                                     onSelect={this.onAccountChange}
                                     items={accounts}
                                     renderItem={this.renderAccountItem}
                                     selectedItem={source}
-                                    keyExtractor={i => i.address}
+                                    keyExtractor={(i) => i.address}
                                 />
                             </View>
 
@@ -657,8 +656,6 @@ class ReviewTransactionModal extends Component<Props, State> {
                             >
                                 <Button onPress={this.onAcceptPress} label={Localize.t('global.accept')} />
                             </View>
-                            <Spacer size={500} />
-                            <Text>Heheheheh</Text>
                         </ScrollView>
                     </View>
                 </Interactable.View>
@@ -744,7 +741,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                             {signedObject && (
                                 <Fragment key="txID">
                                     <Text style={[AppStyles.subtext, AppStyles.bold]}>
-                                        {Localize.t('send.transactionID')}:
+                                        {Localize.t('send.transactionID')}
                                     </Text>
                                     <Spacer />
                                     <Text style={[AppStyles.subtext]}>{signedObject.id}</Text>
@@ -818,14 +815,14 @@ class ReviewTransactionModal extends Component<Props, State> {
 
                 <View style={[AppStyles.flex3]}>
                     <View style={styles.detailsCard}>
-                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}:</Text>
+                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}</Text>
                         <Spacer />
                         <Text style={[AppStyles.p, AppStyles.monoBold]}>{submitResult.engineResult || '-'}</Text>
 
                         <Spacer />
                         <View style={AppStyles.hr} />
                         <Spacer />
-                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
+                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}</Text>
                         <Spacer />
 
                         <Text style={[AppStyles.subtext]}>{submitResult.message.toString()}</Text>
@@ -834,7 +831,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                         <View style={AppStyles.hr} />
                         <Spacer />
 
-                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('send.transactionID')}:</Text>
+                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('send.transactionID')}</Text>
                         <Spacer />
                         <Text style={[AppStyles.subtext]}>{signedObject.id}</Text>
 

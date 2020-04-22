@@ -61,14 +61,14 @@ class EscrowCancelTemplate extends Component<Props, State> {
                     {isLoading ? (
                         'Loading ...'
                     ) : (
-                        <Text style={styles.value}> {ownerName || Localize.t('global.unknown')} </Text>
+                        <Text style={styles.value}> {ownerName || Localize.t('global.noNameFound')} </Text>
                     )}
                 </Text>
                 <View style={[styles.contentBox]}>
                     <Text style={[styles.address]}>{transaction.Owner}</Text>
                 </View>
 
-                <Text style={[styles.label]}>{Localize.t('global.offerSequence')}: </Text>
+                <Text style={[styles.label]}>{Localize.t('global.offerSequence')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={styles.value}>{transaction.OfferSequence}</Text>
                 </View>

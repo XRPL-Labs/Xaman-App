@@ -23,7 +23,7 @@ class OfferCancelTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.offerSequence')}:</Text>
+                <Text style={[styles.label]}>{Localize.t('global.offerSequence')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={styles.value}>{transaction.OfferSequence}</Text>
                 </View>
