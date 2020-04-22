@@ -1,9 +1,10 @@
 /**
  * Edit Contact Screen
  */
-
+import { filter, isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { SafeAreaView, View, KeyboardAvoidingView, Text, Alert, Keyboard, Platform } from 'react-native';
+
 import { StringType, XrplDestination } from 'xumm-string-decode';
 import * as AccountLib from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
@@ -101,14 +102,14 @@ class EditContactView extends Component<Props, State> {
         }
 
         // check if any contact is already exist with this address and tag
-        let filter = { address };
-        if (tag) {
-            filter = Object.assign(filter, { destinationTag: tag });
-        }
-        const existContact = ContactRepository.query(filter);
+        const existContacts = ContactRepository.query({ address, destinationTag: tag });
 
-        if (!existContact.isEmpty()) {
-            return Alert.alert(Localize.t('settings.contactAlreadyExist'));
+        if (!existContacts.isEmpty()) {
+            const filtered = filter(existContacts, c => c.id !== contact.id);
+
+            if (!isEmpty(filtered)) {
+                return Alert.alert(Localize.t('settings.contactAlreadyExist'));
+            }
         }
 
         ContactRepository.update({

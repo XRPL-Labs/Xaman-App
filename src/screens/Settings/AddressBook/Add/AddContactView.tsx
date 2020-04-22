@@ -90,13 +90,9 @@ class AddContactView extends Component<Props, State> {
         }
 
         // check if any contact is already exist with this address and tag
-        let filter = { address };
-        if (tag) {
-            filter = Object.assign(filter, { destinationTag: tag });
-        }
-        const existContact = ContactRepository.query(filter);
+        const existContacts = ContactRepository.query({ address, destinationTag: tag });
 
-        if (!existContact.isEmpty()) {
+        if (!existContacts.isEmpty()) {
             return Alert.alert(Localize.t('settings.contactAlreadyExist'));
         }
 
