@@ -39,6 +39,7 @@ import CurrencySettings from './Overlay/CurrencySettings';
 import Alert from './Overlay/Alert';
 import RequestDecline from './Overlay/RequestDecline';
 import EnterDestinationTag from './Overlay/EnterDestinationTag';
+import ExplainBalance from './Overlay/ExplainBalance';
 
 // Transaction
 import Send from './Send';
@@ -108,6 +109,7 @@ export {
     Alert,
     RequestDecline,
     EnterDestinationTag,
+    ExplainBalance,
     // transaction
     Send,
     Exchange,

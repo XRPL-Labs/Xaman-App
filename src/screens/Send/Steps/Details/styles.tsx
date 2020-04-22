@@ -82,6 +82,16 @@ const styles = StyleSheet.create({
         fontFamily: AppFonts.base.familyMono,
         color: AppColors.greyDark,
     },
+    editButton: {
+        backgroundColor: AppColors.grey,
+        borderRadius: 8,
+        height: 25,
+        width: 40,
+        justifyContent: 'center',
+        alignSelf: 'center',
+        marginRight: 15,
+        marginTop: Platform.OS === 'ios' ? 20 : 10,
+    },
     /*
     brandAvatarContainer: {
         marginRight: 10,

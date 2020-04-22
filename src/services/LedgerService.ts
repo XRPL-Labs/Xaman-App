@@ -89,6 +89,17 @@ class LedgerService extends EventEmitter {
     };
 
     /**
+     * Get account objects
+     */
+    getAccountObjects = (account: string): any => {
+        return SocketService.send({
+            command: 'account_objects',
+            account,
+            ledger_index: 'validated',
+        });
+    };
+
+    /**
      * Get Offers from order book
      */
     getOffers = (request: any): any => {

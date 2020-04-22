@@ -205,7 +205,8 @@
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "此帐户被报告为欺诈或欺诈性地址。请谨慎行事",
       "clearSearch": "清除搜寻",
       "noNameFound": "找不到名字",
-      "readMoreInTheFAQ": "在常见问题中阅读更多内容"
+      "readMoreInTheFAQ": "在常见问题中阅读更多内容",
+      "subject": "学科"
    },
    "onboarding": {
       "slideOne": {
@@ -249,7 +250,9 @@
       "youDonNotHaveOtherCurrency": "您没有其他货币",
       "howActivateMyAccount": "如何激活我的帐户？",
       "howActivateMyAccountDesc": "为了防止创建垃圾邮件帐户，XRP分类帐至少需要将20 XRP存入一个帐户才能激活它。 20 XRP不会丢失：它将保留在您的帐户中，但您不能花掉。要开始使用您的帐户，请确保您的帐户中存入的金额超过20 XRP。",
-      "otherCurrenciesDesc": "XRP分类帐还允许您持有XRP以外的其他货币的余额以及发送和接收。这些货币可以由XRP分类帐上的其他帐户发行。如果您希望能够发送或接收非XRP货币，则必须信任非XRP货币的发行者。"
+      "otherCurrenciesDesc": "XRP分类帐还允许您持有XRP以外的其他货币的余额以及发送和接收。这些货币可以由XRP分类帐上的其他帐户发行。如果您希望能够发送或接收非XRP货币，则必须信任非XRP货币的发行者。",
+      "explainMyBalance": "解释我的余额",
+      "xrpYouOwnVsYourSpendableBalance": "您拥有的XRP与可支出的余额。"
    },
    "events": {
       "noTransaction": "没有交易",
@@ -297,6 +300,7 @@
       "getStartedCreateContact": "通过添加您的第一个联系人开始。",
       "enterNameOrAddress": "输入姓名或地址",
       "enterName": "请输入一个名字",
+      "contactAlreadyExist": "联系人已存在",
       "contactSuccessSaved": "已成功添加联系人",
       "contactSuccessUpdated": "联系人已成功更新",
       "contactSuccessDeleted": "联系人已成功删除",
@@ -442,8 +446,10 @@
       "disableMasterKeyWarning": "交易将禁用该帐户的私钥。这可能将您拒之门外。仅在完全确定这是您想要的并且知道自己在做什么时，才继续。",
       "switchAccount": "切换帐户",
       "useMnemonicPassphrase": "使用助记密码",
-      "mnemonicLargeAmountAlert": "如果您考虑在您的帐户具有重大价值（例如，储蓄，大量XRP或其他令牌）时导入助记符帐户，请考虑在XUMM中创建一个新帐户以使助记符帐户保持脱机状态。",
-      "importExchangeAddressReadonlyWarning": "无法导入您的Exchange（存款）帐户。这样做不允许您跟踪自己在交易所的余额。仅当这是您自己的已激活帐户（例如您的硬件帐户）时，才能导入只读帐户"
+      "mnemonicLargeAmountAlert": "如果您考虑在您的帐户具有重大价值时（例如，您的储蓄，大量XRP或其他令牌）导入助记符帐户，请考虑在XUMM中创建一个新帐户以使助记符帐户保持脱机状态。",
+      "importExchangeAddressReadonlyWarning": "无法导入您的Exchange（存款）帐户。这样做不允许您跟踪自己在交易所的余额。仅当这是您自己的已激活帐户（例如您的硬件帐户）时，才能导入只读帐户",
+      "walletReserve": "钱包储备",
+      "totalBalance": "总余额"
    },
    "send": {
       "amountIsBiggerThanYourSpend": "金额大于您可以消费的金额（ %{spendable} ）",
@@ -530,6 +536,6 @@
       "willIgnoreTheRequestAndClose": "将忽略该请求并关闭。",
       "willRejectTheSignRequest": "将拒绝签名请求",
       "payingWithXRPExchangeRate": "用〜付款%{xrpRoundedUp} XRP汇率： %{exchangeRate}",
-      "notEnoughtLiquidityToSendThisPayment": "没有足够的流动性来发送这笔款项。"
+      "notEnoughLiquidityToSendThisPayment": "没有足够的流动性来发送这笔款项。"
    }
 }

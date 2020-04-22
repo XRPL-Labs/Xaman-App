@@ -38,11 +38,15 @@ const styles = StyleSheet.create({
         // shadowOpacity: 0.07,
     },
     cardLabel: {
-        fontSize: AppFonts.subtext.size * 0.9,
-        fontWeight: '500',
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.subtext.size,
+        color: AppColors.black,
+    },
+    cardSmallLabel: {
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.subtext.size * 0.7,
         color: AppColors.greyDark,
-        marginTop: 10,
-        marginBottom: 8,
+        textAlign: 'center',
     },
     iconSettings: {
         tintColor: AppColors.greyDark,
@@ -61,9 +65,8 @@ const styles = StyleSheet.create({
         color: AppColors.blue,
         // width: '115%',
         // left: -20,
-        paddingLeft: 15,
-        // paddingHorizontal: 10,
-        // paddingVertical: 8,
+        // paddingLeft: 15,
+        marginVertical: 15,
         // paddingBottom: 8,
         borderRadius: 5,
         overflow: 'hidden',
@@ -75,6 +78,7 @@ const styles = StyleSheet.create({
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size * 0.9,
         alignSelf: 'center',
+        paddingHorizontal: 10,
     },
     shareIconContainer: {
         padding: 8,
@@ -106,6 +110,7 @@ const styles = StyleSheet.create({
     currencyItemCard: {
         justifyContent: 'space-between',
         flexDirection: 'row',
+        marginTop: 10,
     },
     currencyItem: {
         paddingTop: 10,

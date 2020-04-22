@@ -205,7 +205,8 @@
         "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "This account is reported as scam or fraudulent address. Please proceed with caution",
         "clearSearch": "Clear search",
         "noNameFound": "No name found",
-        "readMoreInTheFAQ": "Read more in the FAQ"
+        "readMoreInTheFAQ": "Read more in the FAQ",
+        "subject": "Subject"
     },
     "onboarding":{
         "slideOne": {
@@ -249,7 +250,9 @@
         "youDonNotHaveOtherCurrency": "You have no other currencies",
         "howActivateMyAccount": "How can I activate my account?",
         "howActivateMyAccountDesc": "To prevent spam account creation, the XRP ledger requires at least 20 XRP to be deposited into an account to activate it. The 20 XRP is not lost: it will remain in your account, but you cannot spend it. To start using your account, make sure a deposit greater than 20 XRP is made to your account.",
-        "otherCurrenciesDesc": "The XRP ledger also allows you to hold balances of, and to send and receive, currencies other than XRP. These currencies can be issued by other accounts on the XRP ledger. If you want to be able to send or receive a non-XRP currency, you will have to trust the issuer of the non-XRP currency."
+        "otherCurrenciesDesc": "The XRP ledger also allows you to hold balances of, and to send and receive, currencies other than XRP. These currencies can be issued by other accounts on the XRP ledger. If you want to be able to send or receive a non-XRP currency, you will have to trust the issuer of the non-XRP currency.",
+        "explainMyBalance": "Explain my balance",
+        "xrpYouOwnVsYourSpendableBalance": "XRP you own vs. your spendable balance."
     },
     "events": {
         "noTransaction" : "No transactions",
@@ -297,6 +300,7 @@
         "getStartedCreateContact": "Get started by adding your first contact.",
         "enterNameOrAddress": "Enter name or address",
         "enterName": "Please enter a name",
+        "contactAlreadyExist": "Contact already exist",
         "contactSuccessSaved": "Contact successfully added",
         "contactSuccessUpdated": "Contact successfully updated",
         "contactSuccessDeleted": "Contact successfully deleted",
@@ -443,7 +447,9 @@
         "switchAccount": "Switch account",
         "useMnemonicPassphrase": "Use mnemonic passphrase",
         "mnemonicLargeAmountAlert": "If you consider importing your mnemonic account while your account holds significant value (eg. your savings, larger amounts of XRP or other tokens)\n\nPlease consider creating a new account in XUMM to keep your mnemonic account offline.",
-        "importExchangeAddressReadonlyWarning": "It is not possible to import your Exchange (deposit) account. Doing so does not allow you to track your own balance on the exchange.\n\nImporting a read only account only works if this is your own, activated account, like the account of your hardware"
+        "importExchangeAddressReadonlyWarning": "It is not possible to import your Exchange (deposit) account. Doing so does not allow you to track your own balance on the exchange.\n\nImporting a read only account only works if this is your own, activated account, like the account of your hardware",
+        "walletReserve": "Wallet reserve",
+        "totalBalance": "Total balance"
     },
     "send": {
         "amountIsBiggerThanYourSpend": "Amount is bigger than what you can spend (%{spendable})",
@@ -530,7 +536,6 @@
         "willIgnoreTheRequestAndClose": "Will ignore the request and close.",
         "willRejectTheSignRequest": "Will Reject the sign request",
         "payingWithXRPExchangeRate": "Paying with ~ %{xrpRoundedUp} XRP\nExchange rate: %{exchangeRate} ",
-        "notEnoughtLiquidityToSendThisPayment": "Not enough liquidity to send this payment."
-
+        "notEnoughLiquidityToSendThisPayment": "Not enough liquidity to send this payment."
     }
 }

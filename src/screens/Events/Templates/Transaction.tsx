@@ -48,6 +48,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
         const { item, account } = this.props;
 
         let address;
+        let tag;
 
         switch (item.Type) {
             case 'Payment':
@@ -55,6 +56,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
                     address = item.Account.address;
                 } else {
                     address = item.Destination.address;
+                    tag = item.Destination.tag;
                 }
                 break;
             case 'TrustSet':
@@ -62,6 +64,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
                 break;
             case 'EscrowCreate':
                 address = item.Destination.address;
+                tag = item.Destination.tag;
                 break;
             case 'EscrowFinish':
                 address = item.Owner;
@@ -88,7 +91,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
             address,
         });
 
-        getAccountName(address)
+        getAccountName(address, tag)
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     this.setState({

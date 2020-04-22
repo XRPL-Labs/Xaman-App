@@ -117,6 +117,21 @@ class HomeView extends Component<Props, State> {
         });
     };
 
+    showBalanceExplain = () => {
+        const { account } = this.state;
+
+        Navigator.showOverlay(
+            AppScreens.Overlay.ExplainBalance,
+            {
+                layout: {
+                    backgroundColor: 'transparent',
+                    componentBackgroundColor: 'transparent',
+                },
+            },
+            { account },
+        );
+    };
+
     openTrustLineDescription = () => {
         Navigator.showModal(
             AppScreens.Modal.Help,
@@ -466,7 +481,6 @@ class HomeView extends Component<Props, State> {
                             </TouchableOpacity>
                         </View>
 
-                        <Text style={[styles.cardLabel]}>{Localize.t('global.address')}:</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 Share.share({
@@ -490,7 +504,18 @@ class HomeView extends Component<Props, State> {
                             </View>
                         </TouchableOpacity>
 
-                        <Text style={[styles.cardLabel]}>{Localize.t('global.balance')}:</Text>
+                        <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                            <Text style={[AppStyles.flex1, styles.cardLabel]}>{Localize.t('global.balance')}:</Text>
+
+                            {account.balance !== 0 && (
+                                <TouchableOpacity onPress={this.showBalanceExplain}>
+                                    <Text style={[styles.cardSmallLabel]}>
+                                        {Localize.t('home.explainMyBalance')}{' '}
+                                        <Icon style={[AppStyles.imgColorGreyDark]} size={11} name="IconInfo" />
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
+                        </View>
                         <View style={[styles.currencyItemCard]}>
                             <View style={[AppStyles.row, AppStyles.centerAligned]}>
                                 <View style={[styles.xrpAvatarContainer]}>
@@ -499,12 +524,14 @@ class HomeView extends Component<Props, State> {
                                 <Text style={[styles.currencyItemLabel]}>XRP</Text>
                             </View>
 
-                            <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                                {/* <Image style={[styles.currencyAvatar]} source={Images.IconXrp} /> */}
+                            <TouchableOpacity
+                                style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}
+                                onPress={this.showBalanceExplain}
+                            >
                                 <Text style={[AppStyles.h5, AppStyles.monoBold, privacy && AppStyles.colorGreyDark]}>
                                     {privacy ? '••••••••' : account.availableBalance}
                                 </Text>
-                            </View>
+                            </TouchableOpacity>
                         </View>
                         {this.renderButtons()}
                     </View>
