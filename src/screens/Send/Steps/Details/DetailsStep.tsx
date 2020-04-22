@@ -39,6 +39,7 @@ import { StepsContext } from '../../Context';
 /* Component ==================================================================== */
 class DetailsStep extends Component {
     gradientHeight: Animated.Value;
+    amountInput: TextInput;
 
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
@@ -252,7 +253,7 @@ class DetailsStep extends Component {
                             />
                             <View style={[{ paddingLeft: 10 }]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                                    {Localize.t('global.from')} :
+                                    {Localize.t('global.from')}:
                                 </Text>
                             </View>
                             <AccordionPicker
@@ -268,7 +269,7 @@ class DetailsStep extends Component {
                         <View style={[styles.rowItem]}>
                             <View style={[{ paddingLeft: 10 }]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                                    {Localize.t('global.currency')} :
+                                    {Localize.t('global.currency')}:
                                 </Text>
                             </View>
                             <AccordionPicker
@@ -288,16 +289,33 @@ class DetailsStep extends Component {
                                     {Localize.t('global.amount')}:
                                 </Text>
                             </View>
-                            <TextInput
-                                keyboardType="decimal-pad"
-                                autoCapitalize="words"
-                                onChangeText={this.onAmountChange}
-                                returnKeyType="done"
-                                placeholder="0"
-                                style={[styles.amountInput]}
-                                placeholderTextColor={AppColors.greyDark}
-                                value={amount}
-                            />
+                            <View style={[AppStyles.row]}>
+                                <View style={AppStyles.flex1}>
+                                    <TextInput
+                                        ref={r => {
+                                            this.amountInput = r;
+                                        }}
+                                        keyboardType="decimal-pad"
+                                        autoCapitalize="words"
+                                        onChangeText={this.onAmountChange}
+                                        returnKeyType="done"
+                                        placeholder="0"
+                                        style={[styles.amountInput]}
+                                        placeholderTextColor={AppColors.greyDark}
+                                        value={amount}
+                                    />
+                                </View>
+                                <Button
+                                    onPress={() => {
+                                        this.amountInput.focus();
+                                    }}
+                                    style={styles.editButton}
+                                    roundedSmall
+                                    iconSize={13}
+                                    light
+                                    icon="IconEdit"
+                                />
+                            </View>
                         </View>
                     </ScrollView>
                 </KeyboardAvoidingView>

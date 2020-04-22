@@ -306,7 +306,7 @@ class SummaryStep extends Component {
                             />
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.from')} :
+                                    {Localize.t('global.from')}:
                                 </Text>
                             </View>
                             <AccordionPicker
@@ -321,7 +321,7 @@ class SummaryStep extends Component {
 
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.to')} :
+                                    {Localize.t('global.to')}:
                                 </Text>
                             </View>
                             <Spacer size={15} />
@@ -369,7 +369,7 @@ class SummaryStep extends Component {
                         <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.currency')} :
+                                    {Localize.t('global.currency')}:
                                 </Text>
                             </View>
                             <Spacer size={15} />
