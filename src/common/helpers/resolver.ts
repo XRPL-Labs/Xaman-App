@@ -101,25 +101,33 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                 if (accountFlags.requireDestinationTag) {
                     assign(info, { requireDestinationTag: true });
                 } else {
-                    const accountTXS = await LedgerService.getTransactions(address, undefined, 100);
+                    const accountTXS = await LedgerService.getTransactions(address, undefined, 200);
                     if (
                         typeof accountTXS.transactions !== 'undefined' &&
                         accountTXS.transactions &&
                         accountTXS.transactions.length > 0
                     ) {
-                        const incomingTxCountWithTag = accountTXS.transactions.filter((tx: any) => {
+                        const incomingTXS = accountTXS.transactions.filter(tx => {
+                            return tx.tx.Destination === address;
+                        });
+
+                        const incomingTxCountWithTag = incomingTXS.filter(tx => {
                             return (
-                                typeof tx.tx.TransactionType === 'string' &&
-                                tx.tx.TransactionType === 'Payment' &&
-                                typeof tx.tx.DestinationTag !== 'undefined' &&
-                                `${tx.tx.DestinationTag}` !== '0' &&
-                                tx.tx.Destination === address
+                                typeof tx.tx.TransactionType === 'string' && typeof tx.tx.DestinationTag !== 'undefined'
                             );
                         }).length;
 
-                        const percent = (incomingTxCountWithTag * 100) / accountTXS.transactions.length;
+                        const senders = accountTXS.transactions.map(tx => {
+                            return tx.tx.Account || '';
+                        });
 
-                        if (percent > 65) {
+                        const uniqueSenders = senders.filter((elem, pos) => {
+                            return senders.indexOf(elem) === pos;
+                        }).length;
+
+                        const percentageTag = (incomingTxCountWithTag / incomingTXS.length) * 100;
+
+                        if (uniqueSenders >= 10 && percentageTag > 50) {
                             assign(info, { requireDestinationTag: true });
                         }
                     }
