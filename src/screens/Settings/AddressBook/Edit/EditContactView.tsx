@@ -121,7 +121,7 @@ class EditContactView extends Component<Props, State> {
 
         // update catch for this account
         getAccountName.cache.set(
-            address,
+            `${address}${tag}`,
             new Promise(resolve => {
                 resolve({ name, source: 'internal:contacts' });
             }),

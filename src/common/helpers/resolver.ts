@@ -20,24 +20,36 @@ export interface AccountInfoType {
 }
 
 const getAccountName = memoize(
-    (address: string): Promise<AccountNameType> => {
+    (address: string, tag?: number): Promise<AccountNameType> => {
         return new Promise(resolve => {
             // check address  book
-            const contact = ContactRepository.findOne({ address });
-            if (!isEmpty(contact)) {
-                return resolve({
-                    name: contact.name,
-                    source: 'internal:contacts',
-                });
+            try {
+                let filter = { address };
+                if (tag) {
+                    filter = Object.assign(filter, { destinationTag: tag });
+                }
+                const contact = ContactRepository.findOne(filter);
+                if (!isEmpty(contact)) {
+                    return resolve({
+                        name: contact.name,
+                        source: 'internal:contacts',
+                    });
+                }
+            } catch {
+                // ignore
             }
 
-            // check in accounts list
-            const account = AccountRepository.findOne({ address });
-            if (!isEmpty(account)) {
-                return resolve({
-                    name: account.label,
-                    source: 'internal:accounts',
-                });
+            try {
+                // check in accounts list
+                const account = AccountRepository.findOne({ address });
+                if (!isEmpty(account)) {
+                    return resolve({
+                        name: account.label,
+                        source: 'internal:accounts',
+                    });
+                }
+            } catch {
+                // ignore
             }
 
             // check the backend
@@ -62,6 +74,7 @@ const getAccountName = memoize(
                 });
         });
     },
+    (address: string, tag: number) => `${address}${tag}`,
 );
 
 const getAccountInfo = (address: string): Promise<AccountInfoType> => {
