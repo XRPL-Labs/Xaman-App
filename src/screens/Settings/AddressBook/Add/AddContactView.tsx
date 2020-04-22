@@ -89,6 +89,17 @@ class AddContactView extends Component<Props, State> {
             return Alert.alert(Localize.t('global.invalidAddress'));
         }
 
+        // check if any contact is already exist with this address and tag
+        let filter = { address };
+        if (tag) {
+            filter = Object.assign(filter, { destinationTag: tag });
+        }
+        const existContact = ContactRepository.query(filter);
+
+        if (!existContact.isEmpty()) {
+            return Alert.alert(Localize.t('settings.contactAlreadyExist'));
+        }
+
         ContactRepository.create({
             id: uuidv4(),
             name,
