@@ -88,7 +88,7 @@ class Application {
             try {
                 const coreSettings = CoreRepository.getSettings();
                 const servicesPromise = [] as Array<Promise<any>>;
-                Object.keys(services).map(key => {
+                Object.keys(services).map((key) => {
                     // @ts-ignore
                     const service = services[key];
                     if (typeof service.initialize === 'function') {
@@ -101,7 +101,7 @@ class Application {
                     .then(() => {
                         resolve();
                     })
-                    .catch(e => {
+                    .catch((e) => {
                         this.logger.error('initServices Error:', e);
                         reject(e);
                     });
@@ -134,7 +134,7 @@ class Application {
     registerScreens = () => {
         return new Promise((resolve, reject) => {
             try {
-                Object.keys(screens).map(key => {
+                Object.keys(screens).map((key) => {
                     // @ts-ignore
                     const Screen = screens[key];
                     Navigation.registerComponent(Screen.screenName, () => Screen);

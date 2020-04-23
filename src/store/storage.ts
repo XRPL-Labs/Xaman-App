@@ -37,7 +37,7 @@ export default class Storage {
     initialize = () => {
         return new Promise((resolve, reject) => {
             return this.open()
-                .then(instance => {
+                .then((instance) => {
                     // set the db instance
                     this.db = instance;
 
@@ -46,11 +46,11 @@ export default class Storage {
                         .then(() => {
                             return resolve();
                         })
-                        .catch(e => {
+                        .catch((e) => {
                             return reject(e);
                         });
                 })
-                .catch(e => {
+                .catch((e) => {
                     this.logger.error('Storage configure error', e);
                     return reject(e);
                 });
@@ -68,7 +68,7 @@ export default class Storage {
 
         this.logger.debug(`Storage current schema version: ${currentVersion}`);
 
-        const sorted = sortBy(schemas, [v => v.schemaVersion]);
+        const sorted = sortBy(schemas, [(v) => v.schemaVersion]);
         const target = sorted.slice(-1)[0];
 
         // no need to migrate anything just return database instance
@@ -77,7 +77,7 @@ export default class Storage {
 
             return new Realm({
                 ...defaultConfig,
-                schema: flatMap(target.schema, s => s),
+                schema: flatMap(target.schema, (s) => s),
                 schemaVersion: target.schemaVersion,
             });
         }
@@ -92,7 +92,7 @@ export default class Storage {
 
             // create migrations
             const migrations = [] as Array<(oldRealm: any, newRealm: any) => void>;
-            Object.keys(current.schema).map(key => {
+            Object.keys(current.schema).map((key) => {
                 // @ts-ignore
                 const model = current.schema[key];
                 if (typeof model.migration === 'function') {
@@ -103,12 +103,12 @@ export default class Storage {
             });
 
             // build migration function
-            const migration = (oldRealm: any, newRealm: any) => migrations.forEach(fn => fn(oldRealm, newRealm));
+            const migration = (oldRealm: any, newRealm: any) => migrations.forEach((fn) => fn(oldRealm, newRealm));
 
             // migrate and create database instance
             const migrationRealm = new Realm({
                 ...defaultConfig,
-                schema: flatMap(target.schema, s => s),
+                schema: flatMap(target.schema, (s) => s),
                 schemaVersion: target.schemaVersion,
                 migration,
             });
@@ -139,7 +139,7 @@ export default class Storage {
     async initRepositories(db: Realm): Promise<boolean> {
         return new Promise((resolve, reject) => {
             try {
-                return Object.keys(repositories).map(key => {
+                return Object.keys(repositories).map((key) => {
                     // @ts-ignore
                     const repository = repositories[key];
                     if (typeof repository.initialize === 'function') {

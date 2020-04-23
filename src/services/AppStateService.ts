@@ -71,16 +71,16 @@ class AppStateService extends EventEmitter {
      * record net info changes
      */
     setNetInfoListener() {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             NetInfo.fetch()
-                .then(state => {
+                .then((state) => {
                     this.setNetState(state.isConnected);
                 })
                 .finally(() => {
                     return resolve();
                 });
 
-            NetInfo.addEventListener(state => {
+            NetInfo.addEventListener((state) => {
                 this.setNetState(state.isConnected);
             });
         });
@@ -90,9 +90,10 @@ class AppStateService extends EventEmitter {
      * record app state changes
      */
     setAppStateListener() {
-        return new Promise(resolve => {
-            AppState.addEventListener('change', nextAppState => {
+        return new Promise((resolve) => {
+            AppState.addEventListener('change', (nextAppState) => {
                 let appState;
+                console.log(nextAppState);
                 switch (nextAppState) {
                     case 'inactive':
                         appState = AppStateStatus.Inactive;

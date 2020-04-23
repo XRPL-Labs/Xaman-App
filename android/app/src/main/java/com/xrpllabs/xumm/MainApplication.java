@@ -33,7 +33,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.android.gms.security.ProviderInstaller.ProviderInstallListener;
 
-import java.util.Arrays;
 import java.util.List;
 import java.lang.reflect.InvocationTargetException;
 
