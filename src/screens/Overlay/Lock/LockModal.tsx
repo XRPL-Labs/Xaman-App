@@ -82,7 +82,7 @@ class LockModal extends Component<Props, State> {
     onPasscodeEntered = (passcode: string) => {
         AuthenticationService.checkPasscode(passcode)
             .then(this.onUnlock)
-            .catch(e => {
+            .catch((e) => {
                 this.securePinInput.clearInput();
 
                 this.setState({
@@ -93,6 +93,7 @@ class LockModal extends Component<Props, State> {
 
     onUnlock = () => {
         const { onUnlock } = this.props;
+
         // close lock overlay
         Navigator.dismissOverlay();
 
@@ -102,12 +103,18 @@ class LockModal extends Component<Props, State> {
         }
     };
 
+    onBiometricAuthenticateSuccess = () => {
+        // update latest unlock app
+        AuthenticationService.onSuccessAuthentication();
+        this.onUnlock();
+    };
+
     requestBiometricAuthenticate = () => {
         FingerprintScanner.authenticate({
             description: Localize.t('global.unlock'),
             fallbackEnabled: true,
         })
-            .then(this.onUnlock)
+            .then(this.onBiometricAuthenticateSuccess)
             .catch(() => {})
             .finally(() => {
                 FingerprintScanner.release();
@@ -141,7 +148,7 @@ class LockModal extends Component<Props, State> {
                             {error}
                         </Text>
                         <SecurePinInput
-                            ref={r => {
+                            ref={(r) => {
                                 this.securePinInput = r;
                             }}
                             virtualKeyboard

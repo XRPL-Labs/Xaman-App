@@ -51,7 +51,7 @@ class AuthenticationService extends EventEmitter {
 
     getRealTime = (): Promise<number> => {
         const { UtilsModule } = NativeModules;
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             UtilsModule.getElapsedRealtime().then((ts: string) => {
                 return resolve(Number(ts));
             });

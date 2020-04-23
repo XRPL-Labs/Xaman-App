@@ -93,7 +93,6 @@ class AppStateService extends EventEmitter {
         return new Promise((resolve) => {
             AppState.addEventListener('change', (nextAppState) => {
                 let appState;
-                console.log(nextAppState);
                 switch (nextAppState) {
                     case 'inactive':
                         appState = AppStateStatus.Inactive;
