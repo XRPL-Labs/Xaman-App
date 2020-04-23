@@ -42,7 +42,7 @@
     "react-native-keychain": "^6.0.0",
     "react-native-navigation": "6.4.0",
     "react-native-webview": "^9.2.2",
-    "realm": "^3.6.5",
+    "realm": "^5.0.3",
     "rippled-ws-client": "^1.4.0",
     "uuid": "^7.0.3",
     "xrpl-accountlib": "0.3.6",
