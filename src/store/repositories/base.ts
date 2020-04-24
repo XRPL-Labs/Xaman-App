@@ -1,5 +1,5 @@
 import Realm, { Results, ObjectSchema } from 'realm';
-import { forEach, isObject, isString, assign } from 'lodash';
+import { forEach, isObject, isString, assign, isArrayLike } from 'lodash';
 import EventEmitter from 'events';
 
 export default class BaseRepository extends EventEmitter {
@@ -47,6 +47,38 @@ export default class BaseRepository extends EventEmitter {
         }
 
         return '';
+    };
+
+    normalizeObject = (realmObject: any, maxDepth = 3, depth = 0) => {
+        depth++;
+        if (depth > maxDepth) {
+            return realmObject;
+        }
+
+        if (typeof realmObject !== 'object') {
+            return realmObject;
+        }
+
+        if (realmObject === null) {
+            return null;
+        }
+
+        const keys = this.schema.properties;
+
+        const object = {} as any;
+
+        for (const key in keys) {
+            if (Object.prototype.hasOwnProperty.call(realmObject, key)) {
+                if (isString(realmObject[key])) {
+                    object[key] = realmObject[key];
+                } else if (isArrayLike(realmObject[key]) && !isString(realmObject[key])) {
+                    object[key] = realmObject[key].map((item: any) => this.normalizeObject(item, maxDepth, depth));
+                } else {
+                    object[key] = this.normalizeObject(realmObject[key], maxDepth, depth);
+                }
+            }
+        }
+        return object;
     };
 
     safeWrite = (f: any) => {
