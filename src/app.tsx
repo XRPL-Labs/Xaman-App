@@ -69,11 +69,17 @@ class Application {
     }
 
     boot = () => {
+        const { AuthenticationService } = services;
+
         const core = CoreRepository.getSettings();
 
         // if app initialized go to main screen
         if (core && core.initialized) {
-            Navigator.startDefault();
+            // check if the app should be locked
+            // lock the app and the start the app
+            AuthenticationService.checkLockScreen().then(() => {
+                Navigator.startDefault();
+            });
         } else {
             Navigator.startOnboarding();
         }

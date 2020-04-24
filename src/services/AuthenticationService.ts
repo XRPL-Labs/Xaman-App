@@ -18,6 +18,7 @@ import LoggerService from '@services/LoggerService';
 import Localize from '@locale';
 
 class AuthenticationService extends EventEmitter {
+    appStateChangeListener: any;
     locked: boolean;
     logger: any;
 
@@ -35,11 +36,11 @@ class AuthenticationService extends EventEmitter {
                 // we just need to require the lock if user initialized the app the
                 NavigationService.on('setRoot', (root: string) => {
                     if (root === 'DefaultStack') {
-                        // check if the app need to be lock in app startup
-                        this.checkLockScreen();
-
                         // this will listen for app state changes and will check if we need to lock the app
-                        this.setLockRequireListener();
+                        AppStateService.addListener('appStateChange', this.onAppStateChange);
+                    } else {
+                        // else remove listeners
+                        AppStateService.removeListener('appStateChange', this.onAppStateChange);
                     }
                 });
                 return resolve();
@@ -205,43 +206,42 @@ class AuthenticationService extends EventEmitter {
         });
     };
 
-    lockScreen = () => {
-        // lock the app
-        this.locked = true;
-        Navigator.showOverlay(AppScreens.Overlay.Lock, {
-            layout: {
-                backgroundColor: 'transparent',
-                componentBackgroundColor: 'transparent',
-            },
+    checkLockScreen = async () => {
+        /* eslint-disable-next-line */
+        return new Promise(async (resolve) => {
+            if (this.locked) return resolve();
+
+            const coreSettings = CoreRepository.getSettings();
+
+            const realTime = await this.getRealTime();
+
+            if (
+                coreSettings.lastUnlockedTimestamp === 0 ||
+                realTime < coreSettings.lastUnlockedTimestamp ||
+                realTime - coreSettings.lastUnlockedTimestamp > coreSettings.minutesAutoLock * 60
+            ) {
+                // lock the app
+                this.locked = true;
+                await Navigator.showOverlay(AppScreens.Overlay.Lock, {
+                    layout: {
+                        backgroundColor: 'transparent',
+                        componentBackgroundColor: 'transparent',
+                    },
+                });
+            }
+
+            return resolve();
         });
     };
 
-    checkLockScreen = async () => {
-        if (this.locked) return;
-
-        const coreSettings = CoreRepository.getSettings();
-
-        const realTime = await this.getRealTime();
-
+    onAppStateChange = () => {
         if (
-            coreSettings.lastUnlockedTimestamp === 0 ||
-            realTime < coreSettings.lastUnlockedTimestamp ||
-            realTime - coreSettings.lastUnlockedTimestamp > coreSettings.minutesAutoLock * 60
+            AppStateService.prevAppState === AppStateStatus.Background &&
+            AppStateService.currentAppState === AppStateStatus.Active
         ) {
-            this.lockScreen();
+            this.checkLockScreen();
         }
     };
-
-    setLockRequireListener() {
-        AppStateService.on('appStateChange', () => {
-            if (
-                AppStateService.prevAppState === AppStateStatus.Background &&
-                AppStateService.currentAppState === AppStateStatus.Active
-            ) {
-                this.checkLockScreen();
-            }
-        });
-    }
 }
 
 export default new AuthenticationService();
