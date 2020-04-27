@@ -77,6 +77,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
         if (
             item.Type === 'AccountSet' ||
             item.Type === 'SignerListSet' ||
+            item.Type === 'SetRegularKey' ||
             item.Type === 'OfferCreate' ||
             item.Type === 'OfferCancel'
         ) {
