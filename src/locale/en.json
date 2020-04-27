@@ -82,6 +82,7 @@
         "warning": "Warning",
         "pleaseNote": "Please note",
         "unavailable": "Unavailable",
+        "available": "Available",
         "notice": "Notice",
         "error": "Error",
         "critical": "Critical",
@@ -450,7 +451,8 @@
         "mnemonicLargeAmountAlert": "If you consider importing your mnemonic account while your account holds significant value (eg. your savings, larger amounts of XRP or other tokens)\n\nPlease consider creating a new account in XUMM to keep your mnemonic account offline.",
         "importExchangeAddressReadonlyWarning": "It is not possible to import your Exchange (deposit) account. Doing so does not allow you to track your own balance on the exchange.\n\nImporting a read only account only works if this is your own, activated account, like the account of your hardware",
         "walletReserve": "Wallet reserve",
-        "totalBalance": "Total balance"
+        "accountBalance": "Account balance",
+        "availableForSpending": "Available for spending"
     },
     "send": {
         "amountIsBiggerThanYourSpend": "Amount is bigger than what you can spend (%{spendable})",

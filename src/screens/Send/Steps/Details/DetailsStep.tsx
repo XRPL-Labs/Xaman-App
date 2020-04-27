@@ -186,7 +186,7 @@ class DetailsStep extends Component {
                                     selected ? AppStyles.colorBlue : AppStyles.colorGreyDark,
                                 ]}
                             >
-                                {Localize.t('global.balance')}: {source.availableBalance}
+                                {Localize.t('global.available')}: {source.availableBalance}
                             </Text>
                         </View>
                     </View>

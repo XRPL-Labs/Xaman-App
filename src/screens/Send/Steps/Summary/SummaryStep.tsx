@@ -199,7 +199,7 @@ class SummaryStep extends Component {
                         <View style={[AppStyles.column, AppStyles.centerContent]}>
                             <Text style={[styles.currencyItemLabel]}>XRP</Text>
                             <Text style={[styles.currencyBalance]}>
-                                {Localize.t('global.balance')}: {this.getAvailableBalance()}
+                                {Localize.t('global.available')}: {this.getAvailableBalance()}
                             </Text>
                         </View>
                     </View>

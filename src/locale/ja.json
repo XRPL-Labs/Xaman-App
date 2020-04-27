@@ -82,6 +82,7 @@
       "warning": "警告",
       "pleaseNote": "ご注意ください",
       "unavailable": "利用できません",
+      "available": "利用可能",
       "notice": "通知",
       "error": "エラー",
       "critical": "クリティカル",
@@ -450,7 +451,8 @@
       "mnemonicLargeAmountAlert": "アカウントに大きな価値がある（たとえば、貯蓄、大量のXRPまたはその他のトークン）状態でニーモニックアカウントをインポートすることを検討する場合、ニーモニックアカウントをオフラインに保つために、XUMMで新しいアカウントを作成することを検討してください。",
       "importExchangeAddressReadonlyWarning": "Exchange（預金）アカウントをインポートすることはできません。これを行うと、取引所で自分の残高を追跡できなくなります。読み取り専用アカウントのインポートは、これがハードウェアのアカウントのように自分のアクティブなアカウントである場合にのみ機能します",
       "walletReserve": "ウォレットリザーブ",
-      "totalBalance": "総合収支"
+      "accountBalance": "勘定残高",
+      "availableForSpending": "支出可能"
    },
    "send": {
       "amountIsBiggerThanYourSpend": "金額があなたが費やすことができる金額よりも大きい（ %{spendable} ）",

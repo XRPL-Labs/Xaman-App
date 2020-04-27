@@ -82,6 +82,7 @@
       "warning": "Advertencia",
       "pleaseNote": "tenga en cuenta",
       "unavailable": "Indisponible",
+      "available": "Disponible",
       "notice": "aviso",
       "error": "Error",
       "critical": "Crítico",
@@ -450,7 +451,8 @@
       "mnemonicLargeAmountAlert": "Si considera importar su cuenta mnemónica mientras su cuenta tiene un valor significativo (por ejemplo, sus ahorros, grandes cantidades de XRP u otros tokens) Considere crear una nueva cuenta en XUMM para mantener su cuenta mnemónica fuera de línea.",
       "importExchangeAddressReadonlyWarning": "No es posible importar su cuenta de Exchange (depósito). Hacerlo no le permite rastrear su propio saldo en el intercambio. Importar una cuenta de solo lectura solo funciona si esta es su propia cuenta activada, como la cuenta de su hardware",
       "walletReserve": "Reserva de billetera",
-      "totalBalance": "Balance total"
+      "accountBalance": "Saldo de la cuenta",
+      "availableForSpending": "Disponible para gastar"
    },
    "send": {
       "amountIsBiggerThanYourSpend": "La cantidad es mayor de lo que puede gastar ( %{spendable} )",

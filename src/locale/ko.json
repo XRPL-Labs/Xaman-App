@@ -82,6 +82,7 @@
       "warning": "경고",
       "pleaseNote": "양해 바랍니다",
       "unavailable": "없는",
+      "available": "유효한",
       "notice": "주의",
       "error": "오류",
       "critical": "위독한",
@@ -450,7 +451,8 @@
       "mnemonicLargeAmountAlert": "계정에 상당한 가치가있는 동안 니모닉 계정 가져 오기를 고려하는 경우 (예 : 저축, 더 많은 양의 XRP 또는 기타 토큰) 니모닉 계정을 오프라인으로 유지하려면 XUMM에 새 계정을 만드는 것을 고려하십시오.",
       "importExchangeAddressReadonlyWarning": "Exchange (예금) 계정을 가져올 수 없습니다. 그렇게하면 거래소에서 자신의 잔액을 추적 할 수 없습니다. 읽기 전용 계정 가져 오기는 하드웨어 계정과 같이 자신의 활성화 된 계정 인 경우에만 작동합니다",
       "walletReserve": "지갑 예약",
-      "totalBalance": "전체 균형"
+      "accountBalance": "계정 잔액",
+      "availableForSpending": "지출 가능"
    },
    "send": {
       "amountIsBiggerThanYourSpend": "지출 할 수있는 금액보다 금액이 더 많습니다 ( %{spendable} )",

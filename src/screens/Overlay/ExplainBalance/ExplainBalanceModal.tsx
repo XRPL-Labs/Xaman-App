@@ -232,7 +232,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         </View>
 
                         <View style={[AppStyles.paddingHorizontalSml]}>
-                            <Text style={[styles.rowTitle]}>{Localize.t('account.totalBalance')}</Text>
+                            <Text style={[styles.rowTitle]}>{Localize.t('account.accountBalance')}</Text>
                             <View style={[styles.currencyItemCard]}>
                                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
                                     <View style={[styles.xrpAvatarContainer]}>
@@ -251,7 +251,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
                             <Spacer size={30} />
 
-                            <Text style={[styles.rowTitle]}>{Localize.t('global.spendable')}</Text>
+                            <Text style={[styles.rowTitle]}>{Localize.t('account.availableForSpending')}</Text>
                             <View style={[styles.currencyItemCard]}>
                                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
                                     <View style={[styles.xrpAvatarContainer]}>

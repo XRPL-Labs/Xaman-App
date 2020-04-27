@@ -82,6 +82,7 @@
       "warning": "警告",
       "pleaseNote": "请注意",
       "unavailable": "不可用",
+      "available": "可用的",
       "notice": "注意",
       "error": "错误",
       "critical": "危急",
@@ -450,7 +451,8 @@
       "mnemonicLargeAmountAlert": "如果您考虑在您的帐户具有重大价值时（例如，您的储蓄，大量XRP或其他令牌）导入助记符帐户，请考虑在XUMM中创建一个新帐户以使助记符帐户保持脱机状态。",
       "importExchangeAddressReadonlyWarning": "无法导入您的Exchange（存款）帐户。这样做不允许您跟踪自己在交易所的余额。仅当这是您自己的已激活帐户（例如您的硬件帐户）时，才能导入只读帐户",
       "walletReserve": "钱包储备",
-      "totalBalance": "总余额"
+      "accountBalance": "账户余额",
+      "availableForSpending": "可用于消费"
    },
    "send": {
       "amountIsBiggerThanYourSpend": "金额大于您可以消费的金额（ %{spendable} ）",
