@@ -159,6 +159,7 @@ class ScanView extends Component<Props, State> {
     handleXrplDestination = async (destination: XrplDestination) => {
         let address;
         let tag;
+        let amount;
 
         // decode if it's x address
         if (destination.to.startsWith('X')) {
@@ -175,19 +176,30 @@ class ScanView extends Component<Props, State> {
             tag = destination.tag;
         }
 
+        // if amount present as XRP pass the amount
+        if (!destination.currency && destination.amount) {
+            amount = destination.amount;
+        }
+
         // valid address
         if (address) {
+            // check if any account is configured
             const availableAccounts = AccountRepository.getAccounts({ accessLevel: AccessLevels.Full });
 
             if (availableAccounts.length > 0) {
                 await Navigator.dismissModal();
 
-                const paymentDestination = {
-                    address,
-                    tag,
-                };
-
-                Navigator.push(AppScreens.Transaction.Payment, {}, { scanResult: paymentDestination });
+                Navigator.push(
+                    AppScreens.Transaction.Payment,
+                    {},
+                    {
+                        scanResult: {
+                            address,
+                            tag,
+                        },
+                        amount,
+                    },
+                );
             } else {
                 Alert.alert(
                     Localize.t('global.noAccountConfigured'),
@@ -338,7 +350,7 @@ class ScanView extends Component<Props, State> {
         return (
             <View style={styles.container}>
                 <RNCamera
-                    ref={ref => {
+                    ref={(ref) => {
                         this.camera = ref;
                     }}
                     style={AppStyles.flex1}
