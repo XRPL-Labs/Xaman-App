@@ -15,7 +15,7 @@ import { AppScreens } from '@common/constants';
 
 import { Icon } from '@components/Icon';
 
-import { AppColors, AppStyles } from '@theme';
+import { AppColors, AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -87,7 +87,7 @@ class Input extends Component<Props, State> {
         return (
             <View style={[styles.wrapper, containerStyle, focused && activeContainerStyle]}>
                 <TextInput
-                    ref={r => {
+                    ref={(r) => {
                         this.instance = r;
                     }}
                     onFocus={this.onFocus}
@@ -98,7 +98,12 @@ class Input extends Component<Props, State> {
                     autoCorrect={false}
                     multiline={false}
                     underlineColorAndroid="transparent"
-                    style={[styles.input, { paddingRight: showScanner && 60 }, inputStyle, focused && activeInputStyle]}
+                    style={[
+                        styles.input,
+                        { paddingRight: showScanner && AppSizes.heightPercentageToDP(5) },
+                        inputStyle,
+                        focused && activeInputStyle,
+                    ]}
                     {...this.props}
                 />
             </View>
