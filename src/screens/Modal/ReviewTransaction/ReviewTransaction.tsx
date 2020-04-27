@@ -130,6 +130,10 @@ class ReviewTransactionModal extends Component<Props, State> {
                 payload.transaction.Account = { address: preferredAccount.address };
             }
         }
+
+        this.setState({
+            source: preferredAccount,
+        });
     }
 
     componentDidCatch() {
