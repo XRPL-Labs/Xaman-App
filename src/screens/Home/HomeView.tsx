@@ -400,7 +400,7 @@ class HomeView extends Component<Props, State> {
                         Navigator.push(AppScreens.Transaction.Payment);
                     }}
                     activeOpacity={0}
-                    isDisabled={account.accessLevel === AccessLevels.Readonly || account.availableBalance === 0}
+                    isDisabled={account.availableBalance === 0}
                 />
                 <CustomButton
                     style={[styles.requestButton]}

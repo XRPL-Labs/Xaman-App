@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Results } from 'realm';
 import { Payment } from '@common/libs/ledger/transactions';
 import { AccountInfoType } from '@common/helpers/resolver';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
@@ -17,7 +16,7 @@ enum Steps {
 
 interface State {
     currentStep: Steps;
-    accounts: Results<AccountSchema>;
+    accounts: Array<AccountSchema>;
     source: AccountSchema;
     destination: Destination;
     destinationInfo: AccountInfoType;

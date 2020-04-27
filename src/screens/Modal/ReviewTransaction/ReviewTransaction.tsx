@@ -3,7 +3,6 @@
  */
 
 import { get, find, isEmpty } from 'lodash';
-import { Results } from 'realm';
 import React, { Component, Fragment } from 'react';
 import {
     Animated,
@@ -26,7 +25,6 @@ import { BlurView } from '@react-native-community/blur';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
-import { AccessLevels } from '@store/types';
 
 import { Payload } from '@common/libs/payload';
 import Submitter from '@common/libs/ledger/submitter';
@@ -58,7 +56,7 @@ export interface Props {
 }
 
 export interface State {
-    accounts: Results<AccountSchema>;
+    accounts: Array<AccountSchema>;
     source: AccountSchema;
     step: 'review' | 'submitting' | 'verifying' | 'result';
     signedObject: SignedObjectType;
@@ -87,28 +85,9 @@ class ReviewTransactionModal extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        // get available accounts to sign
-        const availableAccounts = AccountRepository.getAccounts({ accessLevel: AccessLevels.Full });
-
-        // choose preferred account for sign
-        // default account || first account
-        let preferredAccount;
-
-        if (!isEmpty(availableAccounts)) {
-            preferredAccount = find(availableAccounts, { default: true }) || availableAccounts[0];
-        }
-
-        // set the default source account
-        if (preferredAccount) {
-            // ignore if it's multisign
-            if (!props.payload.meta.multisign) {
-                props.payload.transaction.Account = { address: preferredAccount.address };
-            }
-        }
-
         this.state = {
-            accounts: availableAccounts,
-            source: preferredAccount,
+            accounts: AccountRepository.getSpendableAccounts(),
+            source: undefined,
             step: 'review',
             signedObject: undefined,
             submitResult: undefined,
@@ -127,10 +106,30 @@ class ReviewTransactionModal extends Component<Props, State> {
     }
 
     componentDidMount() {
+        const { payload } = this.props;
+        const { accounts } = this.state;
+
+        // back handler listener
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
 
         // update the accounts details before process the review
         LedgerService.updateAccountsDetails();
+
+        // choose preferred account for sign
+        // default account || first account
+        let preferredAccount;
+
+        if (!isEmpty(accounts)) {
+            preferredAccount = find(accounts, { default: true }) || accounts[0];
+        }
+
+        // set the default source account
+        if (preferredAccount) {
+            // ignore if it's multisign
+            if (!payload.meta.multisign) {
+                payload.transaction.Account = { address: preferredAccount.address };
+            }
+        }
     }
 
     componentDidCatch() {

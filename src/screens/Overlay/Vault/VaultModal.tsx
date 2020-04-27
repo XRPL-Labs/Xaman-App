@@ -91,7 +91,7 @@ class VaultModal extends Component<Props, State> {
 
         let { encryptionLevel } = account;
 
-        if (account.regularKey && accountFlags.disableMasterKey) {
+        if (account.regularKey && (accountFlags.disableMasterKey || account.accessLevel === AccessLevels.Readonly)) {
             const regularAccount = AccountRepository.findOne({ address: account.regularKey }) as AccountSchema;
             if (isEmpty(regularAccount)) {
                 // dismiss
@@ -233,10 +233,10 @@ class VaultModal extends Component<Props, State> {
 
     onPasscodeEntered = (passcode: string) => {
         AuthenticationService.checkPasscode(passcode)
-            .then(encryptedPasscode => {
+            .then((encryptedPasscode) => {
                 this.openVault(encryptedPasscode);
             })
-            .catch(e => {
+            .catch((e) => {
                 this.securePinInput.clearInput();
                 Alert.alert(Localize.t('global.error'), e.toString());
             });
@@ -277,7 +277,7 @@ class VaultModal extends Component<Props, State> {
                 </Text>
 
                 <SecurePinInput
-                    ref={r => {
+                    ref={(r) => {
                         this.securePinInput = r;
                     }}
                     onInputFinish={this.onPasscodeEntered}
@@ -335,11 +335,11 @@ class VaultModal extends Component<Props, State> {
                 <Spacer size={40} />
 
                 <PasswordInput
-                    ref={r => {
+                    ref={(r) => {
                         this.passwordInput = r;
                     }}
                     placeholder={Localize.t('account.enterPassphrase')}
-                    onChange={passphrase => {
+                    onChange={(passphrase) => {
                         this.setState({ passphrase });
                     }}
                     autoFocus
@@ -385,7 +385,7 @@ class VaultModal extends Component<Props, State> {
                 style={[styles.container, { backgroundColor: interpolateColor }]}
             >
                 <View
-                    ref={r => {
+                    ref={(r) => {
                         this.contentView = r;
                     }}
                     style={[styles.visibleContent, { marginBottom: offsetBottom }]}

@@ -2,7 +2,6 @@
  * Send Screen
  */
 
-import { Results } from 'realm';
 import { findIndex } from 'lodash';
 import BigNumber from 'bignumber.js';
 
@@ -16,7 +15,6 @@ import { LedgerService } from '@services';
 import { AppScreens } from '@common/constants';
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
-import { AccessLevels } from '@store/types';
 
 import LedgerExchange from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
@@ -55,7 +53,7 @@ export interface Props {
 
 export interface State {
     currentStep: Steps;
-    accounts: Results<AccountSchema>;
+    accounts: Array<AccountSchema>;
     source: AccountSchema;
     destination: Destination;
     destinationInfo: AccountInfoType;
@@ -79,7 +77,7 @@ class SendView extends Component<Props, State> {
 
         this.state = {
             currentStep: Steps.Details,
-            accounts: AccountRepository.getAccounts({ accessLevel: AccessLevels.Full }),
+            accounts: AccountRepository.getSpendableAccounts(),
             source: AccountRepository.getDefaultAccount(),
             destination: undefined,
             destinationInfo: undefined,
