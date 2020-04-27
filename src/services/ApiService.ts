@@ -151,7 +151,7 @@ class ApiService {
     serialize(obj: Object, prefix: string) {
         const str: Array<string> = [];
 
-        Object.keys(obj).forEach(p => {
+        Object.keys(obj).forEach((p) => {
             const k = prefix ? `${prefix}[${p}]` : p;
             // @ts-ignore
             const v = obj[p];
@@ -192,12 +192,14 @@ class ApiService {
                 body: '',
             };
 
-            if (header) {
-                req.headers = merge(req.headers, header);
-            } else if (this.accessToken) {
+            if (this.accessToken) {
                 // Add Authorization Token
                 // @ts-ignore
                 req.headers.Authorization = await this.generateAuthToken();
+            }
+
+            if (header) {
+                req.headers = merge(req.headers, header);
             }
 
             // Add Endpoint Params
@@ -251,7 +253,7 @@ class ApiService {
 
             // Make the request
             return fetch(thisUrl, req)
-                .then(async rawRes => {
+                .then(async (rawRes) => {
                     // API got back to us, clear the timeout
                     clearTimeout(apiTimedOut);
 
@@ -271,11 +273,11 @@ class ApiService {
                     }
                     throw jsonRes || rawRes;
                 })
-                .then(res => {
+                .then((res) => {
                     // TODO: inspect X-Call-Ref id
                     return resolve(res);
                 })
-                .catch(err => {
+                .catch((err) => {
                     // API got back to us, clear the timeout
                     clearTimeout(apiTimedOut);
 

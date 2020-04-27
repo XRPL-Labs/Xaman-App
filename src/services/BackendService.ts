@@ -25,6 +25,7 @@ import { Payload, PayloadType } from '@common/libs/payload';
 import PushNotificationsService from '@services/PushNotificationsService';
 import NavigationService from '@services/NavigationService';
 import ApiService from '@services/ApiService';
+import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
 
 // Locale
@@ -85,11 +86,11 @@ class BackendService {
                 // clear the CounterParty store
                 CounterPartyRepository.deleteAll();
 
-                map(details, async value => {
+                map(details, async (value) => {
                     const normalizedList = [] as CurrencySchema[];
 
                     await Promise.all(
-                        map(value.currencies, async c => {
+                        map(value.currencies, async (c) => {
                             const currency = await CurrencyRepository.upsert(
                                 {
                                     id: uuidv4(),
@@ -248,14 +249,14 @@ class BackendService {
     Get details for an xrp address
     */
     getAddressInfo = (address: string) => {
-        return ApiService.addressInfo.get(address);
+        return ApiService.addressInfo.get(address, null, { 'X-XummNet': SocketService.chain });
     };
 
     /*
     Look up on username's and addresses
     */
     lookup = (content: string) => {
-        return ApiService.lookup.get(content);
+        return ApiService.lookup.get(content, null, { 'X-XummNet': SocketService.chain });
     };
 
     /*
