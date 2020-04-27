@@ -206,7 +206,8 @@
         "clearSearch": "Clear search",
         "noNameFound": "No name found",
         "readMoreInTheFAQ": "Read more in the FAQ",
-        "subject": "Subject"
+        "subject": "Subject",
+        "empty": "Empty"
     },
     "onboarding":{
         "slideOne": {

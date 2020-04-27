@@ -42,12 +42,12 @@ class AccountSetTemplate extends Component<Props, State> {
 
         return (
             <>
-                {transaction.Domain && (
+                {transaction.Domain !== undefined && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.domain')}</Text>
                         <View style={[styles.contentBox]}>
                             <Text selectable style={[styles.valueSubtext]}>
-                                {transaction.Domain}
+                                {transaction.Domain || Localize.t('global.empty')}
                             </Text>
                         </View>
                     </>

@@ -14,7 +14,7 @@
       "discard": "Descarte",
       "remove": "Eliminar",
       "go": "Vamos",
-      "close": "Cerrar",
+      "close": "Cerca",
       "save": "Salvar",
       "confirm": "Confirmar",
       "failed": "Ha fallado",
@@ -82,7 +82,7 @@
       "warning": "Advertencia",
       "pleaseNote": "tenga en cuenta",
       "unavailable": "Indisponible",
-      "notice": "darse cuenta",
+      "notice": "aviso",
       "error": "Error",
       "critical": "Crítico",
       "success": "Éxito",
@@ -206,7 +206,8 @@
       "clearSearch": "Borrar búsqueda",
       "noNameFound": "Ningún nombre encontrado",
       "readMoreInTheFAQ": "Lea más en las preguntas frecuentes",
-      "subject": "Tema"
+      "subject": "Tema",
+      "empty": "Vacío"
    },
    "onboarding": {
       "slideOne": {

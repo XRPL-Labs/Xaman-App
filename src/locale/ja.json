@@ -41,7 +41,7 @@
       "code": "コード",
       "copy": "コピーする",
       "selected": "選択済み",
-      "share": "シェア",
+      "share": "共有",
       "status": "状態",
       "description": "説明文",
       "memo": "メモ",
@@ -130,7 +130,7 @@
       "expireAfter": "期限切れ",
       "takerPays": "テイカーペイ",
       "takerGets": "テイカーゲット",
-      "fee": "取引手数料",
+      "fee": "取引料金",
       "invoiceID": "請求書ID",
       "regularKey": "通常のキー",
       "signerQuorum": "署名者",
@@ -206,7 +206,8 @@
       "clearSearch": "検索をクリア",
       "noNameFound": "名前が見つかりません",
       "readMoreInTheFAQ": "FAQで詳細を読む",
-      "subject": "件名"
+      "subject": "件名",
+      "empty": "空の"
    },
    "onboarding": {
       "slideOne": {
@@ -234,7 +235,7 @@
    },
    "setupBiometry": {
       "useBiometry": "FaceIDまたは指紋を使用しますか？",
-      "biometryDescription": "アカウントをより安全に保つには、FaceIDまたは指紋の使用をアクティブ化できます。"
+      "biometryDescription": "アカウントをより安全に保つために、FaceIDまたは指紋の使用をアクティブ化できます。"
    },
    "setupPermissions": {
       "enableNotifications": "プッシュ通知を有効にしますか？",
@@ -314,7 +315,7 @@
       "releaseInformation": "リリース情報",
       "termsAndConditions": "利用規約",
       "credits": "クレジット",
-      "nodeChangeWarning": "から切り替えています%{from}に%{to} 。アカウントを使用できないか、アカウントの履歴を表示できない可能性があります。",
+      "nodeChangeWarning": "から切り替えています%{from}に%{to} 。アカウントを使用したり、アカウントの履歴を表示したりできない場合があります。",
       "nodeList": "ノードリスト",
       "addNode": "ノードを追加",
       "enterURL": "URLを入力してください",
@@ -370,7 +371,7 @@
       "yourPrivateKey": "あなたの秘密の数字",
       "writeDownPrivateKey": "すべての行を紙に書き留めて、安全な場所に保管してください。デバイスがクラッシュして秘密の番号がなくなった場合、資金は失われます。",
       "privateKeyRowsDesc": "あなただけがあなたの資金に触れることができますが、あなたの秘密の番号を安全に保つ必要があります。シークレットは、1行あたり6桁を含む8行（AHのラベルが付いています）で構成されています。",
-      "neverSharePrivateKey": "秘密の番号（秘密鍵）を他の人と共有しないでください。実行すると、資金にアクセスできなくなる可能性があります。",
+      "neverSharePrivateKey": "シークレットナンバー（秘密キー）を他の人と共有しないでください。実行すると、資金にアクセスできなくなる可能性があります。",
       "secretNumbersOfRow": "行の秘密の番号%{row}",
       "confirmNumbersOfRow": "行数を確認%{row}",
       "pleaseRepeatTheNumbers": "数字を繰り返してください",
@@ -447,7 +448,7 @@
       "switchAccount": "アカウントを切り替える",
       "useMnemonicPassphrase": "ニーモニックパスフレーズを使用する",
       "mnemonicLargeAmountAlert": "アカウントに大きな価値がある（たとえば、貯蓄、大量のXRPまたはその他のトークン）状態でニーモニックアカウントをインポートすることを検討する場合、ニーモニックアカウントをオフラインに保つために、XUMMで新しいアカウントを作成することを検討してください。",
-      "importExchangeAddressReadonlyWarning": "Exchange（預金）アカウントをインポートすることはできません。これを行うと、取引所で自分の残高を追跡できなくなります。読み取り専用アカウントのインポートは、ハードウェアのアカウントのように、これが自分のアクティブなアカウントである場合にのみ機能します。",
+      "importExchangeAddressReadonlyWarning": "Exchange（預金）アカウントをインポートすることはできません。これを行うと、取引所で自分の残高を追跡できなくなります。読み取り専用アカウントのインポートは、これがハードウェアのアカウントのように自分のアクティブなアカウントである場合にのみ機能します",
       "walletReserve": "ウォレットリザーブ",
       "totalBalance": "総合収支"
    },
@@ -470,7 +471,7 @@
       "transactionID": "取引ID",
       "sendingDone": "正常に送信されました！",
       "submittingDone": "送信しました！",
-      "addToContacts": "連絡先に追加",
+      "addToContacts": "連絡先に登録する",
       "sendingFailed": "提出に失敗しました！",
       "submitFailed": "提出に失敗しました！",
       "somethingWentWrong": "問題が発生しました！",
@@ -509,7 +510,7 @@
       "failedExchange": "流動性の欠如、または最新の為替レートのため、現在交換できません。",
       "errorDuringExchange": "交換中のエラー： %{error}",
       "liquidityIsNotEnough": "十分な流動性がないため、現在交換できません！",
-      "liquidityIsNotSoMuch": "流動性が比較的低い。引き続きご利用いただけますが、交換全体で最高のレートが得られない可能性があります。"
+      "liquidityIsNotSoMuch": "流動性が比較的低い。引き続きご利用いただけますが、交換全体で最高のレートが得られない場合があります。"
    },
    "scan": {
       "aimAtTheCode": "コードを目指す",

@@ -15,7 +15,7 @@
       "remove": "去掉",
       "go": "走",
       "close": "关",
-      "save": "保存",
+      "save": "救",
       "confirm": "确认",
       "failed": "失败的",
       "balance": "平衡",
@@ -157,7 +157,7 @@
       "invalidAddress": "无效的XRP帐户地址",
       "invalidBiometryAuth": "TouchID / FaceID的身份验证无效",
       "authenticationRequired": "需要验证",
-      "pleaseWait": "请耐心等待 ...",
+      "pleaseWait": "请稍候 ...",
       "thisMayTakeFewSeconds": "这可能需要几秒钟...",
       "cannotOpenLink": "无法打开链接！",
       "openInBrowser": "在浏览器中打开",
@@ -206,7 +206,8 @@
       "clearSearch": "清除搜寻",
       "noNameFound": "找不到名字",
       "readMoreInTheFAQ": "在常见问题中阅读更多内容",
-      "subject": "学科"
+      "subject": "学科",
+      "empty": "空的"
    },
    "onboarding": {
       "slideOne": {
@@ -307,7 +308,7 @@
       "areYouSureRemoveContact": "您确定要删除此联系人吗？",
       "contactName": "联系人姓名",
       "sessionLog": "会话日志",
-      "sendMail": "发邮件",
+      "sendMail": "发送邮件",
       "clearLogs": "清除日志",
       "noLogs": "没有日志",
       "connectingXRPLNode": "连接的XRP分类帐节点",
@@ -408,7 +409,7 @@
       "pleaseEnterYourFamilySeed": "请输入您的家庭种子",
       "accountImportCompleted": "帐户导入完成！",
       "youJustImportedAccount": "您刚刚添加了帐户",
-      "accountSettings": "编辑帐户",
+      "accountSettings": "编辑账户",
       "switchAddAccount": "切换/添加帐户",
       "accountLabel": "帐户标签",
       "pleaseChooseAccountLabel": "请输入该帐户的名称，例如“支出”或“储蓄”。",
@@ -433,7 +434,7 @@
       "youDoNotHaveAnyTrustLine": "您没有任何信任线",
       "yourAccountIsNotActivated": "您的帐户尚未激活！",
       "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "所选帐户未激活。要签署此交易，您需要选择一个激活的帐户！",
-      "accountAlreadyExist": "用户名已经被注册！",
+      "accountAlreadyExist": "账户已存在！",
       "masterKeyForThisAccountDisableRegularKeyNotFound": "此帐户的主密钥已禁用，在帐户列表中找不到普通密钥帐户！",
       "regularKeyAccountForThisAccountDoesNotImportedWithSignAccess": "此帐户的常规密钥帐户未通过登录访问导入！",
       "currentPassphraseShouldNotBeEmpty": "当前密码短语不能为空！",
@@ -468,12 +469,12 @@
       "sent": "已发送",
       "verifying": "验证中",
       "transactionID": "交易编号",
-      "sendingDone": "成功发送！",
+      "sendingDone": "发送成功！",
       "submittingDone": "完成提交！",
       "addToContacts": "添加到通讯录",
       "sendingFailed": "提交失败！",
       "submitFailed": "提交失败！",
-      "somethingWentWrong": "有些不对劲！",
+      "somethingWentWrong": "出问题了！",
       "resultCopiedToClipboard": "结果复制到剪贴板",
       "txIdCopiedToClipboard": "交易ID已复制到剪贴板",
       "submittingToLedger": "将交易发送到XRP分类帐",
@@ -499,7 +500,7 @@
       "selectAnExchangeAndSelectCurrency": "选择一个发行人，然后选择您想要添加的货币。该列表由XUMM开发人员维护。",
       "addAndSign": "添加：签单交易",
       "successRemoved": "货币已成功从您的帐户中删除",
-      "failedRemove": "无法删除货币。发生了错误！"
+      "failedRemove": "无法删除货币。错误发生！"
    },
    "exchange": {
       "exchanging": "交流中",
