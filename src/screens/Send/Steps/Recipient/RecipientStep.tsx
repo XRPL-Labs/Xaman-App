@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { Results } from 'realm';
 import { isEmpty, flatMap, remove, get, uniqBy, toNumber } from 'lodash';
-import { View, Text, Image, TouchableHighlight, SectionList, Alert, RefreshControl } from 'react-native';
+import { View, Text, Image, TouchableHighlight, SectionList, Alert, ActivityIndicator } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
@@ -29,7 +29,7 @@ import { Button, TextInput, Footer, InfoMessage } from '@components';
 import Localize from '@locale';
 
 // style
-import { AppStyles } from '@theme';
+import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
 // context
@@ -165,7 +165,7 @@ class RecipientStep extends Component<Props, State> {
             const searchResult = [] as any;
 
             // search for contacts
-            contacts.forEach(item => {
+            contacts.forEach((item) => {
                 if (
                     item.name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
                     item.address.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
@@ -180,7 +180,7 @@ class RecipientStep extends Component<Props, State> {
             });
 
             // search for contacts
-            accounts.forEach(item => {
+            accounts.forEach((item) => {
                 if (
                     item.label.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
                     item.address.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
@@ -273,7 +273,7 @@ class RecipientStep extends Component<Props, State> {
 
         const dataSource = [];
 
-        const myAccountList = remove(Array.from(accounts), n => {
+        const myAccountList = remove(Array.from(accounts), (n) => {
             // remove source account from list
             return n.address !== source.address;
         });
@@ -281,7 +281,7 @@ class RecipientStep extends Component<Props, State> {
         if (myAccountList.length !== 0) {
             dataSource.push({
                 title: Localize.t('account.myAccounts'),
-                data: flatMap(myAccountList, a => {
+                data: flatMap(myAccountList, (a) => {
                     return { name: a.label, address: a.address, avatar: Images.IconAccount };
                 }),
             });
@@ -295,7 +295,7 @@ class RecipientStep extends Component<Props, State> {
         } else {
             dataSource.push({
                 title: Localize.t('global.contacts'),
-                data: flatMap(contacts, a => {
+                data: flatMap(contacts, (a) => {
                     return {
                         name: a.name,
                         address: a.address,
@@ -620,6 +620,7 @@ class RecipientStep extends Component<Props, State> {
     };
 
     renderListEmptyComponent = () => {
+        const { isSearching } = this.state;
         const { setDestination } = this.context;
 
         return (
@@ -678,15 +679,18 @@ class RecipientStep extends Component<Props, State> {
                     </View>
 
                     <View style={[AppStyles.flex8, AppStyles.paddingTopSml]}>
-                        <SectionList
-                            ListEmptyComponent={this.renderListEmptyComponent}
-                            refreshControl={<RefreshControl refreshing={isSearching} />}
-                            extraData={searchText}
-                            sections={dataSource}
-                            renderItem={this.renderItem}
-                            renderSectionHeader={this.renderSectionHeader}
-                            keyExtractor={item => item.address}
-                        />
+                        {isSearching ? (
+                            <ActivityIndicator color={AppColors.blue} />
+                        ) : (
+                            <SectionList
+                                ListEmptyComponent={this.renderListEmptyComponent}
+                                extraData={searchText}
+                                sections={dataSource}
+                                renderItem={this.renderItem}
+                                renderSectionHeader={this.renderSectionHeader}
+                                keyExtractor={(item) => `${item.address}${item.tag}`}
+                            />
+                        )}
                     </View>
                 </View>
 
