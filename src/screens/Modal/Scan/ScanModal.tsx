@@ -3,29 +3,23 @@
  */
 
 import React, { Component } from 'react';
-import {
-    SafeAreaView,
-    View,
-    ImageBackground,
-    Text,
-    ActivityIndicator,
-    Alert,
-    Linking,
-    BackHandler,
-} from 'react-native';
+import { View, ImageBackground, Text, ActivityIndicator, Alert, Linking, BackHandler } from 'react-native';
+
+import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
+
 import { RNCamera } from 'react-native-camera';
 
 import { AccountRepository } from '@store/repositories';
 import { AccessLevels } from '@store/types';
 
-import { StringTypeDetector, StringDecoder, StringType, XrplDestination } from 'xumm-string-decode';
-import { Decode } from 'xrpl-tagged-address-codec';
-import { utils as AccountLibUtils } from 'xrpl-accountlib';
-
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 import { Payload } from '@common/libs/payload';
+
+import { getPayIdInfo } from '@common/helpers/resolver';
+
+import { NormalizeDestination } from '@common/libs/utils';
 
 import Localize from '@locale';
 
@@ -157,24 +151,9 @@ class ScanView extends Component<Props, State> {
     };
 
     handleXrplDestination = async (destination: XrplDestination) => {
-        let address;
-        let tag;
         let amount;
 
-        // decode if it's x address
-        if (destination.to.startsWith('X')) {
-            try {
-                const decoded = Decode(destination.to);
-                address = decoded.account;
-                // @ts-ignore
-                tag = decoded.tag && decoded.tag;
-            } catch {
-                // ignore
-            }
-        } else if (AccountLibUtils.isValidAddress(destination.to)) {
-            address = destination.to;
-            tag = destination.tag;
-        }
+        const { to, tag } = NormalizeDestination(destination);
 
         // if amount present as XRP pass the amount
         if (!destination.currency && destination.amount) {
@@ -182,7 +161,7 @@ class ScanView extends Component<Props, State> {
         }
 
         // valid address
-        if (address) {
+        if (to) {
             // check if any account is configured
             const availableAccounts = AccountRepository.getAccounts({ accessLevel: AccessLevels.Full });
 
@@ -194,7 +173,7 @@ class ScanView extends Component<Props, State> {
                     {},
                     {
                         scanResult: {
-                            address,
+                            address: to,
                             tag,
                         },
                         amount,
@@ -218,10 +197,62 @@ class ScanView extends Component<Props, State> {
         }
     };
 
+    handlePayId = async (result: PayId) => {
+        this.setState({
+            isLoading: true,
+        });
+
+        try {
+            getPayIdInfo(result.payId)
+                .then((res: any) => {
+                    if (res) {
+                        this.handleXrplDestination({
+                            to: res.account,
+                            tag: res.tag,
+                        });
+                    }
+                })
+                .catch(() => {})
+                .finally(() => {
+                    this.setState({
+                        isLoading: false,
+                    });
+                });
+        } catch (e) {
+            Alert.alert(
+                Localize.t('global.error'),
+                e.message,
+                [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+                { cancelable: false },
+            );
+            this.setState({
+                isLoading: false,
+            });
+        }
+    };
+
+    normalizeResult = (detected: any) => {
+        const parsed = new StringDecoder(detected).getAny();
+
+        if (detected.getType() === StringType.PayId) {
+            return { to: parsed.payId };
+        }
+
+        return parsed;
+    };
+
     handle = (content: any, detected: any) => {
         const { onRead, type } = this.props;
 
-        if (type && detected.getType() !== type) {
+        // normalize detected type
+        let detectedType = detected.getType();
+
+        if (detectedType === StringType.PayId) {
+            detectedType = StringType.XrplDestination;
+        }
+
+        // check if this is something we expect
+        if (type && detectedType !== type) {
             // this is not the type we expected
             let message = Localize.t('scan.theQRIsNotWhatWeExpect');
 
@@ -246,14 +277,15 @@ class ScanView extends Component<Props, State> {
             return;
         }
 
-        const parsed = new StringDecoder(detected).getAny();
-
         // the other component wants to handle the decoded content
         if (onRead) {
+            const result = this.normalizeResult(detected);
             Navigator.dismissModal();
-            onRead(parsed);
+            onRead(result);
             return;
         }
+
+        const parsed = new StringDecoder(detected).getAny();
 
         // the screen will handle the content
         switch (detected.getType()) {
@@ -265,6 +297,9 @@ class ScanView extends Component<Props, State> {
                 break;
             case StringType.XrplDestination:
                 this.handleXrplDestination(parsed);
+                break;
+            case StringType.PayId:
+                this.handlePayId(parsed);
                 break;
             default:
                 // nothing found
@@ -339,11 +374,15 @@ class ScanView extends Component<Props, State> {
 
         if (isLoading) {
             return (
-                <SafeAreaView style={styles.container}>
+                <ImageBackground source={Images.BackgroundShapes} style={[AppStyles.container, AppStyles.paddingSml]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         <ActivityIndicator color={AppColors.blue} size="large" />
+                        <Spacer />
+                        <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
+                            {Localize.t('global.pleaseWait')}
+                        </Text>
                     </View>
-                </SafeAreaView>
+                </ImageBackground>
             );
         }
 

@@ -8,9 +8,6 @@ import { isEmpty, flatMap, remove, get, uniqBy, toNumber } from 'lodash';
 import { View, Text, Image, TouchableHighlight, SectionList, Alert, ActivityIndicator } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
-import { utils as AccountLibUtils } from 'xrpl-accountlib';
-import { Decode } from 'xrpl-tagged-address-codec';
-
 import { AccountRepository, ContactRepository } from '@store/repositories';
 import { ContactSchema, AccountSchema } from '@store/schemas/latest';
 
@@ -27,6 +24,8 @@ import { Button, TextInput, Footer, InfoMessage } from '@components';
 
 // locale
 import Localize from '@locale';
+
+import { NormalizeDestination } from '@common/libs/utils';
 
 // style
 import { AppStyles, AppColors } from '@theme';
@@ -75,40 +74,27 @@ class RecipientStep extends Component<Props, State> {
 
         // if scanResult is passed
         if (scanResult) {
-            this.doAccountLookUp({ to: scanResult.address, tag: scanResult.tag }, true);
+            this.doAccountLookUp({ to: scanResult.address, tag: scanResult.tag });
         } else {
             this.setDefaultDataSource();
         }
     }
 
-    doAccountLookUp = async (result: XrplDestination, asDestination?: boolean) => {
+    doAccountLookUp = async (result: XrplDestination) => {
         const { setDestination } = this.context;
 
-        let address;
-        let tag;
+        const { to, tag } = NormalizeDestination(result);
 
-        // decode if it's x address
-        if (result.to.startsWith('X')) {
-            try {
-                const decoded = Decode(result.to);
-                address = decoded.account;
-                // @ts-ignore
-                tag = decoded.tag && decoded.tag;
-            } catch {
-                // ignore
-            }
-        } else if (AccountLibUtils.isValidAddress(result.to)) {
-            address = result.to;
-            tag = result.tag;
-        }
+        this.setState({
+            searchText: result.to,
+        });
 
-        if (address) {
+        if (to) {
             this.setState({
-                searchText: result.to,
                 isSearching: true,
             });
 
-            const accountInfo = await getAccountName(address);
+            const accountInfo = await getAccountName(to, tag);
 
             let avatar;
 
@@ -128,7 +114,7 @@ class RecipientStep extends Component<Props, State> {
                 dataSource: this.getSearchResultSource([
                     {
                         name: accountInfo.name || '',
-                        address,
+                        address: to,
                         tag,
                         avatar,
                         source: accountInfo.source.replace('internal:', ''),
@@ -137,12 +123,35 @@ class RecipientStep extends Component<Props, State> {
                 isSearching: false,
             });
 
-            if (asDestination) {
-                setDestination({ name: accountInfo.name || '', address, tag: toNumber(tag) || undefined });
-            }
+            // select as destination
+            setDestination({ name: accountInfo.name || '', address: to, tag: toNumber(tag) || undefined });
         } else {
             this.doLookUp(result.to);
         }
+    };
+
+    setSearchResult = (searchResult: any) => {
+        const { destination, setDestination } = this.context;
+
+        // if search result only have one result select it
+        if (searchResult.length === 1) {
+            const onlyResult = searchResult[0];
+            // select as destination
+            if (!destination || (onlyResult.address !== destination.address && onlyResult.tag !== destination.tag)) {
+                setDestination({
+                    name: onlyResult.name || '',
+                    address: onlyResult.address,
+                    tag: toNumber(onlyResult.tag) || undefined,
+                });
+            }
+        } else if (destination) {
+            setDestination(undefined);
+        }
+
+        this.setState({
+            dataSource: this.getSearchResultSource(searchResult),
+            isSearching: false,
+        });
     };
 
     doLookUp = (searchText: string) => {
@@ -215,24 +224,18 @@ class RecipientStep extends Component<Props, State> {
                     .finally(() => {
                         // this will make sure the latest call will apply
                         if (sequence === this.sequence) {
-                            this.setState({
-                                dataSource: this.getSearchResultSource(searchResult),
-                                isSearching: false,
-                            });
+                            this.setSearchResult(searchResult);
                         }
                     });
-            } else {
-                this.setState({
-                    dataSource: this.getSearchResultSource(searchResult),
-                    isSearching: false,
-                });
+            } else if (sequence === this.sequence) {
+                // this will make sure the latest call will apply
+                this.setSearchResult(searchResult);
             }
         }, 500);
     };
 
-    onSearch = (text: string) => {
-        // cleanup
-        const searchText = text.replace(/\s/g, '');
+    onSearch = (searchText: string) => {
+        const { setDestination } = this.context;
 
         this.setState({
             searchText,
@@ -250,7 +253,11 @@ class RecipientStep extends Component<Props, State> {
                 this.doLookUp(searchText);
             }
         } else {
+            clearTimeout(this.lookupTimeout);
+            // get default source
             this.setDefaultDataSource();
+            // clear the destination if set
+            setDestination(undefined);
         }
     };
 
@@ -620,7 +627,6 @@ class RecipientStep extends Component<Props, State> {
     };
 
     renderListEmptyComponent = () => {
-        const { isSearching } = this.state;
         const { setDestination } = this.context;
 
         return (

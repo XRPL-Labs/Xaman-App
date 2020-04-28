@@ -4,6 +4,10 @@
  */
 import moment from 'moment';
 
+import { utils as AccountLibUtils } from 'xrpl-accountlib';
+import { Decode } from 'xrpl-tagged-address-codec';
+import { XrplDestination } from 'xumm-string-decode';
+
 /* Hex Encoding  ==================================================================== */
 const HexEncoding = {
     toBinary: (hex: string): Buffer => {
@@ -47,10 +51,7 @@ const NormalizeAmount = (amount: string): string => {
 
     // not more than 6 decimal places
     if (sendAmount.split('.')[1] && sendAmount.split('.').reverse()[0].length >= 6) {
-        sendAmount = `${sendAmount.split('.').reverse()[1]}.${sendAmount
-            .split('.')
-            .reverse()[0]
-            .slice(0, 6)}`;
+        sendAmount = `${sendAmount.split('.').reverse()[1]}.${sendAmount.split('.').reverse()[0].slice(0, 6)}`;
     }
 
     // "01" to "1"
@@ -86,10 +87,7 @@ const NormalizeDate = (date: string): string => {
     const momentDate = moment(date);
     const reference = moment();
     const today = reference.clone().startOf('day');
-    const yesterday = reference
-        .clone()
-        .subtract(1, 'days')
-        .startOf('day');
+    const yesterday = reference.clone().subtract(1, 'days').startOf('day');
 
     if (momentDate.isSame(today, 'd')) {
         return 'Today';
@@ -101,5 +99,29 @@ const NormalizeDate = (date: string): string => {
     return momentDate.format('DD MMM');
 };
 
+const NormalizeDestination = (destination: XrplDestination): XrplDestination => {
+    let to;
+    let tag;
+
+    // decode if it's x address
+    if (destination.to.startsWith('X')) {
+        try {
+            const decoded = Decode(destination.to);
+            to = decoded.account;
+            tag = Number(decoded.tag);
+        } catch {
+            // ignore
+        }
+    } else if (AccountLibUtils.isValidAddress(destination.to)) {
+        to = destination.to;
+        tag = destination.tag;
+    }
+
+    return {
+        to,
+        tag,
+    };
+};
+
 /* Export ==================================================================== */
-export { Truncate, NormalizeAmount, NormalizeCurrencyCode, NormalizeDate, HexEncoding };
+export { Truncate, NormalizeAmount, NormalizeCurrencyCode, NormalizeDate, NormalizeDestination, HexEncoding };

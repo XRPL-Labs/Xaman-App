@@ -18,4 +18,8 @@ declare module 'xumm-string-decode' {
         mnemonic?: string;
         hexPrivateKey?: string;
     }
+    export interface PayId {
+        payId: string;
+        url: string;
+    }
 }

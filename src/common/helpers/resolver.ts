@@ -8,6 +8,10 @@ import ContactRepository from '@store/repositories/contact';
 import LedgerService from '@services/LedgerService';
 import BackendService from '@services/BackendService';
 
+export interface PayIDInfo {
+    account: string;
+    tag: string;
+}
 export interface AccountNameType {
     name: string;
     source: string;
@@ -21,7 +25,7 @@ export interface AccountInfoType {
 
 const getAccountName = memoize(
     (address: string, tag?: number): Promise<AccountNameType> => {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             // check address  book
             try {
                 let filter = { address };
@@ -120,17 +124,17 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                         accountTXS.transactions &&
                         accountTXS.transactions.length > 0
                     ) {
-                        const incomingTXS = accountTXS.transactions.filter(tx => {
+                        const incomingTXS = accountTXS.transactions.filter((tx) => {
                             return tx.tx.Destination === address;
                         });
 
-                        const incomingTxCountWithTag = incomingTXS.filter(tx => {
+                        const incomingTxCountWithTag = incomingTXS.filter((tx) => {
                             return (
                                 typeof tx.tx.TransactionType === 'string' && typeof tx.tx.DestinationTag !== 'undefined'
                             );
                         }).length;
 
-                        const senders = accountTXS.transactions.map(tx => {
+                        const senders = accountTXS.transactions.map((tx) => {
                             return tx.tx.Account || '';
                         });
 
@@ -154,4 +158,25 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
     });
 };
 
-export { getAccountName, getAccountInfo };
+const getPayIdInfo = (payId: string): Promise<PayIDInfo> => {
+    return new Promise((resolve) => {
+        BackendService.lookup(payId)
+            .then((res: any) => {
+                if (!isEmpty(res) && res.error !== true) {
+                    if (!isEmpty(res.matches)) {
+                        const match = res.matches[0];
+                        return resolve({
+                            account: match.account,
+                            tag: match.tag,
+                        });
+                    }
+                }
+                return resolve(undefined);
+            })
+            .catch(() => {
+                return resolve(undefined);
+            });
+    });
+};
+
+export { getAccountName, getAccountInfo, getPayIdInfo };
