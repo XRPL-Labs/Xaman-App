@@ -30,7 +30,7 @@ class AccountSetTemplate extends Component<Props, State> {
     render() {
         const { transaction } = this.props;
 
-        if (!transaction.SetFlag && !transaction.ClearFlag && !transaction.Domain) {
+        if (!transaction.SetFlag && !transaction.ClearFlag && transaction.Domain === undefined) {
             return (
                 <View key="details" style={[AppStyles.flex1, AppStyles.centerContent]}>
                     <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
