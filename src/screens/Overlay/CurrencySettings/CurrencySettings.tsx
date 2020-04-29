@@ -1,6 +1,8 @@
 /**
  * Currency Settings Overlay
  */
+import find from 'lodash/filter';
+import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
 import { View, Animated, Text, Image, Alert, InteractionManager } from 'react-native';
@@ -8,9 +10,10 @@ import { View, Animated, Text, Image, Alert, InteractionManager } from 'react-na
 import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 import { AccountRepository } from '@store/repositories';
 
-import { TrustSet } from '@common/libs/ledger/transactions';
+import { TrustSet, Payment } from '@common/libs/ledger/transactions';
 import Submitter from '@common/libs/ledger/submitter';
 import Flag from '@common/libs/ledger/parser/common/flag';
+import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
@@ -18,6 +21,8 @@ import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
+
+import LedgerService from '@services/LedgerService';
 
 // components
 import { Button, Spacer, CustomButton } from '@components';
@@ -36,6 +41,8 @@ export interface Props {
 
 export interface State {
     isLoading: boolean;
+    latestLineBalance: number;
+    canRemove: boolean;
 }
 /* Component ==================================================================== */
 class CurrencySettingsModal extends Component<Props, State> {
@@ -56,6 +63,8 @@ class CurrencySettingsModal extends Component<Props, State> {
 
         this.state = {
             isLoading: false,
+            latestLineBalance: 0,
+            canRemove: false,
         };
 
         this.animatedColor = new Animated.Value(0);
@@ -75,6 +84,8 @@ class CurrencySettingsModal extends Component<Props, State> {
                 useNativeDriver: true,
             }),
         ]).start();
+
+        this.getLatestLineBalance();
     }
 
     dismiss = () => {
@@ -94,12 +105,93 @@ class CurrencySettingsModal extends Component<Props, State> {
         });
     };
 
+    getLatestLineBalance = () => {
+        const { account, trustLine } = this.props;
+
+        LedgerService.getAccountLines(account.address).then(async (accountLines: any) => {
+            const { lines } = accountLines;
+
+            const line = find(lines, { account: trustLine.currency.issuer, currency: trustLine.currency.currency });
+
+            if (line && line.length > 0) {
+                const lineBalance = new BigNumber(line[0].balance);
+
+                this.setState({
+                    latestLineBalance: lineBalance.decimalPlaces(15).toNumber(),
+                    canRemove: lineBalance.isLessThan(0.000001),
+                });
+            }
+        });
+    };
+
+    clearDustAmounts = (privateKey: string) => {
+        /* eslint-disable-next-line */
+        return new Promise(async (resolve, reject) => {
+            const { latestLineBalance } = this.state;
+
+            const { trustLine, account } = this.props;
+
+            const payment = new Payment();
+
+            payment.Destination = {
+                address: account.address,
+            };
+
+            payment.Account = {
+                address: account.address,
+            };
+
+            // @ts-ignore
+            payment.Amount = '9999999999';
+            payment.SendMax = {
+                currency: trustLine.currency.currency,
+                issuer: trustLine.currency.issuer,
+                // @ts-ignore
+                value: latestLineBalance,
+            };
+
+            payment.Flags = [txFlags.Payment.PartialPayment];
+
+            // submit payment to the ledger
+            await payment
+                .submit(privateKey)
+                .then(() => {
+                    payment
+                        .verify()
+                        .then(() => {
+                            return resolve();
+                        })
+                        .catch(() => {
+                            return reject();
+                        });
+                })
+                .catch(() => {
+                    return reject();
+                });
+        });
+    };
+
     removeTrustLine = async (privateKey: string) => {
         const { trustLine, account } = this.props;
+        const { latestLineBalance } = this.state;
 
         this.setState({
             isLoading: true,
         });
+
+        // there is dust balance in the account
+        if (latestLineBalance !== 0) {
+            try {
+                await this.clearDustAmounts(privateKey);
+            } catch {
+                InteractionManager.runAfterInteractions(() => {
+                    Alert.alert(Localize.t('global.error'), Localize.t('currency.failedRemove'));
+                });
+
+                this.dismiss();
+                return;
+            }
+        }
 
         // parse account flags
         const accountFlags = new Flag('Account', account.flags).parse();
@@ -190,7 +282,7 @@ class CurrencySettingsModal extends Component<Props, State> {
 
     render() {
         const { trustLine } = this.props;
-        const { isLoading } = this.state;
+        const { isLoading, canRemove } = this.state;
 
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],
@@ -274,7 +366,7 @@ class CurrencySettingsModal extends Component<Props, State> {
 
                         <CustomButton
                             isLoading={isLoading}
-                            isDisabled={trustLine.balance > 0}
+                            isDisabled={!canRemove}
                             icon="IconTrash"
                             iconSize={20}
                             iconStyle={[styles.removeButtonIcon]}
