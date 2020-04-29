@@ -5,6 +5,7 @@
 import BigNumber from 'bignumber.js';
 import Realm from 'realm';
 
+import CurrencySchema from '@store/schemas/v1/currency';
 import TrustLineSchema from '@store/schemas/v1/trustLine';
 
 import { EncryptionLevels, AccessLevels } from '@store/types';
@@ -92,13 +93,11 @@ class Account extends Realm.Object {
     /**
      * check if account have specific trustline
      */
-    hasCurrency = (trustLine: TrustLineSchema): boolean => {
+    hasCurrency = (currency: CurrencySchema): boolean => {
         let found = false;
+
         this.lines.forEach((t: TrustLineSchema) => {
-            if (
-                t.currency.issuer === trustLine.currency.issuer &&
-                t.currency.currency === trustLine.currency.currency
-            ) {
+            if (t.currency.issuer === currency.issuer && t.currency.currency === currency.currency) {
                 found = true;
             }
         });

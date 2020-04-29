@@ -107,7 +107,7 @@ class SummaryStep extends Component {
 
         if (typeof currency === 'string') {
             setSource(item);
-        } else if (item.hasCurrency(currency)) {
+        } else if (item.hasCurrency(currency.currency)) {
             setSource(item);
         } else {
             Alert.alert(Localize.t('global.error'), Localize.t('send.selectedAccountDoNotSupportCurrency'));

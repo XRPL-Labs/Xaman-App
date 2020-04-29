@@ -109,12 +109,18 @@ class HomeView extends Component<Props, State> {
     };
 
     addCurrency = () => {
-        Navigator.showOverlay(AppScreens.Overlay.AddCurrency, {
-            layout: {
-                backgroundColor: 'transparent',
-                componentBackgroundColor: 'transparent',
+        const { account } = this.state;
+
+        Navigator.showOverlay(
+            AppScreens.Overlay.AddCurrency,
+            {
+                layout: {
+                    backgroundColor: 'transparent',
+                    componentBackgroundColor: 'transparent',
+                },
             },
-        });
+            { account },
+        );
     };
 
     showBalanceExplain = () => {

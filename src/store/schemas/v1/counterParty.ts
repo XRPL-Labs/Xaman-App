@@ -20,6 +20,7 @@ class CounterParty extends Realm.Object {
         },
     };
 
+    public id: number;
     public name: string;
     public domain: string;
     public avatar: string;
