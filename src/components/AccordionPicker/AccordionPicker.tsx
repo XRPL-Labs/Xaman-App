@@ -54,8 +54,8 @@ class AccordionPicker extends Component<Props, State> {
         };
     }
 
-    componentDidMount() {
-        const { selectedItem, keyExtractor, items } = this.props;
+    static getDerivedStateFromProps(nextProps: Props) {
+        const { selectedItem, keyExtractor, items } = nextProps;
 
         let selected = 0;
 
@@ -66,10 +66,12 @@ class AccordionPicker extends Component<Props, State> {
         }
 
         if (selected) {
-            this.setState({
+            return {
                 selectedIndex: selected,
-            });
+            };
         }
+
+        return null;
     }
 
     public close = () => {
@@ -198,7 +200,7 @@ class AccordionPicker extends Component<Props, State> {
         return (
             <View
                 onLayout={this.setContainerPosition}
-                ref={r => {
+                ref={(r) => {
                     this.pickerContainer = r;
                 }}
                 style={[
