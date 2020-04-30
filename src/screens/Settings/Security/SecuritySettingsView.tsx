@@ -4,7 +4,8 @@
 import { find } from 'lodash';
 import React, { Component } from 'react';
 import { Text, ScrollView, View, TouchableOpacity, Alert } from 'react-native';
-import TouchID from 'react-native-touch-id';
+
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import { AppScreens } from '@common/constants';
 
@@ -26,6 +27,7 @@ export interface Props {}
 
 export interface State {
     biometricEnabled: boolean;
+    isSensorAvailable: boolean;
     coreSettings: CoreSchema;
 }
 
@@ -58,11 +60,23 @@ class SecuritySettingsView extends Component<Props, State> {
 
         const coreSettings = CoreRepository.getSettings();
 
-        this.state = { coreSettings, biometricEnabled: coreSettings.biometricMethod !== BiometryType.None };
+        this.state = {
+            coreSettings,
+            isSensorAvailable: false,
+            biometricEnabled: coreSettings.biometricMethod !== BiometryType.None,
+        };
     }
 
     componentDidMount() {
         CoreRepository.on('updateSettings', this.updateUI);
+
+        FingerprintScanner.isSensorAvailable()
+            .then(() => {
+                this.setState({
+                    isSensorAvailable: true,
+                });
+            })
+            .catch(() => {});
     }
 
     updateUI = (coreSettings: CoreSchema) => {
@@ -71,23 +85,27 @@ class SecuritySettingsView extends Component<Props, State> {
 
     changeBiometricMethod = (value: boolean) => {
         if (value) {
-            const optionalConfigObject = {
-                title: Localize.t('global.authenticationRequired'),
-                sensorErrorDescription: Localize.t('global.failed'),
-                cancelText: Localize.t('global.cancel'),
-                fallbackLabel: 'Use Passcode',
-                unifiedErrors: false,
-                passcodeFallback: true,
-            };
-
-            TouchID.authenticate('authenticate to TouchID/FaceID', optionalConfigObject)
+            FingerprintScanner.authenticate({ description: Localize.t('global.authenticate'), fallbackEnabled: true })
                 .then(() => {
-                    TouchID.isSupported().then(biometryType => {
-                        if (biometryType === 'FaceID') {
-                            CoreRepository.saveSettings({ biometricMethod: BiometryType.FaceID });
-                        } else {
-                            CoreRepository.saveSettings({ biometricMethod: BiometryType.TouchID });
+                    FingerprintScanner.isSensorAvailable().then(biometryType => {
+                        let type;
+
+                        switch (biometryType) {
+                            case 'Face ID':
+                                type = BiometryType.FaceID;
+                                break;
+                            case 'Touch ID':
+                                type = BiometryType.TouchID;
+                                break;
+                            case 'Biometrics':
+                                type = BiometryType.Biometrics;
+                                break;
+
+                            default:
+                                type = BiometryType.None;
                         }
+
+                        CoreRepository.saveSettings({ biometricMethod: type });
                     });
 
                     this.setState({
@@ -96,6 +114,9 @@ class SecuritySettingsView extends Component<Props, State> {
                 })
                 .catch(() => {
                     Alert.alert(Localize.t('global.invalidAuth'), Localize.t('global.invalidBiometryAuth'));
+                })
+                .finally(() => {
+                    FingerprintScanner.release();
                 });
         } else {
             CoreRepository.saveSettings({ biometricMethod: BiometryType.None });
@@ -157,7 +178,7 @@ class SecuritySettingsView extends Component<Props, State> {
     };
 
     render() {
-        const { biometricEnabled, coreSettings } = this.state;
+        const { biometricEnabled, isSensorAvailable, coreSettings } = this.state;
 
         return (
             <View testID="security-settings-view" style={[styles.container]}>
@@ -207,14 +228,16 @@ class SecuritySettingsView extends Component<Props, State> {
                         </View>
                     </TouchableOpacity>
 
-                    <View style={styles.row}>
-                        <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('settings.biometricAuthentication')}</Text>
+                    {isSensorAvailable && (
+                        <View style={styles.row}>
+                            <View style={[AppStyles.flex3]}>
+                                <Text style={styles.label}>{Localize.t('settings.biometricAuthentication')}</Text>
+                            </View>
+                            <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                                <Switch checked={biometricEnabled} onChange={this.biometricMethodChange} />
+                            </View>
                         </View>
-                        <View style={[AppStyles.centerAligned, AppStyles.flex1, AppStyles.row]}>
-                            <Switch checked={biometricEnabled} onChange={this.biometricMethodChange} />
-                        </View>
-                    </View>
+                    )}
                 </ScrollView>
             </View>
         );

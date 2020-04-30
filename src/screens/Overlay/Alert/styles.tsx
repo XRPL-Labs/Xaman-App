@@ -2,7 +2,7 @@
 
 import { StyleSheet } from 'react-native';
 
-import { AppStyles, AppColors, AppSizes, AppFonts } from '@theme';
+import { AppStyles, AppColors, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({
@@ -11,11 +11,12 @@ const styles = StyleSheet.create({
     visibleContent: {
         width: AppSizes.screen.width * 0.9,
         backgroundColor: AppColors.white,
-        borderRadius: 8,
+        borderRadius: 30,
         shadowColor: AppColors.black,
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 1,
         shadowOpacity: 0.4,
+        ...AppStyles.paddingSml,
     },
 
     iconError: {
@@ -31,71 +32,24 @@ const styles = StyleSheet.create({
         tintColor: AppColors.green,
     },
     title: {
-        fontFamily: AppFonts.base.familyBold,
-        fontWeight: 'bold',
-        fontSize: AppFonts.h5.size,
+        ...AppStyles.h5,
     },
     subTitle: {
         ...AppStyles.p,
+        color: AppColors.black,
         textAlign: 'center',
     },
-    header: {
-        padding: 10,
-
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: AppColors.greyDark,
-        alignItems: 'center',
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 8,
-    },
-    headerError: {
-        backgroundColor: AppColors.lightRed,
+    titleError: {
         color: AppColors.red,
     },
-    headerWarning: {
-        backgroundColor: AppColors.lightOrange,
+    titleWarning: {
         color: AppColors.orange,
     },
-    headerInfo: {
-        backgroundColor: AppColors.lightBlue,
-        color: AppColors.blue,
+    titleInfo: {
+        color: AppColors.lightBlue,
     },
-    headerSuccess: {
-        backgroundColor: AppColors.lightGreen,
+    titleSuccess: {
         color: AppColors.green,
-    },
-    footer: {
-        left: 0,
-        right: 0,
-        flexDirection: 'row',
-        borderBottomLeftRadius: 8,
-        borderBottomRightRadius: 8,
-        borderTopWidth: StyleSheet.hairlineWidth,
-        borderTopColor: AppColors.greyDark,
-    },
-    button: {
-        padding: 20,
-        borderBottomLeftRadius: 8,
-        borderBottomRightRadius: 8,
-        alignItems: 'center',
-        backgroundColor: AppColors.white,
-    },
-    buttonText: {
-        fontFamily: AppFonts.p.family,
-        fontSize: AppFonts.p.size,
-        fontWeight: 'bold',
-        color: AppColors.black,
-    },
-    buttonTextLight: {
-        opacity: 0.6,
-    },
-    buttonTextDismiss: {
-        color: AppColors.red,
-    },
-
-    buttonSeparator: {
-        borderRightWidth: 0.4,
-        borderRightColor: AppColors.greyDark,
     },
 });
 

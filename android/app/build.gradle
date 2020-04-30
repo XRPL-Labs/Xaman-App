@@ -266,7 +266,7 @@ dependencies {
     implementation project(':react-native-navigation')
     implementation project(':react-native-keychain')
     implementation project(':react-native-device-info')
-    implementation project(':react-native-touch-id')
+    implementation project(':react-native-fingerprint-scanner')
     implementation project(':react-native-community-netinfo')
     implementation project(':react-native-blur')
     implementation project(':react-native-firebase')

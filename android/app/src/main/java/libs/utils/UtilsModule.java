@@ -84,7 +84,18 @@ public class UtilsModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void restartBundle() {
-        _restart();
+           Intent mStartActivity = reactContext.getPackageManager().getLaunchIntentForPackage(reactContext.getPackageName());
+        int mPendingIntentId = 123456;
+        PendingIntent mPendingIntent = PendingIntent.getActivity(reactContext, mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager)reactContext.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+        System.exit(0);
+    }
+
+    @ReactMethod
+    public void exitApp() {
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(1);
     }
 
     private static boolean checkRootMethod1() {
@@ -112,14 +123,5 @@ public class UtilsModule extends ReactContextBaseJavaModule {
         } finally {
             if (process != null) process.destroy();
         }
-    }
-
-    private void _restart() {
-        Intent mStartActivity = reactContext.getPackageManager().getLaunchIntentForPackage(reactContext.getPackageName());
-        int mPendingIntentId = 123456;
-        PendingIntent mPendingIntent = PendingIntent.getActivity(reactContext, mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager mgr = (AlarmManager)reactContext.getSystemService(Context.ALARM_SERVICE);
-        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-        System.exit(0);
     }
 }

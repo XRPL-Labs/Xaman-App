@@ -59,7 +59,9 @@ class ChangePasscodeView extends Component<Props, State> {
 
     focusPinInput = () => {
         setTimeout(() => {
-            this.pinInput.focus();
+            if (this.pinInput) {
+                this.pinInput.focus();
+            }
         }, 100);
     };
 
@@ -161,7 +163,6 @@ class ChangePasscodeView extends Component<Props, State> {
                             this.pinInput = r;
                         }}
                         autoFocus={false}
-                        obfuscation
                         codeLength={6}
                         onFinish={this.onPasscodeEntered}
                     />

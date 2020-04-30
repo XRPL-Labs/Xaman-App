@@ -6,6 +6,7 @@ import { TransactionsType } from '@common/libs/ledger/types';
 import { AccountSchema } from '@store/schemas/latest';
 
 import { Navigator, getAccountInfo } from '@common/helpers';
+import { NormalizeCurrencyCode } from '@common/libs/utils';
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
@@ -98,8 +99,8 @@ class TransactionTemplate extends PureComponent<Props, State> {
     };
 
     onPress = () => {
-        const { item } = this.props;
-        Navigator.push(AppScreens.Transaction.Details, {}, { tx: item });
+        const { item, account } = this.props;
+        Navigator.push(AppScreens.Transaction.Details, {}, { tx: item, account: account.address });
     };
 
     getIcon = () => {
@@ -182,7 +183,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
             case 'SignerListSet':
                 return Localize.t('events.setSignerList');
             case 'OfferCreate':
-                if (item.Flags.ImmediateOrCancel) {
+                if (item.Flags?.ImmediateOrCancel) {
                     return Localize.t('events.exchangedCurrencies');
                 }
                 return Localize.t('events.createOffer');
@@ -202,7 +203,8 @@ class TransactionTemplate extends PureComponent<Props, State> {
             return (
                 <Text style={[styles.amount, incoming ? styles.incomingColor : styles.outgoingColor]} numberOfLines={1}>
                     {incoming ? '' : '-'}
-                    {item.Amount.value} <Text style={[styles.currency]}>{item.Amount.currency}</Text>
+                    {item.Amount.value}{' '}
+                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
                 </Text>
             );
         }
@@ -210,7 +212,8 @@ class TransactionTemplate extends PureComponent<Props, State> {
         if (item.Type === 'EscrowCreate') {
             return (
                 <Text style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]} numberOfLines={1}>
-                    -{item.Amount.value} <Text style={[styles.currency]}>{item.Amount.currency}</Text>
+                    -{item.Amount.value}{' '}
+                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
                 </Text>
             );
         }
@@ -218,7 +221,8 @@ class TransactionTemplate extends PureComponent<Props, State> {
         if (item.Type === 'EscrowFinish') {
             return (
                 <Text style={[styles.amount, incoming ? styles.incomingColor : styles.naturalColor]} numberOfLines={1}>
-                    {item.Amount.value} <Text style={[styles.currency]}>{item.Amount.currency}</Text>
+                    {item.Amount.value}{' '}
+                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
                 </Text>
             );
         }

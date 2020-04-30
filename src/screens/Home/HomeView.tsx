@@ -11,10 +11,8 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    LayoutAnimation,
     ImageBackground,
     InteractionManager,
-    Platform,
 } from 'react-native';
 
 import { Navigation } from 'react-native-navigation';
@@ -45,6 +43,7 @@ export interface Props {}
 
 export interface State {
     account: AccountSchema;
+    privacy: boolean;
 }
 
 /* Component ==================================================================== */
@@ -63,6 +62,7 @@ class HomeView extends Component<Props, State> {
         super(props);
         this.state = {
             account: AccountRepository.getDefaultAccount(),
+            privacy: false,
         };
     }
 
@@ -100,8 +100,6 @@ class HomeView extends Component<Props, State> {
 
     updateUI = (updatedAccount: AccountSchema) => {
         if (updatedAccount.default) {
-            LayoutAnimation.easeInEaseOut();
-
             this.setState({
                 account: updatedAccount,
             });
@@ -155,25 +153,25 @@ class HomeView extends Component<Props, State> {
         );
     };
 
+    togglePrivacyMode = () => {
+        const { privacy } = this.state;
+
+        this.setState({
+            privacy: !privacy,
+        });
+    };
+
     renderHeader = () => {
         const { account } = this.state;
-        if (Platform.OS === 'ios') {
-            return (
-                <Fragment key="header">
-                    <View style={[AppStyles.flex1, AppStyles.paddingLeft, AppStyles.centerContent]}>
-                        <Image style={[styles.logo]} source={Images.xummLogo} />
-                    </View>
-                </Fragment>
-            );
-        }
+
         return (
             <Fragment key="header">
                 <View style={[AppStyles.flex1, AppStyles.paddingLeft, AppStyles.centerContent]}>
                     <Image style={[styles.logo]} source={Images.xummLogo} />
                 </View>
                 {!isEmpty(account) && (
-                    <View style={[AppStyles.flex1, AppStyles.rightAligned, AppStyles.centerContent]}>
-                        <TouchableOpacity
+                    <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
+                        <Button
                             onPress={() => {
                                 Navigator.showOverlay(AppScreens.Overlay.SwitchAccount, {
                                     layout: {
@@ -182,9 +180,15 @@ class HomeView extends Component<Props, State> {
                                     },
                                 });
                             }}
-                        >
-                            <Icon name="IconSwitchAccount" size={22} style={[styles.IconSwitchAccount]} />
-                        </TouchableOpacity>
+                            style={styles.switchAccountButton}
+                            textStyle={styles.switchAccountButtonText}
+                            light
+                            roundedSmall
+                            iconSize={14}
+                            iconStyle={AppStyles.imgColorBlue}
+                            icon="IconSwitchAccount"
+                            label={Localize.t('account.switchAccount')}
+                        />
                     </View>
                 )}
             </Fragment>
@@ -192,7 +196,7 @@ class HomeView extends Component<Props, State> {
     };
 
     renderContent = () => {
-        const { account } = this.state;
+        const { account, privacy } = this.state;
 
         if (account.balance === 0) {
             if (account.isRegularKey) {
@@ -336,11 +340,19 @@ class HomeView extends Component<Props, State> {
                                     >
                                         {line.currency.avatar && (
                                             <Image
-                                                style={styles.currencyAvatar}
+                                                style={[styles.currencyAvatar, privacy && AppStyles.imgColorGrey]}
                                                 source={{ uri: line.currency.avatar }}
                                             />
                                         )}
-                                        <Text style={[AppStyles.pbold, AppStyles.monoBold]}>{line.balance}</Text>
+                                        <Text
+                                            style={[
+                                                AppStyles.pbold,
+                                                AppStyles.monoBold,
+                                                privacy && AppStyles.colorGreyDark,
+                                            ]}
+                                        >
+                                            {privacy ? '••••••••' : line.balance}
+                                        </Text>
                                     </View>
                                 </TouchableOpacity>
                             );
@@ -424,7 +436,7 @@ class HomeView extends Component<Props, State> {
     };
 
     render() {
-        const { account } = this.state;
+        const { account, privacy } = this.state;
 
         if (isEmpty(account)) {
             return this.renderEmpty();
@@ -442,7 +454,9 @@ class HomeView extends Component<Props, State> {
                             <Text style={[AppStyles.flex1, AppStyles.h5]} numberOfLines={1}>
                                 {account.label}
                             </Text>
-                            <Image style={[styles.iconXumm]} source={Images.xummIcon} />
+                            <TouchableOpacity onPress={this.togglePrivacyMode}>
+                                <Icon style={[styles.iconEye]} size={20} name={privacy ? 'IconEyeOff' : 'IconEye'} />
+                            </TouchableOpacity>
                         </View>
 
                         <Text style={[styles.cardLabel]}>{Localize.t('global.address')}:</Text>
@@ -461,9 +475,9 @@ class HomeView extends Component<Props, State> {
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
                                 selectable
-                                style={[AppStyles.flex1, styles.cardAddressText]}
+                                style={[AppStyles.flex1, styles.cardAddressText, privacy && AppStyles.colorGreyDark]}
                             >
-                                {account.address}
+                                {privacy ? '••••••••••••••••••••••••••••••••' : account.address}
                             </Text>
                             <View style={[styles.shareIconContainer, AppStyles.rightSelf]}>
                                 <Icon name="IconShare" size={18} style={[styles.shareIcon]} />
@@ -481,7 +495,9 @@ class HomeView extends Component<Props, State> {
 
                             <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
                                 {/* <Image style={[styles.currencyAvatar]} source={Images.IconXrp} /> */}
-                                <Text style={[AppStyles.h5, AppStyles.monoBold]}>{account.balance}</Text>
+                                <Text style={[AppStyles.h5, AppStyles.monoBold, privacy && AppStyles.colorGreyDark]}>
+                                    {privacy ? '••••••••' : account.balance}
+                                </Text>
                             </View>
                         </View>
                         {this.renderButtons()}

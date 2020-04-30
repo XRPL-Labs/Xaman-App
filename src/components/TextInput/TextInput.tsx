@@ -45,11 +45,19 @@ class Input extends Component<Props, State> {
     }
 
     public focus = () => {
-        this.instance.focus();
+        setTimeout(() => {
+            if (this.instance) {
+                this.instance.focus();
+            }
+        }, 50);
     };
 
     public blur = () => {
-        this.instance.blur();
+        setTimeout(() => {
+            if (this.instance) {
+                this.instance.blur();
+            }
+        }, 50);
     };
 
     onFocus = (e: any) => {
@@ -78,7 +86,7 @@ class Input extends Component<Props, State> {
         return (
             <View style={[styles.wrapper, containerStyle, focused && activeContainerStyle]}>
                 <TextInput
-                    ref={r => {
+                    ref={(r) => {
                         this.instance = r;
                     }}
                     onFocus={this.onFocus}

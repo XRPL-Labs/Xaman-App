@@ -8,7 +8,7 @@ import { Results } from 'realm';
 import React, { Component } from 'react';
 import { Navigation } from 'react-native-navigation';
 
-import { View, Text, SectionList, TouchableHighlight, Image, ImageBackground, LayoutAnimation } from 'react-native';
+import { View, Text, SectionList, TouchableHighlight, Image, ImageBackground } from 'react-native';
 
 import { Images, Navigator } from '@common/helpers';
 import { AppScreens } from '@common/constants';
@@ -44,7 +44,7 @@ class AddressBookView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const contacts = ContactRepository.getContacts();
+        const contacts = ContactRepository.getContacts().snapshot();
 
         this.state = {
             contacts,
@@ -55,9 +55,7 @@ class AddressBookView extends Component<Props, State> {
     }
 
     componentDidAppear() {
-        const contacts = ContactRepository.getContacts();
-
-        LayoutAnimation.easeInEaseOut();
+        const contacts = ContactRepository.getContacts().snapshot();
 
         this.setState({
             contacts,
@@ -67,8 +65,8 @@ class AddressBookView extends Component<Props, State> {
 
     updateUI = (contacts: Results<ContactSchema>) => {
         this.setState({
-            contacts,
-            dataSource: this.convertContactsArrayToMap(contacts),
+            contacts: contacts.snapshot(),
+            dataSource: this.convertContactsArrayToMap(contacts.snapshot()),
         });
     };
 

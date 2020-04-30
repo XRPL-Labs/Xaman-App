@@ -155,6 +155,7 @@ class AccountImportView extends Component<Props, State> {
 
         const Step = Steps[currentStep];
 
+        // @ts-ignore
         return <Step goBack={this.goBack} goNext={this.goNext} account={account} />;
     };
 
@@ -176,6 +177,7 @@ class AccountImportView extends Component<Props, State> {
                 title = Localize.t('global.address');
                 break;
             case 'EnterMnemonic':
+            case 'MnemonicAlert':
                 title = Localize.t('account.mnemonic');
                 break;
             case 'EnterSecretNumbers':

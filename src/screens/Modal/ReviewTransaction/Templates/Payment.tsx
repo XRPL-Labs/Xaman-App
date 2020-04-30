@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { findIndex, isEmpty, isEqual } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import React, { Component } from 'react';
 import {
     View,
@@ -97,13 +97,11 @@ class PaymentTemplate extends Component<Props, State> {
 
             const { lines } = sourceLines;
 
-            // check destination have the same trustLine
-            const haveSameTrustLine =
-                findIndex(lines, (l: any) => {
-                    return l.currency === transaction.Amount.currency && l.account === transaction.Amount.issuer;
-                }) !== -1;
+            const trustLine = lines.filter(
+                (l: any) => l.currency === transaction.Amount.currency && l.account === transaction.Amount.issuer,
+            )[0];
 
-            if (!haveSameTrustLine) {
+            if (!trustLine || parseFloat(trustLine.balance) < parseFloat(transaction.Amount.value)) {
                 if (isPartialPayment) return;
 
                 const PAIR = { issuer: transaction.Amount.issuer, currency: transaction.Amount.currency };
@@ -242,7 +240,9 @@ class PaymentTemplate extends Component<Props, State> {
                         activeOpacity={1}
                         style={[AppStyles.row]}
                         onPress={() => {
-                            editableAmount && this.amountInput.focus();
+                            if (editableAmount && this.amountInput) {
+                                this.amountInput.focus();
+                            }
                         }}
                     >
                         <View style={[AppStyles.row, AppStyles.flex1]}>
@@ -251,6 +251,7 @@ class PaymentTemplate extends Component<Props, State> {
                                     this.amountInput = r;
                                 }}
                                 keyboardType="decimal-pad"
+                                autoCapitalize="words"
                                 onChangeText={this.onAmountChange}
                                 returnKeyType="done"
                                 placeholder="0"
@@ -266,7 +267,9 @@ class PaymentTemplate extends Component<Props, State> {
                         {editableAmount && (
                             <Button
                                 onPress={() => {
-                                    this.amountInput.focus();
+                                    if (this.amountInput) {
+                                        this.amountInput.focus();
+                                    }
                                 }}
                                 style={styles.editButton}
                                 roundedSmall

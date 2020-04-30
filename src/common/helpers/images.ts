@@ -24,6 +24,7 @@ export const Images = {
     ImageNotifications: buildImageSource('ImageNotifications', 'image_notifications'),
     ImageComplete: buildImageSource('ImageComplete', 'image_complete'),
     ImageCloudAlert: buildImageSource('ImageCloudAlert', 'image_cloud_alert'),
+    ImageWarningShield: buildImageSource('ImageWarningShield', 'image_warning_shield'),
     // Xumm
     xummLogo: buildImageSource('XummLogo', 'xumm_logo'),
     xummIcon: buildImageSource('XummIcon', 'xumm_icon'),
@@ -85,4 +86,5 @@ export const Images = {
     IconRepeat: buildImageSource('IconRepeat', 'icon_repeat'),
     IconKey: buildImageSource('IconKey', 'icon_key'),
     IconSwitchAccount: buildImageSource('IconSwitchAccount', 'icon_switchaccount'),
+    IconGlobe: buildImageSource('IconGlobe', 'icon_globe'),
 };

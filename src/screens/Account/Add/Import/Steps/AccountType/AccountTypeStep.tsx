@@ -59,7 +59,7 @@ class AccountTypeStep extends Component<Props, State> {
                 goNext('EnterSeed', { accountType });
                 break;
             case AccountTypes.Mnemonic:
-                goNext('EnterMnemonic', { accountType });
+                goNext('MnemonicAlert');
                 break;
             default:
                 break;

@@ -13,7 +13,6 @@ import {
     TouchableOpacity,
     ScrollView,
     SafeAreaView,
-    LayoutAnimation,
 } from 'react-native';
 
 import Interactable from 'react-native-interactable';
@@ -100,12 +99,18 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
     slideUp = () => {
         setTimeout(() => {
-            this.panel.snapTo({ index: 1 });
+            if (this.panel) {
+                this.panel.snapTo({ index: 1 });
+            }
         }, 10);
     };
 
     slideDown = () => {
-        this.panel.snapTo({ index: 0 });
+        setTimeout(() => {
+            if (this.panel) {
+                this.panel.snapTo({ index: 0 });
+            }
+        });
     };
 
     onSnap = (event: any) => {
@@ -125,7 +130,6 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     key={index}
                     style={[styles.listItem, selectedCurrency.name === c.name ? styles.selectedRow : null]}
                     onPress={() => {
-                        LayoutAnimation.easeInEaseOut();
                         this.setState({
                             selectedCurrency: c,
                         });
@@ -161,7 +165,6 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     key={index}
                     style={[styles.listItem, selectedParty.name === c.name ? styles.selectedRow : null]}
                     onPress={() => {
-                        LayoutAnimation.easeInEaseOut();
                         this.setState({
                             selectedParty: c,
                             selectedCurrency: c.currencies[0],

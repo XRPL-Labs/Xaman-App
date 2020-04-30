@@ -1,4 +1,4 @@
-import Realm, { ObjectSchema } from 'realm';
+import Realm, { ObjectSchema, Results } from 'realm';
 
 import assign from 'lodash/assign';
 import moment from 'moment';
@@ -36,7 +36,7 @@ class CoreRepository extends BaseRepository {
     }
 
     saveSettings = (object: Partial<CoreSchema>) => {
-        const current = this.getSettings();
+        const current = this.getSettings(true);
         if (current) {
             this.safeWrite(() => {
                 assign(current, object);
@@ -71,12 +71,15 @@ class CoreRepository extends BaseRepository {
         };
     };
 
-    getSettings = (): CoreSchema => {
-        const settings = Array.from(this.findAll()) as CoreSchema[];
+    getSettings = (plain?: boolean): CoreSchema => {
+        const result = this.findAll() as Results<CoreSchema>;
 
         // settings exist
-        if (settings.length > 0) {
-            return settings[0];
+        if (!result.isEmpty()) {
+            if (plain) {
+                return result[0];
+            }
+            return this.normalizeObject(result[0]);
         }
 
         return undefined;

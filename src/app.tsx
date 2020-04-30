@@ -1,7 +1,7 @@
 /**
  * Application class
  */
-import { UIManager, Platform, Alert, NativeModules } from 'react-native';
+import { UIManager, Platform, Alert, Text, TextInput, NativeModules } from 'react-native';
 
 // modules
 import DeviceInfo from 'react-native-device-info';
@@ -41,12 +41,6 @@ export default class Application {
 
         // on app start
         Navigation.events().registerAppLaunchedListener(() => {
-            // if app initialized do not start the services again
-            // boot the app
-            if (this.initialized) {
-                this.boot();
-                return;
-            }
             // all stuff we need to init before boot the app
             const waterfall = [
                 this.configure,
@@ -202,6 +196,14 @@ export default class Application {
                         return resolve();
                     });
                 }
+
+                // Disable accessibility fonts
+                // @ts-ignore
+                Text.defaultProps = {};
+                // @ts-ignore
+                Text.defaultProps.allowFontScaling = false;
+                // @ts-ignore
+                TextInput.defaultProps.allowFontScaling = false;
 
                 return resolve();
             } catch (e) {

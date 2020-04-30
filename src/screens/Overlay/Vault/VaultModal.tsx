@@ -6,7 +6,7 @@
 import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Animated, Text, Alert, Platform, Keyboard, KeyboardEvent, LayoutAnimation } from 'react-native';
-import TouchID from 'react-native-touch-id';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import Flag from '@common/libs/ledger/parser/common/flag';
 import { CoreRepository, AccountRepository } from '@store/repositories';
@@ -39,6 +39,7 @@ export interface State {
     passphrase: string;
     coreSettings: CoreSchema;
     offsetBottom: number;
+    isSensorAvailable: boolean;
 }
 /* Component ==================================================================== */
 class VaultModal extends Component<Props, State> {
@@ -62,6 +63,7 @@ class VaultModal extends Component<Props, State> {
         this.state = {
             signWith: undefined,
             passphrase: undefined,
+            isSensorAvailable: false,
             coreSettings: CoreRepository.getSettings(),
             offsetBottom: 0,
         };
@@ -126,20 +128,31 @@ class VaultModal extends Component<Props, State> {
 
         // if biometry sets by default switch to biometry for faster result
         if (encryptionLevel === EncryptionLevels.Passcode) {
-            if (coreSettings.biometricMethod !== BiometryType.None) {
-                setTimeout(() => {
-                    this.requestBiometricAuthenticate(true);
-                }, 500);
-            } else {
-                // focus the input
-                setTimeout(() => {
-                    this.securePinInput.focus();
-                }, 300);
-            }
+            FingerprintScanner.isSensorAvailable()
+                .then(() => {
+                    this.setState({
+                        isSensorAvailable: true,
+                    });
+                    if (coreSettings.biometricMethod !== BiometryType.None) {
+                        setTimeout(() => {
+                            this.requestBiometricAuthenticate(true);
+                        }, 500);
+                    } else {
+                        // focus the input
+                        setTimeout(() => {
+                            if (this.securePinInput) {
+                                this.securePinInput.focus();
+                            }
+                        }, 300);
+                    }
+                })
+                .catch(() => {});
         } else if (encryptionLevel === EncryptionLevels.Passphrase) {
             // focus the input
             setTimeout(() => {
-                this.passwordInput.focus();
+                if (this.passwordInput) {
+                    this.passwordInput.focus();
+                }
             }, 300);
         }
     }
@@ -185,25 +198,22 @@ class VaultModal extends Component<Props, State> {
     requestBiometricAuthenticate = (system: boolean = false) => {
         const { coreSettings } = this.state;
 
-        const optionalConfigObject = {
-            title: Localize.t('global.authenticationRequired'),
-            sensorErrorDescription: Localize.t('global.failed'),
-            cancelText: Localize.t('global.cancel'),
-            fallbackLabel: 'Show Passcode',
-            unifiedErrors: true,
-            passcodeFallback: true,
-        };
-
-        TouchID.authenticate(Localize.t('global.signingTheTransaction'), optionalConfigObject)
+        FingerprintScanner.authenticate({
+            description: Localize.t('global.signingTheTransaction'),
+            fallbackEnabled: true,
+        })
             .then(() => {
                 const { passcode } = coreSettings;
                 this.openVault(passcode);
             })
             .catch((error: any) => {
                 if (system) return;
-                if (error.code !== 'USER_CANCELED') {
+                if (error.code !== 'UserCancel') {
                     Alert.alert(Localize.t('global.error'), Localize.t('global.invalidBiometryAuth'));
                 }
+            })
+            .finally(() => {
+                FingerprintScanner.release();
             });
     };
 
@@ -244,7 +254,7 @@ class VaultModal extends Component<Props, State> {
     };
 
     renderPasscode = () => {
-        const { coreSettings } = this.state;
+        const { coreSettings, isSensorAvailable } = this.state;
 
         const { biometricMethod } = coreSettings;
 
@@ -262,7 +272,7 @@ class VaultModal extends Component<Props, State> {
                     length={6}
                 />
 
-                {biometricMethod !== BiometryType.None && (
+                {biometricMethod !== BiometryType.None && isSensorAvailable && (
                     <View style={AppStyles.paddingTopSml}>
                         <Button
                             label={`${biometricMethod}`}

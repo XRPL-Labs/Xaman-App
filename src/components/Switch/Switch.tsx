@@ -1,17 +1,23 @@
 import React, { Component } from 'react';
-import { View, Text, Platform, Switch as RNSwitch } from 'react-native';
+import { View, Text, Platform, Switch as RNSwitch, TextStyle } from 'react-native';
 
 import { AppColors } from '@theme';
 import styles from './styles';
 /* Types ==================================================================== */
 interface Props {
     title?: string;
+    titleStyle?: TextStyle;
+    direction?: 'right' | 'left';
     checked: boolean;
     onChange: (value: boolean) => void;
 }
 
 /* Component ==================================================================== */
 class Switch extends Component<Props> {
+    static defaultProps = {
+        direction: 'left',
+    };
+
     onValueChange = (value: boolean) => {
         const { onChange } = this.props;
         if (onChange) {
@@ -20,7 +26,7 @@ class Switch extends Component<Props> {
     };
 
     render() {
-        const { title, checked } = this.props;
+        const { title, direction, checked } = this.props;
 
         let props = {};
 
@@ -32,13 +38,14 @@ class Switch extends Component<Props> {
         }
         return (
             <View style={styles.container}>
-                <Text style={styles.title}>{title}</Text>
+                {direction === 'right' && title && <Text style={styles.title}>{title}</Text>}
                 <View style={styles.switch}>
                     <View>
                         {/* eslint-disable-next-line */}
                         <RNSwitch onValueChange={this.onValueChange} style={styles.switch} value={checked} {...props} />
                     </View>
                 </View>
+                {direction === 'left' && title && <Text style={styles.title}>{title}</Text>}
             </View>
         );
     }

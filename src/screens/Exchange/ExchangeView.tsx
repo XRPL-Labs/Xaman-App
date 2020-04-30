@@ -12,7 +12,6 @@ import {
     TextInput,
     Keyboard,
     TouchableOpacity,
-    LayoutAnimation,
     InteractionManager,
 } from 'react-native';
 
@@ -118,8 +117,6 @@ class ExchangeView extends Component<Props, State> {
     switchCurrency = () => {
         const { trustLine } = this.props;
         const { fromCurrency } = this.state;
-
-        LayoutAnimation.spring();
 
         this.setState(
             {
@@ -392,7 +389,9 @@ class ExchangeView extends Component<Props, State> {
                         <TouchableOpacity
                             activeOpacity={1}
                             onPress={() => {
-                                this.paysAmountInput.focus();
+                                if (this.paysAmountInput) {
+                                    this.paysAmountInput.focus();
+                                }
                             }}
                             style={[AppStyles.row]}
                         >
@@ -429,9 +428,9 @@ class ExchangeView extends Component<Props, State> {
                                     placeholder="0"
                                     placeholderTextColor={AppColors.red}
                                     keyboardType="decimal-pad"
+                                    autoCapitalize="words"
                                     style={styles.fromAmount}
                                     value={paysAmount}
-                                    allowFontScaling
                                     returnKeyType="done"
                                 />
                             </View>
@@ -486,6 +485,7 @@ class ExchangeView extends Component<Props, State> {
                                 <Text style={styles.toAmount}>~</Text>
                                 <TextInput
                                     keyboardType="decimal-pad"
+                                    autoCapitalize="words"
                                     style={styles.toAmount}
                                     placeholderTextColor={AppColors.green}
                                     placeholder="0"

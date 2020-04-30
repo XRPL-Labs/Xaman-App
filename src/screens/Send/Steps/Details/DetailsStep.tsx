@@ -8,7 +8,6 @@ import { filter } from 'lodash';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import {
-    SafeAreaView,
     ScrollView,
     Animated,
     View,
@@ -105,20 +104,6 @@ class DetailsStep extends Component {
         goNext();
     };
 
-    getAccountReserve = () => {
-        const { currency, source } = this.context;
-
-        // XRP
-        if (typeof currency === 'string') {
-            if (source.balance === 0) {
-                return '';
-            }
-            return `(${source.accountReserve} ${Localize.t('global.reserved')})`;
-        }
-
-        return '';
-    };
-
     getAvailableBalance = () => {
         const { currency, source } = this.context;
 
@@ -181,6 +166,7 @@ class DetailsStep extends Component {
     };
 
     renderCurrencyItem = (item: any, selected: boolean) => {
+        const { source } = this.context;
         // XRP
         if (typeof item === 'string') {
             return (
@@ -205,7 +191,8 @@ class DetailsStep extends Component {
                                     selected ? AppStyles.colorBlue : AppStyles.colorGreyDark,
                                 ]}
                             >
-                                {Localize.t('global.balance')}: {this.getAvailableBalance()} {this.getAccountReserve()}
+                                {Localize.t('global.balance')}: {source.availableBalance}{' '}
+                                {`(${source.accountReserve} ${Localize.t('global.reserved')})`}
                             </Text>
                         </View>
                     </View>
@@ -241,7 +228,7 @@ class DetailsStep extends Component {
         const { accounts, source, currency, amount } = this.context;
 
         return (
-            <SafeAreaView testID="send-details-view" style={[styles.container]}>
+            <View testID="send-details-view" style={[styles.container]}>
                 <KeyboardAvoidingView
                     keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0}
                     behavior="padding"
@@ -304,6 +291,7 @@ class DetailsStep extends Component {
                             </View>
                             <TextInput
                                 keyboardType="decimal-pad"
+                                autoCapitalize="words"
                                 onChangeText={this.onAmountChange}
                                 returnKeyType="done"
                                 placeholder="0"
@@ -316,7 +304,7 @@ class DetailsStep extends Component {
                 </KeyboardAvoidingView>
 
                 {/* Bottom Bar */}
-                <Footer style={[AppStyles.row]}>
+                <Footer style={[AppStyles.row]} safeArea>
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
                         <Button
                             secondary
@@ -341,7 +329,7 @@ class DetailsStep extends Component {
                         />
                     </View>
                 </Footer>
-            </SafeAreaView>
+            </View>
         );
     }
 }

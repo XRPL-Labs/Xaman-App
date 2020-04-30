@@ -21,6 +21,9 @@ const colors = {
     lightOrange: '#FFF9ED',
     lightGreen: '#E6FAF2',
     lightRed: '#FFF9F9',
+
+    bithomp: '#3fa3b5',
+    xrpln: '#3767CE',
 };
 
 export default {

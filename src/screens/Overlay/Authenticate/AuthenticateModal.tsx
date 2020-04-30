@@ -5,7 +5,8 @@
 
 import React, { Component } from 'react';
 import { View, Animated, Text, Alert, Platform, Keyboard, KeyboardEvent, LayoutAnimation } from 'react-native';
-import TouchID from 'react-native-touch-id';
+
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
@@ -30,7 +31,6 @@ export interface Props {
 }
 
 export interface State {
-    success: boolean;
     coreSettings: CoreSchema;
     offsetBottom: number;
 }
@@ -53,7 +53,6 @@ class AuthenticateModal extends Component<Props, State> {
         super(props);
 
         this.state = {
-            success: false,
             coreSettings: CoreRepository.getSettings(),
             offsetBottom: 0,
         };
@@ -88,7 +87,9 @@ class AuthenticateModal extends Component<Props, State> {
 
         // focus the input
         setTimeout(() => {
-            this.securePinInput.focus();
+            if (this.securePinInput) {
+                this.securePinInput.focus();
+            }
         }, 300);
     }
 
@@ -111,8 +112,7 @@ class AuthenticateModal extends Component<Props, State> {
         this.setState({ offsetBottom: 0 });
     };
 
-    dismiss = () => {
-        const { success } = this.state;
+    dismiss = (success?: boolean) => {
         const { onDismissed } = this.props;
 
         if (onDismissed) {
@@ -124,38 +124,27 @@ class AuthenticateModal extends Component<Props, State> {
         Navigator.dismissOverlay();
     };
 
-    success = () => {
-        this.setState({ success: true });
-        this.dismiss();
+    onSuccess = () => {
+        this.dismiss(true);
     };
 
     requestBiometricAuthenticate = (system: boolean = false) => {
-        const optionalConfigObject = {
-            title: Localize.t('global.authenticationRequired'),
-            sensorErrorDescription: Localize.t('global.failed'),
-            cancelText: Localize.t('global.cancel'),
-            fallbackLabel: 'Show Passcode',
-            unifiedErrors: true,
-            passcodeFallback: true,
-        };
-
-        TouchID.authenticate(Localize.t('global.authenticate'), optionalConfigObject)
-            .then(() => {
-                this.success();
-            })
+        FingerprintScanner.authenticate({ description: Localize.t('global.authenticate'), fallbackEnabled: true })
+            .then(this.onSuccess)
             .catch((error: any) => {
                 if (system) return;
-                if (error.code !== 'USER_CANCELED') {
+                if (error.name !== 'UserCancel') {
                     Alert.alert(Localize.t('global.error'), Localize.t('global.invalidBiometryAuth'));
                 }
+            })
+            .finally(() => {
+                FingerprintScanner.release();
             });
     };
 
     onPasscodeEntered = (passcode: string) => {
         CoreRepository.checkPasscode(passcode)
-            .then(() => {
-                this.success();
-            })
+            .then(this.onSuccess)
             .catch(e => {
                 Alert.alert(Localize.t('global.error'), e.toString());
             })
