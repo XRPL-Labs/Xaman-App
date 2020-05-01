@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty, isEqual, has } from 'lodash';
 import React, { Component } from 'react';
 import {
     View,
@@ -89,7 +89,6 @@ class PaymentTemplate extends Component<Props, State> {
 
     checkForConversationRequired = async () => {
         const { transaction } = this.props;
-        const { isPartialPayment } = this.state;
 
         if (transaction.Amount && transaction.Amount.currency !== 'XRP') {
             // get source trust lines
@@ -101,9 +100,9 @@ class PaymentTemplate extends Component<Props, State> {
                 (l: any) => l.currency === transaction.Amount.currency && l.account === transaction.Amount.issuer,
             )[0];
 
+            // if not have the same trust line or the balance is not covering requested value
+            // Pay with XRP instead
             if (!trustLine || parseFloat(trustLine.balance) < parseFloat(transaction.Amount.value)) {
-                if (isPartialPayment) return;
-
                 const PAIR = { issuer: transaction.Amount.issuer, currency: transaction.Amount.currency };
 
                 const ledgerExchange = new LedgerExchange(PAIR);
@@ -134,7 +133,14 @@ class PaymentTemplate extends Component<Props, State> {
                     exchangeRate,
                     xrpRoundedUp: sendMaxXRP.toString(),
                 });
-            } else if (isPartialPayment) {
+            } else {
+                // check for transfer fee
+                // add PartialPayment
+                const issuerAccountInfo = await LedgerService.getAccountInfo(trustLine.account);
+                if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
+                    transaction.Flags = [txFlags.Payment.PartialPayment];
+                }
+
                 if (transaction.SendMax) {
                     transaction.SendMax = undefined;
                 }
