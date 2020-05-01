@@ -1,4 +1,4 @@
-import { has, isEmpty } from 'lodash';
+import { has, isEmpty, filter } from 'lodash';
 import Realm, { Results, ObjectSchema } from 'realm';
 
 import * as AccountLib from 'xrpl-accountlib';
@@ -147,7 +147,7 @@ class AccountRepository extends BaseRepository {
             }
         });
 
-        return availableAccounts;
+        return filter(availableAccounts, (a) => a.balance > 0);
     };
 
     /**
