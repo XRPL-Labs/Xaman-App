@@ -43,7 +43,14 @@ class EnterSeedStep extends Component<Props, State> {
         const { familySeed } = this.state;
 
         try {
-            const account = derive.familySeed(familySeed);
+            let account;
+
+            if (familySeed.startsWith('s')) {
+                account = derive.familySeed(familySeed);
+            } else {
+                account = derive.privatekey(familySeed);
+            }
+
             goNext('ConfirmPublicKey', { importedAccount: account });
         } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.invalidFamilySeed'));
