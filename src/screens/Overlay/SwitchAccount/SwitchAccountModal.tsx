@@ -76,7 +76,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
         let paddingBottom = 0;
 
-        if (contentHeight > AppSizes.screen.height) {
+        if (contentHeight > AppSizes.screen.height - 150) {
             contentHeight = AppSizes.screen.height - 150;
             paddingBottom = AppSizes.scale(60);
         }
@@ -250,7 +250,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={r => {
+                    ref={(r) => {
                         this.panel = r;
                     }}
                     animatedNativeDriver
