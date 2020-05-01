@@ -503,7 +503,8 @@
       "selectAnExchangeAndSelectCurrency": "発行者を選択し、追加する通貨を選択します。このリストはXUMM開発者が管理しています。",
       "addAndSign": "追加：トランザクションに署名",
       "successRemoved": "アカウントから通貨を削除しました",
-      "failedRemove": "通貨を削除できません。エラーが発生しました！"
+      "failedRemove": "通貨を削除できません。エラーが発生しました！",
+      "addingCurrencyReserveDescription": "通貨を追加すると、アカウントの予備が5 XRP増加します"
    },
    "exchange": {
       "exchanging": "交換",

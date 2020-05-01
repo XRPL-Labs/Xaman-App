@@ -503,7 +503,8 @@
       "selectAnExchangeAndSelectCurrency": "발행자를 선택하고 추가하려는 통화를 선택하십시오. 이 목록은 XUMM 개발자가 관리합니다.",
       "addAndSign": "추가 : 서명 거래",
       "successRemoved": "계정에서 통화가 성공적으로 제거되었습니다",
-      "failedRemove": "통화를 제거 할 수 없습니다. 오류가 발생했습니다!"
+      "failedRemove": "통화를 제거 할 수 없습니다. 오류가 발생했습니다!",
+      "addingCurrencyReserveDescription": "통화를 추가하면 계정 예약이 5 XRP 증가합니다"
    },
    "exchange": {
       "exchanging": "교환",

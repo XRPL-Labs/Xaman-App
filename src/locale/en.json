@@ -503,7 +503,8 @@
         "selectAnExchangeAndSelectCurrency": "Select an issuer and select the currency you would like to add. This list is maintained by the XUMM developers.",
         "addAndSign": "Add: sign transaction",
         "successRemoved": "Currency successfully removed from your account",
-        "failedRemove": "Cannot remove currency. Error occurred!"
+        "failedRemove": "Cannot remove currency. Error occurred!",
+        "addingCurrencyReserveDescription": "Adding a currency will increase your account reserve by 5 XRP"
     },
     "exchange": {
         "exchanging": "Exchanging",

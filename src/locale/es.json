@@ -503,7 +503,8 @@
       "selectAnExchangeAndSelectCurrency": "Seleccione un emisor y seleccione la moneda que desea agregar. Esta lista es mantenida por los desarrolladores de XUMM.",
       "addAndSign": "Añadir: firmar transacción",
       "successRemoved": "Moneda eliminada con éxito de su cuenta",
-      "failedRemove": "No se puede eliminar la moneda. ¡Se produjo un error!"
+      "failedRemove": "No se puede eliminar la moneda. ¡Se produjo un error!",
+      "addingCurrencyReserveDescription": "Agregar una moneda aumentará la reserva de su cuenta en 5 XRP"
    },
    "exchange": {
       "exchanging": "Intercambiando",

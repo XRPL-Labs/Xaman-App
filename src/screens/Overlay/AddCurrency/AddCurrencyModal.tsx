@@ -110,11 +110,14 @@ class AddCurrencyOverlay extends Component<Props, State> {
     addCurrency = async () => {
         const { selectedCurrency } = this.state;
 
-        const payload = await Payload.build({
-            TransactionType: 'TrustSet',
-            Flags: 131072, // tfSetNoRipple
-            LimitAmount: { currency: selectedCurrency.currency, issuer: selectedCurrency.issuer, value: 999999999 },
-        });
+        const payload = await Payload.build(
+            {
+                TransactionType: 'TrustSet',
+                Flags: 131072, // tfSetNoRipple
+                LimitAmount: { currency: selectedCurrency.currency, issuer: selectedCurrency.issuer, value: 999999999 },
+            },
+            Localize.t('currency.addingCurrencyReserveDescription'),
+        );
 
         Navigator.showModal(
             AppScreens.Modal.ReviewTransaction,

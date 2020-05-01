@@ -60,7 +60,7 @@ export class Payload {
      * build payload from inside the app
      * @param TxJson Ledger format TXJson
      */
-    static build(TxJson: TransactionJSONType): Promise<Payload> {
+    static build(TxJson: TransactionJSONType, message?: string): Promise<Payload> {
         const payload = {} as Payload;
 
         payload.application = {
@@ -74,6 +74,7 @@ export class Payload {
         payload.meta = {
             submit: true,
             generated: true,
+            custom_instruction: message,
         };
 
         payload.payload = {

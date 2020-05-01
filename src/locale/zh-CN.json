@@ -503,7 +503,8 @@
       "selectAnExchangeAndSelectCurrency": "选择一个发行人，然后选择您想要添加的货币。该列表由XUMM开发人员维护。",
       "addAndSign": "添加：签单交易",
       "successRemoved": "货币已成功从您的帐户中删除",
-      "failedRemove": "无法删除货币。错误发生！"
+      "failedRemove": "无法删除货币。错误发生！",
+      "addingCurrencyReserveDescription": "添加货币将使您的帐户准备金增加5 XRP"
    },
    "exchange": {
       "exchanging": "交流中",
