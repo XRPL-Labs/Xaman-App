@@ -274,6 +274,7 @@
         "addedATrustLine": "Added a currency (Trust Line)",
         "removedATrustLine": "Removed a currency (Trust Line)",
         "addATrustLine": "Add a currency (Trust Line)",
+        "updateAccountCurrencies": "Update account currencies",
         "createOffer": "Create offer",
         "cancelOffer" : "Cancel offer",
         "createEscrow": "Create escrow",

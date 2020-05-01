@@ -375,7 +375,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 type = Localize.t('events.setSignerList');
                 break;
             case 'TrustSet':
-                type = Localize.t('events.addATrustLine');
+                type = Localize.t('events.updateAccountCurrencies');
                 break;
             case 'OfferCreate':
                 type = Localize.t('events.createOffer');

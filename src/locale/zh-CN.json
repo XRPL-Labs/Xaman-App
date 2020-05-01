@@ -274,6 +274,7 @@
       "addedATrustLine": "添加了货币（信任线）",
       "removedATrustLine": "删除了一种货币（信任线）",
       "addATrustLine": "添加货币（信任线）",
+      "updateAccountCurrencies": "更新帐户币种",
       "createOffer": "创建报价",
       "cancelOffer": "取消报价",
       "createEscrow": "创建托管",

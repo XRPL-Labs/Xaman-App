@@ -274,6 +274,7 @@
       "addedATrustLine": "Se agregó una moneda (línea de confianza)",
       "removedATrustLine": "Se eliminó una moneda (línea de confianza)",
       "addATrustLine": "Agregar una moneda (línea de confianza)",
+      "updateAccountCurrencies": "Actualizar monedas de cuenta",
       "createOffer": "Crear oferta",
       "cancelOffer": "Cancelar oferta",
       "createEscrow": "Crear fideicomiso",
