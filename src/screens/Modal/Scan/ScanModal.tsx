@@ -17,8 +17,6 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 import { Payload } from '@common/libs/payload';
 
-import { getPayIdInfo } from '@common/helpers/resolver';
-
 import { NormalizeDestination } from '@common/libs/utils';
 
 import Localize from '@locale';
@@ -150,22 +148,12 @@ class ScanView extends Component<Props, State> {
         );
     };
 
-    handleXrplDestination = async (destination: XrplDestination) => {
-        let amount;
+    handleXrplDestination = async (destination: XrplDestination & PayId) => {
+        // check if any account is configured
+        const availableAccounts = AccountRepository.getAccounts({ accessLevel: AccessLevels.Full });
 
-        const { to, tag } = NormalizeDestination(destination);
-
-        // if amount present as XRP pass the amount
-        if (!destination.currency && destination.amount) {
-            amount = destination.amount;
-        }
-
-        // valid address
-        if (to) {
-            // check if any account is configured
-            const availableAccounts = AccountRepository.getAccounts({ accessLevel: AccessLevels.Full });
-
-            if (availableAccounts.length > 0) {
+        if (availableAccounts.length > 0) {
+            if (destination.payId) {
                 await Navigator.dismissModal();
 
                 Navigator.push(
@@ -173,72 +161,43 @@ class ScanView extends Component<Props, State> {
                     {},
                     {
                         scanResult: {
-                            address: to,
-                            tag,
+                            to: destination.payId,
                         },
-                        amount,
                     },
                 );
-            } else {
-                Alert.alert(
-                    Localize.t('global.noAccountConfigured'),
-                    Localize.t('global.pleaseAddAccountToSendPayments'),
-                    [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
-                    { cancelable: false },
-                );
+                return;
             }
+
+            let amount;
+
+            const { to, tag } = NormalizeDestination(destination);
+
+            // if amount present as XRP pass the amount
+            if (!destination.currency && destination.amount) {
+                amount = destination.amount;
+            }
+
+            await Navigator.dismissModal();
+
+            Navigator.push(
+                AppScreens.Transaction.Payment,
+                {},
+                {
+                    scanResult: {
+                        to,
+                        tag,
+                    },
+                    amount,
+                },
+            );
         } else {
             Alert.alert(
-                Localize.t('global.error'),
-                Localize.t('global.scannedAddressIsNotAValidXRPLAddress'),
+                Localize.t('global.noAccountConfigured'),
+                Localize.t('global.pleaseAddAccountToSendPayments'),
                 [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
                 { cancelable: false },
             );
         }
-    };
-
-    handlePayId = async (result: PayId) => {
-        this.setState({
-            isLoading: true,
-        });
-
-        try {
-            getPayIdInfo(result.payId)
-                .then((res: any) => {
-                    if (res) {
-                        this.handleXrplDestination({
-                            to: res.account,
-                            tag: res.tag,
-                        });
-                    }
-                })
-                .catch(() => {})
-                .finally(() => {
-                    this.setState({
-                        isLoading: false,
-                    });
-                });
-        } catch (e) {
-            Alert.alert(
-                Localize.t('global.error'),
-                e.message,
-                [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
-                { cancelable: false },
-            );
-            this.setState({
-                isLoading: false,
-            });
-        }
-    };
-
-    normalizeResult = (detected: any) => {
-        const parsed = new StringDecoder(detected).getAny();
-
-        if (detected.getType() === StringType.PayId) {
-            return { to: parsed.payId };
-        }
-
-        return parsed;
     };
 
     handle = (content: any, detected: any) => {
@@ -277,15 +236,14 @@ class ScanView extends Component<Props, State> {
             return;
         }
 
+        const parsed = new StringDecoder(detected).getAny();
+
         // the other component wants to handle the decoded content
         if (onRead) {
-            const result = this.normalizeResult(detected);
+            onRead(parsed);
             Navigator.dismissModal();
-            onRead(result);
             return;
         }
-
-        const parsed = new StringDecoder(detected).getAny();
 
         // the screen will handle the content
         switch (detected.getType()) {
@@ -296,10 +254,8 @@ class ScanView extends Component<Props, State> {
                 this.handleSignedTransaction(parsed.txblob);
                 break;
             case StringType.XrplDestination:
-                this.handleXrplDestination(parsed);
-                break;
             case StringType.PayId:
-                this.handlePayId(parsed);
+                this.handleXrplDestination(parsed);
                 break;
             default:
                 // nothing found

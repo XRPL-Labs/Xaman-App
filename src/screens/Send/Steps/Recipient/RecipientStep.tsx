@@ -74,7 +74,7 @@ class RecipientStep extends Component<Props, State> {
 
         // if scanResult is passed
         if (scanResult) {
-            this.doAccountLookUp({ to: scanResult.address, tag: scanResult.tag });
+            this.doAccountLookUp({ to: scanResult.to, tag: scanResult.tag });
         } else {
             this.setDefaultDataSource();
         }
@@ -83,17 +83,14 @@ class RecipientStep extends Component<Props, State> {
     doAccountLookUp = async (result: XrplDestination) => {
         const { setDestination } = this.context;
 
-        const { to, tag } = NormalizeDestination(result);
-
         this.setState({
             searchText: result.to,
+            isSearching: true,
         });
 
-        if (to) {
-            this.setState({
-                isSearching: true,
-            });
+        const { to, tag } = NormalizeDestination(result);
 
+        if (to) {
             const accountInfo = await getAccountName(to, tag);
 
             let avatar;
@@ -204,7 +201,7 @@ class RecipientStep extends Component<Props, State> {
 
             // if text length is more than 4 do server lookup
             if (searchText.length >= 4) {
-                BackendService.lookup(encodeURIComponent(searchText))
+                BackendService.lookup(searchText)
                     .then((res: any) => {
                         if (!isEmpty(res) && res.error !== true) {
                             if (!isEmpty(res.matches)) {
@@ -509,6 +506,14 @@ class RecipientStep extends Component<Props, State> {
         goNext();
     };
 
+    onScannerRead = (content: any) => {
+        if (content.payId) {
+            this.doAccountLookUp({ to: content.payId });
+        } else {
+            this.doAccountLookUp(content);
+        }
+    };
+
     renderSectionHeader = ({ section: { title } }: any) => {
         const { setDestination } = this.context;
         const { dataSource } = this.state;
@@ -680,7 +685,7 @@ class RecipientStep extends Component<Props, State> {
                             value={searchText}
                             showScanner
                             scannerType={StringType.XrplDestination}
-                            onScannerRead={this.doAccountLookUp}
+                            onScannerRead={this.onScannerRead}
                         />
                     </View>
 

@@ -2,7 +2,7 @@
  * Send Screen
  */
 
-import { findIndex } from 'lodash';
+import { findIndex, isEmpty, find } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
@@ -46,9 +46,14 @@ export enum Steps {
     Result = 'Result',
 }
 
+export interface ScanResult {
+    to: string;
+    tag?: number;
+}
+
 export interface Props {
     currency?: TrustLineSchema;
-    scanResult?: Destination;
+    scanResult?: ScanResult;
     amount?: string;
 }
 
@@ -61,7 +66,7 @@ export interface State {
     currency: TrustLineSchema | string;
     amount: string;
     payment: Payment;
-    scanResult: Destination;
+    scanResult: ScanResult;
 }
 /* Component ==================================================================== */
 class SendView extends Component<Props, State> {
@@ -76,10 +81,12 @@ class SendView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        const accounts = AccountRepository.getSpendableAccounts();
+
         this.state = {
             currentStep: Steps.Details,
-            accounts: AccountRepository.getSpendableAccounts(),
-            source: AccountRepository.getDefaultAccount(),
+            accounts,
+            source: find(accounts, { default: true }) || accounts[0],
             destination: undefined,
             destinationInfo: undefined,
             currency: props.currency || 'XRP',

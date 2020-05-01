@@ -14,6 +14,11 @@ enum Steps {
     Result = 'Result',
 }
 
+export interface ScanResult {
+    to: string;
+    tag?: number;
+}
+
 interface State {
     currentStep: Steps;
     accounts: Array<AccountSchema>;
@@ -23,7 +28,7 @@ interface State {
     currency: TrustLineSchema | string;
     amount: string;
     payment: Payment;
-    scanResult: Destination;
+    scanResult: ScanResult;
 }
 
 interface ContextProps extends State {
