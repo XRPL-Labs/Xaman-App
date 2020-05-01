@@ -2,7 +2,7 @@
  * Home Screen
  */
 
-import { isEmpty } from 'lodash';
+import { isEmpty, find } from 'lodash';
 import React, { Component, Fragment } from 'react';
 import {
     View,
@@ -45,6 +45,7 @@ export interface Props {}
 
 export interface State {
     account: AccountSchema;
+    spendableAccounts: Array<AccountSchema>;
     privacy: boolean;
 }
 
@@ -64,6 +65,7 @@ class HomeView extends Component<Props, State> {
         super(props);
         this.state = {
             account: AccountRepository.getDefaultAccount(),
+            spendableAccounts: AccountRepository.getSpendableAccounts(),
             privacy: false,
         };
     }
@@ -86,6 +88,7 @@ class HomeView extends Component<Props, State> {
             } else {
                 this.setState({
                     account: AccountRepository.getDefaultAccount(),
+                    spendableAccounts: AccountRepository.getSpendableAccounts(),
                 });
             }
         });
@@ -391,7 +394,7 @@ class HomeView extends Component<Props, State> {
     };
 
     renderButtons = () => {
-        const { account } = this.state;
+        const { account, spendableAccounts } = this.state;
 
         return (
             <View style={[styles.buttonRow]}>
@@ -406,7 +409,7 @@ class HomeView extends Component<Props, State> {
                         Navigator.push(AppScreens.Transaction.Payment);
                     }}
                     activeOpacity={0}
-                    isDisabled={account.availableBalance === 0}
+                    isDisabled={!find(spendableAccounts, { address: account.address })}
                 />
                 <CustomButton
                     style={[styles.requestButton]}
