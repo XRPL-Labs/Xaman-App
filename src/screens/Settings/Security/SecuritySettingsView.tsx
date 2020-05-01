@@ -84,10 +84,17 @@ class SecuritySettingsView extends Component<Props, State> {
     };
 
     changeBiometricMethod = (value: boolean) => {
+        const { isSensorAvailable } = this.state;
+
         if (value) {
+            if (!isSensorAvailable) {
+                Alert.alert(Localize.t('global.error'), Localize.t('global.biometricIsNotAvailable'));
+                return;
+            }
+
             FingerprintScanner.authenticate({ description: Localize.t('global.authenticate'), fallbackEnabled: true })
                 .then(() => {
-                    FingerprintScanner.isSensorAvailable().then(biometryType => {
+                    FingerprintScanner.isSensorAvailable().then((biometryType) => {
                         let type;
 
                         switch (biometryType) {
@@ -234,16 +241,14 @@ class SecuritySettingsView extends Component<Props, State> {
                         </View>
                     </TouchableOpacity>
 
-                    {isSensorAvailable && (
-                        <View style={styles.row}>
-                            <View style={[AppStyles.flex3]}>
-                                <Text style={styles.label}>{Localize.t('settings.biometricAuthentication')}</Text>
-                            </View>
-                            <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                                <Switch checked={biometricEnabled} onChange={this.biometricMethodChange} />
-                            </View>
+                    <View style={styles.row}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text style={styles.label}>{Localize.t('settings.biometricAuthentication')}</Text>
                         </View>
-                    )}
+                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Switch checked={biometricEnabled} onChange={this.biometricMethodChange} />
+                        </View>
+                    </View>
 
                     <Text style={styles.descriptionText}>{Localize.t('settings.additionalSecurity')}</Text>
                     <View style={styles.row}>

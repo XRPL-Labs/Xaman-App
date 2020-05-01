@@ -152,6 +152,8 @@
       "fair": "공정한",
       "strong": "강한",
       "veryStrong": "매우 강한",
+      "subject": "제목",
+      "empty": "빈",
       "unbelievablyStrong": "믿을 수 없을만큼 강한",
       "biometryIsNotSupported": "이 장치에서는 생체 인증이 지원되지 않습니다!",
       "invalidAuth": "잘못된 인증",
@@ -204,11 +206,10 @@
       "pressBackAgainToExit": "다시 누르면 종료",
       "fraudAlert": "사기 경보",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "이 계정은 사기 또는 사기성 주소로보고됩니다. 주의하여 진행하십시오",
+      "biometricIsNotAvailable": "생체 인식 (지문 또는 얼굴 ID)을 사용할 수 없습니다. 장치가 생체 인증을 지원하는 경우 먼저 구성하십시오 (OS 설정).",
       "clearSearch": "명확한 검색",
       "noNameFound": "이름을 찾을 수 없습니다",
-      "readMoreInTheFAQ": "FAQ에서 더 읽기",
-      "subject": "제목",
-      "empty": "빈"
+      "readMoreInTheFAQ": "FAQ에서 더 읽기"
    },
    "onboarding": {
       "slideOne": {

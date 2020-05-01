@@ -152,6 +152,8 @@
       "fair": "Justa",
       "strong": "Fuerte",
       "veryStrong": "Muy fuerte",
+      "subject": "Tema",
+      "empty": "Vacío",
       "unbelievablyStrong": "Increíblemente fuerte",
       "biometryIsNotSupported": "¡La autenticación biométrica no es compatible con este dispositivo!",
       "invalidAuth": "Autenticación inválida",
@@ -204,11 +206,10 @@
       "pressBackAgainToExit": "Presione de nuevo para salir",
       "fraudAlert": "ALERTA DE FRAUDE",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "Esta cuenta se informa como estafa o dirección fraudulenta. Por favor proceda con precaución",
+      "biometricIsNotAvailable": "La biometría (huella digital o identificación de la cara) no está disponible. Si su dispositivo admite autenticación biométrica, configúrela primero (configuración del sistema operativo).",
       "clearSearch": "Borrar búsqueda",
       "noNameFound": "Ningún nombre encontrado",
-      "readMoreInTheFAQ": "Lea más en las preguntas frecuentes",
-      "subject": "Tema",
-      "empty": "Vacío"
+      "readMoreInTheFAQ": "Lea más en las preguntas frecuentes"
    },
    "onboarding": {
       "slideOne": {

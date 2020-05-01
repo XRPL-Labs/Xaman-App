@@ -152,6 +152,8 @@
         "fair": "Fair",
         "strong": "Strong",
         "veryStrong": "Very strong",
+        "subject": "Subject",
+        "empty": "Empty",
         "unbelievablyStrong": "Unbelievably strong",
         "biometryIsNotSupported": "Biometric authentication is not supported on this device!",
         "invalidAuth": "Invalid Authentication",
@@ -204,11 +206,10 @@
         "pressBackAgainToExit": "Press back again to exit",
         "fraudAlert": "FRAUD ALERT",
         "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "This account is reported as scam or fraudulent address. Please proceed with caution",
+        "biometricIsNotAvailable": "Biometrics (Fingerprint or Face ID) is unavailable. If your device supports biometrics authentication, please configure it first (OS settings).",
         "clearSearch": "Clear search",
         "noNameFound": "No name found",
-        "readMoreInTheFAQ": "Read more in the FAQ",
-        "subject": "Subject",
-        "empty": "Empty"
+        "readMoreInTheFAQ": "Read more in the FAQ"
     },
     "onboarding":{
         "slideOne": {

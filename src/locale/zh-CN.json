@@ -152,6 +152,8 @@
       "fair": "公平",
       "strong": "强大",
       "veryStrong": "非常强壮",
+      "subject": "学科",
+      "empty": "空的",
       "unbelievablyStrong": "难以置信的强大",
       "biometryIsNotSupported": "此设备不支持生物特征认证！",
       "invalidAuth": "无效的验证",
@@ -204,11 +206,10 @@
       "pressBackAgainToExit": "再按一次退出",
       "fraudAlert": "欺诈警报",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "此帐户被报告为欺诈或欺诈性地址。请谨慎行事",
+      "biometricIsNotAvailable": "无法使用生物识别（指纹或面部识别码）。如果您的设备支持生物特征认证，请先对其进行配置（操作系统设置）。",
       "clearSearch": "清除搜寻",
       "noNameFound": "找不到名字",
-      "readMoreInTheFAQ": "在常见问题中阅读更多内容",
-      "subject": "学科",
-      "empty": "空的"
+      "readMoreInTheFAQ": "在常见问题中阅读更多内容"
    },
    "onboarding": {
       "slideOne": {

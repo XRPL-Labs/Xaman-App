@@ -152,6 +152,8 @@
       "fair": "公正",
       "strong": "強い",
       "veryStrong": "とても強い",
+      "subject": "件名",
+      "empty": "空の",
       "unbelievablyStrong": "信じられないほど強い",
       "biometryIsNotSupported": "このデバイスでは生体認証はサポートされていません！",
       "invalidAuth": "無効な認証",
@@ -204,11 +206,10 @@
       "pressBackAgainToExit": "もう一度押すと終了します",
       "fraudAlert": "詐欺警告",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "このアカウントは詐欺または詐欺のアドレスとして報告されます。注意して続行してください",
+      "biometricIsNotAvailable": "バイオメトリクス（指紋または顔ID）は使用できません。デバイスが生体認証をサポートしている場合は、まずそれを構成してください（OS設定）。",
       "clearSearch": "検索をクリア",
       "noNameFound": "名前が見つかりません",
-      "readMoreInTheFAQ": "FAQで詳細を読む",
-      "subject": "件名",
-      "empty": "空の"
+      "readMoreInTheFAQ": "FAQで詳細を読む"
    },
    "onboarding": {
       "slideOne": {
