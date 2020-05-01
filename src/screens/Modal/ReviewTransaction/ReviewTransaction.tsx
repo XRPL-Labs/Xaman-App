@@ -72,6 +72,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     private deltaY: Animated.Value;
     private backHandler: any;
+    private panel: any;
     private sourcePicker: AccordionPicker;
 
     static options() {
@@ -431,10 +432,27 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         this.sourcePicker.updateContainerPosition();
 
-        if (id === 'bottom') {
+        if (id === 'up') {
             this.setState({ canScroll: true });
         }
     };
+
+    slideUp = () => {
+        setTimeout(() => {
+            if (this.panel) {
+                this.panel.snapTo({ index: 1 });
+            }
+        }, 10);
+    };
+
+    slideDown = () => {
+        setTimeout(() => {
+            if (this.panel) {
+                this.panel.snapTo({ index: 0 });
+            }
+        });
+    };
+
     onScroll = (event: any) => {
         const { contentOffset } = event.nativeEvent;
         if (contentOffset.y <= 0) {
@@ -609,7 +627,10 @@ class ReviewTransactionModal extends Component<Props, State> {
                 </View>
 
                 <Interactable.View
-                    snapPoints={[{ y: 0 }, { y: this.getTopOffset(), id: 'bottom' }]}
+                    ref={(r) => {
+                        this.panel = r;
+                    }}
+                    snapPoints={[{ y: 0 }, { y: this.getTopOffset(), id: 'up' }]}
                     boundaries={{ top: this.getTopOffset() - 20 }}
                     animatedValueY={this.deltaY}
                     onSnap={this.onSnap}
@@ -644,6 +665,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                                     renderItem={this.renderAccountItem}
                                     selectedItem={source}
                                     keyExtractor={(i) => i.address}
+                                    // onExpand={this.slideUp}
                                 />
                             </View>
 
