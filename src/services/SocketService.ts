@@ -156,7 +156,14 @@ class SocketService extends EventEmitter {
             chain = NodeChain.Test;
         }
 
-        this.node = node;
+        // THIS IS DURRING BETA
+        // if it's main net and the default node is not xrpl.ws revert
+        if (chain === NodeChain.Main && node !== 'wss://xrpl.ws') {
+            this.node = 'wss://xrpl.ws';
+        } else {
+            this.node = node;
+        }
+        // set the chain
         this.chain = chain;
     }
 
