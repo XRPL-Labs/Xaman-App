@@ -521,7 +521,9 @@
       "aimAtTheCode": "コードを目指す",
       "pleaseScanXRPAddress": "XRPアドレスQRをスキャンしてください",
       "scannedQRIsNotXRPAddress": "スキャンしたQRコードはXRPアドレスコードではありません！",
-      "theQRIsNotWhatWeExpect": "このQRコードは私たちが期待するものではありません！"
+      "scannedQRIsNotXummPayload": "スキャンしたQRコードはXUMMペイロードではありません！",
+      "theQRIsNotWhatWeExpect": "このQRコードは私たちが期待するものではありません！",
+      "invalidQRTryNewOneOrTryAgain": "無効なQRコードです。新しいコードを試すか、もう一度やり直してください"
    },
    "payload": {
       "payloadHandledByAnotherClient": "別のクライアントによって処理されるペイロード",

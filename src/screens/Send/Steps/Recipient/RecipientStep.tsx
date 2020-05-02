@@ -686,6 +686,7 @@ class RecipientStep extends Component<Props, State> {
                             showScanner
                             scannerType={StringType.XrplDestination}
                             onScannerRead={this.onScannerRead}
+                            scannerFallback
                         />
                     </View>
 

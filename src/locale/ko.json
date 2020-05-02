@@ -521,7 +521,9 @@
       "aimAtTheCode": "코드를 목표로",
       "pleaseScanXRPAddress": "XRP 주소 QR을 스캔하십시오",
       "scannedQRIsNotXRPAddress": "스캔 한 QR 코드는 XRP 주소 코드가 아닙니다!",
-      "theQRIsNotWhatWeExpect": "이 QR 코드는 우리가 기대하는 것이 아닙니다!"
+      "scannedQRIsNotXummPayload": "스캔 한 QR 코드는 XUMM 페이로드가 아닙니다!",
+      "theQRIsNotWhatWeExpect": "이 QR 코드는 우리가 기대하는 것이 아닙니다!",
+      "invalidQRTryNewOneOrTryAgain": "유효하지 않은 QR 코드, 새 코드를 시도하거나 다시 시도하십시오"
    },
    "payload": {
       "payloadHandledByAnotherClient": "다른 클라이언트가 처리하는 페이로드",

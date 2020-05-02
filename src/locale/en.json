@@ -521,7 +521,9 @@
         "aimAtTheCode": "Aim at the code",
         "pleaseScanXRPAddress": "Please scan XRP address QR",
         "scannedQRIsNotXRPAddress":"Scanned QR code is not a XRP address code!",
-        "theQRIsNotWhatWeExpect": "This QR code is not what we expect!"
+        "scannedQRIsNotXummPayload":"Scanned QR code is not a XUMM payload!",
+        "theQRIsNotWhatWeExpect": "This QR code is not what we expect!",
+        "invalidQRTryNewOneOrTryAgain": "Invalid Qr Code, Try a new one or try again"
     },
     "payload": {
         "payloadHandledByAnotherClient": "Payload handled by another client",

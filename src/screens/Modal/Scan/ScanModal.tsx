@@ -32,6 +32,7 @@ import styles from './styles';
 export interface Props {
     onRead: (decoded: any) => void;
     type: StringType;
+    fallback?: boolean;
 }
 
 export interface State {
@@ -201,32 +202,13 @@ class ScanView extends Component<Props, State> {
     };
 
     handle = (content: any, detected: any) => {
-        const { onRead, type } = this.props;
+        const { onRead, type, fallback } = this.props;
 
         // normalize detected type
         let detectedType = detected.getType();
 
         if (detectedType === StringType.PayId) {
             detectedType = StringType.XrplDestination;
-        }
-
-        // check if this is something we expect
-        if (type && detectedType !== type) {
-            // this is not the type we expected
-            let message = Localize.t('scan.theQRIsNotWhatWeExpect');
-
-            if (type === StringType.XrplDestination) {
-                message = Localize.t('scan.scannedQRIsNotXRPAddress');
-            }
-
-            Alert.alert(
-                Localize.t('global.warning'),
-                message,
-                [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
-                { cancelable: false },
-            );
-
-            return;
         }
 
         // just return scanned content
@@ -239,9 +221,35 @@ class ScanView extends Component<Props, State> {
         const parsed = new StringDecoder(detected).getAny();
 
         // the other component wants to handle the decoded content
-        if (onRead) {
+        if (detectedType === type && onRead) {
             onRead(parsed);
             Navigator.dismissModal();
+            return;
+        }
+
+        // fallback is not set
+        if (type && !fallback) {
+            // this is not the type we expected
+            let message;
+
+            switch (type) {
+                case StringType.XrplDestination:
+                    message = Localize.t('scan.scannedQRIsNotXRPAddress');
+                    break;
+                // @ts-ignore
+                case StringType.XummPayloadReference:
+                    message = Localize.t('scan.scannedQRIsNotXummPayload');
+                    break;
+                default:
+                    message = Localize.t('scan.theQRIsNotWhatWeExpect');
+            }
+
+            Alert.alert(
+                Localize.t('global.warning'),
+                message,
+                [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+                { cancelable: false },
+            );
             return;
         }
 
@@ -258,8 +266,14 @@ class ScanView extends Component<Props, State> {
                 this.handleXrplDestination(parsed);
                 break;
             default:
-                // nothing found
-                this.setShouldRead(true);
+                Alert.alert(
+                    Localize.t('global.warning'),
+                    Localize.t('scan.invalidQRTryNewOneOrTryAgain'),
+                    [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+                    {
+                        cancelable: false,
+                    },
+                );
         }
     };
 

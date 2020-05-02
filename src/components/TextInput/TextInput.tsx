@@ -27,6 +27,7 @@ interface Props extends TextInputProps {
     showScanner?: boolean;
     scannerType?: StringType;
     onScannerRead?: (decoded: any) => void;
+    scannerFallback?: boolean;
 }
 
 interface State {
@@ -111,7 +112,7 @@ class Input extends Component<Props, State> {
     };
 
     showScanner = () => {
-        const { onScannerRead, scannerType } = this.props;
+        const { onScannerRead, scannerType, scannerFallback } = this.props;
 
         Navigator.showModal(
             AppScreens.Modal.Scan,
@@ -119,6 +120,7 @@ class Input extends Component<Props, State> {
             {
                 type: scannerType,
                 onRead: onScannerRead,
+                fallback: scannerFallback,
             },
         );
     };

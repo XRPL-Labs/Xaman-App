@@ -521,7 +521,9 @@
       "aimAtTheCode": "瞄准代码",
       "pleaseScanXRPAddress": "请扫描XRP地址QR",
       "scannedQRIsNotXRPAddress": "扫描的QR码不是XRP地址代码！",
-      "theQRIsNotWhatWeExpect": "这个二维码不是我们期望的！"
+      "scannedQRIsNotXummPayload": "扫描的QR码不是XUMM有效载荷！",
+      "theQRIsNotWhatWeExpect": "这个二维码不是我们期望的！",
+      "invalidQRTryNewOneOrTryAgain": "无效的二维码，尝试新的或再试一次"
    },
    "payload": {
       "payloadHandledByAnotherClient": "其他客户处理的有效负载",

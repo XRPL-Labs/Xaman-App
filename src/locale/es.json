@@ -521,7 +521,9 @@
       "aimAtTheCode": "Apunta al código",
       "pleaseScanXRPAddress": "Escanea la dirección XRP QR",
       "scannedQRIsNotXRPAddress": "¡El código QR escaneado no es un código de dirección XRP!",
-      "theQRIsNotWhatWeExpect": "¡Este código QR no es lo que esperamos!"
+      "scannedQRIsNotXummPayload": "¡El código QR escaneado no es una carga XUMM!",
+      "theQRIsNotWhatWeExpect": "¡Este código QR no es lo que esperamos!",
+      "invalidQRTryNewOneOrTryAgain": "Código Qr no válido, intente con uno nuevo o vuelva a intentarlo"
    },
    "payload": {
       "payloadHandledByAnotherClient": "Carga útil manejada por otro cliente",
