@@ -10,7 +10,6 @@ import Interactable from 'react-native-interactable';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Toast } from '@common/helpers/interface';
-import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
@@ -136,7 +135,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                 {account.lines.map((line: TrustLineSchema, index: number) => {
                     return (
                         <View key={index} style={[styles.currencyItemCard]}>
-                            <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                            <View style={[AppStyles.flex5, AppStyles.row, AppStyles.centerAligned]}>
                                 <View style={[styles.xrpAvatarContainer]}>
                                     <Image style={[styles.currencyAvatar]} source={{ uri: line.counterParty.avatar }} />
                                 </View>
@@ -149,7 +148,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                                     </Text>
                                 </Text>
                             </View>
-                            <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
+                            <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
                                 <Text style={[styles.reserveAmount]}>5 XRP</Text>
                             </View>
                         </View>
