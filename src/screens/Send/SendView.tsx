@@ -2,7 +2,7 @@
  * Send Screen
  */
 
-import { findIndex, isEmpty, find } from 'lodash';
+import { findIndex, find } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';

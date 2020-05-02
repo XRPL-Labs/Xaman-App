@@ -191,7 +191,7 @@ class SecuritySettingsView extends Component<Props, State> {
     };
 
     render() {
-        const { biometricEnabled, isSensorAvailable, coreSettings } = this.state;
+        const { biometricEnabled, coreSettings } = this.state;
 
         return (
             <View testID="security-settings-view" style={[styles.container]}>
