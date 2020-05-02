@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Platform, ActivityIndicator } from 'react-native';
 import isEmpty from 'lodash/isEmpty';
 
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { getAccountName } from '@common/helpers/resolver';
 
 import Localize from '@locale';
+
+import { AppColors } from '@theme';
 
 import styles from './styles';
 
@@ -17,6 +19,7 @@ export interface Props {
 export interface State {
     takerGetsIssuerName: string;
     takerPaysIssuerName: string;
+    isLoading: boolean;
 }
 
 /* Component ==================================================================== */
@@ -27,11 +30,16 @@ class OfferCreateTemplate extends Component<Props, State> {
         this.state = {
             takerGetsIssuerName: '',
             takerPaysIssuerName: '',
+            isLoading: false,
         };
     }
 
     componentDidMount() {
         const { transaction } = this.props;
+
+        this.setState({
+            isLoading: true,
+        });
 
         if (transaction.TakerGets.issuer) {
             getAccountName(transaction.TakerGets.issuer)
@@ -42,7 +50,14 @@ class OfferCreateTemplate extends Component<Props, State> {
                         });
                     }
                 })
-                .catch(() => {});
+                .catch(() => {
+                    // ignore
+                })
+                .finally(() => {
+                    this.setState({
+                        isLoading: false,
+                    });
+                });
         }
 
         if (transaction.TakerPays.issuer) {
@@ -54,13 +69,20 @@ class OfferCreateTemplate extends Component<Props, State> {
                         });
                     }
                 })
-                .catch(() => {});
+                .catch(() => {
+                    // ignore
+                })
+                .finally(() => {
+                    this.setState({
+                        isLoading: false,
+                    });
+                });
         }
     }
 
     render() {
         const { transaction } = this.props;
-        const { takerGetsIssuerName, takerPaysIssuerName } = this.state;
+        const { takerGetsIssuerName, takerPaysIssuerName, isLoading } = this.state;
 
         return (
             <>
@@ -75,10 +97,14 @@ class OfferCreateTemplate extends Component<Props, State> {
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
                         <View style={[styles.contentBox]}>
-                            {takerGetsIssuerName ? (
-                                <Text style={styles.value}>{takerGetsIssuerName}</Text>
+                            {isLoading ? (
+                                Platform.OS === 'ios' ? (
+                                    <ActivityIndicator color={AppColors.blue} />
+                                ) : (
+                                    'Loading...'
+                                )
                             ) : (
-                                <Text style={styles.address}>{transaction.TakerGets.issuer}</Text>
+                                <Text style={styles.value}>{takerGetsIssuerName || transaction.TakerGets.issuer}</Text>
                             )}
                         </View>
                     </>
@@ -95,10 +121,14 @@ class OfferCreateTemplate extends Component<Props, State> {
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
                         <View style={[styles.contentBox]}>
-                            {takerPaysIssuerName ? (
-                                <Text style={styles.value}>{takerPaysIssuerName}</Text>
+                            {isLoading ? (
+                                Platform.OS === 'ios' ? (
+                                    <ActivityIndicator color={AppColors.blue} />
+                                ) : (
+                                    'Loading...'
+                                )
                             ) : (
-                                <Text style={styles.address}>{transaction.TakerPays.issuer}</Text>
+                                <Text style={styles.value}>{takerPaysIssuerName || transaction.TakerPays.issuer}</Text>
                             )}
                         </View>
                     </>

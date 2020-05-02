@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Alert } from 'react-native';
 
 import { LedgerService } from '@services';
 
@@ -35,20 +35,24 @@ class GlobalTemplate extends Component<Props, State> {
     componentDidMount() {
         const { transaction } = this.props;
 
-        const { Fee } = LedgerService.getLedgerStatus();
-        const minTransactionFee = new Amount(transaction.calculateFee(Fee)).dropsToXrp();
+        try {
+            const { Fee } = LedgerService.getLedgerStatus();
+            const minTransactionFee = new Amount(transaction.calculateFee(Fee)).dropsToXrp();
 
-        if (!transaction.Fee || Number(minTransactionFee) > Number(transaction.Fee)) {
-            // set the min transaction fee
-            transaction.Fee = minTransactionFee;
+            if (!transaction.Fee || Number(minTransactionFee) > Number(transaction.Fee)) {
+                // set the min transaction fee
+                transaction.Fee = minTransactionFee;
 
-            this.setState({
-                networkFee: Number(minTransactionFee),
-            });
-        } else {
-            this.setState({
-                networkFee: Number(transaction.Fee),
-            });
+                this.setState({
+                    networkFee: Number(minTransactionFee),
+                });
+            } else {
+                this.setState({
+                    networkFee: Number(transaction.Fee),
+                });
+            }
+        } catch {
+            Alert.alert(Localize.t('global.error', Localize.t('payload.unableToGetNetworkFee')));
         }
     }
 

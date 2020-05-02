@@ -4,7 +4,7 @@
 
 import { sortBy } from 'lodash';
 import React, { Component } from 'react';
-import { Animated, View, Text, TouchableWithoutFeedback, ScrollView, ActivityIndicator } from 'react-native';
+import { Animated, View, Text, TouchableWithoutFeedback, Image, ScrollView, ActivityIndicator } from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
@@ -13,10 +13,11 @@ import { Toast } from '@common/helpers/interface';
 import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import LedgerService from '@services/LedgerService';
 
+import { NormalizeCurrencyCode } from '@common/libs/utils';
 // components
 import { Button, Icon, Spacer } from '@components';
 
@@ -107,30 +108,54 @@ class ExplainBalanceOverlay extends Component<Props, State> {
     renderAccountObject = (item: any) => {
         const { LedgerEntryType } = item;
 
-        let label = LedgerEntryType;
-        let icon = 'IconInfo' as Extract<keyof typeof Images, string>;
-
-        switch (LedgerEntryType) {
-            case 'RippleState':
-                label = 'Trustline';
-                icon = 'IconShield';
-                break;
-            default:
-                break;
-        }
+        // ignore trustline as we handle them in better way
+        if (LedgerEntryType === 'RippleState') return null;
 
         return (
             <View style={[styles.currencyItemCard]}>
                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[styles.xrpAvatarContainer]}>
-                        <Icon name={icon} size={16} style={[AppStyles.imgColorGreyDark]} />
+                        <Icon name="IconInfo" size={16} style={[AppStyles.imgColorGreyDark]} />
                     </View>
-                    <Text style={[styles.rowLabel]}>{label}</Text>
+                    <Text style={[styles.rowLabel]}>{LedgerEntryType}</Text>
                 </View>
                 <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
                     <Text style={[styles.reserveAmount]}>5 XRP</Text>
                 </View>
             </View>
+        );
+    };
+
+    renderAccountLines = () => {
+        const { account } = this.props;
+
+        if (!account.lines && account.lines.length === 0) return null;
+
+        return (
+            <>
+                {account.lines.map((line: TrustLineSchema, index: number) => {
+                    return (
+                        <View key={index} style={[styles.currencyItemCard]}>
+                            <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                                <View style={[styles.xrpAvatarContainer]}>
+                                    <Image style={[styles.currencyAvatar]} source={{ uri: line.counterParty.avatar }} />
+                                </View>
+                                <Text style={[styles.rowLabel]}>
+                                    {Localize.t('global.currency')}
+                                    <Text style={styles.rowLabelSmall}>
+                                        {` (${line.counterParty.name} ${NormalizeCurrencyCode(
+                                            line.currency.currency,
+                                        )})`}
+                                    </Text>
+                                </Text>
+                            </View>
+                            <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
+                                <Text style={[styles.reserveAmount]}>5 XRP</Text>
+                            </View>
+                        </View>
+                    );
+                })}
+            </>
         );
     };
 
@@ -150,6 +175,8 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         <Text style={[styles.reserveAmount]}>20 XRP</Text>
                     </View>
                 </View>
+
+                {this.renderAccountLines()}
 
                 {isLoading ? (
                     <ActivityIndicator color={AppColors.blue} />

@@ -84,9 +84,18 @@ const styles = StyleSheet.create({
         fontSize: AppFonts.subtext.size,
         color: AppColors.black,
     },
+    rowLabelSmall: {
+        fontSize: AppFonts.subtext.size * 0.8,
+        fontFamily: AppFonts.base.familyMono,
+        color: AppColors.greyDark,
+    },
     listHeader: {
         paddingVertical: 5,
         backgroundColor: AppColors.white,
+    },
+    currencyAvatar: {
+        width: AppSizes.moderateScale(16),
+        height: AppSizes.moderateScale(16),
     },
 });
 

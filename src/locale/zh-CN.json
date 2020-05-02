@@ -544,6 +544,8 @@
       "willIgnoreTheRequestAndClose": "将忽略该请求并关闭。",
       "willRejectTheSignRequest": "将拒绝签名请求",
       "payingWithXRPExchangeRate": "用〜付款%{xrpRoundedUp} XRP汇率： %{exchangeRate}",
-      "notEnoughLiquidityToSendThisPayment": "没有足够的流动性来发送这笔款项。"
+      "notEnoughLiquidityToSendThisPayment": "没有足够的流动性来发送这笔款项。",
+      "unableToCheckCurrencyConversion": "无法检查货币换算，请确保您已连接到XRPL节点",
+      "unableToGetNetworkFee": "无法获得网络费用，请确保您已连接到XRPL节点"
    }
 }

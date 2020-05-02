@@ -3,6 +3,7 @@ import { isEmpty, isEqual, has } from 'lodash';
 import React, { Component } from 'react';
 import {
     View,
+    Alert,
     TextInput,
     Text,
     ActivityIndicator,
@@ -90,64 +91,68 @@ class PaymentTemplate extends Component<Props, State> {
     checkForConversationRequired = async () => {
         const { transaction } = this.props;
 
-        if (transaction.Amount && transaction.Amount.currency !== 'XRP') {
-            // get source trust lines
-            const sourceLines = await LedgerService.getAccountLines(transaction.Account.address);
+        try {
+            if (transaction.Amount && transaction.Amount.currency !== 'XRP') {
+                // get source trust lines
+                const sourceLines = await LedgerService.getAccountLines(transaction.Account.address);
 
-            const { lines } = sourceLines;
+                const { lines } = sourceLines;
 
-            const trustLine = lines.filter(
-                (l: any) => l.currency === transaction.Amount.currency && l.account === transaction.Amount.issuer,
-            )[0];
+                const trustLine = lines.filter(
+                    (l: any) => l.currency === transaction.Amount.currency && l.account === transaction.Amount.issuer,
+                )[0];
 
-            // if not have the same trust line or the balance is not covering requested value
-            // Pay with XRP instead
-            if (!trustLine || parseFloat(trustLine.balance) < parseFloat(transaction.Amount.value)) {
-                const PAIR = { issuer: transaction.Amount.issuer, currency: transaction.Amount.currency };
+                // if not have the same trust line or the balance is not covering requested value
+                // Pay with XRP instead
+                if (!trustLine || parseFloat(trustLine.balance) < parseFloat(transaction.Amount.value)) {
+                    const PAIR = { issuer: transaction.Amount.issuer, currency: transaction.Amount.currency };
 
-                const ledgerExchange = new LedgerExchange(PAIR);
-                // sync with latest order book
-                await ledgerExchange.sync();
+                    const ledgerExchange = new LedgerExchange(PAIR);
+                    // sync with latest order book
+                    await ledgerExchange.sync();
 
-                // get liquidity grade
-                const liquidityGrade = ledgerExchange.liquidityGrade('buy');
+                    // get liquidity grade
+                    const liquidityGrade = ledgerExchange.liquidityGrade('buy');
 
-                // not enough liquidity
-                if (liquidityGrade === 0) {
+                    // not enough liquidity
+                    if (liquidityGrade === 0) {
+                        this.setState({
+                            isPartialPayment: true,
+                            exchangeRate: 0,
+                        });
+                        return;
+                    }
+
+                    const exchangeRate = ledgerExchange.getExchangeRate('buy');
+                    const sendMaxXRP = new BigNumber(transaction.Amount.value).dividedBy(exchangeRate).decimalPlaces(6);
+
+                    // @ts-ignore
+                    transaction.SendMax = sendMaxXRP.toString();
+                    transaction.Flags = [txFlags.Payment.PartialPayment];
+
                     this.setState({
                         isPartialPayment: true,
-                        exchangeRate: 0,
+                        exchangeRate,
+                        xrpRoundedUp: sendMaxXRP.toString(),
                     });
-                    return;
+                } else {
+                    // check for transfer fee
+                    // add PartialPayment
+                    const issuerAccountInfo = await LedgerService.getAccountInfo(trustLine.account);
+                    if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
+                        transaction.Flags = [txFlags.Payment.PartialPayment];
+                    }
+
+                    if (transaction.SendMax) {
+                        transaction.SendMax = undefined;
+                    }
+                    this.setState({
+                        isPartialPayment: false,
+                    });
                 }
-
-                const exchangeRate = ledgerExchange.getExchangeRate('buy');
-                const sendMaxXRP = new BigNumber(transaction.Amount.value).dividedBy(exchangeRate).decimalPlaces(6);
-
-                // @ts-ignore
-                transaction.SendMax = sendMaxXRP.toString();
-                transaction.Flags = [txFlags.Payment.PartialPayment];
-
-                this.setState({
-                    isPartialPayment: true,
-                    exchangeRate,
-                    xrpRoundedUp: sendMaxXRP.toString(),
-                });
-            } else {
-                // check for transfer fee
-                // add PartialPayment
-                const issuerAccountInfo = await LedgerService.getAccountInfo(trustLine.account);
-                if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
-                    transaction.Flags = [txFlags.Payment.PartialPayment];
-                }
-
-                if (transaction.SendMax) {
-                    transaction.SendMax = undefined;
-                }
-                this.setState({
-                    isPartialPayment: false,
-                });
             }
+        } catch {
+            Alert.alert(Localize.t('global.error'), Localize.t('payload.unableToCheckCurrencyConversion'));
         }
     };
 
@@ -166,6 +171,9 @@ class PaymentTemplate extends Component<Props, State> {
                         destinationName: res.name,
                     });
                 }
+            })
+            .catch(() => {
+                // ignore
             })
             .finally(() => {
                 this.setState({

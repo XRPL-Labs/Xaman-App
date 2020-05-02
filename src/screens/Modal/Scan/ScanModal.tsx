@@ -228,8 +228,8 @@ class ScanView extends Component<Props, State> {
         }
 
         // fallback is not set
+        // this is not the type we expected
         if (type && !fallback) {
-            // this is not the type we expected
             let message;
 
             switch (type) {

@@ -45,6 +45,9 @@ class SetRegularKeyTemplate extends Component<Props, State> {
                     });
                 }
             })
+            .catch(() => {
+                // ignore
+            })
             .finally(() => {
                 this.setState({
                     isLoading: false,
