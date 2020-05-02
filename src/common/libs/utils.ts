@@ -75,7 +75,7 @@ const NormalizeCurrencyCode = (currencyCode: string): string => {
         const decoded = HexEncoding.toString(currencyCode);
         if (decoded.toLowerCase().trim() !== 'xrp') {
             // String
-            return decoded;
+            return decoded.replace(/\0.*$/g, '').replace(/(\r\n|\n|\r)/gm, ' ');
         }
 
         return `${currencyCode.slice(0, 4)}...`;
