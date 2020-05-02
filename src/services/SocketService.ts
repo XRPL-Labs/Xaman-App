@@ -6,6 +6,7 @@ import RippledWsClient from 'rippled-ws-client';
 import DeviceInfo from 'react-native-device-info';
 import EventEmitter from 'events';
 
+import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 import { NodeChain } from '@store/types';
 
@@ -160,6 +161,11 @@ class SocketService extends EventEmitter {
         // if it's main net and the default node is not xrpl.ws revert
         if (chain === NodeChain.Main && node !== 'wss://xrpl.ws') {
             this.node = 'wss://xrpl.ws';
+
+            // update the database
+            CoreRepository.saveSettings({
+                defaultNode: this.node,
+            });
         } else {
             this.node = node;
         }
