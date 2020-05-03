@@ -90,6 +90,9 @@ class PaymentTemplate extends Component<Props, State> {
 
     checkForConversationRequired = async () => {
         const { transaction } = this.props;
+        const { account } = this.state;
+
+        if (!account) return;
 
         try {
             if (transaction.Amount && transaction.Amount.currency !== 'XRP') {
@@ -151,7 +154,7 @@ class PaymentTemplate extends Component<Props, State> {
                     });
                 }
             }
-        } catch {
+        } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('payload.unableToCheckCurrencyConversion'));
         }
     };
