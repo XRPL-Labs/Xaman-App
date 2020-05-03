@@ -10,7 +10,7 @@ import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 import Localize from '@locale';
 
-import { AppColors } from '@theme';
+import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -83,6 +83,14 @@ class TrustSetTemplate extends Component<Props, State> {
                 <Text style={[styles.label]}>{Localize.t('global.currency')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={[styles.value]}>{NormalizeCurrencyCode(transaction.Currency)}</Text>
+                </View>
+                <Text style={[styles.label]}>{Localize.t('global.balanceLimit')}</Text>
+                <View style={[styles.contentBox]}>
+                    {transaction.Limit ? (
+                        <Text style={[styles.value]}>{transaction.Limit}</Text>
+                    ) : (
+                        <Text style={[styles.value, AppStyles.colorRed]}>{Localize.t('currency.removeCurrency')}</Text>
+                    )}
                 </View>
             </>
         );

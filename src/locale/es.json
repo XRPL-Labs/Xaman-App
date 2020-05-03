@@ -154,6 +154,7 @@
       "veryStrong": "Muy fuerte",
       "subject": "Tema",
       "empty": "Vacío",
+      "balanceLimit": "Límite de equilibrio",
       "unbelievablyStrong": "Increíblemente fuerte",
       "biometryIsNotSupported": "¡La autenticación biométrica no es compatible con este dispositivo!",
       "invalidAuth": "Autenticación inválida",
@@ -402,7 +403,7 @@
       "pleaseProvideAccountAddress": "Proporcione la dirección de su cuenta (comienza con 'r ...')",
       "pleaseEnterYourAddress": "Por favor ingrese su dirección XRP",
       "invalidMnemonic": "¡Nenemónico inválido!",
-      "pleaseEnterAllWords": "¡Por favor ingrese todas sus palabras mnemotécnicas!",
+      "pleaseEnterAllWords": "¡Por favor ingrese todas sus palabras mnemónicas!",
       "pleaseProvideMnemonic": "Proporcione su Mnemonic (24 palabras) para su cuenta.",
       "pleaseEnterYourMnemonic": "Por favor ingrese su Mnemonic",
       "howManyWordsYourMnemonicIs": "¿Cuántas palabras tiene tu mnemotécnico?",
@@ -505,6 +506,7 @@
       "addAndSign": "Añadir: firmar transacción",
       "successRemoved": "Moneda eliminada con éxito de su cuenta",
       "failedRemove": "No se puede eliminar la moneda. ¡Se produjo un error!",
+      "removeCurrency": "Eliminar moneda",
       "addingCurrencyReserveDescription": "Agregar una moneda aumentará la reserva de su cuenta en 5 XRP"
    },
    "exchange": {

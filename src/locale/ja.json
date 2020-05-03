@@ -154,6 +154,7 @@
       "veryStrong": "とても強い",
       "subject": "件名",
       "empty": "空の",
+      "balanceLimit": "バランス制限",
       "unbelievablyStrong": "信じられないほど強い",
       "biometryIsNotSupported": "このデバイスでは生体認証はサポートされていません！",
       "invalidAuth": "無効な認証",
@@ -237,7 +238,7 @@
    },
    "setupBiometry": {
       "useBiometry": "FaceIDまたは指紋を使用しますか？",
-      "biometryDescription": "アカウントをより安全に保つために、FaceIDまたは指紋の使用をアクティブ化できます。"
+      "biometryDescription": "アカウントをより安全に保つには、FaceIDまたは指紋の使用をアクティブ化できます。"
    },
    "setupPermissions": {
       "enableNotifications": "プッシュ通知を有効にしますか？",
@@ -505,6 +506,7 @@
       "addAndSign": "追加：トランザクションに署名",
       "successRemoved": "アカウントから通貨を削除しました",
       "failedRemove": "通貨を削除できません。エラーが発生しました！",
+      "removeCurrency": "通貨を削除",
       "addingCurrencyReserveDescription": "通貨を追加すると、アカウントの予備が5 XRP増加します"
    },
    "exchange": {

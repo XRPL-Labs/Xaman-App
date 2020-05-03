@@ -154,6 +154,7 @@
         "veryStrong": "Very strong",
         "subject": "Subject",
         "empty": "Empty",
+        "balanceLimit": "Balance limit",
         "unbelievablyStrong": "Unbelievably strong",
         "biometryIsNotSupported": "Biometric authentication is not supported on this device!",
         "invalidAuth": "Invalid Authentication",
@@ -505,6 +506,7 @@
         "addAndSign": "Add: sign transaction",
         "successRemoved": "Currency successfully removed from your account",
         "failedRemove": "Cannot remove currency. Error occurred!",
+        "removeCurrency": "Remove currency",
         "addingCurrencyReserveDescription": "Adding a currency will increase your account reserve by 5 XRP"
     },
     "exchange": {
