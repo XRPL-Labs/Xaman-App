@@ -143,10 +143,7 @@ class ExchangeView extends Component<Props, State> {
                 ? new BigNumber(exchangeRate).dividedBy(1.02)
                 : new BigNumber(1).dividedBy(exchangeRate).dividedBy(1.02);
 
-        const getsAmount = new BigNumber(paysAmount)
-            .multipliedBy(actualExchangeRate)
-            .decimalPlaces(6)
-            .toString(10);
+        const getsAmount = new BigNumber(paysAmount).multipliedBy(actualExchangeRate).decimalPlaces(6).toString(10);
 
         // create offer transaction
         const offer = new OfferCreate();
@@ -242,9 +239,24 @@ class ExchangeView extends Component<Props, State> {
 
         // check if user can spend this much
         if (parseFloat(paysAmount) > availableBalance) {
-            Alert.alert(
+            Prompt(
                 Localize.t('global.error'),
-                Localize.t('send.amountIsBiggerThanYourSpend', { spendable: availableBalance }),
+                Localize.t('send.theMaxAmountYouCanSendIs', {
+                    spendable: availableBalance,
+                    currency: fromCurrency === 'XRP' ? NormalizeCurrencyCode(trustLine.currency.currency) : 'XRP',
+                }),
+                [
+                    { text: Localize.t('global.cancel') },
+                    {
+                        text: Localize.t('global.update'),
+                        onPress: () => {
+                            this.setState({
+                                paysAmount: availableBalance.toString(),
+                            });
+                        },
+                    },
+                ],
+                { type: 'default' },
             );
             return;
         }
@@ -422,7 +434,7 @@ class ExchangeView extends Component<Props, State> {
                             <View style={[AppStyles.row, AppStyles.centerAligned]}>
                                 <Text style={styles.fromAmount}>-</Text>
                                 <TextInput
-                                    ref={r => {
+                                    ref={(r) => {
                                         this.paysAmountInput = r;
                                     }}
                                     autoFocus={false}

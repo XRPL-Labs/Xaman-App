@@ -154,6 +154,7 @@
       "veryStrong": "Muy fuerte",
       "subject": "Tema",
       "empty": "Vacío",
+      "update": "Actualizar",
       "balanceLimit": "Límite de equilibrio",
       "unbelievablyStrong": "Increíblemente fuerte",
       "biometryIsNotSupported": "¡La autenticación biométrica no es compatible con este dispositivo!",
@@ -459,6 +460,7 @@
    },
    "send": {
       "amountIsBiggerThanYourSpend": "La cantidad es mayor de lo que puede gastar ( %{spendable} )",
+      "theMaxAmountYouCanSendIs": "La cantidad máxima que puede enviar es %{spendable}%{currency}",
       "balanceIsNotEnoughForFee": "El saldo no es suficiente para cubrir la tarifa ( %{fee} )",
       "searchResults": "Resultados de la búsqueda",
       "noSearchResult": "Sin resultado de búsqueda",

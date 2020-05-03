@@ -23,6 +23,7 @@ import {
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import { Images } from '@common/helpers/images';
+import { Prompt } from '@common/helpers/interface';
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
@@ -72,9 +73,22 @@ class DetailsStep extends Component {
 
         // check if amount is bigger than what user can spend
         if (bAmount.toNumber() > availableBalance) {
-            Alert.alert(
+            Prompt(
                 Localize.t('global.error'),
-                Localize.t('send.amountIsBiggerThanYourSpend', { spendable: availableBalance }),
+                Localize.t('send.theMaxAmountYouCanSendIs', {
+                    spendable: availableBalance,
+                    currency: this.getCurrencyName(),
+                }),
+                [
+                    { text: Localize.t('global.cancel') },
+                    {
+                        text: Localize.t('global.update'),
+                        onPress: () => {
+                            setAmount(availableBalance.toString());
+                        },
+                    },
+                ],
+                { type: 'default' },
             );
             return;
         }
@@ -97,6 +111,17 @@ class DetailsStep extends Component {
 
         // go to next screen
         goNext();
+    };
+
+    getCurrencyName = (): string => {
+        const { currency } = this.context;
+
+        // XRP
+        if (typeof currency === 'string') {
+            return 'XRP';
+        }
+
+        return NormalizeCurrencyCode(currency.currency.currency);
     };
 
     getAvailableBalance = () => {

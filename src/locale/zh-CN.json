@@ -154,6 +154,7 @@
       "veryStrong": "非常强壮",
       "subject": "学科",
       "empty": "空的",
+      "update": "更新资料",
       "balanceLimit": "余额限制",
       "unbelievablyStrong": "难以置信的强大",
       "biometryIsNotSupported": "此设备不支持生物特征认证！",
@@ -459,6 +460,7 @@
    },
    "send": {
       "amountIsBiggerThanYourSpend": "金额大于您可以消费的金额（ %{spendable} ）",
+      "theMaxAmountYouCanSendIs": "您可以发送的最大金额为%{spendable}%{currency}",
       "balanceIsNotEnoughForFee": "余额不足以支付费用（ %{fee} ）",
       "searchResults": "搜索结果",
       "noSearchResult": "没有搜寻结果",

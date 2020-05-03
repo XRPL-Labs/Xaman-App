@@ -154,6 +154,7 @@
       "veryStrong": "매우 강한",
       "subject": "제목",
       "empty": "빈",
+      "update": "최신 정보",
       "balanceLimit": "잔액 한도",
       "unbelievablyStrong": "믿을 수 없을만큼 강한",
       "biometryIsNotSupported": "이 장치에서는 생체 인증이 지원되지 않습니다!",
@@ -459,6 +460,7 @@
    },
    "send": {
       "amountIsBiggerThanYourSpend": "지출 할 수있는 금액보다 금액이 더 많습니다 ( %{spendable} )",
+      "theMaxAmountYouCanSendIs": "보낼 수있는 최대 금액은 %{spendable}%{currency}",
       "balanceIsNotEnoughForFee": "잔액이 수수료를 충당하기에 충분하지 않습니다 ( %{fee} )",
       "searchResults": "검색 결과",
       "noSearchResult": "검색 결과가 없습니다",

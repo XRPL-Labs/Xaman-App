@@ -228,8 +228,19 @@ class SummaryStep extends Component {
         );
     };
 
+    getCurrencyName = (): string => {
+        const { currency } = this.context;
+
+        // XRP
+        if (typeof currency === 'string') {
+            return 'XRP';
+        }
+
+        return NormalizeCurrencyCode(currency.currency.currency);
+    };
+
     goNext = () => {
-        const { goNext, currency, source, amount, destination, destinationInfo } = this.context;
+        const { goNext, currency, source, amount, destination, destinationInfo, setAmount } = this.context;
 
         const bAmount = new BigNumber(amount);
 
@@ -242,9 +253,22 @@ class SummaryStep extends Component {
 
         // check if amount is bigger than what user can spend
         if (bAmount.toNumber() > availableBalance) {
-            Alert.alert(
+            Prompt(
                 Localize.t('global.error'),
-                Localize.t('send.amountIsBiggerThanYourSpend', { spendable: availableBalance }),
+                Localize.t('send.theMaxAmountYouCanSendIs', {
+                    spendable: availableBalance,
+                    currency: this.getCurrencyName(),
+                }),
+                [
+                    { text: Localize.t('global.cancel') },
+                    {
+                        text: Localize.t('global.update'),
+                        onPress: () => {
+                            setAmount(availableBalance.toString());
+                        },
+                    },
+                ],
+                { type: 'default' },
             );
             return;
         }

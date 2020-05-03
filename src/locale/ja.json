@@ -154,6 +154,7 @@
       "veryStrong": "とても強い",
       "subject": "件名",
       "empty": "空の",
+      "update": "更新",
       "balanceLimit": "バランス制限",
       "unbelievablyStrong": "信じられないほど強い",
       "biometryIsNotSupported": "このデバイスでは生体認証はサポートされていません！",
@@ -459,6 +460,7 @@
    },
    "send": {
       "amountIsBiggerThanYourSpend": "金額があなたが費やすことができる金額よりも大きい（ %{spendable} ）",
+      "theMaxAmountYouCanSendIs": "送信できる最大金額は%{spendable}%{currency}",
       "balanceIsNotEnoughForFee": "残高は料金をカバーするのに十分ではありません（ %{fee} ）",
       "searchResults": "の検索結果",
       "noSearchResult": "検索結果がありません",
