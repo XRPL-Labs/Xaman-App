@@ -545,7 +545,7 @@
         "whatDoYouWantToDo": "What do you want to do?",
         "willIgnoreTheRequestAndClose": "Will ignore the request and close.",
         "willRejectTheSignRequest": "Will Reject the sign request",
-        "payingWithXRPExchangeRate": "Paying with ~ %{xrpRoundedUp} XRP\nExchange rate: %{exchangeRate} ",
+        "payingWithXRPExchangeRate": "Paying with ~ %{xrpRoundedUp} XRP\nExchange rate: ~ %{exchangeRate} ",
         "notEnoughLiquidityToSendThisPayment": "Not enough liquidity to send this payment.",
         "unableToCheckCurrencyConversion": "Unable to check for currency conversion, please make sure you are connected to the XRPL node",
         "unableToGetNetworkFee": "Unable to get network fee, please make sure you are connected to the XRPL node"

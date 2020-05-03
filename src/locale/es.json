@@ -545,7 +545,7 @@
       "whatDoYouWantToDo": "¿Qué quieres hacer?",
       "willIgnoreTheRequestAndClose": "Ignorará la solicitud y la cerrará.",
       "willRejectTheSignRequest": "Rechazará la solicitud de firma",
-      "payingWithXRPExchangeRate": "Pagando con ~ %{xrpRoundedUp} Tipo de cambio XRP: %{exchangeRate}",
+      "payingWithXRPExchangeRate": "Pagando con ~ %{xrpRoundedUp} Tipo de cambio XRP: ~ %{exchangeRate}",
       "notEnoughLiquidityToSendThisPayment": "No hay suficiente liquidez para enviar este pago.",
       "unableToCheckCurrencyConversion": "No se puede verificar la conversión de moneda, asegúrese de estar conectado al nodo XRPL",
       "unableToGetNetworkFee": "No se puede obtener la tarifa de red, asegúrese de estar conectado al nodo XRPL"

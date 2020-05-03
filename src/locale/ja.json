@@ -545,7 +545,7 @@
       "whatDoYouWantToDo": "何をしたいですか？",
       "willIgnoreTheRequestAndClose": "リクエストを無視して閉じます。",
       "willRejectTheSignRequest": "署名リクエストを拒否します",
-      "payingWithXRPExchangeRate": "〜で支払う%{xrpRoundedUp} XRP為替レート： %{exchangeRate}",
+      "payingWithXRPExchangeRate": "〜で支払う%{xrpRoundedUp} XRP為替レート：〜 %{exchangeRate}",
       "notEnoughLiquidityToSendThisPayment": "この支払いを送るのに十分な流動性がありません。",
       "unableToCheckCurrencyConversion": "通貨換算を確認できません。XRPLノードに接続していることを確認してください",
       "unableToGetNetworkFee": "ネットワーク料金を取得できません。XRPLノードに接続していることを確認してください"

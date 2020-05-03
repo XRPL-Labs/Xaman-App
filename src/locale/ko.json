@@ -545,7 +545,7 @@
       "whatDoYouWantToDo": "뭐하고 싶어?",
       "willIgnoreTheRequestAndClose": "요청을 무시하고 닫습니다.",
       "willRejectTheSignRequest": "서명 요청을 거부합니다",
-      "payingWithXRPExchangeRate": "~로 결제 %{xrpRoundedUp} XRP 환율 : %{exchangeRate}",
+      "payingWithXRPExchangeRate": "~로 결제 %{xrpRoundedUp} XRP 환율 : ~ %{exchangeRate}",
       "notEnoughLiquidityToSendThisPayment": "이 지불을 보낼 유동성이 충분하지 않습니다.",
       "unableToCheckCurrencyConversion": "통화 변환을 확인할 수 없습니다. XRPL 노드에 연결되어 있는지 확인하십시오",
       "unableToGetNetworkFee": "네트워크 요금을받을 수 없습니다. XRPL 노드에 연결되어 있는지 확인하십시오"
