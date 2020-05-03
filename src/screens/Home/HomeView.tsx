@@ -75,6 +75,8 @@ class HomeView extends Component<Props, State> {
         AccountRepository.on('accountUpdate', this.updateUI);
         AccountRepository.on('changeDefaultAccount', this.onDefaultAccountChange);
 
+        AccountRepository.on('accountCreate', this.updateSpendableAccounts);
+        AccountRepository.on('accountRemove', this.updateSpendableAccounts);
         // listen for screen appear event
         Navigation.events().bindComponent(this);
     }
@@ -88,7 +90,6 @@ class HomeView extends Component<Props, State> {
             } else {
                 this.setState({
                     account: AccountRepository.getDefaultAccount(),
-                    spendableAccounts: AccountRepository.getSpendableAccounts(),
                 });
             }
         });
@@ -109,6 +110,14 @@ class HomeView extends Component<Props, State> {
                 account: updatedAccount,
             });
         }
+    };
+
+    updateSpendableAccounts = () => {
+        setTimeout(() => {
+            this.setState({
+                spendableAccounts: AccountRepository.getSpendableAccounts(),
+            });
+        }, 200);
     };
 
     addCurrency = () => {
