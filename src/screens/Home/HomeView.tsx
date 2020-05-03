@@ -105,19 +105,37 @@ class HomeView extends Component<Props, State> {
     };
 
     updateUI = (updatedAccount: AccountSchema) => {
+        const { account } = this.state;
+
+        if (updatedAccount.isValid()) {
+            if (updatedAccount.default) {
+                this.setState({
+                    account: updatedAccount,
+                });
+
+                if (account.isValid() && account.balance !== updatedAccount.balance) {
+                    this.updateSpendableAccounts();
+                }
+            }
+        }
         if (updatedAccount.default) {
             this.setState({
                 account: updatedAccount,
+                spendableAccounts: AccountRepository.getSpendableAccounts(),
             });
         }
     };
 
     updateSpendableAccounts = () => {
-        setTimeout(() => {
-            this.setState({
-                spendableAccounts: AccountRepository.getSpendableAccounts(),
-            });
-        }, 200);
+        const { account } = this.state;
+
+        if (account.isValid()) {
+            setTimeout(() => {
+                this.setState({
+                    spendableAccounts: AccountRepository.getSpendableAccounts(),
+                });
+            }, 200);
+        }
     };
 
     addCurrency = () => {
