@@ -81,6 +81,30 @@ class ScanView extends Component<Props, State> {
         this.shouldRead = value;
     };
 
+    routeUser = async (screen: string, options: any, passProps: any) => {
+        // close scan modal
+        await Navigator.dismissModal();
+
+        // got to the root, this is for fallback option
+        try {
+            await Navigator.popToRoot();
+        } catch {
+            // ignore
+        }
+
+        if (screen.indexOf('modal.') !== -1) {
+            setTimeout(() => {
+                Navigator.showModal(screen, options, passProps);
+            }, 10);
+        } else {
+            setTimeout(() => {
+                Navigator.push(screen, options, passProps);
+            }, 10);
+        }
+
+        // close scan modal
+    };
+
     handlePayloadReference = async (uuid: string) => {
         this.setState({
             isLoading: true,
@@ -90,19 +114,14 @@ class ScanView extends Component<Props, State> {
             // fetch the payload
             const payload = await Payload.from(uuid);
 
-            // dismiss scan modal
-            await Navigator.dismissModal();
-
             // review the transaction
-            setTimeout(() => {
-                Navigator.showModal(
-                    AppScreens.Modal.ReviewTransaction,
-                    { modalPresentationStyle: 'fullScreen' },
-                    {
-                        payload,
-                    },
-                );
-            }, 0);
+            this.routeUser(
+                AppScreens.Modal.ReviewTransaction,
+                { modalPresentationStyle: 'fullScreen' },
+                {
+                    payload,
+                },
+            );
         } catch (e) {
             Alert.alert(
                 Localize.t('global.error'),
@@ -130,17 +149,13 @@ class ScanView extends Component<Props, State> {
                 {
                     text: Localize.t('global.submit'),
                     onPress: async () => {
-                        await Navigator.dismissModal();
-                        // review the transaction
-                        setTimeout(() => {
-                            Navigator.showModal(
-                                AppScreens.Modal.Submit,
-                                { modalPresentationStyle: 'fullScreen' },
-                                {
-                                    txblob,
-                                },
-                            );
-                        }, 0);
+                        this.routeUser(
+                            AppScreens.Modal.Submit,
+                            { modalPresentationStyle: 'fullScreen' },
+                            {
+                                txblob,
+                            },
+                        );
                     },
                     style: 'default',
                 },
@@ -155,9 +170,7 @@ class ScanView extends Component<Props, State> {
 
         if (availableAccounts.length > 0) {
             if (destination.payId) {
-                await Navigator.dismissModal();
-
-                Navigator.push(
+                this.routeUser(
                     AppScreens.Transaction.Payment,
                     {},
                     {
@@ -178,9 +191,7 @@ class ScanView extends Component<Props, State> {
                 amount = destination.amount;
             }
 
-            await Navigator.dismissModal();
-
-            Navigator.push(
+            this.routeUser(
                 AppScreens.Transaction.Payment,
                 {},
                 {
