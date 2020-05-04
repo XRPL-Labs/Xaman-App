@@ -519,7 +519,8 @@
         "failedExchange": "Cannot exchange right now due to lack of liquidity, or updated exchange rates.",
         "errorDuringExchange": "Error during the exchange: %{error}",
         "liquidityIsNotEnough": "There is not enough liquidity, cannot exchange right now!",
-        "liquidityIsNotSoMuch": "There's relatively low liquidity. You can still continue, but you may not get the best rate for your entire exchange!"
+        "liquidityIsNotSoMuch": "There's relatively low liquidity. You can still continue, but you may not get the best rate for your entire exchange!",
+        "theMaxAmountYouCanExchangeIs": "The max amount you can exchange is %{spendable} %{currency}"
     },
     "scan":{
         "aimAtTheCode": "Aim at the code",

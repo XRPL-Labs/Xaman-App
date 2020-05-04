@@ -519,7 +519,8 @@
       "failedExchange": "流動性の欠如、または最新の為替レートのため、現在交換できません。",
       "errorDuringExchange": "交換中のエラー： %{error}",
       "liquidityIsNotEnough": "十分な流動性がないため、現在交換できません！",
-      "liquidityIsNotSoMuch": "流動性が比較的低い。引き続きご利用いただけますが、交換全体で最高のレートが得られない可能性があります。"
+      "liquidityIsNotSoMuch": "流動性が比較的低い。引き続きご利用いただけますが、交換全体で最高のレートが得られない可能性があります。",
+      "theMaxAmountYouCanExchangeIs": "交換できる最大金額は%{spendable}%{currency}"
    },
    "scan": {
       "aimAtTheCode": "コードを目指す",

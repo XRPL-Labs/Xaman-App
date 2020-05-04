@@ -519,7 +519,8 @@
       "failedExchange": "유동성 부족 또는 환율 업데이트로 인해 현재 교환 할 수 없습니다.",
       "errorDuringExchange": "교환 중 오류 : %{error}",
       "liquidityIsNotEnough": "유동성이 충분하지 않아 지금 교환 할 수 없습니다!",
-      "liquidityIsNotSoMuch": "유동성이 비교적 낮습니다. 계속할 수 있지만 전체 교환에 대해 최상의 요금을 얻지 못할 수 있습니다!"
+      "liquidityIsNotSoMuch": "유동성이 비교적 낮습니다. 계속할 수 있지만 전체 교환에 대해 최상의 요금을 얻지 못할 수 있습니다!",
+      "theMaxAmountYouCanExchangeIs": "교환 할 수있는 최대 금액은 %{spendable}%{currency}"
    },
    "scan": {
       "aimAtTheCode": "코드를 목표로",

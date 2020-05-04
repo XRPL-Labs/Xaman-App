@@ -519,7 +519,8 @@
       "failedExchange": "No se puede cambiar en este momento debido a la falta de liquidez o a los tipos de cambio actualizados.",
       "errorDuringExchange": "Error durante el intercambio: %{error}",
       "liquidityIsNotEnough": "¡No hay suficiente liquidez, no se puede intercambiar en este momento!",
-      "liquidityIsNotSoMuch": "Hay relativamente poca liquidez. Todavía puede continuar, ¡pero es posible que no obtenga la mejor tarifa para todo su intercambio!"
+      "liquidityIsNotSoMuch": "Hay relativamente poca liquidez. Todavía puede continuar, ¡pero es posible que no obtenga la mejor tarifa para todo su intercambio!",
+      "theMaxAmountYouCanExchangeIs": "La cantidad máxima que puede intercambiar es %{spendable}%{currency}"
    },
    "scan": {
       "aimAtTheCode": "Apunta al código",

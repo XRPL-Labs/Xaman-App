@@ -69,10 +69,20 @@ class DetailsStep extends Component {
             return;
         }
 
-        const availableBalance = this.getAvailableBalance();
+        const availableBalance = new BigNumber(this.getAvailableBalance());
+
+        let maxCanSend = availableBalance.toNumber();
+
+        // check if balance can cover the transfer fee for non XRP currencies
+        if (typeof currency !== 'string') {
+            const rate = new BigNumber(currency.transfer_rate).dividedBy(1000000).minus(1000).dividedBy(10);
+
+            const fee = availableBalance.multipliedBy(rate).dividedBy(100).decimalPlaces(6);
+            maxCanSend = availableBalance.minus(fee).toNumber();
+        }
 
         // check if amount is bigger than what user can spend
-        if (bAmount.toNumber() > availableBalance) {
+        if (bAmount.toNumber() > maxCanSend) {
             Prompt(
                 Localize.t('global.error'),
                 Localize.t('send.theMaxAmountYouCanSendIs', {
@@ -84,26 +94,13 @@ class DetailsStep extends Component {
                     {
                         text: Localize.t('global.update'),
                         onPress: () => {
-                            setAmount(availableBalance.toString());
+                            setAmount(maxCanSend.toString());
                         },
                     },
                 ],
                 { type: 'default' },
             );
             return;
-        }
-
-        // check if balance can cover the transfer fee for non XRP currencies
-        if (typeof currency !== 'string') {
-            const rate = new BigNumber(currency.transfer_rate).dividedBy(1000000).minus(1000).dividedBy(10);
-
-            const fee = bAmount.multipliedBy(rate).dividedBy(100).decimalPlaces(6);
-            const after = bAmount.plus(fee).toNumber();
-
-            if (after > availableBalance) {
-                Alert.alert(Localize.t('global.error'), Localize.t('send.balanceIsNotEnoughForFee', { fee }));
-                return;
-            }
         }
 
         // last set amount parsed by bignumber

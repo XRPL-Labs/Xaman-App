@@ -519,7 +519,8 @@
       "failedExchange": "由于缺乏流动性或更新的汇率，目前无法兑换。",
       "errorDuringExchange": "交换期间发生错误： %{error}",
       "liquidityIsNotEnough": "流动性不足，现在无法兑换！",
-      "liquidityIsNotSoMuch": "流动性相对较低。您仍然可以继续，但是您可能无法获得整个交易的最优惠价格！"
+      "liquidityIsNotSoMuch": "流动性相对较低。您仍然可以继续，但是您可能无法获得整个交易的最优惠价格！",
+      "theMaxAmountYouCanExchangeIs": "您可以兑换的最大金额是%{spendable}%{currency}"
    },
    "scan": {
       "aimAtTheCode": "瞄准代码",

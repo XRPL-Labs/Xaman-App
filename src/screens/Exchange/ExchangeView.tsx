@@ -241,9 +241,9 @@ class ExchangeView extends Component<Props, State> {
         if (parseFloat(paysAmount) > availableBalance) {
             Prompt(
                 Localize.t('global.error'),
-                Localize.t('send.theMaxAmountYouCanSendIs', {
+                Localize.t('exchange.theMaxAmountYouCanExchangeIs', {
                     spendable: availableBalance,
-                    currency: fromCurrency === 'XRP' ? NormalizeCurrencyCode(trustLine.currency.currency) : 'XRP',
+                    currency: fromCurrency === 'XRP' ? 'XRP' : NormalizeCurrencyCode(trustLine.currency.currency),
                 }),
                 [
                     { text: Localize.t('global.cancel') },
