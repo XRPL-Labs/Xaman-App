@@ -143,7 +143,6 @@ class LedgerService extends EventEmitter {
         return SocketService.send(request);
     };
 
-
     /**
      * get server info
      */
@@ -152,7 +151,6 @@ class LedgerService extends EventEmitter {
             command: 'server_info',
         });
     };
-
 
     /**
      * get ledger time from server
@@ -203,7 +201,7 @@ class LedgerService extends EventEmitter {
     loadAccounts = () => {
         const accounts = AccountRepository.getAccounts();
 
-        this.accounts = flatMap(accounts, a => {
+        this.accounts = flatMap(accounts, (a) => {
             return { address: a.address, lastSync: 0 };
         });
 
@@ -277,7 +275,11 @@ class LedgerService extends EventEmitter {
                     const normalizedList = [] as Partial<TrustLineSchema>[];
 
                     await Promise.all(
-                        map(lines, async l => {
+                        map(lines, async (l) => {
+                            // ignore incoming trustline
+                            if (Number(l.balance) < 0 || (Number(l.limit) === 0 && Number(l.limit_peer) > 0)) {
+                                return;
+                            }
                             // update currency
                             const currency = await CurrencyRepository.upsert(
                                 { id: uuidv4(), issuer: l.account, currency: l.currency },
@@ -322,7 +324,7 @@ class LedgerService extends EventEmitter {
      * this will contain account trustLines etc ...
      */
     updateAccountsDetails = (include?: string[]) => {
-        forEach(this.accounts, account => {
+        forEach(this.accounts, (account) => {
             // check if include present
             if (!isEmpty(include)) {
                 if (include.indexOf(account.address) === -1) return;
@@ -339,12 +341,12 @@ class LedgerService extends EventEmitter {
 
             this.updateAccountInfo(account.address)
                 .then(() => this.updateAccountLines(account.address))
-                .catch(e => {
+                .catch((e) => {
                     this.logger.warn('UpdateAccountInfo error: ', e.message);
                 });
 
             // update last sync
-            this.accounts = map(this.accounts, a => {
+            this.accounts = map(this.accounts, (a) => {
                 return a.address === account.address ? { address: account.address, lastSync: moment().unix() } : a;
             });
         });
@@ -359,7 +361,7 @@ class LedgerService extends EventEmitter {
 
         // reload accounts
         const accounts = AccountRepository.getAccounts();
-        this.accounts = flatMap(accounts, a => {
+        this.accounts = flatMap(accounts, (a) => {
             return { address: a.address, lastSync: 0 };
         });
 
@@ -374,7 +376,7 @@ class LedgerService extends EventEmitter {
      * Unsubscribe for streaming
      */
     unsubscribe() {
-        const arrayAccounts = flatMap(this.accounts, a => [a.address]);
+        const arrayAccounts = flatMap(this.accounts, (a) => [a.address]);
 
         this.logger.debug(`Unsubscribe to ${arrayAccounts} accounts`, arrayAccounts);
 
@@ -394,7 +396,7 @@ class LedgerService extends EventEmitter {
             this.unsubscribe();
         }
 
-        const arrayAccounts = flatMap(this.accounts, a => [a.address]);
+        const arrayAccounts = flatMap(this.accounts, (a) => [a.address]);
 
         this.logger.debug(`Subscribed to ${arrayAccounts} accounts`, arrayAccounts);
 
