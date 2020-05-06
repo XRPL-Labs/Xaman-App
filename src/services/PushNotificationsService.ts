@@ -7,10 +7,13 @@ import { Alert, Platform } from 'react-native';
 
 import firebase, { RNFirebase } from 'react-native-firebase';
 
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
-import { LoggerService, NavigationService } from '@services';
+
 import { Payload } from '@common/libs/payload';
+
+import NavigationService from '@services/NavigationService';
+import LoggerService from '@services/LoggerService';
 
 import Localize from '@locale';
 

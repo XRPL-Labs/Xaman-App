@@ -6,7 +6,9 @@ import { Animated, View, Text, TouchableWithoutFeedback } from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
-import { Navigator, getNavigationBarHeight } from '@common/helpers';
+import { getNavigationBarHeight } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+
 import { AppScreens } from '@common/constants';
 
 // components

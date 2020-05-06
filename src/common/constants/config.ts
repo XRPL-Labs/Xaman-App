@@ -20,7 +20,7 @@ export default {
 
     // rippled nodes
     nodes: {
-        main: ['wss://xrpl.ws', 'wss://s2.ripple.com'],
+        main: ['wss://xrpl.ws', 'wss://xrpl.link', 'wss://s2.ripple.com'],
         test: ['wss://testnet.xrpl-labs.com', 'wss://s.altnet.rippletest.net:51233'],
     },
 
@@ -34,5 +34,11 @@ export default {
             { value: 'ja', title: '日本語' },
             { value: 'zh', title: '中文' },
         ],
+    },
+
+    // app theme config
+    theme: {
+        light: 'Light',
+        dark: 'Dark',
     },
 };

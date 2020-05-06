@@ -12,8 +12,10 @@ import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 import { BiometryType } from '@store/types';
 
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
+
+import { AuthenticationService } from '@services';
 
 // components
 import { SecurePinInput, Button } from '@components';
@@ -83,6 +85,7 @@ class AuthenticateModal extends Component<Props, State> {
         Animated.timing(this.animatedColor, {
             toValue: 150,
             duration: 350,
+            useNativeDriver: false,
         }).start();
 
         // focus the input
@@ -143,13 +146,11 @@ class AuthenticateModal extends Component<Props, State> {
     };
 
     onPasscodeEntered = (passcode: string) => {
-        CoreRepository.checkPasscode(passcode)
+        AuthenticationService.checkPasscode(passcode)
             .then(this.onSuccess)
             .catch(e => {
-                Alert.alert(Localize.t('global.error'), e.toString());
-            })
-            .finally(() => {
                 this.securePinInput.clearInput();
+                Alert.alert(Localize.t('global.error'), e.toString());
             });
     };
 

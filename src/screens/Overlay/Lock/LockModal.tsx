@@ -12,7 +12,10 @@ import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 import { BiometryType } from '@store/types';
 
-import { Navigator, Images } from '@common/helpers';
+import { AuthenticationService } from '@services';
+
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
 // components
@@ -77,9 +80,9 @@ class LockModal extends Component<Props, State> {
     }
 
     onPasscodeEntered = (passcode: string) => {
-        CoreRepository.checkPasscode(passcode)
+        AuthenticationService.checkPasscode(passcode)
             .then(this.onUnlock)
-            .catch(e => {
+            .catch((e) => {
                 this.securePinInput.clearInput();
 
                 this.setState({
@@ -91,9 +94,6 @@ class LockModal extends Component<Props, State> {
     onUnlock = () => {
         const { onUnlock } = this.props;
 
-        // update last unlocked
-        CoreRepository.updateTimeLastUnlocked();
-
         // close lock overlay
         Navigator.dismissOverlay();
 
@@ -103,12 +103,18 @@ class LockModal extends Component<Props, State> {
         }
     };
 
+    onBiometricAuthenticateSuccess = () => {
+        // update latest unlock app
+        AuthenticationService.onSuccessAuthentication();
+        this.onUnlock();
+    };
+
     requestBiometricAuthenticate = () => {
         FingerprintScanner.authenticate({
             description: Localize.t('global.unlock'),
             fallbackEnabled: true,
         })
-            .then(this.onUnlock)
+            .then(this.onBiometricAuthenticateSuccess)
             .catch(() => {})
             .finally(() => {
                 FingerprintScanner.release();
@@ -130,11 +136,19 @@ class LockModal extends Component<Props, State> {
                     </View>
 
                     <View style={[AppStyles.flex5, AppStyles.flexEnd]}>
-                        <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.colorRed]}>
+                        <Text
+                            style={[
+                                AppStyles.p,
+                                AppStyles.bold,
+                                AppStyles.textCenterAligned,
+                                AppStyles.colorRed,
+                                AppStyles.paddingSml,
+                            ]}
+                        >
                             {error}
                         </Text>
                         <SecurePinInput
-                            ref={r => {
+                            ref={(r) => {
                                 this.securePinInput = r;
                             }}
                             virtualKeyboard

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { IsIPhoneX } from '@common/helpers';
+import { IsIPhoneX } from '@common/helpers/interface';
 
 const styles = StyleSheet.create({
     rtl: {

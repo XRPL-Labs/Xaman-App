@@ -3,14 +3,24 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Platform, Linking, Alert, InteractionManager, TouchableOpacity } from 'react-native';
+import {
+    View,
+    Text,
+    ScrollView,
+    Platform,
+    Linking,
+    Alert,
+    InteractionManager,
+    TouchableOpacity,
+    Share,
+} from 'react-native';
 
-import Share from 'react-native-share';
-
-import { TransactionsType } from '@common/libs/ledger/types';
+import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import { AppScreens } from '@common/constants';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
-import { Navigator, ActionSheet } from '@common/helpers';
+
+import { ActionSheet } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
 
 import { Header, QRCode, Spacer } from '@components';
 
@@ -79,21 +89,17 @@ class TransactionDetailsView extends Component<Props, State> {
 
     shareTxLink = () => {
         const { tx } = this.props;
-        /* eslint-disable-next-line */
         const url = `https://livenet.xrpl.org/transactions/${tx.Hash}`;
 
-        const shareOptions = {
+        Share.share({
             title: Localize.t('events.shareTransactionId'),
-            message: url,
-            type: 'link',
-        };
-        Share.open(shareOptions).catch(() => {});
+            url,
+        }).catch(() => {});
     };
 
     openTxLink = () => {
         const { tx } = this.props;
 
-        /* eslint-disable-next-line */
         const url = `https://livenet.xrpl.org/transactions/${tx.Hash}`;
         Linking.canOpenURL(url).then(supported => {
             if (supported) {

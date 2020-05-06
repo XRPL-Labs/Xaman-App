@@ -11,16 +11,16 @@ import { Button, Footer, SecretNumberInput } from '@components';
 // locale
 import Localize from '@locale';
 
-import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate';
-
 // style
 import { AppStyles } from '@theme';
+
+import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate/types';
 
 /* types ==================================================================== */
 export interface Props {
     account: AccountObject;
-    goBack: (step?: GenerateSteps, settings?: any) => void;
-    goNext: (step?: GenerateSteps, settings?: any) => void;
+    goBack: (step?: GenerateSteps, settings?: AccountObject) => void;
+    goNext: (step?: GenerateSteps, settings?: AccountObject) => void;
 }
 
 export interface State {

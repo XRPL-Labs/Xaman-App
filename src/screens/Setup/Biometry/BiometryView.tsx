@@ -9,7 +9,8 @@ import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import { CoreRepository } from '@store/repositories';
 import { BiometryType } from '@store/types';
-import { Images, Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 import { PushNotificationsService } from '@services';
 import Localize from '@locale';

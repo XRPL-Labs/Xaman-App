@@ -6,7 +6,8 @@ import React, { Component } from 'react';
 
 import { View, Text, Image, SafeAreaView } from 'react-native';
 
-import { Images, Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 import { PushNotificationsService } from '@services';
 import { Footer, Button, Spacer } from '@components';

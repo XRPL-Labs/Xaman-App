@@ -2,20 +2,19 @@
  * Send Screen
  */
 
-import { Results } from 'realm';
-import { findIndex } from 'lodash';
+import { findIndex, find } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
 import { View, Keyboard } from 'react-native';
 
-import { Navigator } from '@common/helpers';
+import { AccountInfoType } from '@common/helpers/resolver';
+import { Navigator } from '@common/helpers/navigator';
 
 import { LedgerService } from '@services';
 import { AppScreens } from '@common/constants';
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
-import { AccessLevels } from '@store/types';
 
 import LedgerExchange from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
@@ -47,21 +46,27 @@ export enum Steps {
     Result = 'Result',
 }
 
+export interface ScanResult {
+    to: string;
+    tag?: number;
+}
+
 export interface Props {
     currency?: TrustLineSchema;
-    scanResult?: Destination;
+    scanResult?: ScanResult;
+    amount?: string;
 }
 
 export interface State {
     currentStep: Steps;
-    accounts: Results<AccountSchema>;
+    accounts: Array<AccountSchema>;
     source: AccountSchema;
     destination: Destination;
-    destinationInfo: any;
+    destinationInfo: AccountInfoType;
     currency: TrustLineSchema | string;
     amount: string;
     payment: Payment;
-    scanResult: Destination;
+    scanResult: ScanResult;
 }
 /* Component ==================================================================== */
 class SendView extends Component<Props, State> {
@@ -76,14 +81,16 @@ class SendView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        const accounts = AccountRepository.getSpendableAccounts();
+
         this.state = {
             currentStep: Steps.Details,
-            accounts: AccountRepository.getAccounts({ accessLevel: AccessLevels.Full }),
-            source: AccountRepository.getDefaultAccount(),
+            accounts,
+            source: find(accounts, { default: true }) || accounts[0],
             destination: undefined,
             destinationInfo: undefined,
             currency: props.currency || 'XRP',
-            amount: '',
+            amount: props.amount || '',
             payment: new Payment(),
             scanResult: props.scanResult || undefined,
         };

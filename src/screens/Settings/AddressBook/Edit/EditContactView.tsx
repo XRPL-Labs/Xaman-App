@@ -1,14 +1,18 @@
 /**
  * Edit Contact Screen
  */
-
+import { filter, isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { SafeAreaView, View, KeyboardAvoidingView, Text, Alert, Keyboard, Platform } from 'react-native';
+
 import { StringType, XrplDestination } from 'xumm-string-decode';
 import * as AccountLib from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
 
-import { Navigator, Toast, Prompt, getAccountInfo } from '@common/helpers';
+import { Toast, Prompt } from '@common/helpers/interface';
+import { getAccountName } from '@common/helpers/resolver';
+import { Navigator } from '@common/helpers/navigator';
+
 import { AppScreens } from '@common/constants';
 
 import { ContactRepository } from '@store/repositories';
@@ -97,6 +101,17 @@ class EditContactView extends Component<Props, State> {
             return Alert.alert(Localize.t('global.invalidAddress'));
         }
 
+        // check if any contact is already exist with this address and tag
+        const existContacts = ContactRepository.query({ address, destinationTag: tag });
+
+        if (!existContacts.isEmpty()) {
+            const filtered = filter(existContacts, c => c.id !== contact.id);
+
+            if (!isEmpty(filtered)) {
+                return Alert.alert(Localize.t('settings.contactAlreadyExist'));
+            }
+        }
+
         ContactRepository.update({
             id: contact.id,
             name,
@@ -105,8 +120,8 @@ class EditContactView extends Component<Props, State> {
         });
 
         // update catch for this account
-        getAccountInfo.cache.set(
-            address,
+        getAccountName.cache.set(
+            `${address}${tag}`,
             new Promise(resolve => {
                 resolve({ name, source: 'internal:contacts' });
             }),

@@ -4,7 +4,6 @@
 
 const screens = {
     Onboarding: 'app.Onboarding',
-    ConnectionIssue: 'app.ConnectionIssue',
     Setup: {
         Passcode: 'app.Setup.Passcode',
         Biometric: 'app.Setup.Biometric',
@@ -48,6 +47,8 @@ const screens = {
         Alert: 'overlay.Alert',
         ShareAccount: 'overlay.ShareAccount',
         RequestDecline: 'overlay.RequestDecline',
+        EnterDestinationTag: 'overlay.EnterDestinationTag',
+        ExplainBalance: 'overlay.ExplainBalance',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',

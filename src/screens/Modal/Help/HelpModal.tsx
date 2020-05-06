@@ -6,7 +6,8 @@ import React, { Component } from 'react';
 import { View, Text, ImageBackground, BackHandler } from 'react-native';
 
 import { AppScreens } from '@common/constants';
-import { Navigator, Images } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 
 import { Button } from '@components/Button';
 

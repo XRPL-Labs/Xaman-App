@@ -3,7 +3,7 @@
 import React, { PureComponent } from 'react';
 import { TextInput, View, TextStyle, ViewStyle, Animated, TouchableOpacity } from 'react-native';
 
-import { Icon } from '@components';
+import { Icon } from '@components/Icon';
 
 import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
@@ -51,10 +51,12 @@ class SearchBar extends PureComponent<Props, State> {
         if (value && alpha._value === 0) {
             Animated.spring(alpha, {
                 toValue: 1,
+                useNativeDriver: true,
             }).start();
         } else if (!value) {
             Animated.spring(alpha, {
                 toValue: 0,
+                useNativeDriver: true,
             }).start();
         }
     };

@@ -1,12 +1,14 @@
-import BigNumber from 'bignumber.js';
-import Realm from 'realm';
-
-import { AccountRepository } from '@store/repositories';
-import { TrustLineSchema } from '@store/schemas/latest';
-import { EncryptionLevels, AccessLevels } from '@store/types';
 /**
  * Account Model
  */
+
+import BigNumber from 'bignumber.js';
+import Realm from 'realm';
+
+import TrustLineSchema from '@store/schemas/v1/trustLine';
+
+import { EncryptionLevels, AccessLevels } from '@store/types';
+
 // @ts-ignore
 class Account extends Realm.Object {
     public static schema: Realm.ObjectSchema = {
@@ -84,13 +86,6 @@ class Account extends Realm.Object {
         }
 
         return availableBalance;
-    }
-
-    /**
-     * check if account is a regular key to one of xumm accounts
-     */
-    get isRegularKey(): boolean {
-        return !AccountRepository.findBy('regularKey', this.address).isEmpty();
     }
 
     /**

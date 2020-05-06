@@ -8,9 +8,9 @@ import { View, Keyboard, InteractionManager } from 'react-native';
 
 import * as AccountLib from 'xrpl-accountlib';
 
-import { AccountRepository } from '@store/repositories';
-import { EncryptionLevels } from '@store/types';
-import { Navigator } from '@common/helpers';
+import { AccountRepository, CoreRepository } from '@store/repositories';
+import { EncryptionLevels, AccessLevels } from '@store/types';
+import { Navigator } from '@common/helpers/navigator';
 
 // constants
 import { AppScreens } from '@common/constants';
@@ -27,15 +27,8 @@ import { AppStyles } from '@theme';
 // steps
 import Steps from './Steps';
 
+import { GenerateSteps, AccountObject } from './types';
 /* types ==================================================================== */
-export type GenerateSteps = keyof typeof Steps;
-
-export interface AccountObject {
-    generatedAccount?: AccountLib.XRPL_Account;
-    passphrase?: string;
-    label?: string;
-    encryptionLevel?: EncryptionLevels;
-}
 
 export interface Props {}
 
@@ -88,10 +81,23 @@ class AccountGenerateView extends Component<Props, State> {
 
     saveAccount = async () => {
         const { account } = this.state;
+
+        let encryptionKey;
+
+        // if passphrase present use it, instead use Passcode to encrypt the private key
+        // WARNING: passcode should use just for low balance accounts
+        if (account.encryptionLevel === EncryptionLevels.Passphrase) {
+            encryptionKey = account.passphrase;
+        } else {
+            encryptionKey = CoreRepository.getSettings().passcode;
+        }
+
         // add account to store
         AccountRepository.add({
             account: account.generatedAccount,
-            passphrase: account.encryptionLevel === EncryptionLevels.Passphrase ? account.passphrase : null,
+            encryptionLevel: account.encryptionLevel,
+            encryptionKey,
+            accessLevel: AccessLevels.Full,
             label: account.label,
         });
     };

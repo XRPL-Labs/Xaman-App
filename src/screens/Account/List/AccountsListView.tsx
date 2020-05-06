@@ -11,9 +11,9 @@ import { View, Text, FlatList, TouchableHighlight, Image, ImageBackground } from
 import { Navigation } from 'react-native-navigation';
 
 // helpers
-import { Navigator, Images } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
-// import Flag from '@common/libs/ledger/parser/common/flag';
 
 // store
 import { AccountRepository } from '@store/repositories';
@@ -65,12 +65,8 @@ class AccountListView extends Component<Props, State> {
         Navigator.push(AppScreens.Account.Edit.Settings, {}, { account });
     };
 
-    // renderFlag = () => {};
-
     renderItem = (account: { item: AccountSchema }) => {
         const { item } = account;
-
-        // const flags = new Flag('Account', item.flags).parse();
 
         return (
             <TouchableHighlight
@@ -109,18 +105,6 @@ class AccountListView extends Component<Props, State> {
                             <Text style={[AppStyles.monoSubText, AppStyles.colorBlue]}>{item.address}</Text>
                         </View>
                     </View>
-                    {/* <View style={[AppStyles.row, styles.subRow]}>
-                        {keys(flags).map(k => {
-                            if (flags[k]) {
-                                return (
-                                    <View style={[styles.tag]}>
-                                        <Text style={styles.tagText}>{k.toUpperCase()}</Text>
-                                    </View>
-                                );
-                            }
-                            return null;
-                        })}
-                    </View> */}
                 </>
             </TouchableHighlight>
         );
@@ -172,7 +156,7 @@ class AccountListView extends Component<Props, State> {
                     </View>
                 ) : (
                     <View style={[AppStyles.contentContainer]}>
-                        <FlatList data={accounts} renderItem={this.renderItem} />
+                        <FlatList data={accounts} renderItem={this.renderItem} keyExtractor={(a) => a.address} />
                     </View>
                 )}
             </View>

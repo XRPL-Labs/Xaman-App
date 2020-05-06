@@ -1,12 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import { View, TouchableOpacity, TextInput, Text, ViewStyle, Animated } from 'react-native';
 
-import { Icon } from '@components';
+import { Icon } from '@components/Icon';
 
 import Localize from '@locale';
 
 import { AppSizes, AppColors, AppStyles } from '@theme';
 import styles from './styles';
+
 /* Types ==================================================================== */
 interface Props {
     editable?: boolean;
@@ -249,6 +250,7 @@ export default class PasswordInput extends Component<Props, State> {
         Animated.timing(this.animatedBarWidth, {
             toValue: absoluteWidth,
             duration: 700,
+            useNativeDriver: false,
         }).start();
 
         return (
@@ -269,7 +271,7 @@ export default class PasswordInput extends Component<Props, State> {
         return (
             <View style={[styles.inputWrapper, inputWrapperStyle, AppStyles.stretchSelf]}>
                 <TextInput
-                    ref={(r) => {
+                    ref={r => {
                         this.instance = r;
                     }}
                     editable={editable}
@@ -280,7 +282,7 @@ export default class PasswordInput extends Component<Props, State> {
                     multiline={false}
                     underlineColorAndroid="transparent"
                     style={[styles.input, inputStyle]}
-                    onChangeText={(text) => this.onChangeText(text)}
+                    onChangeText={text => this.onChangeText(text)}
                     placeholder={placeholder}
                     selectTextOnFocus={selectTextOnFocus}
                 />

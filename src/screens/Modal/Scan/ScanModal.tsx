@@ -3,28 +3,21 @@
  */
 
 import React, { Component } from 'react';
-import {
-    SafeAreaView,
-    View,
-    ImageBackground,
-    Text,
-    ActivityIndicator,
-    Alert,
-    Linking,
-    BackHandler,
-} from 'react-native';
+import { View, ImageBackground, Text, ActivityIndicator, Alert, Linking, BackHandler } from 'react-native';
+
+import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
+
 import { RNCamera } from 'react-native-camera';
 
 import { AccountRepository } from '@store/repositories';
 import { AccessLevels } from '@store/types';
 
-import { StringTypeDetector, StringDecoder, StringType, XrplDestination } from 'xumm-string-decode';
-import { Decode } from 'xrpl-tagged-address-codec';
-import { utils as AccountLibUtils } from 'xrpl-accountlib';
-
 import { AppScreens } from '@common/constants';
-import { Navigator, Images } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 import { Payload } from '@common/libs/payload';
+
+import { NormalizeDestination } from '@common/libs/utils';
 
 import Localize from '@locale';
 
@@ -39,6 +32,7 @@ import styles from './styles';
 export interface Props {
     onRead: (decoded: any) => void;
     type: StringType;
+    fallback?: boolean;
 }
 
 export interface State {
@@ -87,6 +81,30 @@ class ScanView extends Component<Props, State> {
         this.shouldRead = value;
     };
 
+    routeUser = async (screen: string, options: any, passProps: any) => {
+        // close scan modal
+        await Navigator.dismissModal();
+
+        // got to the root, this is for fallback option
+        try {
+            await Navigator.popToRoot();
+        } catch {
+            // ignore
+        }
+
+        if (screen.indexOf('modal.') !== -1) {
+            setTimeout(() => {
+                Navigator.showModal(screen, options, passProps);
+            }, 10);
+        } else {
+            setTimeout(() => {
+                Navigator.push(screen, options, passProps);
+            }, 10);
+        }
+
+        // close scan modal
+    };
+
     handlePayloadReference = async (uuid: string) => {
         this.setState({
             isLoading: true,
@@ -96,19 +114,14 @@ class ScanView extends Component<Props, State> {
             // fetch the payload
             const payload = await Payload.from(uuid);
 
-            // dismiss scan modal
-            await Navigator.dismissModal();
-
             // review the transaction
-            setTimeout(() => {
-                Navigator.showModal(
-                    AppScreens.Modal.ReviewTransaction,
-                    { modalPresentationStyle: 'fullScreen' },
-                    {
-                        payload,
-                    },
-                );
-            }, 0);
+            this.routeUser(
+                AppScreens.Modal.ReviewTransaction,
+                { modalPresentationStyle: 'fullScreen' },
+                {
+                    payload,
+                },
+            );
         } catch (e) {
             Alert.alert(
                 Localize.t('global.error'),
@@ -136,17 +149,13 @@ class ScanView extends Component<Props, State> {
                 {
                     text: Localize.t('global.submit'),
                     onPress: async () => {
-                        await Navigator.dismissModal();
-                        // review the transaction
-                        setTimeout(() => {
-                            Navigator.showModal(
-                                AppScreens.Modal.Submit,
-                                { modalPresentationStyle: 'fullScreen' },
-                                {
-                                    txblob,
-                                },
-                            );
-                        }, 0);
+                        this.routeUser(
+                            AppScreens.Modal.Submit,
+                            { modalPresentationStyle: 'fullScreen' },
+                            {
+                                txblob,
+                            },
+                        );
                     },
                     style: 'default',
                 },
@@ -155,50 +164,48 @@ class ScanView extends Component<Props, State> {
         );
     };
 
-    handleXrplDestination = async (destination: XrplDestination) => {
-        let address;
-        let tag;
+    handleXrplDestination = async (destination: XrplDestination & PayId) => {
+        // check if any account is configured
+        const availableAccounts = AccountRepository.getAccounts({ accessLevel: AccessLevels.Full });
 
-        // decode if it's x address
-        if (destination.to.startsWith('X')) {
-            try {
-                const decoded = Decode(destination.to);
-                address = decoded.account;
-                // @ts-ignore
-                tag = decoded.tag && decoded.tag;
-            } catch {
-                // ignore
-            }
-        } else if (AccountLibUtils.isValidAddress(destination.to)) {
-            address = destination.to;
-            tag = destination.tag;
-        }
-
-        // valid address
-        if (address) {
-            const availableAccounts = AccountRepository.getAccounts({ accessLevel: AccessLevels.Full });
-
-            if (availableAccounts.length > 0) {
-                await Navigator.dismissModal();
-
-                const paymentDestination = {
-                    address,
-                    tag,
-                };
-
-                Navigator.push(AppScreens.Transaction.Payment, {}, { scanResult: paymentDestination });
-            } else {
-                Alert.alert(
-                    Localize.t('global.noAccountConfigured'),
-                    Localize.t('global.pleaseAddAccountToSendPayments'),
-                    [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
-                    { cancelable: false },
+        if (availableAccounts.length > 0) {
+            if (destination.payId) {
+                this.routeUser(
+                    AppScreens.Transaction.Payment,
+                    {},
+                    {
+                        scanResult: {
+                            to: destination.payId,
+                        },
+                    },
                 );
+                return;
             }
+
+            let amount;
+
+            const { to, tag } = NormalizeDestination(destination);
+
+            // if amount present as XRP pass the amount
+            if (!destination.currency && destination.amount) {
+                amount = destination.amount;
+            }
+
+            this.routeUser(
+                AppScreens.Transaction.Payment,
+                {},
+                {
+                    scanResult: {
+                        to,
+                        tag,
+                    },
+                    amount,
+                },
+            );
         } else {
             Alert.alert(
-                Localize.t('global.error'),
-                Localize.t('global.scannedAddressIsNotAValidXRPLAddress'),
+                Localize.t('global.noAccountConfigured'),
+                Localize.t('global.pleaseAddAccountToSendPayments'),
                 [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
                 { cancelable: false },
             );
@@ -206,24 +213,13 @@ class ScanView extends Component<Props, State> {
     };
 
     handle = (content: any, detected: any) => {
-        const { onRead, type } = this.props;
+        const { onRead, type, fallback } = this.props;
 
-        if (type && detected.getType() !== type) {
-            // this is not the type we expected
-            let message = Localize.t('scan.theQRIsNotWhatWeExpect');
+        // normalize detected type
+        let detectedType = detected.getType();
 
-            if (type === StringType.XrplDestination) {
-                message = Localize.t('scan.scannedQRIsNotXRPAddress');
-            }
-
-            Alert.alert(
-                Localize.t('global.warning'),
-                message,
-                [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
-                { cancelable: false },
-            );
-
-            return;
+        if (detectedType === StringType.PayId) {
+            detectedType = StringType.XrplDestination;
         }
 
         // just return scanned content
@@ -236,9 +232,35 @@ class ScanView extends Component<Props, State> {
         const parsed = new StringDecoder(detected).getAny();
 
         // the other component wants to handle the decoded content
-        if (onRead) {
-            Navigator.dismissModal();
+        if (detectedType === type && onRead) {
             onRead(parsed);
+            Navigator.dismissModal();
+            return;
+        }
+
+        // fallback is not set
+        // this is not the type we expected
+        if (type && !fallback) {
+            let message;
+
+            switch (type) {
+                case StringType.XrplDestination:
+                    message = Localize.t('scan.scannedQRIsNotXRPAddress');
+                    break;
+                // @ts-ignore
+                case StringType.XummPayloadReference:
+                    message = Localize.t('scan.scannedQRIsNotXummPayload');
+                    break;
+                default:
+                    message = Localize.t('scan.theQRIsNotWhatWeExpect');
+            }
+
+            Alert.alert(
+                Localize.t('global.warning'),
+                message,
+                [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+                { cancelable: false },
+            );
             return;
         }
 
@@ -251,11 +273,18 @@ class ScanView extends Component<Props, State> {
                 this.handleSignedTransaction(parsed.txblob);
                 break;
             case StringType.XrplDestination:
+            case StringType.PayId:
                 this.handleXrplDestination(parsed);
                 break;
             default:
-                // nothing found
-                this.setShouldRead(true);
+                Alert.alert(
+                    Localize.t('global.warning'),
+                    Localize.t('scan.invalidQRTryNewOneOrTryAgain'),
+                    [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+                    {
+                        cancelable: false,
+                    },
+                );
         }
     };
 
@@ -326,18 +355,22 @@ class ScanView extends Component<Props, State> {
 
         if (isLoading) {
             return (
-                <SafeAreaView style={styles.container}>
+                <ImageBackground source={Images.BackgroundShapes} style={[AppStyles.container, AppStyles.paddingSml]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         <ActivityIndicator color={AppColors.blue} size="large" />
+                        <Spacer />
+                        <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
+                            {Localize.t('global.pleaseWait')}
+                        </Text>
                     </View>
-                </SafeAreaView>
+                </ImageBackground>
             );
         }
 
         return (
             <View style={styles.container}>
                 <RNCamera
-                    ref={ref => {
+                    ref={(ref) => {
                         this.camera = ref;
                     }}
                     style={AppStyles.flex1}

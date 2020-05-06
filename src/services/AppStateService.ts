@@ -1,17 +1,13 @@
 /**
  * App State Service
  * Used for detect App State and Net info and inactivity status
- * Also lock the screen on inactivity
  */
 
 import { AppState } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import EventEmitter from 'events';
 
-import { AppScreens } from '@common/constants';
-import { Navigator } from '@common/helpers';
-import { CoreRepository } from '@store/repositories';
-import { LoggerService, NavigationService } from '@services';
+import LoggerService from '@services/LoggerService';
 
 export enum NetStateStatus {
     Connected = 'Connected',
@@ -49,57 +45,11 @@ class AppStateService extends EventEmitter {
                 await this.setNetInfoListener();
                 await this.setAppStateListener();
 
-                // we just need to require the lock if user initialized the app the
-                NavigationService.on('setRoot', (root: string) => {
-                    if (root === 'DefaultStack') {
-                        // check if the app need to be lock in app startup
-                        this.checkLockScreen();
-
-                        // this will listen for app state changes and will check if we need to lock the app
-                        this.setLockRequireListener();
-                    }
-                });
                 return resolve();
             } catch (e) {
                 return reject(e);
             }
         });
-    };
-
-    lockScreen = () => {
-        // lock the app
-        this.locked = true;
-        Navigator.showOverlay(
-            AppScreens.Overlay.Lock,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            {
-                onUnlock: () => {
-                    this.locked = false;
-                },
-            },
-        );
-    };
-
-    checkLockScreen = async () => {
-        if (!this.locked) {
-            const coreSettings = CoreRepository.getSettings();
-            CoreRepository.getTimeLastUnlocked()
-                .then(passedMinutes => {
-                    if (passedMinutes >= coreSettings.minutesAutoLock) {
-                        // lock the app
-                        this.lockScreen();
-                    }
-                })
-                .catch(() => {
-                    // on error lock the screen as well
-                    this.lockScreen();
-                });
-        }
     };
 
     setNetState(isConnected: boolean) {
@@ -121,16 +71,16 @@ class AppStateService extends EventEmitter {
      * record net info changes
      */
     setNetInfoListener() {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             NetInfo.fetch()
-                .then(state => {
+                .then((state) => {
                     this.setNetState(state.isConnected);
                 })
                 .finally(() => {
                     return resolve();
                 });
 
-            NetInfo.addEventListener(state => {
+            NetInfo.addEventListener((state) => {
                 this.setNetState(state.isConnected);
             });
         });
@@ -140,8 +90,8 @@ class AppStateService extends EventEmitter {
      * record app state changes
      */
     setAppStateListener() {
-        return new Promise(resolve => {
-            AppState.addEventListener('change', nextAppState => {
+        return new Promise((resolve) => {
+            AppState.addEventListener('change', (nextAppState) => {
                 let appState;
                 switch (nextAppState) {
                     case 'inactive':
@@ -166,14 +116,6 @@ class AppStateService extends EventEmitter {
             });
 
             return resolve();
-        });
-    }
-
-    setLockRequireListener() {
-        this.on('appStateChange', () => {
-            if (this.prevAppState === AppStateStatus.Background && this.currentAppState === AppStateStatus.Active) {
-                this.checkLockScreen();
-            }
         });
     }
 }

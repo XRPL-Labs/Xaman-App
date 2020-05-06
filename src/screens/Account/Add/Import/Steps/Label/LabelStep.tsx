@@ -6,14 +6,14 @@ import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Alert, KeyboardAvoidingView } from 'react-native';
 
-import { getAccountInfo } from '@common/helpers';
+import { getAccountName } from '@common/helpers/resolver';
 // components
 import { Button, TextInput, Spacer, Footer } from '@components';
 
 // locale
 import Localize from '@locale';
 
-import { ImportSteps, AccountObject } from '@screens/Account/Add/Import';
+import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
 
 // style
 import { AppStyles } from '@theme';
@@ -22,8 +22,8 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     account: AccountObject;
-    goBack: (step?: ImportSteps, settings?: any) => void;
-    goNext: (step?: ImportSteps, settings?: any) => void;
+    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
+    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
 }
 
 export interface State {
@@ -43,7 +43,7 @@ class LabelStep extends Component<Props, State> {
     componentDidMount() {
         const { account } = this.props;
 
-        getAccountInfo(account.importedAccount.address)
+        getAccountName(account.importedAccount.address)
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     this.setState({

@@ -7,7 +7,10 @@
       "jest",
       "spellcheck"
     ],
-    "extends": "airbnb",
+    "extends": [
+      "airbnb",
+      "plugin:import/typescript"
+    ],
     "parserOptions":  {
       "ecmaVersion": 2017,
       "sourceType": "module"
@@ -23,10 +26,12 @@
     },
     "settings": {
       "import/resolver": {
-        "node": {
-          "extensions": [".js", ".ts", ".tsx", ".ios.js", ".android.js"]
-        }
-      }
+        "typescript": {}
+      },
+      "import/ignore": [
+        "node_modules",
+        ".(json)$"
+      ]
     },
     "rules": {
       "prettier/prettier": [0, {
@@ -92,8 +97,8 @@
       "react/jsx-one-expression-per-line": 0,
       "react/static-property-placement": 0,
       "import/prefer-default-export": 0,
-      "import/no-unresolved": "off",
-      "import/extensions": ["error", "never", { "packages": "always" }],
+      "import/no-unresolved": "error",
+      "import/extensions": ["error", "never", { "json": "always" }],
       "import/no-extraneous-dependencies": 0,
       "react-native/no-unused-styles": 2,
       "react-native/split-platform-components": 0,

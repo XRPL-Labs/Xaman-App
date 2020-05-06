@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty, isEqual, has } from 'lodash';
 import React, { Component } from 'react';
 import {
     View,
+    Alert,
     TextInput,
     Text,
     ActivityIndicator,
@@ -18,7 +19,7 @@ import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { LedgerService } from '@services';
 import { NormalizeAmount } from '@common/libs/utils';
-import { getAccountInfo } from '@common/helpers';
+import { getAccountName } from '@common/helpers/resolver';
 
 import { Button, InfoMessage, Spacer } from '@components';
 
@@ -89,59 +90,72 @@ class PaymentTemplate extends Component<Props, State> {
 
     checkForConversationRequired = async () => {
         const { transaction } = this.props;
-        const { isPartialPayment } = this.state;
+        const { account } = this.state;
 
-        if (transaction.Amount && transaction.Amount.currency !== 'XRP') {
-            // get source trust lines
-            const sourceLines = await LedgerService.getAccountLines(transaction.Account.address);
+        if (!account) return;
 
-            const { lines } = sourceLines;
+        try {
+            if (transaction.Amount && transaction.Amount.currency !== 'XRP') {
+                // get source trust lines
+                const sourceLines = await LedgerService.getAccountLines(transaction.Account.address);
 
-            const trustLine = lines.filter(
-                (l: any) => l.currency === transaction.Amount.currency && l.account === transaction.Amount.issuer,
-            )[0];
+                const { lines } = sourceLines;
 
-            if (!trustLine || parseFloat(trustLine.balance) < parseFloat(transaction.Amount.value)) {
-                if (isPartialPayment) return;
+                const trustLine = lines.filter(
+                    (l: any) => l.currency === transaction.Amount.currency && l.account === transaction.Amount.issuer,
+                )[0];
 
-                const PAIR = { issuer: transaction.Amount.issuer, currency: transaction.Amount.currency };
+                // if not have the same trust line or the balance is not covering requested value
+                // Pay with XRP instead
+                if (!trustLine || parseFloat(trustLine.balance) < parseFloat(transaction.Amount.value)) {
+                    const PAIR = { issuer: transaction.Amount.issuer, currency: transaction.Amount.currency };
 
-                const ledgerExchange = new LedgerExchange(PAIR);
-                // sync with latest order book
-                await ledgerExchange.sync();
+                    const ledgerExchange = new LedgerExchange(PAIR);
+                    // sync with latest order book
+                    await ledgerExchange.sync();
 
-                // get liquidity grade
-                const liquidityGrade = ledgerExchange.liquidityGrade('buy');
+                    // get liquidity grade
+                    const liquidityGrade = ledgerExchange.liquidityGrade('buy');
 
-                // not enough liquidity
-                if (liquidityGrade === 0) {
+                    // not enough liquidity
+                    if (liquidityGrade === 0) {
+                        this.setState({
+                            isPartialPayment: true,
+                            exchangeRate: 0,
+                        });
+                        return;
+                    }
+
+                    const exchangeRate = ledgerExchange.getExchangeRate('buy');
+                    const sendMaxXRP = new BigNumber(transaction.Amount.value).dividedBy(exchangeRate).decimalPlaces(6);
+
+                    // @ts-ignore
+                    transaction.SendMax = sendMaxXRP.toString();
+                    transaction.Flags = [txFlags.Payment.PartialPayment];
+
                     this.setState({
                         isPartialPayment: true,
-                        exchangeRate: 0,
+                        exchangeRate,
+                        xrpRoundedUp: sendMaxXRP.toString(),
                     });
-                    return;
+                } else {
+                    // check for transfer fee
+                    // add PartialPayment
+                    const issuerAccountInfo = await LedgerService.getAccountInfo(trustLine.account);
+                    if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
+                        transaction.Flags = [txFlags.Payment.PartialPayment];
+                    }
+
+                    if (transaction.SendMax) {
+                        transaction.SendMax = undefined;
+                    }
+                    this.setState({
+                        isPartialPayment: false,
+                    });
                 }
-
-                const exchangeRate = ledgerExchange.getExchangeRate('buy');
-                const sendMaxXRP = new BigNumber(transaction.Amount.value).dividedBy(exchangeRate).decimalPlaces(6);
-
-                // @ts-ignore
-                transaction.SendMax = sendMaxXRP.toString();
-                transaction.Flags = [txFlags.Payment.PartialPayment];
-
-                this.setState({
-                    isPartialPayment: true,
-                    exchangeRate,
-                    xrpRoundedUp: sendMaxXRP.toString(),
-                });
-            } else if (isPartialPayment) {
-                if (transaction.SendMax) {
-                    transaction.SendMax = undefined;
-                }
-                this.setState({
-                    isPartialPayment: false,
-                });
             }
+        } catch (e) {
+            Alert.alert(Localize.t('global.error'), Localize.t('payload.unableToCheckCurrencyConversion'));
         }
     };
 
@@ -153,13 +167,16 @@ class PaymentTemplate extends Component<Props, State> {
         });
 
         // fetch destination details
-        getAccountInfo(transaction.Destination.address)
+        getAccountName(transaction.Destination.address)
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     this.setState({
                         destinationName: res.name,
                     });
                 }
+            })
+            .catch(() => {
+                // ignore
             })
             .finally(() => {
                 this.setState({
@@ -204,7 +221,7 @@ class PaymentTemplate extends Component<Props, State> {
             <KeyboardAvoidingView keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0} behavior="position">
                 <View style={styles.label}>
                     <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                        {Localize.t('global.to')}:
+                        {Localize.t('global.to')}
                     </Text>
                 </View>
                 <View style={[styles.contentBox, styles.addressContainer]}>
@@ -216,7 +233,7 @@ class PaymentTemplate extends Component<Props, State> {
                                 'Loading...'
                             )
                         ) : (
-                            destinationName || Localize.t('global.unknown')
+                            destinationName || Localize.t('global.noNameFound')
                         )}
                     </Text>
                     <Text selectable numberOfLines={1} style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
@@ -233,7 +250,7 @@ class PaymentTemplate extends Component<Props, State> {
                 </View>
 
                 {/* Amount */}
-                <Text style={[styles.label]}>{Localize.t('global.amount')}:</Text>
+                <Text style={[styles.label]}>{Localize.t('global.amount')}</Text>
 
                 <View style={[styles.contentBox]}>
                     <TouchableOpacity
@@ -247,7 +264,7 @@ class PaymentTemplate extends Component<Props, State> {
                     >
                         <View style={[AppStyles.row, AppStyles.flex1]}>
                             <TextInput
-                                ref={r => {
+                                ref={(r) => {
                                     this.amountInput = r;
                                 }}
                                 keyboardType="decimal-pad"
@@ -295,7 +312,7 @@ class PaymentTemplate extends Component<Props, State> {
                             <>
                                 <Spacer size={Platform.OS === 'ios' ? 15 : 0} />
                                 <InfoMessage
-                                    label={Localize.t('payload.notEnoughtLiquidityToSendThisPayment')}
+                                    label={Localize.t('payload.notEnoughLiquidityToSendThisPayment')}
                                     type="error"
                                 />
                             </>
@@ -304,7 +321,7 @@ class PaymentTemplate extends Component<Props, State> {
 
                 {transaction.invoiceID && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.invoiceID')}:</Text>
+                        <Text style={[styles.label]}>{Localize.t('global.invoiceID')}</Text>
                         <View style={[styles.contentBox]}>
                             <Text style={styles.value}>{transaction.invoiceID}</Text>
                         </View>

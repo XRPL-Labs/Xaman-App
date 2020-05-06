@@ -8,7 +8,7 @@ import DeviceInfo from 'react-native-device-info';
 import { Navigation } from 'react-native-navigation';
 
 // helpers
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 
 // Storage
 import { CoreRepository } from '@store/repositories';
@@ -22,9 +22,7 @@ import * as screens from '@screens';
 // services
 import * as services from '@services';
 
-import { NetStateStatus } from '@services/AppStateService';
-
-export default class Application {
+class Application {
     storage: StorageBackend;
     initialized: boolean;
     logger: any;
@@ -47,7 +45,7 @@ export default class Application {
                 this.registerScreens,
                 this.initializeStorage,
                 this.loadAppLocale,
-                this.initAppServices,
+                this.initServices,
             ];
 
             // run them in waterfall
@@ -71,26 +69,19 @@ export default class Application {
     }
 
     boot = () => {
-        const { SocketService, AppStateService } = services;
+        const { AuthenticationService } = services;
 
-        if (AppStateService.netStatus === NetStateStatus.Connected) {
-            // first connect to the websocket
-            SocketService.connect()
-                .then(() => {
-                    const core = CoreRepository.getSettings();
+        const core = CoreRepository.getSettings();
 
-                    // if app initialized go to main screen
-                    if (core && core.initialized) {
-                        Navigator.startDefault();
-                    } else {
-                        Navigator.startOnboarding();
-                    }
-                })
-                .catch(() => {
-                    Navigator.startConnectionIssue();
-                });
+        // if app initialized go to main screen
+        if (core && core.initialized) {
+            // check if the app should be locked
+            // lock the app and the start the app
+            AuthenticationService.checkLockScreen().then(() => {
+                Navigator.startDefault();
+            });
         } else {
-            Navigator.startConnectionIssue();
+            Navigator.startOnboarding();
         }
     };
 
@@ -98,15 +89,16 @@ export default class Application {
         return this.storage.initialize();
     };
 
-    initAppServices = () => {
+    initServices = () => {
         return new Promise((resolve, reject) => {
             try {
+                const coreSettings = CoreRepository.getSettings();
                 const servicesPromise = [] as Array<Promise<any>>;
-                Object.keys(services).map(key => {
+                Object.keys(services).map((key) => {
                     // @ts-ignore
                     const service = services[key];
                     if (typeof service.initialize === 'function') {
-                        servicesPromise.push(service.initialize());
+                        servicesPromise.push(service.initialize(coreSettings));
                     }
                     return servicesPromise;
                 });
@@ -115,12 +107,12 @@ export default class Application {
                     .then(() => {
                         resolve();
                     })
-                    .catch(e => {
-                        this.logger.error('initAppServices Error:', e);
+                    .catch((e) => {
+                        this.logger.error('initServices Error:', e);
                         reject(e);
                     });
             } catch (e) {
-                this.logger.error('initAppServices Error:', e);
+                this.logger.error('initServices Error:', e);
             }
         });
     };
@@ -148,7 +140,7 @@ export default class Application {
     registerScreens = () => {
         return new Promise((resolve, reject) => {
             try {
-                Object.keys(screens).map(key => {
+                Object.keys(screens).map((key) => {
                     // @ts-ignore
                     const Screen = screens[key];
                     Navigation.registerComponent(Screen.screenName, () => Screen);
@@ -212,3 +204,5 @@ export default class Application {
         });
     };
 }
+
+export default new Application();

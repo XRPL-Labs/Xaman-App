@@ -1,7 +1,4 @@
-import AccountImportContainer, { ImportSteps, AccountObject } from './AccountImportView';
-
-/* types ==================================================================== */
-export { ImportSteps, AccountObject };
+import AccountImportContainer from './AccountImportView';
 
 /* Container ==================================================================== */
 export default AccountImportContainer;

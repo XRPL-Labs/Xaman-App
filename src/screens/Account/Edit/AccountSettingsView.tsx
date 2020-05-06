@@ -5,7 +5,10 @@
 import React, { Component, Fragment } from 'react';
 import { Alert, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 
-import { Navigator, Prompt, getAccountInfo } from '@common/helpers';
+import { Prompt } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+import { getAccountName } from '@common/helpers/resolver';
+
 import { AppScreens } from '@common/constants';
 
 import { AccountRepository } from '@store/repositories';
@@ -91,7 +94,7 @@ class AccountSettingsView extends Component<Props, State> {
         });
 
         // update catch for this account
-        getAccountInfo.cache.set(
+        getAccountName.cache.set(
             account.address,
             new Promise(resolve => {
                 resolve({ name: newLabel, source: 'internal:accounts' });

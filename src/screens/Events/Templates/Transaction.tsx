@@ -2,10 +2,11 @@ import React, { PureComponent } from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
 import isEmpty from 'lodash/isEmpty';
 
-import { TransactionsType } from '@common/libs/ledger/types';
+import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import { AccountSchema } from '@store/schemas/latest';
 
-import { Navigator, getAccountInfo } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
+import { getAccountName } from '@common/helpers/resolver';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 import { AppScreens } from '@common/constants';
 
@@ -47,6 +48,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
         const { item, account } = this.props;
 
         let address;
+        let tag;
 
         switch (item.Type) {
             case 'Payment':
@@ -54,6 +56,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
                     address = item.Account.address;
                 } else {
                     address = item.Destination.address;
+                    tag = item.Destination.tag;
                 }
                 break;
             case 'TrustSet':
@@ -61,6 +64,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
                 break;
             case 'EscrowCreate':
                 address = item.Destination.address;
+                tag = item.Destination.tag;
                 break;
             case 'EscrowFinish':
                 address = item.Owner;
@@ -73,6 +77,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
         if (
             item.Type === 'AccountSet' ||
             item.Type === 'SignerListSet' ||
+            item.Type === 'SetRegularKey' ||
             item.Type === 'OfferCreate' ||
             item.Type === 'OfferCancel'
         ) {
@@ -87,7 +92,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
             address,
         });
 
-        getAccountInfo(address)
+        getAccountName(address, tag)
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     this.setState({

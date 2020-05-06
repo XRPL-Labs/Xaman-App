@@ -22,7 +22,8 @@ import {
 
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
-import { Images } from '@common/helpers';
+import { Images } from '@common/helpers/images';
+import { Prompt } from '@common/helpers/interface';
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
@@ -39,9 +40,10 @@ import { StepsContext } from '../../Context';
 /* Component ==================================================================== */
 class DetailsStep extends Component {
     gradientHeight: Animated.Value;
+    amountInput: TextInput;
 
     static contextType = StepsContext;
-    context!: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
     constructor(props: undefined) {
         super(props);
@@ -54,7 +56,7 @@ class DetailsStep extends Component {
 
         if (height === 0) return;
 
-        Animated.timing(this.gradientHeight, { toValue: height }).start();
+        Animated.timing(this.gradientHeight, { toValue: height, useNativeDriver: false }).start();
     };
 
     goNext = () => {
@@ -67,34 +69,38 @@ class DetailsStep extends Component {
             return;
         }
 
-        const availableBalance = this.getAvailableBalance();
+        const availableBalance = new BigNumber(this.getAvailableBalance());
 
-        // check if amount is bigger than what user can spend
-        if (bAmount.toNumber() > availableBalance) {
-            Alert.alert(
-                Localize.t('global.error'),
-                Localize.t('send.amountIsBiggerThanYourSpend', { spendable: availableBalance }),
-            );
-            return;
-        }
+        let maxCanSend = availableBalance.toNumber();
 
         // check if balance can cover the transfer fee for non XRP currencies
         if (typeof currency !== 'string') {
-            const rate = new BigNumber(currency.transfer_rate)
-                .dividedBy(1000000)
-                .minus(1000)
-                .dividedBy(10);
+            const rate = new BigNumber(currency.transfer_rate).dividedBy(1000000).minus(1000).dividedBy(10);
 
-            const fee = bAmount
-                .multipliedBy(rate)
-                .dividedBy(100)
-                .decimalPlaces(6);
-            const after = bAmount.plus(fee).toNumber();
+            const fee = availableBalance.multipliedBy(rate).dividedBy(100).decimalPlaces(6);
+            maxCanSend = availableBalance.minus(fee).toNumber();
+        }
 
-            if (after > availableBalance) {
-                Alert.alert(Localize.t('global.error'), Localize.t('send.balanceIsNotEnoughForFee', { fee }));
-                return;
-            }
+        // check if amount is bigger than what user can spend
+        if (bAmount.toNumber() > maxCanSend) {
+            Prompt(
+                Localize.t('global.error'),
+                Localize.t('send.theMaxAmountYouCanSendIs', {
+                    spendable: availableBalance,
+                    currency: this.getCurrencyName(),
+                }),
+                [
+                    { text: Localize.t('global.cancel') },
+                    {
+                        text: Localize.t('global.update'),
+                        onPress: () => {
+                            setAmount(maxCanSend.toString());
+                        },
+                    },
+                ],
+                { type: 'default' },
+            );
+            return;
         }
 
         // last set amount parsed by bignumber
@@ -102,6 +108,17 @@ class DetailsStep extends Component {
 
         // go to next screen
         goNext();
+    };
+
+    getCurrencyName = (): string => {
+        const { currency } = this.context;
+
+        // XRP
+        if (typeof currency === 'string') {
+            return 'XRP';
+        }
+
+        return NormalizeCurrencyCode(currency.currency.currency);
     };
 
     getAvailableBalance = () => {
@@ -191,8 +208,7 @@ class DetailsStep extends Component {
                                     selected ? AppStyles.colorBlue : AppStyles.colorGreyDark,
                                 ]}
                             >
-                                {Localize.t('global.balance')}: {source.availableBalance}{' '}
-                                {`(${source.accountReserve} ${Localize.t('global.reserved')})`}
+                                {Localize.t('global.available')}: {source.availableBalance}
                             </Text>
                         </View>
                     </View>
@@ -253,7 +269,7 @@ class DetailsStep extends Component {
                             />
                             <View style={[{ paddingLeft: 10 }]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                                    {Localize.t('global.from')} :
+                                    {Localize.t('global.from')}
                                 </Text>
                             </View>
                             <AccordionPicker
@@ -261,7 +277,7 @@ class DetailsStep extends Component {
                                 items={accounts}
                                 renderItem={this.renderAccountItem}
                                 selectedItem={source}
-                                keyExtractor={i => i.address}
+                                keyExtractor={(i) => i.address}
                                 containerStyle={{ backgroundColor: AppColors.transparent }}
                             />
                         </View>
@@ -269,15 +285,15 @@ class DetailsStep extends Component {
                         <View style={[styles.rowItem]}>
                             <View style={[{ paddingLeft: 10 }]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                                    {Localize.t('global.currency')} :
+                                    {Localize.t('global.currency')}
                                 </Text>
                             </View>
                             <AccordionPicker
                                 onSelect={this.onCurrencyChange}
-                                items={['XRP', ...filter(source.lines, l => l.balance > 0)]}
+                                items={['XRP', ...filter(source.lines, (l) => l.balance > 0)]}
                                 renderItem={this.renderCurrencyItem}
                                 selectedItem={currency}
-                                keyExtractor={i => (typeof i === 'string' ? i : i.currency.id)}
+                                keyExtractor={(i) => (typeof i === 'string' ? i : i.currency.id)}
                                 containerStyle={{ backgroundColor: AppColors.transparent }}
                             />
                         </View>
@@ -286,19 +302,36 @@ class DetailsStep extends Component {
                         <View style={[styles.rowItem]}>
                             <View style={[{ paddingLeft: 10 }]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                                    {Localize.t('global.amount')}:
+                                    {Localize.t('global.amount')}
                                 </Text>
                             </View>
-                            <TextInput
-                                keyboardType="decimal-pad"
-                                autoCapitalize="words"
-                                onChangeText={this.onAmountChange}
-                                returnKeyType="done"
-                                placeholder="0"
-                                style={[styles.amountInput]}
-                                placeholderTextColor={AppColors.greyDark}
-                                value={amount}
-                            />
+                            <View style={[AppStyles.row]}>
+                                <View style={AppStyles.flex1}>
+                                    <TextInput
+                                        ref={(r) => {
+                                            this.amountInput = r;
+                                        }}
+                                        keyboardType="decimal-pad"
+                                        autoCapitalize="words"
+                                        onChangeText={this.onAmountChange}
+                                        returnKeyType="done"
+                                        placeholder="0"
+                                        style={[styles.amountInput]}
+                                        placeholderTextColor={AppColors.greyDark}
+                                        value={amount}
+                                    />
+                                </View>
+                                <Button
+                                    onPress={() => {
+                                        this.amountInput.focus();
+                                    }}
+                                    style={styles.editButton}
+                                    roundedSmall
+                                    iconSize={13}
+                                    light
+                                    icon="IconEdit"
+                                />
+                            </View>
                         </View>
                     </ScrollView>
                 </KeyboardAvoidingView>

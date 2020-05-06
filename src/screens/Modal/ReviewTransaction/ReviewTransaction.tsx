@@ -3,7 +3,6 @@
  */
 
 import { get, find, isEmpty } from 'lodash';
-import { Results } from 'realm';
 import React, { Component, Fragment } from 'react';
 import {
     Animated,
@@ -26,14 +25,15 @@ import { BlurView } from '@react-native-community/blur';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
-import { AccessLevels } from '@store/types';
 
 import { Payload } from '@common/libs/payload';
 import Submitter from '@common/libs/ledger/submitter';
 import { SignedObjectType, SubmitResultType } from '@common/libs/ledger/types';
 
 import { AppScreens } from '@common/constants';
-import { Images, Navigator, Toast, AlertModal, getNavigationBarHeight } from '@common/helpers';
+import { Toast, getNavigationBarHeight } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 
 import { PushNotificationsService, LedgerService, SocketService } from '@services';
 
@@ -56,7 +56,7 @@ export interface Props {
 }
 
 export interface State {
-    accounts: Results<AccountSchema>;
+    accounts: Array<AccountSchema>;
     source: AccountSchema;
     step: 'review' | 'submitting' | 'verifying' | 'result';
     signedObject: SignedObjectType;
@@ -72,6 +72,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     private deltaY: Animated.Value;
     private backHandler: any;
+    private panel: any;
     private sourcePicker: AccordionPicker;
 
     static options() {
@@ -85,28 +86,9 @@ class ReviewTransactionModal extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        // get available accounts to sign
-        const availableAccounts = AccountRepository.getAccounts({ accessLevel: AccessLevels.Full });
-
-        // choose preferred account for sign
-        // default account || first account
-        let preferredAccount;
-
-        if (!isEmpty(availableAccounts)) {
-            preferredAccount = find(availableAccounts, { default: true }) || availableAccounts[0];
-        }
-
-        // set the default source account
-        if (preferredAccount) {
-            // ignore if it's multisign
-            if (!props.payload.meta.multisign) {
-                props.payload.transaction.Account = { address: preferredAccount.address };
-            }
-        }
-
         this.state = {
-            accounts: availableAccounts,
-            source: preferredAccount,
+            accounts: AccountRepository.getSpendableAccounts(),
+            source: undefined,
             step: 'review',
             signedObject: undefined,
             submitResult: undefined,
@@ -125,10 +107,34 @@ class ReviewTransactionModal extends Component<Props, State> {
     }
 
     componentDidMount() {
+        const { payload } = this.props;
+        const { accounts } = this.state;
+
+        // back handler listener
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
 
         // update the accounts details before process the review
         LedgerService.updateAccountsDetails();
+
+        // choose preferred account for sign
+        // default account || first account
+        let preferredAccount;
+
+        if (!isEmpty(accounts)) {
+            preferredAccount = find(accounts, { default: true }) || accounts[0];
+        }
+
+        // set the default source account
+        if (preferredAccount) {
+            // ignore if it's multisign
+            if (!payload.meta.multisign) {
+                payload.transaction.Account = { address: preferredAccount.address };
+            }
+        }
+
+        this.setState({
+            source: preferredAccount,
+        });
     }
 
     componentDidCatch() {
@@ -223,7 +229,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         // check for asfDisableMaster
         if (payload.transaction.Type === 'AccountSet' && payload.transaction.SetFlag === 'asfDisableMaster') {
-            AlertModal({
+            Navigator.showAlertModal({
                 type: 'warning',
                 text: Localize.t('account.disableMasterKeyWarning'),
                 buttons: [
@@ -370,7 +376,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 type = Localize.t('events.setSignerList');
                 break;
             case 'TrustSet':
-                type = Localize.t('events.addATrustLine');
+                type = Localize.t('events.updateAccountCurrencies');
                 break;
             case 'OfferCreate':
                 type = Localize.t('events.createOffer');
@@ -395,7 +401,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         const { return_url_app } = payload.meta;
 
         if (return_url_app) {
-            Linking.canOpenURL(return_url_app).then(support => {
+            Linking.canOpenURL(return_url_app).then((support) => {
                 if (support) {
                     Linking.openURL(return_url_app);
                 } else {
@@ -426,10 +432,27 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         this.sourcePicker.updateContainerPosition();
 
-        if (id === 'bottom') {
+        if (id === 'up') {
             this.setState({ canScroll: true });
         }
     };
+
+    slideUp = () => {
+        setTimeout(() => {
+            if (this.panel) {
+                this.panel.snapTo({ index: 1 });
+            }
+        }, 10);
+    };
+
+    slideDown = () => {
+        setTimeout(() => {
+            if (this.panel) {
+                this.panel.snapTo({ index: 0 });
+            }
+        });
+    };
+
     onScroll = (event: any) => {
         const { contentOffset } = event.nativeEvent;
         if (contentOffset.y <= 0) {
@@ -590,12 +613,12 @@ class ReviewTransactionModal extends Component<Props, State> {
 
                             {payload.meta.custom_instruction && (
                                 <>
-                                    <Text style={[styles.xummAppLabelText]}>Subject:</Text>
+                                    <Text style={[styles.xummAppLabelText]}>{Localize.t('global.details')}</Text>
                                     <Text style={[styles.xummAppLabelInfo]}>{payload.meta.custom_instruction}</Text>
                                 </>
                             )}
 
-                            <Text style={[styles.xummAppLabelText]}>{Localize.t('global.type')}:</Text>
+                            <Text style={[styles.xummAppLabelText]}>{Localize.t('global.type')}</Text>
                             <Text style={[styles.xummAppLabelInfo, AppStyles.colorBlue, AppStyles.bold]}>
                                 {this.getTransactionType()}
                             </Text>
@@ -604,7 +627,10 @@ class ReviewTransactionModal extends Component<Props, State> {
                 </View>
 
                 <Interactable.View
-                    snapPoints={[{ y: 0 }, { y: this.getTopOffset(), id: 'bottom' }]}
+                    ref={(r) => {
+                        this.panel = r;
+                    }}
+                    snapPoints={[{ y: 0 }, { y: this.getTopOffset(), id: 'up' }]}
                     boundaries={{ top: this.getTopOffset() - 20 }}
                     animatedValueY={this.deltaY}
                     onSnap={this.onSnap}
@@ -628,18 +654,18 @@ class ReviewTransactionModal extends Component<Props, State> {
                                         {payload.payload.tx_type === 'SignIn' || payload.meta.multisign
                                             ? Localize.t('global.signAs')
                                             : Localize.t('global.signWith')}
-                                        :
                                     </Text>
                                 </View>
                                 <AccordionPicker
-                                    ref={r => {
+                                    ref={(r) => {
                                         this.sourcePicker = r;
                                     }}
                                     onSelect={this.onAccountChange}
                                     items={accounts}
                                     renderItem={this.renderAccountItem}
                                     selectedItem={source}
-                                    keyExtractor={i => i.address}
+                                    keyExtractor={(i) => i.address}
+                                    // onExpand={this.slideUp}
                                 />
                             </View>
 
@@ -655,8 +681,6 @@ class ReviewTransactionModal extends Component<Props, State> {
                             >
                                 <Button onPress={this.onAcceptPress} label={Localize.t('global.accept')} />
                             </View>
-                            <Spacer size={500} />
-                            <Text>Heheheheh</Text>
                         </ScrollView>
                     </View>
                 </Interactable.View>
@@ -742,7 +766,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                             {signedObject && (
                                 <Fragment key="txID">
                                     <Text style={[AppStyles.subtext, AppStyles.bold]}>
-                                        {Localize.t('send.transactionID')}:
+                                        {Localize.t('send.transactionID')}
                                     </Text>
                                     <Spacer />
                                     <Text style={[AppStyles.subtext]}>{signedObject.id}</Text>
@@ -816,14 +840,14 @@ class ReviewTransactionModal extends Component<Props, State> {
 
                 <View style={[AppStyles.flex3]}>
                     <View style={styles.detailsCard}>
-                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}:</Text>
+                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}</Text>
                         <Spacer />
                         <Text style={[AppStyles.p, AppStyles.monoBold]}>{submitResult.engineResult || '-'}</Text>
 
                         <Spacer />
                         <View style={AppStyles.hr} />
                         <Spacer />
-                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
+                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}</Text>
                         <Spacer />
 
                         <Text style={[AppStyles.subtext]}>{submitResult.message.toString()}</Text>
@@ -832,7 +856,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                         <View style={AppStyles.hr} />
                         <Spacer />
 
-                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('send.transactionID')}:</Text>
+                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('send.transactionID')}</Text>
                         <Spacer />
                         <Text style={[AppStyles.subtext]}>{signedObject.id}</Text>
 

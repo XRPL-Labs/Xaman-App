@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 import { AppColors, AppSizes, AppFonts } from '@theme';
 
-import { getBottomTabsHeight } from '@common/helpers';
+import { getBottomTabsHeight } from '@common/helpers/interface';
 
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({

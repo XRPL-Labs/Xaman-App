@@ -1,6 +1,5 @@
 /**
- * Generate Account/Explain seed/ secret numbers steps
-
+ * Import Account/Mnemonic alert step
  */
 
 import React, { Component } from 'react';
@@ -9,11 +8,11 @@ import { XRPL_Account } from 'xrpl-accountlib';
 
 // components
 import { Button, Icon, Footer, Spacer } from '@components';
-import { Images } from '@common/helpers';
+import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
 
-import { ImportSteps } from '@screens/Account/Add/Import';
+import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
 
 // style
 import { AppStyles } from '@theme';
@@ -21,8 +20,8 @@ import { AppStyles } from '@theme';
 /* types ==================================================================== */
 export interface Props {
     account: XRPL_Account;
-    goBack: (step?: ImportSteps, settings?: any) => void;
-    goNext: (step?: ImportSteps, settings?: any) => void;
+    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
+    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
 }
 
 export interface State {}

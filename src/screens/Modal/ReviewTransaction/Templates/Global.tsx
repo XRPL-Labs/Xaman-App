@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Alert } from 'react-native';
 
 import { LedgerService } from '@services';
 
 import { Amount } from '@common/libs/ledger/parser/common';
-import { TransactionsType } from '@common/libs/ledger/types';
+import { TransactionsType } from '@common/libs/ledger/transactions/types';
 
 // components
 // import { Spacer } from '@components';
@@ -35,20 +35,24 @@ class GlobalTemplate extends Component<Props, State> {
     componentDidMount() {
         const { transaction } = this.props;
 
-        const { Fee } = LedgerService.getLedgerStatus();
-        const minTransactionFee = new Amount(transaction.calculateFee(Fee)).dropsToXrp();
+        try {
+            const { Fee } = LedgerService.getLedgerStatus();
+            const minTransactionFee = new Amount(transaction.calculateFee(Fee)).dropsToXrp();
 
-        if (!transaction.Fee || Number(minTransactionFee) > Number(transaction.Fee)) {
-            // set the min transaction fee
-            transaction.Fee = minTransactionFee;
+            if (!transaction.Fee || Number(minTransactionFee) > Number(transaction.Fee)) {
+                // set the min transaction fee
+                transaction.Fee = minTransactionFee;
 
-            this.setState({
-                networkFee: Number(minTransactionFee),
-            });
-        } else {
-            this.setState({
-                networkFee: Number(transaction.Fee),
-            });
+                this.setState({
+                    networkFee: Number(minTransactionFee),
+                });
+            } else {
+                this.setState({
+                    networkFee: Number(transaction.Fee),
+                });
+            }
+        } catch {
+            Alert.alert(Localize.t('global.error', Localize.t('payload.unableToGetNetworkFee')));
         }
     }
 
@@ -60,7 +64,7 @@ class GlobalTemplate extends Component<Props, State> {
             <>
                 {transaction.Memos && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.memo')}:</Text>
+                        <Text style={[styles.label]}>{Localize.t('global.memo')}</Text>
                         <View style={[styles.contentBox]}>
                             {transaction.Memos.map((m: any) => {
                                 let memo = '';
@@ -77,7 +81,7 @@ class GlobalTemplate extends Component<Props, State> {
                     </>
                 )}
 
-                <Text style={[styles.label]}>{Localize.t('global.fee')}:</Text>
+                <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={styles.value}>{transaction.Fee || networkFee} XRP</Text>
                 </View>

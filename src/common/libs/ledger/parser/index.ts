@@ -1,8 +1,9 @@
 import { get, has } from 'lodash';
 
-import { LedgerTransactionType, TransactionJSONType, TransactionsType } from '@common/libs/ledger/types';
+import { LedgerTransactionType, TransactionJSONType } from '@common/libs/ledger/types';
 
-import * as Transactions from '../transactions';
+import * as Transactions from '@common/libs/ledger/transactions';
+import { TransactionsType } from '@common/libs/ledger/transactions/types';
 
 const parserFactory = (tx: LedgerTransactionType | TransactionJSONType): TransactionsType => {
     let passedObject = {} as LedgerTransactionType;

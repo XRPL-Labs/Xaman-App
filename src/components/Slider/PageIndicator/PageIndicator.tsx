@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { View, Animated, SafeAreaView, ViewStyle } from 'react-native';
 
 // components
-import { Button } from '@components';
+import { Button } from '@components/Button';
 
 import Localize from '@locale';
 

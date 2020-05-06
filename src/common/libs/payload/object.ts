@@ -1,9 +1,13 @@
 import { isString, isObject, has, get } from 'lodash';
 
 import parserFactory from '@common/libs/ledger/parser';
-import { TransactionJSONType, TransactionsType } from '@common/libs/ledger/types';
 
-import { ApiService, LoggerService, SocketService } from '@services';
+import { TransactionJSONType } from '@common/libs/ledger/types';
+import { TransactionsType } from '@common/libs/ledger/transactions/types';
+
+import ApiService from '@services/ApiService';
+import LoggerService from '@services/LoggerService';
+import SocketService from '@services/SocketService';
 
 // locale
 import Localize from '@locale';
@@ -24,6 +28,7 @@ import errors from './errors';
 // create logger
 const logger = LoggerService.createLogger('Payload');
 
+/* Payload  ==================================================================== */
 export class Payload {
     meta: MetaType;
     application: ApplicationType;
@@ -55,7 +60,7 @@ export class Payload {
      * build payload from inside the app
      * @param TxJson Ledger format TXJson
      */
-    static build(TxJson: TransactionJSONType): Promise<Payload> {
+    static build(TxJson: TransactionJSONType, message?: string): Promise<Payload> {
         const payload = {} as Payload;
 
         payload.application = {
@@ -69,6 +74,7 @@ export class Payload {
         payload.meta = {
             submit: true,
             generated: true,
+            custom_instruction: message,
         };
 
         payload.payload = {

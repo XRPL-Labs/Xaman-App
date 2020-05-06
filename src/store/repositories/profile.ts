@@ -14,10 +14,10 @@ class ProfileRepository extends BaseRepository {
         this.schema = ProfileSchema.schema;
     }
 
-    increaseIdempotency = () => {
+    updateIdempotency = (idempotency: number) => {
         const profile = this.getProfile();
         this.safeWrite(() => {
-            profile.idempotency += 1;
+            profile.idempotency = idempotency;
         });
     };
 

@@ -1,10 +1,9 @@
 /**
- * Generate Account/View Screen
+ * Import Account/Security step
  */
 
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text } from 'react-native';
-import { ImportSteps } from '@screens/Account/Add/Import';
 
 import { EncryptionLevels } from '@store/types';
 
@@ -14,10 +13,12 @@ import { Button, RadioButton, Footer } from '@components';
 // style
 import { AppStyles } from '@theme';
 
+import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
+
 /* types ==================================================================== */
 export interface Props {
-    goBack: (step?: ImportSteps, settings?: any) => void;
-    goNext: (step?: ImportSteps, settings?: any) => void;
+    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
+    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
 }
 
 export interface State {
@@ -64,7 +65,7 @@ class SecurityStep extends Component<Props, State> {
                             this.onRadioButtonPress('passcode');
                         }}
                         description={Localize.t('account.passcodeOptionDesc')}
-                        labelSmall={Localize.t('account.singWithPasscode')}
+                        labelSmall={Localize.t('account.signWithPasscode')}
                         label={Localize.t('global.standard')}
                         checked={security === 'passcode'}
                     />
@@ -74,7 +75,7 @@ class SecurityStep extends Component<Props, State> {
                             this.onRadioButtonPress('passphrase');
                         }}
                         description={Localize.t('account.passphraseOptionDesc')}
-                        labelSmall={Localize.t('account.singWithPassphrase')}
+                        labelSmall={Localize.t('account.signWithPassphrase')}
                         label={Localize.t('global.extraSecurity')}
                         checked={security === 'passphrase'}
                     />

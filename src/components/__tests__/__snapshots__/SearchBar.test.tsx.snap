@@ -79,7 +79,6 @@ exports[`[SearchBar] renders correctly 1`] = `
   <View
     accessible={true}
     focusable={true}
-    isTVSelectable={true}
     onClick={[Function]}
     onResponderGrant={[Function]}
     onResponderMove={[Function]}
@@ -208,7 +207,6 @@ exports[`[SearchBar] should clear text 1`] = `
   <View
     accessible={true}
     focusable={true}
-    isTVSelectable={true}
     onClick={[Function]}
     onResponderGrant={[Function]}
     onResponderMove={[Function]}
@@ -337,7 +335,6 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
   <View
     accessible={true}
     focusable={true}
-    isTVSelectable={true}
     onClick={[Function]}
     onResponderGrant={[Function]}
     onResponderMove={[Function]}

@@ -3,9 +3,9 @@
  */
 
 import React, { Component } from 'react';
-import { View, Animated, Text } from 'react-native';
+import { View, Animated, Text, StyleSheet } from 'react-native';
 
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 // components
@@ -61,6 +61,7 @@ class AlertModal extends Component<Props, State> {
             Animated.timing(this.animatedColor, {
                 toValue: 150,
                 duration: 350,
+                useNativeDriver: false,
             }),
         ]).start();
     }
@@ -77,6 +78,7 @@ class AlertModal extends Component<Props, State> {
             Animated.timing(this.animatedColor, {
                 toValue: 0,
                 duration: 100,
+                useNativeDriver: false,
             }),
         ]).start(() => {
             Navigator.dismissOverlay();
@@ -109,20 +111,35 @@ class AlertModal extends Component<Props, State> {
     };
 
     renderTitle = () => {
-        const { type } = this.props;
+        const { type, title } = this.props;
+
+        let style;
+        let text;
 
         switch (type) {
             case 'error':
-                return <Text style={[styles.title, styles.titleError]}>{Localize.t('global.error')}</Text>;
+                style = StyleSheet.flatten([styles.title, styles.titleError]);
+                text = Localize.t('global.error');
+                break;
             case 'info':
-                return <Text style={[styles.title, styles.titleInfo]}>{Localize.t('global.info')}</Text>;
+                style = StyleSheet.flatten([styles.title, styles.titleInfo]);
+                text = Localize.t('global.info');
+                break;
             case 'warning':
-                return <Text style={[styles.title, styles.titleWarning]}>{Localize.t('global.warning')}</Text>;
+                style = StyleSheet.flatten([styles.title, styles.titleWarning]);
+                text = Localize.t('global.warning');
+                break;
             case 'success':
-                return <Text style={[styles.title, styles.titleSuccess]}>{Localize.t('global.success')}</Text>;
+                style = StyleSheet.flatten([styles.title, styles.titleSuccess]);
+                text = Localize.t('global.success');
+                break;
             default:
-                return <Text style={[styles.title, styles.titleSuccess]}>{Localize.t('global.success')}</Text>;
+                style = StyleSheet.flatten([styles.title, styles.titleSuccess]);
+                text = Localize.t('global.success');
+                break;
         }
+
+        return <Text style={style}>{title || text}</Text>;
     };
 
     renderButtons = () => {

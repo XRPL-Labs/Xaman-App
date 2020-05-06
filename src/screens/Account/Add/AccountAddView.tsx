@@ -5,7 +5,8 @@
 import React, { Component } from 'react';
 import { View, Text, Image, ImageBackground } from 'react-native';
 
-import { Navigator, Images } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
 // components

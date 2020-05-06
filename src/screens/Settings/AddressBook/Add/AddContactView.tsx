@@ -8,7 +8,9 @@ import { StringType, XrplDestination } from 'xumm-string-decode';
 import * as AccountLib from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
 
-import { Navigator, Toast } from '@common/helpers';
+import { Toast } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+
 import { AppScreens } from '@common/constants';
 
 import { ContactRepository } from '@store/repositories';
@@ -85,6 +87,13 @@ class AddContactView extends Component<Props, State> {
 
         if (!AccountLib.utils.isValidAddress(address)) {
             return Alert.alert(Localize.t('global.invalidAddress'));
+        }
+
+        // check if any contact is already exist with this address and tag
+        const existContacts = ContactRepository.query({ address, destinationTag: tag });
+
+        if (!existContacts.isEmpty()) {
+            return Alert.alert(Localize.t('settings.contactAlreadyExist'));
         }
 
         ContactRepository.create({

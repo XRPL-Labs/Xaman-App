@@ -13,7 +13,7 @@ import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 import { BiometryType } from '@store/types';
 
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 
 import { Header, Switch, Icon } from '@components';
 
@@ -84,10 +84,17 @@ class SecuritySettingsView extends Component<Props, State> {
     };
 
     changeBiometricMethod = (value: boolean) => {
+        const { isSensorAvailable } = this.state;
+
         if (value) {
+            if (!isSensorAvailable) {
+                Alert.alert(Localize.t('global.error'), Localize.t('global.biometricIsNotAvailable'));
+                return;
+            }
+
             FingerprintScanner.authenticate({ description: Localize.t('global.authenticate'), fallbackEnabled: true })
                 .then(() => {
-                    FingerprintScanner.isSensorAvailable().then(biometryType => {
+                    FingerprintScanner.isSensorAvailable().then((biometryType) => {
                         let type;
 
                         switch (biometryType) {
@@ -177,8 +184,14 @@ class SecuritySettingsView extends Component<Props, State> {
         );
     };
 
+    eraseDataChange = (value: boolean) => {
+        CoreRepository.saveSettings({
+            purgeOnBruteForce: value,
+        });
+    };
+
     render() {
-        const { biometricEnabled, isSensorAvailable, coreSettings } = this.state;
+        const { biometricEnabled, coreSettings } = this.state;
 
         return (
             <View testID="security-settings-view" style={[styles.container]}>
@@ -228,16 +241,25 @@ class SecuritySettingsView extends Component<Props, State> {
                         </View>
                     </TouchableOpacity>
 
-                    {isSensorAvailable && (
-                        <View style={styles.row}>
-                            <View style={[AppStyles.flex3]}>
-                                <Text style={styles.label}>{Localize.t('settings.biometricAuthentication')}</Text>
-                            </View>
-                            <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                                <Switch checked={biometricEnabled} onChange={this.biometricMethodChange} />
-                            </View>
+                    <View style={styles.row}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text style={styles.label}>{Localize.t('settings.biometricAuthentication')}</Text>
                         </View>
-                    )}
+                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Switch checked={biometricEnabled} onChange={this.biometricMethodChange} />
+                        </View>
+                    </View>
+
+                    <Text style={styles.descriptionText}>{Localize.t('settings.additionalSecurity')}</Text>
+                    <View style={styles.row}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text style={styles.label}>{Localize.t('settings.eraseData')}</Text>
+                        </View>
+                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Switch checked={coreSettings.purgeOnBruteForce} onChange={this.eraseDataChange} />
+                        </View>
+                    </View>
+                    <Text style={styles.destructionLabel}>{Localize.t('settings.eraseDataDescription')}</Text>
                 </ScrollView>
             </View>
         );

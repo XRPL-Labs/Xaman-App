@@ -11,13 +11,22 @@ import { Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
 import { AppScreens } from '@common/constants';
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 
 import { CurrencySchema } from '@store/schemas/latest';
-import { ProfileRepository, CounterPartyRepository, CurrencyRepository } from '@store/repositories';
+
+import ProfileRepository from '@store/repositories/profile';
+import CounterPartyRepository from '@store/repositories/counterParty';
+import CurrencyRepository from '@store/repositories/currency';
 
 import { Payload, PayloadType } from '@common/libs/payload';
-import { LoggerService, ApiService, NavigationService, PushNotificationsService } from '@services';
+
+// services
+import PushNotificationsService from '@services/PushNotificationsService';
+import NavigationService from '@services/NavigationService';
+import ApiService from '@services/ApiService';
+import SocketService from '@services/SocketService';
+import LoggerService from '@services/LoggerService';
 
 // Locale
 import Localize from '@locale';
@@ -77,11 +86,11 @@ class BackendService {
                 // clear the CounterParty store
                 CounterPartyRepository.deleteAll();
 
-                map(details, async value => {
+                map(details, async (value) => {
                     const normalizedList = [] as CurrencySchema[];
 
                     await Promise.all(
-                        map(value.currencies, async c => {
+                        map(value.currencies, async (c) => {
                             const currency = await CurrencyRepository.upsert(
                                 {
                                     id: uuidv4(),
@@ -240,14 +249,14 @@ class BackendService {
     Get details for an xrp address
     */
     getAddressInfo = (address: string) => {
-        return ApiService.addressInfo.get(address);
+        return ApiService.addressInfo.get(address, null, { 'X-XummNet': SocketService.chain });
     };
 
     /*
     Look up on username's and addresses
     */
     lookup = (content: string) => {
-        return ApiService.lookup.get(content);
+        return ApiService.lookup.get(content, null, { 'X-XummNet': SocketService.chain });
     };
 
     /*

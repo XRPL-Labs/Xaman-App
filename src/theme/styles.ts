@@ -4,7 +4,8 @@
 
 /* eslint-disable spellcheck/spell-checker */
 import { StyleSheet } from 'react-native';
-import { getBottomTabsHeight, isIOS10 } from '@common/helpers';
+import { getBottomTabsHeight, isIOS10 } from '@common/helpers/interface';
+
 import Colors from './colors';
 import Fonts from './fonts';
 import Sizes from './sizes';

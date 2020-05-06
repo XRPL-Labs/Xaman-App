@@ -8,42 +8,41 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* XUMMTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* XUMMTests.m */; };
-		08059B0C1B81BF11E3132321 /* libPods-XUMM-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E0C066145EE70394261FC9D5 /* libPods-XUMM-tvOS.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		15F392B561FAFA4960E11E26 /* libPods-XUMM-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B0D6DCD97D010F5C335C3445 /* libPods-XUMM-tvOSTests.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* XUMMTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* XUMMTests.m */; };
-		383A503A9E6B738390CE09E8 /* libPods-XUMM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C4C7B289A37E4331D18DB92 /* libPods-XUMM.a */; };
-		A21203A92370394300687020 /* Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = A21203A12370394200687020 /* Toast.m */; };
-		A21203AA2370394300687020 /* Crypto.m in Sources */ = {isa = PBXBuildFile; fileRef = A21203A52370394200687020 /* Crypto.m */; };
-		A21203AB2370394300687020 /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = A21203A82370394200687020 /* Utils.m */; };
-		A21203AD23703BA100687020 /* UIView+Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = A21203AC23703BA100687020 /* UIView+Toast.m */; };
-		A21CC9E022DE0E7C0010B717 /* UbuntuMono-RegularItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A21CC9DC22DE0E7C0010B717 /* UbuntuMono-RegularItalic.ttf */; };
-		A21CC9E122DE0E7C0010B717 /* UbuntuMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A21CC9DD22DE0E7C0010B717 /* UbuntuMono-Regular.ttf */; };
-		A21CC9E222DE0E7C0010B717 /* UbuntuMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A21CC9DE22DE0E7C0010B717 /* UbuntuMono-Bold.ttf */; };
-		A21CC9E322DE0E7C0010B717 /* UbuntuMono-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A21CC9DF22DE0E7C0010B717 /* UbuntuMono-BoldItalic.ttf */; };
-		A237DE4A23784C6400711B42 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A237DE4823784C6400711B42 /* Social.framework */; };
-		A237DE4C23784C6C00711B42 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A237DE4B23784C6C00711B42 /* MessageUI.framework */; };
-		A246C4DC22982B3300DAD6AA /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = A246C4DB22982B3300DAD6AA /* main.jsbundle */; };
-		A250860722CF4C0500341CC3 /* Proxima Nova Alt Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = A25085FF22CF4C0500341CC3 /* Proxima Nova Alt Thin.otf */; };
-		A250860822CF4C0500341CC3 /* Proxima Nova Alt Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = A250860022CF4C0500341CC3 /* Proxima Nova Alt Bold.otf */; };
-		A250860922CF4C0500341CC3 /* Proxima Nova Extrabold.otf in Resources */ = {isa = PBXBuildFile; fileRef = A250860122CF4C0500341CC3 /* Proxima Nova Extrabold.otf */; };
-		A250860A22CF4C0500341CC3 /* Proxima Nova Alt Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = A250860222CF4C0500341CC3 /* Proxima Nova Alt Light.otf */; };
-		A250860B22CF4C0500341CC3 /* Proxima Nova Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = A250860322CF4C0500341CC3 /* Proxima Nova Black.otf */; };
-		A250860C22CF4C0500341CC3 /* Proxima Nova Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = A250860422CF4C0500341CC3 /* Proxima Nova Bold.otf */; };
-		A250860D22CF4C0500341CC3 /* ProximaNova-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = A250860522CF4C0500341CC3 /* ProximaNova-Regular.otf */; };
-		A250860E22CF4C0500341CC3 /* Proxima Nova Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = A250860622CF4C0500341CC3 /* Proxima Nova Thin.otf */; };
-		A28FABA423840D19008708FA /* UIView+QRCode.m in Sources */ = {isa = PBXBuildFile; fileRef = A28FAB9A23840D19008708FA /* UIView+QRCode.m */; };
-		A28FABA523840D19008708FA /* QRCode.m in Sources */ = {isa = PBXBuildFile; fileRef = A28FAB9B23840D19008708FA /* QRCode.m */; };
-		A28FABA623840D19008708FA /* QRCodeGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = A28FABA023840D19008708FA /* QRCodeGenerator.m */; };
-		A28FABA723840D19008708FA /* CIColor+QRCode.m in Sources */ = {isa = PBXBuildFile; fileRef = A28FABA123840D19008708FA /* CIColor+QRCode.m */; };
-		A28FABA823840D19008708FA /* NSString+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = A28FABA223840D19008708FA /* NSString+Utils.m */; };
-		A2E13D3C228312BA006EB068 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A2E13D3B228312BA006EB068 /* GoogleService-Info.plist */; };
-		F5962191861564326BFC1C32 /* libPods-XUMMTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C305AF740DF42F112DE7159 /* libPods-XUMMTests.a */; };
+		659EE4F1BFBB4F006DE144D6 /* libPods-XUMM-XUMMTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 28F280297542E3C03C7DAEAD /* libPods-XUMM-XUMMTests.a */; };
+		6C096E355B0FEB859CB472EF /* libPods-XUMM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F7DF66E5B8718EED27621F25 /* libPods-XUMM.a */; };
+		86464F73F86250987049029A /* libPods-XUMM-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CB2A36507F3C531E9484631 /* libPods-XUMM-tvOSTests.a */; };
+		9E87B1725D6A58654AF5721D /* libPods-XUMM-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 739581791CFD3CC03B813515 /* libPods-XUMM-tvOS.a */; };
+		A2AFF12E243E79C30007005E /* Proxima Nova Alt Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */; };
+		A2AFF12F243E79C30007005E /* UbuntuMono-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10B243E79C30007005E /* UbuntuMono-BoldItalic.ttf */; };
+		A2AFF130243E79C30007005E /* UbuntuMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10C243E79C30007005E /* UbuntuMono-Bold.ttf */; };
+		A2AFF131243E79C30007005E /* Proxima Nova Alt Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10D243E79C30007005E /* Proxima Nova Alt Bold.otf */; };
+		A2AFF132243E79C30007005E /* UbuntuMono-RegularItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10E243E79C30007005E /* UbuntuMono-RegularItalic.ttf */; };
+		A2AFF133243E79C30007005E /* Proxima Nova Extrabold.otf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10F243E79C30007005E /* Proxima Nova Extrabold.otf */; };
+		A2AFF134243E79C30007005E /* Proxima Nova Alt Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF110243E79C30007005E /* Proxima Nova Alt Light.otf */; };
+		A2AFF135243E79C30007005E /* UbuntuMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF111243E79C30007005E /* UbuntuMono-Regular.ttf */; };
+		A2AFF136243E79C30007005E /* Proxima Nova Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF112243E79C30007005E /* Proxima Nova Black.otf */; };
+		A2AFF137243E79C30007005E /* Proxima Nova Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF113243E79C30007005E /* Proxima Nova Bold.otf */; };
+		A2AFF138243E79C30007005E /* ProximaNova-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF114243E79C30007005E /* ProximaNova-Regular.otf */; };
+		A2AFF139243E79C30007005E /* Proxima Nova Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF115243E79C30007005E /* Proxima Nova Thin.otf */; };
+		A2AFF13A243E79C30007005E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF116243E79C30007005E /* GoogleService-Info.plist */; };
+		A2AFF13B243E79C30007005E /* QRCode.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF119243E79C30007005E /* QRCode.m */; };
+		A2AFF13C243E79C30007005E /* UIView+QRCode.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF11A243E79C30007005E /* UIView+QRCode.m */; };
+		A2AFF13D243E79C30007005E /* Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF11C243E79C30007005E /* Toast.m */; };
+		A2AFF13E243E79C30007005E /* QRCodeGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF123243E79C30007005E /* QRCodeGenerator.m */; };
+		A2AFF13F243E79C30007005E /* CIColor+QRCode.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF124243E79C30007005E /* CIColor+QRCode.m */; };
+		A2AFF140243E79C30007005E /* NSString+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF125243E79C30007005E /* NSString+Utils.m */; };
+		A2AFF141243E79C30007005E /* UIView+Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF127243E79C30007005E /* UIView+Toast.m */; };
+		A2AFF142243E79C30007005E /* Crypto.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF12A243E79C30007005E /* Crypto.m */; };
+		A2AFF143243E79C30007005E /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF12D243E79C30007005E /* Utils.m */; };
+		A2B145CB243E935F00E952B6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A2B145CA243E935F00E952B6 /* LaunchScreen.storyboard */; };
+		A2B9D13E2449BAA400259841 /* UserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = A2B9D13D2449B83C00259841 /* UserDefaults.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,64 +67,63 @@
 		00E356EE1AD99517003FC87E /* XUMMTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XUMMTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* XUMMTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XUMMTests.m; sourceTree = "<group>"; };
+		10169F9F05526CC53D9D64D0 /* Pods-XUMM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM.release.xcconfig"; path = "Target Support Files/Pods-XUMM/Pods-XUMM.release.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* XUMM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XUMM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = XUMM/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = XUMM/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = XUMM/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = XUMM/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = XUMM/main.m; sourceTree = "<group>"; };
+		18BD82E68265DF34B24CA90E /* Pods-XUMM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM.debug.xcconfig"; path = "Target Support Files/Pods-XUMM/Pods-XUMM.debug.xcconfig"; sourceTree = "<group>"; };
+		28F280297542E3C03C7DAEAD /* libPods-XUMM-XUMMTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-XUMM-XUMMTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E47B1E0B4A5D006451C7 /* XUMM-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "XUMM-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* XUMM-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "XUMM-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		35DABE805DF1899F2DFCBACE /* Pods-XUMM-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-XUMM-tvOSTests/Pods-XUMM-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		4C305AF740DF42F112DE7159 /* libPods-XUMMTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-XUMMTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5C4C7B289A37E4331D18DB92 /* libPods-XUMM.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-XUMM.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6657FFC3D8E96728DE35FEF6 /* Pods-XUMM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM.debug.xcconfig"; path = "Target Support Files/Pods-XUMM/Pods-XUMM.debug.xcconfig"; sourceTree = "<group>"; };
-		8A8B936EF8D7480D64C0A808 /* Pods-XUMM-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-XUMM-tvOS/Pods-XUMM-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		98E153D192941035BD93AD96 /* Pods-XUMMTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMMTests.debug.xcconfig"; path = "Target Support Files/Pods-XUMMTests/Pods-XUMMTests.debug.xcconfig"; sourceTree = "<group>"; };
-		9FD52D9A10D0A0CC94C0041B /* Pods-XUMM-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM-tvOS.release.xcconfig"; path = "Target Support Files/Pods-XUMM-tvOS/Pods-XUMM-tvOS.release.xcconfig"; sourceTree = "<group>"; };
-		A21203A12370394200687020 /* Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Toast.m; sourceTree = "<group>"; };
-		A21203A22370394200687020 /* Toast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Toast.h; sourceTree = "<group>"; };
-		A21203A42370394200687020 /* Crypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Crypto.h; sourceTree = "<group>"; };
-		A21203A52370394200687020 /* Crypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Crypto.m; sourceTree = "<group>"; };
-		A21203A72370394200687020 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
-		A21203A82370394200687020 /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
-		A21203AC23703BA100687020 /* UIView+Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Toast.m"; sourceTree = "<group>"; };
-		A21203AE23703BAA00687020 /* UIView+Toast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Toast.h"; sourceTree = "<group>"; };
-		A21CC9DC22DE0E7C0010B717 /* UbuntuMono-RegularItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-RegularItalic.ttf"; sourceTree = "<group>"; };
-		A21CC9DD22DE0E7C0010B717 /* UbuntuMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-Regular.ttf"; sourceTree = "<group>"; };
-		A21CC9DE22DE0E7C0010B717 /* UbuntuMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-Bold.ttf"; sourceTree = "<group>"; };
-		A21CC9DF22DE0E7C0010B717 /* UbuntuMono-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-BoldItalic.ttf"; sourceTree = "<group>"; };
-		A237DE4823784C6400711B42 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
-		A237DE4B23784C6C00711B42 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		A246C4DB22982B3300DAD6AA /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; name = main.jsbundle; path = XUMM/main.jsbundle; sourceTree = "<group>"; };
-		A25085FF22CF4C0500341CC3 /* Proxima Nova Alt Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Alt Thin.otf"; sourceTree = "<group>"; };
-		A250860022CF4C0500341CC3 /* Proxima Nova Alt Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Alt Bold.otf"; sourceTree = "<group>"; };
-		A250860122CF4C0500341CC3 /* Proxima Nova Extrabold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Extrabold.otf"; sourceTree = "<group>"; };
-		A250860222CF4C0500341CC3 /* Proxima Nova Alt Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Alt Light.otf"; sourceTree = "<group>"; };
-		A250860322CF4C0500341CC3 /* Proxima Nova Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Black.otf"; sourceTree = "<group>"; };
-		A250860422CF4C0500341CC3 /* Proxima Nova Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Bold.otf"; sourceTree = "<group>"; };
-		A250860522CF4C0500341CC3 /* ProximaNova-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Regular.otf"; sourceTree = "<group>"; };
-		A250860622CF4C0500341CC3 /* Proxima Nova Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Thin.otf"; sourceTree = "<group>"; };
-		A28FAB9823840D19008708FA /* QRCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRCode.h; sourceTree = "<group>"; };
-		A28FAB9A23840D19008708FA /* UIView+QRCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+QRCode.m"; sourceTree = "<group>"; };
-		A28FAB9B23840D19008708FA /* QRCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCode.m; sourceTree = "<group>"; };
-		A28FAB9C23840D19008708FA /* UIView+QRCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+QRCode.h"; sourceTree = "<group>"; };
-		A28FAB9E23840D19008708FA /* NSString+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Utils.h"; sourceTree = "<group>"; };
-		A28FAB9F23840D19008708FA /* CIColor+QRCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CIColor+QRCode.h"; sourceTree = "<group>"; };
-		A28FABA023840D19008708FA /* QRCodeGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCodeGenerator.m; sourceTree = "<group>"; };
-		A28FABA123840D19008708FA /* CIColor+QRCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CIColor+QRCode.m"; sourceTree = "<group>"; };
-		A28FABA223840D19008708FA /* NSString+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Utils.m"; sourceTree = "<group>"; };
-		A28FABA323840D19008708FA /* QRCodeGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRCodeGenerator.h; sourceTree = "<group>"; };
-		A29F8942228425D9005C3F00 /* XUMM.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = XUMM.entitlements; path = XUMM/XUMM.entitlements; sourceTree = "<group>"; };
-		A2E13D3B228312BA006EB068 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "XUMM/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		A57276F5ABE090647D0AA8D0 /* Pods-XUMM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM.release.xcconfig"; path = "Target Support Files/Pods-XUMM/Pods-XUMM.release.xcconfig"; sourceTree = "<group>"; };
-		B0D6DCD97D010F5C335C3445 /* libPods-XUMM-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-XUMM-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BD85708E47F856DAA8FFD28B /* Pods-XUMMTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMMTests.release.xcconfig"; path = "Target Support Files/Pods-XUMMTests/Pods-XUMMTests.release.xcconfig"; sourceTree = "<group>"; };
-		E0C066145EE70394261FC9D5 /* libPods-XUMM-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-XUMM-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D4048D747DAD947C65944D0 /* Pods-XUMM-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-XUMM-tvOSTests/Pods-XUMM-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		3C28A874F6EBA770B0EF5C34 /* Pods-XUMM-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-XUMM-tvOS/Pods-XUMM-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		47F14D3C3D5F5648D1DAB5F0 /* Pods-XUMM-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-XUMM-tvOSTests/Pods-XUMM-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		739581791CFD3CC03B813515 /* libPods-XUMM-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-XUMM-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7609C68B14DB18314E28687D /* Pods-XUMM-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM-tvOS.release.xcconfig"; path = "Target Support Files/Pods-XUMM-tvOS/Pods-XUMM-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		7CB2A36507F3C531E9484631 /* libPods-XUMM-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-XUMM-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Alt Thin.otf"; sourceTree = "<group>"; };
+		A2AFF10B243E79C30007005E /* UbuntuMono-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-BoldItalic.ttf"; sourceTree = "<group>"; };
+		A2AFF10C243E79C30007005E /* UbuntuMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-Bold.ttf"; sourceTree = "<group>"; };
+		A2AFF10D243E79C30007005E /* Proxima Nova Alt Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Alt Bold.otf"; sourceTree = "<group>"; };
+		A2AFF10E243E79C30007005E /* UbuntuMono-RegularItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-RegularItalic.ttf"; sourceTree = "<group>"; };
+		A2AFF10F243E79C30007005E /* Proxima Nova Extrabold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Extrabold.otf"; sourceTree = "<group>"; };
+		A2AFF110243E79C30007005E /* Proxima Nova Alt Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Alt Light.otf"; sourceTree = "<group>"; };
+		A2AFF111243E79C30007005E /* UbuntuMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-Regular.ttf"; sourceTree = "<group>"; };
+		A2AFF112243E79C30007005E /* Proxima Nova Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Black.otf"; sourceTree = "<group>"; };
+		A2AFF113243E79C30007005E /* Proxima Nova Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Bold.otf"; sourceTree = "<group>"; };
+		A2AFF114243E79C30007005E /* ProximaNova-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Regular.otf"; sourceTree = "<group>"; };
+		A2AFF115243E79C30007005E /* Proxima Nova Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Thin.otf"; sourceTree = "<group>"; };
+		A2AFF116243E79C30007005E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "XUMM/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A2AFF119243E79C30007005E /* QRCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCode.m; sourceTree = "<group>"; };
+		A2AFF11A243E79C30007005E /* UIView+QRCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+QRCode.m"; sourceTree = "<group>"; };
+		A2AFF11B243E79C30007005E /* UIView+Toast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Toast.h"; sourceTree = "<group>"; };
+		A2AFF11C243E79C30007005E /* Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Toast.m; sourceTree = "<group>"; };
+		A2AFF11D243E79C30007005E /* QRCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRCode.h; sourceTree = "<group>"; };
+		A2AFF11E243E79C30007005E /* UIView+QRCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+QRCode.h"; sourceTree = "<group>"; };
+		A2AFF11F243E79C30007005E /* Toast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Toast.h; sourceTree = "<group>"; };
+		A2AFF121243E79C30007005E /* NSString+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Utils.h"; sourceTree = "<group>"; };
+		A2AFF122243E79C30007005E /* CIColor+QRCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CIColor+QRCode.h"; sourceTree = "<group>"; };
+		A2AFF123243E79C30007005E /* QRCodeGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCodeGenerator.m; sourceTree = "<group>"; };
+		A2AFF124243E79C30007005E /* CIColor+QRCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CIColor+QRCode.m"; sourceTree = "<group>"; };
+		A2AFF125243E79C30007005E /* NSString+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Utils.m"; sourceTree = "<group>"; };
+		A2AFF126243E79C30007005E /* QRCodeGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRCodeGenerator.h; sourceTree = "<group>"; };
+		A2AFF127243E79C30007005E /* UIView+Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Toast.m"; sourceTree = "<group>"; };
+		A2AFF129243E79C30007005E /* Crypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Crypto.h; sourceTree = "<group>"; };
+		A2AFF12A243E79C30007005E /* Crypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Crypto.m; sourceTree = "<group>"; };
+		A2AFF12C243E79C30007005E /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
+		A2AFF12D243E79C30007005E /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
+		A2B145CA243E935F00E952B6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		A2B145CC243F734600E952B6 /* XUMM.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = XUMM.entitlements; path = XUMM/XUMM.entitlements; sourceTree = "<group>"; };
+		A2B9D13C2449B83900259841 /* UserDefaults.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserDefaults.h; sourceTree = "<group>"; };
+		A2B9D13D2449B83C00259841 /* UserDefaults.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserDefaults.m; sourceTree = "<group>"; };
+		C53185DA05E46CBC4EE88304 /* Pods-XUMM-XUMMTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM-XUMMTests.debug.xcconfig"; path = "Target Support Files/Pods-XUMM-XUMMTests/Pods-XUMM-XUMMTests.debug.xcconfig"; sourceTree = "<group>"; };
+		D90CCA2FDB346DFCE12B4606 /* Pods-XUMM-XUMMTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM-XUMMTests.release.xcconfig"; path = "Target Support Files/Pods-XUMM-XUMMTests/Pods-XUMM-XUMMTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		F1F75DC8DF2F10B6C62695C2 /* Pods-XUMM-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-XUMM-tvOSTests/Pods-XUMM-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		F7DF66E5B8718EED27621F25 /* libPods-XUMM.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-XUMM.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,7 +131,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F5962191861564326BFC1C32 /* libPods-XUMMTests.a in Frameworks */,
+				659EE4F1BFBB4F006DE144D6 /* libPods-XUMM-XUMMTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,9 +139,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A237DE4C23784C6C00711B42 /* MessageUI.framework in Frameworks */,
-				A237DE4A23784C6400711B42 /* Social.framework in Frameworks */,
-				383A503A9E6B738390CE09E8 /* libPods-XUMM.a in Frameworks */,
+				6C096E355B0FEB859CB472EF /* libPods-XUMM.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,7 +147,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08059B0C1B81BF11E3132321 /* libPods-XUMM-tvOS.a in Frameworks */,
+				9E87B1725D6A58654AF5721D /* libPods-XUMM-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,7 +155,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				15F392B561FAFA4960E11E26 /* libPods-XUMM-tvOSTests.a in Frameworks */,
+				86464F73F86250987049029A /* libPods-XUMM-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,14 +182,15 @@
 		13B07FAE1A68108700A75B9A /* XUMM */ = {
 			isa = PBXGroup;
 			children = (
-				A212039F2370394200687020 /* Libs */,
-				A25085FE22CF4C0500341CC3 /* Fonts */,
-				A29F8942228425D9005C3F00 /* XUMM.entitlements */,
+				A2B145CC243F734600E952B6 /* XUMM.entitlements */,
+				A2AFF109243E79C30007005E /* Fonts */,
+				A2AFF116243E79C30007005E /* GoogleService-Info.plist */,
+				A2AFF117243E79C30007005E /* Libs */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
-				A2E13D3B228312BA006EB068 /* GoogleService-Info.plist */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				A2B145CA243E935F00E952B6 /* LaunchScreen.storyboard */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -203,15 +200,12 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A237DE4B23784C6C00711B42 /* MessageUI.framework */,
-				A237DE4823784C6400711B42 /* Social.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				2D16E6891FA4F8E400B85C8A /* libReact.a */,
-				5C4C7B289A37E4331D18DB92 /* libPods-XUMM.a */,
-				E0C066145EE70394261FC9D5 /* libPods-XUMM-tvOS.a */,
-				B0D6DCD97D010F5C335C3445 /* libPods-XUMM-tvOSTests.a */,
-				4C305AF740DF42F112DE7159 /* libPods-XUMMTests.a */,
+				F7DF66E5B8718EED27621F25 /* libPods-XUMM.a */,
+				28F280297542E3C03C7DAEAD /* libPods-XUMM-XUMMTests.a */,
+				739581791CFD3CC03B813515 /* libPods-XUMM-tvOS.a */,
+				7CB2A36507F3C531E9484631 /* libPods-XUMM-tvOSTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -226,13 +220,12 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				A246C4DB22982B3300DAD6AA /* main.jsbundle */,
 				13B07FAE1A68108700A75B9A /* XUMM */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* XUMMTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				E930195628CF876D1ECC611E /* Pods */,
+				ED14F17356ED5A81E9920E69 /* Pods */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -250,95 +243,105 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A212039F2370394200687020 /* Libs */ = {
+		A2AFF109243E79C30007005E /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				A21203A02370394200687020 /* UI */,
-				A21203A32370394200687020 /* Crypto */,
-				A21203A62370394200687020 /* Utils */,
-			);
-			name = Libs;
-			path = XUMM/Libs;
-			sourceTree = "<group>";
-		};
-		A21203A02370394200687020 /* UI */ = {
-			isa = PBXGroup;
-			children = (
-				A28FAB9823840D19008708FA /* QRCode.h */,
-				A28FAB9B23840D19008708FA /* QRCode.m */,
-				A28FAB9D23840D19008708FA /* QRCodeGenerator */,
-				A28FAB9C23840D19008708FA /* UIView+QRCode.h */,
-				A28FAB9A23840D19008708FA /* UIView+QRCode.m */,
-				A21203AE23703BAA00687020 /* UIView+Toast.h */,
-				A21203AC23703BA100687020 /* UIView+Toast.m */,
-				A21203A12370394200687020 /* Toast.m */,
-				A21203A22370394200687020 /* Toast.h */,
-			);
-			path = UI;
-			sourceTree = "<group>";
-		};
-		A21203A32370394200687020 /* Crypto */ = {
-			isa = PBXGroup;
-			children = (
-				A21203A42370394200687020 /* Crypto.h */,
-				A21203A52370394200687020 /* Crypto.m */,
-			);
-			path = Crypto;
-			sourceTree = "<group>";
-		};
-		A21203A62370394200687020 /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-				A21203A72370394200687020 /* Utils.h */,
-				A21203A82370394200687020 /* Utils.m */,
-			);
-			path = Utils;
-			sourceTree = "<group>";
-		};
-		A25085FE22CF4C0500341CC3 /* Fonts */ = {
-			isa = PBXGroup;
-			children = (
-				A21CC9DE22DE0E7C0010B717 /* UbuntuMono-Bold.ttf */,
-				A21CC9DF22DE0E7C0010B717 /* UbuntuMono-BoldItalic.ttf */,
-				A21CC9DD22DE0E7C0010B717 /* UbuntuMono-Regular.ttf */,
-				A21CC9DC22DE0E7C0010B717 /* UbuntuMono-RegularItalic.ttf */,
-				A25085FF22CF4C0500341CC3 /* Proxima Nova Alt Thin.otf */,
-				A250860022CF4C0500341CC3 /* Proxima Nova Alt Bold.otf */,
-				A250860122CF4C0500341CC3 /* Proxima Nova Extrabold.otf */,
-				A250860222CF4C0500341CC3 /* Proxima Nova Alt Light.otf */,
-				A250860322CF4C0500341CC3 /* Proxima Nova Black.otf */,
-				A250860422CF4C0500341CC3 /* Proxima Nova Bold.otf */,
-				A250860522CF4C0500341CC3 /* ProximaNova-Regular.otf */,
-				A250860622CF4C0500341CC3 /* Proxima Nova Thin.otf */,
+				A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */,
+				A2AFF10B243E79C30007005E /* UbuntuMono-BoldItalic.ttf */,
+				A2AFF10C243E79C30007005E /* UbuntuMono-Bold.ttf */,
+				A2AFF10D243E79C30007005E /* Proxima Nova Alt Bold.otf */,
+				A2AFF10E243E79C30007005E /* UbuntuMono-RegularItalic.ttf */,
+				A2AFF10F243E79C30007005E /* Proxima Nova Extrabold.otf */,
+				A2AFF110243E79C30007005E /* Proxima Nova Alt Light.otf */,
+				A2AFF111243E79C30007005E /* UbuntuMono-Regular.ttf */,
+				A2AFF112243E79C30007005E /* Proxima Nova Black.otf */,
+				A2AFF113243E79C30007005E /* Proxima Nova Bold.otf */,
+				A2AFF114243E79C30007005E /* ProximaNova-Regular.otf */,
+				A2AFF115243E79C30007005E /* Proxima Nova Thin.otf */,
 			);
 			name = Fonts;
 			path = XUMM/Fonts;
 			sourceTree = "<group>";
 		};
-		A28FAB9D23840D19008708FA /* QRCodeGenerator */ = {
+		A2AFF117243E79C30007005E /* Libs */ = {
 			isa = PBXGroup;
 			children = (
-				A28FAB9E23840D19008708FA /* NSString+Utils.h */,
-				A28FAB9F23840D19008708FA /* CIColor+QRCode.h */,
-				A28FABA023840D19008708FA /* QRCodeGenerator.m */,
-				A28FABA123840D19008708FA /* CIColor+QRCode.m */,
-				A28FABA223840D19008708FA /* NSString+Utils.m */,
-				A28FABA323840D19008708FA /* QRCodeGenerator.h */,
+				A2B9D13B2449B81800259841 /* Common */,
+				A2AFF118243E79C30007005E /* UI */,
+				A2AFF128243E79C30007005E /* Crypto */,
+				A2AFF12B243E79C30007005E /* Utils */,
+			);
+			name = Libs;
+			path = XUMM/Libs;
+			sourceTree = "<group>";
+		};
+		A2AFF118243E79C30007005E /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				A2AFF119243E79C30007005E /* QRCode.m */,
+				A2AFF11A243E79C30007005E /* UIView+QRCode.m */,
+				A2AFF11B243E79C30007005E /* UIView+Toast.h */,
+				A2AFF11C243E79C30007005E /* Toast.m */,
+				A2AFF11D243E79C30007005E /* QRCode.h */,
+				A2AFF11E243E79C30007005E /* UIView+QRCode.h */,
+				A2AFF11F243E79C30007005E /* Toast.h */,
+				A2AFF120243E79C30007005E /* QRCodeGenerator */,
+				A2AFF127243E79C30007005E /* UIView+Toast.m */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		A2AFF120243E79C30007005E /* QRCodeGenerator */ = {
+			isa = PBXGroup;
+			children = (
+				A2AFF121243E79C30007005E /* NSString+Utils.h */,
+				A2AFF122243E79C30007005E /* CIColor+QRCode.h */,
+				A2AFF123243E79C30007005E /* QRCodeGenerator.m */,
+				A2AFF124243E79C30007005E /* CIColor+QRCode.m */,
+				A2AFF125243E79C30007005E /* NSString+Utils.m */,
+				A2AFF126243E79C30007005E /* QRCodeGenerator.h */,
 			);
 			path = QRCodeGenerator;
 			sourceTree = "<group>";
 		};
-		E930195628CF876D1ECC611E /* Pods */ = {
+		A2AFF128243E79C30007005E /* Crypto */ = {
 			isa = PBXGroup;
 			children = (
-				6657FFC3D8E96728DE35FEF6 /* Pods-XUMM.debug.xcconfig */,
-				A57276F5ABE090647D0AA8D0 /* Pods-XUMM.release.xcconfig */,
-				8A8B936EF8D7480D64C0A808 /* Pods-XUMM-tvOS.debug.xcconfig */,
-				9FD52D9A10D0A0CC94C0041B /* Pods-XUMM-tvOS.release.xcconfig */,
-				F1F75DC8DF2F10B6C62695C2 /* Pods-XUMM-tvOSTests.debug.xcconfig */,
-				35DABE805DF1899F2DFCBACE /* Pods-XUMM-tvOSTests.release.xcconfig */,
-				98E153D192941035BD93AD96 /* Pods-XUMMTests.debug.xcconfig */,
-				BD85708E47F856DAA8FFD28B /* Pods-XUMMTests.release.xcconfig */,
+				A2AFF129243E79C30007005E /* Crypto.h */,
+				A2AFF12A243E79C30007005E /* Crypto.m */,
+			);
+			path = Crypto;
+			sourceTree = "<group>";
+		};
+		A2AFF12B243E79C30007005E /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				A2AFF12C243E79C30007005E /* Utils.h */,
+				A2AFF12D243E79C30007005E /* Utils.m */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		A2B9D13B2449B81800259841 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				A2B9D13D2449B83C00259841 /* UserDefaults.m */,
+				A2B9D13C2449B83900259841 /* UserDefaults.h */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		ED14F17356ED5A81E9920E69 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				18BD82E68265DF34B24CA90E /* Pods-XUMM.debug.xcconfig */,
+				10169F9F05526CC53D9D64D0 /* Pods-XUMM.release.xcconfig */,
+				C53185DA05E46CBC4EE88304 /* Pods-XUMM-XUMMTests.debug.xcconfig */,
+				D90CCA2FDB346DFCE12B4606 /* Pods-XUMM-XUMMTests.release.xcconfig */,
+				3C28A874F6EBA770B0EF5C34 /* Pods-XUMM-tvOS.debug.xcconfig */,
+				7609C68B14DB18314E28687D /* Pods-XUMM-tvOS.release.xcconfig */,
+				47F14D3C3D5F5648D1DAB5F0 /* Pods-XUMM-tvOSTests.debug.xcconfig */,
+				2D4048D747DAD947C65944D0 /* Pods-XUMM-tvOSTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -350,7 +353,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "XUMMTests" */;
 			buildPhases = (
-				C07FA09D4BFBCB6C7F14629D /* [CP] Check Pods Manifest.lock */,
+				64D449A149F801F9A83301C4 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
@@ -369,19 +372,19 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "XUMM" */;
 			buildPhases = (
-				0633051A03E0D0B36453392F /* [CP] Check Pods Manifest.lock */,
+				EF5235A037686C995B4C35EA /* [CP] Check Pods Manifest.lock */,
+				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				A29F89E922845952005C3F00 /* Run Script */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = XUMM;
-			productName = "Hello World";
+			productName = XUMM;
 			productReference = 13B07F961A680F5B00A75B9A /* XUMM.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -389,7 +392,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "XUMM-tvOS" */;
 			buildPhases = (
-				43A2DEDE0BEE19F2A8034265 /* [CP] Check Pods Manifest.lock */,
+				91DC5AF44FDD34EACFF9A6F6 /* [CP] Check Pods Manifest.lock */,
+				FD10A7F122414F3F0027D42C /* Start Packager */,
 				2D02E4771E0B4A5D006451C7 /* Sources */,
 				2D02E4781E0B4A5D006451C7 /* Frameworks */,
 				2D02E4791E0B4A5D006451C7 /* Resources */,
@@ -408,7 +412,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "XUMM-tvOSTests" */;
 			buildPhases = (
-				75B55CA60EC5513D1D993379 /* [CP] Check Pods Manifest.lock */,
+				B1DA45ACBDFF2F00BD119101 /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
 				2D02E48D1E0B4A5D006451C7 /* Frameworks */,
 				2D02E48E1E0B4A5D006451C7 /* Resources */,
@@ -429,28 +433,15 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0940;
-				ORGANIZATIONNAME = Facebook;
+				LastUpgradeCheck = 1130;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = LK5BBJNJZ6;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = LK5BBJNJZ6;
-						ProvisioningStyle = Automatic;
-						SystemCapabilities = {
-							com.apple.BackgroundModes = {
-								enabled = 1;
-							};
-							com.apple.Push = {
-								enabled = 1;
-							};
-							com.apple.SafariKeychain = {
-								enabled = 1;
-							};
-						};
+						LastSwiftMigration = 1120;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -465,10 +456,9 @@
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "XUMM" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				Base,
 			);
@@ -497,21 +487,21 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A21CC9E022DE0E7C0010B717 /* UbuntuMono-RegularItalic.ttf in Resources */,
-				A21CC9E122DE0E7C0010B717 /* UbuntuMono-Regular.ttf in Resources */,
-				A21CC9E222DE0E7C0010B717 /* UbuntuMono-Bold.ttf in Resources */,
-				A21CC9E322DE0E7C0010B717 /* UbuntuMono-BoldItalic.ttf in Resources */,
+				A2AFF12E243E79C30007005E /* Proxima Nova Alt Thin.otf in Resources */,
+				A2AFF132243E79C30007005E /* UbuntuMono-RegularItalic.ttf in Resources */,
+				A2AFF13A243E79C30007005E /* GoogleService-Info.plist in Resources */,
+				A2B145CB243E935F00E952B6 /* LaunchScreen.storyboard in Resources */,
+				A2AFF133243E79C30007005E /* Proxima Nova Extrabold.otf in Resources */,
+				A2AFF12F243E79C30007005E /* UbuntuMono-BoldItalic.ttf in Resources */,
+				A2AFF131243E79C30007005E /* Proxima Nova Alt Bold.otf in Resources */,
+				A2AFF136243E79C30007005E /* Proxima Nova Black.otf in Resources */,
+				A2AFF130243E79C30007005E /* UbuntuMono-Bold.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				A250860822CF4C0500341CC3 /* Proxima Nova Alt Bold.otf in Resources */,
-				A246C4DC22982B3300DAD6AA /* main.jsbundle in Resources */,
-				A250860922CF4C0500341CC3 /* Proxima Nova Extrabold.otf in Resources */,
-				A250860B22CF4C0500341CC3 /* Proxima Nova Black.otf in Resources */,
-				A250860D22CF4C0500341CC3 /* ProximaNova-Regular.otf in Resources */,
-				A250860E22CF4C0500341CC3 /* Proxima Nova Thin.otf in Resources */,
-				A2E13D3C228312BA006EB068 /* GoogleService-Info.plist in Resources */,
-				A250860A22CF4C0500341CC3 /* Proxima Nova Alt Light.otf in Resources */,
-				A250860722CF4C0500341CC3 /* Proxima Nova Alt Thin.otf in Resources */,
-				A250860C22CF4C0500341CC3 /* Proxima Nova Bold.otf in Resources */,
+				A2AFF137243E79C30007005E /* Proxima Nova Bold.otf in Resources */,
+				A2AFF134243E79C30007005E /* Proxima Nova Alt Light.otf in Resources */,
+				A2AFF138243E79C30007005E /* ProximaNova-Regular.otf in Resources */,
+				A2AFF135243E79C30007005E /* UbuntuMono-Regular.ttf in Resources */,
+				A2AFF139243E79C30007005E /* Proxima Nova Thin.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -545,29 +535,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
-		};
-		0633051A03E0D0B36453392F /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-XUMM-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -583,7 +551,29 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
-		43A2DEDE0BEE19F2A8034265 /* [CP] Check Pods Manifest.lock */ = {
+		64D449A149F801F9A83301C4 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-XUMM-XUMMTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		91DC5AF44FDD34EACFF9A6F6 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -605,7 +595,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		75B55CA60EC5513D1D993379 /* [CP] Check Pods Manifest.lock */ = {
+		B1DA45ACBDFF2F00BD119101 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -627,25 +617,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A29F89E922845952005C3F00 /* Run Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Run Script";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Fabric/run\"\n";
-		};
-		C07FA09D4BFBCB6C7F14629D /* [CP] Check Pods Manifest.lock */ = {
+		EF5235A037686C995B4C35EA /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -660,11 +632,49 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-XUMMTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-XUMM-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FD10A7F022414F080027D42C /* Start Packager */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Start Packager";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FD10A7F122414F3F0027D42C /* Start Packager */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Start Packager";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -682,17 +692,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A28FABA423840D19008708FA /* UIView+QRCode.m in Sources */,
-				A28FABA523840D19008708FA /* QRCode.m in Sources */,
-				A21203AD23703BA100687020 /* UIView+Toast.m in Sources */,
-				A21203AA2370394300687020 /* Crypto.m in Sources */,
-				A28FABA823840D19008708FA /* NSString+Utils.m in Sources */,
-				A21203A92370394300687020 /* Toast.m in Sources */,
-				A28FABA723840D19008708FA /* CIColor+QRCode.m in Sources */,
-				A28FABA623840D19008708FA /* QRCodeGenerator.m in Sources */,
+				A2B9D13E2449BAA400259841 /* UserDefaults.m in Sources */,
+				A2AFF142243E79C30007005E /* Crypto.m in Sources */,
+				A2AFF143243E79C30007005E /* Utils.m in Sources */,
+				A2AFF141243E79C30007005E /* UIView+Toast.m in Sources */,
+				A2AFF13D243E79C30007005E /* Toast.m in Sources */,
+				A2AFF13C243E79C30007005E /* UIView+QRCode.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
-				A21203AB2370394300687020 /* Utils.m in Sources */,
+				A2AFF13B243E79C30007005E /* QRCode.m in Sources */,
+				A2AFF13F243E79C30007005E /* CIColor+QRCode.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				A2AFF13E243E79C30007005E /* QRCodeGenerator.m in Sources */,
+				A2AFF140243E79C30007005E /* NSString+Utils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -731,10 +742,9 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 98E153D192941035BD93AD96 /* Pods-XUMMTests.debug.xcconfig */;
+			baseConfigurationReference = C53185DA05E46CBC4EE88304 /* Pods-XUMM-XUMMTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = LK5BBJNJZ6;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -742,13 +752,10 @@
 				INFOPLIST_FILE = XUMMTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_CFLAGS = (
-					"$(inherited)",
-					"-DFB_SONARKIT_ENABLED=1",
-				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
+					"$(inherited)",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -758,21 +765,17 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BD85708E47F856DAA8FFD28B /* Pods-XUMMTests.release.xcconfig */;
+			baseConfigurationReference = D90CCA2FDB346DFCE12B4606 /* Pods-XUMM-XUMMTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = LK5BBJNJZ6;
 				INFOPLIST_FILE = XUMMTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_CFLAGS = (
-					"$(inherited)",
-					"-DFB_SONARKIT_ENABLED=1",
-				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
+					"$(inherited)",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -782,64 +785,21 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6657FFC3D8E96728DE35FEF6 /* Pods-XUMM.debug.xcconfig */;
+			baseConfigurationReference = 18BD82E68265DF34B24CA90E /* Pods-XUMM.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = XUMM/XUMM.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
-				DEAD_CODE_STRIPPING = NO;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = LK5BBJNJZ6;
+				ENABLE_BITCODE = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"FB_SONARKIT_ENABLED=1",
+				);
 				INFOPLIST_FILE = XUMM/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/DoubleConversion\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/FBReactNativeSpec\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseInstanceID\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseMessaging\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/Folly\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleUtilities\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/Interactable\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/Protobuf\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RCTTypeSafety\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RNDeviceInfo\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RNKeychain\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RNShare\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-Core\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-CoreModules\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTActionSheet\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTAnimation\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTBlob\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTImage\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTLinking\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTNetwork\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTSettings\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTText\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTVibration\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-cxxreact\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-jsi\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-jsiexecutor\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-jsinspector\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/ReactNativeNavigation\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/TouchID\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/Yoga\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/glog\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/nanopb\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-netinfo\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-udp\"",
-					"\"${PODS_ROOT}/GoogleIDFASupport/Libraries\"",
-					"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)",
-				);
-				MARKETING_VERSION = 0.3.0;
-				OTHER_CFLAGS = (
-					"$(inherited)",
-					"-DFB_SONARKIT_ENABLED=1",
-				);
+				MARKETING_VERSION = 0.4.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -847,72 +807,24 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.xrpllabs.xumm;
 				PRODUCT_NAME = XUMM;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A57276F5ABE090647D0AA8D0 /* Pods-XUMM.release.xcconfig */;
+			baseConfigurationReference = 10169F9F05526CC53D9D64D0 /* Pods-XUMM.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = XUMM/XUMM.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = LK5BBJNJZ6;
 				INFOPLIST_FILE = XUMM/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/DoubleConversion\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/FBReactNativeSpec\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseInstanceID\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseMessaging\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/Folly\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleUtilities\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/Interactable\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/Protobuf\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RCTTypeSafety\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RNCAsyncStorage\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RNDeviceInfo\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RNKeychain\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RNShare\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-Core\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-CoreModules\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTActionSheet\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTAnimation\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTBlob\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTImage\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTLinking\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTNetwork\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTSettings\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTText\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-RCTVibration\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-cxxreact\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-jsi\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-jsiexecutor\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/React-jsinspector\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/ReactNativeNavigation\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/TouchID\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/Yoga\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/glog\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/nanopb\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-camera-kit\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-netinfo\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-udp\"",
-					"\"${PODS_ROOT}/GoogleIDFASupport/Libraries\"",
-					"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)",
-				);
-				MARKETING_VERSION = 0.3.0;
-				OTHER_CFLAGS = (
-					"$(inherited)",
-					"-DFB_SONARKIT_ENABLED=1",
-				);
+				MARKETING_VERSION = 0.4.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -920,14 +832,14 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.xrpllabs.xumm;
 				PRODUCT_NAME = XUMM;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8A8B936EF8D7480D64C0A808 /* Pods-XUMM-tvOS.debug.xcconfig */;
+			baseConfigurationReference = 3C28A874F6EBA770B0EF5C34 /* Pods-XUMM-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -940,15 +852,12 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "XUMM-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_CFLAGS = (
-					"$(inherited)",
-					"-DFB_SONARKIT_ENABLED=1",
-				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.XUMM-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.XUMM-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -958,7 +867,7 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9FD52D9A10D0A0CC94C0041B /* Pods-XUMM-tvOS.release.xcconfig */;
+			baseConfigurationReference = 7609C68B14DB18314E28687D /* Pods-XUMM-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -971,15 +880,12 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "XUMM-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_CFLAGS = (
-					"$(inherited)",
-					"-DFB_SONARKIT_ENABLED=1",
-				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.XUMM-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.XUMM-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -989,7 +895,7 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F1F75DC8DF2F10B6C62695C2 /* Pods-XUMM-tvOSTests.debug.xcconfig */;
+			baseConfigurationReference = 47F14D3C3D5F5648D1DAB5F0 /* Pods-XUMM-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1001,15 +907,12 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "XUMM-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_CFLAGS = (
-					"$(inherited)",
-					"-DFB_SONARKIT_ENABLED=1",
-				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.XUMM-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.XUMM-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/XUMM-tvOS.app/XUMM-tvOS";
@@ -1019,7 +922,7 @@
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 35DABE805DF1899F2DFCBACE /* Pods-XUMM-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = 2D4048D747DAD947C65944D0 /* Pods-XUMM-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1031,15 +934,12 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "XUMM-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_CFLAGS = (
-					"$(inherited)",
-					"-DFB_SONARKIT_ENABLED=1",
-				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.XUMM-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.XUMM-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/XUMM-tvOS.app/XUMM-tvOS";
@@ -1051,6 +951,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -1093,12 +994,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase\"\n\"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase\"\n\"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase\"\n\"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase\"\n\"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase\"\n",
-					"\"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/notifications\"\n",
-					"\"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/messaging\"\n",
-				);
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
+					"\"$(inherited)\"",
+				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1109,6 +1011,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -1144,12 +1047,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase\"\n\"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase\"\n\"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase\"\n\"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase\"\n\"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase\"\n",
-					"\"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/notifications\"\n",
-					"\"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/messaging\"\n",
-				);
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
+					"\"$(inherited)\"",
+				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

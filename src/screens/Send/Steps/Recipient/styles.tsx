@@ -98,6 +98,9 @@ const styles = StyleSheet.create({
     xrplnsTag: {
         backgroundColor: AppColors.xrpln,
     },
+    payidTag: {
+        backgroundColor: AppColors.payid,
+    },
     clearSearchButton: {
         height: AppSizes.scale(25),
 

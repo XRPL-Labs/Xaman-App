@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import { SafeAreaView, View, ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 import { AppScreens, AppConfig } from '@common/constants';
 
 import { Header } from '@components';

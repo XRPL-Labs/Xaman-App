@@ -6,7 +6,9 @@ import filter from 'lodash/filter';
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, NativeModules } from 'react-native';
 
-import { Navigator, Prompt } from '@common/helpers';
+import { Prompt } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+
 import { AppScreens, AppConfig } from '@common/constants';
 
 import { CoreRepository } from '@store/repositories';

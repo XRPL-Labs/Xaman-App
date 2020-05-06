@@ -26,14 +26,14 @@ class SignerListSetTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.signerQuorum')}:</Text>
+                <Text style={[styles.label]}>{Localize.t('global.signerQuorum')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={styles.value}>{transaction.SignerQuorum}</Text>
                 </View>
 
-                <Text style={[styles.label]}>{Localize.t('global.signerEntries')}: </Text>
+                <Text style={[styles.label]}>{Localize.t('global.signerEntries')}</Text>
                 <View style={[styles.contentBox]}>
-                    {transaction.SignerEntries.map(e => {
+                    {transaction.SignerEntries.map((e) => {
                         return (
                             <>
                                 <Spacer size={10} />

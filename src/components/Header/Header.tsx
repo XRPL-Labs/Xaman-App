@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Text, TextStyle, TouchableOpacity, View, ViewStyle, Platform } from 'react-native';
 
-import { Images } from '@common/helpers';
-import { Icon } from '@components';
+import { Images } from '@common/helpers/images';
+import { Icon } from '@components/Icon';
 
 import { AppColors, AppStyles } from '@theme';
 

@@ -6,7 +6,9 @@ import React, { Component } from 'react';
 import { View, Text, FlatList, Platform, Linking, Alert, Clipboard } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 
-import { ActionSheet, Navigator, Toast } from '@common/helpers';
+import { ActionSheet, Toast } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+
 import { AppScreens, AppConfig } from '@common/constants';
 
 import { LoggerService } from '@services';

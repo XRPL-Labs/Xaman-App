@@ -15,7 +15,9 @@ import {
     InteractionManager,
 } from 'react-native';
 
-import { Navigator, Prompt, Images } from '@common/helpers';
+import { Images } from '@common/helpers/images';
+import { Prompt } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
 
 import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 import { AccountRepository } from '@store/repositories';
@@ -141,10 +143,7 @@ class ExchangeView extends Component<Props, State> {
                 ? new BigNumber(exchangeRate).dividedBy(1.02)
                 : new BigNumber(1).dividedBy(exchangeRate).dividedBy(1.02);
 
-        const getsAmount = new BigNumber(paysAmount)
-            .multipliedBy(actualExchangeRate)
-            .decimalPlaces(6)
-            .toString(10);
+        const getsAmount = new BigNumber(paysAmount).multipliedBy(actualExchangeRate).decimalPlaces(6).toString(10);
 
         // create offer transaction
         const offer = new OfferCreate();
@@ -240,9 +239,24 @@ class ExchangeView extends Component<Props, State> {
 
         // check if user can spend this much
         if (parseFloat(paysAmount) > availableBalance) {
-            Alert.alert(
+            Prompt(
                 Localize.t('global.error'),
-                Localize.t('send.amountIsBiggerThanYourSpend', { spendable: availableBalance }),
+                Localize.t('exchange.theMaxAmountYouCanExchangeIs', {
+                    spendable: availableBalance,
+                    currency: fromCurrency === 'XRP' ? 'XRP' : NormalizeCurrencyCode(trustLine.currency.currency),
+                }),
+                [
+                    { text: Localize.t('global.cancel') },
+                    {
+                        text: Localize.t('global.update'),
+                        onPress: () => {
+                            this.setState({
+                                paysAmount: availableBalance.toString(),
+                            });
+                        },
+                    },
+                ],
+                { type: 'default' },
             );
             return;
         }
@@ -420,7 +434,7 @@ class ExchangeView extends Component<Props, State> {
                             <View style={[AppStyles.row, AppStyles.centerAligned]}>
                                 <Text style={styles.fromAmount}>-</Text>
                                 <TextInput
-                                    ref={r => {
+                                    ref={(r) => {
                                         this.paysAmountInput = r;
                                     }}
                                     autoFocus={false}

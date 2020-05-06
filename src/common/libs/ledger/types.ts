@@ -1,10 +1,4 @@
 import { Memo } from './parser/types';
-import { BaseTransaction, Payment, TrustSet, OfferCreate, OfferCancel } from './transactions';
-
-/**
- * Parsed Transactions type
- */
-export type TransactionsType = BaseTransaction | Payment | TrustSet | OfferCreate | OfferCancel;
 
 /**
  * Ledger Transaction schema from rippled
@@ -27,7 +21,7 @@ export interface LedgerTransactionType {
  */
 export type TransactionJSONType = {
     Account?: string;
-    TransactionType: string;
+    TransactionType?: string;
     Memos?: { Memo: Memo }[];
     Flags?: number;
     Fulfillment?: string;

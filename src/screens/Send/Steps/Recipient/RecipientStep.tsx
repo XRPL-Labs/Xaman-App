@@ -1,30 +1,31 @@
-/* eslint-disable react/no-unused-state */
-
 /**
- * Generate Account/Finish Screen
+ * Send / Recipient step
  */
-import { v4 as uuidv4 } from 'uuid';
+
 import React, { Component } from 'react';
 import { Results } from 'realm';
-import { isEmpty, flatMap, remove, get, uniqBy, has, toNumber } from 'lodash';
-import { View, Text, Image, TouchableHighlight, SectionList, ActivityIndicator, Alert } from 'react-native';
+import { isEmpty, flatMap, remove, get, uniqBy, toNumber } from 'lodash';
+import { View, Text, Image, TouchableHighlight, SectionList, Alert, ActivityIndicator } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
-
-import { utils as AccountLibUtils } from 'xrpl-accountlib';
-import { Decode } from 'xrpl-tagged-address-codec';
 
 import { AccountRepository, ContactRepository } from '@store/repositories';
 import { ContactSchema, AccountSchema } from '@store/schemas/latest';
 
-import { getAccountInfo, Images, AlertModal, Toast } from '@common/helpers';
+import { AppScreens } from '@common/constants';
+import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
+import { Toast } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 
-import { BackendService, LedgerService } from '@services';
+import { BackendService } from '@services';
 
 // components
 import { Button, TextInput, Footer, InfoMessage } from '@components';
 
 // locale
 import Localize from '@locale';
+
+import { NormalizeDestination } from '@common/libs/utils';
 
 // style
 import { AppStyles, AppColors } from '@theme';
@@ -42,14 +43,15 @@ export interface State {
     searchText: string;
     accounts: Results<AccountSchema>;
     contacts: Results<ContactSchema>;
-    searchResult: any[];
+    dataSource: any[];
 }
 /* Component ==================================================================== */
 class RecipientStep extends Component<Props, State> {
     lookupTimeout: any;
+    sequence: number;
 
     static contextType = StepsContext;
-    context!: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
         super(props);
@@ -58,12 +60,13 @@ class RecipientStep extends Component<Props, State> {
             isSearching: false,
             isLoading: false,
             searchText: '',
-            accounts: AccountRepository.findAll().snapshot(),
+            accounts: AccountRepository.getAccounts().snapshot(),
             contacts: ContactRepository.getContacts().snapshot(),
-            searchResult: [],
+            dataSource: [],
         };
 
         this.lookupTimeout = null;
+        this.sequence = 0;
     }
 
     componentDidMount() {
@@ -71,38 +74,24 @@ class RecipientStep extends Component<Props, State> {
 
         // if scanResult is passed
         if (scanResult) {
-            this.doAccountLookUp({ to: scanResult.address, tag: scanResult.tag }, true);
+            this.doAccountLookUp({ to: scanResult.to, tag: scanResult.tag });
+        } else {
+            this.setDefaultDataSource();
         }
     }
 
-    doAccountLookUp = async (result: XrplDestination, asDestination?: boolean) => {
+    doAccountLookUp = async (result: XrplDestination) => {
         const { setDestination } = this.context;
 
-        let address;
-        let tag;
+        this.setState({
+            searchText: result.to,
+            isSearching: true,
+        });
 
-        // decode if it's x address
-        if (result.to.startsWith('X')) {
-            try {
-                const decoded = Decode(result.to);
-                address = decoded.account;
-                // @ts-ignore
-                tag = decoded.tag && decoded.tag;
-            } catch {
-                // ignore
-            }
-        } else if (AccountLibUtils.isValidAddress(result.to)) {
-            address = result.to;
-            tag = result.tag;
-        }
+        const { to, tag } = NormalizeDestination(result);
 
-        if (address) {
-            this.setState({
-                searchText: result.to,
-                isSearching: true,
-            });
-
-            const accountInfo = await getAccountInfo(address);
+        if (to) {
+            const accountInfo = await getAccountName(to, tag);
 
             let avatar;
 
@@ -119,25 +108,47 @@ class RecipientStep extends Component<Props, State> {
             }
 
             this.setState({
-                searchResult: [
+                dataSource: this.getSearchResultSource([
                     {
-                        id: uuidv4(),
                         name: accountInfo.name || '',
-                        address,
+                        address: to,
                         tag,
                         avatar,
                         source: accountInfo.source.replace('internal:', ''),
                     },
-                ],
+                ]),
                 isSearching: false,
             });
 
-            if (asDestination) {
-                setDestination({ name: accountInfo.name || '', address, tag: toNumber(tag) || undefined });
-            }
+            // select as destination
+            setDestination({ name: accountInfo.name || '', address: to, tag: toNumber(tag) || undefined });
         } else {
             this.doLookUp(result.to);
         }
+    };
+
+    setSearchResult = (searchResult: any) => {
+        const { destination, setDestination } = this.context;
+
+        // if search result only have one result select it
+        if (searchResult.length === 1) {
+            const onlyResult = searchResult[0];
+            // select as destination
+            if (!destination || (onlyResult.address !== destination.address && onlyResult.tag !== destination.tag)) {
+                setDestination({
+                    name: onlyResult.name || '',
+                    address: onlyResult.address,
+                    tag: toNumber(onlyResult.tag) || undefined,
+                });
+            }
+        } else if (destination) {
+            setDestination(undefined);
+        }
+
+        this.setState({
+            dataSource: this.getSearchResultSource(searchResult),
+            isSearching: false,
+        });
     };
 
     doLookUp = (searchText: string) => {
@@ -145,59 +156,62 @@ class RecipientStep extends Component<Props, State> {
 
         clearTimeout(this.lookupTimeout);
 
-        this.setState({
-            isSearching: true,
-            searchText,
-        });
+        this.lookupTimeout = setTimeout(() => {
+            // set searching true
+            this.setState({
+                isSearching: true,
+            });
 
-        // create empty search result array
-        const searchResult = [] as any;
+            // increase sequence
+            this.sequence += 1;
+            // get a copy of sequence
+            const { sequence } = this;
 
-        // search for contacts
-        contacts.forEach(item => {
-            if (
-                item.name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
-                item.address.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
-            ) {
-                searchResult.push({
-                    id: uuidv4(),
-                    name: item.name,
-                    address: item.address,
-                    tag: item.destinationTag,
-                    avatar: Images.IconProfile,
-                });
-            }
-        });
+            // create empty search result array
+            const searchResult = [] as any;
 
-        // search for contacts
-        accounts.forEach(item => {
-            if (
-                item.label.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
-                item.address.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
-            ) {
-                searchResult.push({
-                    id: uuidv4(),
-                    name: item.label,
-                    address: item.address,
-                    avatar: Images.IconAccount,
-                });
-            }
-        });
+            // search for contacts
+            contacts.forEach((item) => {
+                if (
+                    item.name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
+                    item.address.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
+                ) {
+                    searchResult.push({
+                        name: item.name,
+                        address: item.address,
+                        tag: item.destinationTag,
+                        avatar: Images.IconProfile,
+                    });
+                }
+            });
 
-        // if text length is more than 4 do server lookup
-        if (searchText.length >= 4) {
-            this.lookupTimeout = setTimeout(() => {
-                BackendService.lookup(encodeURIComponent(searchText))
+            // search for contacts
+            accounts.forEach((item) => {
+                if (
+                    item.label.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
+                    item.address.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
+                ) {
+                    searchResult.push({
+                        name: item.label,
+                        address: item.address,
+                        avatar: Images.IconAccount,
+                    });
+                }
+            });
+
+            // if text length is more than 4 do server lookup
+            if (searchText.length >= 4) {
+                BackendService.lookup(searchText)
                     .then((res: any) => {
                         if (!isEmpty(res) && res.error !== true) {
                             if (!isEmpty(res.matches)) {
                                 res.matches.forEach((element: any) => {
                                     searchResult.push({
-                                        id: uuidv4(),
                                         name: element.alias === element.account ? '' : element.alias,
                                         address: element.account,
                                         avatar: Images.IconGlobe,
                                         source: element.source,
+                                        tag: element.tag,
                                     });
                                 });
                             }
@@ -205,65 +219,65 @@ class RecipientStep extends Component<Props, State> {
                     })
                     .catch(() => {})
                     .finally(() => {
-                        this.setState({
-                            searchResult: uniqBy(searchResult, 'address'),
-                            isSearching: false,
-                        });
+                        // this will make sure the latest call will apply
+                        if (sequence === this.sequence) {
+                            this.setSearchResult(searchResult);
+                        }
                     });
-            }, 500);
+            } else if (sequence === this.sequence) {
+                // this will make sure the latest call will apply
+                this.setSearchResult(searchResult);
+            }
+        }, 500);
+    };
 
-            return;
-        }
+    onSearch = (searchText: string) => {
+        const { setDestination } = this.context;
 
         this.setState({
-            searchResult: uniqBy(searchResult, 'address'),
-            isSearching: false,
+            searchText,
         });
-    };
 
-    onSearch = (text: string) => {
-        // cleanup
-        const searchText = text.replace(/\s/g, '');
+        if (searchText && searchText.length > 0) {
+            // check if it's a xrp address
+            const possibleAccountAddress = new RegExp(
+                /[rX][rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{23,50}/,
+            );
 
-        // check if it's a xrp address
-        const possibleAccountAddress = new RegExp(
-            /[rX][rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{23,50}/,
-        );
-
-        if (possibleAccountAddress.test(searchText)) {
-            this.doAccountLookUp({ to: searchText });
+            if (possibleAccountAddress.test(searchText)) {
+                this.doAccountLookUp({ to: searchText });
+            } else {
+                this.doLookUp(searchText);
+            }
         } else {
-            this.doLookUp(searchText);
+            clearTimeout(this.lookupTimeout);
+            // get default source
+            this.setDefaultDataSource();
+            // clear the destination if set
+            setDestination(undefined);
         }
     };
 
-    getSearchResultSource = () => {
-        const { searchResult } = this.state;
-
+    getSearchResultSource = (searchResult: any) => {
         const dataSource = [];
 
-        if (searchResult.length === 0) {
+        if (searchResult.length > 0) {
             dataSource.push({
                 title: Localize.t('send.searchResults'),
-                data: [{ empty: true, title: Localize.t('send.noSearchResult') }],
-            });
-        } else {
-            dataSource.push({
-                title: Localize.t('send.searchResults'),
-                data: [...searchResult],
+                data: uniqBy(searchResult, 'address'),
             });
         }
 
         return dataSource;
     };
 
-    getDefaultDateSource = () => {
+    setDefaultDataSource = () => {
         const { source } = this.context;
         const { contacts, accounts } = this.state;
 
         const dataSource = [];
 
-        const myAccountList = remove(Array.from(accounts), n => {
+        const myAccountList = remove(Array.from(accounts), (n) => {
             // remove source account from list
             return n.address !== source.address;
         });
@@ -271,7 +285,7 @@ class RecipientStep extends Component<Props, State> {
         if (myAccountList.length !== 0) {
             dataSource.push({
                 title: Localize.t('account.myAccounts'),
-                data: flatMap(myAccountList, a => {
+                data: flatMap(myAccountList, (a) => {
                     return { name: a.label, address: a.address, avatar: Images.IconAccount };
                 }),
             });
@@ -285,9 +299,8 @@ class RecipientStep extends Component<Props, State> {
         } else {
             dataSource.push({
                 title: Localize.t('global.contacts'),
-                data: flatMap(contacts, a => {
+                data: flatMap(contacts, (a) => {
                     return {
-                        id: uuidv4(),
                         name: a.name,
                         address: a.address,
                         tag: a.destinationTag,
@@ -297,7 +310,9 @@ class RecipientStep extends Component<Props, State> {
             });
         }
 
-        return dataSource;
+        this.setState({
+            dataSource,
+        });
     };
 
     checkAndNext = async () => {
@@ -308,8 +323,6 @@ class RecipientStep extends Component<Props, State> {
         });
 
         try {
-            let shouldCheckAccountRisk = true;
-
             // check for same destination as source
             if (destination.address === source.address) {
                 Alert.alert(Localize.t('global.error'), Localize.t('send.sourceAndDestinationCannotBeSame'));
@@ -318,155 +331,170 @@ class RecipientStep extends Component<Props, State> {
             }
 
             // check for account exist and potential destination tag required
-            const destinationInfo = await LedgerService.getAccountInfo(destination.address);
+            const destinationInfo = await getAccountInfo(destination.address);
 
-            if (has(destinationInfo, 'error')) {
-                if (get(destinationInfo, 'error') === 'actNotFound') {
-                    // account doesn't exist no need to check account risk
-                    shouldCheckAccountRisk = false;
-
-                    if (typeof currency !== 'string') {
-                        AlertModal({
-                            type: 'warning',
-                            text: Localize.t('send.destinationCannotActivateWithIOU'),
-                            buttons: [
-                                {
-                                    text: Localize.t('global.back'),
-                                    onPress: () => {
-                                        setDestination(undefined);
-                                        this.setState({
-                                            searchText: '',
-                                        });
-                                    },
-                                    type: 'dismiss',
-                                    light: false,
-                                },
-                            ],
-                        });
-
-                        // don't move to next step
-                        return;
-                    }
-
-                    // check if amount is not covering the creation of account
-                    if (typeof currency === 'string' && parseFloat(amount) < 20) {
-                        AlertModal({
-                            type: 'warning',
-                            text: Localize.t('send.destinationNotExistTooLittleToCreate'),
-                            buttons: [
-                                {
-                                    text: Localize.t('global.back'),
-                                    onPress: () => {
-                                        setDestination(undefined);
-                                        this.setState({
-                                            searchText: '',
-                                        });
-                                    },
-                                    type: 'dismiss',
-                                    light: false,
-                                },
-                            ],
-                        });
-
-                        // don't move to next step
-                        return;
-                    }
-
-                    // check if the amount will create the account
-                    if (typeof currency === 'string' && parseFloat(amount) >= 20) {
-                        AlertModal({
-                            type: 'warning',
-                            text: Localize.t('send.destinationNotExistCreationWarning', { amount }),
-                            buttons: [
-                                {
-                                    text: Localize.t('global.back'),
-                                    onPress: () => {
-                                        setDestination(undefined);
-                                        this.setState({
-                                            searchText: '',
-                                        });
-                                    },
-                                    type: 'dismiss',
-                                    light: true,
-                                },
-                                {
-                                    text: Localize.t('global.continue'),
-                                    onPress: goNext,
-                                    type: 'continue',
-                                    light: false,
-                                },
-                            ],
-                        });
-
-                        // don't move to next step
-                        return;
-                    }
-                }
-            }
-
-            if (shouldCheckAccountRisk) {
-                // check for account risk and scam
-                const accountRisk = await BackendService.getAccountRisk(destination.address);
-
-                if (accountRisk.danger !== 'ERROR' || accountRisk.danger !== 'UNKNOWS') {
-                    if (accountRisk.danger === 'PROBABLE' || accountRisk.danger === 'HIGH_PROBABILITY') {
-                        AlertModal({
-                            type: 'warning',
-                            text: Localize.t('send.destinationIsProbableIsScam'),
-                            buttons: [
-                                {
-                                    text: Localize.t('global.back'),
-                                    onPress: () => {
-                                        setDestination(undefined);
-                                        this.setState({
-                                            searchText: '',
-                                        });
-                                    },
-                                    type: 'dismiss',
-                                    light: false,
-                                },
-                                {
-                                    text: Localize.t('global.continue'),
-                                    onPress: goNext,
-                                    type: 'continue',
-                                    light: true,
-                                },
-                            ],
-                        });
-
-                        // don't move to next step
-                        return;
-                    }
-
-                    if (accountRisk.danger === 'CONFIRMED') {
-                        AlertModal({
-                            type: 'error',
-                            title: Localize.t('global.critical'),
-                            text: Localize.t('send.destinationIsConfirmedAsScam'),
-
-                            buttons: [
-                                {
-                                    text: Localize.t('global.back'),
-                                    onPress: () => {
-                                        setDestination(undefined);
-                                        this.setState({
-                                            searchText: '',
-                                        });
-                                    },
-                                    type: 'dismiss',
-                                    light: false,
-                                },
-                            ],
-                        });
-
-                        // don't move to next step
-                        return;
-                    }
-                }
-            }
-
-            // set account info
+            // set destination account info
             setDestinationInfo(destinationInfo);
+
+            // account doesn't exist no need to check account risk
+            if (!destinationInfo.exist) {
+                // account does not exist and cannot activate with IOU
+                if (typeof currency !== 'string') {
+                    Navigator.showAlertModal({
+                        type: 'warning',
+                        text: Localize.t('send.destinationCannotActivateWithIOU'),
+                        buttons: [
+                            {
+                                text: Localize.t('global.back'),
+                                onPress: () => {
+                                    setDestination(undefined);
+                                    this.setState({
+                                        searchText: '',
+                                    });
+                                },
+                                type: 'dismiss',
+                                light: false,
+                            },
+                        ],
+                    });
+
+                    // don't move to next step
+                    return;
+                }
+
+                // check if amount is not covering the creation of account
+                if (typeof currency === 'string' && parseFloat(amount) < 20) {
+                    Navigator.showAlertModal({
+                        type: 'warning',
+                        text: Localize.t('send.destinationNotExistTooLittleToCreate'),
+                        buttons: [
+                            {
+                                text: Localize.t('global.back'),
+                                onPress: () => {
+                                    setDestination(undefined);
+                                    this.setState({
+                                        searchText: '',
+                                    });
+                                },
+                                type: 'dismiss',
+                                light: false,
+                            },
+                        ],
+                    });
+
+                    // don't move to next step
+                    return;
+                }
+
+                // check if the amount will create the account
+                if (typeof currency === 'string' && parseFloat(amount) >= 20) {
+                    Navigator.showAlertModal({
+                        type: 'warning',
+                        text: Localize.t('send.destinationNotExistCreationWarning', { amount }),
+                        buttons: [
+                            {
+                                text: Localize.t('global.back'),
+                                onPress: () => {
+                                    setDestination(undefined);
+                                    this.setState({
+                                        searchText: '',
+                                    });
+                                },
+                                type: 'dismiss',
+                                light: true,
+                            },
+                            {
+                                text: Localize.t('global.continue'),
+                                onPress: goNext,
+                                type: 'continue',
+                                light: false,
+                            },
+                        ],
+                    });
+
+                    // don't move to next step
+                    return;
+                }
+            }
+
+            // check for account risk and scam
+            if (destinationInfo.risk === 'PROBABLE' || destinationInfo.risk === 'HIGH_PROBABILITY') {
+                Navigator.showAlertModal({
+                    type: 'warning',
+                    text: Localize.t('send.destinationIsProbableIsScam'),
+                    buttons: [
+                        {
+                            text: Localize.t('global.back'),
+                            onPress: () => {
+                                setDestination(undefined);
+                                this.setState({
+                                    searchText: '',
+                                });
+                            },
+                            type: 'dismiss',
+                            light: false,
+                        },
+                        {
+                            text: Localize.t('global.continue'),
+                            onPress: goNext,
+                            type: 'continue',
+                            light: true,
+                        },
+                    ],
+                });
+
+                // don't move to next step
+                return;
+            }
+
+            if (destinationInfo.risk === 'CONFIRMED') {
+                Navigator.showAlertModal({
+                    type: 'error',
+                    title: Localize.t('global.critical'),
+                    text: Localize.t('send.destinationIsConfirmedAsScam'),
+
+                    buttons: [
+                        {
+                            text: Localize.t('global.back'),
+                            onPress: () => {
+                                setDestination(undefined);
+                                this.setState({
+                                    searchText: '',
+                                });
+                            },
+                            type: 'dismiss',
+                            light: false,
+                        },
+                    ],
+                });
+
+                // don't move to next step
+                return;
+            }
+
+            if (destinationInfo.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
+                Navigator.showOverlay(
+                    AppScreens.Overlay.EnterDestinationTag,
+                    {
+                        layout: {
+                            backgroundColor: 'transparent',
+                            componentBackgroundColor: 'transparent',
+                        },
+                    },
+                    {
+                        buttonType: 'next',
+                        destination,
+                        onFinish: (destinationTag: string) => {
+                            Object.assign(destination, { tag: destinationTag });
+                            setDestination(destination);
+                            goNext();
+                        },
+                    },
+                );
+
+                // don't move to next step
+                return;
+            }
         } catch {
             Toast(Localize.t('send.unableGetRecipientAccountInfoPleaseTryAgain'));
             return;
@@ -478,25 +506,37 @@ class RecipientStep extends Component<Props, State> {
         goNext();
     };
 
+    onScannerRead = (content: any) => {
+        if (content.payId) {
+            this.doAccountLookUp({ to: content.payId });
+        } else {
+            this.doAccountLookUp(content);
+        }
+    };
+
     renderSectionHeader = ({ section: { title } }: any) => {
         const { setDestination } = this.context;
-        const { searchResult } = this.state;
+        const { dataSource } = this.state;
 
         if (title === Localize.t('send.searchResults')) {
             return (
                 <View style={[styles.sectionHeader, AppStyles.row]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         <Text style={[AppStyles.p, AppStyles.bold]}>
-                            {title} {searchResult.length > 0 && `(${searchResult.length})`}
+                            {title} {dataSource[0].data.length > 0 && `(${dataSource[0].data.length})`}
                         </Text>
                     </View>
                     <View style={[AppStyles.flex1]}>
                         <Button
                             onPress={() => {
+                                // clear search text
                                 this.setState({
                                     searchText: '',
                                 });
+                                // clear the destination if any set
                                 setDestination(undefined);
+                                // set the default source
+                                this.setDefaultDataSource();
                             }}
                             style={styles.clearSearchButton}
                             light
@@ -531,7 +571,7 @@ class RecipientStep extends Component<Props, State> {
             case 'xrplns':
                 tag = (
                     <View style={[styles.tag, styles.xrplnsTag]}>
-                        <Text style={styles.tagLabel}>Xrplns</Text>
+                        <Text style={styles.tagLabel}>XRPLNS</Text>
                     </View>
                 );
                 break;
@@ -539,6 +579,13 @@ class RecipientStep extends Component<Props, State> {
                 tag = (
                     <View style={[styles.tag, styles.bithompTag]}>
                         <Text style={styles.tagLabel}>Bithomp</Text>
+                    </View>
+                );
+                break;
+            case 'payid':
+                tag = (
+                    <View style={[styles.tag, styles.payidTag]}>
+                        <Text style={styles.tagLabel}>PayID</Text>
                     </View>
                 );
                 break;
@@ -560,6 +607,7 @@ class RecipientStep extends Component<Props, State> {
                     }
                 }}
                 underlayColor="#FFF"
+                key={item.id}
             >
                 <View style={[styles.itemRow, selected ? styles.itemSelected : null]}>
                     <View style={styles.avatarContainer}>
@@ -567,7 +615,11 @@ class RecipientStep extends Component<Props, State> {
                     </View>
                     <View style={AppStyles.paddingLeftSml}>
                         <View style={AppStyles.row}>
-                            <Text style={[styles.title, selected ? styles.selectedText : null]}>
+                            <Text
+                                numberOfLines={1}
+                                adjustsFontSizeToFit
+                                style={[styles.title, selected ? styles.selectedText : null]}
+                            >
                                 {item.name || Localize.t('global.noNameFound')}
                             </Text>
                             {tag && tag}
@@ -579,32 +631,46 @@ class RecipientStep extends Component<Props, State> {
         );
     };
 
-    renderContent = () => {
-        const { searchText, isSearching } = this.state;
-
-        if (isSearching) {
-            return (
-                <View style={[AppStyles.flex8, AppStyles.paddingTop]}>
-                    <ActivityIndicator color={AppColors.blue} />
-                </View>
-            );
-        }
+    renderListEmptyComponent = () => {
+        const { setDestination } = this.context;
 
         return (
-            <View style={[AppStyles.flex8, AppStyles.paddingTopSml]}>
-                <SectionList
-                    sections={searchText ? this.getSearchResultSource() : this.getDefaultDateSource()}
-                    renderItem={this.renderItem}
-                    renderSectionHeader={this.renderSectionHeader}
-                    keyExtractor={item => item.id}
-                />
-            </View>
+            <>
+                <View style={[styles.sectionHeader, AppStyles.row]}>
+                    <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                        <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('send.searchResults')}</Text>
+                    </View>
+                    <View style={[AppStyles.flex1]}>
+                        <Button
+                            onPress={() => {
+                                // clear search text
+                                this.setState({
+                                    searchText: '',
+                                });
+                                // clear the destination if any set
+                                setDestination(undefined);
+                                // set the default source
+                                this.setDefaultDataSource();
+                            }}
+                            style={styles.clearSearchButton}
+                            light
+                            roundedMini
+                            label={Localize.t('global.clearSearch')}
+                        />
+                    </View>
+                </View>
+                <View style={AppStyles.paddingVerticalSml}>
+                    <InfoMessage type="warning" label={Localize.t('send.noSearchResult')} />
+                </View>
+            </>
         );
     };
 
     render() {
         const { goBack, destination } = this.context;
-        const { searchText, isLoading } = this.state;
+        const { searchText, isSearching, isLoading, dataSource } = this.state;
+
+        if (!dataSource) return null;
 
         return (
             <View testID="send-recipient-view" style={[AppStyles.pageContainerFull]}>
@@ -619,11 +685,25 @@ class RecipientStep extends Component<Props, State> {
                             value={searchText}
                             showScanner
                             scannerType={StringType.XrplDestination}
-                            onScannerRead={this.doAccountLookUp}
+                            onScannerRead={this.onScannerRead}
+                            scannerFallback
                         />
                     </View>
 
-                    {this.renderContent()}
+                    <View style={[AppStyles.flex8, AppStyles.paddingTopSml]}>
+                        {isSearching ? (
+                            <ActivityIndicator color={AppColors.blue} />
+                        ) : (
+                            <SectionList
+                                ListEmptyComponent={this.renderListEmptyComponent}
+                                extraData={searchText}
+                                sections={dataSource}
+                                renderItem={this.renderItem}
+                                renderSectionHeader={this.renderSectionHeader}
+                                keyExtractor={(item) => `${item.address}${item.tag}`}
+                            />
+                        )}
+                    </View>
                 </View>
 
                 {/* Bottom Bar */}

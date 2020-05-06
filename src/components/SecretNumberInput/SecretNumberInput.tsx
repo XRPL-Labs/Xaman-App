@@ -4,11 +4,13 @@
     <SecretNumberInput />
  *
  */
-import React, { Component } from 'react';
-import { View, TouchableOpacity, LayoutAnimation } from 'react-native';
+
 import { get, set } from 'lodash';
 
-import { Icon } from '@components';
+import React, { Component } from 'react';
+import { View, TouchableOpacity, LayoutAnimation } from 'react-native';
+
+import { Icon } from '@components/Icon';
 
 import { AppStyles } from '@theme';
 import styles from './styles';

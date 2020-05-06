@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
 import { EscrowCancel } from '@common/libs/ledger/transactions';
-import { getAccountInfo } from '@common/helpers';
+import { getAccountName } from '@common/helpers/resolver';
 
 import Localize from '@locale';
 
@@ -36,13 +36,16 @@ class EscrowCancelTemplate extends Component<Props, State> {
             isLoading: true,
         });
 
-        getAccountInfo(transaction.Owner)
+        getAccountName(transaction.Owner)
             .then((res: any) => {
                 if (!isEmpty(res) && !res.error) {
                     this.setState({
                         ownerName: res.name,
                     });
                 }
+            })
+            .catch(() => {
+                // ignore
             })
             .finally(() => {
                 this.setState({
@@ -61,14 +64,14 @@ class EscrowCancelTemplate extends Component<Props, State> {
                     {isLoading ? (
                         'Loading ...'
                     ) : (
-                        <Text style={styles.value}> {ownerName || Localize.t('global.unknown')} </Text>
+                        <Text style={styles.value}> {ownerName || Localize.t('global.noNameFound')} </Text>
                     )}
                 </Text>
                 <View style={[styles.contentBox]}>
                     <Text style={[styles.address]}>{transaction.Owner}</Text>
                 </View>
 
-                <Text style={[styles.label]}>{Localize.t('global.offerSequence')}: </Text>
+                <Text style={[styles.label]}>{Localize.t('global.offerSequence')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={styles.value}>{transaction.OfferSequence}</Text>
                 </View>

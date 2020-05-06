@@ -2,7 +2,6 @@
  * Send Summary Step
  */
 
-import { has } from 'lodash';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import {
@@ -21,9 +20,11 @@ import {
 import { CoreRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
-import Flag from '@common/libs/ledger/parser/common/flag';
+import { AppScreens } from '@common/constants';
+import { Prompt } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 
-import { Images, Prompt } from '@common/helpers';
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
@@ -45,7 +46,7 @@ class SummaryStep extends Component {
     destinationTagInput: TextInput;
 
     static contextType = StepsContext;
-    context!: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
     constructor(props: undefined) {
         super(props);
@@ -56,7 +57,7 @@ class SummaryStep extends Component {
     setGradientHeight = (event: LayoutChangeEvent) => {
         const { height } = event.nativeEvent.layout;
         if (height === 0) return;
-        Animated.timing(this.gradientHeight, { toValue: height }).start();
+        Animated.timing(this.gradientHeight, { toValue: height, useNativeDriver: false }).start();
     };
 
     onDescriptionChange = (text: string) => {
@@ -86,20 +87,6 @@ class SummaryStep extends Component {
         setDestination(destination);
     };
 
-    getAccountReserve = () => {
-        const { currency, source } = this.context;
-
-        // XRP
-        if (typeof currency === 'string') {
-            if (source.balance === 0) {
-                return '';
-            }
-            return `(${source.accountReserve} ${Localize.t('global.reserved')})`;
-        }
-
-        return '';
-    };
-
     getAvailableBalance = () => {
         const { currency, source } = this.context;
 
@@ -120,7 +107,7 @@ class SummaryStep extends Component {
 
         if (typeof currency === 'string') {
             setSource(item);
-        } else if (item.hasCurrency(currency)) {
+        } else if (item.hasCurrency(currency.currency)) {
             setSource(item);
         } else {
             Alert.alert(Localize.t('global.error'), Localize.t('send.selectedAccountDoNotSupportCurrency'));
@@ -161,6 +148,28 @@ class SummaryStep extends Component {
         }
     };
 
+    showEnterDestinationTag = () => {
+        const { destination, setDestination } = this.context;
+
+        Navigator.showOverlay(
+            AppScreens.Overlay.EnterDestinationTag,
+            {
+                layout: {
+                    backgroundColor: 'transparent',
+                    componentBackgroundColor: 'transparent',
+                },
+            },
+            {
+                buttonType: 'apply',
+                destination,
+                onFinish: (destinationTag: string) => {
+                    Object.assign(destination, { tag: destinationTag });
+                    setDestination(destination);
+                },
+            },
+        );
+    };
+
     renderAccountItem = (account: AccountSchema, selected: boolean) => {
         return (
             <View style={[styles.pickerItem]}>
@@ -190,7 +199,7 @@ class SummaryStep extends Component {
                         <View style={[AppStyles.column, AppStyles.centerContent]}>
                             <Text style={[styles.currencyItemLabel]}>XRP</Text>
                             <Text style={[styles.currencyBalance]}>
-                                {Localize.t('global.balance')}: {this.getAvailableBalance()} {this.getAccountReserve()}
+                                {Localize.t('global.available')}: {this.getAvailableBalance()}
                             </Text>
                         </View>
                     </View>
@@ -219,8 +228,19 @@ class SummaryStep extends Component {
         );
     };
 
+    getCurrencyName = (): string => {
+        const { currency } = this.context;
+
+        // XRP
+        if (typeof currency === 'string') {
+            return 'XRP';
+        }
+
+        return NormalizeCurrencyCode(currency.currency.currency);
+    };
+
     goNext = () => {
-        const { goNext, currency, source, amount, destination, destinationInfo } = this.context;
+        const { goNext, currency, source, amount, destination, destinationInfo, setAmount } = this.context;
 
         const bAmount = new BigNumber(amount);
 
@@ -229,48 +249,44 @@ class SummaryStep extends Component {
             return;
         }
 
-        const availableBalance = this.getAvailableBalance();
+        const availableBalance = new BigNumber(this.getAvailableBalance());
+
+        let maxCanSend = availableBalance.toNumber();
+
+        // check if balance can cover the transfer fee for non XRP currencies
+        if (typeof currency !== 'string') {
+            const rate = new BigNumber(currency.transfer_rate).dividedBy(1000000).minus(1000).dividedBy(10);
+
+            const fee = availableBalance.multipliedBy(rate).dividedBy(100).decimalPlaces(6);
+            maxCanSend = availableBalance.minus(fee).toNumber();
+        }
 
         // check if amount is bigger than what user can spend
-        if (bAmount.toNumber() > availableBalance) {
-            Alert.alert(
+        if (bAmount.toNumber() > maxCanSend) {
+            Prompt(
                 Localize.t('global.error'),
-                Localize.t('send.amountIsBiggerThanYourSpend', { spendable: availableBalance }),
+                Localize.t('send.theMaxAmountYouCanSendIs', {
+                    spendable: availableBalance,
+                    currency: this.getCurrencyName(),
+                }),
+                [
+                    { text: Localize.t('global.cancel') },
+                    {
+                        text: Localize.t('global.update'),
+                        onPress: () => {
+                            setAmount(maxCanSend.toString());
+                        },
+                    },
+                ],
+                { type: 'default' },
             );
             return;
         }
 
-        // check if balance can cover the transfer fee for non XRP currencies
-        if (typeof currency !== 'string') {
-            const rate = new BigNumber(currency.transfer_rate)
-                .dividedBy(1000000)
-                .minus(1000)
-                .dividedBy(10);
-
-            const fee = bAmount
-                .multipliedBy(rate)
-                .dividedBy(100)
-                .decimalPlaces(6);
-            const after = bAmount.plus(fee).toNumber();
-
-            if (after > availableBalance) {
-                Alert.alert(Localize.t('global.error'), Localize.t('send.balanceIsNotEnoughForFee', { fee }));
-                return;
-            }
-        }
-
         // check if destination requires the destination tag
-        if (!has(destinationInfo, 'error') && has(destinationInfo, ['account_data', 'Flags'])) {
-            const { account_data } = destinationInfo;
-            const accountFlags = new Flag('Account', account_data.Flags).parse();
-
-            if (accountFlags.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
-                Alert.alert(Localize.t('global.warning'), Localize.t('send.destinationTagIsRequired'));
-                if (this.destinationTagInput) {
-                    this.destinationTagInput.focus();
-                }
-                return;
-            }
+        if (destinationInfo.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
+            Alert.alert(Localize.t('global.warning'), Localize.t('send.destinationTagIsRequired'));
+            return;
         }
 
         // go to next screen
@@ -305,7 +321,7 @@ class SummaryStep extends Component {
                             />
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.from')} :
+                                    {Localize.t('global.from')}
                                 </Text>
                             </View>
                             <AccordionPicker
@@ -313,14 +329,14 @@ class SummaryStep extends Component {
                                 items={accounts}
                                 renderItem={this.renderAccountItem}
                                 selectedItem={source}
-                                keyExtractor={i => i.address}
+                                keyExtractor={(i) => i.address}
                                 containerStyle={{ backgroundColor: AppColors.transparent }}
                             />
                             <Spacer size={20} />
 
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.to')} :
+                                    {Localize.t('global.to')}
                                 </Text>
                             </View>
                             <Spacer size={15} />
@@ -338,13 +354,37 @@ class SummaryStep extends Component {
                                     </Text>
                                 </View>
                             </View>
+
+                            <Spacer size={20} />
+
+                            <View style={AppStyles.row}>
+                                <View style={AppStyles.flex1}>
+                                    {/* eslint-disable-next-line */}
+                                    <View style={[{ paddingLeft: 10 }]}>
+                                        <Text style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
+                                            {destination.tag && `${Localize.t('global.destinationTag')}: `}
+                                            <Text style={AppStyles.colorBlue}>
+                                                {destination.tag || Localize.t('send.noDestinationTag')}
+                                            </Text>
+                                        </Text>
+                                    </View>
+                                </View>
+                                <Button
+                                    onPress={this.showEnterDestinationTag}
+                                    style={styles.editButton}
+                                    roundedSmall
+                                    iconSize={13}
+                                    light
+                                    icon="IconEdit"
+                                />
+                            </View>
                         </View>
 
                         {/* Currency */}
                         <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.currency')} :
+                                    {Localize.t('global.currency')}
                                 </Text>
                             </View>
                             <Spacer size={15} />
@@ -357,7 +397,7 @@ class SummaryStep extends Component {
                         <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.amount')}:
+                                    {Localize.t('global.amount')}
                                 </Text>
                             </View>
                             <Spacer size={15} />
@@ -365,7 +405,7 @@ class SummaryStep extends Component {
                             <View style={AppStyles.row}>
                                 <View style={AppStyles.flex1}>
                                     <RNTextInput
-                                        ref={r => {
+                                        ref={(r) => {
                                             this.amountInput = r;
                                         }}
                                         keyboardType="decimal-pad"
@@ -390,32 +430,11 @@ class SummaryStep extends Component {
                             </View>
                         </View>
 
-                        {/* destination tag */}
+                        {/* Memo */}
                         <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.destinationTag')}:
-                                </Text>
-                            </View>
-                            <Spacer size={15} />
-                            <TextInput
-                                ref={r => {
-                                    this.destinationTagInput = r;
-                                }}
-                                value={destination.tag?.toString()}
-                                onChangeText={this.onDestinationTagChange}
-                                placeholder={Localize.t('send.enterDestinationTag')}
-                                inputStyle={styles.inputStyle}
-                                keyboardType="number-pad"
-                                returnKeyType="done"
-                            />
-                        </View>
-
-                        {/* Desc */}
-                        <View style={[styles.rowItem]}>
-                            <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.memo')}:
+                                    {Localize.t('global.memo')}
                                 </Text>
                             </View>
                             <Spacer size={15} />

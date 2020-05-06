@@ -12,4 +12,14 @@ declare module 'xumm-string-decode' {
         currency?: string;
         issuer?: string;
     }
+    export interface XrplSecret {
+        secretType: SecretType;
+        familySeed?: string;
+        mnemonic?: string;
+        hexPrivateKey?: string;
+    }
+    export interface PayId {
+        payId: string;
+        url: string;
+    }
 }

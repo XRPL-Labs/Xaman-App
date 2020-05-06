@@ -1,16 +1,13 @@
 /**
  * Import Account Screen
  */
-
 import React, { Component } from 'react';
 import { View, Keyboard, Alert } from 'react-native';
 import { dropRight, last, isEmpty } from 'lodash';
 
-import { XRPL_Account } from 'xrpl-accountlib';
-
-import { AccountRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccessLevels, EncryptionLevels } from '@store/types';
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 
 // constants
 import { AppScreens } from '@common/constants';
@@ -29,17 +26,7 @@ import { AppStyles } from '@theme';
 import Steps from './Steps';
 
 /* types ==================================================================== */
-
-export type ImportSteps = keyof typeof Steps;
-
-export interface AccountObject {
-    importedAccount?: XRPL_Account;
-    passphrase?: string;
-    accessLevel?: AccessLevels;
-    encryptionLevel?: EncryptionLevels;
-    accountType?: string;
-    label?: string;
-}
+import { ImportSteps, AccountObject } from './types';
 
 export interface Props {
     upgrade: boolean;
@@ -141,12 +128,26 @@ class AccountImportView extends Component<Props, State> {
 
     importAccount = () => {
         const { account } = this.state;
+
+        let encryptionKey;
+
+        if (account.accessLevel === AccessLevels.Full) {
+            // if passphrase present use it, instead use Passcode to encrypt the private key
+            // WARNING: passcode should use just for low balance accounts
+            if (account.encryptionLevel === EncryptionLevels.Passphrase) {
+                encryptionKey = account.passphrase;
+            } else {
+                encryptionKey = CoreRepository.getSettings().passcode;
+            }
+        }
+
         // add account to store
         AccountRepository.add({
             label: account.label,
             account: account.importedAccount,
-            passphrase: account.encryptionLevel === EncryptionLevels.Passphrase ? account.passphrase : null,
-            readonly: account.accessLevel === AccessLevels.Readonly,
+            encryptionKey,
+            encryptionLevel: account.encryptionLevel,
+            accessLevel: account.accessLevel,
         });
     };
 

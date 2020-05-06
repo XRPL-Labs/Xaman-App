@@ -5,24 +5,23 @@
 
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Image } from 'react-native';
-import { XRPL_Account } from 'xrpl-accountlib';
 
 // components
 import { Button, InfoMessage, Spacer, Footer } from '@components';
-import { Images } from '@common/helpers';
+import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
-
-import { GenerateSteps } from '@screens/Account/Add/Generate';
 
 // style
 import { AppStyles } from '@theme';
 
+import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate/types';
+
 /* types ==================================================================== */
 export interface Props {
-    account: XRPL_Account;
-    goBack: (step?: GenerateSteps, settings?: any) => void;
-    goNext: (step?: GenerateSteps, settings?: any) => void;
+    account: AccountObject;
+    goBack: (step?: GenerateSteps, settings?: AccountObject) => void;
+    goNext: (step?: GenerateSteps, settings?: AccountObject) => void;
 }
 
 export interface State {}

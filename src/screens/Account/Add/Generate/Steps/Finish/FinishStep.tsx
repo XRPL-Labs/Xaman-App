@@ -6,11 +6,13 @@ import React, { Component } from 'react';
 import { SafeAreaView, View, Text, ImageBackground, Image } from 'react-native';
 import { XRPL_Account } from 'xrpl-accountlib';
 
-import { Images } from '@common/helpers';
+import { Images } from '@common/helpers/images';
 // components
 import { Button, Footer } from '@components';
 
 import Localize from '@locale';
+
+import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate/types';
 
 // style
 import { AppStyles } from '@theme';
@@ -19,8 +21,8 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     account: XRPL_Account;
-    goBack: () => void;
-    goNext: () => void;
+    goBack: (step?: GenerateSteps, settings?: AccountObject) => void;
+    goNext: (step?: GenerateSteps, settings?: AccountObject) => void;
 }
 
 export interface State {}

@@ -1,56 +1,48 @@
 diff --git a/node_modules/react-native/Libraries/Network/RCTNetworking.mm b/node_modules/react-native/Libraries/Network/RCTNetworking.mm
-index 193e3c5..3abe796 100644
+index 3638374..afff7dc 100644
 --- a/node_modules/react-native/Libraries/Network/RCTNetworking.mm
 +++ b/node_modules/react-native/Libraries/Network/RCTNetworking.mm
-@@ -514,6 +514,16 @@ - (void)sendRequest:(NSURLRequest *)request
+@@ -517,6 +517,15 @@ - (void)sendRequest:(NSURLRequest *)request
   incrementalUpdates:(BOOL)incrementalUpdates
       responseSender:(RCTResponseSenderBlock)responseSender
  {
 +  #if DEBUG
 +  #else
-+      // this will force the app to just connect to trusted domains
-+      NSArray *allowedEndpoints;
-+      allowedEndpoints = [NSArray arrayWithObjects: @"clients3.google.com", @"xumm.app", nil];
-+      NSString* domain = [request.URL host];
-+    
-+      NSAssert([allowedEndpoints containsObject: domain], [@"Fetch endpoint have unsecure domain: " stringByAppendingString:domain]);
++    // this will force the app to just connect to trusted domains
++    NSArray *allowedEndpoints;
++    allowedEndpoints = [NSArray arrayWithObjects: @"clients3.google.com", @"xumm.app", nil];
++    NSString* domain = [request.URL host];
++
++    NSAssert([allowedEndpoints containsObject: domain], [@"Fetch endpoint have unsecure domain: " stringByAppendingString:domain]);
 +  #endif
-+    
    RCTAssertThread(_methodQueue, @"sendRequest: must be called on method queue");
    __weak __typeof(self) weakSelf = self;
    __block RCTNetworkTask *task;
 diff --git a/node_modules/react-native/Libraries/WebSocket/RCTSRWebSocket.m b/node_modules/react-native/Libraries/WebSocket/RCTSRWebSocket.m
-index a134d2e..04110d7 100644
+index b967c14..282c751 100644
 --- a/node_modules/react-native/Libraries/WebSocket/RCTSRWebSocket.m
 +++ b/node_modules/react-native/Libraries/WebSocket/RCTSRWebSocket.m
-@@ -236,12 +236,29 @@ - (instancetype)initWithURLRequest:(NSURLRequest *)request protocols:(NSArray<NS
+@@ -233,7 +233,22 @@ - (instancetype)initWithURLRequest:(NSURLRequest *)request protocols:(NSArray<NS
    RCTAssertParam(request);
  
    if ((self = [super init])) {
 -    _url = request.URL;
-+      
++
 +    #if DEBUG
-+        _url = request.URL;
++      _url = request.URL;
 +    #else
 +      // this will force the app to just connect to trusted nodes
 +      NSArray *allowedEndpoints;
-+      allowedEndpoints = [NSArray arrayWithObjects: @"localhost", @"xrpl.ws", @"s2.ripple.com", @"testnet.xrpl-labs.com", @"s.altnet.rippletest.net", nil];
++      allowedEndpoints = [NSArray arrayWithObjects: @"localhost", @"xrpl.ws", @"xrpl.link", @"s2.ripple.com", @"testnet.xrpl-labs.com", @"s.altnet.rippletest.net", nil];
 +      NSString* domain = [request.URL host];
-+        
++
 +      if([allowedEndpoints containsObject: domain]){
-+          _url = request.URL;
++        _url = request.URL;
 +      }else{
-+          _url = [NSURL URLWithString:@"wss://xrpl.ws"];
++        _url = [NSURL URLWithString:@"wss://xrpl.ws"];
 +      }
-+      
 +    #endif
-+          
++
      _urlRequest = request;
  
      _requestedProtocols = [protocols copy];
- 
-     [self _RCTSR_commonInit];
-+    
-   }
-   return self;
- }

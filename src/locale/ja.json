@@ -15,7 +15,7 @@
       "remove": "削除する",
       "go": "行く",
       "close": "閉じる",
-      "save": "保存する",
+      "save": "セーブ",
       "confirm": "確認",
       "failed": "失敗した",
       "balance": "残高",
@@ -82,6 +82,7 @@
       "warning": "警告",
       "pleaseNote": "ご注意ください",
       "unavailable": "利用できません",
+      "available": "利用可能",
       "notice": "通知",
       "error": "エラー",
       "critical": "クリティカル",
@@ -151,6 +152,10 @@
       "fair": "公正",
       "strong": "強い",
       "veryStrong": "とても強い",
+      "subject": "件名",
+      "empty": "空の",
+      "update": "更新",
+      "balanceLimit": "バランス制限",
       "unbelievablyStrong": "信じられないほど強い",
       "biometryIsNotSupported": "このデバイスでは生体認証はサポートされていません！",
       "invalidAuth": "無効な認証",
@@ -170,9 +175,10 @@
       "atLeastOneLetter": "少なくとも1つの小文字（az）",
       "atLeastOneSymbol": "少なくとも1つの特殊文字（！@、？など）",
       "atLeastOneUpperCase": "少なくとも1つの大文字（AZ）",
-      "tooManyAttemptLogin": "ログインに失敗した回数が多すぎます。もう一度お試しください%{after}分。",
+      "tooManyAttempts": "失敗した試行が多すぎます。再試行してください%{after}分。",
       "passcodeAttemptExceed": "パスコードの試行回数を超えています。しばらくしてからもう一度お試しください。",
-      "invalidPasscodeLeftAttempt": "無効なパスコード、 %{left}残りの試行",
+      "invalidPasscode": "無効なパスコード",
+      "autoWipeAlert": "アプリのロックを誤って解除しようとしました%{times}何度か失敗した後、アプリはリセットされ、すべてのアカウントデータが失われます。",
       "cannotValidateCurrentTimeWithServer": "サーバー時間でアプリケーション時間を検証できません。インターネットに接続していることを確認してください。",
       "unableOpenReturnURL": "リターンURLを開けません！",
       "changingLanguageNeedsRestartToTakeEffect": "言語を変更すると、アプリを再起動する必要があります。今すぐ再起動しますか？",
@@ -202,6 +208,7 @@
       "pressBackAgainToExit": "もう一度押すと終了します",
       "fraudAlert": "詐欺警告",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "このアカウントは詐欺または詐欺のアドレスとして報告されます。注意して続行してください",
+      "biometricIsNotAvailable": "バイオメトリクス（指紋または顔ID）は使用できません。デバイスが生体認証をサポートしている場合は、まずそれを構成してください（OS設定）。",
       "clearSearch": "検索をクリア",
       "noNameFound": "名前が見つかりません",
       "readMoreInTheFAQ": "FAQで詳細を読む"
@@ -232,7 +239,7 @@
    },
    "setupBiometry": {
       "useBiometry": "FaceIDまたは指紋を使用しますか？",
-      "biometryDescription": "アカウントをより安全に保つために、FaceIDまたは指紋の使用をアクティブ化できます。"
+      "biometryDescription": "アカウントをより安全に保つには、FaceIDまたは指紋の使用をアクティブ化できます。"
    },
    "setupPermissions": {
       "enableNotifications": "プッシュ通知を有効にしますか？",
@@ -248,7 +255,9 @@
       "youDonNotHaveOtherCurrency": "他の通貨はありません",
       "howActivateMyAccount": "アカウントを有効にするにはどうすればよいですか？",
       "howActivateMyAccountDesc": "スパムアカウントの作成を防ぐために、XRP元帳では、アカウントをアクティブ化するために少なくとも20のXRPをアカウントに入金する必要があります。 20 XRPは失われません。アカウントには残りますが、使うことはできません。アカウントの使用を開始するには、20 XRPを超える預金がアカウントに行われていることを確認してください。",
-      "otherCurrenciesDesc": "XRP元帳では、XRP以外の通貨の残高を保持したり、通貨を送受信したりすることもできます。これらの通貨は、XRP元帳の他のアカウントから発行できます。非XRP通貨を送受信できるようにするには、非XRP通貨の発行者を信頼する必要があります。"
+      "otherCurrenciesDesc": "XRP元帳では、XRP以外の通貨の残高を保持したり、通貨を送受信したりすることもできます。これらの通貨は、XRP元帳の他のアカウントから発行できます。非XRP通貨を送受信できるようにするには、非XRP通貨の発行者を信頼する必要があります。",
+      "explainMyBalance": "私のバランスを説明してください",
+      "xrpYouOwnVsYourSpendableBalance": "所有するXRPと支出可能な残高のXRP。"
    },
    "events": {
       "noTransaction": "取引なし",
@@ -268,6 +277,7 @@
       "addedATrustLine": "通貨を追加しました（Trust Line）",
       "removedATrustLine": "通貨を削除しました（Trust Line）",
       "addATrustLine": "通貨を追加する（Trust Line）",
+      "updateAccountCurrencies": "アカウントの通貨を更新する",
       "createOffer": "オファーを作成",
       "cancelOffer": "オファーをキャンセル",
       "createEscrow": "エスクローを作成",
@@ -296,6 +306,7 @@
       "getStartedCreateContact": "最初の連絡先を追加することから始めます。",
       "enterNameOrAddress": "名前または住所を入力してください",
       "enterName": "名前を入力してください",
+      "contactAlreadyExist": "連絡先は既に存在します",
       "contactSuccessSaved": "連絡先を追加しました",
       "contactSuccessUpdated": "連絡先を更新しました",
       "contactSuccessDeleted": "連絡先を削除しました",
@@ -325,7 +336,10 @@
       "newOldPasscodeNotMatch": "新しいピンコードと確認は同じではありません！",
       "passcodeChangedSuccess": "ピンコードの変更に成功しました！",
       "canNotSendLogsByEmail": "予期しないエラーが発生しました。ログをメールで送信できません！",
-      "logsCopiedToClipboard": "クリップボードにコピーされたセッションログ"
+      "logsCopiedToClipboard": "クリップボードにコピーされたセッションログ",
+      "additionalSecurity": "追加のセキュリティ",
+      "eraseData": "データを消去",
+      "eraseDataDescription": "パスコードの試行が10回失敗した後にすべてのデータを消去する"
    },
    "account": {
       "addAccount": "アカウントを追加",
@@ -342,20 +356,20 @@
       "pleaseEnterSafePassphrase": "覚えやすいが、他の人には推測できない長さの長いパスフレーズを作成します。",
       "enterPassphrase": "パスフレーズを入力してください",
       "repeatPassphrase": "パスフレーズを繰り返す",
-      "passphraseShouldContain": "パスフレーズの強度は少なくとも公平である必要があります。長いパスフレーズまたはより難しいパスフレーズを使用してください（長いパスフレーズを使用することをお勧めします）。",
+      "passphraseShouldContain": "パスフレーズの強度は少なくとも公平である必要があります。長いパスフレーズまたはより難しいパスフレーズを使用してください（長いパスフレーズの方が適しています）。",
       "passphraseConfirmNotMatch": "パスフレーズが一致しません",
       "enterValidPassphrase": "有効なパスフレーズを入力してください",
       "chooseSecurityLevel": "セキュリティレベル",
       "extraSecurity": "追加のセキュリティ",
       "chooseWisely": "このアカウントに適したセキュリティレベルを選択してください",
       "passcodeOptionDesc": "これは毎日の支出に最適です。顔を見せたり、指をスキャンしたり、パスコードを入力するだけで、取引に署名できます。",
-      "singWithPasscode": "FaceID /パスコードで署名",
+      "signWithPasscode": "FaceID /パスコードで署名",
       "passphraseOptionDesc": "これはXRPの長期保存に適しています。トランザクションに署名するにはパスフレーズが必要です",
-      "singWithPassphrase": "パスフレーズで署名する",
+      "signWithPassphrase": "パスフレーズで署名する",
       "publicAddress": "パブリックアドレス",
       "yourPublicAccoutAddress": "パブリックアカウントアドレス：",
       "pleaseConfirmYourAccountAddress": "アカウントのアドレスを確認してください",
-      "hereIsYourPublicKeyConfirm": "派生したアカウントアドレスです。",
+      "hereIsYourPublicKeyConfirm": "これが派生アカウントのアドレスです。",
       "hereIsYourPublicKey": "これが新しいアカウントです。生成されたパブリックアカウントアドレスに資金を受け取ることができます。",
       "copyAddress": "住所をコピー",
       "publicKeyCopiedToClipboard": "クリップボードにコピーされたアカウントアドレス",
@@ -417,7 +431,7 @@
       "destroyAccount": "このアカウントを削除",
       "upgradingAccessLevelWarning": "アクセスレベルをアップグレードしています。このアカウントの秘密鍵をインポートする必要があります。",
       "downgradingAccessLevelWarning": "アクセスレベルをダウングレードしています。これにより、このアカウントの秘密鍵が失われます。本気ですか？",
-      "removeTrustLineWarning": "あなたはあなたのアカウントからこの通貨を削除しています。この操作は元に戻せません。本気ですか？",
+      "removeTrustLineWarning": "この通貨をアカウントから削除しています。この操作は元に戻せません。本気ですか？",
       "unavailableChangeSecurityLevel": "現在、セキュリティレベルの変更は利用できません",
       "accountDestroyWarning": "アカウントは完全に削除されますが、よろしいですか？",
       "accountMaxLabelLengthError": "アカウントラベルは16文字未満にしてください！",
@@ -427,7 +441,7 @@
       "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "選択したアカウントはアクティブ化されていません。このトランザクションに署名するには、アクティブ化されたアカウントを選択する必要があります！",
       "accountAlreadyExist": "アカウントはすでに存在しています！",
       "masterKeyForThisAccountDisableRegularKeyNotFound": "このアカウントのマスターキーは無効になっており、通常のキーアカウントはアカウントリストにありません！",
-      "regularKeyAccountForThisAccountDoesNotImportedWithSignAccess": "このアカウントの通常のキーアカウントは、サインアクセスでインポートされませんでした！",
+      "regularKeyAccountForThisAccountDoesNotImportedWithSignAccess": "このアカウントの通常のキーは、サインアクセスでインポートされませんでした！",
       "currentPassphraseShouldNotBeEmpty": "現在のパスフレーズは空にできません！",
       "enteredCurrentPassphraseIsInvalid": "入力された現在のパスフレーズは無効です！",
       "yourAccountPassphraseChangedSuccessfully": "アカウントのパスフレーズが正常に変更されました！",
@@ -439,10 +453,14 @@
       "switchAccount": "アカウントを切り替える",
       "useMnemonicPassphrase": "ニーモニックパスフレーズを使用する",
       "mnemonicLargeAmountAlert": "アカウントに大きな価値がある（たとえば、貯蓄、大量のXRPまたはその他のトークン）状態でニーモニックアカウントをインポートすることを検討する場合、ニーモニックアカウントをオフラインに保つために、XUMMで新しいアカウントを作成することを検討してください。",
-      "importExchangeAddressReadonlyWarning": "Exchange（預金）アカウントをインポートすることはできません。これを行うと、取引所で自分の残高を追跡できなくなります。読み取り専用アカウントのインポートは、ハードウェアのアカウントのように、これが自分のアクティブなアカウントである場合にのみ機能します。"
+      "importExchangeAddressReadonlyWarning": "Exchange（預金）アカウントをインポートすることはできません。これを行うと、取引所で自分の残高を追跡できなくなります。読み取り専用アカウントのインポートは、これがハードウェアのアカウントのように自分のアクティブなアカウントである場合にのみ機能します",
+      "walletReserve": "ウォレットリザーブ",
+      "accountBalance": "勘定残高",
+      "availableForSpending": "支出可能"
    },
    "send": {
       "amountIsBiggerThanYourSpend": "金額があなたが費やすことができる金額よりも大きい（ %{spendable} ）",
+      "theMaxAmountYouCanSendIs": "送信できる最大金額は%{spendable}%{currency}",
       "balanceIsNotEnoughForFee": "残高は料金をカバーするのに十分ではありません（ %{fee} ）",
       "searchResults": "の検索結果",
       "noSearchResult": "検索結果がありません",
@@ -460,8 +478,8 @@
       "transactionID": "取引ID",
       "sendingDone": "正常に送信されました！",
       "submittingDone": "送信しました！",
-      "addToContacts": "連絡先に追加",
-      "sendingFailed": "提出に失敗しました！",
+      "addToContacts": "連絡先に登録する",
+      "sendingFailed": "送信に失敗しました！",
       "submitFailed": "提出に失敗しました！",
       "somethingWentWrong": "問題が発生しました！",
       "resultCopiedToClipboard": "結果をクリップボードにコピーしました",
@@ -471,6 +489,7 @@
       "enterDescription": "説明を入力してください",
       "enterPublicMemo": "公開メモを入力してください（オプション）",
       "enterDestinationTag": "宛先タグを入力してください",
+      "pleaseEnterTheDestinationTag": "宛先タグを入力してください",
       "destinationIsConfirmedAsScam": "宛先アカウントは詐欺として確認されます",
       "destinationIsProbableIsScam": "移行先のアカウントに高リスクのフラグが付けられています",
       "selectedAccountDoNotSupportCurrency": "選択したアカウントは選択した通貨をサポートしていません。",
@@ -479,30 +498,37 @@
       "destinationNotExistCreationWarning": "移行先のアカウントは以前に使用されておらず、残高もありません。このアカウントへの送信を続けると、20 XRPの%{amount} XRPは、XRP元帳のアカウントをアクティブ化するために使用されます。つまり、20 XRPは使用できません。続行してもよろしいですか？",
       "destinationCannotActivateWithIOU": "移行先のアカウントは以前に使用されておらず、残高もありません。 XRP元帳でアカウントをアクティブ化するには、少なくとも20のXRPの初期預金をアカウントに送信する必要があります。 XRP以外の通貨は初回入金には使用できません。",
       "destinationTagIsRequired": "この支払いを送信するには宛先タグが必要です。",
-      "unableGetRecipientAccountInfoPleaseTryAgain": "受信者のアカウント情報を取得できません。もう一度お試しください。"
+      "unableGetRecipientAccountInfoPleaseTryAgain": "受信者のアカウント情報を取得できません。もう一度お試しください。",
+      "noDestinationTag": "宛先タグなし",
+      "thisAddressRequiredDestinationTag": "このアドレスには宛先タグが必要です"
    },
    "currency": {
       "addCurrency": "通貨を追加",
       "selectAnExchangeAndSelectCurrency": "発行者を選択し、追加する通貨を選択します。このリストはXUMM開発者が管理しています。",
       "addAndSign": "追加：トランザクションに署名",
       "successRemoved": "アカウントから通貨を削除しました",
-      "failedRemove": "通貨を削除できません。エラーが発生しました！"
+      "failedRemove": "通貨を削除できません。エラーが発生しました！",
+      "removeCurrency": "通貨を削除",
+      "addingCurrencyReserveDescription": "通貨を追加すると、アカウントの予備が5 XRP増加します"
    },
    "exchange": {
       "exchanging": "交換",
       "exchangeRate": "為替レート （ %{exchangeRate} XRP）",
-      "doYouWantToExchange": "交換してもよろしいですか%{payAmount}%{payCurrency}にとって%{getAmount}%{getCurrency} ？",
-      "successfullyExchanged": "交換しました%{payAmount}%{payCurrency}にとって%{getAmount}%{getCurrency} 。",
+      "doYouWantToExchange": "交換してもよろしいですか%{payAmount}%{payCurrency}ために%{getAmount}%{getCurrency} ？",
+      "successfullyExchanged": "交換しました%{payAmount}%{payCurrency}ために%{getAmount}%{getCurrency} 。",
       "failedExchange": "流動性の欠如、または最新の為替レートのため、現在交換できません。",
       "errorDuringExchange": "交換中のエラー： %{error}",
       "liquidityIsNotEnough": "十分な流動性がないため、現在交換できません！",
-      "liquidityIsNotSoMuch": "流動性が比較的低い。引き続きご利用いただけますが、交換全体で最高のレートが得られない可能性があります。"
+      "liquidityIsNotSoMuch": "流動性が比較的低い。引き続きご利用いただけますが、交換全体で最高のレートが得られない可能性があります。",
+      "theMaxAmountYouCanExchangeIs": "交換できる最大金額は%{spendable}%{currency}"
    },
    "scan": {
       "aimAtTheCode": "コードを目指す",
       "pleaseScanXRPAddress": "XRPアドレスQRをスキャンしてください",
       "scannedQRIsNotXRPAddress": "スキャンしたQRコードはXRPアドレスコードではありません！",
-      "theQRIsNotWhatWeExpect": "このQRコードは私たちが期待するものではありません！"
+      "scannedQRIsNotXummPayload": "スキャンしたQRコードはXUMMペイロードではありません！",
+      "theQRIsNotWhatWeExpect": "このQRコードは私たちが期待するものではありません！",
+      "invalidQRTryNewOneOrTryAgain": "無効なQRコードです。新しいコードを試すか、もう一度やり直してください"
    },
    "payload": {
       "payloadHandledByAnotherClient": "別のクライアントによって処理されるペイロード",
@@ -522,7 +548,9 @@
       "whatDoYouWantToDo": "何をしたいですか？",
       "willIgnoreTheRequestAndClose": "リクエストを無視して閉じます。",
       "willRejectTheSignRequest": "署名リクエストを拒否します",
-      "payingWithXRPExchangeRate": "〜で支払う%{xrpRoundedUp} XRP為替レート： %{exchangeRate}",
-      "notEnoughtLiquidityToSendThisPayment": "この支払いを送るのに十分な流動性がありません。"
+      "payingWithXRPExchangeRate": "〜で支払う%{xrpRoundedUp} XRP為替レート：〜 %{exchangeRate}",
+      "notEnoughLiquidityToSendThisPayment": "この支払いを送るのに十分な流動性がありません。",
+      "unableToCheckCurrencyConversion": "通貨換算を確認できません。XRPLノードに接続していることを確認してください",
+      "unableToGetNetworkFee": "ネットワーク料金を取得できません。XRPLノードに接続していることを確認してください"
    }
 }

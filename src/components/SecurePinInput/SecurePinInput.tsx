@@ -16,7 +16,8 @@ import {
     TextInputKeyPressEventData,
 } from 'react-native';
 
-import { Icon } from '@components';
+import { Icon } from '@components/Icon';
+
 import { AppColors } from '@theme';
 import styles from './styles';
 

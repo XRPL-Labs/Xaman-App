@@ -1,10 +1,9 @@
 /**
- * Import Account/AccessLevel Screen
+ * Import Account/AccessLevel Step
  */
 
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text } from 'react-native';
-import { ImportSteps } from '@screens/Account/Add/Import';
 
 import { Button, RadioButton, InfoMessage, Footer } from '@components';
 
@@ -14,14 +13,16 @@ import Localize from '@locale';
 import { AppStyles } from '@theme';
 // import styles from './styles';
 
+import { AccessLevels } from '@store/types';
+import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
 /* types ==================================================================== */
 export interface Props {
-    goBack: (step?: ImportSteps, settings?: any) => void;
-    goNext: (step?: ImportSteps, settings?: any) => void;
+    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
+    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
 }
 
 export interface State {
-    accessLevel: string;
+    accessLevel: AccessLevels;
 }
 
 /* Component ==================================================================== */
@@ -30,11 +31,11 @@ class AccessLevelStep extends Component<Props, State> {
         super(props);
 
         this.state = {
-            accessLevel: 'Full',
+            accessLevel: AccessLevels.Full,
         };
     }
 
-    onRadioButtonPress = (level: string) => {
+    onRadioButtonPress = (level: AccessLevels) => {
         this.setState({
             accessLevel: level,
         });
@@ -43,6 +44,7 @@ class AccessLevelStep extends Component<Props, State> {
     goNext = () => {
         const { goNext } = this.props;
         const { accessLevel } = this.state;
+
         if (accessLevel === 'Full') {
             goNext('AccountType', { accessLevel });
         } else {
@@ -60,7 +62,7 @@ class AccessLevelStep extends Component<Props, State> {
                 <View style={[AppStyles.contentContainer, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <RadioButton
                         onPress={() => {
-                            this.onRadioButtonPress('Full');
+                            this.onRadioButtonPress(AccessLevels.Full);
                         }}
                         label={Localize.t('account.fullAccess')}
                         description={Localize.t('account.fullAccessDesc')}
@@ -68,7 +70,7 @@ class AccessLevelStep extends Component<Props, State> {
                     />
                     <RadioButton
                         onPress={() => {
-                            this.onRadioButtonPress('Readonly');
+                            this.onRadioButtonPress(AccessLevels.Readonly);
                         }}
                         label={Localize.t('account.readOnly')}
                         description={Localize.t('account.readOnlyDesc')}

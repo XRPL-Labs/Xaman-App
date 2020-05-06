@@ -9,9 +9,11 @@ import { View, SafeAreaView, ActivityIndicator, Image, Alert } from 'react-nativ
 import { WebView } from 'react-native-webview';
 
 import { CoreRepository, ProfileRepository } from '@store/repositories';
-import { Images, Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 import { AppScreens, AppConfig } from '@common/constants';
-import { BackendService } from '@services';
+
+import { BackendService, AuthenticationService } from '@services';
 
 import Localize from '@locale';
 
@@ -72,7 +74,9 @@ class FinishView extends Component<Props, State> {
             ProfileRepository.saveProfile({ accessToken, signedTOSDate: new Date(), signedTOSVersion: TOSVersion });
 
             // set the initialized flag to true
-            CoreRepository.saveSettings({ initialized: true });
+            // update last unlocked ts to prevent app lock on first run
+            const ts = await AuthenticationService.getRealTime();
+            CoreRepository.saveSettings({ initialized: true, lastUnlockedTimestamp: ts });
 
             // navigate to default root
             Navigator.startDefault();

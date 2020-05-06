@@ -7,8 +7,14 @@ import DeviceInfo from 'react-native-device-info';
 import EventEmitter from 'events';
 
 import { CoreRepository } from '@store/repositories';
+import { CoreSchema } from '@store/schemas/latest';
 import { NodeChain } from '@store/types';
-import { LoggerService, AppStateService } from '@services';
+
+import { AppConfig } from '@common/constants';
+
+import AppStateService from '@services/AppStateService';
+import LoggerService from '@services/LoggerService';
+import NavigationService from '@services/NavigationService';
 
 type BaseCommand = {
     id?: string;
@@ -92,18 +98,34 @@ class SocketService extends EventEmitter {
         this.onError = this.onError.bind(this);
     }
 
-    initialize = () => {
+    initialize = (coreSettings: CoreSchema) => {
         return new Promise((resolve, reject) => {
             try {
-                // get/set default node
-                this.setDefaultNode();
+                // listen on navigation change event
+                NavigationService.on('setRoot', (root: string) => {
+                    // we just need to connect to socket when we are in DefaultStack not Onboarding
+                    if (root === 'DefaultStack') {
+                        // get/set default node
+                        let defaultNode = __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0];
 
-                // listen for net state change
-                AppStateService.on('netStateChange', (newState: string) => {
-                    if (newState === 'Connected') {
-                        this.reconnect();
-                    } else {
-                        this.close();
+                        if (coreSettings && coreSettings.defaultNode) {
+                            defaultNode = coreSettings.defaultNode;
+                        }
+
+                        // set default node
+                        this.setDefaultNode(defaultNode);
+
+                        // connect to the node
+                        this.connect();
+
+                        // listen for net state change
+                        AppStateService.on('netStateChange', (newState: string) => {
+                            if (newState === 'Connected') {
+                                this.reconnect();
+                            } else {
+                                this.close();
+                            }
+                        });
                     }
                 });
 
@@ -125,11 +147,30 @@ class SocketService extends EventEmitter {
         }
     }
 
-    setDefaultNode() {
-        const defaultNode = CoreRepository.getDefaultNode();
+    setDefaultNode(node: string) {
+        let chain = NodeChain.Main;
 
-        this.node = defaultNode.node;
-        this.chain = defaultNode.chain;
+        // it is a verified type
+        if (AppConfig.nodes.main.indexOf(node) > -1) {
+            chain = NodeChain.Main;
+        } else if (AppConfig.nodes.test.indexOf(node) > -1) {
+            chain = NodeChain.Test;
+        }
+
+        // THIS IS DURRING BETA
+        // if it's main net and the default node is not xrpl.ws revert
+        if (chain === NodeChain.Main && node !== 'wss://xrpl.ws') {
+            this.node = 'wss://xrpl.ws';
+
+            // update the database
+            CoreRepository.saveSettings({
+                defaultNode: this.node,
+            });
+        } else {
+            this.node = node;
+        }
+        // set the chain
+        this.chain = chain;
     }
 
     close() {
@@ -181,6 +222,7 @@ class SocketService extends EventEmitter {
         return new Promise((resolve, reject) => {
             // sent tracker
             let sent = false;
+
             if (this.status === SocketStateStatus.Connected) {
                 resolve(this.sendPayload(payload));
                 return;
@@ -220,7 +262,7 @@ class SocketService extends EventEmitter {
 
     onClose() {
         this.status = SocketStateStatus.Disconnected;
-        this.logger.error('Socket Closed');
+        this.logger.warn('Socket Closed');
     }
 
     connect() {
@@ -240,11 +282,13 @@ class SocketService extends EventEmitter {
                         Connection.on('close', this.onClose);
 
                         Connection.on('state', (connected: boolean) => {
+                            const reconnected = this.status === SocketStateStatus.Disconnected && connected;
+                            // update current state
+                            this.status = connected ? SocketStateStatus.Connected : SocketStateStatus.Disconnected;
                             // if we are connecting again
-                            if (this.status === SocketStateStatus.Disconnected && connected) {
+                            if (reconnected) {
                                 this.emit('connect', Connection);
                             }
-                            this.status = connected ? SocketStateStatus.Connected : SocketStateStatus.Disconnected;
                         });
                         return resolve();
                     })

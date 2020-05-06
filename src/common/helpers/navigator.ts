@@ -2,12 +2,14 @@ import { get, merge } from 'lodash';
 import { Platform } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 
-import { Images, getBottomTabScale, isIOS10 } from '@common/helpers';
+import { getBottomTabScale, isIOS10 } from '@common/helpers/interface';
+import { Images } from '@common/helpers/images';
+
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
 
-import { NavigationService } from '@services';
+import NavigationService from '@services/NavigationService';
 
 import { AppColors, AppFonts } from '@theme';
 
@@ -151,25 +153,6 @@ const Navigator = {
         });
     },
 
-    startConnectionIssue() {
-        Navigation.setDefaultOptions(defaultOptions);
-
-        return Navigation.setRoot({
-            root: {
-                stack: {
-                    id: AppScreens.ConnectionIssue,
-                    children: [
-                        {
-                            component: {
-                                name: AppScreens.ConnectionIssue,
-                            },
-                        },
-                    ],
-                },
-            },
-        });
-    },
-
     push(nextScreen: any, options = {}, passProps = {}) {
         const currentScreen = NavigationService.getCurrentScreen();
         if (currentScreen !== nextScreen) {
@@ -257,6 +240,28 @@ const Navigator = {
                 currentTabIndex: index,
             },
         });
+    },
+
+    showAlertModal(options: {
+        type: 'success' | 'info' | 'warning' | 'error';
+        text: string;
+        title?: string;
+        buttons: { text: string; onPress: () => void; type?: 'continue' | 'dismiss'; light?: boolean }[];
+        onDismissed?: () => void;
+    }) {
+        Navigator.showOverlay(
+            AppScreens.Overlay.Alert,
+            {
+                overlay: {
+                    handleKeyboardEvents: true,
+                },
+                layout: {
+                    backgroundColor: 'transparent',
+                    componentBackgroundColor: 'transparent',
+                },
+            },
+            options,
+        );
     },
 
     mergeOptions(options = {}) {

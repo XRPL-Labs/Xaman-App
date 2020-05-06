@@ -15,7 +15,9 @@ import { AccessLevels, EncryptionLevels, BiometryType } from '@store/types';
 
 import Vault from '@common/libs/vault';
 
-import { Navigator } from '@common/helpers';
+import { AuthenticationService } from '@services';
+
+import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 // components
@@ -89,7 +91,7 @@ class VaultModal extends Component<Props, State> {
 
         let { encryptionLevel } = account;
 
-        if (account.regularKey && accountFlags.disableMasterKey) {
+        if (account.regularKey && (accountFlags.disableMasterKey || account.accessLevel === AccessLevels.Readonly)) {
             const regularAccount = AccountRepository.findOne({ address: account.regularKey }) as AccountSchema;
             if (isEmpty(regularAccount)) {
                 // dismiss
@@ -124,29 +126,41 @@ class VaultModal extends Component<Props, State> {
         Animated.timing(this.animatedColor, {
             toValue: 150,
             duration: 350,
+            useNativeDriver: false,
         }).start();
 
-        // if biometry sets by default switch to biometry for faster result
         if (encryptionLevel === EncryptionLevels.Passcode) {
             FingerprintScanner.isSensorAvailable()
                 .then(() => {
-                    this.setState({
-                        isSensorAvailable: true,
-                    });
-                    if (coreSettings.biometricMethod !== BiometryType.None) {
-                        setTimeout(() => {
-                            this.requestBiometricAuthenticate(true);
-                        }, 500);
-                    } else {
-                        // focus the input
-                        setTimeout(() => {
-                            if (this.securePinInput) {
-                                this.securePinInput.focus();
+                    this.setState(
+                        {
+                            isSensorAvailable: true,
+                        },
+                        () => {
+                            // if biometry sets by default switch to biometry for faster result
+                            if (coreSettings.biometricMethod !== BiometryType.None) {
+                                setTimeout(() => {
+                                    this.requestBiometricAuthenticate(true);
+                                }, 500);
+                            } else {
+                                // focus the input
+                                setTimeout(() => {
+                                    if (this.securePinInput) {
+                                        this.securePinInput.focus();
+                                    }
+                                }, 300);
                             }
-                        }, 300);
-                    }
+                        },
+                    );
                 })
-                .catch(() => {});
+                .catch(() => {
+                    // focus the input
+                    setTimeout(() => {
+                        if (this.securePinInput) {
+                            this.securePinInput.focus();
+                        }
+                    }, 300);
+                });
         } else if (encryptionLevel === EncryptionLevels.Passphrase) {
             // focus the input
             setTimeout(() => {
@@ -208,7 +222,7 @@ class VaultModal extends Component<Props, State> {
             })
             .catch((error: any) => {
                 if (system) return;
-                if (error.code !== 'UserCancel') {
+                if (error.name !== 'UserCancel') {
                     Alert.alert(Localize.t('global.error'), Localize.t('global.invalidBiometryAuth'));
                 }
             })
@@ -218,15 +232,13 @@ class VaultModal extends Component<Props, State> {
     };
 
     onPasscodeEntered = (passcode: string) => {
-        CoreRepository.checkPasscode(passcode)
-            .then(encryptedPasscode => {
+        AuthenticationService.checkPasscode(passcode)
+            .then((encryptedPasscode) => {
                 this.openVault(encryptedPasscode);
             })
-            .catch(e => {
-                Alert.alert(Localize.t('global.error'), e.toString());
-            })
-            .finally(() => {
+            .catch((e) => {
                 this.securePinInput.clearInput();
+                Alert.alert(Localize.t('global.error'), e.toString());
             });
     };
 
@@ -265,7 +277,7 @@ class VaultModal extends Component<Props, State> {
                 </Text>
 
                 <SecurePinInput
-                    ref={r => {
+                    ref={(r) => {
                         this.securePinInput = r;
                     }}
                     onInputFinish={this.onPasscodeEntered}
@@ -323,11 +335,11 @@ class VaultModal extends Component<Props, State> {
                 <Spacer size={40} />
 
                 <PasswordInput
-                    ref={r => {
+                    ref={(r) => {
                         this.passwordInput = r;
                     }}
                     placeholder={Localize.t('account.enterPassphrase')}
-                    onChange={passphrase => {
+                    onChange={(passphrase) => {
                         this.setState({ passphrase });
                     }}
                     autoFocus
@@ -373,7 +385,7 @@ class VaultModal extends Component<Props, State> {
                 style={[styles.container, { backgroundColor: interpolateColor }]}
             >
                 <View
-                    ref={r => {
+                    ref={(r) => {
                         this.contentView = r;
                     }}
                     style={[styles.visibleContent, { marginBottom: offsetBottom }]}

@@ -1,6 +1,7 @@
 import Realm from 'realm';
 
-// import { BackendService } from '@services';
+import { Truncate } from '@common/libs/utils';
+
 /**
  * Account Trust Lines Model
  */
@@ -70,7 +71,7 @@ class TrustLine extends Realm.Object {
         }
 
         return {
-            name: `${this.currency.issuer.substr(0, 20)}...`,
+            name: Truncate(this.currency.issuer, 11),
             avatar: 'https://xumm.app/assets/icons/currencies/trustline-unknown.png',
             domain: '',
         };

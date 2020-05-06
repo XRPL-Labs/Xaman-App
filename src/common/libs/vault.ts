@@ -6,9 +6,11 @@
  */
 
 import * as Keychain from 'react-native-keychain';
-import { AES } from '@common/libs/crypto';
 
-import { LoggerService } from '@services';
+import { AES, randomKey } from '@common/libs/crypto';
+import { HexEncoding } from '@common/libs/utils';
+
+import LoggerService from '@services/LoggerService';
 
 /* Types ==================================================================== */
 export interface VaultEntry {
@@ -84,6 +86,22 @@ const Vault = {
         } catch {
             return '';
         }
+    },
+
+    /**
+     *  get storage encryption key from vault
+     */
+    getStorageEncryptionKey: async (keyName: string): Promise<Buffer> => {
+        return Keychain.getInternetCredentials(keyName).then((data: any) => {
+            if (!data) {
+                return randomKey(64).then((key: string) => {
+                    return Keychain.setInternetCredentials(keyName, 'empty', key).then(() => {
+                        return HexEncoding.toBinary(key);
+                    });
+                });
+            }
+            return HexEncoding.toBinary(data.password);
+        });
     },
 
     /**

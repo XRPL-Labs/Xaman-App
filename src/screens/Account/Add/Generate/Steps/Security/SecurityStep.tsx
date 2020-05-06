@@ -12,17 +12,18 @@ import { Button, RadioButton, Footer } from '@components';
 import Localize from '@locale';
 
 import { EncryptionLevels } from '@store/types';
-import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate';
 
 // style
 import { AppStyles } from '@theme';
 // import styles from './styles';
 
+import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate/types';
+
 /* types ==================================================================== */
 export interface Props {
     account: AccountObject;
-    goBack: (step?: GenerateSteps, settings?: any) => void;
-    goNext: (step?: GenerateSteps, settings?: any) => void;
+    goBack: (step?: GenerateSteps, settings?: AccountObject) => void;
+    goNext: (step?: GenerateSteps, settings?: AccountObject) => void;
 }
 
 export interface State {
@@ -69,7 +70,7 @@ class SecurityStep extends Component<Props, State> {
                             this.onRadioButtonPress('passcode');
                         }}
                         description={Localize.t('account.passcodeOptionDesc')}
-                        labelSmall={Localize.t('account.singWithPasscode')}
+                        labelSmall={Localize.t('account.signWithPasscode')}
                         label={Localize.t('global.standard')}
                         checked={security === 'passcode'}
                     />
@@ -78,7 +79,7 @@ class SecurityStep extends Component<Props, State> {
                             this.onRadioButtonPress('passphrase');
                         }}
                         description={Localize.t('account.passphraseOptionDesc')}
-                        labelSmall={Localize.t('account.singWithPassphrase')}
+                        labelSmall={Localize.t('account.signWithPassphrase')}
                         label={Localize.t('global.extraSecurity')}
                         checked={security === 'passphrase'}
                     />

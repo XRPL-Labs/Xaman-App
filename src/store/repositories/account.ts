@@ -1,10 +1,10 @@
-import { has, isEmpty } from 'lodash';
+import { has, isEmpty, filter } from 'lodash';
 import Realm, { Results, ObjectSchema } from 'realm';
 
 import * as AccountLib from 'xrpl-accountlib';
 
 import Vault from '@common/libs/vault';
-import { CoreRepository } from '@store/repositories';
+
 import { AccountSchema } from '@store/schemas/latest';
 
 import { AccessLevels, EncryptionLevels } from '@store/types';
@@ -13,9 +13,10 @@ import BaseRepository from './base';
 /* types  ==================================================================== */
 type AddAccountParams = {
     account: AccountLib.XRPL_Account;
-    passphrase?: string;
+    encryptionKey?: string;
+    encryptionLevel: EncryptionLevels;
+    accessLevel?: AccessLevels;
     label?: string;
-    readonly?: boolean;
 };
 
 // events
@@ -42,7 +43,7 @@ class AccountRepository extends BaseRepository {
      * this will store private key in the vault
      */
     add = (params: AddAccountParams): Promise<AccountSchema> => {
-        const { account, passphrase, label, readonly } = params;
+        const { account, encryptionKey, encryptionLevel, label, accessLevel } = params;
 
         // check if there is any default account if
         // it's upgrading so we don't want to remove the default flag
@@ -55,7 +56,7 @@ class AccountRepository extends BaseRepository {
         }
 
         // if the account is readonly
-        if (readonly) {
+        if (accessLevel === AccessLevels.Readonly) {
             const newAccount = {
                 address: account.address,
                 accessLevel: AccessLevels.Readonly,
@@ -74,9 +75,6 @@ class AccountRepository extends BaseRepository {
 
         // else for sure we have full access
         const { keypair } = account;
-        // if passphrase present use it, instead use Passcode to encrypt the private key
-        // WARNING: passcode should use just for low balance accounts
-        const encryptionKey = passphrase || CoreRepository.getSettings().passcode;
 
         // save the privateKey in the vault
         return Vault.create(keypair.publicKey, keypair.privateKey, encryptionKey).then(() => {
@@ -84,7 +82,7 @@ class AccountRepository extends BaseRepository {
                 publicKey: keypair.publicKey,
                 accessLevel: AccessLevels.Full,
                 address: account.address,
-                encryptionLevel: passphrase ? EncryptionLevels.Passphrase : EncryptionLevels.Passcode,
+                encryptionLevel,
                 default: true,
             } as Partial<AccountSchema>;
 
@@ -127,6 +125,36 @@ class AccountRepository extends BaseRepository {
             return this.query(filters);
         }
         return this.findAll();
+    };
+
+    /**
+     * get list of available accounts for spending
+     */
+    getSpendableAccounts = (): Array<AccountSchema> => {
+        const accounts = this.findAll();
+
+        const availableAccounts = [] as Array<AccountSchema>;
+
+        accounts.forEach((account: AccountSchema) => {
+            if (account.accessLevel === AccessLevels.Full) {
+                availableAccounts.push(account);
+                // check if the regular key account is imported
+            } else if (
+                account.regularKey &&
+                !this.query({ address: account.regularKey, accessLevel: AccessLevels.Full }).isEmpty()
+            ) {
+                availableAccounts.push(account);
+            }
+        });
+
+        return filter(availableAccounts, (a) => a.balance > 0);
+    };
+
+    /**
+     * check if account is a regular key to one of xumm accounts
+     */
+    isRegularKey = (account: AccountSchema) => {
+        return !this.findBy('regularKey', account.address).isEmpty();
     };
 
     /**
@@ -203,6 +231,20 @@ class AccountRepository extends BaseRepository {
 
         // emit the account remove event
         this.emit('accountRemove');
+
+        return true;
+    };
+
+    /**
+     * Purge All accounts
+     * WARNING: this will be permanently and cannot be undo
+     */
+    purgePrivateKeys = (): boolean => {
+        // clear the vault
+        const accounts = this.getAccounts({ accessLevel: AccessLevels.Full });
+        accounts.forEach((a) => {
+            Vault.purge(a.publicKey);
+        });
 
         return true;
     };

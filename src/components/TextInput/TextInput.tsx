@@ -9,12 +9,13 @@ import React, { Component } from 'react';
 import { View, TouchableHighlight, TextInput, TextInputProps, ViewStyle, TextStyle } from 'react-native';
 
 import { StringType } from 'xumm-string-decode';
-import { Navigator } from '@common/helpers';
+
+import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-import { Icon } from '@components';
+import { Icon } from '@components/Icon';
 
-import { AppColors, AppStyles } from '@theme';
+import { AppColors, AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -26,6 +27,7 @@ interface Props extends TextInputProps {
     showScanner?: boolean;
     scannerType?: StringType;
     onScannerRead?: (decoded: any) => void;
+    scannerFallback?: boolean;
 }
 
 interface State {
@@ -97,7 +99,12 @@ class Input extends Component<Props, State> {
                     autoCorrect={false}
                     multiline={false}
                     underlineColorAndroid="transparent"
-                    style={[styles.input, { paddingRight: showScanner && 60 }, inputStyle, focused && activeInputStyle]}
+                    style={[
+                        styles.input,
+                        { paddingRight: showScanner && AppSizes.heightPercentageToDP(5) },
+                        inputStyle,
+                        focused && activeInputStyle,
+                    ]}
                     {...this.props}
                 />
             </View>
@@ -105,7 +112,7 @@ class Input extends Component<Props, State> {
     };
 
     showScanner = () => {
-        const { onScannerRead, scannerType } = this.props;
+        const { onScannerRead, scannerType, scannerFallback } = this.props;
 
         Navigator.showModal(
             AppScreens.Modal.Scan,
@@ -113,6 +120,7 @@ class Input extends Component<Props, State> {
             {
                 type: scannerType,
                 onRead: onScannerRead,
+                fallback: scannerFallback,
             },
         );
     };

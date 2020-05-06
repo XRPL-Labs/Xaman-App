@@ -8,11 +8,13 @@
 import merge from 'lodash/merge';
 import DeviceInfo from 'react-native-device-info';
 
-import { CoreRepository, ProfileRepository } from '@store/repositories';
+import { ProfileRepository } from '@store/repositories';
+import { CoreSchema } from '@store/schemas/latest';
+
 import { SHA256 } from '@common/libs/crypto';
 import { AppConfig, ErrorMessages, APIConfig } from '@common/constants';
 
-import { LoggerService } from '@services';
+import LoggerService from '@services/LoggerService';
 
 /* Types  ==================================================================== */
 type Methods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
@@ -70,15 +72,13 @@ class ApiService {
         });
     }
 
-    initialize() {
+    initialize(coreSettings: CoreSchema) {
         return new Promise((resolve, reject) => {
             try {
                 // if the app is initialized and the access token set
-                const core = CoreRepository.getSettings();
-                const profile = ProfileRepository.getProfile();
-
-                if (core && profile) {
-                    if (core.initialized && profile.accessToken) {
+                if (coreSettings && coreSettings.initialized) {
+                    const profile = ProfileRepository.getProfile();
+                    if (profile && profile.accessToken) {
                         this.accessToken = profile.accessToken;
                         this.idempotencyInt = profile.idempotency;
                     }
@@ -96,8 +96,8 @@ class ApiService {
     increaseIdempotencyInt = () => {
         this.idempotencyInt += 1;
 
-        // Increase idempotencyInt
-        ProfileRepository.increaseIdempotency();
+        // update idempotency in the database
+        ProfileRepository.updateIdempotency(this.idempotencyInt);
     };
 
     /**
@@ -151,7 +151,7 @@ class ApiService {
     serialize(obj: Object, prefix: string) {
         const str: Array<string> = [];
 
-        Object.keys(obj).forEach(p => {
+        Object.keys(obj).forEach((p) => {
             const k = prefix ? `${prefix}[${p}]` : p;
             // @ts-ignore
             const v = obj[p];
@@ -192,12 +192,14 @@ class ApiService {
                 body: '',
             };
 
-            if (header) {
-                req.headers = merge(req.headers, header);
-            } else if (this.accessToken) {
+            if (this.accessToken) {
                 // Add Authorization Token
                 // @ts-ignore
                 req.headers.Authorization = await this.generateAuthToken();
+            }
+
+            if (header) {
+                req.headers = merge(req.headers, header);
             }
 
             // Add Endpoint Params
@@ -251,7 +253,7 @@ class ApiService {
 
             // Make the request
             return fetch(thisUrl, req)
-                .then(async rawRes => {
+                .then(async (rawRes) => {
                     // API got back to us, clear the timeout
                     clearTimeout(apiTimedOut);
 
@@ -271,11 +273,11 @@ class ApiService {
                     }
                     throw jsonRes || rawRes;
                 })
-                .then(res => {
+                .then((res) => {
                     // TODO: inspect X-Call-Ref id
                     return resolve(res);
                 })
-                .catch(err => {
+                .catch((err) => {
                     // API got back to us, clear the timeout
                     clearTimeout(apiTimedOut);
 

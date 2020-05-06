@@ -2,7 +2,8 @@
  * Add Currency Screen
  */
 
-import head from 'lodash/head';
+import { head, first, forEach, isEmpty, get } from 'lodash';
+
 import React, { Component } from 'react';
 import {
     Animated,
@@ -17,12 +18,12 @@ import {
 
 import Interactable from 'react-native-interactable';
 
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 import { Payload } from '@common/libs/payload';
 import { CounterPartyRepository } from '@store/repositories';
-import { CounterPartySchema, CurrencySchema } from '@store/schemas/latest';
+import { CounterPartySchema, CurrencySchema, AccountSchema } from '@store/schemas/latest';
 
 // components
 import { Button, Footer } from '@components';
@@ -34,10 +35,17 @@ import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {}
+export interface Props {
+    account: AccountSchema;
+}
+
+export interface CurrenciesList {
+    [key: string]: CurrencySchema[];
+}
 
 export interface State {
     counterParties: CounterPartySchema[];
+    currencies: CurrenciesList;
     selectedCurrency: CurrencySchema;
     selectedParty: CounterPartySchema;
 }
@@ -54,6 +62,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
         this.state = {
             counterParties: undefined,
+            currencies: undefined,
             selectedParty: undefined,
             selectedCurrency: undefined,
         };
@@ -67,24 +76,48 @@ class AddCurrencyOverlay extends Component<Props, State> {
     }
 
     setDefaults = () => {
+        const { account } = this.props;
+
         const counterParties = CounterPartyRepository.findAll() as any;
 
+        const availableParties = [] as CounterPartySchema[];
+        const availableCurrencies = [] as any;
+
+        forEach(counterParties, (counterParty) => {
+            const currencies = [] as any;
+
+            forEach(counterParty.currencies, (currency) => {
+                if (!account.hasCurrency(currency)) {
+                    currencies.push(currency);
+                }
+            });
+
+            if (!isEmpty(currencies)) {
+                availableParties.push(counterParty);
+
+                availableCurrencies[counterParty.id] = currencies;
+            }
+        });
+
         this.setState({
-            counterParties,
-            selectedParty: head(counterParties),
-            // @ts-ignore
-            selectedCurrency: head(head(counterParties).currencies),
+            counterParties: availableParties,
+            currencies: availableCurrencies,
+            selectedParty: head(availableParties),
+            selectedCurrency: head(get(availableCurrencies, head(availableParties).id)),
         });
     };
 
     addCurrency = async () => {
         const { selectedCurrency } = this.state;
 
-        const payload = await Payload.build({
-            TransactionType: 'TrustSet',
-            Flags: 131072, // tfSetNoRipple
-            LimitAmount: { currency: selectedCurrency.currency, issuer: selectedCurrency.issuer, value: 999999999 },
-        });
+        const payload = await Payload.build(
+            {
+                TransactionType: 'TrustSet',
+                Flags: 131072, // tfSetNoRipple
+                LimitAmount: { currency: selectedCurrency.currency, issuer: selectedCurrency.issuer, value: 999999999 },
+            },
+            Localize.t('currency.addingCurrencyReserveDescription'),
+        );
 
         Navigator.showModal(
             AppScreens.Modal.ReviewTransaction,
@@ -122,13 +155,21 @@ class AddCurrencyOverlay extends Component<Props, State> {
     };
 
     renderCurrencies = () => {
-        const { selectedParty, selectedCurrency } = this.state;
+        const { counterParties, selectedParty, selectedCurrency, currencies } = this.state;
 
-        return selectedParty.currencies.map((c, index) => {
+        if (isEmpty(counterParties)) {
+            return (
+                <Text style={[AppStyles.subtext]} adjustsFontSizeToFit numberOfLines={1}>
+                    No Item to show
+                </Text>
+            );
+        }
+
+        return currencies[selectedParty.id].map((c, index) => {
             return (
                 <TouchableOpacity
                     key={index}
-                    style={[styles.listItem, selectedCurrency.name === c.name ? styles.selectedRow : null]}
+                    style={[styles.listItem, selectedCurrency.id === c.id && styles.selectedRow]}
                     onPress={() => {
                         this.setState({
                             selectedCurrency: c,
@@ -137,14 +178,11 @@ class AddCurrencyOverlay extends Component<Props, State> {
                 >
                     <View style={[AppStyles.flex3, AppStyles.row, AppStyles.centerAligned]}>
                         <View style={[AppStyles.flex1]}>
-                            <Image style={styles.currencyAvatar} source={{ uri: c.avatar }} />
+                            <Image style={[styles.currencyAvatar]} source={{ uri: c.avatar }} />
                         </View>
                         <View style={[AppStyles.flex3]}>
                             <Text
-                                style={[
-                                    AppStyles.subtext,
-                                    selectedCurrency.name === c.name ? styles.selectedText : null,
-                                ]}
+                                style={[AppStyles.subtext, selectedCurrency.id === c.id && styles.selectedText]}
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
                             >
@@ -158,16 +196,25 @@ class AddCurrencyOverlay extends Component<Props, State> {
     };
 
     renderParties = () => {
-        const { counterParties, selectedParty } = this.state;
+        const { counterParties, selectedParty, currencies } = this.state;
+
+        if (isEmpty(counterParties)) {
+            return (
+                <Text style={[AppStyles.subtext]} adjustsFontSizeToFit numberOfLines={1}>
+                    No Item to show
+                </Text>
+            );
+        }
+
         return counterParties.map((c, index) => {
             return (
                 <TouchableOpacity
                     key={index}
-                    style={[styles.listItem, selectedParty.name === c.name ? styles.selectedRow : null]}
+                    style={[styles.listItem, selectedParty.id === c.id ? styles.selectedRow : null]}
                     onPress={() => {
                         this.setState({
                             selectedParty: c,
-                            selectedCurrency: c.currencies[0],
+                            selectedCurrency: first(get(currencies, c.id)),
                         });
                     }}
                 >
@@ -177,12 +224,12 @@ class AddCurrencyOverlay extends Component<Props, State> {
                         </View>
                         <View style={[AppStyles.flex3]}>
                             <Text
-                                style={[AppStyles.subtext, selectedParty.name === c.name ? styles.selectedText : null]}
+                                style={[AppStyles.subtext, selectedParty.id === c.id ? styles.selectedText : null]}
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
                             >
                                 {c.name}
-                                {c.name && ` (${c.currencies.length})`}
+                                {c.name && ` (${currencies[c.id].length})`}
                             </Text>
                         </View>
                     </View>
@@ -276,7 +323,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={r => {
+                    ref={(r) => {
                         this.panel = r;
                     }}
                     animatedNativeDriver

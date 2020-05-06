@@ -8,10 +8,11 @@ import { Linking, Alert } from 'react-native';
 
 import { Payload } from '@common/libs/payload';
 
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-import { LoggerService, NavigationService } from '@services';
+import NavigationService from '@services/NavigationService';
+import LoggerService from '@services/LoggerService';
 
 import Localize from '@locale';
 

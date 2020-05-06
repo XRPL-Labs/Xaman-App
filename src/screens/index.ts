@@ -1,6 +1,4 @@
 import Onboarding from './Onboarding';
-// Connection Issue
-import ConnectionIssue from './ConnectionIssue';
 // setup
 import PasscodeSetup from './Setup/Passcode';
 import BiometrySetup from './Setup/Biometry';
@@ -40,6 +38,8 @@ import Lock from './Overlay/Lock';
 import CurrencySettings from './Overlay/CurrencySettings';
 import Alert from './Overlay/Alert';
 import RequestDecline from './Overlay/RequestDecline';
+import EnterDestinationTag from './Overlay/EnterDestinationTag';
+import ExplainBalance from './Overlay/ExplainBalance';
 
 // Transaction
 import Send from './Send';
@@ -73,8 +73,6 @@ import Placeholder from './Placeholder';
 export {
     // onboarding
     Onboarding,
-    // Connection issue
-    ConnectionIssue,
     // Setup
     PasscodeSetup,
     BiometrySetup,
@@ -110,6 +108,8 @@ export {
     CurrencySettings,
     Alert,
     RequestDecline,
+    EnterDestinationTag,
+    ExplainBalance,
     // transaction
     Send,
     Exchange,

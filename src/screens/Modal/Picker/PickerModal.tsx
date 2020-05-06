@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 
 import { AppScreens } from '@common/constants';
-import { Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
 
 import { Header, Icon } from '@components';
 
@@ -88,7 +88,7 @@ class PickerModal extends Component<Props, State> {
                         <Text style={styles.descriptionText}>{description}</Text>
                     </View>
                 )}
-                <FlatList data={items} renderItem={this.renderItem} />
+                <FlatList data={items} renderItem={this.renderItem} keyExtractor={(i) => i.value} />
             </View>
         );
     }

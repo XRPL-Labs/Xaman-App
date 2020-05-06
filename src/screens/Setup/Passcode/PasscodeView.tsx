@@ -10,7 +10,8 @@ import FingerprintScanner from 'react-native-fingerprint-scanner';
 import { CoreRepository } from '@store/repositories';
 import { BiometryType } from '@store/types';
 import { AppScreens } from '@common/constants';
-import { Images, Navigator } from '@common/helpers';
+import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 import { Button, PinInput, Spacer, Footer, InfoMessage } from '@components';
 
 import { PushNotificationsService } from '@services';
@@ -132,7 +133,7 @@ class PasscodeSetupView extends Component<Props, State> {
     };
 
     isBiometricSupported = () => {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             return FingerprintScanner.isSensorAvailable()
                 .then(() => {
                     return resolve(true);
@@ -234,7 +235,7 @@ class PasscodeSetupView extends Component<Props, State> {
                     <Spacer size={30} />
                     <PinInput
                         testID="pinInput"
-                        ref={r => {
+                        ref={(r) => {
                             this.pinInput = r;
                         }}
                         autoFocus

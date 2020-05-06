@@ -7,8 +7,8 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
-import { Images } from '@common/helpers';
-import { Icon } from '@components';
+import { Images } from '@common/helpers/images';
+import { Icon } from '@components/Icon';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
