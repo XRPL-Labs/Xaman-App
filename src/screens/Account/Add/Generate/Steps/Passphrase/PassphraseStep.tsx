@@ -93,7 +93,7 @@ class PassphraseStep extends Component<Props, State> {
                         editable={passphrase.isValid}
                         selectTextOnFocus={passphrase.isValid}
                         placeholder={Localize.t('account.repeatPassphrase')}
-                        onChange={passphrase_confirmation => this.setState({ passphrase_confirmation })}
+                        onChange={(passphrase_confirmation) => this.setState({ passphrase_confirmation })}
                         validate={false}
                     />
                 </KeyboardAvoidingView>

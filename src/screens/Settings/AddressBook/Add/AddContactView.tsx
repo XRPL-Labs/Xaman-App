@@ -150,7 +150,7 @@ class AddContactView extends Component<Props, State> {
                 testID="address-book-add"
                 onResponderRelease={() => Keyboard.dismiss()}
                 onStartShouldSetResponder={() => true}
-                style={[AppStyles.pageContainerFull]}
+                style={[AppStyles.container]}
             >
                 <Header
                     leftComponent={{
@@ -168,7 +168,7 @@ class AddContactView extends Component<Props, State> {
                         <Spacer size={10} />
                         <TextInput
                             placeholder={Localize.t('settings.contactName')}
-                            onChangeText={value => this.setState({ name: value })}
+                            onChangeText={(value) => this.setState({ name: value })}
                             value={name}
                             maxLength={30}
                         />

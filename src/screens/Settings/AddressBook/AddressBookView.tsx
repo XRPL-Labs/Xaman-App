@@ -74,7 +74,7 @@ class AddressBookView extends Component<Props, State> {
     convertContactsArrayToMap = (contacts: Results<ContactSchema>) => {
         const contactsCategoryMap = [] as any;
 
-        contacts.forEach(item => {
+        contacts.forEach((item) => {
             const firstLetter = item.name.charAt(0).toUpperCase();
 
             if (
@@ -93,7 +93,7 @@ class AddressBookView extends Component<Props, State> {
 
         // Sort
         return _(contactsCategoryMap)
-            .sortBy(o => {
+            .sortBy((o) => {
                 return o.title;
             })
             .value();
@@ -151,7 +151,7 @@ class AddressBookView extends Component<Props, State> {
 
         if (_.isEmpty(contacts)) {
             return (
-                <View testID="address-book-view" style={[AppStyles.pageContainer]}>
+                <View testID="address-book-view" style={[AppStyles.container]}>
                     <Header
                         leftComponent={{
                             icon: 'IconChevronLeft',

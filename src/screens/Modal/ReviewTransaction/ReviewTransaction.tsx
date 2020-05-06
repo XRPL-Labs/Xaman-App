@@ -498,7 +498,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         return (
             <View
                 testID="review-error-view"
-                style={[AppStyles.pageContainerFull, AppStyles.paddingSml, { backgroundColor: AppColors.lightBlue }]}
+                style={[AppStyles.container, AppStyles.paddingSml, { backgroundColor: AppColors.lightBlue }]}
             >
                 <Icon name="IconInfo" size={70} />
                 <Spacer size={20} />

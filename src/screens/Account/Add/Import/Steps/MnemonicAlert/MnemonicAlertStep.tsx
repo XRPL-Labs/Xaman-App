@@ -37,7 +37,7 @@ class MnemonicAlertStep extends Component<Props, State> {
         const { goNext, goBack } = this.props;
 
         return (
-            <SafeAreaView testID="account-generate-explanation-private" style={[AppStyles.pageContainerFull]}>
+            <SafeAreaView testID="account-generate-explanation-private" style={[AppStyles.container]}>
                 <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.padding]}>
                     <Image style={[AppStyles.emptyIcon]} source={Images.ImageWarningShield} />
 

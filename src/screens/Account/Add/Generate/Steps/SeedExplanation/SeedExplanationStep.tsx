@@ -32,7 +32,7 @@ class SeedExplanationStep extends Component<Props, State> {
         const { goNext } = this.props;
 
         return (
-            <SafeAreaView testID="account-generate-explanation-private" style={[AppStyles.pageContainerFull]}>
+            <SafeAreaView testID="account-generate-explanation-private" style={[AppStyles.container]}>
                 <View style={[AppStyles.centerAligned, AppStyles.marginBottomSml]}>
                     <Image style={[AppStyles.emptyIcon]} source={Images.ImageSecretWarning} />
                 </View>

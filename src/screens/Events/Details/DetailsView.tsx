@@ -101,7 +101,7 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx } = this.props;
 
         const url = `https://livenet.xrpl.org/transactions/${tx.Hash}`;
-        Linking.canOpenURL(url).then(supported => {
+        Linking.canOpenURL(url).then((supported) => {
             if (supported) {
                 Linking.openURL(url);
             } else {
@@ -256,7 +256,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
                 {showMemo ? (
                     <Text style={[styles.contentText, scamAlert && AppStyles.colorRed]}>
-                        {tx.Memos.map(m => {
+                        {tx.Memos.map((m) => {
                             let memo = '';
                             memo += m.type ? `${m.type}\n` : '';
                             memo += m.format ? `${m.format}\n` : '';
@@ -324,7 +324,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     </View>
                 )}
 
-                <ScrollView testID="transaction-details-view" contentContainerStyle={[]}>
+                <ScrollView testID="transaction-details-view">
                     <View style={styles.qrCodeContainer}>
                         <Text
                             style={[

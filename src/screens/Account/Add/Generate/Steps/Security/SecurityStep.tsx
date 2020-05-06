@@ -60,7 +60,7 @@ class SecurityStep extends Component<Props, State> {
         const { security } = this.state;
 
         return (
-            <SafeAreaView testID="account-generate-finish-view" style={[AppStyles.pageContainerFull]}>
+            <SafeAreaView testID="account-generate-finish-view" style={[AppStyles.container]}>
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
                     {Localize.t('account.chooseWisely')}
                 </Text>

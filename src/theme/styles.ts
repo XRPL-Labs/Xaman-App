@@ -11,24 +11,6 @@ import Fonts from './fonts';
 import Sizes from './sizes';
 
 export default StyleSheet.create({
-    // Default
-    pageContainer: {
-        position: 'relative',
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignContent: 'stretch',
-        marginBottom: getBottomTabsHeight(),
-    },
-    pageContainerFull: {
-        position: 'relative',
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignContent: 'stretch',
-    },
     container: {
         position: 'relative',
         flex: 1,
@@ -36,7 +18,15 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         alignContent: 'stretch',
-        alignSelf: 'stretch',
+    },
+    tabContainer: {
+        position: 'relative',
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignContent: 'stretch',
+        marginBottom: getBottomTabsHeight(),
     },
     headerContainer: {
         backgroundColor: Colors.transparent,

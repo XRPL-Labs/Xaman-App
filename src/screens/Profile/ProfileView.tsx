@@ -36,7 +36,7 @@ class ProfileView extends Component<Props, State> {
 
     render() {
         return (
-            <SafeAreaView testID="profile-tab-view" style={[AppStyles.pageContainer]}>
+            <SafeAreaView testID="profile-tab-view" style={[AppStyles.tabContainer]}>
                 <View style={[AppStyles.headerContainer]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeft, AppStyles.centerContent]}>
                         <Text style={AppStyles.h3}>{Localize.t('global.profile')}</Text>

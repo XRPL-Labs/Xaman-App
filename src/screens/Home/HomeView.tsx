@@ -466,7 +466,7 @@ class HomeView extends Component<Props, State> {
 
     renderEmpty = () => {
         return (
-            <SafeAreaView testID="home-tab-empty-view" style={[AppStyles.pageContainer]}>
+            <SafeAreaView testID="home-tab-empty-view" style={[AppStyles.tabContainer]}>
                 <View style={[AppStyles.headerContainer]}>{this.renderHeader()}</View>
 
                 <View style={[AppStyles.contentContainer, AppStyles.padding]}>
@@ -501,7 +501,7 @@ class HomeView extends Component<Props, State> {
         }
 
         return (
-            <SafeAreaView testID="home-tab-view" style={[AppStyles.pageContainer, AppStyles.centerAligned]}>
+            <SafeAreaView testID="home-tab-view" style={[AppStyles.tabContainer, AppStyles.centerAligned]}>
                 {/* Header */}
                 <View style={[AppStyles.headerContainer]}>{this.renderHeader()}</View>
 

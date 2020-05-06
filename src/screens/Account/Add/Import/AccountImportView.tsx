@@ -222,7 +222,7 @@ class AccountImportView extends Component<Props, State> {
                 onResponderRelease={() => Keyboard.dismiss()}
                 onStartShouldSetResponder={() => true}
                 testID="account-import-view"
-                style={AppStyles.pageContainerFull}
+                style={AppStyles.container}
             >
                 {this.renderHeader()}
                 {this.renderStep()}
