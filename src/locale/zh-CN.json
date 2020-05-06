@@ -128,7 +128,7 @@
       "offerSequence": "报价顺序",
       "finishAfter": "之后完成",
       "cancelAfter": "之后取消",
-      "expireAfter": "过期之后",
+      "expireAfter": "之后过期",
       "takerPays": "收款人付款",
       "takerGets": "接管者",
       "fee": "手续费",
