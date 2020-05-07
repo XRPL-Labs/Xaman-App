@@ -105,9 +105,14 @@ class PaymentTemplate extends Component<Props, State> {
                     (l: any) => l.currency === transaction.Amount.currency && l.account === transaction.Amount.issuer,
                 )[0];
 
+                const shouldPayWithXRP =
+                    !trustLine ||
+                    (parseFloat(trustLine.balance) < parseFloat(transaction.Amount.value) &&
+                        account !== transaction.Amount.issuer);
+
                 // if not have the same trust line or the balance is not covering requested value
                 // Pay with XRP instead
-                if (!trustLine || parseFloat(trustLine.balance) < parseFloat(transaction.Amount.value)) {
+                if (shouldPayWithXRP) {
                     const PAIR = { issuer: transaction.Amount.issuer, currency: transaction.Amount.currency };
 
                     const ledgerExchange = new LedgerExchange(PAIR);
