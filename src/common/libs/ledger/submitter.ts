@@ -87,7 +87,7 @@ class Submitter {
     }
 
     static verify = (transactionId?: string): Promise<VerifyResultType> => {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             // wait for ledger close event
             let verified = false;
             const ledgerListener = async () => {
@@ -133,7 +133,7 @@ class Submitter {
                 }
                 return this.signedObject;
             })
-            .catch(e => {
+            .catch((e) => {
                 this.logger.error('Error Prepare transaction', e);
                 throw new Error('Unable prepare the transaction, please try again!');
             });
@@ -142,7 +142,7 @@ class Submitter {
     async submit(): Promise<SubmitResultType> {
         // TODO: handle error
         /* eslint-disable-next-line */
-        return new Promise(async resolve => {
+        return new Promise(async (resolve) => {
             try {
                 this.logger.debug('Submit TX:', this.txJson);
 
@@ -152,7 +152,14 @@ class Submitter {
 
                 const submitResult = await LedgerService.submit(this.signedObject.signedTransaction);
 
-                const { error, tx_json, error_message, engine_result, engine_result_message } = submitResult;
+                const {
+                    error,
+                    tx_json,
+                    error_message,
+                    error_exception,
+                    engine_result,
+                    engine_result_message,
+                } = submitResult;
 
                 this.logger.debug('Submit Result TX:', submitResult);
 
@@ -173,7 +180,7 @@ class Submitter {
                         Object.assign(result, {
                             success: false,
                             engineResult: error,
-                            message: error_message,
+                            message: error_message || error_exception,
                         }),
                     );
                 }
