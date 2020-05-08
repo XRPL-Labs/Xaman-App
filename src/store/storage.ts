@@ -6,7 +6,7 @@
  */
 
 import Realm from 'realm';
-import { sortBy, flatMap } from 'lodash';
+import { sortBy, filter } from 'lodash';
 
 import Vault from '@common/libs/vault';
 
@@ -69,54 +69,42 @@ export default class Storage {
         this.logger.debug(`Storage current schema version: ${currentVersion}`);
 
         const sorted = sortBy(schemas, [(v) => v.schemaVersion]);
-        const target = sorted.slice(-1)[0];
+        const latest = sorted.slice(-1)[0];
 
         // no need to migrate anything just return database instance
-        if (currentVersion === -1 || currentVersion >= target.schemaVersion) {
+        if (currentVersion === -1 || currentVersion >= latest.schemaVersion) {
             this.logger.debug('Storage is on latest schema version');
 
+            // @ts-ignore
             return new Realm({
                 ...defaultConfig,
-                schema: flatMap(target.schema, (s) => s),
-                schemaVersion: target.schemaVersion,
+                schema: filter(latest.schema, (_, k) => k !== 'migration'),
+                schemaVersion: latest.schemaVersion,
             });
         }
 
         this.logger.warn('Storage needs migration, running ...');
-        this.logger.warn(`Latest schema version ${target.schemaVersion}`);
+        this.logger.warn(`Latest schema version ${latest.schemaVersion}`);
 
         for (const current of sorted) {
+            // if schema is lower than our current schema ignore & continue
             if (current.schemaVersion <= currentVersion) {
                 continue;
             }
 
-            // create migrations
-            const migrations = [] as Array<(oldRealm: any, newRealm: any) => void>;
-            Object.keys(current.schema).map((key) => {
-                // @ts-ignore
-                const model = current.schema[key];
-                if (typeof model.migration === 'function') {
-                    migrations.push(model.migration);
-                }
-
-                return migrations;
-            });
-
-            // build migration function
-            const migration = (oldRealm: any, newRealm: any) => migrations.forEach((fn) => fn(oldRealm, newRealm));
-
             // migrate and create database instance
+            // @ts-ignore
             const migrationRealm = new Realm({
                 ...defaultConfig,
-                schema: flatMap(target.schema, (s) => s),
-                schemaVersion: target.schemaVersion,
-                migration,
+                schema: filter(current.schema, (_, k) => k !== 'migration'),
+                schemaVersion: current.schemaVersion,
+                migration: current.migration,
             });
 
             this.logger.warn(`Successfully migrate to ${current.schemaVersion}`);
 
             // if last migration then return instance
-            if (current.schemaVersion === target.schemaVersion) {
+            if (current.schemaVersion === latest.schemaVersion) {
                 return migrationRealm;
             }
             // close the database for next migration
