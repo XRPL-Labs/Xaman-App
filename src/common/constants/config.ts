@@ -18,11 +18,33 @@ export default {
         path: 'xumm.realm',
     },
 
-    // rippled nodes
+    // xrpl nodes
     nodes: {
         main: ['wss://xrpl.ws', 'wss://xrpl.link', 'wss://s2.ripple.com'],
         test: ['wss://testnet.xrpl-labs.com', 'wss://s.altnet.rippletest.net:51233'],
     },
+
+    // xrpl explorers
+    explorer: [
+        {
+            value: 'xpring',
+            title: 'XRPL.org',
+            main: 'https://livenet.xrpl.org/transactions/',
+            test: 'https://testnet.xrpl.org/transactions/',
+        },
+        {
+            value: 'bithomp',
+            title: 'Bithomp',
+            main: 'https://bithomp.com/explorer/',
+            test: 'https://test.bithomp.com/explorer/',
+        },
+        {
+            value: 'xrpscan',
+            title: 'XRPScan',
+            main: 'https://xrpscan.com/tx/',
+            test: 'https://test.bithomp.com/explorer/',
+        },
+    ],
 
     // localization config
     language: {

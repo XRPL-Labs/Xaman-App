@@ -1,6 +1,7 @@
 /**
  * Transaction Details screen
  */
+import { find } from 'lodash';
 
 import React, { Component } from 'react';
 import {
@@ -16,7 +17,7 @@ import {
 } from 'react-native';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
-import { AppScreens } from '@common/constants';
+import { AppScreens, AppConfig } from '@common/constants';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 import { ActionSheet } from '@common/helpers/interface';
@@ -24,7 +25,12 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { Header, QRCode, Spacer } from '@components';
 
-import { BackendService } from '@services';
+import { BackendService, SocketService } from '@services';
+
+import CoreRepository from '@store/repositories/core';
+import { CoreSchema } from '@store/schemas/latest';
+
+import { NodeChain } from '@store/types';
 
 import Localize from '@locale';
 // style
@@ -38,6 +44,8 @@ export interface Props {
 }
 
 export interface State {
+    coreSettings: CoreSchema;
+    connectedChain: NodeChain;
     scamAlert: boolean;
     showMemo: boolean;
 }
@@ -56,6 +64,8 @@ class TransactionDetailsView extends Component<Props, State> {
         super(props);
 
         this.state = {
+            coreSettings: CoreRepository.getSettings(),
+            connectedChain: SocketService.chain,
             scamAlert: false,
             showMemo: true,
         };
@@ -87,9 +97,19 @@ class TransactionDetailsView extends Component<Props, State> {
         }
     };
 
-    shareTxLink = () => {
+    getTransactionLink = () => {
+        const { connectedChain, coreSettings } = this.state;
         const { tx } = this.props;
-        const url = `https://livenet.xrpl.org/transactions/${tx.Hash}`;
+
+        const net = connectedChain === NodeChain.Main ? 'main' : 'test';
+
+        const explorer = find(AppConfig.explorer, { value: coreSettings.defaultExplorer });
+
+        return `${explorer[net]}${tx.Hash}`;
+    };
+
+    shareTxLink = () => {
+        const url = this.getTransactionLink();
 
         Share.share({
             title: Localize.t('events.shareTransactionId'),
@@ -98,9 +118,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     openTxLink = () => {
-        const { tx } = this.props;
-
-        const url = `https://livenet.xrpl.org/transactions/${tx.Hash}`;
+        const url = this.getTransactionLink();
         Linking.canOpenURL(url).then((supported) => {
             if (supported) {
                 Linking.openURL(url);

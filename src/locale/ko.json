@@ -155,6 +155,7 @@
       "subject": "제목",
       "empty": "빈",
       "update": "최신 정보",
+      "explorer": "탐침",
       "balanceLimit": "잔액 한도",
       "unbelievablyStrong": "믿을 수 없을만큼 강한",
       "biometryIsNotSupported": "이 장치에서는 생체 인증이 지원되지 않습니다!",
@@ -176,7 +177,7 @@
       "atLeastOneSymbol": "하나 이상의 특수 문자 (! @,? 등)",
       "atLeastOneUpperCase": "하나 이상의 대문자 (AZ)",
       "tooManyAttempts": "실패한 시도가 너무 많습니다. 다시 시도하십시오 %{after} 의사록.",
-      "passcodeAttemptExceed": "비밀번호 시도 횟수를 초과했습니다. 나중에 다시 시도하십시오.",
+      "passcodeAttemptExceed": "비밀번호 시도가 초과되었습니다. 나중에 다시 시도하십시오.",
       "invalidPasscode": "잘못된 비밀번호",
       "autoWipeAlert": "앱 잠금을 잘못 시도했습니다 %{times} 1 회 이상 실패하면 앱이 재설정되고 모든 계정 데이터가 손실됩니다.",
       "cannotValidateCurrentTimeWithServer": "서버 시간으로 응용 프로그램 시간을 확인할 수 없습니다. 인터넷에 연결되어 있는지 확인하십시오!",
@@ -187,7 +188,7 @@
       "pleaseAddAccountToSendPayments": "지불을 보내려면 계정을 추가하십시오",
       "doNotRemindMe": "다시 상기시키지 마",
       "invalidPayload": "유효하지 않은 페이로드",
-      "unexpectedErrorOccurred": "예상치 못한 오류가 발생했습니다.",
+      "unexpectedErrorOccurred": "예기치 않은 오류가 발생했습니다.",
       "fieldIsRequired": "%{field} 필수입니다!",
       "decodedFrom": "에서 해독",
       "congratulations": "축하합니다",
@@ -207,15 +208,15 @@
       "WeWillKeepTryingButThereMayBeAProblemWithYourInternetConnection": "계속 시도하지만 인터넷 연결에 문제가있을 수 있습니다.",
       "pressBackAgainToExit": "다시 누르면 종료",
       "fraudAlert": "사기 경보",
-      "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "이 계정은 사기 또는 사기성 주소로보고됩니다. 주의하여 진행하십시오",
-      "biometricIsNotAvailable": "생체 인식 (지문 또는 얼굴 ID)을 사용할 수 없습니다. 장치가 생체 인증을 지원하는 경우 먼저 구성하십시오 (OS 설정).",
+      "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "이 계정은 사기 또는 사기성 주소로보고됩니다. 주의해서 진행하십시오",
+      "biometricIsNotAvailable": "생체 인식 (지문 또는 얼굴 ID)을 사용할 수 없습니다. 장치가 생체 인증을 지원하는 경우 먼저 장치를 구성하십시오 (OS 설정).",
       "clearSearch": "명확한 검색",
       "noNameFound": "이름을 찾을 수 없습니다",
       "readMoreInTheFAQ": "FAQ에서 더 읽기"
    },
    "onboarding": {
       "slideOne": {
-         "title": "XRP 원장에 대한 지불 및 지불 요청"
+         "title": "XRP 원장의 지불 및 지불 요청"
       },
       "slideTwo": {
          "title": "사용자 친화적 액세스",
@@ -239,11 +240,11 @@
    },
    "setupBiometry": {
       "useBiometry": "FaceID 또는 지문을 사용 하시겠습니까?",
-      "biometryDescription": "계정을보다 안전하게 유지하기 위해 FaceID 또는 지문 사용을 활성화 할 수 있습니다."
+      "biometryDescription": "계정 보안을 강화하기 위해 FaceID 또는 지문 사용을 활성화 할 수 있습니다."
    },
    "setupPermissions": {
       "enableNotifications": "푸시 알림을 사용 하시겠습니까?",
-      "permissionDescription": "푸시 알림을 사용하여 사인 요청을 보냅니다."
+      "permissionDescription": "우리는 푸시 알림을 사용하여 사인 요청을 보냅니다."
    },
    "home": {
       "addCurrency": "더하다",
@@ -255,7 +256,7 @@
       "youDonNotHaveOtherCurrency": "다른 통화가 없습니다",
       "howActivateMyAccount": "계정을 활성화하려면 어떻게해야합니까?",
       "howActivateMyAccountDesc": "스팸 계정 생성을 방지하려면 XRP 원장에서 계정에 20 개 이상의 XRP를 입금하여 활성화해야합니다. 20 XRP는 손실되지 않습니다. 계정에 남아 있지만 사용할 수는 없습니다. 계정 사용을 시작하려면 20 XRP 이상의 예금이 계정에 입금되어 있는지 확인하십시오.",
-      "otherCurrenciesDesc": "XRP 원장을 사용하면 XRP 이외의 통화 잔액을 보유하고주고받을 수 있습니다. 이러한 통화는 XRP 원장의 다른 계정에서 발행 할 수 있습니다. XRP 이외의 통화를 보내거나 받으려면 XRP 이외의 통화 발행자를 신뢰해야합니다.",
+      "otherCurrenciesDesc": "XRP 원장을 사용하면 XRP 이외의 통화 잔액을 보유하고주고받을 수 있습니다. 이 통화는 XRP 원장의 다른 계정에서 발행 할 수 있습니다. XRP 이외의 통화를 보내거나 받으려면 XRP 이외의 통화 발행자를 신뢰해야합니다.",
       "explainMyBalance": "내 균형을 설명",
       "xrpYouOwnVsYourSpendableBalance": "소유 한 XRP와 지출 가능한 잔액"
    },
@@ -316,7 +317,8 @@
       "sendMail": "메일을 보내다",
       "clearLogs": "로그 지우기",
       "noLogs": "로그 없음",
-      "connectingXRPLNode": "연결된 XRP 원장 노드",
+      "nodeAndExplorer": "XRP 원장 노드 및 탐색기",
+      "selectExplorer": "탐색기를 선택하십시오",
       "releaseInformation": "출시 정보",
       "termsAndConditions": "이용 약관",
       "credits": "크레딧",
@@ -331,7 +333,7 @@
       "changePasscode": "비밀번호 변경",
       "biometricAuthentication": "생체 인증",
       "enterOldPasscode": "기존 암호를 입력하십시오",
-      "enterNewPasscode": "새로운 암호를 입력하십시오",
+      "enterNewPasscode": "새 암호를 입력하십시오",
       "enterNewPasscodeAgain": "새 비밀번호를 다시 입력하십시오",
       "newOldPasscodeNotMatch": "새 비밀번호와 확인 내용이 동일하지 않습니다!",
       "passcodeChangedSuccess": "비밀번호 변경이 성공했습니다!",
@@ -351,7 +353,7 @@
       "invalidSecretNumber": "잘못된 비밀 번호 키를 입력했습니다",
       "accountSetupCompleted": "계정 설정이 완료되었습니다.",
       "YouJustCreatedAccount": "새로운 신규 계정을 만들었습니다.",
-      "yeahLetsGo": "후 레이, 가자!",
+      "yeahLetsGo": "만세, 가자!",
       "enterYourPassphrase": "암호를 입력하십시오",
       "pleaseEnterSafePassphrase": "기억하기 쉽지만 다른 사람이 추측 할 수없는 확장 된 길이의 암호를 작성하십시오.",
       "enterPassphrase": "암호 입력",
@@ -413,7 +415,7 @@
       "pleaseProvideFamilySeed": "계정 비밀 / 가족 종자를 제공하십시오.",
       "pleaseEnterYourFamilySeed": "가족 종자를 입력하십시오",
       "accountImportCompleted": "계정 가져 오기 완료!",
-      "youJustImportedAccount": "방금 계정을 추가했습니다",
+      "youJustImportedAccount": "당신은 당신의 계정을 추가",
       "accountSettings": "계정 편집",
       "switchAddAccount": "계정 전환 / 추가",
       "accountLabel": "계정 라벨",
@@ -444,7 +446,7 @@
       "regularKeyAccountForThisAccountDoesNotImportedWithSignAccess": "이 계정의 일반 키를 서명 액세스 권한으로 가져 오지 못했습니다!",
       "currentPassphraseShouldNotBeEmpty": "현재 암호 문구는 비워 둘 수 없습니다!",
       "enteredCurrentPassphraseIsInvalid": "입력 한 현재 비밀번호 문구가 유효하지 않습니다!",
-      "yourAccountPassphraseChangedSuccessfully": "계정 비밀번호 문구가 성공적으로 변경되었습니다!",
+      "yourAccountPassphraseChangedSuccessfully": "귀하의 계정 암호가 성공적으로 변경되었습니다!",
       "currentPassphrase": "현재 비밀번호 문구",
       "newPassphrase": "새로운 비밀번호 문구",
       "regularKeyFor": "에 대한 일반 키",
@@ -453,8 +455,8 @@
       "switchAccount": "계정 전환",
       "useMnemonicPassphrase": "니모닉 암호 구 사용",
       "mnemonicLargeAmountAlert": "계정에 상당한 가치가있는 동안 니모닉 계정 가져 오기를 고려하는 경우 (예 : 저축, 더 많은 양의 XRP 또는 기타 토큰) 니모닉 계정을 오프라인으로 유지하려면 XUMM에 새 계정을 만드는 것을 고려하십시오.",
-      "importExchangeAddressReadonlyWarning": "Exchange (예금) 계정을 가져올 수 없습니다. 그렇게하면 거래소에서 자신의 잔액을 추적 할 수 없습니다. 읽기 전용 계정 가져 오기는 하드웨어 계정과 같이 자신의 활성화 된 계정 인 경우에만 작동합니다",
-      "walletReserve": "지갑 예약",
+      "importExchangeAddressReadonlyWarning": "Exchange (예금) 계정을 가져올 수 없습니다. 그렇게하면 거래소에서 자신의 잔액을 추적 할 수 없습니다. 읽기 전용 계정 가져 오기는 하드웨어 계정처럼 자신의 활성화 된 계정 인 경우에만 작동합니다",
+      "walletReserve": "월렛 예약",
       "accountBalance": "계정 잔액",
       "availableForSpending": "지출 가능"
    },

@@ -2,14 +2,16 @@
  * Advanced Settings Screen
  */
 
+import { find } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+
 import DeviceInfo from 'react-native-device-info';
 
 import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 
-import { AppScreens } from '@common/constants';
+import { AppScreens, AppConfig } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
 import { Header, Icon } from '@components';
@@ -55,6 +57,38 @@ class AdvancedSettingsView extends Component<Props, State> {
         });
     };
 
+    getCurrentExplorerTitle = () => {
+        const { coreSettings } = this.state;
+
+        const { defaultExplorer } = coreSettings;
+
+        const explorer = find(AppConfig.explorer, { value: defaultExplorer });
+
+        return explorer.title;
+    };
+
+    changeDefaultExplorer = (selected: any) => {
+        const { value } = selected;
+        // save in store
+        CoreRepository.saveSettings({ defaultExplorer: value });
+    };
+
+    showExplorerPicker = () => {
+        const { coreSettings } = this.state;
+
+        Navigator.push(
+            AppScreens.Modal.Picker,
+            {},
+            {
+                title: Localize.t('global.explorer'),
+                description: Localize.t('settings.selectExplorer'),
+                items: AppConfig.explorer,
+                selected: coreSettings.defaultExplorer,
+                onSelect: this.changeDefaultExplorer,
+            },
+        );
+    };
+
     render() {
         const { coreSettings } = this.state;
 
@@ -71,7 +105,7 @@ class AdvancedSettingsView extends Component<Props, State> {
                 />
 
                 <ScrollView>
-                    <Text style={styles.descriptionText}>{Localize.t('settings.connectingXRPLNode')}</Text>
+                    <Text style={styles.descriptionText}>{Localize.t('settings.nodeAndExplorer')}</Text>
                     <TouchableOpacity
                         style={[styles.row]}
                         onPress={() => {
@@ -84,6 +118,16 @@ class AdvancedSettingsView extends Component<Props, State> {
 
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
                             <Text style={[styles.value]}>{coreSettings.defaultNode}</Text>
+                            <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.row]} onPress={this.showExplorerPicker}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text style={styles.label}>{Localize.t('global.explorer')}</Text>
+                        </View>
+
+                        <View style={[AppStyles.centerAligned, AppStyles.row]}>
+                            <Text style={[styles.value]}>{this.getCurrentExplorerTitle()}</Text>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
                     </TouchableOpacity>
