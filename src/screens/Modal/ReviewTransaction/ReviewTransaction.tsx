@@ -27,15 +27,19 @@ import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
 import { Payload } from '@common/libs/payload';
-import Submitter from '@common/libs/ledger/submitter';
-import { SignedObjectType, SubmitResultType } from '@common/libs/ledger/types';
+import { SubmitResultType } from '@common/libs/ledger/types';
 
 import { AppScreens } from '@common/constants';
 import { Toast, getNavigationBarHeight } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
+// services
 import { PushNotificationsService, LedgerService, SocketService } from '@services';
+
+// transaction parser
+import parserFactory from '@common/libs/ledger/parser';
+import { TransactionsType } from '@common/libs/ledger/transactions/types';
 
 // components
 import { Button, AccordionPicker, Icon, Footer, Spacer } from '@components';
@@ -57,11 +61,12 @@ export interface Props {
 
 export interface State {
     accounts: Array<AccountSchema>;
+    transaction: TransactionsType;
     source: AccountSchema;
     step: 'review' | 'submitting' | 'verifying' | 'result';
-    signedObject: SignedObjectType;
     submitResult: SubmitResultType;
     hasError: boolean;
+    isPreparing: boolean;
     canScroll: boolean;
     headerHeight: number;
 }
@@ -88,10 +93,11 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         this.state = {
             accounts: AccountRepository.getSpendableAccounts(),
+            transaction: parserFactory(props.payload.TxJson),
             source: undefined,
             step: 'review',
-            signedObject: undefined,
             submitResult: undefined,
+            isPreparing: false,
             hasError: false,
             canScroll: false,
             headerHeight: 0,
@@ -108,7 +114,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     componentDidMount() {
         const { payload } = this.props;
-        const { accounts } = this.state;
+        const { accounts, transaction } = this.state;
 
         // back handler listener
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
@@ -128,7 +134,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         if (preferredAccount) {
             // ignore if it's multisign
             if (!payload.meta.multisign) {
-                payload.transaction.Account = { address: preferredAccount.address };
+                transaction.Account = { address: preferredAccount.address };
             }
         }
 
@@ -206,20 +212,13 @@ class ReviewTransactionModal extends Component<Props, State> {
         return true;
     };
 
-    onAcceptPress = () => {
-        const { source } = this.state;
-        const { payload } = this.props;
-        // const { payload } = this.props;
+    onAcceptPress = async () => {
+        const { source, transaction } = this.state;
 
-        // validate required fields for transaction
-        // const validateResp = payload.transaction.validate();
-        // if (!validateResp.valid) {
-        //     Alert.alert(Localize.t('global.error'), validateResp.error);
-        //     return;
-        // }
+        // console.log(await transaction.validate());
 
         // account is not activated and want to sign a tx
-        if (payload.transaction.Type !== 'SignIn' && source.balance === 0) {
+        if (transaction.Type !== 'SignIn' && source.balance === 0) {
             Alert.alert(
                 Localize.t('global.error'),
                 Localize.t('account.selectedAccountIsNotActivatedPleaseChooseAnotherOne'),
@@ -227,8 +226,31 @@ class ReviewTransactionModal extends Component<Props, State> {
             return;
         }
 
+        // check for account delete and alert user
+        if (transaction.Type === 'AccountDelete') {
+            Navigator.showAlertModal({
+                type: 'error',
+                title: Localize.t('global.danger'),
+                text: Localize.t('account.deleteAccountWarning'),
+                buttons: [
+                    {
+                        text: Localize.t('global.cancel'),
+                        onPress: () => {},
+                        light: false,
+                    },
+                    {
+                        text: Localize.t('global.continue'),
+                        onPress: this.onAccept,
+                        type: 'dismiss',
+                        light: true,
+                    },
+                ],
+            });
+            return;
+        }
+
         // check for asfDisableMaster
-        if (payload.transaction.Type === 'AccountSet' && payload.transaction.SetFlag === 'asfDisableMaster') {
+        if (transaction.Type === 'AccountSet' && transaction.SetFlag === 'asfDisableMaster') {
             Navigator.showAlertModal({
                 type: 'warning',
                 text: Localize.t('account.disableMasterKeyWarning'),
@@ -254,11 +276,12 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     onAccountChange = (item: AccountSchema) => {
         const { payload } = this.props;
+        const { transaction } = this.state;
 
         // set the source account to payload
         // ignore if it's multisign
         if (!payload.meta.multisign) {
-            payload.transaction.Account = { address: item.address };
+            transaction.Account = { address: item.address };
         }
 
         // change state
@@ -269,24 +292,23 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     submit = async (privateKey: string) => {
         const { payload } = this.props;
-
-        this.setState({
-            step: 'submitting',
-        });
+        const { transaction } = this.state;
 
         try {
-            // this will make sure apply's any change from transaction to the payload =
-            payload.refactorTransaction(payload.transaction);
+            this.setState({
+                isPreparing: true,
+            });
 
+            // prepare the transaction
+            await transaction.prepare(privateKey, payload.meta.multisign);
             // sign the payload
-            const ledgerSubmitter = new Submitter(payload.transaction.Json, privateKey, payload.meta.multisign);
-            const signedObject = await ledgerSubmitter.prepareAndSign();
+            const singedBlob = await transaction.sign();
 
             // create patch object
             const patch = {
-                signed_blob: signedObject.signedTransaction,
-                tx_id: signedObject.id,
-                multisigned: payload.meta.multisign ? ledgerSubmitter.signer.address : '',
+                signed_blob: singedBlob,
+                tx_id: transaction.Hash,
+                multisigned: payload.meta.multisign ? transaction.signer.address : '',
                 permission: {
                     push: true,
                     days: 365,
@@ -295,15 +317,19 @@ class ReviewTransactionModal extends Component<Props, State> {
 
             // check if we need to submit the payload to the XRP Ledger
             if (payload.shouldSubmit()) {
+                this.setState({
+                    step: 'submitting',
+                });
+
                 // submit the transaction to the xrp ledger
-                const submitResult = await ledgerSubmitter.submit();
+                const submitResult = await transaction.submit();
 
                 // if submitted then verify
                 if (submitResult.success) {
                     this.setState({ step: 'verifying' });
 
                     // verify transaction
-                    const verifyResult = await Submitter.verify(submitResult.transactionId);
+                    const verifyResult = await transaction.verify();
 
                     // change the transaction final status if the transaction settled in the ledger
                     if (verifyResult.success && submitResult.engineResult !== 'tesSUCCESS') {
@@ -337,11 +363,12 @@ class ReviewTransactionModal extends Component<Props, State> {
 
             this.setState({
                 step: 'result',
-                signedObject,
+                isPreparing: false,
             });
         } catch (e) {
             this.setState({
                 step: 'review',
+                isPreparing: false,
             });
             if (typeof e.toString === 'function') {
                 Alert.alert(Localize.t('global.error'), e.toString());
@@ -353,12 +380,16 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     getTransactionType = () => {
         const { payload } = this.props;
+        const { transaction } = this.state;
 
         let type = '';
 
-        switch (payload.transaction.Type) {
+        switch (transaction.Type) {
             case 'AccountSet':
                 type = Localize.t('events.updateAccountSettings');
+                break;
+            case 'AccountDelete':
+                type = Localize.t('events.deleteAccount');
                 break;
             case 'EscrowFinish':
                 type = Localize.t('events.finishEscrow');
@@ -462,6 +493,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     renderDetails = () => {
         const { payload } = this.props;
+        const { transaction } = this.state;
 
         const Template = get(Templates, payload.payload.tx_type, View);
         const Global = get(Templates, 'Global');
@@ -471,8 +503,8 @@ class ReviewTransactionModal extends Component<Props, State> {
         }
         return (
             <>
-                <Template transaction={payload.transaction} />
-                <Global transaction={payload.transaction} />
+                <Template transaction={transaction} />
+                <Global transaction={transaction} />
             </>
         );
     };
@@ -526,7 +558,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                         <View style={[AppStyles.row]}>
                             <View style={[AppStyles.flex1, AppStyles.leftAligned]}>
                                 <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
-                                    {/* {Localize.t('global.reviewTransaction')} */}
+                                    {Localize.t('global.reviewTransaction')}
                                 </Text>
                             </View>
                             <View style={[AppStyles.rightAligned]}>
@@ -574,7 +606,7 @@ class ReviewTransactionModal extends Component<Props, State> {
     };
 
     renderReview = () => {
-        const { accounts, source, canScroll } = this.state;
+        const { accounts, source, canScroll, isPreparing } = this.state;
         const { payload } = this.props;
 
         return (
@@ -679,7 +711,11 @@ class ReviewTransactionModal extends Component<Props, State> {
                                     { paddingBottom: getNavigationBarHeight() },
                                 ]}
                             >
-                                <Button onPress={this.onAcceptPress} label={Localize.t('global.accept')} />
+                                <Button
+                                    isLoading={isPreparing}
+                                    onPress={this.onAcceptPress}
+                                    label={Localize.t('global.accept')}
+                                />
                             </View>
                         </ScrollView>
                     </View>
@@ -732,7 +768,7 @@ class ReviewTransactionModal extends Component<Props, State> {
     };
 
     renderResult = () => {
-        const { submitResult, signedObject } = this.state;
+        const { submitResult, transaction } = this.state;
         const { payload } = this.props;
 
         if (!submitResult) {
@@ -763,13 +799,13 @@ class ReviewTransactionModal extends Component<Props, State> {
 
                     <View style={[AppStyles.flex3]}>
                         <View style={styles.detailsCard}>
-                            {signedObject && (
+                            {transaction.Hash && (
                                 <Fragment key="txID">
                                     <Text style={[AppStyles.subtext, AppStyles.bold]}>
                                         {Localize.t('send.transactionID')}
                                     </Text>
                                     <Spacer />
-                                    <Text style={[AppStyles.subtext]}>{signedObject.id}</Text>
+                                    <Text style={[AppStyles.subtext]}>{transaction.Hash}</Text>
 
                                     <Spacer size={50} />
                                     <Button
@@ -778,7 +814,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                                         label={Localize.t('global.copy')}
                                         style={AppStyles.stretchSelf}
                                         onPress={() => {
-                                            Clipboard.setString(signedObject.id);
+                                            Clipboard.setString(transaction.Hash);
                                             Toast(Localize.t('send.txIdCopiedToClipboard'));
                                         }}
                                     />
@@ -850,7 +886,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}</Text>
                         <Spacer />
 
-                        <Text style={[AppStyles.subtext]}>{submitResult.message.toString()}</Text>
+                        <Text style={[AppStyles.subtext]}>{submitResult.message?.toString()}</Text>
                         <Spacer />
 
                         <View style={AppStyles.hr} />
@@ -858,7 +894,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('send.transactionID')}</Text>
                         <Spacer />
-                        <Text style={[AppStyles.subtext]}>{signedObject.id}</Text>
+                        <Text style={[AppStyles.subtext]}>{transaction.Hash}</Text>
 
                         <Spacer size={50} />
                         <Button
@@ -867,7 +903,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                             label={Localize.t('global.copy')}
                             style={AppStyles.stretchSelf}
                             onPress={() => {
-                                Clipboard.setString(signedObject.id);
+                                Clipboard.setString(transaction.Hash);
                                 Toast(Localize.t('send.txIdCopiedToClipboard'));
                             }}
                         />

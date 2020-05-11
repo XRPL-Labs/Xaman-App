@@ -1,9 +1,6 @@
 import { isString, isObject, has, get } from 'lodash';
 
-import parserFactory from '@common/libs/ledger/parser';
-
 import { TransactionJSONType } from '@common/libs/ledger/types';
-import { TransactionsType } from '@common/libs/ledger/transactions/types';
 
 import ApiService from '@services/ApiService';
 import LoggerService from '@services/LoggerService';
@@ -33,7 +30,6 @@ export class Payload {
     meta: MetaType;
     application: ApplicationType;
     payload: PayloadReferenceType;
-    transaction: TransactionsType;
 
     /**
      * get payload object from payload UUID or payload Json
@@ -100,11 +96,6 @@ export class Payload {
      */
     assign = (object: PayloadType) => {
         Object.assign(this, object);
-        try {
-            this.transaction = parserFactory(this.TxJson);
-        } catch (e) {
-            throw new Error(e.string());
-        }
     };
 
     /**
@@ -164,14 +155,6 @@ export class Payload {
         ApiService.payload.patch(this.meta.uuid, patch).catch((e: any) => {
             logger.debug('Patch error', e);
         });
-    };
-
-    /**
-     * quick hack for refactoring the object
-     * @param transaction
-     */
-    refactorTransaction = (transaction: TransactionsType) => {
-        this.transaction = transaction;
     };
 
     /**
