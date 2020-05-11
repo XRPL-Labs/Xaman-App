@@ -7,14 +7,14 @@
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 import EventEmitter from 'events';
-import { map, isEmpty, flatMap, forEach, has, get } from 'lodash';
+import { map, isEmpty, flatMap, forEach, has, get, assign } from 'lodash';
 
 import { TrustLineSchema } from '@store/schemas/latest';
 import AccountRepository from '@store/repositories/account';
 import CurrencyRepository from '@store/repositories/currency';
 
 import { Amount } from '@common/libs/ledger/parser/common';
-import { AccountTxResponse, LedgerMarker } from '@common/libs/ledger/types';
+import { AccountTxResponse, LedgerMarker, SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
 
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
@@ -171,10 +171,104 @@ class LedgerService extends EventEmitter {
     /**
      * Submit signed transaction to the XRP Ledger
      */
-    submit = (tx_blob: string): any => {
-        return SocketService.send({
-            command: 'submit',
-            tx_blob,
+    submitTX = async (tx_blob: string): Promise<SubmitResultType> => {
+        try {
+            const submitResult = await SocketService.send({
+                command: 'submit',
+                tx_blob,
+            });
+
+            const {
+                error,
+                error_message,
+                error_exception,
+                engine_result,
+                tx_json,
+                engine_result_message,
+            } = submitResult;
+
+            this.logger.debug('Submit Result TX:', submitResult);
+
+            // create default result
+            const result = {
+                transactionId: tx_json?.hash,
+                node: SocketService.node,
+                nodeType: SocketService.chain,
+            };
+
+            // error happened in validation of transaction
+            // probably something missing
+            if (error) {
+                return assign(result, {
+                    success: false,
+                    engineResult: error,
+                    message: error_message || error_exception,
+                });
+            }
+
+            // result code prefix
+            const prefix = engine_result.substr(0, 3);
+
+            // probably success submit
+            if (['tes', 'tel', 'ter'].indexOf(prefix) > -1) {
+                return assign(result, {
+                    success: true,
+                    engineResult: engine_result,
+                    message: engine_result_message,
+                });
+            }
+
+            // didn't got any possible success result
+            return Object.assign(result, {
+                success: false,
+                engineResult: engine_result,
+                message: engine_result_message,
+            });
+        } catch (e) {
+            // something wrong happened
+            return {
+                success: false,
+                engineResult: 'telFAILED',
+                message: e.message,
+                node: SocketService.node,
+                nodeType: SocketService.chain,
+            };
+        }
+    };
+
+    verifyTx = (transactionId: string): Promise<VerifyResultType> => {
+        return new Promise((resolve) => {
+            // wait for ledger close event
+            let verified = false;
+            const ledgerListener = async () => {
+                this.getTransaction(transactionId)
+                    .then((tx: any) => {
+                        if (tx.validated) {
+                            SocketService.offEvent('ledger', ledgerListener);
+                            verified = true;
+
+                            const { TransactionResult } = tx.meta;
+
+                            resolve({
+                                success: TransactionResult === 'tesSUCCESS',
+                                transaction: tx,
+                            });
+                        }
+                    })
+                    .catch(() => {});
+            };
+
+            SocketService.onEvent('ledger', ledgerListener);
+
+            // timeout after 20 sec
+            setTimeout(() => {
+                if (!verified) {
+                    SocketService.offEvent('ledger', ledgerListener);
+                    resolve({
+                        success: false,
+                    });
+                }
+            }, 30000);
         });
     };
 

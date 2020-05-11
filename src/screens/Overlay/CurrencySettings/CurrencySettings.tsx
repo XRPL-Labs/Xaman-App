@@ -11,7 +11,6 @@ import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 import { AccountRepository } from '@store/repositories';
 
 import { TrustSet, Payment } from '@common/libs/ledger/transactions';
-import Submitter from '@common/libs/ledger/submitter';
 import Flag from '@common/libs/ledger/parser/common/flag';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
@@ -219,12 +218,11 @@ class CurrencySettingsModal extends Component<Props, State> {
             },
         });
 
-        const ledgerSubmitter = new Submitter(newTrustline.Json, privateKey);
-
-        const submitResult = await ledgerSubmitter.submit();
+        // sign and submit
+        const submitResult = await newTrustline.submit(privateKey);
 
         if (submitResult.success) {
-            const verifyResult = await Submitter.verify(submitResult.transactionId);
+            const verifyResult = await newTrustline.verify();
 
             if (verifyResult.success) {
                 InteractionManager.runAfterInteractions(() => {
