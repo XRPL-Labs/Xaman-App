@@ -241,17 +241,21 @@ class SendView extends Component<Props, State> {
         };
 
         // submit payment to the ledger
-        payment.submit(privateKey).then(() => {
-            this.setState(
-                {
-                    currentStep: Steps.Verifying,
-                },
-                () => {
-                    payment.verify().then(() => {
-                        this.changeView(Steps.Result);
-                    });
-                },
-            );
+        payment.submit(privateKey).then((submitResult) => {
+            if (submitResult.success) {
+                this.setState(
+                    {
+                        currentStep: Steps.Verifying,
+                    },
+                    () => {
+                        payment.verify().then(() => {
+                            this.changeView(Steps.Result);
+                        });
+                    },
+                );
+            } else {
+                this.changeView(Steps.Result);
+            }
         });
     };
 
