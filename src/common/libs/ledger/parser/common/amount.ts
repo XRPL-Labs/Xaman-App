@@ -8,7 +8,7 @@ class Amount {
         // validate
 
         if (typeof amount === 'string' && !drops) {
-            if (!amount.match(/^[+-]?\d+(?:[\.]*\d*(?:[eE][+-]?\d+)?)?$/)) {
+            if (!amount.match(/^[+-]?\d+(?:[.]*\d*(?:[eE][+-]?\d+)?)?$/)) {
                 throw new Error(`invalid value '${amount}', should be a number`);
             } else if (this.amount === '.') {
                 throw new Error(`invalid value '${amount}',  should be a BigNumber or string-encoded number.`);
