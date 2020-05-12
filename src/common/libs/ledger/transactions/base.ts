@@ -72,7 +72,7 @@ class BaseTransaction {
             if (isUndefined(this.Fee)) {
                 const { Fee } = LedgerService.getLedgerStatus();
                 if (Fee) {
-                    this.Fee = Fee.toString();
+                    this.Fee = new Amount(this.calculateFee(Fee)).dropsToXrp();
                 } else {
                     throw new Error('Unable to set transaction Fee');
                 }
@@ -193,7 +193,12 @@ class BaseTransaction {
         }
     };
 
-    calculateFee = (netFee: number) => {
+    /**
+     * Calculate the fee base on transaction type
+     * @param {number} netFee in drops
+     * @returns {string} calculated fee in drops
+     */
+    calculateFee = (netFee?: number) => {
         let baseFee;
         // 10 drops × (33 + (Fulfillment size in bytes ÷ 16))
         if (this.Type === 'EscrowFinish' && this.Fulfillment) {
