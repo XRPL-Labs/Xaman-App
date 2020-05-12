@@ -155,6 +155,7 @@
       "subject": "Tema",
       "empty": "Vacío",
       "update": "Actualizar",
+      "danger": "Peligro",
       "explorer": "Explorador",
       "balanceLimit": "Límite de equilibrio",
       "unbelievablyStrong": "Increíblemente fuerte",
@@ -177,7 +178,7 @@
       "atLeastOneSymbol": "Al menos un carácter especial (! @,? Etc.)",
       "atLeastOneUpperCase": "Al menos un carácter MAYÚSCULAS (AZ)",
       "tooManyAttempts": "Demasiados intentos fallidos, intente nuevamente en %{after} minutos.",
-      "passcodeAttemptExceed": "Los intentos de contraseña superan, por favor intente nuevamente más tarde",
+      "passcodeAttemptExceed": "Los intentos de contraseña superan, por favor intente nuevamente más tarde.",
       "invalidPasscode": "Código de acceso inválido",
       "autoWipeAlert": "Intentaste desbloquear la aplicación incorrectamente %{times} veces, después de 1 intento fallido más, la aplicación se restablecerá y se perderán todos los datos de su cuenta.",
       "cannotValidateCurrentTimeWithServer": "No se puede validar la hora de la aplicación con la hora del servidor. ¡Asegúrate de estar conectado a internet!",
@@ -285,6 +286,7 @@
       "finishEscrow": "Terminar el depósito en garantía",
       "cancelEscrow": "Cancelar fideicomiso",
       "accountSettings": "Configuraciones de la cuenta",
+      "deleteAccount": "Borrar cuenta",
       "setSignerList": "Establecer lista de firmantes",
       "updateAccountSettings": "Actualizar la configuración de la cuenta",
       "setARegularKey": "Establecer una clave regular",
@@ -458,7 +460,12 @@
       "importExchangeAddressReadonlyWarning": "No es posible importar su cuenta de Exchange (depósito). Hacerlo no le permite rastrear su propio saldo en el intercambio. Importar una cuenta de solo lectura solo funciona si esta es su propia cuenta activada, como la cuenta de su hardware",
       "walletReserve": "Reserva de billetera",
       "accountBalance": "Saldo de la cuenta",
-      "availableForSpending": "Disponible para gastar"
+      "availableForSpending": "Disponible para gastar",
+      "deleteAccountWarning": "Esta es una transacción de eliminación de cuenta. Al firmar, su cuenta será eliminada, y todos sus fondos restantes (excepto los últimos 5 XRP reservados, ya que la tarifa en el libro mayor de XRP para eliminar una cuenta es 5 XRP) se enviará al destino configurado. Verifique el destino dos veces y SOLO continúe si REALMENTE desea eliminar su cuenta en el libro mayor XRP",
+      "deleteAccountObjectsExistError": "No puede eliminar esta cuenta, ya que su cuenta contiene objetos contables XRP específicos, como otras monedas, ofertas de intercambio descentralizado, depósitos en garantía (como creador o beneficiario)",
+      "unableToCheckAccountObjects": "No se pueden verificar los objetos de la cuenta, asegúrese de estar conectado al nodo XRPL",
+      "destinationAccountIsNotActivated": "La cuenta de destino no está activada, debe ser una cuenta con fondos en el libro mayor.",
+      "destinationAccountAndSourceCannotBeSame": "La cuenta de destino y la fuente no pueden ser lo mismo."
    },
    "send": {
       "amountIsBiggerThanYourSpend": "La cantidad es mayor de lo que puede gastar ( %{spendable} )",

@@ -215,7 +215,32 @@ class ReviewTransactionModal extends Component<Props, State> {
     onAcceptPress = async () => {
         const { source, transaction } = this.state;
 
-        // console.log(await transaction.validate());
+        // if any validation set to the transaction run and check
+        if (typeof transaction.validate === 'function') {
+            this.setState({
+                isPreparing: true,
+            });
+            await transaction
+                .validate()
+                .catch((e: any) => {
+                    Navigator.showAlertModal({
+                        type: 'error',
+                        text: e.message,
+                        buttons: [
+                            {
+                                text: Localize.t('global.ok'),
+                                onPress: () => {},
+                                light: false,
+                            },
+                        ],
+                    });
+                })
+                .finally(() => {
+                    this.setState({
+                        isPreparing: false,
+                    });
+                });
+        }
 
         // account is not activated and want to sign a tx
         if (transaction.Type !== 'SignIn' && source.balance === 0) {
@@ -234,7 +259,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 text: Localize.t('account.deleteAccountWarning'),
                 buttons: [
                     {
-                        text: Localize.t('global.cancel'),
+                        text: Localize.t('global.back'),
                         onPress: () => {},
                         light: false,
                     },
@@ -498,9 +523,12 @@ class ReviewTransactionModal extends Component<Props, State> {
         const Template = get(Templates, payload.payload.tx_type, View);
         const Global = get(Templates, 'Global');
 
+        // if tx is SignIn ignore to show details
         if (payload.payload.tx_type === 'SignIn') {
             return null;
         }
+
+        // render transaction details and global variables
         return (
             <>
                 <Template transaction={transaction} />

@@ -155,6 +155,7 @@
       "subject": "제목",
       "empty": "빈",
       "update": "최신 정보",
+      "danger": "위험",
       "explorer": "탐침",
       "balanceLimit": "잔액 한도",
       "unbelievablyStrong": "믿을 수 없을만큼 강한",
@@ -244,7 +245,7 @@
    },
    "setupPermissions": {
       "enableNotifications": "푸시 알림을 사용 하시겠습니까?",
-      "permissionDescription": "우리는 푸시 알림을 사용하여 사인 요청을 보냅니다."
+      "permissionDescription": "푸시 알림을 사용하여 사인 요청을 보냅니다."
    },
    "home": {
       "addCurrency": "더하다",
@@ -254,7 +255,7 @@
       "whatAreOtherCurrencies": "다른 통화는 무엇입니까?",
       "otherCurrencies": "다른 통화",
       "youDonNotHaveOtherCurrency": "다른 통화가 없습니다",
-      "howActivateMyAccount": "계정을 활성화하려면 어떻게해야합니까?",
+      "howActivateMyAccount": "계정을 활성화하려면 어떻게합니까?",
       "howActivateMyAccountDesc": "스팸 계정 생성을 방지하려면 XRP 원장에서 계정에 20 개 이상의 XRP를 입금하여 활성화해야합니다. 20 XRP는 손실되지 않습니다. 계정에 남아 있지만 사용할 수는 없습니다. 계정 사용을 시작하려면 20 XRP 이상의 예금이 계정에 입금되어 있는지 확인하십시오.",
       "otherCurrenciesDesc": "XRP 원장을 사용하면 XRP 이외의 통화 잔액을 보유하고주고받을 수 있습니다. 이 통화는 XRP 원장의 다른 계정에서 발행 할 수 있습니다. XRP 이외의 통화를 보내거나 받으려면 XRP 이외의 통화 발행자를 신뢰해야합니다.",
       "explainMyBalance": "내 균형을 설명",
@@ -285,6 +286,7 @@
       "finishEscrow": "에스크로 완료",
       "cancelEscrow": "에스크로 취소",
       "accountSettings": "계정 설정",
+      "deleteAccount": "계정 삭제",
       "setSignerList": "서명자 목록 설정",
       "updateAccountSettings": "계정 설정 업데이트",
       "setARegularKey": "일반 키 설정",
@@ -364,7 +366,7 @@
       "chooseSecurityLevel": "보안 수준",
       "extraSecurity": "추가 보안",
       "chooseWisely": "이 계정에 맞는 보안 수준을 선택하십시오",
-      "passcodeOptionDesc": "일일 지출에 이상적입니다. 얼굴을 보여 주거나 손가락을 스캔하거나 암호를 입력하여 거래에 서명 할 수 있습니다.",
+      "passcodeOptionDesc": "일일 지출에 이상적입니다. 단순히 얼굴을 보여 주거나 손가락을 스캔하거나 암호를 입력하여 거래에 서명 할 수 있습니다.",
       "signWithPasscode": "FaceID / 비밀번호로 서명",
       "passphraseOptionDesc": "이것은 XRP의 장기 저장에 더 좋으며 거래에 서명하려면 암호가 필요합니다",
       "signWithPassphrase": "암호로 서명",
@@ -451,14 +453,19 @@
       "newPassphrase": "새로운 비밀번호 문구",
       "regularKeyFor": "에 대한 일반 키",
       "allDoneYouCanGoToNextStepNow": "모든 작업을 마치면 다음 단계로 넘어갈 수 있습니다",
-      "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이하고있는 것을 알고 있다면 계속하십시오.",
+      "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이 무엇을하고 있는지 아는 경우에만 계속하십시오.",
       "switchAccount": "계정 전환",
       "useMnemonicPassphrase": "니모닉 암호 구 사용",
-      "mnemonicLargeAmountAlert": "계정에 상당한 가치가있는 동안 니모닉 계정 가져 오기를 고려하는 경우 (예 : 저축, 더 많은 양의 XRP 또는 기타 토큰) 니모닉 계정을 오프라인으로 유지하려면 XUMM에 새 계정을 만드는 것을 고려하십시오.",
-      "importExchangeAddressReadonlyWarning": "Exchange (예금) 계정을 가져올 수 없습니다. 그렇게하면 거래소에서 자신의 잔액을 추적 할 수 없습니다. 읽기 전용 계정 가져 오기는 하드웨어 계정처럼 자신의 활성화 된 계정 인 경우에만 작동합니다",
+      "mnemonicLargeAmountAlert": "계정에 상당한 가치가있는 동안 니모닉 계정 가져 오기를 고려하는 경우 (예 : 저축, 더 많은 XRP 또는 기타 토큰) 니모닉 계정을 오프라인으로 유지하려면 XUMM에 새 계정을 만드는 것을 고려하십시오.",
+      "importExchangeAddressReadonlyWarning": "Exchange (예금) 계정을 가져올 수 없습니다. 그렇게하면 거래소에서 자신의 잔액을 추적 할 수 없습니다. 읽기 전용 계정 가져 오기는 하드웨어 계정과 같이 자신의 활성화 된 계정 인 경우에만 작동합니다",
       "walletReserve": "월렛 예약",
       "accountBalance": "계정 잔액",
-      "availableForSpending": "지출 가능"
+      "availableForSpending": "지출 가능",
+      "deleteAccountWarning": "이것은 계정 삭제 트랜잭션입니다. 계정에 서명하면 계정을 삭제하기위한 XRP 원장의 수수료가 5 XRP이므로 남은 모든 자금 (마지막 5 개의 예약 된 XRP 제외)이 구성된 대상으로 전송됩니다. 대상을 두 번 확인하고 XRP 원장에서 계정을 실제로 삭제하려는 경우에만 계속하십시오",
+      "deleteAccountObjectsExistError": "계정에 다른 통화, 탈 중앙화 거래소 오퍼, 에스크로 (창조자 또는 수혜자)와 같은 특정 XRP 원장 개체가 포함되어 있으므로이 계정을 삭제할 수 없습니다.",
+      "unableToCheckAccountObjects": "계정 개체를 확인할 수 없습니다. XRPL 노드에 연결되어 있는지 확인하십시오",
+      "destinationAccountIsNotActivated": "대상 계정이 활성화되지 않았습니다. 원장에서 자금을 조달 한 계정이어야합니다.",
+      "destinationAccountAndSourceCannotBeSame": "대상 계정과 출처가 같을 수 없습니다."
    },
    "send": {
       "amountIsBiggerThanYourSpend": "지출 할 수있는 금액보다 금액이 더 많습니다 ( %{spendable} )",

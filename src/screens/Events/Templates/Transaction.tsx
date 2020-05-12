@@ -73,8 +73,9 @@ class TransactionTemplate extends PureComponent<Props, State> {
                 break;
         }
 
-        // this transactions don't have destination so we can fetch name from our account
+        // this this transactions are belong to account
         if (
+            item.Type === 'AccountDelete' ||
             item.Type === 'AccountSet' ||
             item.Type === 'SignerListSet' ||
             item.Type === 'SetRegularKey' ||

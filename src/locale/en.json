@@ -155,6 +155,7 @@
         "subject": "Subject",
         "empty": "Empty",
         "update": "Update",
+        "danger": "Danger",
         "explorer": "Explorer",
         "balanceLimit": "Balance limit",
         "unbelievablyStrong": "Unbelievably strong",
@@ -285,6 +286,7 @@
         "finishEscrow": "Finish escrow",
         "cancelEscrow": "Cancel escrow",
         "accountSettings": "Account Settings",
+        "deleteAccount": "Delete Account",
         "setSignerList": "Set Signer List",
         "updateAccountSettings": "Update account settings",
         "setARegularKey": "Set a Regular Key",
@@ -458,7 +460,12 @@
         "importExchangeAddressReadonlyWarning": "It is not possible to import your Exchange (deposit) account. Doing so does not allow you to track your own balance on the exchange.\n\nImporting a read only account only works if this is your own, activated account, like the account of your hardware",
         "walletReserve": "Wallet reserve",
         "accountBalance": "Account balance",
-        "availableForSpending": "Available for spending"
+        "availableForSpending": "Available for spending",
+        "deleteAccountWarning": "This is an Account Delete transaction. When signing your account will be deleted, and all your remaining funds (except for the last 5 reserved XRP, as the fee on the XRP ledger for deleting an account is 5 XRP) will be sent to the configured destination. Please check the destination twice, and ONLY continue if you ACTUALLY want to delete your account on the XRP ledger",
+        "deleteAccountObjectsExistError": "You cannot delete this account, as your account contains specific XRP ledger objects, like other currencies, Decentralized Exchange offers, Escrows (as a creator or beneficiary)",
+        "unableToCheckAccountObjects": "Unable to check for account objects, please make sure you are connected to the XRPL node",
+        "destinationAccountIsNotActivated": "Destination account is not activated, Must be a funded account in the ledger.",
+        "destinationAccountAndSourceCannotBeSame": "Destiniation account and source cannot be the same."
     },
     "send": {
         "amountIsBiggerThanYourSpend": "Amount is bigger than what you can spend (%{spendable})",
