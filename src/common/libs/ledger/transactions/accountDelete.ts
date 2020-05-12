@@ -57,7 +57,7 @@ class AccountDelete extends BaseTransaction {
                     }
                 })
                 .catch(() => {
-                    return reject(new Error(Locale.t('account.unableGetRecipientAccountInfoPleaseTryAgain')));
+                    return reject(new Error(Locale.t('account.unableGetDestinationAccountInfo')));
                 });
 
             await LedgerService.getAccountObjects(this.Account.address)

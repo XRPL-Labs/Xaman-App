@@ -463,8 +463,9 @@
       "availableForSpending": "可用于消费",
       "deleteAccountWarning": "这是一个帐户删除交易。签名时，您的帐户将被删除，所有剩余资金（最后5个保留的XRP除外，因为删除帐户的XRP分类账上的费用为5 XRP）将被发送到配置的目的地。请检查目标位置两次，并且如果您确实要删除XRP分类帐上的帐户，则仅继续",
       "deleteAccountObjectsExistError": "您无法删除此帐户，因为您的帐户包含特定的XRP分类帐对象，例如其他货币，去中心化交易所的报价，托管（作为创建者或受益人）",
-      "unableToCheckAccountObjects": "无法检查帐户对象，请确保您已连接到XRPL节点",
-      "destinationAccountIsNotActivated": "目标帐户未激活，必须是分类账中的注资帐户。",
+      "unableToCheckAccountObjects": "无法检查帐户对象，请确保您已连接到XRP分类帐节点",
+      "unableGetDestinationAccountInfo": "无法获取目标帐户信息，请确保您已连接到XRP分类帐节点",
+      "destinationAccountIsNotActivated": "目标帐户未激活，必须是XRP分类帐中的注资帐户。",
       "destinationAccountAndSourceCannotBeSame": "目的地帐户和来源不能相同。"
    },
    "send": {

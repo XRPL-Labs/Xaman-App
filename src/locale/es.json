@@ -463,8 +463,9 @@
       "availableForSpending": "Disponible para gastar",
       "deleteAccountWarning": "Esta es una transacción de eliminación de cuenta. Al firmar, su cuenta será eliminada, y todos sus fondos restantes (excepto los últimos 5 XRP reservados, ya que la tarifa en el libro mayor de XRP para eliminar una cuenta es 5 XRP) se enviará al destino configurado. Verifique el destino dos veces y SOLO continúe si REALMENTE desea eliminar su cuenta en el libro mayor XRP",
       "deleteAccountObjectsExistError": "No puede eliminar esta cuenta, ya que su cuenta contiene objetos contables XRP específicos, como otras monedas, ofertas de intercambio descentralizado, depósitos en garantía (como creador o beneficiario)",
-      "unableToCheckAccountObjects": "No se pueden verificar los objetos de la cuenta, asegúrese de estar conectado al nodo XRPL",
-      "destinationAccountIsNotActivated": "La cuenta de destino no está activada, debe ser una cuenta con fondos en el libro mayor.",
+      "unableToCheckAccountObjects": "No se pueden verificar los objetos de la cuenta, asegúrese de estar conectado al nodo del libro mayor XRP",
+      "unableGetDestinationAccountInfo": "No se puede obtener la información de la cuenta de destino, asegúrese de estar conectado al nodo del libro mayor XRP",
+      "destinationAccountIsNotActivated": "La cuenta de destino no está activada, debe ser una cuenta con fondos en el libro mayor XRP.",
       "destinationAccountAndSourceCannotBeSame": "La cuenta de destino y la fuente no pueden ser lo mismo."
    },
    "send": {

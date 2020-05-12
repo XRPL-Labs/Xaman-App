@@ -463,8 +463,9 @@
       "availableForSpending": "支出可能",
       "deleteAccountWarning": "これはアカウント削除トランザクションです。アカウントに署名すると、削除され、残りのすべての資金（アカウントを削除するためのXRP元帳の料金が5 XRPであるため、最後の5つの予約済みXRPを除く）が構成された宛先に送信されます。宛先を2回確認し、実際にXRP元帳でアカウントを削除する場合にのみ続行してください",
       "deleteAccountObjectsExistError": "このアカウントは、他の通貨、分散型Exchangeオファー、エスクロー（作成者または受取人として）などの特定のXRP元帳オブジェクトが含まれているため、削除できません",
-      "unableToCheckAccountObjects": "アカウントオブジェクトを確認できません。XRPLノードに接続していることを確認してください",
-      "destinationAccountIsNotActivated": "宛先アカウントがアクティブ化されていません。元帳の資金口座である必要があります。",
+      "unableToCheckAccountObjects": "アカウントオブジェクトを確認できません。XRPレジャーノードに接続していることを確認してください",
+      "unableGetDestinationAccountInfo": "宛先アカウント情報を取得できません。XRP元帳ノードに接続していることを確認してください",
+      "destinationAccountIsNotActivated": "宛先アカウントはアクティブ化されていません。XRP元帳の資金提供されたアカウントである必要があります。",
       "destinationAccountAndSourceCannotBeSame": "宛先アカウントとソースを同じにすることはできません。"
    },
    "send": {

@@ -463,8 +463,9 @@
       "availableForSpending": "지출 가능",
       "deleteAccountWarning": "이것은 계정 삭제 트랜잭션입니다. 계정에 서명하면 계정을 삭제하기위한 XRP 원장의 수수료가 5 XRP이므로 남은 모든 자금 (마지막 5 개의 예약 된 XRP 제외)이 구성된 대상으로 전송됩니다. 대상을 두 번 확인하고 XRP 원장에서 계정을 실제로 삭제하려는 경우에만 계속하십시오",
       "deleteAccountObjectsExistError": "계정에 다른 통화, 탈 중앙화 거래소 오퍼, 에스크로 (창조자 또는 수혜자)와 같은 특정 XRP 원장 개체가 포함되어 있으므로이 계정을 삭제할 수 없습니다.",
-      "unableToCheckAccountObjects": "계정 개체를 확인할 수 없습니다. XRPL 노드에 연결되어 있는지 확인하십시오",
-      "destinationAccountIsNotActivated": "대상 계정이 활성화되지 않았습니다. 원장에서 자금을 조달 한 계정이어야합니다.",
+      "unableToCheckAccountObjects": "계정 개체를 확인할 수 없습니다. XRP 원장 노드에 연결되어 있는지 확인하십시오",
+      "unableGetDestinationAccountInfo": "대상 계정 정보를 가져올 수 없습니다. XRP 원장 노드에 연결되어 있는지 확인하십시오",
+      "destinationAccountIsNotActivated": "대상 계정이 활성화되지 않았습니다. XRP 원장에서 자금을 조달 한 계정이어야합니다.",
       "destinationAccountAndSourceCannotBeSame": "대상 계정과 출처가 같을 수 없습니다."
    },
    "send": {
