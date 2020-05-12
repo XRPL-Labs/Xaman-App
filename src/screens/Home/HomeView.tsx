@@ -156,6 +156,11 @@ class HomeView extends Component<Props, State> {
     showBalanceExplain = () => {
         const { account } = this.state;
 
+        // don't show the explain screen when account is not activated
+        if (account.balance === 0) {
+            return;
+        }
+
         Navigator.showOverlay(
             AppScreens.Overlay.ExplainBalance,
             {

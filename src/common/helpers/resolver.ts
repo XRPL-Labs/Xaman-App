@@ -26,6 +26,13 @@ export interface AccountInfoType {
 const getAccountName = memoize(
     (address: string, tag?: number): Promise<AccountNameType> => {
         return new Promise((resolve) => {
+            if (!address) {
+                return resolve({
+                    name: '',
+                    source: '',
+                });
+            }
+
             // check address  book
             try {
                 let filter = { address };
@@ -84,6 +91,10 @@ const getAccountName = memoize(
 const getAccountInfo = (address: string): Promise<AccountInfoType> => {
     /* eslint-disable-next-line  */
     return new Promise(async (resolve, reject) => {
+        if (!address) {
+            return reject();
+        }
+
         const info = {
             exist: true,
             risk: 'UNKNOWS',
