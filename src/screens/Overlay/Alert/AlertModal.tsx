@@ -30,8 +30,9 @@ export interface State {}
 class AlertModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Alert;
 
-    private animate: Animated.Value;
+    private animateScale: Animated.Value;
     private animatedColor: Animated.Value;
+    private animatedOpacity: Animated.Value;
 
     static options() {
         return {
@@ -44,13 +45,14 @@ class AlertModal extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        this.animate = new Animated.Value(0);
+        this.animateScale = new Animated.Value(0);
         this.animatedColor = new Animated.Value(0);
+        this.animatedOpacity = new Animated.Value(1);
     }
 
     componentDidMount() {
         Animated.parallel([
-            Animated.spring(this.animate, {
+            Animated.spring(this.animateScale, {
                 toValue: 1,
                 velocity: 0,
                 tension: 65,
@@ -70,14 +72,14 @@ class AlertModal extends Component<Props, State> {
         const { onDismissed } = this.props;
 
         Animated.parallel([
-            Animated.timing(this.animate, {
+            Animated.timing(this.animatedOpacity, {
                 toValue: 0,
-                duration: 100,
+                duration: 200,
                 useNativeDriver: true,
             }),
             Animated.timing(this.animatedColor, {
                 toValue: 0,
-                duration: 100,
+                duration: 200,
                 useNativeDriver: false,
             }),
         ]).start(() => {
@@ -172,7 +174,7 @@ class AlertModal extends Component<Props, State> {
         const { text } = this.props;
         const transform = [
             {
-                scale: this.animate.interpolate({
+                scale: this.animateScale.interpolate({
                     inputRange: [0, 1],
                     outputRange: [0, 1],
                 }),
@@ -191,7 +193,7 @@ class AlertModal extends Component<Props, State> {
                 onStartShouldSetResponder={() => true}
                 style={[styles.container, { backgroundColor: interpolateColor }]}
             >
-                <Animated.View style={[styles.visibleContent, { transform }]}>
+                <Animated.View style={[styles.visibleContent, { transform, opacity: this.animatedOpacity }]}>
                     <View style={[AppStyles.centerAligned]}>{this.renderIcon()}</View>
 
                     <View style={AppStyles.centerAligned}>{this.renderTitle()}</View>
