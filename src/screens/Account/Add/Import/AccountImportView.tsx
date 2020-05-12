@@ -63,6 +63,17 @@ class AccountImportView extends Component<Props, State> {
         };
     }
 
+    componentDidMount() {
+        const { upgrade } = this.props;
+
+        // set the access level if it's upgrade
+        if (upgrade) {
+            this.saveSettings({
+                accessLevel: AccessLevels.Full,
+            });
+        }
+    }
+
     saveSettings = (accountObject: AccountObject) => {
         const { account } = this.state;
         this.setState({ account: Object.assign(account, accountObject) });
