@@ -187,9 +187,8 @@ class AlertModal extends Component<Props, State> {
         });
 
         return (
-            // @ts-ignore
             <Animated.View
-                onResponderRelease={this.dismiss}
+                // onResponderRelease={this.dismiss}
                 onStartShouldSetResponder={() => true}
                 style={[styles.container, { backgroundColor: interpolateColor }]}
             >
