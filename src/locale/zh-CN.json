@@ -444,6 +444,7 @@
       "yourAccountIsNotActivated": "您的帐户尚未激活！",
       "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "所选帐户未激活。要签署此交易，您需要选择一个激活的帐户！",
       "accountAlreadyExist": "账户已存在！",
+      "upgradeAccountSecretIsNotMatch": "输入的密码属于另一个r地址。如果要导入常规密钥，请[导入新帐户]。如果没有，请[取消]并检查您的输入。",
       "masterKeyForThisAccountDisableRegularKeyNotFound": "此帐户的主密钥已禁用，在帐户列表中找不到普通密钥帐户！",
       "regularKeyAccountForThisAccountDoesNotImportedWithSignAccess": "此帐户的常规密钥未通过登录访问导入！",
       "currentPassphraseShouldNotBeEmpty": "当前密码短语不能为空！",

@@ -444,6 +444,7 @@
       "yourAccountIsNotActivated": "귀하의 계정이 활성화되지 않았습니다!",
       "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "선택한 계정이 활성화되지 않았습니다. 이 거래에 서명하려면 활성화 된 계정을 선택해야합니다!",
       "accountAlreadyExist": "계정이 이미 존재합니다!",
+      "upgradeAccountSecretIsNotMatch": "입력 한 비밀은 다른 r- 주소에 속합니다. 일반 키를 가져 오려면 [새 계정 가져 오기]를 참조하십시오. 그렇지 않은 경우 [취소]하고 입력 내용을 확인하십시오.",
       "masterKeyForThisAccountDisableRegularKeyNotFound": "이 계정의 마스터 키가 비활성화되었으며 계정 목록에 일반 키 계정이 없습니다!",
       "regularKeyAccountForThisAccountDoesNotImportedWithSignAccess": "이 계정의 일반 키를 서명 액세스 권한으로 가져 오지 못했습니다!",
       "currentPassphraseShouldNotBeEmpty": "현재 암호 문구는 비워 둘 수 없습니다!",

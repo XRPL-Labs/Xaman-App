@@ -444,6 +444,7 @@
       "yourAccountIsNotActivated": "¡Su cuenta no está activada!",
       "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "La cuenta seleccionada no está activada. Para firmar esta transacción, debe seleccionar una cuenta activada.",
       "accountAlreadyExist": "¡La cuenta ya existe!",
+      "upgradeAccountSecretIsNotMatch": "El secreto introducido pertenece a otra dirección r. Si desea importar una clave normal, por favor [Importar nueva cuenta]. De lo contrario, [cancelar] y verificar su entrada.",
       "masterKeyForThisAccountDisableRegularKeyNotFound": "¡La clave maestra para esta cuenta está desactivada y la cuenta de clave normal no se encuentra en la lista de cuentas!",
       "regularKeyAccountForThisAccountDoesNotImportedWithSignAccess": "¡La clave regular para esta cuenta no se importó con acceso a la señal!",
       "currentPassphraseShouldNotBeEmpty": "¡La frase de contraseña actual no debe estar vacía!",

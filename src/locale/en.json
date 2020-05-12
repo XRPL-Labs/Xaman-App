@@ -444,6 +444,7 @@
         "yourAccountIsNotActivated": "Your account is not activated!",
         "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "Selected account is not activated. To sign this transaction you need to select an activated account!",
         "accountAlreadyExist": "Account already exists!",
+        "upgradeAccountSecretIsNotMatch": "The entered secret belongs to another r-address. If you want to import a regular key, please [Import new account]. If not, please [cancel] and check your entry.",
         "masterKeyForThisAccountDisableRegularKeyNotFound":"Master key for this account is disabled and regular key account not found in accounts list!",
         "regularKeyAccountForThisAccountDoesNotImportedWithSignAccess": "Regular Key for this account was not imported with sign access!",
         "currentPassphraseShouldNotBeEmpty": "Current Passphrase should not be empty!",

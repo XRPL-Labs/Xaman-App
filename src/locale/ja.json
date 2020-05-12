@@ -444,6 +444,7 @@
       "yourAccountIsNotActivated": "あなたのアカウントはアクティブ化されていません！",
       "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "選択したアカウントはアクティブ化されていません。このトランザクションに署名するには、アクティブ化されたアカウントを選択する必要があります！",
       "accountAlreadyExist": "アカウントはすでに存在しています！",
+      "upgradeAccountSecretIsNotMatch": "入力されたシークレットは別のrアドレスに属しています。通常の鍵をインポートしたい場合は、[新規アカウントのインポート]を行ってください。そうでない場合は、[キャンセル]してエントリを確認してください。",
       "masterKeyForThisAccountDisableRegularKeyNotFound": "このアカウントのマスターキーは無効になっており、通常のキーアカウントはアカウントリストにありません！",
       "regularKeyAccountForThisAccountDoesNotImportedWithSignAccess": "このアカウントの通常のキーは、サインアクセスでインポートされませんでした！",
       "currentPassphraseShouldNotBeEmpty": "現在のパスフレーズは空にできません！",
