@@ -4,7 +4,9 @@ import { Text, TextStyle, TouchableOpacity, View, ViewStyle, Platform } from 're
 import { Images } from '@common/helpers/images';
 import { Icon } from '@components/Icon';
 
-import { AppColors, AppStyles } from '@theme';
+import { getStatusBarHeight } from '@common/helpers/interface';
+
+import { AppColors, AppStyles, AppSizes } from '@theme';
 
 import styles from './styles';
 /* Types ==================================================================== */
@@ -99,6 +101,8 @@ const Children = ({
 
 /* Component ==================================================================== */
 class Header extends PureComponent<Props> {
+    static Height = AppSizes.heightPercentageToDP(9) + getStatusBarHeight(true);
+
     static defaultProps = {
         placement: 'center',
         backgroundColor: AppColors.white,

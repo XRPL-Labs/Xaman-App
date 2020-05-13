@@ -27,7 +27,7 @@ import { Prompt } from '@common/helpers/interface';
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { Button, AccordionPicker, Footer } from '@components';
+import { Header, Button, AccordionPicker, Footer } from '@components';
 
 import Localize from '@locale';
 
@@ -246,7 +246,8 @@ class DetailsStep extends Component {
         return (
             <View testID="send-details-view" style={[styles.container]}>
                 <KeyboardAvoidingView
-                    keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0}
+                    enabled={Platform.OS === 'ios'}
+                    keyboardVerticalOffset={Header.Height}
                     behavior="padding"
                     style={[AppStyles.flex1, AppStyles.stretchSelf]}
                 >

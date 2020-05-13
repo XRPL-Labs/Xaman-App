@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Alert, KeyboardAvoidingView } from 'react-native';
+import { SafeAreaView, View, Text, Alert, Platform, KeyboardAvoidingView } from 'react-native';
 
 import { derive } from 'xrpl-accountlib';
 import { StringType, XrplSecret } from 'xumm-string-decode';
@@ -77,7 +77,11 @@ class EnterSeedStep extends Component<Props, State> {
 
                 <Spacer size={50} />
 
-                <KeyboardAvoidingView behavior="padding" style={[AppStyles.flex1, AppStyles.paddingHorizontal]}>
+                <KeyboardAvoidingView
+                    enabled={Platform.OS === 'ios'}
+                    behavior="padding"
+                    style={[AppStyles.flex1, AppStyles.paddingHorizontal]}
+                >
                     <TextInput
                         placeholder={Localize.t('account.pleaseEnterYourFamilySeed')}
                         // containerStyle={styles.searchContainer}

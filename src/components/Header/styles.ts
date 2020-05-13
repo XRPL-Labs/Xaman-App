@@ -15,8 +15,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         zIndex: 99999,
         height: AppSizes.heightPercentageToDP(9) + getStatusBarHeight(true),
-        minHeight: 70,
-        maxHeight: 130,
     },
 
     centerContainer: {

@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Alert, KeyboardAvoidingView } from 'react-native';
+import { SafeAreaView, View, Text, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 
 // components
 import { Button, Spacer, TextInput, Footer } from '@components';
@@ -61,6 +61,7 @@ class LabelStep extends Component<Props, State> {
 
                 <Spacer size={50} />
                 <KeyboardAvoidingView
+                    enabled={Platform.OS === 'ios'}
                     behavior="padding"
                     style={[AppStyles.contentContainer, AppStyles.flexStart, AppStyles.paddingSml]}
                 >

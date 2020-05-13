@@ -9,7 +9,6 @@ import {
     ActivityIndicator,
     Platform,
     TouchableOpacity,
-    KeyboardAvoidingView,
     InteractionManager,
 } from 'react-native';
 
@@ -223,7 +222,7 @@ class PaymentTemplate extends Component<Props, State> {
             destinationName,
         } = this.state;
         return (
-            <KeyboardAvoidingView keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0} behavior="position">
+            <>
                 <View style={styles.label}>
                     <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
                         {Localize.t('global.to')}
@@ -332,7 +331,7 @@ class PaymentTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
-            </KeyboardAvoidingView>
+            </>
         );
     }
 }

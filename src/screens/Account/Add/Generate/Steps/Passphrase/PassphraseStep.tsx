@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 
 // components
-import { Button, PasswordInput, Footer } from '@components';
+import { Button, PasswordInput, Footer, Header } from '@components';
 
 // locale
 import Localize from '@locale';
@@ -74,8 +74,9 @@ class PassphraseStep extends Component<Props, State> {
                 </Text>
 
                 <KeyboardAvoidingView
+                    enabled={Platform.OS === 'ios'}
                     behavior="padding"
-                    keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0}
+                    keyboardVerticalOffset={Header.Height}
                     style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}
                 >
                     <PasswordInput

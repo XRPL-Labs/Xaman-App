@@ -28,7 +28,7 @@ import { Images } from '@common/helpers/images';
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { Button, AccordionPicker, Footer, Spacer, TextInput } from '@components';
+import { Button, AccordionPicker, Footer, Spacer, TextInput, Header } from '@components';
 
 // locale
 import Localize from '@locale';
@@ -308,7 +308,8 @@ class SummaryStep extends Component {
         return (
             <View testID="send-summary-view" style={[styles.container]}>
                 <KeyboardAvoidingView
-                    keyboardVerticalOffset={Platform.OS === 'ios' ? 130 : 0}
+                    enabled={Platform.OS === 'ios'}
+                    keyboardVerticalOffset={Header.Height}
                     behavior="padding"
                     style={[AppStyles.flex1, AppStyles.stretchSelf]}
                 >

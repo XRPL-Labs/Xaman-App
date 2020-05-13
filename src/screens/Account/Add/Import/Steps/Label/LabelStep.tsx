@@ -4,7 +4,7 @@
 
 import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Alert, KeyboardAvoidingView } from 'react-native';
+import { SafeAreaView, View, Text, Alert, Platform, KeyboardAvoidingView } from 'react-native';
 
 import { getAccountName } from '@common/helpers/resolver';
 // components
@@ -77,6 +77,7 @@ class LabelStep extends Component<Props, State> {
 
                 <Spacer size={50} />
                 <KeyboardAvoidingView
+                    enabled={Platform.OS === 'ios'}
                     behavior="padding"
                     style={[AppStyles.contentContainer, AppStyles.flexStart, AppStyles.paddingSml]}
                 >
@@ -85,7 +86,7 @@ class LabelStep extends Component<Props, State> {
                         placeholder={Localize.t('account.accountLabel')}
                         value={label}
                         inputStyle={styles.inputText}
-                        onChangeText={l => this.setState({ label: l })}
+                        onChangeText={(l) => this.setState({ label: l })}
                     />
                 </KeyboardAvoidingView>
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>
