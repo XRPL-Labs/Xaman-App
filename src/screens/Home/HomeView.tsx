@@ -528,6 +528,7 @@ class HomeView extends Component<Props, State> {
                                 Share.share({
                                     title: Localize.t('home.shareAccount'),
                                     message: account.address,
+                                    url: undefined,
                                 }).catch(() => {});
                             }}
                             activeOpacity={0.9}

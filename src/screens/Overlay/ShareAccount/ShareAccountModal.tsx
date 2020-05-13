@@ -91,6 +91,7 @@ class ShareAccountModal extends Component<Props, State> {
         Share.share({
             title: Localize.t('home.shareAccount'),
             message: account.address,
+            url: undefined,
         }).catch(() => {});
     };
 
@@ -118,7 +119,7 @@ class ShareAccountModal extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={r => {
+                    ref={(r) => {
                         this.panel = r;
                     }}
                     animatedNativeDriver

@@ -113,7 +113,8 @@ class TransactionDetailsView extends Component<Props, State> {
 
         Share.share({
             title: Localize.t('events.shareTransactionId'),
-            url,
+            message: url,
+            url: undefined,
         }).catch(() => {});
     };
 
