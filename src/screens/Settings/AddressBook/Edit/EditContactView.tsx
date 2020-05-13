@@ -3,7 +3,7 @@
  */
 import { filter, isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { SafeAreaView, View, KeyboardAvoidingView, Text, Alert, Keyboard, Platform, ScrollView } from 'react-native';
+import { View, KeyboardAvoidingView, Text, Alert, Keyboard, Platform, ScrollView } from 'react-native';
 
 import { StringType, XrplDestination } from 'xumm-string-decode';
 import * as AccountLib from 'xrpl-accountlib';
