@@ -48,7 +48,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
         this.state = {
             isLoading: true,
-            accountObjects: undefined,
+            accountObjects: [],
         };
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
@@ -66,12 +66,16 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         LedgerService.getAccountObjects(account.address)
             .then((res: any) => {
                 const { account_objects } = res;
-                this.setState({
-                    accountObjects: sortBy(account_objects, 'LedgerEntryType'),
-                });
+                if (account_objects) {
+                    this.setState({
+                        accountObjects: sortBy(account_objects, 'LedgerEntryType'),
+                    });
+                } else {
+                    Toast(Localize.t('account.unableToCheckAccountObjects'));
+                }
             })
             .catch(() => {
-                Toast('Unable to load account objects');
+                Toast(Localize.t('account.unableToCheckAccountObjects'));
             })
             .finally(() => {
                 this.setState({
@@ -178,7 +182,10 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                 {this.renderAccountLines()}
 
                 {isLoading ? (
-                    <ActivityIndicator color={AppColors.blue} />
+                    <>
+                        <Spacer size={20} />
+                        <ActivityIndicator color={AppColors.blue} />
+                    </>
                 ) : (
                     accountObjects.map(this.renderAccountObject)
                 )}
