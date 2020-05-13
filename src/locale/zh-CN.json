@@ -520,7 +520,8 @@
       "successRemoved": "货币已成功从您的帐户中删除",
       "failedRemove": "无法删除货币。错误发生！",
       "removeCurrency": "删除货币",
-      "addingCurrencyReserveDescription": "添加货币将使您的帐户准备金增加5 XRP"
+      "addingCurrencyReserveDescription": "添加货币将使您的帐户准备金增加5 XRP",
+      "unableToRemoveCurrencyNotInDefaultState": "无法从您的帐户中删除该货币。可能是由于发行人在此货币上添加了特定设置，或者是因为其发行帐户未正确配置。"
    },
    "exchange": {
       "exchanging": "交流中",

@@ -520,7 +520,8 @@
       "successRemoved": "アカウントから通貨を削除しました",
       "failedRemove": "通貨を削除できません。エラーが発生しました！",
       "removeCurrency": "通貨を削除",
-      "addingCurrencyReserveDescription": "通貨を追加すると、アカウントの予備が5 XRP増加します"
+      "addingCurrencyReserveDescription": "通貨を追加すると、アカウントの予備が5 XRP増加します",
+      "unableToRemoveCurrencyNotInDefaultState": "この通貨はアカウントから削除できません。発行者がこの通貨に特定の設定を追加したか、発行アカウントが正しく構成されていないためです。"
    },
    "exchange": {
       "exchanging": "交換",

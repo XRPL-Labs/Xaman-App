@@ -1,7 +1,8 @@
 /**
  * Currency Settings Overlay
  */
-import find from 'lodash/filter';
+import find from 'lodash/find';
+import get from 'lodash/get';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
@@ -11,8 +12,8 @@ import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 import { AccountRepository } from '@store/repositories';
 
 import { TrustSet, Payment } from '@common/libs/ledger/transactions';
-import Flag from '@common/libs/ledger/parser/common/flag';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
+import Flag from '@common/libs/ledger/parser/common/flag';
 
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
@@ -107,20 +108,24 @@ class CurrencySettingsModal extends Component<Props, State> {
     getLatestLineBalance = () => {
         const { account, trustLine } = this.props;
 
-        LedgerService.getAccountLines(account.address).then(async (accountLines: any) => {
-            const { lines } = accountLines;
+        LedgerService.getAccountLines(account.address)
+            .then(async (accountLines: any) => {
+                const { lines } = accountLines;
 
-            const line = find(lines, { account: trustLine.currency.issuer, currency: trustLine.currency.currency });
+                const line = find(lines, { account: trustLine.currency.issuer, currency: trustLine.currency.currency });
 
-            if (line && line.length > 0) {
-                const lineBalance = new BigNumber(line[0].balance);
+                if (line) {
+                    const lineBalance = new BigNumber(line.balance);
 
-                this.setState({
-                    latestLineBalance: lineBalance.decimalPlaces(15).toNumber(),
-                    canRemove: lineBalance.isLessThan(0.000001),
-                });
-            }
-        });
+                    this.setState({
+                        latestLineBalance: lineBalance.decimalPlaces(15).toNumber(),
+                        canRemove: lineBalance.isLessThan(0.000001),
+                    });
+                }
+            })
+            .catch(() => {
+                // ignore
+            });
     };
 
     clearDustAmounts = (privateKey: string) => {
@@ -163,6 +168,33 @@ class CurrencySettingsModal extends Component<Props, State> {
                         .catch(() => {
                             return reject();
                         });
+                })
+                .catch(() => {
+                    return reject();
+                });
+        });
+    };
+
+    checkForIssuerState = () => {
+        const { trustLine } = this.props;
+
+        return new Promise((resolve, reject) => {
+            LedgerService.getAccountInfo(trustLine.currency.issuer)
+                .then((issuerAccountInfo: any) => {
+                    const issuerFlags = new Flag(
+                        'Account',
+                        get(issuerAccountInfo, ['account_data', 'Flags'], 0),
+                    ).parse();
+
+                    if (
+                        trustLine.limit_peer > 0 ||
+                        (!trustLine.no_ripple_peer && !issuerFlags.defaultRipple) ||
+                        (trustLine.no_ripple_peer && issuerFlags.defaultRipple)
+                    ) {
+                        return reject();
+                    }
+
+                    return resolve();
                 })
                 .catch(() => {
                     return reject();
@@ -242,7 +274,22 @@ class CurrencySettingsModal extends Component<Props, State> {
         this.dismiss();
     };
 
-    showRemoveAlert = () => {
+    showRemoveAlert = async () => {
+        this.setState({
+            isLoading: true,
+        });
+
+        try {
+            await this.checkForIssuerState().finally(() => {
+                this.setState({
+                    isLoading: false,
+                });
+            });
+        } catch {
+            Alert.alert(Localize.t('global.error'), Localize.t('currency.unableToRemoveCurrencyNotInDefaultState'));
+            return;
+        }
+
         Prompt(
             Localize.t('global.warning'),
             Localize.t('account.removeTrustLineWarning'),

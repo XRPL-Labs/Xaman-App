@@ -520,7 +520,8 @@
       "successRemoved": "계정에서 통화가 성공적으로 제거되었습니다",
       "failedRemove": "통화를 제거 할 수 없습니다. 오류가 발생했습니다!",
       "removeCurrency": "통화 제거",
-      "addingCurrencyReserveDescription": "통화를 추가하면 계정 예약이 5 XRP 증가합니다"
+      "addingCurrencyReserveDescription": "통화를 추가하면 계정 예약이 5 XRP 증가합니다",
+      "unableToRemoveCurrencyNotInDefaultState": "이 통화는 계정에서 제거 할 수 없습니다. 발행자가이 통화에 특정 설정을 추가했거나 발행 계정이 올바르게 구성되지 않았기 때문입니다."
    },
    "exchange": {
       "exchanging": "교환",

@@ -520,7 +520,8 @@
         "successRemoved": "Currency successfully removed from your account",
         "failedRemove": "Cannot remove currency. Error occurred!",
         "removeCurrency": "Remove currency",
-        "addingCurrencyReserveDescription": "Adding a currency will increase your account reserve by 5 XRP"
+        "addingCurrencyReserveDescription": "Adding a currency will increase your account reserve by 5 XRP",
+        "unableToRemoveCurrencyNotInDefaultState": "This currency cannot be removed from your account. Either because the issuer either added specific settings on this currency, or because their issuing account is not properly configured."
     },
     "exchange": {
         "exchanging": "Exchanging",
