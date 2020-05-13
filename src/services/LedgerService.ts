@@ -390,10 +390,14 @@ class LedgerService extends EventEmitter {
                             // add to trustLines list
                             normalizedList.push({
                                 currency,
+                                balance: new Amount(l.balance, false).toNumber(),
                                 transfer_rate,
+                                no_ripple: l.no_ripple || false,
+                                no_ripple_peer: l.no_ripple_peer || false,
                                 limit: new Amount(l.limit, false).toNumber(),
                                 limit_peer: new Amount(l.limit_peer, false).toNumber(),
-                                balance: new Amount(l.balance, false).toNumber(),
+                                quality_in: l.quality_in || 0,
+                                quality_out: l.quality_out || 0,
                             });
                         }),
                     );
