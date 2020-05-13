@@ -141,7 +141,9 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
 
                         const incomingTxCountWithTag = incomingTXS.filter((tx) => {
                             return (
-                                typeof tx.tx.TransactionType === 'string' && typeof tx.tx.DestinationTag !== 'undefined'
+                                typeof tx.tx.TransactionType === 'string' &&
+                                typeof tx.tx.DestinationTag !== 'undefined' &&
+                                tx.tx.DestinationTag !== 0
                             );
                         }).length;
 
