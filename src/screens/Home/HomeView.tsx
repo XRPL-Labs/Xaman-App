@@ -22,7 +22,6 @@ import { LedgerService } from '@services';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
-import { AccessLevels } from '@store/types';
 
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 // constants
@@ -256,7 +255,9 @@ class HomeView extends Component<Props, State> {
     };
 
     renderContent = () => {
-        const { account, privacy } = this.state;
+        const { account, privacy, spendableAccounts } = this.state;
+
+        const spendable = !!find(spendableAccounts, { address: account.address });
 
         if (account.balance === 0) {
             // check if account is a regular key to one of xumm accounts
@@ -324,7 +325,7 @@ class HomeView extends Component<Props, State> {
                     <View style={[AppStyles.flex5, AppStyles.centerContent]}>
                         <Text style={[AppStyles.pbold]}>{Localize.t('home.otherCurrencies')}</Text>
                     </View>
-                    {account.accessLevel === AccessLevels.Full && (
+                    {spendable && (
                         <View style={[AppStyles.flex5]}>
                             <Button
                                 label={Localize.t('home.addCurrency')}
@@ -368,11 +369,11 @@ class HomeView extends Component<Props, State> {
                             return (
                                 <TouchableOpacity
                                     onPress={() => {
-                                        if (account.accessLevel === AccessLevels.Full) {
+                                        if (spendable) {
                                             this.showCurrencyOptions(line);
                                         }
                                     }}
-                                    activeOpacity={account.accessLevel === AccessLevels.Full ? 0.5 : 1}
+                                    activeOpacity={spendable ? 0.5 : 1}
                                     style={[styles.currencyItem]}
                                     key={index}
                                 >
