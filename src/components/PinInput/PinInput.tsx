@@ -89,6 +89,7 @@ class PinInput extends Component<Props, State> {
 
     onKeyPress(e: NativeSyntheticEvent<TextInputKeyPressEventData>) {
         const { code } = this.state;
+
         if (e.nativeEvent.key === 'Backspace' && Platform.OS === 'android') {
             const arrayCode = code.split('');
             arrayCode.pop();
@@ -115,6 +116,8 @@ class PinInput extends Component<Props, State> {
                     onFinish(cleanCode);
                 }
             }
+        } else {
+            this.setPinCode('');
         }
     }
 
@@ -154,7 +157,7 @@ class PinInput extends Component<Props, State> {
         return (
             <View style={[styles.container]}>
                 <TextInput
-                    ref={r => {
+                    ref={(r) => {
                         this.textInput = r;
                     }}
                     testID={testID}
