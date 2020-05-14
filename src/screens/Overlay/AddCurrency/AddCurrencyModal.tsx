@@ -116,7 +116,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                 Flags: 131072, // tfSetNoRipple
                 LimitAmount: { currency: selectedCurrency.currency, issuer: selectedCurrency.issuer, value: 999999999 },
             },
-            Localize.t('currency.addingCurrencyReserveDescription'),
+            Localize.t('asset.addingAssetReserveDescription'),
         );
 
         Navigator.showModal(
@@ -247,7 +247,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                        <Text style={[AppStyles.h5, AppStyles.strong]}>{Localize.t('currency.addCurrency')}</Text>
+                        <Text style={[AppStyles.h5, AppStyles.strong]}>{Localize.t('asset.addAsset')}</Text>
                     </View>
                     <View style={[AppStyles.row, AppStyles.flex1, AppStyles.paddingRightSml, AppStyles.flexEnd]}>
                         <Button
@@ -264,7 +264,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                 </View>
                 <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.marginBottomSml]}>
                     <Text style={[AppStyles.p, AppStyles.subtext]}>
-                        {Localize.t('currency.selectAnExchangeAndSelectCurrency')}
+                        {Localize.t('asset.selectAnExchangeAndSelectAsset')}
                     </Text>
                 </View>
 
@@ -275,7 +275,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     <View style={styles.separator} />
                     <View style={[AppStyles.flex1]}>
                         <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}>
-                            Currencies:
+                            {Localize.t('global.assets')}:
                         </Text>
                     </View>
                 </View>
@@ -292,7 +292,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                             isDisabled={false}
                             onPress={this.addCurrency}
                             style={[AppStyles.buttonGreen]}
-                            label={Localize.t('currency.addAndSign')}
+                            label={Localize.t('asset.addAndSign')}
                         />
                     </Footer>
                 </SafeAreaView>

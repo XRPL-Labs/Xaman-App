@@ -80,7 +80,7 @@ class TrustSetTemplate extends Component<Props, State> {
                         {transaction.Issuer}
                     </Text>
                 </View>
-                <Text style={[styles.label]}>{Localize.t('global.currency')}</Text>
+                <Text style={[styles.label]}>{Localize.t('global.asset')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={[styles.value]}>{NormalizeCurrencyCode(transaction.Currency)}</Text>
                 </View>
@@ -89,7 +89,7 @@ class TrustSetTemplate extends Component<Props, State> {
                     {transaction.Limit ? (
                         <Text style={[styles.value]}>{transaction.Limit}</Text>
                     ) : (
-                        <Text style={[styles.value, AppStyles.colorRed]}>{Localize.t('currency.removeCurrency')}</Text>
+                        <Text style={[styles.value, AppStyles.colorRed]}>{Localize.t('asset.removeAsset')}</Text>
                     )}
                 </View>
             </>

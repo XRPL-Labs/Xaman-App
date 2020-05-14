@@ -216,7 +216,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                 await this.clearDustAmounts(privateKey);
             } catch {
                 InteractionManager.runAfterInteractions(() => {
-                    Alert.alert(Localize.t('global.error'), Localize.t('currency.failedRemove'));
+                    Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
                 });
 
                 this.dismiss();
@@ -258,16 +258,16 @@ class CurrencySettingsModal extends Component<Props, State> {
 
             if (verifyResult.success) {
                 InteractionManager.runAfterInteractions(() => {
-                    Alert.alert(Localize.t('global.success'), Localize.t('currency.successRemoved'));
+                    Alert.alert(Localize.t('global.success'), Localize.t('asset.successRemoved'));
                 });
             } else {
                 InteractionManager.runAfterInteractions(() => {
-                    Alert.alert(Localize.t('global.error'), Localize.t('currency.failedRemove'));
+                    Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
                 });
             }
         } else {
             InteractionManager.runAfterInteractions(() => {
-                Alert.alert(Localize.t('global.error'), Localize.t('currency.failedRemove'));
+                Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
             });
         }
 
@@ -286,7 +286,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                 });
             });
         } catch {
-            Alert.alert(Localize.t('global.error'), Localize.t('currency.unableToRemoveCurrencyNotInDefaultState'));
+            Alert.alert(Localize.t('global.error'), Localize.t('asset.unableToRemoveAssetNotInDefaultState'));
             return;
         }
 
@@ -343,7 +343,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                 <Animated.View style={[styles.visibleContent, { opacity: this.animatedOpacity }]}>
                     <View style={styles.headerContainer}>
                         <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                            <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.currency')}</Text>
+                            <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.asset')}</Text>
                         </View>
                         <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                             <Button label={Localize.t('global.cancel')} roundedSmall secondary onPress={this.dismiss} />

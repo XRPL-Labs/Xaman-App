@@ -59,7 +59,8 @@
       "filter": "필터",
       "expense": "비용",
       "direction": "방향",
-      "currency": "통화",
+      "asset": "유산",
+      "assets": "자산",
       "accounts": "계정",
       "contacts": "콘택트 렌즈",
       "general": "일반",
@@ -210,7 +211,7 @@
       "pressBackAgainToExit": "다시 누르면 종료",
       "fraudAlert": "사기 경보",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "이 계정은 사기 또는 사기성 주소로보고됩니다. 주의해서 진행하십시오",
-      "biometricIsNotAvailable": "생체 인식 (지문 또는 얼굴 ID)을 사용할 수 없습니다. 장치가 생체 인증을 지원하는 경우 먼저 장치를 구성하십시오 (OS 설정).",
+      "biometricIsNotAvailable": "생체 인식 (지문 또는 얼굴 ID)을 사용할 수 없습니다. 장치가 생체 인식 인증을 지원하는 경우 먼저 장치를 구성하십시오 (OS 설정).",
       "clearSearch": "명확한 검색",
       "noNameFound": "이름을 찾을 수 없습니다",
       "readMoreInTheFAQ": "FAQ에서 더 읽기"
@@ -221,7 +222,7 @@
       },
       "slideTwo": {
          "title": "사용자 친화적 액세스",
-         "desc": "전체 액세스 모드에서 여러 계정을 추가하거나 읽기 전용입니다. 모든 액세스 계정으로 거래를 보내고 서명을 요청하십시오."
+         "desc": "전체 액세스 모드에서 여러 계정을 추가하거나 읽기 전용입니다. 전체 액세스 계정으로 거래를 보내고 서명을 요청하십시오."
       },
       "slideThree": {
          "title": "보안 우선",
@@ -229,7 +230,7 @@
       },
       "slideFour": {
          "title": "보내고 받기",
-         "desc": "XRP 및 기타 신뢰할 수있는 화폐 통화 (IOU)도 보내고받을 수 있습니다"
+         "desc": "XRP 및 기타 신뢰할 수있는 자산 (IOU)도 보내고받을 수 있습니다"
       }
    },
    "setupPasscode": {
@@ -245,19 +246,19 @@
    },
    "setupPermissions": {
       "enableNotifications": "푸시 알림을 사용 하시겠습니까?",
-      "permissionDescription": "푸시 알림을 사용하여 사인 요청을 보냅니다."
+      "permissionDescription": "우리는 푸시 알림을 사용하여 사인 요청을 보냅니다."
    },
    "home": {
-      "addCurrency": "더하다",
+      "addAsset": "더하다",
       "shareAccount": "계정 주소 공유",
       "addressBalance": "주소 및 잔액 :",
       "addAccount": "계정을 추가",
-      "whatAreOtherCurrencies": "다른 통화는 무엇입니까?",
-      "otherCurrencies": "다른 통화",
-      "youDonNotHaveOtherCurrency": "다른 통화가 없습니다",
-      "howActivateMyAccount": "계정을 활성화하려면 어떻게합니까?",
+      "whatAreOtherAssets": "다른 자산은 무엇입니까?",
+      "otherAssets": "기타 자산",
+      "youDonNotHaveOtherAssets": "다른 자산이 없습니다",
+      "howActivateMyAccount": "계정을 활성화하려면 어떻게해야합니까?",
       "howActivateMyAccountDesc": "스팸 계정 생성을 방지하려면 XRP 원장에서 계정에 20 개 이상의 XRP를 입금하여 활성화해야합니다. 20 XRP는 손실되지 않습니다. 계정에 남아 있지만 사용할 수는 없습니다. 계정 사용을 시작하려면 20 XRP 이상의 예금이 계정에 입금되어 있는지 확인하십시오.",
-      "otherCurrenciesDesc": "XRP 원장을 사용하면 XRP 이외의 통화 잔액을 보유하고주고받을 수 있습니다. 이 통화는 XRP 원장의 다른 계정에서 발행 할 수 있습니다. XRP 이외의 통화를 보내거나 받으려면 XRP 이외의 통화 발행자를 신뢰해야합니다.",
+      "otherAssetsDesc": "XRP 원장은 또한 XRP 이외의 자산의 잔액을 보유하고 보내고받을 수 있습니다. 이러한 자산은 XRP 원장의 다른 계정에서 발행 할 수 있습니다. 비 XRP 자산을 보내거나 받으려면 비 XRP 자산의 발행자를 신뢰해야합니다.",
       "explainMyBalance": "내 균형을 설명",
       "xrpYouOwnVsYourSpendableBalance": "소유 한 XRP와 지출 가능한 잔액"
    },
@@ -275,11 +276,11 @@
       "onDate": "의 위에",
       "paymentReceived": "지불 수신",
       "paymentSent": "결제가 전송되었습니다",
-      "exchangedCurrencies": "교환 통화",
-      "addedATrustLine": "통화 추가 (신뢰 선)",
-      "removedATrustLine": "통화 제거 (신뢰 선)",
-      "addATrustLine": "통화 추가 (신뢰 선)",
-      "updateAccountCurrencies": "계정 통화 업데이트",
+      "exchangedAssets": "교환 자산",
+      "addedATrustLine": "자산 추가 (신뢰 선)",
+      "removedATrustLine": "자산 제거 (신뢰 선)",
+      "addATrustLine": "자산 추가 (신뢰 선)",
+      "updateAccountAssets": "계정 자산 업데이트",
       "createOffer": "오퍼 작성",
       "cancelOffer": "제안 취소",
       "createEscrow": "에스크로 만들기",
@@ -366,7 +367,7 @@
       "chooseSecurityLevel": "보안 수준",
       "extraSecurity": "추가 보안",
       "chooseWisely": "이 계정에 맞는 보안 수준을 선택하십시오",
-      "passcodeOptionDesc": "일일 지출에 이상적입니다. 단순히 얼굴을 보여 주거나 손가락을 스캔하거나 암호를 입력하여 거래에 서명 할 수 있습니다.",
+      "passcodeOptionDesc": "일일 지출에 이상적입니다. 얼굴을 보여 주거나 손가락을 스캔하거나 암호를 입력하여 거래에 서명 할 수 있습니다.",
       "signWithPasscode": "FaceID / 비밀번호로 서명",
       "passphraseOptionDesc": "이것은 XRP의 장기 저장에 더 좋으며 거래에 서명하려면 암호가 필요합니다",
       "signWithPassphrase": "암호로 서명",
@@ -435,7 +436,7 @@
       "destroyAccount": "이 계정을 삭제",
       "upgradingAccessLevelWarning": "액세스 수준을 업그레이드하는 중입니다.이 계정의 개인 키를 가져와야합니다.",
       "downgradingAccessLevelWarning": "액세스 수준을 낮추고 있습니다. 이 계정의 개인 키가 손실 될 수 있습니다. 확실해?",
-      "removeTrustLineWarning": "귀하의 계정에서이 통화를 제거하고 있습니다. 이 작업은 취소 할 수 없습니다. 확실해?",
+      "removeTrustLineWarning": "계정에서이 자산을 제거하고 있습니다. 이 작업은 취소 할 수 없습니다. 확실해?",
       "unavailableChangeSecurityLevel": "현재 보안 수준 변경이 불가능합니다",
       "accountDestroyWarning": "귀하의 계정은 영구적으로 삭제됩니다. 확실합니까?",
       "accountMaxLabelLengthError": "계정 라벨은 16 자 미만이어야합니다!",
@@ -457,13 +458,13 @@
       "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이 무엇을하고 있는지 아는 경우에만 계속하십시오.",
       "switchAccount": "계정 전환",
       "useMnemonicPassphrase": "니모닉 암호 구 사용",
-      "mnemonicLargeAmountAlert": "계정에 상당한 가치가있는 동안 니모닉 계정 가져 오기를 고려하는 경우 (예 : 저축, 더 많은 XRP 또는 기타 토큰) 니모닉 계정을 오프라인으로 유지하려면 XUMM에 새 계정을 만드는 것을 고려하십시오.",
-      "importExchangeAddressReadonlyWarning": "Exchange (예금) 계정을 가져올 수 없습니다. 그렇게하면 거래소에서 자신의 잔액을 추적 할 수 없습니다. 읽기 전용 계정 가져 오기는 하드웨어 계정과 같이 자신의 활성화 된 계정 인 경우에만 작동합니다",
+      "mnemonicLargeAmountAlert": "계정에 상당한 가치가있는 동안 니모닉 계정 가져 오기를 고려하는 경우 (예 : 저축, 더 많은 양의 XRP 또는 기타 토큰) 니모닉 계정을 오프라인으로 유지하려면 XUMM에 새 계정을 만드는 것을 고려하십시오.",
+      "importExchangeAddressReadonlyWarning": "Exchange (예금) 계정을 가져올 수 없습니다. 그렇게하면 거래소에서 자신의 잔액을 추적 할 수 없습니다. 읽기 전용 계정 가져 오기는 하드웨어 계정처럼 자신의 활성화 된 계정 인 경우에만 작동합니다",
       "walletReserve": "월렛 예약",
       "accountBalance": "계정 잔액",
       "availableForSpending": "지출 가능",
       "deleteAccountWarning": "이것은 계정 삭제 트랜잭션입니다. 계정에 서명하면 계정을 삭제하기위한 XRP 원장의 수수료가 5 XRP이므로 남은 모든 자금 (마지막 5 개의 예약 된 XRP 제외)이 구성된 대상으로 전송됩니다. 대상을 두 번 확인하고 XRP 원장에서 계정을 실제로 삭제하려는 경우에만 계속하십시오",
-      "deleteAccountObjectsExistError": "계정에 다른 통화, 탈 중앙화 거래소 오퍼, 에스크로 (창조자 또는 수혜자)와 같은 특정 XRP 원장 개체가 포함되어 있으므로이 계정을 삭제할 수 없습니다.",
+      "deleteAccountObjectsExistError": "계정에 다른 자산, 탈 중앙화 거래소 오퍼, 에스크로 (작성자 또는 수익자)와 같은 특정 XRP 원장 개체가 포함되어 있으므로이 계정을 삭제할 수 없습니다.",
       "unableToCheckAccountObjects": "계정 개체를 확인할 수 없습니다. XRP 원장 노드에 연결되어 있는지 확인하십시오",
       "unableGetDestinationAccountInfo": "대상 계정 정보를 가져올 수 없습니다. XRP 원장 노드에 연결되어 있는지 확인하십시오",
       "destinationAccountIsNotActivated": "대상 계정이 활성화되지 않았습니다. XRP 원장에서 자금을 조달 한 계정이어야합니다.",
@@ -503,25 +504,25 @@
       "pleaseEnterTheDestinationTag": "대상 태그를 입력하십시오",
       "destinationIsConfirmedAsScam": "대상 계정이 SCAM으로 확인되었습니다.",
       "destinationIsProbableIsScam": "대상 계정은 위험도가 높은 것으로 표시됩니다.",
-      "selectedAccountDoNotSupportCurrency": "선택한 계정은 선택한 통화를 지원하지 않습니다.",
+      "selectedAccountDoNotSupportAsset": "선택된 계정은 선택된 자산을 지원하지 않습니다.",
       "memoPublicWarning": "메모 정보는 모든 사람에게 공개됩니다",
       "destinationNotExistTooLittleToCreate": "대상 계정은 이전에 사용되지 않았으며 잔액이 없습니다. XRP 원장에서 계정을 활성화하려면 최소 20 개의 XRP 입금이 필요합니다.",
       "destinationNotExistCreationWarning": "대상 계정은 이전에 사용되지 않았으며 잔액이 없습니다. 이 계정으로 계속 전송하면 %{amount} XRP 원장에서 계정을 활성화하는 데 XRP가 사용되므로 20 XRP를 사용할 수 없습니다. 너 정말 계속하고 싶니?",
-      "destinationCannotActivateWithIOU": "대상 계정은 이전에 사용되지 않았으며 잔액이 없습니다. XRP 원장에서 계정을 활성화하려면 최소 20 개의 XRP 입금을 계정으로 보내야합니다. XRP 이외의 통화는 최초 입금에 사용할 수 없습니다.",
+      "destinationCannotActivateWithIOU": "대상 계정은 이전에 사용되지 않았으며 잔액이 없습니다. XRP 원장에서 계정을 활성화하려면 최소 20 개의 XRP 입금을 계정으로 보내야합니다. XRP 이외의 자산은 초기 예금에 사용할 수 없습니다.",
       "destinationTagIsRequired": "이 결제를 보내려면 대상 태그가 필요합니다.",
       "unableGetRecipientAccountInfoPleaseTryAgain": "수신자 계정 정보를 얻을 수 없습니다. 다시 시도하십시오.",
       "noDestinationTag": "대상 태그가 없습니다",
       "thisAddressRequiredDestinationTag": "이 주소에는 목적지 태그가 필요합니다"
    },
-   "currency": {
-      "addCurrency": "통화 추가",
-      "selectAnExchangeAndSelectCurrency": "발행자를 선택하고 추가하려는 통화를 선택하십시오. 이 목록은 XUMM 개발자가 관리합니다.",
+   "asset": {
+      "addAsset": "자산 추가",
+      "selectAnExchangeAndSelectAsset": "발행자를 선택하고 추가하려는 자산을 선택하십시오. 이 목록은 XUMM 개발자가 관리합니다.",
       "addAndSign": "추가 : 서명 거래",
-      "successRemoved": "계정에서 통화가 성공적으로 제거되었습니다",
-      "failedRemove": "통화를 제거 할 수 없습니다. 오류가 발생했습니다!",
-      "removeCurrency": "통화 제거",
-      "addingCurrencyReserveDescription": "통화를 추가하면 계정 예약이 5 XRP 증가합니다",
-      "unableToRemoveCurrencyNotInDefaultState": "이 통화는 계정에서 제거 할 수 없습니다. 발행자가이 통화에 특정 설정을 추가했거나 발행 계정이 올바르게 구성되지 않았기 때문입니다."
+      "successRemoved": "계정에서 자산이 성공적으로 제거되었습니다",
+      "failedRemove": "자산을 제거 할 수 없습니다. 오류가 발생했습니다!",
+      "removeAsset": "자산 제거",
+      "addingAssetReserveDescription": "자산을 추가하면 계정 예약이 5 XRP 증가합니다",
+      "unableToRemoveAssetNotInDefaultState": "계정에서이 자산을 제거 할 수 없습니다. 발행자가이 자산에 특정 설정을 추가했거나 발행 계정이 올바르게 구성되지 않았기 때문입니다."
    },
    "exchange": {
       "exchanging": "교환",
@@ -562,7 +563,7 @@
       "willRejectTheSignRequest": "서명 요청을 거부합니다",
       "payingWithXRPExchangeRate": "~로 결제 %{xrpRoundedUp} XRP 환율 : ~ %{exchangeRate}",
       "notEnoughLiquidityToSendThisPayment": "이 지불을 보낼 유동성이 충분하지 않습니다.",
-      "unableToCheckCurrencyConversion": "통화 변환을 확인할 수 없습니다. XRPL 노드에 연결되어 있는지 확인하십시오",
+      "unableToCheckAssetConversion": "자산 변환을 확인할 수 없습니다. XRPL 노드에 연결되어 있는지 확인하십시오",
       "unableToGetNetworkFee": "네트워크 요금을받을 수 없습니다. XRPL 노드에 연결되어 있는지 확인하십시오"
    }
 }

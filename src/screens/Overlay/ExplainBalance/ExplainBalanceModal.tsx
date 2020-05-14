@@ -144,7 +144,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                                     <Image style={[styles.currencyAvatar]} source={{ uri: line.counterParty.avatar }} />
                                 </View>
                                 <Text style={[styles.rowLabel]}>
-                                    {Localize.t('global.currency')}
+                                    {Localize.t('global.asset')}
                                     <Text style={styles.rowLabelSmall}>
                                         {` (${line.counterParty.name} ${NormalizeCurrencyCode(
                                             line.currency.currency,

@@ -286,7 +286,7 @@ class DetailsStep extends Component {
                         <View style={[styles.rowItem]}>
                             <View style={[{ paddingLeft: 10 }]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                                    {Localize.t('global.currency')}
+                                    {Localize.t('global.asset')}
                                 </Text>
                             </View>
                             <AccordionPicker

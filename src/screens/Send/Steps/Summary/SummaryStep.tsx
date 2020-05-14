@@ -110,7 +110,7 @@ class SummaryStep extends Component {
         } else if (item.hasCurrency(currency.currency)) {
             setSource(item);
         } else {
-            Alert.alert(Localize.t('global.error'), Localize.t('send.selectedAccountDoNotSupportCurrency'));
+            Alert.alert(Localize.t('global.error'), Localize.t('send.selectedAccountDoNotSupportAsset'));
         }
     };
 
@@ -385,7 +385,7 @@ class SummaryStep extends Component {
                         <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.currency')}
+                                    {Localize.t('global.asset')}
                                 </Text>
                             </View>
                             <Spacer size={15} />

@@ -177,8 +177,8 @@ class HomeView extends Component<Props, State> {
             AppScreens.Modal.Help,
             {},
             {
-                title: Localize.t('home.whatAreOtherCurrencies'),
-                content: Localize.t('home.otherCurrenciesDesc'),
+                title: Localize.t('home.whatAreOtherAssets'),
+                content: Localize.t('home.otherAssetsDesc'),
             },
         );
     };
@@ -323,12 +323,12 @@ class HomeView extends Component<Props, State> {
             <View style={[AppStyles.flex6, styles.currencyList]}>
                 <View style={[AppStyles.row, AppStyles.centerContent, styles.trustLinesHeader]}>
                     <View style={[AppStyles.flex5, AppStyles.centerContent]}>
-                        <Text style={[AppStyles.pbold]}>{Localize.t('home.otherCurrencies')}</Text>
+                        <Text style={[AppStyles.pbold]}>{Localize.t('home.otherAssets')}</Text>
                     </View>
                     {spendable && (
                         <View style={[AppStyles.flex5]}>
                             <Button
-                                label={Localize.t('home.addCurrency')}
+                                label={Localize.t('home.addAsset')}
                                 onPress={this.addCurrency}
                                 roundedSmall
                                 icon="IconPlus"
@@ -343,7 +343,7 @@ class HomeView extends Component<Props, State> {
 
                 {isEmpty(account.lines) && (
                     <View style={[styles.noTrustlineMessage]}>
-                        <InfoMessage type="warning" label={Localize.t('home.youDonNotHaveOtherCurrency')} />
+                        <InfoMessage type="warning" label={Localize.t('home.youDonNotHaveOtherAssets')} />
                         <TouchableOpacity
                             style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingSml]}
                             onPress={this.openTrustLineDescription}
@@ -357,7 +357,7 @@ class HomeView extends Component<Props, State> {
                                     AppStyles.colorGreyDark,
                                 ]}
                             >
-                                {Localize.t('home.whatAreOtherCurrencies')}
+                                {Localize.t('home.whatAreOtherAssets')}
                             </Text>
                         </TouchableOpacity>
                     </View>

@@ -59,7 +59,8 @@
       "filter": "Filtrar",
       "expense": "Gastos",
       "direction": "Dirección",
-      "currency": "Moneda",
+      "asset": "Activo",
+      "assets": "Bienes",
       "accounts": "Cuentas",
       "contacts": "Contactos",
       "general": "General",
@@ -134,7 +135,7 @@
       "fee": "Tarifa de transacción",
       "invoiceID": "ID de factura",
       "regularKey": "Clave regular",
-      "signerQuorum": "el firmante",
+      "signerQuorum": "El firmante",
       "signerEntries": "Entradas de firmante",
       "weight": "Peso",
       "reviewTransaction": "Revisar transacción",
@@ -229,7 +230,7 @@
       },
       "slideFour": {
          "title": "Enviar y recibir",
-         "desc": "También puede enviar y recibir XRP y otras monedas fiduciarias de confianza (IOU)"
+         "desc": "También puede enviar y recibir XRP y otros activos de confianza (IOU)"
       }
    },
    "setupPasscode": {
@@ -248,16 +249,16 @@
       "permissionDescription": "Usamos notificaciones push para enviar solicitudes de firmas"
    },
    "home": {
-      "addCurrency": "Añadir",
+      "addAsset": "Añadir",
       "shareAccount": "Dirección de cuenta compartida",
       "addressBalance": "Dirección y saldo:",
       "addAccount": "Añadir cuenta",
-      "whatAreOtherCurrencies": "¿Qué son otras monedas?",
-      "otherCurrencies": "Otras monedas",
-      "youDonNotHaveOtherCurrency": "No tienes otras monedas",
+      "whatAreOtherAssets": "¿Qué son otros activos?",
+      "otherAssets": "Otros activos",
+      "youDonNotHaveOtherAssets": "No tienes otros activos",
       "howActivateMyAccount": "¿Cómo puedo activar mi cuenta?",
       "howActivateMyAccountDesc": "Para evitar la creación de cuentas de spam, el libro mayor de XRP requiere que se depositen al menos 20 XRP en una cuenta para activarlo. El 20 XRP no se pierde: permanecerá en su cuenta, pero no puede gastarlo. Para comenzar a usar su cuenta, asegúrese de realizar un depósito superior a 20 XRP en su cuenta.",
-      "otherCurrenciesDesc": "El libro mayor de XRP también le permite mantener saldos y enviar y recibir monedas que no sean XRP. Estas monedas pueden ser emitidas por otras cuentas en el libro mayor XRP. Si desea poder enviar o recibir una moneda que no sea XRP, deberá confiar en el emisor de la moneda que no sea XRP.",
+      "otherAssetsDesc": "El libro mayor de XRP también le permite mantener saldos y enviar y recibir activos que no sean XRP. Estos activos pueden ser emitidos por otras cuentas en el libro mayor XRP. Si desea poder enviar o recibir un activo que no sea XRP, deberá confiar en el emisor del activo que no sea XRP.",
       "explainMyBalance": "Explica mi saldo",
       "xrpYouOwnVsYourSpendableBalance": "XRP que posee frente a su saldo gastable."
    },
@@ -275,11 +276,11 @@
       "onDate": "en",
       "paymentReceived": "Pago recibido",
       "paymentSent": "Pago enviado",
-      "exchangedCurrencies": "Monedas intercambiadas",
-      "addedATrustLine": "Se agregó una moneda (línea de confianza)",
-      "removedATrustLine": "Se eliminó una moneda (línea de confianza)",
-      "addATrustLine": "Agregar una moneda (línea de confianza)",
-      "updateAccountCurrencies": "Actualizar monedas de cuenta",
+      "exchangedAssets": "Activos intercambiados",
+      "addedATrustLine": "Se agregó un activo (Línea de confianza)",
+      "removedATrustLine": "Se eliminó un activo (Línea de confianza)",
+      "addATrustLine": "Agregar un activo (Línea de confianza)",
+      "updateAccountAssets": "Actualizar activos de la cuenta",
       "createOffer": "Crear oferta",
       "cancelOffer": "Cancelar oferta",
       "createEscrow": "Crear fideicomiso",
@@ -290,7 +291,7 @@
       "setSignerList": "Establecer lista de firmantes",
       "updateAccountSettings": "Actualizar la configuración de la cuenta",
       "setARegularKey": "Establecer una clave regular",
-      "canNotFetchTransactions": "¡No se pueden recuperar las transacciones de la cuenta!"
+      "canNotFetchTransactions": "¡No se pueden recuperar transacciones de la cuenta!"
    },
    "profile": {
       "availableInFuture": "Esta característica estará disponible en el futuro.",
@@ -435,7 +436,7 @@
       "destroyAccount": "Eliminar esta cuenta",
       "upgradingAccessLevelWarning": "Está actualizando su nivel de acceso. Debe importar su clave privada para esta cuenta.",
       "downgradingAccessLevelWarning": "Estás bajando tu nivel de acceso. Esto hará que pierda su clave privada para esta cuenta. ¿Estás seguro?",
-      "removeTrustLineWarning": "Estás eliminando esta moneda de tu cuenta. Esta acción no se puede deshacer. ¿Estás seguro?",
+      "removeTrustLineWarning": "Estás eliminando este activo de tu cuenta. Esta acción no se puede deshacer. ¿Estás seguro?",
       "unavailableChangeSecurityLevel": "Cambiar el nivel de seguridad no está disponible en este momento",
       "accountDestroyWarning": "Su cuenta se eliminará permanentemente, ¿está seguro?",
       "accountMaxLabelLengthError": "¡La etiqueta de la cuenta debe tener menos de 16 caracteres!",
@@ -463,7 +464,7 @@
       "accountBalance": "Saldo de la cuenta",
       "availableForSpending": "Disponible para gastar",
       "deleteAccountWarning": "Esta es una transacción de eliminación de cuenta. Al firmar, su cuenta será eliminada, y todos sus fondos restantes (excepto los últimos 5 XRP reservados, ya que la tarifa en el libro mayor de XRP para eliminar una cuenta es 5 XRP) se enviará al destino configurado. Verifique el destino dos veces y SOLO continúe si REALMENTE desea eliminar su cuenta en el libro mayor XRP",
-      "deleteAccountObjectsExistError": "No puede eliminar esta cuenta, ya que su cuenta contiene objetos contables XRP específicos, como otras monedas, ofertas de intercambio descentralizado, depósitos en garantía (como creador o beneficiario)",
+      "deleteAccountObjectsExistError": "No puede eliminar esta cuenta, ya que su cuenta contiene objetos contables XRP específicos, como otros activos, ofertas de intercambio descentralizado, depósitos en garantía (como creador o beneficiario)",
       "unableToCheckAccountObjects": "No se pueden verificar los objetos de la cuenta, asegúrese de estar conectado al nodo del libro mayor XRP",
       "unableGetDestinationAccountInfo": "No se puede obtener la información de la cuenta de destino, asegúrese de estar conectado al nodo del libro mayor XRP",
       "destinationAccountIsNotActivated": "La cuenta de destino no está activada, debe ser una cuenta con fondos en el libro mayor XRP.",
@@ -503,25 +504,25 @@
       "pleaseEnterTheDestinationTag": "Por favor, introduzca la etiqueta de destino",
       "destinationIsConfirmedAsScam": "La cuenta de destino se confirma como estafa",
       "destinationIsProbableIsScam": "La cuenta de destino está marcada como de alto riesgo.",
-      "selectedAccountDoNotSupportCurrency": "La cuenta seleccionada no admite la moneda seleccionada.",
+      "selectedAccountDoNotSupportAsset": "La cuenta seleccionada no es compatible con el activo seleccionado.",
       "memoPublicWarning": "La información de la nota será pública para todos",
       "destinationNotExistTooLittleToCreate": "La cuenta de destino no se ha utilizado antes y no tiene saldo. Para activar una cuenta en el libro mayor XRP, se requiere un depósito inicial de al menos 20 XRP.",
       "destinationNotExistCreationWarning": "La cuenta de destino no se ha utilizado antes y no tiene ningún saldo. Si continúa enviando a esta cuenta, 20 XRP del %{amount} XRP se usará para activar la cuenta en el libro mayor de XRP, lo que significa que 20 XRP no se gastará. Estás seguro de que quieres continuar?",
-      "destinationCannotActivateWithIOU": "La cuenta de destino no se ha utilizado antes y no tiene ningún saldo. Para activar una cuenta en el libro mayor de XRP, se debe enviar un depósito inicial de al menos 20 XRP a la cuenta. Las monedas que no sean XRP no se pueden usar para el depósito inicial.",
+      "destinationCannotActivateWithIOU": "La cuenta de destino no se ha utilizado antes y no tiene ningún saldo. Para activar una cuenta en el libro mayor de XRP, se debe enviar un depósito inicial de al menos 20 XRP a la cuenta. Los activos que no son XRP no se pueden usar para el depósito inicial.",
       "destinationTagIsRequired": "Se requiere la etiqueta de destino para enviar este pago.",
       "unableGetRecipientAccountInfoPleaseTryAgain": "No se puede obtener la información de la cuenta del destinatario, intente nuevamente.",
       "noDestinationTag": "Sin etiqueta de destino",
       "thisAddressRequiredDestinationTag": "Esta dirección requiere una etiqueta de destino"
    },
-   "currency": {
-      "addCurrency": "Agregar moneda",
-      "selectAnExchangeAndSelectCurrency": "Seleccione un emisor y seleccione la moneda que desea agregar. Esta lista es mantenida por los desarrolladores de XUMM.",
+   "asset": {
+      "addAsset": "Agregar activo",
+      "selectAnExchangeAndSelectAsset": "Seleccione un emisor y seleccione el activo que desea agregar. Esta lista es mantenida por los desarrolladores de XUMM.",
       "addAndSign": "Añadir: firmar transacción",
-      "successRemoved": "Moneda eliminada con éxito de su cuenta",
-      "failedRemove": "No se puede eliminar la moneda. ¡Se produjo un error!",
-      "removeCurrency": "Eliminar moneda",
-      "addingCurrencyReserveDescription": "Agregar una moneda aumentará la reserva de su cuenta en 5 XRP",
-      "unableToRemoveCurrencyNotInDefaultState": "Esta moneda no se puede eliminar de su cuenta. Ya sea porque el emisor agregó configuraciones específicas en esta moneda o porque su cuenta de emisión no está configurada correctamente."
+      "successRemoved": "Activo eliminado con éxito de su cuenta",
+      "failedRemove": "No se puede eliminar el activo. ¡Se produjo un error!",
+      "removeAsset": "Eliminar activo",
+      "addingAssetReserveDescription": "Agregar un activo aumentará la reserva de su cuenta en 5 XRP",
+      "unableToRemoveAssetNotInDefaultState": "Este activo no se puede eliminar de su cuenta. Ya sea porque el emisor agregó configuraciones específicas en este activo o porque su cuenta de emisión no está configurada correctamente."
    },
    "exchange": {
       "exchanging": "Intercambiando",
@@ -562,7 +563,7 @@
       "willRejectTheSignRequest": "Rechazará la solicitud de firma",
       "payingWithXRPExchangeRate": "Pagando con ~ %{xrpRoundedUp} Tipo de cambio XRP: ~ %{exchangeRate}",
       "notEnoughLiquidityToSendThisPayment": "No hay suficiente liquidez para enviar este pago.",
-      "unableToCheckCurrencyConversion": "No se puede verificar la conversión de moneda, asegúrese de estar conectado al nodo XRPL",
+      "unableToCheckAssetConversion": "No se puede verificar la conversión de activos, asegúrese de estar conectado al nodo XRPL",
       "unableToGetNetworkFee": "No se puede obtener la tarifa de red, asegúrese de estar conectado al nodo XRPL"
    }
 }

@@ -159,7 +159,7 @@ class PaymentTemplate extends Component<Props, State> {
                 }
             }
         } catch (e) {
-            Alert.alert(Localize.t('global.error'), Localize.t('payload.unableToCheckCurrencyConversion'));
+            Alert.alert(Localize.t('global.error'), Localize.t('payload.unableToCheckAssetConversion'));
         }
     };
 
