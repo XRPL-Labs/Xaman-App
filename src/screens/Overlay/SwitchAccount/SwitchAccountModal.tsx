@@ -261,7 +261,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
                     initialPosition={{ y: AppSizes.screen.height }}
                     animatedValueY={this.deltaY}
                 >
-                    <View style={[AppStyles.visibleContent]}>
+                    <View style={[styles.visibleContent, { height: contentHeight + 50 }]}>
                         <View style={AppStyles.panelHeader}>
                             <View style={AppStyles.panelHandle} />
                         </View>

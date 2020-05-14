@@ -4,7 +4,16 @@ import { AppColors, AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({
-    // container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    visibleContent: {
+        backgroundColor: AppColors.white,
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        shadowColor: AppColors.black,
+        shadowOffset: { width: 0, height: 0 },
+        shadowRadius: 5,
+        shadowOpacity: 0.3,
+        padding: 15,
+    },
     iconAccount: {
         marginRight: 15,
         opacity: 0.4,
