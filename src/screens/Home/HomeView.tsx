@@ -386,10 +386,15 @@ class HomeView extends Component<Props, State> {
                                         </View>
                                         <View style={[AppStyles.column, AppStyles.centerContent]}>
                                             <Text style={[styles.currencyItemLabelSmall]}>
-                                                {NormalizeCurrencyCode(line.currency.currency)}
+                                                {line.currency.name
+                                                    ? line.currency.name
+                                                    : NormalizeCurrencyCode(line.currency.currency)}
                                             </Text>
                                             <Text style={[styles.issuerLabel]}>
-                                                {line.currency.name ? line.currency.name : line.counterParty.name}
+                                                {line.counterParty.name}{' '}
+                                                {line.currency.name
+                                                    ? NormalizeCurrencyCode(line.currency.currency)
+                                                    : ''}
                                             </Text>
                                         </View>
                                     </View>
