@@ -1,17 +1,15 @@
 /**
  * App Change log modal
  */
-import { isNumber } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, Animated, ActivityIndicator, BackHandler } from 'react-native';
+import { View, Text, Animated, ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import { getStatusBarHeight, IsIPhoneX } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens, AppConfig } from '@common/constants';
 
-import { Header, Footer, Spacer, Button } from '@components';
+import { Button } from '@components';
 
 import Localize from '@locale';
 

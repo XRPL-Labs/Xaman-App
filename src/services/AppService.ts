@@ -60,34 +60,6 @@ class AppService extends EventEmitter {
         });
     };
 
-    // return true if 'installed' (considered as a JRE version string) is
-    // greater than or equal to 'required' (again, a JRE version string).
-    compareVersions = (installed: string, saved: string) => {
-        const a = installed.split('.');
-        const b = saved.split('.');
-
-        for (let i = 0; i < a.length; ++i) {
-            a[i] = Number(a[i]);
-        }
-        for (let i = 0; i < b.length; ++i) {
-            b[i] = Number(b[i]);
-        }
-        if (a.length === 2) {
-            a[2] = 0;
-        }
-
-        if (a[0] > b[0]) return true;
-        if (a[0] < b[0]) return false;
-
-        if (a[1] > b[1]) return true;
-        if (a[1] < b[1]) return false;
-
-        if (a[2] > b[2]) return true;
-        if (a[2] < b[2]) return false;
-
-        return true;
-    };
-
     checkShowChangeLog = async () => {
         const currentVersionCode = DeviceInfo.getVersion();
         const savedVersionCode = await Preferences.get(Preferences.keys.LATEST_VERSION_CODE);
