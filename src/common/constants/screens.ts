@@ -49,6 +49,7 @@ const screens = {
         RequestDecline: 'overlay.RequestDecline',
         EnterDestinationTag: 'overlay.EnterDestinationTag',
         ExplainBalance: 'overlay.ExplainBalance',
+        ChangeLog: 'overlay.ChangeLog',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',

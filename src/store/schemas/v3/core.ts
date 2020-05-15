@@ -24,7 +24,6 @@ class Core extends Realm.Object {
             defaultExplorer: { type: 'string', default: AppConfig.explorer[0].value }, // default explorer
             hapticFeedback: { type: 'bool', default: true }, // enable haptic feedback
             theme: { type: 'string', default: AppConfig.theme.light }, // app theme
-            showMemoAlert: { type: 'bool', default: true }, // show memo alert
         },
     };
 
@@ -42,7 +41,6 @@ class Core extends Realm.Object {
     public defaultExplorer: string;
     public hapticFeedback: boolean;
     public theme: string;
-    public showMemoAlert: boolean;
 
     constructor(obj: Partial<Core>) {
         super();

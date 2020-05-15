@@ -214,7 +214,8 @@
       "biometricIsNotAvailable": "La biometría (huella digital o identificación de la cara) no está disponible. Si su dispositivo admite autenticación biométrica, configúrela primero (configuración del sistema operativo).",
       "clearSearch": "Borrar búsqueda",
       "noNameFound": "Ningún nombre encontrado",
-      "readMoreInTheFAQ": "Lea más en las preguntas frecuentes"
+      "readMoreInTheFAQ": "Lea más en las preguntas frecuentes",
+      "whatsNew": "Qué hay de nuevo"
    },
    "onboarding": {
       "slideOne": {

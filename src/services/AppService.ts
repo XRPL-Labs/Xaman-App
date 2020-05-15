@@ -1,11 +1,20 @@
 /**
- * App State Service
+ * App Service
  * Used for detect App State and Net info and inactivity status
  */
+import EventEmitter from 'events';
 
 import { AppState } from 'react-native';
+
 import NetInfo from '@react-native-community/netinfo';
-import EventEmitter from 'events';
+import DeviceInfo from 'react-native-device-info';
+
+import { AppScreens } from '@common/constants';
+
+import { Navigator } from '@common/helpers/navigator';
+
+import Preferences from '@common/libs/preferences';
+import { VersionDiff } from '@common/libs/utils';
 
 import LoggerService from '@services/LoggerService';
 
@@ -20,21 +29,20 @@ export enum AppStateStatus {
     Inactive = 'Inactive',
 }
 
-class AppStateService extends EventEmitter {
+class AppService extends EventEmitter {
     netStatus: NetStateStatus;
     prevAppState: AppStateStatus;
     currentAppState: AppStateStatus;
-    locked: boolean;
     logger: any;
 
     constructor() {
         super();
 
-        this.locked = false;
         this.netStatus = NetStateStatus.Connected;
         this.prevAppState = AppStateStatus.Inactive;
         this.currentAppState = AppStateStatus.Active;
-        this.logger = LoggerService.createLogger('App State');
+
+        this.logger = LoggerService.createLogger('AppState');
     }
 
     initialize = () => {
@@ -50,6 +58,59 @@ class AppStateService extends EventEmitter {
                 return reject(e);
             }
         });
+    };
+
+    // return true if 'installed' (considered as a JRE version string) is
+    // greater than or equal to 'required' (again, a JRE version string).
+    compareVersions = (installed: string, saved: string) => {
+        const a = installed.split('.');
+        const b = saved.split('.');
+
+        for (let i = 0; i < a.length; ++i) {
+            a[i] = Number(a[i]);
+        }
+        for (let i = 0; i < b.length; ++i) {
+            b[i] = Number(b[i]);
+        }
+        if (a.length === 2) {
+            a[2] = 0;
+        }
+
+        if (a[0] > b[0]) return true;
+        if (a[0] < b[0]) return false;
+
+        if (a[1] > b[1]) return true;
+        if (a[1] < b[1]) return false;
+
+        if (a[2] > b[2]) return true;
+        if (a[2] < b[2]) return false;
+
+        return true;
+    };
+
+    checkShowChangeLog = async () => {
+        const currentVersionCode = DeviceInfo.getVersion();
+        const savedVersionCode = await Preferences.get(Preferences.keys.LATEST_VERSION_CODE);
+
+        if (!savedVersionCode || VersionDiff(currentVersionCode, savedVersionCode) > 0) {
+            // showChangeLogModal
+            Navigator.showOverlay(
+                AppScreens.Overlay.ChangeLog,
+                {
+                    overlay: {
+                        handleKeyboardEvents: true,
+                    },
+                    layout: {
+                        backgroundColor: 'transparent',
+                        componentBackgroundColor: 'transparent',
+                    },
+                },
+                { version: currentVersionCode },
+            );
+
+            // update the latest version code
+            Preferences.set(Preferences.keys.LATEST_VERSION_CODE, currentVersionCode);
+        }
     };
 
     setNetState(isConnected: boolean) {
@@ -120,4 +181,4 @@ class AppStateService extends EventEmitter {
     }
 }
 
-export default new AppStateService();
+export default new AppService();

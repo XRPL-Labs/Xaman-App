@@ -123,7 +123,7 @@
           "privatekey", "multisign", "tes", "Reactotron", "resize", "Interitem", "multisigned", "txid", "rgba", "jsx", "uint8", "img", "btn", "pbold",
           "Devnet", "Mainnet", "Swiper", "calc", "abcdefgh", "cancelable", "uniqBy", "memoize", "Memoized", "html", "len", "fg", "bg", "ctx", "checksum",
           "ecc", "uniq", "Truthy", "Responder", "ter", "ko", "zh", "mailto", "tabbar", "https", "gcm", "tf", "xlight", "aps", "tec", "barcodes", "Barcode",
-          "txblob", "tos", "gif", "ic", "asf", "ok", "Sig"
+          "txblob", "tos", "gif", "ic", "asf", "ok", "Sig", "haptic"
         ],
         "skipIfMatch": [
           "http://[^s]*",

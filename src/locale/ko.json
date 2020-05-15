@@ -214,7 +214,8 @@
       "biometricIsNotAvailable": "생체 인식 (지문 또는 얼굴 ID)을 사용할 수 없습니다. 장치가 생체 인식 인증을 지원하는 경우 먼저 장치를 구성하십시오 (OS 설정).",
       "clearSearch": "명확한 검색",
       "noNameFound": "이름을 찾을 수 없습니다",
-      "readMoreInTheFAQ": "FAQ에서 더 읽기"
+      "readMoreInTheFAQ": "FAQ에서 더 읽기",
+      "whatsNew": "새로운 소식"
    },
    "onboarding": {
       "slideOne": {

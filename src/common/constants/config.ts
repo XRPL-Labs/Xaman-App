@@ -8,6 +8,7 @@ export default {
     supportEmail: 'support@xumm.dev',
     termOfUseURL: 'https://xumm.app/app/webviews/tos-privacy/',
     creditsURL: 'https://xumm.app/app/webviews/credits/',
+    changeLogURL: 'https://xumm.app/app/webviews/update/en/?update=',
 
     // Build Configuration - Debug or Release?
     DEV: __DEV__,

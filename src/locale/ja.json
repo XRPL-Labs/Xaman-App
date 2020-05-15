@@ -66,7 +66,7 @@
       "general": "一般的な",
       "addressBook": "住所録",
       "security": "安全保障",
-      "advanced": "高度な",
+      "advanced": "上級",
       "authenticate": "認証する",
       "unlock": "ロックを解除",
       "comingSoon": "近日公開",
@@ -214,7 +214,8 @@
       "biometricIsNotAvailable": "バイオメトリクス（指紋または顔ID）は使用できません。デバイスが生体認証をサポートしている場合は、最初にそれを構成してください（OS設定）。",
       "clearSearch": "検索をクリア",
       "noNameFound": "名前が見つかりません",
-      "readMoreInTheFAQ": "FAQで詳細を読む"
+      "readMoreInTheFAQ": "FAQで詳細を読む",
+      "whatsNew": "新着情報"
    },
    "onboarding": {
       "slideOne": {

@@ -214,7 +214,8 @@
         "biometricIsNotAvailable": "Biometrics (Fingerprint or Face ID) is unavailable. If your device supports biometrics authentication, please configure it first (OS settings).",
         "clearSearch": "Clear search",
         "noNameFound": "No name found",
-        "readMoreInTheFAQ": "Read more in the FAQ"
+        "readMoreInTheFAQ": "Read more in the FAQ",
+        "whatsNew": "What's new"
     },
     "onboarding":{
         "slideOne": {

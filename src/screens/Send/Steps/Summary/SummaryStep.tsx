@@ -17,7 +17,6 @@ import {
     LayoutChangeEvent,
 } from 'react-native';
 
-import { CoreRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
 import { AppScreens } from '@common/constants';
@@ -25,6 +24,7 @@ import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
+import Preferences from '@common/libs/preferences';
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
@@ -122,12 +122,12 @@ class SummaryStep extends Component {
         setAmount(sendAmount);
     };
 
-    showMemoAlert = () => {
+    showMemoAlert = async () => {
         const { payment } = this.context;
 
-        const coreSettings = CoreRepository.getSettings();
+        const displayedMemoAlert = await Preferences.get(Preferences.keys.DISPLAYED_MEMO_ALERT);
 
-        if (coreSettings.showMemoAlert && payment.Memos) {
+        if (!displayedMemoAlert && payment.Memos) {
             Prompt(
                 Localize.t('global.pleaseNote'),
                 Localize.t('send.memoPublicWarning'),
@@ -135,9 +135,7 @@ class SummaryStep extends Component {
                     {
                         text: Localize.t('global.doNotRemindMe'),
                         onPress: () => {
-                            CoreRepository.saveSettings({
-                                showMemoAlert: false,
-                            });
+                            Preferences.set(Preferences.keys.DISPLAYED_MEMO_ALERT, 'YES');
                         },
                         style: 'destructive',
                     },

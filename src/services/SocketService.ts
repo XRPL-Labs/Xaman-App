@@ -12,7 +12,7 @@ import { NodeChain } from '@store/types';
 
 import { AppConfig } from '@common/constants';
 
-import AppStateService from '@services/AppStateService';
+import AppService from '@services/AppService';
 import LoggerService from '@services/LoggerService';
 import NavigationService from '@services/NavigationService';
 
@@ -119,7 +119,7 @@ class SocketService extends EventEmitter {
                         this.connect();
 
                         // listen for net state change
-                        AppStateService.on('netStateChange', (newState: string) => {
+                        AppService.on('netStateChange', (newState: string) => {
                             if (newState === 'Connected') {
                                 this.reconnect();
                             } else {

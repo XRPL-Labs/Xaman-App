@@ -214,7 +214,8 @@
       "biometricIsNotAvailable": "无法使用生物特征识别（指纹或面部识别）。如果您的设备支持生物特征认证，请先对其进行配置（操作系统设置）。",
       "clearSearch": "清除搜寻",
       "noNameFound": "找不到名字",
-      "readMoreInTheFAQ": "在常见问题中阅读更多内容"
+      "readMoreInTheFAQ": "在常见问题中阅读更多内容",
+      "whatsNew": "什么是新的"
    },
    "onboarding": {
       "slideOne": {
