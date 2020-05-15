@@ -548,6 +548,7 @@
       "payloadHandledByAnotherClient": "其他客户处理的有效负载",
       "payloadNotFound": "找不到有效载荷",
       "invalidPayloadResult": "有效载荷结果无效",
+      "UnableVerifyPayload": "无法验证有效载荷签名",
       "payloadAlreadyResolved": "该有效负载已被签名或拒绝。请重复生成请求的过程，然后扫描新请求。",
       "payloadCouldNotBeUpdated": "有效负载无法更新",
       "payloadExpired": "该有效负载已过期。请重复生成请求的过程，然后扫描新请求。",

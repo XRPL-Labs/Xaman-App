@@ -548,6 +548,7 @@
       "payloadHandledByAnotherClient": "Carga útil manejada por otro cliente",
       "payloadNotFound": "Carga útil no encontrada",
       "invalidPayloadResult": "Resultado de carga útil no válido",
+      "UnableVerifyPayload": "No se puede verificar la firma de la carga útil",
       "payloadAlreadyResolved": "Esta carga ya ha sido firmada o rechazada. Repita el proceso que generó la solicitud y escanee la nueva solicitud.",
       "payloadCouldNotBeUpdated": "La carga útil no se pudo actualizar",
       "payloadExpired": "Esta carga útil ha expirado. Repita el proceso que generó la solicitud y escanee la nueva solicitud.",

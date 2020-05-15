@@ -548,6 +548,7 @@
         "payloadHandledByAnotherClient": "Payload handled by another client",
         "payloadNotFound": "Payload not found",
         "invalidPayloadResult": "Invalid payload result",
+        "UnableVerifyPayload": "Unable to verify the payload signature",
         "payloadAlreadyResolved": "This payload has already been signed or rejected. Please repeat the process that generated the request, and scan the new request.",
         "payloadCouldNotBeUpdated": "Payload couldn't be updated",
         "payloadExpired": "This payload has expired. Please repeat the process that generated the request, and scan the new request.",

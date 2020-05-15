@@ -1,15 +1,22 @@
 import { isString, isObject, has, get } from 'lodash';
 
-import { TransactionJSONType } from '@common/libs/ledger/types';
+import DeviceInfo from 'react-native-device-info';
 
+import codec from 'ripple-binary-codec';
+
+// Services
 import ApiService from '@services/ApiService';
 import LoggerService from '@services/LoggerService';
 import SocketService from '@services/SocketService';
+
+import { SHA1 } from '@common/libs/crypto';
 
 // locale
 import Localize from '@locale';
 
 // types
+import { TransactionJSONType } from '@common/libs/ledger/types';
+
 import {
     PayloadType,
     MetaType,
@@ -91,6 +98,25 @@ export class Payload {
     }
 
     /**
+     * Verify the requested tx checksum
+     * @param  {PayloadReferenceType} payload
+     * @returns Promise<boolean>
+     */
+    verify = async (payload: PayloadReferenceType): Promise<boolean> => {
+        const deviceId = DeviceInfo.getUniqueId();
+
+        const encodedTX = codec.encode(payload.request_json);
+
+        const checksum = await SHA1(`${encodedTX}+${deviceId}`);
+
+        if (checksum === payload.hash) {
+            return true;
+        }
+
+        return false;
+    };
+
+    /**
      *  Assign payload object to class
      * @param object
      */
@@ -106,7 +132,14 @@ export class Payload {
         return new Promise((resolve, reject) => {
             ApiService.payload
                 .get(uuid)
-                .then((res: any) => {
+                .then(async (res: PayloadType) => {
+                    // get verification status
+                    const verified = await this.verify(res.payload);
+
+                    if (!verified) {
+                        return reject(new Error(Localize.t('payload.UnableVerifyPayload')));
+                    }
+
                     if (get(res, 'response.resolved_at')) {
                         return reject(new Error(Localize.t('payload.payloadAlreadyResolved')));
                     }

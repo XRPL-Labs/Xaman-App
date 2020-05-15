@@ -548,6 +548,7 @@
       "payloadHandledByAnotherClient": "다른 클라이언트가 처리하는 페이로드",
       "payloadNotFound": "페이로드를 찾을 수 없습니다",
       "invalidPayloadResult": "유효하지 않은 페이로드 결과",
+      "UnableVerifyPayload": "페이로드 서명을 확인할 수 없습니다",
       "payloadAlreadyResolved": "이 페이로드는 이미 서명되었거나 거부되었습니다. 요청을 생성 한 프로세스를 반복하고 새 요청을 스캔하십시오.",
       "payloadCouldNotBeUpdated": "페이로드를 업데이트 할 수 없습니다",
       "payloadExpired": "이 페이로드가 만료되었습니다. 요청을 생성 한 프로세스를 반복하고 새 요청을 스캔하십시오.",

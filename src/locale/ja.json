@@ -548,6 +548,7 @@
       "payloadHandledByAnotherClient": "別のクライアントによって処理されるペイロード",
       "payloadNotFound": "ペイロードが見つかりません",
       "invalidPayloadResult": "無効なペイロード結果",
+      "UnableVerifyPayload": "ペイロードの署名を確認できません",
       "payloadAlreadyResolved": "このペイロードはすでに署名または拒否されています。リクエストを生成したプロセスを繰り返し、新しいリクエストをスキャンしてください。",
       "payloadCouldNotBeUpdated": "ペイロードを更新できませんでした",
       "payloadExpired": "このペイロードは有効期限が切れています。リクエストを生成したプロセスを繰り返し、新しいリクエストをスキャンしてください。",
