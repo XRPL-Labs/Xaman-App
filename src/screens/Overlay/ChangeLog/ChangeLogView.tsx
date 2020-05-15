@@ -92,21 +92,23 @@ class ChangeLogModalView extends Component<Props, State> {
             >
                 <Animated.View style={[styles.visibleContent, { opacity: this.animatedOpacity }]}>
                     <View style={styles.headerContainer}>
-                        <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
+                        <View style={[AppStyles.flex1]}>
                             <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.whatsNew')}</Text>
                         </View>
                         <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                             <Button label={Localize.t('global.close')} roundedSmall secondary onPress={this.dismiss} />
                         </View>
                     </View>
-                    <WebView
-                        containerStyle={[AppStyles.flex1, AppStyles.paddingSml]}
-                        startInLoadingState
-                        renderLoading={() => (
-                            <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
-                        )}
-                        source={{ uri: `${AppConfig.changeLogURL}${version}` }}
-                    />
+                    <View style={[AppStyles.flex1, AppStyles.paddingVerticalSml]}>
+                        <WebView
+                            containerStyle={[AppStyles.flex1]}
+                            startInLoadingState
+                            renderLoading={() => (
+                                <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
+                            )}
+                            source={{ uri: `${AppConfig.changeLogURL}${version}` }}
+                        />
+                    </View>
                 </Animated.View>
             </Animated.View>
         );
