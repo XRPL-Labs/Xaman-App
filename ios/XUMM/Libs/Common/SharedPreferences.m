@@ -1,6 +1,6 @@
-#import "UserDefaults.h"
+#import "SharedPreferences.h"
 
-@implementation UserDefaultsModule
+@implementation SharedPreferencesModule
 
 
 static NSString * const SuiteName = @"xumm";
