@@ -3,6 +3,7 @@
  */
 
 import { isEmpty, find } from 'lodash';
+
 import React, { Component, Fragment } from 'react';
 import {
     View,
@@ -14,11 +15,14 @@ import {
     ImageBackground,
     InteractionManager,
     Share,
+    Clipboard,
 } from 'react-native';
+
+import { StringTypeDetector, StringType, StringDecoder } from 'xumm-string-decode';
 
 import { Navigation } from 'react-native-navigation';
 
-import { LedgerService } from '@services';
+import { LedgerService, LinkingService } from '@services';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
@@ -45,7 +49,9 @@ export interface Props {}
 export interface State {
     account: AccountSchema;
     spendableAccounts: Array<AccountSchema>;
-    privacy: boolean;
+    privacyMode: boolean;
+    clipboardDetected: StringTypeDetector;
+    ignoreClipboardContent: Array<string>;
 }
 
 /* Component ==================================================================== */
@@ -65,7 +71,9 @@ class HomeView extends Component<Props, State> {
         this.state = {
             account: AccountRepository.getDefaultAccount(),
             spendableAccounts: AccountRepository.getSpendableAccounts(),
-            privacy: false,
+            privacyMode: false,
+            clipboardDetected: undefined,
+            ignoreClipboardContent: [],
         };
     }
 
@@ -82,8 +90,9 @@ class HomeView extends Component<Props, State> {
 
     componentDidAppear() {
         const { account } = this.state;
-        // update account details
+
         InteractionManager.runAfterInteractions(() => {
+            // update account details
             if (account.isValid()) {
                 LedgerService.updateAccountsDetails([account.address]);
             } else {
@@ -91,8 +100,37 @@ class HomeView extends Component<Props, State> {
                     account: AccountRepository.getDefaultAccount(),
                 });
             }
+
+            // check for XRPL destination and payload in clipboard
+            this.checkClipboardContent();
         });
     }
+
+    checkClipboardContent = async () => {
+        const { ignoreClipboardContent } = this.state;
+
+        // get clipboard content
+        const clipboardContent = await Clipboard.getString();
+
+        // if empty or it's in ignore list return
+        if (!clipboardContent || ignoreClipboardContent.indexOf(clipboardContent) > -1) return;
+
+        const detected = new StringTypeDetector(clipboardContent);
+
+        if (
+            [StringType.XrplDestination, StringType.PayId, StringType.XummPayloadReference].indexOf(
+                detected.getType(),
+            ) > -1
+        ) {
+            this.setState({
+                clipboardDetected: detected,
+            });
+        } else {
+            this.setState({
+                clipboardDetected: undefined,
+            });
+        }
+    };
 
     onDefaultAccountChange = (defaultAccount: AccountSchema) => {
         // update the default account
@@ -213,11 +251,88 @@ class HomeView extends Component<Props, State> {
     };
 
     togglePrivacyMode = () => {
-        const { privacy } = this.state;
+        const { privacyMode } = this.state;
 
         this.setState({
-            privacy: !privacy,
+            privacyMode: !privacyMode,
         });
+    };
+
+    onClipboardGuideClick = (ignore?: boolean) => {
+        const { clipboardDetected, ignoreClipboardContent } = this.state;
+
+        const rawClipboard = clipboardDetected.getRawInput();
+
+        this.setState({
+            ignoreClipboardContent: ignoreClipboardContent.concat(rawClipboard),
+            clipboardDetected: undefined,
+        });
+
+        if (!ignore) {
+            LinkingService.handle(clipboardDetected);
+        }
+    };
+
+    renderClipboardGuide = () => {
+        const { clipboardDetected, spendableAccounts, account } = this.state;
+
+        // if no clipboard detected or spendable accounts is empty return
+        if (!clipboardDetected || spendableAccounts.length === 0) return null;
+
+        let title = '';
+        let content = '';
+
+        const parsed = new StringDecoder(clipboardDetected).getAny();
+
+        // ignore if copied content belong to the default address
+        if (clipboardDetected.getType() === StringType.XrplDestination) {
+            if (parsed.to === account.address) {
+                return null;
+            }
+        }
+
+        switch (clipboardDetected.getType()) {
+            case StringType.XummPayloadReference:
+                title = 'Open Sign Request';
+                break;
+            case StringType.XrplDestination:
+                title = 'Send payment to';
+                content = parsed.to;
+                break;
+            case StringType.PayId:
+                title = 'Send payment to';
+                content = parsed.payId;
+                break;
+            default:
+                break;
+        }
+
+        return (
+            <View style={styles.clipboardGuideContainer}>
+                <TouchableOpacity
+                    onPress={() => {
+                        this.onClipboardGuideClick();
+                    }}
+                    style={AppStyles.centerContent}
+                >
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorWhite]}>{title}</Text>
+                    {!!content && (
+                        <>
+                            <Spacer size={4} />
+                            <Text style={[AppStyles.monoSubText, AppStyles.colorWhite]}>{content}</Text>
+                        </>
+                    )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => {
+                        this.onClipboardGuideClick(true);
+                    }}
+                    style={[AppStyles.flex1, AppStyles.rightAligned, AppStyles.centerContent]}
+                >
+                    <Icon name="IconX" size={25} style={AppStyles.imgColorWhite} />
+                </TouchableOpacity>
+            </View>
+        );
     };
 
     renderHeader = () => {
@@ -254,8 +369,8 @@ class HomeView extends Component<Props, State> {
         );
     };
 
-    renderContent = () => {
-        const { account, privacy, spendableAccounts } = this.state;
+    renderAssets = () => {
+        const { account, privacyMode, spendableAccounts } = this.state;
 
         const spendable = !!find(spendableAccounts, { address: account.address });
 
@@ -409,7 +524,7 @@ class HomeView extends Component<Props, State> {
                                     >
                                         {line.currency.avatar && (
                                             <Image
-                                                style={[styles.currencyAvatar, privacy && AppStyles.imgColorGrey]}
+                                                style={[styles.currencyAvatar, privacyMode && AppStyles.imgColorGrey]}
                                                 source={{ uri: line.currency.avatar }}
                                             />
                                         )}
@@ -417,10 +532,10 @@ class HomeView extends Component<Props, State> {
                                             style={[
                                                 AppStyles.pbold,
                                                 AppStyles.monoBold,
-                                                privacy && AppStyles.colorGreyDark,
+                                                privacyMode && AppStyles.colorGreyDark,
                                             ]}
                                         >
-                                            {privacy ? '••••••••' : line.balance}
+                                            {privacyMode ? '••••••••' : line.balance}
                                         </Text>
                                     </View>
                                 </TouchableOpacity>
@@ -505,7 +620,7 @@ class HomeView extends Component<Props, State> {
     };
 
     render() {
-        const { account, privacy } = this.state;
+        const { account, privacyMode } = this.state;
 
         if (isEmpty(account)) {
             return this.renderEmpty();
@@ -524,7 +639,11 @@ class HomeView extends Component<Props, State> {
                                 {account.label}
                             </Text>
                             <TouchableOpacity onPress={this.togglePrivacyMode}>
-                                <Icon style={[styles.iconEye]} size={20} name={privacy ? 'IconEyeOff' : 'IconEye'} />
+                                <Icon
+                                    style={[styles.iconEye]}
+                                    size={20}
+                                    name={privacyMode ? 'IconEyeOff' : 'IconEye'}
+                                />
                             </TouchableOpacity>
                         </View>
 
@@ -543,9 +662,13 @@ class HomeView extends Component<Props, State> {
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
                                 selectable
-                                style={[AppStyles.flex1, styles.cardAddressText, privacy && AppStyles.colorGreyDark]}
+                                style={[
+                                    AppStyles.flex1,
+                                    styles.cardAddressText,
+                                    privacyMode && AppStyles.colorGreyDark,
+                                ]}
                             >
-                                {privacy ? '••••••••••••••••••••••••••••••••' : account.address}
+                                {privacyMode ? '••••••••••••••••••••••••••••••••' : account.address}
                             </Text>
                             <View style={[styles.shareIconContainer, AppStyles.rightSelf]}>
                                 <Icon name="IconShare" size={18} style={[styles.shareIcon]} />
@@ -576,15 +699,19 @@ class HomeView extends Component<Props, State> {
                                 style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}
                                 onPress={this.showBalanceExplain}
                             >
-                                <Text style={[AppStyles.h5, AppStyles.monoBold, privacy && AppStyles.colorGreyDark]}>
-                                    {privacy ? '••••••••' : account.availableBalance}
+                                <Text
+                                    style={[AppStyles.h5, AppStyles.monoBold, privacyMode && AppStyles.colorGreyDark]}
+                                >
+                                    {privacyMode ? '••••••••' : account.availableBalance}
                                 </Text>
                             </TouchableOpacity>
                         </View>
                         {this.renderButtons()}
                     </View>
-                    {this.renderContent()}
+                    {this.renderAssets()}
                 </View>
+
+                {this.renderClipboardGuide()}
             </SafeAreaView>
         );
     }
