@@ -89,7 +89,7 @@ const Navigator = {
 
         const bottomTabsChildren: any = [];
 
-        Object.keys(AppScreens.TabBar).forEach(tab => {
+        Object.keys(AppScreens.TabBar).forEach((tab) => {
             bottomTabsChildren.push({
                 stack: {
                     id: get(AppScreens.TabBar, tab),

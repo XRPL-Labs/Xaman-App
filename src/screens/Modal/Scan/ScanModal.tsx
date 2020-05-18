@@ -166,7 +166,7 @@ class ScanView extends Component<Props, State> {
 
     handleXrplDestination = async (destination: XrplDestination & PayId) => {
         // check if any account is configured
-        const availableAccounts = AccountRepository.getAccounts({ accessLevel: AccessLevels.Full });
+        const availableAccounts = AccountRepository.getSpendableAccounts();
 
         if (availableAccounts.length > 0) {
             if (destination.payId) {
@@ -204,16 +204,18 @@ class ScanView extends Component<Props, State> {
             );
         } else {
             Alert.alert(
-                Localize.t('global.noAccountConfigured'),
-                Localize.t('global.pleaseAddAccountToSendPayments'),
+                Localize.t('global.error'),
+                Localize.t('global.noSpendableAccountIsAvailableForSendingPayment'),
                 [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
                 { cancelable: false },
             );
         }
     };
 
-    handle = (content: any, detected: any) => {
+    handle = (content: string) => {
         const { onRead, type, fallback } = this.props;
+
+        const detected = new StringTypeDetector(content);
 
         // normalize detected type
         let detectedType = detected.getType();
@@ -296,9 +298,8 @@ class ScanView extends Component<Props, State> {
             // should not read anymore until we decide about detect value
             this.setShouldRead(false);
 
-            const detected = new StringTypeDetector(data);
-
-            this.handle(data, detected);
+            // handle the content
+            this.handle(data);
         }
     };
 

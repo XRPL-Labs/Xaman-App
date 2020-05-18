@@ -179,7 +179,7 @@
       "atLeastOneSymbol": "Al menos un carácter especial (! @,? Etc.)",
       "atLeastOneUpperCase": "Al menos un carácter MAYÚSCULAS (AZ)",
       "tooManyAttempts": "Demasiados intentos fallidos, intente nuevamente en %{after} minutos.",
-      "passcodeAttemptExceed": "Los intentos de contraseña superan, por favor intente nuevamente más tarde.",
+      "passcodeAttemptExceed": "Los intentos de contraseña superan, por favor intente nuevamente más tarde",
       "invalidPasscode": "Código de acceso inválido",
       "autoWipeAlert": "Intentaste desbloquear la aplicación incorrectamente %{times} veces, después de 1 intento fallido más, la aplicación se restablecerá y se perderán todos los datos de su cuenta.",
       "cannotValidateCurrentTimeWithServer": "No se puede validar la hora de la aplicación con la hora del servidor. ¡Asegúrate de estar conectado a internet!",
@@ -187,7 +187,7 @@
       "changingLanguageNeedsRestartToTakeEffect": "Cambiar el idioma requiere que la aplicación se reinicie. ¿Quieres reiniciar ahora?",
       "noAccountConfigured": "No cuenta configurada",
       "pleaseAddAccountToSignTheTransaction": "Agregue una cuenta para firmar la transacción.",
-      "pleaseAddAccountToSendPayments": "Agregue una cuenta para enviar pagos.",
+      "noSpendableAccountIsAvailableForSendingPayment": "No hay una cuenta gastable disponible para enviar pagos.",
       "doNotRemindMe": "No me recuerdes de nuevo",
       "invalidPayload": "Carga no válida",
       "unexpectedErrorOccurred": "Ocurrió un error inesperado.",
@@ -292,7 +292,7 @@
       "setSignerList": "Establecer lista de firmantes",
       "updateAccountSettings": "Actualizar la configuración de la cuenta",
       "setARegularKey": "Establecer una clave regular",
-      "canNotFetchTransactions": "¡No se pueden recuperar transacciones de la cuenta!"
+      "canNotFetchTransactions": "¡No se pueden recuperar las transacciones de la cuenta!"
    },
    "profile": {
       "availableInFuture": "Esta característica estará disponible en el futuro.",

@@ -9,6 +9,7 @@ import React, { Component } from 'react';
 import { View, Keyboard } from 'react-native';
 
 import { AccountInfoType } from '@common/helpers/resolver';
+import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { LedgerService } from '@services';
@@ -94,6 +95,18 @@ class SendView extends Component<Props, State> {
             payment: new Payment(),
             scanResult: props.scanResult || undefined,
         };
+    }
+
+    componentDidMount() {
+        const { accounts } = this.state;
+
+        // go back if no spendable account is available
+        if (accounts.length === 0) {
+            setTimeout(() => {
+                Navigator.pop();
+                Toast(Localize.t('global.noSpendableAccountIsAvailableForSendingPayment'));
+            }, 1000);
+        }
     }
 
     setSource = (source: AccountSchema) => {

@@ -291,7 +291,7 @@ class DetailsStep extends Component {
                             </View>
                             <AccordionPicker
                                 onSelect={this.onCurrencyChange}
-                                items={['XRP', ...filter(source.lines, (l) => l.balance > 0)]}
+                                items={source ? ['XRP', ...filter(source.lines, (l) => l.balance > 0)] : []}
                                 renderItem={this.renderCurrencyItem}
                                 selectedItem={currency}
                                 keyExtractor={(i) => (typeof i === 'string' ? i : i.currency.id)}

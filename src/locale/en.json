@@ -187,7 +187,7 @@
         "changingLanguageNeedsRestartToTakeEffect": "Changing language requires the app to restart. Do you want to restart now?",
         "noAccountConfigured": "No account configured",
         "pleaseAddAccountToSignTheTransaction": "Please add an account to sign the transaction",
-        "pleaseAddAccountToSendPayments": "Please add an account to send payments",
+        "noSpendableAccountIsAvailableForSendingPayment": "No spendable account is available for sending payments.",
         "doNotRemindMe": "Don't remind me again",
         "invalidPayload": "Invalid payload",
         "unexpectedErrorOccurred": "Unexpected error occurred.",

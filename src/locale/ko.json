@@ -187,7 +187,7 @@
       "changingLanguageNeedsRestartToTakeEffect": "언어를 변경하려면 앱을 다시 시작해야합니다. 지금 다시 시작 하시겠습니까?",
       "noAccountConfigured": "구성된 계정이 없습니다",
       "pleaseAddAccountToSignTheTransaction": "거래에 서명 할 계정을 추가하십시오",
-      "pleaseAddAccountToSendPayments": "지불을 보내려면 계정을 추가하십시오",
+      "noSpendableAccountIsAvailableForSendingPayment": "결제에 사용할 수있는 사용 가능한 계정이 없습니다.",
       "doNotRemindMe": "다시 상기시키지 마",
       "invalidPayload": "유효하지 않은 페이로드",
       "unexpectedErrorOccurred": "예기치 않은 오류가 발생했습니다.",
@@ -223,7 +223,7 @@
       },
       "slideTwo": {
          "title": "사용자 친화적 액세스",
-         "desc": "전체 액세스 모드에서 여러 계정을 추가하거나 읽기 전용입니다. 전체 액세스 계정으로 거래를 보내고 서명을 요청하십시오."
+         "desc": "전체 액세스 모드에서 여러 계정을 추가하거나 읽기 전용입니다. 모든 액세스 계정으로 거래를 보내고 서명을 요청하십시오."
       },
       "slideThree": {
          "title": "보안 우선",
@@ -259,7 +259,7 @@
       "youDonNotHaveOtherAssets": "다른 자산이 없습니다",
       "howActivateMyAccount": "계정을 활성화하려면 어떻게해야합니까?",
       "howActivateMyAccountDesc": "스팸 계정 생성을 방지하려면 XRP 원장에서 계정에 20 개 이상의 XRP를 입금하여 활성화해야합니다. 20 XRP는 손실되지 않습니다. 계정에 남아 있지만 사용할 수는 없습니다. 계정 사용을 시작하려면 20 XRP 이상의 예금이 계정에 입금되어 있는지 확인하십시오.",
-      "otherAssetsDesc": "XRP 원장은 또한 XRP 이외의 자산의 잔액을 보유하고 보내고받을 수 있습니다. 이러한 자산은 XRP 원장의 다른 계정에서 발행 할 수 있습니다. 비 XRP 자산을 보내거나 받으려면 비 XRP 자산의 발행자를 신뢰해야합니다.",
+      "otherAssetsDesc": "XRP 원장을 사용하면 XRP 이외의 자산의 잔액을 보유하고 보내고받을 수 있습니다. 이러한 자산은 XRP 원장의 다른 계정에서 발행 할 수 있습니다. 비 XRP 자산을 보내거나 받으려면 비 XRP 자산의 발행자를 신뢰해야합니다.",
       "explainMyBalance": "내 균형을 설명",
       "xrpYouOwnVsYourSpendableBalance": "소유 한 XRP와 지출 가능한 잔액"
    },
@@ -368,7 +368,7 @@
       "chooseSecurityLevel": "보안 수준",
       "extraSecurity": "추가 보안",
       "chooseWisely": "이 계정에 맞는 보안 수준을 선택하십시오",
-      "passcodeOptionDesc": "일일 지출에 이상적입니다. 얼굴을 보여 주거나 손가락을 스캔하거나 암호를 입력하여 거래에 서명 할 수 있습니다.",
+      "passcodeOptionDesc": "일일 지출에 이상적입니다. 단순히 얼굴을 보여 주거나 손가락을 스캔하거나 암호를 입력하여 거래에 서명 할 수 있습니다.",
       "signWithPasscode": "FaceID / 비밀번호로 서명",
       "passphraseOptionDesc": "이것은 XRP의 장기 저장에 더 좋으며 거래에 서명하려면 암호가 필요합니다",
       "signWithPassphrase": "암호로 서명",
@@ -456,11 +456,11 @@
       "newPassphrase": "새로운 비밀번호 문구",
       "regularKeyFor": "에 대한 일반 키",
       "allDoneYouCanGoToNextStepNow": "모든 작업을 마치면 다음 단계로 넘어갈 수 있습니다",
-      "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이 무엇을하고 있는지 아는 경우에만 계속하십시오.",
+      "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이하고있는 것을 알고 있다면 계속하십시오.",
       "switchAccount": "계정 전환",
       "useMnemonicPassphrase": "니모닉 암호 구 사용",
-      "mnemonicLargeAmountAlert": "계정에 상당한 가치가있는 동안 니모닉 계정 가져 오기를 고려하는 경우 (예 : 저축, 더 많은 양의 XRP 또는 기타 토큰) 니모닉 계정을 오프라인으로 유지하려면 XUMM에 새 계정을 만드는 것을 고려하십시오.",
-      "importExchangeAddressReadonlyWarning": "Exchange (예금) 계정을 가져올 수 없습니다. 그렇게하면 거래소에서 자신의 잔액을 추적 할 수 없습니다. 읽기 전용 계정 가져 오기는 하드웨어 계정처럼 자신의 활성화 된 계정 인 경우에만 작동합니다",
+      "mnemonicLargeAmountAlert": "계정에 상당한 가치가있는 동안 니모닉 계정 가져 오기를 고려하는 경우 (예 : 저축, 더 많은 XRP 또는 기타 토큰) 니모닉 계정을 오프라인으로 유지하려면 XUMM에 새 계정을 만드는 것을 고려하십시오.",
+      "importExchangeAddressReadonlyWarning": "Exchange (예금) 계정을 가져올 수 없습니다. 그렇게하면 거래소에서 자신의 잔액을 추적 할 수 없습니다. 읽기 전용 계정 가져 오기는 하드웨어 계정과 같이 자신의 활성화 된 계정 인 경우에만 작동합니다",
       "walletReserve": "월렛 예약",
       "accountBalance": "계정 잔액",
       "availableForSpending": "지출 가능",
