@@ -10,7 +10,6 @@ import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId }
 import { RNCamera } from 'react-native-camera';
 
 import { AccountRepository } from '@store/repositories';
-import { AccessLevels } from '@store/types';
 
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';

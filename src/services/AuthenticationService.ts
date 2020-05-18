@@ -18,6 +18,7 @@ import LoggerService from '@services/LoggerService';
 
 import Localize from '@locale';
 
+/* Service  ==================================================================== */
 class AuthenticationService extends EventEmitter {
     locked: boolean;
     postSuccess: Array<() => void>;

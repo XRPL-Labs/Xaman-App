@@ -18,6 +18,7 @@ import { VersionDiff } from '@common/libs/utils';
 
 import LoggerService from '@services/LoggerService';
 
+/* Types  ==================================================================== */
 export enum NetStateStatus {
     Connected = 'Connected',
     Disconnected = 'Disconnected',
@@ -29,6 +30,7 @@ export enum AppStateStatus {
     Inactive = 'Inactive',
 }
 
+/* Service  ==================================================================== */
 class AppService extends EventEmitter {
     netStatus: NetStateStatus;
     prevAppState: AppStateStatus;

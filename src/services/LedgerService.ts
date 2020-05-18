@@ -19,12 +19,13 @@ import { AccountTxResponse, LedgerMarker, SubmitResultType, VerifyResultType } f
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
 
-// events
+/* events  ==================================================================== */
 declare interface LedgerService {
     on(event: 'onTransaction', listener: (name: string) => void): this;
     on(event: string, listener: Function): this;
 }
 
+/* Service  ==================================================================== */
 class LedgerService extends EventEmitter {
     accounts: Array<any>;
     logger: any;

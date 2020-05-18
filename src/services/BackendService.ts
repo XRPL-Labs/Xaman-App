@@ -31,6 +31,7 @@ import LoggerService from '@services/LoggerService';
 // Locale
 import Localize from '@locale';
 
+/* Service  ==================================================================== */
 class BackendService {
     logger: any;
 

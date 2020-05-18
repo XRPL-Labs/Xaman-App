@@ -16,6 +16,7 @@ import AppService from '@services/AppService';
 import LoggerService from '@services/LoggerService';
 import NavigationService from '@services/NavigationService';
 
+/* Types  ==================================================================== */
 type BaseCommand = {
     id?: string;
     command: string;
@@ -61,6 +62,7 @@ enum SocketStateStatus {
     Disconnected = 'Disconnected',
 }
 
+/* Service  ==================================================================== */
 class SocketService extends EventEmitter {
     node: string;
     chain: NodeChain;

@@ -25,6 +25,7 @@ declare interface PushNotificationsService {
     on(event: string, listener: Function): this;
 }
 
+/* Service  ==================================================================== */
 class PushNotificationsService extends EventEmitter {
     initialized: boolean;
     logger: any;
@@ -47,7 +48,7 @@ class PushNotificationsService extends EventEmitter {
                         }
                         return resolve();
                     })
-                    .catch(e => {
+                    .catch((e) => {
                         return reject(e);
                     });
             } catch (e) {
@@ -90,10 +91,10 @@ class PushNotificationsService extends EventEmitter {
         return firebase
             .messaging()
             .getToken()
-            .then(token => {
+            .then((token) => {
                 return token;
             })
-            .catch(e => {
+            .catch((e) => {
                 this.logger.error('Cannot get token from firebase', e);
                 return undefined;
             });
@@ -194,7 +195,7 @@ class PushNotificationsService extends EventEmitter {
 
             if (payloadUUID) {
                 Payload.from(payloadUUID)
-                    .then(payload => {
+                    .then((payload) => {
                         // show review transaction screen
                         Navigator.showModal(
                             AppScreens.Modal.ReviewTransaction,
@@ -204,7 +205,7 @@ class PushNotificationsService extends EventEmitter {
                             },
                         );
                     })
-                    .catch(e => {
+                    .catch((e) => {
                         Alert.alert(Localize.t('global.error'), e.message);
                         this.logger.error('Cannot fetch payload from backend', payloadUUID);
                     });
