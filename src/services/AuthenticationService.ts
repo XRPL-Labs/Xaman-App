@@ -14,7 +14,10 @@ import AccountRepository from '@store/repositories/account';
 import AppService, { AppStateStatus } from '@services/AppService';
 import BackendService from '@services/BackendService';
 import NavigationService from '@services/NavigationService';
+import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
+import LinkingService from '@services/LinkingService';
+import PushNotificationsService from '@services/PushNotificationsService';
 
 import Localize from '@locale';
 
@@ -32,7 +35,13 @@ class AuthenticationService extends EventEmitter {
         this.logger = LoggerService.createLogger('App State');
 
         // functions needs to run after success auth
-        this.postSuccess = [AppService.checkShowChangeLog, BackendService.ping];
+        this.postSuccess = [
+            AppService.checkShowChangeLog,
+            BackendService.ping,
+            SocketService.connect,
+            LinkingService.checkInitialDeepLink,
+            PushNotificationsService.checkInitialNotification,
+        ];
     }
 
     initialize = () => {

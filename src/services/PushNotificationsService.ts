@@ -12,7 +12,6 @@ import { AppScreens } from '@common/constants';
 
 import { Payload } from '@common/libs/payload';
 
-import NavigationService from '@services/NavigationService';
 import LoggerService from '@services/LoggerService';
 
 import Localize from '@locale';
@@ -73,7 +72,6 @@ class PushNotificationsService extends EventEmitter {
         if (!this.initialized) {
             this.prepareNotifications();
             this.createNotificationListeners();
-            this.checkInitialNotification();
             this.initialized = true;
         }
     };
@@ -140,16 +138,11 @@ class PushNotificationsService extends EventEmitter {
     };
 
     /* If the app was launched by a push notification  */
-    checkInitialNotification = () => {
-        // check init notification after moving to default stack
-        NavigationService.on('setRoot', async (root: string) => {
-            if (root === 'DefaultStack') {
-                const notificationOpen = await firebase.notifications().getInitialNotification();
-                if (notificationOpen) {
-                    this.handleNotificationOpen(notificationOpen);
-                }
-            }
-        });
+    checkInitialNotification = async () => {
+        const notificationOpen = await firebase.notifications().getInitialNotification();
+        if (notificationOpen) {
+            this.handleNotificationOpen(notificationOpen);
+        }
     };
 
     /* Handle notifications within the app when app is running in foreground */

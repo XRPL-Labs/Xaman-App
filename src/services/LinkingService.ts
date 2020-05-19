@@ -23,25 +23,25 @@ class LinkingService extends EventEmitter {
     initialize = () => {
         return new Promise((resolve, reject) => {
             try {
-                // check init notification after moving to default stack
                 NavigationService.on('setRoot', async (root: string) => {
                     if (root === 'DefaultStack') {
                         // Listen for deep link as the app is open
                         Linking.addEventListener('url', this.handleDeepLink);
-
-                        // handle if app opens with link
-                        Linking.getInitialURL().then((url) => {
-                            setTimeout(() => {
-                                this.handleDeepLink({ url });
-                            }, 100);
-                        });
                     }
                 });
-
                 return resolve();
             } catch (e) {
                 return reject(e);
             }
+        });
+    };
+
+    checkInitialDeepLink = () => {
+        // handle if app opens with link
+        Linking.getInitialURL().then((url) => {
+            setTimeout(() => {
+                this.handleDeepLink({ url });
+            }, 100);
         });
     };
 

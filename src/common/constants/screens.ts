@@ -50,6 +50,7 @@ const screens = {
         EnterDestinationTag: 'overlay.EnterDestinationTag',
         ExplainBalance: 'overlay.ExplainBalance',
         ChangeLog: 'overlay.ChangeLog',
+        ConnectionIssue: 'overlay.ConnectionIssue',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',
