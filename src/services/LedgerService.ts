@@ -352,7 +352,7 @@ class LedgerService extends EventEmitter {
                     resolve();
                 })
                 .catch((e: any) => {
-                    reject(new Error('Unable get Account info'));
+                    reject(e);
                     this.logger.warn('Unable get Account info', e);
                 });
         });
@@ -441,7 +441,7 @@ class LedgerService extends EventEmitter {
             this.updateAccountInfo(account.address)
                 .then(() => this.updateAccountLines(account.address))
                 .catch((e) => {
-                    this.logger.warn('UpdateAccountInfo error: ', e.message);
+                    this.logger.warn('UpdateAccountInfo error: ', e);
                 });
 
             // update last sync

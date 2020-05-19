@@ -126,23 +126,6 @@ class ApiService {
     /* Helper Functions ==================================================================== */
 
     /**
-     * Sends requests to the API
-     */
-    static handleError(err: any) {
-        let error = '';
-        if (typeof err === 'string') {
-            error = err;
-        } else if (err.error) {
-            error = err.error.message;
-        }
-
-        if (!err) {
-            error = ErrorMessages.default;
-        }
-        return error;
-    }
-
-    /**
      * Convert parameters object into query string
      * example.
      *   {foo: 'hi there', bar: { blah: 123, blah: [1, 2, 3] }}
@@ -281,7 +264,6 @@ class ApiService {
                     // API got back to us, clear the timeout
                     clearTimeout(apiTimedOut);
 
-                    this.logger.error(this.apiUrl + endpoint + urlParams, err);
                     return reject(err);
                 });
         });
