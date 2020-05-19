@@ -55,7 +55,7 @@ class TermOfUseView extends Component<Props, State> {
         this.state = {
             TOSVersion: undefined,
             isTOSLoaded: false,
-            shouldShowAgreement: true,
+            shouldShowAgreement: false,
             uri,
         };
     }
