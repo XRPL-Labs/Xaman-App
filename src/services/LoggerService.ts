@@ -4,6 +4,8 @@
  * Logger Service
  */
 
+import { ErrorMessages } from '@common/constants';
+
 /* Types  ==================================================================== */
 type levels = 'debug' | 'warn' | 'error';
 
@@ -31,6 +33,27 @@ class LoggerService {
         };
     }
 
+    /**
+     * normalize error message
+     */
+    normalizeError = (err: any) => {
+        let error = '';
+        if (typeof err === 'string') {
+            error = err;
+        } else if (err.error && err.error.message) {
+            error = err.error.message;
+        } else if (err.message) {
+            error = err.message;
+        } else if (typeof err.toString === 'function') {
+            error = err.toString();
+        }
+
+        if (!err) {
+            error = ErrorMessages.default;
+        }
+        return error;
+    };
+
     pad = (time: string) => time.padStart(2, '0');
 
     getTimeStamp = () => {
@@ -47,10 +70,9 @@ class LoggerService {
 
         // eslint-disable-next-line
         const log = (level: levels) => {
-            return (message = '', data = '') => {
-                if (typeof message !== 'string') {
-                    data = message;
-                    message = '';
+            return (message = '', data: any) => {
+                if (data instanceof Error) {
+                    data = this.normalizeError(data);
                 }
 
                 if (this.isDEV) {
