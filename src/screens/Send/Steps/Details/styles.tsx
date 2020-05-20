@@ -9,6 +9,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    rowTitle: {
+        paddingLeft: 15,
+    },
     rowItem: {
         paddingHorizontal: AppSizes.paddingSml,
         paddingTop: AppSizes.paddingSml,
@@ -20,7 +23,7 @@ const styles = StyleSheet.create({
         padding: 0,
         margin: 0,
         paddingTop: Platform.OS === 'ios' ? 20 : 10,
-        paddingLeft: 10,
+        paddingLeft: 15,
         fontSize: AppFonts.h1.size,
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',

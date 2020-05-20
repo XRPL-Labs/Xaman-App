@@ -340,8 +340,7 @@ class SummaryStep extends Component {
                             </View>
                             <Spacer size={15} />
 
-                            {/* eslint-disable-next-line */}
-                            <View style={[{ paddingLeft: 10 }]}>
+                            <View style={[styles.rowTitle]}>
                                 <View style={[styles.pickerItem]}>
                                     <Text style={[styles.pickerItemTitle]}>{destination.name}</Text>
                                     <Text
@@ -358,8 +357,7 @@ class SummaryStep extends Component {
 
                             <View style={AppStyles.row}>
                                 <View style={AppStyles.flex1}>
-                                    {/* eslint-disable-next-line */}
-                                    <View style={[{ paddingLeft: 10 }]}>
+                                    <View style={[styles.rowTitle]}>
                                         <Text style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
                                             {destination.tag && `${Localize.t('global.destinationTag')}: `}
                                             <Text style={AppStyles.colorBlue}>
@@ -388,8 +386,7 @@ class SummaryStep extends Component {
                             </View>
                             <Spacer size={15} />
 
-                            {/* eslint-disable-next-line */}
-                            <View style={[{ paddingLeft: 10 }]}>{this.renderCurrencyItem(currency)}</View>
+                            <View style={[styles.rowTitle]}>{this.renderCurrencyItem(currency)}</View>
                         </View>
 
                         {/* Amount */}

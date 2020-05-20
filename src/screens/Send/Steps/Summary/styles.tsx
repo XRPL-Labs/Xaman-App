@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
     },
     rowTitle: {
-        paddingLeft: 10,
+        paddingLeft: 15,
     },
     pickerItem: {
         // paddingLeft: 10,
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     amountInput: {
         padding: 0,
         margin: 0,
-        paddingLeft: 10,
+        paddingLeft: 15,
         fontSize: AppFonts.h3.size,
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',

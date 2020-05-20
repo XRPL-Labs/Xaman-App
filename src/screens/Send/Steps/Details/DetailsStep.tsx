@@ -268,7 +268,7 @@ class DetailsStep extends Component {
                                 }}
                                 resizeMode="stretch"
                             />
-                            <View style={[{ paddingLeft: 10 }]}>
+                            <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
                                     {Localize.t('global.from')}
                                 </Text>
@@ -284,7 +284,7 @@ class DetailsStep extends Component {
                         </View>
                         {/* Currency */}
                         <View style={[styles.rowItem]}>
-                            <View style={[{ paddingLeft: 10 }]}>
+                            <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
                                     {Localize.t('global.asset')}
                                 </Text>
@@ -301,7 +301,7 @@ class DetailsStep extends Component {
 
                         {/* Amount */}
                         <View style={[styles.rowItem]}>
-                            <View style={[{ paddingLeft: 10 }]}>
+                            <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
                                     {Localize.t('global.amount')}
                                 </Text>
