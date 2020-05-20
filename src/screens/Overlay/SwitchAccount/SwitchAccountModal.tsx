@@ -9,10 +9,13 @@ import React, { Component } from 'react';
 import { Animated, View, Text, TouchableWithoutFeedback, TouchableOpacity, Platform, ScrollView } from 'react-native';
 
 import Interactable from 'react-native-interactable';
+import LinearGradient from 'react-native-linear-gradient';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
+import { AccessLevels } from '@store/types';
 
+import { Images } from '@common/helpers/images';
 import { getNavigationBarHeight } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -24,7 +27,7 @@ import { Button, Icon } from '@components';
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppSizes } from '@theme';
+import { AppStyles, AppSizes, AppColors } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -72,12 +75,12 @@ class SwitchAccountOverlay extends Component<Props, State> {
     componentDidMount() {
         const accounts = AccountRepository.getAccounts();
 
-        let contentHeight = accounts.length * AppSizes.scale(60) + 150 + getNavigationBarHeight();
+        let contentHeight = accounts.length * AppSizes.scale(60) + 160 + getNavigationBarHeight();
 
         let paddingBottom = 0;
 
-        if (contentHeight > AppSizes.screen.height - 150) {
-            contentHeight = AppSizes.screen.height - 150;
+        if (contentHeight > AppSizes.screen.height - 160) {
+            contentHeight = AppSizes.screen.height - 160;
             paddingBottom = AppSizes.scale(60);
         }
 
@@ -143,7 +146,81 @@ class SwitchAccountOverlay extends Component<Props, State> {
     isRegularKey = (account: AccountSchema) => {
         const { accounts } = this.state;
 
-        return find(accounts, { regularKey: account.address });
+        const found = find(accounts, { regularKey: account.address });
+
+        if (found) {
+            return found.label;
+        }
+
+        return false;
+    };
+
+    renderRow = (account: AccountSchema) => {
+        // default full access
+        let accessLevelLabel = Localize.t('account.fullAccess');
+        let accessLevelIcon = 'IconCornerLeftUp' as Extract<keyof typeof Images, string>;
+
+        if (account.accessLevel === AccessLevels.Readonly) {
+            accessLevelLabel = Localize.t('account.readOnly');
+            accessLevelIcon = 'IconLock';
+        }
+
+        const regularKeyFor = this.isRegularKey(account);
+        if (regularKeyFor) {
+            accessLevelLabel = `${Localize.t('account.regularKeyFor')} (${regularKeyFor})`;
+            accessLevelIcon = 'IconKey';
+        }
+
+        if (account.default) {
+            return (
+                <View
+                    key={account.address}
+                    style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow, styles.accountRowSelected]}
+                >
+                    <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text style={[styles.accountLabel]}>{account.label}</Text>
+                            <View style={[styles.accessLevelContainer]}>
+                                <Icon size={13} name={accessLevelIcon} style={AppStyles.imgColorBlack} />
+                                <Text style={[styles.accessLevelLabel, AppStyles.colorBlack]}>{accessLevelLabel}</Text>
+                            </View>
+                        </View>
+                    </View>
+                    <View style={[AppStyles.flex1]}>
+                        <View style={[styles.radioCircleSelected, AppStyles.rightSelf]} />
+                    </View>
+                </View>
+            );
+        }
+
+        return (
+            <LinearGradient
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                colors={[AppColors.light, AppColors.white]}
+                style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow]}
+            >
+                <TouchableOpacity
+                    key={account.address}
+                    style={[AppStyles.row, AppStyles.centerAligned]}
+                    onPress={() => {
+                        this.changeDefaultAccount(account.address);
+                    }}
+                    activeOpacity={0.9}
+                >
+                    <View style={[AppStyles.flex3]}>
+                        <Text style={[styles.accountLabel]}>{account.label}</Text>
+                        <View style={[styles.accessLevelContainer]}>
+                            <Icon size={13} name={accessLevelIcon} style={AppStyles.imgColorGreyDark} />
+                            <Text style={[styles.accessLevelLabel]}>{accessLevelLabel}</Text>
+                        </View>
+                    </View>
+                    <View style={[AppStyles.flex1]}>
+                        <View style={[styles.radioCircle, AppStyles.rightSelf]} />
+                    </View>
+                </TouchableOpacity>
+            </LinearGradient>
+        );
     };
 
     renderContent = () => {
@@ -157,69 +234,8 @@ class SwitchAccountOverlay extends Component<Props, State> {
             );
         }
 
-        return accounts.map((account, index) => {
-            if (account.default) {
-                return (
-                    <View
-                        key={index}
-                        style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow, styles.accountRowSelected]}
-                    >
-                        <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
-                            <Icon size={25} style={[styles.iconAccountActive]} name="IconAccount" />
-                            <Text style={[AppStyles.pbold]}>{account.label}</Text>
-                            {this.isRegularKey(account) && (
-                                <View style={[styles.regularKey]}>
-                                    <Icon size={12} style={[styles.iconKey]} name="IconKey" />
-                                    <Text style={[styles.regularKeyText]}>REGULAR</Text>
-                                </View>
-                            )}
-                        </View>
-                        <View style={[AppStyles.flex1]}>
-                            <View style={[styles.radioCircleSelected, AppStyles.rightSelf]} />
-                        </View>
-                        {/* <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
-                            <Text style={[AppStyles.subtext, AppStyles.bold, styles.selectedText]}>
-                                {Localize.t('global.selected')}
-                            </Text>
-                        </View> */}
-                    </View>
-                );
-            }
-            return (
-                <TouchableOpacity
-                    key={index}
-                    style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow]}
-                    onPress={() => {
-                        this.changeDefaultAccount(account.address);
-                    }}
-                    activeOpacity={0.9}
-                >
-                    <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
-                        <Icon size={25} style={[styles.iconAccount]} name="IconAccount" />
-                        <Text style={[AppStyles.p]}>{account.label}</Text>
-                        {this.isRegularKey(account) && (
-                            <View style={[styles.regularKey]}>
-                                <Icon size={12} style={[styles.iconKey]} name="IconKey" />
-                                <Text style={[styles.regularKeyText]}>REGULAR</Text>
-                            </View>
-                        )}
-                    </View>
-                    <View style={[AppStyles.flex1]}>
-                        <View style={[styles.radioCircle, AppStyles.rightSelf]} />
-                    </View>
-                    {/* <View style={[AppStyles.flex1]}>
-                        <Button
-                            roundedSmall
-                            label={Localize.t('global.switch')}
-                            onPress={() => {
-                                this.changeDefaultAccount(account.address);
-                            }}
-                            style={[AppStyles.buttonBlack, AppStyles.rightSelf]}
-                            // textStyle={styles.switchButtonText}
-                        />
-                    </View> */}
-                </TouchableOpacity>
-            );
+        return accounts.map((account) => {
+            return this.renderRow(account);
         });
     };
 

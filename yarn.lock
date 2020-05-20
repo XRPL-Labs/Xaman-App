@@ -8344,6 +8344,11 @@ react-native-keychain@^4.0.5:
   resolved "https://registry.yarnpkg.com/react-native-keychain/-/react-native-keychain-4.0.5.tgz#6d3aef8f2789fc0dfa8149b8400d82ff77be361a"
   integrity sha512-TbiO8AO055EPjaxIuKxrCEOB4r81uQCVDFbtcs+e4pEOHxf6z3JgDC0UU0poJElKfCh37b+TFRxQhg6DbsYJBA==
 
+react-native-linear-gradient@^2.5.6:
+  version "2.5.6"
+  resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"
+  integrity sha512-HDwEaXcQIuXXCV70O+bK1rizFong3wj+5Q/jSyifKFLg0VWF95xh8XQgfzXwtq0NggL9vNjPKXa016KuFu+VFg==
+
 react-native-navigation@6.4.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-6.4.0.tgz#bc7af1b32cc69143e186c4996b787a58a600776f"

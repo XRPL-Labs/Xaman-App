@@ -40,6 +40,7 @@
     "react-native-firebase": "^5.6.0",
     "react-native-interactable": "2.0.1",
     "react-native-keychain": "^4.0.5",
+    "react-native-linear-gradient": "^2.5.6",
     "react-native-navigation": "6.4.0",
     "react-native-webview": "^9.2.2",
     "realm": "^3.6.5",

@@ -134,32 +134,28 @@ class HomeView extends Component<Props, State> {
 
     onDefaultAccountChange = (defaultAccount: AccountSchema) => {
         // update the default account
-        LedgerService.updateAccountsDetails([defaultAccount.address]);
+        if (defaultAccount.isValid()) {
+            LedgerService.updateAccountsDetails([defaultAccount.address]);
 
-        this.setState({
-            account: defaultAccount,
-        });
+            this.setState({
+                account: defaultAccount,
+            });
+        }
     };
 
     updateUI = (updatedAccount: AccountSchema) => {
         const { account } = this.state;
 
-        if (updatedAccount.isValid()) {
-            if (updatedAccount.default) {
-                this.setState({
-                    account: updatedAccount,
-                });
-
-                if (account.isValid() && account.balance !== updatedAccount.balance) {
-                    this.updateSpendableAccounts();
-                }
-            }
-        }
-        if (updatedAccount.default) {
+        if (updatedAccount.isValid() && updatedAccount.default) {
+            // update the UI
             this.setState({
                 account: updatedAccount,
-                spendableAccounts: AccountRepository.getSpendableAccounts(),
             });
+
+            // when account balance changed update spendable accounts
+            if (account.isValid() && account.balance !== updatedAccount.balance) {
+                this.updateSpendableAccounts();
+            }
         }
     };
 
