@@ -73,13 +73,19 @@ const NormalizeCurrencyCode = (currencyCode: string): string => {
     // currency code is hex try to decode it
     if (currencyCode.match(/^[A-F0-9]{40}$/)) {
         const decoded = HexEncoding.toString(currencyCode);
-        if (decoded.toLowerCase().trim() !== 'xrp') {
-            // String
-            return decoded.replace(/\0.*$/g, '').replace(/(\r\n|\n|\r)/gm, ' ');
+        const clean = decoded.replace(/\0.*$/g, '').replace(/(\r\n|\n|\r)/gm, ' ');
+        if (clean.toLowerCase().trim() !== 'xrp') {
+            return clean;
         }
 
         return `${currencyCode.slice(0, 4)}...`;
     }
+
+    // check if it's fake XRP
+    if (currencyCode.toLowerCase().trim() === 'xrp') {
+        return 'FakeXRP';
+    }
+
     return currencyCode;
 };
 
