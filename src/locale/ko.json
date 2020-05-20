@@ -208,7 +208,7 @@
       "pressBackAgainToExit": "다시 누르면 종료",
       "fraudAlert": "사기 경보",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "이 계정은 사기 또는 사기성 주소로보고됩니다. 주의해서 진행하십시오",
-      "biometricIsNotAvailable": "생체 인식 (지문 또는 얼굴 ID)을 사용할 수 없습니다. 장치가 생체 인식 인증을 지원하는 경우 먼저 장치를 구성하십시오 (OS 설정).",
+      "biometricIsNotAvailable": "생체 인식 (지문 또는 얼굴 ID)을 사용할 수 없습니다. 장치가 생체 인증을 지원하는 경우 먼저 장치를 구성하십시오 (OS 설정).",
       "clearSearch": "명확한 검색",
       "noNameFound": "이름을 찾을 수 없습니다",
       "readMoreInTheFAQ": "FAQ에서 더 읽기",
@@ -216,15 +216,15 @@
    },
    "onboarding": {
       "slideOne": {
-         "title": "XRP 원장의 지불 및 지불 요청"
+         "title": "XRP 원장에 대한 지불 및 지불 요청"
       },
       "slideTwo": {
          "title": "사용자 친화적 액세스",
-         "desc": "전체 액세스 모드에서 여러 계정을 추가하거나 읽기 전용입니다. 모든 액세스 계정으로 거래를 보내고 서명을 요청하십시오."
+         "desc": "전체 액세스 모드에서 여러 계정을 추가하거나 읽기 전용입니다. 전체 액세스 계정으로 거래를 보내고 서명을 요청하십시오."
       },
       "slideThree": {
          "title": "보안 우선",
-         "desc": "xumm 응용 프로그램 및 플랫폼은 보안을 염두에두고 구축되었습니다. 비밀을 다시 입력하지 말고 신뢰할 수있는 자신의 장치에서 거래에 서명하십시오."
+         "desc": "xumm 응용 프로그램 및 플랫폼은 보안을 염두에두고 구축되었습니다. 비밀을 다시 입력하지 말고 자신의 신뢰할 수있는 장치에서 거래에 서명하십시오."
       },
       "slideFour": {
          "title": "보내고 받기",
@@ -256,7 +256,7 @@
       "youDonNotHaveOtherAssets": "다른 자산이 없습니다",
       "howActivateMyAccount": "계정을 활성화하려면 어떻게해야합니까?",
       "howActivateMyAccountDesc": "스팸 계정 생성을 방지하려면 XRP 원장에서 계정에 20 개 이상의 XRP를 입금하여 활성화해야합니다. 20 XRP는 손실되지 않습니다. 계정에 남아 있지만 사용할 수는 없습니다. 계정 사용을 시작하려면 20 XRP 이상의 예금이 계정에 입금되어 있는지 확인하십시오.",
-      "otherAssetsDesc": "XRP 원장을 사용하면 XRP 이외의 자산의 잔액을 보유하고 보내고받을 수 있습니다. 이러한 자산은 XRP 원장의 다른 계정에서 발행 할 수 있습니다. 비 XRP 자산을 보내거나 받으려면 비 XRP 자산의 발행자를 신뢰해야합니다.",
+      "otherAssetsDesc": "XRP 원장을 사용하면 XRP 이외의 자산의 잔액을 보유하고 보내고받을 수도 있습니다. 이러한 자산은 XRP 원장의 다른 계정에서 발행 할 수 있습니다. 비 XRP 자산을 보내거나 받으려면 비 XRP 자산의 발행자를 신뢰해야합니다.",
       "explainMyBalance": "내 균형을 설명",
       "xrpYouOwnVsYourSpendableBalance": "소유 한 XRP와 지출 가능한 잔액"
    },
@@ -333,6 +333,7 @@
       "securitySettingsDescription": "여기에서 PIN 코드 또는 생체 인증 기관을 변경하십시오",
       "changePasscode": "비밀번호 변경",
       "biometricAuthentication": "생체 인증",
+      "hapticFeedback": "햅틱 피드백",
       "enterOldPasscode": "기존 암호를 입력하십시오",
       "enterNewPasscode": "새 암호를 입력하십시오",
       "enterNewPasscodeAgain": "새 비밀번호를 다시 입력하십시오",
@@ -365,7 +366,7 @@
       "chooseSecurityLevel": "보안 수준",
       "extraSecurity": "추가 보안",
       "chooseWisely": "이 계정에 맞는 보안 수준을 선택하십시오",
-      "passcodeOptionDesc": "일일 지출에 이상적입니다. 단순히 얼굴을 보여 주거나 손가락을 스캔하거나 암호를 입력하여 거래에 서명 할 수 있습니다.",
+      "passcodeOptionDesc": "일일 지출에 이상적입니다. 얼굴을 보여 주거나 손가락을 스캔하거나 암호를 입력하여 거래에 서명 할 수 있습니다.",
       "signWithPasscode": "FaceID / 비밀번호로 서명",
       "passphraseOptionDesc": "이것은 XRP의 장기 저장에 더 좋으며 거래에 서명하려면 암호가 필요합니다",
       "signWithPassphrase": "암호로 서명",
@@ -453,11 +454,11 @@
       "newPassphrase": "새로운 비밀번호 문구",
       "regularKeyFor": "에 대한 일반 키",
       "allDoneYouCanGoToNextStepNow": "모든 작업을 마치면 다음 단계로 넘어갈 수 있습니다",
-      "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이하고있는 것을 알고 있다면 계속하십시오.",
+      "disableMasterKeyWarning": "거래는 계정의 개인 키를 비활성화합니다. 이것은 당신을 잠글 수 있습니다. 이것이 당신이 원하는 것임을 절대적으로 확신하고 당신이 무엇을하고 있는지 아는 경우에만 계속하십시오.",
       "switchAccount": "계정 전환",
       "useMnemonicPassphrase": "니모닉 암호 구 사용",
-      "mnemonicLargeAmountAlert": "계정에 상당한 가치가있는 동안 니모닉 계정 가져 오기를 고려하는 경우 (예 : 저축, 더 많은 XRP 또는 기타 토큰) 니모닉 계정을 오프라인으로 유지하려면 XUMM에 새 계정을 만드는 것을 고려하십시오.",
-      "importExchangeAddressReadonlyWarning": "Exchange (예금) 계정을 가져올 수 없습니다. 그렇게하면 거래소에서 자신의 잔액을 추적 할 수 없습니다. 읽기 전용 계정 가져 오기는 하드웨어 계정과 같이 자신의 활성화 된 계정 인 경우에만 작동합니다",
+      "mnemonicLargeAmountAlert": "계정에 상당한 가치가있는 동안 니모닉 계정 가져 오기를 고려하는 경우 (예 : 저축, 더 많은 양의 XRP 또는 기타 토큰) 니모닉 계정을 오프라인으로 유지하려면 XUMM에 새 계정을 만드는 것을 고려하십시오.",
+      "importExchangeAddressReadonlyWarning": "Exchange (예금) 계정을 가져올 수 없습니다. 그렇게하면 거래소에서 자신의 잔액을 추적 할 수 없습니다. 읽기 전용 계정 가져 오기는 하드웨어 계정처럼 자신의 활성화 된 계정 인 경우에만 작동합니다",
       "walletReserve": "월렛 예약",
       "accountBalance": "계정 잔액",
       "availableForSpending": "지출 가능",

@@ -23,14 +23,14 @@ import {
 import Interactable from 'react-native-interactable';
 import { BlurView } from '@react-native-community/blur';
 
-import { AccountRepository } from '@store/repositories';
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 
 import { Payload } from '@common/libs/payload';
 import { SubmitResultType } from '@common/libs/ledger/types';
 
 import { AppScreens } from '@common/constants';
-import { Toast, getNavigationBarHeight } from '@common/helpers/interface';
+import { Toast, VibrateHapticFeedback, getNavigationBarHeight } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
@@ -69,6 +69,7 @@ export interface State {
     isPreparing: boolean;
     canScroll: boolean;
     headerHeight: number;
+    coreSettings: CoreSchema;
 }
 
 /* Component ==================================================================== */
@@ -101,6 +102,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             hasError: false,
             canScroll: false,
             headerHeight: 0,
+            coreSettings: CoreRepository.getSettings(),
         };
 
         this.deltaY = new Animated.Value(0);
@@ -317,7 +319,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     submit = async (privateKey: string) => {
         const { payload } = this.props;
-        const { transaction } = this.state;
+        const { transaction, coreSettings } = this.state;
 
         try {
             this.setState({
@@ -360,6 +362,16 @@ class ReviewTransactionModal extends Component<Props, State> {
                     if (verifyResult.success && submitResult.engineResult !== 'tesSUCCESS') {
                         submitResult.engineResult = 'tesSUCCESS';
                     }
+
+                    if (coreSettings.hapticFeedback) {
+                        if (verifyResult.success) {
+                            VibrateHapticFeedback('notificationSuccess');
+                        } else {
+                            VibrateHapticFeedback('notificationError');
+                        }
+                    }
+                } else if (coreSettings.hapticFeedback) {
+                    VibrateHapticFeedback('notificationError');
                 }
 
                 // update patch

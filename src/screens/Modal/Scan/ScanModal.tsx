@@ -9,13 +9,16 @@ import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId }
 
 import { RNCamera } from 'react-native-camera';
 
-import { AccountRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository } from '@store/repositories';
+import { CoreSchema } from '@store/schemas/latest';
 
 import { AppScreens } from '@common/constants';
+
+import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
-import { Payload } from '@common/libs/payload';
 
+import { Payload } from '@common/libs/payload';
 import { NormalizeDestination } from '@common/libs/utils';
 
 import Localize from '@locale';
@@ -36,6 +39,7 @@ export interface Props {
 
 export interface State {
     isLoading: boolean;
+    coreSettings: CoreSchema;
 }
 
 /* Component ==================================================================== */
@@ -61,6 +65,7 @@ class ScanView extends Component<Props, State> {
         super(props);
         this.state = {
             isLoading: false,
+            coreSettings: CoreRepository.getSettings(),
         };
 
         this.shouldRead = true;
@@ -290,12 +295,19 @@ class ScanView extends Component<Props, State> {
     };
 
     onReadCode = ({ data }: { data: string }) => {
+        const { coreSettings } = this.state;
+
         if (data) {
             // return if we don't need to read again
             if (!this.shouldRead) return;
 
             // should not read anymore until we decide about detect value
             this.setShouldRead(false);
+
+            // vibrate
+            if (coreSettings.hapticFeedback) {
+                VibrateHapticFeedback('impactLight');
+            }
 
             // handle the content
             this.handle(data);

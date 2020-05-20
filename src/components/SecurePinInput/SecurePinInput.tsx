@@ -16,6 +16,8 @@ import {
     TextInputKeyPressEventData,
 } from 'react-native';
 
+import { VibrateHapticFeedback } from '@common/helpers/interface';
+
 import { Icon } from '@components/Icon';
 
 import { AppColors } from '@theme';
@@ -27,6 +29,7 @@ interface Props {
     supportBiometric: boolean;
     length: number;
     clearOnFinish: boolean;
+    enableHapticFeedback?: boolean;
     onInputFinish: (pin: string) => void;
     onBiometryPress: () => void;
 }
@@ -46,6 +49,7 @@ class SecurePinInput extends Component<Props, State> {
         supportBiometric: true,
         length: 6,
         clearOnFinish: false,
+        enableHapticFeedback: true,
         onBiometryPress: () => {},
     };
 
@@ -84,7 +88,11 @@ class SecurePinInput extends Component<Props, State> {
 
     onDigitInput = (digit: any) => {
         const { digits } = this.state;
-        const { length } = this.props;
+        const { length, enableHapticFeedback } = this.props;
+
+        if (enableHapticFeedback) {
+            VibrateHapticFeedback('impactLight');
+        }
 
         if (digit === 'Backspace') {
             const arrayCode = digits.split('');
@@ -268,7 +276,7 @@ class SecurePinInput extends Component<Props, State> {
                             onKeyPress={this.onKeyPress}
                             onChangeText={this.handleEdit}
                             secureTextEntry
-                            ref={component => {
+                            ref={(component) => {
                                 this.input = component;
                             }}
                             value={digits}

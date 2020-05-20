@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Animated, Text } from 'react-native';
+import { Animated, Text } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
@@ -13,7 +13,6 @@ import { Button, Spacer, Icon } from '@components';
 import Localize from '@locale';
 
 // style
-import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */

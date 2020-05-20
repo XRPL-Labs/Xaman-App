@@ -3,13 +3,12 @@
  * Subscribe to navigation events
  */
 
-import { last, take, values } from 'lodash';
 import EventEmitter from 'events';
+import { last, take, values } from 'lodash';
 
 import { BackHandler, Platform, NativeModules } from 'react-native';
 
 import firebase from 'react-native-firebase';
-
 import {
     Navigation,
     ComponentDidAppearEvent,
@@ -20,7 +19,7 @@ import {
     OptionsModalTransitionStyle,
 } from 'react-native-navigation';
 
-import { Toast } from '@common/helpers/interface';
+import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
 import Locale from '@locale';
@@ -57,6 +56,9 @@ class NavigationService extends EventEmitter {
                         if (selectedTabIndex === 1) {
                             const currentOverlay = this.getCurrentOverlay();
                             if (currentOverlay !== AppScreens.Overlay.SwitchAccount) {
+                                // haptic vibrate
+                                VibrateHapticFeedback('impactLight');
+                                // show switch account overlay
                                 Navigation.showOverlay({
                                     component: {
                                         name: AppScreens.Overlay.SwitchAccount,

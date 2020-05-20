@@ -333,6 +333,7 @@
         "securitySettingsDescription": "Change your pincode or your biometric authentication authority here",
         "changePasscode": "Change pincode",
         "biometricAuthentication": "Biometric authentication",
+        "hapticFeedback": "Haptic feedback",
         "enterOldPasscode": "Enter your old pincode",
         "enterNewPasscode": "Enter your new pincode",
         "enterNewPasscodeAgain": "Enter your new pincode again",

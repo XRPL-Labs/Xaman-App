@@ -9,13 +9,14 @@ import React, { Component } from 'react';
 import { View, Keyboard } from 'react-native';
 
 import { AccountInfoType } from '@common/helpers/resolver';
-import { Toast } from '@common/helpers/interface';
+import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { LedgerService } from '@services';
 import { AppScreens } from '@common/constants';
-import { AccountRepository } from '@store/repositories';
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
+
+import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
 
 import LedgerExchange from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
@@ -68,6 +69,7 @@ export interface State {
     amount: string;
     payment: Payment;
     scanResult: ScanResult;
+    coreSettings: CoreSchema;
 }
 /* Component ==================================================================== */
 class SendView extends Component<Props, State> {
@@ -94,6 +96,7 @@ class SendView extends Component<Props, State> {
             amount: props.amount || '',
             payment: new Payment(),
             scanResult: props.scanResult || undefined,
+            coreSettings: CoreRepository.getSettings(),
         };
     }
 
@@ -161,7 +164,7 @@ class SendView extends Component<Props, State> {
     };
 
     submit = async (privateKey: string) => {
-        const { currency, amount, destination, source, payment } = this.state;
+        const { currency, amount, destination, source, payment, coreSettings } = this.state;
 
         this.changeView(Steps.Submitting);
 
@@ -261,12 +264,23 @@ class SendView extends Component<Props, State> {
                         currentStep: Steps.Verifying,
                     },
                     () => {
-                        payment.verify().then(() => {
+                        payment.verify().then((result) => {
+                            if (coreSettings.hapticFeedback) {
+                                if (result.success) {
+                                    VibrateHapticFeedback('notificationSuccess');
+                                } else {
+                                    VibrateHapticFeedback('notificationError');
+                                }
+                            }
+
                             this.changeView(Steps.Result);
                         });
                     },
                 );
             } else {
+                if (coreSettings.hapticFeedback) {
+                    VibrateHapticFeedback('notificationError');
+                }
                 this.changeView(Steps.Result);
             }
         });

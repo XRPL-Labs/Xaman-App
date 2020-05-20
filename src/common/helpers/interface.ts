@@ -180,6 +180,19 @@ const Prompt = (title: string, message: string, callbackOrButtons: any, options:
     }
 };
 
+const VibrateHapticFeedback = (
+    type:
+        | 'impactLight'
+        | 'impactMedium'
+        | 'impactHeavy'
+        | 'notificationSuccess'
+        | 'notificationWarning'
+        | 'notificationError',
+) => {
+    const { UtilsModule } = NativeModules;
+    UtilsModule.hapticFeedback(type);
+};
+
 /* Export ==================================================================== */
 export {
     IsIPhoneX,
@@ -191,4 +204,5 @@ export {
     Toast,
     ActionSheet,
     Prompt,
+    VibrateHapticFeedback,
 };

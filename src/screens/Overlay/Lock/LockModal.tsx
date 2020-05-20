@@ -15,6 +15,7 @@ import { BiometryType } from '@store/types';
 import { AuthenticationService } from '@services';
 
 import { Navigator } from '@common/helpers/navigator';
+import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
@@ -80,9 +81,16 @@ class LockModal extends Component<Props, State> {
     }
 
     onPasscodeEntered = (passcode: string) => {
+        const { coreSettings } = this.state;
+
         AuthenticationService.checkPasscode(passcode)
             .then(this.onUnlock)
             .catch((e) => {
+                // wrong passcode entered
+                if (coreSettings.hapticFeedback) {
+                    VibrateHapticFeedback('notificationError');
+                }
+
                 this.securePinInput.clearInput();
 
                 this.setState({
@@ -155,6 +163,7 @@ class LockModal extends Component<Props, State> {
                             supportBiometric={coreSettings.biometricMethod !== BiometryType.None && isSensorAvailable}
                             onBiometryPress={this.requestBiometricAuthenticate}
                             onInputFinish={this.onPasscodeEntered}
+                            enableHapticFeedback={coreSettings.hapticFeedback}
                             length={6}
                         />
                     </View>
