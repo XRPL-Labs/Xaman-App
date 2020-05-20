@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { get, set, has, isUndefined, isNumber, toInteger } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
-// import Localize from '@locale';
+import Locale from '@locale';
 
 import BaseTransaction from './base';
 import Amount from '../parser/common/amount';
@@ -251,6 +251,17 @@ class Payment extends BaseTransaction {
 
         return invoiceID;
     }
+
+    validate = () => {
+        /* eslint-disable-next-line */
+        return new Promise((resolve, reject) => {
+            if (!this.Amount) {
+                return reject(new Error(Locale.t('send.pleaseEnterAmount')));
+            }
+
+            return resolve();
+        });
+    };
 }
 
 /* Export ==================================================================== */

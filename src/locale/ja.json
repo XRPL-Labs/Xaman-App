@@ -507,11 +507,12 @@
       "memoPublicWarning": "メモ情報はすべての人に公開されます",
       "destinationNotExistTooLittleToCreate": "移行先のアカウントは以前に使用されておらず、残高もありません。 XRP元帳でアカウントをアクティブ化するには、少なくとも20のXRPの初回デポジットが必要です。",
       "destinationNotExistCreationWarning": "移行先のアカウントは以前に使用されておらず、残高もありません。このアカウントへの送信を続けると、20のXRP %{amount} XRPは、XRP元帳でアカウントをアクティブ化するために使用されます。つまり、20 XRPは使用できません。続行してもよろしいですか？",
-      "destinationCannotActivateWithIOU": "移行先のアカウントはこれまで使用されておらず、残高もありません。 XRP元帳でアカウントをアクティブ化するには、少なくとも20のXRPの初期預金をアカウントに送信する必要があります。 XRP以外のアセットは初回デポジットに使用できません。",
+      "destinationCannotActivateWithIOU": "移行先のアカウントは以前に使用されておらず、残高もありません。 XRP元帳でアカウントをアクティブ化するには、少なくとも20のXRPの初期預金をアカウントに送信する必要があります。 XRP以外のアセットは初回デポジットに使用できません。",
       "destinationTagIsRequired": "この支払いを送信するには宛先タグが必要です。",
       "unableGetRecipientAccountInfoPleaseTryAgain": "受信者のアカウント情報を取得できません。もう一度お試しください。",
       "noDestinationTag": "宛先タグなし",
-      "thisAddressRequiredDestinationTag": "このアドレスには宛先タグが必要です"
+      "thisAddressRequiredDestinationTag": "このアドレスには宛先タグが必要です",
+      "pleaseEnterAmount": "取引金額を入力してください"
    },
    "asset": {
       "addAsset": "アセットを追加",

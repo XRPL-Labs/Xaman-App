@@ -511,7 +511,8 @@
         "destinationTagIsRequired": "The destination tag is required for sending this payment.",
         "unableGetRecipientAccountInfoPleaseTryAgain": "Unable to get recipient account info please try again.",
         "noDestinationTag": "No destination tag",
-        "thisAddressRequiredDestinationTag": "This address requires a destination tag"
+        "thisAddressRequiredDestinationTag": "This address requires a destination tag",
+        "pleaseEnterAmount": "Please enter the amount of transaction"
     },
     "asset": {
         "addAsset": "Add asset",

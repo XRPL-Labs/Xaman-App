@@ -511,7 +511,8 @@
       "destinationTagIsRequired": "发送此付款需要提供目的地标签。",
       "unableGetRecipientAccountInfoPleaseTryAgain": "无法获取收件人帐户信息，请重试。",
       "noDestinationTag": "没有目的地标签",
-      "thisAddressRequiredDestinationTag": "该地址需要目的地标签"
+      "thisAddressRequiredDestinationTag": "该地址需要目的地标签",
+      "pleaseEnterAmount": "请输入交易金额"
    },
    "asset": {
       "addAsset": "添加资产",

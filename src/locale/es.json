@@ -511,7 +511,8 @@
       "destinationTagIsRequired": "Se requiere la etiqueta de destino para enviar este pago.",
       "unableGetRecipientAccountInfoPleaseTryAgain": "No se puede obtener la información de la cuenta del destinatario, intente nuevamente.",
       "noDestinationTag": "Sin etiqueta de destino",
-      "thisAddressRequiredDestinationTag": "Esta dirección requiere una etiqueta de destino"
+      "thisAddressRequiredDestinationTag": "Esta dirección requiere una etiqueta de destino",
+      "pleaseEnterAmount": "Por favor ingrese el monto de la transacción"
    },
    "asset": {
       "addAsset": "Agregar activo",

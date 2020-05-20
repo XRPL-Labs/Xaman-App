@@ -17,7 +17,7 @@ import { Payment } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { LedgerService } from '@services';
-import { NormalizeAmount } from '@common/libs/utils';
+import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 import { getAccountName } from '@common/helpers/resolver';
 
 import { Button, InfoMessage, Spacer } from '@components';
@@ -282,7 +282,9 @@ class PaymentTemplate extends Component<Props, State> {
                             />
                             <Text style={[styles.amountInput]}>
                                 {' '}
-                                {transaction.Amount?.currency ? transaction.Amount.currency : 'XRP'}
+                                {transaction.Amount?.currency
+                                    ? NormalizeCurrencyCode(transaction.Amount.currency)
+                                    : 'XRP'}
                             </Text>
                         </View>
                         {editableAmount && (

@@ -222,26 +222,27 @@ class ReviewTransactionModal extends Component<Props, State> {
             this.setState({
                 isPreparing: true,
             });
-            await transaction
-                .validate()
-                .catch((e: any) => {
-                    Navigator.showAlertModal({
-                        type: 'error',
-                        text: e.message,
-                        buttons: [
-                            {
-                                text: Localize.t('global.ok'),
-                                onPress: () => {},
-                                light: false,
-                            },
-                        ],
-                    });
-                })
-                .finally(() => {
-                    this.setState({
-                        isPreparing: false,
-                    });
+
+            try {
+                await transaction.validate();
+            } catch (e) {
+                Navigator.showAlertModal({
+                    type: 'error',
+                    text: e.message,
+                    buttons: [
+                        {
+                            text: Localize.t('global.ok'),
+                            onPress: () => {},
+                            light: false,
+                        },
+                    ],
                 });
+                return;
+            } finally {
+                this.setState({
+                    isPreparing: false,
+                });
+            }
         }
 
         // account is not activated and want to sign a tx

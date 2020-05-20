@@ -511,7 +511,8 @@
       "destinationTagIsRequired": "이 결제를 보내려면 대상 태그가 필요합니다.",
       "unableGetRecipientAccountInfoPleaseTryAgain": "수신자 계정 정보를 얻을 수 없습니다. 다시 시도하십시오.",
       "noDestinationTag": "대상 태그가 없습니다",
-      "thisAddressRequiredDestinationTag": "이 주소에는 목적지 태그가 필요합니다"
+      "thisAddressRequiredDestinationTag": "이 주소에는 목적지 태그가 필요합니다",
+      "pleaseEnterAmount": "거래 금액을 입력하십시오"
    },
    "asset": {
       "addAsset": "자산 추가",
