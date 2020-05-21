@@ -75,6 +75,10 @@ class LoggerService {
                     data = this.normalizeError(data);
                 }
 
+                if (!data) {
+                    data = '';
+                }
+
                 if (this.isDEV) {
                     const output = `[${namespace}] ${message}`;
                     console[level](output, data);
