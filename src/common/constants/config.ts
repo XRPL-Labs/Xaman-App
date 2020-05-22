@@ -45,6 +45,12 @@ export default {
             main: 'https://xrpscan.com/tx/',
             test: 'https://test.bithomp.com/explorer/',
         },
+        {
+            value: 'xrplorer',
+            title: 'XRPlorer',
+            main: 'https://xrplorer.com/transaction/',
+            test: 'https://test.bithomp.com/explorer/',
+        },
     ],
 
     // localization config
