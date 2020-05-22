@@ -200,6 +200,12 @@ class BaseTransaction {
      */
     calculateFee = (netFee?: number) => {
         let baseFee;
+
+        // if netFee is not set, default to 12 drops
+        if (!netFee) {
+            netFee = 12;
+        }
+
         // 10 drops × (33 + (Fulfillment size in bytes ÷ 16))
         if (this.Type === 'EscrowFinish' && this.Fulfillment) {
             baseFee = new BigNumber(netFee).multipliedBy(

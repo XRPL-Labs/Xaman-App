@@ -80,6 +80,8 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
         const counterParties = CounterPartyRepository.findAll() as any;
 
+        if (isEmpty(counterParties)) return;
+
         const availableParties = [] as CounterPartySchema[];
         const availableCurrencies = [] as any;
 
@@ -159,7 +161,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
         if (isEmpty(counterParties)) {
             return (
-                <Text style={[AppStyles.subtext]} adjustsFontSizeToFit numberOfLines={1}>
+                <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]} adjustsFontSizeToFit numberOfLines={1}>
                     No Item to show
                 </Text>
             );
@@ -200,7 +202,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
         if (isEmpty(counterParties)) {
             return (
-                <Text style={[AppStyles.subtext]} adjustsFontSizeToFit numberOfLines={1}>
+                <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]} adjustsFontSizeToFit numberOfLines={1}>
                     No Item to show
                 </Text>
             );
@@ -239,6 +241,8 @@ class AddCurrencyOverlay extends Component<Props, State> {
     };
 
     renderContent = () => {
+        const { selectedCurrency } = this.state;
+
         return (
             <View style={[AppStyles.visibleContent, AppStyles.centerAligned]}>
                 <View style={AppStyles.panelHeader}>
@@ -289,7 +293,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     <Footer>
                         <Button
                             block
-                            isDisabled={false}
+                            isDisabled={!selectedCurrency}
                             onPress={this.addCurrency}
                             style={[AppStyles.buttonGreen]}
                             label={Localize.t('asset.addAndSign')}
@@ -301,10 +305,6 @@ class AddCurrencyOverlay extends Component<Props, State> {
     };
 
     render() {
-        const { counterParties } = this.state;
-
-        if (!counterParties) return null;
-
         return (
             <View style={AppStyles.flex1}>
                 <TouchableWithoutFeedback onPress={this.slideDown}>

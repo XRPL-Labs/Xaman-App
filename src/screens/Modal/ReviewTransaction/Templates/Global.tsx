@@ -37,6 +37,7 @@ class GlobalTemplate extends Component<Props, State> {
 
         try {
             const { Fee } = LedgerService.getLedgerStatus();
+
             const minTransactionFee = new Amount(transaction.calculateFee(Fee)).dropsToXrp();
 
             if (!transaction.Fee || Number(minTransactionFee) > Number(transaction.Fee)) {

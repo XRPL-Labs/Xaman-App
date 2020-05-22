@@ -147,8 +147,6 @@ class HomeView extends Component<Props, State> {
     };
 
     updateUI = (updatedAccount: AccountSchema) => {
-        const { account } = this.state;
-
         if (updatedAccount.isValid() && updatedAccount.default) {
             // update the UI
             this.setState({
@@ -156,22 +154,16 @@ class HomeView extends Component<Props, State> {
             });
 
             // when account balance changed update spendable accounts
-            if (account.isValid() && account.balance !== updatedAccount.balance) {
-                this.updateSpendableAccounts();
-            }
+            this.updateSpendableAccounts();
         }
     };
 
     updateSpendableAccounts = () => {
-        const { account } = this.state;
-
-        if (account.isValid()) {
-            setTimeout(() => {
-                this.setState({
-                    spendableAccounts: AccountRepository.getSpendableAccounts(),
-                });
-            }, 200);
-        }
+        setTimeout(() => {
+            this.setState({
+                spendableAccounts: AccountRepository.getSpendableAccounts(),
+            });
+        }, 300);
     };
 
     addCurrency = () => {
@@ -621,7 +613,7 @@ class HomeView extends Component<Props, State> {
     render() {
         const { account, privacyMode } = this.state;
 
-        if (isEmpty(account)) {
+        if (isEmpty(account) || !account.isValid()) {
             return this.renderEmpty();
         }
 
