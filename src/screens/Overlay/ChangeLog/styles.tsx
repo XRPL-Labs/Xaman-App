@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     visibleContent: {
         height: AppSizes.screen.height * 0.8,
         width: AppSizes.screen.width * 0.9,
-        backgroundColor: AppColors.light,
+        backgroundColor: AppColors.white,
         borderRadius: 20,
     },
     headerContainer: {

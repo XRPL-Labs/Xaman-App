@@ -30,6 +30,12 @@ export enum AppStateStatus {
     Inactive = 'Inactive',
 }
 
+// events
+declare interface AppService {
+    on(event: 'appStateChange', listener: (status: AppStateStatus) => void): this;
+    on(event: string, listener: Function): this;
+}
+
 /* Service  ==================================================================== */
 class AppService extends EventEmitter {
     netStatus: NetStateStatus;

@@ -259,7 +259,9 @@
       "otherAssetsDesc": "XRP分类帐还允许您持有XRP以外的资产的余额以及发送和接收。这些资产可以由XRP分类帐上的其他帐户发行。如果您希望能够发送或接收非XRP资产，则必须信任非XRP资产的发行方。",
       "explainMyBalance": "解释我的余额",
       "xrpYouOwnVsYourSpendableBalance": "您拥有的XRP与可支出的余额。",
-      "emptyAccountAddFirstAccount": "这里有点空，添加您的第一个帐户。"
+      "emptyAccountAddFirstAccount": "这里有点空，添加您的第一个帐户。",
+      "openSignRequest": "公开招募请求",
+      "sendPaymentTo": "汇款至"
    },
    "events": {
       "noTransaction": "没有交易",

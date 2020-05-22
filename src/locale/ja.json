@@ -259,7 +259,9 @@
       "otherAssetsDesc": "XRP元帳を使用すると、XRP以外の資産の残高を保持し、資産を送受信することもできます。これらの資産は、XRP元帳の他のアカウントから発行できます。非XRPアセットを送受信できるようにするには、非XRPアセットの発行者を信頼する必要があります。",
       "explainMyBalance": "私のバランスを説明してください",
       "xrpYouOwnVsYourSpendableBalance": "所有するXRPと支出可能な残高のXRP。",
-      "emptyAccountAddFirstAccount": "ここは少し空です。最初のアカウントを追加してください。"
+      "emptyAccountAddFirstAccount": "ここは少し空です。最初のアカウントを追加してください。",
+      "openSignRequest": "オープンサインリクエスト",
+      "sendPaymentTo": "に支払いを送る"
    },
    "events": {
       "noTransaction": "取引なし",

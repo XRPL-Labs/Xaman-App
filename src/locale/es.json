@@ -259,7 +259,9 @@
       "otherAssetsDesc": "El libro mayor de XRP también le permite mantener saldos y enviar y recibir activos que no sean XRP. Estos activos pueden ser emitidos por otras cuentas en el libro mayor XRP. Si desea poder enviar o recibir un activo que no sea XRP, deberá confiar en el emisor del activo que no sea XRP.",
       "explainMyBalance": "Explica mi saldo",
       "xrpYouOwnVsYourSpendableBalance": "XRP que posee frente a su saldo gastable.",
-      "emptyAccountAddFirstAccount": "Está un poco vacío aquí, agrega tu primera cuenta."
+      "emptyAccountAddFirstAccount": "Está un poco vacío aquí, agrega tu primera cuenta.",
+      "openSignRequest": "Solicitud de firma abierta",
+      "sendPaymentTo": "Enviar pago a"
    },
    "events": {
       "noTransaction": "Sin transacciones",

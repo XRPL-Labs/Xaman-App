@@ -22,7 +22,8 @@ import { StringTypeDetector, StringType, StringDecoder } from 'xumm-string-decod
 
 import { Navigation } from 'react-native-navigation';
 
-import { LedgerService, LinkingService, SocketService } from '@services';
+import { LedgerService, LinkingService, SocketService, AppService } from '@services';
+import { AppStateStatus } from '@services/AppService';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
@@ -83,8 +84,13 @@ class HomeView extends Component<Props, State> {
         AccountRepository.on('accountUpdate', this.updateUI);
         AccountRepository.on('changeDefaultAccount', this.onDefaultAccountChange);
 
+        // update spendable accounts on account add/remove
         AccountRepository.on('accountCreate', this.updateSpendableAccounts);
         AccountRepository.on('accountRemove', this.updateSpendableAccounts);
+
+        // check for the clipboard content when app come from background
+        AppService.on('appStateChange', this.onAppStateChange);
+
         // listen for screen appear event
         Navigation.events().bindComponent(this);
     }
@@ -102,6 +108,21 @@ class HomeView extends Component<Props, State> {
         });
     }
 
+    /**
+     * Listen for app state change to check for clipboard content
+     */
+    onAppStateChange = () => {
+        if (
+            AppService.prevAppState === AppStateStatus.Background &&
+            AppService.currentAppState === AppStateStatus.Active
+        ) {
+            this.checkClipboardContent();
+        }
+    };
+
+    /**
+     * Check the app for XRPL destination and XUMM payloads
+     */
     checkClipboardContent = async () => {
         const { ignoreClipboardContent } = this.state;
 
@@ -277,14 +298,14 @@ class HomeView extends Component<Props, State> {
 
         switch (clipboardDetected.getType()) {
             case StringType.XummPayloadReference:
-                title = 'Open Sign Request';
+                title = Localize.t('home.openSignRequest');
                 break;
             case StringType.XrplDestination:
-                title = 'Send payment to';
+                title = Localize.t('home.sendPaymentTo');
                 content = parsed.to;
                 break;
             case StringType.PayId:
-                title = 'Send payment to';
+                title = Localize.t('home.sendPaymentTo');
                 content = parsed.payId;
                 break;
             default:
@@ -292,13 +313,14 @@ class HomeView extends Component<Props, State> {
         }
 
         return (
-            <View style={styles.clipboardGuideContainer}>
-                <TouchableOpacity
-                    onPress={() => {
-                        this.onClipboardGuideClick();
-                    }}
-                    style={AppStyles.centerContent}
-                >
+            <TouchableOpacity
+                style={styles.clipboardGuideContainer}
+                activeOpacity={0.8}
+                onPress={() => {
+                    this.onClipboardGuideClick();
+                }}
+            >
+                <View style={[AppStyles.centerContent, AppStyles.flex1]}>
                     <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorWhite]}>{title}</Text>
                     {!!content && (
                         <>
@@ -306,16 +328,18 @@ class HomeView extends Component<Props, State> {
                             <Text style={[AppStyles.monoSubText, AppStyles.colorWhite]}>{content}</Text>
                         </>
                     )}
-                </TouchableOpacity>
+                </View>
                 <TouchableOpacity
+                    hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+                    activeOpacity={0.5}
                     onPress={() => {
                         this.onClipboardGuideClick(true);
                     }}
-                    style={[AppStyles.flex1, AppStyles.rightAligned, AppStyles.centerContent]}
+                    style={[AppStyles.centerContent]}
                 >
                     <Icon name="IconX" size={25} style={AppStyles.imgColorWhite} />
                 </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
         );
     };
 

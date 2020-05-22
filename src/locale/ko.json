@@ -259,7 +259,9 @@
       "otherAssetsDesc": "XRP 원장을 사용하면 XRP 이외의 자산의 잔액을 보유하고 보내고받을 수 있습니다. 이러한 자산은 XRP 원장의 다른 계정에서 발행 할 수 있습니다. 비 XRP 자산을 보내거나 받으려면 비 XRP 자산의 발행자를 신뢰해야합니다.",
       "explainMyBalance": "내 균형을 설명",
       "xrpYouOwnVsYourSpendableBalance": "소유 한 XRP와 지출 가능한 잔액",
-      "emptyAccountAddFirstAccount": "여기에 첫 번째 계정을 추가하는 것이 약간 비어 있습니다."
+      "emptyAccountAddFirstAccount": "여기에 첫 번째 계정을 추가하는 것이 약간 비어 있습니다.",
+      "openSignRequest": "오픈 사인 요청",
+      "sendPaymentTo": "로 결제"
    },
    "events": {
       "noTransaction": "거래 없음",
