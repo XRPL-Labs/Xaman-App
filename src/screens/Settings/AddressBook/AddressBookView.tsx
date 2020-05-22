@@ -2,13 +2,14 @@
  * AddressBook List Screen
  */
 
-import _ from 'lodash';
+import { isEmpty, sortBy, flatMap } from 'lodash';
 import Fuse from 'fuse.js';
 import { Results } from 'realm';
-import React, { Component } from 'react';
-import { Navigation } from 'react-native-navigation';
 
+import React, { Component } from 'react';
 import { View, Text, SectionList, TouchableHighlight, Image, ImageBackground } from 'react-native';
+
+import { Navigation } from 'react-native-navigation';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
@@ -75,6 +76,8 @@ class AddressBookView extends Component<Props, State> {
         const contactsCategoryMap = [] as any;
 
         contacts.forEach((item) => {
+            if (!item || !item.name) return;
+
             const firstLetter = item.name.charAt(0).toUpperCase();
 
             if (
@@ -92,20 +95,28 @@ class AddressBookView extends Component<Props, State> {
         });
 
         // Sort
-        return _(contactsCategoryMap)
-            .sortBy((o) => {
-                return o.title;
-            })
-            .value();
+        return sortBy(contactsCategoryMap, (o) => {
+            return o.title;
+        });
     };
 
     onSearchChange = (text: string) => {
         const { contacts } = this.state;
 
+        if (!text) {
+            this.setState({
+                dataSource: this.convertContactsArrayToMap(contacts),
+            });
+            return;
+        }
+
         const contactsFilter = new Fuse(contacts, {
             keys: ['name', 'address', 'destinationTag'],
+            shouldSort: false,
+            includeScore: false,
         });
-        const newContacts = contactsFilter.search(text) as any;
+
+        const newContacts = flatMap(contactsFilter.search(text), 'item') as any;
 
         this.setState({
             dataSource: this.convertContactsArrayToMap(newContacts),
@@ -149,7 +160,7 @@ class AddressBookView extends Component<Props, State> {
     render() {
         const { contacts, dataSource } = this.state;
 
-        if (_.isEmpty(contacts)) {
+        if (isEmpty(contacts)) {
             return (
                 <View testID="address-book-view" style={[AppStyles.container]}>
                     <Header
@@ -201,12 +212,6 @@ class AddressBookView extends Component<Props, State> {
                         },
                     }}
                 />
-                {/* <SearchBar
-                    placeholder={Localize.t('settings.enterNameOrAddress')}
-                    inputStyle={styles.searchInput}
-                    containerStyle={styles.searchContainer}
-                    onChangeText={this.onSearchChange}
-                /> */}
                 <SearchBar
                     onChangeText={this.onSearchChange}
                     placeholder={Localize.t('settings.enterNameOrAddress')}
