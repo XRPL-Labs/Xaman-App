@@ -40,7 +40,17 @@ class GlobalTemplate extends Component<Props, State> {
 
             const minTransactionFee = new Amount(transaction.calculateFee(Fee)).dropsToXrp();
 
-            if (!transaction.Fee || Number(minTransactionFee) > Number(transaction.Fee)) {
+            // override the fee if
+            // fee not set
+            // the min transaction fee is more than set fee
+            // the fee is more than enough
+
+            const shouldOverrideFee =
+                typeof transaction.Fee === 'undefined' ||
+                Number(minTransactionFee) > Number(transaction.Fee) ||
+                Number(transaction.Fee) > 0.1;
+
+            if (shouldOverrideFee) {
                 // set the min transaction fee
                 transaction.Fee = minTransactionFee;
 
