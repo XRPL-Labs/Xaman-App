@@ -345,7 +345,8 @@
       "logsCopiedToClipboard": "会话日志已复制到剪贴板",
       "additionalSecurity": "额外的安全性",
       "eraseData": "清除资料",
-      "eraseDataDescription": "尝试10次密码失败后擦除所有数据"
+      "eraseDataDescription": "尝试10次密码失败后擦除所有数据",
+      "viewChangeLog": "查看变更日志"
    },
    "account": {
       "addAccount": "新增帐号",

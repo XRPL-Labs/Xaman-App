@@ -345,7 +345,8 @@
       "logsCopiedToClipboard": "Registros de sesión copiados al portapapeles",
       "additionalSecurity": "Seguridad adicional",
       "eraseData": "Borrar datos",
-      "eraseDataDescription": "Borrar todos los datos después de 10 intentos fallidos de contraseña"
+      "eraseDataDescription": "Borrar todos los datos después de 10 intentos fallidos de contraseña",
+      "viewChangeLog": "Ver registro de cambios"
    },
    "account": {
       "addAccount": "Agregar una cuenta",

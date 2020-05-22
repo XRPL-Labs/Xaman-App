@@ -345,7 +345,8 @@
         "logsCopiedToClipboard": "Session Logs  copied to clipboard",
         "additionalSecurity": "Additional security",
         "eraseData": "Erase data",
-        "eraseDataDescription": "Erase all data after 10 failed passcode attempts"
+        "eraseDataDescription": "Erase all data after 10 failed passcode attempts",
+        "viewChangeLog": "View changelog"
     },
     "account": {
         "addAccount": "Add an account",

@@ -345,7 +345,8 @@
       "logsCopiedToClipboard": "클립 보드에 복사 된 세션 로그",
       "additionalSecurity": "추가 보안",
       "eraseData": "데이터 지우기",
-      "eraseDataDescription": "10 번의 암호 시도 실패 후 모든 데이터 지우기"
+      "eraseDataDescription": "10 번의 암호 시도 실패 후 모든 데이터 지우기",
+      "viewChangeLog": "변경 내역보기"
    },
    "account": {
       "addAccount": "계정 추가",

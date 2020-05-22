@@ -345,7 +345,8 @@
       "logsCopiedToClipboard": "クリップボードにコピーされたセッションログ",
       "additionalSecurity": "追加のセキュリティ",
       "eraseData": "データを消去",
-      "eraseDataDescription": "パスコードの試行が10回失敗した後にすべてのデータを消去する"
+      "eraseDataDescription": "パスコードの試行が10回失敗した後にすべてのデータを消去する",
+      "viewChangeLog": "変更ログを表示"
    },
    "account": {
       "addAccount": "アカウントを追加",

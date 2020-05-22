@@ -89,6 +89,24 @@ class AdvancedSettingsView extends Component<Props, State> {
         );
     };
 
+    showChangeLog = () => {
+        const currentVersionCode = DeviceInfo.getVersion();
+
+        Navigator.showOverlay(
+            AppScreens.Overlay.ChangeLog,
+            {
+                overlay: {
+                    handleKeyboardEvents: true,
+                },
+                layout: {
+                    backgroundColor: 'transparent',
+                    componentBackgroundColor: 'transparent',
+                },
+            },
+            { version: currentVersionCode },
+        );
+    };
+
     render() {
         const { coreSettings } = this.state;
 
@@ -143,6 +161,17 @@ class AdvancedSettingsView extends Component<Props, State> {
                             </Text>
                         </View>
                     </View>
+                    <TouchableOpacity style={[styles.row]} onPress={this.showChangeLog}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text style={styles.label}>{Localize.t('settings.viewChangeLog')}</Text>
+                        </View>
+
+                        <View style={[AppStyles.centerAligned, AppStyles.row]}>
+                            <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
+                        </View>
+                    </TouchableOpacity>
+
+                    <Text style={styles.descriptionText}>{Localize.t('global.debug')}</Text>
                     <View style={[styles.row]}>
                         <View style={[AppStyles.flex1]}>
                             <Text style={styles.label}>{Localize.t('global.deviceUUID')}</Text>
@@ -154,8 +183,6 @@ class AdvancedSettingsView extends Component<Props, State> {
                             </Text>
                         </View>
                     </View>
-
-                    <Text style={styles.descriptionText}>{Localize.t('global.debug')}</Text>
                     <TouchableOpacity
                         style={[styles.row]}
                         onPress={() => {
