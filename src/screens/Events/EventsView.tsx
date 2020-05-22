@@ -555,9 +555,7 @@ class EventsView extends Component<Props, State> {
                             style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent]}
                         >
                             <Image style={[AppStyles.emptyIcon]} source={Images.ImageNoEvents} />
-                            <Text style={[AppStyles.emptyText]}>
-                                There are no events because you do not have an account.
-                            </Text>
+                            <Text style={[AppStyles.emptyText]}>{Localize.t('events.emptyEventsNoAccount')}</Text>
                             <Button
                                 testID="add-account-button"
                                 label={Localize.t('home.addAccount')}

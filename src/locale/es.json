@@ -258,7 +258,8 @@
       "howActivateMyAccountDesc": "Para evitar la creación de cuentas de spam, el libro mayor de XRP requiere que se depositen al menos 20 XRP en una cuenta para activarlo. El 20 XRP no se pierde: permanecerá en su cuenta, pero no puede gastarlo. Para comenzar a usar su cuenta, asegúrese de realizar un depósito superior a 20 XRP en su cuenta.",
       "otherAssetsDesc": "El libro mayor de XRP también le permite mantener saldos y enviar y recibir activos que no sean XRP. Estos activos pueden ser emitidos por otras cuentas en el libro mayor XRP. Si desea poder enviar o recibir un activo que no sea XRP, deberá confiar en el emisor del activo que no sea XRP.",
       "explainMyBalance": "Explica mi saldo",
-      "xrpYouOwnVsYourSpendableBalance": "XRP que posee frente a su saldo gastable."
+      "xrpYouOwnVsYourSpendableBalance": "XRP que posee frente a su saldo gastable.",
+      "emptyAccountAddFirstAccount": "Está un poco vacío aquí, agrega tu primera cuenta."
    },
    "events": {
       "noTransaction": "Sin transacciones",
@@ -289,7 +290,8 @@
       "setSignerList": "Establecer lista de firmantes",
       "updateAccountSettings": "Actualizar la configuración de la cuenta",
       "setARegularKey": "Establecer una clave regular",
-      "canNotFetchTransactions": "¡No se pueden recuperar transacciones de la cuenta!"
+      "canNotFetchTransactions": "¡No se pueden recuperar las transacciones de la cuenta!",
+      "emptyEventsNoAccount": "No hay eventos porque no tienes una cuenta."
    },
    "profile": {
       "availableInFuture": "Esta característica estará disponible en el futuro.",
@@ -357,7 +359,7 @@
       "YouJustCreatedAccount": "Acaba de crear una nueva cuenta nueva.",
       "yeahLetsGo": "¡Hurra, vamos!",
       "enterYourPassphrase": "Ingrese su frase de contraseña",
-      "pleaseEnterSafePassphrase": "Cree una frase de contraseña de longitud extendida que sea fácil de recordar, pero que otros no puedan adivinar.",
+      "pleaseEnterSafePassphrase": "Cree una frase de contraseña de longitud extendida que sea fácil de recordar, pero que otros puedan adivinar.",
       "enterPassphrase": "Ingrese la frase de contraseña",
       "repeatPassphrase": "Repetir frase de contraseña",
       "passphraseShouldContain": "La fuerza de su frase de contraseña debe ser al menos Justa, utilice una frase de contraseña larga o más difícil (la frase de contraseña larga es mejor).",

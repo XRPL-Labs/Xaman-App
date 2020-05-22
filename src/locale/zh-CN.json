@@ -258,7 +258,8 @@
       "howActivateMyAccountDesc": "为了防止创建垃圾邮件帐户，XRP分类帐至少需要将20 XRP存入一个帐户才能激活它。 20 XRP不会丢失：它将保留在您的帐户中，但您不能花掉。要开始使用您的帐户，请确保您的帐户中存入的金额超过20 XRP。",
       "otherAssetsDesc": "XRP分类帐还允许您持有XRP以外的资产的余额以及发送和接收。这些资产可以由XRP分类帐上的其他帐户发行。如果您希望能够发送或接收非XRP资产，则必须信任非XRP资产的发行方。",
       "explainMyBalance": "解释我的余额",
-      "xrpYouOwnVsYourSpendableBalance": "您拥有的XRP与可支出的余额。"
+      "xrpYouOwnVsYourSpendableBalance": "您拥有的XRP与可支出的余额。",
+      "emptyAccountAddFirstAccount": "这里有点空，添加您的第一个帐户。"
    },
    "events": {
       "noTransaction": "没有交易",
@@ -289,7 +290,8 @@
       "setSignerList": "设置签名者列表",
       "updateAccountSettings": "更新帐户设置",
       "setARegularKey": "设置常规密钥",
-      "canNotFetchTransactions": "无法提取帐户交易！"
+      "canNotFetchTransactions": "无法提取帐户交易！",
+      "emptyEventsNoAccount": "没有活动，因为您没有帐户。"
    },
    "profile": {
       "availableInFuture": "将来将提供此功能。",
@@ -454,7 +456,7 @@
       "newPassphrase": "新密码",
       "regularKeyFor": "常规密钥",
       "allDoneYouCanGoToNextStepNow": "全部完成，您可以继续下一步",
-      "disableMasterKeyWarning": "事务禁用该帐户的私钥。这可能会将您锁定。仅在完全确定这是您想要的并且知道自己在做什么时，才继续。",
+      "disableMasterKeyWarning": "事务禁用该帐户的私钥。这可能将您拒之门外。仅在完全确定这是您想要的并且知道自己在做什么时，才继续。",
       "switchAccount": "切换帐户",
       "useMnemonicPassphrase": "使用助记密码",
       "mnemonicLargeAmountAlert": "如果您考虑在您的帐户具有重大价值（例如，储蓄，大量的XRP或其他令牌）时导入助记符帐户，请考虑在XUMM中创建一个新帐户以使助记符帐户保持脱机状态。",

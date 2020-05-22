@@ -258,7 +258,8 @@
         "howActivateMyAccountDesc": "To prevent spam account creation, the XRP ledger requires at least 20 XRP to be deposited into an account to activate it. The 20 XRP is not lost: it will remain in your account, but you cannot spend it. To start using your account, make sure a deposit greater than 20 XRP is made to your account.",
         "otherAssetsDesc": "The XRP ledger also allows you to hold balances of, and to send and receive, assets other than XRP. These assets can be issued by other accounts on the XRP ledger. If you want to be able to send or receive a non-XRP asset, you will have to trust the issuer of the non-XRP asset.",
         "explainMyBalance": "Explain my balance",
-        "xrpYouOwnVsYourSpendableBalance": "XRP you own vs. your spendable balance."
+        "xrpYouOwnVsYourSpendableBalance": "XRP you own vs. your spendable balance.",
+        "emptyAccountAddFirstAccount": "It’s a little bit empty here add your first account."
     },
     "events": {
         "noTransaction" : "No transactions",
@@ -289,7 +290,8 @@
         "setSignerList": "Set Signer List",
         "updateAccountSettings": "Update account settings",
         "setARegularKey": "Set a Regular Key",
-        "canNotFetchTransactions": "Can not fetch account transactions!"
+        "canNotFetchTransactions": "Can not fetch account transactions!",
+        "emptyEventsNoAccount": "There are no events because you do not have an account."
     },
     "profile": {
         "availableInFuture": "This feature will be available in the future.",

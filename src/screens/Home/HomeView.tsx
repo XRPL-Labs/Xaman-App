@@ -22,7 +22,7 @@ import { StringTypeDetector, StringType, StringDecoder } from 'xumm-string-decod
 
 import { Navigation } from 'react-native-navigation';
 
-import { LedgerService, LinkingService } from '@services';
+import { LedgerService, LinkingService, AuthenticationService } from '@services';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
@@ -33,6 +33,7 @@ import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
+import { VibrateHapticFeedback } from '@common/helpers/interface';
 
 import Localize from '@locale';
 
@@ -92,13 +93,15 @@ class HomeView extends Component<Props, State> {
         const { account } = this.state;
 
         InteractionManager.runAfterInteractions(() => {
-            // update account details
-            if (account.isValid()) {
-                LedgerService.updateAccountsDetails([account.address]);
-            } else {
-                this.setState({
-                    account: AccountRepository.getDefaultAccount(),
-                });
+            if (!AuthenticationService.locked) {
+                // update account details
+                if (account.isValid()) {
+                    LedgerService.updateAccountsDetails([account.address]);
+                } else {
+                    this.setState({
+                        account: AccountRepository.getDefaultAccount(),
+                    });
+                }
             }
 
             // check for XRPL destination and payload in clipboard
@@ -475,7 +478,7 @@ class HomeView extends Component<Props, State> {
                 )}
 
                 <ScrollView style={AppStyles.flex1}>
-                    {account.lines &&
+                    {!isEmpty(account.lines) &&
                         account.lines.map((line: TrustLineSchema, index: number) => {
                             return (
                                 <TouchableOpacity
@@ -598,7 +601,7 @@ class HomeView extends Component<Props, State> {
                         style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent]}
                     >
                         <Image style={[AppStyles.emptyIcon]} source={Images.ImageFirstAccount} />
-                        <Text style={[AppStyles.emptyText]}>It’s a little bit empty here add your first account.</Text>
+                        <Text style={[AppStyles.emptyText]}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
                         <Button
                             testID="add-account-button"
                             label={Localize.t('home.addAccount')}
@@ -645,6 +648,8 @@ class HomeView extends Component<Props, State> {
 
                         <TouchableOpacity
                             onPress={() => {
+                                VibrateHapticFeedback('impactMedium');
+
                                 Share.share({
                                     title: Localize.t('home.shareAccount'),
                                     message: account.address,

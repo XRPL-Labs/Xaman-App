@@ -208,7 +208,7 @@
       "pressBackAgainToExit": "もう一度押すと終了します",
       "fraudAlert": "詐欺警告",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "このアカウントは詐欺または詐欺のアドレスとして報告されます。注意して続行してください",
-      "biometricIsNotAvailable": "バイオメトリクス（指紋または顔ID）は使用できません。デバイスが生体認証をサポートしている場合は、まずそれを構成してください（OS設定）。",
+      "biometricIsNotAvailable": "バイオメトリクス（指紋または顔ID）は使用できません。デバイスが生体認証をサポートしている場合は、最初にそれを構成してください（OS設定）。",
       "clearSearch": "検索をクリア",
       "noNameFound": "名前が見つかりません",
       "readMoreInTheFAQ": "FAQで詳細を読む",
@@ -258,7 +258,8 @@
       "howActivateMyAccountDesc": "スパムアカウントの作成を防ぐために、XRP元帳では、アカウントをアクティブ化するために少なくとも20のXRPをアカウントに入金する必要があります。 20 XRPは失われません。アカウントには残りますが、使うことはできません。アカウントの使用を開始するには、20 XRPを超える預金がアカウントに行われていることを確認してください。",
       "otherAssetsDesc": "XRP元帳を使用すると、XRP以外の資産の残高を保持し、資産を送受信することもできます。これらの資産は、XRP元帳の他のアカウントから発行できます。非XRPアセットを送受信できるようにするには、非XRPアセットの発行者を信頼する必要があります。",
       "explainMyBalance": "私のバランスを説明してください",
-      "xrpYouOwnVsYourSpendableBalance": "所有するXRPと支出可能な残高のXRP。"
+      "xrpYouOwnVsYourSpendableBalance": "所有するXRPと支出可能な残高のXRP。",
+      "emptyAccountAddFirstAccount": "ここは少し空です。最初のアカウントを追加してください。"
    },
    "events": {
       "noTransaction": "取引なし",
@@ -289,7 +290,8 @@
       "setSignerList": "署名者リストの設定",
       "updateAccountSettings": "アカウント設定を更新する",
       "setARegularKey": "通常のキーを設定する",
-      "canNotFetchTransactions": "アカウントのトランザクションを取得できません！"
+      "canNotFetchTransactions": "アカウントのトランザクションを取得できません！",
+      "emptyEventsNoAccount": "アカウントがないため、イベントはありません。"
    },
    "profile": {
       "availableInFuture": "この機能は将来利用可能になる予定です。",
@@ -421,7 +423,7 @@
       "accountSettings": "アカウントの編集",
       "switchAddAccount": "アカウントの切り替え/追加",
       "accountLabel": "アカウントラベル",
-      "pleaseChooseAccountLabel": "このアカウントの名前を入力してください（「支出」、「普通」など）。",
+      "pleaseChooseAccountLabel": "このアカウントの名前を入力してください（例：「支出」または「普通預金」）。",
       "pleaseEnterLabel": "新しいラベルを入力してください",
       "accessLevel": "アクセスレベル",
       "accessLevelChangeAlert": "読み取り専用モードからフルアクセスモードに変更するには、アカウントの秘密鍵を入力する必要があります",
@@ -462,8 +464,8 @@
       "walletReserve": "ウォレットリザーブ",
       "accountBalance": "勘定残高",
       "availableForSpending": "支出可能",
-      "deleteAccountWarning": "これはアカウント削除トランザクションです。アカウントに署名すると、残りのすべての資金（アカウントを削除するためのXRP元帳の料金が5 XRPであるため、最後の5つの予約済みXRPを除く）が構成された宛先に送られます。宛先を2回確認し、実際にXRP元帳でアカウントを削除する場合にのみ続行してください",
-      "deleteAccountObjectsExistError": "このアカウントは、他のアセット、分散型Exchangeオファー、エスクロー（作成者または受取人として）などの特定のXRP元帳オブジェクトが含まれているため、削除できません",
+      "deleteAccountWarning": "これはアカウント削除トランザクションです。アカウントに署名すると、残りのすべての資金（アカウントを削除するためのXRP元帳の料金が5 XRPであるため、最後の5つの予約済みXRPを除く）が構成された宛先に送られます。宛先を2回確認し、XRP元帳で実際にアカウントを削除する場合にのみ続行してください",
+      "deleteAccountObjectsExistError": "このアカウントは、他のアセット、分散型Exchangeオファー、エスクロー（作成者または受益者として）などの特定のXRP元帳オブジェクトが含まれているため、削除できません",
       "unableToCheckAccountObjects": "アカウントオブジェクトを確認できません。XRPレジャーノードに接続していることを確認してください",
       "unableGetDestinationAccountInfo": "宛先アカウント情報を取得できません。XRP元帳ノードに接続していることを確認してください",
       "destinationAccountIsNotActivated": "宛先アカウントがアクティブ化されていません。XRP元帳の資金口座である必要があります。",
@@ -506,8 +508,8 @@
       "selectedAccountDoNotSupportAsset": "選択したアカウントは選択したアセットをサポートしていません。",
       "memoPublicWarning": "メモ情報はすべての人に公開されます",
       "destinationNotExistTooLittleToCreate": "移行先のアカウントは以前に使用されておらず、残高もありません。 XRP元帳でアカウントをアクティブ化するには、少なくとも20のXRPの初回デポジットが必要です。",
-      "destinationNotExistCreationWarning": "移行先のアカウントは以前に使用されておらず、残高もありません。このアカウントへの送信を続けると、20のXRP %{amount} XRPは、XRP元帳でアカウントをアクティブ化するために使用されます。つまり、20 XRPは使用できません。続行してもよろしいですか？",
-      "destinationCannotActivateWithIOU": "移行先のアカウントは以前に使用されておらず、残高もありません。 XRP元帳でアカウントをアクティブ化するには、少なくとも20のXRPの初期預金をアカウントに送信する必要があります。 XRP以外のアセットは初回デポジットに使用できません。",
+      "destinationNotExistCreationWarning": "移行先のアカウントはこれまで使用されておらず、残高もありません。このアカウントへの送信を続けると、20のXRP %{amount} XRPは、XRP元帳でアカウントをアクティブ化するために使用されます。つまり、20 XRPは使用できません。続行してもよろしいですか？",
+      "destinationCannotActivateWithIOU": "移行先のアカウントはこれまで使用されておらず、残高もありません。 XRP元帳でアカウントをアクティブ化するには、少なくとも20のXRPの初期預金をアカウントに送信する必要があります。 XRP以外のアセットは初回デポジットに使用できません。",
       "destinationTagIsRequired": "この支払いを送信するには宛先タグが必要です。",
       "unableGetRecipientAccountInfoPleaseTryAgain": "受信者のアカウント情報を取得できません。もう一度お試しください。",
       "noDestinationTag": "宛先タグなし",
@@ -521,7 +523,7 @@
       "successRemoved": "アカウントからアセットが正常に削除されました",
       "failedRemove": "アセットを削除できません。エラーが発生しました！",
       "removeAsset": "アセットを削除",
-      "addingAssetReserveDescription": "アセットを追加すると、アカウントの予約が5 XRP増加します",
+      "addingAssetReserveDescription": "アセットを追加すると、アカウントの予約が5倍になります",
       "unableToRemoveAssetNotInDefaultState": "このアセットはアカウントから削除できません。発行者がこのアセットに特定の設定を追加したか、発行アカウントが適切に構成されていないためです。"
    },
    "exchange": {
@@ -541,7 +543,7 @@
       "scannedQRIsNotXRPAddress": "スキャンしたQRコードはXRPアドレスコードではありません！",
       "scannedQRIsNotXummPayload": "スキャンしたQRコードはXUMMペイロードではありません！",
       "theQRIsNotWhatWeExpect": "このQRコードは私たちが期待するものではありません！",
-      "invalidQRTryNewOneOrTryAgain": "無効なQRコードです。新しいコードを試すか、もう一度お試しください"
+      "invalidQRTryNewOneOrTryAgain": "無効なQRコードです。新しいコードを試すか、もう一度やり直してください"
    },
    "payload": {
       "payloadHandledByAnotherClient": "別のクライアントによって処理されるペイロード",
