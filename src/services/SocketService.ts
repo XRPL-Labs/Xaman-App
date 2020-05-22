@@ -151,6 +151,10 @@ class SocketService extends EventEmitter {
         }
     };
 
+    isConnected = (): boolean => {
+        return this.status === SocketStateStatus.Connected;
+    };
+
     setDefaultNode = (node: string) => {
         let chain = NodeChain.Main;
 

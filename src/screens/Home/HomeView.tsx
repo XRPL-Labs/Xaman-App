@@ -22,7 +22,7 @@ import { StringTypeDetector, StringType, StringDecoder } from 'xumm-string-decod
 
 import { Navigation } from 'react-native-navigation';
 
-import { LedgerService, LinkingService, AuthenticationService } from '@services';
+import { LedgerService, LinkingService, SocketService } from '@services';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
@@ -93,17 +93,10 @@ class HomeView extends Component<Props, State> {
         const { account } = this.state;
 
         InteractionManager.runAfterInteractions(() => {
-            if (!AuthenticationService.locked) {
+            if (account.isValid() && SocketService.isConnected()) {
                 // update account details
-                if (account.isValid()) {
-                    LedgerService.updateAccountsDetails([account.address]);
-                } else {
-                    this.setState({
-                        account: AccountRepository.getDefaultAccount(),
-                    });
-                }
+                LedgerService.updateAccountsDetails([account.address]);
             }
-
             // check for XRPL destination and payload in clipboard
             this.checkClipboardContent();
         });
