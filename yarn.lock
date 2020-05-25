@@ -9006,10 +9006,10 @@ ripple-secret-codec@1.0.2:
     ripple-hashes latest
     ripple-keypairs latest
 
-rippled-ws-client@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/rippled-ws-client/-/rippled-ws-client-1.5.0.tgz#ea05ed3ad328989db6af4596a18ccb3c3b06a889"
-  integrity sha512-iO8TovzJQ1sdN/kJIAzsOAraSLmV8cOR27jBauK2f5k1yBpLLkBe3m17dfBkCMycBGjn6atU/oD2lInYj4FVqg==
+rippled-ws-client@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/rippled-ws-client/-/rippled-ws-client-1.5.1.tgz#76c6056a6d5ebf49029ffdf7a34a0109f1fdb5a5"
+  integrity sha512-ThhQav0KU5wk9CxQ4Yyt7rP6yosqXBc/2lN6RhXjYSKjgBrQeOyFCErAYR6kl3pLq2UkjBcoG/V/MgZ4yp0O/g==
   dependencies:
     websocket "^1.0.31"
 
@@ -10661,10 +10661,10 @@ xtend@^4.0.0, xtend@~4.0.1:
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
 
-xumm-string-decode@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/xumm-string-decode/-/xumm-string-decode-0.3.0.tgz#7efadcc3469af22ce540cce626250305112daa5b"
-  integrity sha512-A9f7tVD4//kYo4h7NgyficNpP31z4wjpDxaMXt336FTJ3KMKsETAulMNJxiywB3lS9vEJjOrHMONxTvNWVchmQ==
+xumm-string-decode@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/xumm-string-decode/-/xumm-string-decode-0.4.0.tgz#92ace9e36298bd1060ee611270c81b176f77f2d6"
+  integrity sha512-hHyylFvnEttTj2ZbyGxC5uE3uCGGtX9mfIIr5pehhtUILD3NTGgDD9nCPMzZWD+x788clyPQhiM69KvrCMy1Hg==
   dependencies:
     "@ungap/url-search-params" "^0.1.4"
     debug "^4.1.1"

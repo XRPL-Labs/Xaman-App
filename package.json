@@ -45,11 +45,11 @@
     "react-native-webview": "^9.2.2",
     "realm": "^3.6.5",
     "ripple-binary-codec": "^0.2.6",
-    "rippled-ws-client": "^1.5.0",
+    "rippled-ws-client": "^1.5.1",
     "uuid": "^7.0.3",
     "xrpl-accountlib": "0.3.6",
     "xrpl-tagged-address-codec": "^0.2.1",
-    "xumm-string-decode": "^0.3.0"
+    "xumm-string-decode": "^0.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
