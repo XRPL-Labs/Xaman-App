@@ -355,7 +355,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         </Text>
                         <View style={styles.qrImage}>
                             {/* eslint-disable-next-line */}
-                            <QRCode size={170} value={`https://livenet.xrpl.org/transactions/${tx.Hash}`} />
+                            <QRCode size={170} value={this.getTransactionLink()} />
                         </View>
                         <Spacer />
                         <Text style={[styles.hashText]}>{tx.Hash}</Text>

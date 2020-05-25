@@ -70,18 +70,28 @@ const NormalizeAmount = (amount: string): string => {
 };
 
 const NormalizeCurrencyCode = (currencyCode: string): string => {
+    // Native XRP
+    if (currencyCode === 'XRP') {
+        return currencyCode;
+    }
+
+    // IOU
     // currency code is hex try to decode it
     if (currencyCode.match(/^[A-F0-9]{40}$/)) {
         const decoded = HexEncoding.toString(currencyCode);
-        const clean = decoded.replace(/\0.*$/g, '').replace(/(\r\n|\n|\r)/gm, ' ');
-        if (clean.toLowerCase().trim() !== 'xrp') {
+
+        if (decoded) {
+            const clean = decoded.replace(/\0.*$/g, '').replace(/(\r\n|\n|\r)/gm, ' ');
+            // check if it's fake XRP
+            if (clean.toLowerCase().trim() === 'xrp') {
+                return 'FakeXRP';
+            }
             return clean;
         }
 
         return `${currencyCode.slice(0, 4)}...`;
     }
 
-    // check if it's fake XRP
     if (currencyCode.toLowerCase().trim() === 'xrp') {
         return 'FakeXRP';
     }
