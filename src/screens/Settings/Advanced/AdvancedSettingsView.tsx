@@ -155,11 +155,11 @@ class AdvancedSettingsView extends Component<Props, State> {
                             <Text style={styles.label}>{Localize.t('global.version')}</Text>
                         </View>
 
-                        <View style={[AppStyles.centerAligned, AppStyles.row]}>
+                        <TouchableOpacity style={[AppStyles.centerAligned, AppStyles.row]} onPress={this.showChangeLog}>
                             <Text selectable style={[styles.value]}>
                                 {DeviceInfo.getReadableVersion()}
                             </Text>
-                        </View>
+                        </TouchableOpacity>
                     </View>
                     <TouchableOpacity style={[styles.row]} onPress={this.showChangeLog}>
                         <View style={[AppStyles.flex3]}>
