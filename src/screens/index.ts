@@ -40,6 +40,8 @@ import Alert from './Overlay/Alert';
 import RequestDecline from './Overlay/RequestDecline';
 import EnterDestinationTag from './Overlay/EnterDestinationTag';
 import ExplainBalance from './Overlay/ExplainBalance';
+import ChangeLog from './Overlay/ChangeLog';
+import ConnectionIssue from './Overlay/ConnectionIssue';
 
 // Transaction
 import Send from './Send';
@@ -110,6 +112,8 @@ export {
     RequestDecline,
     EnterDestinationTag,
     ExplainBalance,
+    ChangeLog,
+    ConnectionIssue,
     // transaction
     Send,
     Exchange,

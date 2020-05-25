@@ -2,11 +2,13 @@
  * Credits screen
  */
 import React, { Component } from 'react';
-import { SafeAreaView, View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens, AppConfig } from '@common/constants';
+
+import { IsIPhoneX } from '@common/helpers/interface';
 
 import { Header } from '@components';
 
@@ -50,8 +52,10 @@ class CreditsView extends Component<Props, State> {
     render() {
         const { uri } = this.state;
 
+        const paddingBottom = IsIPhoneX() ? 20 : 0;
+
         return (
-            <View testID="credits-view" style={[styles.container]}>
+            <View testID="credits-view" style={[AppStyles.flex1]}>
                 <Header
                     centerComponent={{ text: Localize.t('settings.credits') }}
                     leftComponent={{
@@ -61,15 +65,14 @@ class CreditsView extends Component<Props, State> {
                         },
                     }}
                 />
-                <SafeAreaView style={[AppStyles.flex1, AppStyles.centerContent]}>
-                    <WebView
-                        startInLoadingState
-                        renderLoading={() => (
-                            <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
-                        )}
-                        source={{ uri }}
-                    />
-                </SafeAreaView>
+                <WebView
+                    containerStyle={[AppStyles.flex1, { paddingBottom }]}
+                    startInLoadingState
+                    renderLoading={() => (
+                        <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
+                    )}
+                    source={{ uri }}
+                />
             </View>
         );
     }

@@ -83,6 +83,7 @@ class SearchBar extends PureComponent<Props, State> {
                         placeholder={placeholder}
                         underlineColorAndroid="rgba(0,0,0,0)"
                         autoCapitalize="none"
+                        autoCorrect={false}
                     />
                 </View>
 

@@ -17,7 +17,6 @@ import {
     LayoutChangeEvent,
 } from 'react-native';
 
-import { CoreRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
 import { AppScreens } from '@common/constants';
@@ -25,10 +24,11 @@ import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
+import Preferences from '@common/libs/preferences';
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { Button, AccordionPicker, Footer, Spacer, TextInput } from '@components';
+import { Button, AccordionPicker, Footer, Spacer, TextInput, Header } from '@components';
 
 // locale
 import Localize from '@locale';
@@ -110,7 +110,7 @@ class SummaryStep extends Component {
         } else if (item.hasCurrency(currency.currency)) {
             setSource(item);
         } else {
-            Alert.alert(Localize.t('global.error'), Localize.t('send.selectedAccountDoNotSupportCurrency'));
+            Alert.alert(Localize.t('global.error'), Localize.t('send.selectedAccountDoNotSupportAsset'));
         }
     };
 
@@ -122,12 +122,12 @@ class SummaryStep extends Component {
         setAmount(sendAmount);
     };
 
-    showMemoAlert = () => {
+    showMemoAlert = async () => {
         const { payment } = this.context;
 
-        const coreSettings = CoreRepository.getSettings();
+        const displayedMemoAlert = await Preferences.get(Preferences.keys.DISPLAYED_MEMO_ALERT);
 
-        if (coreSettings.showMemoAlert && payment.Memos) {
+        if (!displayedMemoAlert && payment.Memos) {
             Prompt(
                 Localize.t('global.pleaseNote'),
                 Localize.t('send.memoPublicWarning'),
@@ -135,9 +135,7 @@ class SummaryStep extends Component {
                     {
                         text: Localize.t('global.doNotRemindMe'),
                         onPress: () => {
-                            CoreRepository.saveSettings({
-                                showMemoAlert: false,
-                            });
+                            Preferences.set(Preferences.keys.DISPLAYED_MEMO_ALERT, 'YES');
                         },
                         style: 'destructive',
                     },
@@ -308,7 +306,8 @@ class SummaryStep extends Component {
         return (
             <View testID="send-summary-view" style={[styles.container]}>
                 <KeyboardAvoidingView
-                    keyboardVerticalOffset={Platform.OS === 'ios' ? 130 : 0}
+                    enabled={Platform.OS === 'ios'}
+                    keyboardVerticalOffset={Header.Height}
                     behavior="padding"
                     style={[AppStyles.flex1, AppStyles.stretchSelf]}
                 >
@@ -341,8 +340,7 @@ class SummaryStep extends Component {
                             </View>
                             <Spacer size={15} />
 
-                            {/* eslint-disable-next-line */}
-                            <View style={[{ paddingLeft: 10 }]}>
+                            <View style={[styles.rowTitle]}>
                                 <View style={[styles.pickerItem]}>
                                     <Text style={[styles.pickerItemTitle]}>{destination.name}</Text>
                                     <Text
@@ -359,8 +357,7 @@ class SummaryStep extends Component {
 
                             <View style={AppStyles.row}>
                                 <View style={AppStyles.flex1}>
-                                    {/* eslint-disable-next-line */}
-                                    <View style={[{ paddingLeft: 10 }]}>
+                                    <View style={[styles.rowTitle]}>
                                         <Text style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
                                             {destination.tag && `${Localize.t('global.destinationTag')}: `}
                                             <Text style={AppStyles.colorBlue}>
@@ -384,13 +381,12 @@ class SummaryStep extends Component {
                         <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.currency')}
+                                    {Localize.t('global.asset')}
                                 </Text>
                             </View>
                             <Spacer size={15} />
 
-                            {/* eslint-disable-next-line */}
-                            <View style={[{ paddingLeft: 10 }]}>{this.renderCurrencyItem(currency)}</View>
+                            <View style={[styles.rowTitle]}>{this.renderCurrencyItem(currency)}</View>
                         </View>
 
                         {/* Amount */}

@@ -42,7 +42,7 @@
 		A2AFF142243E79C30007005E /* Crypto.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF12A243E79C30007005E /* Crypto.m */; };
 		A2AFF143243E79C30007005E /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF12D243E79C30007005E /* Utils.m */; };
 		A2B145CB243E935F00E952B6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A2B145CA243E935F00E952B6 /* LaunchScreen.storyboard */; };
-		A2B9D13E2449BAA400259841 /* UserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = A2B9D13D2449B83C00259841 /* UserDefaults.m */; };
+		A2B9D13E2449BAA400259841 /* SharedPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = A2B9D13D2449B83C00259841 /* SharedPreferences.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -117,8 +117,8 @@
 		A2AFF12D243E79C30007005E /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
 		A2B145CA243E935F00E952B6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A2B145CC243F734600E952B6 /* XUMM.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = XUMM.entitlements; path = XUMM/XUMM.entitlements; sourceTree = "<group>"; };
-		A2B9D13C2449B83900259841 /* UserDefaults.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserDefaults.h; sourceTree = "<group>"; };
-		A2B9D13D2449B83C00259841 /* UserDefaults.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserDefaults.m; sourceTree = "<group>"; };
+		A2B9D13C2449B83900259841 /* SharedPreferences.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedPreferences.h; sourceTree = "<group>"; };
+		A2B9D13D2449B83C00259841 /* SharedPreferences.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedPreferences.m; sourceTree = "<group>"; };
 		C53185DA05E46CBC4EE88304 /* Pods-XUMM-XUMMTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM-XUMMTests.debug.xcconfig"; path = "Target Support Files/Pods-XUMM-XUMMTests/Pods-XUMM-XUMMTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D90CCA2FDB346DFCE12B4606 /* Pods-XUMM-XUMMTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM-XUMMTests.release.xcconfig"; path = "Target Support Files/Pods-XUMM-XUMMTests/Pods-XUMM-XUMMTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -325,8 +325,8 @@
 		A2B9D13B2449B81800259841 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				A2B9D13D2449B83C00259841 /* UserDefaults.m */,
-				A2B9D13C2449B83900259841 /* UserDefaults.h */,
+				A2B9D13D2449B83C00259841 /* SharedPreferences.m */,
+				A2B9D13C2449B83900259841 /* SharedPreferences.h */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -692,7 +692,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A2B9D13E2449BAA400259841 /* UserDefaults.m in Sources */,
+				A2B9D13E2449BAA400259841 /* SharedPreferences.m in Sources */,
 				A2AFF142243E79C30007005E /* Crypto.m in Sources */,
 				A2AFF143243E79C30007005E /* Utils.m in Sources */,
 				A2AFF141243E79C30007005E /* UIView+Toast.m in Sources */,
@@ -799,7 +799,7 @@
 				);
 				INFOPLIST_FILE = XUMM/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 0.4.1;
+				MARKETING_VERSION = 0.5.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -824,7 +824,7 @@
 				DEVELOPMENT_TEAM = LK5BBJNJZ6;
 				INFOPLIST_FILE = XUMM/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 0.4.1;
+				MARKETING_VERSION = 0.5.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

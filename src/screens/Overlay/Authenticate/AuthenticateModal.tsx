@@ -12,6 +12,7 @@ import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 import { BiometryType } from '@store/types';
 
+import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
@@ -146,9 +147,16 @@ class AuthenticateModal extends Component<Props, State> {
     };
 
     onPasscodeEntered = (passcode: string) => {
+        const { coreSettings } = this.state;
+
         AuthenticationService.checkPasscode(passcode)
             .then(this.onSuccess)
-            .catch(e => {
+            .catch((e) => {
+                // wrong passcode entered
+                if (coreSettings.hapticFeedback) {
+                    VibrateHapticFeedback('notificationError');
+                }
+
                 this.securePinInput.clearInput();
                 Alert.alert(Localize.t('global.error'), e.toString());
             });
@@ -167,11 +175,12 @@ class AuthenticateModal extends Component<Props, State> {
                 </Text>
 
                 <SecurePinInput
-                    ref={r => {
+                    ref={(r) => {
                         this.securePinInput = r;
                     }}
                     onInputFinish={this.onPasscodeEntered}
                     length={6}
+                    enableHapticFeedback={coreSettings.hapticFeedback}
                 />
 
                 {biometricMethod !== BiometryType.None && biometricAvailable && (
@@ -207,7 +216,7 @@ class AuthenticateModal extends Component<Props, State> {
                 style={[styles.container, { backgroundColor: interpolateColor }]}
             >
                 <View
-                    ref={r => {
+                    ref={(r) => {
                         this.contentView = r;
                     }}
                     style={[styles.visibleContent, { marginBottom: offsetBottom }]}

@@ -3,6 +3,7 @@ import Global from './Global';
 import TrustSet from './TrustSet';
 import Payment from './Payment';
 import AccountSet from './AccountSet';
+import AccountDelete from './AccountDelete';
 import EscrowCancel from './EscrowCancel';
 import EscrowCreate from './EscrowCreate';
 import EscrowFinish from './EscrowFinish';
@@ -16,6 +17,7 @@ export {
     TrustSet,
     Payment,
     AccountSet,
+    AccountDelete,
     EscrowCancel,
     EscrowCreate,
     EscrowFinish,

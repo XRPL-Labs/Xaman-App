@@ -27,7 +27,7 @@ import { Prompt } from '@common/helpers/interface';
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { Button, AccordionPicker, Footer } from '@components';
+import { Header, Button, AccordionPicker, Footer } from '@components';
 
 import Localize from '@locale';
 
@@ -246,7 +246,8 @@ class DetailsStep extends Component {
         return (
             <View testID="send-details-view" style={[styles.container]}>
                 <KeyboardAvoidingView
-                    keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0}
+                    enabled={Platform.OS === 'ios'}
+                    keyboardVerticalOffset={Header.Height}
                     behavior="padding"
                     style={[AppStyles.flex1, AppStyles.stretchSelf]}
                 >
@@ -267,7 +268,7 @@ class DetailsStep extends Component {
                                 }}
                                 resizeMode="stretch"
                             />
-                            <View style={[{ paddingLeft: 10 }]}>
+                            <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
                                     {Localize.t('global.from')}
                                 </Text>
@@ -283,14 +284,14 @@ class DetailsStep extends Component {
                         </View>
                         {/* Currency */}
                         <View style={[styles.rowItem]}>
-                            <View style={[{ paddingLeft: 10 }]}>
+                            <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                                    {Localize.t('global.currency')}
+                                    {Localize.t('global.asset')}
                                 </Text>
                             </View>
                             <AccordionPicker
                                 onSelect={this.onCurrencyChange}
-                                items={['XRP', ...filter(source.lines, (l) => l.balance > 0)]}
+                                items={source ? ['XRP', ...filter(source.lines, (l) => l.balance > 0)] : []}
                                 renderItem={this.renderCurrencyItem}
                                 selectedItem={currency}
                                 keyExtractor={(i) => (typeof i === 'string' ? i : i.currency.id)}
@@ -300,7 +301,7 @@ class DetailsStep extends Component {
 
                         {/* Amount */}
                         <View style={[styles.rowItem]}>
-                            <View style={[{ paddingLeft: 10 }]}>
+                            <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
                                     {Localize.t('global.amount')}
                                 </Text>

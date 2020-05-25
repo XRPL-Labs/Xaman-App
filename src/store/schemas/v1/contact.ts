@@ -28,18 +28,6 @@ class Contact extends Realm.Object {
         super();
         Object.assign(this, obj);
     }
-
-    // public static migration(oldRealm: any, newRealm: any) {
-    //     /*  eslint-disable-next-line */
-    //     console.log('migrating Contact model to v2');
-
-    //     const newObjects = newRealm.objects('Contact') as Contact[];
-
-    //     for (let i = 0; i < newObjects.length; i++) {
-    //         // set empty destination tag
-    //         newObjects[i].destinationTag = '';
-    //     }
-    // }
 }
 
 export default Contact;

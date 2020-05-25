@@ -673,7 +673,7 @@ class RecipientStep extends Component<Props, State> {
         if (!dataSource) return null;
 
         return (
-            <View testID="send-recipient-view" style={[AppStyles.pageContainerFull]}>
+            <View testID="send-recipient-view" style={[AppStyles.container]}>
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal]}>
                     <View style={[AppStyles.row]}>
                         <TextInput

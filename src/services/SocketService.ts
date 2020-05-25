@@ -1,21 +1,24 @@
 /**
  * Socket service
  */
+import EventEmitter from 'events';
 import { Platform } from 'react-native';
 import RippledWsClient from 'rippled-ws-client';
 import DeviceInfo from 'react-native-device-info';
-import EventEmitter from 'events';
 
 import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 import { NodeChain } from '@store/types';
 
-import { AppConfig } from '@common/constants';
+import { Navigator } from '@common/helpers/navigator';
 
-import AppStateService from '@services/AppStateService';
+import { AppConfig, AppScreens } from '@common/constants';
+
+import AppService from '@services/AppService';
 import LoggerService from '@services/LoggerService';
 import NavigationService from '@services/NavigationService';
 
+/* Types  ==================================================================== */
 type BaseCommand = {
     id?: string;
     command: string;
@@ -61,11 +64,18 @@ enum SocketStateStatus {
     Disconnected = 'Disconnected',
 }
 
+// events
+declare interface SocketService {
+    on(event: 'connect', listener: () => void): this;
+    on(event: string, listener: Function): this;
+}
+
+/* Service  ==================================================================== */
 class SocketService extends EventEmitter {
     node: string;
     chain: NodeChain;
     connection: any;
-    connectionTimeout: 10;
+    connectionTimeout: number;
     origin: string;
     logger: any;
     status: SocketStateStatus;
@@ -79,6 +89,7 @@ class SocketService extends EventEmitter {
         this.node = null;
         this.chain = null;
         this.connection = null;
+        this.connectionTimeout = 5;
         this.origin = `https://xumm.app/#${Platform.OS}/${DeviceInfo.getReadableVersion()}`;
         this.status = SocketStateStatus.Disconnected;
         this.logger = LoggerService.createLogger('Socket');
@@ -92,34 +103,27 @@ class SocketService extends EventEmitter {
         this.offEvent = (event: string, fn: any) => {
             return this.connection.removeListener(event, fn);
         };
-
-        this.onNodeChange = this.onNodeChange.bind(this);
-        this.onClose = this.onClose.bind(this);
-        this.onError = this.onError.bind(this);
     }
 
     initialize = (coreSettings: CoreSchema) => {
         return new Promise((resolve, reject) => {
             try {
+                // get/set default node
+                let defaultNode = __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0];
+
+                if (coreSettings && coreSettings.defaultNode) {
+                    defaultNode = coreSettings.defaultNode;
+                }
+
+                // set default node
+                this.setDefaultNode(defaultNode);
+
                 // listen on navigation change event
                 NavigationService.on('setRoot', (root: string) => {
                     // we just need to connect to socket when we are in DefaultStack not Onboarding
                     if (root === 'DefaultStack') {
-                        // get/set default node
-                        let defaultNode = __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0];
-
-                        if (coreSettings && coreSettings.defaultNode) {
-                            defaultNode = coreSettings.defaultNode;
-                        }
-
-                        // set default node
-                        this.setDefaultNode(defaultNode);
-
-                        // connect to the node
-                        this.connect();
-
                         // listen for net state change
-                        AppStateService.on('netStateChange', (newState: string) => {
+                        AppService.on('netStateChange', (newState: string) => {
                             if (newState === 'Connected') {
                                 this.reconnect();
                             } else {
@@ -136,7 +140,7 @@ class SocketService extends EventEmitter {
         });
     };
 
-    onNodeChange(url: string, chain: NodeChain) {
+    onNodeChange = (url: string, chain: NodeChain) => {
         // if the default node changed
         if (url !== this.node) {
             // change default node
@@ -145,9 +149,13 @@ class SocketService extends EventEmitter {
             // reconnect
             this.reconnect();
         }
-    }
+    };
 
-    setDefaultNode(node: string) {
+    isConnected = (): boolean => {
+        return this.status === SocketStateStatus.Connected;
+    };
+
+    setDefaultNode = (node: string) => {
         let chain = NodeChain.Main;
 
         // it is a verified type
@@ -171,45 +179,50 @@ class SocketService extends EventEmitter {
         }
         // set the chain
         this.chain = chain;
-    }
+    };
 
-    close() {
+    showConnectionProblem = () => {
+        Navigator.showOverlay(
+            AppScreens.Overlay.ConnectionIssue,
+            {
+                overlay: {
+                    handleKeyboardEvents: true,
+                },
+                layout: {
+                    backgroundColor: 'transparent',
+                    componentBackgroundColor: 'transparent',
+                },
+            },
+            {},
+        );
+    };
+
+    close = () => {
         // close current connection
         if (this.connection) {
             this.connection.close();
             this.connection = undefined;
         }
-    }
+    };
 
-    reconnect() {
-        /* eslint-disable-next-line */
-        return new Promise((resolve, reject) => {
-            try {
-                this.logger.debug('Reconnecting socket service...');
-                // close current connection
-                this.close();
-                // reconnect
-                this.connect()
-                    .then(() => {
-                        resolve();
-                        return reject();
-                    })
-                    .catch(() => {
-                        return reject();
-                    });
-            } catch (e) {
-                this.logger.error('Reconnect Error', e);
-                return reject();
-            }
-        });
-    }
+    reconnect = () => {
+        try {
+            this.logger.debug('Reconnecting socket service...');
+            // close current connection
+            this.close();
+            // reconnect
+            this.connect();
+        } catch (e) {
+            this.logger.error('Reconnect Error', e);
+        }
+    };
 
     sendPayload = (payload: any) => {
         this.logger.debug('Sending Socket Payload', payload);
         return this.connection.send(payload);
     };
 
-    send(
+    send = (
         payload:
             | ServerInfoPayload
             | SubscribePayload
@@ -218,7 +231,7 @@ class SocketService extends EventEmitter {
             | AccountTransactionsPayload
             | GetTransactionPayload
             | BookOffersPayload,
-    ): any {
+    ): any => {
         return new Promise((resolve, reject) => {
             // sent tracker
             let sent = false;
@@ -244,32 +257,31 @@ class SocketService extends EventEmitter {
                 }
             }, 5000);
         });
-    }
+    };
 
-    onError(err: any) {
+    onError = (err: any) => {
         this.logger.error('Socket Error: ', err);
-    }
+    };
 
-    onConnect(Connection: any) {
-        this.logger.debug(`Connected to Rippled Node ${this.node}`);
+    onConnect = (Connection: any) => {
+        this.logger.debug(`Connected to XRPL  Node ${this.node}`);
         this.connection = Connection;
 
         // change socket status
         this.status = SocketStateStatus.Connected;
         // emit on connect event
         this.emit('connect', Connection);
-    }
+    };
 
-    onClose() {
+    onClose = () => {
         this.status = SocketStateStatus.Disconnected;
         this.logger.warn('Socket Closed');
-    }
+    };
 
-    connect() {
-        /* eslint-disable-next-line */
+    establish = (node: string) => {
         return new Promise((resolve, reject) => {
             try {
-                new RippledWsClient(this.node, {
+                new RippledWsClient(node, {
                     Origin: this.origin,
                     ConnectTimeout: this.connectionTimeout,
                     MaxConnectTryCount: 1,
@@ -290,18 +302,49 @@ class SocketService extends EventEmitter {
                                 this.emit('connect', Connection);
                             }
                         });
-                        return resolve();
+
+                        resolve();
                     })
-                    .catch((e: any) => {
-                        this.logger.error('Socket connecting Error', e);
-                        return reject();
+                    .catch(() => {
+                        this.logger.error(`Unable to connect to node: ${node}`);
+                        reject();
                     });
             } catch (e) {
-                this.logger.error('Socket Error', e);
-                return reject();
+                this.logger.error(`Unable to connect to node: ${node}`, e);
+                reject();
             }
         });
-    }
+    };
+
+    connect = async () => {
+        let nodes = [];
+
+        if (this.chain === NodeChain.Main) {
+            nodes = AppConfig.nodes.main;
+        } else {
+            nodes = AppConfig.nodes.test;
+        }
+
+        // move preferred node to the first
+        nodes.sort((x, y) => {
+            return x === this.node ? -1 : y === this.node ? 1 : 0;
+        });
+
+        // try to connect to the nodes in the list
+        for (let i = 0; i < nodes.length; i++) {
+            try {
+                await this.establish(nodes[i]);
+                // connected close the loop
+                break;
+            } catch {
+                // if this was the last one emit the max exceed event
+                if (i === nodes.length - 1) {
+                    this.logger.error('Tried all node, unable to connect');
+                    this.showConnectionProblem();
+                }
+            }
+        }
+    };
 }
 
 export default new SocketService();

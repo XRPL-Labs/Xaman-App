@@ -9,19 +9,19 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
 
 
-public class UserDefaultsModule extends ReactContextBaseJavaModule {
+public class SharedPreferencesModule extends ReactContextBaseJavaModule {
     private String preferencesName = "xumm";
 
     private final ReactApplicationContext reactContext;
 
-    public UserDefaultsModule(ReactApplicationContext reactContext) {
+    public SharedPreferencesModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
     }
 
     @Override
     public String getName() {
-        return "UserDefaultsModule";
+        return "SharedPreferencesModule";
     }
 
     @ReactMethod

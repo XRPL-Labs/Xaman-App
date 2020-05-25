@@ -1,7 +1,8 @@
 /**
  * Currency Settings Overlay
  */
-import find from 'lodash/filter';
+import find from 'lodash/find';
+import get from 'lodash/get';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
@@ -11,9 +12,8 @@ import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 import { AccountRepository } from '@store/repositories';
 
 import { TrustSet, Payment } from '@common/libs/ledger/transactions';
-import Submitter from '@common/libs/ledger/submitter';
-import Flag from '@common/libs/ledger/parser/common/flag';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
+import Flag from '@common/libs/ledger/parser/common/flag';
 
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
@@ -108,20 +108,24 @@ class CurrencySettingsModal extends Component<Props, State> {
     getLatestLineBalance = () => {
         const { account, trustLine } = this.props;
 
-        LedgerService.getAccountLines(account.address).then(async (accountLines: any) => {
-            const { lines } = accountLines;
+        LedgerService.getAccountLines(account.address)
+            .then(async (accountLines: any) => {
+                const { lines } = accountLines;
 
-            const line = find(lines, { account: trustLine.currency.issuer, currency: trustLine.currency.currency });
+                const line = find(lines, { account: trustLine.currency.issuer, currency: trustLine.currency.currency });
 
-            if (line && line.length > 0) {
-                const lineBalance = new BigNumber(line[0].balance);
+                if (line) {
+                    const lineBalance = new BigNumber(line.balance);
 
-                this.setState({
-                    latestLineBalance: lineBalance.decimalPlaces(15).toNumber(),
-                    canRemove: lineBalance.isLessThan(0.000001),
-                });
-            }
-        });
+                    this.setState({
+                        latestLineBalance: lineBalance.decimalPlaces(15).toNumber(),
+                        canRemove: lineBalance.isLessThan(0.000001),
+                    });
+                }
+            })
+            .catch(() => {
+                // ignore
+            });
     };
 
     clearDustAmounts = (privateKey: string) => {
@@ -171,6 +175,33 @@ class CurrencySettingsModal extends Component<Props, State> {
         });
     };
 
+    checkForIssuerState = () => {
+        const { trustLine } = this.props;
+
+        return new Promise((resolve, reject) => {
+            LedgerService.getAccountInfo(trustLine.currency.issuer)
+                .then((issuerAccountInfo: any) => {
+                    const issuerFlags = new Flag(
+                        'Account',
+                        get(issuerAccountInfo, ['account_data', 'Flags'], 0),
+                    ).parse();
+
+                    if (
+                        trustLine.limit_peer > 0 ||
+                        (!trustLine.no_ripple_peer && !issuerFlags.defaultRipple) ||
+                        (trustLine.no_ripple_peer && issuerFlags.defaultRipple)
+                    ) {
+                        return reject();
+                    }
+
+                    return resolve();
+                })
+                .catch(() => {
+                    return reject();
+                });
+        });
+    };
+
     removeTrustLine = async (privateKey: string) => {
         const { trustLine, account } = this.props;
         const { latestLineBalance } = this.state;
@@ -185,7 +216,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                 await this.clearDustAmounts(privateKey);
             } catch {
                 InteractionManager.runAfterInteractions(() => {
-                    Alert.alert(Localize.t('global.error'), Localize.t('currency.failedRemove'));
+                    Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
                 });
 
                 this.dismiss();
@@ -219,32 +250,46 @@ class CurrencySettingsModal extends Component<Props, State> {
             },
         });
 
-        const ledgerSubmitter = new Submitter(newTrustline.Json, privateKey);
-
-        const submitResult = await ledgerSubmitter.submit();
+        // sign and submit
+        const submitResult = await newTrustline.submit(privateKey);
 
         if (submitResult.success) {
-            const verifyResult = await Submitter.verify(submitResult.transactionId);
+            const verifyResult = await newTrustline.verify();
 
             if (verifyResult.success) {
                 InteractionManager.runAfterInteractions(() => {
-                    Alert.alert(Localize.t('global.success'), Localize.t('currency.successRemoved'));
+                    Alert.alert(Localize.t('global.success'), Localize.t('asset.successRemoved'));
                 });
             } else {
                 InteractionManager.runAfterInteractions(() => {
-                    Alert.alert(Localize.t('global.error'), Localize.t('currency.failedRemove'));
+                    Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
                 });
             }
         } else {
             InteractionManager.runAfterInteractions(() => {
-                Alert.alert(Localize.t('global.error'), Localize.t('currency.failedRemove'));
+                Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
             });
         }
 
         this.dismiss();
     };
 
-    showRemoveAlert = () => {
+    showRemoveAlert = async () => {
+        this.setState({
+            isLoading: true,
+        });
+
+        try {
+            await this.checkForIssuerState().finally(() => {
+                this.setState({
+                    isLoading: false,
+                });
+            });
+        } catch {
+            Alert.alert(Localize.t('global.error'), Localize.t('asset.unableToRemoveAssetNotInDefaultState'));
+            return;
+        }
+
         Prompt(
             Localize.t('global.warning'),
             Localize.t('account.removeTrustLineWarning'),
@@ -298,7 +343,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                 <Animated.View style={[styles.visibleContent, { opacity: this.animatedOpacity }]}>
                     <View style={styles.headerContainer}>
                         <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                            <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.currency')}</Text>
+                            <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.asset')}</Text>
                         </View>
                         <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                             <Button label={Localize.t('global.cancel')} roundedSmall secondary onPress={this.dismiss} />

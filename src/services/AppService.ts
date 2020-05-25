@@ -1,14 +1,24 @@
 /**
- * App State Service
+ * App Service
  * Used for detect App State and Net info and inactivity status
  */
+import EventEmitter from 'events';
 
 import { AppState } from 'react-native';
+
 import NetInfo from '@react-native-community/netinfo';
-import EventEmitter from 'events';
+import DeviceInfo from 'react-native-device-info';
+
+import { AppScreens } from '@common/constants';
+
+import { Navigator } from '@common/helpers/navigator';
+
+import Preferences from '@common/libs/preferences';
+import { VersionDiff } from '@common/libs/utils';
 
 import LoggerService from '@services/LoggerService';
 
+/* Types  ==================================================================== */
 export enum NetStateStatus {
     Connected = 'Connected',
     Disconnected = 'Disconnected',
@@ -20,21 +30,27 @@ export enum AppStateStatus {
     Inactive = 'Inactive',
 }
 
-class AppStateService extends EventEmitter {
+// events
+declare interface AppService {
+    on(event: 'appStateChange', listener: (status: AppStateStatus) => void): this;
+    on(event: string, listener: Function): this;
+}
+
+/* Service  ==================================================================== */
+class AppService extends EventEmitter {
     netStatus: NetStateStatus;
     prevAppState: AppStateStatus;
     currentAppState: AppStateStatus;
-    locked: boolean;
     logger: any;
 
     constructor() {
         super();
 
-        this.locked = false;
         this.netStatus = NetStateStatus.Connected;
         this.prevAppState = AppStateStatus.Inactive;
         this.currentAppState = AppStateStatus.Active;
-        this.logger = LoggerService.createLogger('App State');
+
+        this.logger = LoggerService.createLogger('AppState');
     }
 
     initialize = () => {
@@ -50,6 +66,31 @@ class AppStateService extends EventEmitter {
                 return reject(e);
             }
         });
+    };
+
+    checkShowChangeLog = async () => {
+        const currentVersionCode = DeviceInfo.getVersion();
+        const savedVersionCode = await Preferences.get(Preferences.keys.LATEST_VERSION_CODE);
+
+        if (!savedVersionCode || VersionDiff(currentVersionCode, savedVersionCode) > 0) {
+            // showChangeLogModal
+            Navigator.showOverlay(
+                AppScreens.Overlay.ChangeLog,
+                {
+                    overlay: {
+                        handleKeyboardEvents: true,
+                    },
+                    layout: {
+                        backgroundColor: 'transparent',
+                        componentBackgroundColor: 'transparent',
+                    },
+                },
+                { version: currentVersionCode },
+            );
+
+            // update the latest version code
+            Preferences.set(Preferences.keys.LATEST_VERSION_CODE, currentVersionCode);
+        }
     };
 
     setNetState(isConnected: boolean) {
@@ -120,4 +161,4 @@ class AppStateService extends EventEmitter {
     }
 }
 
-export default new AppStateService();
+export default new AppService();

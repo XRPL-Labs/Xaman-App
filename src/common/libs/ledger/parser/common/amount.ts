@@ -7,9 +7,9 @@ class Amount {
     constructor(amount: string | number, drops = true) {
         // validate
 
-        if (typeof amount === 'string') {
-            if (!amount.match(/^-?[0-9]*\.?[0-9]*$/)) {
-                throw new Error(`invalid value '${amount}', should be a number matching (^-?[0-9]*.?[0-9]*$).`);
+        if (typeof amount === 'string' && !drops) {
+            if (!amount.match(/^[+-]?\d+(?:[.]*\d*(?:[eE][+-]?\d+)?)?$/)) {
+                throw new Error(`invalid value '${amount}', should be a number`);
             } else if (this.amount === '.') {
                 throw new Error(`invalid value '${amount}',  should be a BigNumber or string-encoded number.`);
             }

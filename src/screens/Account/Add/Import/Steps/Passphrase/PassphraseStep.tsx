@@ -7,7 +7,7 @@ import { SafeAreaView, View, Text, Alert, KeyboardAvoidingView, Platform } from 
 
 import Localize from '@locale';
 // components
-import { Button, PasswordInput, Footer } from '@components';
+import { Button, PasswordInput, Footer, Header } from '@components';
 // style
 import { AppStyles } from '@theme';
 
@@ -72,8 +72,9 @@ class PassphraseStep extends Component<Props, State> {
                 </Text>
 
                 <KeyboardAvoidingView
+                    enabled={Platform.OS === 'ios'}
                     behavior="padding"
-                    keyboardVerticalOffset={Platform.OS === 'ios' ? 110 : 0}
+                    keyboardVerticalOffset={Header.Height}
                     style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}
                 >
                     <PasswordInput
@@ -91,7 +92,7 @@ class PassphraseStep extends Component<Props, State> {
                         editable={passphrase.isValid}
                         placeholder={Localize.t('account.repeatPassphrase')}
                         selectTextOnFocus={passphrase.isValid}
-                        onChange={passphrase_confirmation => this.setState({ passphrase_confirmation })}
+                        onChange={(passphrase_confirmation) => this.setState({ passphrase_confirmation })}
                         validate={false}
                     />
                 </KeyboardAvoidingView>

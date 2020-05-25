@@ -41,6 +41,7 @@ export interface PayloadReferenceType {
     request_json: TransactionJSONType;
     created_at?: Date;
     expires_at?: Date;
+    hash?: string;
 }
 
 export interface ResponseType {

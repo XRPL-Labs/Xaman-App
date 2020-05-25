@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { get, set, has, isUndefined, isNumber, toInteger } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
-// import Localize from '@locale';
+import Locale from '@locale';
 
 import BaseTransaction from './base';
 import Amount from '../parser/common/amount';
@@ -32,28 +32,7 @@ class Payment extends BaseTransaction {
             'SendMax',
             'DeliverMin',
         ]);
-        this.requiredFields = this.requiredFields.concat(['Amount', 'Destination']);
     }
-
-    // public validate = (): ValidationResponse => {
-    //     console.log(this.Amount);
-    //     // check for required fields
-    //     for (let i = 0; i < this.requiredFields.length; i++) {
-    //         const field = this.requiredFields[i];
-
-    //         if (!has(this, field)) {
-    //             return {
-    //                 valid: false,
-    //                 error: Localize.t('global.fieldIsRequired', { field }),
-    //             };
-    //         }
-    //     }
-
-    //     return {
-    //         valid: true,
-    //         error: undefined,
-    //     };
-    // };
 
     get LastBalance(): any {
         const affectedNodes = get(this, ['meta', 'AffectedNodes']);
@@ -272,6 +251,17 @@ class Payment extends BaseTransaction {
 
         return invoiceID;
     }
+
+    validate = () => {
+        /* eslint-disable-next-line */
+        return new Promise((resolve, reject) => {
+            if (!this.Amount) {
+                return reject(new Error(Locale.t('send.pleaseEnterAmount')));
+            }
+
+            return resolve();
+        });
+    };
 }
 
 /* Export ==================================================================== */

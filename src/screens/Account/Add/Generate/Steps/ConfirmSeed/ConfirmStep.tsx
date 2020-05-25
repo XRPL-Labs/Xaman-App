@@ -83,7 +83,7 @@ class ConfirmStep extends Component<Props, State> {
         const abcdefgh = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
         return (
-            <SafeAreaView testID="account-generate-step-view" style={[AppStyles.pageContainerFull]}>
+            <SafeAreaView testID="account-generate-step-view" style={[AppStyles.container]}>
                 {currentRow < 8 ? (
                     <>
                         <Text style={[AppStyles.p, AppStyles.bold]}>
@@ -105,15 +105,15 @@ class ConfirmStep extends Component<Props, State> {
 
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal, AppStyles.centerAligned]}>
                     <SecretNumberInput
-                        ref={r => {
+                        ref={(r) => {
                             this.secretNumberInput = r;
                         }}
-                        onAllFilled={filled => {
+                        onAllFilled={(filled) => {
                             this.setState({
                                 allFilled: filled,
                             });
                         }}
-                        onRowChanged={row => {
+                        onRowChanged={(row) => {
                             this.setState({
                                 currentRow: row,
                             });

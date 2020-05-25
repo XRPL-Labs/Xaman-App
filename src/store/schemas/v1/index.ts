@@ -6,4 +6,8 @@ import ProfileSchema from '@store/schemas/v1/profile';
 import TrustLineSchema from '@store/schemas/v1/trustLine';
 import ContactSchema from '@store/schemas/v1/contact';
 
-export { AccountSchema, CoreSchema, CounterPartySchema, CurrencySchema, ProfileSchema, TrustLineSchema, ContactSchema };
+/* Migration ==================================================================== */
+export const migration = () => {};
+
+/* Schemas ==================================================================== */
+export { CounterPartySchema, CurrencySchema, ProfileSchema, TrustLineSchema, ContactSchema, AccountSchema, CoreSchema };

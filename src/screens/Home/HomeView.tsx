@@ -3,6 +3,7 @@
  */
 
 import { isEmpty, find } from 'lodash';
+
 import React, { Component, Fragment } from 'react';
 import {
     View,
@@ -14,15 +15,18 @@ import {
     ImageBackground,
     InteractionManager,
     Share,
+    Clipboard,
 } from 'react-native';
+
+import { StringTypeDetector, StringType, StringDecoder } from 'xumm-string-decode';
 
 import { Navigation } from 'react-native-navigation';
 
-import { LedgerService } from '@services';
+import { LedgerService, LinkingService, SocketService, AppService } from '@services';
+import { AppStateStatus } from '@services/AppService';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
-import { AccessLevels } from '@store/types';
 
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 // constants
@@ -30,6 +34,7 @@ import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
+import { VibrateHapticFeedback } from '@common/helpers/interface';
 
 import Localize from '@locale';
 
@@ -46,7 +51,9 @@ export interface Props {}
 export interface State {
     account: AccountSchema;
     spendableAccounts: Array<AccountSchema>;
-    privacy: boolean;
+    privacyMode: boolean;
+    clipboardDetected: StringTypeDetector;
+    ignoreClipboardContent: Array<string>;
 }
 
 /* Component ==================================================================== */
@@ -66,7 +73,9 @@ class HomeView extends Component<Props, State> {
         this.state = {
             account: AccountRepository.getDefaultAccount(),
             spendableAccounts: AccountRepository.getSpendableAccounts(),
-            privacy: false,
+            privacyMode: false,
+            clipboardDetected: undefined,
+            ignoreClipboardContent: [],
         };
     }
 
@@ -75,67 +84,100 @@ class HomeView extends Component<Props, State> {
         AccountRepository.on('accountUpdate', this.updateUI);
         AccountRepository.on('changeDefaultAccount', this.onDefaultAccountChange);
 
+        // update spendable accounts on account add/remove
         AccountRepository.on('accountCreate', this.updateSpendableAccounts);
         AccountRepository.on('accountRemove', this.updateSpendableAccounts);
+
+        // check for the clipboard content when app come from background
+        AppService.on('appStateChange', this.onAppStateChange);
+
         // listen for screen appear event
         Navigation.events().bindComponent(this);
     }
 
     componentDidAppear() {
         const { account } = this.state;
-        // update account details
+
         InteractionManager.runAfterInteractions(() => {
-            if (account.isValid()) {
+            if (account.isValid() && SocketService.isConnected()) {
+                // update account details
                 LedgerService.updateAccountsDetails([account.address]);
-            } else {
-                this.setState({
-                    account: AccountRepository.getDefaultAccount(),
-                });
             }
+            // check for XRPL destination and payload in clipboard
+            this.checkClipboardContent();
         });
     }
 
-    onDefaultAccountChange = (defaultAccount: AccountSchema) => {
-        // update the default account
-        LedgerService.updateAccountsDetails([defaultAccount.address]);
-
-        this.setState({
-            account: defaultAccount,
-        });
+    /**
+     * Listen for app state change to check for clipboard content
+     */
+    onAppStateChange = () => {
+        if (
+            AppService.prevAppState === AppStateStatus.Background &&
+            AppService.currentAppState === AppStateStatus.Active
+        ) {
+            this.checkClipboardContent();
+        }
     };
 
-    updateUI = (updatedAccount: AccountSchema) => {
-        const { account } = this.state;
+    /**
+     * Check the app for XRPL destination and XUMM payloads
+     */
+    checkClipboardContent = async () => {
+        const { ignoreClipboardContent } = this.state;
 
-        if (updatedAccount.isValid()) {
-            if (updatedAccount.default) {
-                this.setState({
-                    account: updatedAccount,
-                });
+        // get clipboard content
+        const clipboardContent = await Clipboard.getString();
 
-                if (account.isValid() && account.balance !== updatedAccount.balance) {
-                    this.updateSpendableAccounts();
-                }
-            }
-        }
-        if (updatedAccount.default) {
+        // if empty or it's in ignore list return
+        if (!clipboardContent || ignoreClipboardContent.indexOf(clipboardContent) > -1) return;
+
+        const detected = new StringTypeDetector(clipboardContent);
+
+        if (
+            [StringType.XrplDestination, StringType.PayId, StringType.XummPayloadReference].indexOf(
+                detected.getType(),
+            ) > -1
+        ) {
             this.setState({
-                account: updatedAccount,
-                spendableAccounts: AccountRepository.getSpendableAccounts(),
+                clipboardDetected: detected,
+            });
+        } else {
+            this.setState({
+                clipboardDetected: undefined,
             });
         }
     };
 
-    updateSpendableAccounts = () => {
-        const { account } = this.state;
+    onDefaultAccountChange = (defaultAccount: AccountSchema) => {
+        // update the default account
+        if (defaultAccount.isValid()) {
+            LedgerService.updateAccountsDetails([defaultAccount.address]);
 
-        if (account.isValid()) {
-            setTimeout(() => {
-                this.setState({
-                    spendableAccounts: AccountRepository.getSpendableAccounts(),
-                });
-            }, 200);
+            this.setState({
+                account: defaultAccount,
+            });
         }
+    };
+
+    updateUI = (updatedAccount: AccountSchema) => {
+        if (updatedAccount.isValid() && updatedAccount.default) {
+            // update the UI
+            this.setState({
+                account: updatedAccount,
+            });
+
+            // when account balance changed update spendable accounts
+            this.updateSpendableAccounts();
+        }
+    };
+
+    updateSpendableAccounts = () => {
+        setTimeout(() => {
+            this.setState({
+                spendableAccounts: AccountRepository.getSpendableAccounts(),
+            });
+        }, 300);
     };
 
     addCurrency = () => {
@@ -156,6 +198,11 @@ class HomeView extends Component<Props, State> {
     showBalanceExplain = () => {
         const { account } = this.state;
 
+        // don't show the explain screen when account is not activated
+        if (account.balance === 0) {
+            return;
+        }
+
         Navigator.showOverlay(
             AppScreens.Overlay.ExplainBalance,
             {
@@ -173,8 +220,8 @@ class HomeView extends Component<Props, State> {
             AppScreens.Modal.Help,
             {},
             {
-                title: Localize.t('home.whatAreOtherCurrencies'),
-                content: Localize.t('home.otherCurrenciesDesc'),
+                title: Localize.t('home.whatAreOtherAssets'),
+                content: Localize.t('home.otherAssetsDesc'),
             },
         );
     };
@@ -209,11 +256,91 @@ class HomeView extends Component<Props, State> {
     };
 
     togglePrivacyMode = () => {
-        const { privacy } = this.state;
+        const { privacyMode } = this.state;
 
         this.setState({
-            privacy: !privacy,
+            privacyMode: !privacyMode,
         });
+    };
+
+    onClipboardGuideClick = (ignore?: boolean) => {
+        const { clipboardDetected, ignoreClipboardContent } = this.state;
+
+        const rawClipboard = clipboardDetected.getRawInput();
+
+        this.setState({
+            ignoreClipboardContent: ignoreClipboardContent.concat(rawClipboard),
+            clipboardDetected: undefined,
+        });
+
+        if (!ignore) {
+            LinkingService.handle(clipboardDetected);
+        }
+    };
+
+    renderClipboardGuide = () => {
+        const { clipboardDetected, spendableAccounts, account } = this.state;
+
+        // if no clipboard detected or spendable accounts is empty return
+        if (!clipboardDetected || spendableAccounts.length === 0) return null;
+
+        let title = '';
+        let content = '';
+
+        const parsed = new StringDecoder(clipboardDetected).getAny();
+
+        // ignore if copied content belong to the default address
+        if (clipboardDetected.getType() === StringType.XrplDestination) {
+            if (parsed.to === account.address) {
+                return null;
+            }
+        }
+
+        switch (clipboardDetected.getType()) {
+            case StringType.XummPayloadReference:
+                title = Localize.t('home.openSignRequest');
+                break;
+            case StringType.XrplDestination:
+                title = Localize.t('home.sendPaymentTo');
+                content = parsed.to;
+                break;
+            case StringType.PayId:
+                title = Localize.t('home.sendPaymentTo');
+                content = parsed.payId;
+                break;
+            default:
+                break;
+        }
+
+        return (
+            <TouchableOpacity
+                style={styles.clipboardGuideContainer}
+                activeOpacity={0.8}
+                onPress={() => {
+                    this.onClipboardGuideClick();
+                }}
+            >
+                <View style={[AppStyles.centerContent, AppStyles.flex1]}>
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorWhite]}>{title}</Text>
+                    {!!content && (
+                        <>
+                            <Spacer size={4} />
+                            <Text style={[AppStyles.monoSubText, AppStyles.colorWhite]}>{content}</Text>
+                        </>
+                    )}
+                </View>
+                <TouchableOpacity
+                    hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+                    activeOpacity={0.5}
+                    onPress={() => {
+                        this.onClipboardGuideClick(true);
+                    }}
+                    style={[AppStyles.centerContent]}
+                >
+                    <Icon name="IconX" size={25} style={AppStyles.imgColorWhite} />
+                </TouchableOpacity>
+            </TouchableOpacity>
+        );
     };
 
     renderHeader = () => {
@@ -250,8 +377,10 @@ class HomeView extends Component<Props, State> {
         );
     };
 
-    renderContent = () => {
-        const { account, privacy } = this.state;
+    renderAssets = () => {
+        const { account, privacyMode, spendableAccounts } = this.state;
+
+        const spendable = !!find(spendableAccounts, { address: account.address });
 
         if (account.balance === 0) {
             // check if account is a regular key to one of xumm accounts
@@ -317,12 +446,12 @@ class HomeView extends Component<Props, State> {
             <View style={[AppStyles.flex6, styles.currencyList]}>
                 <View style={[AppStyles.row, AppStyles.centerContent, styles.trustLinesHeader]}>
                     <View style={[AppStyles.flex5, AppStyles.centerContent]}>
-                        <Text style={[AppStyles.pbold]}>{Localize.t('home.otherCurrencies')}</Text>
+                        <Text style={[AppStyles.pbold]}>{Localize.t('home.otherAssets')}</Text>
                     </View>
-                    {account.accessLevel === AccessLevels.Full && (
+                    {spendable && (
                         <View style={[AppStyles.flex5]}>
                             <Button
-                                label={Localize.t('home.addCurrency')}
+                                label={Localize.t('home.addAsset')}
                                 onPress={this.addCurrency}
                                 roundedSmall
                                 icon="IconPlus"
@@ -337,7 +466,7 @@ class HomeView extends Component<Props, State> {
 
                 {isEmpty(account.lines) && (
                     <View style={[styles.noTrustlineMessage]}>
-                        <InfoMessage type="warning" label={Localize.t('home.youDonNotHaveOtherCurrency')} />
+                        <InfoMessage type="warning" label={Localize.t('home.youDonNotHaveOtherAssets')} />
                         <TouchableOpacity
                             style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingSml]}
                             onPress={this.openTrustLineDescription}
@@ -351,23 +480,23 @@ class HomeView extends Component<Props, State> {
                                     AppStyles.colorGreyDark,
                                 ]}
                             >
-                                {Localize.t('home.whatAreOtherCurrencies')}
+                                {Localize.t('home.whatAreOtherAssets')}
                             </Text>
                         </TouchableOpacity>
                     </View>
                 )}
 
                 <ScrollView style={AppStyles.flex1}>
-                    {account.lines &&
+                    {!isEmpty(account.lines) &&
                         account.lines.map((line: TrustLineSchema, index: number) => {
                             return (
                                 <TouchableOpacity
                                     onPress={() => {
-                                        if (account.accessLevel === AccessLevels.Full) {
+                                        if (spendable) {
                                             this.showCurrencyOptions(line);
                                         }
                                     }}
-                                    activeOpacity={account.accessLevel === AccessLevels.Full ? 0.5 : 1}
+                                    activeOpacity={spendable ? 0.5 : 1}
                                     style={[styles.currencyItem]}
                                     key={index}
                                 >
@@ -380,10 +509,15 @@ class HomeView extends Component<Props, State> {
                                         </View>
                                         <View style={[AppStyles.column, AppStyles.centerContent]}>
                                             <Text style={[styles.currencyItemLabelSmall]}>
-                                                {NormalizeCurrencyCode(line.currency.currency)}
+                                                {line.currency.name
+                                                    ? line.currency.name
+                                                    : NormalizeCurrencyCode(line.currency.currency)}
                                             </Text>
                                             <Text style={[styles.issuerLabel]}>
-                                                {line.currency.name ? line.currency.name : line.counterParty.name}
+                                                {line.counterParty.name}{' '}
+                                                {line.currency.name
+                                                    ? NormalizeCurrencyCode(line.currency.currency)
+                                                    : ''}
                                             </Text>
                                         </View>
                                     </View>
@@ -398,7 +532,7 @@ class HomeView extends Component<Props, State> {
                                     >
                                         {line.currency.avatar && (
                                             <Image
-                                                style={[styles.currencyAvatar, privacy && AppStyles.imgColorGrey]}
+                                                style={[styles.currencyAvatar, privacyMode && AppStyles.imgColorGrey]}
                                                 source={{ uri: line.currency.avatar }}
                                             />
                                         )}
@@ -406,10 +540,10 @@ class HomeView extends Component<Props, State> {
                                             style={[
                                                 AppStyles.pbold,
                                                 AppStyles.monoBold,
-                                                privacy && AppStyles.colorGreyDark,
+                                                privacyMode && AppStyles.colorGreyDark,
                                             ]}
                                         >
-                                            {privacy ? '••••••••' : line.balance}
+                                            {privacyMode ? '••••••••' : line.balance}
                                         </Text>
                                     </View>
                                 </TouchableOpacity>
@@ -466,7 +600,7 @@ class HomeView extends Component<Props, State> {
 
     renderEmpty = () => {
         return (
-            <SafeAreaView testID="home-tab-empty-view" style={[AppStyles.pageContainer]}>
+            <SafeAreaView testID="home-tab-empty-view" style={[AppStyles.tabContainer]}>
                 <View style={[AppStyles.headerContainer]}>{this.renderHeader()}</View>
 
                 <View style={[AppStyles.contentContainer, AppStyles.padding]}>
@@ -476,7 +610,7 @@ class HomeView extends Component<Props, State> {
                         style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent]}
                     >
                         <Image style={[AppStyles.emptyIcon]} source={Images.ImageFirstAccount} />
-                        <Text style={[AppStyles.emptyText]}>It’s a little bit empty here add your first account.</Text>
+                        <Text style={[AppStyles.emptyText]}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
                         <Button
                             testID="add-account-button"
                             label={Localize.t('home.addAccount')}
@@ -494,14 +628,14 @@ class HomeView extends Component<Props, State> {
     };
 
     render() {
-        const { account, privacy } = this.state;
+        const { account, privacyMode } = this.state;
 
-        if (isEmpty(account)) {
+        if (isEmpty(account) || !account.isValid()) {
             return this.renderEmpty();
         }
 
         return (
-            <SafeAreaView testID="home-tab-view" style={[AppStyles.pageContainer, AppStyles.centerAligned]}>
+            <SafeAreaView testID="home-tab-view" style={[AppStyles.tabContainer, AppStyles.centerAligned]}>
                 {/* Header */}
                 <View style={[AppStyles.headerContainer]}>{this.renderHeader()}</View>
 
@@ -513,15 +647,22 @@ class HomeView extends Component<Props, State> {
                                 {account.label}
                             </Text>
                             <TouchableOpacity onPress={this.togglePrivacyMode}>
-                                <Icon style={[styles.iconEye]} size={20} name={privacy ? 'IconEyeOff' : 'IconEye'} />
+                                <Icon
+                                    style={[styles.iconEye]}
+                                    size={20}
+                                    name={privacyMode ? 'IconEyeOff' : 'IconEye'}
+                                />
                             </TouchableOpacity>
                         </View>
 
                         <TouchableOpacity
                             onPress={() => {
+                                VibrateHapticFeedback('impactMedium');
+
                                 Share.share({
                                     title: Localize.t('home.shareAccount'),
                                     message: account.address,
+                                    url: undefined,
                                 }).catch(() => {});
                             }}
                             activeOpacity={0.9}
@@ -531,9 +672,13 @@ class HomeView extends Component<Props, State> {
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
                                 selectable
-                                style={[AppStyles.flex1, styles.cardAddressText, privacy && AppStyles.colorGreyDark]}
+                                style={[
+                                    AppStyles.flex1,
+                                    styles.cardAddressText,
+                                    privacyMode && AppStyles.colorGreyDark,
+                                ]}
                             >
-                                {privacy ? '••••••••••••••••••••••••••••••••' : account.address}
+                                {privacyMode ? '••••••••••••••••••••••••••••••••' : account.address}
                             </Text>
                             <View style={[styles.shareIconContainer, AppStyles.rightSelf]}>
                                 <Icon name="IconShare" size={18} style={[styles.shareIcon]} />
@@ -564,15 +709,19 @@ class HomeView extends Component<Props, State> {
                                 style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}
                                 onPress={this.showBalanceExplain}
                             >
-                                <Text style={[AppStyles.h5, AppStyles.monoBold, privacy && AppStyles.colorGreyDark]}>
-                                    {privacy ? '••••••••' : account.availableBalance}
+                                <Text
+                                    style={[AppStyles.h5, AppStyles.monoBold, privacyMode && AppStyles.colorGreyDark]}
+                                >
+                                    {privacyMode ? '••••••••' : account.availableBalance}
                                 </Text>
                             </TouchableOpacity>
                         </View>
                         {this.renderButtons()}
                     </View>
-                    {this.renderContent()}
+                    {this.renderAssets()}
                 </View>
+
+                {this.renderClipboardGuide()}
             </SafeAreaView>
         );
     }

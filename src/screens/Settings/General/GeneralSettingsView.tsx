@@ -14,7 +14,7 @@ import { AppScreens, AppConfig } from '@common/constants';
 import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 
-import { Header, Icon } from '@components';
+import { Header, Icon, Switch } from '@components';
 
 import Localize from '@locale';
 
@@ -53,7 +53,7 @@ class GeneralSettingsView extends Component<Props, State> {
         this.setState({ coreSettings });
     };
 
-    showAccessLevelPicker = () => {
+    showLanguagePicker = () => {
         const { coreSettings } = this.state;
 
         Navigator.push(
@@ -100,10 +100,16 @@ class GeneralSettingsView extends Component<Props, State> {
         );
     };
 
+    hapticFeedbackChange = (value: boolean) => {
+        CoreRepository.saveSettings({
+            hapticFeedback: value,
+        });
+    };
+
     render() {
         const { coreSettings } = this.state;
 
-        const language = filter(AppConfig.language.supported, l => {
+        const language = filter(AppConfig.language.supported, (l) => {
             return l.value === coreSettings.language;
         })[0];
 
@@ -119,17 +125,24 @@ class GeneralSettingsView extends Component<Props, State> {
                     centerComponent={{ text: Localize.t('settings.generalSettings') }}
                 />
                 <ScrollView>
-                    {/* Account Label */}
-                    <TouchableOpacity style={[styles.row]} onPress={this.showAccessLevelPicker}>
-                        <View style={[styles.labelContainer]}>
+                    <TouchableOpacity style={[styles.row]} onPress={this.showLanguagePicker}>
+                        <View style={[AppStyles.flex3]}>
                             <Text style={styles.label}>{Localize.t('global.language')}</Text>
                         </View>
-
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
                             <Text style={[styles.value]}>{language.title}</Text>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
                     </TouchableOpacity>
+
+                    <View style={styles.row}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text style={styles.label}>{Localize.t('settings.hapticFeedback')}</Text>
+                        </View>
+                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Switch checked={coreSettings.hapticFeedback} onChange={this.hapticFeedbackChange} />
+                        </View>
+                    </View>
                 </ScrollView>
             </View>
         );

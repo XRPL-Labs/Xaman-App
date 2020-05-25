@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Alert, Keyboard, KeyboardAvoidingView } from 'react-native';
+import { SafeAreaView, View, Text, Alert, Keyboard, Platform, KeyboardAvoidingView } from 'react-native';
 
 import { XRPL_Account, utils } from 'xrpl-accountlib';
 import { StringType, XrplDestination } from 'xumm-string-decode';
@@ -70,10 +70,14 @@ class EnterAddressStep extends Component<Props, State> {
 
                 <Spacer size={50} />
 
-                <KeyboardAvoidingView behavior="padding" style={[AppStyles.flex1, AppStyles.paddingHorizontal]}>
+                <KeyboardAvoidingView
+                    enabled={Platform.OS === 'ios'}
+                    behavior="padding"
+                    style={[AppStyles.flex1, AppStyles.paddingHorizontal]}
+                >
                     <TextInput
                         value={address}
-                        onChangeText={value => this.setState({ address: value.replace(/[^a-z0-9]/gi, '') })}
+                        onChangeText={(value) => this.setState({ address: value.replace(/[^a-z0-9]/gi, '') })}
                         placeholder={Localize.t('account.pleaseEnterYourAddress')}
                         numberOfLines={1}
                         showScanner

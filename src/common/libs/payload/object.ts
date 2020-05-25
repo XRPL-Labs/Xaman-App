@@ -1,18 +1,22 @@
 import { isString, isObject, has, get } from 'lodash';
 
-import parserFactory from '@common/libs/ledger/parser';
+import DeviceInfo from 'react-native-device-info';
 
-import { TransactionJSONType } from '@common/libs/ledger/types';
-import { TransactionsType } from '@common/libs/ledger/transactions/types';
+import codec from 'ripple-binary-codec';
 
+// Services
 import ApiService from '@services/ApiService';
 import LoggerService from '@services/LoggerService';
 import SocketService from '@services/SocketService';
+
+import { SHA1 } from '@common/libs/crypto';
 
 // locale
 import Localize from '@locale';
 
 // types
+import { TransactionJSONType } from '@common/libs/ledger/types';
+
 import {
     PayloadType,
     MetaType,
@@ -33,7 +37,6 @@ export class Payload {
     meta: MetaType;
     application: ApplicationType;
     payload: PayloadReferenceType;
-    transaction: TransactionsType;
 
     /**
      * get payload object from payload UUID or payload Json
@@ -95,16 +98,30 @@ export class Payload {
     }
 
     /**
+     * Verify the requested tx checksum
+     * @param  {PayloadReferenceType} payload
+     * @returns Promise<boolean>
+     */
+    verify = async (payload: PayloadReferenceType): Promise<boolean> => {
+        const deviceId = DeviceInfo.getUniqueId();
+
+        const encodedTX = codec.encode(payload.request_json);
+
+        const checksum = await SHA1(`${encodedTX}+${deviceId}`);
+
+        if (checksum === payload.hash) {
+            return true;
+        }
+
+        return false;
+    };
+
+    /**
      *  Assign payload object to class
      * @param object
      */
     assign = (object: PayloadType) => {
         Object.assign(this, object);
-        try {
-            this.transaction = parserFactory(this.TxJson);
-        } catch (e) {
-            throw new Error(e.string());
-        }
     };
 
     /**
@@ -115,7 +132,14 @@ export class Payload {
         return new Promise((resolve, reject) => {
             ApiService.payload
                 .get(uuid)
-                .then((res: any) => {
+                .then(async (res: PayloadType) => {
+                    // get verification status
+                    const verified = await this.verify(res.payload);
+
+                    if (!verified) {
+                        return reject(new Error(Localize.t('payload.UnableVerifyPayload')));
+                    }
+
                     if (get(res, 'response.resolved_at')) {
                         return reject(new Error(Localize.t('payload.payloadAlreadyResolved')));
                     }
@@ -164,14 +188,6 @@ export class Payload {
         ApiService.payload.patch(this.meta.uuid, patch).catch((e: any) => {
             logger.debug('Patch error', e);
         });
-    };
-
-    /**
-     * quick hack for refactoring the object
-     * @param transaction
-     */
-    refactorTransaction = (transaction: TransactionsType) => {
-        this.transaction = transaction;
     };
 
     /**

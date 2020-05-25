@@ -17,6 +17,7 @@ import Vault from '@common/libs/vault';
 
 import { AuthenticationService } from '@services';
 
+import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
@@ -232,13 +233,19 @@ class VaultModal extends Component<Props, State> {
     };
 
     onPasscodeEntered = (passcode: string) => {
+        const { coreSettings } = this.state;
+
         AuthenticationService.checkPasscode(passcode)
             .then((encryptedPasscode) => {
                 this.openVault(encryptedPasscode);
             })
             .catch((e) => {
+                // wrong passcode entered
+                if (coreSettings.hapticFeedback) {
+                    VibrateHapticFeedback('notificationError');
+                }
                 this.securePinInput.clearInput();
-                Alert.alert(Localize.t('global.error'), e.toString());
+                Alert.alert(Localize.t('global.error'), e.message);
             });
     };
 
@@ -249,7 +256,7 @@ class VaultModal extends Component<Props, State> {
 
     openVault = async (encryptionKey: string) => {
         const { account, onOpen } = this.props;
-        const { signWith } = this.state;
+        const { signWith, coreSettings } = this.state;
 
         if (!encryptionKey) {
             return;
@@ -258,6 +265,9 @@ class VaultModal extends Component<Props, State> {
         const privateKey = await Vault.open(signWith ? signWith.publicKey : account.publicKey, encryptionKey);
 
         if (!privateKey) {
+            if (coreSettings.hapticFeedback) {
+                VibrateHapticFeedback('notificationError');
+            }
             Alert.alert(Localize.t('global.error'), Localize.t('global.invalidAuth'));
         } else {
             onOpen(privateKey);
@@ -282,6 +292,7 @@ class VaultModal extends Component<Props, State> {
                     }}
                     onInputFinish={this.onPasscodeEntered}
                     length={6}
+                    enableHapticFeedback={coreSettings.hapticFeedback}
                 />
 
                 {biometricMethod !== BiometryType.None && isSensorAvailable && (

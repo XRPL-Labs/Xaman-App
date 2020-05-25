@@ -6,6 +6,8 @@ import { View, Keyboard, Alert } from 'react-native';
 import { dropRight, last, isEmpty } from 'lodash';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountSchema } from '@store/schemas/latest';
+
 import { AccessLevels, EncryptionLevels } from '@store/types';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -29,7 +31,7 @@ import Steps from './Steps';
 import { ImportSteps, AccountObject } from './types';
 
 export interface Props {
-    upgrade: boolean;
+    upgrade: AccountSchema;
 }
 
 export interface State {
@@ -61,6 +63,17 @@ class AccountImportView extends Component<Props, State> {
         };
     }
 
+    componentDidMount() {
+        const { upgrade } = this.props;
+
+        // set the access level if it's upgrade
+        if (upgrade) {
+            this.saveSettings({
+                accessLevel: AccessLevels.Full,
+            });
+        }
+    }
+
     saveSettings = (accountObject: AccountObject) => {
         const { account } = this.state;
         this.setState({ account: Object.assign(account, accountObject) });
@@ -78,6 +91,14 @@ class AccountImportView extends Component<Props, State> {
             this.importAccount();
             Navigator.popToRoot();
         } else {
+            // if it's upgrade check if entered secret is match the account
+            if (nextStep === 'ConfirmPublicKey' && upgrade) {
+                if (account.importedAccount.address !== upgrade.address) {
+                    Alert.alert(Localize.t('global.error'), Localize.t('account.upgradeAccountSecretIsNotMatch'));
+                    return;
+                }
+            }
+
             // check if the account is already exist before
             // move to next step
             if ((nextStep === 'ConfirmPublicKey' || nextStep === 'LabelStep') && !upgrade) {
@@ -222,7 +243,7 @@ class AccountImportView extends Component<Props, State> {
                 onResponderRelease={() => Keyboard.dismiss()}
                 onStartShouldSetResponder={() => true}
                 testID="account-import-view"
-                style={AppStyles.pageContainerFull}
+                style={AppStyles.container}
             >
                 {this.renderHeader()}
                 {this.renderStep()}

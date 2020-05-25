@@ -9,7 +9,6 @@ import {
     ActivityIndicator,
     Platform,
     TouchableOpacity,
-    KeyboardAvoidingView,
     InteractionManager,
 } from 'react-native';
 
@@ -18,7 +17,7 @@ import { Payment } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { LedgerService } from '@services';
-import { NormalizeAmount } from '@common/libs/utils';
+import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 import { getAccountName } from '@common/helpers/resolver';
 
 import { Button, InfoMessage, Spacer } from '@components';
@@ -105,9 +104,14 @@ class PaymentTemplate extends Component<Props, State> {
                     (l: any) => l.currency === transaction.Amount.currency && l.account === transaction.Amount.issuer,
                 )[0];
 
+                const shouldPayWithXRP =
+                    !trustLine ||
+                    (parseFloat(trustLine.balance) < parseFloat(transaction.Amount.value) &&
+                        account !== transaction.Amount.issuer);
+
                 // if not have the same trust line or the balance is not covering requested value
                 // Pay with XRP instead
-                if (!trustLine || parseFloat(trustLine.balance) < parseFloat(transaction.Amount.value)) {
+                if (shouldPayWithXRP) {
                     const PAIR = { issuer: transaction.Amount.issuer, currency: transaction.Amount.currency };
 
                     const ledgerExchange = new LedgerExchange(PAIR);
@@ -155,7 +159,7 @@ class PaymentTemplate extends Component<Props, State> {
                 }
             }
         } catch (e) {
-            Alert.alert(Localize.t('global.error'), Localize.t('payload.unableToCheckCurrencyConversion'));
+            Alert.alert(Localize.t('global.error'), Localize.t('payload.unableToCheckAssetConversion'));
         }
     };
 
@@ -218,7 +222,7 @@ class PaymentTemplate extends Component<Props, State> {
             destinationName,
         } = this.state;
         return (
-            <KeyboardAvoidingView keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0} behavior="position">
+            <>
                 <View style={styles.label}>
                     <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
                         {Localize.t('global.to')}
@@ -278,7 +282,9 @@ class PaymentTemplate extends Component<Props, State> {
                             />
                             <Text style={[styles.amountInput]}>
                                 {' '}
-                                {transaction.Amount?.currency ? transaction.Amount.currency : 'XRP'}
+                                {transaction.Amount?.currency
+                                    ? NormalizeCurrencyCode(transaction.Amount.currency)
+                                    : 'XRP'}
                             </Text>
                         </View>
                         {editableAmount && (
@@ -327,7 +333,7 @@ class PaymentTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
-            </KeyboardAvoidingView>
+            </>
         );
     }
 }

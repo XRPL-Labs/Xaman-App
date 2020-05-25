@@ -27,11 +27,6 @@ const styles = StyleSheet.create({
         paddingLeft: 5,
         marginBottom: 10,
     },
-    // value: {
-    //     fontFamily: AppFonts.base.familyBold,
-    //     fontSize: AppFonts.base.size,
-    //     color: AppColors.black,
-    // },
     destinationAddress: {
         marginTop: 10,
         paddingTop: 10,
@@ -91,6 +86,16 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         margin: 0,
         padding: 0,
+    },
+    alertBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'stretch',
+        borderRadius: 15,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        backgroundColor: AppColors.lightRed,
+        borderColor: AppColors.lightRed,
     },
 });
 

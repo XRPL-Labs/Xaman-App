@@ -202,7 +202,7 @@ class EventsFilterView extends Component<Props, State> {
                         </View>
 
                         <Spacer size={15} />
-                        <Text style={AppStyles.h5}>{Localize.t('global.currency')}</Text>
+                        <Text style={AppStyles.h5}>{Localize.t('global.asset')}</Text>
                         <View style={[styles.row]}>
                             {this.renderButton('Currency', 'XRP')}
                             {account.lines &&

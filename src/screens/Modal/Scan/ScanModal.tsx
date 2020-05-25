@@ -9,14 +9,16 @@ import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId }
 
 import { RNCamera } from 'react-native-camera';
 
-import { AccountRepository } from '@store/repositories';
-import { AccessLevels } from '@store/types';
+import { AccountRepository, CoreRepository } from '@store/repositories';
+import { CoreSchema } from '@store/schemas/latest';
 
 import { AppScreens } from '@common/constants';
+
+import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
-import { Payload } from '@common/libs/payload';
 
+import { Payload } from '@common/libs/payload';
 import { NormalizeDestination } from '@common/libs/utils';
 
 import Localize from '@locale';
@@ -37,6 +39,7 @@ export interface Props {
 
 export interface State {
     isLoading: boolean;
+    coreSettings: CoreSchema;
 }
 
 /* Component ==================================================================== */
@@ -62,6 +65,7 @@ class ScanView extends Component<Props, State> {
         super(props);
         this.state = {
             isLoading: false,
+            coreSettings: CoreRepository.getSettings(),
         };
 
         this.shouldRead = true;
@@ -166,7 +170,7 @@ class ScanView extends Component<Props, State> {
 
     handleXrplDestination = async (destination: XrplDestination & PayId) => {
         // check if any account is configured
-        const availableAccounts = AccountRepository.getAccounts({ accessLevel: AccessLevels.Full });
+        const availableAccounts = AccountRepository.getSpendableAccounts();
 
         if (availableAccounts.length > 0) {
             if (destination.payId) {
@@ -204,16 +208,18 @@ class ScanView extends Component<Props, State> {
             );
         } else {
             Alert.alert(
-                Localize.t('global.noAccountConfigured'),
-                Localize.t('global.pleaseAddAccountToSendPayments'),
+                Localize.t('global.error'),
+                Localize.t('global.noSpendableAccountIsAvailableForSendingPayment'),
                 [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
                 { cancelable: false },
             );
         }
     };
 
-    handle = (content: any, detected: any) => {
+    handle = (content: string) => {
         const { onRead, type, fallback } = this.props;
+
+        const detected = new StringTypeDetector(content);
 
         // normalize detected type
         let detectedType = detected.getType();
@@ -289,6 +295,8 @@ class ScanView extends Component<Props, State> {
     };
 
     onReadCode = ({ data }: { data: string }) => {
+        const { coreSettings } = this.state;
+
         if (data) {
             // return if we don't need to read again
             if (!this.shouldRead) return;
@@ -296,9 +304,13 @@ class ScanView extends Component<Props, State> {
             // should not read anymore until we decide about detect value
             this.setShouldRead(false);
 
-            const detected = new StringTypeDetector(data);
+            // vibrate
+            if (coreSettings.hapticFeedback) {
+                VibrateHapticFeedback('impactLight');
+            }
 
-            this.handle(data, detected);
+            // handle the content
+            this.handle(data);
         }
     };
 

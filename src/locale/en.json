@@ -59,7 +59,8 @@
         "filter": "Filter",
         "expense": "Expense",
         "direction": "Direction",
-        "currency": "Currency",
+        "asset": "Asset",
+        "assets": "Assets",
         "accounts": "Accounts",
         "contacts": "Contacts",
         "general": "General",
@@ -155,6 +156,8 @@
         "subject": "Subject",
         "empty": "Empty",
         "update": "Update",
+        "danger": "Danger",
+        "explorer": "Explorer",
         "balanceLimit": "Balance limit",
         "unbelievablyStrong": "Unbelievably strong",
         "biometryIsNotSupported": "Biometric authentication is not supported on this device!",
@@ -184,7 +187,7 @@
         "changingLanguageNeedsRestartToTakeEffect": "Changing language requires the app to restart. Do you want to restart now?",
         "noAccountConfigured": "No account configured",
         "pleaseAddAccountToSignTheTransaction": "Please add an account to sign the transaction",
-        "pleaseAddAccountToSendPayments": "Please add an account to send payments",
+        "noSpendableAccountIsAvailableForSendingPayment": "No spendable account is available for sending payments.",
         "doNotRemindMe": "Don't remind me again",
         "invalidPayload": "Invalid payload",
         "unexpectedErrorOccurred": "Unexpected error occurred.",
@@ -200,18 +203,16 @@
         "needPermissionToAccessCamera": "Need permission to access Camera.",
         "pleaseApproveCameraPermission": "Please approve camera permissions",
         "scannedAddressIsNotAValidXRPLAddress": "Scanned address is not a valid XRPL address.",
-        "noConnection": "No connection ...",
-        "thereIsNoConnectionToTheCurrentXRPLNode": "There's no connection to the current XRPL node",
-        "UnableToConnectToNode": "Unable to connect to to node '%{defaultNode}'",
-        "CheckYourNetworkConnection": "Check your network connection",
-        "WeWillKeepTryingButThereMayBeAProblemWithYourInternetConnection": "We'll keep trying, but there may be a problem with your internet connection.",
+        "looksLikeYouAreOffline": "Looks like you're offline",
+        "unableToConnectToXRPLNodePleaseCheckYourConnection": "Unable to connect to XRPL node, Please check your internet connection and try again",
         "pressBackAgainToExit": "Press back again to exit",
         "fraudAlert": "FRAUD ALERT",
         "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "This account is reported as scam or fraudulent address. Please proceed with caution",
         "biometricIsNotAvailable": "Biometrics (Fingerprint or Face ID) is unavailable. If your device supports biometrics authentication, please configure it first (OS settings).",
         "clearSearch": "Clear search",
         "noNameFound": "No name found",
-        "readMoreInTheFAQ": "Read more in the FAQ"
+        "readMoreInTheFAQ": "Read more in the FAQ",
+        "whatsNew": "What's new"
     },
     "onboarding":{
         "slideOne": {
@@ -227,7 +228,7 @@
         },
         "slideFour": {
             "title": "Send and receive",
-            "desc": "You can send and receive XRP and other trusted fiat currencies (IOU's) as well"
+            "desc": "You can send and receive XRP and other trusted assets (IOU's) as well"
         }
     },
     "setupPasscode": {
@@ -246,18 +247,21 @@
         "permissionDescription": "We use push notification to send sign requests"
     },
     "home": {
-        "addCurrency" : "Add",
+        "addAsset" : "Add",
         "shareAccount": "Share Account Address",
         "addressBalance" : "Address & balance:",
         "addAccount": "Add account",
-        "whatAreOtherCurrencies": "What are other currencies?",
-        "otherCurrencies" : "Other currencies",
-        "youDonNotHaveOtherCurrency": "You have no other currencies",
+        "whatAreOtherAssets": "What are other assets?",
+        "otherAssets" : "Other assets",
+        "youDonNotHaveOtherAssets": "You have no other assets",
         "howActivateMyAccount": "How can I activate my account?",
         "howActivateMyAccountDesc": "To prevent spam account creation, the XRP ledger requires at least 20 XRP to be deposited into an account to activate it. The 20 XRP is not lost: it will remain in your account, but you cannot spend it. To start using your account, make sure a deposit greater than 20 XRP is made to your account.",
-        "otherCurrenciesDesc": "The XRP ledger also allows you to hold balances of, and to send and receive, currencies other than XRP. These currencies can be issued by other accounts on the XRP ledger. If you want to be able to send or receive a non-XRP currency, you will have to trust the issuer of the non-XRP currency.",
+        "otherAssetsDesc": "The XRP ledger also allows you to hold balances of, and to send and receive, assets other than XRP. These assets can be issued by other accounts on the XRP ledger. If you want to be able to send or receive a non-XRP asset, you will have to trust the issuer of the non-XRP asset.",
         "explainMyBalance": "Explain my balance",
-        "xrpYouOwnVsYourSpendableBalance": "XRP you own vs. your spendable balance."
+        "xrpYouOwnVsYourSpendableBalance": "XRP you own vs. your spendable balance.",
+        "emptyAccountAddFirstAccount": "It’s a little bit empty here add your first account.",
+        "openSignRequest": "Open Sign Request",
+        "sendPaymentTo": "Send payment to"
     },
     "events": {
         "noTransaction" : "No transactions",
@@ -273,21 +277,23 @@
         "onDate": "on",
         "paymentReceived": "Payment received",
         "paymentSent": "Payment sent",
-        "exchangedCurrencies": "Exchanged currencies",
-        "addedATrustLine": "Added a currency (Trust Line)",
-        "removedATrustLine": "Removed a currency (Trust Line)",
-        "addATrustLine": "Add a currency (Trust Line)",
-        "updateAccountCurrencies": "Update account currencies",
+        "exchangedAssets": "Exchanged assets",
+        "addedATrustLine": "Added a asset (Trust Line)",
+        "removedATrustLine": "Removed a asset (Trust Line)",
+        "addATrustLine": "Add a asset (Trust Line)",
+        "updateAccountAssets": "Update account assets",
         "createOffer": "Create offer",
         "cancelOffer" : "Cancel offer",
         "createEscrow": "Create escrow",
         "finishEscrow": "Finish escrow",
         "cancelEscrow": "Cancel escrow",
         "accountSettings": "Account Settings",
+        "deleteAccount": "Delete Account",
         "setSignerList": "Set Signer List",
         "updateAccountSettings": "Update account settings",
         "setARegularKey": "Set a Regular Key",
-        "canNotFetchTransactions": "Can not fetch account transactions!"
+        "canNotFetchTransactions": "Can not fetch account transactions!",
+        "emptyEventsNoAccount": "There are no events because you do not have an account."
     },
     "profile": {
         "availableInFuture": "This feature will be available in the future.",
@@ -316,7 +322,8 @@
         "sendMail": "Send Mail",
         "clearLogs": "Clear Logs",
         "noLogs": "No Logs",
-        "connectingXRPLNode": "Connected XRP Ledger node",
+        "nodeAndExplorer": "XRP Ledger node and Explorer",
+        "selectExplorer": "Please select a explorer",
         "releaseInformation": "Release information",
         "termsAndConditions": "Terms & Conditions",
         "credits": "Credits",
@@ -330,6 +337,7 @@
         "securitySettingsDescription": "Change your pincode or your biometric authentication authority here",
         "changePasscode": "Change pincode",
         "biometricAuthentication": "Biometric authentication",
+        "hapticFeedback": "Haptic feedback",
         "enterOldPasscode": "Enter your old pincode",
         "enterNewPasscode": "Enter your new pincode",
         "enterNewPasscodeAgain": "Enter your new pincode again",
@@ -339,7 +347,8 @@
         "logsCopiedToClipboard": "Session Logs  copied to clipboard",
         "additionalSecurity": "Additional security",
         "eraseData": "Erase data",
-        "eraseDataDescription": "Erase all data after 10 failed passcode attempts"
+        "eraseDataDescription": "Erase all data after 10 failed passcode attempts",
+        "viewChangeLog": "View changelog"
     },
     "account": {
         "addAccount": "Add an account",
@@ -431,7 +440,7 @@
         "destroyAccount": "Delete this account",
         "upgradingAccessLevelWarning": "You are upgrading your access level, You need to import your private key for this account.",
         "downgradingAccessLevelWarning": "You are downgrading your access level. This will cause you to lose your private key for this account. Are you sure?",
-        "removeTrustLineWarning": "You are removing this currency from your account. This action cannot be undone. Are you sure?",
+        "removeTrustLineWarning": "You are removing this asset from your account. This action cannot be undone. Are you sure?",
         "unavailableChangeSecurityLevel": "Changing Security level is not available right now",
         "accountDestroyWarning":"Your account will be deleted permanently, are you sure?",
         "accountMaxLabelLengthError": "Account label should be less than 16 characters!",
@@ -440,6 +449,7 @@
         "yourAccountIsNotActivated": "Your account is not activated!",
         "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "Selected account is not activated. To sign this transaction you need to select an activated account!",
         "accountAlreadyExist": "Account already exists!",
+        "upgradeAccountSecretIsNotMatch": "The entered secret belongs to another r-address. If you want to import a regular key, please [Import new account]. If not, please [cancel] and check your entry.",
         "masterKeyForThisAccountDisableRegularKeyNotFound":"Master key for this account is disabled and regular key account not found in accounts list!",
         "regularKeyAccountForThisAccountDoesNotImportedWithSignAccess": "Regular Key for this account was not imported with sign access!",
         "currentPassphraseShouldNotBeEmpty": "Current Passphrase should not be empty!",
@@ -456,7 +466,13 @@
         "importExchangeAddressReadonlyWarning": "It is not possible to import your Exchange (deposit) account. Doing so does not allow you to track your own balance on the exchange.\n\nImporting a read only account only works if this is your own, activated account, like the account of your hardware",
         "walletReserve": "Wallet reserve",
         "accountBalance": "Account balance",
-        "availableForSpending": "Available for spending"
+        "availableForSpending": "Available for spending",
+        "deleteAccountWarning": "This is an Account Delete transaction. When signing your account will be deleted, and all your remaining funds (except for the last 5 reserved XRP, as the fee on the XRP ledger for deleting an account is 5 XRP) will be sent to the configured destination. Please check the destination twice, and ONLY continue if you ACTUALLY want to delete your account on the XRP ledger",
+        "deleteAccountObjectsExistError": "You cannot delete this account, as your account contains specific XRP ledger objects, like other assets, Decentralized Exchange offers, Escrows (as a creator or beneficiary)",
+        "unableToCheckAccountObjects": "Unable to check for account objects, please make sure you are connected to the XRP ledger node",
+        "unableGetDestinationAccountInfo": "Unable to get destination account info, please make sure you are connected to the XRP ledger node",
+        "destinationAccountIsNotActivated": "Destination account is not activated, Must be a funded account in the XRP ledger.",
+        "destinationAccountAndSourceCannotBeSame": "Destiniation account and source cannot be the same."
     },
     "send": {
         "amountIsBiggerThanYourSpend": "Amount is bigger than what you can spend (%{spendable})",
@@ -492,24 +508,26 @@
         "pleaseEnterTheDestinationTag": "Please enter the destination tag",
         "destinationIsConfirmedAsScam": "The destination account is confirmed as SCAM",
         "destinationIsProbableIsScam": "The destination account is flagged as high risk",
-        "selectedAccountDoNotSupportCurrency": "Selected account does not support selected currency.",
+        "selectedAccountDoNotSupportAsset": "Selected account does not support selected asset.",
         "memoPublicWarning": "Memo info will be public for everyone",
         "destinationNotExistTooLittleToCreate": "The destination account hasn't been used before, and doesn't have a balance. To activate an account on the XRP ledger, an initial deposit of at least 20 XRP is required.",
         "destinationNotExistCreationWarning": "The destination account hasn't been used before, and doesn't have any balance. If you continue sending to this account, 20 XRP of the %{amount} XRP will be used to activate the account on the XRP ledger, meaning 20 XRP will not be spendable. Are you sure you want to continue?",
-        "destinationCannotActivateWithIOU": "The destination account hasn't been used before, and doesn't have any balance. To activate an account on the XRP ledger, an initial deposit of at least 20 XRP has to be sent to the account. Non XRP currencies cannot be used for the initial deposit.",
+        "destinationCannotActivateWithIOU": "The destination account hasn't been used before, and doesn't have any balance. To activate an account on the XRP ledger, an initial deposit of at least 20 XRP has to be sent to the account. Non XRP assets cannot be used for the initial deposit.",
         "destinationTagIsRequired": "The destination tag is required for sending this payment.",
         "unableGetRecipientAccountInfoPleaseTryAgain": "Unable to get recipient account info please try again.",
         "noDestinationTag": "No destination tag",
-        "thisAddressRequiredDestinationTag": "This address requires a destination tag"
+        "thisAddressRequiredDestinationTag": "This address requires a destination tag",
+        "pleaseEnterAmount": "Please enter the amount of transaction"
     },
-    "currency": {
-        "addCurrency": "Add currency",
-        "selectAnExchangeAndSelectCurrency": "Select an issuer and select the currency you would like to add. This list is maintained by the XUMM developers.",
+    "asset": {
+        "addAsset": "Add asset",
+        "selectAnExchangeAndSelectAsset": "Select an issuer and select the asset you would like to add. This list is maintained by the XUMM developers.",
         "addAndSign": "Add: sign transaction",
-        "successRemoved": "Currency successfully removed from your account",
-        "failedRemove": "Cannot remove currency. Error occurred!",
-        "removeCurrency": "Remove currency",
-        "addingCurrencyReserveDescription": "Adding a currency will increase your account reserve by 5 XRP"
+        "successRemoved": "Asset successfully removed from your account",
+        "failedRemove": "Cannot remove asset. Error occurred!",
+        "removeAsset": "Remove asset",
+        "addingAssetReserveDescription": "Adding a asset will increase your account reserve by 5 XRP",
+        "unableToRemoveAssetNotInDefaultState": "This asset cannot be removed from your account. Either because the issuer either added specific settings on this asset, or because their issuing account is not properly configured."
     },
     "exchange": {
         "exchanging": "Exchanging",
@@ -534,6 +552,7 @@
         "payloadHandledByAnotherClient": "Payload handled by another client",
         "payloadNotFound": "Payload not found",
         "invalidPayloadResult": "Invalid payload result",
+        "UnableVerifyPayload": "Unable to verify the payload signature",
         "payloadAlreadyResolved": "This payload has already been signed or rejected. Please repeat the process that generated the request, and scan the new request.",
         "payloadCouldNotBeUpdated": "Payload couldn't be updated",
         "payloadExpired": "This payload has expired. Please repeat the process that generated the request, and scan the new request.",
@@ -550,7 +569,7 @@
         "willRejectTheSignRequest": "Will Reject the sign request",
         "payingWithXRPExchangeRate": "Paying with ~ %{xrpRoundedUp} XRP\nExchange rate: ~ %{exchangeRate} ",
         "notEnoughLiquidityToSendThisPayment": "Not enough liquidity to send this payment.",
-        "unableToCheckCurrencyConversion": "Unable to check for currency conversion, please make sure you are connected to the XRPL node",
+        "unableToCheckAssetConversion": "Unable to check for asset conversion, please make sure you are connected to the XRPL node",
         "unableToGetNetworkFee": "Unable to get network fee, please make sure you are connected to the XRPL node"
     }
 }

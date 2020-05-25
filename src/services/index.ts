@@ -2,7 +2,7 @@ import LoggerService from './LoggerService';
 import NavigationService from './NavigationService';
 import PushNotificationsService from './PushNotificationsService';
 import ApiService from './ApiService';
-import AppStateService from './AppStateService';
+import AppService from './AppService';
 import AuthenticationService from './AuthenticationService';
 import LinkingService from './LinkingService';
 import SocketService from './SocketService';
@@ -14,7 +14,7 @@ export {
     PushNotificationsService,
     NavigationService,
     ApiService,
-    AppStateService,
+    AppService,
     AuthenticationService,
     LinkingService,
     SocketService,

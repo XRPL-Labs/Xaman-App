@@ -2,7 +2,7 @@
  * Add Currency Screen
  */
 
-import { sortBy } from 'lodash';
+import { sortBy, isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { Animated, View, Text, TouchableWithoutFeedback, Image, ScrollView, ActivityIndicator } from 'react-native';
 
@@ -48,7 +48,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
         this.state = {
             isLoading: true,
-            accountObjects: undefined,
+            accountObjects: [],
         };
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
@@ -66,12 +66,16 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         LedgerService.getAccountObjects(account.address)
             .then((res: any) => {
                 const { account_objects } = res;
-                this.setState({
-                    accountObjects: sortBy(account_objects, 'LedgerEntryType'),
-                });
+                if (account_objects) {
+                    this.setState({
+                        accountObjects: sortBy(account_objects, 'LedgerEntryType'),
+                    });
+                } else {
+                    Toast(Localize.t('account.unableToCheckAccountObjects'));
+                }
             })
             .catch(() => {
-                Toast('Unable to load account objects');
+                Toast(Localize.t('account.unableToCheckAccountObjects'));
             })
             .finally(() => {
                 this.setState({
@@ -128,7 +132,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
     renderAccountLines = () => {
         const { account } = this.props;
 
-        if (!account.lines && account.lines.length === 0) return null;
+        if (isEmpty(account.lines)) return null;
 
         return (
             <>
@@ -140,7 +144,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                                     <Image style={[styles.currencyAvatar]} source={{ uri: line.counterParty.avatar }} />
                                 </View>
                                 <Text style={[styles.rowLabel]}>
-                                    {Localize.t('global.currency')}
+                                    {Localize.t('global.asset')}
                                     <Text style={styles.rowLabelSmall}>
                                         {` (${line.counterParty.name} ${NormalizeCurrencyCode(
                                             line.currency.currency,
@@ -178,7 +182,10 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                 {this.renderAccountLines()}
 
                 {isLoading ? (
-                    <ActivityIndicator color={AppColors.blue} />
+                    <>
+                        <Spacer size={20} />
+                        <ActivityIndicator color={AppColors.blue} />
+                    </>
                 ) : (
                     accountObjects.map(this.renderAccountObject)
                 )}

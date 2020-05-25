@@ -247,6 +247,25 @@ const styles = StyleSheet.create({
         paddingLeft: 1,
         paddingRight: 0,
     },
+    /* eslint-disable-next-line */
+    clipboardGuideContainer: {
+        flexDirection: 'row',
+        position: 'absolute',
+        backgroundColor: 'rgba(48, 82, 255, 0.95)',
+        height: AppSizes.verticalScale(50),
+        minHeight: 70,
+        width: '90%',
+        bottom: '2%',
+        left: '5%',
+        justifyContent: 'center',
+        borderRadius: AppSizes.verticalScale(15),
+        paddingHorizontal: 15,
+        paddingVertical: 15,
+        shadowColor: AppColors.blue,
+        shadowOffset: { width: 0, height: 4 },
+        shadowRadius: 8,
+        shadowOpacity: 0.5,
+    },
 });
 
 export default styles;

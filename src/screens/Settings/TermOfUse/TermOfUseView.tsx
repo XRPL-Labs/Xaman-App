@@ -3,10 +3,10 @@
  */
 import { isNumber } from 'lodash';
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, ActivityIndicator, BackHandler } from 'react-native';
+import { View, Text, ActivityIndicator, BackHandler } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import { getStatusBarHeight } from '@common/helpers/interface';
+import { getStatusBarHeight, IsIPhoneX } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens, AppConfig } from '@common/constants';
@@ -111,6 +111,9 @@ class TermOfUseView extends Component<Props, State> {
     render() {
         const { asModal } = this.props;
         const { uri, isTOSLoaded, shouldShowAgreement } = this.state;
+
+        const paddingBottom = IsIPhoneX() && !shouldShowAgreement ? 20 : 0;
+
         return (
             <View testID="term-of-use-view" style={[styles.container]}>
                 {asModal ? (
@@ -129,21 +132,20 @@ class TermOfUseView extends Component<Props, State> {
                     />
                 )}
 
-                <SafeAreaView style={[AppStyles.flex1, AppStyles.centerContent]}>
-                    <WebView
-                        startInLoadingState
-                        onMessage={this.fetchTOSVersion}
-                        onLoadEnd={() => {
-                            this.setState({
-                                isTOSLoaded: true,
-                            });
-                        }}
-                        renderLoading={() => (
-                            <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
-                        )}
-                        source={{ uri }}
-                    />
-                </SafeAreaView>
+                <WebView
+                    containerStyle={[AppStyles.flex1, { paddingBottom }]}
+                    startInLoadingState
+                    onMessage={this.fetchTOSVersion}
+                    onLoadEnd={() => {
+                        this.setState({
+                            isTOSLoaded: true,
+                        });
+                    }}
+                    renderLoading={() => (
+                        <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
+                    )}
+                    source={{ uri }}
+                />
 
                 {shouldShowAgreement && (
                     <Footer>

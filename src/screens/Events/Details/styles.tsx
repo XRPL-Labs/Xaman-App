@@ -6,7 +6,7 @@ import { AppColors, AppFonts, AppSizes } from '@theme';
 const styles = StyleSheet.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     qrCodeContainer: {
-        width: '100%',
+        width: AppSizes.screen.width,
         alignSelf: 'center',
         alignItems: 'center',
         backgroundColor: AppColors.light,
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     detailsContainer: {
-        width: '100%',
+        width: AppSizes.screen.width,
         padding: 25,
     },
     statusText: {

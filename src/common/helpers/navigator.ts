@@ -1,5 +1,5 @@
 import { get, merge } from 'lodash';
-import { Platform } from 'react-native';
+import { Platform, InteractionManager } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 
 import { getBottomTabScale, isIOS10 } from '@common/helpers/interface';
@@ -89,7 +89,7 @@ const Navigator = {
 
         const bottomTabsChildren: any = [];
 
-        Object.keys(AppScreens.TabBar).forEach(tab => {
+        Object.keys(AppScreens.TabBar).forEach((tab) => {
             bottomTabsChildren.push({
                 stack: {
                     id: get(AppScreens.TabBar, tab),
@@ -124,32 +124,36 @@ const Navigator = {
             });
         });
 
-        Navigation.setRoot({
-            root: {
-                bottomTabs: {
-                    id: 'DefaultStack',
-                    children: bottomTabsChildren,
+        InteractionManager.runAfterInteractions(() => {
+            Navigation.setRoot({
+                root: {
+                    bottomTabs: {
+                        id: 'DefaultStack',
+                        children: bottomTabsChildren,
+                    },
                 },
-            },
+            });
         });
     },
 
     startOnboarding() {
         Navigation.setDefaultOptions(defaultOptions);
 
-        return Navigation.setRoot({
-            root: {
-                stack: {
-                    id: AppScreens.Onboarding,
-                    children: [
-                        {
-                            component: {
-                                name: AppScreens.Onboarding,
+        InteractionManager.runAfterInteractions(() => {
+            Navigation.setRoot({
+                root: {
+                    stack: {
+                        id: AppScreens.Onboarding,
+                        children: [
+                            {
+                                component: {
+                                    name: AppScreens.Onboarding,
+                                },
                             },
-                        },
-                    ],
+                        ],
+                    },
                 },
-            },
+            });
         });
     },
 

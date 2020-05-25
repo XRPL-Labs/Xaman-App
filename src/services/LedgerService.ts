@@ -7,24 +7,25 @@
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 import EventEmitter from 'events';
-import { map, isEmpty, flatMap, forEach, has, get } from 'lodash';
+import { map, isEmpty, flatMap, forEach, has, get, assign } from 'lodash';
 
 import { TrustLineSchema } from '@store/schemas/latest';
 import AccountRepository from '@store/repositories/account';
 import CurrencyRepository from '@store/repositories/currency';
 
 import { Amount } from '@common/libs/ledger/parser/common';
-import { AccountTxResponse, LedgerMarker } from '@common/libs/ledger/types';
+import { AccountTxResponse, LedgerMarker, SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
 
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
 
-// events
+/* events  ==================================================================== */
 declare interface LedgerService {
     on(event: 'onTransaction', listener: (name: string) => void): this;
     on(event: string, listener: Function): this;
 }
 
+/* Service  ==================================================================== */
 class LedgerService extends EventEmitter {
     accounts: Array<any>;
     logger: any;
@@ -143,7 +144,6 @@ class LedgerService extends EventEmitter {
         return SocketService.send(request);
     };
 
-
     /**
      * get server info
      */
@@ -152,7 +152,6 @@ class LedgerService extends EventEmitter {
             command: 'server_info',
         });
     };
-
 
     /**
      * get ledger time from server
@@ -173,10 +172,104 @@ class LedgerService extends EventEmitter {
     /**
      * Submit signed transaction to the XRP Ledger
      */
-    submit = (tx_blob: string): any => {
-        return SocketService.send({
-            command: 'submit',
-            tx_blob,
+    submitTX = async (tx_blob: string): Promise<SubmitResultType> => {
+        try {
+            const submitResult = await SocketService.send({
+                command: 'submit',
+                tx_blob,
+            });
+
+            const {
+                error,
+                error_message,
+                error_exception,
+                engine_result,
+                tx_json,
+                engine_result_message,
+            } = submitResult;
+
+            this.logger.debug('Submit Result TX:', submitResult);
+
+            // create default result
+            const result = {
+                transactionId: tx_json?.hash,
+                node: SocketService.node,
+                nodeType: SocketService.chain,
+            };
+
+            // error happened in validation of transaction
+            // probably something missing
+            if (error) {
+                return assign(result, {
+                    success: false,
+                    engineResult: error,
+                    message: error_message || error_exception,
+                });
+            }
+
+            // result code prefix
+            const prefix = engine_result.substr(0, 3);
+
+            // probably success submit
+            if (['tes', 'tel', 'ter'].indexOf(prefix) > -1) {
+                return assign(result, {
+                    success: true,
+                    engineResult: engine_result,
+                    message: engine_result_message,
+                });
+            }
+
+            // didn't got any possible success result
+            return Object.assign(result, {
+                success: false,
+                engineResult: engine_result,
+                message: engine_result_message,
+            });
+        } catch (e) {
+            // something wrong happened
+            return {
+                success: false,
+                engineResult: 'telFAILED',
+                message: e.message,
+                node: SocketService.node,
+                nodeType: SocketService.chain,
+            };
+        }
+    };
+
+    verifyTx = (transactionId: string): Promise<VerifyResultType> => {
+        return new Promise((resolve) => {
+            // wait for ledger close event
+            let verified = false;
+            const ledgerListener = async () => {
+                this.getTransaction(transactionId)
+                    .then((tx: any) => {
+                        if (tx.validated) {
+                            SocketService.offEvent('ledger', ledgerListener);
+                            verified = true;
+
+                            const { TransactionResult } = tx.meta;
+
+                            resolve({
+                                success: TransactionResult === 'tesSUCCESS',
+                                transaction: tx,
+                            });
+                        }
+                    })
+                    .catch(() => {});
+            };
+
+            SocketService.onEvent('ledger', ledgerListener);
+
+            // timeout after 20 sec
+            setTimeout(() => {
+                if (!verified) {
+                    SocketService.offEvent('ledger', ledgerListener);
+                    resolve({
+                        success: false,
+                    });
+                }
+            }, 30000);
         });
     };
 
@@ -203,7 +296,7 @@ class LedgerService extends EventEmitter {
     loadAccounts = () => {
         const accounts = AccountRepository.getAccounts();
 
-        this.accounts = flatMap(accounts, a => {
+        this.accounts = flatMap(accounts, (a) => {
             return { address: a.address, lastSync: 0 };
         });
 
@@ -259,7 +352,7 @@ class LedgerService extends EventEmitter {
                     resolve();
                 })
                 .catch((e: any) => {
-                    reject(new Error('Unable get Account info'));
+                    reject(e);
                     this.logger.warn('Unable get Account info', e);
                 });
         });
@@ -277,7 +370,11 @@ class LedgerService extends EventEmitter {
                     const normalizedList = [] as Partial<TrustLineSchema>[];
 
                     await Promise.all(
-                        map(lines, async l => {
+                        map(lines, async (l) => {
+                            // ignore incoming trustline
+                            if (Number(l.balance) < 0 || (Number(l.limit) === 0 && Number(l.limit_peer) > 0)) {
+                                return;
+                            }
                             // update currency
                             const currency = await CurrencyRepository.upsert(
                                 { id: uuidv4(), issuer: l.account, currency: l.currency },
@@ -294,10 +391,14 @@ class LedgerService extends EventEmitter {
                             // add to trustLines list
                             normalizedList.push({
                                 currency,
+                                balance: new Amount(l.balance, false).toNumber(),
                                 transfer_rate,
+                                no_ripple: l.no_ripple || false,
+                                no_ripple_peer: l.no_ripple_peer || false,
                                 limit: new Amount(l.limit, false).toNumber(),
                                 limit_peer: new Amount(l.limit_peer, false).toNumber(),
-                                balance: new Amount(l.balance, false).toNumber(),
+                                quality_in: l.quality_in || 0,
+                                quality_out: l.quality_out || 0,
                             });
                         }),
                     );
@@ -322,7 +423,7 @@ class LedgerService extends EventEmitter {
      * this will contain account trustLines etc ...
      */
     updateAccountsDetails = (include?: string[]) => {
-        forEach(this.accounts, account => {
+        forEach(this.accounts, (account) => {
             // check if include present
             if (!isEmpty(include)) {
                 if (include.indexOf(account.address) === -1) return;
@@ -339,12 +440,12 @@ class LedgerService extends EventEmitter {
 
             this.updateAccountInfo(account.address)
                 .then(() => this.updateAccountLines(account.address))
-                .catch(e => {
-                    this.logger.warn('UpdateAccountInfo error: ', e.message);
+                .catch((e) => {
+                    this.logger.warn('UpdateAccountInfo error: ', e);
                 });
 
             // update last sync
-            this.accounts = map(this.accounts, a => {
+            this.accounts = map(this.accounts, (a) => {
                 return a.address === account.address ? { address: account.address, lastSync: moment().unix() } : a;
             });
         });
@@ -359,7 +460,7 @@ class LedgerService extends EventEmitter {
 
         // reload accounts
         const accounts = AccountRepository.getAccounts();
-        this.accounts = flatMap(accounts, a => {
+        this.accounts = flatMap(accounts, (a) => {
             return { address: a.address, lastSync: 0 };
         });
 
@@ -374,7 +475,7 @@ class LedgerService extends EventEmitter {
      * Unsubscribe for streaming
      */
     unsubscribe() {
-        const arrayAccounts = flatMap(this.accounts, a => [a.address]);
+        const arrayAccounts = flatMap(this.accounts, (a) => [a.address]);
 
         this.logger.debug(`Unsubscribe to ${arrayAccounts} accounts`, arrayAccounts);
 
@@ -394,7 +495,7 @@ class LedgerService extends EventEmitter {
             this.unsubscribe();
         }
 
-        const arrayAccounts = flatMap(this.accounts, a => [a.address]);
+        const arrayAccounts = flatMap(this.accounts, (a) => [a.address]);
 
         this.logger.debug(`Subscribed to ${arrayAccounts} accounts`, arrayAccounts);
 

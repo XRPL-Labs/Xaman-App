@@ -12,7 +12,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
-import Submitter from '@common/libs/ledger/submitter';
+import LedgerService from '@services/LedgerService';
 import { SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
 
 // components
@@ -76,15 +76,13 @@ class SubmitModal extends Component<Props, State> {
     submit = async () => {
         const { txblob } = this.props;
 
-        const ledgerSubmitter = new Submitter(txblob);
-
-        const submitResult = await ledgerSubmitter.submit();
+        const submitResult = await LedgerService.submitTX(txblob);
 
         // submitted verify
         if (submitResult.success) {
             this.setState({ step: 'verifying', submitResult });
 
-            const verifyResult = await Submitter.verify(submitResult.transactionId);
+            const verifyResult = await LedgerService.verifyTx(submitResult.transactionId);
 
             this.setState({
                 step: 'result',

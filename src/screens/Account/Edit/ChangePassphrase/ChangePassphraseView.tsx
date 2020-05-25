@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, Alert, View, KeyboardAvoidingView, Keyboard } from 'react-native';
+import { Alert, View, Platform, KeyboardAvoidingView, Keyboard } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -115,11 +115,15 @@ class ChangePassphraseView extends Component<Props, State> {
                     }}
                     centerComponent={{ text: Localize.t('account.changePassphrase') }}
                 />
-                <KeyboardAvoidingView behavior="padding" style={[AppStyles.flex1, AppStyles.paddingSml]}>
+                <KeyboardAvoidingView
+                    enabled={Platform.OS === 'ios'}
+                    behavior="padding"
+                    style={[AppStyles.flex1, AppStyles.paddingSml]}
+                >
                     <PasswordInput
                         placeholder={Localize.t('account.currentPassphrase')}
                         selectTextOnFocus={passphrase.isValid}
-                        onChange={currentPassphrase => this.setState({ currentPassphrase })}
+                        onChange={(currentPassphrase) => this.setState({ currentPassphrase })}
                         validate={false}
                     />
 
@@ -139,21 +143,19 @@ class ChangePassphraseView extends Component<Props, State> {
                         editable={passphrase.isValid}
                         placeholder={Localize.t('account.repeatPassphrase')}
                         selectTextOnFocus={passphrase.isValid}
-                        onChange={passphrase_confirmation => this.setState({ passphrase_confirmation })}
+                        onChange={(passphrase_confirmation) => this.setState({ passphrase_confirmation })}
                         validate={false}
                     />
                 </KeyboardAvoidingView>
 
-                <SafeAreaView>
-                    <Footer>
-                        <Button
-                            label={Localize.t('global.save')}
-                            onPress={() => {
-                                this.savePassphrase();
-                            }}
-                        />
-                    </Footer>
-                </SafeAreaView>
+                <Footer safeArea>
+                    <Button
+                        label={Localize.t('global.save')}
+                        onPress={() => {
+                            this.savePassphrase();
+                        }}
+                    />
+                </Footer>
             </View>
         );
     }

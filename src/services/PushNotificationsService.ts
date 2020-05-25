@@ -12,7 +12,6 @@ import { AppScreens } from '@common/constants';
 
 import { Payload } from '@common/libs/payload';
 
-import NavigationService from '@services/NavigationService';
 import LoggerService from '@services/LoggerService';
 
 import Localize from '@locale';
@@ -25,6 +24,7 @@ declare interface PushNotificationsService {
     on(event: string, listener: Function): this;
 }
 
+/* Service  ==================================================================== */
 class PushNotificationsService extends EventEmitter {
     initialized: boolean;
     logger: any;
@@ -47,7 +47,7 @@ class PushNotificationsService extends EventEmitter {
                         }
                         return resolve();
                     })
-                    .catch(e => {
+                    .catch((e) => {
                         return reject(e);
                     });
             } catch (e) {
@@ -72,7 +72,6 @@ class PushNotificationsService extends EventEmitter {
         if (!this.initialized) {
             this.prepareNotifications();
             this.createNotificationListeners();
-            this.checkInitialNotification();
             this.initialized = true;
         }
     };
@@ -90,10 +89,10 @@ class PushNotificationsService extends EventEmitter {
         return firebase
             .messaging()
             .getToken()
-            .then(token => {
+            .then((token) => {
                 return token;
             })
-            .catch(e => {
+            .catch((e) => {
                 this.logger.error('Cannot get token from firebase', e);
                 return undefined;
             });
@@ -139,16 +138,11 @@ class PushNotificationsService extends EventEmitter {
     };
 
     /* If the app was launched by a push notification  */
-    checkInitialNotification = () => {
-        // check init notification after moving to default stack
-        NavigationService.on('setRoot', async (root: string) => {
-            if (root === 'DefaultStack') {
-                const notificationOpen = await firebase.notifications().getInitialNotification();
-                if (notificationOpen) {
-                    this.handleNotificationOpen(notificationOpen);
-                }
-            }
-        });
+    checkInitialNotification = async () => {
+        const notificationOpen = await firebase.notifications().getInitialNotification();
+        if (notificationOpen) {
+            this.handleNotificationOpen(notificationOpen);
+        }
     };
 
     /* Handle notifications within the app when app is running in foreground */
@@ -194,7 +188,7 @@ class PushNotificationsService extends EventEmitter {
 
             if (payloadUUID) {
                 Payload.from(payloadUUID)
-                    .then(payload => {
+                    .then((payload) => {
                         // show review transaction screen
                         Navigator.showModal(
                             AppScreens.Modal.ReviewTransaction,
@@ -204,7 +198,7 @@ class PushNotificationsService extends EventEmitter {
                             },
                         );
                     })
-                    .catch(e => {
+                    .catch((e) => {
                         Alert.alert(Localize.t('global.error'), e.message);
                         this.logger.error('Cannot fetch payload from backend', payloadUUID);
                     });

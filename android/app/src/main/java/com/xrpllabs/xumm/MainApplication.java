@@ -15,7 +15,7 @@ import libs.crypto.CryptoPackage;
 import libs.ui.ActionSheetPackage;
 import libs.ui.PromptPackage;
 import libs.ui.QRCodePackage;
-import libs.common.UserDefaultsPackage;
+import libs.common.SharedPreferencesPackage;
 import libs.common.HTTPClientFactory;
 
 // External Dependencies
@@ -59,7 +59,7 @@ public class MainApplication extends NavigationApplication {
                 packages.add(new ActionSheetPackage());
                 packages.add(new PromptPackage());
                 packages.add(new QRCodePackage());
-                packages.add(new UserDefaultsPackage());
+                packages.add(new SharedPreferencesPackage());
                 // Firebase Dependencies
                 packages.add(new RNFirebaseMessagingPackage());
                 packages.add(new RNFirebaseNotificationsPackage());

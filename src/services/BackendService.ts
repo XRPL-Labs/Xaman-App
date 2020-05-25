@@ -31,12 +31,11 @@ import LoggerService from '@services/LoggerService';
 // Locale
 import Localize from '@locale';
 
+/* Service  ==================================================================== */
 class BackendService {
-    accounts: string[];
     logger: any;
 
     constructor() {
-        this.accounts = [];
         this.logger = LoggerService.createLogger('Backend');
     }
 
@@ -62,7 +61,6 @@ class BackendService {
     */
     sync = async () => {
         this.logger.debug('Start Syncing with backend');
-        await this.ping();
         await this.syncCuratedIous();
         await this.syncContacts();
     };

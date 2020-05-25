@@ -96,7 +96,7 @@ class AccountSettingsView extends Component<Props, State> {
         // update catch for this account
         getAccountName.cache.set(
             account.address,
-            new Promise(resolve => {
+            new Promise((resolve) => {
                 resolve({ name: newLabel, source: 'internal:accounts' });
             }),
         );
@@ -160,7 +160,7 @@ class AccountSettingsView extends Component<Props, State> {
                 {
                     text: Localize.t('global.doIt'),
                     onPress: () => {
-                        Navigator.push(AppScreens.Account.Import, {}, { upgrade: true });
+                        Navigator.push(AppScreens.Account.Import, {}, { upgrade: account });
                     },
                 },
             ],

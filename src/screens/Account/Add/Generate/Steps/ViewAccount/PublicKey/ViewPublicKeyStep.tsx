@@ -53,7 +53,7 @@ class ViewPublicKeyStep extends Component<Props, State> {
     render() {
         const { account, goNext } = this.props;
         return (
-            <SafeAreaView testID="account-generate-step-view-public" style={[AppStyles.pageContainerFull]}>
+            <SafeAreaView testID="account-generate-step-view-public" style={[AppStyles.container]}>
                 <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.paddingSml]}>
                     <Text style={[AppStyles.h3]}>{Localize.t('global.great')}</Text>
                     <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>

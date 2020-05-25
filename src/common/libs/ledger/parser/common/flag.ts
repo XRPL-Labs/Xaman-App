@@ -58,11 +58,12 @@ class Flag {
                 flagsList = txFlags.PaymentChannelClaim;
                 break;
             default:
-                flagsList = AccountFlags;
                 break;
         }
 
         const settings = {} as any;
+
+        // parse transaction flags
         for (const flagName in flagsList) {
             if (this.flags & flagsList[flagName]) {
                 settings[flagName] = true;
@@ -70,6 +71,17 @@ class Flag {
                 settings[flagName] = false;
             }
         }
+
+        // parse universal flags
+        for (const flagName in txFlags.Universal) {
+            // @ts-ignore
+            if (this.flags & txFlags.Universal[flagName]) {
+                settings[flagName] = true;
+            } else {
+                settings[flagName] = false;
+            }
+        }
+
         return settings;
     }
 
@@ -82,6 +94,10 @@ class Flag {
             this.flags = flag;
         } else {
             this.flags |= flag;
+            /* eslint-disable-next-line spellcheck/spell-checker */
+            // JavaScript converts operands to 32-bit signed ints before doing bitwise
+            // operations. We need to convert it back to an unsigned int.
+            this.flags >>>= 0;
         }
 
         return this.flags;

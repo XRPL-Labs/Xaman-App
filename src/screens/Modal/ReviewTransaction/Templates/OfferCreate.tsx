@@ -97,15 +97,17 @@ class OfferCreateTemplate extends Component<Props, State> {
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
                         <View style={[styles.contentBox]}>
-                            {isLoading ? (
-                                Platform.OS === 'ios' ? (
-                                    <ActivityIndicator color={AppColors.blue} />
+                            <Text style={[styles.value]}>
+                                {isLoading ? (
+                                    Platform.OS === 'ios' ? (
+                                        <ActivityIndicator color={AppColors.blue} />
+                                    ) : (
+                                        'Loading...'
+                                    )
                                 ) : (
-                                    'Loading...'
-                                )
-                            ) : (
-                                <Text style={styles.value}>{takerGetsIssuerName || transaction.TakerGets.issuer}</Text>
-                            )}
+                                    takerGetsIssuerName || transaction.TakerGets.issuer
+                                )}
+                            </Text>
                         </View>
                     </>
                 )}
@@ -116,20 +118,21 @@ class OfferCreateTemplate extends Component<Props, State> {
                         {`${transaction.TakerPays.value} ${transaction.TakerPays.currency}`}
                     </Text>
                 </View>
-
                 {transaction.TakerPays.issuer && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
                         <View style={[styles.contentBox]}>
-                            {isLoading ? (
-                                Platform.OS === 'ios' ? (
-                                    <ActivityIndicator color={AppColors.blue} />
+                            <Text style={[styles.value]}>
+                                {isLoading ? (
+                                    Platform.OS === 'ios' ? (
+                                        <ActivityIndicator color={AppColors.blue} />
+                                    ) : (
+                                        'Loading...'
+                                    )
                                 ) : (
-                                    'Loading...'
-                                )
-                            ) : (
-                                <Text style={styles.value}>{takerPaysIssuerName || transaction.TakerPays.issuer}</Text>
-                            )}
+                                    takerPaysIssuerName || transaction.TakerPays.issuer
+                                )}
+                            </Text>
                         </View>
                     </>
                 )}

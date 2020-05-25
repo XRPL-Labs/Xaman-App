@@ -163,8 +163,8 @@ class EventsView extends Component<Props, State> {
     };
 
     loadPendingPayloads = () => {
-        return new Promise(resolve => {
-            return BackendService.getPendingPayloads().then(payloads => {
+        return new Promise((resolve) => {
+            return BackendService.getPendingPayloads().then((payloads) => {
                 this.setState({ pendingPayloads: payloads }, () => {
                     return resolve(payloads);
                 });
@@ -175,14 +175,14 @@ class EventsView extends Component<Props, State> {
     loadTransactions = (loadMore?: boolean): Promise<TransactionsType[]> => {
         const { account, lastMarker } = this.state;
 
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             // return if no account exist
             if (isEmpty(account)) {
                 return resolve([]);
             }
 
             return LedgerService.getTransactions(account.address, loadMore && lastMarker, 100)
-                .then(resp => {
+                .then((resp) => {
                     const { transactions, marker } = resp;
                     let shouldLoadMore = true;
 
@@ -193,7 +193,7 @@ class EventsView extends Component<Props, State> {
 
                     const parsedList = flatMap(transactions, parserFactory);
 
-                    const filtered = filter(parsedList, t => {
+                    const filtered = filter(parsedList, (t) => {
                         return t.TransactionResult.success;
                     });
 
@@ -233,7 +233,7 @@ class EventsView extends Component<Props, State> {
 
         if (isEmpty(pendingPayloads)) {
             // group items by month name and then get the name for each month
-            const grouped = groupBy(transactions, item => moment(item.Date, 'YYYY-MM-DD').format('YYYY-MM-DD'));
+            const grouped = groupBy(transactions, (item) => moment(item.Date, 'YYYY-MM-DD').format('YYYY-MM-DD'));
 
             const dateSource = [] as any;
 
@@ -249,7 +249,9 @@ class EventsView extends Component<Props, State> {
         dateSource.push({ title: Localize.t('global.awaiting'), type: 'requests', data: pendingPayloads });
 
         // group items by month name and then get the name for each date
-        const groupedTransactions = groupBy(transactions, item => moment(item.Date, 'YYYY-MM-DD').format('YYYY-MM-DD'));
+        const groupedTransactions = groupBy(transactions, (item) => {
+            return moment(item.Date, 'YYYY-MM-DD').format('YYYY-MM-DD');
+        });
 
         map(groupedTransactions, (v, k) => {
             dateSource.push({ title: k, type: 'transactions', data: v });
@@ -290,7 +292,7 @@ class EventsView extends Component<Props, State> {
         let isEmptyFilters = true;
 
         if (filters && typeof filters === 'object') {
-            Object.keys(filters).map(k => {
+            Object.keys(filters).map((k) => {
                 if (!isUndefined(filters[k])) {
                     isEmptyFilters = false;
                     return false;
@@ -310,7 +312,7 @@ class EventsView extends Component<Props, State> {
         let newTransactions = transactions;
 
         if (filters.Amount && filters.AmountIndicator) {
-            newTransactions = filter(newTransactions, t => {
+            newTransactions = filter(newTransactions, (t) => {
                 if (filters.AmountIndicator === 'Bigger') {
                     return parseFloat(get(t, 'Amount.value')) >= parseFloat(filters.Amount);
                 }
@@ -319,13 +321,13 @@ class EventsView extends Component<Props, State> {
         }
 
         if (filters.Currency) {
-            newTransactions = filter(newTransactions, t => {
+            newTransactions = filter(newTransactions, (t) => {
                 return get(t, 'Amount.currency') === filters.Currency;
             });
         }
 
         if (filters.ExpenseType) {
-            newTransactions = filter(newTransactions, t => {
+            newTransactions = filter(newTransactions, (t) => {
                 if (filters.ExpenseType === 'Income') {
                     return get(t, 'Destination.address') === account.address;
                 }
@@ -367,7 +369,7 @@ class EventsView extends Component<Props, State> {
                     break;
             }
 
-            newTransactions = filter(newTransactions, t => {
+            newTransactions = filter(newTransactions, (t) => {
                 return includeTypes.indexOf(get(t, 'Type')) !== -1;
             });
         }
@@ -446,7 +448,7 @@ class EventsView extends Component<Props, State> {
 
         return (
             <View style={[AppStyles.paddingTopSml, styles.row]}>
-                {Object.keys(filters).map(key => {
+                {Object.keys(filters).map((key) => {
                     if (!filters[key] || key === 'Amount') return null;
                     if (key === 'AmountIndicator' && !filters.Amount) return null;
 
@@ -478,7 +480,7 @@ class EventsView extends Component<Props, State> {
                             onPress={() => {
                                 /* eslint-disable-next-line */
                                 const f = Object.assign({}, filters);
-                                keys.forEach(k => {
+                                keys.forEach((k) => {
                                     f[k] = undefined;
                                 });
                                 this.applyFilters(f);
@@ -539,7 +541,7 @@ class EventsView extends Component<Props, State> {
 
         if (isEmpty(account)) {
             return (
-                <SafeAreaView testID="events-tab-empty-view" style={[AppStyles.pageContainer]}>
+                <SafeAreaView testID="events-tab-empty-view" style={[AppStyles.tabContainer]}>
                     {/* Header */}
                     <View style={[AppStyles.headerContainer]}>
                         <View style={[AppStyles.flex1, AppStyles.paddingLeft, AppStyles.centerContent]}>
@@ -553,9 +555,7 @@ class EventsView extends Component<Props, State> {
                             style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent]}
                         >
                             <Image style={[AppStyles.emptyIcon]} source={Images.ImageNoEvents} />
-                            <Text style={[AppStyles.emptyText]}>
-                                There are no events because you do not have an account.
-                            </Text>
+                            <Text style={[AppStyles.emptyText]}>{Localize.t('events.emptyEventsNoAccount')}</Text>
                             <Button
                                 testID="add-account-button"
                                 label={Localize.t('home.addAccount')}
@@ -572,7 +572,7 @@ class EventsView extends Component<Props, State> {
             );
         }
         return (
-            <SafeAreaView testID="events-tab-view" style={[AppStyles.pageContainer, styles.container]}>
+            <SafeAreaView testID="events-tab-view" style={[AppStyles.tabContainer, styles.container]}>
                 {/* Header */}
                 <View style={[AppStyles.headerContainer]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeft, AppStyles.centerContent]}>
@@ -609,7 +609,7 @@ class EventsView extends Component<Props, State> {
                         ListHeaderComponent={this.renderHeader}
                         renderSectionHeader={this.renderSectionHeader}
                         refreshing={isLoading}
-                        keyExtractor={item => item.Hash || item.meta.uuid}
+                        keyExtractor={(item) => item.Hash || item.meta.uuid}
                         ListEmptyComponent={this.listEmpty}
                         onEndReached={this.loadMore}
                         onEndReachedThreshold={0.2}

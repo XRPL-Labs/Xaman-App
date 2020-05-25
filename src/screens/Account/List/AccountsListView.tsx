@@ -114,7 +114,7 @@ class AccountListView extends Component<Props, State> {
         const { accounts } = this.state;
 
         return (
-            <View testID="account-list-view" style={[AppStyles.pageContainerFull]}>
+            <View testID="account-list-view" style={[AppStyles.container]}>
                 <Header
                     centerComponent={{ text: Localize.t('global.accounts') }}
                     leftComponent={{

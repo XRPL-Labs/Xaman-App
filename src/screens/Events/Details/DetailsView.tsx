@@ -1,6 +1,7 @@
 /**
  * Transaction Details screen
  */
+import { find } from 'lodash';
 
 import React, { Component } from 'react';
 import {
@@ -16,7 +17,7 @@ import {
 } from 'react-native';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
-import { AppScreens } from '@common/constants';
+import { AppScreens, AppConfig } from '@common/constants';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 import { ActionSheet } from '@common/helpers/interface';
@@ -24,7 +25,12 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { Header, QRCode, Spacer } from '@components';
 
-import { BackendService } from '@services';
+import { BackendService, SocketService } from '@services';
+
+import CoreRepository from '@store/repositories/core';
+import { CoreSchema } from '@store/schemas/latest';
+
+import { NodeChain } from '@store/types';
 
 import Localize from '@locale';
 // style
@@ -38,6 +44,8 @@ export interface Props {
 }
 
 export interface State {
+    coreSettings: CoreSchema;
+    connectedChain: NodeChain;
     scamAlert: boolean;
     showMemo: boolean;
 }
@@ -56,6 +64,8 @@ class TransactionDetailsView extends Component<Props, State> {
         super(props);
 
         this.state = {
+            coreSettings: CoreRepository.getSettings(),
+            connectedChain: SocketService.chain,
             scamAlert: false,
             showMemo: true,
         };
@@ -87,21 +97,30 @@ class TransactionDetailsView extends Component<Props, State> {
         }
     };
 
-    shareTxLink = () => {
+    getTransactionLink = () => {
+        const { connectedChain, coreSettings } = this.state;
         const { tx } = this.props;
-        const url = `https://livenet.xrpl.org/transactions/${tx.Hash}`;
+
+        const net = connectedChain === NodeChain.Main ? 'main' : 'test';
+
+        const explorer = find(AppConfig.explorer, { value: coreSettings.defaultExplorer });
+
+        return `${explorer[net]}${tx.Hash}`;
+    };
+
+    shareTxLink = () => {
+        const url = this.getTransactionLink();
 
         Share.share({
             title: Localize.t('events.shareTransactionId'),
-            url,
+            message: url,
+            url: undefined,
         }).catch(() => {});
     };
 
     openTxLink = () => {
-        const { tx } = this.props;
-
-        const url = `https://livenet.xrpl.org/transactions/${tx.Hash}`;
-        Linking.canOpenURL(url).then(supported => {
+        const url = this.getTransactionLink();
+        Linking.canOpenURL(url).then((supported) => {
             if (supported) {
                 Linking.openURL(url);
             } else {
@@ -256,7 +275,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
                 {showMemo ? (
                     <Text style={[styles.contentText, scamAlert && AppStyles.colorRed]}>
-                        {tx.Memos.map(m => {
+                        {tx.Memos.map((m) => {
                             let memo = '';
                             memo += m.type ? `${m.type}\n` : '';
                             memo += m.format ? `${m.format}\n` : '';
@@ -324,7 +343,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     </View>
                 )}
 
-                <ScrollView testID="transaction-details-view" contentContainerStyle={[]}>
+                <ScrollView testID="transaction-details-view">
                     <View style={styles.qrCodeContainer}>
                         <Text
                             style={[
@@ -336,7 +355,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         </Text>
                         <View style={styles.qrImage}>
                             {/* eslint-disable-next-line */}
-                            <QRCode size={170} value={`https://livenet.xrpl.org/transactions/${tx.Hash}`} />
+                            <QRCode size={170} value={this.getTransactionLink()} />
                         </View>
                         <Spacer />
                         <Text style={[styles.hashText]}>{tx.Hash}</Text>

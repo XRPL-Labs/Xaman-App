@@ -4,7 +4,16 @@ import { AppColors, AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({
-    // container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    visibleContent: {
+        backgroundColor: AppColors.white,
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        shadowColor: AppColors.black,
+        shadowOffset: { width: 0, height: 0 },
+        shadowRadius: 5,
+        shadowOpacity: 0.3,
+        padding: 15,
+    },
     iconAccount: {
         marginRight: 15,
         opacity: 0.4,
@@ -15,13 +24,13 @@ const styles = StyleSheet.create({
     },
     accountRow: {
         paddingRight: 20,
-        paddingLeft: 20,
+        paddingLeft: 18,
         paddingTop: 6,
         paddingBottom: 6,
-        // marginTop: 5,
+        marginTop: 10,
         // marginBottom: 5,
         height: AppSizes.scale(60),
-        borderRadius: AppSizes.scale(60) / 3,
+        borderRadius: AppSizes.scale(50) / 3,
         // borderRadius: 20,
         // borderBottomWidth: 1,
         // borderBottomColor: AppColors.red,
@@ -37,15 +46,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
         color: AppColors.green,
     },
-    regularKey: {
-        flexDirection: 'row',
-        paddingHorizontal: 7,
-        paddingVertical: 5,
-        marginLeft: 10,
-        borderRadius: 5,
-        backgroundColor: AppColors.lightBlue,
-        overflow: 'hidden',
-    },
+
     iconKey: {
         tintColor: AppColors.blue,
         marginRight: 5,
@@ -53,26 +54,37 @@ const styles = StyleSheet.create({
         // borderColor: AppColors.red,
         alignSelf: 'center',
     },
-    regularKeyText: {
-        textAlign: 'left',
-        fontSize: 10,
-        fontFamily: AppFonts.subtext.family,
-        color: AppColors.blue,
-        paddingTop: 1,
+    accountLabel: {
+        fontFamily: AppFonts.h5.family,
+        fontSize: AppFonts.p.size,
+        color: AppColors.black,
+    },
+    accessLevelContainer: {
+        left: 0,
+        right: 0,
+        flexDirection: 'row',
+        marginTop: 3,
+    },
+    accessLevelLabel: {
+        marginLeft: 5,
+        fontSize: AppFonts.base.size * 0.7,
+        fontFamily: AppFonts.base.familyBold,
+        color: AppColors.greyDark,
+        includeFontPadding: false,
     },
     radioCircle: {
-        width: AppSizes.scale(25),
-        height: AppSizes.scale(25),
-        borderWidth: 2,
+        width: AppSizes.scale(23),
+        height: AppSizes.scale(23),
+        borderWidth: 3,
         borderColor: AppColors.grey,
-        borderRadius: AppSizes.scale(25) / 2,
+        borderRadius: AppSizes.scale(23) / 2,
     },
     radioCircleSelected: {
-        width: AppSizes.scale(25),
-        height: AppSizes.scale(25),
+        width: AppSizes.scale(23),
+        height: AppSizes.scale(23),
         borderWidth: AppSizes.scale(6),
         borderColor: AppColors.green,
-        borderRadius: AppSizes.scale(25) / 2,
+        borderRadius: AppSizes.scale(23) / 2,
         backgroundColor: AppColors.white,
     },
     switchButton: {
