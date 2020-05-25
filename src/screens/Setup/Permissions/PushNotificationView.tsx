@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 
-import { View, Text, Image, SafeAreaView } from 'react-native';
+import { View, Text, Image, SafeAreaView, Platform, Alert, Linking } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
@@ -25,8 +25,8 @@ export interface Props {
 export interface State {}
 
 /* Component ==================================================================== */
-class PermissionsSetupView extends Component<Props, State> {
-    static screenName = AppScreens.Setup.Permissions;
+class PushNotificationSetupView extends Component<Props, State> {
+    static screenName = AppScreens.Setup.PushNotification;
 
     static options() {
         return {
@@ -36,10 +36,29 @@ class PermissionsSetupView extends Component<Props, State> {
         };
     }
 
+    openAppSettings = () => {
+        Linking.openSettings();
+    };
+
     requestPermission = () => {
-        PushNotificationsService.requestPermission().then(granted => {
+        PushNotificationsService.requestPermission().then((granted) => {
             if (granted) {
                 this.nextStep();
+                return;
+            }
+
+            if (Platform.OS === 'ios') {
+                Alert.alert(
+                    Localize.t('global.error'),
+                    Localize.t('global.pushErrorPermissionMessage'),
+                    [
+                        { text: Localize.t('global.approvePermissions'), onPress: this.openAppSettings },
+                        { text: Localize.t('global.cancel') },
+                    ],
+                    { cancelable: true },
+                );
+            } else {
+                Alert.alert(Localize.t('global.error'), Localize.t('global.UnableToRegisterPushNotifications'));
             }
         });
     };
@@ -82,4 +101,4 @@ class PermissionsSetupView extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default PermissionsSetupView;
+export default PushNotificationSetupView;

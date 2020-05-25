@@ -85,7 +85,7 @@ class PasscodeSetupView extends Component<Props, State> {
         }
 
         // go to the next step
-        Navigator.push(AppScreens.Setup.Permissions);
+        Navigator.push(AppScreens.Setup.PushNotification);
     };
 
     onNext = () => {

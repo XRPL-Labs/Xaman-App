@@ -159,6 +159,7 @@
         "danger": "Danger",
         "explorer": "Explorer",
         "balanceLimit": "Balance limit",
+        "activation": "Activation",
         "unbelievablyStrong": "Unbelievably strong",
         "biometryIsNotSupported": "Biometric authentication is not supported on this device!",
         "invalidAuth": "Invalid Authentication",
@@ -212,7 +213,9 @@
         "clearSearch": "Clear search",
         "noNameFound": "No name found",
         "readMoreInTheFAQ": "Read more in the FAQ",
-        "whatsNew": "What's new"
+        "whatsNew": "What's new",
+        "pushErrorPermissionMessage": "Unable to register push notifications, To grant the required notification permission, please go to your system settings and make sure that XUMM > Notifications is enabled.",
+        "UnableToRegisterPushNotifications": "Unable to register push notifications"
     },
     "onboarding":{
         "slideOne": {
@@ -472,7 +475,10 @@
         "unableToCheckAccountObjects": "Unable to check for account objects, please make sure you are connected to the XRP ledger node",
         "unableGetDestinationAccountInfo": "Unable to get destination account info, please make sure you are connected to the XRP ledger node",
         "destinationAccountIsNotActivated": "Destination account is not activated, Must be a funded account in the XRP ledger.",
-        "destinationAccountAndSourceCannotBeSame": "Destiniation account and source cannot be the same."
+        "destinationAccountAndSourceCannotBeSame": "Destiniation account and source cannot be the same.",
+        "accountGenerateActivationExplain": "You created a new account on the XRP ledger. The account is not activated. Account activation is a requirement on the XRP ledger. To activate, you will have to make a first deposit of at least 20 XRP. The first 20 XRP deposited into your account cannot be spent, but will be reserved to keep your account active and pay for on ledger fees.",
+        "accountImportActivationExplain": "You imported a new account on the XRP ledger. The account is not activated. Account activation is a requirement on the XRP ledger. To activate, you will have to make a first deposit of at least 20 XRP. The first 20 XRP deposited into your account cannot be spent, but will be reserved to keep your account active and pay for on ledger fees.",
+        "accountReserveNotShownExplain": "Your reserved XRP will not show up as balance in XUMM, but you can view your reserve with the \"Explain my balance\" button in the home screen, above your XRP balance."
     },
     "send": {
         "amountIsBiggerThanYourSpend": "Amount is bigger than what you can spend (%{spendable})",

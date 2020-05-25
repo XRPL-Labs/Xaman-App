@@ -159,6 +159,7 @@
       "danger": "危険",
       "explorer": "冒険者",
       "balanceLimit": "バランス制限",
+      "activation": "アクティベーション",
       "unbelievablyStrong": "信じられないほど強い",
       "biometryIsNotSupported": "このデバイスでは生体認証はサポートされていません！",
       "invalidAuth": "無効な認証",
@@ -212,7 +213,9 @@
       "clearSearch": "検索をクリア",
       "noNameFound": "名前が見つかりません",
       "readMoreInTheFAQ": "FAQで詳細を読む",
-      "whatsNew": "新着情報"
+      "whatsNew": "新着情報",
+      "pushErrorPermissionMessage": "プッシュ通知を登録できません。必要な通知権限を付与するには、システム設定に移動し、XUMM>通知が有効になっていることを確認してください。",
+      "UnableToRegisterPushNotifications": "プッシュ通知を登録できません"
    },
    "onboarding": {
       "slideOne": {
@@ -256,7 +259,7 @@
       "youDonNotHaveOtherAssets": "他に資産はありません",
       "howActivateMyAccount": "アカウントを有効にするにはどうすればよいですか？",
       "howActivateMyAccountDesc": "スパムアカウントの作成を防ぐために、XRP元帳では、アカウントをアクティブ化するために少なくとも20のXRPをアカウントに入金する必要があります。 20 XRPは失われません。アカウントには残りますが、使うことはできません。アカウントの使用を開始するには、20 XRPを超える預金がアカウントに行われていることを確認してください。",
-      "otherAssetsDesc": "XRP元帳を使用すると、XRP以外の資産の残高を保持し、資産を送受信することもできます。これらの資産は、XRP元帳の他のアカウントから発行できます。非XRPアセットを送受信できるようにするには、非XRPアセットの発行者を信頼する必要があります。",
+      "otherAssetsDesc": "XRP元帳を使用すると、XRP以外の資産の残高を保持し、資産を送受信することもできます。これらの資産は、XRP元帳の他のアカウントから発行できます。非XRP資産を送受信できるようにするには、非XRP資産の発行者を信頼する必要があります。",
       "explainMyBalance": "私のバランスを説明してください",
       "xrpYouOwnVsYourSpendableBalance": "所有するXRPと支出可能な残高のXRP。",
       "emptyAccountAddFirstAccount": "ここは少し空です。最初のアカウントを追加してください。",
@@ -365,7 +368,7 @@
       "pleaseEnterSafePassphrase": "覚えやすいが、他の人には推測できない長さの長いパスフレーズを作成します。",
       "enterPassphrase": "パスフレーズを入力してください",
       "repeatPassphrase": "パスフレーズを繰り返す",
-      "passphraseShouldContain": "パスフレーズの強度は少なくとも公平である必要があります。長いパスフレーズまたはより難しいパスフレーズを使用してください（長いパスフレーズの方が適しています）。",
+      "passphraseShouldContain": "パスフレーズの強度は少なくとも公平である必要があります。長いパスフレーズまたはより難しいパスフレーズを使用してください（長いパスフレーズを使用することをお勧めします）。",
       "passphraseConfirmNotMatch": "パスフレーズが一致しません",
       "enterValidPassphrase": "有効なパスフレーズを入力してください",
       "chooseSecurityLevel": "セキュリティレベル",
@@ -383,8 +386,8 @@
       "copyAddress": "住所をコピー",
       "publicKeyCopiedToClipboard": "クリップボードにコピーされたアカウントアドレス",
       "yourPrivateKey": "あなたの秘密の数字",
-      "writeDownPrivateKey": "すべての行を紙に書き留めて、安全な場所に保管してください！デバイスがクラッシュし、秘密の番号がなくなった場合、資金は失われます。",
-      "privateKeyRowsDesc": "あなただけがあなたの資金に触れることができますが、あなたの秘密の番号を安全に保つ必要があります。あなたの秘密は、行ごとに6桁を含む8行（ラベルAH）で構成されています。",
+      "writeDownPrivateKey": "すべての行を紙に書き留めて、安全な場所に保管してください！デバイスがクラッシュして秘密の番号がなくなった場合、資金は失われます。",
+      "privateKeyRowsDesc": "あなただけがあなたの資金に触れることができますが、あなたの秘密の番号を安全に保つ必要があります。シークレットは8行で構成され（AHのラベルが付いている）、行ごとに6桁が含まれています。",
       "neverSharePrivateKey": "シークレットナンバー（秘密キー）を他の人と共有しないでください。実行すると、資金にアクセスできなくなる可能性があります。",
       "secretNumbersOfRow": "行の秘密の番号%{row}",
       "confirmNumbersOfRow": "行数を確認%{row}",
@@ -467,12 +470,15 @@
       "walletReserve": "ウォレットリザーブ",
       "accountBalance": "勘定残高",
       "availableForSpending": "支出可能",
-      "deleteAccountWarning": "これはアカウント削除トランザクションです。アカウントに署名すると、残りのすべての資金（アカウントを削除するためのXRP元帳の料金が5 XRPであるため、最後の5つの予約済みXRPを除く）が構成された宛先に送られます。宛先を2回確認し、XRP元帳で実際にアカウントを削除する場合にのみ続行してください",
+      "deleteAccountWarning": "これはアカウント削除トランザクションです。アカウントに署名すると、削除され、残りのすべての資金（アカウントを削除するためのXRP元帳の料金が5 XRPであるため、最後の5つの予約済みXRPを除く）が構成された宛先に送信されます。宛先を2回確認し、実際にXRP元帳でアカウントを削除する場合にのみ続行してください",
       "deleteAccountObjectsExistError": "このアカウントは、他のアセット、分散型Exchangeオファー、エスクロー（作成者または受益者として）などの特定のXRP元帳オブジェクトが含まれているため、削除できません",
       "unableToCheckAccountObjects": "アカウントオブジェクトを確認できません。XRPレジャーノードに接続していることを確認してください",
       "unableGetDestinationAccountInfo": "宛先アカウント情報を取得できません。XRP元帳ノードに接続していることを確認してください",
       "destinationAccountIsNotActivated": "宛先アカウントがアクティブ化されていません。XRP元帳の資金口座である必要があります。",
-      "destinationAccountAndSourceCannotBeSame": "宛先アカウントとソースを同じにすることはできません。"
+      "destinationAccountAndSourceCannotBeSame": "宛先アカウントとソースを同じにすることはできません。",
+      "accountGenerateActivationExplain": "XRP元帳に新しいアカウントを作成しました。アカウントはアクティブ化されていません。アカウントのアクティブ化は、XRP元帳の要件です。有効にするには、少なくとも20 XRPの初回デポジットを行う必要があります。アカウントに入金された最初の20 XRPは使用できませんが、アカウントをアクティブに保ち、元帳料金を支払うために予約されます。",
+      "accountImportActivationExplain": "XRP元帳に新しいアカウントをインポートしました。アカウントはアクティブ化されていません。アカウントのアクティブ化は、XRP元帳の要件です。有効にするには、少なくとも20 XRPの初回デポジットを行う必要があります。アカウントに入金された最初の20 XRPは使用できませんが、アカウントをアクティブに保ち、元帳料金を支払うために予約されます。",
+      "accountReserveNotShownExplain": "予約したXRPはXUMMに残高として表示されませんが、XRP残高の上にあるホーム画面の[残高を説明]ボタンで予約を表示できます。"
    },
    "send": {
       "amountIsBiggerThanYourSpend": "金額があなたが費やすことができる金額よりも大きい（ %{spendable} ）",
@@ -497,7 +503,7 @@
       "addToContacts": "連絡先に登録する",
       "sendingFailed": "送信に失敗しました！",
       "submitFailed": "提出に失敗しました！",
-      "somethingWentWrong": "エラーが発生しました！",
+      "somethingWentWrong": "問題が発生しました！",
       "resultCopiedToClipboard": "結果をクリップボードにコピーしました",
       "txIdCopiedToClipboard": "トランザクションIDがクリップボードにコピーされました",
       "submittingToLedger": "XRP元帳へのトランザクションの送信",
@@ -526,7 +532,7 @@
       "successRemoved": "アカウントからアセットが正常に削除されました",
       "failedRemove": "アセットを削除できません。エラーが発生しました！",
       "removeAsset": "アセットを削除",
-      "addingAssetReserveDescription": "アセットを追加すると、アカウントの予約が5倍になります",
+      "addingAssetReserveDescription": "アセットを追加すると、アカウントの予約が5 XRP増加します",
       "unableToRemoveAssetNotInDefaultState": "このアセットはアカウントから削除できません。発行者がこのアセットに特定の設定を追加したか、発行アカウントが適切に構成されていないためです。"
    },
    "exchange": {

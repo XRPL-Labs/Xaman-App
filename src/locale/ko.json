@@ -159,6 +159,7 @@
       "danger": "위험",
       "explorer": "탐침",
       "balanceLimit": "잔액 한도",
+      "activation": "활성화",
       "unbelievablyStrong": "믿을 수 없을만큼 강한",
       "biometryIsNotSupported": "이 장치에서는 생체 인증이 지원되지 않습니다!",
       "invalidAuth": "잘못된 인증",
@@ -208,23 +209,25 @@
       "pressBackAgainToExit": "다시 누르면 종료",
       "fraudAlert": "사기 경보",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "이 계정은 사기 또는 사기성 주소로보고됩니다. 주의해서 진행하십시오",
-      "biometricIsNotAvailable": "생체 인식 (지문 또는 얼굴 ID)을 사용할 수 없습니다. 장치가 생체 인식 인증을 지원하는 경우 먼저 장치를 구성하십시오 (OS 설정).",
+      "biometricIsNotAvailable": "생체 인식 (지문 또는 얼굴 ID)을 사용할 수 없습니다. 장치가 생체 인증을 지원하는 경우 먼저 장치를 구성하십시오 (OS 설정).",
       "clearSearch": "명확한 검색",
       "noNameFound": "이름을 찾을 수 없습니다",
       "readMoreInTheFAQ": "FAQ에서 더 읽기",
-      "whatsNew": "새로운 소식"
+      "whatsNew": "새로운 소식",
+      "pushErrorPermissionMessage": "푸시 알림을 등록 할 수 없습니다. 필요한 알림 권한을 부여하려면 시스템 설정으로 이동하여 XUMM> 알림이 활성화되어 있는지 확인하십시오.",
+      "UnableToRegisterPushNotifications": "푸시 알림을 등록 할 수 없습니다"
    },
    "onboarding": {
       "slideOne": {
-         "title": "XRP 원장의 지불 및 지불 요청"
+         "title": "XRP 원장에 대한 지불 및 지불 요청"
       },
       "slideTwo": {
          "title": "사용자 친화적 액세스",
-         "desc": "전체 액세스 모드에서 여러 계정을 추가하거나 읽기 전용입니다. 모든 액세스 계정으로 거래를 보내고 서명을 요청하십시오."
+         "desc": "전체 액세스 모드에서 여러 계정을 추가하거나 읽기 전용입니다. 전체 액세스 계정으로 거래를 보내고 서명을 요청하십시오."
       },
       "slideThree": {
          "title": "보안 우선",
-         "desc": "xumm 응용 프로그램 및 플랫폼은 보안을 염두에두고 구축되었습니다. 비밀을 다시 입력하지 말고 신뢰할 수있는 자신의 장치에서 거래에 서명하십시오."
+         "desc": "xumm 응용 프로그램 및 플랫폼은 보안을 염두에두고 구축되었습니다. 비밀을 다시 입력하지 말고 자신의 신뢰할 수있는 장치에서 거래에 서명하십시오."
       },
       "slideFour": {
          "title": "보내고 받기",
@@ -244,7 +247,7 @@
    },
    "setupPermissions": {
       "enableNotifications": "푸시 알림을 사용 하시겠습니까?",
-      "permissionDescription": "푸시 알림을 사용하여 사인 요청을 보냅니다."
+      "permissionDescription": "우리는 푸시 알림을 사용하여 사인 요청을 보냅니다."
    },
    "home": {
       "addAsset": "더하다",
@@ -254,7 +257,7 @@
       "whatAreOtherAssets": "다른 자산은 무엇입니까?",
       "otherAssets": "기타 자산",
       "youDonNotHaveOtherAssets": "다른 자산이 없습니다",
-      "howActivateMyAccount": "계정을 활성화하려면 어떻게합니까?",
+      "howActivateMyAccount": "계정을 활성화하려면 어떻게해야합니까?",
       "howActivateMyAccountDesc": "스팸 계정 생성을 방지하려면 XRP 원장에서 계정에 20 개 이상의 XRP를 입금하여 활성화해야합니다. 20 XRP는 손실되지 않습니다. 계정에 남아 있지만 사용할 수는 없습니다. 계정 사용을 시작하려면 20 XRP 이상의 예금이 계정에 입금되어 있는지 확인하십시오.",
       "otherAssetsDesc": "XRP 원장을 사용하면 XRP 이외의 자산의 잔액을 보유하고 보내고받을 수 있습니다. 이러한 자산은 XRP 원장의 다른 계정에서 발행 할 수 있습니다. 비 XRP 자산을 보내거나 받으려면 비 XRP 자산의 발행자를 신뢰해야합니다.",
       "explainMyBalance": "내 균형을 설명",
@@ -463,7 +466,7 @@
       "switchAccount": "계정 전환",
       "useMnemonicPassphrase": "니모닉 암호 구 사용",
       "mnemonicLargeAmountAlert": "계정에 상당한 가치가있는 동안 니모닉 계정 가져 오기를 고려하는 경우 (예 : 저축, 더 많은 양의 XRP 또는 기타 토큰) 니모닉 계정을 오프라인으로 유지하려면 XUMM에 새 계정을 만드는 것을 고려하십시오.",
-      "importExchangeAddressReadonlyWarning": "Exchange (예금) 계정을 가져올 수 없습니다. 그렇게하면 거래소에서 자신의 잔액을 추적 할 수 없습니다. 읽기 전용 계정 가져 오기는 하드웨어 계정과 같이 자신의 활성화 된 계정 인 경우에만 작동합니다",
+      "importExchangeAddressReadonlyWarning": "Exchange (예금) 계정을 가져올 수 없습니다. 그렇게하면 거래소에서 자신의 잔액을 추적 할 수 없습니다. 읽기 전용 계정 가져 오기는 하드웨어 계정처럼 자신의 활성화 된 계정 인 경우에만 작동합니다",
       "walletReserve": "월렛 예약",
       "accountBalance": "계정 잔액",
       "availableForSpending": "지출 가능",
@@ -472,7 +475,10 @@
       "unableToCheckAccountObjects": "계정 개체를 확인할 수 없습니다. XRP 원장 노드에 연결되어 있는지 확인하십시오",
       "unableGetDestinationAccountInfo": "대상 계정 정보를 가져올 수 없습니다. XRP 원장 노드에 연결되어 있는지 확인하십시오",
       "destinationAccountIsNotActivated": "대상 계정이 활성화되지 않았습니다. XRP 원장에서 자금을 조달 한 계정이어야합니다.",
-      "destinationAccountAndSourceCannotBeSame": "대상 계정과 출처가 같을 수 없습니다."
+      "destinationAccountAndSourceCannotBeSame": "대상 계정과 출처가 같을 수 없습니다.",
+      "accountGenerateActivationExplain": "XRP 원장에서 새 계정을 만들었습니다. 계정이 활성화되지 않았습니다. 계정 활성화는 XRP 원장의 요구 사항입니다. 활성화하려면 최소 20 XRP의 첫 입금을해야합니다. 귀하의 계정에 입금 된 첫 20 개의 XRP는 사용할 수 없지만 귀하의 계정을 활성 상태로 유지하고 원장 수수료를 지불하도록 예약됩니다.",
+      "accountImportActivationExplain": "XRP 원장에서 새 계정을 가져 왔습니다. 계정이 활성화되지 않았습니다. 계정 활성화는 XRP 원장의 요구 사항입니다. 활성화하려면 최소 20 XRP의 첫 입금을해야합니다. 귀하의 계정에 입금 된 첫 20 개의 XRP는 사용할 수 없지만 계정을 활성화 상태로 유지하고 원장 수수료를 지불하도록 예약됩니다.",
+      "accountReserveNotShownExplain": "예약 된 XRP는 XUMM에 잔액으로 표시되지 않지만 XRP 잔액 위의 홈 화면에서 \"내 잔액 설명\"버튼을 사용하여 예약을 볼 수 있습니다."
    },
    "send": {
       "amountIsBiggerThanYourSpend": "지출 할 수있는 금액보다 금액이 더 많습니다 ( %{spendable} )",

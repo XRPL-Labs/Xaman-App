@@ -7,7 +7,7 @@ const screens = {
     Setup: {
         Passcode: 'app.Setup.Passcode',
         Biometric: 'app.Setup.Biometric',
-        Permissions: 'app.Setup.Permissions',
+        PushNotification: 'app.Setup.PushNotification',
         Agreement: 'app.Setup.Agreement',
         Finish: 'app.Setup.Finish',
     },

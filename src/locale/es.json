@@ -159,6 +159,7 @@
       "danger": "Peligro",
       "explorer": "Explorador",
       "balanceLimit": "Límite de equilibrio",
+      "activation": "Activación",
       "unbelievablyStrong": "Increíblemente fuerte",
       "biometryIsNotSupported": "¡La autenticación biométrica no es compatible con este dispositivo!",
       "invalidAuth": "Autenticación inválida",
@@ -212,7 +213,9 @@
       "clearSearch": "Borrar búsqueda",
       "noNameFound": "Ningún nombre encontrado",
       "readMoreInTheFAQ": "Lea más en las preguntas frecuentes",
-      "whatsNew": "Qué hay de nuevo"
+      "whatsNew": "Qué hay de nuevo",
+      "pushErrorPermissionMessage": "No se pueden registrar las notificaciones automáticas. Para otorgar el permiso de notificación requerido, vaya a la configuración del sistema y asegúrese de que XUMM> Notificaciones esté habilitado.",
+      "UnableToRegisterPushNotifications": "No se pueden registrar notificaciones push"
    },
    "onboarding": {
       "slideOne": {
@@ -362,7 +365,7 @@
       "YouJustCreatedAccount": "Acaba de crear una nueva cuenta nueva.",
       "yeahLetsGo": "¡Hurra, vamos!",
       "enterYourPassphrase": "Ingrese su frase de contraseña",
-      "pleaseEnterSafePassphrase": "Cree una frase de contraseña de longitud extendida que sea fácil de recordar, pero que otros puedan adivinar.",
+      "pleaseEnterSafePassphrase": "Cree una frase de contraseña de longitud extendida que sea fácil de recordar, pero que otros no puedan adivinar.",
       "enterPassphrase": "Ingrese la frase de contraseña",
       "repeatPassphrase": "Repetir frase de contraseña",
       "passphraseShouldContain": "La fuerza de su frase de contraseña debe ser al menos Justa, utilice una frase de contraseña larga o más difícil (la frase de contraseña larga es mejor).",
@@ -472,7 +475,10 @@
       "unableToCheckAccountObjects": "No se pueden verificar los objetos de la cuenta, asegúrese de estar conectado al nodo del libro mayor XRP",
       "unableGetDestinationAccountInfo": "No se puede obtener la información de la cuenta de destino, asegúrese de estar conectado al nodo del libro mayor XRP",
       "destinationAccountIsNotActivated": "La cuenta de destino no está activada, debe ser una cuenta con fondos en el libro mayor XRP.",
-      "destinationAccountAndSourceCannotBeSame": "La cuenta de destino y la fuente no pueden ser lo mismo."
+      "destinationAccountAndSourceCannotBeSame": "La cuenta de destino y la fuente no pueden ser lo mismo.",
+      "accountGenerateActivationExplain": "Creó una nueva cuenta en el libro mayor XRP. La cuenta no está activada. La activación de la cuenta es un requisito en el libro mayor XRP. Para activar, deberá realizar un primer depósito de al menos 20 XRP. Los primeros 20 XRP depositados en su cuenta no se pueden gastar, pero se reservarán para mantener su cuenta activa y pagar las tarifas del libro mayor.",
+      "accountImportActivationExplain": "Importó una nueva cuenta en el libro mayor XRP. La cuenta no está activada. La activación de la cuenta es un requisito en el libro mayor XRP. Para activar, deberá realizar un primer depósito de al menos 20 XRP. Los primeros 20 XRP depositados en su cuenta no se pueden gastar, pero se reservarán para mantener su cuenta activa y pagar las tarifas del libro mayor.",
+      "accountReserveNotShownExplain": "Su XRP reservado no aparecerá como saldo en XUMM, pero puede ver su reserva con el botón \"Explicar mi saldo\" en la pantalla de inicio, arriba de su saldo XRP."
    },
    "send": {
       "amountIsBiggerThanYourSpend": "La cantidad es mayor de lo que puede gastar ( %{spendable} )",

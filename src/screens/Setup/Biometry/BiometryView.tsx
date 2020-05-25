@@ -40,7 +40,7 @@ class BiometrySetupView extends Component<Props, State> {
 
     requestAuthenticate = () => {
         FingerprintScanner.isSensorAvailable()
-            .then(biometryType => {
+            .then((biometryType) => {
                 FingerprintScanner.authenticate({
                     description: Localize.t('global.authenticate'),
                     fallbackEnabled: true,
@@ -87,13 +87,13 @@ class BiometrySetupView extends Component<Props, State> {
 
     nextStep = () => {
         // if push notification already granted then go to last part
-        PushNotificationsService.checkPermission().then(granted => {
+        PushNotificationsService.checkPermission().then((granted) => {
             if (granted) {
                 Navigator.push(AppScreens.Setup.Finish);
                 return;
             }
 
-            Navigator.push(AppScreens.Setup.Permissions);
+            Navigator.push(AppScreens.Setup.PushNotification);
         });
     };
 
