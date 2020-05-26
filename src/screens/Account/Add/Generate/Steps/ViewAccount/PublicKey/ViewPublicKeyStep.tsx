@@ -102,11 +102,8 @@ class ViewPublicKeyStep extends Component<Props, State> {
                             isDisabled={!account.generatedAccount}
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
-                            // icon={Images.IconChevronRight}
-                            // iconStyle={AppStyles.imgColorWhite}
-                            // iconPosition="right"
                             onPress={() => {
-                                goNext('SecurityStep');
+                                goNext('ExplainActivation');
                             }}
                         />
                     </View>

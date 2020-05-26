@@ -476,8 +476,9 @@
         "unableGetDestinationAccountInfo": "Unable to get destination account info, please make sure you are connected to the XRP ledger node",
         "destinationAccountIsNotActivated": "Destination account is not activated, Must be a funded account in the XRP ledger.",
         "destinationAccountAndSourceCannotBeSame": "Destiniation account and source cannot be the same.",
-        "accountGenerateActivationExplain": "You created a new account on the XRP ledger. The account is not activated. Account activation is a requirement on the XRP ledger. To activate, you will have to make a first deposit of at least 20 XRP. The first 20 XRP deposited into your account cannot be spent, but will be reserved to keep your account active and pay for on ledger fees.",
-        "accountImportActivationExplain": "You imported a new account on the XRP ledger. The account is not activated. Account activation is a requirement on the XRP ledger. To activate, you will have to make a first deposit of at least 20 XRP. The first 20 XRP deposited into your account cannot be spent, but will be reserved to keep your account active and pay for on ledger fees.",
+        "accountGenerateActivationExplain": "Account activation is a requirement on the XRP ledger. To activate, you will have to make a first deposit of at least 20 XRP.",
+        "accountImportActivationExplain": "You imported a new account on the XRP ledger. The account is not activated. Account activation is a requirement on the XRP ledger. To activate, you will have to make a first deposit of at least 20 XRP.",
+        "accountActivateReserveExplain": "The first 20 XRP deposited into your account cannot be spent, but will be reserved to keep your account active and pay for on ledger fees.",
         "accountReserveNotShownExplain": "Your reserved XRP will not show up as balance in XUMM, but you can view your reserve with the \"Explain my balance\" button in the home screen, above your XRP balance."
     },
     "send": {

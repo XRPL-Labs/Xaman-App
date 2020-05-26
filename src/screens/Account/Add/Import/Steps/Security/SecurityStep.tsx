@@ -59,7 +59,7 @@ class SecurityStep extends Component<Props, State> {
                 <Text style={[AppStyles.p, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
                     {Localize.t('account.chooseWisely')}
                 </Text>
-                <View style={[AppStyles.contentContainer, AppStyles.flexStart, AppStyles.paddingSml]}>
+                <View style={[AppStyles.contentContainer, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <RadioButton
                         onPress={() => {
                             this.onRadioButtonPress('passcode');

@@ -168,6 +168,9 @@ class AccountGenerateView extends Component<Props, State> {
             case 'ViewPublicKey':
                 title = Localize.t('account.publicAddress');
                 break;
+            case 'ExplainActivation':
+                title = Localize.t('global.activation');
+                break;
             case 'LabelStep':
                 title = Localize.t('account.accountLabel');
                 break;

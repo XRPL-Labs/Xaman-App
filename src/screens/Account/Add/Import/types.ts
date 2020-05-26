@@ -11,6 +11,7 @@ export type ImportSteps =
     | 'MnemonicAlert'
     | 'EnterMnemonic'
     | 'ConfirmPublicKey'
+    | 'ExplainActivation'
     | 'SecurityStep'
     | 'PassphraseStep'
     | 'LabelStep'

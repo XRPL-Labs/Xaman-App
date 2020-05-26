@@ -25,6 +25,7 @@ export const Images = {
     ImageComplete: buildImageSource('ImageComplete', 'image_complete'),
     ImageCloudAlert: buildImageSource('ImageCloudAlert', 'image_cloud_alert'),
     ImageWarningShield: buildImageSource('ImageWarningShield', 'image_warning_shield'),
+    ImageCoinWallet: buildImageSource('ImageCoinWallet', 'image_coin_wallet'),
     // Xumm
     xummLogo: buildImageSource('XummLogo', 'xumm_logo'),
     xummIcon: buildImageSource('XummIcon', 'xumm_icon'),

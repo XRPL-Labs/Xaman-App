@@ -1,15 +1,19 @@
 /**
  * Import Account Screen
  */
+
+import { dropRight, last, isEmpty, has, get } from 'lodash';
+
 import React, { Component } from 'react';
 import { View, Keyboard, Alert } from 'react-native';
-import { dropRight, last, isEmpty } from 'lodash';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
 import { AccessLevels, EncryptionLevels } from '@store/types';
 import { Navigator } from '@common/helpers/navigator';
+
+import { LedgerService } from '@services';
 
 // constants
 import { AppScreens } from '@common/constants';
@@ -79,7 +83,7 @@ class AccountImportView extends Component<Props, State> {
         this.setState({ account: Object.assign(account, accountObject) });
     };
 
-    goNext = (nextStep: ImportSteps, settings?: AccountObject) => {
+    goNext = async (nextStep: ImportSteps, settings?: AccountObject) => {
         const { upgrade } = this.props;
         const { account, currentStep, prevSteps } = this.state;
 
@@ -106,6 +110,24 @@ class AccountImportView extends Component<Props, State> {
                     Alert.alert(Localize.t('global.error'), Localize.t('account.accountAlreadyExist'));
                     return;
                 }
+            }
+
+            // check if account is activated
+            // if not  -> show the activation explain step
+            if (currentStep === 'ConfirmPublicKey') {
+                await LedgerService.getAccountInfo(account.importedAccount.address)
+                    .then((accountInfo: any) => {
+                        if (!accountInfo || has(accountInfo, 'error')) {
+                            if (get(accountInfo, 'error') === 'actNotFound') {
+                                // account not activated
+                                // override next step
+                                nextStep = 'ExplainActivation';
+                            }
+                        }
+                    })
+                    .catch(() => {
+                        // ignore
+                    });
             }
 
             prevSteps.push(currentStep);
@@ -210,6 +232,9 @@ class AccountImportView extends Component<Props, State> {
                 break;
             case 'ConfirmPublicKey':
                 title = Localize.t('account.publicAddress');
+                break;
+            case 'ExplainActivation':
+                title = Localize.t('global.activation');
                 break;
             case 'LabelStep':
                 title = Localize.t('account.accountLabel');
