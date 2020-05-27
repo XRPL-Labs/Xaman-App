@@ -1,8 +1,20 @@
-MIT License
+CUSTOM (dual) License (!)
 
 Copyright (c) 2019 XRPL Labs OU
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
+> If in doubt about / questions regarding XUMM licenses: please contact XRPL Labs: w@xrpl-labs.com
+
+# For public / commercial / beta use
+### Eg. XRPL forks, public projects, etc.
+
+Permission required by XRPL Labs OU (EE) / The Integrators BV (NL). 
+Please contact w@xrpl-labs.com with a project description. A license may be granted
+(free or charge or paid) depending on the project & target audience.
+
+# For personal use
+### Eg. Educational, research (non commercial, non public)
+
+Permission is hereby granted to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
