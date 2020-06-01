@@ -95,6 +95,9 @@ const styles = StyleSheet.create({
     bithompTag: {
         backgroundColor: AppColors.bithomp,
     },
+    xrpscanTag: {
+        backgroundColor: AppColors.xrpscan,
+    },
     xrplnsTag: {
         backgroundColor: AppColors.xrpln,
     },
