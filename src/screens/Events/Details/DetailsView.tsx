@@ -219,6 +219,25 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
+    renderAccountDelete = () => {
+        const { tx } = this.props;
+
+        let content = `It deleted account ${tx.Account.address}`;
+
+        content += `\n\nIt was instructed to deliver remaining balance ${tx.Amount.value} ${NormalizeCurrencyCode(
+            tx.Amount.currency,
+        )} to ${tx.Destination.address}`;
+
+        if (tx.Account.tag) {
+            content += `\nThe transaction has a source tag:${tx.Account.tag}`;
+        }
+        if (tx.Destination.tag) {
+            content += `\nThe transaction has a destination tag: ${tx.Destination.tag}`;
+        }
+
+        return content;
+    };
+
     renderTrustSet = () => {
         const { tx } = this.props;
 
@@ -248,6 +267,9 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case 'TrustSet':
                 content += this.renderTrustSet();
+                break;
+            case 'AccountDelete':
+                content += this.renderAccountDelete();
                 break;
             default:
                 content += `This is a ${tx.Type} transaction`;
