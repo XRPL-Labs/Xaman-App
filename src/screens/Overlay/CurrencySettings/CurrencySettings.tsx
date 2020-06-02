@@ -360,12 +360,15 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 </View>
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
                                     <Text style={[styles.currencyItemLabelSmall]}>
-                                        {NormalizeCurrencyCode(trustLine.currency.currency)}
-                                    </Text>
-                                    <Text style={[styles.issuerLabel]}>
                                         {trustLine.currency.name
                                             ? trustLine.currency.name
-                                            : trustLine.counterParty.name}
+                                            : NormalizeCurrencyCode(trustLine.currency.currency)}
+                                    </Text>
+                                    <Text style={[styles.issuerLabel]}>
+                                        {trustLine.counterParty.name}{' '}
+                                        {trustLine.currency.name
+                                            ? NormalizeCurrencyCode(trustLine.currency.currency)
+                                            : ''}
                                     </Text>
                                 </View>
                             </View>
