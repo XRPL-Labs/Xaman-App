@@ -112,7 +112,12 @@ const NormalizeDate = (date: string): string => {
         return 'Yesterday';
     }
 
-    return momentDate.format('DD MMM');
+    // same year, don't show year
+    if (momentDate.isSame(reference, 'year')) {
+        return momentDate.format('DD MMM');
+    }
+
+    return momentDate.format('DD MMM, Y');
 };
 
 const NormalizeDestination = (destination: XrplDestination): XrplDestination => {
