@@ -8,7 +8,8 @@ import LedgerService from '@services/LedgerService';
 
 import Locale from '@locale';
 
-import { Destination } from '../parser/types';
+import Amount from '../parser/common/amount';
+import { Destination, AmountType } from '../parser/types';
 
 import BaseTransaction from './base';
 /* Types ==================================================================== */
@@ -25,6 +26,32 @@ class AccountDelete extends BaseTransaction {
         }
 
         this.fields = this.fields.concat(['Destination', 'DestinationTag']);
+    }
+
+    get Amount(): AmountType {
+        let amount;
+
+        if (has(this, ['meta', 'DeliveredAmount'])) {
+            amount = get(this, ['meta', 'DeliveredAmount']);
+        } else {
+            amount = get(this, ['meta', 'delivered_amount']);
+        }
+
+        // the delivered_amount will be unavailable in old transactions
+        if (amount === 'unavailable') {
+            amount = undefined;
+        }
+
+        if (!amount) {
+            amount = get(this, ['tx', 'Amount']);
+        }
+
+        if (isUndefined(amount)) return undefined;
+
+        return {
+            currency: 'XRP',
+            value: new Amount(amount).dropsToXrp(),
+        };
     }
 
     get Destination(): Destination {

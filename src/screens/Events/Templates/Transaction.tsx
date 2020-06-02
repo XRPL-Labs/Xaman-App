@@ -59,6 +59,9 @@ class TransactionTemplate extends PureComponent<Props, State> {
                     tag = item.Destination.tag;
                 }
                 break;
+            case 'AccountDelete':
+                address = item.Account.address;
+                break;
             case 'TrustSet':
                 address = item.Issuer;
                 break;
@@ -75,7 +78,6 @@ class TransactionTemplate extends PureComponent<Props, State> {
 
         // this this transactions are belong to account
         if (
-            item.Type === 'AccountDelete' ||
             item.Type === 'AccountSet' ||
             item.Type === 'SignerListSet' ||
             item.Type === 'SetRegularKey' ||
@@ -195,6 +197,8 @@ class TransactionTemplate extends PureComponent<Props, State> {
                 return Localize.t('events.createOffer');
             case 'OfferCancel':
                 return Localize.t('events.cancelOffer');
+            case 'AccountDelete':
+                return Localize.t('events.deleteAccount');
             default:
                 return item.Type;
         }
@@ -206,6 +210,16 @@ class TransactionTemplate extends PureComponent<Props, State> {
         const incoming = item.Destination?.address === account.address;
 
         if (item.Type === 'Payment') {
+            return (
+                <Text style={[styles.amount, incoming ? styles.incomingColor : styles.outgoingColor]} numberOfLines={1}>
+                    {incoming ? '' : '-'}
+                    {item.Amount.value}{' '}
+                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
+                </Text>
+            );
+        }
+
+        if (item.Type === 'AccountDelete') {
             return (
                 <Text style={[styles.amount, incoming ? styles.incomingColor : styles.outgoingColor]} numberOfLines={1}>
                     {incoming ? '' : '-'}
