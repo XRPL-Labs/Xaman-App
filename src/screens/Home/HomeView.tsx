@@ -50,7 +50,8 @@ export interface Props {}
 
 export interface State {
     account: AccountSchema;
-    spendableAccounts: Array<AccountSchema>;
+    canSendPayment: boolean;
+    isSpendable: boolean;
     privacyMode: boolean;
     clipboardDetected: StringTypeDetector;
     ignoreClipboardContent: Array<string>;
@@ -72,7 +73,8 @@ class HomeView extends Component<Props, State> {
         super(props);
         this.state = {
             account: AccountRepository.getDefaultAccount(),
-            spendableAccounts: AccountRepository.getSpendableAccounts(),
+            isSpendable: false,
+            canSendPayment: false,
             privacyMode: false,
             clipboardDetected: undefined,
             ignoreClipboardContent: [],
@@ -82,24 +84,26 @@ class HomeView extends Component<Props, State> {
     componentDidMount() {
         // update UI on accounts update
         AccountRepository.on('accountUpdate', this.updateUI);
-        AccountRepository.on('changeDefaultAccount', this.onDefaultAccountChange);
 
         // update spendable accounts on account add/remove
-        AccountRepository.on('accountCreate', this.updateSpendableAccounts);
-        AccountRepository.on('accountRemove', this.updateSpendableAccounts);
+        AccountRepository.on('accountCreate', this.updateSpendableStatus);
+        AccountRepository.on('accountRemove', this.updateSpendableStatus);
 
         // check for the clipboard content when app come from background
         AppService.on('appStateChange', this.onAppStateChange);
 
         // listen for screen appear event
         Navigation.events().bindComponent(this);
+
+        // update spendable status
+        this.updateSpendableStatus();
     }
 
     componentDidAppear() {
         const { account } = this.state;
 
         InteractionManager.runAfterInteractions(() => {
-            if (account.isValid() && SocketService.isConnected()) {
+            if (!isEmpty(account) && account.isValid() && SocketService.isConnected()) {
                 // update account details
                 LedgerService.updateAccountsDetails([account.address]);
             }
@@ -149,35 +153,32 @@ class HomeView extends Component<Props, State> {
         }
     };
 
-    onDefaultAccountChange = (defaultAccount: AccountSchema) => {
-        // update the default account
-        if (defaultAccount.isValid()) {
-            LedgerService.updateAccountsDetails([defaultAccount.address]);
-
-            this.setState({
-                account: defaultAccount,
-            });
-        }
-    };
-
     updateUI = (updatedAccount: AccountSchema) => {
         if (updatedAccount.isValid() && updatedAccount.default) {
             // update the UI
-            this.setState({
-                account: updatedAccount,
-            });
-
-            // when account balance changed update spendable accounts
-            this.updateSpendableAccounts();
+            this.setState(
+                {
+                    account: updatedAccount,
+                },
+                () => {
+                    // when account balance changed update spendable accounts
+                    this.updateSpendableStatus();
+                },
+            );
         }
     };
 
-    updateSpendableAccounts = () => {
-        setTimeout(() => {
+    updateSpendableStatus = () => {
+        const { account } = this.state;
+
+        if (!isEmpty(account) && account.isValid()) {
+            const spendableAccounts = AccountRepository.getSpendableAccounts();
+
             this.setState({
-                spendableAccounts: AccountRepository.getSpendableAccounts(),
+                isSpendable: !!find(spendableAccounts, { address: account.address }),
+                canSendPayment: spendableAccounts.length > 0,
             });
-        }, 300);
+        }
     };
 
     addCurrency = () => {
@@ -279,10 +280,10 @@ class HomeView extends Component<Props, State> {
     };
 
     renderClipboardGuide = () => {
-        const { clipboardDetected, spendableAccounts, account } = this.state;
+        const { clipboardDetected, canSendPayment, account } = this.state;
 
         // if no clipboard detected or spendable accounts is empty return
-        if (!clipboardDetected || spendableAccounts.length === 0) return null;
+        if (!clipboardDetected || canSendPayment) return null;
 
         let title = '';
         let content = '';
@@ -378,9 +379,7 @@ class HomeView extends Component<Props, State> {
     };
 
     renderAssets = () => {
-        const { account, privacyMode, spendableAccounts } = this.state;
-
-        const spendable = !!find(spendableAccounts, { address: account.address });
+        const { account, privacyMode, isSpendable } = this.state;
 
         if (account.balance === 0) {
             // check if account is a regular key to one of xumm accounts
@@ -448,7 +447,7 @@ class HomeView extends Component<Props, State> {
                     <View style={[AppStyles.flex5, AppStyles.centerContent]}>
                         <Text style={[AppStyles.pbold]}>{Localize.t('home.otherAssets')}</Text>
                     </View>
-                    {spendable && (
+                    {isSpendable && (
                         <View style={[AppStyles.flex5]}>
                             <Button
                                 label={Localize.t('home.addAsset')}
@@ -492,11 +491,11 @@ class HomeView extends Component<Props, State> {
                             return (
                                 <TouchableOpacity
                                     onPress={() => {
-                                        if (spendable) {
+                                        if (isSpendable) {
                                             this.showCurrencyOptions(line);
                                         }
                                     }}
-                                    activeOpacity={spendable ? 0.5 : 1}
+                                    activeOpacity={isSpendable ? 0.5 : 1}
                                     style={[styles.currencyItem]}
                                     key={index}
                                 >
@@ -555,7 +554,7 @@ class HomeView extends Component<Props, State> {
     };
 
     renderButtons = () => {
-        const { account, spendableAccounts } = this.state;
+        const { account, isSpendable } = this.state;
 
         return (
             <View style={[styles.buttonRow]}>
@@ -570,7 +569,7 @@ class HomeView extends Component<Props, State> {
                         Navigator.push(AppScreens.Transaction.Payment);
                     }}
                     activeOpacity={0}
-                    isDisabled={!find(spendableAccounts, { address: account.address })}
+                    isDisabled={!isSpendable}
                 />
                 <CustomButton
                     style={[styles.requestButton]}
