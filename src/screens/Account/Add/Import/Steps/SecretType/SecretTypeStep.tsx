@@ -1,5 +1,5 @@
 /**
- * Import Account/accountType Step
+ * Import Account/secretType Step
  */
 
 import React, { Component } from 'react';
@@ -13,9 +13,10 @@ import Localize from '@locale';
 import { AppStyles } from '@theme';
 // import styles from './styles';
 
-import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
+import { StepsContext } from '../../Context';
+
 /* types ==================================================================== */
-export enum AccountTypes {
+export enum SecretTypes {
     SecretNumbers = 'secretNumbers',
     Passphrase = 'passphrase',
     FamilySeed = 'familySeed',
@@ -23,42 +24,42 @@ export enum AccountTypes {
     Hex = 'hex',
 }
 
-export interface Props {
-    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
-    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {
-    accountType: AccountTypes;
+    secretType: SecretTypes;
 }
 
 /* Component ==================================================================== */
-class AccountTypeStep extends Component<Props, State> {
+class SecretTypeStep extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            accountType: AccountTypes.SecretNumbers,
+            secretType: SecretTypes.SecretNumbers,
         };
     }
 
-    onRadioButtonPress = (type: AccountTypes) => {
+    onRadioButtonPress = (type: SecretTypes) => {
         this.setState({
-            accountType: type,
+            secretType: type,
         });
     };
 
     goNext = () => {
-        const { goNext } = this.props;
-        const { accountType } = this.state;
-        switch (accountType) {
-            case AccountTypes.SecretNumbers:
-                goNext('EnterSecretNumbers', { accountType });
+        const { goNext } = this.context;
+        const { secretType } = this.state;
+        switch (secretType) {
+            case SecretTypes.SecretNumbers:
+                goNext('EnterSecretNumbers');
                 break;
-            case AccountTypes.FamilySeed:
-                goNext('EnterSeed', { accountType });
+            case SecretTypes.FamilySeed:
+                goNext('EnterSeed');
                 break;
-            case AccountTypes.Mnemonic:
+            case SecretTypes.Mnemonic:
                 goNext('MnemonicAlert');
                 break;
             default:
@@ -66,8 +67,8 @@ class AccountTypeStep extends Component<Props, State> {
         }
     };
     render() {
-        const { goBack } = this.props;
-        const { accountType } = this.state;
+        const { goBack } = this.context;
+        const { secretType } = this.state;
         return (
             <SafeAreaView testID="account-import-account-type" style={[AppStyles.contentContainer]}>
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
@@ -77,29 +78,29 @@ class AccountTypeStep extends Component<Props, State> {
                 <View style={[AppStyles.contentContainer, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <RadioButton
                         onPress={() => {
-                            this.onRadioButtonPress(AccountTypes.SecretNumbers);
+                            this.onRadioButtonPress(SecretTypes.SecretNumbers);
                         }}
                         label={Localize.t('account.secretNumbers')}
                         description={Localize.t('account.secretNumbersDesc')}
-                        checked={accountType === AccountTypes.SecretNumbers}
+                        checked={secretType === SecretTypes.SecretNumbers}
                     />
 
                     <RadioButton
                         onPress={() => {
-                            this.onRadioButtonPress(AccountTypes.FamilySeed);
+                            this.onRadioButtonPress(SecretTypes.FamilySeed);
                         }}
                         label={Localize.t('account.familySeed')}
                         description={Localize.t('account.familySeedDesc')}
-                        checked={accountType === AccountTypes.FamilySeed}
+                        checked={secretType === SecretTypes.FamilySeed}
                     />
 
                     <RadioButton
                         onPress={() => {
-                            this.onRadioButtonPress(AccountTypes.Mnemonic);
+                            this.onRadioButtonPress(SecretTypes.Mnemonic);
                         }}
                         label={Localize.t('account.mnemonic')}
                         description={Localize.t('account.mnemonicDesc')}
-                        checked={accountType === AccountTypes.Mnemonic}
+                        checked={secretType === SecretTypes.Mnemonic}
                     />
                 </View>
 
@@ -130,4 +131,4 @@ class AccountTypeStep extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default AccountTypeStep;
+export default SecretTypeStep;

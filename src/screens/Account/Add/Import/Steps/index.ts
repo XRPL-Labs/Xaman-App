@@ -1,4 +1,4 @@
-import AccountType from './AccountType';
+import SecretType from './SecretType';
 import AccessLevel from './AccessLevel';
 import EnterAddress from './EnterAddress';
 import EnterSeed from './EnterSeed';
@@ -14,7 +14,7 @@ import FinishStep from './Finish';
 
 export default {
     AccessLevel,
-    AccountType,
+    SecretType,
     EnterAddress,
     EnterSecretNumbers,
     EnterSeed,

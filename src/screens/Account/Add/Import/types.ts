@@ -1,10 +1,10 @@
 import { XRPL_Account } from 'xrpl-accountlib';
 
-import { AccessLevels, EncryptionLevels } from '@store/types';
+import { AccountSchema } from '@store/schemas/latest';
 
 export type ImportSteps =
     | 'AccessLevel'
-    | 'AccountType'
+    | 'SecretType'
     | 'EnterAddress'
     | 'EnterSecretNumbers'
     | 'EnterSeed'
@@ -17,11 +17,14 @@ export type ImportSteps =
     | 'LabelStep'
     | 'FinishStep';
 
-export interface AccountObject {
-    importedAccount?: XRPL_Account;
+export interface Props {
+    upgrade: AccountSchema;
+}
+
+export interface State {
+    currentStep: ImportSteps;
+    prevSteps: Array<ImportSteps>;
+    account: Partial<AccountSchema>;
+    importedAccount: XRPL_Account;
     passphrase?: string;
-    accessLevel?: AccessLevels;
-    encryptionLevel?: EncryptionLevels;
-    accountType?: string;
-    label?: string;
 }

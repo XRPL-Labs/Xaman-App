@@ -12,17 +12,14 @@ import Localize from '@locale';
 // components
 import { Button, TextInput, Spacer, Footer } from '@components';
 
-import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
-
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+import { StepsContext } from '../../Context';
+
 /* types ==================================================================== */
-export interface Props {
-    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
-    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {
     familySeed: string;
@@ -30,6 +27,9 @@ export interface State {
 
 /* Component ==================================================================== */
 class EnterSeedStep extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     constructor(props: Props) {
         super(props);
 
@@ -39,7 +39,7 @@ class EnterSeedStep extends Component<Props, State> {
     }
 
     goNext = () => {
-        const { goNext } = this.props;
+        const { goNext, setImportedAccount } = this.context;
         const { familySeed } = this.state;
 
         try {
@@ -51,7 +51,10 @@ class EnterSeedStep extends Component<Props, State> {
                 account = derive.privatekey(familySeed);
             }
 
-            goNext('ConfirmPublicKey', { importedAccount: account });
+            // set imported account
+            setImportedAccount(account, () => {
+                goNext('ConfirmPublicKey');
+            });
         } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.invalidFamilySeed'));
         }
@@ -66,7 +69,7 @@ class EnterSeedStep extends Component<Props, State> {
     };
 
     render() {
-        const { goBack } = this.props;
+        const { goBack } = this.context;
         const { familySeed } = this.state;
 
         return (

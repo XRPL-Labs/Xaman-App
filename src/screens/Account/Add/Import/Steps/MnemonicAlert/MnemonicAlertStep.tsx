@@ -4,7 +4,6 @@
 
 import React, { Component } from 'react';
 import { SafeAreaView, TouchableOpacity, View, Text, Image, Linking } from 'react-native';
-import { XRPL_Account } from 'xrpl-accountlib';
 
 // components
 import { Button, Icon, Footer, Spacer } from '@components';
@@ -12,29 +11,28 @@ import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
 
-import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
-
 // style
 import { AppStyles } from '@theme';
 
+import { StepsContext } from '../../Context';
+
 /* types ==================================================================== */
-export interface Props {
-    account: XRPL_Account;
-    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
-    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {}
 
 /* Component ==================================================================== */
 class MnemonicAlertStep extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     openFAQ = () => {
         const url = 'https://support.xumm.app/en/articles/3852597-how-does-xumm-security-compare-to-a-hardware-wallet';
         Linking.openURL(url);
     };
 
     render() {
-        const { goNext, goBack } = this.props;
+        const { goNext, goBack } = this.context;
 
         return (
             <SafeAreaView testID="account-generate-explanation-private" style={[AppStyles.container]}>
@@ -85,7 +83,7 @@ class MnemonicAlertStep extends Component<Props, State> {
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.nextIUnderstand')}
                             onPress={() => {
-                                goNext('EnterMnemonic', { accountType: 'mnemonic' });
+                                goNext('EnterMnemonic');
                             }}
                         />
                     </View>

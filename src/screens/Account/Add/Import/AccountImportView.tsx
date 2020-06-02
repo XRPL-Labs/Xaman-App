@@ -7,9 +7,9 @@ import { dropRight, last, isEmpty, has, get } from 'lodash';
 import React, { Component } from 'react';
 import { View, Keyboard, Alert } from 'react-native';
 
-import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccountSchema } from '@store/schemas/latest';
+import { XRPL_Account } from 'xrpl-accountlib';
 
+import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccessLevels, EncryptionLevels } from '@store/types';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -31,18 +31,11 @@ import { AppStyles } from '@theme';
 // steps
 import Steps from './Steps';
 
+// context
+import { StepsContext } from './Context';
+
 /* types ==================================================================== */
-import { ImportSteps, AccountObject } from './types';
-
-export interface Props {
-    upgrade: AccountSchema;
-}
-
-export interface State {
-    currentStep: ImportSteps;
-    prevSteps: Array<ImportSteps>;
-    account: AccountObject;
-}
+import { ImportSteps, Props, State } from './types';
 
 /* Component ==================================================================== */
 class AccountImportView extends Component<Props, State> {
@@ -61,9 +54,11 @@ class AccountImportView extends Component<Props, State> {
         super(props);
 
         this.state = {
-            currentStep: props.upgrade ? 'AccountType' : 'AccessLevel',
+            currentStep: props.upgrade ? 'SecretType' : 'AccessLevel',
             prevSteps: [],
             account: {},
+            importedAccount: undefined,
+            passphrase: undefined,
         };
     }
 
@@ -72,24 +67,68 @@ class AccountImportView extends Component<Props, State> {
 
         // set the access level if it's upgrade
         if (upgrade) {
-            this.saveSettings({
-                accessLevel: AccessLevels.Full,
-            });
+            this.setAccessLevel(AccessLevels.Full);
         }
     }
 
-    saveSettings = (accountObject: AccountObject) => {
+    setEncryptionLevel = (encryptionLevel: EncryptionLevels, callback?: any) => {
         const { account } = this.state;
-        this.setState({ account: Object.assign(account, accountObject) });
+        this.setState({ account: Object.assign(account, { encryptionLevel }) }, () => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
     };
 
-    goNext = async (nextStep: ImportSteps, settings?: AccountObject) => {
-        const { upgrade } = this.props;
-        const { account, currentStep, prevSteps } = this.state;
+    setLabel = (label: string, callback?: any) => {
+        const { account } = this.state;
+        this.setState({ account: Object.assign(account, { label }) }, () => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    };
 
-        if (settings) {
-            this.saveSettings(settings);
-        }
+    setPassphrase = (passphrase: string, callback?: any) => {
+        this.setState({ passphrase }, () => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    };
+
+    setAccessLevel = (accessLevel: AccessLevels, callback?: any) => {
+        const { account } = this.state;
+        this.setState({ account: Object.assign(account, { accessLevel }) }, () => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    };
+
+    setImportedAccount = (importedAccount: XRPL_Account, callback?: any) => {
+        const { account } = this.state;
+
+        this.setState(
+            {
+                importedAccount,
+                account: Object.assign(account, {
+                    publicKey: importedAccount.keypair.publicKey,
+                    address: importedAccount.address,
+                    default: true,
+                }),
+            },
+            () => {
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            },
+        );
+    };
+
+    goNext = async (nextStep: ImportSteps) => {
+        const { upgrade } = this.props;
+        const { importedAccount, currentStep, prevSteps } = this.state;
 
         if (currentStep === 'FinishStep') {
             this.importAccount();
@@ -97,7 +136,7 @@ class AccountImportView extends Component<Props, State> {
         } else {
             // if it's upgrade check if entered secret is match the account
             if (nextStep === 'ConfirmPublicKey' && upgrade) {
-                if (account.importedAccount.address !== upgrade.address) {
+                if (importedAccount.address !== upgrade.address) {
                     Alert.alert(Localize.t('global.error'), Localize.t('account.upgradeAccountSecretIsNotMatch'));
                     return;
                 }
@@ -106,7 +145,7 @@ class AccountImportView extends Component<Props, State> {
             // check if the account is already exist before
             // move to next step
             if ((nextStep === 'ConfirmPublicKey' || nextStep === 'LabelStep') && !upgrade) {
-                if (!isEmpty(AccountRepository.findBy('address', account.importedAccount.address))) {
+                if (!isEmpty(AccountRepository.findBy('address', importedAccount.address))) {
                     Alert.alert(Localize.t('global.error'), Localize.t('account.accountAlreadyExist'));
                     return;
                 }
@@ -115,7 +154,7 @@ class AccountImportView extends Component<Props, State> {
             // check if account is activated
             // if not  -> show the activation explain step
             if (currentStep === 'ConfirmPublicKey') {
-                await LedgerService.getAccountInfo(account.importedAccount.address)
+                await LedgerService.getAccountInfo(importedAccount.address)
                     .then((accountInfo: any) => {
                         if (!accountInfo || has(accountInfo, 'error')) {
                             if (get(accountInfo, 'error') === 'actNotFound') {
@@ -152,25 +191,21 @@ class AccountImportView extends Component<Props, State> {
         }
     };
 
-    goBack = (nextStep: ImportSteps, settings?: AccountObject) => {
+    goBack = () => {
         const { prevSteps } = this.state;
-
-        if (settings) {
-            this.saveSettings(settings);
-        }
 
         if (isEmpty(prevSteps)) {
             Navigator.pop();
         } else {
             this.setState({
-                currentStep: nextStep || last(prevSteps),
+                currentStep: last(prevSteps),
                 prevSteps: dropRight(prevSteps),
             });
         }
     };
 
     importAccount = () => {
-        const { account } = this.state;
+        const { account, importedAccount, passphrase } = this.state;
 
         let encryptionKey;
 
@@ -178,29 +213,38 @@ class AccountImportView extends Component<Props, State> {
             // if passphrase present use it, instead use Passcode to encrypt the private key
             // WARNING: passcode should use just for low balance accounts
             if (account.encryptionLevel === EncryptionLevels.Passphrase) {
-                encryptionKey = account.passphrase;
+                encryptionKey = passphrase;
             } else {
                 encryptionKey = CoreRepository.getSettings().passcode;
             }
         }
 
         // add account to store
-        AccountRepository.add({
-            label: account.label,
-            account: account.importedAccount,
-            encryptionKey,
-            encryptionLevel: account.encryptionLevel,
-            accessLevel: account.accessLevel,
-        });
+        AccountRepository.add(account, importedAccount.keypair.privateKey, encryptionKey);
     };
 
     renderStep = () => {
-        const { currentStep, account } = this.state;
+        const { currentStep } = this.state;
 
         const Step = Steps[currentStep];
 
-        // @ts-ignore
-        return <Step goBack={this.goBack} goNext={this.goNext} account={account} />;
+        return (
+            <StepsContext.Provider
+                value={{
+                    ...this.state,
+                    goNext: this.goNext,
+                    goBack: this.goBack,
+
+                    setAccessLevel: this.setAccessLevel,
+                    setEncryptionLevel: this.setEncryptionLevel,
+                    setLabel: this.setLabel,
+                    setPassphrase: this.setPassphrase,
+                    setImportedAccount: this.setImportedAccount,
+                }}
+            >
+                <Step />
+            </StepsContext.Provider>
+        );
     };
 
     renderHeader = () => {
@@ -214,7 +258,7 @@ class AccountImportView extends Component<Props, State> {
             case 'AccessLevel':
                 title = Localize.t('account.accountType');
                 break;
-            case 'AccountType':
+            case 'SecretType':
                 title = Localize.t('account.secretType');
                 break;
             case 'EnterAddress':

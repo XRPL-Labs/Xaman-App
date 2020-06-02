@@ -13,25 +13,24 @@ import { Button, Footer } from '@components';
 // locale
 import Localize from '@locale';
 
-import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
-
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+import { StepsContext } from '../../Context';
+
 /* types ==================================================================== */
-export interface Props {
-    account: AccountObject;
-    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
-    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {}
 
 /* Component ==================================================================== */
 class ConfirmPublicKeyStep extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     goBack = () => {
-        const { goBack } = this.props;
+        const { goBack } = this.context;
 
         Prompt(
             Localize.t('global.pleaseNote'),
@@ -51,7 +50,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
     };
 
     render() {
-        const { account, goNext } = this.props;
+        const { importedAccount, goNext } = this.context;
 
         return (
             <SafeAreaView testID="account-import-account-type" style={[AppStyles.container]}>
@@ -67,14 +66,9 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                         AppStyles.paddingHorizontalSml,
                     ]}
                 >
-                    {/* <Text style={[AppStyles.p, AppStyles.textCenterAligned, AppStyles.paddingSml]}>
-                        {Localize.t('account.hereIsYourPublicKeyConfirm')}
-                    </Text> */}
-                    {/* <Spacer size={30} /> */}
-
                     <View style={[styles.labelWrapper, AppStyles.stretchSelf]}>
                         <Text selectable style={[styles.addressField]}>
-                            {account.importedAccount.address}
+                            {importedAccount.address}
                         </Text>
                     </View>
                     <Button
@@ -84,7 +78,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                         iconStyle={AppStyles.imgColorGreyDark}
                         textStyle={[AppStyles.colorGreyDark]}
                         onPress={() => {
-                            Clipboard.setString(account.importedAccount.address);
+                            Clipboard.setString(importedAccount.address);
                             Toast(Localize.t('account.publicKeyCopiedToClipboard'));
                         }}
                         roundedSmall

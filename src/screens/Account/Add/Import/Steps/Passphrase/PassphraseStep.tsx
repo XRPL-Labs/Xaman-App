@@ -11,13 +11,9 @@ import { Button, PasswordInput, Footer, Header } from '@components';
 // style
 import { AppStyles } from '@theme';
 
-import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
-
+import { StepsContext } from '../../Context';
 /* types ==================================================================== */
-export interface Props {
-    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
-    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {
     passphrase: {
@@ -29,6 +25,9 @@ export interface State {
 
 /* Component ==================================================================== */
 class PassphraseStep extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     constructor(props: Props) {
         super(props);
 
@@ -43,7 +42,7 @@ class PassphraseStep extends Component<Props, State> {
 
     goNext = () => {
         const { passphrase, passphrase_confirmation } = this.state;
-        const { goNext } = this.props;
+        const { goNext, setPassphrase } = this.context;
 
         if (!passphrase.isValid) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.passphraseShouldContain'));
@@ -56,15 +55,20 @@ class PassphraseStep extends Component<Props, State> {
         }
 
         if (passphrase) {
-            goNext('LabelStep', { passphrase: passphrase.value });
+            // set the passphrase
+            setPassphrase(passphrase.value, () => {
+                // go to the next step
+                goNext('LabelStep');
+            });
         } else {
             Alert.alert(Localize.t('global.error'), Localize.t('account.enterValidPassphrase'));
         }
     };
 
     render() {
-        const { goBack } = this.props;
+        const { goBack } = this.context;
         const { passphrase } = this.state;
+
         return (
             <SafeAreaView testID="account-import-set-passphrase" style={[AppStyles.container]}>
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>

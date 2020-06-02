@@ -1,23 +1,12 @@
 import { has, isEmpty, filter } from 'lodash';
 import Realm, { Results, ObjectSchema } from 'realm';
 
-import * as AccountLib from 'xrpl-accountlib';
-
 import Vault from '@common/libs/vault';
 
 import { AccountSchema } from '@store/schemas/latest';
 
 import { AccessLevels, EncryptionLevels } from '@store/types';
 import BaseRepository from './base';
-
-/* types  ==================================================================== */
-type AddAccountParams = {
-    account: AccountLib.XRPL_Account;
-    encryptionKey?: string;
-    encryptionLevel: EncryptionLevels;
-    accessLevel?: AccessLevels;
-    label?: string;
-};
 
 // events
 declare interface AccountRepository {
@@ -40,13 +29,10 @@ class AccountRepository extends BaseRepository {
 
     /**
      * add new account to the store
-     * this will store private key in the vault
+     * this will store private key in the vault if full access
      */
-    add = (params: AddAccountParams): Promise<AccountSchema> => {
-        const { account, encryptionKey, encryptionLevel, label, accessLevel } = params;
-
-        // check if there is any default account if
-        // it's upgrading so we don't want to remove the default flag
+    add = (account: Partial<AccountSchema>, privateKey?: string, encryptionKey?: string): Promise<AccountSchema> => {
+        // remove default flag from any other account
         const defaultAccount = this.getDefaultAccount();
         if (!isEmpty(defaultAccount) && defaultAccount.address !== account.address) {
             this.update({
@@ -55,41 +41,19 @@ class AccountRepository extends BaseRepository {
             });
         }
 
-        // if the account is readonly
-        if (accessLevel === AccessLevels.Readonly) {
-            const newAccount = {
-                address: account.address,
-                accessLevel: AccessLevels.Readonly,
-                encryptionLevel: EncryptionLevels.None,
-                default: true,
-            } as Partial<AccountSchema>;
-            // assign label if set
-            if (label) newAccount.label = label;
+        // READONLY
+        if (account.accessLevel === AccessLevels.Readonly) {
             // create
-            return this.create(newAccount).then((createdAccount: AccountSchema) => {
+            return this.create(account).then((createdAccount: AccountSchema) => {
                 this.emit('accountCreate', createdAccount);
                 this.emit('changeDefaultAccount', createdAccount);
                 return createdAccount;
             });
         }
 
-        // else for sure we have full access
-        const { keypair } = account;
-
-        // save the privateKey in the vault
-        return Vault.create(keypair.publicKey, keypair.privateKey, encryptionKey).then(() => {
-            const newAccount = {
-                publicKey: keypair.publicKey,
-                accessLevel: AccessLevels.Full,
-                address: account.address,
-                encryptionLevel,
-                default: true,
-            } as Partial<AccountSchema>;
-
-            // assign label if set
-            if (label) newAccount.label = label;
-
-            return this.create(newAccount, true).then((createdAccount: AccountSchema) => {
+        // FULLACCESS
+        return Vault.create(account.publicKey, privateKey, encryptionKey).then(() => {
+            return this.create(account, true).then((createdAccount: AccountSchema) => {
                 this.emit('accountCreate', createdAccount);
                 this.emit('changeDefaultAccount', createdAccount);
                 return createdAccount;

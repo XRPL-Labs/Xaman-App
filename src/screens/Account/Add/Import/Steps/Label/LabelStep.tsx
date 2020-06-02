@@ -2,7 +2,7 @@
  * import Account/Label Screen
  */
 
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Alert, Platform, KeyboardAvoidingView } from 'react-native';
 
@@ -13,18 +13,13 @@ import { Button, TextInput, Spacer, Footer } from '@components';
 // locale
 import Localize from '@locale';
 
-import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
-
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+import { StepsContext } from '../../Context';
 /* types ==================================================================== */
-export interface Props {
-    account: AccountObject;
-    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
-    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {
     label: string;
@@ -32,6 +27,9 @@ export interface State {
 
 /* Component ==================================================================== */
 class LabelStep extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     constructor(props: Props) {
         super(props);
 
@@ -41,21 +39,25 @@ class LabelStep extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { account } = this.props;
+        const { importedAccount } = this.context;
 
-        getAccountName(account.importedAccount.address)
+        getAccountName(importedAccount.address)
             .then((res: any) => {
                 if (!isEmpty(res)) {
-                    this.setState({
-                        label: res.name || '',
-                    });
+                    const name = get(res, 'name');
+
+                    if (name) {
+                        this.setState({
+                            label: res.name,
+                        });
+                    }
                 }
             })
             .catch(() => {});
     }
 
     goNext = () => {
-        const { goNext } = this.props;
+        const { goNext, setLabel } = this.context;
         const { label } = this.state;
 
         if (label.length > 16) {
@@ -63,11 +65,15 @@ class LabelStep extends Component<Props, State> {
             return;
         }
 
-        goNext('FinishStep', { label: label.trim() });
+        // set account label
+        setLabel(label.trim(), () => {
+            // go next
+            goNext('FinishStep');
+        });
     };
 
     render() {
-        const { goBack } = this.props;
+        const { goBack } = this.context;
         const { label } = this.state;
         return (
             <SafeAreaView testID="account-import-label-step" style={[AppStyles.container]}>

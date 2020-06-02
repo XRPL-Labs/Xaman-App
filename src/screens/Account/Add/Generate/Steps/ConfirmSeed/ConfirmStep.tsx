@@ -14,14 +14,9 @@ import { Button, SecretNumberInput, Footer } from '@components';
 // style
 import { AppStyles } from '@theme';
 
-import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate/types';
-
+import { StepsContext } from '../../Context';
 /* types ==================================================================== */
-export interface Props {
-    account: AccountObject;
-    goBack: (step?: GenerateSteps, settings?: AccountObject) => void;
-    goNext: (step?: GenerateSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {
     currentRow: number;
@@ -31,6 +26,9 @@ export interface State {
 /* Component ==================================================================== */
 class ConfirmStep extends Component<Props, State> {
     secretNumberInput: SecretNumberInput;
+
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
         super(props);
@@ -42,7 +40,7 @@ class ConfirmStep extends Component<Props, State> {
     }
 
     goNext = () => {
-        const { account, goNext } = this.props;
+        const { generatedAccount, goNext } = this.context;
 
         const secretNumber = this.secretNumberInput.getNumbers();
 
@@ -51,7 +49,7 @@ class ConfirmStep extends Component<Props, State> {
             return;
         }
 
-        if (isEqual(account.generatedAccount.secret.secretNumbers, secretNumber)) {
+        if (isEqual(generatedAccount.secret.secretNumbers, secretNumber)) {
             goNext('ViewPublicKey');
         } else {
             Alert.alert('Invalid', Localize.t('account.invalidSecretNumber'));
@@ -59,7 +57,7 @@ class ConfirmStep extends Component<Props, State> {
     };
 
     goBack = () => {
-        const { goBack } = this.props;
+        const { goBack } = this.context;
 
         Prompt(
             Localize.t('global.pleaseNote'),

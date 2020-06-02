@@ -3,6 +3,7 @@
  */
 
 import { dropRight, last, isEmpty } from 'lodash';
+
 import React, { Component } from 'react';
 import { View, Keyboard, InteractionManager } from 'react-native';
 
@@ -10,6 +11,7 @@ import * as AccountLib from 'xrpl-accountlib';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { EncryptionLevels, AccessLevels } from '@store/types';
+
 import { Navigator } from '@common/helpers/navigator';
 
 // constants
@@ -27,16 +29,11 @@ import { AppStyles } from '@theme';
 // steps
 import Steps from './Steps';
 
-import { GenerateSteps, AccountObject } from './types';
+// context
+import { StepsContext } from './Context';
+
 /* types ==================================================================== */
-
-export interface Props {}
-
-export interface State {
-    currentStep: GenerateSteps;
-    prevSteps: Array<GenerateSteps>;
-    account: AccountObject;
-}
+import { GenerateSteps, State, Props } from './types';
 
 /* Component ==================================================================== */
 class AccountGenerateView extends Component<Props, State> {
@@ -58,6 +55,8 @@ class AccountGenerateView extends Component<Props, State> {
             currentStep: 'SeedExplanation',
             prevSteps: [],
             account: {},
+            generatedAccount: undefined,
+            passphrase: undefined,
         };
     }
 
@@ -69,45 +68,54 @@ class AccountGenerateView extends Component<Props, State> {
 
     generateAccount = () => {
         setTimeout(() => {
+            // generate new account base on secret numbers
             const generatedAccount = AccountLib.generate.secretNumbers();
-            this.setState({ account: { generatedAccount } });
+
+            // assign generated account to the store object
+            const account = {
+                publicKey: generatedAccount.keypair.publicKey,
+                accessLevel: AccessLevels.Full,
+                address: generatedAccount.address,
+                default: true,
+            };
+
+            this.setState({ generatedAccount, account });
         }, 300);
     };
 
-    saveSettings = (accountObject: AccountObject) => {
+    setEncryptionLevel = (encryptionLevel: EncryptionLevels) => {
         const { account } = this.state;
-        this.setState({ account: Object.assign(account, accountObject) });
+        this.setState({ account: Object.assign(account, { encryptionLevel }) });
+    };
+
+    setLabel = (label: string) => {
+        const { account } = this.state;
+        this.setState({ account: Object.assign(account, { label }) });
+    };
+
+    setPassphrase = (passphrase: string) => {
+        this.setState({ passphrase });
     };
 
     saveAccount = async () => {
-        const { account } = this.state;
+        const { generatedAccount, account, passphrase } = this.state;
 
         let encryptionKey;
 
         // if passphrase present use it, instead use Passcode to encrypt the private key
         // WARNING: passcode should use just for low balance accounts
         if (account.encryptionLevel === EncryptionLevels.Passphrase) {
-            encryptionKey = account.passphrase;
+            encryptionKey = passphrase;
         } else {
             encryptionKey = CoreRepository.getSettings().passcode;
         }
 
         // add account to store
-        AccountRepository.add({
-            account: account.generatedAccount,
-            encryptionLevel: account.encryptionLevel,
-            encryptionKey,
-            accessLevel: AccessLevels.Full,
-            label: account.label,
-        });
+        AccountRepository.add(account, generatedAccount.keypair.privateKey, encryptionKey);
     };
 
-    goNext = (nextStep: GenerateSteps, settings?: AccountObject) => {
+    goNext = (nextStep: GenerateSteps) => {
         const { currentStep, prevSteps } = this.state;
-
-        if (settings) {
-            this.saveSettings(settings);
-        }
 
         if (currentStep === 'FinishStep') {
             this.saveAccount();
@@ -122,30 +130,39 @@ class AccountGenerateView extends Component<Props, State> {
         }
     };
 
-    goBack = (nextStep: GenerateSteps, settings?: AccountObject) => {
+    goBack = () => {
         const { prevSteps } = this.state;
-
-        if (settings) {
-            this.saveSettings(settings);
-        }
 
         if (isEmpty(prevSteps)) {
             Navigator.pop();
         } else {
             this.setState({
-                currentStep: nextStep || last(prevSteps),
+                currentStep: last(prevSteps),
                 prevSteps: dropRight(prevSteps),
             });
         }
     };
 
     renderStep = () => {
-        const { currentStep, account } = this.state;
+        const { currentStep } = this.state;
 
         const Step = Steps[currentStep];
 
-        // @ts-ignore
-        return <Step account={account} goBack={this.goBack} goNext={this.goNext} />;
+        return (
+            <StepsContext.Provider
+                value={{
+                    ...this.state,
+                    goNext: this.goNext,
+                    goBack: this.goBack,
+
+                    setEncryptionLevel: this.setEncryptionLevel,
+                    setLabel: this.setLabel,
+                    setPassphrase: this.setPassphrase,
+                }}
+            >
+                <Step />
+            </StepsContext.Provider>
+        );
     };
 
     renderHeader = () => {

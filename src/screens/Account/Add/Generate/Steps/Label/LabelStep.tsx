@@ -11,18 +11,13 @@ import { Button, Spacer, TextInput, Footer } from '@components';
 // locale
 import Localize from '@locale';
 
-import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate/types';
-
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+import { StepsContext } from '../../Context';
 /* types ==================================================================== */
-export interface Props {
-    account: AccountObject;
-    goBack: (step?: GenerateSteps, settings?: AccountObject) => void;
-    goNext: (step?: GenerateSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {
     label: string;
@@ -30,6 +25,9 @@ export interface State {
 
 /* Component ==================================================================== */
 class LabelStep extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     constructor(props: Props) {
         super(props);
 
@@ -39,7 +37,7 @@ class LabelStep extends Component<Props, State> {
     }
 
     goNext = () => {
-        const { goNext } = this.props;
+        const { goNext, setLabel } = this.context;
         const { label } = this.state;
 
         if (label.length > 16) {
@@ -47,11 +45,15 @@ class LabelStep extends Component<Props, State> {
             return;
         }
 
-        goNext('FinishStep', { label: label.trim() });
+        // set the label
+        setLabel(label.trim());
+
+        // go to next step
+        goNext('FinishStep');
     };
 
     render() {
-        const { goBack } = this.props;
+        const { goBack } = this.context;
         const { label } = this.state;
         return (
             <SafeAreaView testID="account-generate-finish-view" style={[AppStyles.container]}>

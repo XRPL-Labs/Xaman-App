@@ -22,17 +22,14 @@ import Localize from '@locale';
 // components
 import { Button, Spacer, Switch, Footer, PasswordInput } from '@components';
 
-import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
-
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+import { StepsContext } from '../../Context';
+
 /* types ==================================================================== */
-export interface Props {
-    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
-    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {
     words: string[];
@@ -45,6 +42,9 @@ export interface State {
 
 /* Component ==================================================================== */
 class EnterMnemonicStep extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     scrollView: ScrollView;
     inputs: TextInput[];
     scrollToBottomY: number;
@@ -97,7 +97,7 @@ class EnterMnemonicStep extends Component<Props, State> {
     };
 
     goNext = () => {
-        const { goNext } = this.props;
+        const { goNext, setImportedAccount } = this.context;
         const { words, usePassphrase, passphrase } = this.state;
 
         if (words.filter(Boolean).length < 6) {
@@ -114,7 +114,12 @@ class EnterMnemonicStep extends Component<Props, State> {
         try {
             const mnemonic = words.filter(Boolean).join(' ');
             const account = derive.mnemonic(mnemonic, options);
-            goNext('ConfirmPublicKey', { importedAccount: account });
+
+            // set imported account
+            setImportedAccount(account, () => {
+                // go to next step
+                goNext('ConfirmPublicKey');
+            });
         } catch (e) {
             Alert.alert('Error', Localize.t('account.invalidMnemonic'));
         }
@@ -178,7 +183,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                 >
                     <Text style={[styles.label, isActive && styles.labelActive]}>#{i + 1}</Text>
                     <TextInput
-                        ref={r => {
+                        ref={(r) => {
                             this.inputs[i] = r;
                         }}
                         autoCapitalize="none"
@@ -193,7 +198,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                                 }
                             }
                         }}
-                        onChangeText={v => {
+                        onChangeText={(v) => {
                             this.setValue(i, v);
                         }}
                         onFocus={() => {
@@ -218,7 +223,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                 <View style={[AppStyles.row, AppStyles.paddingVerticalSml]}>
                     <View style={[AppStyles.leftAligned]}>
                         <Switch
-                            onChange={enabled => {
+                            onChange={(enabled) => {
                                 this.setState({ usePassphrase: enabled });
 
                                 setTimeout(() => {
@@ -239,7 +244,7 @@ class EnterMnemonicStep extends Component<Props, State> {
 
                 {usePassphrase && (
                     <PasswordInput
-                        onChange={pass => {
+                        onChange={(pass) => {
                             this.setState({
                                 passphrase: pass,
                             });
@@ -252,7 +257,7 @@ class EnterMnemonicStep extends Component<Props, State> {
     };
 
     render() {
-        const { goBack } = this.props;
+        const { goBack } = this.context;
         const { length, keyboardHeight } = this.state;
 
         return (
@@ -308,7 +313,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                 </View>
 
                 <ScrollView
-                    ref={r => {
+                    ref={(r) => {
                         this.scrollView = r;
                     }}
                     style={[AppStyles.flex1, AppStyles.stretchSelf]}

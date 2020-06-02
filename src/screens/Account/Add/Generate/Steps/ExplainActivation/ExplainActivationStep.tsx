@@ -11,25 +11,23 @@ import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
 
-import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate/types';
-
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+import { StepsContext } from '../../Context';
 /* types ==================================================================== */
-export interface Props {
-    account: AccountObject;
-    goBack: (step?: GenerateSteps, settings?: AccountObject) => void;
-    goNext: (step?: GenerateSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {}
 
 /* Component ==================================================================== */
 class ExplainActivationStep extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     render() {
-        const { goNext, goBack } = this.props;
+        const { goNext, goBack } = this.context;
 
         return (
             <SafeAreaView testID="account-generate-explain-activation" style={[AppStyles.container]}>
