@@ -132,6 +132,10 @@ class SecurePinInput extends Component<Props, State> {
             if (cleanCode.length === length) {
                 this.onFinish(cleanCode);
             }
+        } else {
+            this.setState({
+                digits: '',
+            });
         }
     };
 
