@@ -93,7 +93,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         super(props);
 
         this.state = {
-            accounts: AccountRepository.getSpendableAccounts(),
+            accounts: undefined,
             transaction: parserFactory(props.payload.TxJson),
             source: undefined,
             step: 'review',
@@ -116,7 +116,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     componentDidMount() {
         const { payload } = this.props;
-        const { accounts, transaction } = this.state;
+        const { transaction } = this.state;
 
         // back handler listener
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
@@ -124,12 +124,18 @@ class ReviewTransactionModal extends Component<Props, State> {
         // update the accounts details before process the review
         LedgerService.updateAccountsDetails();
 
+        // get available account base on transaction type
+        const availableAccounts =
+            transaction.Type !== 'SignIn'
+                ? AccountRepository.getSpendableAccounts()
+                : AccountRepository.getSignableAccounts();
+
         // choose preferred account for sign
         // default account || first account
         let preferredAccount;
 
-        if (!isEmpty(accounts)) {
-            preferredAccount = find(accounts, { default: true }) || accounts[0];
+        if (!isEmpty(availableAccounts)) {
+            preferredAccount = find(availableAccounts, { default: true }) || availableAccounts[0];
         }
 
         // set the default source account
@@ -141,6 +147,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         }
 
         this.setState({
+            accounts: availableAccounts,
             source: preferredAccount,
         });
     }

@@ -115,6 +115,29 @@ class AccountRepository extends BaseRepository {
     };
 
     /**
+     * get list of available accounts for signing
+     */
+    getSignableAccounts = (): Array<AccountSchema> => {
+        const accounts = this.findAll();
+
+        const availableAccounts = [] as Array<AccountSchema>;
+
+        accounts.forEach((account: AccountSchema) => {
+            if (account.accessLevel === AccessLevels.Full) {
+                availableAccounts.push(account);
+                // check if the regular key account is imported
+            } else if (
+                account.regularKey &&
+                !this.query({ address: account.regularKey, accessLevel: AccessLevels.Full }).isEmpty()
+            ) {
+                availableAccounts.push(account);
+            }
+        });
+
+        return availableAccounts;
+    };
+
+    /**
      * check if account is a regular key to one of xumm accounts
      */
     isRegularKey = (account: AccountSchema) => {
