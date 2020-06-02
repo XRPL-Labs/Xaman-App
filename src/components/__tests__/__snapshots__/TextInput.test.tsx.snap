@@ -43,7 +43,7 @@ exports[`[TextInput] renders correctly 1`] = `
           "fontWeight": "600",
         },
         Object {
-          "paddingRight": undefined,
+          "paddingRight": 0,
         },
         undefined,
         false,

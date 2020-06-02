@@ -85,6 +85,13 @@ class Input extends Component<Props, State> {
     renderInput = () => {
         const { focused } = this.state;
         const { containerStyle, activeContainerStyle, activeInputStyle, inputStyle, showScanner } = this.props;
+
+        const scannerPadding = showScanner
+            ? AppSizes.heightPercentageToDP(5.5) < 45
+                ? 38
+                : AppSizes.heightPercentageToDP(5.5)
+            : 0;
+
         return (
             <View style={[styles.wrapper, containerStyle, focused && activeContainerStyle]}>
                 <TextInput
@@ -99,12 +106,7 @@ class Input extends Component<Props, State> {
                     autoCorrect={false}
                     multiline={false}
                     underlineColorAndroid="transparent"
-                    style={[
-                        styles.input,
-                        { paddingRight: showScanner && AppSizes.heightPercentageToDP(5) },
-                        inputStyle,
-                        focused && activeInputStyle,
-                    ]}
+                    style={[styles.input, { paddingRight: scannerPadding }, inputStyle, focused && activeInputStyle]}
                     {...this.props}
                 />
             </View>

@@ -55,6 +55,7 @@ exports[`[SearchBar] renders correctly 1`] = `
     <TextInput
       allowFontScaling={true}
       autoCapitalize="none"
+      autoCorrect={false}
       onChangeText={[Function]}
       placeholder="Please type ..."
       rejectResponderTermination={true}
@@ -183,6 +184,7 @@ exports[`[SearchBar] should clear text 1`] = `
     <TextInput
       allowFontScaling={true}
       autoCapitalize="none"
+      autoCorrect={false}
       onChangeText={[Function]}
       placeholder="Please type ..."
       rejectResponderTermination={true}
@@ -311,6 +313,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
     <TextInput
       allowFontScaling={true}
       autoCapitalize="none"
+      autoCorrect={false}
       onChangeText={[Function]}
       placeholder="Please type ..."
       rejectResponderTermination={true}
