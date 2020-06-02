@@ -352,7 +352,7 @@ class HomeView extends Component<Props, State> {
                 <View style={[AppStyles.flex1, AppStyles.paddingLeft, AppStyles.centerContent]}>
                     <Image style={[styles.logo]} source={Images.xummLogo} />
                 </View>
-                {!isEmpty(account) && (
+                {!isEmpty(account) && account.isValid() && (
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
                         <Button
                             onPress={() => {
