@@ -72,6 +72,9 @@ class TransactionTemplate extends PureComponent<Props, State> {
             case 'EscrowFinish':
                 address = item.Owner;
                 break;
+            case 'DepositPreauth':
+                address = item.Authorize || item.Unauthorize;
+                break;
             default:
                 break;
         }
@@ -199,6 +202,13 @@ class TransactionTemplate extends PureComponent<Props, State> {
                 return Localize.t('events.cancelOffer');
             case 'AccountDelete':
                 return Localize.t('events.deleteAccount');
+            case 'SetRegularKey':
+                return Localize.t('events.setRegularKey');
+            case 'DepositPreauth':
+                if (item.Authorize) {
+                    return Localize.t('events.authorizeDeposit');
+                }
+                return Localize.t('events.unauthorizeDeposit');
             default:
                 return item.Type;
         }

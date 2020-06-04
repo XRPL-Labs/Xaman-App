@@ -10,6 +10,7 @@ import EscrowCancel from './escrowCancel';
 import EscrowFinish from './escrowFinish';
 import SetRegularKey from './setRegularKey';
 import SignerListSet from './signerListSet';
+import DepositPreauth from './depositPreauth';
 
 export {
     BaseTransaction,
@@ -24,4 +25,5 @@ export {
     EscrowFinish,
     SetRegularKey,
     SignerListSet,
+    DepositPreauth,
 };

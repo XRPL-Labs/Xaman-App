@@ -238,6 +238,16 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
+    renderDepositPreauth = () => {
+        const { tx } = this.props;
+
+        if (tx.Authorize) {
+            return `It authorizes ${tx.Authorize} to send payments to this account`;
+        }
+
+        return `It removes the authorization for ${tx.Unauthorize} to send payments to this account`;
+    };
+
     renderTrustSet = () => {
         const { tx } = this.props;
 
@@ -270,6 +280,9 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case 'AccountDelete':
                 content += this.renderAccountDelete();
+                break;
+            case 'DepositPreauth':
+                content += this.renderDepositPreauth();
                 break;
             default:
                 content += `This is a ${tx.Type} transaction`;

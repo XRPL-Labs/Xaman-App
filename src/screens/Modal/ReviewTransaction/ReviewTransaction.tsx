@@ -460,6 +460,13 @@ class ReviewTransactionModal extends Component<Props, State> {
             case 'OfferCancel':
                 type = Localize.t('events.cancelOffer');
                 break;
+            case 'DepositPreauth':
+                if (transaction.Authorize) {
+                    type = Localize.t('events.authorizeDeposit');
+                } else {
+                    type = Localize.t('events.unauthorizeDeposit');
+                }
+                break;
             case 'SignIn':
                 type = Localize.t('global.signIn');
                 break;

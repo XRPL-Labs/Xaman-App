@@ -11,6 +11,7 @@ import OfferCancel from './OfferCancel';
 import OfferCreate from './OfferCreate';
 import SetRegularKey from './SetRegularKey';
 import SignerListSet from './SignerListSet';
+import DepositPreauth from './DepositPreauth';
 
 export {
     Global,
@@ -25,4 +26,5 @@ export {
     OfferCreate,
     SetRegularKey,
     SignerListSet,
+    DepositPreauth,
 };
