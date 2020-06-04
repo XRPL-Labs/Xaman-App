@@ -453,6 +453,7 @@
       "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "La cuenta seleccionada no está activada. Para firmar esta transacción, debe seleccionar una cuenta activada.",
       "accountAlreadyExist": "¡La cuenta ya existe!",
       "upgradeAccountSecretIsNotMatch": "El secreto introducido pertenece a otra dirección r. Si desea importar una clave normal, por favor [Importar nueva cuenta]. De lo contrario, [cancelar] y verificar su entrada.",
+      "toTheseExistingAccounts": "A esta / a cuenta (s) existente (s)",
       "masterKeyForThisAccountDisableRegularKeyNotFound": "¡La clave maestra para esta cuenta está desactivada y la cuenta de clave normal no se encuentra en la lista de cuentas!",
       "regularKeyAccountForThisAccountDoesNotImportedWithSignAccess": "¡La clave regular para esta cuenta no se importó con acceso a la señal!",
       "currentPassphraseShouldNotBeEmpty": "¡La frase de contraseña actual no debe estar vacía!",
@@ -476,8 +477,9 @@
       "unableGetDestinationAccountInfo": "No se puede obtener la información de la cuenta de destino, asegúrese de estar conectado al nodo del libro mayor XRP",
       "destinationAccountIsNotActivated": "La cuenta de destino no está activada, debe ser una cuenta con fondos en el libro mayor XRP.",
       "destinationAccountAndSourceCannotBeSame": "La cuenta de destino y la fuente no pueden ser lo mismo.",
-      "accountGenerateActivationExplain": "Creó una nueva cuenta en el libro mayor XRP. La cuenta no está activada. La activación de la cuenta es un requisito en el libro mayor XRP. Para activar, deberá realizar un primer depósito de al menos 20 XRP. Los primeros 20 XRP depositados en su cuenta no se pueden gastar, pero se reservarán para mantener su cuenta activa y pagar las tarifas del libro mayor.",
-      "accountImportActivationExplain": "Importó una nueva cuenta en el libro mayor XRP. La cuenta no está activada. La activación de la cuenta es un requisito en el libro mayor XRP. Para activar, deberá realizar un primer depósito de al menos 20 XRP. Los primeros 20 XRP depositados en su cuenta no se pueden gastar, pero se reservarán para mantener su cuenta activa y pagar las tarifas del libro mayor.",
+      "accountGenerateActivationExplain": "La activación de la cuenta es un requisito en el libro mayor XRP. Para activar, deberá realizar un primer depósito de al menos 20 XRP.",
+      "accountImportActivationExplain": "Importó una nueva cuenta en el libro mayor XRP. La cuenta no está activada. La activación de la cuenta es un requisito en el libro mayor XRP. Para activar, deberá realizar un primer depósito de al menos 20 XRP.",
+      "accountActivateReserveExplain": "Los primeros 20 XRP depositados en su cuenta no se pueden gastar, pero se reservarán para mantener su cuenta activa y pagar las tarifas del libro mayor.",
       "accountReserveNotShownExplain": "Su XRP reservado no aparecerá como saldo en XUMM, pero puede ver su reserva con el botón \"Explicar mi saldo\" en la pantalla de inicio, arriba de su saldo XRP."
    },
    "send": {

@@ -140,8 +140,8 @@ class AccountRepository extends BaseRepository {
     /**
      * check if account is a regular key to one of xumm accounts
      */
-    isRegularKey = (account: AccountSchema) => {
-        return !this.findBy('regularKey', account.address).isEmpty();
+    isRegularKey = (address: string) => {
+        return !this.findBy('regularKey', address).isEmpty();
     };
 
     /**

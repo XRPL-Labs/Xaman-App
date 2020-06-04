@@ -3,12 +3,14 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Clipboard } from 'react-native';
+import { SafeAreaView, View, Text, Clipboard, ScrollView } from 'react-native';
+
+import { AccountRepository } from '@store/repositories';
 
 import { Toast, Prompt } from '@common/helpers/interface';
 
 // components
-import { Button, Footer } from '@components';
+import { Button, Footer, Icon, Spacer } from '@components';
 
 // locale
 import Localize from '@locale';
@@ -49,6 +51,72 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
         );
     };
 
+    renderRegularKeys = () => {
+        const { importedAccount } = this.context;
+
+        const isRegularKey = AccountRepository.isRegularKey(importedAccount.address);
+
+        if (isRegularKey) {
+            const keysForAccounts = AccountRepository.findBy('regularKey', importedAccount.address);
+
+            return (
+                <View
+                    style={[
+                        AppStyles.flex1,
+                        AppStyles.centerContent,
+                        AppStyles.stretchSelf,
+                        AppStyles.paddingHorizontalSml,
+                    ]}
+                >
+                    <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.centerContent]}>
+                        <Icon name="IconKey" size={20} style={AppStyles.imgColorGreen} />
+                        <Text style={[AppStyles.p, AppStyles.bold, AppStyles.colorGreen]}>
+                            {' '}
+                            {Localize.t('global.regularKey')}
+                        </Text>
+                    </View>
+                    <Spacer size={5} />
+                    <View style={[AppStyles.centerAligned, AppStyles.centerContent]}>
+                        <Text style={[AppStyles.subtext, AppStyles.colorGreen]}>
+                            {Localize.t('account.toTheseExistingAccounts')}
+                        </Text>
+                    </View>
+
+                    <Spacer size={10} />
+                    <View style={[AppStyles.centerAligned, AppStyles.centerContent]}>
+                        <Icon size={20} name="IconArrowDown" />
+                    </View>
+                    <Spacer size={10} />
+
+                    <ScrollView contentContainerStyle={[AppStyles.flex1]}>
+                        {keysForAccounts.map((a, index) => {
+                            return (
+                                <View key={index} style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow]}>
+                                    <View style={[AppStyles.row, AppStyles.flex1, AppStyles.centerAligned]}>
+                                        <View style={styles.iconContainer}>
+                                            <Icon size={25} style={AppStyles.imgColorGreyDark} name="IconAccount" />
+                                        </View>
+
+                                        <View>
+                                            <Text style={[AppStyles.p, AppStyles.bold]}>{a.label}</Text>
+                                            <Text
+                                                style={[AppStyles.subtext, AppStyles.monoBold, AppStyles.colorGreyDark]}
+                                            >
+                                                {a.address}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            );
+                        })}
+                    </ScrollView>
+                </View>
+            );
+        }
+
+        return null;
+    };
+
     render() {
         const { importedAccount, goNext } = this.context;
 
@@ -74,7 +142,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                     <Button
                         label={Localize.t('account.copyAddress')}
                         icon="IconClipboard"
-                        style={AppStyles.buttonGreyOutline}
+                        style={AppStyles.buttonBlueLight}
                         iconStyle={AppStyles.imgColorGreyDark}
                         textStyle={[AppStyles.colorGreyDark]}
                         onPress={() => {
@@ -85,6 +153,8 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                         outline
                     />
                 </View>
+
+                {this.renderRegularKeys()}
 
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>

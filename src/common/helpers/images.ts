@@ -88,4 +88,5 @@ export const Images = {
     IconKey: buildImageSource('IconKey', 'icon_key'),
     IconSwitchAccount: buildImageSource('IconSwitchAccount', 'icon_switchaccount'),
     IconGlobe: buildImageSource('IconGlobe', 'icon_globe'),
+    IconArrowDown: buildImageSource('IconArrowDown', 'icon_arrow_down'),
 };

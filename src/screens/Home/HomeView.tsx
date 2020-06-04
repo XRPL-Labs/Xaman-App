@@ -383,7 +383,7 @@ class HomeView extends Component<Props, State> {
 
         if (account.balance === 0) {
             // check if account is a regular key to one of xumm accounts
-            const isRegularKey = AccountRepository.isRegularKey(account);
+            const isRegularKey = AccountRepository.isRegularKey(account.address);
 
             if (isRegularKey) {
                 const keysForAccounts = AccountRepository.findBy('regularKey', account.address);
