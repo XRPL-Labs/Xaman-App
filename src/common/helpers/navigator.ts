@@ -166,6 +166,7 @@ const Navigator = {
                     name: nextScreen,
                     id: nextScreen,
                     passProps,
+                    options,
                 },
             });
         }

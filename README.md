@@ -1,6 +1,6 @@
 # XUMM
 
-[![Build Status](https://travis-ci.org/XRPL-Labs/XUMM-App.svg?branch=master)](https://travis-ci.com/XRPL-Labs/XUMM-App)
+[![Build Status](https://travis-ci.org/XRPL-Labs/XUMM-App.svg?branch=master)](https://travis-ci.org/XRPL-Labs/XUMM-App)
 [![Coverage Status](https://coveralls.io/repos/github/XRPL-Labs/XUMM-App/badge.svg?branch=master)](https://coveralls.io/github/XRPL-Labs/XUMM-App)
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)
 
