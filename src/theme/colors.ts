@@ -24,6 +24,7 @@ const colors = {
 
     bithomp: '#3fa3b5',
     xrpln: '#3767CE',
+    xrpscan: '#004a7c',
     payid: '#38D39F',
 };
 

@@ -98,6 +98,9 @@ const styles = StyleSheet.create({
     xrplnsTag: {
         backgroundColor: AppColors.xrpln,
     },
+    xrpscanTag: {
+        backgroundColor: AppColors.xrpscan,
+    },
     payidTag: {
         backgroundColor: AppColors.payid,
     },

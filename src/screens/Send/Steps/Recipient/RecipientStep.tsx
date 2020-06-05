@@ -614,6 +614,13 @@ class RecipientStep extends Component<Props, State> {
                     </View>
                 );
                 break;
+            case 'xrpscan.com':
+                tag = (
+                    <View style={[styles.tag, styles.xrpscanTag]}>
+                        <Text style={styles.tagLabel}>XRPScan</Text>
+                    </View>
+                );
+                break;
             case 'payid':
                 tag = (
                     <View style={[styles.tag, styles.payidTag]}>
