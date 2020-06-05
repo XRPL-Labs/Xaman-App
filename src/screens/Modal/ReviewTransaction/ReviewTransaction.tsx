@@ -231,7 +231,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             });
 
             try {
-                await transaction.validate();
+                await transaction.validate(source);
             } catch (e) {
                 Navigator.showAlertModal({
                     type: 'error',

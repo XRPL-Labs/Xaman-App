@@ -4,9 +4,11 @@
 
 import { get, isUndefined, has } from 'lodash';
 
+import { AccountSchema } from '@store/schemas/latest';
+
 import LedgerService from '@services/LedgerService';
 
-import Locale from '@locale';
+import Localize from '@locale';
 
 import Amount from '../parser/common/amount';
 import { Destination, AmountType } from '../parser/types';
@@ -68,11 +70,11 @@ class AccountDelete extends BaseTransaction {
         };
     }
 
-    validate = () => {
+    validate = (account: AccountSchema) => {
         /* eslint-disable-next-line */
         return new Promise(async (resolve, reject) => {
             if (this.Account.address === this.Destination.address) {
-                return reject(new Error(Locale.t('account.destinationAccountAndSourceCannotBeSame')));
+                return reject(new Error(Localize.t('account.destinationAccountAndSourceCannotBeSame')));
             }
             // check if destination is exist
             await LedgerService.getAccountInfo(this.Destination.address)
@@ -80,24 +82,17 @@ class AccountDelete extends BaseTransaction {
                 .then((accountInfo: any) => {
                     // TODO: handle errors
                     if (!accountInfo || has(accountInfo, 'error')) {
-                        return reject(new Error(Locale.t('account.destinationAccountIsNotActivated')));
+                        return reject(new Error(Localize.t('account.destinationAccountIsNotActivated')));
                     }
                 })
                 .catch(() => {
-                    return reject(new Error(Locale.t('account.unableGetDestinationAccountInfo')));
+                    return reject(new Error(Localize.t('account.unableGetDestinationAccountInfo')));
                 });
 
-            await LedgerService.getAccountObjects(this.Account.address)
-                /* eslint-disable-next-line */
-                .then((res: any) => {
-                    const { account_objects } = res;
-                    if (account_objects.length > 0) {
-                        return reject(new Error(Locale.t('account.deleteAccountObjectsExistError')));
-                    }
-                })
-                .catch(() => {
-                    return reject(new Error(Locale.t('account.unableToCheckAccountObjects')));
-                });
+            // check if there is no account object belong to this account
+            if (account.ownerCount > 0) {
+                return reject(new Error(Localize.t('account.deleteAccountObjectsExistError')));
+            }
 
             return resolve();
         });

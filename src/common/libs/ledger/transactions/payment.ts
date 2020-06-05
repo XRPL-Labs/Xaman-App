@@ -2,7 +2,10 @@ import BigNumber from 'bignumber.js';
 import { get, set, has, isUndefined, isNumber, toInteger } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
-import Locale from '@locale';
+import { AccountSchema } from '@store/schemas/latest';
+import { NormalizeCurrencyCode } from '@common/libs/utils';
+
+import Localize from '@locale';
 
 import BaseTransaction from './base';
 import Amount from '../parser/common/amount';
@@ -252,11 +255,42 @@ class Payment extends BaseTransaction {
         return invoiceID;
     }
 
-    validate = () => {
+    validate = (source: AccountSchema) => {
         /* eslint-disable-next-line */
         return new Promise((resolve, reject) => {
             if (!this.Amount) {
-                return reject(new Error(Locale.t('send.pleaseEnterAmount')));
+                return reject(new Error(Localize.t('send.pleaseEnterAmount')));
+            }
+
+            // if XRP ||  IOU<>IOU & insufficient balance fallback to XRP >> check XRP Balance
+            if (this.Amount.currency === 'XRP' || (this.SendMax && this.SendMax.currency === 'XRP')) {
+                if (Number(this.Amount.value) > Number(source.availableBalance)) {
+                    return reject(
+                        new Error(
+                            Localize.t('send.insufficientBalanceSpendableBalance', {
+                                spendable: source.availableBalance,
+                                currency: 'XRP',
+                            }),
+                        ),
+                    );
+                }
+            } else if (source.address !== this.Amount.issuer) {
+                // check if IOU<>IOU and sender is not issuer
+                const line = source.lines.find(
+                    (e: any) =>
+                        e.currency.issuer === this.Amount.issuer && e.currency.currency === this.Amount.currency,
+                );
+
+                if (line && Number(this.Amount.value) > Number(line.balance)) {
+                    return reject(
+                        new Error(
+                            Localize.t('send.insufficientBalanceSpendableBalance', {
+                                spendable: line.balance,
+                                currency: NormalizeCurrencyCode(line.currency.currency),
+                            }),
+                        ),
+                    );
+                }
             }
 
             return resolve();
