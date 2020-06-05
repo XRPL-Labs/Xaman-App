@@ -9127,10 +9127,10 @@ ripple-secret-codec@1.0.2:
     ripple-hashes latest
     ripple-keypairs latest
 
-rippled-ws-client@^1.5.2:
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/rippled-ws-client/-/rippled-ws-client-1.5.2.tgz#0e948ca3441ac817bf0116b54f73fdb3737ef25c"
-  integrity sha512-58/fQKOCRtdDO3Ps+w+dizmlPP0x3wdfFz9+BhPlYb1nw5DE91khyHC2cCQ/eKotx+SxNI6fLerrHSJohBy0uA==
+rippled-ws-client@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/rippled-ws-client/-/rippled-ws-client-1.6.0.tgz#ef0cd4011bbc500454e9e19d63d50a358b579938"
+  integrity sha512-M408KCC3Lbb+TQptEn8q0ox0NdgBhSkkJdPf0M4zzMrMpu+Qo9JNQUKlWIMAM9LdStL/gCB8327t0qNZmLyHYg==
   dependencies:
     websocket "^1.0.31"
 
