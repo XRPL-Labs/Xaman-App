@@ -173,6 +173,7 @@ class ScanView extends Component<Props, State> {
         const availableAccounts = AccountRepository.getSpendableAccounts();
 
         if (availableAccounts.length > 0) {
+            // if it's payId do nothing
             if (destination.payId) {
                 this.routeUser(
                     AppScreens.Transaction.Payment,
@@ -188,6 +189,8 @@ class ScanView extends Component<Props, State> {
 
             let amount;
 
+            // normal XRP address scanned
+            // try to decode X Address
             const { to, tag } = NormalizeDestination(destination);
 
             // if amount present as XRP pass the amount

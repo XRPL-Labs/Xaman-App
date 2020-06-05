@@ -24,7 +24,7 @@ export interface AccountInfoType {
 }
 
 const getAccountName = memoize(
-    (address: string, tag?: number): Promise<AccountNameType> => {
+    (address: string, tag?: number, internal?: boolean): Promise<AccountNameType> => {
         return new Promise((resolve) => {
             if (!address) {
                 return resolve({
@@ -61,6 +61,14 @@ const getAccountName = memoize(
                 }
             } catch {
                 // ignore
+            }
+
+            // only lookup for local result
+            if (internal) {
+                return resolve({
+                    name: '',
+                    source: '',
+                });
             }
 
             // check the backend

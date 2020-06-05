@@ -283,7 +283,7 @@ class HomeView extends Component<Props, State> {
         const { clipboardDetected, canSendPayment, account } = this.state;
 
         // if no clipboard detected or spendable accounts is empty return
-        if (!clipboardDetected || canSendPayment) return null;
+        if (!clipboardDetected || !canSendPayment) return null;
 
         let title = '';
         let content = '';

@@ -8,7 +8,6 @@ import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import { View, Keyboard } from 'react-native';
 
-import { AccountInfoType } from '@common/helpers/resolver';
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -16,7 +15,7 @@ import { LedgerService } from '@services';
 import { AppScreens } from '@common/constants';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
+import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import LedgerExchange from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
@@ -29,48 +28,18 @@ import { Header } from '@components';
 // local
 import Localize from '@locale';
 
-// style
-import styles from './styles';
-
 // steps
 import { DetailsStep, RecipientStep, SummaryStep, SubmittingStep, ResultStep } from './Steps';
 
 // context
 import { StepsContext } from './Context';
 
+// style
+import styles from './styles';
+
 /* types ==================================================================== */
-export enum Steps {
-    Details = 'Details',
-    Recipient = 'Recipient',
-    Summary = 'Summary',
-    Submitting = 'Submitting',
-    Verifying = 'Verifying',
-    Result = 'Result',
-}
+import { Steps, Props, State } from './types';
 
-export interface ScanResult {
-    to: string;
-    tag?: number;
-}
-
-export interface Props {
-    currency?: TrustLineSchema;
-    scanResult?: ScanResult;
-    amount?: string;
-}
-
-export interface State {
-    currentStep: Steps;
-    accounts: Array<AccountSchema>;
-    source: AccountSchema;
-    destination: Destination;
-    destinationInfo: AccountInfoType;
-    currency: TrustLineSchema | string;
-    amount: string;
-    payment: Payment;
-    scanResult: ScanResult;
-    coreSettings: CoreSchema;
-}
 /* Component ==================================================================== */
 class SendView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Payment;
@@ -130,6 +99,10 @@ class SendView extends Component<Props, State> {
 
     setDestinationInfo = (info: any) => {
         this.setState({ destinationInfo: info });
+    };
+
+    setScanResult = (result: any) => {
+        this.setState({ scanResult: result });
     };
 
     changeView = (step: Steps) => {
@@ -362,6 +335,7 @@ class SendView extends Component<Props, State> {
                     setSource: this.setSource,
                     setDestination: this.setDestination,
                     setDestinationInfo: this.setDestinationInfo,
+                    setScanResult: this.setScanResult,
                 }}
             >
                 <Step />

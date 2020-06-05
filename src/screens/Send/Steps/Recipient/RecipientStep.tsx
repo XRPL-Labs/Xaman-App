@@ -72,9 +72,9 @@ class RecipientStep extends Component<Props, State> {
     componentDidMount() {
         const { scanResult } = this.context;
 
-        // if scanResult is passed
+        // check any scan result exist
         if (scanResult) {
-            this.doAccountLookUp({ to: scanResult.to, tag: scanResult.tag });
+            this.doAccountLookUp(scanResult);
         } else {
             this.setDefaultDataSource();
         }
@@ -185,7 +185,7 @@ class RecipientStep extends Component<Props, State> {
                 }
             });
 
-            // search for contacts
+            // search for accounts
             accounts.forEach((item) => {
                 if (
                     item.label.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
@@ -205,7 +205,39 @@ class RecipientStep extends Component<Props, State> {
                     .then((res: any) => {
                         if (!isEmpty(res) && res.error !== true) {
                             if (!isEmpty(res.matches)) {
-                                res.matches.forEach((element: any) => {
+                                res.matches.forEach(async (element: any) => {
+                                    // if payid in result, then look for payId in local source as well
+                                    if (element.source === 'payid') {
+                                        const internalResult = await getAccountName(element.account, element.tag, true);
+
+                                        // found in local source
+                                        if (internalResult.name) {
+                                            let avatar;
+
+                                            switch (internalResult.source) {
+                                                case 'internal:contacts':
+                                                    avatar = Images.IconProfile;
+                                                    break;
+                                                case 'internal:accounts':
+                                                    avatar = Images.IconAccount;
+                                                    break;
+                                                default:
+                                                    avatar = Images.IconGlobe;
+                                                    break;
+                                            }
+
+                                            searchResult.push({
+                                                name: internalResult.name || '',
+                                                address: element.account,
+                                                tag: element.tag,
+                                                avatar,
+                                                source: internalResult.source.replace('internal:', ''),
+                                            });
+
+                                            return;
+                                        }
+                                    }
+
                                     searchResult.push({
                                         name: element.alias === element.account ? '' : element.alias,
                                         address: element.account,
