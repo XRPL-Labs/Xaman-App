@@ -18,7 +18,7 @@ import { AppScreens } from '@common/constants';
 import { ContactRepository } from '@store/repositories';
 // import { ContactSchema } from '@store/schemas/latest';
 
-import { Header, Spacer, Button, TextInput, InfoMessage, Footer } from '@components';
+import { Header, Spacer, Button, TextInput, InfoMessage, Footer } from '@components/General';
 
 import Localize from '@locale';
 

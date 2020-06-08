@@ -7,7 +7,7 @@ import { Amount } from '@common/libs/ledger/parser/common';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 
 // components
-// import { Spacer } from '@components';
+// import { Spacer } from '@components/General';
 
 import Localize from '@locale';
 

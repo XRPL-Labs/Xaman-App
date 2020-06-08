@@ -23,7 +23,7 @@ import { NormalizeCurrencyCode } from '@common/libs/utils';
 import { ActionSheet } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
-import { Header, QRCode, Spacer } from '@components';
+import { Header, QRCode, Spacer } from '@components/General';
 
 import { BackendService, SocketService } from '@services';
 

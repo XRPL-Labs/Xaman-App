@@ -25,7 +25,7 @@ import { AppScreens } from '@common/constants';
 import LedgerService from '@services/LedgerService';
 
 // components
-import { Button, Spacer, CustomButton } from '@components';
+import { Button, Spacer, CustomButton } from '@components/General';
 
 import Localize from '@locale';
 

@@ -13,7 +13,7 @@ import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, TextInput } from '@components';
+import { Button, TextInput } from '@components/General';
 
 import Localize from '@locale';
 
@@ -192,7 +192,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={r => {
+                    ref={(r) => {
                         this.panel = r;
                     }}
                     animatedNativeDriver

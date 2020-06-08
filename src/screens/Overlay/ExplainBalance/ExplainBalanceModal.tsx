@@ -18,7 +18,7 @@ import LedgerService from '@services/LedgerService';
 
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 // components
-import { Button, Icon, Spacer } from '@components';
+import { Button, Icon, Spacer } from '@components/General';
 
 import Localize from '@locale';
 

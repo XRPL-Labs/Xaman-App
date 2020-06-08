@@ -15,7 +15,7 @@ import { BiometryType } from '@store/types';
 
 import { Navigator } from '@common/helpers/navigator';
 
-import { Header, Switch, Icon } from '@components';
+import { Header, Switch, Icon } from '@components/General';
 
 import Localize from '@locale';
 // style

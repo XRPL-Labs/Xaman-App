@@ -20,7 +20,7 @@ import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
 // components
-import { Button, Icon, Header } from '@components';
+import { Button, Icon, Header } from '@components/General';
 
 import Localize from '@locale';
 // style

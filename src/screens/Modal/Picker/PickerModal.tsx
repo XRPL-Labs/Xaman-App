@@ -9,7 +9,7 @@ import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
-import { Header, Icon } from '@components';
+import { Header, Icon } from '@components/General';
 
 // style
 import { AppStyles } from '@theme';

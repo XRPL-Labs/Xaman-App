@@ -22,7 +22,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Icon } from '@components';
+import { Button, Icon } from '@components/General';
 
 import Localize from '@locale';
 

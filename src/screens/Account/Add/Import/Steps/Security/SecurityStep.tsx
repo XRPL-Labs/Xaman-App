@@ -9,7 +9,7 @@ import { EncryptionLevels } from '@store/types';
 
 import Localize from '@locale';
 // components
-import { Button, RadioButton, Footer } from '@components';
+import { Button, RadioButton, Footer } from '@components/General';
 // style
 import { AppStyles } from '@theme';
 

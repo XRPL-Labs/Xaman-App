@@ -22,7 +22,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 // components
-import { SecurePinInput, Button, PasswordInput, Spacer } from '@components';
+import { Button, Spacer, SecurePinInput, PasswordInput } from '@components/General';
 
 import Localize from '@locale';
 

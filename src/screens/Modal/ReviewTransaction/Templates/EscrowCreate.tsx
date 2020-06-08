@@ -6,7 +6,7 @@ import { EscrowCreate } from '@common/libs/ledger/transactions';
 
 import { getAccountName } from '@common/helpers/resolver';
 
-import { Spacer } from '@components';
+import { Spacer } from '@components/General';
 
 import Localize from '@locale';
 

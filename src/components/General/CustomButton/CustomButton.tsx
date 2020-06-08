@@ -15,7 +15,7 @@ import {
 
 import { Images } from '@common/helpers/images';
 
-import { Icon } from '@components/Icon';
+import { Icon } from '@components/General/Icon';
 
 import { AppColors } from '@theme';
 import { styles } from './styles';

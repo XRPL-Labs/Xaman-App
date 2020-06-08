@@ -9,7 +9,8 @@ import { SafeAreaView, View, Text, Alert } from 'react-native';
 import { Prompt } from '@common/helpers/interface';
 import Localize from '@locale';
 // components
-import { Button, SecretNumberInput, Footer } from '@components';
+import { Button, Footer } from '@components/General';
+import { SecretNumberInput } from '@components/Modules';
 
 // style
 import { AppStyles } from '@theme';

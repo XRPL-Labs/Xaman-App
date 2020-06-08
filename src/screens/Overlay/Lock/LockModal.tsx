@@ -20,7 +20,7 @@ import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
 // components
-import { SecurePinInput } from '@components';
+import { SecurePinInput } from '@components/General';
 
 import Localize from '@locale';
 

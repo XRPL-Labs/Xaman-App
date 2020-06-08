@@ -14,7 +14,7 @@ import { CoreSchema } from '@store/schemas/latest';
 import { AppScreens, AppConfig } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
-import { Header, Icon } from '@components';
+import { Header, Icon } from '@components/General';
 
 import Localize from '@locale';
 

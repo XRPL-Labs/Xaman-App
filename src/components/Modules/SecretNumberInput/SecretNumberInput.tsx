@@ -10,7 +10,7 @@ import { get, set } from 'lodash';
 import React, { Component } from 'react';
 import { View, TouchableOpacity, LayoutAnimation } from 'react-native';
 
-import { Icon } from '@components/Icon';
+import { Icon } from '@components/General/Icon';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -48,7 +48,7 @@ class SecretNumberInput extends Component<Props, State> {
         let rows = [...Array(ROWS)].map(() => Array(COLUMNS));
         if (props.secretNumbers) {
             rows = [];
-            props.secretNumbers.forEach(row => rows.push(row.split('')));
+            props.secretNumbers.forEach((row) => rows.push(row.split('')));
         }
 
         this.state = {
@@ -225,7 +225,7 @@ class SecretNumberInput extends Component<Props, State> {
     getNumbers = () => {
         const { secretNumbers } = this.state;
         const secretNumber = [] as string[];
-        secretNumbers.forEach(row => secretNumber.push(row.join('')));
+        secretNumbers.forEach((row) => secretNumber.push(row.join('')));
         return secretNumber;
     };
 

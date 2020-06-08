@@ -12,7 +12,7 @@ import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
-import { Button, Spacer, Footer } from '@components';
+import { Button, Spacer, Footer } from '@components/General';
 
 import Localize from '@locale';
 

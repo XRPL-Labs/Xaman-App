@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 
 // components
-import { Button, PasswordInput, Footer, Header } from '@components';
+import { PasswordInput, Button, Footer, Header } from '@components/General';
 
 // locale
 import Localize from '@locale';

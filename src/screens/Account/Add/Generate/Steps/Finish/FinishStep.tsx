@@ -7,7 +7,7 @@ import { SafeAreaView, View, Text, ImageBackground, Image } from 'react-native';
 
 import { Images } from '@common/helpers/images';
 // components
-import { Button, Footer } from '@components';
+import { Button, Footer } from '@components/General';
 
 import Localize from '@locale';
 

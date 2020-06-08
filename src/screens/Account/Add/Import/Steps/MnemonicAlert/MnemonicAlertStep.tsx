@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { SafeAreaView, TouchableOpacity, View, Text, Image, Linking } from 'react-native';
 
 // components
-import { Button, Icon, Footer, Spacer } from '@components';
+import { Button, Icon, Footer, Spacer } from '@components/General';
 import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';

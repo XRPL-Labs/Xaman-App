@@ -18,7 +18,7 @@ import { BackendService, AuthenticationService } from '@services';
 import Localize from '@locale';
 
 // component
-import { Button, Footer } from '@components';
+import { Button, Footer } from '@components/General';
 
 // style
 import { AppStyles, AppColors } from '@theme';

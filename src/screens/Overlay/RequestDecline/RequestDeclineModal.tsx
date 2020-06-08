@@ -12,7 +12,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Spacer } from '@components';
+import { Button, Spacer } from '@components/General';
 
 import Localize from '@locale';
 
@@ -127,7 +127,7 @@ class RequestDeclineOverlay extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={r => {
+                    ref={(r) => {
                         this.panel = r;
                     }}
                     animatedNativeDriver

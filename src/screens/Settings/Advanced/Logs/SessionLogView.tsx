@@ -13,7 +13,7 @@ import { AppScreens, AppConfig } from '@common/constants';
 
 import { LoggerService } from '@services';
 
-import { Header } from '@components';
+import { Header } from '@components/General';
 
 import Localize from '@locale';
 
@@ -65,7 +65,7 @@ class SessionLogView extends Component<Props, State> {
 
     copyToClipboard = () => {
         const logs = LoggerService.getLogs();
-        const body = flatMap(logs, l => {
+        const body = flatMap(logs, (l) => {
             return `[${l.timestamp}] ${l.message} ${l.data && this.normalizeLog(l.data)}`;
         }).join('\n');
 
@@ -75,13 +75,13 @@ class SessionLogView extends Component<Props, State> {
 
     sendEmail = () => {
         const logs = LoggerService.getLogs();
-        const body = flatMap(logs, l => {
+        const body = flatMap(logs, (l) => {
             return `[${l.timestamp}] ${l.message} ${l.data && this.normalizeLog(l.data)}`;
         }).join('\n');
 
         const content = `mailto:${AppConfig.supportEmail}?subject=SessionLogs&body=${body}`;
 
-        Linking.canOpenURL(content).then(support => {
+        Linking.canOpenURL(content).then((support) => {
             if (support) {
                 Linking.openURL(content);
             } else {

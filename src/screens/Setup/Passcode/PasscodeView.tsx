@@ -12,10 +12,13 @@ import { BiometryType } from '@store/types';
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
-import { Button, PinInput, Spacer, Footer, InfoMessage } from '@components';
 
 import { PushNotificationsService } from '@services';
 
+// components
+import { Button, Spacer, Footer, PinInput, InfoMessage } from '@components/General';
+
+// locale
 import Localize from '@locale';
 
 // style

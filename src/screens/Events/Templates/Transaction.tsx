@@ -14,7 +14,7 @@ import Localize from '@locale';
 
 import { AppStyles } from '@theme';
 
-import { Icon } from '@components';
+import { Icon } from '@components/General';
 
 import styles from './styles';
 

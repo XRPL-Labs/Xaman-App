@@ -27,7 +27,7 @@ import { Prompt } from '@common/helpers/interface';
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { Header, Button, AccordionPicker, Footer } from '@components';
+import { Header, Button, AccordionPicker, Footer } from '@components/General';
 
 import Localize from '@locale';
 

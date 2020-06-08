@@ -10,7 +10,7 @@ import { StringType, XrplDestination } from 'xumm-string-decode';
 
 import Localize from '@locale';
 // components
-import { Button, TextInput, InfoMessage, Spacer, Footer } from '@components';
+import { Button, TextInput, InfoMessage, Spacer, Footer } from '@components/General';
 // style
 import { AppStyles } from '@theme';
 

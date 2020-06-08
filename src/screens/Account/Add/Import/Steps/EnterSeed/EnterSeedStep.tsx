@@ -10,7 +10,7 @@ import { StringType, XrplSecret } from 'xumm-string-decode';
 
 import Localize from '@locale';
 // components
-import { Button, TextInput, Spacer, Footer } from '@components';
+import { Button, TextInput, Spacer, Footer } from '@components/General';
 
 // style
 import { AppStyles } from '@theme';

@@ -39,7 +39,7 @@ import { VibrateHapticFeedback } from '@common/helpers/interface';
 import Localize from '@locale';
 
 // components
-import { Button, CustomButton, InfoMessage, Spacer, Icon } from '@components';
+import { Button, CustomButton, InfoMessage, Spacer, Icon } from '@components/General';
 
 // style
 import { AppStyles } from '@theme';

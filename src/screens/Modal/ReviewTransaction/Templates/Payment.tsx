@@ -20,7 +20,7 @@ import { LedgerService } from '@services';
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 import { getAccountName } from '@common/helpers/resolver';
 
-import { Button, InfoMessage, Spacer } from '@components';
+import { Button, InfoMessage, Spacer } from '@components/General';
 
 import Localize from '@locale';
 

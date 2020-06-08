@@ -9,7 +9,7 @@ import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
-import { Button } from '@components/Button';
+import { Button } from '@components/General/Button';
 
 import Localize from '@locale';
 

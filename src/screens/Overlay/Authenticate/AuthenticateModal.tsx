@@ -19,7 +19,7 @@ import { AppScreens } from '@common/constants';
 import { AuthenticationService } from '@services';
 
 // components
-import { SecurePinInput, Button } from '@components';
+import { Button, SecurePinInput } from '@components/General';
 
 import Localize from '@locale';
 

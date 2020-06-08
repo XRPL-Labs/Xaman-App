@@ -14,7 +14,7 @@ import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 import { PushNotificationsService } from '@services';
 import Localize from '@locale';
-import { Button, Spacer, Footer } from '@components';
+import { Button, Spacer, Footer } from '@components/General';
 import { AppStyles } from '@theme';
 
 import styles from './styles';

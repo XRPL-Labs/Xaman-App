@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { SafeAreaView, View, Text } from 'react-native';
 
 // components
-import { Button, RadioButton, Footer } from '@components';
+import { Button, RadioButton, Footer } from '@components/General';
 
 // locale
 import Localize from '@locale';

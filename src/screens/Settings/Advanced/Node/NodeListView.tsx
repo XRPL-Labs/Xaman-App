@@ -18,7 +18,7 @@ import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 import { NodeChain } from '@store/types';
 
-import { Header, Icon } from '@components';
+import { Header, Icon } from '@components/General';
 
 import Localize from '@locale';
 
@@ -73,13 +73,13 @@ class NodeListView extends Component<Props, State> {
         const nodesCategoryMap = [
             {
                 title: Localize.t('global.mainnet'),
-                data: flatMap(AppConfig.nodes.main, n => {
+                data: flatMap(AppConfig.nodes.main, (n) => {
                     return { chain: NodeChain.Main, url: n };
                 }),
             },
             {
                 title: Localize.t('global.testnet'),
-                data: flatMap(AppConfig.nodes.test, n => {
+                data: flatMap(AppConfig.nodes.test, (n) => {
                     return { chain: NodeChain.Test, url: n };
                 }),
             },

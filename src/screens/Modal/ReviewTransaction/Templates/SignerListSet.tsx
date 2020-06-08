@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 
 import { SignerListSet } from '@common/libs/ledger/transactions';
 
-import { Spacer } from '@components';
+import { Spacer } from '@components/General';
 
 import Localize from '@locale';
 

@@ -10,7 +10,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 import { PushNotificationsService } from '@services';
-import { Footer, Button, Spacer } from '@components';
+import { Footer, Button, Spacer } from '@components/General';
 
 import Localize from '@locale';
 // style

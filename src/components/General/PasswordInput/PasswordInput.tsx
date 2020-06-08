@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { View, TouchableOpacity, TextInput, Text, ViewStyle, Animated } from 'react-native';
 
-import { Icon } from '@components/Icon';
+import { Icon } from '@components/General/Icon';
 
 import Localize from '@locale';
 
@@ -271,7 +271,7 @@ export default class PasswordInput extends Component<Props, State> {
         return (
             <View style={[styles.inputWrapper, inputWrapperStyle, AppStyles.stretchSelf]}>
                 <TextInput
-                    ref={r => {
+                    ref={(r) => {
                         this.instance = r;
                     }}
                     editable={editable}
@@ -282,7 +282,7 @@ export default class PasswordInput extends Component<Props, State> {
                     multiline={false}
                     underlineColorAndroid="transparent"
                     style={[styles.input, inputStyle]}
-                    onChangeText={text => this.onChangeText(text)}
+                    onChangeText={(text) => this.onChangeText(text)}
                     placeholder={placeholder}
                     selectTextOnFocus={selectTextOnFocus}
                 />

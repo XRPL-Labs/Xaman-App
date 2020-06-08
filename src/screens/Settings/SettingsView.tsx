@@ -8,7 +8,7 @@ import { SafeAreaView, View, Text, ScrollView, TouchableOpacity } from 'react-na
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-import { Icon } from '@components';
+import { Icon } from '@components/General';
 
 import Localize from '@locale';
 

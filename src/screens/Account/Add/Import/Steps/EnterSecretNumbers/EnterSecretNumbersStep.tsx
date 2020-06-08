@@ -9,7 +9,9 @@ import { derive } from 'xrpl-accountlib';
 
 import Localize from '@locale';
 // components
-import { Button, SecretNumberInput, Footer } from '@components';
+import { Button, Footer } from '@components/General';
+import { SecretNumberInput } from '@components/Modules';
+
 // style
 import { AppStyles } from '@theme';
 

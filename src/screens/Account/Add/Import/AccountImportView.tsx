@@ -19,7 +19,7 @@ import { LedgerService } from '@services';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Header } from '@components';
+import { Header } from '@components/General';
 
 // localize
 import Localize from '@locale';

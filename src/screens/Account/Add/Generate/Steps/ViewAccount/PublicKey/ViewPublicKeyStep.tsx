@@ -8,7 +8,7 @@ import { SafeAreaView, View, Text, Clipboard, ActivityIndicator } from 'react-na
 import { Toast, Prompt } from '@common/helpers/interface';
 
 // components
-import { Button, Footer, Spacer } from '@components';
+import { Button, Footer, Spacer } from '@components/General';
 
 // locale
 import Localize from '@locale';

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Text, TextStyle, TouchableOpacity, View, ViewStyle, Platform } from 'react-native';
 
 import { Images } from '@common/helpers/images';
-import { Icon } from '@components/Icon';
+import { Icon } from '@components/General/Icon';
 
 import { getStatusBarHeight } from '@common/helpers/interface';
 

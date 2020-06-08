@@ -12,7 +12,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens, AppConfig } from '@common/constants';
 
 import { ProfileRepository } from '@store/repositories';
-import { Header, Footer, Spacer, Button } from '@components';
+import { Header, Footer, Spacer, Button } from '@components/General';
 
 import Localize from '@locale';
 

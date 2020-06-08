@@ -41,7 +41,7 @@ import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterView';
 import { LedgerService, BackendService, PushNotificationsService } from '@services';
 
 // Components
-import { SearchBar, Button, Icon } from '@components';
+import { SearchBar, Button, Icon } from '@components/General';
 
 // Locale
 import Localize from '@locale';

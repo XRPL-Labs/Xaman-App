@@ -20,7 +20,7 @@ import { Images } from '@common/helpers/images';
 import { BackendService } from '@services';
 
 // components
-import { Button, TextInput, Footer, InfoMessage } from '@components';
+import { Button, TextInput, Footer, InfoMessage } from '@components/General';
 
 // locale
 import Localize from '@locale';

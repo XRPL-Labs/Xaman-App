@@ -8,7 +8,7 @@ import { SafeAreaView, View, Text, Alert, Platform, KeyboardAvoidingView } from 
 
 import { getAccountName } from '@common/helpers/resolver';
 // components
-import { Button, TextInput, Spacer, Footer } from '@components';
+import { Button, TextInput, Spacer, Footer } from '@components/General';
 
 // locale
 import Localize from '@locale';

@@ -31,7 +31,7 @@ import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Header, Spacer, Icon, Button, InfoMessage } from '@components';
+import { Header, Spacer, Icon, Button, InfoMessage } from '@components/General';
 
 import Localize from '@locale';
 

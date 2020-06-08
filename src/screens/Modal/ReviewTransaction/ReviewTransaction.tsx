@@ -42,7 +42,7 @@ import parserFactory from '@common/libs/ledger/parser';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 
 // components
-import { Button, AccordionPicker, Icon, Footer, Spacer } from '@components';
+import { Button, AccordionPicker, Icon, Footer, Spacer } from '@components/General';
 
 // localize
 import Localize from '@locale';

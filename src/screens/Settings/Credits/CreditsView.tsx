@@ -10,7 +10,7 @@ import { AppScreens, AppConfig } from '@common/constants';
 
 import { IsIPhoneX } from '@common/helpers/interface';
 
-import { Header } from '@components';
+import { Header } from '@components/General';
 
 import Localize from '@locale';
 

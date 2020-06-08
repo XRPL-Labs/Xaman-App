@@ -17,7 +17,7 @@ import { Navigator } from '@common/helpers/navigator';
 // constants
 import { AppScreens } from '@common/constants';
 
-import { Header } from '@components';
+import { Header } from '@components/General';
 
 // localize
 import Localize from '@locale';

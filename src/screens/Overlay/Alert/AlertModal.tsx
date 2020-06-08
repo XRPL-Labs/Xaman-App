@@ -9,7 +9,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Spacer, Icon } from '@components';
+import { Button, Spacer, Icon } from '@components/General';
 import Localize from '@locale';
 
 // style

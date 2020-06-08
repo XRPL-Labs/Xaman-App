@@ -28,7 +28,7 @@ import Preferences from '@common/libs/preferences';
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { Button, AccordionPicker, Footer, Spacer, TextInput, Header } from '@components';
+import { Button, AccordionPicker, Footer, Spacer, TextInput, Header } from '@components/General';
 
 // locale
 import Localize from '@locale';

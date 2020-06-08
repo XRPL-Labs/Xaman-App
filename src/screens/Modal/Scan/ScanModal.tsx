@@ -24,7 +24,7 @@ import { NormalizeDestination } from '@common/libs/utils';
 import Localize from '@locale';
 
 // components
-import { Button, Spacer, Icon } from '@components';
+import { Button, Spacer, Icon } from '@components/General';
 
 // style
 import { AppStyles, AppColors } from '@theme';

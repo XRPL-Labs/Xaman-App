@@ -20,7 +20,7 @@ import { derive } from 'xrpl-accountlib';
 
 import Localize from '@locale';
 // components
-import { Button, Spacer, Switch, Footer, PasswordInput } from '@components';
+import { PasswordInput, Button, Spacer, Switch, Footer } from '@components/General';
 
 // style
 import { AppStyles } from '@theme';

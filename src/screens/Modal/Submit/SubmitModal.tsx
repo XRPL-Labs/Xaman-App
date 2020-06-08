@@ -16,7 +16,7 @@ import LedgerService from '@services/LedgerService';
 import { SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
 
 // components
-import { Footer, Button, Icon, Spacer } from '@components';
+import { Footer, Button, Icon, Spacer } from '@components/General';
 
 import Localize from '@locale';
 

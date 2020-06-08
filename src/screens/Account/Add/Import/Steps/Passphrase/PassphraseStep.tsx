@@ -7,7 +7,8 @@ import { SafeAreaView, View, Text, Alert, KeyboardAvoidingView, Platform } from 
 
 import Localize from '@locale';
 // components
-import { Button, PasswordInput, Footer, Header } from '@components';
+import { PasswordInput, Button, Footer, Header } from '@components/General';
+
 // style
 import { AppStyles } from '@theme';
 

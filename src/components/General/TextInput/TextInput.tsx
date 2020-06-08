@@ -13,7 +13,7 @@ import { StringType } from 'xumm-string-decode';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-import { Icon } from '@components/Icon';
+import { Icon } from '@components/General/Icon';
 
 import { AppColors, AppStyles, AppSizes } from '@theme';
 import styles from './styles';

@@ -15,7 +15,7 @@ import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 import { AccessLevels, EncryptionLevels } from '@store/types';
 
-import { Header, Spacer, Icon, Button } from '@components';
+import { Header, Spacer, Icon, Button } from '@components/General';
 
 import Localize from '@locale';
 

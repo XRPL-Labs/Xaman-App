@@ -23,7 +23,7 @@ import { Destination } from '@common/libs/ledger/parser/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 // components
-import { Header } from '@components';
+import { Header } from '@components/General';
 
 // local
 import Localize from '@locale';

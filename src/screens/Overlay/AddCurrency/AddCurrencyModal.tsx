@@ -26,7 +26,7 @@ import { CounterPartyRepository } from '@store/repositories';
 import { CounterPartySchema, CurrencySchema, AccountSchema } from '@store/schemas/latest';
 
 // components
-import { Button, Footer } from '@components';
+import { Button, Footer } from '@components/General';
 
 import Localize from '@locale';
 

@@ -12,7 +12,7 @@ import {
     LayoutChangeEvent,
 } from 'react-native';
 
-import { Icon } from '@components/Icon';
+import { Icon } from '@components/General/Icon';
 
 import { AppStyles, AppColors } from '@theme';
 import styles from './styles';

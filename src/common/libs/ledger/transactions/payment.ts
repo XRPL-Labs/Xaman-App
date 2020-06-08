@@ -278,6 +278,7 @@ class Payment extends BaseTransaction {
                 // check if IOU<>IOU and sender is not issuer
                 const line = source.lines.find(
                     (e: any) =>
+                        // eslint-disable-next-line implicit-arrow-linebreak
                         e.currency.issuer === this.Amount.issuer && e.currency.currency === this.Amount.currency,
                 );
 

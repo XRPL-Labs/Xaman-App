@@ -18,7 +18,7 @@ import {
 
 import { VibrateHapticFeedback } from '@common/helpers/interface';
 
-import { Icon } from '@components/Icon';
+import { Icon } from '@components/General/Icon';
 
 import { AppColors } from '@theme';
 import styles from './styles';

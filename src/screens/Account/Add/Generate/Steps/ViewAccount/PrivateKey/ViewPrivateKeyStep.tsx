@@ -6,7 +6,8 @@ import React, { Component } from 'react';
 import { SafeAreaView, View, Text } from 'react-native';
 
 // components
-import { Button, Footer, SecretNumberInput } from '@components';
+import { Button, Footer } from '@components/General';
+import { SecretNumberInput } from '@components/Modules';
 
 // locale
 import Localize from '@locale';

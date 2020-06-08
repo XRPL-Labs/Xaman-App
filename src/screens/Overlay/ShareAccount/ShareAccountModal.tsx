@@ -14,7 +14,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, QRCode, Spacer } from '@components';
+import { Button, QRCode, Spacer } from '@components/General';
 
 import Localize from '@locale';
 

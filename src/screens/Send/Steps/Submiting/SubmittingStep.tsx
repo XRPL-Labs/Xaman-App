@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Image } from 'react-native';
 
-import { Spacer, Icon } from '@components';
+import { Spacer, Icon } from '@components/General';
 
 import { Images } from '@common/helpers/images';
 

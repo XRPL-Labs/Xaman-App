@@ -10,7 +10,7 @@ import { AccountRepository } from '@store/repositories';
 import { Toast, Prompt } from '@common/helpers/interface';
 
 // components
-import { Button, Footer, Icon, Spacer } from '@components';
+import { Button, Footer, Icon, Spacer } from '@components/General';
 
 // locale
 import Localize from '@locale';
