@@ -670,7 +670,7 @@ class HomeView extends Component<Props, State> {
                             <Text
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
-                                selectable
+                                selectable={!privacyMode}
                                 style={[
                                     AppStyles.flex1,
                                     styles.cardAddressText,
