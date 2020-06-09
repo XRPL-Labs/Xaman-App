@@ -34,7 +34,6 @@ const defaultOptions = {
         drawBehind: true,
         tabsAttachMode: 'onSwitchToTab' as any,
         titleDisplayMode: 'alwaysShow' as any,
-        visible: true,
     },
     animations: {
         pop: {
