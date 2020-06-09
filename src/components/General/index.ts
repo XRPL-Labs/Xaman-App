@@ -1,3 +1,4 @@
+export * from './Avatar';
 export * from './Spacer';
 export * from './Slider';
 export * from './Button';

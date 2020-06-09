@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { Results } from 'realm';
 import { isEmpty, flatMap, remove, get, uniqBy, toNumber } from 'lodash';
-import { View, Text, Image, TouchableHighlight, SectionList, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, SectionList, Alert, ActivityIndicator } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
 import { AccountRepository, ContactRepository } from '@store/repositories';
@@ -21,6 +21,7 @@ import { BackendService } from '@services';
 
 // components
 import { Button, TextInput, Footer, InfoMessage } from '@components/General';
+import { RecipientElement } from '@components/Modules';
 
 // locale
 import Localize from '@locale';
@@ -597,43 +598,10 @@ class RecipientStep extends Component<Props, State> {
 
         const selected = item.address === get(destination, 'address') && item.name === get(destination, 'name');
 
-        let tag;
-
-        switch (item.source) {
-            case 'xrplns':
-                tag = (
-                    <View style={[styles.tag, styles.xrplnsTag]}>
-                        <Text style={styles.tagLabel}>XRPLNS</Text>
-                    </View>
-                );
-                break;
-            case 'bithomp.com':
-                tag = (
-                    <View style={[styles.tag, styles.bithompTag]}>
-                        <Text style={styles.tagLabel}>Bithomp</Text>
-                    </View>
-                );
-                break;
-            case 'xrpscan.com':
-                tag = (
-                    <View style={[styles.tag, styles.xrpscanTag]}>
-                        <Text style={styles.tagLabel}>XRPScan</Text>
-                    </View>
-                );
-                break;
-            case 'payid':
-                tag = (
-                    <View style={[styles.tag, styles.payidTag]}>
-                        <Text style={styles.tagLabel}>PayID</Text>
-                    </View>
-                );
-                break;
-            default:
-                break;
-        }
-
         return (
-            <TouchableHighlight
+            <RecipientElement
+                recipient={item}
+                selected={selected}
                 onPress={() => {
                     if (!selected) {
                         setDestination({
@@ -645,28 +613,7 @@ class RecipientStep extends Component<Props, State> {
                         setDestination(undefined);
                     }
                 }}
-                underlayColor="#FFF"
-                key={item.id}
-            >
-                <View style={[styles.itemRow, selected ? styles.itemSelected : null]}>
-                    <View style={styles.avatarContainer}>
-                        <Image source={item.avatar} style={styles.avatarImage} />
-                    </View>
-                    <View style={AppStyles.paddingLeftSml}>
-                        <View style={AppStyles.row}>
-                            <Text
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                style={[styles.title, selected ? styles.selectedText : null]}
-                            >
-                                {item.name || Localize.t('global.noNameFound')}
-                            </Text>
-                            {tag && tag}
-                        </View>
-                        <Text style={[styles.subtitle, selected ? styles.selectedText : null]}>{item.address}</Text>
-                    </View>
-                </View>
-            </TouchableHighlight>
+            />
         );
     };
 
