@@ -60,7 +60,7 @@ exports[`Storyshots RecipientElement Selected 1`] = `
         <Image
           source={
             Object {
-              "uri": "IconProfile",
+              "uri": "IconGlobe",
             }
           }
           style={
@@ -218,7 +218,7 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
         <Image
           source={
             Object {
-              "uri": "IconProfile",
+              "uri": "IconGlobe",
             }
           }
           style={

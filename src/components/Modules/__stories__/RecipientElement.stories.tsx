@@ -8,8 +8,8 @@ import { RecipientElement } from '../RecipientElement';
 export const recipientData = {
     id: 'id',
     address: 'rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1',
-    avatar: { uri: 'IconProfile' },
     name: 'Wietse',
+    source: 'internal:contacts',
 };
 
 storiesOf('RecipientElement', module)
@@ -17,11 +17,14 @@ storiesOf('RecipientElement', module)
     .addDecorator((storyFn: any) => <View style={{ flex: 1, justifyContent: 'center' }}>{storyFn()}</View>)
     .add('default', () => <RecipientElement recipient={{ ...recipientData }} onPress={action('onPress')} />)
     .add('WithSource', () => (
-        <RecipientElement recipient={{ ...recipientData, source: 'bithomp.com' }} onPress={action('onPress')} />
+        <RecipientElement
+            recipient={{ ...recipientData, source: 'internal:bithomp.com' }}
+            onPress={action('onPress')}
+        />
     ))
     .add('Selected', () => (
         <RecipientElement
-            recipient={{ ...recipientData, source: 'bithomp.com' }}
+            recipient={{ ...recipientData, source: 'internal:bithomp.com' }}
             onPress={action('onPress')}
             selected
         />

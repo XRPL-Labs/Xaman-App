@@ -15,7 +15,6 @@ import { AppScreens } from '@common/constants';
 import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 
 import { BackendService } from '@services';
 
@@ -94,28 +93,13 @@ class RecipientStep extends Component<Props, State> {
         if (to) {
             const accountInfo = await getAccountName(to, tag);
 
-            let avatar;
-
-            switch (accountInfo.source) {
-                case 'internal:contacts':
-                    avatar = Images.IconProfile;
-                    break;
-                case 'internal:accounts':
-                    avatar = Images.IconAccount;
-                    break;
-                default:
-                    avatar = Images.IconGlobe;
-                    break;
-            }
-
             this.setState({
                 dataSource: this.getSearchResultSource([
                     {
                         name: accountInfo.name || '',
                         address: to,
                         tag,
-                        avatar,
-                        source: accountInfo.source.replace('internal:', ''),
+                        source: accountInfo.source,
                     },
                 ]),
                 isSearching: false,
@@ -181,7 +165,7 @@ class RecipientStep extends Component<Props, State> {
                         name: item.name,
                         address: item.address,
                         tag: item.destinationTag,
-                        avatar: Images.IconProfile,
+                        source: 'internal:contacts',
                     });
                 }
             });
@@ -195,7 +179,7 @@ class RecipientStep extends Component<Props, State> {
                     searchResult.push({
                         name: item.label,
                         address: item.address,
-                        avatar: Images.IconAccount,
+                        source: 'internal:accounts',
                     });
                 }
             });
@@ -213,26 +197,11 @@ class RecipientStep extends Component<Props, State> {
 
                                         // found in local source
                                         if (internalResult.name) {
-                                            let avatar;
-
-                                            switch (internalResult.source) {
-                                                case 'internal:contacts':
-                                                    avatar = Images.IconProfile;
-                                                    break;
-                                                case 'internal:accounts':
-                                                    avatar = Images.IconAccount;
-                                                    break;
-                                                default:
-                                                    avatar = Images.IconGlobe;
-                                                    break;
-                                            }
-
                                             searchResult.push({
                                                 name: internalResult.name || '',
                                                 address: element.account,
                                                 tag: element.tag,
-                                                avatar,
-                                                source: internalResult.source.replace('internal:', ''),
+                                                source: internalResult.source,
                                             });
 
                                             return;
@@ -242,7 +211,6 @@ class RecipientStep extends Component<Props, State> {
                                     searchResult.push({
                                         name: element.alias === element.account ? '' : element.alias,
                                         address: element.account,
-                                        avatar: Images.IconGlobe,
                                         source: element.source,
                                         tag: element.tag,
                                     });
@@ -319,7 +287,7 @@ class RecipientStep extends Component<Props, State> {
             dataSource.push({
                 title: Localize.t('account.myAccounts'),
                 data: flatMap(myAccountList, (a) => {
-                    return { name: a.label, address: a.address, avatar: Images.IconAccount };
+                    return { name: a.label, address: a.address, source: 'internal:accounts' };
                 }),
             });
         }
@@ -337,7 +305,7 @@ class RecipientStep extends Component<Props, State> {
                         name: a.name,
                         address: a.address,
                         tag: a.destinationTag,
-                        avatar: Images.IconProfile,
+                        source: 'internal:contacts',
                     };
                 }),
             });

@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
-import { View, Text, TouchableHighlight, ImageSourcePropType } from 'react-native';
+import { View, Text, TouchableHighlight } from 'react-native';
 
 import { Avatar } from '@components/General/Avatar';
+import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
 
@@ -11,7 +12,6 @@ import styles from './styles';
 /* Types ==================================================================== */
 export type RecipientType = {
     id: string;
-    avatar: ImageSourcePropType;
     address: string;
     name: string;
     source?: string;
@@ -33,50 +33,64 @@ class RecipientElement extends PureComponent<Props> {
         }
     };
 
+    getTag = () => {
+        const { recipient } = this.props;
+
+        switch (recipient.source) {
+            case 'internal:xrplns':
+                return (
+                    <View style={[styles.tag, styles.xrplnsTag]}>
+                        <Text style={styles.tagLabel}>XRPLNS</Text>
+                    </View>
+                );
+            case 'internal:bithomp.com':
+                return (
+                    <View style={[styles.tag, styles.bithompTag]}>
+                        <Text style={styles.tagLabel}>Bithomp</Text>
+                    </View>
+                );
+            case 'internal:xrpscan.com':
+                return (
+                    <View style={[styles.tag, styles.xrpscanTag]}>
+                        <Text style={styles.tagLabel}>XRPScan</Text>
+                    </View>
+                );
+            case 'internal:payid':
+                return (
+                    <View style={[styles.tag, styles.payidTag]}>
+                        <Text style={styles.tagLabel}>PayID</Text>
+                    </View>
+                );
+            default:
+                break;
+        }
+
+        return undefined;
+    };
+
+    getAvatar = () => {
+        const { recipient } = this.props;
+
+        switch (recipient.source) {
+            case 'internal:contacts':
+                return Images.IconProfile;
+            case 'internal:accounts':
+                return Images.IconAccount;
+            default:
+                return Images.IconGlobe;
+        }
+    };
+
     render() {
         const { recipient, selected } = this.props;
 
-        let tag;
-
-        if (recipient.source) {
-            switch (recipient.source) {
-                case 'xrplns':
-                    tag = (
-                        <View style={[styles.tag, styles.xrplnsTag]}>
-                            <Text style={styles.tagLabel}>XRPLNS</Text>
-                        </View>
-                    );
-                    break;
-                case 'bithomp.com':
-                    tag = (
-                        <View style={[styles.tag, styles.bithompTag]}>
-                            <Text style={styles.tagLabel}>Bithomp</Text>
-                        </View>
-                    );
-                    break;
-                case 'xrpscan.com':
-                    tag = (
-                        <View style={[styles.tag, styles.xrpscanTag]}>
-                            <Text style={styles.tagLabel}>XRPScan</Text>
-                        </View>
-                    );
-                    break;
-                case 'payid':
-                    tag = (
-                        <View style={[styles.tag, styles.payidTag]}>
-                            <Text style={styles.tagLabel}>PayID</Text>
-                        </View>
-                    );
-                    break;
-                default:
-                    break;
-            }
-        }
+        const tag = this.getTag();
+        const avatar = this.getAvatar();
 
         return (
             <TouchableHighlight onPress={this.onPress} underlayColor="#FFF" key={recipient.id}>
                 <View style={[styles.itemRow, selected ? styles.itemSelected : null]}>
-                    <Avatar source={recipient.avatar} />
+                    <Avatar source={avatar} />
 
                     <View style={AppStyles.paddingLeftSml}>
                         <View style={AppStyles.row}>
