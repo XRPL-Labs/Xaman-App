@@ -9,7 +9,9 @@ const Navigation = {
     mergeOptions: jest.fn(),
     showOverlay: jest.fn(),
     dismissOverlay: jest.fn(),
+    registerComponent: jest.fn(),
     events: jest.fn(() => ({
+        registerAppLaunchedListener: jest.fn(),
         registerComponentDidAppearListener: jest.fn(),
         bindComponent: jest.fn(),
     })),

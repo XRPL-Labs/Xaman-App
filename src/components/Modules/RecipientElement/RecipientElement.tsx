@@ -14,8 +14,7 @@ export type RecipientType = {
     avatar: ImageSourcePropType;
     address: string;
     name: string;
-    tag: string;
-    source: string;
+    source?: string;
 };
 
 interface Props {
@@ -39,37 +38,39 @@ class RecipientElement extends PureComponent<Props> {
 
         let tag;
 
-        switch (recipient.source) {
-            case 'xrplns':
-                tag = (
-                    <View style={[styles.tag, styles.xrplnsTag]}>
-                        <Text style={styles.tagLabel}>XRPLNS</Text>
-                    </View>
-                );
-                break;
-            case 'bithomp.com':
-                tag = (
-                    <View style={[styles.tag, styles.bithompTag]}>
-                        <Text style={styles.tagLabel}>Bithomp</Text>
-                    </View>
-                );
-                break;
-            case 'xrpscan.com':
-                tag = (
-                    <View style={[styles.tag, styles.xrpscanTag]}>
-                        <Text style={styles.tagLabel}>XRPScan</Text>
-                    </View>
-                );
-                break;
-            case 'payid':
-                tag = (
-                    <View style={[styles.tag, styles.payidTag]}>
-                        <Text style={styles.tagLabel}>PayID</Text>
-                    </View>
-                );
-                break;
-            default:
-                break;
+        if (recipient.source) {
+            switch (recipient.source) {
+                case 'xrplns':
+                    tag = (
+                        <View style={[styles.tag, styles.xrplnsTag]}>
+                            <Text style={styles.tagLabel}>XRPLNS</Text>
+                        </View>
+                    );
+                    break;
+                case 'bithomp.com':
+                    tag = (
+                        <View style={[styles.tag, styles.bithompTag]}>
+                            <Text style={styles.tagLabel}>Bithomp</Text>
+                        </View>
+                    );
+                    break;
+                case 'xrpscan.com':
+                    tag = (
+                        <View style={[styles.tag, styles.xrpscanTag]}>
+                            <Text style={styles.tagLabel}>XRPScan</Text>
+                        </View>
+                    );
+                    break;
+                case 'payid':
+                    tag = (
+                        <View style={[styles.tag, styles.payidTag]}>
+                            <Text style={styles.tagLabel}>PayID</Text>
+                        </View>
+                    );
+                    break;
+                default:
+                    break;
+            }
         }
 
         return (

@@ -22,4 +22,5 @@ module.exports = {
     testPathIgnorePatterns: ['\\.snap$', '<rootDir>/node_modules/', '<rootDir>/e2e/'],
     cacheDirectory: '.jest/cache',
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'ios.ts', 'ios.tsx', 'android.ts', 'android.tsx'],
+    setupFilesAfterEnv: ['<rootDir>/src/__mocks__/globalMock.ts'],
 };

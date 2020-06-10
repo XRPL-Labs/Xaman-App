@@ -1,0 +1,443 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Storyshots RecipientElement Selected 1`] = `
+<View
+  style={
+    Object {
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
+  <View
+    accessible={true}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "#F8FAFD",
+            "borderColor": "#F8FAFD",
+            "borderRadius": 12,
+            "borderWidth": 2,
+            "flexDirection": "row",
+            "marginBottom": 8,
+            "padding": 5,
+          },
+          Object {
+            "backgroundColor": "#F0F3FF",
+            "borderColor": "#3052FF",
+            "borderWidth": 2,
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Array [
+            Object {
+              "alignItems": "center",
+              "backgroundColor": "#FFFFFF",
+              "borderRadius": 8,
+              "justifyContent": "center",
+            },
+            Object {
+              "height": 96.42857142857143,
+              "width": 96.42857142857143,
+            },
+          ]
+        }
+      >
+        <Image
+          source={
+            Object {
+              "uri": "IconProfile",
+            }
+          }
+          style={
+            Array [
+              Object {
+                "resizeMode": "contain",
+              },
+              Object {
+                "height": 53.03571428571429,
+                "tintColor": "#848DB8",
+                "width": 53.03571428571429,
+              },
+            ]
+          }
+        />
+      </View>
+      <View
+        style={
+          Object {
+            "paddingLeft": 20,
+          }
+        }
+      >
+        <View
+          style={
+            Object {
+              "flexDirection": "row",
+              "left": 0,
+              "right": 0,
+            }
+          }
+        >
+          <Text
+            adjustsFontSizeToFit={true}
+            numberOfLines={1}
+            style={
+              Array [
+                Object {
+                  "color": "#000000",
+                  "fontFamily": "ProximaNova-Bold",
+                  "fontSize": 32.14285714285714,
+                },
+                Object {
+                  "color": "#3052FF",
+                },
+              ]
+            }
+          >
+            Wietse
+          </Text>
+          <View
+            style={
+              Array [
+                Object {
+                  "alignSelf": "center",
+                  "borderRadius": 5,
+                  "marginLeft": 5,
+                  "paddingHorizontal": 5,
+                  "paddingVertical": 1,
+                },
+                Object {
+                  "backgroundColor": "#3fa3b5",
+                },
+              ]
+            }
+          >
+            <Text
+              style={
+                Object {
+                  "color": "#FFFFFF",
+                  "fontFamily": "ProximaNova-Bold",
+                  "fontSize": 18,
+                }
+              }
+            >
+              Bithomp
+            </Text>
+          </View>
+        </View>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#848DB8",
+                "fontFamily": "UbuntuMono-Regular",
+                "fontSize": 25.71428571428571,
+              },
+              Object {
+                "color": "#3052FF",
+              },
+            ]
+          }
+        >
+          rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1
+        </Text>
+      </View>
+    </View>
+  </View>
+</View>
+`;
+
+exports[`Storyshots RecipientElement WithSource 1`] = `
+<View
+  style={
+    Object {
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
+  <View
+    accessible={true}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "#F8FAFD",
+            "borderColor": "#F8FAFD",
+            "borderRadius": 12,
+            "borderWidth": 2,
+            "flexDirection": "row",
+            "marginBottom": 8,
+            "padding": 5,
+          },
+          null,
+        ]
+      }
+    >
+      <View
+        style={
+          Array [
+            Object {
+              "alignItems": "center",
+              "backgroundColor": "#FFFFFF",
+              "borderRadius": 8,
+              "justifyContent": "center",
+            },
+            Object {
+              "height": 96.42857142857143,
+              "width": 96.42857142857143,
+            },
+          ]
+        }
+      >
+        <Image
+          source={
+            Object {
+              "uri": "IconProfile",
+            }
+          }
+          style={
+            Array [
+              Object {
+                "resizeMode": "contain",
+              },
+              Object {
+                "height": 53.03571428571429,
+                "tintColor": "#848DB8",
+                "width": 53.03571428571429,
+              },
+            ]
+          }
+        />
+      </View>
+      <View
+        style={
+          Object {
+            "paddingLeft": 20,
+          }
+        }
+      >
+        <View
+          style={
+            Object {
+              "flexDirection": "row",
+              "left": 0,
+              "right": 0,
+            }
+          }
+        >
+          <Text
+            adjustsFontSizeToFit={true}
+            numberOfLines={1}
+            style={
+              Array [
+                Object {
+                  "color": "#000000",
+                  "fontFamily": "ProximaNova-Bold",
+                  "fontSize": 32.14285714285714,
+                },
+                null,
+              ]
+            }
+          >
+            Wietse
+          </Text>
+          <View
+            style={
+              Array [
+                Object {
+                  "alignSelf": "center",
+                  "borderRadius": 5,
+                  "marginLeft": 5,
+                  "paddingHorizontal": 5,
+                  "paddingVertical": 1,
+                },
+                Object {
+                  "backgroundColor": "#3fa3b5",
+                },
+              ]
+            }
+          >
+            <Text
+              style={
+                Object {
+                  "color": "#FFFFFF",
+                  "fontFamily": "ProximaNova-Bold",
+                  "fontSize": 18,
+                }
+              }
+            >
+              Bithomp
+            </Text>
+          </View>
+        </View>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#848DB8",
+                "fontFamily": "UbuntuMono-Regular",
+                "fontSize": 25.71428571428571,
+              },
+              null,
+            ]
+          }
+        >
+          rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1
+        </Text>
+      </View>
+    </View>
+  </View>
+</View>
+`;
+
+exports[`Storyshots RecipientElement default 1`] = `
+<View
+  style={
+    Object {
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
+  <View
+    accessible={true}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "#F8FAFD",
+            "borderColor": "#F8FAFD",
+            "borderRadius": 12,
+            "borderWidth": 2,
+            "flexDirection": "row",
+            "marginBottom": 8,
+            "padding": 5,
+          },
+          null,
+        ]
+      }
+    >
+      <View
+        style={
+          Array [
+            Object {
+              "alignItems": "center",
+              "backgroundColor": "#FFFFFF",
+              "borderRadius": 8,
+              "justifyContent": "center",
+            },
+            Object {
+              "height": 96.42857142857143,
+              "width": 96.42857142857143,
+            },
+          ]
+        }
+      >
+        <Image
+          source={
+            Object {
+              "uri": "IconProfile",
+            }
+          }
+          style={
+            Array [
+              Object {
+                "resizeMode": "contain",
+              },
+              Object {
+                "height": 53.03571428571429,
+                "tintColor": "#848DB8",
+                "width": 53.03571428571429,
+              },
+            ]
+          }
+        />
+      </View>
+      <View
+        style={
+          Object {
+            "paddingLeft": 20,
+          }
+        }
+      >
+        <View
+          style={
+            Object {
+              "flexDirection": "row",
+              "left": 0,
+              "right": 0,
+            }
+          }
+        >
+          <Text
+            adjustsFontSizeToFit={true}
+            numberOfLines={1}
+            style={
+              Array [
+                Object {
+                  "color": "#000000",
+                  "fontFamily": "ProximaNova-Bold",
+                  "fontSize": 32.14285714285714,
+                },
+                null,
+              ]
+            }
+          >
+            Wietse
+          </Text>
+        </View>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#848DB8",
+                "fontFamily": "UbuntuMono-Regular",
+                "fontSize": 25.71428571428571,
+              },
+              null,
+            ]
+          }
+        >
+          rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1
+        </Text>
+      </View>
+    </View>
+  </View>
+</View>
+`;
