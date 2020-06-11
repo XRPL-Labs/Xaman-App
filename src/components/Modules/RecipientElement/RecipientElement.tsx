@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
 
-import { Avatar } from '@components/General/Avatar';
+import { Avatar, Badge } from '@components/General';
 import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
@@ -33,39 +33,13 @@ class RecipientElement extends PureComponent<Props> {
         }
     };
 
-    getTag = () => {
+    getBadge = () => {
         const { recipient } = this.props;
 
-        switch (recipient.source) {
-            case 'internal:xrplns':
-                return (
-                    <View style={[styles.tag, styles.xrplnsTag]}>
-                        <Text style={styles.tagLabel}>XRPLNS</Text>
-                    </View>
-                );
-            case 'internal:bithomp.com':
-                return (
-                    <View style={[styles.tag, styles.bithompTag]}>
-                        <Text style={styles.tagLabel}>Bithomp</Text>
-                    </View>
-                );
-            case 'internal:xrpscan.com':
-                return (
-                    <View style={[styles.tag, styles.xrpscanTag]}>
-                        <Text style={styles.tagLabel}>XRPScan</Text>
-                    </View>
-                );
-            case 'internal:payid':
-                return (
-                    <View style={[styles.tag, styles.payidTag]}>
-                        <Text style={styles.tagLabel}>PayID</Text>
-                    </View>
-                );
-            default:
-                break;
-        }
+        const source = recipient.source.replace('internal:', '').replace('.com', '');
 
-        return undefined;
+        // @ts-ignore
+        return <Badge type={source} />;
     };
 
     getAvatar = () => {
@@ -84,7 +58,7 @@ class RecipientElement extends PureComponent<Props> {
     render() {
         const { recipient, selected } = this.props;
 
-        const tag = this.getTag();
+        const badge = this.getBadge();
         const avatar = this.getAvatar();
 
         return (
@@ -101,7 +75,7 @@ class RecipientElement extends PureComponent<Props> {
                             >
                                 {recipient.name || Localize.t('global.noNameFound')}
                             </Text>
-                            {tag && tag}
+                            {badge && badge}
                         </View>
                         <Text style={[styles.subtitle, selected ? styles.selectedText : null]}>
                             {recipient.address}
