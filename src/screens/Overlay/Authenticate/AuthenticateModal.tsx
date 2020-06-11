@@ -30,7 +30,8 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     biometricAvailable: true;
-    onDismissed: ({ success }: { success: boolean }) => void;
+    onDismissed: () => void;
+    onSuccess: () => void;
 }
 
 export interface State {
@@ -116,20 +117,23 @@ class AuthenticateModal extends Component<Props, State> {
         this.setState({ offsetBottom: 0 });
     };
 
-    dismiss = (success?: boolean) => {
+    dismiss = () => {
         const { onDismissed } = this.props;
 
         if (onDismissed) {
-            onDismissed({
-                success,
-            });
+            onDismissed();
         }
         Keyboard.dismiss();
         Navigator.dismissOverlay();
     };
 
     onSuccess = () => {
-        this.dismiss(true);
+        const { onSuccess } = this.props;
+
+        if (typeof onSuccess === 'function') {
+            onSuccess();
+        }
+        this.dismiss();
     };
 
     requestBiometricAuthenticate = (system: boolean = false) => {

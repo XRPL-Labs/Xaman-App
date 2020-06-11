@@ -150,10 +150,8 @@ class SecuritySettingsView extends Component<Props, State> {
                 },
                 {
                     biometricAvailable: false,
-                    onDismissed: ({ success }: { success: boolean }) => {
-                        if (success) {
-                            this.changeBiometricMethod(value);
-                        }
+                    onSuccess: () => {
+                        this.changeBiometricMethod(value);
                     },
                 },
             );
