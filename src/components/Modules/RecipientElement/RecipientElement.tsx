@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import { View, Text, TouchableHighlight } from 'react-native';
+import { View, Text, TouchableHighlight, TouchableOpacity } from 'react-native';
 
-import { Avatar, Badge } from '@components/General';
+import { Avatar, Badge, Icon } from '@components/General';
 import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
@@ -21,15 +21,29 @@ interface Props {
     recipient: RecipientType;
     onPress?: () => void;
     selected?: boolean;
+    showMoreButton?: boolean;
+    onMorePress?: () => void;
 }
 
 /* Component ==================================================================== */
 class RecipientElement extends PureComponent<Props> {
+    static defaultProps = {
+        showMoreButton: false,
+    };
+
     onPress = () => {
         const { onPress } = this.props;
 
         if (onPress && typeof onPress === 'function') {
             onPress();
+        }
+    };
+
+    onMorePress = () => {
+        const { onMorePress } = this.props;
+
+        if (onMorePress && typeof onMorePress === 'function') {
+            onMorePress();
         }
     };
 
@@ -56,7 +70,7 @@ class RecipientElement extends PureComponent<Props> {
     };
 
     render() {
-        const { recipient, selected } = this.props;
+        const { recipient, selected, showMoreButton } = this.props;
 
         const badge = this.getBadge();
         const avatar = this.getAvatar();
@@ -66,7 +80,8 @@ class RecipientElement extends PureComponent<Props> {
                 <View style={[styles.itemRow, selected ? styles.itemSelected : null]}>
                     <Avatar source={avatar} />
 
-                    <View style={AppStyles.paddingLeftSml}>
+                    {/* eslint-disable-next-line react-native/no-inline-styles */}
+                    <View style={{ paddingLeft: 10 }}>
                         <View style={AppStyles.row}>
                             <Text
                                 numberOfLines={1}
@@ -81,6 +96,16 @@ class RecipientElement extends PureComponent<Props> {
                             {recipient.address}
                         </Text>
                     </View>
+
+                    {showMoreButton && (
+                        <TouchableOpacity
+                            onPress={this.onMorePress}
+                            activeOpacity={0.7}
+                            style={[AppStyles.flex1, AppStyles.rightAligned, AppStyles.centerContent]}
+                        >
+                            <Icon name="IconMoreVertical" size={30} style={AppStyles.imgColorGreyDark} />
+                        </TouchableOpacity>
+                    )}
                 </View>
             </TouchableHighlight>
         );

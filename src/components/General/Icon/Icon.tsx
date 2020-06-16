@@ -14,7 +14,7 @@ import { Images } from '@common/helpers/images';
 /* Types ==================================================================== */
 interface Props {
     name: Extract<keyof typeof Images, string>;
-    size: number;
+    size?: number;
     style?: any;
 }
 

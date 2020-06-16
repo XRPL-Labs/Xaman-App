@@ -54,6 +54,7 @@ export const Images = {
     IconPlus: buildImageSource('IconPlus', 'icon_plus'),
     IconMinus: buildImageSource('IconMinus', 'icon_minus'),
     IconMoreHorizontal: buildImageSource('IconMoreHorizontal', 'icon_more_horizontal'),
+    IconMoreVertical: buildImageSource('IconMoreVertical', 'icon_more_vertical'),
     IconTrash: buildImageSource('IconTrash', 'icon_trash'),
     IconEye: buildImageSource('IconEye', 'icon_eye'),
     IconEyeOff: buildImageSource('IconEyeOff', 'icon_eye_off'),
