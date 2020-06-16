@@ -53,6 +53,10 @@ export default {
         },
     ],
 
+    thirdParty: {
+        XRPToolkit: 'https://www.xrptoolkit.com/',
+    },
+
     // localization config
     language: {
         default: 'en',

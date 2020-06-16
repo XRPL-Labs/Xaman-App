@@ -217,7 +217,8 @@
         "readMoreInTheFAQ": "Read more in the FAQ",
         "whatsNew": "What's new",
         "pushErrorPermissionMessage": "Unable to register push notifications, To grant the required notification permission, please go to your system settings and make sure that XUMM > Notifications is enabled.",
-        "UnableToRegisterPushNotifications": "Unable to register push notifications"
+        "UnableToRegisterPushNotifications": "Unable to register push notifications",
+        "openXRPToolkitByTowoLabs": "Open XRP Toolkit by Towo Labs"
     },
     "onboarding":{
         "slideOne": {
@@ -552,7 +553,8 @@
         "errorDuringExchange": "Error during the exchange: %{error}",
         "liquidityIsNotEnough": "There is not enough liquidity, cannot exchange right now!",
         "liquidityIsNotSoMuch": "There's relatively low liquidity. You can still continue, but you may not get the best rate for your entire exchange!",
-        "theMaxAmountYouCanExchangeIs": "The max amount you can exchange is %{spendable} %{currency}"
+        "theMaxAmountYouCanExchangeIs": "The max amount you can exchange is %{spendable} %{currency}",
+        "exchangeByThirdPartyMessage": "If you want to create an offer for execution at a requested price level, you can use the 3rd party XUMM enabled XRP Toolkit application to create a limit order."
     },
     "scan":{
         "aimAtTheCode": "Aim at the code",

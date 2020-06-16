@@ -11,6 +11,7 @@ import {
     Alert,
     TextInput,
     Keyboard,
+    Linking,
     TouchableOpacity,
     InteractionManager,
 } from 'react-native';
@@ -28,7 +29,7 @@ import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 // constants
-import { AppScreens } from '@common/constants';
+import { AppScreens, AppConfig } from '@common/constants';
 
 // components
 import { Header, Spacer, Icon, Button, InfoMessage } from '@components/General';
@@ -113,6 +114,16 @@ class ExchangeView extends Component<Props, State> {
 
         this.setState({
             exchangeRate: ledgerExchange.getExchangeRate(direction),
+        });
+    };
+
+    openXRPToolkit = () => {
+        Linking.canOpenURL(AppConfig.thirdParty.XRPToolkit).then((supported) => {
+            if (supported) {
+                Linking.openURL(AppConfig.thirdParty.XRPToolkit);
+            } else {
+                Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
+            }
         });
     };
 
@@ -520,7 +531,25 @@ class ExchangeView extends Component<Props, State> {
 
                     <View style={styles.bottomContainer}>
                         {exchangeRate === 0 ? (
-                            <InfoMessage type="error" label={Localize.t('exchange.liquidityIsNotEnough')} />
+                            <>
+                                <InfoMessage type="warning" label={Localize.t('exchange.liquidityIsNotEnough')} />
+                                <Spacer />
+                                <InfoMessage type="info">
+                                    <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
+                                        {Localize.t('exchange.exchangeByThirdPartyMessage')}
+                                    </Text>
+                                    <Spacer size={30} />
+                                    <Button
+                                        onPress={this.openXRPToolkit}
+                                        icon="IconLink"
+                                        iconStyle={AppStyles.imgColorGreyDark}
+                                        light
+                                        rounded
+                                        label={Localize.t('global.openXRPToolkitByTowoLabs')}
+                                        textStyle={[AppStyles.subtext, AppStyles.bold]}
+                                    />
+                                </InfoMessage>
+                            </>
                         ) : (
                             <>
                                 <Text style={[styles.subLabel, AppStyles.textCenterAligned]}>
