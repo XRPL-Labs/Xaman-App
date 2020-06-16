@@ -684,37 +684,51 @@ class HomeView extends Component<Props, State> {
                             </View>
                         </TouchableOpacity>
 
-                        <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                            <Text style={[AppStyles.flex1, styles.cardLabel]}>{Localize.t('global.balance')}:</Text>
-
-                            {account.balance !== 0 && (
-                                <TouchableOpacity onPress={this.showBalanceExplain}>
-                                    <Text style={[styles.cardSmallLabel]}>
-                                        {Localize.t('home.explainMyBalance')}{' '}
-                                        <Icon style={[AppStyles.imgColorGreyDark]} size={11} name="IconInfo" />
+                        {account.balance !== 0 && (
+                            <>
+                                <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                                    <Text style={[AppStyles.flex1, styles.cardLabel]}>
+                                        {Localize.t('global.balance')}:
                                     </Text>
-                                </TouchableOpacity>
-                            )}
-                        </View>
-                        <View style={[styles.currencyItemCard]}>
-                            <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                <View style={[styles.xrpAvatarContainer]}>
-                                    <Icon name="IconXrp" size={20} style={[styles.xrpAvatar]} />
-                                </View>
-                                <Text style={[styles.currencyItemLabel]}>XRP</Text>
-                            </View>
 
-                            <TouchableOpacity
-                                style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}
-                                onPress={this.showBalanceExplain}
-                            >
-                                <Text
-                                    style={[AppStyles.h5, AppStyles.monoBold, privacyMode && AppStyles.colorGreyDark]}
-                                >
-                                    {privacyMode ? '••••••••' : account.availableBalance}
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
+                                    <TouchableOpacity onPress={this.showBalanceExplain}>
+                                        <Text style={[styles.cardSmallLabel]}>
+                                            {Localize.t('home.explainMyBalance')}{' '}
+                                            <Icon style={[AppStyles.imgColorGreyDark]} size={11} name="IconInfo" />
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={[styles.currencyItemCard]}>
+                                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                                        <View style={[styles.xrpAvatarContainer]}>
+                                            <Icon name="IconXrp" size={20} style={[styles.xrpAvatar]} />
+                                        </View>
+                                        <Text style={[styles.currencyItemLabel]}>XRP</Text>
+                                    </View>
+
+                                    <TouchableOpacity
+                                        style={[
+                                            AppStyles.flex4,
+                                            AppStyles.row,
+                                            AppStyles.centerAligned,
+                                            AppStyles.flexEnd,
+                                        ]}
+                                        onPress={this.showBalanceExplain}
+                                    >
+                                        <Text
+                                            style={[
+                                                AppStyles.h5,
+                                                AppStyles.monoBold,
+                                                privacyMode && AppStyles.colorGreyDark,
+                                            ]}
+                                        >
+                                            {privacyMode ? '••••••••' : account.availableBalance}
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </>
+                        )}
+
                         {this.renderButtons()}
                     </View>
                     {this.renderAssets()}
