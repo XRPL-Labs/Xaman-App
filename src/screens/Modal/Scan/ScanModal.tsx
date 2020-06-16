@@ -140,6 +140,17 @@ class ScanView extends Component<Props, State> {
     };
 
     handleSignedTransaction = (txblob: string) => {
+        // normalize input
+        let cleanBlob = txblob;
+
+        // Bithomp txBlob contains json
+        try {
+            const parsedBlob = JSON.parse(txblob);
+            cleanBlob = parsedBlob.signedTransaction;
+        } catch {
+            // ignore
+        }
+
         Alert.alert(
             Localize.t('global.signedTransaction'),
             Localize.t('global.signedTransactionDetectedSubmit'),
@@ -157,7 +168,7 @@ class ScanView extends Component<Props, State> {
                             AppScreens.Modal.Submit,
                             { modalPresentationStyle: 'fullScreen' },
                             {
-                                txblob,
+                                txblob: cleanBlob,
                             },
                         );
                     },

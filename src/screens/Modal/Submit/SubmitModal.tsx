@@ -91,6 +91,7 @@ class SubmitModal extends Component<Props, State> {
         } else {
             this.setState({
                 step: 'result',
+                submitResult,
                 verifyResult: { success: false },
             });
         }
