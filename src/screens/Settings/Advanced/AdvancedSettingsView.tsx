@@ -8,8 +8,8 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 
 import DeviceInfo from 'react-native-device-info';
 
-import { CoreRepository } from '@store/repositories';
-import { CoreSchema } from '@store/schemas/latest';
+import { CoreRepository, ProfileRepository } from '@store/repositories';
+import { CoreSchema, ProfileSchema } from '@store/schemas/latest';
 
 import { AppScreens, AppConfig } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
@@ -27,6 +27,7 @@ export interface Props {}
 
 export interface State {
     coreSettings: CoreSchema;
+    profile: ProfileSchema;
 }
 
 /* Component ==================================================================== */
@@ -44,6 +45,7 @@ class AdvancedSettingsView extends Component<Props, State> {
 
         this.state = {
             coreSettings: CoreRepository.getSettings(),
+            profile: ProfileRepository.getProfile(),
         };
     }
 
@@ -108,7 +110,7 @@ class AdvancedSettingsView extends Component<Props, State> {
     };
 
     render() {
-        const { coreSettings } = this.state;
+        const { coreSettings, profile } = this.state;
 
         return (
             <View testID="advanced-settings-view" style={[styles.container]}>
@@ -179,7 +181,7 @@ class AdvancedSettingsView extends Component<Props, State> {
 
                         <View style={[AppStyles.flex2]}>
                             <Text selectable numberOfLines={1} adjustsFontSizeToFit style={[styles.value]}>
-                                {DeviceInfo.getUniqueId()}
+                                {profile.uuid.toUpperCase()}
                             </Text>
                         </View>
                     </View>
