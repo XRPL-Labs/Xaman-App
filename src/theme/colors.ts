@@ -23,7 +23,7 @@ const colors = {
     lightRed: '#FFF9F9',
 
     bithomp: '#3fa3b5',
-    xrpln: '#3767CE',
+    xrplns: '#3767CE',
     xrpscan: '#004a7c',
     payid: '#38D39F',
 };
