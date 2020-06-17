@@ -2,7 +2,7 @@
  * Utils
  *
  */
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
@@ -99,25 +99,8 @@ const NormalizeCurrencyCode = (currencyCode: string): string => {
     return currencyCode;
 };
 
-const NormalizeDate = (date: string): string => {
-    const momentDate = moment(date);
-    const reference = moment();
-    const today = reference.clone().startOf('day');
-    const yesterday = reference.clone().subtract(1, 'days').startOf('day');
-
-    if (momentDate.isSame(today, 'd')) {
-        return 'Today';
-    }
-    if (momentDate.isSame(yesterday, 'd')) {
-        return 'Yesterday';
-    }
-
-    // same year, don't show year
-    if (momentDate.isSame(reference, 'year')) {
-        return momentDate.format('DD MMM');
-    }
-
-    return momentDate.format('DD MMM, Y');
+const FormatDate = (date: string): string => {
+    return moment(date).format('lll');
 };
 
 const NormalizeDestination = (destination: XrplDestination): XrplDestination => {
@@ -186,12 +169,4 @@ const VersionDiff = (v1: string, v2: string) => {
 };
 
 /* Export ==================================================================== */
-export {
-    HexEncoding,
-    Truncate,
-    NormalizeAmount,
-    NormalizeCurrencyCode,
-    NormalizeDate,
-    NormalizeDestination,
-    VersionDiff,
-};
+export { HexEncoding, Truncate, FormatDate, NormalizeAmount, NormalizeCurrencyCode, NormalizeDestination, VersionDiff };

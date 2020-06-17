@@ -33,6 +33,7 @@
     "i18n-js": "^3.7.0",
     "lodash": "^4.17.15",
     "moment": "^2.26.0",
+    "moment-timezone": "^0.5.31",
     "node-libs-browser": "^2.2.1",
     "react": "16.11.0",
     "react-native": "0.62.2",

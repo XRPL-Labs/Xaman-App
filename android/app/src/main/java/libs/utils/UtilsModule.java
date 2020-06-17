@@ -13,6 +13,8 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
 
+import java.util.TimeZone;
+import java.util.Calendar;
 
 import android.os.Vibrator;
 import android.view.HapticFeedbackConstants;
@@ -112,6 +114,18 @@ public class UtilsModule extends ReactContextBaseJavaModule {
 
         // React Native bridge complains if we try to pass back a long directly
         promise.resolve(Long.toString(time / 1000));
+    }
+
+
+    @ReactMethod
+    public void getTimeZone(Promise promise) {
+        try {
+            Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+            TimeZone zone = calendar.getTimeZone();
+            promise.resolve(zone.getID());
+        }catch (Exception e){
+            promise.reject(e);
+        }
     }
 
 

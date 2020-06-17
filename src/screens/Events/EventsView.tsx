@@ -26,7 +26,6 @@ import { AppScreens } from '@common/constants';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
-import { NormalizeDate } from '@common/libs/utils';
 
 // Parses
 import parserFactory from '@common/libs/ledger/parser';
@@ -148,6 +147,27 @@ class EventsView extends Component<Props, State> {
             }
         });
     }
+
+    formatDate = (date: string) => {
+        const momentDate = moment(date);
+        const reference = moment();
+        const today = reference.clone().startOf('day');
+        const yesterday = reference.clone().subtract(1, 'days').startOf('day');
+
+        if (momentDate.isSame(today, 'd')) {
+            return 'Today';
+        }
+        if (momentDate.isSame(yesterday, 'd')) {
+            return 'Yesterday';
+        }
+
+        // same year, don't show year
+        if (momentDate.isSame(reference, 'year')) {
+            return momentDate.format('DD MMM');
+        }
+
+        return momentDate.format('DD MMM, Y');
+    };
 
     onDefaultAccountChange = (account: AccountSchema) => {
         this.setState(
@@ -433,7 +453,7 @@ class EventsView extends Component<Props, State> {
         if (type === 'transactions') {
             return (
                 <View style={[styles.sectionHeader]}>
-                    <Text style={AppStyles.pbold}>{NormalizeDate(title)}</Text>
+                    <Text style={AppStyles.pbold}>{this.formatDate(title)}</Text>
                 </View>
             );
         }
