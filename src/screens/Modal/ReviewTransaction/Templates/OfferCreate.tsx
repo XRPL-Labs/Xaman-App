@@ -5,6 +5,8 @@ import isEmpty from 'lodash/isEmpty';
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { getAccountName } from '@common/helpers/resolver';
 
+import { FormatDate, NormalizeCurrencyCode } from '@common/libs/utils';
+
 import Localize from '@locale';
 
 import { AppColors } from '@theme';
@@ -89,7 +91,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                 <Text style={[styles.label]}>{Localize.t('global.takerGets')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={[styles.amount]}>
-                        {`${transaction.TakerGets.value} ${transaction.TakerGets.currency}`}
+                        {`${transaction.TakerGets.value} ${NormalizeCurrencyCode(transaction.TakerGets.currency)}`}
                     </Text>
                 </View>
 
@@ -115,7 +117,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                 <Text style={[styles.label]}>{Localize.t('global.takerPays')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={[styles.amount]}>
-                        {`${transaction.TakerPays.value} ${transaction.TakerPays.currency}`}
+                        {`${transaction.TakerPays.value} ${NormalizeCurrencyCode(transaction.TakerPays.currency)}`}
                     </Text>
                 </View>
                 {transaction.TakerPays.issuer && (
@@ -141,7 +143,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.expireAfter')}</Text>
                         <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{transaction.Expiration}</Text>
+                            <Text style={[styles.value]}>{FormatDate(transaction.Expiration)}</Text>
                         </View>
                     </>
                 )}

@@ -1,15 +1,17 @@
 import { isEmpty } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text, ActivityIndicator, Platform } from 'react-native';
+import { View, Text } from 'react-native';
 
 import { AccountDelete } from '@common/libs/ledger/transactions';
 
 import Localize from '@locale';
 
-import { getAccountName } from '@common/helpers/resolver';
+import { RecipientElement } from '@components/Modules';
 
-import { AppStyles, AppColors } from '@theme';
+import { getAccountName, AccountNameType } from '@common/helpers/resolver';
+
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -19,7 +21,7 @@ export interface Props {
 
 export interface State {
     isLoading: boolean;
-    destinationName: string;
+    destinationDetails: AccountNameType;
 }
 
 /* Component ==================================================================== */
@@ -29,7 +31,10 @@ class AccountDeleteTemplate extends Component<Props, State> {
 
         this.state = {
             isLoading: false,
-            destinationName: '',
+            destinationDetails: {
+                name: '',
+                source: '',
+            },
         };
     }
 
@@ -50,7 +55,7 @@ class AccountDeleteTemplate extends Component<Props, State> {
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     this.setState({
-                        destinationName: res.name,
+                        destinationDetails: res,
                     });
                 }
             })
@@ -66,7 +71,7 @@ class AccountDeleteTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoading, destinationName } = this.state;
+        const { isLoading, destinationDetails } = this.state;
 
         return (
             <>
@@ -75,30 +80,16 @@ class AccountDeleteTemplate extends Component<Props, State> {
                         {Localize.t('global.to')}
                     </Text>
                 </View>
-                <View style={[styles.contentBox, styles.addressContainer]}>
-                    <Text style={[AppStyles.pbold]}>
-                        {isLoading ? (
-                            Platform.OS === 'ios' ? (
-                                <ActivityIndicator color={AppColors.blue} />
-                            ) : (
-                                'Loading...'
-                            )
-                        ) : (
-                            destinationName || Localize.t('global.noNameFound')
-                        )}
-                    </Text>
-                    <Text selectable numberOfLines={1} style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
-                        {transaction.Destination.address}
-                    </Text>
-                    {transaction.Destination.tag && (
-                        <View style={[styles.destinationAddress]}>
-                            <Text style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
-                                {Localize.t('global.destinationTag')}:{' '}
-                                <Text style={AppStyles.colorBlue}>{transaction.Destination.tag}</Text>
-                            </Text>
-                        </View>
-                    )}
-                </View>
+                <RecipientElement
+                    containerStyle={[styles.contentBox, styles.addressContainer]}
+                    isLoading={isLoading}
+                    showAvatar={false}
+                    recipient={{
+                        address: transaction.Destination.address,
+                        tag: transaction.Destination.tag,
+                        ...destinationDetails,
+                    }}
+                />
             </>
         );
     }

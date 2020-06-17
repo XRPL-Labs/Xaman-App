@@ -1,13 +1,15 @@
 import isEmpty from 'lodash/isEmpty';
 import React, { Component } from 'react';
-import { View, Text, ActivityIndicator, Platform } from 'react-native';
+import { View, Text } from 'react-native';
 
 import { EscrowFinish } from '@common/libs/ledger/transactions';
-import { getAccountName } from '@common/helpers/resolver';
+import { getAccountName, AccountNameType } from '@common/helpers/resolver';
+
+import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
 
-import { AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -17,7 +19,7 @@ export interface Props {
 
 export interface State {
     isLoading: boolean;
-    regularKeyName: any;
+    regularKeyDetails: AccountNameType;
 }
 
 /* Component ==================================================================== */
@@ -27,7 +29,10 @@ class SetRegularKeyTemplate extends Component<Props, State> {
 
         this.state = {
             isLoading: false,
-            regularKeyName: '',
+            regularKeyDetails: {
+                name: '',
+                source: '',
+            },
         };
     }
     componentDidMount() {
@@ -41,7 +46,7 @@ class SetRegularKeyTemplate extends Component<Props, State> {
             .then((res: any) => {
                 if (!isEmpty(res) && !res.error) {
                     this.setState({
-                        regularKeyName: res.name,
+                        regularKeyDetails: res,
                     });
                 }
             })
@@ -57,26 +62,23 @@ class SetRegularKeyTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoading, regularKeyName } = this.state;
+        const { isLoading, regularKeyDetails } = this.state;
         return (
             <>
-                <Text style={[styles.label]}>
-                    {Localize.t('global.regularKey')}:{' '}
-                    {isLoading ? (
-                        Platform.OS === 'ios' ? (
-                            <ActivityIndicator color={AppColors.blue} />
-                        ) : (
-                            'Loading...'
-                        )
-                    ) : (
-                        <Text style={styles.value}>{regularKeyName || Localize.t('global.noNameFound')}</Text>
-                    )}
-                </Text>
-                <View style={[styles.contentBox]}>
-                    <Text selectable style={[styles.address]}>
-                        {transaction.RegularKey}
+                <View style={styles.label}>
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                        {Localize.t('global.regularKey')}
                     </Text>
                 </View>
+                <RecipientElement
+                    containerStyle={[styles.contentBox, styles.addressContainer]}
+                    isLoading={isLoading}
+                    showAvatar={false}
+                    recipient={{
+                        address: transaction.RegularKey,
+                        ...regularKeyDetails,
+                    }}
+                />
             </>
         );
     }

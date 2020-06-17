@@ -1,7 +1,11 @@
+import { isEmpty } from 'lodash';
+
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
 import { SignerListSet } from '@common/libs/ledger/transactions';
+
+import { getAccountName } from '@common/helpers/resolver';
 
 import { Spacer } from '@components/General';
 
@@ -16,39 +20,92 @@ export interface Props {
 }
 
 export interface State {
-    isLoading: boolean;
+    signers: Array<any>;
 }
 
 /* Component ==================================================================== */
 class SignerListSetTemplate extends Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            signers: props.transaction.SignerEntries,
+        };
+    }
+
+    componentDidMount() {
+        // fetch the signers details
+        this.fetchSignersDetails();
+    }
+
+    fetchSignersDetails = async () => {
+        const { transaction } = this.props;
+
+        const signers = [] as any;
+
+        await Promise.all(
+            transaction.SignerEntries.map((e) => {
+                const signer = e;
+                // fetch destination details
+                getAccountName(e.account)
+                    .then((res: any) => {
+                        if (!isEmpty(res)) {
+                            signers.push(Object.assign(signer, res));
+                        }
+                    })
+                    .catch(() => {
+                        signers.push(signer);
+                    });
+
+                return signer;
+            }),
+        );
+
+        this.setState({
+            signers,
+        });
+    };
+
     render() {
         const { transaction } = this.props;
+        const { signers } = this.state;
 
         return (
             <>
+                <View style={styles.label}>
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                        {Localize.t('global.signerEntries')}
+                    </Text>
+                </View>
+
+                {signers.map((e) => {
+                    return (
+                        // eslint-disable-next-line react-native/no-inline-styles
+                        <View style={[styles.contentBox, styles.addressContainer, { paddingLeft: 18 }]}>
+                            {e.name && (
+                                <>
+                                    <Text selectable style={styles.address}>
+                                        {e.name}
+                                    </Text>
+                                    <Spacer size={5} />
+                                </>
+                            )}
+                            <Text selectable style={styles.address}>
+                                {e.account}
+                            </Text>
+                            <Spacer size={10} />
+                            <View style={AppStyles.hr} />
+                            <Spacer size={10} />
+                            <Text style={styles.value}>
+                                {Localize.t('global.weight')}: {e.weight}
+                            </Text>
+                        </View>
+                    );
+                })}
+
                 <Text style={[styles.label]}>{Localize.t('global.signerQuorum')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={styles.value}>{transaction.SignerQuorum}</Text>
-                </View>
-
-                <Text style={[styles.label]}>{Localize.t('global.signerEntries')}</Text>
-                <View style={[styles.contentBox]}>
-                    {transaction.SignerEntries.map((e) => {
-                        return (
-                            <>
-                                <Spacer size={10} />
-                                <Text selectable style={styles.address}>
-                                    {e.account}
-                                </Text>
-                                <Spacer size={10} />
-                                <Text style={styles.value}>
-                                    {Localize.t('global.weight')}: {e.weight}
-                                </Text>
-                                <Spacer size={10} />
-                                <View style={AppStyles.hr} />
-                            </>
-                        );
-                    })}
                 </View>
             </>
         );

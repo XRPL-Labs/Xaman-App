@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
         backgroundColor: AppColors.light,
         zIndex: 2,
         padding: 20,
-        paddingHorizontal: 20,
         marginBottom: AppSizes.paddingSml,
     },
     label: {

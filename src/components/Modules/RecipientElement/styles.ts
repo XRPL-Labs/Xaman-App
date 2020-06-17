@@ -47,12 +47,19 @@ export default StyleSheet.create({
         backgroundColor: AppColors.bithomp,
     },
     xrplnsTag: {
-        backgroundColor: AppColors.xrpln,
+        backgroundColor: AppColors.xrplns,
     },
     xrpscanTag: {
         backgroundColor: AppColors.xrpscan,
     },
     payidTag: {
         backgroundColor: AppColors.payid,
+    },
+    destinationTagContainer: {
+        marginTop: 10,
+        paddingTop: 10,
+        width: '100%',
+        borderTopWidth: 1,
+        borderTopColor: AppColors.grey,
     },
 });

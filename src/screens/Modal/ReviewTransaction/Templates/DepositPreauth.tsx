@@ -1,14 +1,16 @@
 import isEmpty from 'lodash/isEmpty';
 import React, { Component } from 'react';
-import { View, Text, Platform, ActivityIndicator } from 'react-native';
+import { View, Text } from 'react-native';
 
 import { DepositPreauth } from '@common/libs/ledger/transactions';
 
-import { getAccountName } from '@common/helpers/resolver';
+import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import Localize from '@locale';
 
-import { AppColors } from '@theme';
+import { RecipientElement } from '@components/Modules';
+
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -18,7 +20,7 @@ export interface Props {
 
 export interface State {
     isLoading: boolean;
-    addressName: string;
+    addressDetails: AccountNameType;
 }
 
 /* Component ==================================================================== */
@@ -27,16 +29,15 @@ class DepositPreauthTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            isLoading: false,
-            addressName: '',
+            isLoading: true,
+            addressDetails: {
+                name: '',
+                source: '',
+            },
         };
     }
     componentDidMount() {
         const { transaction } = this.props;
-
-        this.setState({
-            isLoading: true,
-        });
 
         const address = transaction.Authorize || transaction.Unauthorize;
 
@@ -46,7 +47,7 @@ class DepositPreauthTemplate extends Component<Props, State> {
             .then((res: any) => {
                 if (!isEmpty(res) && !res.error) {
                     this.setState({
-                        addressName: res.name,
+                        addressDetails: res,
                     });
                 }
             })
@@ -62,50 +63,46 @@ class DepositPreauthTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoading, addressName } = this.state;
+        const { isLoading, addressDetails } = this.state;
         return (
             <>
                 {transaction.Authorize && (
                     <>
-                        <Text style={[styles.label]}>
-                            {Localize.t('global.authorize')}:{' '}
-                            {isLoading ? (
-                                Platform.OS === 'ios' ? (
-                                    <ActivityIndicator color={AppColors.blue} />
-                                ) : (
-                                    'Loading...'
-                                )
-                            ) : (
-                                <Text style={styles.value}>{addressName || Localize.t('global.noNameFound')}</Text>
-                            )}
-                        </Text>
-                        <View style={[styles.contentBox]}>
-                            <Text selectable style={[styles.address]}>
-                                {transaction.Authorize}
+                        <View style={styles.label}>
+                            <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                                {Localize.t('global.authorize')}
                             </Text>
                         </View>
+
+                        <RecipientElement
+                            containerStyle={[styles.contentBox, styles.addressContainer]}
+                            isLoading={isLoading}
+                            showAvatar={false}
+                            recipient={{
+                                address: transaction.Authorize,
+                                ...addressDetails,
+                            }}
+                        />
                     </>
                 )}
 
                 {transaction.Unauthorize && (
                     <>
-                        <Text style={[styles.label]}>
-                            {Localize.t('global.unauthorize')}:{' '}
-                            {isLoading ? (
-                                Platform.OS === 'ios' ? (
-                                    <ActivityIndicator color={AppColors.blue} />
-                                ) : (
-                                    'Loading...'
-                                )
-                            ) : (
-                                <Text style={styles.value}>{addressName || Localize.t('global.noNameFound')}</Text>
-                            )}
-                        </Text>
-                        <View style={[styles.contentBox]}>
-                            <Text selectable style={[styles.address]}>
-                                {transaction.Unauthorize}
+                        <View style={styles.label}>
+                            <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                                {Localize.t('global.unauthorize')}
                             </Text>
                         </View>
+
+                        <RecipientElement
+                            containerStyle={[styles.contentBox, styles.addressContainer]}
+                            isLoading={isLoading}
+                            showAvatar={false}
+                            recipient={{
+                                address: transaction.Unauthorize,
+                                ...addressDetails,
+                            }}
+                        />
                     </>
                 )}
             </>

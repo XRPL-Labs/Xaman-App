@@ -1,16 +1,18 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 import React, { Component } from 'react';
-import { View, Text, ActivityIndicator, Platform } from 'react-native';
+import { View, Text } from 'react-native';
 import isEmpty from 'lodash/isEmpty';
 
 import { TrustSet } from '@common/libs/ledger/transactions';
 
-import { getAccountName } from '@common/helpers/resolver';
+import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 import Localize from '@locale';
 
-import { AppColors, AppStyles } from '@theme';
+import { RecipientElement } from '@components/Modules';
+
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -20,7 +22,7 @@ export interface Props {
 
 export interface State {
     isLoading: boolean;
-    issuerName: string;
+    issuerDetails: AccountNameType;
 }
 
 /* Component ==================================================================== */
@@ -29,22 +31,22 @@ class TrustSetTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            isLoading: false,
-            issuerName: '',
+            isLoading: true,
+            issuerDetails: {
+                name: '',
+                source: '',
+            },
         };
     }
+
     componentDidMount() {
         const { transaction } = this.props;
-
-        this.setState({
-            isLoading: true,
-        });
 
         getAccountName(transaction.Issuer)
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     this.setState({
-                        issuerName: res.name,
+                        issuerDetails: res,
                     });
                 }
             })
@@ -60,26 +62,24 @@ class TrustSetTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoading, issuerName } = this.state;
+        const { isLoading, issuerDetails } = this.state;
+
         return (
             <>
-                <Text style={[styles.label]}>
-                    {Localize.t('global.issuer')}:{' '}
-                    {isLoading ? (
-                        Platform.OS === 'ios' ? (
-                            <ActivityIndicator color={AppColors.blue} />
-                        ) : (
-                            'Loading...'
-                        )
-                    ) : (
-                        <Text style={styles.value}> {issuerName || Localize.t('global.noNameFound')} </Text>
-                    )}
-                </Text>
-                <View style={[styles.contentBox]}>
-                    <Text selectable style={[styles.address]}>
-                        {transaction.Issuer}
+                <View style={styles.label}>
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                        {Localize.t('global.issuer')}
                     </Text>
                 </View>
+                <RecipientElement
+                    containerStyle={[styles.contentBox, styles.addressContainer]}
+                    isLoading={isLoading}
+                    showAvatar={false}
+                    recipient={{
+                        address: transaction.Issuer,
+                        ...issuerDetails,
+                    }}
+                />
                 <Text style={[styles.label]}>{Localize.t('global.asset')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={[styles.value]}>{NormalizeCurrencyCode(transaction.Currency)}</Text>

@@ -1,16 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { isEmpty, isEqual, has } from 'lodash';
 import React, { Component } from 'react';
-import {
-    View,
-    Alert,
-    TextInput,
-    Text,
-    ActivityIndicator,
-    Platform,
-    TouchableOpacity,
-    InteractionManager,
-} from 'react-native';
+import { View, Alert, TextInput, Text, Platform, TouchableOpacity, InteractionManager } from 'react-native';
 
 import LedgerExchange from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
@@ -18,13 +9,14 @@ import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { LedgerService } from '@services';
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
-import { getAccountName } from '@common/helpers/resolver';
+import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { Button, InfoMessage, Spacer } from '@components/General';
+import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
 
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -37,7 +29,7 @@ export interface State {
     isLoading: boolean;
     amount: string;
     editableAmount: boolean;
-    destinationName: string;
+    destinationDetails: AccountNameType;
     isPartialPayment: boolean;
     exchangeRate: number;
     xrpRoundedUp: string;
@@ -55,7 +47,7 @@ class PaymentTemplate extends Component<Props, State> {
             isLoading: false,
             editableAmount: !props.transaction.Amount?.value,
             amount: props.transaction.Amount?.value,
-            destinationName: '',
+            destinationDetails: { name: '', source: '' },
             isPartialPayment: false,
             exchangeRate: undefined,
             xrpRoundedUp: undefined,
@@ -180,7 +172,7 @@ class PaymentTemplate extends Component<Props, State> {
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     this.setState({
-                        destinationName: res.name,
+                        destinationDetails: res,
                     });
                 }
             })
@@ -224,7 +216,7 @@ class PaymentTemplate extends Component<Props, State> {
             xrpRoundedUp,
             editableAmount,
             amount,
-            destinationName,
+            destinationDetails,
         } = this.state;
         return (
             <>
@@ -233,30 +225,17 @@ class PaymentTemplate extends Component<Props, State> {
                         {Localize.t('global.to')}
                     </Text>
                 </View>
-                <View style={[styles.contentBox, styles.addressContainer]}>
-                    <Text style={[AppStyles.pbold]}>
-                        {isLoading ? (
-                            Platform.OS === 'ios' ? (
-                                <ActivityIndicator color={AppColors.blue} />
-                            ) : (
-                                'Loading...'
-                            )
-                        ) : (
-                            destinationName || Localize.t('global.noNameFound')
-                        )}
-                    </Text>
-                    <Text selectable numberOfLines={1} style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
-                        {transaction.Destination.address}
-                    </Text>
-                    {transaction.Destination.tag && (
-                        <View style={[styles.destinationAddress]}>
-                            <Text style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
-                                {Localize.t('global.destinationTag')}:{' '}
-                                <Text style={AppStyles.colorBlue}>{transaction.Destination.tag}</Text>
-                            </Text>
-                        </View>
-                    )}
-                </View>
+
+                <RecipientElement
+                    containerStyle={[styles.contentBox, styles.addressContainer]}
+                    isLoading={isLoading}
+                    showAvatar={false}
+                    recipient={{
+                        address: transaction.Destination.address,
+                        tag: transaction.Destination.tag,
+                        ...destinationDetails,
+                    }}
+                />
 
                 {/* Amount */}
                 <Text style={[styles.label]}>{Localize.t('global.amount')}</Text>

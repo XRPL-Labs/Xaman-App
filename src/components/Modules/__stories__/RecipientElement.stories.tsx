@@ -1,3 +1,4 @@
+/* eslint-disable spellcheck/spell-checker */
 import React from 'react';
 import { View } from 'react-native';
 import { action } from '@storybook/addon-actions';

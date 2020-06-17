@@ -1,27 +1,31 @@
 import React, { PureComponent } from 'react';
-import { View, Text, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableHighlight, TouchableOpacity, ActivityIndicator, Platform, ViewStyle } from 'react-native';
 
 import { Avatar, Badge, Icon } from '@components/General';
 import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
 
-import { AppStyles } from '@theme';
+import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
 export type RecipientType = {
-    id: string;
+    id?: string;
     address: string;
+    tag?: number;
     name: string;
     source?: string;
 };
 
 interface Props {
+    containerStyle?: ViewStyle | ViewStyle[];
     recipient: RecipientType;
-    onPress?: () => void;
+    isLoading?: boolean;
     selected?: boolean;
     showMoreButton?: boolean;
+    showAvatar?: boolean;
+    onPress?: () => void;
     onMorePress?: () => void;
 }
 
@@ -29,6 +33,7 @@ interface Props {
 class RecipientElement extends PureComponent<Props> {
     static defaultProps = {
         showMoreButton: false,
+        showAvatar: true,
     };
 
     onPress = () => {
@@ -70,15 +75,20 @@ class RecipientElement extends PureComponent<Props> {
     };
 
     render() {
-        const { recipient, selected, showMoreButton } = this.props;
+        const { recipient, selected, showMoreButton, showAvatar, isLoading, containerStyle, onPress } = this.props;
 
         const badge = this.getBadge();
         const avatar = this.getAvatar();
 
         return (
-            <TouchableHighlight onPress={this.onPress} underlayColor="#FFF" key={recipient.id}>
-                <View style={[styles.itemRow, selected ? styles.itemSelected : null]}>
-                    <Avatar source={avatar} />
+            <TouchableHighlight
+                activeOpacity={onPress ? 0.7 : 1}
+                onPress={this.onPress}
+                underlayColor="#FFF"
+                key={recipient.id}
+            >
+                <View style={[styles.itemRow, selected && styles.itemSelected, containerStyle]}>
+                    {showAvatar && <Avatar source={avatar} />}
 
                     {/* eslint-disable-next-line react-native/no-inline-styles */}
                     <View style={{ paddingLeft: 10 }}>
@@ -88,13 +98,33 @@ class RecipientElement extends PureComponent<Props> {
                                 adjustsFontSizeToFit
                                 style={[styles.title, selected ? styles.selectedText : null]}
                             >
-                                {recipient.name || Localize.t('global.noNameFound')}
+                                {isLoading ? (
+                                    Platform.OS === 'ios' ? (
+                                        <>
+                                            <Text>Loading </Text>
+                                            <ActivityIndicator color={AppColors.blue} />
+                                        </>
+                                    ) : (
+                                        'Loading...'
+                                    )
+                                ) : (
+                                    recipient.name || Localize.t('global.noNameFound')
+                                )}
                             </Text>
                             {badge && badge}
                         </View>
                         <Text style={[styles.subtitle, selected ? styles.selectedText : null]}>
                             {recipient.address}
                         </Text>
+
+                        {!!recipient.tag && (
+                            <View style={styles.destinationTagContainer}>
+                                <Text style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
+                                    {Localize.t('global.destinationTag')}:{' '}
+                                    <Text style={AppStyles.colorBlue}>{recipient.tag}</Text>
+                                </Text>
+                            </View>
+                        )}
                     </View>
 
                     {showMoreButton && (
