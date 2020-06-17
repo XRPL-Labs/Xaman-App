@@ -134,6 +134,8 @@
         "expireAfter": "Expire After",
         "takerPays": "Taker Pays",
         "takerGets": "Taker Gets",
+        "selling": "Selling",
+        "inExchangeForReceive": "In exchange for (receive)",
         "fee": "Transaction fee",
         "invoiceID": "Invoice ID",
         "regularKey": "Regular Key",

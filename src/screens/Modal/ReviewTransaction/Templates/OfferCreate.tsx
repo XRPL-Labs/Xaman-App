@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
-import { View, Text, Platform, ActivityIndicator } from 'react-native';
+import { View, Text } from 'react-native';
 import isEmpty from 'lodash/isEmpty';
 
 import { OfferCreate } from '@common/libs/ledger/transactions';
-import { getAccountName } from '@common/helpers/resolver';
+import { getAccountName, AccountNameType } from '@common/helpers/resolver';
+
+import { Spacer } from '@components/General';
+import { RecipientElement } from '@components/Modules';
 
 import { FormatDate, NormalizeCurrencyCode } from '@common/libs/utils';
 
 import Localize from '@locale';
 
-import { AppColors } from '@theme';
+import { AppStyles } from '@theme';
 
 import styles from './styles';
 
@@ -19,8 +22,8 @@ export interface Props {
 }
 
 export interface State {
-    takerGetsIssuerName: string;
-    takerPaysIssuerName: string;
+    takerGetsIssuerDetails: AccountNameType;
+    takerPaysIssuerDetails: AccountNameType;
     isLoading: boolean;
 }
 
@@ -30,8 +33,14 @@ class OfferCreateTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            takerGetsIssuerName: '',
-            takerPaysIssuerName: '',
+            takerGetsIssuerDetails: {
+                name: '',
+                source: '',
+            },
+            takerPaysIssuerDetails: {
+                name: '',
+                source: '',
+            },
             isLoading: false,
         };
     }
@@ -48,7 +57,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                 .then((res: any) => {
                     if (!isEmpty(res)) {
                         this.setState({
-                            takerGetsIssuerName: res.name,
+                            takerGetsIssuerDetails: res,
                         });
                     }
                 })
@@ -67,7 +76,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                 .then((res: any) => {
                     if (!isEmpty(res)) {
                         this.setState({
-                            takerPaysIssuerName: res.name,
+                            takerPaysIssuerDetails: res,
                         });
                     }
                 })
@@ -84,11 +93,11 @@ class OfferCreateTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { takerGetsIssuerName, takerPaysIssuerName, isLoading } = this.state;
+        const { takerGetsIssuerDetails, takerPaysIssuerDetails, isLoading } = this.state;
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.takerGets')}</Text>
+                <Text style={[styles.label]}>{Localize.t('global.selling')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={[styles.amount]}>
                         {`${transaction.TakerGets.value} ${NormalizeCurrencyCode(transaction.TakerGets.currency)}`}
@@ -98,23 +107,22 @@ class OfferCreateTemplate extends Component<Props, State> {
                 {transaction.TakerGets.issuer && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
-                        <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>
-                                {isLoading ? (
-                                    Platform.OS === 'ios' ? (
-                                        <ActivityIndicator color={AppColors.blue} />
-                                    ) : (
-                                        'Loading...'
-                                    )
-                                ) : (
-                                    takerGetsIssuerName || transaction.TakerGets.issuer
-                                )}
-                            </Text>
-                        </View>
+                        <RecipientElement
+                            containerStyle={[styles.contentBox, styles.addressContainer]}
+                            isLoading={isLoading}
+                            showAvatar={false}
+                            recipient={{
+                                address: transaction.TakerGets.issuer,
+                                ...takerGetsIssuerDetails,
+                            }}
+                        />
                     </>
                 )}
 
-                <Text style={[styles.label]}>{Localize.t('global.takerPays')}</Text>
+                <View style={AppStyles.hr} />
+                <Spacer size={20} />
+
+                <Text style={[styles.label]}>{Localize.t('global.inExchangeForReceive')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={[styles.amount]}>
                         {`${transaction.TakerPays.value} ${NormalizeCurrencyCode(transaction.TakerPays.currency)}`}
@@ -123,19 +131,15 @@ class OfferCreateTemplate extends Component<Props, State> {
                 {transaction.TakerPays.issuer && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
-                        <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>
-                                {isLoading ? (
-                                    Platform.OS === 'ios' ? (
-                                        <ActivityIndicator color={AppColors.blue} />
-                                    ) : (
-                                        'Loading...'
-                                    )
-                                ) : (
-                                    takerPaysIssuerName || transaction.TakerPays.issuer
-                                )}
-                            </Text>
-                        </View>
+                        <RecipientElement
+                            containerStyle={[styles.contentBox, styles.addressContainer]}
+                            isLoading={isLoading}
+                            showAvatar={false}
+                            recipient={{
+                                address: transaction.TakerPays.issuer,
+                                ...takerPaysIssuerDetails,
+                            }}
+                        />
                     </>
                 )}
 
