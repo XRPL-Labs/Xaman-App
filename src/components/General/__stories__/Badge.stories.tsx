@@ -2,7 +2,7 @@
 
 import { storiesOf } from '@storybook/react-native';
 
-import withPropsCombinations from '../../../../storybook/matrix';
+import withPropsCombinations from '../../../../.storybook/matrix';
 
 import { Badge } from '../Badge';
 

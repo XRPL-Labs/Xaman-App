@@ -24,6 +24,7 @@ xcshareddata
 ios/Pods/
 GoogleService-Info.plist
 ios/Podfile.lock
+.podinstall
 
 # Android/IntelliJ
 #
@@ -67,4 +68,3 @@ src/.vscode/settings.json
 
 #others
 e2e/screenshots/*
-ios/Podfile.lock
