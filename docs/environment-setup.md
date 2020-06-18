@@ -11,7 +11,7 @@ A macOS computer is required to build the XUMM App iOS mobile app.
 Install the following prerequisite software to develop and build the iOS or Android apps. For macOS, we recommend using [Homebrew](https://brew.sh/) as a package manager.
 
 #### Install [NodeJS](https://nodejs.org/en/).
-This includes NPM which is also needed. Currently version 10.21.0 is recommended with npm 6.14.4.
+This includes YARN which is also needed. Currently version 10.21.0 is recommended with yarn 1.21.1.
 
 ##### MacOS
 - To install using Homebrew open a terminal and execute ..
@@ -41,10 +41,10 @@ This includes NPM which is also needed. Currently version 10.21.0 is recommended
 
 #### Install ```react-native-cli``` tools
 
-Use *npm* to install [React Native CLI Tools](http://facebook.github.io/react-native/docs/understanding-cli.html) globally (minimum required version is 2.0.1)
+Use *yarn* to install [React Native CLI Tools](http://facebook.github.io/react-native/docs/understanding-cli.html) globally (minimum required version is 2.0.1)
 
 ```sh
-$ npm -g install react-native-cli
+$ yarn global add react-native-cli
 ```
 
 #### Obtaining the source code

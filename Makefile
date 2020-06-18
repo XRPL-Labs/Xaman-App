@@ -10,22 +10,22 @@ OS := $(shell sh -c 'uname -s 2>/dev/null')
 SIMULATOR = iPhone 11 Pro Max
 
 node_modules: package.json
-	@if ! [ $(shell which npm 2> /dev/null) ]; then \
-		echo "npm is not installed https://npmjs.com"; \
+	@if ! [ $(shell which yarn 2> /dev/null) ]; then \
+		echo "yarn is not installed https://yarnpkg.com"; \
 		exit 1; \
 	fi
 
 	@echo Getting Javascript dependencies
-	@npm install
+	@yarn install
 
-npm-ci: package.json
-	@if ! [ $(shell which npm 2> /dev/null) ]; then \
-		echo "npm is not installed https://npmjs.com"; \
+yarn-ci: package.json
+	@if ! [ $(shell which yarn 2> /dev/null) ]; then \
+		echo "yarn is not installed https://yarnpkg.com"; \
 		exit 1; \
 	fi
 
 	@echo Getting Javascript dependencies
-	@npm ci
+	@yarn install --frozen-lockfile
 
 .podinstall:
 ifeq ($(OS), Darwin)
@@ -43,11 +43,11 @@ build-env:
 
 pre-run: | node_modules .podinstall build-env ## Installs dependencies
 
-pre-build: | npm-ci .podinstall build-env ## Install dependencies before building
+pre-build: | yarn-ci .podinstall build-env ## Install dependencies before building
 
 check-style: node_modules ## Runs eslint
 	@echo Checking for style guide compliance
-	@npm run check
+	@yarn run check
 
 clean: ## Cleans dependencies, previous builds and temp files
 	@echo Cleaning started
@@ -103,7 +103,7 @@ run: run-ios ## alias for run-ios
 run-ios: | check-device-ios pre-run ## Runs the app on an iOS simulator
 	@if [ $(shell ps -ef | grep -i "cli.js start" | grep -civ grep) -eq 0 ]; then \
 		echo Starting React Native packager server; \
-		npm start & echo Running iOS app in development; \
+		yarn start & echo Running iOS app in development; \
 		if [ ! -z "${SIMULATOR}" ]; then \
 			react-native run-ios --simulator="${SIMULATOR}"; \
 		else \
@@ -122,7 +122,7 @@ run-ios: | check-device-ios pre-run ## Runs the app on an iOS simulator
 run-android: | check-device-android pre-run ## Runs the app on an Android emulator or dev device
 	@if [ $(shell ps -ef | grep -i "cli.js start" | grep -civ grep) -eq 0 ]; then \
         echo Starting React Native packager server; \
-    	npm start & echo Running Android app in development; \
+    	yarn start & echo Running Android app in development; \
 	if [ ! -z ${VARIANT} ]; then \
     		react-native run-android --no-packager --variant=${VARIANT}; \
     	else \
@@ -178,10 +178,10 @@ unsigned-android: stop pre-build check-style prepare-android-build ## Build an u
 	@cd fastlane && NODE_ENV=production bundle exec fastlane android unsigned
 
 test: | pre-run check-style ## Runs tests
-	@npm test
+	@yarn test
 
 test-e2e: | pre-run ## Runs e2e tests
-	@npm run test:e2e:ios
+	@yarn run test:e2e:ios
 
 build-pr: | can-build-pr stop pre-build check-style ## Build a PR from the XUMM repo
 	$(call start_packager)
@@ -202,7 +202,7 @@ help:
 define start_packager
 	@if [ $(shell ps -ef | grep -i "cli.js start" | grep -civ grep) -eq 0 ]; then \
 		echo Starting React Native packager server; \
-		npm start & echo; \
+		yarn start & echo; \
 	else \
 		echo React Native packager server already running; \
 	fi
