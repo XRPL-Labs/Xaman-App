@@ -96,6 +96,7 @@ class BackendService {
                                     currency: c.currency,
                                     name: c.name,
                                     avatar: c.avatar || '',
+                                    shortlist: c.shortlist === 1,
                                 },
                                 {
                                     issuer: c.issuer,
@@ -113,6 +114,7 @@ class BackendService {
                             name: value.name,
                             domain: value.domain,
                             avatar: value.avatar || '',
+                            shortlist: value.shortlist === 1,
                             currencies: normalizedList,
                         },
                         true,

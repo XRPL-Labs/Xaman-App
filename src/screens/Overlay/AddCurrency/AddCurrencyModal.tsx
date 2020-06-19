@@ -78,7 +78,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
     setDefaults = () => {
         const { account } = this.props;
 
-        const counterParties = CounterPartyRepository.findAll() as any;
+        const counterParties = CounterPartyRepository.query({ shortlist: true }) as any;
 
         if (isEmpty(counterParties)) return;
 
@@ -89,7 +89,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
             const currencies = [] as any;
 
             forEach(counterParty.currencies, (currency) => {
-                if (!account.hasCurrency(currency)) {
+                if (!account.hasCurrency(currency) && currency.shortlist === true) {
                     currencies.push(currency);
                 }
             });
