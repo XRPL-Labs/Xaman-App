@@ -164,6 +164,7 @@
         "explorer": "Explorer",
         "balanceLimit": "Balance limit",
         "activation": "Activation",
+        "authentication": "Authentication",
         "unbelievablyStrong": "Unbelievably strong",
         "biometryIsNotSupported": "Biometric authentication is not supported on this device!",
         "invalidAuth": "Invalid Authentication",
@@ -240,11 +241,11 @@
         }
     },
     "setupPasscode": {
-        "setupAPasscode" : "Setup a pincode",
-        "passCodeDescription": "We use the pincode to lock the app, confirm settings and to keep your account secure.",
-        "setPasscode": "Please set your pincode",
-        "repeatPasscode": "Please repeat your new pincode",
-        "warnNeedPasscode": "You will need your pincode to unlock the app"
+        "setupAPasscode" : "Setup a passcode",
+        "passCodeDescription": "We use the passcode to lock the app, confirm settings and to keep your account secure.",
+        "setPasscode": "Please set your passcode",
+        "repeatPasscode": "Please repeat your new passcode",
+        "warnNeedPasscode": "You will need your passcode to unlock the app"
     },
     "setupBiometry": {
         "useBiometry": "Use FaceID or Fingerprint?",
@@ -345,21 +346,22 @@
         "nodeIsAlreadyExist": "Node already exists!" ,
         "invalidNodeURL": "Entered node url is not a valid url!" ,
         "securitySetting": "Security",
-        "securitySettingsDescription": "Change your pincode or your biometric authentication authority here",
-        "changePasscode": "Change pincode",
+        "securitySettingsDescription": "Change your passcode or your biometric authentication authority here",
+        "changePasscode": "Change passcode",
         "biometricAuthentication": "Biometric authentication",
         "hapticFeedback": "Haptic feedback",
-        "enterOldPasscode": "Enter your old pincode",
-        "enterNewPasscode": "Enter your new pincode",
-        "enterNewPasscodeAgain": "Enter your new pincode again",
-        "newOldPasscodeNotMatch": "The new pincode and your confirmation are not the same!",
-        "passcodeChangedSuccess": "Your pincode change was successfull!",
+        "enterOldPasscode": "Enter your old passcode",
+        "enterNewPasscode": "Enter your new passcode",
+        "enterNewPasscodeAgain": "Enter your new passcode again",
+        "newOldPasscodeNotMatch": "The new passcode and your confirmation are not the same!",
+        "passcodeChangedSuccess": "Your passcode change was successfull!",
         "canNotSendLogsByEmail": "An unexpected error occurred, can not sent logs by email!",
         "logsCopiedToClipboard": "Session Logs  copied to clipboard",
         "additionalSecurity": "Additional security",
         "eraseData": "Erase data",
         "eraseDataDescription": "Erase all data after 10 failed passcode attempts",
-        "viewChangeLog": "View changelog"
+        "viewChangeLog": "View changelog",
+        "hideBalanceByDefault": "Hide balance by default"
     },
     "account": {
         "addAccount": "Add an account",
