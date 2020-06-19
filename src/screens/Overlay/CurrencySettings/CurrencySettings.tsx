@@ -108,6 +108,9 @@ class CurrencySettingsModal extends Component<Props, State> {
     getLatestLineBalance = () => {
         const { account, trustLine } = this.props;
 
+        // ignore obligation lines
+        if (trustLine.obligation) return;
+
         LedgerService.getAccountLines(account.address)
             .then(async (accountLines: any) => {
                 const { lines } = accountLines;
@@ -383,7 +386,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                         <Spacer />
                         <View style={[styles.buttonRow]}>
                             <CustomButton
-                                isDisabled={trustLine.balance <= 0}
+                                isDisabled={trustLine.balance <= 0 && trustLine.obligation !== true}
                                 style={styles.sendButton}
                                 icon="IconCornerLeftUp"
                                 iconSize={20}
@@ -396,6 +399,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 }}
                             />
                             <CustomButton
+                                isDisabled={trustLine.obligation}
                                 style={styles.exchangeButton}
                                 icon="IconCornerRightUp"
                                 iconSize={20}

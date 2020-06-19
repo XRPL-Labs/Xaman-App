@@ -371,17 +371,17 @@ class LedgerService extends EventEmitter {
         });
     };
 
-    getAccountObligations = async (account: string) => {
+    getAccountObligations = (account: string) => {
         return new Promise((resolve) => {
-            this.getGatewayBalances(account).then(async (accountObligations: any) => {
-                const obligationsLines = [] as any[];
+            this.getGatewayBalances(account)
+                .then((accountObligations: any) => {
+                    const obligationsLines = [] as any[];
 
-                const { obligations } = accountObligations;
+                    const { obligations } = accountObligations;
 
-                if (isEmpty(obligations)) return resolve([]);
+                    if (isEmpty(obligations)) return resolve([]);
 
-                await Promise.all(
-                    map(obligations, async (b, c) => {
+                    map(obligations, (b, c) => {
                         // add to trustLines list
                         obligationsLines.push({
                             account,
@@ -392,11 +392,13 @@ class LedgerService extends EventEmitter {
                             transfer_rate: 0,
                             obligation: true,
                         });
-                    }),
-                );
+                    });
 
-                return resolve(obligationsLines);
-            });
+                    return resolve(obligationsLines);
+                })
+                .catch(() => {
+                    return resolve([]);
+                });
         });
     };
 
@@ -442,7 +444,6 @@ class LedgerService extends EventEmitter {
                             // add to trustLines list
                             normalizedList.push({
                                 currency,
-                                // TODO: change me
                                 balance: new Amount(l.balance, false).toNumber(),
                                 transfer_rate,
                                 no_ripple: l.no_ripple || false,
