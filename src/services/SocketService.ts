@@ -59,6 +59,11 @@ interface BookOffersPayload extends BaseCommand {
     taker_gets: any;
 }
 
+interface GatewayBalancesPayload extends BaseCommand {
+    strict: boolean;
+    hotwallet: Array<string>;
+}
+
 enum SocketStateStatus {
     Connected = 'Connected',
     Disconnected = 'Disconnected',
@@ -230,7 +235,8 @@ class SocketService extends EventEmitter {
             | SubmitPayload
             | AccountTransactionsPayload
             | GetTransactionPayload
-            | BookOffersPayload,
+            | BookOffersPayload
+            | GatewayBalancesPayload,
     ): any => {
         return new Promise((resolve, reject) => {
             // sent tracker

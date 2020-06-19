@@ -64,13 +64,24 @@ class DetailsStep extends Component {
 
         const bAmount = new BigNumber(amount);
 
+        // check if account is activated
         if (source.balance === 0) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.accountIsNotActivated'));
             return;
         }
 
-        const availableBalance = new BigNumber(this.getAvailableBalance());
+        // check for exceed amount
 
+        // if IOU and obligation can send unlimited
+        if (typeof currency !== 'string' && currency.obligation) {
+            // last set amount parsed by bignumber
+            setAmount(bAmount.toString(10));
+            // go to next screen
+            goNext();
+            return;
+        }
+
+        const availableBalance = new BigNumber(this.getAvailableBalance());
         let maxCanSend = availableBalance.toNumber();
 
         // check if balance can cover the transfer fee for non XRP currencies
@@ -291,7 +302,14 @@ class DetailsStep extends Component {
                             </View>
                             <AccordionPicker
                                 onSelect={this.onCurrencyChange}
-                                items={source ? ['XRP', ...filter(source.lines, (l) => l.balance > 0)] : []}
+                                items={
+                                    source
+                                        ? [
+                                            'XRP',
+                                            ...filter(source.lines, (l) => l.balance > 0 || l.obligation === true),
+                                        ]
+                                        : []
+                                }
                                 renderItem={this.renderCurrencyItem}
                                 selectedItem={currency}
                                 keyExtractor={(i) => (typeof i === 'string' ? i : i.currency.id)}

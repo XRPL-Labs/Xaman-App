@@ -247,6 +247,13 @@ class SummaryStep extends Component {
             return;
         }
 
+        // if IOU and obligation can send unlimited
+        if (typeof currency !== 'string' && currency.obligation) {
+            // go to next screen
+            goNext();
+            return;
+        }
+
         const availableBalance = new BigNumber(this.getAvailableBalance());
 
         let maxCanSend = availableBalance.toNumber();
