@@ -545,7 +545,7 @@
         "successRemoved": "Asset successfully removed from your account",
         "failedRemove": "Cannot remove asset. Error occurred!",
         "removeAsset": "Remove asset",
-        "addingAssetReserveDescription": "Adding a asset will increase your account reserve by 5 XRP",
+        "addingAssetReserveDescription": "Adding an asset will increase your account reserve by 5 XRP",
         "unableToRemoveAssetNotInDefaultState": "This asset cannot be removed from your account. Either because the issuer either added specific settings on this asset, or because their issuing account is not properly configured."
     },
     "exchange": {
