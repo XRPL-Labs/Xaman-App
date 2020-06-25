@@ -566,7 +566,7 @@
         "scannedQRIsNotXRPAddress":"Scanned QR code is not a XRP address code!",
         "scannedQRIsNotXummPayload":"Scanned QR code is not a XUMM payload!",
         "theQRIsNotWhatWeExpect": "This QR code is not what we expect!",
-        "invalidQRTryNewOneOrTryAgain": "Invalid Qr Code, Try a new one or try again"
+        "invalidQRTryNewOneOrTryAgain": "Invalid QR code (for XUMM), try a new one or try again"
     },
     "payload": {
         "payloadHandledByAnotherClient": "Payload handled by another client",
