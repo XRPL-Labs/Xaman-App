@@ -236,13 +236,24 @@ class Payment extends BaseTransaction {
     }
 
     get DeliverMin(): AmountType {
-        const deliverMin = get(this, 'tx.DeliverMin', undefined);
+        const deliverMin = get(this, ['tx', 'DeliverMin'], undefined);
 
         if (!deliverMin) {
             return undefined;
         }
 
-        return deliverMin;
+        if (typeof deliverMin === 'string') {
+            return {
+                currency: 'XRP',
+                value: new Amount(deliverMin).dropsToXrp(),
+            };
+        }
+
+        return {
+            currency: deliverMin.currency,
+            value: deliverMin.value && new Amount(deliverMin.value, false).toString(),
+            issuer: deliverMin.issuer,
+        };
     }
 
     get InvoiceID(): string {
@@ -258,7 +269,7 @@ class Payment extends BaseTransaction {
     validate = (source: AccountSchema) => {
         /* eslint-disable-next-line */
         return new Promise((resolve, reject) => {
-            if (!this.Amount) {
+            if (!this.Amount || !this.Amount?.value || this.Amount?.value === '0') {
                 return reject(new Error(Localize.t('send.pleaseEnterAmount')));
             }
 

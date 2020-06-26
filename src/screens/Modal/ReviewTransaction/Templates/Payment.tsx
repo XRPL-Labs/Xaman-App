@@ -309,11 +309,11 @@ class PaymentTemplate extends Component<Props, State> {
                         ))}
                 </View>
 
-                {transaction.invoiceID && (
+                {transaction.InvoiceID && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.invoiceID')}</Text>
                         <View style={[styles.contentBox]}>
-                            <Text style={styles.value}>{transaction.invoiceID}</Text>
+                            <Text style={styles.value}>{transaction.InvoiceID}</Text>
                         </View>
                     </>
                 )}

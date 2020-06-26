@@ -29,7 +29,7 @@ class BaseTransaction {
         if (!isUndefined(_transaction)) {
             const { transaction, tx, meta } = _transaction;
             this.meta = meta;
-            this.tx = transaction || tx;
+            this.tx = transaction || tx || _transaction;
         } else {
             this.meta = {};
             this.tx = {};

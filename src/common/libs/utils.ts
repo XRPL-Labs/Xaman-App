@@ -70,6 +70,8 @@ const NormalizeAmount = (amount: string): string => {
 };
 
 const NormalizeCurrencyCode = (currencyCode: string): string => {
+    if (!currencyCode) return '';
+
     // Native XRP
     if (currencyCode === 'XRP') {
         return currencyCode;
