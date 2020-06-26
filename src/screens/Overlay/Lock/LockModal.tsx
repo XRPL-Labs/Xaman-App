@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, SafeAreaView, Image, Platform } from 'react-native';
+import { View, Text, SafeAreaView, Image, Platform, Keyboard } from 'react-native';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import { BlurView } from '@react-native-community/blur';
@@ -66,6 +66,10 @@ class LockModal extends Component<Props, State> {
     componentDidMount() {
         const { coreSettings } = this.state;
 
+        // dismiss any keyboard when it's locked
+        Keyboard.dismiss();
+
+        // check for biometric auth
         FingerprintScanner.isSensorAvailable()
             .then(() => {
                 this.setState({
