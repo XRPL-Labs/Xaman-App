@@ -545,12 +545,14 @@ class ReviewTransactionModal extends Component<Props, State> {
         this.setState({ headerHeight: height });
     };
 
-    onSnap = (event: any) => {
-        const { id } = event.nativeEvent;
-
+    onSnap = () => {
         this.sourcePicker.updateContainerPosition();
+    };
 
-        if (id === 'up') {
+    onDrag = (event: any) => {
+        const { targetSnapPointId, state } = event.nativeEvent;
+
+        if (state === 'end' && targetSnapPointId === 'up') {
             this.setState({ canScroll: true });
         }
     };
@@ -753,9 +755,13 @@ class ReviewTransactionModal extends Component<Props, State> {
                     ref={(r) => {
                         this.panel = r;
                     }}
-                    snapPoints={[{ y: 0 }, { y: this.getTopOffset(), id: 'up' }]}
+                    snapPoints={[
+                        { y: 0, id: 'down' },
+                        { y: this.getTopOffset(), id: 'up' },
+                    ]}
                     boundaries={{ top: this.getTopOffset() - 20 }}
                     animatedValueY={this.deltaY}
+                    onDrag={this.onDrag}
                     onSnap={this.onSnap}
                     verticalOnly
                     animatedNativeDriver
@@ -808,6 +814,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                                     label={Localize.t('global.accept')}
                                 />
                             </View>
+
+                            <Spacer size={50} />
                         </ScrollView>
                     </View>
                 </Interactable.View>
