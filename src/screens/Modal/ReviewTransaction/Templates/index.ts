@@ -12,6 +12,9 @@ import OfferCreate from './OfferCreate';
 import SetRegularKey from './SetRegularKey';
 import SignerListSet from './SignerListSet';
 import DepositPreauth from './DepositPreauth';
+import CheckCreate from './CheckCreate';
+import CheckCash from './CheckCash';
+import CheckCancel from './CheckCancel';
 
 export {
     Global,
@@ -27,4 +30,7 @@ export {
     SetRegularKey,
     SignerListSet,
     DepositPreauth,
+    CheckCreate,
+    CheckCash,
+    CheckCancel,
 };

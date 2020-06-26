@@ -66,6 +66,7 @@ export interface State {
     step: 'review' | 'submitting' | 'verifying' | 'result';
     submitResult: SubmitResultType;
     hasError: boolean;
+    errorMessage: string;
     isPreparing: boolean;
     canScroll: boolean;
     headerHeight: number;
@@ -100,6 +101,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             submitResult: undefined,
             isPreparing: false,
             hasError: false,
+            errorMessage: '',
             canScroll: false,
             headerHeight: 0,
             coreSettings: CoreRepository.getSettings(),
@@ -115,34 +117,62 @@ class ReviewTransactionModal extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { payload } = this.props;
-        const { transaction } = this.state;
-
         // back handler listener
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
 
         // update the accounts details before process the review
         LedgerService.updateAccountsDetails();
 
+        // set signalbe account and set prefer account
+        this.setAccounts();
+    }
+
+    componentDidCatch() {
+        this.setState({ hasError: true });
+    }
+
+    setAccounts = () => {
+        const { payload } = this.props;
+        const { transaction } = this.state;
+
         // get available account base on transaction type
-        const availableAccounts =
-            transaction.Type !== 'SignIn'
-                ? AccountRepository.getSpendableAccounts()
-                : AccountRepository.getSignableAccounts();
+        let availableAccounts =
+            transaction.Type === 'SignIn'
+                ? AccountRepository.getSignableAccounts()
+                : AccountRepository.getSpendableAccounts();
 
-        // choose preferred account for sign
-        // default account || first account
-        let preferredAccount;
-
-        if (!isEmpty(availableAccounts)) {
-            preferredAccount = find(availableAccounts, { default: true }) || availableAccounts[0];
+        if (isEmpty(availableAccounts)) {
+            return;
         }
 
-        // set the default source account
-        if (preferredAccount) {
-            // ignore if it's multisign
-            if (!payload.meta.multisign) {
-                transaction.Account = { address: preferredAccount.address };
+        // choose preferred account for sign
+        let preferredAccount;
+
+        // for CheckCash and CheckCancel
+        if (transaction.Account && transaction.Type === 'CheckCash') {
+            preferredAccount = find(availableAccounts, { address: transaction.Account.address });
+
+            // override available Accounts
+            availableAccounts = [preferredAccount];
+
+            // cannot sign this tx as account is not imported in the XUMM
+            if (!preferredAccount) {
+                this.setState({
+                    hasError: true,
+                    errorMessage: Localize.t('payload.checkCanOnlyCashByCheckDestination'),
+                });
+
+                return;
+            }
+        } else {
+            preferredAccount = find(availableAccounts, { default: true }) || availableAccounts[0];
+
+            // set the default source account
+            if (preferredAccount) {
+                // ignore if it's multisign
+                if (!payload.meta.multisign) {
+                    transaction.Account = { address: preferredAccount.address };
+                }
             }
         }
 
@@ -150,11 +180,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             accounts: availableAccounts,
             source: preferredAccount,
         });
-    }
-
-    componentDidCatch() {
-        this.setState({ hasError: true });
-    }
+    };
 
     onDecline = () => {
         const { payload } = this.props;
@@ -467,6 +493,15 @@ class ReviewTransactionModal extends Component<Props, State> {
                     type = Localize.t('events.unauthorizeDeposit');
                 }
                 break;
+            case 'CheckCreate':
+                type = Localize.t('events.createCheck');
+                break;
+            case 'CheckCash':
+                type = Localize.t('events.cashCheck');
+                break;
+            case 'CheckCancel':
+                type = Localize.t('events.cancelCheck');
+                break;
             case 'SignIn':
                 type = Localize.t('global.signIn');
                 break;
@@ -582,6 +617,7 @@ class ReviewTransactionModal extends Component<Props, State> {
     };
 
     renderError = () => {
+        const { errorMessage } = this.state;
         return (
             <View
                 testID="review-error-view"
@@ -589,9 +625,9 @@ class ReviewTransactionModal extends Component<Props, State> {
             >
                 <Icon name="IconInfo" size={70} />
                 <Spacer size={20} />
-                <Text style={AppStyles.h5}>{Localize.t('global.invalidPayload')}</Text>
+                <Text style={AppStyles.h5}>{Localize.t('global.error')}</Text>
                 <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                    {Localize.t('payload.unexpectedPayloadErrorOccurred')}
+                    {errorMessage || Localize.t('payload.unexpectedPayloadErrorOccurred')}
                 </Text>
                 <Spacer size={40} />
                 <Button

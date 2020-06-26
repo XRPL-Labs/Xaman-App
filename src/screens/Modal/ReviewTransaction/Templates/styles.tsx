@@ -39,6 +39,12 @@ const styles = StyleSheet.create({
         fontSize: AppFonts.h5.size,
         color: AppColors.black,
     },
+    amountRed: {
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontWeight: '600',
+        fontSize: AppFonts.h5.size,
+        color: AppColors.red,
+    },
     value: {
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',

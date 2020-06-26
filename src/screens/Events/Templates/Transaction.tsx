@@ -62,6 +62,16 @@ class TransactionTemplate extends PureComponent<Props, State> {
             case 'AccountDelete':
                 address = item.Account.address;
                 break;
+            case 'CheckCreate':
+                address = item.Destination.address;
+                tag = item.Destination.tag;
+                break;
+            case 'CheckCash':
+                address = item.Account.address;
+                break;
+            case 'CheckCancel':
+                address = item.Account.address;
+                break;
             case 'TrustSet':
                 address = item.Issuer;
                 break;
@@ -129,6 +139,15 @@ class TransactionTemplate extends PureComponent<Props, State> {
             }
         }
 
+        if (item.Type === 'CheckCash') {
+            const incoming = item.Account.address === account.address;
+            if (incoming) {
+                iconColor = styles.incomingColor;
+            } else {
+                iconColor = styles.outgoingColor;
+            }
+        }
+
         switch (item.Type) {
             case 'Payment':
                 if (item.Destination.address === account.address) {
@@ -151,6 +170,23 @@ class TransactionTemplate extends PureComponent<Props, State> {
                 iconName = 'IconCornerLeftUp';
                 break;
             case 'EscrowCancel':
+                iconName = 'IconX';
+                break;
+            case 'CheckCreate':
+                if (item.Account.address === account.address) {
+                    iconName = 'IconCornerLeftUp';
+                } else {
+                    iconName = 'IconCornerRightDown';
+                }
+                break;
+            case 'CheckCash':
+                if (item.Account.address === account.address) {
+                    iconName = 'IconCornerRightDown';
+                } else {
+                    iconName = 'IconCornerLeftUp';
+                }
+                break;
+            case 'CheckCancel':
                 iconName = 'IconX';
                 break;
             default:
@@ -209,6 +245,12 @@ class TransactionTemplate extends PureComponent<Props, State> {
                     return Localize.t('events.authorizeDeposit');
                 }
                 return Localize.t('events.unauthorizeDeposit');
+            case 'CheckCreate':
+                return Localize.t('events.createCheck');
+            case 'CheckCash':
+                return Localize.t('events.cashCheck');
+            case 'CheckCancel':
+                return Localize.t('events.cancelCheck');
             default:
                 return item.Type;
         }
@@ -217,7 +259,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
     renderRightPanel = () => {
         const { item, account } = this.props;
 
-        const incoming = item.Destination?.address === account.address;
+        let incoming = item.Destination?.address === account.address;
 
         if (item.Type === 'Payment') {
             return (
@@ -253,6 +295,26 @@ class TransactionTemplate extends PureComponent<Props, State> {
                 <Text style={[styles.amount, incoming ? styles.incomingColor : styles.naturalColor]} numberOfLines={1}>
                     {item.Amount.value}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
+                </Text>
+            );
+        }
+
+        if (item.Type === 'CheckCreate') {
+            return (
+                <Text style={[styles.amount, styles.naturalColor]} numberOfLines={1}>
+                    {item.SendMax.value}{' '}
+                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.SendMax.currency)}</Text>
+                </Text>
+            );
+        }
+
+        if (item.Type === 'CheckCash') {
+            const amount = item.Amount || item.DeliverMin;
+            incoming = item.Account.address === account.address;
+            return (
+                <Text style={[styles.amount, incoming ? styles.incomingColor : styles.outgoingColor]} numberOfLines={1}>
+                    {incoming ? '' : '-'}
+                    {amount.value} <Text style={[styles.currency]}>{NormalizeCurrencyCode(amount.currency)}</Text>
                 </Text>
             );
         }

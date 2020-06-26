@@ -11,6 +11,9 @@ import EscrowFinish from './escrowFinish';
 import SetRegularKey from './setRegularKey';
 import SignerListSet from './signerListSet';
 import DepositPreauth from './depositPreauth';
+import CheckCreate from './checkCreate';
+import CheckCash from './checkCash';
+import CheckCancel from './checkCancel';
 
 export {
     BaseTransaction,
@@ -26,4 +29,7 @@ export {
     SetRegularKey,
     SignerListSet,
     DepositPreauth,
+    CheckCreate,
+    CheckCash,
+    CheckCancel,
 };

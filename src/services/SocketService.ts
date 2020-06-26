@@ -64,6 +64,10 @@ interface GatewayBalancesPayload extends BaseCommand {
     hotwallet: Array<string>;
 }
 
+interface LedgerEntryPayload extends BaseCommand {
+    index: string;
+}
+
 enum SocketStateStatus {
     Connected = 'Connected',
     Disconnected = 'Disconnected',
@@ -236,7 +240,8 @@ class SocketService extends EventEmitter {
             | AccountTransactionsPayload
             | GetTransactionPayload
             | BookOffersPayload
-            | GatewayBalancesPayload,
+            | GatewayBalancesPayload
+            | LedgerEntryPayload,
     ): any => {
         return new Promise((resolve, reject) => {
             // sent tracker

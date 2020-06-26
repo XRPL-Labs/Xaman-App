@@ -213,7 +213,7 @@ class TransactionDetailsView extends Component<Props, State> {
             content += `\nThe payment has a destination tag: ${tx.Destination.tag}`;
         }
         content += `\n\nIt was instructed to deliver ${tx.Amount.value} ${NormalizeCurrencyCode(tx.Amount.currency)}`;
-        if (tx.tx.SendMax) {
+        if (tx.SendMax) {
             content += ` by spending up to ${tx.SendMax.value} ${NormalizeCurrencyCode(tx.SendMax.currency)}`;
         }
         return content;
@@ -236,6 +236,40 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         return content;
+    };
+
+    renderCheckCreate = () => {
+        const { tx } = this.props;
+
+        let content = `The check is from ${tx.Account.address} to ${tx.Destination.address}`;
+        if (tx.Account.tag) {
+            content += `\nThe check has a source tag:${tx.Account.tag}`;
+        }
+        if (tx.Destination.tag) {
+            content += `\nThe check has a destination tag: ${tx.Destination.tag}`;
+        }
+        content += `\n\nMaximum amount of source currency the Check is allowed to debit the sender is ${
+            tx.SendMax.value
+        } ${NormalizeCurrencyCode(tx.SendMax.currency)}`;
+
+        return content;
+    };
+
+    renderCheckCash = () => {
+        const { tx } = this.props;
+
+        const amount = tx.Amount || tx.DeliverMin;
+
+        const content = `It was instructed to deliver ${amount.value} ${NormalizeCurrencyCode(amount.currency)} to ${
+            tx.Account.address
+        } by cashing check with ID ${tx.CheckID}`;
+
+        return content;
+    };
+
+    renderCheckCancel = () => {
+        const { tx } = this.props;
+        return `The transaction will cancel check with ID ${tx.CheckID}`;
     };
 
     renderDepositPreauth = () => {
@@ -277,6 +311,15 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case 'TrustSet':
                 content += this.renderTrustSet();
+                break;
+            case 'CheckCreate':
+                content += this.renderCheckCreate();
+                break;
+            case 'CheckCash':
+                content += this.renderCheckCash();
+                break;
+            case 'CheckCancel':
+                content += this.renderCheckCancel();
                 break;
             case 'AccountDelete':
                 content += this.renderAccountDelete();
