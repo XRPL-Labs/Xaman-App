@@ -38,7 +38,7 @@
     "react-native-webview": "10.2.3",
     "realm": "3.6.5",
     "ripple-binary-codec": "0.2.6",
-    "rippled-ws-client": "1.6.0",
+    "rippled-ws-client": "1.6.1",
     "uuid": "8.1.0",
     "xrpl-accountlib": "0.3.6",
     "xrpl-tagged-address-codec": "0.2.1",

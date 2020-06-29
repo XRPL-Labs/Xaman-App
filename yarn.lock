@@ -13367,10 +13367,10 @@ ripple-secret-codec@1.0.2:
     ripple-hashes latest
     ripple-keypairs latest
 
-rippled-ws-client@1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/rippled-ws-client/-/rippled-ws-client-1.6.0.tgz#ef0cd4011bbc500454e9e19d63d50a358b579938"
-  integrity sha512-M408KCC3Lbb+TQptEn8q0ox0NdgBhSkkJdPf0M4zzMrMpu+Qo9JNQUKlWIMAM9LdStL/gCB8327t0qNZmLyHYg==
+rippled-ws-client@1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/rippled-ws-client/-/rippled-ws-client-1.6.1.tgz#018311231cc5ad0f6ad72ab3cb19d8538be01b85"
+  integrity sha512-LjbQe3sYyVIZsEcm/pztsCO1rZKcMQIAtGyPpNK3ycRrys30xIPIfIsIhshMZh0Me6FRJJGUjFj/jFW3bLvBjg==
   dependencies:
     websocket "^1.0.31"
 
