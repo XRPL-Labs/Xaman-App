@@ -736,7 +736,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
                             <Text style={[styles.xummAppTitle]}>{payload.application.name}</Text>
 
-                            {payload.meta.custom_instruction && (
+                            {!!payload.meta.custom_instruction && (
                                 <>
                                     <Text style={[styles.xummAppLabelText]}>{Localize.t('global.details')}</Text>
                                     <Text style={[styles.xummAppLabelInfo]}>{payload.meta.custom_instruction}</Text>

@@ -570,6 +570,7 @@ class RecipientStep extends Component<Props, State> {
             <RecipientElement
                 recipient={item}
                 selected={selected}
+                showTag={false}
                 onPress={() => {
                     if (!selected) {
                         setDestination({

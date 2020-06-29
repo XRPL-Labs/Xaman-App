@@ -25,6 +25,7 @@ interface Props {
     selected?: boolean;
     showMoreButton?: boolean;
     showAvatar?: boolean;
+    showTag?: boolean;
     onPress?: () => void;
     onMorePress?: () => void;
 }
@@ -34,6 +35,7 @@ class RecipientElement extends PureComponent<Props> {
     static defaultProps = {
         showMoreButton: false,
         showAvatar: true,
+        showTag: true,
     };
 
     onPress = () => {
@@ -75,7 +77,16 @@ class RecipientElement extends PureComponent<Props> {
     };
 
     render() {
-        const { recipient, selected, showMoreButton, showAvatar, isLoading, containerStyle, onPress } = this.props;
+        const {
+            recipient,
+            selected,
+            showMoreButton,
+            showAvatar,
+            showTag,
+            isLoading,
+            containerStyle,
+            onPress,
+        } = this.props;
 
         const badge = this.getBadge();
         const avatar = this.getAvatar();
@@ -117,7 +128,7 @@ class RecipientElement extends PureComponent<Props> {
                             {recipient.address}
                         </Text>
 
-                        {!!recipient.tag && (
+                        {!!recipient.tag && showTag && (
                             <View style={styles.destinationTagContainer}>
                                 <Text style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
                                     {Localize.t('global.destinationTag')}:{' '}
