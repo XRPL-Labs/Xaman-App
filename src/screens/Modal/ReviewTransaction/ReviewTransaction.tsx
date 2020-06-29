@@ -137,7 +137,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         // get available account base on transaction type
         let availableAccounts =
-            transaction.Type === 'SignIn'
+            payload.payload.tx_type === 'SignIn'
                 ? AccountRepository.getSignableAccounts()
                 : AccountRepository.getSpendableAccounts();
 
@@ -248,6 +248,7 @@ class ReviewTransactionModal extends Component<Props, State> {
     };
 
     onAcceptPress = async () => {
+        const { payload } = this.props;
         const { source, transaction } = this.state;
 
         // if any validation set to the transaction run and check
@@ -279,7 +280,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         }
 
         // account is not activated and want to sign a tx
-        if (transaction.Type !== 'SignIn' && source.balance === 0) {
+        if (payload.payload.tx_type !== 'SignIn' && source.balance === 0) {
             Alert.alert(
                 Localize.t('global.error'),
                 Localize.t('account.selectedAccountIsNotActivatedPleaseChooseAnotherOne'),
@@ -455,7 +456,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         let type = '';
 
-        switch (transaction.Type) {
+        switch (payload.payload.tx_type) {
             case 'AccountSet':
                 type = Localize.t('events.updateAccountSettings');
                 break;

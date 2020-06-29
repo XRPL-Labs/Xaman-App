@@ -68,9 +68,9 @@ class BaseTransaction {
                 this.Account = { address: this.signer.address };
             }
 
-            // if transaction is  signing the ignore setting Sequence and flags
-            if (this.Type !== 'SignIn') {
-                // if fee not set then get current network fee
+            // if fee not set then get current network fee
+            // just for known tx types
+            if (this.Type) {
                 if (isUndefined(this.Fee)) {
                     const { Fee } = LedgerService.getLedgerStatus();
                     if (Fee) {
