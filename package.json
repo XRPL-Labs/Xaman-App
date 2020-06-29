@@ -42,7 +42,7 @@
     "uuid": "8.1.0",
     "xrpl-accountlib": "0.3.6",
     "xrpl-tagged-address-codec": "0.2.1",
-    "xumm-string-decode": "0.4.0"
+    "xumm-string-decode": "0.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
