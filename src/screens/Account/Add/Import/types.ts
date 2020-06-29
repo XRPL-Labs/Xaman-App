@@ -27,4 +27,5 @@ export interface State {
     account: Partial<AccountSchema>;
     importedAccount: XRPL_Account;
     passphrase?: string;
+    upgrade: AccountSchema;
 }

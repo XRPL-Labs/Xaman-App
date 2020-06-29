@@ -11,6 +11,7 @@ import { XRPL_Account } from 'xrpl-accountlib';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccessLevels, EncryptionLevels } from '@store/types';
+
 import { Navigator } from '@common/helpers/navigator';
 
 import { LedgerService } from '@services';
@@ -59,6 +60,7 @@ class AccountImportView extends Component<Props, State> {
             account: {},
             importedAccount: undefined,
             passphrase: undefined,
+            upgrade: props.upgrade,
         };
     }
 
@@ -127,8 +129,7 @@ class AccountImportView extends Component<Props, State> {
     };
 
     goNext = async (nextStep: ImportSteps) => {
-        const { upgrade } = this.props;
-        const { importedAccount, currentStep, prevSteps } = this.state;
+        const { upgrade, importedAccount, currentStep, prevSteps } = this.state;
 
         if (currentStep === 'FinishStep') {
             this.importAccount();
@@ -142,12 +143,19 @@ class AccountImportView extends Component<Props, State> {
                 }
             }
 
-            // check if the account is already exist before
-            // move to next step
+            // check if the account is already exist before move to next step
+            // if it's exist and readonly move as upgrade
             if ((nextStep === 'ConfirmPublicKey' || nextStep === 'LabelStep') && !upgrade) {
-                if (!isEmpty(AccountRepository.findBy('address', importedAccount.address))) {
-                    Alert.alert(Localize.t('global.error'), Localize.t('account.accountAlreadyExist'));
-                    return;
+                const exist = AccountRepository.findOne({ address: importedAccount.address });
+
+                if (!isEmpty(exist)) {
+                    if (exist.accessLevel === AccessLevels.Full) {
+                        Alert.alert(Localize.t('global.error'), Localize.t('account.accountAlreadyExist'));
+                        return;
+                    }
+
+                    // set as upgrade
+                    this.setState({ upgrade: exist });
                 }
             }
 
@@ -192,7 +200,15 @@ class AccountImportView extends Component<Props, State> {
     };
 
     goBack = () => {
-        const { prevSteps } = this.state;
+        const { upgrade } = this.props;
+        const { prevSteps, currentStep } = this.state;
+
+        // clear upgrade if we manually added it on back
+        if (currentStep === 'ConfirmPublicKey' && !upgrade) {
+            this.setState({
+                upgrade: undefined,
+            });
+        }
 
         if (isEmpty(prevSteps)) {
             Navigator.pop();
