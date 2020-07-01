@@ -8,7 +8,7 @@ import { WebView } from 'react-native-webview';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens, AppConfig } from '@common/constants';
 
-import { IsIPhoneX } from '@common/helpers/interface';
+import { IsIPhoneX } from '@common/helpers/device';
 
 import { Header } from '@components/General';
 
