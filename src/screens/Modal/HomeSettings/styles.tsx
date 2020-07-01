@@ -1,6 +1,6 @@
 import { StyleSheet, Platform } from 'react-native';
 
-import { IsIPhoneX, getStatusBarHeight } from '@common/helpers/interface';
+import { IsIPhoneX } from '@common/helpers/device';
 import { AppColors, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: AppColors.blue },
     topContainer: {
         position: 'absolute',
-        top: Platform.OS === 'ios' ? getStatusBarHeight() + 30 : getStatusBarHeight(),
+        top: Platform.OS === 'ios' ? AppSizes.statusBarHeight + 30 : AppSizes.statusBarHeight,
         left: 0,
         right: 0,
     },

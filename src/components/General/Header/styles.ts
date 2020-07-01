@@ -1,20 +1,16 @@
-import { StyleSheet } from 'react-native';
-
-import { getStatusBarHeight } from '@common/helpers/interface';
+import { StyleSheet, Platform } from 'react-native';
 
 import { AppStyles, AppSizes } from '@theme';
 
 const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 20,
-        paddingTop: getStatusBarHeight(true),
-        // paddingLeft: 25,
-        // paddingRight: 25,
+        paddingTop: Platform.OS === 'ios' ? AppSizes.statusBarHeight : 0,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         zIndex: 99999,
-        height: AppSizes.heightPercentageToDP(9) + getStatusBarHeight(true),
+        height: AppSizes.heightPercentageToDP(9) + (Platform.OS === 'ios' ? AppSizes.statusBarHeight : 0),
     },
 
     centerContainer: {

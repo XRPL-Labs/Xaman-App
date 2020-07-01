@@ -2,7 +2,7 @@ import { get } from 'lodash';
 import { Platform, InteractionManager } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 
-import { getBottomTabScale, isIOS10 } from '@common/helpers/interface';
+import { getBottomTabScale, isIOS10 } from '@common/helpers/device';
 import { Images } from '@common/helpers/images';
 
 import { AppScreens } from '@common/constants';

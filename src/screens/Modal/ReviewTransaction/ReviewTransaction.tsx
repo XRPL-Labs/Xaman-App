@@ -30,7 +30,8 @@ import { Payload } from '@common/libs/payload';
 import { SubmitResultType } from '@common/libs/ledger/types';
 
 import { AppScreens } from '@common/constants';
-import { Toast, VibrateHapticFeedback, getNavigationBarHeight } from '@common/helpers/interface';
+import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
+
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
@@ -806,7 +807,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                                 style={[
                                     AppStyles.flex1,
                                     AppStyles.paddingHorizontalSml,
-                                    { paddingBottom: getNavigationBarHeight() },
+                                    { paddingBottom: AppSizes.navigationBarHeight },
                                 ]}
                             >
                                 <Button

@@ -17,7 +17,6 @@ import java.util.TimeZone;
 import java.util.Calendar;
 
 import android.os.Vibrator;
-import android.view.HapticFeedbackConstants;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;

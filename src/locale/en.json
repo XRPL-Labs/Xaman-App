@@ -31,6 +31,7 @@
         "authorize": "Authorize",
         "unauthorize": "Unauthorize",
         "exchange": "Exchange",
+        "exchanges": "Exchanges",
         "scan": "Scan",
         "request": "Request",
         "details": "Details",

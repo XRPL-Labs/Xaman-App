@@ -16,7 +16,6 @@ import { AccountSchema } from '@store/schemas/latest';
 import { AccessLevels } from '@store/types';
 
 import { Images } from '@common/helpers/images';
-import { getNavigationBarHeight } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
@@ -39,6 +38,7 @@ export interface State {
     paddingBottom: number;
 }
 
+const BOUNDARY_HEIGHT = 50;
 /* Component ==================================================================== */
 class SwitchAccountOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.SwitchAccount;
@@ -75,17 +75,24 @@ class SwitchAccountOverlay extends Component<Props, State> {
     componentDidMount() {
         const accounts = AccountRepository.getAccounts();
 
-        let contentHeight = accounts.length * AppSizes.scale(60) + 160 + getNavigationBarHeight();
+        // accounts count or as 3 item height
+        const count = accounts.length < 3 ? 3 : accounts.length;
+
+        // calculate the overlay height
+        const headerContentHeight = AppSizes.scale(33) + 90;
+
+        const bottomGap = Platform.select({
+            ios: 0,
+            android: AppSizes.navigationBarHeight * 1.1,
+        });
+
+        let contentHeight = count * (AppSizes.scale(60) + 10) + bottomGap + headerContentHeight;
 
         let paddingBottom = 0;
 
-        if (contentHeight > AppSizes.screen.height - 160) {
-            contentHeight = AppSizes.screen.height - 160;
-            paddingBottom = AppSizes.scale(60);
-        }
-
-        if (contentHeight < 300) {
-            contentHeight = 300;
+        if (contentHeight > AppSizes.screen.height * 0.9) {
+            contentHeight = AppSizes.screen.height * 0.9;
+            paddingBottom = AppSizes.scale(60) + bottomGap;
         }
 
         this.setState(
@@ -273,11 +280,13 @@ class SwitchAccountOverlay extends Component<Props, State> {
                     onSnap={this.onSnap}
                     verticalOnly
                     snapPoints={[{ y: AppSizes.screen.height + 3 }, { y: AppSizes.screen.height - contentHeight }]}
-                    boundaries={{ top: AppSizes.screen.height - (contentHeight + 50) }}
+                    boundaries={{
+                        top: AppSizes.screen.height - (contentHeight + BOUNDARY_HEIGHT),
+                    }}
                     initialPosition={{ y: AppSizes.screen.height }}
                     animatedValueY={this.deltaY}
                 >
-                    <View style={[styles.visibleContent, { height: contentHeight + 50 }]}>
+                    <View style={[styles.visibleContent, { height: contentHeight + BOUNDARY_HEIGHT }]}>
                         <View style={AppStyles.panelHeader}>
                             <View style={AppStyles.panelHandle} />
                         </View>

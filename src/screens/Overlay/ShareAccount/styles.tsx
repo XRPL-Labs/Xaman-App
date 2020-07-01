@@ -1,10 +1,21 @@
 import { StyleSheet } from 'react-native';
 
-import { AppColors, AppFonts } from '@theme';
+import { AppColors, AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({
-    // container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    visibleContent: {
+        // height: Sizes.screen.heightHalf + 100,
+        height: AppSizes.screen.height * 0.9,
+        backgroundColor: AppColors.white,
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        shadowColor: AppColors.black,
+        shadowOffset: { width: 0, height: 0 },
+        shadowRadius: 5,
+        shadowOpacity: 0.3,
+        padding: 15,
+    },
     qrCodeContainer: {
         borderRadius: 14,
         borderWidth: 5,

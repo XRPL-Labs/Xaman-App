@@ -2,9 +2,9 @@
  * App Theme - Sizes
  */
 
-/* eslint-disable spellcheck/spell-checker */
+import { Dimensions, Platform, PixelRatio, StatusBar } from 'react-native';
 
-import { Dimensions, Platform, PixelRatio } from 'react-native';
+import { IsIPhoneX } from '@common/helpers/device';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -12,8 +12,25 @@ const { width, height } = Dimensions.get('screen');
 const guidelineBaseWidth = 350;
 const guidelineBaseHeight = 680;
 
+// bottomTabs height
+const tabbarHeight = Platform.select({
+    ios: IsIPhoneX() ? 95 : 60,
+    android: 60,
+    default: 0,
+});
+
+// status bar size
+const statusBarHeight = Platform.select({
+    ios: IsIPhoneX() ? 44 : 20,
+    android: StatusBar.currentHeight,
+    default: 0,
+});
+
+// soft menu bar
+const navigationBarHeight = Platform.OS === 'android' ? height - Dimensions.get('window').height + 10 : 0;
+
 const Sizes = {
-    // Window Dimensions
+    // Screen Dimensions
     screen: {
         height,
         width,
@@ -22,7 +39,7 @@ const Sizes = {
         heightThird: height * 0.333,
         heightTwoThirds: height * 0.666,
         heightQuarter: height * 0.25,
-        vThreeQuarters: height * 0.75,
+        heightThreeQuarters: height * 0.75,
 
         widthHalf: width * 0.5,
         widthThird: width * 0.333,
@@ -30,9 +47,9 @@ const Sizes = {
         widthQuarter: width * 0.25,
         widthThreeQuarters: width * 0.75,
     },
-    navbarHeight: Platform.OS === 'ios' ? 60 : 50,
-    statusBarHeight: Platform.OS === 'ios' ? 16 : 0,
-    tabbarHeight: 50,
+    navigationBarHeight,
+    statusBarHeight,
+    tabbarHeight,
 
     padding: 30,
     paddingSml: 20,

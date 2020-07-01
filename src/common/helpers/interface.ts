@@ -1,93 +1,6 @@
 /* eslint-disable operator-linebreak */
 
-import {
-    Dimensions,
-    Platform,
-    PixelRatio,
-    StatusBar,
-    ActionSheetIOS,
-    ToastAndroid,
-    Alert,
-    NativeModules,
-} from 'react-native';
-
-const IsIPhoneX = (): boolean => {
-    const { height, width } = Dimensions.get('window');
-    return (
-        Platform.OS === 'ios' &&
-        !Platform.isPad &&
-        !Platform.isTVOS &&
-        (height === 812 || width === 812 || height === 896 || width === 896)
-    );
-};
-
-const getStatusBarHeight = (skipAndroid?: boolean) => {
-    return Platform.select({
-        ios: IsIPhoneX() ? 44 : 20,
-        android: skipAndroid ? 0 : StatusBar.currentHeight,
-        default: 0,
-    });
-};
-
-const getBottomTabsHeight = (): number => {
-    if (Platform.OS === 'ios') {
-        return IsIPhoneX() ? 95 : 60;
-    }
-
-    if (Platform.OS === 'android') {
-        return 60;
-    }
-
-    return 0;
-};
-
-const getNavigationBarHeight = (): number => {
-    if (Platform.OS === 'android') {
-        const screenHeight = Dimensions.get('screen').height;
-        const windowHeight = Dimensions.get('window').height;
-        const height = screenHeight - windowHeight;
-
-        return height;
-    }
-
-    return 0;
-};
-
-const getBottomTabScale = (factor?: number): number => {
-    if (Platform.OS !== 'ios') return 0;
-    const ratio = PixelRatio.get();
-
-    let scale;
-    switch (ratio) {
-        case 2:
-            scale = 4.5;
-            break;
-        case 3:
-            scale = 6;
-            break;
-        default:
-            scale = ratio * 2;
-    }
-
-    if (factor) {
-        return scale * factor;
-    }
-
-    return scale;
-};
-
-const isIOS10 = (): boolean => {
-    if (Platform.OS !== 'ios') return false;
-
-    // @ts-ignore
-    const majorVersionIOS = parseInt(Platform.Version, 10);
-
-    if (majorVersionIOS <= 10) {
-        return true;
-    }
-
-    return false;
-};
+import { Platform, ActionSheetIOS, ToastAndroid, Alert, NativeModules } from 'react-native';
 
 const Toast = (message: string, duration?: number) => {
     const toast = Platform.OS === 'android' ? ToastAndroid : NativeModules.Toast;
@@ -194,15 +107,4 @@ const VibrateHapticFeedback = (
 };
 
 /* Export ==================================================================== */
-export {
-    IsIPhoneX,
-    isIOS10,
-    getStatusBarHeight,
-    getNavigationBarHeight,
-    getBottomTabScale,
-    getBottomTabsHeight,
-    Toast,
-    ActionSheet,
-    Prompt,
-    VibrateHapticFeedback,
-};
+export { Toast, ActionSheet, Prompt, VibrateHapticFeedback };
