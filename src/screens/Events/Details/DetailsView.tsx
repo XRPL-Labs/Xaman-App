@@ -354,11 +354,11 @@ class TransactionDetailsView extends Component<Props, State> {
                 {showMemo ? (
                     <Text style={[styles.contentText, scamAlert && AppStyles.colorRed]}>
                         {tx.Memos.map((m) => {
-                            let memo = '';
-                            memo += m.type ? `${m.type}\n` : '';
-                            memo += m.format ? `${m.format}\n` : '';
-                            memo += m.data ? `${m.data}\n` : '';
-                            return memo;
+                            if (m.type === 'text/plain') {
+                                return m.data;
+                            }
+
+                            return `${m.type}: ${m.data}`;
                         })}
                     </Text>
                 ) : (
