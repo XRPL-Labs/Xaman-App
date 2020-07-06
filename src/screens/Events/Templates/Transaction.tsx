@@ -59,6 +59,9 @@ class TransactionTemplate extends PureComponent<Props, State> {
                     tag = item.Destination.tag;
                 }
                 break;
+            case 'OfferCreate':
+                address = item.TakerPays.issuer || item.TakerGets.issuer;
+                break;
             case 'AccountDelete':
                 address = item.Account.address;
                 break;
@@ -94,7 +97,6 @@ class TransactionTemplate extends PureComponent<Props, State> {
             item.Type === 'AccountSet' ||
             item.Type === 'SignerListSet' ||
             item.Type === 'SetRegularKey' ||
-            item.Type === 'OfferCreate' ||
             item.Type === 'OfferCancel'
         ) {
             this.setState({
@@ -130,31 +132,18 @@ class TransactionTemplate extends PureComponent<Props, State> {
         let iconName = '' as any;
         let iconColor;
 
-        if (item.Type === 'Payment') {
-            const incoming = item.Destination.address === account.address;
-            if (incoming) {
-                iconColor = styles.incomingColor;
-            } else {
-                iconColor = styles.outgoingColor;
-            }
-        }
-
-        if (item.Type === 'CheckCash') {
-            const incoming = item.Account.address === account.address;
-            if (incoming) {
-                iconColor = styles.incomingColor;
-            } else {
-                iconColor = styles.outgoingColor;
-            }
-        }
-
         switch (item.Type) {
             case 'Payment':
                 if (item.Destination.address === account.address) {
                     iconName = 'IconCornerRightDown';
+                    iconColor = styles.incomingColor;
                 } else {
                     iconName = 'IconCornerLeftUp';
+                    iconColor = styles.outgoingColor;
                 }
+                break;
+            case 'OfferCreate':
+                iconName = 'IconSwitchAccount';
                 break;
             case 'TrustSet':
                 if (item.Limit === 0) {
@@ -175,8 +164,10 @@ class TransactionTemplate extends PureComponent<Props, State> {
             case 'CheckCreate':
                 if (item.Account.address === account.address) {
                     iconName = 'IconCornerLeftUp';
+                    iconColor = styles.incomingColor;
                 } else {
                     iconName = 'IconCornerRightDown';
+                    iconColor = styles.outgoingColor;
                 }
                 break;
             case 'CheckCash':
@@ -197,15 +188,23 @@ class TransactionTemplate extends PureComponent<Props, State> {
         return <Icon size={25} style={[styles.icon, iconColor]} name={iconName} />;
     };
 
-    getLabel = () => {
+    getDescription = () => {
         const { name, address } = this.state;
+        const { item } = this.props;
+
+        if (item.Type === 'OfferCreate') {
+            return `${item.TakerGets.value} ${NormalizeCurrencyCode(item.TakerGets.currency)}/${NormalizeCurrencyCode(
+                item.TakerPays.currency,
+            )}`;
+        }
+
         if (name) return name;
         if (address) return address;
 
         return Localize.t('global.unknown');
     };
 
-    getDescription = () => {
+    getLabel = () => {
         const { item, account } = this.props;
 
         switch (item.Type) {
@@ -230,7 +229,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
             case 'SignerListSet':
                 return Localize.t('events.setSignerList');
             case 'OfferCreate':
-                if (item.Flags?.ImmediateOrCancel) {
+                if (item.Executed) {
                     return Localize.t('events.exchangedAssets');
                 }
                 return Localize.t('events.createOffer');
@@ -318,6 +317,24 @@ class TransactionTemplate extends PureComponent<Props, State> {
                 </Text>
             );
         }
+
+        if (item.Type === 'OfferCreate') {
+            if (item.Executed) {
+                return (
+                    <Text style={[styles.amount, styles.incomingColor]} numberOfLines={1}>
+                        {item.TakerPaid.value}{' '}
+                        <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.TakerPaid.currency)}</Text>
+                    </Text>
+                );
+            }
+            return (
+                <Text style={[styles.amount, styles.naturalColor]} numberOfLines={1}>
+                    {item.TakerPays.value}{' '}
+                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.TakerPays.currency)}</Text>
+                </Text>
+            );
+        }
+
         return null;
     };
 
@@ -330,10 +347,10 @@ class TransactionTemplate extends PureComponent<Props, State> {
                     </View>
                     <View style={[AppStyles.flex3, AppStyles.centerContent]}>
                         <Text style={[styles.label]} numberOfLines={1}>
-                            {this.getDescription()}
+                            {this.getLabel()}
                         </Text>
                         <Text style={[styles.description]} numberOfLines={1}>
-                            {this.getLabel()}
+                            {this.getDescription()}
                         </Text>
                     </View>
                     <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>
