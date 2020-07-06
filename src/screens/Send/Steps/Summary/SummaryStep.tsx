@@ -258,8 +258,12 @@ class SummaryStep extends Component {
 
         let maxCanSend = availableBalance.toNumber();
 
+        let hasTransferFee = false;
+
         // check if balance can cover the transfer fee for non XRP currencies
-        if (typeof currency !== 'string') {
+        if (typeof currency !== 'string' && currency.transfer_rate) {
+            hasTransferFee = true;
+
             const rate = new BigNumber(currency.transfer_rate).dividedBy(1000000).minus(1000).dividedBy(10);
 
             const fee = availableBalance.multipliedBy(rate).dividedBy(100).decimalPlaces(6);
@@ -270,7 +274,7 @@ class SummaryStep extends Component {
         if (bAmount.toNumber() > maxCanSend) {
             Prompt(
                 Localize.t('global.error'),
-                Localize.t('send.theMaxAmountYouCanSendIs', {
+                Localize.t(hasTransferFee ? 'send.theMaxAmountYouCanSendWithFee' : 'send.theMaxAmountYouCanSendIs', {
                     spendable: availableBalance,
                     currency: this.getCurrencyName(),
                 }),

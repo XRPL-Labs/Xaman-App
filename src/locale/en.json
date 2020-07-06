@@ -503,6 +503,7 @@
     "send": {
         "amountIsBiggerThanYourSpend": "Amount is bigger than what you can spend (%{spendable})",
         "theMaxAmountYouCanSendIs": "The max amount you can send is %{spendable} %{currency} ",
+        "theMaxAmountYouCanSendWithFee": "The issuer of %{currency} charges a Transfer Fee. The max. amount you can send (respecting the Transfer Fee) is %{spendable} %{currency}",
         "insufficientBalanceSpendableBalance": "Insufficient balance, spendable balance:  %{spendable} %{currency}",
         "balanceIsNotEnoughForFee": "Balance is not enough to cover the fee (%{fee})",
         "searchResults": "Search results",
