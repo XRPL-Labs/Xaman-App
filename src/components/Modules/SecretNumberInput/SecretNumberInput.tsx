@@ -25,6 +25,7 @@ interface Props {
     readonly?: boolean;
     onRowChanged?: (row: number) => void;
     onAllFilled?: (filled: boolean) => void;
+    validateRow?: (row: number, numbers: string) => boolean;
 }
 
 interface State {
@@ -84,15 +85,23 @@ class SecretNumberInput extends Component<Props, State> {
         return currentRow;
     };
 
-    checkChecksum = (row: number, value: number | string, checksum?: number): Boolean => {
-        if (typeof value === 'string') {
-            if (value.length !== 6) {
-                return false;
-            }
-            checksum = parseInt(value.slice(5), 10);
-            value = parseInt(value.slice(0, 5), 10);
+    checkChecksum = (row: number, numbers: string): Boolean => {
+        const { validateRow } = this.props;
+
+        if (numbers.length !== 6) {
+            return false;
         }
-        return (value * (row * 2 + 1)) % 9 === checksum;
+
+        const checksum = parseInt(numbers.slice(5), 10);
+        const value = parseInt(numbers.slice(0, 5), 10);
+
+        const validChecksum = (value * (row * 2 + 1)) % 9 === checksum;
+
+        // if any custom row validation
+        if (typeof validateRow === 'function') {
+            return validateRow(row, numbers) && validChecksum;
+        }
+        return validChecksum;
     };
 
     goLeft = () => {

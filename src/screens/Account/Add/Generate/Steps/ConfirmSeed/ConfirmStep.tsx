@@ -77,6 +77,11 @@ class ConfirmStep extends Component<Props, State> {
         );
     };
 
+    validateRow = (row: number, numbers: string) => {
+        const { generatedAccount } = this.context;
+        return isEqual(generatedAccount.secret.secretNumbers[row], numbers);
+    };
+
     render() {
         const { allFilled, currentRow } = this.state;
         const abcdefgh = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
@@ -117,6 +122,7 @@ class ConfirmStep extends Component<Props, State> {
                                 currentRow: row,
                             });
                         }}
+                        validateRow={this.validateRow}
                     />
                 </View>
 
