@@ -1,8 +1,17 @@
-import { get } from 'lodash';
-import BigNumber from 'bignumber.js';
+import { has } from 'lodash';
 
-import { LedgerService } from '@services';
+import {
+    LiquidityCheck,
+    Params as LiquidityCheckParams,
+    Result as LiquidityResult,
+    RatesInCurrency,
+    Errors,
+    Options,
+} from 'xrpl-orderbook-reader';
 
+import Localize from '@locale';
+
+import { ApiService, SocketService } from '@services';
 /* types ==================================================================== */
 export type ExchangePair = {
     currency: string;
@@ -11,85 +20,80 @@ export type ExchangePair = {
 
 /* Class ==================================================================== */
 class LedgerExchange {
+    private liquidityCheck: LiquidityCheck;
     private pair: ExchangePair;
-    private offersSell: Array<any>;
-    private offersBuy: Array<any>;
+    public boundaryOptions: Options;
+    public errors: any;
 
     constructor(pair: ExchangePair) {
         this.pair = pair;
+
+        this.boundaryOptions = {
+            rates: RatesInCurrency.to,
+            timeoutSeconds: 10,
+            maxSpreadPercentage: 4,
+            maxSlippagePercentage: 3,
+            maxSlippagePercentageReverse: 3,
+        };
+
+        this.errors = {
+            [Errors.REQUESTED_LIQUIDITY_NOT_AVAILABLE]: Localize.t('exchange.requestedLiquidityNotAvailable'),
+            [Errors.REVERSE_LIQUIDITY_NOT_AVAILABLE]: Localize.t('exchange.reverseLiquidityNotAvailable'),
+            [Errors.MAX_SPREAD_EXCEEDED]: Localize.t('exchange.maxSpreadExceeded'),
+            [Errors.MAX_SLIPPAGE_EXCEEDED]: Localize.t('exchange.maxSlippageExceeded'),
+            [Errors.MAX_REVERSE_SLIPPAGE_EXCEEDED]: Localize.t('exchange.maxReverseSlippageExceeded'),
+        };
     }
 
-    sync = async () => {
-        // sell XRP orderBook
-        const orderBookSell = await LedgerService.getOffers({
-            limit: 10,
-            taker_pays: { currency: 'XRP' },
-            taker_gets: this.pair,
-        });
+    initialize = async () => {
+        // fetch liquidity boundaries
+        await ApiService.liquidityBoundaries
+            .get({
+                issuer: this.pair.issuer,
+                currency: this.pair.currency,
+            })
+            .then((res: any) => {
+                if (res && has(res, 'options')) {
+                    this.boundaryOptions = res.options;
+                }
+            })
+            .catch(() => {
+                // ignore
+            });
 
-        // buy XRP orderBook
-        const orderBookBuy = await LedgerService.getOffers({
-            limit: 10,
-            taker_pays: this.pair,
-            taker_gets: { currency: 'XRP' },
-        });
+        // build default params
+        const params = this.getLiquidityCheckParams('sell', 0);
 
-        this.offersSell = get(orderBookSell, 'offers', []);
-        this.offersBuy = get(orderBookBuy, 'offers', []);
+        this.liquidityCheck = new LiquidityCheck(params);
     };
 
-    liquidityGrade = (direction: 'sell' | 'buy'): number => {
-        let enoughLiquidity = 2;
+    getLiquidityCheckParams = (direction: 'sell' | 'buy', amount: number): LiquidityCheckParams => {
+        const pair = {
+            currency: this.pair.currency,
+            issuer: this.pair.issuer,
+        };
 
-        const offers = direction === 'sell' ? this.offersSell : this.offersBuy;
+        const from = direction === 'sell' ? { currency: 'XRP' } : pair;
+        const to = direction === 'sell' ? pair : { currency: 'XRP' };
 
-        // check for liquidity
-        // not much offer is the orderBook
-        if (offers.length < 10) {
-            enoughLiquidity = 0;
-        } else {
-            const firstOffer = new BigNumber(offers[0].quality);
-            const lastOffer = new BigNumber(offers[9].quality);
-
-            const diffPercent = lastOffer
-                .dividedBy(firstOffer)
-                .multipliedBy(100)
-                .minus(100)
-                .toNumber();
-
-            if (diffPercent > 20) {
-                enoughLiquidity = 0;
-            } else if (diffPercent > 10) {
-                // liquidityIsNotSoMuch
-                enoughLiquidity = 1;
-            }
-        }
-
-        // 2 liquidity is looks good
-        // 1 not enough but OK
-        // 0 not enough liquidity
-        return enoughLiquidity;
+        return {
+            trade: {
+                from,
+                to,
+                amount,
+            },
+            options: this.boundaryOptions,
+            method: SocketService.send,
+        };
     };
 
-    getExchangeRate = (direction: 'sell' | 'buy'): number => {
-        const offers = direction === 'sell' ? this.offersSell : this.offersBuy;
+    getLiquidity = (direction: 'sell' | 'buy', amount: number): Promise<LiquidityResult> => {
+        const params = this.getLiquidityCheckParams(direction, amount);
 
-        if (this.liquidityGrade(direction) === 0) {
-            return 0;
-        }
+        // update params
+        this.liquidityCheck.refresh(params);
 
-        const offerRates = offers.map((o: any) => {
-            const quality = new BigNumber(o.quality);
-            if (direction === 'sell') {
-                return new BigNumber(1).dividedBy(quality.dividedBy(1000000));
-            }
-            return quality.multipliedBy(1000000);
-        });
-
-        // const bestRate = offerRates.slice(-1)[0];
-        const bestRate = offerRates[0];
-
-        return bestRate.decimalPlaces(6).toNumber();
+        return this.liquidityCheck.get();
     };
 }
 

@@ -148,11 +148,7 @@ class OfferCreate extends BaseTransaction {
 
                 takerGot = {
                     currency: modifiedNode.FinalFields.Balance.currency,
-                    value: balance
-                        .minus(prevBalance)
-                        .decimalPlaces(6)
-                        .absoluteValue()
-                        .toString(10),
+                    value: balance.minus(prevBalance).decimalPlaces(6).absoluteValue().toString(10),
                     issuer: modifiedNode.FinalFields.Balance.issuer,
                 };
             } else {
@@ -198,11 +194,7 @@ class OfferCreate extends BaseTransaction {
 
                 takerPaid = {
                     currency: modifiedNode.FinalFields.Balance.currency,
-                    value: balance
-                        .minus(prevBalance)
-                        .absoluteValue()
-                        .decimalPlaces(6)
-                        .toString(10),
+                    value: balance.minus(prevBalance).absoluteValue().decimalPlaces(6).toString(10),
                     issuer: modifiedNode.FinalFields.Balance.issuer,
                 };
             } else {

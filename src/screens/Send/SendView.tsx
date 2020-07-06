@@ -192,22 +192,21 @@ class SendView extends Component<Props, State> {
                 const PAIR = { issuer: currency.currency.issuer, currency: currency.currency.currency };
                 const ledgerExchange = new LedgerExchange(PAIR);
                 // sync with latest order book
-                await ledgerExchange.sync();
+                await ledgerExchange.initialize();
 
-                // get liquidity grade
-                const liquidityGrade = ledgerExchange.liquidityGrade('buy');
+                // get liquidity
+                const liquidity = await ledgerExchange.getLiquidity('buy', Number(amount));
 
                 // TODO: show error
                 // not enough liquidity
-                if (liquidityGrade === 0) {
+                if (!liquidity.safe || liquidity.errors.length > 0) {
                     return;
                 }
 
-                const exchangeRate = ledgerExchange.getExchangeRate('buy');
-                const xrpRoundedUp = new BigNumber(amount).dividedBy(exchangeRate).decimalPlaces(6);
+                const xrpRoundedUp = new BigNumber(amount).multipliedBy(liquidity.rate).decimalPlaces(6).toString(10);
 
                 // @ts-ignore
-                payment.Amount = xrpRoundedUp.toString();
+                payment.Amount = xrpRoundedUp;
                 payment.SendMax = {
                     currency: currency.currency.currency,
                     issuer: currency.currency.issuer,

@@ -113,13 +113,13 @@ class PaymentTemplate extends Component<Props, State> {
 
                     const ledgerExchange = new LedgerExchange(PAIR);
                     // sync with latest order book
-                    await ledgerExchange.sync();
+                    await ledgerExchange.initialize();
 
                     // get liquidity grade
-                    const liquidityGrade = ledgerExchange.liquidityGrade('buy');
+                    const liquidity = await ledgerExchange.getLiquidity('buy', Number(transaction.Amount.value));
 
                     // not enough liquidity
-                    if (liquidityGrade === 0) {
+                    if (!liquidity.safe || liquidity.errors.length > 0) {
                         this.setState({
                             isPartialPayment: true,
                             exchangeRate: 0,
@@ -127,17 +127,19 @@ class PaymentTemplate extends Component<Props, State> {
                         return;
                     }
 
-                    const exchangeRate = ledgerExchange.getExchangeRate('buy');
-                    const sendMaxXRP = new BigNumber(transaction.Amount.value).dividedBy(exchangeRate).decimalPlaces(6);
+                    const sendMaxXRP = new BigNumber(transaction.Amount.value)
+                        .multipliedBy(liquidity.rate)
+                        .decimalPlaces(6)
+                        .toString(10);
 
                     // @ts-ignore
-                    transaction.SendMax = sendMaxXRP.toString();
+                    transaction.SendMax = sendMaxXRP;
                     transaction.Flags = [txFlags.Payment.PartialPayment];
 
                     this.setState({
                         isPartialPayment: true,
-                        exchangeRate,
-                        xrpRoundedUp: sendMaxXRP.toString(),
+                        exchangeRate: new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(6).toNumber(),
+                        xrpRoundedUp: sendMaxXRP,
                     });
                 } else {
                     // check for transfer fee
