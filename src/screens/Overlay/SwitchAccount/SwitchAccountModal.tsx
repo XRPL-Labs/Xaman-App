@@ -33,7 +33,7 @@ export interface Props {}
 
 export interface State {
     accounts: Results<AccountSchema>;
-    spendableAccounts: Array<AccountSchema>;
+    signableAccount: Array<AccountSchema>;
     contentHeight: number;
     paddingBottom: number;
 }
@@ -64,7 +64,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
         this.state = {
             accounts: undefined,
-            spendableAccounts: undefined,
+            signableAccount: undefined,
             contentHeight: 0,
             paddingBottom: 0,
         };
@@ -75,7 +75,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
     componentDidMount() {
         const accounts = AccountRepository.getAccounts();
-        const spendableAccounts = AccountRepository.getSignableAccounts();
+        const signableAccount = AccountRepository.getSignableAccounts();
 
         // accounts count or as 3 item height
         const count = accounts.length < 3 ? 3 : accounts.length;
@@ -100,7 +100,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
         this.setState(
             {
                 accounts,
-                spendableAccounts,
+                signableAccount,
                 contentHeight,
                 paddingBottom,
             },
@@ -166,12 +166,12 @@ class SwitchAccountOverlay extends Component<Props, State> {
     };
 
     renderRow = (account: AccountSchema) => {
-        const { spendableAccounts } = this.state;
+        const { signableAccount } = this.state;
         // default full access
         let accessLevelLabel = Localize.t('account.fullAccess');
         let accessLevelIcon = 'IconCornerLeftUp' as Extract<keyof typeof Images, string>;
 
-        if (!find(spendableAccounts, { address: account.address })) {
+        if (!find(signableAccount, { address: account.address })) {
             accessLevelLabel = Localize.t('account.readOnly');
             accessLevelIcon = 'IconLock';
         }

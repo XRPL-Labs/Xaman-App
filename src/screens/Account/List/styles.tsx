@@ -52,13 +52,30 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         backgroundColor: AppColors.lightBlue,
     },
-
     tagText: {
         textAlign: 'left',
         fontSize: 10,
         fontFamily: AppFonts.subtext.family,
         color: AppColors.blue,
         paddingTop: 1,
+    },
+    accountLabel: {
+        fontFamily: AppFonts.h5.family,
+        fontSize: AppFonts.p.size,
+        color: AppColors.black,
+    },
+    accessLevelContainer: {
+        left: 0,
+        right: 0,
+        flexDirection: 'row',
+        marginTop: 3,
+    },
+    accessLevelLabel: {
+        marginLeft: 5,
+        fontSize: AppFonts.base.size * 0.7,
+        fontFamily: AppFonts.base.familyBold,
+        color: AppColors.greyDark,
+        includeFontPadding: false,
     },
 });
 

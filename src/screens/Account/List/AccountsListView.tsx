@@ -2,7 +2,7 @@
  * Accounts List Screen
  */
 
-import { isEmpty } from 'lodash';
+import { isEmpty, find } from 'lodash';
 import { Results } from 'realm';
 
 import React, { Component } from 'react';
@@ -32,6 +32,7 @@ export interface Props {}
 
 export interface State {
     accounts: Results<AccountSchema>;
+    signableAccount: Array<AccountSchema>;
 }
 
 /* Component ==================================================================== */
@@ -50,6 +51,7 @@ class AccountListView extends Component<Props, State> {
 
         this.state = {
             accounts: AccountRepository.getAccounts(),
+            signableAccount: AccountRepository.getSignableAccounts(),
         };
 
         Navigation.events().bindComponent(this);
@@ -65,8 +67,37 @@ class AccountListView extends Component<Props, State> {
         Navigator.push(AppScreens.Account.Edit.Settings, {}, { account });
     };
 
+    isRegularKey = (account: AccountSchema) => {
+        const { accounts } = this.state;
+
+        const found = find(accounts, { regularKey: account.address });
+
+        if (found) {
+            return found.label;
+        }
+
+        return false;
+    };
+
     renderItem = (account: { item: AccountSchema }) => {
+        const { signableAccount } = this.state;
         const { item } = account;
+
+        // default full access
+        let accessLevelLabel = Localize.t('account.fullAccess');
+        let accessLevelIcon = 'IconCornerLeftUp' as Extract<keyof typeof Images, string>;
+
+        if (!find(signableAccount, { address: item.address })) {
+            accessLevelLabel = Localize.t('account.readOnly');
+            accessLevelIcon = 'IconLock';
+        }
+
+        const regularKeyFor = this.isRegularKey(item);
+
+        if (regularKeyFor) {
+            accessLevelLabel = `${Localize.t('account.regularKeyFor')} (${regularKeyFor})`;
+            accessLevelIcon = 'IconKey';
+        }
 
         return (
             <TouchableHighlight
@@ -79,8 +110,15 @@ class AccountListView extends Component<Props, State> {
                 <>
                     <View style={[AppStyles.row, styles.rowHeader, AppStyles.centerContent]}>
                         <View style={[AppStyles.flex6, AppStyles.row]}>
-                            <Icon name="IconAccount" size={25} style={styles.accountIcon} />
-                            <Text style={[AppStyles.p, AppStyles.bold, styles.rowHeaderText]}>{item.label}</Text>
+                            <View style={[AppStyles.flex1]}>
+                                <Text style={[styles.accountLabel]}>{item.label}</Text>
+                                <View style={[styles.accessLevelContainer]}>
+                                    <Icon size={13} name={accessLevelIcon} style={AppStyles.imgColorGreyDark} />
+                                    <Text style={[styles.accessLevelLabel, AppStyles.colorBlack]}>
+                                        {accessLevelLabel}
+                                    </Text>
+                                </View>
+                            </View>
                         </View>
                         <View style={[AppStyles.flex2]}>
                             <Button
