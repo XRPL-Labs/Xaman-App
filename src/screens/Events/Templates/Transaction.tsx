@@ -7,15 +7,14 @@ import { AccountSchema } from '@store/schemas/latest';
 
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode, Truncate } from '@common/libs/utils';
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
 
-import { AppStyles } from '@theme';
-
 import { Icon } from '@components/General';
 
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -59,9 +58,6 @@ class TransactionTemplate extends PureComponent<Props, State> {
                     tag = item.Destination.tag;
                 }
                 break;
-            case 'OfferCreate':
-                address = item.TakerPays.issuer || item.TakerGets.issuer;
-                break;
             case 'AccountDelete':
                 address = item.Account.address;
                 break;
@@ -97,7 +93,8 @@ class TransactionTemplate extends PureComponent<Props, State> {
             item.Type === 'AccountSet' ||
             item.Type === 'SignerListSet' ||
             item.Type === 'SetRegularKey' ||
-            item.Type === 'OfferCancel'
+            item.Type === 'OfferCancel' ||
+            item.Type === 'OfferCreate'
         ) {
             this.setState({
                 address,
@@ -199,7 +196,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
         }
 
         if (name) return name;
-        if (address) return address;
+        if (address) return Truncate(address, 20);
 
         return Localize.t('global.unknown');
     };
@@ -253,6 +250,18 @@ class TransactionTemplate extends PureComponent<Props, State> {
             default:
                 return item.Type;
         }
+    };
+
+    renderMemoIcon = () => {
+        const { item } = this.props;
+
+        if (item.Memos) {
+            return (
+                <Icon name="IconFileText" style={[AppStyles.imgColorGreyDark, AppStyles.paddingLeftSml]} size={12} />
+            );
+        }
+
+        return null;
     };
 
     renderRightPanel = () => {
@@ -349,9 +358,13 @@ class TransactionTemplate extends PureComponent<Props, State> {
                         <Text style={[styles.label]} numberOfLines={1}>
                             {this.getLabel()}
                         </Text>
-                        <Text style={[styles.description]} numberOfLines={1}>
-                            {this.getDescription()}
-                        </Text>
+                        <View style={AppStyles.row}>
+                            <Text style={[styles.description]} numberOfLines={1}>
+                                {this.getDescription()}
+                            </Text>
+
+                            {this.renderMemoIcon()}
+                        </View>
                     </View>
                     <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>
                         {this.renderRightPanel()}

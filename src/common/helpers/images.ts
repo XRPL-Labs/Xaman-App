@@ -90,4 +90,5 @@ export const Images = {
     IconSwitchAccount: buildImageSource('IconSwitchAccount', 'icon_switchaccount'),
     IconGlobe: buildImageSource('IconGlobe', 'icon_globe'),
     IconArrowDown: buildImageSource('IconArrowDown', 'icon_arrow_down'),
+    IconFileText: buildImageSource('IconFileText', 'icon_file_text'),
 };
