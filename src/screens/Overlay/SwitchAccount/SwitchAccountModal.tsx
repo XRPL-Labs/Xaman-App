@@ -33,7 +33,7 @@ export interface Props {}
 
 export interface State {
     accounts: Results<AccountSchema>;
-    spendableAccounts: Results<AccountSchema>;
+    spendableAccounts: Array<AccountSchema>;
     contentHeight: number;
     paddingBottom: number;
 }
