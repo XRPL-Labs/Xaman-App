@@ -12581,10 +12581,10 @@ react-native-linear-gradient@2.5.6:
   resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"
   integrity sha512-HDwEaXcQIuXXCV70O+bK1rizFong3wj+5Q/jSyifKFLg0VWF95xh8XQgfzXwtq0NggL9vNjPKXa016KuFu+VFg==
 
-react-native-navigation@6.8.0:
-  version "6.8.0"
-  resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-6.8.0.tgz#a2a0d98abba62f55238d0743c99f9a3106e1b789"
-  integrity sha512-TqtN97g6RkdvLpX4jiGLPZoXznxqkkZ/SCJC0rRY5QuTifuRzDM13l5KX/A6DbtZqYHsAI4bVonviE7vKykd3w==
+react-native-navigation@6.9.0:
+  version "6.9.0"
+  resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-6.9.0.tgz#9f02c832d2e0291ccc863e717517ec70655047b7"
+  integrity sha512-kzV91Gn+txTkWva4rCu1ia7JOhulMj7RITutkpvlUwKoYWlbsTMKy5hXMf+uoMlaStxmolmdo/X2au1X+U08nA==
   dependencies:
     hoist-non-react-statics "3.x.x"
     lodash "4.17.x"
@@ -13460,10 +13460,10 @@ ripple-secret-codec@1.0.2:
     ripple-hashes latest
     ripple-keypairs latest
 
-rippled-ws-client@1.6.2:
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/rippled-ws-client/-/rippled-ws-client-1.6.2.tgz#1e607207fc8a90ff87f20e4cab305d75c2b1c8ae"
-  integrity sha512-KJEECNmjMrjA3zJUPYadNfU2mdscL9m7bnAejhJ9V5SQORhzh8wHSwQXycJ2mMG8NU70cE05CNBL8nJsrD2DNg==
+rippled-ws-client@1.6.3:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/rippled-ws-client/-/rippled-ws-client-1.6.3.tgz#deb3e9e874583157f3ee34b34b5341b36011c9e8"
+  integrity sha512-abtZFEGVxv00bB2EllLtU/xNmUn9POMewry5kMeyWoU2ewmhHQRaMmVSMtj0z+X0Sy0fBDsTHz6JEcAETdrrdw==
   dependencies:
     websocket "^1.0.31"
 
@@ -15717,7 +15717,7 @@ xrpl-accountlib@0.3.6:
     ripple-sign-keypairs "git+https://github.com/WietseWind/node-ripple-sign-keypairs.git"
     xrpl-secret-numbers "0.2.1"
 
-xrpl-orderbook-reader@^0.3.1:
+xrpl-orderbook-reader@0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/xrpl-orderbook-reader/-/xrpl-orderbook-reader-0.3.1.tgz#452c5f703b14a32e4dd546afab6fc6b11859c0fd"
   integrity sha512-ALqp0L1AUcUO8ahwx0YsMb8PlJfTwcGPalPu/CiMUPCKqLfXtHHwtaufu7bMcUO2gQjvQGrknshzyFJwg/3YaA==
@@ -15748,10 +15748,10 @@ xtend@^4.0.0, xtend@~4.0.1:
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
 
-xumm-string-decode@0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/xumm-string-decode/-/xumm-string-decode-0.4.1.tgz#c03d754aec96d5535073f5af7c173231485d7680"
-  integrity sha512-YPd3xC9sVabVgaGrg8mYrcSdPkuBK5CJN5+LEl0ByUx64vINmOJX+iNPDcdY55KcWexJndkJPfd8aoAqChz1/w==
+xumm-string-decode@0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/xumm-string-decode/-/xumm-string-decode-0.4.2.tgz#4c4230cd13f75c78cb7729c6dd548c82d960e7b8"
+  integrity sha512-H6xyS/4/HqHqPlasVAYivIYLpmeaTdMfF5H3zwc7PETQTYedpziGpz9p6bY9hFw6vmwCbdltguh7HbTuxtZTXQ==
   dependencies:
     "@ungap/url-search-params" "^0.1.4"
     debug "^4.1.1"
