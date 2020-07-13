@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
 import isEqual from 'lodash/isEqual';
 
@@ -40,39 +39,49 @@ interface Props {
 }
 
 interface State {
-    width: number;
+    animatedActive: Animated.Value;
+    animatedValue: Animated.Value;
 }
 
-export default class CustomButton extends Component<Props, State> {
+export default class RaisedButton extends Component<Props, State> {
     static defaultProps = {
         iconPosition: 'left',
         iconSize: 20,
+        isDisabled: false,
     };
-
-    private animatedActive: Animated.Value;
-    private animatedValue: Animated.Value;
-    private pressing: boolean;
 
     constructor(props: Props) {
         super(props);
-        this.animatedActive = new Animated.Value(props.isDisabled ? 0 : 0.1);
-        this.animatedValue = new Animated.Value(0);
-        this.pressing = false;
+
+        this.state = {
+            animatedActive: new Animated.Value(props.isDisabled ? 0 : 0.1),
+            animatedValue: new Animated.Value(0),
+        };
     }
 
     shouldComponentUpdate(nextProps: Props) {
         return !isEqual(nextProps, this.props);
     }
 
+    static getDerivedStateFromProps(props: Props) {
+        const { isDisabled } = props;
+
+        return {
+            animatedActive: new Animated.Value(isDisabled ? 0 : 0.1),
+        };
+    }
+
     getAnimatedValues() {
+        const { animatedActive, animatedValue } = this.state;
+
         return {
             animatedContainer: {
-                shadowOpacity: this.animatedActive,
+                shadowOpacity: animatedActive,
             },
             animatedContent: {
                 transform: [
                     {
-                        translateY: this.animatedValue.interpolate({
+                        translateY: animatedValue.interpolate({
                             inputRange: [0, 1],
                             outputRange: [0, 1.5],
                         }),
@@ -103,6 +112,7 @@ export default class CustomButton extends Component<Props, State> {
     };
 
     onPress = () => {
+        const { animatedActive, animatedValue } = this.state;
         const { isDisabled, isLoading } = this.props;
 
         if (isDisabled || isLoading) {
@@ -110,13 +120,13 @@ export default class CustomButton extends Component<Props, State> {
         }
 
         this.animateTiming({
-            variable: this.animatedValue,
+            variable: animatedValue,
             toValue: 1,
             duration: 50,
             useNativeDriver: true,
         });
         this.animateTiming({
-            variable: this.animatedActive,
+            variable: animatedActive,
             toValue: 0,
             duration: 50,
             useNativeDriver: true,
@@ -135,12 +145,14 @@ export default class CustomButton extends Component<Props, State> {
     };
 
     release(callback = () => {}) {
+        const { animatedActive, animatedValue } = this.state;
+
         this.animateSpring({
-            variable: this.animatedActive,
+            variable: animatedActive,
             toValue: 0.1,
         });
         this.animateSpring({
-            variable: this.animatedValue,
+            variable: animatedValue,
             toValue: 0,
             callback,
         });

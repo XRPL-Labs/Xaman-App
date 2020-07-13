@@ -25,7 +25,7 @@ import { AppScreens } from '@common/constants';
 import LedgerService from '@services/LedgerService';
 
 // components
-import { Button, Spacer, CustomButton } from '@components/General';
+import { Button, Spacer, RaisedButton } from '@components/General';
 
 import Localize from '@locale';
 
@@ -385,7 +385,7 @@ class CurrencySettingsModal extends Component<Props, State> {
 
                         <Spacer />
                         <View style={[styles.buttonRow]}>
-                            <CustomButton
+                            <RaisedButton
                                 isDisabled={trustLine.balance <= 0 && trustLine.obligation !== true}
                                 style={styles.sendButton}
                                 icon="IconCornerLeftUp"
@@ -398,7 +398,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                                     Navigator.push(AppScreens.Transaction.Payment, {}, { currency: trustLine });
                                 }}
                             />
-                            <CustomButton
+                            <RaisedButton
                                 isDisabled={trustLine.obligation}
                                 style={styles.exchangeButton}
                                 icon="IconCornerRightUp"
@@ -416,7 +416,7 @@ class CurrencySettingsModal extends Component<Props, State> {
 
                         <Spacer size={20} />
 
-                        <CustomButton
+                        <RaisedButton
                             isLoading={isLoading}
                             isDisabled={!canRemove}
                             icon="IconTrash"

@@ -39,7 +39,7 @@ import { VibrateHapticFeedback } from '@common/helpers/interface';
 import Localize from '@locale';
 
 // components
-import { Button, CustomButton, InfoMessage, Spacer, Icon } from '@components/General';
+import { Button, RaisedButton, InfoMessage, Spacer, Icon } from '@components/General';
 
 // style
 import { AppStyles } from '@theme';
@@ -292,6 +292,25 @@ class HomeView extends Component<Props, State> {
         if (!ignore) {
             LinkingService.handle(clipboardDetected);
         }
+    };
+
+    showShareOverlay = () => {
+        const { account } = this.state;
+
+        Navigator.showOverlay(
+            AppScreens.Overlay.ShareAccount,
+            {
+                layout: {
+                    backgroundColor: 'transparent',
+                    componentBackgroundColor: 'transparent',
+                },
+            },
+            { account },
+        );
+    };
+
+    pushSendScreen = () => {
+        Navigator.push(AppScreens.Transaction.Payment);
     };
 
     renderClipboardGuide = () => {
@@ -569,24 +588,22 @@ class HomeView extends Component<Props, State> {
     };
 
     renderButtons = () => {
-        const { account, isSpendable } = this.state;
+        const { isSpendable } = this.state;
 
         return (
             <View style={[styles.buttonRow]}>
-                <CustomButton
+                <RaisedButton
                     style={[styles.sendButton]}
                     icon="IconCornerLeftUp"
                     iconSize={25}
                     iconStyle={[styles.sendButtonIcon]}
                     label={Localize.t('global.send')}
                     textStyle={[styles.sendButtonText]}
-                    onPress={() => {
-                        Navigator.push(AppScreens.Transaction.Payment);
-                    }}
+                    onPress={this.pushSendScreen}
                     activeOpacity={0}
                     isDisabled={!isSpendable}
                 />
-                <CustomButton
+                <RaisedButton
                     style={[styles.requestButton]}
                     icon="IconCornerRightDown"
                     iconSize={25}
@@ -594,18 +611,7 @@ class HomeView extends Component<Props, State> {
                     iconPosition="right"
                     label={Localize.t('global.request')}
                     textStyle={[styles.requestButtonText]}
-                    onPress={() => {
-                        Navigator.showOverlay(
-                            AppScreens.Overlay.ShareAccount,
-                            {
-                                layout: {
-                                    backgroundColor: 'transparent',
-                                    componentBackgroundColor: 'transparent',
-                                },
-                            },
-                            { account },
-                        );
-                    }}
+                    onPress={this.showShareOverlay}
                     activeOpacity={0}
                 />
             </View>
