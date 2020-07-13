@@ -1,6 +1,6 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
-import isEmpty from 'lodash/isEmpty';
+import { isEmpty, isEqual } from 'lodash';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import { AccountSchema } from '@store/schemas/latest';
@@ -29,7 +29,7 @@ export interface State {
 }
 
 /* Component ==================================================================== */
-class TransactionTemplate extends PureComponent<Props, State> {
+class TransactionTemplate extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
@@ -37,6 +37,10 @@ class TransactionTemplate extends PureComponent<Props, State> {
             name: '',
             address: '',
         };
+    }
+
+    shouldComponentUpdate(nextProps: Props, nextState: State) {
+        return !isEqual(nextState, this.state);
     }
 
     componentDidMount() {
@@ -79,7 +83,8 @@ class TransactionTemplate extends PureComponent<Props, State> {
                 tag = item.Destination.tag;
                 break;
             case 'EscrowFinish':
-                address = item.Owner;
+                address = item.Destination.address;
+                tag = item.Destination.tag;
                 break;
             case 'DepositPreauth':
                 address = item.Authorize || item.Unauthorize;
@@ -109,7 +114,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
 
         getAccountName(address, tag)
             .then((res: any) => {
-                if (!isEmpty(res)) {
+                if (!isEmpty(res) && res.name) {
                     this.setState({
                         name: res.name,
                     });
@@ -120,7 +125,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
 
     onPress = () => {
         const { item, account } = this.props;
-        Navigator.push(AppScreens.Transaction.Details, {}, { tx: item, account: account.address });
+        Navigator.push(AppScreens.Transaction.Details, {}, { tx: item, account });
     };
 
     getIcon = () => {
@@ -358,7 +363,7 @@ class TransactionTemplate extends PureComponent<Props, State> {
                         <Text style={[styles.label]} numberOfLines={1}>
                             {this.getLabel()}
                         </Text>
-                        <View style={AppStyles.row}>
+                        <View style={[AppStyles.row, AppStyles.centerAligned]}>
                             <Text style={[styles.description]} numberOfLines={1}>
                                 {this.getDescription()}
                             </Text>

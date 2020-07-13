@@ -313,7 +313,10 @@
         "setARegularKey": "Set a Regular Key",
         "setRegularKey": "Set Regular Key",
         "canNotFetchTransactions": "Can not fetch account transactions!",
-        "emptyEventsNoAccount": "There are no events because you do not have an account."
+        "emptyEventsNoAccount": "There are no events because you do not have an account.",
+        "returnPayment": "Return payment",
+        "newPayment": "New payment",
+        "openWithExplorer": "Open with %{explorer}"
     },
     "profile": {
         "availableInFuture": "This feature will be available in the future.",

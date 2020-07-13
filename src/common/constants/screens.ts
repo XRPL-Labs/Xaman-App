@@ -51,6 +51,7 @@ const screens = {
         ExplainBalance: 'overlay.ExplainBalance',
         ChangeLog: 'overlay.ChangeLog',
         ConnectionIssue: 'overlay.ConnectionIssue',
+        RecipientMenu: 'overlay.RecipientMenu',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',

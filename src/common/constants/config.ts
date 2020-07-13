@@ -30,26 +30,50 @@ export default {
         {
             value: 'xpring',
             title: 'XRPL.org',
-            main: 'https://livenet.xrpl.org/transactions/',
-            test: 'https://testnet.xrpl.org/transactions/',
+            tx: {
+                main: 'https://livenet.xrpl.org/transactions/',
+                test: 'https://testnet.xrpl.org/transactions/',
+            },
+            account: {
+                main: 'https://livenet.xrpl.org/accounts/',
+                test: 'https://testnet.xrpl.org/accounts/',
+            },
         },
         {
             value: 'bithomp',
             title: 'Bithomp',
-            main: 'https://bithomp.com/explorer/',
-            test: 'https://test.bithomp.com/explorer/',
+            tx: {
+                main: 'https://bithomp.com/explorer/',
+                test: 'https://test.bithomp.com/explorer/',
+            },
+            account: {
+                main: 'https://bithomp.com/explorer/',
+                test: 'https://test.bithomp.com/explorer/',
+            },
         },
         {
             value: 'xrpscan',
             title: 'XRPScan',
-            main: 'https://xrpscan.com/tx/',
-            test: 'https://test.bithomp.com/explorer/',
+            tx: {
+                main: 'https://xrpscan.com/tx/',
+                test: 'https://test.bithomp.com/explorer/',
+            },
+            account: {
+                main: 'https://xrpscan.com/account/',
+                test: 'https://test.bithomp.com/explorer/',
+            },
         },
         {
             value: 'xrplorer',
             title: 'XRPlorer',
-            main: 'https://xrplorer.com/transaction/',
-            test: 'https://test.bithomp.com/explorer/',
+            tx: {
+                main: 'https://xrplorer.com/transaction/',
+                test: 'https://test.bithomp.com/explorer/',
+            },
+            account: {
+                main: 'https://xrplorer.com/account/',
+                test: 'https://test.bithomp.com/explorer/',
+            },
         },
     ],
 

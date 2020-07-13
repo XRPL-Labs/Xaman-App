@@ -5,22 +5,35 @@ import { AppColors, AppFonts, AppSizes } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    qrCodeContainer: {
+    headerContainer: {
         width: AppSizes.screen.width,
-        alignSelf: 'center',
+        justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: AppColors.light,
         padding: 25,
+        borderBottomColor: AppColors.grey,
+        borderBottomWidth: 1,
     },
-    qrImage: {
-        backgroundColor: AppColors.white,
-        padding: 10,
-        borderRadius: 4,
-        marginBottom: 10,
+    extraHeaderContainer: {
+        padding: 25,
+        borderBottomColor: AppColors.grey,
+        borderBottomWidth: 1,
     },
     detailsContainer: {
         width: AppSizes.screen.width,
         padding: 25,
+    },
+    amountContainer: {
+        backgroundColor: AppColors.light,
+        paddingVertical: 20,
+        paddingHorizontal: 30,
+        marginTop: 40,
+        borderRadius: 50,
+    },
+    amountText: {
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontSize: AppFonts.h4.size,
+        textAlign: 'center',
+        color: AppColors.blue,
     },
     statusText: {
         fontFamily: AppFonts.base.familyBold,
@@ -34,16 +47,21 @@ const styles = StyleSheet.create({
     statusFailed: {
         color: AppColors.red,
     },
+    dateText: {
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontSize: AppFonts.small.size,
+        color: AppColors.greyDark,
+        textAlign: 'left',
+    },
     hashText: {
         fontFamily: AppFonts.base.familyMono,
-        fontSize: AppFonts.base.size * 0.8,
+        fontSize: AppFonts.base.size * 0.9,
         color: AppColors.greyDark,
-        textAlign: 'center',
-        paddingHorizontal: 40,
+        textAlign: 'left',
     },
     labelText: {
         fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.h5.size,
+        fontSize: AppFonts.base.size,
         marginBottom: 8,
     },
     contentText: {
@@ -58,6 +76,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: AppSizes.paddingSml,
         backgroundColor: AppColors.red,
+    },
+    outgoingColor: {
+        color: AppColors.red,
+        tintColor: AppColors.red,
+    },
+    incomingColor: {
+        color: AppColors.blue,
+        tintColor: AppColors.blue,
+    },
+    orangeColor: {
+        color: AppColors.orange,
+        tintColor: AppColors.orange,
+    },
+    naturalColor: {
+        color: AppColors.greyDark,
+        tintColor: AppColors.greyDark,
     },
 });
 

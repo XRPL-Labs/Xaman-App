@@ -42,6 +42,7 @@ import EnterDestinationTag from './Overlay/EnterDestinationTag';
 import ExplainBalance from './Overlay/ExplainBalance';
 import ChangeLog from './Overlay/ChangeLog';
 import ConnectionIssue from './Overlay/ConnectionIssue';
+import RecipientMenu from './Overlay/RecipientMenu';
 
 // Transaction
 import Send from './Send';
@@ -114,6 +115,7 @@ export {
     ExplainBalance,
     ChangeLog,
     ConnectionIssue,
+    RecipientMenu,
     // transaction
     Send,
     Exchange,
