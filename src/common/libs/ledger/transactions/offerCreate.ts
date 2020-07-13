@@ -117,7 +117,7 @@ class OfferCreate extends BaseTransaction {
         const affectedNodes = get(this.meta, 'AffectedNodes', []);
 
         affectedNodes.map((node: any) => {
-            if (node.ModifiedNode?.LedgerEntryType === 'Offer') {
+            if (node.ModifiedNode?.LedgerEntryType === 'Offer' || node.DeletedNode?.LedgerEntryType === 'Offer') {
                 foundOrderObject = true;
                 return true;
             }
@@ -140,7 +140,7 @@ class OfferCreate extends BaseTransaction {
         affectedNodes.forEach((node: any) => {
             const modifiedNode = node.ModifiedNode;
 
-            if (modifiedNode.LedgerEntryType !== ledgerEntryType || takerGot) return;
+            if (!modifiedNode || modifiedNode.LedgerEntryType !== ledgerEntryType || takerGot) return;
 
             if (isIOU) {
                 const balance = new BigNumber(modifiedNode.FinalFields.Balance.value);
@@ -186,7 +186,7 @@ class OfferCreate extends BaseTransaction {
         affectedNodes.forEach((node: any) => {
             const modifiedNode = node.ModifiedNode;
 
-            if (modifiedNode.LedgerEntryType !== ledgerEntryType || takerPaid) return;
+            if (!modifiedNode || modifiedNode.LedgerEntryType !== ledgerEntryType || takerPaid) return;
 
             if (isIOU) {
                 const balance = new BigNumber(modifiedNode.FinalFields.Balance.value);

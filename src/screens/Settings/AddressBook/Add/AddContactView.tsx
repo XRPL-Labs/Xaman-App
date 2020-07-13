@@ -55,7 +55,7 @@ class AddContactView extends Component<Props, State> {
         this.state = {
             xAddress: undefined,
             address: props.address,
-            tag: props.tag,
+            tag: props.tag && props.tag.toString(),
             name: props.name,
         };
     }
