@@ -298,6 +298,10 @@ class SocketService extends EventEmitter {
                     MaxConnectTryCount: 1,
                 })
                     .then((Connection: any) => {
+                        // apply connected node
+                        this.node = node;
+
+                        // emit on connect
                         this.onConnect(Connection);
 
                         Connection.on('error', this.onError);

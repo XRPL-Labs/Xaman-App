@@ -57,10 +57,14 @@ class RecipientElement extends PureComponent<Props> {
     getBadge = () => {
         const { recipient } = this.props;
 
-        const source = recipient.source.replace('internal:', '').replace('.com', '');
+        if (recipient.source) {
+            const source = recipient.source?.replace('internal:', '').replace('.com', '');
 
-        // @ts-ignore
-        return <Badge type={source} />;
+            // @ts-ignore
+            return <Badge type={source} />;
+        }
+
+        return null;
     };
 
     getAvatar = () => {
