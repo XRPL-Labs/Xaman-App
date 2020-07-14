@@ -10,6 +10,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 25,
+    },
+    memoContainer: {
+        width: AppSizes.screen.width,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 25,
         borderBottomColor: AppColors.grey,
         borderBottomWidth: 1,
     },
@@ -66,6 +72,12 @@ const styles = StyleSheet.create({
     },
     contentText: {
         fontFamily: AppFonts.base.familyMono,
+        lineHeight: 20,
+        fontSize: AppFonts.base.size * 0.9,
+        color: AppColors.black,
+    },
+    memoText: {
+        fontFamily: AppFonts.base.family,
         lineHeight: 20,
         fontSize: AppFonts.base.size * 0.9,
         color: AppColors.black,

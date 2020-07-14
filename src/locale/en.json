@@ -226,7 +226,9 @@
         "whatsNew": "What's new",
         "pushErrorPermissionMessage": "Unable to register push notifications, To grant the required notification permission, please go to your system settings and make sure that XUMM > Notifications is enabled.",
         "UnableToRegisterPushNotifications": "Unable to register push notifications",
-        "openXRPToolkitByTowoLabs": "Open XRP Toolkit by Towo Labs"
+        "openXRPToolkitByTowoLabs": "Open XRP Toolkit by Towo Labs",
+        "readMore": "Read more",
+        "readLess": "Read less"
     },
     "onboarding":{
         "slideOne": {
@@ -316,7 +318,8 @@
         "emptyEventsNoAccount": "There are no events because you do not have an account.",
         "returnPayment": "Return payment",
         "newPayment": "New payment",
-        "openWithExplorer": "Open with %{explorer}"
+        "openWithExplorer": "Open with %{explorer}",
+        "showMemo": "Show memo"
     },
     "profile": {
         "availableInFuture": "This feature will be available in the future.",

@@ -20,3 +20,4 @@ export * from './Header';
 export * from './SecurePinInput';
 export * from './PinInput';
 export * from './PasswordInput';
+export * from './ReadMore';

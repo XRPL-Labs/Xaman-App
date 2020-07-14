@@ -130,6 +130,7 @@ export default StyleSheet.create({
     colorOrange: { color: Colors.orange },
     colorRed: { color: Colors.red },
     colorGreyDark: { color: Colors.greyDark },
+    colorGreyBlack: { color: Colors.greyBlack },
     // colorPurple: { color: Colors.purple },
     // colorGreyBlue: { color: Colors.greyBlue },
     imgColorBlue: { tintColor: Colors.blue },
@@ -140,6 +141,7 @@ export default StyleSheet.create({
     imgColorGreyDark: { tintColor: Colors.greyDark },
     imgColorRed: { tintColor: Colors.red },
     imgColorOrange: { tintColor: Colors.orange },
+    imgcolorGreyBlack: { tintColor: Colors.greyBlack },
 
     borderRadius: {
         borderRadius: 12,

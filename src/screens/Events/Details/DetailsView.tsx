@@ -33,7 +33,7 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { Header, Button, Badge, Spacer, Icon } from '@components/General';
+import { Header, Button, Badge, Spacer, Icon, ReadMore } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
@@ -574,25 +574,31 @@ class TransactionDetailsView extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.labelText]}>Memos</Text>
+                <View style={[AppStyles.row]}>
+                    <Icon name="IconFileText" size={18} />
+                    <Text style={[styles.labelText]}> {Localize.t('global.memo')}</Text>
+                </View>
 
                 {showMemo ? (
-                    <Text style={[styles.contentText, scamAlert && AppStyles.colorRed]}>
+                    <ReadMore
+                        numberOfLines={2}
+                        textStyle={[styles.memoText, AppStyles.textCenterAligned, scamAlert && AppStyles.colorRed]}
+                    >
                         {tx.Memos.map((m) => {
-                            if (m.type === 'text/plain') {
+                            if (m.type === 'text/plain' || !m.type) {
                                 return m.data;
                             }
 
                             return `${m.type}: ${m.data}`;
                         })}
-                    </Text>
+                    </ReadMore>
                 ) : (
                     <TouchableOpacity
                         onPress={() => {
                             this.setState({ showMemo: true });
                         }}
                     >
-                        <Text style={[styles.contentText, AppStyles.colorRed]}>Show Memo</Text>
+                        <Text style={[styles.contentText, AppStyles.colorRed]}>{Localize.t('events.showMemo')}</Text>
                     </TouchableOpacity>
                 )}
             </>
@@ -820,6 +826,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
                 <ScrollView testID="transaction-details-view">
                     <View style={styles.headerContainer}>{this.renderHeader()}</View>
+                    <View style={styles.memoContainer}>{this.renderMemos()}</View>
                     <View style={styles.extraHeaderContainer}>{this.renderExtraHeader()}</View>
                     <View style={styles.detailsContainer}>
                         {this.renderTransactionId()}
@@ -829,8 +836,6 @@ class TransactionDetailsView extends Component<Props, State> {
                         {this.renderFee()}
                         <Spacer size={30} />
                         {this.renderStatus()}
-                        <Spacer size={30} />
-                        {this.renderMemos()}
                     </View>
 
                     {/* renderFlags(tx); */}
