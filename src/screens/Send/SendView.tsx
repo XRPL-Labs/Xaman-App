@@ -171,20 +171,16 @@ class SendView extends Component<Props, State> {
                      */
 
                     payment.TransferRate = currency.transfer_rate;
+                }
 
-                    payment.Amount = {
-                        currency: currency.currency.currency,
-                        issuer: currency.currency.issuer,
-                        value: amount,
-                    };
+                payment.Amount = {
+                    currency: currency.currency.currency,
+                    issuer: currency.currency.issuer,
+                    value: amount,
+                };
 
+                if (currency.transfer_rate || currency.currency.issuer === source.address) {
                     payment.Flags = [txFlags.Payment.PartialPayment];
-                } else {
-                    payment.Amount = {
-                        currency: currency.currency.currency,
-                        issuer: currency.currency.issuer,
-                        value: amount,
-                    };
                 }
             } else {
                 // *  Amount = XRP rounded up
