@@ -277,7 +277,8 @@
         "xrpYouOwnVsYourSpendableBalance": "XRP you own vs. your spendable balance.",
         "emptyAccountAddFirstAccount": "It’s a little bit empty here add your first account.",
         "openSignRequest": "Open Sign Request",
-        "sendPaymentTo": "Send payment to"
+        "sendPaymentTo": "Send payment to",
+        "selfIssued": "Self issued"
     },
     "events": {
         "noTransaction" : "No transactions",

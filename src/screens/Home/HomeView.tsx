@@ -519,9 +519,9 @@ class HomeView extends Component<Props, State> {
                     </View>
                 )}
 
-                <ScrollView style={AppStyles.flex1}>
-                    {!isEmpty(account.lines) &&
-                        account.lines.map((line: TrustLineSchema, index: number) => {
+                {!isEmpty(account.lines) && (
+                    <ScrollView style={AppStyles.flex1}>
+                        {account.lines.map((line: TrustLineSchema, index: number) => {
                             return (
                                 <TouchableOpacity
                                     onPress={() => {
@@ -547,10 +547,12 @@ class HomeView extends Component<Props, State> {
                                                     : NormalizeCurrencyCode(line.currency.currency)}
                                             </Text>
                                             <Text style={[styles.issuerLabel]}>
-                                                {line.counterParty.name}{' '}
-                                                {line.currency.name
-                                                    ? NormalizeCurrencyCode(line.currency.currency)
-                                                    : ''}
+                                                {line.currency.issuer === account.address
+                                                    ? Localize.t('home.selfIssued')
+                                                    : `${line.counterParty.name} ${
+                                                        line.currency.name &&
+                                                          NormalizeCurrencyCode(line.currency.currency)
+                                                    }`}
                                             </Text>
                                         </View>
                                     </View>
@@ -582,7 +584,8 @@ class HomeView extends Component<Props, State> {
                                 </TouchableOpacity>
                             );
                         })}
-                </ScrollView>
+                    </ScrollView>
+                )}
             </View>
         );
     };
