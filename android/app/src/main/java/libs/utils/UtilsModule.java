@@ -12,6 +12,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
+import android.os.Handler;
 
 import java.util.TimeZone;
 import java.util.Calendar;
@@ -22,6 +23,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 
 public class UtilsModule extends ReactContextBaseJavaModule {
@@ -165,6 +167,24 @@ public class UtilsModule extends ReactContextBaseJavaModule {
         }
     }
 
+
+    @ReactMethod
+    public void timeoutEvent(final String id, final int timeout) {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable(){
+            @Override
+            public void run(){
+                if (getReactApplicationContext().hasActiveCatalystInstance()) {
+                    getReactApplicationContext()
+                        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                        .emit("Utils.timeout", id);
+                }
+           }
+        }, timeout);
+    }
+
+
+    // private methods
     private static boolean checkRootMethod1() {
         String buildTags = android.os.Build.TAGS;
         return buildTags != null && buildTags.contains("test-keys");

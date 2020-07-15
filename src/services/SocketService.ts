@@ -14,7 +14,7 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { AppConfig, AppScreens } from '@common/constants';
 
-import AppService from '@services/AppService';
+import AppService, { AppStateStatus, NetStateStatus } from '@services/AppService';
 import LoggerService from '@services/LoggerService';
 import NavigationService from '@services/NavigationService';
 
@@ -131,20 +131,36 @@ class SocketService extends EventEmitter {
                 NavigationService.on('setRoot', (root: string) => {
                     // we just need to connect to socket when we are in DefaultStack not Onboarding
                     if (root === 'DefaultStack') {
-                        // listen for net state change
-                        AppService.on('netStateChange', (newState: string) => {
-                            if (newState === 'Connected') {
-                                this.reconnect();
-                            } else {
-                                this.close();
-                            }
-                        });
+                        // listen for net/app state change
+                        this.setAppStateListeners();
                     }
                 });
 
                 return resolve();
             } catch (e) {
                 return reject(e);
+            }
+        });
+    };
+
+    setAppStateListeners = () => {
+        // on net state changed
+        AppService.on('netStateChange', (newState: NetStateStatus) => {
+            if (newState === NetStateStatus.Connected) {
+                this.reconnect();
+            } else {
+                this.close();
+            }
+        });
+
+        // on app state changed
+        AppService.on('appStateChange', (newState: AppStateStatus, prevState: AppStateStatus) => {
+            if (newState === AppStateStatus.Active && prevState === AppStateStatus.Inactive) {
+                this.reconnect();
+            }
+
+            if (newState === AppStateStatus.Inactive) {
+                this.close();
             }
         });
     };

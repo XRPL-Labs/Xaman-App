@@ -18,16 +18,15 @@ static UISelectionFeedbackGenerator *selectionGenerator = nil;
 static NSMutableDictionary<NSNumber*, UIImpactFeedbackGenerator*> *impactGeneratorMap = nil;
 static UINotificationFeedbackGenerator *notificationGenerator = nil;
 
-@implementation UtilsModule
 
-@synthesize bridge = _bridge;
+@implementation UtilsModule
 
 RCT_EXPORT_MODULE();
 
 
-- (void)setBridge:(RCTBridge *)bridge
+- (NSArray<NSString *> *)supportedEvents
 {
-    _bridge = bridge;
+  return @[@"Utils.timeout"];;
 }
 
 - (dispatch_queue_t)methodQueue
@@ -37,7 +36,7 @@ RCT_EXPORT_MODULE();
 
 - (void)loadBundle
 {
-    [_bridge reload];
+  [self.bridge reload];
 }
 
 + (BOOL)requiresMainQueueSetup
@@ -335,6 +334,25 @@ RCT_EXPORT_METHOD(hapticFeedback:(NSString *)type)
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
     }
     
+}
+
+
+RCT_EXPORT_METHOD(timeoutEvent:(NSString *)timeoutId timeout:(int)timeout
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    __block UIBackgroundTaskIdentifier task = [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"UtilsModule" expirationHandler:^{
+        [[UIApplication sharedApplication] endBackgroundTask:task];
+    }];
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeout * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+        if ([self bridge] != nil) {
+            [self sendEventWithName:@"Utils.timeout" body:timeoutId];
+        }
+  
+        [[UIApplication sharedApplication] endBackgroundTask:task];
+    });
+    resolve([NSNumber numberWithBool:YES]);
 }
 
 @end

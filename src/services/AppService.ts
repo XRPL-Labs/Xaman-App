@@ -4,7 +4,7 @@
  */
 import EventEmitter from 'events';
 
-import { AppState } from 'react-native';
+import { AppState, NativeModules, NativeEventEmitter } from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
 import DeviceInfo from 'react-native-device-info';
@@ -17,6 +17,11 @@ import Preferences from '@common/libs/preferences';
 import { VersionDiff } from '@common/libs/utils';
 
 import LoggerService from '@services/LoggerService';
+
+/* Constants  ==================================================================== */
+const { UtilsModule } = NativeModules;
+
+const Emitter = new NativeEventEmitter(UtilsModule);
 
 /* Types  ==================================================================== */
 export enum NetStateStatus {
@@ -32,7 +37,7 @@ export enum AppStateStatus {
 
 // events
 declare interface AppService {
-    on(event: 'appStateChange', listener: (status: AppStateStatus) => void): this;
+    on(event: 'appStateChange', listener: (status: AppStateStatus, prevStatus: AppStateStatus) => void): this;
     on(event: string, listener: Function): this;
 }
 
@@ -41,7 +46,8 @@ class AppService extends EventEmitter {
     netStatus: NetStateStatus;
     prevAppState: AppStateStatus;
     currentAppState: AppStateStatus;
-    logger: any;
+    private inactivityTimeout: any;
+    private logger: any;
 
     constructor() {
         super();
@@ -68,6 +74,7 @@ class AppService extends EventEmitter {
         });
     };
 
+    // check if we need to show the App change log
     checkShowChangeLog = async () => {
         const currentVersionCode = DeviceInfo.getVersion();
         const savedVersionCode = await Preferences.get(Preferences.keys.LATEST_VERSION_CODE);
@@ -93,7 +100,7 @@ class AppService extends EventEmitter {
         }
     };
 
-    setNetState(isConnected: boolean) {
+    setNetState = (isConnected: boolean) => {
         let netStatus = NetStateStatus.Disconnected;
         if (isConnected) {
             netStatus = NetStateStatus.Connected;
@@ -106,12 +113,12 @@ class AppService extends EventEmitter {
             // emit the netStateChange event
             this.emit('netStateChange', this.netStatus);
         }
-    }
+    };
 
     /*
      * record net info changes
      */
-    setNetInfoListener() {
+    setNetInfoListener = () => {
         return new Promise((resolve) => {
             NetInfo.fetch()
                 .then((state) => {
@@ -125,37 +132,81 @@ class AppService extends EventEmitter {
                 this.setNetState(state.isConnected);
             });
         });
-    }
+    };
 
     /*
-     * record app state changes
+     * start a timer to check for background inactivity
+     */
+    startInactivityTimer = () => {
+        if (this.inactivityTimeout) {
+            return;
+        }
+
+        // send timeout timer
+        UtilsModule.timeoutEvent('timeout_event', 15000);
+
+        this.inactivityTimeout = Emitter.addListener('Utils.timeout', (id) => {
+            if (id === 'timeout_event') {
+                // clear any listener
+                this.stopInactivityListener();
+
+                if (this.currentAppState !== AppStateStatus.Inactive) {
+                    this.prevAppState = this.currentAppState;
+                    this.currentAppState = AppStateStatus.Inactive;
+                    // emit the appStateChange event
+                    this.emit('appStateChange', this.currentAppState, this.prevAppState);
+                }
+            }
+        });
+    };
+
+    /*
+     * stop the inactivity timer
+     */
+    stopInactivityListener = () => {
+        if (this.inactivityTimeout) {
+            this.inactivityTimeout.remove();
+            this.inactivityTimeout = null;
+        }
+    };
+
+    handleAppStateChange = (nextAppState: any) => {
+        let appState;
+        switch (nextAppState) {
+            case 'active':
+                appState = AppStateStatus.Active;
+                break;
+            case 'background':
+            case 'inactive':
+                appState = AppStateStatus.Background;
+                break;
+            default:
+                appState = AppStateStatus.Active;
+        }
+
+        // if changed
+        if (this.currentAppState !== appState) {
+            this.prevAppState = this.currentAppState;
+            this.currentAppState = appState;
+
+            // if the app is in background, start inactivity timer / stop it
+            if (appState === AppStateStatus.Background) {
+                this.startInactivityTimer();
+            } else {
+                this.stopInactivityListener();
+            }
+
+            // emit the appStateChange event
+            this.emit('appStateChange', this.currentAppState, this.prevAppState);
+        }
+    };
+
+    /*
+     * init app state change  listener
      */
     setAppStateListener() {
         return new Promise((resolve) => {
-            AppState.addEventListener('change', (nextAppState) => {
-                let appState;
-                switch (nextAppState) {
-                    case 'inactive':
-                        appState = AppStateStatus.Inactive;
-                        break;
-                    case 'active':
-                        appState = AppStateStatus.Active;
-                        break;
-                    case 'background':
-                        appState = AppStateStatus.Background;
-                        break;
-                    default:
-                        appState = AppStateStatus.Active;
-                }
-
-                if (this.currentAppState !== appState) {
-                    this.prevAppState = this.currentAppState;
-                    this.currentAppState = appState;
-                    // emit the appStateChange event
-                    this.emit('appStateChange', this.currentAppState);
-                }
-            });
-
+            AppState.addEventListener('change', this.handleAppStateChange);
             return resolve();
         });
     }
