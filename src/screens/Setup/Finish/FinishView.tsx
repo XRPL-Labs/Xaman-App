@@ -71,7 +71,12 @@ class FinishView extends Component<Props, State> {
 
             // create empty profile and store access token
             // save the signed TOS version and date
-            ProfileRepository.saveProfile({ accessToken, signedTOSDate: new Date(), signedTOSVersion: TOSVersion });
+            ProfileRepository.saveProfile({
+                uuid: user.uuid,
+                accessToken,
+                signedTOSDate: new Date(),
+                signedTOSVersion: TOSVersion,
+            });
 
             // set the initialized flag to true
             // update last unlocked ts to prevent app lock on first run
