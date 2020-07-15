@@ -16,6 +16,7 @@ import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
 // store
+import { AccessLevels } from '@store/types';
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
@@ -87,9 +88,16 @@ class AccountListView extends Component<Props, State> {
         let accessLevelLabel = Localize.t('account.fullAccess');
         let accessLevelIcon = 'IconCornerLeftUp' as Extract<keyof typeof Images, string>;
 
-        if (!find(signableAccount, { address: item.address })) {
+        const signable = find(signableAccount, { address: item.address });
+
+        if (!signable) {
             accessLevelLabel = Localize.t('account.readOnly');
             accessLevelIcon = 'IconLock';
+        }
+
+        // promoted by regular key
+        if (item.accessLevel === AccessLevels.Readonly && signable) {
+            accessLevelIcon = 'IconKey';
         }
 
         const regularKeyFor = this.isRegularKey(item);

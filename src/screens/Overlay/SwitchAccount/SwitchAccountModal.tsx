@@ -11,6 +11,7 @@ import { Animated, View, Text, TouchableWithoutFeedback, TouchableOpacity, Platf
 import Interactable from 'react-native-interactable';
 import LinearGradient from 'react-native-linear-gradient';
 
+import { AccessLevels } from '@store/types';
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
@@ -171,9 +172,16 @@ class SwitchAccountOverlay extends Component<Props, State> {
         let accessLevelLabel = Localize.t('account.fullAccess');
         let accessLevelIcon = 'IconCornerLeftUp' as Extract<keyof typeof Images, string>;
 
-        if (!find(signableAccount, { address: account.address })) {
+        const signable = find(signableAccount, { address: account.address });
+
+        if (!signable) {
             accessLevelLabel = Localize.t('account.readOnly');
             accessLevelIcon = 'IconLock';
+        }
+
+        // promoted by regular key
+        if (account.accessLevel === AccessLevels.Readonly && signable) {
+            accessLevelIcon = 'IconKey';
         }
 
         const regularKeyFor = this.isRegularKey(account);
