@@ -20,6 +20,9 @@ static UINotificationFeedbackGenerator *notificationGenerator = nil;
 
 
 @implementation UtilsModule
+{
+  bool hasListeners;
+}
 
 RCT_EXPORT_MODULE();
 
@@ -42,6 +45,16 @@ RCT_EXPORT_MODULE();
 + (BOOL)requiresMainQueueSetup
 {
     return YES;
+}
+
+// Will be called when this module's first listener is added.
+-(void)startObserving {
+    hasListeners = YES;
+}
+
+// Will be called when this module's last listener is removed, or on dealloc.
+-(void)stopObserving {
+    hasListeners = NO;
 }
 
 - (NSString *)platform
@@ -346,7 +359,7 @@ RCT_EXPORT_METHOD(timeoutEvent:(NSString *)timeoutId timeout:(int)timeout
     }];
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeout * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
-        if ([self bridge] != nil) {
+        if ([self bridge] != nil && self->hasListeners) {
             [self sendEventWithName:@"Utils.timeout" body:timeoutId];
         }
   
