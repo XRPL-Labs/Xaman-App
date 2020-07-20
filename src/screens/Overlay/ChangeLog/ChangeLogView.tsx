@@ -95,7 +95,7 @@ class ChangeLogModalView extends Component<Props, State> {
                             <Button label={Localize.t('global.close')} roundedSmall secondary onPress={this.dismiss} />
                         </View>
                     </View>
-                    <View style={[AppStyles.flex1, AppStyles.paddingVerticalSml]}>
+                    <View style={[AppStyles.flex1, styles.contentContainer]}>
                         <WebView
                             containerStyle={[AppStyles.flex1]}
                             startInLoadingState

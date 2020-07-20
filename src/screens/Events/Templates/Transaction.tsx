@@ -26,6 +26,7 @@ export interface Props {
 export interface State {
     name: string;
     address: string;
+    tag: number
 }
 
 /* Component ==================================================================== */
@@ -33,9 +34,12 @@ class TransactionTemplate extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        const recipientDetails = this.getRecipientDetails();
+
         this.state = {
-            name: '',
-            address: '',
+            name: recipientDetails.name,
+            address: recipientDetails.address,
+            tag: recipientDetails.tag,
         };
     }
 
@@ -44,11 +48,16 @@ class TransactionTemplate extends Component<Props, State> {
     }
 
     componentDidMount() {
-        this.setPartiesDetails();
+        const { name } = this.state;
+
+        if (!name) {
+            this.lookUpRecipientName();
+        }
     }
 
-    setPartiesDetails = () => {
+    getRecipientDetails = () => {
         const { item, account } = this.props;
+
 
         let address;
         let tag;
@@ -101,16 +110,25 @@ class TransactionTemplate extends Component<Props, State> {
             item.Type === 'OfferCancel' ||
             item.Type === 'OfferCreate'
         ) {
-            this.setState({
+            return {
                 address,
+                tag,
                 name: account.label,
-            });
-            return;
+
+            };
         }
 
-        this.setState({
+
+        return {
             address,
-        });
+            tag,
+            name: undefined,
+        };
+    }
+
+    lookUpRecipientName = () => {
+        const { address, tag } = this.state;
+
 
         getAccountName(address, tag)
             .then((res: any) => {
@@ -355,7 +373,7 @@ class TransactionTemplate extends Component<Props, State> {
     render() {
         return (
             <TouchableHighlight onPress={this.onPress} underlayColor="#FFF">
-                <View style={[AppStyles.row, styles.row]}>
+                <View style={[AppStyles.row, styles.container]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         <View style={styles.iconContainer}>{this.getIcon()}</View>
                     </View>

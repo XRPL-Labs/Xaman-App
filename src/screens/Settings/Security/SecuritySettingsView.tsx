@@ -79,6 +79,10 @@ class SecuritySettingsView extends Component<Props, State> {
             .catch(() => {});
     }
 
+    componentWillUnmount() {
+        CoreRepository.off('updateSettings', this.updateUI);
+    }
+
     updateUI = (coreSettings: CoreSchema) => {
         this.setState({ coreSettings });
     };

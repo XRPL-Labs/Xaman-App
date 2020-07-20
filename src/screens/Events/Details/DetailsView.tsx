@@ -445,7 +445,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
         let content = `It deleted account ${tx.Account.address}`;
 
-        content += `\n\nIt was instructed to deliver remaining balance ${tx.Amount.value} ${NormalizeCurrencyCode(
+        content += `\n\nIt was instructed to deliver the remaining balance of ${tx.Amount.value} ${NormalizeCurrencyCode(
             tx.Amount.currency,
         )} to ${tx.Destination.address}`;
 
@@ -573,7 +573,7 @@ class TransactionDetailsView extends Component<Props, State> {
         if (!tx.Memos) return null;
 
         return (
-            <>
+            <View style={styles.memoContainer}>
                 <View style={[AppStyles.row]}>
                     <Icon name="IconFileText" size={18} />
                     <Text style={[styles.labelText]}> {Localize.t('global.memo')}</Text>
@@ -601,7 +601,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         <Text style={[styles.contentText, AppStyles.colorRed]}>{Localize.t('events.showMemo')}</Text>
                     </TouchableOpacity>
                 )}
-            </>
+            </View>
         );
     };
 
@@ -632,8 +632,24 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderHeader = () => {
+        const { tx } = this.props;
+
+        return (
+            <View style={styles.headerContainer}>
+                <Text style={AppStyles.h5}>{this.getLabel()}</Text>
+                <Spacer />
+                <Badge size="medium" type="success" />
+                <Spacer />
+                <Text style={[styles.dateText]}>{moment(tx.Date).format('LLLL')}</Text>
+            </View>
+        );
+    };
+
+
+    renderAmount = () => {
         const { tx, account } = this.props;
         const { incomingTx } = this.state;
+
 
         let shouldShowAmount = true;
 
@@ -703,28 +719,54 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
         }
 
-        return (
-            <>
-                <Text style={AppStyles.h5}>{this.getLabel()}</Text>
-                <Spacer />
-                <Badge size="medium" type="success" />
-                <Spacer />
-                <Text style={[styles.dateText]}>{moment(tx.Date).format('LLLL')}</Text>
-                {!!shouldShowAmount && (
+
+        if (!shouldShowAmount) {
+            return null;
+        }
+
+
+        if (tx.Type === 'OfferCreate') {
+            return (
+                <View style={styles.headerContainer}>
+                    <View style={[AppStyles.row, styles.amountContainerSmall]}>
+                        <Text style={[styles.amountTextSmall]} numberOfLines={1}>
+                            { `${tx.TakerGets.value} ${NormalizeCurrencyCode(tx.TakerGets.currency)}`}
+                        </Text>
+                    </View>
+
+                    <Spacer />
+                    <Icon size={20} style={AppStyles.imgColorGreyBlack} name="IconSwitchAccount" />
+                    <Spacer />
+
                     <View style={[AppStyles.row, styles.amountContainer]}>
                         {/*
-                        // @ts-ignore */}
+                    // @ts-ignore */}
                         <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
                         <Text style={[styles.amountText, props.color]} numberOfLines={1}>
                             {props.text}
                         </Text>
                     </View>
-                )}
-            </>
-        );
-    };
+                </View>
+            );
+        }
 
-    renderExtraHeader = () => {
+
+        return (
+
+            <View style={styles.headerContainer}>
+                <View style={[AppStyles.row, styles.amountContainer]}>
+                    {/*
+                        // @ts-ignore */}
+                    <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                    <Text style={[styles.amountText, props.color]} numberOfLines={1}>
+                        {props.text}
+                    </Text>
+                </View>
+            </View>
+        );
+    }
+
+    renderSourceDestination = () => {
         const { tx, account } = this.props;
         const { partiesDetails, incomingTx } = this.state;
 
@@ -759,15 +801,15 @@ class TransactionDetailsView extends Component<Props, State> {
 
         if (!to.address) {
             return (
-                <>
+                <View style={styles.extraHeaderContainer}>
                     <Text style={[styles.labelText]}>From</Text>
                     <RecipientElement recipient={from} showMoreButton />
-                </>
+                </View>
             );
         }
 
         return (
-            <>
+            <View style={styles.extraHeaderContainer}>
                 <Text style={[styles.labelText]}>From</Text>
                 <RecipientElement
                     recipient={from}
@@ -788,7 +830,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         {actionButton}
                     </>
                 )}
-            </>
+            </View>
         );
     };
 
@@ -825,9 +867,10 @@ class TransactionDetailsView extends Component<Props, State> {
                 )}
 
                 <ScrollView testID="transaction-details-view">
-                    <View style={styles.headerContainer}>{this.renderHeader()}</View>
-                    <View style={styles.memoContainer}>{this.renderMemos()}</View>
-                    <View style={styles.extraHeaderContainer}>{this.renderExtraHeader()}</View>
+                    {this.renderHeader()}
+                    {this.renderAmount()}
+                    {this.renderMemos()}
+                    {this.renderSourceDestination()}
                     <View style={styles.detailsContainer}>
                         {this.renderTransactionId()}
                         <Spacer size={30} />

@@ -183,13 +183,13 @@ class HomeView extends Component<Props, State> {
         }
     };
 
-    updateSpendableStatus = () => {
-        const { account } = this.state;
-
+    // eslint-disable-next-line react/destructuring-assignment
+    updateSpendableStatus = (account = this.state.account) => {
         if (!isEmpty(account) && account.isValid()) {
             const spendableAccounts = AccountRepository.getSpendableAccounts();
 
             this.setState({
+                account,
                 isSpendable: !!find(spendableAccounts, { address: account.address }),
                 canSendPayment: spendableAccounts.length > 0,
             });
@@ -550,8 +550,8 @@ class HomeView extends Component<Props, State> {
                                                 {line.currency.issuer === account.address
                                                     ? Localize.t('home.selfIssued')
                                                     : `${line.counterParty.name} ${
-                                                        line.currency.name &&
-                                                          NormalizeCurrencyCode(line.currency.currency)
+                                                        // eslint-disable-next-line max-len
+                                                        line.currency.name ? NormalizeCurrencyCode(line.currency.currency) : ''
                                                     }`}
                                             </Text>
                                         </View>

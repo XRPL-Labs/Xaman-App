@@ -5,14 +5,12 @@ import isEmpty from 'lodash/isEmpty';
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { Spacer } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import { FormatDate, NormalizeCurrencyCode } from '@common/libs/utils';
 
 import Localize from '@locale';
 
-import { AppStyles } from '@theme';
 
 import styles from './styles';
 
@@ -33,14 +31,8 @@ class OfferCreateTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            takerGetsIssuerDetails: {
-                name: '',
-                source: '',
-            },
-            takerPaysIssuerDetails: {
-                name: '',
-                source: '',
-            },
+            takerGetsIssuerDetails: undefined,
+            takerPaysIssuerDetails: undefined,
             isLoading: false,
         };
     }
@@ -104,23 +96,6 @@ class OfferCreateTemplate extends Component<Props, State> {
                     </Text>
                 </View>
 
-                {transaction.TakerGets.issuer && (
-                    <>
-                        <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
-                        <RecipientElement
-                            containerStyle={[styles.contentBox, styles.addressContainer]}
-                            isLoading={isLoading}
-                            showAvatar={false}
-                            recipient={{
-                                address: transaction.TakerGets.issuer,
-                                ...takerGetsIssuerDetails,
-                            }}
-                        />
-                    </>
-                )}
-
-                <View style={AppStyles.hr} />
-                <Spacer size={20} />
 
                 <Text style={[styles.label]}>{Localize.t('global.inExchangeForReceive')}</Text>
                 <View style={[styles.contentBox]}>
@@ -128,20 +103,17 @@ class OfferCreateTemplate extends Component<Props, State> {
                         {`${transaction.TakerPays.value} ${NormalizeCurrencyCode(transaction.TakerPays.currency)}`}
                     </Text>
                 </View>
-                {transaction.TakerPays.issuer && (
-                    <>
-                        <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
-                        <RecipientElement
-                            containerStyle={[styles.contentBox, styles.addressContainer]}
-                            isLoading={isLoading}
-                            showAvatar={false}
-                            recipient={{
-                                address: transaction.TakerPays.issuer,
-                                ...takerPaysIssuerDetails,
-                            }}
-                        />
-                    </>
-                )}
+
+                <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
+                <RecipientElement
+                    containerStyle={[styles.contentBox, styles.addressContainer]}
+                    isLoading={isLoading}
+                    showAvatar={false}
+                    recipient={{
+                        address: transaction.TakerGets.issuer || transaction.TakerPays.issuer,
+                        ...takerGetsIssuerDetails || takerPaysIssuerDetails,
+                    }}
+                />
 
                 {transaction.Expiration && (
                     <>

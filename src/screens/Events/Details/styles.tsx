@@ -16,23 +16,32 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 25,
-        borderBottomColor: AppColors.grey,
-        borderBottomWidth: 1,
     },
     extraHeaderContainer: {
         padding: 25,
         borderBottomColor: AppColors.grey,
         borderBottomWidth: 1,
+        borderTopColor: AppColors.grey,
+        borderTopWidth: 1,
     },
     detailsContainer: {
         width: AppSizes.screen.width,
         padding: 25,
     },
     amountContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: AppColors.light,
         paddingVertical: 20,
         paddingHorizontal: 30,
-        marginTop: 40,
+        borderRadius: 50,
+    },
+    amountContainerSmall: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: AppColors.light,
+        paddingVertical: 10,
+        paddingHorizontal: 30,
         borderRadius: 50,
     },
     amountText: {
@@ -40,6 +49,12 @@ const styles = StyleSheet.create({
         fontSize: AppFonts.h4.size,
         textAlign: 'center',
         color: AppColors.blue,
+    },
+    amountTextSmall: {
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontSize: AppFonts.h5.size,
+        textAlign: 'center',
+        color: AppColors.black,
     },
     statusText: {
         fontFamily: AppFonts.base.familyBold,

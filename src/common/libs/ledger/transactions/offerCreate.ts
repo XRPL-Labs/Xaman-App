@@ -170,6 +170,11 @@ class OfferCreate extends BaseTransaction {
             }
         });
 
+
+        if (!takerGot) {
+            return this.TakerGets;
+        }
+
         return takerGot;
     }
 
@@ -215,6 +220,10 @@ class OfferCreate extends BaseTransaction {
                 }
             }
         });
+
+        if (!takerPaid) {
+            return this.TakerPays;
+        }
 
         return takerPaid;
     }

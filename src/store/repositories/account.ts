@@ -1,11 +1,12 @@
 import { has, isEmpty, filter } from 'lodash';
 import Realm, { Results, ObjectSchema } from 'realm';
 
+import Flag from '@common/libs/ledger/parser/common/flag';
 import Vault from '@common/libs/vault';
 
 import { AccountSchema } from '@store/schemas/latest';
-
 import { AccessLevels, EncryptionLevels } from '@store/types';
+
 import BaseRepository from './base';
 
 // events
@@ -95,23 +96,9 @@ class AccountRepository extends BaseRepository {
      * get list of available accounts for spending
      */
     getSpendableAccounts = (): Array<AccountSchema> => {
-        const accounts = this.findAll();
+        const signableAccounts = this.getSignableAccounts();
 
-        const availableAccounts = [] as Array<AccountSchema>;
-
-        accounts.forEach((account: AccountSchema) => {
-            if (account.accessLevel === AccessLevels.Full) {
-                availableAccounts.push(account);
-                // check if the regular key account is imported
-            } else if (
-                account.regularKey &&
-                !this.query({ address: account.regularKey, accessLevel: AccessLevels.Full }).isEmpty()
-            ) {
-                availableAccounts.push(account);
-            }
-        });
-
-        return filter(availableAccounts, (a) => a.balance > 0);
+        return filter(signableAccounts, (a) => a.balance > 0);
     };
 
     /**
@@ -124,9 +111,22 @@ class AccountRepository extends BaseRepository {
 
         accounts.forEach((account: AccountSchema) => {
             if (account.accessLevel === AccessLevels.Full) {
-                availableAccounts.push(account);
-                // check if the regular key account is imported
+                // check if master key is disable and regular key not imported
+                if (account.regularKey) {
+                    const flags = new Flag('Account', account.flags);
+                    const accountFlags = flags.parse();
+
+                    // eslint-disable-next-line max-len
+                    const regularKeyImported = !this.query({ address: account.regularKey, accessLevel: AccessLevels.Full }).isEmpty();
+
+                    if ((accountFlags.disableMasterKey && regularKeyImported) || !accountFlags.disableMasterKey) {
+                        availableAccounts.push(account);
+                    }
+                } else {
+                    availableAccounts.push(account);
+                }
             } else if (
+                // Readonly but the regular Key imported as full access
                 account.regularKey &&
                 !this.query({ address: account.regularKey, accessLevel: AccessLevels.Full }).isEmpty()
             ) {

@@ -50,6 +50,12 @@ const styles = StyleSheet.create({
         textAlign: 'right',
         color: AppColors.greyDark,
     },
+    address: {
+        fontFamily: AppFonts.base.familyMono,
+        fontSize: AppFonts.small.size,
+        textAlign: 'right',
+        color: AppColors.greyDark,
+    },
     descriptionText: {
         padding: AppSizes.paddingSml,
         fontFamily: AppFonts.base.familyBold,

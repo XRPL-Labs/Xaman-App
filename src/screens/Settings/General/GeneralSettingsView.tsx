@@ -49,6 +49,10 @@ class GeneralSettingsView extends Component<Props, State> {
         CoreRepository.on('updateSettings', this.updateUI);
     }
 
+    componentWillUnmount() {
+        CoreRepository.off('updateSettings', this.updateUI);
+    }
+
     updateUI = (coreSettings: CoreSchema) => {
         this.setState({ coreSettings });
     };

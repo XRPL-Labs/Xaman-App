@@ -565,7 +565,7 @@ class LedgerService extends EventEmitter {
 
         const arrayAccounts = flatMap(this.accounts, (a) => [a.address]);
 
-        this.logger.debug(`Subscribed to ${arrayAccounts} accounts`, arrayAccounts);
+        this.logger.debug(`Subscribed to ${arrayAccounts.length} accounts`, arrayAccounts);
 
         SocketService.send({
             command: 'subscribe',

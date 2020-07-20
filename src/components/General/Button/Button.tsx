@@ -27,6 +27,8 @@ interface Props {
     testID?: string;
     activeOpacity?: number;
     allowFontScaling?: boolean;
+    adjustsFontSizeToFit?: boolean;
+    numberOfLines?: number;
     isLoading?: boolean;
     isDisabled?: boolean;
     activityIndicatorColor?: string;
@@ -45,6 +47,8 @@ export default class Button extends Component<Props> {
         iconSize: 20,
         activeOpacity: 0.6,
         allowFontScaling: false,
+        adjustsFontSizeToFit: false,
+        numberOfLines: 2,
     };
 
     renderChildren() {
@@ -60,6 +64,8 @@ export default class Button extends Component<Props> {
             roundedSmall,
             roundedMini,
             allowFontScaling,
+            adjustsFontSizeToFit,
+            numberOfLines,
             textStyle,
             iconStyle,
             iconSize,
@@ -89,7 +95,9 @@ export default class Button extends Component<Props> {
                             isDisabled && styles.textButtonDisabled,
                             textStyle,
                         ]}
+                        numberOfLines={numberOfLines}
                         allowFontScaling={allowFontScaling}
+                        adjustsFontSizeToFit={adjustsFontSizeToFit}
                     >
                         {label}
                     </Text>

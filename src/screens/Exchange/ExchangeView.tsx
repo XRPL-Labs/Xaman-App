@@ -364,8 +364,11 @@ class ExchangeView extends Component<Props, State> {
         if (liquidity.errors && liquidity.errors.length > 0) {
             let errorsText = '';
 
-            liquidity.errors.forEach((e) => {
-                errorsText += `* ${this.ledgerExchange.errors[e]}\n`;
+            liquidity.errors.forEach((e, i) => {
+                errorsText += `* ${this.ledgerExchange.errors[e]}`;
+                if (i + 1 < liquidity.errors.length) {
+                    errorsText += '\n';
+                }
             });
 
             return (
@@ -385,6 +388,8 @@ class ExchangeView extends Component<Props, State> {
                             rounded
                             label={Localize.t('global.openXRPToolkitByTowoLabs')}
                             textStyle={[AppStyles.subtext, AppStyles.bold]}
+                            adjustsFontSizeToFit
+                            numberOfLines={1}
                         />
                     </InfoMessage>
                     <Spacer size={40} />

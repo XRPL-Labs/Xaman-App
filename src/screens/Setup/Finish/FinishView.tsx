@@ -55,7 +55,7 @@ class FinishView extends Component<Props, State> {
         };
     }
 
-    handleSubmit = async () => {
+    onConfirmPress = async () => {
         const { TOSVersion } = this.state;
 
         this.setState({
@@ -73,15 +73,18 @@ class FinishView extends Component<Props, State> {
             // save the signed TOS version and date
             ProfileRepository.saveProfile({
                 uuid: user.uuid,
+                deviceUUID: device.uuid,
                 accessToken,
                 signedTOSDate: new Date(),
                 signedTOSVersion: TOSVersion,
             });
 
             // set the initialized flag to true
-            // update last unlocked ts to prevent app lock on first run
-            const ts = await AuthenticationService.getRealTime();
-            CoreRepository.saveSettings({ initialized: true, lastUnlockedTimestamp: ts });
+            CoreRepository.saveSettings({ initialized: true });
+
+            // run post services after success auth
+            AuthenticationService.onSuccessAuthentication();
+
 
             // navigate to default root
             Navigator.startDefault();
@@ -136,7 +139,7 @@ class FinishView extends Component<Props, State> {
                         isDisabled={!isTOSLoaded}
                         testID="confirm-button"
                         isLoading={isLoading}
-                        onPress={this.handleSubmit}
+                        onPress={this.onConfirmPress}
                         label={Localize.t('global.confirm')}
                     />
                 </Footer>

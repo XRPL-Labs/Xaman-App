@@ -196,6 +196,20 @@ class SendView extends Component<Props, State> {
                 // TODO: show error
                 // not enough liquidity
                 if (!liquidity.safe || liquidity.errors.length > 0) {
+                    // TODO: handle better
+                    Navigator.showAlertModal({
+                        type: 'error',
+                        text: Localize.t('send.unableToSendPaymentNotEnoughLiquidity'),
+                        buttons: [
+                            {
+                                text: Localize.t('global.ok'),
+                                onPress: () => {},
+                                light: false,
+                            },
+                        ],
+                    });
+
+                    this.changeView(Steps.Summary);
                     return;
                 }
 
@@ -223,6 +237,26 @@ class SendView extends Component<Props, State> {
         payment.Account = {
             address: source.address,
         };
+
+
+        try {
+            await payment.validate(source);
+        } catch (e) {
+            Navigator.showAlertModal({
+                type: 'error',
+                text: e.message,
+                buttons: [
+                    {
+                        text: Localize.t('global.ok'),
+                        onPress: () => {},
+                        light: false,
+                    },
+                ],
+            });
+            return;
+        } finally {
+            this.changeView(Steps.Summary);
+        }
 
         // submit payment to the ledger
         payment.submit(privateKey).then((submitResult) => {

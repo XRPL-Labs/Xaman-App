@@ -215,7 +215,7 @@ class SummaryStep extends Component {
                         <Text style={[styles.currencyItemLabel]}>
                             {NormalizeCurrencyCode(item.currency.currency)}
 
-                            <Text style={[AppStyles.subtext]}> - {item.currency.name}</Text>
+                            {item.currency.name && <Text style={[AppStyles.subtext]}> - {item.currency.name}</Text>}
                         </Text>
                         <Text style={[styles.currencyBalance]}>
                             {Localize.t('global.balance')}: {item.balance}

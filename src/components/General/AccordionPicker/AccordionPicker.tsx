@@ -25,6 +25,7 @@ interface Props {
     renderItem: (item: any, selected?: boolean) => React.ReactElement | null;
     onSelect?: (item: any) => void;
     onExpand?: () => void;
+    onPress?: () => void;
     keyExtractor?: (item: any) => string;
 }
 
@@ -108,6 +109,18 @@ class AccordionPicker extends Component<Props, State> {
     public updateContainerPosition = () => {
         this.setContainerPosition();
     };
+
+
+    onPress = () => {
+        const { onPress } = this.props;
+
+
+        if (typeof onPress === 'function') {
+            onPress();
+        } else {
+            this.toggle();
+        }
+    }
 
     toggle = () => {
         const { items } = this.props;
@@ -212,7 +225,7 @@ class AccordionPicker extends Component<Props, State> {
                 <TouchableOpacity
                     activeOpacity={0.9}
                     onLayout={this.setItemHeight}
-                    onPress={this.toggle}
+                    onPress={this.onPress}
                     style={[styles.pickerDropDownItem, AppStyles.centerContent]}
                 >
                     <View style={[AppStyles.row]}>

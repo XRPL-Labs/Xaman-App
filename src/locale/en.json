@@ -552,7 +552,9 @@
         "unableGetRecipientAccountInfoPleaseTryAgain": "Unable to get recipient account info please try again.",
         "noDestinationTag": "No destination tag",
         "thisAddressRequiredDestinationTag": "This address requires a destination tag",
-        "pleaseEnterAmount": "Please enter the amount of transaction"
+        "pleaseEnterAmount": "Please enter the amount of transaction",
+        "trustLineLimitExceeded": "TrustLine limit is exceeded, now: %{balance}, max: %{peer_limit}, available for issuing: %{available}. The recipient can update the Trustline limit.",
+        "unableToSendPaymentNotEnoughLiquidity": "Unable to send the payment right now due to lack of liquidity."
     },
     "asset": {
         "addAsset": "Add asset",

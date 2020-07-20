@@ -53,6 +53,11 @@ class AdvancedSettingsView extends Component<Props, State> {
         CoreRepository.on('updateSettings', this.updateUI);
     }
 
+    componentWillUnmount() {
+        CoreRepository.off('updateSettings', this.updateUI);
+    }
+
+
     updateUI = (coreSettings: CoreSchema) => {
         this.setState({
             coreSettings,
@@ -181,7 +186,7 @@ class AdvancedSettingsView extends Component<Props, State> {
 
                         <View style={[AppStyles.flex2]}>
                             <Text selectable numberOfLines={1} adjustsFontSizeToFit style={[styles.value]}>
-                                {profile.uuid.toUpperCase()}
+                                {profile.deviceUUID.toUpperCase()}
                             </Text>
                         </View>
                     </View>

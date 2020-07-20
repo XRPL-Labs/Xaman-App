@@ -176,8 +176,9 @@ class AppService extends EventEmitter {
             case 'active':
                 appState = AppStateStatus.Active;
                 break;
-            case 'background':
             case 'inactive':
+                break;
+            case 'background':
                 appState = AppStateStatus.Background;
                 break;
             default:

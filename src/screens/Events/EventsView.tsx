@@ -5,7 +5,6 @@ import Fuse from 'fuse.js';
 import moment from 'moment';
 import { isEmpty, flatMap, isUndefined, isEqual, filter, get, uniqBy, groupBy, map } from 'lodash';
 import React, { Component } from 'react';
-import { Navigation } from 'react-native-navigation';
 import {
     SafeAreaView,
     View,
@@ -111,11 +110,10 @@ class EventsView extends Component<Props, State> {
     }
 
     componentDidMount = () => {
+        const { account } = this.state;
+
         // add listener for default account change
         AccountRepository.on('changeDefaultAccount', this.onDefaultAccountChange);
-
-        // listen for screen appear event
-        Navigation.events().bindComponent(this);
 
         // update list on transaction received
         LedgerService.on('transaction', () => {
@@ -126,27 +124,15 @@ class EventsView extends Component<Props, State> {
         PushNotificationsService.on('signRequestUpdate', () => {
             this.updateDataSource();
         });
-    };
 
-    componentDidAppear() {
-        const { account } = this.state;
 
-        // update account details
         InteractionManager.runAfterInteractions(() => {
             if (account.isValid()) {
                 this.updateDataSource(true);
-            } else {
-                this.setState(
-                    {
-                        account: AccountRepository.getDefaultAccount(),
-                    },
-                    () => {
-                        this.updateDataSource(true);
-                    },
-                );
             }
         });
-    }
+    };
+
 
     formatDate = (date: string) => {
         const momentDate = moment(date);

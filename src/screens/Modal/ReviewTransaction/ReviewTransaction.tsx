@@ -70,6 +70,7 @@ export interface State {
     errorMessage: string;
     isPreparing: boolean;
     canScroll: boolean;
+    panelExpanded: boolean;
     headerHeight: number;
     coreSettings: CoreSchema;
 }
@@ -104,6 +105,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             hasError: false,
             errorMessage: '',
             canScroll: false,
+            panelExpanded: false,
             headerHeight: 0,
             coreSettings: CoreRepository.getSettings(),
         };
@@ -555,7 +557,11 @@ class ReviewTransactionModal extends Component<Props, State> {
         const { targetSnapPointId, state } = event.nativeEvent;
 
         if (state === 'end' && targetSnapPointId === 'up') {
-            this.setState({ canScroll: true });
+            this.setState({ canScroll: true, panelExpanded: true });
+        }
+
+        if (state === 'end' && targetSnapPointId === 'down') {
+            this.setState({ panelExpanded: false });
         }
     };
 
@@ -572,7 +578,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             if (this.panel) {
                 this.panel.snapTo({ index: 0 });
             }
-        });
+        }, 10);
     };
 
     onScroll = (event: any) => {
@@ -581,6 +587,22 @@ class ReviewTransactionModal extends Component<Props, State> {
             this.setState({ canScroll: false });
         }
     };
+
+
+    onSourcePickerPress = () => {
+        const { panelExpanded } = this.state;
+
+
+        if (!panelExpanded) {
+            this.slideUp();
+
+            setTimeout(() => {
+                this.sourcePicker.open();
+            }, 1000);
+        } else {
+            this.sourcePicker.open();
+        }
+    }
 
     renderDetails = () => {
         const { payload } = this.props;
@@ -796,7 +818,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                                     renderItem={this.renderAccountItem}
                                     selectedItem={source}
                                     keyExtractor={(i) => i.address}
-                                    // onExpand={this.slideUp}
+                                    onPress={this.onSourcePickerPress}
                                 />
                             </View>
 

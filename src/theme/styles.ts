@@ -141,7 +141,7 @@ export default StyleSheet.create({
     imgColorGreyDark: { tintColor: Colors.greyDark },
     imgColorRed: { tintColor: Colors.red },
     imgColorOrange: { tintColor: Colors.orange },
-    imgcolorGreyBlack: { tintColor: Colors.greyBlack },
+    imgColorGreyBlack: { tintColor: Colors.greyBlack },
 
     borderRadius: {
         borderRadius: 12,

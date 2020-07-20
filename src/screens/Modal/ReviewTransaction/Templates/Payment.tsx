@@ -144,8 +144,9 @@ class PaymentTemplate extends Component<Props, State> {
                 } else {
                     // check for transfer fee
                     // add PartialPayment
-                    const issuerAccountInfo = await LedgerService.getAccountInfo(trustLine.account);
-                    if (has(issuerAccountInfo, ['account_data', 'TransferRate']) || account === trustLine.account) {
+                    const issuerAccountInfo = await LedgerService.getAccountInfo(transaction.Amount.issuer);
+                    // eslint-disable-next-line max-len
+                    if (has(issuerAccountInfo, ['account_data', 'TransferRate']) || account === transaction.Amount.issuer) {
                         transaction.Flags = [txFlags.Payment.PartialPayment];
                     }
 

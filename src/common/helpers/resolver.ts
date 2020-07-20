@@ -35,7 +35,7 @@ const getAccountName = memoize(
 
             // check address  book
             try {
-                const filter = { address, destinationTag: tag };
+                const filter = { address, destinationTag: tag || '' };
                 const contact = ContactRepository.findOne(filter);
                 if (!isEmpty(contact)) {
                     return resolve({

@@ -61,6 +61,7 @@ class AccountListView extends Component<Props, State> {
     componentDidAppear() {
         this.setState({
             accounts: AccountRepository.getAccounts(),
+            signableAccount: AccountRepository.getSignableAccounts(),
         });
     }
 
@@ -83,6 +84,9 @@ class AccountListView extends Component<Props, State> {
     renderItem = (account: { item: AccountSchema }) => {
         const { signableAccount } = this.state;
         const { item } = account;
+
+
+        if (!item.isValid()) return null;
 
         // default full access
         let accessLevelLabel = Localize.t('account.fullAccess');
