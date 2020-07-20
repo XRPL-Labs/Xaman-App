@@ -208,13 +208,14 @@ class BackendService {
                 const { auth, badge, tosAndPrivacyPolicyVersion } = res;
 
                 if (auth) {
-                    const { user } = auth;
+                    const { user, device } = auth;
 
                     // update the profile
                     ProfileRepository.saveProfile({
                         username: user.name,
                         slug: user.slug,
                         uuid: user.uuidv4,
+                        deviceUUID: device.uuidv4,
                         lastSync: new Date(),
                     });
 
