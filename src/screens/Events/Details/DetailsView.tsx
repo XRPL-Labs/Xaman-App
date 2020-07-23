@@ -445,9 +445,9 @@ class TransactionDetailsView extends Component<Props, State> {
 
         let content = `It deleted account ${tx.Account.address}`;
 
-        content += `\n\nIt was instructed to deliver the remaining balance of ${tx.Amount.value} ${NormalizeCurrencyCode(
-            tx.Amount.currency,
-        )} to ${tx.Destination.address}`;
+        content += `\n\nIt was instructed to deliver the remaining balance of ${
+            tx.Amount.value
+        } ${NormalizeCurrencyCode(tx.Amount.currency)} to ${tx.Destination.address}`;
 
         if (tx.Account.tag) {
             content += `\nThe transaction has a source tag:${tx.Account.tag}`;
@@ -645,11 +645,9 @@ class TransactionDetailsView extends Component<Props, State> {
         );
     };
 
-
     renderAmount = () => {
         const { tx, account } = this.props;
         const { incomingTx } = this.state;
-
 
         let shouldShowAmount = true;
 
@@ -719,18 +717,16 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
         }
 
-
         if (!shouldShowAmount) {
             return null;
         }
-
 
         if (tx.Type === 'OfferCreate') {
             return (
                 <View style={styles.headerContainer}>
                     <View style={[AppStyles.row, styles.amountContainerSmall]}>
                         <Text style={[styles.amountTextSmall]} numberOfLines={1}>
-                            { `${tx.TakerGets.value} ${NormalizeCurrencyCode(tx.TakerGets.currency)}`}
+                            {`${tx.TakerGets.value} ${NormalizeCurrencyCode(tx.TakerGets.currency)}`}
                         </Text>
                     </View>
 
@@ -750,9 +746,7 @@ class TransactionDetailsView extends Component<Props, State> {
             );
         }
 
-
         return (
-
             <View style={styles.headerContainer}>
                 <View style={[AppStyles.row, styles.amountContainer]}>
                     {/*
@@ -764,7 +758,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 </View>
             </View>
         );
-    }
+    };
 
     renderSourceDestination = () => {
         const { tx, account } = this.props;

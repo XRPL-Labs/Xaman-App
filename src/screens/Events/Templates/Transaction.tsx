@@ -26,7 +26,7 @@ export interface Props {
 export interface State {
     name: string;
     address: string;
-    tag: number
+    tag: number;
 }
 
 /* Component ==================================================================== */
@@ -57,7 +57,6 @@ class TransactionTemplate extends Component<Props, State> {
 
     getRecipientDetails = () => {
         const { item, account } = this.props;
-
 
         let address;
         let tag;
@@ -114,21 +113,18 @@ class TransactionTemplate extends Component<Props, State> {
                 address,
                 tag,
                 name: account.label,
-
             };
         }
-
 
         return {
             address,
             tag,
             name: undefined,
         };
-    }
+    };
 
     lookUpRecipientName = () => {
         const { address, tag } = this.state;
-
 
         getAccountName(address, tag)
             .then((res: any) => {

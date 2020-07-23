@@ -9,6 +9,8 @@ import { View, Keyboard, InteractionManager } from 'react-native';
 
 import * as AccountLib from 'xrpl-accountlib';
 
+import { getAccountName } from '@common/helpers/resolver';
+
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { EncryptionLevels, AccessLevels } from '@store/types';
 
@@ -112,6 +114,14 @@ class AccountGenerateView extends Component<Props, State> {
 
         // add account to store
         AccountRepository.add(account, generatedAccount.keypair.privateKey, encryptionKey);
+
+        // update catch for this account
+        getAccountName.cache.set(
+            account.address,
+            new Promise((resolve) => {
+                resolve({ name: account.label, source: 'internal:accounts' });
+            }),
+        );
     };
 
     goNext = (nextStep: GenerateSteps) => {

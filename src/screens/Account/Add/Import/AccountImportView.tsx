@@ -9,6 +9,8 @@ import { View, Keyboard, Alert } from 'react-native';
 
 import { XRPL_Account } from 'xrpl-accountlib';
 
+import { getAccountName } from '@common/helpers/resolver';
+
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccessLevels, EncryptionLevels } from '@store/types';
 
@@ -235,6 +237,13 @@ class AccountImportView extends Component<Props, State> {
             }
         }
 
+        // update catch for this account
+        getAccountName.cache.set(
+            account.address,
+            new Promise((resolve) => {
+                resolve({ name: account.label, source: 'internal:accounts' });
+            }),
+        );
         // add account to store
         AccountRepository.add(account, importedAccount.keypair.privateKey, encryptionKey);
     };

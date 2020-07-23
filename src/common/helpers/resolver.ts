@@ -24,7 +24,7 @@ export interface AccountInfoType {
 }
 
 const getAccountName = memoize(
-    (address: string, tag?: number, internal?: boolean): Promise<AccountNameType> => {
+    (address: string, tag = '', internal = false): Promise<AccountNameType> => {
         return new Promise((resolve) => {
             if (!address) {
                 return resolve({
@@ -35,7 +35,7 @@ const getAccountName = memoize(
 
             // check address  book
             try {
-                const filter = { address, destinationTag: tag || '' };
+                const filter = { address, destinationTag: tag };
                 const contact = ContactRepository.findOne(filter);
                 if (!isEmpty(contact)) {
                     return resolve({
@@ -90,7 +90,7 @@ const getAccountName = memoize(
                 });
         });
     },
-    (address: string, tag: number) => `${address}${tag}`,
+    (address: string, tag = '') => `${address}${tag}`,
 );
 
 const getAccountInfo = (address: string): Promise<AccountInfoType> => {
