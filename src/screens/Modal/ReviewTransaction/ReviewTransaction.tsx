@@ -192,7 +192,9 @@ class ReviewTransactionModal extends Component<Props, State> {
         payload.reject();
 
         // emit sign requests update
-        PushNotificationsService.emit('signRequestUpdate');
+        setTimeout(() => {
+            PushNotificationsService.emit('signRequestUpdate');
+        }, 1000);
 
         // close modal
         Navigator.dismissModal();
@@ -436,6 +438,11 @@ class ReviewTransactionModal extends Component<Props, State> {
             // patch the payload
             payload.patch(patch);
 
+            // emit sign requests update
+            setTimeout(() => {
+                PushNotificationsService.emit('signRequestUpdate');
+            }, 1000);
+
             this.setState({
                 step: 'result',
                 isPreparing: false,
@@ -588,10 +595,8 @@ class ReviewTransactionModal extends Component<Props, State> {
         }
     };
 
-
     onSourcePickerPress = () => {
         const { panelExpanded } = this.state;
-
 
         if (!panelExpanded) {
             this.slideUp();
@@ -602,7 +607,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         } else {
             this.sourcePicker.open();
         }
-    }
+    };
 
     renderDetails = () => {
         const { payload } = this.props;
