@@ -1,7 +1,7 @@
 /**
  * Transaction Details screen
  */
-import { find, isEmpty } from 'lodash';
+import { find, isEmpty, isUndefined } from 'lodash';
 import moment from 'moment';
 
 import React, { Component } from 'react';
@@ -515,6 +515,65 @@ class TransactionDetailsView extends Component<Props, State> {
         );
     };
 
+    renderAccountSet = () => {
+        const { tx } = this.props;
+
+        let content = `This is a ${tx.Type} transaction`;
+
+        if (
+            isUndefined(tx.SetFlag) &&
+            isUndefined(tx.ClearFlag) &&
+            isUndefined(tx.Domain) &&
+            isUndefined(tx.EmailHash) &&
+            isUndefined(tx.MessageKey) &&
+            isUndefined(tx.TransferRate)
+        ) {
+            return content;
+        }
+
+        if (tx.Domain !== undefined) {
+            if (tx.Domain === '') {
+                content += '\nIt removes the account domain';
+            } else {
+                content += `\nIt sets the account domain to ${tx.Domain}`;
+            }
+        }
+
+        if (tx.EmailHash !== undefined) {
+            if (tx.EmailHash === '') {
+                content += '\nIt removes the account email hash';
+            } else {
+                content += `\nIt sets the account email hash to ${tx.EmailHash}`;
+            }
+        }
+
+        if (tx.MessageKey !== undefined) {
+            if (tx.MessageKey === '') {
+                content += '\nIt removes the account message key';
+            } else {
+                content += `\nIt sets the account message key to ${tx.MessageKey}`;
+            }
+        }
+
+        if (tx.TransferRate !== undefined) {
+            if (tx.TransferRate === '') {
+                content += '\nIt removes the account transfer rate';
+            } else {
+                content += `\nIt sets the account transfer rates to ${tx.TransferRate}`;
+            }
+        }
+
+        if (tx.SetFlag !== undefined) {
+            content += `\nIt sets the account flag ${tx.SetFlag}`;
+        }
+
+        if (tx.ClearFlag !== undefined) {
+            content += `\nIt clears the account flag ${tx.ClearFlag}`;
+        }
+
+        return content;
+    };
+
     renderDescription = () => {
         const { tx } = this.props;
 
@@ -553,6 +612,9 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case 'DepositPreauth':
                 content += this.renderDepositPreauth();
+                break;
+            case 'AccountSet':
+                content += this.renderAccountSet();
                 break;
             default:
                 content += `This is a ${tx.Type} transaction`;
@@ -797,7 +859,7 @@ class TransactionDetailsView extends Component<Props, State> {
             return (
                 <View style={styles.extraHeaderContainer}>
                     <Text style={[styles.labelText]}>From</Text>
-                    <RecipientElement recipient={from} showMoreButton />
+                    <RecipientElement recipient={from} />
                 </View>
             );
         }
