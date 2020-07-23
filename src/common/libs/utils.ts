@@ -3,6 +3,7 @@
  *
  */
 import moment from 'moment-timezone';
+import BigNumber from 'bignumber.js';
 
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
@@ -101,10 +102,6 @@ const NormalizeCurrencyCode = (currencyCode: string): string => {
     return currencyCode;
 };
 
-const FormatDate = (date: string): string => {
-    return moment(date).format('lll');
-};
-
 const NormalizeDestination = (destination: XrplDestination): XrplDestination => {
     let to;
     let tag;
@@ -127,6 +124,19 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination => 
         to,
         tag,
     };
+};
+
+const NormalizeBalance = (balance: number) => {
+    return new BigNumber(balance).decimalPlaces(6).toString(10);
+};
+
+/**
+ * format the date
+ * @param date
+ * @returns string September 4 1986 8:30 PM
+ */
+const FormatDate = (date: string): string => {
+    return moment(date).format('lll');
 };
 
 /**
@@ -171,4 +181,13 @@ const VersionDiff = (v1: string, v2: string) => {
 };
 
 /* Export ==================================================================== */
-export { HexEncoding, Truncate, FormatDate, NormalizeAmount, NormalizeCurrencyCode, NormalizeDestination, VersionDiff };
+export {
+    HexEncoding,
+    Truncate,
+    FormatDate,
+    NormalizeAmount,
+    NormalizeBalance,
+    NormalizeCurrencyCode,
+    NormalizeDestination,
+    VersionDiff,
+};

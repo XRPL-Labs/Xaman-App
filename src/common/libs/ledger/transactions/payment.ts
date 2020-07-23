@@ -152,13 +152,14 @@ class Payment extends BaseTransaction {
         }
 
         if (typeof input === 'object') {
-            let value = new BigNumber(input.value);
+            const value = new BigNumber(input.value);
 
             // if transferRate set then add the fee to the value
-            if (this.TransferRate) {
-                const fee = value.multipliedBy(this.TransferRate).dividedBy(100);
-                value = value.plus(fee);
-            }
+            // if (this.TransferRate) {
+            //     const fee = value.multipliedBy(this.TransferRate).dividedBy(100);
+            //     value = value.plus(fee);
+            // }
+            // value = new BigNumber(value.toString().slice(0, 16));
 
             set(this, 'tx.Amount', {
                 currency: input.currency,
@@ -223,13 +224,13 @@ class Payment extends BaseTransaction {
             return;
         }
 
-        let value = new BigNumber(input.value);
+        const value = new BigNumber(input.value);
 
         // if transferRate set then add the fee to the value
-        if (this.TransferRate) {
-            const fee = value.multipliedBy(this.TransferRate).dividedBy(100);
-            value = value.plus(fee);
-        }
+        // if (this.TransferRate) {
+        //     const fee = value.multipliedBy(this.TransferRate).dividedBy(100);
+        //     value = value.plus(fee);
+        // }
 
         set(this, 'tx.DeliverMin', {
             currency: input.currency,
@@ -296,13 +297,11 @@ class Payment extends BaseTransaction {
                     // check IOU balance
                     const line = source.lines.find(
                         (e: any) =>
-                        // eslint-disable-next-line implicit-arrow-linebreak
+                            // eslint-disable-next-line implicit-arrow-linebreak
                             e.currency.issuer === this.Amount.issuer && e.currency.currency === this.Amount.currency,
                     );
 
-
                     if (!line) return resolve();
-
 
                     if (Number(this.Amount.value) > Number(line.balance)) {
                         return reject(

@@ -25,7 +25,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
 import Preferences from '@common/libs/preferences';
-import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeAmount, NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
 
 // components
 import { Button, AccordionPicker, Footer, Spacer, TextInput, Header } from '@components/General';
@@ -218,7 +218,7 @@ class SummaryStep extends Component {
                             {item.currency.name && <Text style={[AppStyles.subtext]}> - {item.currency.name}</Text>}
                         </Text>
                         <Text style={[styles.currencyBalance]}>
-                            {Localize.t('global.balance')}: {item.balance}
+                            {Localize.t('global.balance')}: {NormalizeBalance(item.balance)}
                         </Text>
                     </View>
                 </View>
@@ -254,27 +254,13 @@ class SummaryStep extends Component {
             return;
         }
 
-        const availableBalance = new BigNumber(this.getAvailableBalance());
-
-        let maxCanSend = availableBalance.toNumber();
-
-        let hasTransferFee = false;
-
-        // check if balance can cover the transfer fee for non XRP currencies
-        if (typeof currency !== 'string' && currency.transfer_rate) {
-            hasTransferFee = true;
-
-            const rate = new BigNumber(currency.transfer_rate).dividedBy(1000000).minus(1000).dividedBy(10);
-
-            const fee = availableBalance.multipliedBy(rate).dividedBy(100).decimalPlaces(6);
-            maxCanSend = availableBalance.minus(fee).toNumber();
-        }
+        const availableBalance = new BigNumber(this.getAvailableBalance()).toNumber();
 
         // check if amount is bigger than what user can spend
-        if (bAmount.toNumber() > maxCanSend) {
+        if (bAmount.toNumber() > availableBalance) {
             Prompt(
                 Localize.t('global.error'),
-                Localize.t(hasTransferFee ? 'send.theMaxAmountYouCanSendWithFee' : 'send.theMaxAmountYouCanSendIs', {
+                Localize.t('send.theMaxAmountYouCanSendIs', {
                     spendable: availableBalance,
                     currency: this.getCurrencyName(),
                 }),
@@ -283,7 +269,7 @@ class SummaryStep extends Component {
                     {
                         text: Localize.t('global.update'),
                         onPress: () => {
-                            setAmount(maxCanSend.toString());
+                            setAmount(availableBalance.toString());
                         },
                     },
                 ],

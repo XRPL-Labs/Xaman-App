@@ -28,7 +28,7 @@ import { AppStateStatus } from '@services/AppService';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
 // constants
 import { AppScreens } from '@common/constants';
 
@@ -550,9 +550,11 @@ class HomeView extends Component<Props, State> {
                                                 {line.currency.issuer === account.address
                                                     ? Localize.t('home.selfIssued')
                                                     : `${line.counterParty.name} ${
-                                                        // eslint-disable-next-line max-len
-                                                        line.currency.name ? NormalizeCurrencyCode(line.currency.currency) : ''
-                                                    }`}
+                                                          // eslint-disable-next-line max-len
+                                                          line.currency.name
+                                                              ? NormalizeCurrencyCode(line.currency.currency)
+                                                              : ''
+                                                      }`}
                                             </Text>
                                         </View>
                                     </View>
@@ -578,7 +580,7 @@ class HomeView extends Component<Props, State> {
                                                 discreetMode && AppStyles.colorGreyDark,
                                             ]}
                                         >
-                                            {discreetMode ? '••••••••' : line.balance}
+                                            {discreetMode ? '••••••••' : NormalizeBalance(line.balance)}
                                         </Text>
                                     </View>
                                 </TouchableOpacity>

@@ -24,7 +24,7 @@ import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import { Images } from '@common/helpers/images';
 import { Prompt } from '@common/helpers/interface';
-import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeAmount, NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
 
 // components
 import { Header, Button, AccordionPicker, Footer } from '@components/General';
@@ -81,27 +81,14 @@ class DetailsStep extends Component {
             return;
         }
 
-        const availableBalance = new BigNumber(this.getAvailableBalance());
-        let maxCanSend = availableBalance.toNumber();
-
-        let hasTransferFee = false;
-
-        // check if balance can cover the transfer fee for non XRP currencies
-        if (typeof currency !== 'string' && currency.transfer_rate) {
-            hasTransferFee = true;
-
-            const rate = new BigNumber(currency.transfer_rate).dividedBy(1000000).minus(1000).dividedBy(10);
-
-            const fee = availableBalance.multipliedBy(rate).dividedBy(100).decimalPlaces(6);
-            maxCanSend = availableBalance.minus(fee).toNumber();
-        }
+        const availableBalance = new BigNumber(this.getAvailableBalance()).toNumber();
 
         // check if amount is bigger than what user can spend
-        if (bAmount.toNumber() > maxCanSend) {
+        if (bAmount.toNumber() > availableBalance) {
             Prompt(
                 Localize.t('global.error'),
-                Localize.t(hasTransferFee ? 'send.theMaxAmountYouCanSendWithFee' : 'send.theMaxAmountYouCanSendIs', {
-                    spendable: maxCanSend,
+                Localize.t('send.theMaxAmountYouCanSendIs', {
+                    spendable: availableBalance,
                     currency: this.getCurrencyName(),
                 }),
                 [
@@ -109,7 +96,7 @@ class DetailsStep extends Component {
                     {
                         text: Localize.t('global.update'),
                         onPress: () => {
-                            setAmount(maxCanSend.toString());
+                            setAmount(availableBalance.toString());
                         },
                     },
                 ],
@@ -246,7 +233,7 @@ class DetailsStep extends Component {
                         <Text
                             style={[styles.currencyBalance, selected ? AppStyles.colorBlue : AppStyles.colorGreyDark]}
                         >
-                            {Localize.t('global.balance')}: {item.balance}
+                            {Localize.t('global.balance')}: {NormalizeBalance(item.balance)}
                         </Text>
                     </View>
                 </View>
