@@ -785,7 +785,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
         if (tx.Type === 'OfferCreate') {
             return (
-                <View style={styles.headerContainer}>
+                <View style={styles.amountHeaderContainer}>
                     <View style={[AppStyles.row, styles.amountContainerSmall]}>
                         <Text style={[styles.amountTextSmall]} numberOfLines={1}>
                             {`${tx.TakerGets.value} ${NormalizeCurrencyCode(tx.TakerGets.currency)}`}
@@ -809,7 +809,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         return (
-            <View style={styles.headerContainer}>
+            <View style={styles.amountHeaderContainer}>
                 <View style={[AppStyles.row, styles.amountContainer]}>
                     {/*
                         // @ts-ignore */}

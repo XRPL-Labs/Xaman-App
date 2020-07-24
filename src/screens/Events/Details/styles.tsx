@@ -11,11 +11,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 25,
     },
+    amountHeaderContainer: {
+        width: AppSizes.screen.width,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 10,
+        paddingBottom: 25,
+        paddingHorizontal: 25,
+    },
     memoContainer: {
         width: AppSizes.screen.width,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 25,
+        paddingTop: 10,
+        paddingBottom: 25,
+        paddingHorizontal: 25,
     },
     extraHeaderContainer: {
         padding: 25,

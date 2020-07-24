@@ -18,6 +18,7 @@ import {
     LayoutChangeEvent,
     BackHandler,
     Keyboard,
+    Platform,
 } from 'react-native';
 
 import Interactable from 'react-native-interactable';
@@ -557,7 +558,13 @@ class ReviewTransactionModal extends Component<Props, State> {
     };
 
     onSnap = () => {
-        this.sourcePicker.updateContainerPosition();
+        if (Platform.OS === 'android') {
+            setTimeout(() => {
+                this.sourcePicker.updateContainerPosition();
+            }, 500);
+        } else {
+            this.sourcePicker.updateContainerPosition();
+        }
     };
 
     onDrag = (event: any) => {
