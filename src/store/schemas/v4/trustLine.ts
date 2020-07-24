@@ -42,6 +42,7 @@ class TrustLine extends Realm.Object {
     public freeze?: boolean;
     public freeze_peer?: boolean;
     public obligation?: boolean;
+    public isValid?: () => boolean;
 
     constructor(obj: Partial<TrustLine>) {
         super();

@@ -106,18 +106,22 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination => 
     let to;
     let tag;
 
-    // decode if it's x address
-    if (destination.to.startsWith('X')) {
-        try {
-            const decoded = Decode(destination.to);
-            to = decoded.account;
-            tag = Number(decoded.tag);
-        } catch {
-            // ignore
+    try {
+        // decode if it's x address
+        if (destination.to.startsWith('X')) {
+            try {
+                const decoded = Decode(destination.to);
+                to = decoded.account;
+                tag = Number(decoded.tag);
+            } catch {
+                // ignore
+            }
+        } else if (AccountLibUtils.isValidAddress(destination.to)) {
+            to = destination.to;
+            tag = destination.tag;
         }
-    } else if (AccountLibUtils.isValidAddress(destination.to)) {
-        to = destination.to;
-        tag = destination.tag;
+    } catch {
+        // ignore
     }
 
     return {

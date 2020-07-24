@@ -209,6 +209,8 @@ class AddCurrencyOverlay extends Component<Props, State> {
         }
 
         return counterParties.map((c, index) => {
+            if (!c.isValid()) return null;
+
             return (
                 <TouchableOpacity
                     key={index}

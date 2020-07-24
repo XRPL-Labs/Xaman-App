@@ -29,6 +29,7 @@ class CounterParty extends Realm.Object {
     public registerAt?: Date;
     public updatedAt?: Date;
     public currencies?: CurrencySchema[];
+    public isValid?: () => boolean;
 
     constructor(obj: Partial<CounterParty>) {
         super();

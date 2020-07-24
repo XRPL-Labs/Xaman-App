@@ -25,6 +25,7 @@ class Currency extends Realm.Object {
     public name: string;
     public avatar: string;
     public shortlist: boolean;
+    public isValid?: () => boolean;
 
     constructor(obj: Partial<Currency>) {
         super();

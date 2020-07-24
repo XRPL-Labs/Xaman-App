@@ -518,7 +518,7 @@ class TransactionDetailsView extends Component<Props, State> {
     renderAccountSet = () => {
         const { tx } = this.props;
 
-        let content = `This is a ${tx.Type} transaction`;
+        let content = `This is an ${tx.Type} transaction`;
 
         if (
             isUndefined(tx.SetFlag) &&
