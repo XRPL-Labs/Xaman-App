@@ -15,7 +15,7 @@ import { TrustSet, Payment } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import Flag from '@common/libs/ledger/parser/common/flag';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
 
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
@@ -379,7 +379,9 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 {trustLine.currency.avatar && (
                                     <Image style={styles.currencyAvatar} source={{ uri: trustLine.currency.avatar }} />
                                 )}
-                                <Text style={[AppStyles.pbold, AppStyles.monoBold]}>{trustLine.balance}</Text>
+                                <Text style={[AppStyles.pbold, AppStyles.monoBold]}>
+                                    {NormalizeBalance(trustLine.balance)}
+                                </Text>
                             </View>
                         </View>
 
