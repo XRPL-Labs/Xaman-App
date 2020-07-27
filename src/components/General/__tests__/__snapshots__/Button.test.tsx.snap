@@ -178,7 +178,9 @@ exports[`Button Component should render with label 1`] = `
     }
   >
     <Text
+      adjustsFontSizeToFit={false}
       allowFontScaling={false}
+      numberOfLines={2}
       style={
         Array [
           Object {
