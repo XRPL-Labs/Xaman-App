@@ -277,6 +277,12 @@ class Payment extends BaseTransaction {
                 return reject(new Error(Localize.t('send.pleaseEnterAmount')));
             }
 
+
+            // this is a multisign tx
+            if (source.balance === 0) {
+                return resolve();
+            }
+
             // if XRP check XRP Balance
             if (this.Amount.currency === 'XRP' || (this.SendMax && this.SendMax.currency === 'XRP')) {
                 const XRPAmount = (this.SendMax && this.SendMax.value) || this.Amount.value;

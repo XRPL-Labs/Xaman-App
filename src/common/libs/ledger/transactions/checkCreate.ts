@@ -99,6 +99,11 @@ class CheckCreate extends BaseTransaction {
                 return reject(new Error(Localize.t('send.pleaseEnterAmount')));
             }
 
+            // this is a multisign tx & ignore balance check
+            if (source.balance === 0) {
+                return resolve();
+            }
+
             if (this.SendMax.currency === 'XRP') {
                 if (Number(this.SendMax.value) > Number(source.availableBalance)) {
                     return reject(

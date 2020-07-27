@@ -141,7 +141,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         // get available account base on transaction type
         let availableAccounts =
-            payload.payload.tx_type === 'SignIn'
+            payload.payload.tx_type === 'SignIn' || payload.meta.multisign
                 ? AccountRepository.getSignableAccounts()
                 : AccountRepository.getSpendableAccounts();
 
@@ -286,7 +286,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         }
 
         // account is not activated and want to sign a tx
-        if (payload.payload.tx_type !== 'SignIn' && source.balance === 0) {
+        if (payload.payload.tx_type !== 'SignIn' && !payload.meta.multisign && source.balance === 0) {
             Alert.alert(
                 Localize.t('global.error'),
                 Localize.t('account.selectedAccountIsNotActivatedPleaseChooseAnotherOne'),
