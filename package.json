@@ -1,7 +1,8 @@
 {
   "name": "xumm",
   "version": "0.5.1",
-  "private": true,
+  "private": false,
+  "license": "SEE LICENSE IN <LICENSE>",
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "prettier": "prettier --write `find -E src -regex \".*.(ts|tsx)\"`",
