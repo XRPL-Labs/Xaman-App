@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import { View, Text, Platform, ActivityIndicator } from 'react-native';
+import { View, Text } from 'react-native';
 import isEmpty from 'lodash/isEmpty';
 
 import { OfferCreate } from '@common/libs/ledger/transactions';
-import { getAccountName } from '@common/helpers/resolver';
+import { getAccountName, AccountNameType } from '@common/helpers/resolver';
+
+import { RecipientElement } from '@components/Modules';
+
+import { FormatDate, NormalizeCurrencyCode } from '@common/libs/utils';
 
 import Localize from '@locale';
 
-import { AppColors } from '@theme';
 
 import styles from './styles';
 
@@ -17,8 +20,8 @@ export interface Props {
 }
 
 export interface State {
-    takerGetsIssuerName: string;
-    takerPaysIssuerName: string;
+    takerGetsIssuerDetails: AccountNameType;
+    takerPaysIssuerDetails: AccountNameType;
     isLoading: boolean;
 }
 
@@ -28,8 +31,8 @@ class OfferCreateTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            takerGetsIssuerName: '',
-            takerPaysIssuerName: '',
+            takerGetsIssuerDetails: undefined,
+            takerPaysIssuerDetails: undefined,
             isLoading: false,
         };
     }
@@ -46,7 +49,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                 .then((res: any) => {
                     if (!isEmpty(res)) {
                         this.setState({
-                            takerGetsIssuerName: res.name,
+                            takerGetsIssuerDetails: res,
                         });
                     }
                 })
@@ -65,7 +68,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                 .then((res: any) => {
                     if (!isEmpty(res)) {
                         this.setState({
-                            takerPaysIssuerName: res.name,
+                            takerPaysIssuerDetails: res,
                         });
                     }
                 })
@@ -82,66 +85,41 @@ class OfferCreateTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { takerGetsIssuerName, takerPaysIssuerName, isLoading } = this.state;
+        const { takerGetsIssuerDetails, takerPaysIssuerDetails, isLoading } = this.state;
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.takerGets')}</Text>
+                <Text style={[styles.label]}>{Localize.t('global.selling')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={[styles.amount]}>
-                        {`${transaction.TakerGets.value} ${transaction.TakerGets.currency}`}
+                        {`${transaction.TakerGets.value} ${NormalizeCurrencyCode(transaction.TakerGets.currency)}`}
                     </Text>
                 </View>
 
-                {transaction.TakerGets.issuer && (
-                    <>
-                        <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
-                        <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>
-                                {isLoading ? (
-                                    Platform.OS === 'ios' ? (
-                                        <ActivityIndicator color={AppColors.blue} />
-                                    ) : (
-                                        'Loading...'
-                                    )
-                                ) : (
-                                    takerGetsIssuerName || transaction.TakerGets.issuer
-                                )}
-                            </Text>
-                        </View>
-                    </>
-                )}
 
-                <Text style={[styles.label]}>{Localize.t('global.takerPays')}</Text>
+                <Text style={[styles.label]}>{Localize.t('global.inExchangeForReceive')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={[styles.amount]}>
-                        {`${transaction.TakerPays.value} ${transaction.TakerPays.currency}`}
+                        {`${transaction.TakerPays.value} ${NormalizeCurrencyCode(transaction.TakerPays.currency)}`}
                     </Text>
                 </View>
-                {transaction.TakerPays.issuer && (
-                    <>
-                        <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
-                        <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>
-                                {isLoading ? (
-                                    Platform.OS === 'ios' ? (
-                                        <ActivityIndicator color={AppColors.blue} />
-                                    ) : (
-                                        'Loading...'
-                                    )
-                                ) : (
-                                    takerPaysIssuerName || transaction.TakerPays.issuer
-                                )}
-                            </Text>
-                        </View>
-                    </>
-                )}
+
+                <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
+                <RecipientElement
+                    containerStyle={[styles.contentBox, styles.addressContainer]}
+                    isLoading={isLoading}
+                    showAvatar={false}
+                    recipient={{
+                        address: transaction.TakerGets.issuer || transaction.TakerPays.issuer,
+                        ...takerGetsIssuerDetails || takerPaysIssuerDetails,
+                    }}
+                />
 
                 {transaction.Expiration && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.expireAfter')}</Text>
                         <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{transaction.Expiration}</Text>
+                            <Text style={[styles.value]}>{FormatDate(transaction.Expiration)}</Text>
                         </View>
                     </>
                 )}

@@ -89,6 +89,19 @@ const Vault = {
     },
 
     /**
+     *  Check key exist in vault
+     */
+    exist: async (name: string): Promise<boolean> => {
+        try {
+            const { iv, cipher } = await Vault.retrieve(name);
+
+            return !!iv && !!cipher;
+        } catch {
+            return false;
+        }
+    },
+
+    /**
      *  get storage encryption key from vault
      */
     getStorageEncryptionKey: async (keyName: string): Promise<Buffer> => {

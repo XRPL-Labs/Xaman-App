@@ -36,17 +36,24 @@ export default class Storage {
      */
     initialize = () => {
         return new Promise((resolve, reject) => {
-            return this.open()
-                .then((instance) => {
-                    // set the db instance
-                    this.db = instance;
+            return this.configure()
+                .then((config) => {
+                    return this.open(config)
+                        .then((instance) => {
+                            // set the db instance
+                            this.db = instance;
 
-                    // initialize repositories
-                    this.initRepositories(instance)
-                        .then(() => {
-                            return resolve();
+                            // initialize repositories
+                            this.initRepositories(instance)
+                                .then(() => {
+                                    return resolve();
+                                })
+                                .catch((e) => {
+                                    return reject(e);
+                                });
                         })
                         .catch((e) => {
+                            this.logger.error('Storage open error', e);
                             return reject(e);
                         });
                 })
@@ -60,14 +67,13 @@ export default class Storage {
     /**
      * Configure Database
      */
-    open = async (): Promise<Realm> => {
-        // get the config
-        const defaultConfig = await this.getDefaultConfig();
-
-        const currentVersion = Realm.schemaVersion(defaultConfig.path, defaultConfig.encryptionKey);
+    open = async (config: Realm.Configuration): Promise<Realm> => {
+        // get current version
+        const currentVersion = Realm.schemaVersion(config.path, config.encryptionKey);
 
         this.logger.debug(`Storage current schema version: ${currentVersion}`);
 
+        // sort migrations and get latest schema version
         const sorted = sortBy(schemas, [(v) => v.schemaVersion]);
         const latest = sorted.slice(-1)[0];
 
@@ -77,7 +83,7 @@ export default class Storage {
 
             // @ts-ignore
             return new Realm({
-                ...defaultConfig,
+                ...config,
                 schema: filter(latest.schema, (_, k) => k !== 'migration'),
                 schemaVersion: latest.schemaVersion,
             });
@@ -95,7 +101,7 @@ export default class Storage {
             // migrate and create database instance
             // @ts-ignore
             const migrationRealm = new Realm({
-                ...defaultConfig,
+                ...config,
                 schema: filter(current.schema, (_, k) => k !== 'migration'),
                 schemaVersion: current.schemaVersion,
                 migration: current.migration,
@@ -145,7 +151,15 @@ export default class Storage {
     /**
      * Get Default Database config
      */
-    async getDefaultConfig(): Promise<Realm.Configuration> {
+    async configure(): Promise<Realm.Configuration> {
+        // check if we need to start a clean realm
+        const encryptionKeyExist = await Vault.exist(this.keyName);
+        const dbFileExist = Realm.exists({ path: this.path });
+
+        if (!encryptionKeyExist && dbFileExist) {
+            Realm.deleteFile({ path: this.path });
+        }
+
         // set encryption key
         return Vault.getStorageEncryptionKey(this.keyName).then((key: Buffer) => {
             return {

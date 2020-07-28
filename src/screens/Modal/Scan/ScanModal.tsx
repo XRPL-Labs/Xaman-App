@@ -24,7 +24,7 @@ import { NormalizeDestination } from '@common/libs/utils';
 import Localize from '@locale';
 
 // components
-import { Button, Spacer, Icon } from '@components';
+import { Button, Spacer, Icon } from '@components/General';
 
 // style
 import { AppStyles, AppColors } from '@theme';
@@ -140,6 +140,17 @@ class ScanView extends Component<Props, State> {
     };
 
     handleSignedTransaction = (txblob: string) => {
+        // normalize input
+        let cleanBlob = txblob;
+
+        // Bithomp txBlob contains json
+        try {
+            const parsedBlob = JSON.parse(txblob);
+            cleanBlob = parsedBlob.signedTransaction;
+        } catch {
+            // ignore
+        }
+
         Alert.alert(
             Localize.t('global.signedTransaction'),
             Localize.t('global.signedTransactionDetectedSubmit'),
@@ -157,7 +168,7 @@ class ScanView extends Component<Props, State> {
                             AppScreens.Modal.Submit,
                             { modalPresentationStyle: 'fullScreen' },
                             {
-                                txblob,
+                                txblob: cleanBlob,
                             },
                         );
                     },
@@ -173,6 +184,7 @@ class ScanView extends Component<Props, State> {
         const availableAccounts = AccountRepository.getSpendableAccounts();
 
         if (availableAccounts.length > 0) {
+            // if it's payId do nothing
             if (destination.payId) {
                 this.routeUser(
                     AppScreens.Transaction.Payment,
@@ -188,6 +200,8 @@ class ScanView extends Component<Props, State> {
 
             let amount;
 
+            // normal XRP address scanned
+            // try to decode X Address
             const { to, tag } = NormalizeDestination(destination);
 
             // if amount present as XRP pass the amount

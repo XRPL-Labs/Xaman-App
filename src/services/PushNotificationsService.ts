@@ -13,6 +13,7 @@ import { AppScreens } from '@common/constants';
 import { Payload } from '@common/libs/payload';
 
 import LoggerService from '@services/LoggerService';
+import NavigationService from '@services/NavigationService';
 
 import Localize from '@locale';
 
@@ -153,7 +154,10 @@ class PushNotificationsService extends EventEmitter {
             title: notification.title,
         });
 
-        if (this.isSignRequest(notification)) {
+        // eslint-disable-next-line max-len
+        const shouldShowNotification = this.isSignRequest(notification) && NavigationService.getCurrentScreen() !== AppScreens.Modal.ReviewTransaction;
+
+        if (shouldShowNotification) {
             // show the notification
             if (Platform.OS === 'android') {
                 notification.android.setChannelId('notifications');

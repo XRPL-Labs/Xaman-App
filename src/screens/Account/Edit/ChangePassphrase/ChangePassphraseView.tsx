@@ -12,7 +12,7 @@ import Vault from '@common/libs/vault';
 
 import { AccountSchema } from '@store/schemas/latest';
 
-import { Header, Footer, Button, Spacer, PasswordInput } from '@components';
+import { PasswordInput, Header, Footer, Button, Spacer } from '@components/General';
 
 import Localize from '@locale';
 

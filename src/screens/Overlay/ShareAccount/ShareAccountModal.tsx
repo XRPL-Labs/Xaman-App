@@ -8,13 +8,12 @@ import Interactable from 'react-native-interactable';
 
 import { AccountSchema } from '@store/schemas/latest';
 
-import { getNavigationBarHeight } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, QRCode, Spacer } from '@components';
+import { Button, QRCode, Spacer } from '@components/General';
 
 import Localize from '@locale';
 
@@ -127,15 +126,15 @@ class ShareAccountModal extends Component<Props, State> {
                     verticalOnly
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
-                        { y: AppSizes.screen.height - (AppSizes.moderateScale(370) + getNavigationBarHeight()) },
+                        { y: AppSizes.screen.height - (AppSizes.moderateScale(370) + AppSizes.navigationBarHeight) },
                     ]}
                     boundaries={{
-                        top: AppSizes.screen.height - (AppSizes.moderateScale(390) + getNavigationBarHeight()),
+                        top: AppSizes.screen.height - (AppSizes.moderateScale(390) + AppSizes.navigationBarHeight),
                     }}
                     initialPosition={{ y: AppSizes.screen.height }}
                     animatedValueY={this.deltaY}
                 >
-                    <View style={[AppStyles.visibleContent]}>
+                    <View style={[styles.visibleContent]}>
                         <View style={AppStyles.panelHeader}>
                             <View style={AppStyles.panelHandle} />
                         </View>

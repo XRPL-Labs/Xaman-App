@@ -15,7 +15,7 @@ import { BiometryType } from '@store/types';
 
 import { Navigator } from '@common/helpers/navigator';
 
-import { Header, Switch, Icon } from '@components';
+import { Header, Switch, Icon, InfoMessage } from '@components/General';
 
 import Localize from '@locale';
 // style
@@ -77,6 +77,10 @@ class SecuritySettingsView extends Component<Props, State> {
                 });
             })
             .catch(() => {});
+    }
+
+    componentWillUnmount() {
+        CoreRepository.off('updateSettings', this.updateUI);
     }
 
     updateUI = (coreSettings: CoreSchema) => {
@@ -150,10 +154,8 @@ class SecuritySettingsView extends Component<Props, State> {
                 },
                 {
                     biometricAvailable: false,
-                    onDismissed: ({ success }: { success: boolean }) => {
-                        if (success) {
-                            this.changeBiometricMethod(value);
-                        }
+                    onSuccess: () => {
+                        this.changeBiometricMethod(value);
                     },
                 },
             );
@@ -190,6 +192,12 @@ class SecuritySettingsView extends Component<Props, State> {
         });
     };
 
+    discreetModeChange = (value: boolean) => {
+        CoreRepository.saveSettings({
+            discreetMode: value,
+        });
+    };
+
     render() {
         const { biometricEnabled, coreSettings } = this.state;
 
@@ -206,7 +214,7 @@ class SecuritySettingsView extends Component<Props, State> {
                 />
 
                 <ScrollView>
-                    <Text style={styles.descriptionText}>{Localize.t('settings.securitySettingsDescription')}</Text>
+                    <Text style={styles.descriptionText}>{Localize.t('global.authentication')}</Text>
                     <TouchableOpacity
                         style={styles.row}
                         onPress={() => {
@@ -259,7 +267,17 @@ class SecuritySettingsView extends Component<Props, State> {
                             <Switch checked={coreSettings.purgeOnBruteForce} onChange={this.eraseDataChange} />
                         </View>
                     </View>
-                    <Text style={styles.destructionLabel}>{Localize.t('settings.eraseDataDescription')}</Text>
+                    <InfoMessage label={Localize.t('settings.eraseDataDescription')} type="error" />
+
+                    <Text style={styles.descriptionText}>{Localize.t('global.other')}</Text>
+                    <View style={styles.row}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text style={styles.label}>{Localize.t('settings.hideBalanceByDefault')}</Text>
+                        </View>
+                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Switch checked={coreSettings.discreetMode} onChange={this.discreetModeChange} />
+                        </View>
+                    </View>
                 </ScrollView>
             </View>
         );

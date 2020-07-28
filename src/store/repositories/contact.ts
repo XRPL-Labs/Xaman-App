@@ -24,6 +24,10 @@ class ContactRepository extends BaseRepository {
     getContacts = (): Results<ContactSchema> => {
         return this.findAll();
     };
+
+    exist = (address: string, tag: string): boolean => {
+        return !this.query({ address, destinationTag: tag }).isEmpty();
+    };
 }
 
 export default new ContactRepository();

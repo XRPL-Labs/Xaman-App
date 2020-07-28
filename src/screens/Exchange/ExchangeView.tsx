@@ -6,14 +6,19 @@ import React, { Component } from 'react';
 import {
     View,
     SafeAreaView,
+    ScrollView,
     Text,
     Image,
     Alert,
     TextInput,
     Keyboard,
+    Linking,
     TouchableOpacity,
     InteractionManager,
+    ActivityIndicator,
 } from 'react-native';
+
+import { Result as LiquidityResult } from 'xrpl-orderbook-reader';
 
 import { Images } from '@common/helpers/images';
 import { Prompt } from '@common/helpers/interface';
@@ -28,10 +33,10 @@ import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 // constants
-import { AppScreens } from '@common/constants';
+import { AppScreens, AppConfig } from '@common/constants';
 
 // components
-import { Header, Spacer, Icon, Button, InfoMessage } from '@components';
+import { Header, Spacer, Icon, Button, InfoMessage } from '@components/General';
 
 import Localize from '@locale';
 
@@ -46,10 +51,10 @@ export interface Props {
 
 export interface State {
     sourceAccount: AccountSchema;
-    ledgerExchange: LedgerExchange;
-    fromCurrency: string;
-    paysAmount: string;
-    exchangeRate: number;
+    direction: 'sell' | 'buy';
+    amount: string;
+    liquidity: LiquidityResult;
+    isLoading: boolean;
     isExchanging: boolean;
     isVerifying: boolean;
 }
@@ -58,7 +63,10 @@ export interface State {
 class ExchangeView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Exchange;
 
-    paysAmountInput: TextInput;
+    timeout: any;
+    sequence: number;
+    ledgerExchange: LedgerExchange;
+    amountInput: TextInput;
 
     static options() {
         return {
@@ -69,90 +77,110 @@ class ExchangeView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const XRPL_PAIR = { issuer: props.trustLine.currency.issuer, currency: props.trustLine.currency.currency };
-
         this.state = {
             sourceAccount: AccountRepository.getDefaultAccount(),
-            ledgerExchange: new LedgerExchange(XRPL_PAIR),
-            fromCurrency: 'XRP',
-            paysAmount: '',
-            exchangeRate: undefined,
+            direction: 'sell',
+            amount: '',
+            liquidity: undefined,
+            isLoading: true,
             isExchanging: false,
             isVerifying: false,
         };
+
+        const PAIR = { issuer: props.trustLine.currency.issuer, currency: props.trustLine.currency.currency };
+        this.ledgerExchange = new LedgerExchange(PAIR);
+
+        this.timeout = null;
+        this.sequence = 0;
     }
 
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
-            this.getExchangeRate();
+            this.ledgerExchange.initialize().then(() => {
+                this.checkLiquidity();
+            });
         });
     }
 
-    getExchangeRate = async () => {
-        const { fromCurrency, ledgerExchange } = this.state;
+    checkLiquidity = async () => {
+        const { direction, amount } = this.state;
 
-        const direction = fromCurrency === 'XRP' ? 'sell' : 'buy';
+        clearTimeout(this.timeout);
 
-        // sync from latest order book
-        await ledgerExchange.sync();
+        this.timeout = setTimeout(() => {
+            // increase sequence
+            this.sequence += 1;
+            // get a copy of sequence
+            const { sequence } = this;
 
-        // get Liquidity grade
-        const liquidityGrade = ledgerExchange.liquidityGrade(direction);
+            this.setState({
+                isLoading: true,
+            });
 
-        if (liquidityGrade < 2) {
-            if (liquidityGrade === 1) {
-                Alert.alert(Localize.t('global.warning'), Localize.t('exchange.liquidityIsNotSoMuch'));
-            }
-            if (liquidityGrade === 0) {
-                this.setState({
-                    exchangeRate: 0,
+            this.ledgerExchange
+                .getLiquidity(direction, Number(amount))
+                .then((res) => {
+                    // this will make sure the latest call will apply
+                    if (sequence === this.sequence) {
+                        this.setState({
+                            liquidity: res,
+                        });
+                    }
+                })
+                .finally(() => {
+                    this.setState({
+                        isLoading: false,
+                    });
                 });
-                return;
-            }
-        }
+        }, 500);
+    };
 
-        this.setState({
-            exchangeRate: ledgerExchange.getExchangeRate(direction),
+    openXRPToolkit = () => {
+        Linking.canOpenURL(AppConfig.thirdParty.XRPToolkit).then((supported) => {
+            if (supported) {
+                Linking.openURL(AppConfig.thirdParty.XRPToolkit);
+            } else {
+                Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
+            }
         });
     };
 
-    switchCurrency = () => {
-        const { trustLine } = this.props;
-        const { fromCurrency } = this.state;
+    switchDirection = () => {
+        const { direction } = this.state;
 
         this.setState(
             {
-                fromCurrency: fromCurrency === 'XRP' ? trustLine.currency.name : 'XRP',
+                direction: direction === 'buy' ? 'sell' : 'buy',
+                isLoading: true,
             },
             () => {
-                this.getExchangeRate();
+                this.checkLiquidity();
             },
         );
     };
 
     createOffer = async (privateKey: string) => {
         const { trustLine } = this.props;
-        const { sourceAccount, paysAmount, fromCurrency, exchangeRate } = this.state;
+        const { sourceAccount, amount, direction, liquidity } = this.state;
 
         this.setState({ isExchanging: true });
 
         const XRPL_PAIR = { issuer: trustLine.currency.issuer, currency: trustLine.currency.currency };
 
-        const actualExchangeRate =
-            fromCurrency === 'XRP'
-                ? new BigNumber(exchangeRate).dividedBy(1.02)
-                : new BigNumber(1).dividedBy(exchangeRate).dividedBy(1.02);
+        const paddedExchangeRate = new BigNumber(liquidity.rate).dividedBy(
+            (100 + this.ledgerExchange.boundaryOptions.maxSlippagePercentage) / 100,
+        );
 
-        const getsAmount = new BigNumber(paysAmount).multipliedBy(actualExchangeRate).decimalPlaces(6).toString(10);
+        const getsAmount = new BigNumber(amount).multipliedBy(paddedExchangeRate).decimalPlaces(6).toString(10);
 
         // create offer transaction
         const offer = new OfferCreate();
 
-        if (fromCurrency === 'XRP') {
-            offer.TakerGets = { currency: 'XRP', value: paysAmount };
+        if (direction === 'sell') {
+            offer.TakerGets = { currency: 'XRP', value: amount };
             offer.TakerPays = { value: getsAmount, ...XRPL_PAIR };
         } else {
-            offer.TakerGets = { value: paysAmount, ...XRPL_PAIR };
+            offer.TakerGets = { value: amount, ...XRPL_PAIR };
             offer.TakerPays = { currency: 'XRP', value: getsAmount };
         }
 
@@ -188,9 +216,9 @@ class ExchangeView extends Component<Props, State> {
                     Localize.t('global.success'),
                     Localize.t('exchange.successfullyExchanged', {
                         payAmount: offer.TakerGot.value,
-                        payCurrency: offer.TakerGot.currency,
+                        payCurrency: NormalizeCurrencyCode(offer.TakerGot.currency),
                         getAmount: offer.TakerPaid.value,
-                        getCurrency: offer.TakerPaid.currency,
+                        getCurrency: NormalizeCurrencyCode(offer.TakerPaid.currency),
                     }),
                 );
             } else {
@@ -223,13 +251,10 @@ class ExchangeView extends Component<Props, State> {
 
     exchange = () => {
         const { trustLine } = this.props;
-        const { fromCurrency, exchangeRate, paysAmount } = this.state;
+        const { direction, liquidity, amount } = this.state;
 
         // calculate gets amount
-        const getsAmount = new BigNumber(paysAmount)
-            .multipliedBy(fromCurrency === 'XRP' ? exchangeRate : 1 / exchangeRate)
-            .decimalPlaces(3)
-            .toString(10);
+        const getsAmount = new BigNumber(amount).multipliedBy(liquidity.rate).decimalPlaces(3).toString(10);
 
         // dismiss keyboard if present
         Keyboard.dismiss();
@@ -238,12 +263,12 @@ class ExchangeView extends Component<Props, State> {
         const availableBalance = this.getAvailableBalance();
 
         // check if user can spend this much
-        if (parseFloat(paysAmount) > availableBalance) {
+        if (parseFloat(amount) > availableBalance) {
             Prompt(
                 Localize.t('global.error'),
                 Localize.t('exchange.theMaxAmountYouCanExchangeIs', {
                     spendable: availableBalance,
-                    currency: fromCurrency === 'XRP' ? 'XRP' : NormalizeCurrencyCode(trustLine.currency.currency),
+                    currency: direction === 'sell' ? 'XRP' : NormalizeCurrencyCode(trustLine.currency.currency),
                 }),
                 [
                     { text: Localize.t('global.cancel') },
@@ -251,7 +276,7 @@ class ExchangeView extends Component<Props, State> {
                         text: Localize.t('global.update'),
                         onPress: () => {
                             this.setState({
-                                paysAmount: availableBalance.toString(),
+                                amount: availableBalance.toString(),
                             });
                         },
                     },
@@ -264,10 +289,10 @@ class ExchangeView extends Component<Props, State> {
         Prompt(
             Localize.t('global.pleaseNote'),
             Localize.t('exchange.doYouWantToExchange', {
-                payAmount: paysAmount,
-                payCurrency: fromCurrency,
+                payAmount: amount,
+                payCurrency: direction === 'sell' ? 'XRP' : NormalizeCurrencyCode(trustLine.currency.currency),
                 getAmount: getsAmount,
-                getCurrency: fromCurrency === 'XRP' ? NormalizeCurrencyCode(trustLine.currency.currency) : 'XRP',
+                getCurrency: direction === 'sell' ? NormalizeCurrencyCode(trustLine.currency.currency) : 'XRP',
             }),
             [
                 { text: Localize.t('global.cancel') },
@@ -301,21 +326,26 @@ class ExchangeView extends Component<Props, State> {
         );
     };
 
-    onPaysAmountChange = (amount: string) => {
-        const paysAmount = NormalizeAmount(amount);
+    onAmountChange = (amount: string) => {
+        const normalizedAmount = NormalizeAmount(amount);
 
-        this.setState({
-            paysAmount,
-        });
+        this.setState(
+            {
+                amount: normalizedAmount,
+            },
+            () => {
+                this.checkLiquidity();
+            },
+        );
     };
 
     getAvailableBalance = () => {
         const { trustLine } = this.props;
-        const { fromCurrency, sourceAccount } = this.state;
+        const { direction, sourceAccount } = this.state;
 
         let availableBalance;
 
-        if (fromCurrency === 'XRP') {
+        if (direction === 'sell') {
             availableBalance = sourceAccount.availableBalance;
         } else {
             availableBalance = trustLine.balance;
@@ -324,17 +354,78 @@ class ExchangeView extends Component<Props, State> {
         return availableBalance;
     };
 
+    renderBottomContainer = () => {
+        const { direction, liquidity, amount, isExchanging, isLoading } = this.state;
+
+        if (isLoading || !liquidity) {
+            return <ActivityIndicator color={AppColors.blue} />;
+        }
+
+        if (liquidity.errors && liquidity.errors.length > 0) {
+            let errorsText = '';
+
+            liquidity.errors.forEach((e, i) => {
+                errorsText += `* ${this.ledgerExchange.errors[e]}`;
+                if (i + 1 < liquidity.errors.length) {
+                    errorsText += '\n';
+                }
+            });
+
+            return (
+                <>
+                    <InfoMessage type="error" label={errorsText} />
+                    <Spacer />
+                    <InfoMessage type="info">
+                        <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
+                            {Localize.t('exchange.exchangeByThirdPartyMessage')}
+                        </Text>
+                        <Spacer size={30} />
+                        <Button
+                            onPress={this.openXRPToolkit}
+                            icon="IconLink"
+                            iconStyle={AppStyles.imgColorGreyDark}
+                            light
+                            rounded
+                            label={Localize.t('global.openXRPToolkitByTowoLabs')}
+                            textStyle={[AppStyles.subtext, AppStyles.bold]}
+                            adjustsFontSizeToFit
+                            numberOfLines={1}
+                        />
+                    </InfoMessage>
+                    <Spacer size={40} />
+                </>
+            );
+        }
+
+        const exchangeRate =
+            direction === 'sell'
+                ? liquidity.rate
+                : new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(6).toString(10);
+
+        return (
+            <>
+                <Text style={[styles.subLabel, AppStyles.textCenterAligned]}>
+                    {Localize.t('exchange.exchangeRate', { exchangeRate })}
+                </Text>
+                <Spacer size={40} />
+                <Button
+                    onPress={this.exchange}
+                    isLoading={isExchanging}
+                    isDisabled={!amount || amount === '0' || !liquidity.rate || isLoading}
+                    label={Localize.t('global.exchange')}
+                />
+            </>
+        );
+    };
+
     render() {
         const { trustLine } = this.props;
-        const { fromCurrency, exchangeRate, paysAmount, isExchanging, isVerifying } = this.state;
+        const { direction, liquidity, amount, isExchanging, isVerifying } = this.state;
 
         let getsAmount = '0';
 
-        if (exchangeRate) {
-            getsAmount = new BigNumber(paysAmount || 0)
-                .multipliedBy(fromCurrency === 'XRP' ? exchangeRate : 1 / exchangeRate)
-                .decimalPlaces(3)
-                .toString(10);
+        if (liquidity?.rate) {
+            getsAmount = new BigNumber(amount || 0).multipliedBy(liquidity.rate).decimalPlaces(3).toString(10);
         }
 
         if (isExchanging) {
@@ -382,7 +473,6 @@ class ExchangeView extends Component<Props, State> {
         return (
             <View
                 onResponderRelease={() => Keyboard.dismiss()}
-                onStartShouldSetResponder={() => true}
                 testID="exchange-currency-view"
                 style={[styles.container]}
             >
@@ -403,14 +493,14 @@ class ExchangeView extends Component<Props, State> {
                         <TouchableOpacity
                             activeOpacity={1}
                             onPress={() => {
-                                if (this.paysAmountInput) {
-                                    this.paysAmountInput.focus();
+                                if (this.amountInput) {
+                                    this.amountInput.focus();
                                 }
                             }}
                             style={[AppStyles.row]}
                         >
                             <View style={[AppStyles.row, AppStyles.flex1]}>
-                                {fromCurrency === 'XRP' ? (
+                                {direction === 'sell' ? (
                                     <View style={[styles.xrpAvatarContainer]}>
                                         <Image source={Images.IconXrpNew} style={[styles.xrpAvatar]} />
                                     </View>
@@ -424,7 +514,7 @@ class ExchangeView extends Component<Props, State> {
                                 )}
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
                                     <Text style={[styles.currencyLabel]}>
-                                        {fromCurrency === 'XRP'
+                                        {direction === 'sell'
                                             ? 'XRP'
                                             : trustLine.currency.name ||
                                               NormalizeCurrencyCode(trustLine.currency.currency)}
@@ -435,16 +525,16 @@ class ExchangeView extends Component<Props, State> {
                                 <Text style={styles.fromAmount}>-</Text>
                                 <TextInput
                                     ref={(r) => {
-                                        this.paysAmountInput = r;
+                                        this.amountInput = r;
                                     }}
                                     autoFocus={false}
-                                    onChangeText={this.onPaysAmountChange}
+                                    onChangeText={this.onAmountChange}
                                     placeholder="0"
                                     placeholderTextColor={AppColors.red}
                                     keyboardType="decimal-pad"
                                     autoCapitalize="words"
                                     style={styles.fromAmount}
-                                    value={paysAmount}
+                                    value={amount}
                                     returnKeyType="done"
                                 />
                             </View>
@@ -458,7 +548,7 @@ class ExchangeView extends Component<Props, State> {
 
                         {/* switch button */}
                         <Button
-                            onPress={this.switchCurrency}
+                            onPress={this.switchDirection}
                             roundedSmall
                             icon="IconCornerRightUp"
                             iconStyle={AppStyles.imgColorBlue}
@@ -474,7 +564,7 @@ class ExchangeView extends Component<Props, State> {
                     <View style={styles.toContainer}>
                         <View style={[AppStyles.row]}>
                             <View style={[AppStyles.row, AppStyles.flex1]}>
-                                {fromCurrency !== 'XRP' ? (
+                                {direction === 'buy' ? (
                                     <View style={[styles.xrpAvatarContainer]}>
                                         <Image source={Images.IconXrpNew} style={[styles.xrpAvatar]} />
                                     </View>
@@ -488,7 +578,7 @@ class ExchangeView extends Component<Props, State> {
                                 )}
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
                                     <Text style={[styles.currencyLabel]}>
-                                        {fromCurrency !== 'XRP'
+                                        {direction === 'buy'
                                             ? 'XRP'
                                             : trustLine.currency.name ||
                                               NormalizeCurrencyCode(trustLine.currency.currency)}
@@ -510,7 +600,7 @@ class ExchangeView extends Component<Props, State> {
                         <Spacer />
                         <View>
                             <Text style={[styles.subLabel]}>
-                                {fromCurrency === 'XRP' &&
+                                {direction === 'sell' &&
                                     `${trustLine.counterParty.name} ${NormalizeCurrencyCode(
                                         trustLine.currency.currency,
                                     )}`}
@@ -518,24 +608,10 @@ class ExchangeView extends Component<Props, State> {
                         </View>
                     </View>
 
-                    <View style={styles.bottomContainer}>
-                        {exchangeRate === 0 ? (
-                            <InfoMessage type="error" label={Localize.t('exchange.liquidityIsNotEnough')} />
-                        ) : (
-                            <>
-                                <Text style={[styles.subLabel, AppStyles.textCenterAligned]}>
-                                    {Localize.t('exchange.exchangeRate', { exchangeRate: exchangeRate || '' })}
-                                </Text>
-                                <Spacer size={40} />
-                                <Button
-                                    onPress={this.exchange}
-                                    isLoading={isExchanging}
-                                    isDisabled={!paysAmount || paysAmount === '0' || !exchangeRate}
-                                    label={Localize.t('global.exchange')}
-                                />
-                            </>
-                        )}
-                    </View>
+                    {/* bottom part */}
+                    <ScrollView bounces={false} style={styles.bottomContainer}>
+                        {this.renderBottomContainer()}
+                    </ScrollView>
                 </View>
             </View>
         );

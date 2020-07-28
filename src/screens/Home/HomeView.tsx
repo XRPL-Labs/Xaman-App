@@ -2,7 +2,7 @@
  * Home Screen
  */
 
-import { isEmpty, find } from 'lodash';
+import { isEmpty, find, has } from 'lodash';
 
 import React, { Component, Fragment } from 'react';
 import {
@@ -25,10 +25,10 @@ import { Navigation } from 'react-native-navigation';
 import { LedgerService, LinkingService, SocketService, AppService } from '@services';
 import { AppStateStatus } from '@services/AppService';
 
-import { AccountRepository } from '@store/repositories';
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
+import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
 // constants
 import { AppScreens } from '@common/constants';
 
@@ -39,7 +39,7 @@ import { VibrateHapticFeedback } from '@common/helpers/interface';
 import Localize from '@locale';
 
 // components
-import { Button, CustomButton, InfoMessage, Spacer, Icon } from '@components';
+import { Button, RaisedButton, InfoMessage, Spacer, Icon } from '@components/General';
 
 // style
 import { AppStyles } from '@theme';
@@ -50,8 +50,9 @@ export interface Props {}
 
 export interface State {
     account: AccountSchema;
-    spendableAccounts: Array<AccountSchema>;
-    privacyMode: boolean;
+    canSendPayment: boolean;
+    isSpendable: boolean;
+    discreetMode: boolean;
     clipboardDetected: StringTypeDetector;
     ignoreClipboardContent: Array<string>;
 }
@@ -70,10 +71,14 @@ class HomeView extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
+
+        const coreSettings = CoreRepository.getSettings();
+
         this.state = {
             account: AccountRepository.getDefaultAccount(),
-            spendableAccounts: AccountRepository.getSpendableAccounts(),
-            privacyMode: false,
+            isSpendable: false,
+            canSendPayment: false,
+            discreetMode: coreSettings.discreetMode,
             clipboardDetected: undefined,
             ignoreClipboardContent: [],
         };
@@ -82,24 +87,28 @@ class HomeView extends Component<Props, State> {
     componentDidMount() {
         // update UI on accounts update
         AccountRepository.on('accountUpdate', this.updateUI);
-        AccountRepository.on('changeDefaultAccount', this.onDefaultAccountChange);
 
         // update spendable accounts on account add/remove
-        AccountRepository.on('accountCreate', this.updateSpendableAccounts);
-        AccountRepository.on('accountRemove', this.updateSpendableAccounts);
+        AccountRepository.on('accountCreate', this.updateSpendableStatus);
+        AccountRepository.on('accountRemove', this.updateSpendableStatus);
+
+        CoreRepository.on('updateSettings', this.updateDiscreetMode);
 
         // check for the clipboard content when app come from background
         AppService.on('appStateChange', this.onAppStateChange);
 
         // listen for screen appear event
         Navigation.events().bindComponent(this);
+
+        // update spendable status
+        this.updateSpendableStatus();
     }
 
     componentDidAppear() {
         const { account } = this.state;
 
         InteractionManager.runAfterInteractions(() => {
-            if (account.isValid() && SocketService.isConnected()) {
+            if (!isEmpty(account) && account.isValid() && SocketService.isConnected()) {
                 // update account details
                 LedgerService.updateAccountsDetails([account.address]);
             }
@@ -107,6 +116,16 @@ class HomeView extends Component<Props, State> {
             this.checkClipboardContent();
         });
     }
+
+    updateDiscreetMode = (coreSettings: CoreSchema, changes: Partial<CoreSchema>) => {
+        const { discreetMode } = this.state;
+
+        if (has(changes, 'discreetMode') && discreetMode !== changes.discreetMode) {
+            this.setState({
+                discreetMode: coreSettings.discreetMode,
+            });
+        }
+    };
 
     /**
      * Listen for app state change to check for clipboard content
@@ -149,35 +168,32 @@ class HomeView extends Component<Props, State> {
         }
     };
 
-    onDefaultAccountChange = (defaultAccount: AccountSchema) => {
-        // update the default account
-        if (defaultAccount.isValid()) {
-            LedgerService.updateAccountsDetails([defaultAccount.address]);
-
-            this.setState({
-                account: defaultAccount,
-            });
-        }
-    };
-
     updateUI = (updatedAccount: AccountSchema) => {
         if (updatedAccount.isValid() && updatedAccount.default) {
             // update the UI
-            this.setState({
-                account: updatedAccount,
-            });
-
-            // when account balance changed update spendable accounts
-            this.updateSpendableAccounts();
+            this.setState(
+                {
+                    account: updatedAccount,
+                },
+                () => {
+                    // when account balance changed update spendable accounts
+                    this.updateSpendableStatus();
+                },
+            );
         }
     };
 
-    updateSpendableAccounts = () => {
-        setTimeout(() => {
+    // eslint-disable-next-line react/destructuring-assignment
+    updateSpendableStatus = (account = this.state.account) => {
+        if (!isEmpty(account) && account.isValid()) {
+            const spendableAccounts = AccountRepository.getSpendableAccounts();
+
             this.setState({
-                spendableAccounts: AccountRepository.getSpendableAccounts(),
+                account,
+                isSpendable: !!find(spendableAccounts, { address: account.address }),
+                canSendPayment: spendableAccounts.length > 0,
             });
-        }, 300);
+        }
     };
 
     addCurrency = () => {
@@ -255,11 +271,11 @@ class HomeView extends Component<Props, State> {
         );
     };
 
-    togglePrivacyMode = () => {
-        const { privacyMode } = this.state;
+    toggleDiscreetMode = () => {
+        const { discreetMode } = this.state;
 
-        this.setState({
-            privacyMode: !privacyMode,
+        CoreRepository.saveSettings({
+            discreetMode: !discreetMode,
         });
     };
 
@@ -278,11 +294,30 @@ class HomeView extends Component<Props, State> {
         }
     };
 
+    showShareOverlay = () => {
+        const { account } = this.state;
+
+        Navigator.showOverlay(
+            AppScreens.Overlay.ShareAccount,
+            {
+                layout: {
+                    backgroundColor: 'transparent',
+                    componentBackgroundColor: 'transparent',
+                },
+            },
+            { account },
+        );
+    };
+
+    pushSendScreen = () => {
+        Navigator.push(AppScreens.Transaction.Payment);
+    };
+
     renderClipboardGuide = () => {
-        const { clipboardDetected, spendableAccounts, account } = this.state;
+        const { clipboardDetected, canSendPayment, account } = this.state;
 
         // if no clipboard detected or spendable accounts is empty return
-        if (!clipboardDetected || spendableAccounts.length === 0) return null;
+        if (!clipboardDetected || !canSendPayment) return null;
 
         let title = '';
         let content = '';
@@ -351,7 +386,7 @@ class HomeView extends Component<Props, State> {
                 <View style={[AppStyles.flex1, AppStyles.paddingLeft, AppStyles.centerContent]}>
                     <Image style={[styles.logo]} source={Images.xummLogo} />
                 </View>
-                {!isEmpty(account) && (
+                {!isEmpty(account) && account.isValid() && (
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
                         <Button
                             onPress={() => {
@@ -378,13 +413,11 @@ class HomeView extends Component<Props, State> {
     };
 
     renderAssets = () => {
-        const { account, privacyMode, spendableAccounts } = this.state;
-
-        const spendable = !!find(spendableAccounts, { address: account.address });
+        const { account, discreetMode, isSpendable } = this.state;
 
         if (account.balance === 0) {
             // check if account is a regular key to one of xumm accounts
-            const isRegularKey = AccountRepository.isRegularKey(account);
+            const isRegularKey = AccountRepository.isRegularKey(account.address);
 
             if (isRegularKey) {
                 const keysForAccounts = AccountRepository.findBy('regularKey', account.address);
@@ -448,7 +481,7 @@ class HomeView extends Component<Props, State> {
                     <View style={[AppStyles.flex5, AppStyles.centerContent]}>
                         <Text style={[AppStyles.pbold]}>{Localize.t('home.otherAssets')}</Text>
                     </View>
-                    {spendable && (
+                    {isSpendable && (
                         <View style={[AppStyles.flex5]}>
                             <Button
                                 label={Localize.t('home.addAsset')}
@@ -486,17 +519,17 @@ class HomeView extends Component<Props, State> {
                     </View>
                 )}
 
-                <ScrollView style={AppStyles.flex1}>
-                    {!isEmpty(account.lines) &&
-                        account.lines.map((line: TrustLineSchema, index: number) => {
+                {!isEmpty(account.lines) && (
+                    <ScrollView style={AppStyles.flex1}>
+                        {account.lines.map((line: TrustLineSchema, index: number) => {
                             return (
                                 <TouchableOpacity
                                     onPress={() => {
-                                        if (spendable) {
+                                        if (isSpendable) {
                                             this.showCurrencyOptions(line);
                                         }
                                     }}
-                                    activeOpacity={spendable ? 0.5 : 1}
+                                    activeOpacity={isSpendable ? 0.5 : 1}
                                     style={[styles.currencyItem]}
                                     key={index}
                                 >
@@ -514,10 +547,14 @@ class HomeView extends Component<Props, State> {
                                                     : NormalizeCurrencyCode(line.currency.currency)}
                                             </Text>
                                             <Text style={[styles.issuerLabel]}>
-                                                {line.counterParty.name}{' '}
-                                                {line.currency.name
-                                                    ? NormalizeCurrencyCode(line.currency.currency)
-                                                    : ''}
+                                                {line.currency.issuer === account.address
+                                                    ? Localize.t('home.selfIssued')
+                                                    : `${line.counterParty.name} ${
+                                                        // eslint-disable-next-line max-len
+                                                        line.currency.name
+                                                            ? NormalizeCurrencyCode(line.currency.currency)
+                                                            : ''
+                                                    }`}
                                             </Text>
                                         </View>
                                     </View>
@@ -532,7 +569,7 @@ class HomeView extends Component<Props, State> {
                                     >
                                         {line.currency.avatar && (
                                             <Image
-                                                style={[styles.currencyAvatar, privacyMode && AppStyles.imgColorGrey]}
+                                                style={[styles.currencyAvatar, discreetMode && AppStyles.imgColorGrey]}
                                                 source={{ uri: line.currency.avatar }}
                                             />
                                         )}
@@ -540,39 +577,38 @@ class HomeView extends Component<Props, State> {
                                             style={[
                                                 AppStyles.pbold,
                                                 AppStyles.monoBold,
-                                                privacyMode && AppStyles.colorGreyDark,
+                                                discreetMode && AppStyles.colorGreyDark,
                                             ]}
                                         >
-                                            {privacyMode ? '••••••••' : line.balance}
+                                            {discreetMode ? '••••••••' : NormalizeBalance(line.balance)}
                                         </Text>
                                     </View>
                                 </TouchableOpacity>
                             );
                         })}
-                </ScrollView>
+                    </ScrollView>
+                )}
             </View>
         );
     };
 
     renderButtons = () => {
-        const { account, spendableAccounts } = this.state;
+        const { isSpendable } = this.state;
 
         return (
             <View style={[styles.buttonRow]}>
-                <CustomButton
+                <RaisedButton
                     style={[styles.sendButton]}
                     icon="IconCornerLeftUp"
                     iconSize={25}
                     iconStyle={[styles.sendButtonIcon]}
                     label={Localize.t('global.send')}
                     textStyle={[styles.sendButtonText]}
-                    onPress={() => {
-                        Navigator.push(AppScreens.Transaction.Payment);
-                    }}
+                    onPress={this.pushSendScreen}
                     activeOpacity={0}
-                    isDisabled={!find(spendableAccounts, { address: account.address })}
+                    isDisabled={!isSpendable}
                 />
-                <CustomButton
+                <RaisedButton
                     style={[styles.requestButton]}
                     icon="IconCornerRightDown"
                     iconSize={25}
@@ -580,18 +616,7 @@ class HomeView extends Component<Props, State> {
                     iconPosition="right"
                     label={Localize.t('global.request')}
                     textStyle={[styles.requestButtonText]}
-                    onPress={() => {
-                        Navigator.showOverlay(
-                            AppScreens.Overlay.ShareAccount,
-                            {
-                                layout: {
-                                    backgroundColor: 'transparent',
-                                    componentBackgroundColor: 'transparent',
-                                },
-                            },
-                            { account },
-                        );
-                    }}
+                    onPress={this.showShareOverlay}
                     activeOpacity={0}
                 />
             </View>
@@ -628,7 +653,7 @@ class HomeView extends Component<Props, State> {
     };
 
     render() {
-        const { account, privacyMode } = this.state;
+        const { account, discreetMode } = this.state;
 
         if (isEmpty(account) || !account.isValid()) {
             return this.renderEmpty();
@@ -646,11 +671,11 @@ class HomeView extends Component<Props, State> {
                             <Text style={[AppStyles.flex1, AppStyles.h5]} numberOfLines={1}>
                                 {account.label}
                             </Text>
-                            <TouchableOpacity onPress={this.togglePrivacyMode}>
+                            <TouchableOpacity onPress={this.toggleDiscreetMode}>
                                 <Icon
                                     style={[styles.iconEye]}
                                     size={20}
-                                    name={privacyMode ? 'IconEyeOff' : 'IconEye'}
+                                    name={discreetMode ? 'IconEyeOff' : 'IconEye'}
                                 />
                             </TouchableOpacity>
                         </View>
@@ -671,51 +696,65 @@ class HomeView extends Component<Props, State> {
                             <Text
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
-                                selectable
+                                selectable={!discreetMode}
                                 style={[
                                     AppStyles.flex1,
                                     styles.cardAddressText,
-                                    privacyMode && AppStyles.colorGreyDark,
+                                    discreetMode && AppStyles.colorGreyDark,
                                 ]}
                             >
-                                {privacyMode ? '••••••••••••••••••••••••••••••••' : account.address}
+                                {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
                             </Text>
                             <View style={[styles.shareIconContainer, AppStyles.rightSelf]}>
                                 <Icon name="IconShare" size={18} style={[styles.shareIcon]} />
                             </View>
                         </TouchableOpacity>
 
-                        <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                            <Text style={[AppStyles.flex1, styles.cardLabel]}>{Localize.t('global.balance')}:</Text>
-
-                            {account.balance !== 0 && (
-                                <TouchableOpacity onPress={this.showBalanceExplain}>
-                                    <Text style={[styles.cardSmallLabel]}>
-                                        {Localize.t('home.explainMyBalance')}{' '}
-                                        <Icon style={[AppStyles.imgColorGreyDark]} size={11} name="IconInfo" />
+                        {account.balance !== 0 && (
+                            <>
+                                <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                                    <Text style={[AppStyles.flex1, styles.cardLabel]}>
+                                        {Localize.t('global.balance')}:
                                     </Text>
-                                </TouchableOpacity>
-                            )}
-                        </View>
-                        <View style={[styles.currencyItemCard]}>
-                            <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                <View style={[styles.xrpAvatarContainer]}>
-                                    <Icon name="IconXrp" size={20} style={[styles.xrpAvatar]} />
-                                </View>
-                                <Text style={[styles.currencyItemLabel]}>XRP</Text>
-                            </View>
 
-                            <TouchableOpacity
-                                style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}
-                                onPress={this.showBalanceExplain}
-                            >
-                                <Text
-                                    style={[AppStyles.h5, AppStyles.monoBold, privacyMode && AppStyles.colorGreyDark]}
-                                >
-                                    {privacyMode ? '••••••••' : account.availableBalance}
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
+                                    <TouchableOpacity onPress={this.showBalanceExplain}>
+                                        <Text style={[styles.cardSmallLabel]}>
+                                            {Localize.t('home.explainMyBalance')}{' '}
+                                            <Icon style={[AppStyles.imgColorGreyDark]} size={11} name="IconInfo" />
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={[styles.currencyItemCard]}>
+                                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                                        <View style={[styles.xrpAvatarContainer]}>
+                                            <Icon name="IconXrp" size={20} style={[styles.xrpAvatar]} />
+                                        </View>
+                                        <Text style={[styles.currencyItemLabel]}>XRP</Text>
+                                    </View>
+
+                                    <TouchableOpacity
+                                        style={[
+                                            AppStyles.flex4,
+                                            AppStyles.row,
+                                            AppStyles.centerAligned,
+                                            AppStyles.flexEnd,
+                                        ]}
+                                        onPress={this.showBalanceExplain}
+                                    >
+                                        <Text
+                                            style={[
+                                                AppStyles.h5,
+                                                AppStyles.monoBold,
+                                                discreetMode && AppStyles.colorGreyDark,
+                                            ]}
+                                        >
+                                            {discreetMode ? '••••••••' : account.availableBalance}
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </>
+                        )}
+
                         {this.renderButtons()}
                     </View>
                     {this.renderAssets()}

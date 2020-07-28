@@ -2,7 +2,7 @@ import { StyleSheet, Platform } from 'react-native';
 
 import { AppFonts, AppColors, AppSizes } from '@theme';
 
-import { IsIPhoneX } from '@common/helpers/interface';
+import { IsIPhoneX } from '@common/helpers/device';
 
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({

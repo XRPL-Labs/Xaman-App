@@ -3,10 +3,13 @@ import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
 import { EscrowCancel } from '@common/libs/ledger/transactions';
-import { getAccountName } from '@common/helpers/resolver';
+import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import Localize from '@locale';
 
+import { RecipientElement } from '@components/Modules';
+
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -16,7 +19,7 @@ export interface Props {
 
 export interface State {
     isLoading: boolean;
-    ownerName: string;
+    ownerDetails: AccountNameType;
 }
 
 /* Component ==================================================================== */
@@ -25,22 +28,21 @@ class EscrowCancelTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            isLoading: false,
-            ownerName: '',
+            isLoading: true,
+            ownerDetails: {
+                name: '',
+                source: '',
+            },
         };
     }
     componentDidMount() {
         const { transaction } = this.props;
 
-        this.setState({
-            isLoading: true,
-        });
-
         getAccountName(transaction.Owner)
             .then((res: any) => {
                 if (!isEmpty(res) && !res.error) {
                     this.setState({
-                        ownerName: res.name,
+                        ownerDetails: res,
                     });
                 }
             })
@@ -56,20 +58,24 @@ class EscrowCancelTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoading, ownerName } = this.state;
+        const { isLoading, ownerDetails } = this.state;
         return (
             <>
-                <Text style={[styles.label]}>
-                    {Localize.t('global.owner')}:
-                    {isLoading ? (
-                        'Loading ...'
-                    ) : (
-                        <Text style={styles.value}> {ownerName || Localize.t('global.noNameFound')} </Text>
-                    )}
-                </Text>
-                <View style={[styles.contentBox]}>
-                    <Text style={[styles.address]}>{transaction.Owner}</Text>
+                <View style={styles.label}>
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                        {Localize.t('global.owner')}
+                    </Text>
                 </View>
+
+                <RecipientElement
+                    containerStyle={[styles.contentBox, styles.addressContainer]}
+                    isLoading={isLoading}
+                    showAvatar={false}
+                    recipient={{
+                        address: transaction.Owner,
+                        ...ownerDetails,
+                    }}
+                />
 
                 <Text style={[styles.label]}>{Localize.t('global.offerSequence')}</Text>
                 <View style={[styles.contentBox]}>

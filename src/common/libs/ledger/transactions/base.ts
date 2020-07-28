@@ -29,7 +29,7 @@ class BaseTransaction {
         if (!isUndefined(_transaction)) {
             const { transaction, tx, meta } = _transaction;
             this.meta = meta;
-            this.tx = transaction || tx;
+            this.tx = transaction || tx || _transaction;
         } else {
             this.meta = {};
             this.tx = {};
@@ -69,40 +69,43 @@ class BaseTransaction {
             }
 
             // if fee not set then get current network fee
-            if (isUndefined(this.Fee)) {
-                const { Fee } = LedgerService.getLedgerStatus();
-                if (Fee) {
-                    this.Fee = new Amount(this.calculateFee(Fee)).dropsToXrp();
-                } else {
-                    throw new Error('Unable to set transaction Fee');
-                }
-            }
-
-            // if account sequence not set get the latest account sequence
-            if (isUndefined(this.Sequence)) {
-                const accountInfo = await LedgerService.getAccountInfo(this.signAs);
-                if (!has(accountInfo, 'error') && has(accountInfo, ['account_data', 'Sequence'])) {
-                    const { account_data } = accountInfo;
-                    this.Sequence = Number(account_data.Sequence);
-                } else {
-                    throw new Error('Unable to set account Sequence');
-                }
-            }
-
-            // When a transaction has a Max Ledger property + value and the value < 32570,
-            // use the existing Ledger + the entered value at the moment of signing.
-            if (this.LastLedgerSequence) {
-                if (this.LastLedgerSequence < 32570) {
-                    const { LastLedger } = LedgerService.getLedgerStatus();
-                    if (LastLedger) {
-                        this.LastLedgerSequence = Number(LastLedger) + this.LastLedgerSequence;
+            // just for known tx types
+            if (this.Type) {
+                if (isUndefined(this.Fee)) {
+                    const { Fee } = LedgerService.getLedgerStatus();
+                    if (Fee) {
+                        this.Fee = new Amount(this.calculateFee(Fee)).dropsToXrp();
+                    } else {
+                        throw new Error('Unable to set transaction Fee');
                     }
                 }
-            }
 
-            // if FullyCanonicalSig is not set, add it
-            if (!this.Flags.FullyCanonicalSig) {
-                this.Flags = [txFlags.Universal.FullyCanonicalSig];
+                // if account sequence not set get the latest account sequence
+                if (isUndefined(this.Sequence)) {
+                    const accountInfo = await LedgerService.getAccountInfo(this.signAs);
+                    if (!has(accountInfo, 'error') && has(accountInfo, ['account_data', 'Sequence'])) {
+                        const { account_data } = accountInfo;
+                        this.Sequence = Number(account_data.Sequence);
+                    } else {
+                        throw new Error('Unable to set account Sequence');
+                    }
+                }
+
+                // When a transaction has a Max Ledger property + value and the value < 32570,
+                // use the existing Ledger + the entered value at the moment of signing.
+                if (this.LastLedgerSequence) {
+                    if (this.LastLedgerSequence < 32570) {
+                        const { LastLedger } = LedgerService.getLedgerStatus();
+                        if (LastLedger) {
+                            this.LastLedgerSequence = Number(LastLedger) + this.LastLedgerSequence;
+                        }
+                    }
+                }
+
+                // if FullyCanonicalSig is not set, add it
+                if (!this.Flags.FullyCanonicalSig) {
+                    this.Flags = [txFlags.Universal.FullyCanonicalSig];
+                }
             }
         } catch (e) {
             throw new Error(`Unable to prepare the transaction, ${e.message}`);

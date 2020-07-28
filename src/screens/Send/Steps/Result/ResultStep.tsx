@@ -15,7 +15,7 @@ import { AppScreens } from '@common/constants';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { Button, Footer, Spacer } from '@components';
+import { Button, Footer, Spacer } from '@components/General';
 import Localize from '@locale';
 // style
 import { AppStyles, AppColors } from '@theme';

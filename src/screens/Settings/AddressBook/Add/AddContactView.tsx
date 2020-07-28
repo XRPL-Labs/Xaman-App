@@ -18,7 +18,7 @@ import { AppScreens } from '@common/constants';
 import { ContactRepository } from '@store/repositories';
 // import { ContactSchema } from '@store/schemas/latest';
 
-import { Header, Spacer, Button, TextInput, InfoMessage, Footer } from '@components';
+import { Header, Spacer, Button, TextInput, InfoMessage, Footer } from '@components/General';
 
 import Localize from '@locale';
 
@@ -55,7 +55,7 @@ class AddContactView extends Component<Props, State> {
         this.state = {
             xAddress: undefined,
             address: props.address,
-            tag: props.tag,
+            tag: props.tag && props.tag.toString(),
             name: props.name,
         };
     }
@@ -67,11 +67,16 @@ class AddContactView extends Component<Props, State> {
 
         // decode if it's x address
         if (result.to.startsWith('X')) {
-            const decoded = Decode(result.to);
-
-            address = decoded.account;
-            tag = decoded.tag && decoded.tag.toString();
-            xAddress = result.to;
+            try {
+                const decoded = Decode(result.to);
+                if (decoded) {
+                    address = decoded.account;
+                    tag = decoded.tag && decoded.tag.toString();
+                    xAddress = result.to;
+                }
+            } catch {
+                // continue regardless of error
+            }
         }
         this.setState({
             address,

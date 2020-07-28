@@ -6,18 +6,18 @@ import React, { Component } from 'react';
 import { View, Text, ActivityIndicator, BackHandler } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import { getStatusBarHeight, IsIPhoneX } from '@common/helpers/interface';
+import { IsIPhoneX } from '@common/helpers/device';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens, AppConfig } from '@common/constants';
 
 import { ProfileRepository } from '@store/repositories';
-import { Header, Footer, Spacer, Button } from '@components';
+import { Header, Footer, Spacer, Button } from '@components/General';
 
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles, AppColors, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -117,7 +117,7 @@ class TermOfUseView extends Component<Props, State> {
         return (
             <View testID="term-of-use-view" style={[styles.container]}>
                 {asModal ? (
-                    <View style={[AppStyles.centerAligned, { paddingTop: getStatusBarHeight() }]}>
+                    <View style={[AppStyles.centerAligned, { paddingTop: AppSizes.statusBarHeight }]}>
                         <Text style={AppStyles.h5}>{Localize.t('settings.termsAndConditions')}</Text>
                     </View>
                 ) : (

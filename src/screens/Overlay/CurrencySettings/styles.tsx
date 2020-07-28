@@ -37,20 +37,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     brandAvatarContainer: {
-        width: AppSizes.screen.width * 0.1,
-        height: AppSizes.screen.width * 0.1,
         marginRight: 10,
         borderWidth: 1,
         borderColor: AppColors.light,
         borderRadius: 8,
         justifyContent: 'center',
-        alignItems: 'center',
         overflow: 'hidden',
     },
     brandAvatar: {
-        width: AppSizes.screen.width * 0.1,
-        height: AppSizes.screen.width * 0.1,
-        resizeMode: 'cover',
+        height: AppSizes.scale(35),
+        width: AppSizes.scale(35),
+        alignSelf: 'center',
     },
     currencyItemLabelSmall: {
         fontSize: AppFonts.p.size,

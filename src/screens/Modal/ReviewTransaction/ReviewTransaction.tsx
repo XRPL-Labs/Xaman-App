@@ -18,6 +18,7 @@ import {
     LayoutChangeEvent,
     BackHandler,
     Keyboard,
+    Platform,
 } from 'react-native';
 
 import Interactable from 'react-native-interactable';
@@ -30,7 +31,8 @@ import { Payload } from '@common/libs/payload';
 import { SubmitResultType } from '@common/libs/ledger/types';
 
 import { AppScreens } from '@common/constants';
-import { Toast, VibrateHapticFeedback, getNavigationBarHeight } from '@common/helpers/interface';
+import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
+
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
@@ -42,7 +44,7 @@ import parserFactory from '@common/libs/ledger/parser';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 
 // components
-import { Button, AccordionPicker, Icon, Footer, Spacer } from '@components';
+import { Button, AccordionPicker, Icon, Footer, Spacer } from '@components/General';
 
 // localize
 import Localize from '@locale';
@@ -66,8 +68,10 @@ export interface State {
     step: 'review' | 'submitting' | 'verifying' | 'result';
     submitResult: SubmitResultType;
     hasError: boolean;
+    errorMessage: string;
     isPreparing: boolean;
     canScroll: boolean;
+    panelExpanded: boolean;
     headerHeight: number;
     coreSettings: CoreSchema;
 }
@@ -93,14 +97,16 @@ class ReviewTransactionModal extends Component<Props, State> {
         super(props);
 
         this.state = {
-            accounts: AccountRepository.getSpendableAccounts(),
+            accounts: undefined,
             transaction: parserFactory(props.payload.TxJson),
             source: undefined,
             step: 'review',
             submitResult: undefined,
             isPreparing: false,
             hasError: false,
+            errorMessage: '',
             canScroll: false,
+            panelExpanded: false,
             headerHeight: 0,
             coreSettings: CoreRepository.getSettings(),
         };
@@ -115,39 +121,70 @@ class ReviewTransactionModal extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { payload } = this.props;
-        const { accounts, transaction } = this.state;
-
         // back handler listener
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
 
         // update the accounts details before process the review
         LedgerService.updateAccountsDetails();
 
-        // choose preferred account for sign
-        // default account || first account
-        let preferredAccount;
-
-        if (!isEmpty(accounts)) {
-            preferredAccount = find(accounts, { default: true }) || accounts[0];
-        }
-
-        // set the default source account
-        if (preferredAccount) {
-            // ignore if it's multisign
-            if (!payload.meta.multisign) {
-                transaction.Account = { address: preferredAccount.address };
-            }
-        }
-
-        this.setState({
-            source: preferredAccount,
-        });
+        // set signalbe account and set prefer account
+        this.setAccounts();
     }
 
     componentDidCatch() {
         this.setState({ hasError: true });
     }
+
+    setAccounts = () => {
+        const { payload } = this.props;
+        const { transaction } = this.state;
+
+        // get available account base on transaction type
+        let availableAccounts =
+            payload.payload.tx_type === 'SignIn' || payload.meta.multisign
+                ? AccountRepository.getSignableAccounts()
+                : AccountRepository.getSpendableAccounts();
+
+        if (isEmpty(availableAccounts)) {
+            return;
+        }
+
+        // choose preferred account for sign
+        let preferredAccount;
+
+        // for CheckCash and CheckCancel
+        if (transaction.Account && transaction.Type === 'CheckCash') {
+            preferredAccount = find(availableAccounts, { address: transaction.Account.address });
+
+            // override available Accounts
+            availableAccounts = [preferredAccount];
+
+            // cannot sign this tx as account is not imported in the XUMM
+            if (!preferredAccount) {
+                this.setState({
+                    hasError: true,
+                    errorMessage: Localize.t('payload.checkCanOnlyCashByCheckDestination'),
+                });
+
+                return;
+            }
+        } else {
+            preferredAccount = find(availableAccounts, { default: true }) || availableAccounts[0];
+
+            // set the default source account
+            if (preferredAccount) {
+                // ignore if it's multisign
+                if (!payload.meta.multisign) {
+                    transaction.Account = { address: preferredAccount.address };
+                }
+            }
+        }
+
+        this.setState({
+            accounts: availableAccounts,
+            source: preferredAccount,
+        });
+    };
 
     onDecline = () => {
         const { payload } = this.props;
@@ -156,7 +193,9 @@ class ReviewTransactionModal extends Component<Props, State> {
         payload.reject();
 
         // emit sign requests update
-        PushNotificationsService.emit('signRequestUpdate');
+        setTimeout(() => {
+            PushNotificationsService.emit('signRequestUpdate');
+        }, 1000);
 
         // close modal
         Navigator.dismissModal();
@@ -215,6 +254,7 @@ class ReviewTransactionModal extends Component<Props, State> {
     };
 
     onAcceptPress = async () => {
+        const { payload } = this.props;
         const { source, transaction } = this.state;
 
         // if any validation set to the transaction run and check
@@ -224,7 +264,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             });
 
             try {
-                await transaction.validate();
+                await transaction.validate(source);
             } catch (e) {
                 Navigator.showAlertModal({
                     type: 'error',
@@ -246,7 +286,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         }
 
         // account is not activated and want to sign a tx
-        if (transaction.Type !== 'SignIn' && source.balance === 0) {
+        if (payload.payload.tx_type !== 'SignIn' && !payload.meta.multisign && source.balance === 0) {
             Alert.alert(
                 Localize.t('global.error'),
                 Localize.t('account.selectedAccountIsNotActivatedPleaseChooseAnotherOne'),
@@ -399,6 +439,11 @@ class ReviewTransactionModal extends Component<Props, State> {
             // patch the payload
             payload.patch(patch);
 
+            // emit sign requests update
+            setTimeout(() => {
+                PushNotificationsService.emit('signRequestUpdate');
+            }, 1000);
+
             this.setState({
                 step: 'result',
                 isPreparing: false,
@@ -422,7 +467,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         let type = '';
 
-        switch (transaction.Type) {
+        switch (payload.payload.tx_type) {
             case 'AccountSet':
                 type = Localize.t('events.updateAccountSettings');
                 break;
@@ -452,6 +497,22 @@ class ReviewTransactionModal extends Component<Props, State> {
                 break;
             case 'OfferCancel':
                 type = Localize.t('events.cancelOffer');
+                break;
+            case 'DepositPreauth':
+                if (transaction.Authorize) {
+                    type = Localize.t('events.authorizeDeposit');
+                } else {
+                    type = Localize.t('events.unauthorizeDeposit');
+                }
+                break;
+            case 'CheckCreate':
+                type = Localize.t('events.createCheck');
+                break;
+            case 'CheckCash':
+                type = Localize.t('events.cashCheck');
+                break;
+            case 'CheckCancel':
+                type = Localize.t('events.cancelCheck');
                 break;
             case 'SignIn':
                 type = Localize.t('global.signIn');
@@ -496,13 +557,25 @@ class ReviewTransactionModal extends Component<Props, State> {
         this.setState({ headerHeight: height });
     };
 
-    onSnap = (event: any) => {
-        const { id } = event.nativeEvent;
+    onSnap = () => {
+        if (Platform.OS === 'android') {
+            setTimeout(() => {
+                this.sourcePicker.updateContainerPosition();
+            }, 500);
+        } else {
+            this.sourcePicker.updateContainerPosition();
+        }
+    };
 
-        this.sourcePicker.updateContainerPosition();
+    onDrag = (event: any) => {
+        const { targetSnapPointId, state } = event.nativeEvent;
 
-        if (id === 'up') {
-            this.setState({ canScroll: true });
+        if (state === 'end' && targetSnapPointId === 'up') {
+            this.setState({ canScroll: true, panelExpanded: true });
+        }
+
+        if (state === 'end' && targetSnapPointId === 'down') {
+            this.setState({ panelExpanded: false });
         }
     };
 
@@ -519,13 +592,27 @@ class ReviewTransactionModal extends Component<Props, State> {
             if (this.panel) {
                 this.panel.snapTo({ index: 0 });
             }
-        });
+        }, 10);
     };
 
     onScroll = (event: any) => {
         const { contentOffset } = event.nativeEvent;
         if (contentOffset.y <= 0) {
             this.setState({ canScroll: false });
+        }
+    };
+
+    onSourcePickerPress = () => {
+        const { panelExpanded } = this.state;
+
+        if (!panelExpanded) {
+            this.slideUp();
+
+            setTimeout(() => {
+                this.sourcePicker.open();
+            }, 1000);
+        } else {
+            this.sourcePicker.open();
         }
     };
 
@@ -568,6 +655,7 @@ class ReviewTransactionModal extends Component<Props, State> {
     };
 
     renderError = () => {
+        const { errorMessage } = this.state;
         return (
             <View
                 testID="review-error-view"
@@ -575,9 +663,9 @@ class ReviewTransactionModal extends Component<Props, State> {
             >
                 <Icon name="IconInfo" size={70} />
                 <Spacer size={20} />
-                <Text style={AppStyles.h5}>{Localize.t('global.invalidPayload')}</Text>
+                <Text style={AppStyles.h5}>{Localize.t('global.error')}</Text>
                 <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                    {Localize.t('payload.unexpectedPayloadErrorOccurred')}
+                    {errorMessage || Localize.t('payload.unexpectedPayloadErrorOccurred')}
                 </Text>
                 <Spacer size={40} />
                 <Button
@@ -684,7 +772,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
                             <Text style={[styles.xummAppTitle]}>{payload.application.name}</Text>
 
-                            {payload.meta.custom_instruction && (
+                            {!!payload.meta.custom_instruction && (
                                 <>
                                     <Text style={[styles.xummAppLabelText]}>{Localize.t('global.details')}</Text>
                                     <Text style={[styles.xummAppLabelInfo]}>{payload.meta.custom_instruction}</Text>
@@ -703,9 +791,13 @@ class ReviewTransactionModal extends Component<Props, State> {
                     ref={(r) => {
                         this.panel = r;
                     }}
-                    snapPoints={[{ y: 0 }, { y: this.getTopOffset(), id: 'up' }]}
+                    snapPoints={[
+                        { y: 0, id: 'down' },
+                        { y: this.getTopOffset(), id: 'up' },
+                    ]}
                     boundaries={{ top: this.getTopOffset() - 20 }}
                     animatedValueY={this.deltaY}
+                    onDrag={this.onDrag}
                     onSnap={this.onSnap}
                     verticalOnly
                     animatedNativeDriver
@@ -738,7 +830,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                                     renderItem={this.renderAccountItem}
                                     selectedItem={source}
                                     keyExtractor={(i) => i.address}
-                                    // onExpand={this.slideUp}
+                                    onPress={this.onSourcePickerPress}
                                 />
                             </View>
 
@@ -749,7 +841,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                                 style={[
                                     AppStyles.flex1,
                                     AppStyles.paddingHorizontalSml,
-                                    { paddingBottom: getNavigationBarHeight() },
+                                    { paddingBottom: AppSizes.navigationBarHeight },
                                 ]}
                             >
                                 <Button
@@ -758,6 +850,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                                     label={Localize.t('global.accept')}
                                 />
                             </View>
+
+                            <Spacer size={50} />
                         </ScrollView>
                     </View>
                 </Interactable.View>

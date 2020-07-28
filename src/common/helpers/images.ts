@@ -25,6 +25,7 @@ export const Images = {
     ImageComplete: buildImageSource('ImageComplete', 'image_complete'),
     ImageCloudAlert: buildImageSource('ImageCloudAlert', 'image_cloud_alert'),
     ImageWarningShield: buildImageSource('ImageWarningShield', 'image_warning_shield'),
+    ImageCoinWallet: buildImageSource('ImageCoinWallet', 'image_coin_wallet'),
     // Xumm
     xummLogo: buildImageSource('XummLogo', 'xumm_logo'),
     xummIcon: buildImageSource('XummIcon', 'xumm_icon'),
@@ -53,6 +54,7 @@ export const Images = {
     IconPlus: buildImageSource('IconPlus', 'icon_plus'),
     IconMinus: buildImageSource('IconMinus', 'icon_minus'),
     IconMoreHorizontal: buildImageSource('IconMoreHorizontal', 'icon_more_horizontal'),
+    IconMoreVertical: buildImageSource('IconMoreVertical', 'icon_more_vertical'),
     IconTrash: buildImageSource('IconTrash', 'icon_trash'),
     IconEye: buildImageSource('IconEye', 'icon_eye'),
     IconEyeOff: buildImageSource('IconEyeOff', 'icon_eye_off'),
@@ -87,4 +89,6 @@ export const Images = {
     IconKey: buildImageSource('IconKey', 'icon_key'),
     IconSwitchAccount: buildImageSource('IconSwitchAccount', 'icon_switchaccount'),
     IconGlobe: buildImageSource('IconGlobe', 'icon_globe'),
+    IconArrowDown: buildImageSource('IconArrowDown', 'icon_arrow_down'),
+    IconFileText: buildImageSource('IconFileText', 'icon_file_text'),
 };

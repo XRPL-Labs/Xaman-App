@@ -12,7 +12,7 @@ if (__DEV__) {
     console.warn = (...args) => {
         if (
             typeof args[0] === 'string' &&
-            IGNORED_WARNINGS.some(ignoredWarning => args[0].startsWith(ignoredWarning))
+            IGNORED_WARNINGS.some((ignoredWarning) => args[0].startsWith(ignoredWarning))
         ) {
             return;
         }

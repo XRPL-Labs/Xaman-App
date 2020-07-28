@@ -1,8 +1,8 @@
-import { get, merge } from 'lodash';
+import { get } from 'lodash';
 import { Platform, InteractionManager } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 
-import { getBottomTabScale, isIOS10 } from '@common/helpers/interface';
+import { getBottomTabScale, isIOS10 } from '@common/helpers/device';
 import { Images } from '@common/helpers/images';
 
 import { AppScreens } from '@common/constants';
@@ -165,7 +165,7 @@ const Navigator = {
                     name: nextScreen,
                     id: nextScreen,
                     passProps,
-                    options: merge({}, defaultOptions, options),
+                    options,
                 },
             });
         }
@@ -175,12 +175,12 @@ const Navigator = {
 
     pop(options = {}) {
         const currentScreen = NavigationService.getCurrentScreen();
-        return Navigation.pop(currentScreen, merge({}, defaultOptions, options));
+        return Navigation.pop(currentScreen, options);
     },
 
     popToRoot(options = {}) {
         const currentScreen = NavigationService.getCurrentScreen();
-        return Navigation.popToRoot(currentScreen, merge({}, defaultOptions, options));
+        return Navigation.popToRoot(currentScreen, options);
     },
 
     showOverlay(overlay: any, options = {}, passProps = {}) {
@@ -191,7 +191,7 @@ const Navigator = {
                     name: overlay,
                     id: overlay,
                     passProps,
-                    options: merge({}, defaultOptions, options),
+                    options,
                 },
             });
         }
@@ -213,7 +213,7 @@ const Navigator = {
                             component: {
                                 name: modal,
                                 id: modal,
-                                options: merge({}, defaultOptions, options),
+                                options,
                                 passProps,
                             },
                         },

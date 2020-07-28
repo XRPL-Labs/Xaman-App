@@ -1,13 +1,12 @@
 /**
  * Generate Account/Explain seed/ secret numbers steps
-
  */
 
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Image } from 'react-native';
 
 // components
-import { Button, InfoMessage, Spacer, Footer } from '@components';
+import { Button, InfoMessage, Spacer, Footer } from '@components/General';
 import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
@@ -15,21 +14,18 @@ import Localize from '@locale';
 // style
 import { AppStyles } from '@theme';
 
-import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate/types';
-
+import { StepsContext } from '../../Context';
 /* types ==================================================================== */
-export interface Props {
-    account: AccountObject;
-    goBack: (step?: GenerateSteps, settings?: AccountObject) => void;
-    goNext: (step?: GenerateSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {}
-
 /* Component ==================================================================== */
 class SeedExplanationStep extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     render() {
-        const { goNext } = this.props;
+        const { goNext } = this.context;
 
         return (
             <SafeAreaView testID="account-generate-explanation-private" style={[AppStyles.container]}>

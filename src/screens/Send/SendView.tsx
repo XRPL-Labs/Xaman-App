@@ -8,7 +8,6 @@ import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import { View, Keyboard } from 'react-native';
 
-import { AccountInfoType } from '@common/helpers/resolver';
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -16,7 +15,7 @@ import { LedgerService } from '@services';
 import { AppScreens } from '@common/constants';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
+import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import LedgerExchange from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
@@ -24,13 +23,10 @@ import { Destination } from '@common/libs/ledger/parser/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 // components
-import { Header } from '@components';
+import { Header } from '@components/General';
 
 // local
 import Localize from '@locale';
-
-// style
-import styles from './styles';
 
 // steps
 import { DetailsStep, RecipientStep, SummaryStep, SubmittingStep, ResultStep } from './Steps';
@@ -38,39 +34,12 @@ import { DetailsStep, RecipientStep, SummaryStep, SubmittingStep, ResultStep } f
 // context
 import { StepsContext } from './Context';
 
+// style
+import styles from './styles';
+
 /* types ==================================================================== */
-export enum Steps {
-    Details = 'Details',
-    Recipient = 'Recipient',
-    Summary = 'Summary',
-    Submitting = 'Submitting',
-    Verifying = 'Verifying',
-    Result = 'Result',
-}
+import { Steps, Props, State } from './types';
 
-export interface ScanResult {
-    to: string;
-    tag?: number;
-}
-
-export interface Props {
-    currency?: TrustLineSchema;
-    scanResult?: ScanResult;
-    amount?: string;
-}
-
-export interface State {
-    currentStep: Steps;
-    accounts: Array<AccountSchema>;
-    source: AccountSchema;
-    destination: Destination;
-    destinationInfo: AccountInfoType;
-    currency: TrustLineSchema | string;
-    amount: string;
-    payment: Payment;
-    scanResult: ScanResult;
-    coreSettings: CoreSchema;
-}
 /* Component ==================================================================== */
 class SendView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Payment;
@@ -130,6 +99,10 @@ class SendView extends Component<Props, State> {
 
     setDestinationInfo = (info: any) => {
         this.setState({ destinationInfo: info });
+    };
+
+    setScanResult = (result: any) => {
+        this.setState({ scanResult: result });
     };
 
     changeView = (step: Steps) => {
@@ -198,20 +171,16 @@ class SendView extends Component<Props, State> {
                      */
 
                     payment.TransferRate = currency.transfer_rate;
+                }
 
-                    payment.Amount = {
-                        currency: currency.currency.currency,
-                        issuer: currency.currency.issuer,
-                        value: amount,
-                    };
+                payment.Amount = {
+                    currency: currency.currency.currency,
+                    issuer: currency.currency.issuer,
+                    value: amount,
+                };
 
+                if (currency.transfer_rate || currency.currency.issuer === source.address) {
                     payment.Flags = [txFlags.Payment.PartialPayment];
-                } else {
-                    payment.Amount = {
-                        currency: currency.currency.currency,
-                        issuer: currency.currency.issuer,
-                        value: amount,
-                    };
                 }
             } else {
                 // *  Amount = XRP rounded up
@@ -219,22 +188,35 @@ class SendView extends Component<Props, State> {
                 const PAIR = { issuer: currency.currency.issuer, currency: currency.currency.currency };
                 const ledgerExchange = new LedgerExchange(PAIR);
                 // sync with latest order book
-                await ledgerExchange.sync();
+                await ledgerExchange.initialize();
 
-                // get liquidity grade
-                const liquidityGrade = ledgerExchange.liquidityGrade('buy');
+                // get liquidity
+                const liquidity = await ledgerExchange.getLiquidity('buy', Number(amount));
 
                 // TODO: show error
                 // not enough liquidity
-                if (liquidityGrade === 0) {
+                if (!liquidity.safe || liquidity.errors.length > 0) {
+                    // TODO: handle better
+                    Navigator.showAlertModal({
+                        type: 'error',
+                        text: Localize.t('send.unableToSendPaymentNotEnoughLiquidity'),
+                        buttons: [
+                            {
+                                text: Localize.t('global.ok'),
+                                onPress: () => {},
+                                light: false,
+                            },
+                        ],
+                    });
+
+                    this.changeView(Steps.Summary);
                     return;
                 }
 
-                const exchangeRate = ledgerExchange.getExchangeRate('buy');
-                const xrpRoundedUp = new BigNumber(amount).dividedBy(exchangeRate).decimalPlaces(6);
+                const xrpRoundedUp = new BigNumber(amount).multipliedBy(liquidity.rate).decimalPlaces(6).toString(10);
 
                 // @ts-ignore
-                payment.Amount = xrpRoundedUp.toString();
+                payment.Amount = xrpRoundedUp;
                 payment.SendMax = {
                     currency: currency.currency.currency,
                     issuer: currency.currency.issuer,
@@ -255,6 +237,26 @@ class SendView extends Component<Props, State> {
         payment.Account = {
             address: source.address,
         };
+
+
+        try {
+            await payment.validate(source);
+        } catch (e) {
+            Navigator.showAlertModal({
+                type: 'error',
+                text: e.message,
+                buttons: [
+                    {
+                        text: Localize.t('global.ok'),
+                        onPress: () => {},
+                        light: false,
+                    },
+                ],
+            });
+            return;
+        } finally {
+            this.changeView(Steps.Summary);
+        }
 
         // submit payment to the ledger
         payment.submit(privateKey).then((submitResult) => {
@@ -362,6 +364,7 @@ class SendView extends Component<Props, State> {
                     setSource: this.setSource,
                     setDestination: this.setDestination,
                     setDestinationInfo: this.setDestinationInfo,
+                    setScanResult: this.setScanResult,
                 }}
             >
                 <Step />

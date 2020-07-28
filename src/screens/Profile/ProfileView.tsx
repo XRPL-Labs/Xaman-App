@@ -9,7 +9,7 @@ import { SafeAreaView, View, Text, ImageBackground, Image } from 'react-native';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Spacer } from '@components';
+import { Button, Spacer } from '@components/General';
 import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';

@@ -14,7 +14,7 @@ import { AppScreens, AppConfig } from '@common/constants';
 import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 
-import { Header, Icon, Switch } from '@components';
+import { Header, Icon, Switch } from '@components/General';
 
 import Localize from '@locale';
 
@@ -47,6 +47,10 @@ class GeneralSettingsView extends Component<Props, State> {
 
     componentDidMount() {
         CoreRepository.on('updateSettings', this.updateUI);
+    }
+
+    componentWillUnmount() {
+        CoreRepository.off('updateSettings', this.updateUI);
     }
 
     updateUI = (coreSettings: CoreSchema) => {

@@ -18,7 +18,7 @@ import { AppScreens } from '@common/constants';
 import { ContactRepository } from '@store/repositories';
 import { ContactSchema } from '@store/schemas/latest';
 
-import { Header, Button, SearchBar, TextAvatar } from '@components';
+import { Header, Button, SearchBar, TextAvatar } from '@components/General';
 
 import Localize from '@locale';
 // style

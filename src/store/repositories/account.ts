@@ -1,23 +1,13 @@
 import { has, isEmpty, filter } from 'lodash';
 import Realm, { Results, ObjectSchema } from 'realm';
 
-import * as AccountLib from 'xrpl-accountlib';
-
+import Flag from '@common/libs/ledger/parser/common/flag';
 import Vault from '@common/libs/vault';
 
 import { AccountSchema } from '@store/schemas/latest';
-
 import { AccessLevels, EncryptionLevels } from '@store/types';
-import BaseRepository from './base';
 
-/* types  ==================================================================== */
-type AddAccountParams = {
-    account: AccountLib.XRPL_Account;
-    encryptionKey?: string;
-    encryptionLevel: EncryptionLevels;
-    accessLevel?: AccessLevels;
-    label?: string;
-};
+import BaseRepository from './base';
 
 // events
 declare interface AccountRepository {
@@ -40,13 +30,10 @@ class AccountRepository extends BaseRepository {
 
     /**
      * add new account to the store
-     * this will store private key in the vault
+     * this will store private key in the vault if full access
      */
-    add = (params: AddAccountParams): Promise<AccountSchema> => {
-        const { account, encryptionKey, encryptionLevel, label, accessLevel } = params;
-
-        // check if there is any default account if
-        // it's upgrading so we don't want to remove the default flag
+    add = (account: Partial<AccountSchema>, privateKey?: string, encryptionKey?: string): Promise<AccountSchema> => {
+        // remove default flag from any other account
         const defaultAccount = this.getDefaultAccount();
         if (!isEmpty(defaultAccount) && defaultAccount.address !== account.address) {
             this.update({
@@ -55,41 +42,19 @@ class AccountRepository extends BaseRepository {
             });
         }
 
-        // if the account is readonly
-        if (accessLevel === AccessLevels.Readonly) {
-            const newAccount = {
-                address: account.address,
-                accessLevel: AccessLevels.Readonly,
-                encryptionLevel: EncryptionLevels.None,
-                default: true,
-            } as Partial<AccountSchema>;
-            // assign label if set
-            if (label) newAccount.label = label;
+        // READONLY
+        if (account.accessLevel === AccessLevels.Readonly) {
             // create
-            return this.create(newAccount).then((createdAccount: AccountSchema) => {
+            return this.create(account).then((createdAccount: AccountSchema) => {
                 this.emit('accountCreate', createdAccount);
                 this.emit('changeDefaultAccount', createdAccount);
                 return createdAccount;
             });
         }
 
-        // else for sure we have full access
-        const { keypair } = account;
-
-        // save the privateKey in the vault
-        return Vault.create(keypair.publicKey, keypair.privateKey, encryptionKey).then(() => {
-            const newAccount = {
-                publicKey: keypair.publicKey,
-                accessLevel: AccessLevels.Full,
-                address: account.address,
-                encryptionLevel,
-                default: true,
-            } as Partial<AccountSchema>;
-
-            // assign label if set
-            if (label) newAccount.label = label;
-
-            return this.create(newAccount, true).then((createdAccount: AccountSchema) => {
+        // FULLACCESS
+        return Vault.create(account.publicKey, privateKey, encryptionKey).then(() => {
+            return this.create(account, true).then((createdAccount: AccountSchema) => {
                 this.emit('accountCreate', createdAccount);
                 this.emit('changeDefaultAccount', createdAccount);
                 return createdAccount;
@@ -131,15 +96,37 @@ class AccountRepository extends BaseRepository {
      * get list of available accounts for spending
      */
     getSpendableAccounts = (): Array<AccountSchema> => {
+        const signableAccounts = this.getSignableAccounts();
+
+        return filter(signableAccounts, (a) => a.balance > 0);
+    };
+
+    /**
+     * get list of available accounts for signing
+     */
+    getSignableAccounts = (): Array<AccountSchema> => {
         const accounts = this.findAll();
 
         const availableAccounts = [] as Array<AccountSchema>;
 
         accounts.forEach((account: AccountSchema) => {
             if (account.accessLevel === AccessLevels.Full) {
-                availableAccounts.push(account);
-                // check if the regular key account is imported
+                // check if master key is disable and regular key not imported
+                if (account.regularKey) {
+                    const flags = new Flag('Account', account.flags);
+                    const accountFlags = flags.parse();
+
+                    // eslint-disable-next-line max-len
+                    const regularKeyImported = !this.query({ address: account.regularKey, accessLevel: AccessLevels.Full }).isEmpty();
+
+                    if ((accountFlags.disableMasterKey && regularKeyImported) || !accountFlags.disableMasterKey) {
+                        availableAccounts.push(account);
+                    }
+                } else {
+                    availableAccounts.push(account);
+                }
             } else if (
+                // Readonly but the regular Key imported as full access
                 account.regularKey &&
                 !this.query({ address: account.regularKey, accessLevel: AccessLevels.Full }).isEmpty()
             ) {
@@ -147,14 +134,14 @@ class AccountRepository extends BaseRepository {
             }
         });
 
-        return filter(availableAccounts, (a) => a.balance > 0);
+        return availableAccounts;
     };
 
     /**
      * check if account is a regular key to one of xumm accounts
      */
-    isRegularKey = (account: AccountSchema) => {
-        return !this.findBy('regularKey', account.address).isEmpty();
+    isRegularKey = (address: string) => {
+        return !this.findBy('regularKey', address).isEmpty();
     };
 
     /**

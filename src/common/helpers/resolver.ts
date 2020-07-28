@@ -24,7 +24,7 @@ export interface AccountInfoType {
 }
 
 const getAccountName = memoize(
-    (address: string, tag?: number): Promise<AccountNameType> => {
+    (address: string, tag = '', internal = false): Promise<AccountNameType> => {
         return new Promise((resolve) => {
             if (!address) {
                 return resolve({
@@ -35,10 +35,7 @@ const getAccountName = memoize(
 
             // check address  book
             try {
-                let filter = { address };
-                if (tag) {
-                    filter = Object.assign(filter, { destinationTag: tag });
-                }
+                const filter = { address, destinationTag: tag };
                 const contact = ContactRepository.findOne(filter);
                 if (!isEmpty(contact)) {
                     return resolve({
@@ -63,6 +60,14 @@ const getAccountName = memoize(
                 // ignore
             }
 
+            // only lookup for local result
+            if (internal) {
+                return resolve({
+                    name: '',
+                    source: '',
+                });
+            }
+
             // check the backend
             return BackendService.getAddressInfo(address)
                 .then((res: any) => {
@@ -85,7 +90,7 @@ const getAccountName = memoize(
                 });
         });
     },
-    (address: string, tag: number) => `${address}${tag}`,
+    (address: string, tag = '') => `${address}${tag}`,
 );
 
 const getAccountInfo = (address: string): Promise<AccountInfoType> => {

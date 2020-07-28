@@ -18,7 +18,7 @@
       "save": "저장",
       "confirm": "확인",
       "failed": "실패한",
-      "balance": "균형",
+      "balance": "밸런스",
       "spendable": "지출 가능",
       "home": "집",
       "events": "행사",
@@ -28,7 +28,10 @@
       "send": "보내다",
       "done": "끝난",
       "previous": "이전",
+      "authorize": "승인",
+      "unauthorize": "무단",
       "exchange": "교환",
+      "exchanges": "교류",
       "scan": "주사",
       "request": "의뢰",
       "details": "세부",
@@ -130,10 +133,16 @@
       "finishAfter": "후 완료",
       "cancelAfter": "이후 취소",
       "expireAfter": "만료 후",
+      "expire": "내쉬다",
+      "neverExpires": "만료되지 않습니다",
       "takerPays": "테이커 지불",
       "takerGets": "테이커",
+      "selling": "판매",
+      "inExchangeForReceive": "(수신)과 교환",
       "fee": "거래 수수료",
       "invoiceID": "송장 ID",
+      "checkID": "아이디 확인",
+      "checkAmount": "금액 확인",
       "regularKey": "일반 키",
       "signerQuorum": "서명자",
       "signerEntries": "서명자 항목",
@@ -145,7 +154,7 @@
       "signIn": "로그인",
       "signInAs": "로 로그인",
       "signAs": "로그인",
-      "patheticallyWeak": "Pathetically 약한",
+      "patheticallyWeak": "Pathetically 약",
       "extremelyWeak": "매우 약한",
       "veryWeak": "매우 약한",
       "weak": "약한",
@@ -159,6 +168,8 @@
       "danger": "위험",
       "explorer": "탐침",
       "balanceLimit": "잔액 한도",
+      "activation": "활성화",
+      "authentication": "입증",
       "unbelievablyStrong": "믿을 수 없을만큼 강한",
       "biometryIsNotSupported": "이 장치에서는 생체 인증이 지원되지 않습니다!",
       "invalidAuth": "잘못된 인증",
@@ -212,7 +223,12 @@
       "clearSearch": "명확한 검색",
       "noNameFound": "이름을 찾을 수 없습니다",
       "readMoreInTheFAQ": "FAQ에서 더 읽기",
-      "whatsNew": "새로운 소식"
+      "whatsNew": "새로운 소식",
+      "pushErrorPermissionMessage": "푸시 알림을 등록 할 수 없습니다. 필요한 알림 권한을 부여하려면 시스템 설정으로 이동하여 XUMM> 알림이 활성화되어 있는지 확인하십시오.",
+      "UnableToRegisterPushNotifications": "푸시 알림을 등록 할 수 없습니다",
+      "openXRPToolkitByTowoLabs": "Towo Labs의 XRP 툴킷 열기",
+      "readMore": "더 읽어보기",
+      "readLess": "덜 읽기"
    },
    "onboarding": {
       "slideOne": {
@@ -233,10 +249,10 @@
    },
    "setupPasscode": {
       "setupAPasscode": "비밀번호 설정",
-      "passCodeDescription": "우리는 암호를 사용하여 앱을 잠그고 설정을 확인하며 계정을 안전하게 유지합니다.",
+      "passCodeDescription": "암호를 사용하여 앱을 잠그고 설정을 확인하며 계정을 안전하게 유지합니다.",
       "setPasscode": "비밀번호를 설정하십시오",
       "repeatPasscode": "새 비밀번호를 반복하십시오",
-      "warnNeedPasscode": "앱 잠금을 해제하려면 PIN 코드가 필요합니다"
+      "warnNeedPasscode": "앱 잠금을 해제하려면 비밀번호가 필요합니다"
    },
    "setupBiometry": {
       "useBiometry": "FaceID 또는 지문을 사용 하시겠습니까?",
@@ -244,7 +260,7 @@
    },
    "setupPermissions": {
       "enableNotifications": "푸시 알림을 사용 하시겠습니까?",
-      "permissionDescription": "푸시 알림을 사용하여 사인 요청을 보냅니다."
+      "permissionDescription": "우리는 푸시 알림을 사용하여 사인 요청을 보냅니다."
    },
    "home": {
       "addAsset": "더하다",
@@ -254,14 +270,15 @@
       "whatAreOtherAssets": "다른 자산은 무엇입니까?",
       "otherAssets": "기타 자산",
       "youDonNotHaveOtherAssets": "다른 자산이 없습니다",
-      "howActivateMyAccount": "계정을 활성화하려면 어떻게합니까?",
+      "howActivateMyAccount": "계정을 활성화하려면 어떻게해야합니까?",
       "howActivateMyAccountDesc": "스팸 계정 생성을 방지하려면 XRP 원장에서 계정에 20 개 이상의 XRP를 입금하여 활성화해야합니다. 20 XRP는 손실되지 않습니다. 계정에 남아 있지만 사용할 수는 없습니다. 계정 사용을 시작하려면 20 XRP 이상의 예금이 계정에 입금되어 있는지 확인하십시오.",
-      "otherAssetsDesc": "XRP 원장을 사용하면 XRP 이외의 자산의 잔액을 보유하고 보내고받을 수 있습니다. 이러한 자산은 XRP 원장의 다른 계정에서 발행 할 수 있습니다. 비 XRP 자산을 보내거나 받으려면 비 XRP 자산의 발행자를 신뢰해야합니다.",
+      "otherAssetsDesc": "XRP 원장을 사용하면 XRP 이외의 자산의 잔액을 보유하고 보내고받을 수도 있습니다. 이러한 자산은 XRP 원장의 다른 계정에서 발행 할 수 있습니다. 비 XRP 자산을 보내거나 받으려면 비 XRP 자산의 발행자를 신뢰해야합니다.",
       "explainMyBalance": "내 균형을 설명",
       "xrpYouOwnVsYourSpendableBalance": "소유 한 XRP와 지출 가능한 잔액",
       "emptyAccountAddFirstAccount": "여기에 첫 번째 계정을 추가하는 것이 약간 비어 있습니다.",
       "openSignRequest": "오픈 사인 요청",
-      "sendPaymentTo": "로 결제"
+      "sendPaymentTo": "로 결제",
+      "selfIssued": "자체 발행"
    },
    "events": {
       "noTransaction": "거래 없음",
@@ -287,13 +304,23 @@
       "createEscrow": "에스크로 만들기",
       "finishEscrow": "에스크로 완료",
       "cancelEscrow": "에스크로 취소",
+      "createCheck": "확인 작성",
+      "cashCheck": "현금 확인",
+      "cancelCheck": "확인 취소",
       "accountSettings": "계정 설정",
+      "authorizeDeposit": "예금 승인",
+      "unauthorizeDeposit": "예금을 무단으로",
       "deleteAccount": "계정 삭제",
       "setSignerList": "서명자 목록 설정",
       "updateAccountSettings": "계정 설정 업데이트",
       "setARegularKey": "일반 키 설정",
+      "setRegularKey": "일반 키 설정",
       "canNotFetchTransactions": "계정 거래를 가져올 수 없습니다!",
-      "emptyEventsNoAccount": "계정이 없기 때문에 이벤트가 없습니다."
+      "emptyEventsNoAccount": "계정이 없기 때문에 이벤트가 없습니다.",
+      "returnPayment": "반품",
+      "newPayment": "새로운 지불",
+      "openWithExplorer": "로 열기 %{explorer}",
+      "showMemo": "메모 표시"
    },
    "profile": {
       "availableInFuture": "이 기능은 향후에 제공 될 예정입니다.",
@@ -334,27 +361,28 @@
       "nodeIsAlreadyExist": "노드가 이미 존재합니다!",
       "invalidNodeURL": "입력 한 노드 URL이 유효한 URL이 아닙니다!",
       "securitySetting": "보안",
-      "securitySettingsDescription": "여기에서 PIN 코드 또는 생체 인증 기관을 변경하십시오",
+      "securitySettingsDescription": "여기에서 비밀번호 또는 생체 인증 기관을 변경하십시오",
       "changePasscode": "비밀번호 변경",
       "biometricAuthentication": "생체 인증",
       "hapticFeedback": "햅틱 피드백",
-      "enterOldPasscode": "기존 암호를 입력하십시오",
-      "enterNewPasscode": "새 암호를 입력하십시오",
+      "enterOldPasscode": "기존 비밀번호를 입력하십시오",
+      "enterNewPasscode": "새 비밀번호를 입력하십시오",
       "enterNewPasscodeAgain": "새 비밀번호를 다시 입력하십시오",
       "newOldPasscodeNotMatch": "새 비밀번호와 확인 내용이 동일하지 않습니다!",
-      "passcodeChangedSuccess": "비밀번호 변경이 성공했습니다!",
+      "passcodeChangedSuccess": "비밀번호 변경에 성공했습니다!",
       "canNotSendLogsByEmail": "예기치 않은 오류가 발생하여 이메일로 로그를 보낼 수 없습니다!",
       "logsCopiedToClipboard": "클립 보드에 복사 된 세션 로그",
       "additionalSecurity": "추가 보안",
       "eraseData": "데이터 지우기",
       "eraseDataDescription": "10 번의 암호 시도 실패 후 모든 데이터 지우기",
-      "viewChangeLog": "변경 내역보기"
+      "viewChangeLog": "변경 내역보기",
+      "hideBalanceByDefault": "기본적으로 잔액 숨기기"
    },
    "account": {
       "addAccount": "계정 추가",
       "addAccountDescription": "기존 계정을 가져 오거나 새 계정을 만듭니다.",
       "importExisting": "기존 계정 가져 오기",
-      "generateNewAccount": "새 계정 생성",
+      "generateNewAccount": "새로운 계정을 생성",
       "confirmPrivateTitle": "비밀 번호 확인",
       "confirmPrivateDescription": "번호는 알려주십시오. 이는 본인의 안전을위한 것입니다. 번호를 적어 두 었음을 확인하십시오.",
       "invalidSecretNumber": "잘못된 비밀 번호 키를 입력했습니다",
@@ -439,8 +467,8 @@
       "changePassphrase": "암호 변경",
       "destroyAccount": "이 계정을 삭제",
       "upgradingAccessLevelWarning": "액세스 수준을 업그레이드하는 중입니다.이 계정의 개인 키를 가져와야합니다.",
-      "downgradingAccessLevelWarning": "액세스 수준을 낮추고 있습니다. 이 계정의 개인 키가 손실 될 수 있습니다. 확실해?",
-      "removeTrustLineWarning": "계정에서이 자산을 제거하고 있습니다. 이 작업은 취소 할 수 없습니다. 확실해?",
+      "downgradingAccessLevelWarning": "액세스 수준을 낮추고 있습니다. 이 계정의 개인 키가 손실 될 수 있습니다. 확실합니까?",
+      "removeTrustLineWarning": "계정에서이 자산을 제거하고 있습니다. 이 작업은 취소 할 수 없습니다. 확실합니까?",
       "unavailableChangeSecurityLevel": "현재 보안 수준 변경이 불가능합니다",
       "accountDestroyWarning": "귀하의 계정은 영구적으로 삭제됩니다. 확실합니까?",
       "accountMaxLabelLengthError": "계정 라벨은 16 자 미만이어야합니다!",
@@ -450,6 +478,7 @@
       "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "선택한 계정이 활성화되지 않았습니다. 이 거래에 서명하려면 활성화 된 계정을 선택해야합니다!",
       "accountAlreadyExist": "계정이 이미 존재합니다!",
       "upgradeAccountSecretIsNotMatch": "입력 한 비밀은 다른 r- 주소에 속합니다. 일반 키를 가져 오려면 [새 계정 가져 오기]를 참조하십시오. 그렇지 않은 경우 [취소]하고 입력 내용을 확인하십시오.",
+      "toTheseExistingAccounts": "이 / 이러한 기존 계정으로",
       "masterKeyForThisAccountDisableRegularKeyNotFound": "이 계정의 마스터 키가 비활성화되었으며 계정 목록에 일반 키 계정이 없습니다!",
       "regularKeyAccountForThisAccountDoesNotImportedWithSignAccess": "이 계정의 일반 키를 서명 액세스 권한으로 가져 오지 못했습니다!",
       "currentPassphraseShouldNotBeEmpty": "현재 암호 문구는 비워 둘 수 없습니다!",
@@ -472,11 +501,17 @@
       "unableToCheckAccountObjects": "계정 개체를 확인할 수 없습니다. XRP 원장 노드에 연결되어 있는지 확인하십시오",
       "unableGetDestinationAccountInfo": "대상 계정 정보를 가져올 수 없습니다. XRP 원장 노드에 연결되어 있는지 확인하십시오",
       "destinationAccountIsNotActivated": "대상 계정이 활성화되지 않았습니다. XRP 원장에서 자금을 조달 한 계정이어야합니다.",
-      "destinationAccountAndSourceCannotBeSame": "대상 계정과 출처가 같을 수 없습니다."
+      "destinationAccountAndSourceCannotBeSame": "대상 계정과 출처가 같을 수 없습니다.",
+      "accountGenerateActivationExplain": "계정 활성화는 XRP 원장의 요구 사항입니다. 활성화하려면 최소 20 XRP의 첫 입금을해야합니다.",
+      "accountImportActivationExplain": "XRP 원장에서 새 계정을 가져 왔습니다. 계정이 활성화되지 않았습니다. 계정 활성화는 XRP 원장의 요구 사항입니다. 활성화하려면 최소 20 XRP의 첫 입금을해야합니다.",
+      "accountActivateReserveExplain": "귀하의 계정에 입금 된 첫 20 개의 XRP는 사용할 수 없지만 계정을 활성화 상태로 유지하고 원장 수수료를 지불하도록 예약됩니다.",
+      "accountReserveNotShownExplain": "예약 된 XRP는 XUMM에 잔액으로 표시되지 않지만 XRP 잔액 위의 홈 화면에서 \"내 잔액 설명\"버튼을 사용하여 예약을 볼 수 있습니다."
    },
    "send": {
       "amountIsBiggerThanYourSpend": "지출 할 수있는 금액보다 금액이 더 많습니다 ( %{spendable} )",
       "theMaxAmountYouCanSendIs": "보낼 수있는 최대 금액은 %{spendable}%{currency}",
+      "theMaxAmountYouCanSendWithFee": "발행인 %{currency} 양도 수수료를 청구합니다. 최대 송금 수수료와 관련하여 송금 할 수있는 금액은 %{spendable}%{currency}",
+      "insufficientBalanceSpendableBalance": "잔액 부족, 지출 가능 잔액 : %{spendable}%{currency}",
       "balanceIsNotEnoughForFee": "잔액이 수수료를 충당하기에 충분하지 않습니다 ( %{fee} )",
       "searchResults": "검색 결과",
       "noSearchResult": "검색 결과가 없습니다",
@@ -517,7 +552,9 @@
       "unableGetRecipientAccountInfoPleaseTryAgain": "수신자 계정 정보를 얻을 수 없습니다. 다시 시도하십시오.",
       "noDestinationTag": "대상 태그가 없습니다",
       "thisAddressRequiredDestinationTag": "이 주소에는 목적지 태그가 필요합니다",
-      "pleaseEnterAmount": "거래 금액을 입력하십시오"
+      "pleaseEnterAmount": "거래 금액을 입력하십시오",
+      "trustLineLimitExceeded": "TrustLine 제한이 이제 초과되었습니다. %{balance} , 최대 : %{peer_limit} 발행 가능 : %{available} . 수신자는 Trustline 제한을 업데이트 할 수 있습니다.",
+      "unableToSendPaymentNotEnoughLiquidity": "유동성 부족으로 인해 현재 지불금을 보낼 수 없습니다."
    },
    "asset": {
       "addAsset": "자산 추가",
@@ -538,7 +575,13 @@
       "errorDuringExchange": "교환 중 오류 : %{error}",
       "liquidityIsNotEnough": "유동성이 충분하지 않아 지금 교환 할 수 없습니다!",
       "liquidityIsNotSoMuch": "유동성이 비교적 낮습니다. 계속할 수 있지만 전체 교환에 대해 최상의 요금을 얻지 못할 수 있습니다!",
-      "theMaxAmountYouCanExchangeIs": "교환 할 수있는 최대 금액은 %{spendable}%{currency}"
+      "theMaxAmountYouCanExchangeIs": "교환 할 수있는 최대 금액은 %{spendable}%{currency}",
+      "exchangeByThirdPartyMessage": "요청 된 가격 수준으로 실행 제안을 생성하려는 경우 타사 XUMM 지원 XRP 툴킷 응용 프로그램을 사용하여 제한 주문을 생성 할 수 있습니다.",
+      "requestedLiquidityNotAvailable": "금액을 교환 할 수 없습니다. 탈 중앙화 거래소에서 사용할 수있는 쿠폰이 충분하지 않습니다.",
+      "reverseLiquidityNotAvailable": "교환 할 수없는 금액 : 탈 중앙화 거래소의 오퍼 부족으로 인해 교환 할 수 없습니다.",
+      "maxSpreadExceeded": "판매 및 구매 오퍼의 가격 차이가 너무 큽니다.",
+      "maxSlippageExceeded": "탈 중앙화 거래소에 충분한 (좋은) 제안이 없기 때문에 환율이 나빠질 것입니다.",
+      "maxReverseSlippageExceeded": "탈 중앙화 거래소에 충분한 (좋은) 제안이 없기 때문에 교환을 시도하면 환율이 나빠질 것입니다."
    },
    "scan": {
       "aimAtTheCode": "코드를 목표로",
@@ -546,7 +589,7 @@
       "scannedQRIsNotXRPAddress": "스캔 한 QR 코드는 XRP 주소 코드가 아닙니다!",
       "scannedQRIsNotXummPayload": "스캔 한 QR 코드는 XUMM 페이로드가 아닙니다!",
       "theQRIsNotWhatWeExpect": "이 QR 코드는 우리가 기대하는 것이 아닙니다!",
-      "invalidQRTryNewOneOrTryAgain": "유효하지 않은 QR 코드, 새 코드를 시도하거나 다시 시도하십시오"
+      "invalidQRTryNewOneOrTryAgain": "유효하지 않은 QR 코드 (XUMM의 경우), 새 코드를 시도하거나 다시 시도하십시오"
    },
    "payload": {
       "payloadHandledByAnotherClient": "다른 클라이언트가 처리하는 페이로드",
@@ -570,6 +613,11 @@
       "payingWithXRPExchangeRate": "~로 결제 %{xrpRoundedUp} XRP 환율 : ~ %{exchangeRate}",
       "notEnoughLiquidityToSendThisPayment": "이 지불을 보낼 유동성이 충분하지 않습니다.",
       "unableToCheckAssetConversion": "자산 변환을 확인할 수 없습니다. XRPL 노드에 연결되어 있는지 확인하십시오",
-      "unableToGetNetworkFee": "네트워크 요금을받을 수 없습니다. XRPL 노드에 연결되어 있는지 확인하십시오"
+      "unableToGetNetworkFee": "네트워크 요금을받을 수 없습니다. XRPL 노드에 연결되어 있는지 확인하십시오",
+      "checkCanOnlyCashByCheckDestination": "Check 대상 계정이 XUMM에 읽기 / 쓰기 (또는 일반 키) 모드로 존재하는 경우에만 수표를 현금화 할 수 있습니다.",
+      "unableToGetCheckObject": "점검 오브젝트를 얻을 수 없습니다. XRPL 노드에 연결되어 있는지 확인하십시오",
+      "checkObjectDoesNotExist": "점검 오브젝트를 확보 할 수 없습니다. 점검이 XRPL Ledger에 있는지 확인하십시오.",
+      "insufficientCashAmount": "불충분 한 금액, 현금화 가능 금액 : %{amount}%{currency}",
+      "nonExpiredCheckCanOnlyCancelByCreatedAccount": "(만료되지 않은) 수표는 수표를 만든 계정 또는 대상 계정으로 만 취소 할 수 있습니다."
    }
 }

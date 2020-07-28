@@ -1,3 +1,3 @@
-import PermissionsSetupContainer from './PermissionsView';
+import PushNotificationView from './PushNotificationView';
 
-export default PermissionsSetupContainer;
+export default PushNotificationView;

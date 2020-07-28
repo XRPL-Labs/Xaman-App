@@ -1,0 +1,291 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Button Component should have TouchableNativeFeedback on android  1`] = `
+<View
+  accessibilityRole="button"
+  accessible={true}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Object {
+      "alignSelf": "stretch",
+      "backgroundColor": "#3052FF",
+      "borderColor": "transparent",
+      "borderRadius": 40.17857142857143,
+      "borderWidth": 1,
+      "flexDirection": "row",
+      "height": 117.85714285714285,
+      "justifyContent": "center",
+      "opacity": 1,
+      "paddingHorizontal": 15,
+    }
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "alignItems": "center",
+          "flexDirection": "row",
+        },
+      ]
+    }
+  />
+</View>
+`;
+
+exports[`Button Component should render with icon  1`] = `
+<View
+  accessibilityRole="button"
+  accessible={true}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Object {
+      "alignSelf": "stretch",
+      "backgroundColor": "#3052FF",
+      "borderColor": "transparent",
+      "borderRadius": 40.17857142857143,
+      "borderWidth": 1,
+      "flexDirection": "row",
+      "height": 117.85714285714285,
+      "justifyContent": "center",
+      "opacity": 1,
+      "paddingHorizontal": 15,
+    }
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "alignItems": "center",
+          "flexDirection": "row",
+        },
+      ]
+    }
+  >
+    <Image
+      resizeMode="contain"
+      source={
+        Object {
+          "uri": "IconChevronDown",
+        }
+      }
+      style={
+        Array [
+          Object {
+            "height": 31.428571428571427,
+            "width": 31.428571428571427,
+          },
+          Array [
+            Object {
+              "marginRight": 3,
+            },
+            undefined,
+            undefined,
+          ],
+        ]
+      }
+    />
+  </View>
+</View>
+`;
+
+exports[`Button Component should render with isDisabled 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "alignSelf": "stretch",
+        "backgroundColor": "#3052FF",
+        "borderColor": "transparent",
+        "borderRadius": 40.17857142857143,
+        "borderWidth": 1,
+        "flexDirection": "row",
+        "height": 117.85714285714285,
+        "justifyContent": "center",
+        "paddingHorizontal": 15,
+      },
+      Object {
+        "borderColor": "transparent",
+        "opacity": 0.5,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "alignItems": "center",
+          "flexDirection": "row",
+        },
+      ]
+    }
+  />
+</View>
+`;
+
+exports[`Button Component should render with label 1`] = `
+<View
+  accessibilityRole="button"
+  accessible={true}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Object {
+      "alignSelf": "stretch",
+      "backgroundColor": "#3052FF",
+      "borderColor": "transparent",
+      "borderRadius": 40.17857142857143,
+      "borderWidth": 1,
+      "flexDirection": "row",
+      "height": 117.85714285714285,
+      "justifyContent": "center",
+      "opacity": 1,
+      "paddingHorizontal": 15,
+    }
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "alignItems": "center",
+          "flexDirection": "row",
+        },
+      ]
+    }
+  >
+    <Text
+      adjustsFontSizeToFit={false}
+      allowFontScaling={false}
+      numberOfLines={2}
+      style={
+        Array [
+          Object {
+            "color": "#FFFFFF",
+            "fontFamily": "ProximaNova-Bold",
+            "fontSize": 35.357142857142854,
+            "paddingHorizontal": 5,
+            "textAlign": "center",
+          },
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+        ]
+      }
+    >
+      label
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`Button Component should render with loading 1`] = `
+<View
+  accessibilityRole="button"
+  accessible={true}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Object {
+      "alignSelf": "stretch",
+      "backgroundColor": "#3052FF",
+      "borderColor": "transparent",
+      "borderRadius": 40.17857142857143,
+      "borderWidth": 1,
+      "flexDirection": "row",
+      "height": 117.85714285714285,
+      "justifyContent": "center",
+      "opacity": 1,
+      "paddingHorizontal": 15,
+    }
+  }
+>
+  <ActivityIndicator
+    animating={true}
+    color="#FFFFFF"
+    hidesWhenStopped={true}
+    size="small"
+    style={
+      Object {
+        "alignSelf": "center",
+        "flex": 1,
+      }
+    }
+  />
+</View>
+`;
+
+exports[`Button Component should render without issues 1`] = `
+<View
+  accessibilityRole="button"
+  accessible={true}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Object {
+      "alignSelf": "stretch",
+      "backgroundColor": "#3052FF",
+      "borderColor": "transparent",
+      "borderRadius": 40.17857142857143,
+      "borderWidth": 1,
+      "flexDirection": "row",
+      "height": 117.85714285714285,
+      "justifyContent": "center",
+      "opacity": 1,
+      "paddingHorizontal": 15,
+    }
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "alignItems": "center",
+          "flexDirection": "row",
+        },
+      ]
+    }
+  />
+</View>
+`;

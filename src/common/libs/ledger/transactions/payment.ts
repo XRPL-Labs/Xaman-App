@@ -1,8 +1,14 @@
+/* eslint-disable no-lonely-if */
 import BigNumber from 'bignumber.js';
 import { get, set, has, isUndefined, isNumber, toInteger } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
-import Locale from '@locale';
+import LedgerService from '@services/LedgerService';
+
+import { AccountSchema } from '@store/schemas/latest';
+import { NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
+
+import Localize from '@locale';
 
 import BaseTransaction from './base';
 import Amount from '../parser/common/amount';
@@ -146,13 +152,14 @@ class Payment extends BaseTransaction {
         }
 
         if (typeof input === 'object') {
-            let value = new BigNumber(input.value);
+            const value = new BigNumber(input.value);
 
             // if transferRate set then add the fee to the value
-            if (this.TransferRate) {
-                const fee = value.multipliedBy(this.TransferRate).dividedBy(100);
-                value = value.plus(fee);
-            }
+            // if (this.TransferRate) {
+            //     const fee = value.multipliedBy(this.TransferRate).dividedBy(100);
+            //     value = value.plus(fee);
+            // }
+            // value = new BigNumber(value.toString().slice(0, 16));
 
             set(this, 'tx.Amount', {
                 currency: input.currency,
@@ -217,13 +224,13 @@ class Payment extends BaseTransaction {
             return;
         }
 
-        let value = new BigNumber(input.value);
+        const value = new BigNumber(input.value);
 
         // if transferRate set then add the fee to the value
-        if (this.TransferRate) {
-            const fee = value.multipliedBy(this.TransferRate).dividedBy(100);
-            value = value.plus(fee);
-        }
+        // if (this.TransferRate) {
+        //     const fee = value.multipliedBy(this.TransferRate).dividedBy(100);
+        //     value = value.plus(fee);
+        // }
 
         set(this, 'tx.DeliverMin', {
             currency: input.currency,
@@ -233,13 +240,24 @@ class Payment extends BaseTransaction {
     }
 
     get DeliverMin(): AmountType {
-        const deliverMin = get(this, 'tx.DeliverMin', undefined);
+        const deliverMin = get(this, ['tx', 'DeliverMin'], undefined);
 
         if (!deliverMin) {
             return undefined;
         }
 
-        return deliverMin;
+        if (typeof deliverMin === 'string') {
+            return {
+                currency: 'XRP',
+                value: new Amount(deliverMin).dropsToXrp(),
+            };
+        }
+
+        return {
+            currency: deliverMin.currency,
+            value: deliverMin.value && new Amount(deliverMin.value, false).toString(),
+            issuer: deliverMin.issuer,
+        };
     }
 
     get InvoiceID(): string {
@@ -252,11 +270,77 @@ class Payment extends BaseTransaction {
         return invoiceID;
     }
 
-    validate = () => {
+    validate = (source: AccountSchema) => {
         /* eslint-disable-next-line */
-        return new Promise((resolve, reject) => {
-            if (!this.Amount) {
-                return reject(new Error(Locale.t('send.pleaseEnterAmount')));
+        return new Promise(async (resolve, reject) => {
+            if (!this.Amount || !this.Amount?.value || this.Amount?.value === '0') {
+                return reject(new Error(Localize.t('send.pleaseEnterAmount')));
+            }
+
+
+            // this is a multisign tx
+            if (source.balance === 0) {
+                return resolve();
+            }
+
+            // if XRP check XRP Balance
+            if (this.Amount.currency === 'XRP' || (this.SendMax && this.SendMax.currency === 'XRP')) {
+                const XRPAmount = (this.SendMax && this.SendMax.value) || this.Amount.value;
+
+                if (Number(XRPAmount) > Number(source.availableBalance)) {
+                    return reject(
+                        new Error(
+                            Localize.t('send.insufficientBalanceSpendableBalance', {
+                                spendable: source.availableBalance,
+                                currency: 'XRP',
+                            }),
+                        ),
+                    );
+                }
+            } else {
+                // sender is not issuer
+                if (source.address !== this.Amount.issuer) {
+                    // check IOU balance
+                    const line = source.lines.find(
+                        (e: any) =>
+                            // eslint-disable-next-line implicit-arrow-linebreak
+                            e.currency.issuer === this.Amount.issuer && e.currency.currency === this.Amount.currency,
+                    );
+
+                    if (!line) return resolve();
+
+                    if (Number(this.Amount.value) > Number(NormalizeBalance(line.balance))) {
+                        return reject(
+                            new Error(
+                                Localize.t('send.insufficientBalanceSpendableBalance', {
+                                    spendable: line.balance,
+                                    currency: NormalizeCurrencyCode(line.currency.currency),
+                                }),
+                            ),
+                        );
+                    }
+                } else {
+                    // check for exceed the trustline Limit on obligations
+                    const sourceLines = await LedgerService.getAccountLines(source.address);
+
+                    const { lines } = sourceLines;
+
+                    const trustLine = lines.filter(
+                        (l: any) => l.currency === this.Amount.currency && l.account === this.Destination.address,
+                    )[0];
+
+                    if (Number(this.Amount.value) + Math.abs(trustLine.balance) > Number(trustLine.limit_peer)) {
+                        return reject(
+                            new Error(
+                                Localize.t('send.trustLineLimitExceeded', {
+                                    balance: Math.abs(trustLine.balance),
+                                    peer_limit: trustLine.limit_peer,
+                                    available: Number(trustLine.limit_peer - Math.abs(trustLine.balance)),
+                                }),
+                            ),
+                        );
+                    }
+                }
             }
 
             return resolve();

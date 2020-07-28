@@ -10,7 +10,7 @@ import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Header } from '@components';
+import { Button, Header } from '@components/General';
 
 import Localize from '@locale';
 

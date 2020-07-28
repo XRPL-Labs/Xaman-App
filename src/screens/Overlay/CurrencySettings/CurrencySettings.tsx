@@ -15,7 +15,7 @@ import { TrustSet, Payment } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import Flag from '@common/libs/ledger/parser/common/flag';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
 
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
@@ -25,7 +25,7 @@ import { AppScreens } from '@common/constants';
 import LedgerService from '@services/LedgerService';
 
 // components
-import { Button, Spacer, CustomButton } from '@components';
+import { Button, Spacer, RaisedButton } from '@components/General';
 
 import Localize from '@locale';
 
@@ -107,6 +107,9 @@ class CurrencySettingsModal extends Component<Props, State> {
 
     getLatestLineBalance = () => {
         const { account, trustLine } = this.props;
+
+        // ignore obligation lines
+        if (trustLine.obligation) return;
 
         LedgerService.getAccountLines(account.address)
             .then(async (accountLines: any) => {
@@ -360,12 +363,15 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 </View>
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
                                     <Text style={[styles.currencyItemLabelSmall]}>
-                                        {NormalizeCurrencyCode(trustLine.currency.currency)}
-                                    </Text>
-                                    <Text style={[styles.issuerLabel]}>
                                         {trustLine.currency.name
                                             ? trustLine.currency.name
-                                            : trustLine.counterParty.name}
+                                            : NormalizeCurrencyCode(trustLine.currency.currency)}
+                                    </Text>
+                                    <Text style={[styles.issuerLabel]}>
+                                        {trustLine.counterParty.name}{' '}
+                                        {trustLine.currency.name
+                                            ? NormalizeCurrencyCode(trustLine.currency.currency)
+                                            : ''}
                                     </Text>
                                 </View>
                             </View>
@@ -373,14 +379,16 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 {trustLine.currency.avatar && (
                                     <Image style={styles.currencyAvatar} source={{ uri: trustLine.currency.avatar }} />
                                 )}
-                                <Text style={[AppStyles.pbold, AppStyles.monoBold]}>{trustLine.balance}</Text>
+                                <Text style={[AppStyles.pbold, AppStyles.monoBold]}>
+                                    {NormalizeBalance(trustLine.balance)}
+                                </Text>
                             </View>
                         </View>
 
                         <Spacer />
                         <View style={[styles.buttonRow]}>
-                            <CustomButton
-                                isDisabled={trustLine.balance <= 0}
+                            <RaisedButton
+                                isDisabled={trustLine.balance <= 0 && trustLine.obligation !== true}
                                 style={styles.sendButton}
                                 icon="IconCornerLeftUp"
                                 iconSize={20}
@@ -392,7 +400,8 @@ class CurrencySettingsModal extends Component<Props, State> {
                                     Navigator.push(AppScreens.Transaction.Payment, {}, { currency: trustLine });
                                 }}
                             />
-                            <CustomButton
+                            <RaisedButton
+                                isDisabled={trustLine.obligation}
                                 style={styles.exchangeButton}
                                 icon="IconCornerRightUp"
                                 iconSize={20}
@@ -409,7 +418,7 @@ class CurrencySettingsModal extends Component<Props, State> {
 
                         <Spacer size={20} />
 
-                        <CustomButton
+                        <RaisedButton
                             isLoading={isLoading}
                             isDisabled={!canRemove}
                             icon="IconTrash"

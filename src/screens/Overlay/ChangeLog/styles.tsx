@@ -25,7 +25,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
     },
     contentContainer: {
-        padding: AppSizes.paddingSml,
+        paddingVertical: AppSizes.paddingSml,
+        paddingTop: 10,
     },
     loadingStyle: {
         position: 'absolute',

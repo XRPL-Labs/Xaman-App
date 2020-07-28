@@ -4,7 +4,7 @@
 
 /* eslint-disable spellcheck/spell-checker */
 import { StyleSheet } from 'react-native';
-import { getBottomTabsHeight, isIOS10 } from '@common/helpers/interface';
+import { isIOS10 } from '@common/helpers/device';
 
 import Colors from './colors';
 import Fonts from './fonts';
@@ -26,7 +26,7 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         alignContent: 'stretch',
-        marginBottom: getBottomTabsHeight(),
+        marginBottom: Sizes.tabbarHeight,
     },
     headerContainer: {
         backgroundColor: Colors.transparent,
@@ -130,6 +130,7 @@ export default StyleSheet.create({
     colorOrange: { color: Colors.orange },
     colorRed: { color: Colors.red },
     colorGreyDark: { color: Colors.greyDark },
+    colorGreyBlack: { color: Colors.greyBlack },
     // colorPurple: { color: Colors.purple },
     // colorGreyBlue: { color: Colors.greyBlue },
     imgColorBlue: { tintColor: Colors.blue },
@@ -140,6 +141,7 @@ export default StyleSheet.create({
     imgColorGreyDark: { tintColor: Colors.greyDark },
     imgColorRed: { tintColor: Colors.red },
     imgColorOrange: { tintColor: Colors.orange },
+    imgColorGreyBlack: { tintColor: Colors.greyBlack },
 
     borderRadius: {
         borderRadius: 12,
@@ -474,18 +476,6 @@ export default StyleSheet.create({
         left: 0,
         right: 0,
         backgroundColor: Colors.black,
-    },
-    visibleContent: {
-        // height: Sizes.screen.heightHalf + 100,
-        height: Sizes.screen.height * 0.9,
-        backgroundColor: Colors.white,
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        shadowColor: Colors.black,
-        shadowOffset: { width: 0, height: 0 },
-        shadowRadius: 5,
-        shadowOpacity: 0.3,
-        padding: 15,
     },
     panelHeader: {
         alignItems: 'center',

@@ -18,16 +18,18 @@ static UISelectionFeedbackGenerator *selectionGenerator = nil;
 static NSMutableDictionary<NSNumber*, UIImpactFeedbackGenerator*> *impactGeneratorMap = nil;
 static UINotificationFeedbackGenerator *notificationGenerator = nil;
 
-@implementation UtilsModule
 
-@synthesize bridge = _bridge;
+@implementation UtilsModule
+{
+  bool hasListeners;
+}
 
 RCT_EXPORT_MODULE();
 
 
-- (void)setBridge:(RCTBridge *)bridge
+- (NSArray<NSString *> *)supportedEvents
 {
-    _bridge = bridge;
+  return @[@"Utils.timeout"];;
 }
 
 - (dispatch_queue_t)methodQueue
@@ -37,12 +39,22 @@ RCT_EXPORT_MODULE();
 
 - (void)loadBundle
 {
-    [_bridge reload];
+  [self.bridge reload];
 }
 
 + (BOOL)requiresMainQueueSetup
 {
     return YES;
+}
+
+// Will be called when this module's first listener is added.
+-(void)startObserving {
+    hasListeners = YES;
+}
+
+// Will be called when this module's last listener is removed, or on dealloc.
+-(void)stopObserving {
+    hasListeners = NO;
 }
 
 - (NSString *)platform
@@ -280,6 +292,23 @@ RCT_EXPORT_METHOD(getElapsedRealtime: (RCTPromiseResolveBlock)resolve rejecter:(
     resolve([NSString stringWithFormat:@"%ld", [self uptime]]);
 }
 
+
+RCT_EXPORT_METHOD(getTimeZone:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+  @try{
+    NSTimeZone *timeZone = [NSTimeZone localTimeZone];
+    resolve(timeZone.name);
+  }
+  @catch(NSException *exception){
+    NSMutableDictionary * info = [NSMutableDictionary dictionary];
+    [info setValue:exception.name forKey:@"ExceptionName"];
+    [info setValue:exception.reason forKey:@"ExceptionReason"];
+    [info setValue:exception.userInfo forKey:@"ExceptionUserInfo"];
+    NSError *error = [[NSError alloc] initWithDomain:@"Root Detection Module" code:0 userInfo:info];
+    reject(@"failed to execute",@"",error);
+  }
+}
+
 // From:
 // https://github.com/junina-de/react-native-haptic-feedback
 RCT_EXPORT_METHOD(hapticFeedback:(NSString *)type)
@@ -318,6 +347,25 @@ RCT_EXPORT_METHOD(hapticFeedback:(NSString *)type)
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
     }
     
+}
+
+
+RCT_EXPORT_METHOD(timeoutEvent:(NSString *)timeoutId timeout:(int)timeout
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    __block UIBackgroundTaskIdentifier task = [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"UtilsModule" expirationHandler:^{
+        [[UIApplication sharedApplication] endBackgroundTask:task];
+    }];
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeout * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+        if ([self bridge] != nil && self->hasListeners) {
+            [self sendEventWithName:@"Utils.timeout" body:timeoutId];
+        }
+  
+        [[UIApplication sharedApplication] endBackgroundTask:task];
+    });
+    resolve([NSNumber numberWithBool:YES]);
 }
 
 @end

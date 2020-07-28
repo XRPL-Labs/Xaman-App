@@ -5,21 +5,20 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text } from 'react-native';
 
-import { Button, RadioButton, InfoMessage, Footer } from '@components';
+import { Button, RadioButton, InfoMessage, Footer } from '@components/General';
 
 import Localize from '@locale';
+
+import { AccessLevels, EncryptionLevels } from '@store/types';
 
 // style
 import { AppStyles } from '@theme';
 // import styles from './styles';
 
-import { AccessLevels } from '@store/types';
-import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
+import { StepsContext } from '../../Context';
+
 /* types ==================================================================== */
-export interface Props {
-    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
-    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {
     accessLevel: AccessLevels;
@@ -27,6 +26,9 @@ export interface State {
 
 /* Component ==================================================================== */
 class AccessLevelStep extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     constructor(props: Props) {
         super(props);
 
@@ -42,17 +44,24 @@ class AccessLevelStep extends Component<Props, State> {
     };
 
     goNext = () => {
-        const { goNext } = this.props;
+        const { goNext, setAccessLevel, setEncryptionLevel } = this.context;
         const { accessLevel } = this.state;
 
-        if (accessLevel === 'Full') {
-            goNext('AccountType', { accessLevel });
-        } else {
-            goNext('EnterAddress', { accessLevel });
-        }
+        // set access level for account
+        setAccessLevel(accessLevel, () => {
+            if (accessLevel === 'Full') {
+                goNext('SecretType');
+            } else {
+                // if the account is readonly then set the encryption level to None
+                setEncryptionLevel(EncryptionLevels.None, () => {
+                    goNext('EnterAddress');
+                });
+            }
+        });
     };
+
     render() {
-        const { goBack } = this.props;
+        const { goBack } = this.context;
         const { accessLevel } = this.state;
         return (
             <SafeAreaView testID="account-import-access-level" style={[AppStyles.contentContainer]}>

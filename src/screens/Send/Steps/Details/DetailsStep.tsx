@@ -24,10 +24,10 @@ import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import { Images } from '@common/helpers/images';
 import { Prompt } from '@common/helpers/interface';
-import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeAmount, NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
 
 // components
-import { Header, Button, AccordionPicker, Footer } from '@components';
+import { Header, Button, AccordionPicker, Footer } from '@components/General';
 
 import Localize from '@locale';
 
@@ -64,25 +64,27 @@ class DetailsStep extends Component {
 
         const bAmount = new BigNumber(amount);
 
+        // check if account is activated
         if (source.balance === 0) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.accountIsNotActivated'));
             return;
         }
 
-        const availableBalance = new BigNumber(this.getAvailableBalance());
+        // check for exceed amount
 
-        let maxCanSend = availableBalance.toNumber();
-
-        // check if balance can cover the transfer fee for non XRP currencies
-        if (typeof currency !== 'string') {
-            const rate = new BigNumber(currency.transfer_rate).dividedBy(1000000).minus(1000).dividedBy(10);
-
-            const fee = availableBalance.multipliedBy(rate).dividedBy(100).decimalPlaces(6);
-            maxCanSend = availableBalance.minus(fee).toNumber();
+        // if IOU and obligation can send unlimited
+        if (typeof currency !== 'string' && currency.obligation) {
+            // last set amount parsed by bignumber
+            setAmount(bAmount.toString(10));
+            // go to next screen
+            goNext();
+            return;
         }
 
+        const availableBalance = new BigNumber(this.getAvailableBalance()).toNumber();
+
         // check if amount is bigger than what user can spend
-        if (bAmount.toNumber() > maxCanSend) {
+        if (bAmount.toNumber() > availableBalance) {
             Prompt(
                 Localize.t('global.error'),
                 Localize.t('send.theMaxAmountYouCanSendIs', {
@@ -94,7 +96,7 @@ class DetailsStep extends Component {
                     {
                         text: Localize.t('global.update'),
                         onPress: () => {
-                            setAmount(maxCanSend.toString());
+                            setAmount(availableBalance.toString());
                         },
                     },
                 ],
@@ -231,7 +233,7 @@ class DetailsStep extends Component {
                         <Text
                             style={[styles.currencyBalance, selected ? AppStyles.colorBlue : AppStyles.colorGreyDark]}
                         >
-                            {Localize.t('global.balance')}: {item.balance}
+                            {Localize.t('global.balance')}: {NormalizeBalance(item.balance)}
                         </Text>
                     </View>
                 </View>
@@ -291,7 +293,14 @@ class DetailsStep extends Component {
                             </View>
                             <AccordionPicker
                                 onSelect={this.onCurrencyChange}
-                                items={source ? ['XRP', ...filter(source.lines, (l) => l.balance > 0)] : []}
+                                items={
+                                    source
+                                        ? [
+                                            'XRP',
+                                            ...filter(source.lines, (l) => l.balance > 0 || l.obligation === true),
+                                        ]
+                                        : []
+                                }
                                 renderItem={this.renderCurrencyItem}
                                 selectedItem={currency}
                                 keyExtractor={(i) => (typeof i === 'string' ? i : i.currency.id)}

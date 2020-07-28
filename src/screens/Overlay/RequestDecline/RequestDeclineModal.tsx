@@ -6,13 +6,12 @@ import { Animated, View, Text, TouchableWithoutFeedback } from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
-import { getNavigationBarHeight } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Spacer } from '@components';
+import { Button, Spacer } from '@components/General';
 
 import Localize from '@locale';
 
@@ -127,7 +126,7 @@ class RequestDeclineOverlay extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={r => {
+                    ref={(r) => {
                         this.panel = r;
                     }}
                     animatedNativeDriver
@@ -163,7 +162,7 @@ class RequestDeclineOverlay extends Component<Props, State> {
                             style={[
                                 AppStyles.flex2,
                                 AppStyles.paddingHorizontalSml,
-                                { marginBottom: getNavigationBarHeight() },
+                                { marginBottom: AppSizes.navigationBarHeight },
                             ]}
                         >
                             <Button

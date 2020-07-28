@@ -4,6 +4,7 @@
 import { UIManager, Platform, Alert, Text, TextInput, NativeModules } from 'react-native';
 
 // modules
+import moment from 'moment-timezone';
 import DeviceInfo from 'react-native-device-info';
 import { Navigation } from 'react-native-navigation';
 
@@ -154,14 +155,14 @@ class Application {
     };
 
     configure = () => {
-        return new Promise((resolve, reject) => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
             try {
                 const { UtilsModule } = NativeModules;
 
-                // enable LayoutAnimation for android
                 if (Platform.OS === 'android') {
                     // check for device root
-                    UtilsModule.isRooted().then((rooted: boolean) => {
+                    await UtilsModule.isRooted().then((rooted: boolean) => {
                         if (rooted && !__DEV__) {
                             return reject(new Error('For your security, XUMM cannot be opened on a rooted phone.'));
                         }
@@ -173,21 +174,26 @@ class Application {
                         if (UIManager.setLayoutAnimationEnabledExperimental) {
                             UIManager.setLayoutAnimationEnabledExperimental(true);
                         }
-
-                        return resolve();
                     });
-                } else {
+                } else if (Platform.OS === 'ios') {
                     // check for device root
-                    UtilsModule.isJailBroken().then((isJailBroken: boolean) => {
+                    await UtilsModule.isJailBroken().then((isJailBroken: boolean) => {
                         if (isJailBroken && !__DEV__) {
                             return reject(
                                 new Error('For your security, XUMM cannot be opened on a Jail Broken phone.'),
                             );
                         }
-
-                        return resolve();
                     });
                 }
+
+                // set timezone
+                UtilsModule.getTimeZone()
+                    .then((tz: string) => {
+                        moment.tz.setDefault(tz);
+                    })
+                    .catch(() => {
+                        // ignore
+                    });
 
                 // Disable accessibility fonts
                 // @ts-ignore

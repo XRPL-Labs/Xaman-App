@@ -1,3 +1,4 @@
+import isUndefined from 'lodash/isUndefined';
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
@@ -30,7 +31,14 @@ class AccountSetTemplate extends Component<Props, State> {
     render() {
         const { transaction } = this.props;
 
-        if (!transaction.SetFlag && !transaction.ClearFlag && transaction.Domain === undefined) {
+        if (
+            isUndefined(transaction.SetFlag) &&
+            isUndefined(transaction.ClearFlag) &&
+            isUndefined(transaction.Domain) &&
+            isUndefined(transaction.EmailHash) &&
+            isUndefined(transaction.MessageKey) &&
+            isUndefined(transaction.TransferRate)
+        ) {
             return (
                 <View key="details" style={[AppStyles.flex1, AppStyles.centerContent]}>
                     <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
@@ -52,22 +60,32 @@ class AccountSetTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
-                {transaction.EmailHash && (
+                {transaction.EmailHash !== undefined && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.emailHash')}</Text>
                         <View style={[styles.contentBox]}>
                             <Text selectable style={[styles.valueSubtext]}>
-                                {transaction.EmailHash}
+                                {transaction.EmailHash || Localize.t('global.empty')}
                             </Text>
                         </View>
                     </>
                 )}
-                {transaction.MessageKey && (
+                {transaction.MessageKey !== undefined && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.messageKey')}</Text>
                         <View style={[styles.contentBox]}>
                             <Text selectable style={[styles.valueSubtext]}>
-                                {transaction.MessageKey}
+                                {transaction.MessageKey || Localize.t('global.empty')}
+                            </Text>
+                        </View>
+                    </>
+                )}
+                {transaction.TransferRate !== undefined && (
+                    <>
+                        <Text style={[styles.label]}>{Localize.t('global.transferRate')}</Text>
+                        <View style={[styles.contentBox]}>
+                            <Text selectable style={[styles.valueSubtext]}>
+                                {transaction.TransferRate}
                             </Text>
                         </View>
                     </>

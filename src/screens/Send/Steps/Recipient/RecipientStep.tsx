@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { Results } from 'realm';
 import { isEmpty, flatMap, remove, get, uniqBy, toNumber } from 'lodash';
-import { View, Text, Image, TouchableHighlight, SectionList, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, SectionList, Alert, ActivityIndicator } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
 import { AccountRepository, ContactRepository } from '@store/repositories';
@@ -15,12 +15,12 @@ import { AppScreens } from '@common/constants';
 import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 
 import { BackendService } from '@services';
 
 // components
-import { Button, TextInput, Footer, InfoMessage } from '@components';
+import { Button, TextInput, Footer, InfoMessage } from '@components/General';
+import { RecipientElement } from '@components/Modules';
 
 // locale
 import Localize from '@locale';
@@ -72,9 +72,9 @@ class RecipientStep extends Component<Props, State> {
     componentDidMount() {
         const { scanResult } = this.context;
 
-        // if scanResult is passed
+        // check any scan result exist
         if (scanResult) {
-            this.doAccountLookUp({ to: scanResult.to, tag: scanResult.tag });
+            this.doAccountLookUp(scanResult);
         } else {
             this.setDefaultDataSource();
         }
@@ -93,28 +93,13 @@ class RecipientStep extends Component<Props, State> {
         if (to) {
             const accountInfo = await getAccountName(to, tag);
 
-            let avatar;
-
-            switch (accountInfo.source) {
-                case 'internal:contacts':
-                    avatar = Images.IconProfile;
-                    break;
-                case 'internal:accounts':
-                    avatar = Images.IconAccount;
-                    break;
-                default:
-                    avatar = Images.IconGlobe;
-                    break;
-            }
-
             this.setState({
                 dataSource: this.getSearchResultSource([
                     {
                         name: accountInfo.name || '',
                         address: to,
                         tag,
-                        avatar,
-                        source: accountInfo.source.replace('internal:', ''),
+                        source: accountInfo.source,
                     },
                 ]),
                 isSearching: false,
@@ -180,12 +165,12 @@ class RecipientStep extends Component<Props, State> {
                         name: item.name,
                         address: item.address,
                         tag: item.destinationTag,
-                        avatar: Images.IconProfile,
+                        source: 'internal:contacts',
                     });
                 }
             });
 
-            // search for contacts
+            // search for accounts
             accounts.forEach((item) => {
                 if (
                     item.label.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
@@ -194,7 +179,7 @@ class RecipientStep extends Component<Props, State> {
                     searchResult.push({
                         name: item.label,
                         address: item.address,
-                        avatar: Images.IconAccount,
+                        source: 'internal:accounts',
                     });
                 }
             });
@@ -205,11 +190,27 @@ class RecipientStep extends Component<Props, State> {
                     .then((res: any) => {
                         if (!isEmpty(res) && res.error !== true) {
                             if (!isEmpty(res.matches)) {
-                                res.matches.forEach((element: any) => {
+                                res.matches.forEach(async (element: any) => {
+                                    // if payid in result, then look for payId in local source as well
+                                    if (element.source === 'payid') {
+                                        const internalResult = await getAccountName(element.account, element.tag, true);
+
+                                        // found in local source
+                                        if (internalResult.name) {
+                                            searchResult.push({
+                                                name: internalResult.name || '',
+                                                address: element.account,
+                                                tag: element.tag,
+                                                source: internalResult.source,
+                                            });
+
+                                            return;
+                                        }
+                                    }
+
                                     searchResult.push({
                                         name: element.alias === element.account ? '' : element.alias,
                                         address: element.account,
-                                        avatar: Images.IconGlobe,
                                         source: element.source,
                                         tag: element.tag,
                                     });
@@ -286,7 +287,7 @@ class RecipientStep extends Component<Props, State> {
             dataSource.push({
                 title: Localize.t('account.myAccounts'),
                 data: flatMap(myAccountList, (a) => {
-                    return { name: a.label, address: a.address, avatar: Images.IconAccount };
+                    return { name: a.label, address: a.address, source: 'internal:accounts' };
                 }),
             });
         }
@@ -304,7 +305,7 @@ class RecipientStep extends Component<Props, State> {
                         name: a.name,
                         address: a.address,
                         tag: a.destinationTag,
-                        avatar: Images.IconProfile,
+                        source: 'internal:contacts',
                     };
                 }),
             });
@@ -565,36 +566,11 @@ class RecipientStep extends Component<Props, State> {
 
         const selected = item.address === get(destination, 'address') && item.name === get(destination, 'name');
 
-        let tag;
-
-        switch (item.source) {
-            case 'xrplns':
-                tag = (
-                    <View style={[styles.tag, styles.xrplnsTag]}>
-                        <Text style={styles.tagLabel}>XRPLNS</Text>
-                    </View>
-                );
-                break;
-            case 'bithomp.com':
-                tag = (
-                    <View style={[styles.tag, styles.bithompTag]}>
-                        <Text style={styles.tagLabel}>Bithomp</Text>
-                    </View>
-                );
-                break;
-            case 'payid':
-                tag = (
-                    <View style={[styles.tag, styles.payidTag]}>
-                        <Text style={styles.tagLabel}>PayID</Text>
-                    </View>
-                );
-                break;
-            default:
-                break;
-        }
-
         return (
-            <TouchableHighlight
+            <RecipientElement
+                recipient={item}
+                selected={selected}
+                showTag={false}
                 onPress={() => {
                     if (!selected) {
                         setDestination({
@@ -606,28 +582,7 @@ class RecipientStep extends Component<Props, State> {
                         setDestination(undefined);
                     }
                 }}
-                underlayColor="#FFF"
-                key={item.id}
-            >
-                <View style={[styles.itemRow, selected ? styles.itemSelected : null]}>
-                    <View style={styles.avatarContainer}>
-                        <Image source={item.avatar} style={styles.avatarImage} />
-                    </View>
-                    <View style={AppStyles.paddingLeftSml}>
-                        <View style={AppStyles.row}>
-                            <Text
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                style={[styles.title, selected ? styles.selectedText : null]}
-                            >
-                                {item.name || Localize.t('global.noNameFound')}
-                            </Text>
-                            {tag && tag}
-                        </View>
-                        <Text style={[styles.subtitle, selected ? styles.selectedText : null]}>{item.address}</Text>
-                    </View>
-                </View>
-            </TouchableHighlight>
+            />
         );
     };
 

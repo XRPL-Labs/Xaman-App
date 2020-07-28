@@ -15,7 +15,7 @@ import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 import { AccessLevels, EncryptionLevels } from '@store/types';
 
-import { Header, Spacer, Icon, Button } from '@components';
+import { Header, Spacer, Icon, Button } from '@components/General';
 
 import Localize from '@locale';
 
@@ -52,6 +52,11 @@ class AccountSettingsView extends Component<Props, State> {
 
     componentDidMount() {
         AccountRepository.on('accountUpdate', this.onAccountUpdate);
+    }
+
+
+    componentWillUnmount() {
+        AccountRepository.off('accountUpdate', this.onAccountUpdate);
     }
 
     onAccountUpdate = (updateAccount: AccountSchema) => {
@@ -220,6 +225,18 @@ class AccountSettingsView extends Component<Props, State> {
                     <ScrollView>
                         {/* Account Label */}
                         <Text style={styles.descriptionText}>{Localize.t('account.accountSettingsDescription')}</Text>
+
+                        <View style={styles.row}>
+                            <View style={[AppStyles.flex3]}>
+                                <Text style={styles.label}>{Localize.t('global.address')}</Text>
+                            </View>
+
+                            <View style={[AppStyles.centerAligned, AppStyles.row]}>
+                                <Text selectable style={[styles.address]}>{account.address}</Text>
+                            </View>
+                        </View>
+
+
                         <TouchableOpacity style={styles.row} onPress={this.accountLabelPressed}>
                             <View style={[AppStyles.flex3]}>
                                 <Text style={styles.label}>{Localize.t('account.accountLabel')}</Text>
@@ -227,6 +244,7 @@ class AccountSettingsView extends Component<Props, State> {
 
                             <View style={[AppStyles.centerAligned, AppStyles.row]}>
                                 <Text style={[styles.value]}>{account.label}</Text>
+                                <Icon size={20} style={[styles.rowIcon]} name="IconChevronRight" />
                             </View>
                         </TouchableOpacity>
 
@@ -256,6 +274,7 @@ class AccountSettingsView extends Component<Props, State> {
 
                                     <View style={[AppStyles.centerAligned, AppStyles.row]}>
                                         <Text style={[styles.value]}>{account.encryptionLevel}</Text>
+                                        <Icon size={20} style={[styles.rowIcon]} name="IconChevronRight" />
                                     </View>
                                 </TouchableOpacity>
 
@@ -271,12 +290,7 @@ class AccountSettingsView extends Component<Props, State> {
                         )}
 
                         <Spacer size={50} />
-                        {/* Remove Account */}
-                        {/* <TouchableOpacity style={[AppStyles.buttonRed]} onPress={this.removeAccount}>
-                            <View style={[AppStyles.flex3]}>
-                                <Text style={styles.destructionLabel}>{Localize.t('account.destroyAccount')}</Text>
-                            </View>
-                        </TouchableOpacity> */}
+
                         <Button
                             label={Localize.t('account.destroyAccount')}
                             icon="IconTrash"

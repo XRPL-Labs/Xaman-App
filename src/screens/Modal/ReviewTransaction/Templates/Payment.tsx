@@ -1,16 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { isEmpty, isEqual, has } from 'lodash';
 import React, { Component } from 'react';
-import {
-    View,
-    Alert,
-    TextInput,
-    Text,
-    ActivityIndicator,
-    Platform,
-    TouchableOpacity,
-    InteractionManager,
-} from 'react-native';
+import { View, Alert, TextInput, Text, Platform, TouchableOpacity, InteractionManager } from 'react-native';
 
 import LedgerExchange from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
@@ -18,13 +9,14 @@ import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { LedgerService } from '@services';
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
-import { getAccountName } from '@common/helpers/resolver';
+import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { Button, InfoMessage, Spacer } from '@components';
+import { Button, InfoMessage, Spacer } from '@components/General';
+import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
 
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -37,7 +29,7 @@ export interface State {
     isLoading: boolean;
     amount: string;
     editableAmount: boolean;
-    destinationName: string;
+    destinationDetails: AccountNameType;
     isPartialPayment: boolean;
     exchangeRate: number;
     xrpRoundedUp: string;
@@ -55,7 +47,7 @@ class PaymentTemplate extends Component<Props, State> {
             isLoading: false,
             editableAmount: !props.transaction.Amount?.value,
             amount: props.transaction.Amount?.value,
-            destinationName: '',
+            destinationDetails: { name: '', source: '' },
             isPartialPayment: false,
             exchangeRate: undefined,
             xrpRoundedUp: undefined,
@@ -104,10 +96,15 @@ class PaymentTemplate extends Component<Props, State> {
                     (l: any) => l.currency === transaction.Amount.currency && l.account === transaction.Amount.issuer,
                 )[0];
 
-                const shouldPayWithXRP =
+                let shouldPayWithXRP =
                     !trustLine ||
                     (parseFloat(trustLine.balance) < parseFloat(transaction.Amount.value) &&
                         account !== transaction.Amount.issuer);
+
+                // just ignore if the sender is the issuer
+                if (account === transaction.Amount.issuer) {
+                    shouldPayWithXRP = false;
+                }
 
                 // if not have the same trust line or the balance is not covering requested value
                 // Pay with XRP instead
@@ -116,13 +113,13 @@ class PaymentTemplate extends Component<Props, State> {
 
                     const ledgerExchange = new LedgerExchange(PAIR);
                     // sync with latest order book
-                    await ledgerExchange.sync();
+                    await ledgerExchange.initialize();
 
                     // get liquidity grade
-                    const liquidityGrade = ledgerExchange.liquidityGrade('buy');
+                    const liquidity = await ledgerExchange.getLiquidity('buy', Number(transaction.Amount.value));
 
                     // not enough liquidity
-                    if (liquidityGrade === 0) {
+                    if (!liquidity.safe || liquidity.errors.length > 0) {
                         this.setState({
                             isPartialPayment: true,
                             exchangeRate: 0,
@@ -130,23 +127,26 @@ class PaymentTemplate extends Component<Props, State> {
                         return;
                     }
 
-                    const exchangeRate = ledgerExchange.getExchangeRate('buy');
-                    const sendMaxXRP = new BigNumber(transaction.Amount.value).dividedBy(exchangeRate).decimalPlaces(6);
+                    const sendMaxXRP = new BigNumber(transaction.Amount.value)
+                        .multipliedBy(liquidity.rate)
+                        .decimalPlaces(6)
+                        .toString(10);
 
                     // @ts-ignore
-                    transaction.SendMax = sendMaxXRP.toString();
+                    transaction.SendMax = sendMaxXRP;
                     transaction.Flags = [txFlags.Payment.PartialPayment];
 
                     this.setState({
                         isPartialPayment: true,
-                        exchangeRate,
-                        xrpRoundedUp: sendMaxXRP.toString(),
+                        exchangeRate: new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(6).toNumber(),
+                        xrpRoundedUp: sendMaxXRP,
                     });
                 } else {
                     // check for transfer fee
                     // add PartialPayment
-                    const issuerAccountInfo = await LedgerService.getAccountInfo(trustLine.account);
-                    if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
+                    const issuerAccountInfo = await LedgerService.getAccountInfo(transaction.Amount.issuer);
+                    // eslint-disable-next-line max-len
+                    if (has(issuerAccountInfo, ['account_data', 'TransferRate']) || account === transaction.Amount.issuer) {
                         transaction.Flags = [txFlags.Payment.PartialPayment];
                     }
 
@@ -175,7 +175,7 @@ class PaymentTemplate extends Component<Props, State> {
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     this.setState({
-                        destinationName: res.name,
+                        destinationDetails: res,
                     });
                 }
             })
@@ -219,7 +219,7 @@ class PaymentTemplate extends Component<Props, State> {
             xrpRoundedUp,
             editableAmount,
             amount,
-            destinationName,
+            destinationDetails,
         } = this.state;
         return (
             <>
@@ -228,30 +228,17 @@ class PaymentTemplate extends Component<Props, State> {
                         {Localize.t('global.to')}
                     </Text>
                 </View>
-                <View style={[styles.contentBox, styles.addressContainer]}>
-                    <Text style={[AppStyles.pbold]}>
-                        {isLoading ? (
-                            Platform.OS === 'ios' ? (
-                                <ActivityIndicator color={AppColors.blue} />
-                            ) : (
-                                'Loading...'
-                            )
-                        ) : (
-                            destinationName || Localize.t('global.noNameFound')
-                        )}
-                    </Text>
-                    <Text selectable numberOfLines={1} style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
-                        {transaction.Destination.address}
-                    </Text>
-                    {transaction.Destination.tag && (
-                        <View style={[styles.destinationAddress]}>
-                            <Text style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
-                                {Localize.t('global.destinationTag')}:{' '}
-                                <Text style={AppStyles.colorBlue}>{transaction.Destination.tag}</Text>
-                            </Text>
-                        </View>
-                    )}
-                </View>
+
+                <RecipientElement
+                    containerStyle={[styles.contentBox, styles.addressContainer]}
+                    isLoading={isLoading}
+                    showAvatar={false}
+                    recipient={{
+                        address: transaction.Destination.address,
+                        tag: transaction.Destination.tag,
+                        ...destinationDetails,
+                    }}
+                />
 
                 {/* Amount */}
                 <Text style={[styles.label]}>{Localize.t('global.amount')}</Text>
@@ -325,11 +312,11 @@ class PaymentTemplate extends Component<Props, State> {
                         ))}
                 </View>
 
-                {transaction.invoiceID && (
+                {transaction.InvoiceID && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.invoiceID')}</Text>
                         <View style={[styles.contentBox]}>
-                            <Text style={styles.value}>{transaction.invoiceID}</Text>
+                            <Text style={styles.value}>{transaction.InvoiceID}</Text>
                         </View>
                     </>
                 )}

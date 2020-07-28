@@ -1,20 +1,27 @@
 #!/usr/bin/env bash
+files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '.js$|.ts$|.tsx$')
 
-echo "Running pre-commit hook"  
+if [ -z "files" ]; then
+    exit 0
+fi
 
+if [ -n "$files" ]; then
+    echo "Checking lint for:"
+    for f in $files; do
+        echo "$f"
+        e=$(node_modules/.bin/eslint --quiet --fix $f)
+        if [[ -n "$e" ]]; then
+            echo "ERROR: Check eslint hints."
+            echo "$e"
+            exit 1 # reject
+        fi
+    done
 
-# TESTS
-cd "${0%/*}/.."
-
-# let's fake failing test for now 
-echo "Running tests"  
-echo "............................"  
-
-npm run test
-
-
-# $? stores exit value of the last command
-if [ $? -ne 0 ]; then  
-  echo "Tests must pass before commit!"
-  exit 1
+    echo "Checking for TSC"
+    tsc=$(node_modules/.bin/tsc --noEmit)
+    if [[ -n "$tsc" ]]; then
+        echo "ERROR: Check TSC hints."
+        echo "$tsc"
+        exit 1 # reject
+    fi
 fi

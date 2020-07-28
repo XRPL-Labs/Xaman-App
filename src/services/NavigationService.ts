@@ -53,7 +53,7 @@ class NavigationService extends EventEmitter {
                 Navigation.events().registerModalDismissedListener(this.modalDismissedListener);
                 Navigation.events().registerBottomTabLongPressedListener(
                     ({ selectedTabIndex }: BottomTabLongPressedEvent) => {
-                        if (selectedTabIndex === 1) {
+                        if (selectedTabIndex === 0) {
                             const currentOverlay = this.getCurrentOverlay();
                             if (currentOverlay !== AppScreens.Overlay.SwitchAccount) {
                                 // haptic vibrate

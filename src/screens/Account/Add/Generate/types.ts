@@ -1,10 +1,11 @@
 import { XRPL_Account } from 'xrpl-accountlib';
 
-import { EncryptionLevels } from '@store/types';
+import { AccountSchema } from '@store/schemas/latest';
 
 export type GenerateSteps =
-    | 'ViewPublicKey'
     | 'SeedExplanation'
+    | 'ViewPublicKey'
+    | 'ExplainActivation'
     | 'ViewPrivateKey'
     | 'ConfirmSeed'
     | 'SecurityStep'
@@ -12,9 +13,12 @@ export type GenerateSteps =
     | 'LabelStep'
     | 'FinishStep';
 
-export interface AccountObject {
-    generatedAccount?: XRPL_Account;
+export interface Props {}
+
+export interface State {
+    currentStep: GenerateSteps;
+    prevSteps: Array<GenerateSteps>;
+    account: Partial<AccountSchema>;
+    generatedAccount: XRPL_Account;
     passphrase?: string;
-    label?: string;
-    encryptionLevel?: EncryptionLevels;
 }

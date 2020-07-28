@@ -8,30 +8,27 @@ import { SafeAreaView, View, Text, Clipboard, ActivityIndicator } from 'react-na
 import { Toast, Prompt } from '@common/helpers/interface';
 
 // components
-import { Button, Footer, Spacer } from '@components';
+import { Button, Footer, Spacer } from '@components/General';
 
 // locale
 import Localize from '@locale';
-
-import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate/types';
 
 // style
 import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
+import { StepsContext } from '../../../Context';
 /* types ==================================================================== */
-export interface Props {
-    account: AccountObject;
-    goBack: (step?: GenerateSteps, settings?: AccountObject) => void;
-    goNext: (step?: GenerateSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {}
-
 /* Component ==================================================================== */
 class ViewPublicKeyStep extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     goBack = () => {
-        const { goBack } = this.props;
+        const { goBack } = this.context;
 
         Prompt(
             Localize.t('global.pleaseNote'),
@@ -51,7 +48,8 @@ class ViewPublicKeyStep extends Component<Props, State> {
     };
 
     render() {
-        const { account, goNext } = this.props;
+        const { generatedAccount, goNext } = this.context;
+
         return (
             <SafeAreaView testID="account-generate-step-view-public" style={[AppStyles.container]}>
                 <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.paddingSml]}>
@@ -64,9 +62,9 @@ class ViewPublicKeyStep extends Component<Props, State> {
                         {Localize.t('account.publicAddress')}
                     </Text>
                     <View style={[styles.labelWrapper, AppStyles.stretchSelf]}>
-                        {account.generatedAccount ? (
+                        {generatedAccount ? (
                             <Text selectable style={[styles.addressField]}>
-                                {account.generatedAccount.address}
+                                {generatedAccount.address}
                             </Text>
                         ) : (
                             <ActivityIndicator color={AppColors.blue} />
@@ -79,7 +77,7 @@ class ViewPublicKeyStep extends Component<Props, State> {
                         iconStyle={AppStyles.imgColorGreyDark}
                         textStyle={[AppStyles.colorGreyDark]}
                         onPress={() => {
-                            Clipboard.setString(account.generatedAccount.address);
+                            Clipboard.setString(generatedAccount.address);
                             Toast(Localize.t('account.publicKeyCopiedToClipboard'));
                         }}
                         roundedSmall
@@ -99,14 +97,11 @@ class ViewPublicKeyStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
-                            isDisabled={!account.generatedAccount}
+                            isDisabled={!generatedAccount}
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
-                            // icon={Images.IconChevronRight}
-                            // iconStyle={AppStyles.imgColorWhite}
-                            // iconPosition="right"
                             onPress={() => {
-                                goNext('SecurityStep');
+                                goNext('ExplainActivation');
                             }}
                         />
                     </View>

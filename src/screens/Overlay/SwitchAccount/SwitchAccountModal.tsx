@@ -11,18 +11,17 @@ import { Animated, View, Text, TouchableWithoutFeedback, TouchableOpacity, Platf
 import Interactable from 'react-native-interactable';
 import LinearGradient from 'react-native-linear-gradient';
 
+import { AccessLevels } from '@store/types';
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
-import { AccessLevels } from '@store/types';
 
 import { Images } from '@common/helpers/images';
-import { getNavigationBarHeight } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Icon } from '@components';
+import { Button, Icon } from '@components/General';
 
 import Localize from '@locale';
 
@@ -35,10 +34,12 @@ export interface Props {}
 
 export interface State {
     accounts: Results<AccountSchema>;
+    signableAccount: Array<AccountSchema>;
     contentHeight: number;
     paddingBottom: number;
 }
 
+const BOUNDARY_HEIGHT = 50;
 /* Component ==================================================================== */
 class SwitchAccountOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.SwitchAccount;
@@ -64,6 +65,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
         this.state = {
             accounts: undefined,
+            signableAccount: undefined,
             contentHeight: 0,
             paddingBottom: 0,
         };
@@ -73,24 +75,33 @@ class SwitchAccountOverlay extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const accounts = AccountRepository.getAccounts();
+        const accounts = AccountRepository.getAccounts().sorted([['default', true]]);
+        const signableAccount = AccountRepository.getSignableAccounts();
 
-        let contentHeight = accounts.length * AppSizes.scale(60) + 160 + getNavigationBarHeight();
+        // accounts count or as 3 item height
+        const count = accounts.length < 3 ? 3 : accounts.length;
+
+        // calculate the overlay height
+        const headerContentHeight = AppSizes.scale(33) + 90;
+
+        const bottomGap = Platform.select({
+            ios: 0,
+            android: AppSizes.navigationBarHeight * 1.1,
+        });
+
+        let contentHeight = count * (AppSizes.scale(60) + 10) + bottomGap + headerContentHeight;
 
         let paddingBottom = 0;
 
-        if (contentHeight > AppSizes.screen.height - 160) {
-            contentHeight = AppSizes.screen.height - 160;
-            paddingBottom = AppSizes.scale(60);
-        }
-
-        if (contentHeight < 300) {
-            contentHeight = 300;
+        if (contentHeight > AppSizes.screen.height * 0.9) {
+            contentHeight = AppSizes.screen.height * 0.9;
+            paddingBottom = AppSizes.scale(60) + bottomGap;
         }
 
         this.setState(
             {
                 accounts,
+                signableAccount,
                 contentHeight,
                 paddingBottom,
             },
@@ -156,16 +167,25 @@ class SwitchAccountOverlay extends Component<Props, State> {
     };
 
     renderRow = (account: AccountSchema) => {
+        const { signableAccount } = this.state;
         // default full access
         let accessLevelLabel = Localize.t('account.fullAccess');
         let accessLevelIcon = 'IconCornerLeftUp' as Extract<keyof typeof Images, string>;
 
-        if (account.accessLevel === AccessLevels.Readonly) {
+        const signable = find(signableAccount, { address: account.address });
+
+        if (!signable) {
             accessLevelLabel = Localize.t('account.readOnly');
             accessLevelIcon = 'IconLock';
         }
 
+        // promoted by regular key
+        if (account.accessLevel === AccessLevels.Readonly && signable) {
+            accessLevelIcon = 'IconKey';
+        }
+
         const regularKeyFor = this.isRegularKey(account);
+
         if (regularKeyFor) {
             accessLevelLabel = `${Localize.t('account.regularKeyFor')} (${regularKeyFor})`;
             accessLevelIcon = 'IconKey';
@@ -273,11 +293,13 @@ class SwitchAccountOverlay extends Component<Props, State> {
                     onSnap={this.onSnap}
                     verticalOnly
                     snapPoints={[{ y: AppSizes.screen.height + 3 }, { y: AppSizes.screen.height - contentHeight }]}
-                    boundaries={{ top: AppSizes.screen.height - (contentHeight + 50) }}
+                    boundaries={{
+                        top: AppSizes.screen.height - (contentHeight + BOUNDARY_HEIGHT),
+                    }}
                     initialPosition={{ y: AppSizes.screen.height }}
                     animatedValueY={this.deltaY}
                 >
-                    <View style={[styles.visibleContent, { height: contentHeight + 50 }]}>
+                    <View style={[styles.visibleContent, { height: contentHeight + BOUNDARY_HEIGHT }]}>
                         <View style={AppStyles.panelHeader}>
                             <View style={AppStyles.panelHandle} />
                         </View>

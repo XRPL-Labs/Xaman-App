@@ -10,16 +10,14 @@ import { StringType, XrplDestination } from 'xumm-string-decode';
 
 import Localize from '@locale';
 // components
-import { Button, TextInput, InfoMessage, Spacer, Footer } from '@components';
+import { Button, TextInput, InfoMessage, Spacer, Footer } from '@components/General';
 // style
 import { AppStyles } from '@theme';
 
-import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
+import { StepsContext } from '../../Context';
+
 /* types ==================================================================== */
-export interface Props {
-    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
-    goNext: (step: ImportSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {
     address: string;
@@ -27,6 +25,9 @@ export interface State {
 
 /* Component ==================================================================== */
 class EnterAddressStep extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     constructor(props: Props) {
         super(props);
 
@@ -36,13 +37,17 @@ class EnterAddressStep extends Component<Props, State> {
     }
 
     goNext = () => {
-        const { goNext } = this.props;
+        const { goNext, setImportedAccount } = this.context;
         const { address } = this.state;
 
         if (utils.isValidAddress(address)) {
             const account = new XRPL_Account({ address });
 
-            goNext('LabelStep', { importedAccount: account });
+            // set imported account
+            setImportedAccount(account, () => {
+                // go to next step
+                goNext('LabelStep');
+            });
         } else {
             Alert.alert(Localize.t('global.error'), Localize.t('global.invalidAddress'));
         }
@@ -55,7 +60,7 @@ class EnterAddressStep extends Component<Props, State> {
     };
 
     render() {
-        const { goBack } = this.props;
+        const { goBack } = this.context;
         const { address } = this.state;
         return (
             <SafeAreaView

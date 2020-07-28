@@ -9,17 +9,16 @@ import { derive } from 'xrpl-accountlib';
 
 import Localize from '@locale';
 // components
-import { Button, SecretNumberInput, Footer } from '@components';
+import { Button, Footer } from '@components/General';
+import { SecretNumberInput } from '@components/Modules';
+
 // style
 import { AppStyles } from '@theme';
 
-import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
+import { StepsContext } from '../../Context';
 
 /* types ==================================================================== */
-export interface Props {
-    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
-    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {
     allFilled: boolean;
@@ -27,6 +26,9 @@ export interface State {
 
 /* Component ==================================================================== */
 class EnterSecretNumbers extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     secretNumberInput: SecretNumberInput;
 
     constructor(props: Props) {
@@ -38,13 +40,18 @@ class EnterSecretNumbers extends Component<Props, State> {
     }
 
     goNext = () => {
-        const { goNext } = this.props;
+        const { goNext, setImportedAccount } = this.context;
 
         const secretNumber = this.secretNumberInput.getNumbers();
 
         try {
             const account = derive.secretNumbers(secretNumber);
-            goNext('ConfirmPublicKey', { importedAccount: account });
+
+            // set imported account
+            setImportedAccount(account, () => {
+                // go to next step
+                goNext('ConfirmPublicKey');
+            });
         } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.invalidSecretNumber'));
         }
@@ -52,7 +59,8 @@ class EnterSecretNumbers extends Component<Props, State> {
 
     render() {
         const { allFilled } = this.state;
-        const { goBack } = this.props;
+        const { goBack } = this.context;
+
         return (
             <SafeAreaView testID="account-import-enter-secretNumbers" style={[AppStyles.container]}>
                 <Text
@@ -63,10 +71,10 @@ class EnterSecretNumbers extends Component<Props, State> {
 
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal, AppStyles.centerAligned]}>
                     <SecretNumberInput
-                        ref={r => {
+                        ref={(r) => {
                             this.secretNumberInput = r;
                         }}
-                        onAllFilled={filled => {
+                        onAllFilled={(filled) => {
                             this.setState({
                                 allFilled: filled,
                             });

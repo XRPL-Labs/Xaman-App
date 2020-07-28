@@ -6,14 +6,13 @@ import { Animated, View, Text, Platform, Keyboard, Image, TouchableWithoutFeedba
 
 import Interactable from 'react-native-interactable';
 
-import { getNavigationBarHeight } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, TextInput } from '@components';
+import { Button, TextInput } from '@components/General';
 
 import Localize from '@locale';
 
@@ -192,7 +191,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={r => {
+                    ref={(r) => {
                         this.panel = r;
                     }}
                     animatedNativeDriver
@@ -200,10 +199,22 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                     verticalOnly
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
-                        { y: AppSizes.screen.height - AppSizes.moderateScale(450) },
-                        { y: AppSizes.screen.height - AppSizes.moderateScale(450) - offsetBottom },
+                        { y: AppSizes.screen.height - AppSizes.moderateScale(450) - AppSizes.navigationBarHeight },
+                        {
+                            y:
+                                AppSizes.screen.height -
+                                AppSizes.moderateScale(450) -
+                                AppSizes.navigationBarHeight -
+                                offsetBottom,
+                        },
                     ]}
-                    boundaries={{ top: AppSizes.screen.height - AppSizes.moderateScale(500) - offsetBottom }}
+                    boundaries={{
+                        top:
+                            AppSizes.screen.height -
+                            AppSizes.moderateScale(500) -
+                            AppSizes.navigationBarHeight -
+                            offsetBottom,
+                    }}
                     initialPosition={{ y: AppSizes.screen.height + 3 }}
                     animatedValueY={this.deltaY}
                 >
@@ -287,7 +298,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                                 AppStyles.centerContent,
                                 AppStyles.paddingHorizontalSml,
                                 AppStyles.paddingVertical,
-                                { marginBottom: getNavigationBarHeight() },
+                                { marginBottom: AppSizes.navigationBarHeight },
                             ]}
                         >
                             <Button

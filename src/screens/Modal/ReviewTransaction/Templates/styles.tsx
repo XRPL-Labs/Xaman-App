@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
         backgroundColor: AppColors.light,
         zIndex: 2,
         padding: 20,
-        paddingHorizontal: 20,
         marginBottom: AppSizes.paddingSml,
     },
     label: {
@@ -39,6 +38,12 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         fontSize: AppFonts.h5.size,
         color: AppColors.black,
+    },
+    amountRed: {
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontWeight: '600',
+        fontSize: AppFonts.h5.size,
+        color: AppColors.red,
     },
     value: {
         fontFamily: AppFonts.base.familyMonoBold,

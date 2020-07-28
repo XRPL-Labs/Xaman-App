@@ -5,22 +5,66 @@ import { AppColors, AppFonts, AppSizes } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    qrCodeContainer: {
+    headerContainer: {
         width: AppSizes.screen.width,
-        alignSelf: 'center',
+        justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: AppColors.light,
         padding: 25,
     },
-    qrImage: {
-        backgroundColor: AppColors.white,
-        padding: 10,
-        borderRadius: 4,
-        marginBottom: 10,
+    amountHeaderContainer: {
+        width: AppSizes.screen.width,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 10,
+        paddingBottom: 25,
+        paddingHorizontal: 25,
+    },
+    memoContainer: {
+        width: AppSizes.screen.width,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 10,
+        paddingBottom: 25,
+        paddingHorizontal: 25,
+    },
+    extraHeaderContainer: {
+        padding: 25,
+        borderBottomColor: AppColors.grey,
+        borderBottomWidth: 1,
+        borderTopColor: AppColors.grey,
+        borderTopWidth: 1,
     },
     detailsContainer: {
         width: AppSizes.screen.width,
         padding: 25,
+    },
+    amountContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: AppColors.light,
+        paddingVertical: 20,
+        paddingHorizontal: 30,
+        borderRadius: 50,
+    },
+    amountContainerSmall: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: AppColors.light,
+        paddingVertical: 10,
+        paddingHorizontal: 30,
+        borderRadius: 50,
+    },
+    amountText: {
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontSize: AppFonts.h4.size,
+        textAlign: 'center',
+        color: AppColors.blue,
+    },
+    amountTextSmall: {
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontSize: AppFonts.h5.size,
+        textAlign: 'center',
+        color: AppColors.black,
     },
     statusText: {
         fontFamily: AppFonts.base.familyBold,
@@ -34,20 +78,31 @@ const styles = StyleSheet.create({
     statusFailed: {
         color: AppColors.red,
     },
+    dateText: {
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontSize: AppFonts.small.size,
+        color: AppColors.greyDark,
+        textAlign: 'left',
+    },
     hashText: {
         fontFamily: AppFonts.base.familyMono,
-        fontSize: AppFonts.base.size * 0.8,
+        fontSize: AppFonts.base.size * 0.9,
         color: AppColors.greyDark,
-        textAlign: 'center',
-        paddingHorizontal: 40,
+        textAlign: 'left',
     },
     labelText: {
         fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.h5.size,
+        fontSize: AppFonts.base.size,
         marginBottom: 8,
     },
     contentText: {
         fontFamily: AppFonts.base.familyMono,
+        lineHeight: 20,
+        fontSize: AppFonts.base.size * 0.9,
+        color: AppColors.black,
+    },
+    memoText: {
+        fontFamily: AppFonts.base.family,
         lineHeight: 20,
         fontSize: AppFonts.base.size * 0.9,
         color: AppColors.black,
@@ -58,6 +113,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: AppSizes.paddingSml,
         backgroundColor: AppColors.red,
+    },
+    outgoingColor: {
+        color: AppColors.red,
+        tintColor: AppColors.red,
+    },
+    incomingColor: {
+        color: AppColors.blue,
+        tintColor: AppColors.blue,
+    },
+    orangeColor: {
+        color: AppColors.orange,
+        tintColor: AppColors.orange,
+    },
+    naturalColor: {
+        color: AppColors.greyDark,
+        tintColor: AppColors.greyDark,
     },
 });
 

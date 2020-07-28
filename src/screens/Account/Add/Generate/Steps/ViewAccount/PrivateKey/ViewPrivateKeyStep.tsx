@@ -6,7 +6,8 @@ import React, { Component } from 'react';
 import { SafeAreaView, View, Text } from 'react-native';
 
 // components
-import { Button, Footer, SecretNumberInput } from '@components';
+import { Button, Footer } from '@components/General';
+import { SecretNumberInput } from '@components/Modules';
 
 // locale
 import Localize from '@locale';
@@ -14,18 +15,12 @@ import Localize from '@locale';
 // style
 import { AppStyles } from '@theme';
 
-import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate/types';
-
+import { StepsContext } from '../../../Context';
 /* types ==================================================================== */
-export interface Props {
-    account: AccountObject;
-    goBack: (step?: GenerateSteps, settings?: AccountObject) => void;
-    goNext: (step?: GenerateSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {
     currentRow: number;
-    secretNumbers: string[];
 }
 
 /* Constants ==================================================================== */
@@ -35,17 +30,19 @@ const ROWS = 8;
 class ViewPrivateKeyStep extends Component<Props, State> {
     secretNumberInput: SecretNumberInput;
 
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     constructor(props: Props) {
         super(props);
 
         this.state = {
             currentRow: 0,
-            secretNumbers: props.account.generatedAccount.secret.secretNumbers,
         };
     }
 
     goBack = () => {
-        const { goBack } = this.props;
+        const { goBack } = this.context;
 
         const { currentRow } = this.state;
 
@@ -59,7 +56,7 @@ class ViewPrivateKeyStep extends Component<Props, State> {
     };
 
     goNext = () => {
-        const { goNext } = this.props;
+        const { goNext } = this.context;
 
         const { currentRow } = this.state;
 
@@ -73,7 +70,8 @@ class ViewPrivateKeyStep extends Component<Props, State> {
     };
 
     render() {
-        const { currentRow, secretNumbers } = this.state;
+        const { currentRow } = this.state;
+        const { generatedAccount } = this.context;
 
         const abcdefgh = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
@@ -90,7 +88,7 @@ class ViewPrivateKeyStep extends Component<Props, State> {
                             this.secretNumberInput = r;
                         }}
                         currentRow={currentRow}
-                        secretNumbers={secretNumbers}
+                        secretNumbers={generatedAccount.secret.secretNumbers}
                         readonly
                     />
                 </View>

@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 
 // components
-import { Button, PasswordInput, Footer, Header } from '@components';
+import { PasswordInput, Button, Footer, Header } from '@components/General';
 
 // locale
 import Localize from '@locale';
@@ -15,14 +15,9 @@ import Localize from '@locale';
 import { AppStyles } from '@theme';
 // import styles from './styles';
 
-import { GenerateSteps, AccountObject } from '@screens/Account/Add/Generate/types';
-
+import { StepsContext } from '../../Context';
 /* types ==================================================================== */
-export interface Props {
-    account: AccountObject;
-    goBack: (step?: GenerateSteps, settings?: AccountObject) => void;
-    goNext: (step?: GenerateSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {
     passphrase: {
@@ -34,6 +29,9 @@ export interface State {
 
 /* Component ==================================================================== */
 class PassphraseStep extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     constructor(props: Props) {
         super(props);
 
@@ -48,7 +46,7 @@ class PassphraseStep extends Component<Props, State> {
 
     goNext = () => {
         const { passphrase, passphrase_confirmation } = this.state;
-        const { goNext } = this.props;
+        const { goNext, setPassphrase } = this.context;
 
         if (passphrase.value !== passphrase_confirmation) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.passphraseConfirmNotMatch'));
@@ -56,14 +54,18 @@ class PassphraseStep extends Component<Props, State> {
         }
 
         if (passphrase) {
-            goNext('LabelStep', { passphrase: passphrase.value });
+            // set the passphrase
+            setPassphrase(passphrase.value);
+
+            // go to next step
+            goNext('LabelStep');
         } else {
             Alert.alert(Localize.t('global.error'), Localize.t('account.enterValidPassphrase'));
         }
     };
 
     render() {
-        const { goBack } = this.props;
+        const { goBack } = this.context;
         const { passphrase } = this.state;
         return (
             <SafeAreaView testID="account-generate-finish-view" style={[AppStyles.container]}>

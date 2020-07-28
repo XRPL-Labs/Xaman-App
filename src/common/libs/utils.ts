@@ -2,7 +2,8 @@
  * Utils
  *
  */
-import moment from 'moment';
+import moment from 'moment-timezone';
+import BigNumber from 'bignumber.js';
 
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
@@ -70,6 +71,8 @@ const NormalizeAmount = (amount: string): string => {
 };
 
 const NormalizeCurrencyCode = (currencyCode: string): string => {
+    if (!currencyCode) return '';
+
     // Native XRP
     if (currencyCode === 'XRP') {
         return currencyCode;
@@ -99,44 +102,45 @@ const NormalizeCurrencyCode = (currencyCode: string): string => {
     return currencyCode;
 };
 
-const NormalizeDate = (date: string): string => {
-    const momentDate = moment(date);
-    const reference = moment();
-    const today = reference.clone().startOf('day');
-    const yesterday = reference.clone().subtract(1, 'days').startOf('day');
-
-    if (momentDate.isSame(today, 'd')) {
-        return 'Today';
-    }
-    if (momentDate.isSame(yesterday, 'd')) {
-        return 'Yesterday';
-    }
-
-    return momentDate.format('DD MMM');
-};
-
 const NormalizeDestination = (destination: XrplDestination): XrplDestination => {
     let to;
     let tag;
 
-    // decode if it's x address
-    if (destination.to.startsWith('X')) {
-        try {
-            const decoded = Decode(destination.to);
-            to = decoded.account;
-            tag = Number(decoded.tag);
-        } catch {
-            // ignore
+    try {
+        // decode if it's x address
+        if (destination.to.startsWith('X')) {
+            try {
+                const decoded = Decode(destination.to);
+                to = decoded.account;
+                tag = Number(decoded.tag);
+            } catch {
+                // ignore
+            }
+        } else if (AccountLibUtils.isValidAddress(destination.to)) {
+            to = destination.to;
+            tag = destination.tag;
         }
-    } else if (AccountLibUtils.isValidAddress(destination.to)) {
-        to = destination.to;
-        tag = destination.tag;
+    } catch {
+        // ignore
     }
 
     return {
         to,
         tag,
     };
+};
+
+const NormalizeBalance = (balance: number) => {
+    return new BigNumber(balance).decimalPlaces(6).toString(10);
+};
+
+/**
+ * format the date
+ * @param date
+ * @returns string September 4 1986 8:30 PM
+ */
+const FormatDate = (date: string): string => {
+    return moment(date).format('lll');
 };
 
 /**
@@ -184,9 +188,10 @@ const VersionDiff = (v1: string, v2: string) => {
 export {
     HexEncoding,
     Truncate,
+    FormatDate,
     NormalizeAmount,
+    NormalizeBalance,
     NormalizeCurrencyCode,
-    NormalizeDate,
     NormalizeDestination,
     VersionDiff,
 };

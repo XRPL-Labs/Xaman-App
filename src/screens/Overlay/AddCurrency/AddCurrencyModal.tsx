@@ -26,7 +26,7 @@ import { CounterPartyRepository } from '@store/repositories';
 import { CounterPartySchema, CurrencySchema, AccountSchema } from '@store/schemas/latest';
 
 // components
-import { Button, Footer } from '@components';
+import { Button, Footer } from '@components/General';
 
 import Localize from '@locale';
 
@@ -78,7 +78,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
     setDefaults = () => {
         const { account } = this.props;
 
-        const counterParties = CounterPartyRepository.findAll() as any;
+        const counterParties = CounterPartyRepository.query({ shortlist: true }) as any;
 
         if (isEmpty(counterParties)) return;
 
@@ -89,7 +89,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
             const currencies = [] as any;
 
             forEach(counterParty.currencies, (currency) => {
-                if (!account.hasCurrency(currency)) {
+                if (!account.hasCurrency(currency) && currency.shortlist === true) {
                     currencies.push(currency);
                 }
             });
@@ -209,6 +209,8 @@ class AddCurrencyOverlay extends Component<Props, State> {
         }
 
         return counterParties.map((c, index) => {
+            if (!c.isValid()) return null;
+
             return (
                 <TouchableOpacity
                     key={index}
@@ -244,7 +246,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
         const { selectedCurrency } = this.state;
 
         return (
-            <View style={[AppStyles.visibleContent, AppStyles.centerAligned]}>
+            <View style={[styles.visibleContent, AppStyles.centerAligned]}>
                 <View style={AppStyles.panelHeader}>
                     <View style={AppStyles.panelHandle} />
                 </View>
@@ -274,7 +276,9 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
                 <View style={[AppStyles.row, AppStyles.paddingExtraSml]}>
                     <View style={[AppStyles.flex1]}>
-                        <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}>Exchanges:</Text>
+                        <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}>
+                            {Localize.t('global.exchanges')}:
+                        </Text>
                     </View>
                     <View style={styles.separator} />
                     <View style={[AppStyles.flex1]}>
@@ -329,8 +333,8 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     animatedNativeDriver
                     onSnap={this.onSnap}
                     verticalOnly
-                    snapPoints={[{ y: AppSizes.screen.height + 3 }, { y: AppSizes.screen.height * 0.12 }]}
-                    boundaries={{ top: AppSizes.screen.height * 0.1 }}
+                    snapPoints={[{ y: AppSizes.screen.height + 3 }, { y: AppSizes.heightPercentageToDP(10) }]}
+                    boundaries={{ top: AppSizes.heightPercentageToDP(8) }}
                     initialPosition={{ y: AppSizes.screen.height }}
                     animatedValueY={this.deltaY}
                 >

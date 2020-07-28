@@ -28,7 +28,10 @@
         "send": "Send",
         "done": "Done",
         "previous": "Previous",
+        "authorize": "Authorize",
+        "unauthorize": "Unauthorize",
         "exchange": "Exchange",
+        "exchanges": "Exchanges",
         "scan": "Scan",
         "request": "Request",
         "details": "Details",
@@ -130,10 +133,16 @@
         "finishAfter": "Finish After",
         "cancelAfter": "Cancel After",
         "expireAfter": "Expire After",
+        "expire": "Expire",
+        "neverExpires": "Never expires",
         "takerPays": "Taker Pays",
         "takerGets": "Taker Gets",
+        "selling": "Selling",
+        "inExchangeForReceive": "In exchange for (receive)",
         "fee": "Transaction fee",
         "invoiceID": "Invoice ID",
+        "checkID": "Check ID",
+        "checkAmount": "Check amount",
         "regularKey": "Regular Key",
         "signerQuorum": "Signer Quorum",
         "signerEntries": "Signer Entries",
@@ -159,6 +168,8 @@
         "danger": "Danger",
         "explorer": "Explorer",
         "balanceLimit": "Balance limit",
+        "activation": "Activation",
+        "authentication": "Authentication",
         "unbelievablyStrong": "Unbelievably strong",
         "biometryIsNotSupported": "Biometric authentication is not supported on this device!",
         "invalidAuth": "Invalid Authentication",
@@ -212,7 +223,12 @@
         "clearSearch": "Clear search",
         "noNameFound": "No name found",
         "readMoreInTheFAQ": "Read more in the FAQ",
-        "whatsNew": "What's new"
+        "whatsNew": "What's new",
+        "pushErrorPermissionMessage": "Unable to register push notifications, To grant the required notification permission, please go to your system settings and make sure that XUMM > Notifications is enabled.",
+        "UnableToRegisterPushNotifications": "Unable to register push notifications",
+        "openXRPToolkitByTowoLabs": "Open XRP Toolkit by Towo Labs",
+        "readMore": "Read more",
+        "readLess": "Read less"
     },
     "onboarding":{
         "slideOne": {
@@ -232,11 +248,11 @@
         }
     },
     "setupPasscode": {
-        "setupAPasscode" : "Setup a pincode",
-        "passCodeDescription": "We use the pincode to lock the app, confirm settings and to keep your account secure.",
-        "setPasscode": "Please set your pincode",
-        "repeatPasscode": "Please repeat your new pincode",
-        "warnNeedPasscode": "You will need your pincode to unlock the app"
+        "setupAPasscode" : "Setup a passcode",
+        "passCodeDescription": "We use the passcode to lock the app, confirm settings and to keep your account secure.",
+        "setPasscode": "Please set your passcode",
+        "repeatPasscode": "Please repeat your new passcode",
+        "warnNeedPasscode": "You will need your passcode to unlock the app"
     },
     "setupBiometry": {
         "useBiometry": "Use FaceID or Fingerprint?",
@@ -261,7 +277,8 @@
         "xrpYouOwnVsYourSpendableBalance": "XRP you own vs. your spendable balance.",
         "emptyAccountAddFirstAccount": "It’s a little bit empty here add your first account.",
         "openSignRequest": "Open Sign Request",
-        "sendPaymentTo": "Send payment to"
+        "sendPaymentTo": "Send payment to",
+        "selfIssued": "Self issued"
     },
     "events": {
         "noTransaction" : "No transactions",
@@ -287,13 +304,23 @@
         "createEscrow": "Create escrow",
         "finishEscrow": "Finish escrow",
         "cancelEscrow": "Cancel escrow",
+        "createCheck": "Create check",
+        "cashCheck": "Cash check",
+        "cancelCheck": "Cancel check",
         "accountSettings": "Account Settings",
+        "authorizeDeposit": "Authorize deposit ",
+        "unauthorizeDeposit": "Unauthorize deposit ",
         "deleteAccount": "Delete Account",
         "setSignerList": "Set Signer List",
         "updateAccountSettings": "Update account settings",
         "setARegularKey": "Set a Regular Key",
+        "setRegularKey": "Set Regular Key",
         "canNotFetchTransactions": "Can not fetch account transactions!",
-        "emptyEventsNoAccount": "There are no events because you do not have an account."
+        "emptyEventsNoAccount": "There are no events because you do not have an account.",
+        "returnPayment": "Return payment",
+        "newPayment": "New payment",
+        "openWithExplorer": "Open with %{explorer}",
+        "showMemo": "Show memo"
     },
     "profile": {
         "availableInFuture": "This feature will be available in the future.",
@@ -334,21 +361,22 @@
         "nodeIsAlreadyExist": "Node already exists!" ,
         "invalidNodeURL": "Entered node url is not a valid url!" ,
         "securitySetting": "Security",
-        "securitySettingsDescription": "Change your pincode or your biometric authentication authority here",
-        "changePasscode": "Change pincode",
+        "securitySettingsDescription": "Change your passcode or your biometric authentication authority here",
+        "changePasscode": "Change passcode",
         "biometricAuthentication": "Biometric authentication",
         "hapticFeedback": "Haptic feedback",
-        "enterOldPasscode": "Enter your old pincode",
-        "enterNewPasscode": "Enter your new pincode",
-        "enterNewPasscodeAgain": "Enter your new pincode again",
-        "newOldPasscodeNotMatch": "The new pincode and your confirmation are not the same!",
-        "passcodeChangedSuccess": "Your pincode change was successfull!",
+        "enterOldPasscode": "Enter your old passcode",
+        "enterNewPasscode": "Enter your new passcode",
+        "enterNewPasscodeAgain": "Enter your new passcode again",
+        "newOldPasscodeNotMatch": "The new passcode and your confirmation are not the same!",
+        "passcodeChangedSuccess": "Your passcode change was successfull!",
         "canNotSendLogsByEmail": "An unexpected error occurred, can not sent logs by email!",
         "logsCopiedToClipboard": "Session Logs  copied to clipboard",
         "additionalSecurity": "Additional security",
         "eraseData": "Erase data",
         "eraseDataDescription": "Erase all data after 10 failed passcode attempts",
-        "viewChangeLog": "View changelog"
+        "viewChangeLog": "View changelog",
+        "hideBalanceByDefault": "Hide balance by default"
     },
     "account": {
         "addAccount": "Add an account",
@@ -450,6 +478,7 @@
         "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "Selected account is not activated. To sign this transaction you need to select an activated account!",
         "accountAlreadyExist": "Account already exists!",
         "upgradeAccountSecretIsNotMatch": "The entered secret belongs to another r-address. If you want to import a regular key, please [Import new account]. If not, please [cancel] and check your entry.",
+        "toTheseExistingAccounts": "To this/these existing account(s)",
         "masterKeyForThisAccountDisableRegularKeyNotFound":"Master key for this account is disabled and regular key account not found in accounts list!",
         "regularKeyAccountForThisAccountDoesNotImportedWithSignAccess": "Regular Key for this account was not imported with sign access!",
         "currentPassphraseShouldNotBeEmpty": "Current Passphrase should not be empty!",
@@ -472,11 +501,17 @@
         "unableToCheckAccountObjects": "Unable to check for account objects, please make sure you are connected to the XRP ledger node",
         "unableGetDestinationAccountInfo": "Unable to get destination account info, please make sure you are connected to the XRP ledger node",
         "destinationAccountIsNotActivated": "Destination account is not activated, Must be a funded account in the XRP ledger.",
-        "destinationAccountAndSourceCannotBeSame": "Destiniation account and source cannot be the same."
+        "destinationAccountAndSourceCannotBeSame": "Destiniation account and source cannot be the same.",
+        "accountGenerateActivationExplain": "Account activation is a requirement on the XRP ledger. To activate, you will have to make a first deposit of at least 20 XRP.",
+        "accountImportActivationExplain": "You imported a new account on the XRP ledger. The account is not activated. Account activation is a requirement on the XRP ledger. To activate, you will have to make a first deposit of at least 20 XRP.",
+        "accountActivateReserveExplain": "The first 20 XRP deposited into your account cannot be spent, but will be reserved to keep your account active and pay for on ledger fees.",
+        "accountReserveNotShownExplain": "Your reserved XRP will not show up as balance in XUMM, but you can view your reserve with the \"Explain my balance\" button in the home screen, above your XRP balance."
     },
     "send": {
         "amountIsBiggerThanYourSpend": "Amount is bigger than what you can spend (%{spendable})",
         "theMaxAmountYouCanSendIs": "The max amount you can send is %{spendable} %{currency} ",
+        "theMaxAmountYouCanSendWithFee": "The issuer of %{currency} charges a Transfer Fee. The max. amount you can send (respecting the Transfer Fee) is %{spendable} %{currency}",
+        "insufficientBalanceSpendableBalance": "Insufficient balance, spendable balance:  %{spendable} %{currency}",
         "balanceIsNotEnoughForFee": "Balance is not enough to cover the fee (%{fee})",
         "searchResults": "Search results",
         "noSearchResult": "No search result",
@@ -517,7 +552,9 @@
         "unableGetRecipientAccountInfoPleaseTryAgain": "Unable to get recipient account info please try again.",
         "noDestinationTag": "No destination tag",
         "thisAddressRequiredDestinationTag": "This address requires a destination tag",
-        "pleaseEnterAmount": "Please enter the amount of transaction"
+        "pleaseEnterAmount": "Please enter the amount of transaction",
+        "trustLineLimitExceeded": "TrustLine limit is exceeded, now: %{balance}, max: %{peer_limit}, available for issuing: %{available}. The recipient can update the Trustline limit.",
+        "unableToSendPaymentNotEnoughLiquidity": "Unable to send the payment right now due to lack of liquidity."
     },
     "asset": {
         "addAsset": "Add asset",
@@ -526,7 +563,7 @@
         "successRemoved": "Asset successfully removed from your account",
         "failedRemove": "Cannot remove asset. Error occurred!",
         "removeAsset": "Remove asset",
-        "addingAssetReserveDescription": "Adding a asset will increase your account reserve by 5 XRP",
+        "addingAssetReserveDescription": "Adding an asset will increase your account reserve by 5 XRP",
         "unableToRemoveAssetNotInDefaultState": "This asset cannot be removed from your account. Either because the issuer either added specific settings on this asset, or because their issuing account is not properly configured."
     },
     "exchange": {
@@ -538,7 +575,14 @@
         "errorDuringExchange": "Error during the exchange: %{error}",
         "liquidityIsNotEnough": "There is not enough liquidity, cannot exchange right now!",
         "liquidityIsNotSoMuch": "There's relatively low liquidity. You can still continue, but you may not get the best rate for your entire exchange!",
-        "theMaxAmountYouCanExchangeIs": "The max amount you can exchange is %{spendable} %{currency}"
+        "theMaxAmountYouCanExchangeIs": "The max amount you can exchange is %{spendable} %{currency}",
+        "exchangeByThirdPartyMessage": "If you want to create an offer for execution at a requested price level, you can use the 3rd party XUMM enabled XRP Toolkit application to create a limit order.",
+        "requestedLiquidityNotAvailable": "The amount can't be exchanged: there are not enough offers available on the Decentralized Exchange.",
+        "reverseLiquidityNotAvailable" : "The amount can't be exchanged: based on the lack of offers on the Decentralized Exchange, you would not be able to exchange it back.",
+        "maxSpreadExceeded": "The price difference between selling and buying offers is too high.",
+        "maxSlippageExceeded": "The exchange rate will be bad as there are not enough (good) offers on the Decentralized Exchange.",
+        "maxReverseSlippageExceeded": "The exchange rate will be bad if you would try to exchange back, as there are not enough (good) offers on the Decentralized Exchange."
+        
     },
     "scan":{
         "aimAtTheCode": "Aim at the code",
@@ -546,7 +590,7 @@
         "scannedQRIsNotXRPAddress":"Scanned QR code is not a XRP address code!",
         "scannedQRIsNotXummPayload":"Scanned QR code is not a XUMM payload!",
         "theQRIsNotWhatWeExpect": "This QR code is not what we expect!",
-        "invalidQRTryNewOneOrTryAgain": "Invalid Qr Code, Try a new one or try again"
+        "invalidQRTryNewOneOrTryAgain": "Invalid QR code (for XUMM), try a new one or try again"
     },
     "payload": {
         "payloadHandledByAnotherClient": "Payload handled by another client",
@@ -570,6 +614,11 @@
         "payingWithXRPExchangeRate": "Paying with ~ %{xrpRoundedUp} XRP\nExchange rate: ~ %{exchangeRate} ",
         "notEnoughLiquidityToSendThisPayment": "Not enough liquidity to send this payment.",
         "unableToCheckAssetConversion": "Unable to check for asset conversion, please make sure you are connected to the XRPL node",
-        "unableToGetNetworkFee": "Unable to get network fee, please make sure you are connected to the XRPL node"
+        "unableToGetNetworkFee": "Unable to get network fee, please make sure you are connected to the XRPL node",
+        "checkCanOnlyCashByCheckDestination": "A Check can only be cashed if the Check destination account is present in XUMM in Read/Write (or regular key) mode.",
+        "unableToGetCheckObject": "Unable to get check object, please make sure you are connected to the XRPL node",
+        "checkObjectDoesNotExist": "Unable to get check object, please make sure the check exist in XRPL Ledger.",
+        "insufficientCashAmount": "Insufficient amount, cashable amount:  %{amount} %{currency}",
+        "nonExpiredCheckCanOnlyCancelByCreatedAccount": "A (non expired) check can only be cancelled by the account that created it or destination account."
     }
 }

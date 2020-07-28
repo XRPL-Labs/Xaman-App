@@ -10,28 +10,28 @@ import { SafeAreaView, View, ImageBackground, Text } from 'react-native';
 import { Images } from '@common/helpers/images';
 
 // components
-import { Button, Footer } from '@components';
+import { Button, Footer } from '@components/General';
 
 import Localize from '@locale';
-
-import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
 
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+import { StepsContext } from '../../Context';
+
 /* types ==================================================================== */
-export interface Props {
-    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
-    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {}
 
 /* Component ==================================================================== */
 class FinishStep extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     render() {
-        const { goNext } = this.props;
+        const { goNext } = this.context;
         return (
             <SafeAreaView style={[AppStyles.container]}>
                 <ImageBackground

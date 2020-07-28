@@ -1,6 +1,6 @@
 /* eslint-disable no-lonely-if */
 import BigNumber from 'bignumber.js';
-import { get, set, isUndefined } from 'lodash';
+import { get, set, has, isUndefined } from 'lodash';
 
 import BaseTransaction from './base';
 import Amount from '../parser/common/amount';
@@ -117,7 +117,7 @@ class OfferCreate extends BaseTransaction {
         const affectedNodes = get(this.meta, 'AffectedNodes', []);
 
         affectedNodes.map((node: any) => {
-            if (node.ModifiedNode?.LedgerEntryType === 'Offer') {
+            if (node.ModifiedNode?.LedgerEntryType === 'Offer' || node.DeletedNode?.LedgerEntryType === 'Offer') {
                 foundOrderObject = true;
                 return true;
             }
@@ -138,28 +138,29 @@ class OfferCreate extends BaseTransaction {
         let takerGot: AmountType;
 
         affectedNodes.forEach((node: any) => {
-            const modifiedNode = node.ModifiedNode;
+            const { ModifiedNode } = node;
 
-            if (modifiedNode.LedgerEntryType !== ledgerEntryType || takerGot) return;
+            if (!ModifiedNode || get(ModifiedNode, 'LedgerEntryType') !== ledgerEntryType || takerGot) return;
 
             if (isIOU) {
-                const balance = new BigNumber(modifiedNode.FinalFields.Balance.value);
-                const prevBalance = new BigNumber(modifiedNode.PreviousFields.Balance.value);
+                if (has(ModifiedNode.FinalFields, 'Balance') && has(ModifiedNode.PreviousFields, 'Balance')) {
+                    const balance = new BigNumber(ModifiedNode.FinalFields.Balance.value);
+                    const prevBalance = new BigNumber(ModifiedNode.PreviousFields.Balance.value);
 
-                takerGot = {
-                    currency: modifiedNode.FinalFields.Balance.currency,
-                    value: balance
-                        .minus(prevBalance)
-                        .decimalPlaces(6)
-                        .absoluteValue()
-                        .toString(10),
-                    issuer: modifiedNode.FinalFields.Balance.issuer,
-                };
+                    takerGot = {
+                        currency: ModifiedNode.FinalFields.Balance.currency,
+                        value: balance.minus(prevBalance).decimalPlaces(6).absoluteValue().toString(10),
+                        issuer: ModifiedNode.FinalFields.Balance.issuer,
+                    };
+                }
             } else {
-                // this will avoid calculating XRP the fee
-                if (modifiedNode.FinalFields.Account !== this.Account.address) {
-                    const balance = new BigNumber(modifiedNode.FinalFields.Balance);
-                    const prevBalance = new BigNumber(modifiedNode.PreviousFields.Balance);
+                if (
+                    get(ModifiedNode.FinalFields, 'Account') !== this.Account.address &&
+                    has(ModifiedNode.FinalFields, 'Balance') &&
+                    has(ModifiedNode.PreviousFields, 'Balance')
+                ) {
+                    const balance = new BigNumber(ModifiedNode.FinalFields.Balance);
+                    const prevBalance = new BigNumber(ModifiedNode.PreviousFields.Balance);
 
                     takerGot = {
                         currency: 'XRP',
@@ -173,6 +174,10 @@ class OfferCreate extends BaseTransaction {
                 }
             }
         });
+
+        if (!takerGot) {
+            return this.TakerGets;
+        }
 
         return takerGot;
     }
@@ -188,28 +193,30 @@ class OfferCreate extends BaseTransaction {
         let takerPaid: AmountType;
 
         affectedNodes.forEach((node: any) => {
-            const modifiedNode = node.ModifiedNode;
+            const { ModifiedNode } = node;
 
-            if (modifiedNode.LedgerEntryType !== ledgerEntryType || takerPaid) return;
+            if (!ModifiedNode || get(ModifiedNode, 'LedgerEntryType') !== ledgerEntryType || takerPaid) return;
 
             if (isIOU) {
-                const balance = new BigNumber(modifiedNode.FinalFields.Balance.value);
-                const prevBalance = new BigNumber(modifiedNode.PreviousFields.Balance.value);
+                if (has(ModifiedNode.FinalFields, 'Balance') && has(ModifiedNode.PreviousFields, 'Balance')) {
+                    const balance = new BigNumber(ModifiedNode.FinalFields.Balance.value);
+                    const prevBalance = new BigNumber(ModifiedNode.PreviousFields.Balance.value);
 
-                takerPaid = {
-                    currency: modifiedNode.FinalFields.Balance.currency,
-                    value: balance
-                        .minus(prevBalance)
-                        .absoluteValue()
-                        .decimalPlaces(6)
-                        .toString(10),
-                    issuer: modifiedNode.FinalFields.Balance.issuer,
-                };
+                    takerPaid = {
+                        currency: ModifiedNode.FinalFields.Balance.currency,
+                        value: balance.minus(prevBalance).absoluteValue().decimalPlaces(6).toString(10),
+                        issuer: ModifiedNode.FinalFields.Balance.issuer,
+                    };
+                }
             } else {
                 // this will avoid calculating XRP the fee
-                if (modifiedNode.FinalFields.Account === this.Account.address) {
-                    const balance = new BigNumber(modifiedNode.FinalFields.Balance);
-                    const prevBalance = new BigNumber(modifiedNode.PreviousFields.Balance);
+                if (
+                    get(ModifiedNode.FinalFields, 'Account') === this.Account.address &&
+                    has(ModifiedNode.FinalFields, 'Balance') &&
+                    has(ModifiedNode.PreviousFields, 'Balance')
+                ) {
+                    const balance = new BigNumber(ModifiedNode.FinalFields.Balance);
+                    const prevBalance = new BigNumber(ModifiedNode.PreviousFields.Balance);
 
                     takerPaid = {
                         currency: 'XRP',
@@ -223,6 +230,10 @@ class OfferCreate extends BaseTransaction {
                 }
             }
         });
+
+        if (!takerPaid) {
+            return this.TakerPays;
+        }
 
         return takerPaid;
     }

@@ -5,7 +5,6 @@ import Fuse from 'fuse.js';
 import moment from 'moment';
 import { isEmpty, flatMap, isUndefined, isEqual, filter, get, uniqBy, groupBy, map } from 'lodash';
 import React, { Component } from 'react';
-import { Navigation } from 'react-native-navigation';
 import {
     SafeAreaView,
     View,
@@ -26,7 +25,6 @@ import { AppScreens } from '@common/constants';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
-import { NormalizeDate } from '@common/libs/utils';
 
 // Parses
 import parserFactory from '@common/libs/ledger/parser';
@@ -41,7 +39,7 @@ import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterView';
 import { LedgerService, BackendService, PushNotificationsService } from '@services';
 
 // Components
-import { SearchBar, Button, Icon } from '@components';
+import { SearchBar, Button, Icon } from '@components/General';
 
 // Locale
 import Localize from '@locale';
@@ -112,11 +110,10 @@ class EventsView extends Component<Props, State> {
     }
 
     componentDidMount = () => {
+        const { account } = this.state;
+
         // add listener for default account change
         AccountRepository.on('changeDefaultAccount', this.onDefaultAccountChange);
-
-        // listen for screen appear event
-        Navigation.events().bindComponent(this);
 
         // update list on transaction received
         LedgerService.on('transaction', () => {
@@ -127,27 +124,36 @@ class EventsView extends Component<Props, State> {
         PushNotificationsService.on('signRequestUpdate', () => {
             this.updateDataSource();
         });
-    };
 
-    componentDidAppear() {
-        const { account } = this.state;
 
-        // update account details
         InteractionManager.runAfterInteractions(() => {
             if (account.isValid()) {
                 this.updateDataSource(true);
-            } else {
-                this.setState(
-                    {
-                        account: AccountRepository.getDefaultAccount(),
-                    },
-                    () => {
-                        this.updateDataSource(true);
-                    },
-                );
             }
         });
-    }
+    };
+
+
+    formatDate = (date: string) => {
+        const momentDate = moment(date);
+        const reference = moment();
+        const today = reference.clone().startOf('day');
+        const yesterday = reference.clone().subtract(1, 'days').startOf('day');
+
+        if (momentDate.isSame(today, 'd')) {
+            return 'Today';
+        }
+        if (momentDate.isSame(yesterday, 'd')) {
+            return 'Yesterday';
+        }
+
+        // same year, don't show year
+        if (momentDate.isSame(reference, 'year')) {
+            return momentDate.format('DD MMM');
+        }
+
+        return momentDate.format('DD MMM, Y');
+    };
 
     onDefaultAccountChange = (account: AccountSchema) => {
         this.setState(
@@ -433,7 +439,7 @@ class EventsView extends Component<Props, State> {
         if (type === 'transactions') {
             return (
                 <View style={[styles.sectionHeader]}>
-                    <Text style={AppStyles.pbold}>{NormalizeDate(title)}</Text>
+                    <Text style={AppStyles.pbold}>{this.formatDate(title)}</Text>
                 </View>
             );
         }

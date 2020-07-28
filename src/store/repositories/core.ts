@@ -1,6 +1,6 @@
 import Realm, { ObjectSchema, Results } from 'realm';
 
-import assign from 'lodash/assign';
+import { assign } from 'lodash';
 
 import DeviceInfo from 'react-native-device-info';
 import { SHA512, HMAC256 } from '@common/libs/crypto';
@@ -16,7 +16,7 @@ import BaseRepository from './base';
 
 // events
 declare interface CoreRepository {
-    on(event: 'updateSettings', listener: (settings: CoreSchema) => void): this;
+    on(event: 'updateSettings', listener: (settings: CoreSchema, changes: Partial<CoreSchema>) => void): this;
     on(event: string, listener: Function): this;
 }
 
@@ -30,16 +30,17 @@ class CoreRepository extends BaseRepository {
         this.schema = CoreSchema.schema;
     }
 
-    saveSettings = (object: Partial<CoreSchema>) => {
+    saveSettings = (settings: Partial<CoreSchema>) => {
         const current = this.getSettings(true);
+
         if (current) {
             this.safeWrite(() => {
-                assign(current, object);
+                assign(current, settings);
 
-                this.emit('updateSettings', current);
+                this.emit('updateSettings', current, settings);
             });
         } else {
-            this.create(object);
+            this.create(settings);
         }
     };
 

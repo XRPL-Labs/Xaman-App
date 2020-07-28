@@ -9,75 +9,79 @@ import { EncryptionLevels } from '@store/types';
 
 import Localize from '@locale';
 // components
-import { Button, RadioButton, Footer } from '@components';
+import { Button, RadioButton, Footer } from '@components/General';
 // style
 import { AppStyles } from '@theme';
 
-import { ImportSteps, AccountObject } from '@screens/Account/Add/Import/types';
+import { StepsContext } from '../../Context';
 
 /* types ==================================================================== */
-export interface Props {
-    goBack: (step?: ImportSteps, settings?: AccountObject) => void;
-    goNext: (step?: ImportSteps, settings?: AccountObject) => void;
-}
+export interface Props {}
 
 export interface State {
-    security: string;
+    encryptionLevel: EncryptionLevels;
 }
 
 /* Component ==================================================================== */
 class SecurityStep extends Component<Props, State> {
+    static contextType = StepsContext;
+    context: React.ContextType<typeof StepsContext>;
+
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            security: 'passcode',
+            encryptionLevel: EncryptionLevels.Passcode,
         };
     }
 
-    onRadioButtonPress = (option: string) => {
+    onRadioButtonPress = (level: EncryptionLevels) => {
         this.setState({
-            security: option,
+            encryptionLevel: level,
         });
     };
 
     goNext = () => {
-        const { goNext } = this.props;
-        const { security } = this.state;
-        if (security === 'passphrase') {
-            goNext('PassphraseStep', { encryptionLevel: EncryptionLevels.Passphrase });
-        } else {
-            goNext('LabelStep', { encryptionLevel: EncryptionLevels.Passcode });
-        }
+        const { goNext, setEncryptionLevel } = this.context;
+        const { encryptionLevel } = this.state;
+
+        setEncryptionLevel(encryptionLevel, () => {
+            if (encryptionLevel === EncryptionLevels.Passphrase) {
+                goNext('PassphraseStep');
+            } else {
+                goNext('LabelStep');
+            }
+        });
     };
 
     render() {
-        const { goBack } = this.props;
-        const { security } = this.state;
+        const { goBack } = this.context;
+        const { encryptionLevel } = this.state;
+
         return (
             <SafeAreaView testID="account-import-security" style={[AppStyles.container]}>
                 <Text style={[AppStyles.p, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
                     {Localize.t('account.chooseWisely')}
                 </Text>
-                <View style={[AppStyles.contentContainer, AppStyles.flexStart, AppStyles.paddingSml]}>
+                <View style={[AppStyles.contentContainer, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <RadioButton
                         onPress={() => {
-                            this.onRadioButtonPress('passcode');
+                            this.onRadioButtonPress(EncryptionLevels.Passcode);
                         }}
                         description={Localize.t('account.passcodeOptionDesc')}
                         labelSmall={Localize.t('account.signWithPasscode')}
                         label={Localize.t('global.standard')}
-                        checked={security === 'passcode'}
+                        checked={encryptionLevel === EncryptionLevels.Passcode}
                     />
 
                     <RadioButton
                         onPress={() => {
-                            this.onRadioButtonPress('passphrase');
+                            this.onRadioButtonPress(EncryptionLevels.Passphrase);
                         }}
                         description={Localize.t('account.passphraseOptionDesc')}
                         labelSmall={Localize.t('account.signWithPassphrase')}
                         label={Localize.t('global.extraSecurity')}
-                        checked={security === 'passphrase'}
+                        checked={encryptionLevel === EncryptionLevels.Passphrase}
                     />
                 </View>
 

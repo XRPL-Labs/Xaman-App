@@ -4,8 +4,6 @@ import { StyleSheet } from 'react-native';
 
 import { AppSizes } from '@theme';
 
-import { getNavigationBarHeight } from '@common/helpers/interface';
-
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({
     container: {
@@ -21,7 +19,7 @@ const styles = StyleSheet.create({
         width: AppSizes.screen.width,
         height: AppSizes.screen.height,
         padding: AppSizes.paddingSml,
-        paddingBottom: AppSizes.paddingSml + getNavigationBarHeight(),
+        paddingBottom: AppSizes.paddingSml + AppSizes.navigationBarHeight,
     },
     logo: {
         width: AppSizes.scale(120),

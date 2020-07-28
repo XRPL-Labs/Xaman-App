@@ -14,7 +14,7 @@ import { AppScreens } from '@common/constants';
 import Localize from '@locale';
 
 // component
-import { Slider, Slide, Spacer } from '@components';
+import { Slider, Slide, Spacer } from '@components/General';
 
 // style
 import { AppStyles } from '@theme';

@@ -4,9 +4,10 @@ import { View, Text } from 'react-native';
 
 import { EscrowCreate } from '@common/libs/ledger/transactions';
 
-import { getAccountName } from '@common/helpers/resolver';
+import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { Spacer } from '@components';
+import { FormatDate } from '@common/libs/utils';
+import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -20,7 +21,7 @@ export interface Props {
 
 export interface State {
     isLoading: boolean;
-    destinationName: string;
+    destinationDetails: AccountNameType;
 }
 
 /* Component ==================================================================== */
@@ -30,7 +31,10 @@ class EscrowCreateTemplate extends Component<Props, State> {
 
         this.state = {
             isLoading: false,
-            destinationName: '',
+            destinationDetails: {
+                name: '',
+                source: '',
+            },
         };
     }
     componentDidMount() {
@@ -44,7 +48,7 @@ class EscrowCreateTemplate extends Component<Props, State> {
             .then((res: any) => {
                 if (!isEmpty(res) && !res.error) {
                     this.setState({
-                        destinationName: res.name,
+                        destinationDetails: res,
                     });
                 }
             })
@@ -60,32 +64,24 @@ class EscrowCreateTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoading, destinationName } = this.state;
+        const { isLoading, destinationDetails } = this.state;
         return (
             <>
-                <Text style={[styles.label]}>
-                    {Localize.t('global.to')}:{' '}
-                    {isLoading ? (
-                        'Loading ...'
-                    ) : (
-                        <Text style={styles.value}>{destinationName || Localize.t('global.noNameFound')}</Text>
-                    )}
-                </Text>
-                <View style={[styles.contentBox]}>
-                    <Text selectable style={[styles.address]}>
-                        {transaction.Destination.address}
+                <View style={styles.label}>
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                        {Localize.t('global.to')}
                     </Text>
-                    <Spacer size={15} />
-
-                    {transaction.Destination.tag && (
-                        <View style={[styles.destinationAddress]}>
-                            <Text style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
-                                {Localize.t('global.destinationTag')}:{' '}
-                                <Text style={AppStyles.colorBlue}>{transaction.Destination.tag}</Text>
-                            </Text>
-                        </View>
-                    )}
                 </View>
+                <RecipientElement
+                    containerStyle={[styles.contentBox, styles.addressContainer]}
+                    isLoading={isLoading}
+                    showAvatar={false}
+                    recipient={{
+                        address: transaction.Destination.address,
+                        tag: transaction.Destination.tag,
+                        ...destinationDetails,
+                    }}
+                />
 
                 <Text style={[styles.label]}>{Localize.t('global.amount')}</Text>
                 <View style={[styles.contentBox]}>
@@ -96,7 +92,7 @@ class EscrowCreateTemplate extends Component<Props, State> {
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.finishAfter')}</Text>
                         <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{transaction.FinishAfter}</Text>
+                            <Text style={[styles.value]}>{FormatDate(transaction.FinishAfter)}</Text>
                         </View>
                     </>
                 )}
@@ -105,7 +101,7 @@ class EscrowCreateTemplate extends Component<Props, State> {
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.cancelAfter')}</Text>
                         <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{transaction.CancelAfter}</Text>
+                            <Text style={[styles.value]}>{FormatDate(transaction.CancelAfter)}</Text>
                         </View>
                     </>
                 )}

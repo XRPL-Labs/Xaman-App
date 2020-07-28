@@ -7,7 +7,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 import EventEmitter from 'events';
-import { map, isEmpty, flatMap, forEach, has, get, assign } from 'lodash';
+import { map, isEmpty, flatMap, forEach, has, get, assign, omitBy } from 'lodash';
 
 import { TrustLineSchema } from '@store/schemas/latest';
 import AccountRepository from '@store/repositories/account';
@@ -75,6 +75,30 @@ class LedgerService extends EventEmitter {
             Fee: 0,
             LastLedger: 0,
         };
+    };
+
+    /**
+     * Get ledger info
+     */
+    getLedgerEntry = (index: string): any => {
+        return SocketService.send({
+            command: 'ledger_entry',
+            index,
+            ledger_index: 'validated',
+        });
+    };
+
+    /**
+     * Get account info
+     */
+    getGatewayBalances = (account: string): any => {
+        return SocketService.send({
+            command: 'gateway_balances',
+            account,
+            strict: true,
+            ledger_index: 'validated',
+            hotwallet: [account],
+        });
     };
 
     /**
@@ -358,6 +382,37 @@ class LedgerService extends EventEmitter {
         });
     };
 
+    getAccountObligations = (account: string) => {
+        return new Promise((resolve) => {
+            this.getGatewayBalances(account)
+                .then((accountObligations: any) => {
+                    const obligationsLines = [] as any[];
+
+                    const { obligations } = accountObligations;
+
+                    if (isEmpty(obligations)) return resolve([]);
+
+                    map(obligations, (b, c) => {
+                        // add to trustLines list
+                        obligationsLines.push({
+                            account,
+                            currency: c,
+                            balance: new Amount(-b, false).toNumber(),
+                            limit: 0,
+                            limit_peer: 0,
+                            transfer_rate: 0,
+                            obligation: true,
+                        });
+                    });
+
+                    return resolve(obligationsLines);
+                })
+                .catch(() => {
+                    return resolve([]);
+                });
+        });
+    };
+
     /**
      * Update account trustLines
      */
@@ -369,12 +424,21 @@ class LedgerService extends EventEmitter {
 
                     const normalizedList = [] as Partial<TrustLineSchema>[];
 
+                    // ignore incoming trustline
+                    let filteredLines = flatMap(
+                        omitBy(lines, (l: any) => {
+                            return Number(l.balance) < 0 || (Number(l.limit) === 0 && Number(l.limit_peer) > 0);
+                        }),
+                    );
+
+                    // get obligationsLines
+                    const obligationsLines = await this.getAccountObligations(account);
+
+                    // combine obligations lines with normal lines
+                    filteredLines = filteredLines.concat(obligationsLines);
+
                     await Promise.all(
-                        map(lines, async (l) => {
-                            // ignore incoming trustline
-                            if (Number(l.balance) < 0 || (Number(l.limit) === 0 && Number(l.limit_peer) > 0)) {
-                                return;
-                            }
+                        map(filteredLines, async (l) => {
                             // update currency
                             const currency = await CurrencyRepository.upsert(
                                 { id: uuidv4(), issuer: l.account, currency: l.currency },
@@ -391,7 +455,7 @@ class LedgerService extends EventEmitter {
                             // add to trustLines list
                             normalizedList.push({
                                 currency,
-                                balance: new Amount(l.balance, false).toNumber(),
+                                balance: new Amount(l.balance, false).toNumber(15),
                                 transfer_rate,
                                 no_ripple: l.no_ripple || false,
                                 no_ripple_peer: l.no_ripple_peer || false,
@@ -399,6 +463,10 @@ class LedgerService extends EventEmitter {
                                 limit_peer: new Amount(l.limit_peer, false).toNumber(),
                                 quality_in: l.quality_in || 0,
                                 quality_out: l.quality_out || 0,
+                                authorized: l.authorized || false,
+                                peer_authorized: l.peer_authorized || false,
+                                freeze: l.freeze || false,
+                                obligation: l.obligation || false,
                             });
                         }),
                     );
@@ -497,7 +565,7 @@ class LedgerService extends EventEmitter {
 
         const arrayAccounts = flatMap(this.accounts, (a) => [a.address]);
 
-        this.logger.debug(`Subscribed to ${arrayAccounts} accounts`, arrayAccounts);
+        this.logger.debug(`Subscribed to ${arrayAccounts.length} accounts`, arrayAccounts);
 
         SocketService.send({
             command: 'subscribe',
