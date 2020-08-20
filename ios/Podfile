@@ -77,14 +77,9 @@ target 'XUMM' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-    # Firebase
-    pod 'Firebase/Core', '~> 6.13.0'
-    pod 'Firebase/Messaging', '~> 6.13.0'
+  # Additional Pods
+  pod 'Fabric', '~> 1.10.2'
 
-    # Additional Pods
-    pod 'Fabric', '~> 1.10.2'
-    pod 'Crashlytics', '~> 3.14.0'
-    pod 'GoogleIDFASupport', '~> 3.14.0'
 
   target 'XUMMTests' do
     inherit! :complete

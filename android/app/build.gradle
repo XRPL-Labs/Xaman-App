@@ -237,6 +237,9 @@ dependencies {
         implementation jscFlavor
     }
 
+    // Firebase
+    implementation "com.google.firebase:firebase-messaging"
+    implementation 'me.leolin:ShortcutBadger:1.1.22@aar'
     // e2e dependencies
     androidTestImplementation('com.wix:detox:+') { transitive = true } 
     androidTestImplementation 'junit:junit:4.12'
@@ -247,15 +250,8 @@ dependencies {
     implementation 'com.madgag.spongycastle:pg:1.54.0.0'
     // qrcode generate dependencies
     implementation 'com.github.kenglxn.QRGen:android:2.6.0'
-    // Firebase dependencies
-    // implementation 'com.google.guava:guava:27.0.1-android'
+    // Other
     implementation "com.google.android.gms:play-services-base:16.1.0"
-    implementation "com.google.firebase:firebase-core:16.0.9"
-    implementation "com.google.firebase:firebase-messaging:18.0.0"
-    implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
-        transitive = true
-    }
-    implementation 'me.leolin:ShortcutBadger:1.1.21@aar'
 }
 
 // Run this once to be able to run the application with BUCK
@@ -266,6 +262,7 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 // Firebase
+apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

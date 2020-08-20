@@ -19,6 +19,10 @@
   "dependencies": {
     "@react-native-community/blur": "3.6.0",
     "@react-native-community/netinfo": "5.9.4",
+    "@react-native-firebase/analytics": "7.4.2",
+    "@react-native-firebase/app": "8.3.1",
+    "@react-native-firebase/crashlytics": "8.3.2",
+    "@react-native-firebase/messaging": "7.7.1",
     "bignumber.js": "9.0.0",
     "fuse.js": "6.4.0",
     "i18n-js": "3.7.1",
@@ -31,7 +35,6 @@
     "react-native-camera": "3.31.0",
     "react-native-device-info": "5.6.1",
     "react-native-fingerprint-scanner": "6.0.0",
-    "react-native-firebase": "5.6.0",
     "react-native-interactable": "2.0.1",
     "react-native-keychain": "4.0.5",
     "react-native-linear-gradient": "2.5.6",

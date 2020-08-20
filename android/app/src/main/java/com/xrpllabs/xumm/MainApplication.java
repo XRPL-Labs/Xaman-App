@@ -16,16 +16,12 @@ import libs.ui.ActionSheetPackage;
 import libs.ui.PromptPackage;
 import libs.ui.QRCodePackage;
 import libs.common.SharedPreferencesPackage;
+import libs.notification.LocalNotificationPackage;
 import libs.common.HTTPClientFactory;
 
 // External Dependencies
 import com.reactnativenavigation.NavigationApplication;
 import com.reactnativenavigation.react.NavigationReactNativeHost;
-// firebase
-import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
-import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
-import io.invertase.firebase.fabric.crashlytics.RNFirebaseCrashlyticsPackage;
-import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
 
 // PlayService
 import android.content.Intent;
@@ -60,11 +56,8 @@ public class MainApplication extends NavigationApplication {
                 packages.add(new PromptPackage());
                 packages.add(new QRCodePackage());
                 packages.add(new SharedPreferencesPackage());
+                packages.add(new LocalNotificationPackage());
                 // Firebase Dependencies
-                packages.add(new RNFirebaseMessagingPackage());
-                packages.add(new RNFirebaseNotificationsPackage());
-                packages.add(new RNFirebaseCrashlyticsPackage());
-                packages.add(new RNFirebaseAnalyticsPackage());
 
                 return packages;
             }

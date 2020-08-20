@@ -3,9 +3,9 @@
  * handle push notification permission and received notifications
  */
 import { get } from 'lodash';
-import { Alert, Platform } from 'react-native';
+import { Alert, NativeModules } from 'react-native';
 
-import firebase, { RNFirebase } from 'react-native-firebase';
+import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
@@ -18,6 +18,9 @@ import NavigationService from '@services/NavigationService';
 import Localize from '@locale';
 
 import EventEmitter from 'events';
+
+/* Constants  ==================================================================== */
+const { LocalNotificationModule } = NativeModules;
 
 // events
 declare interface PushNotificationsService {
@@ -61,10 +64,10 @@ class PushNotificationsService extends EventEmitter {
         // this.badge = badge;
         // set badge count on tabbar
         if (typeof badge !== 'undefined') {
-            await firebase.notifications().setBadge(badge);
+            await LocalNotificationModule.setBadge(badge);
             Navigator.setBadge(AppScreens.TabBar.Events, badge === 0 ? '' : badge.toString());
         } else {
-            const appBadge = await firebase.notifications().getBadge();
+            const appBadge = await LocalNotificationModule.getBadge();
             Navigator.setBadge(AppScreens.TabBar.Events, appBadge === 0 ? '' : appBadge.toString());
         }
     };
@@ -78,7 +81,11 @@ class PushNotificationsService extends EventEmitter {
     };
 
     checkPermission = async (): Promise<boolean> => {
-        const enabled = await firebase.messaging().hasPermission();
+        const authStatus = await messaging().hasPermission();
+        const enabled =
+            authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+            authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
         if (enabled) {
             const token = await this.getToken();
             return !!token;
@@ -87,8 +94,7 @@ class PushNotificationsService extends EventEmitter {
     };
 
     getToken = (): Promise<string> => {
-        return firebase
-            .messaging()
+        return messaging()
             .getToken()
             .then((token) => {
                 return token;
@@ -101,7 +107,7 @@ class PushNotificationsService extends EventEmitter {
 
     requestPermission = async (): Promise<boolean> => {
         try {
-            await firebase.messaging().requestPermission();
+            await messaging().requestPermission();
             const token = await this.getToken();
             this.onPermissionGranted();
             return !!token;
@@ -111,66 +117,36 @@ class PushNotificationsService extends EventEmitter {
         }
     };
 
-    prepareNotifications = () => {
-        /* istanbul ignore next */
-        if (Platform.OS === 'android') {
-            const channel = new firebase.notifications.Android.Channel(
-                'notifications',
-                'notifications',
-                firebase.notifications.Android.Importance.Max,
-            ).setDescription('Get urgent notifications/sign requests');
-            firebase.notifications().android.createChannel(channel);
-        }
-
-        if (Platform.OS === 'ios') {
-            firebase.messaging().ios.registerForRemoteNotifications();
-        }
-    };
+    prepareNotifications = () => {};
 
     createNotificationListeners = async () => {
-        await firebase.messaging().getToken();
+        await messaging().getToken();
 
-        firebase.notifications().onNotification(this.handleNotification);
-        firebase.notifications().onNotificationOpened(this.handleNotificationOpen);
+        messaging().onMessage(this.handleNotification);
+        messaging().onNotificationOpenedApp(this.handleNotificationOpen);
     };
 
-    isSignRequest = (notification: RNFirebase.notifications.Notification) => {
+    isSignRequest = (notification: any) => {
         return get(notification, ['data', 'category']) === 'SIGNTX';
     };
 
     /* If the app was launched by a push notification  */
     checkInitialNotification = async () => {
-        const notificationOpen = await firebase.notifications().getInitialNotification();
+        const notificationOpen = await messaging().getInitialNotification();
         if (notificationOpen) {
             this.handleNotificationOpen(notificationOpen);
         }
     };
 
     /* Handle notifications within the app when app is running in foreground */
-    handleNotification = (notification: RNFirebase.notifications.Notification) => {
-        this.logger.debug('New Notification received', {
-            data: notification.data,
-            body: notification.body,
-            title: notification.title,
-        });
+    handleNotification = (message: FirebaseMessagingTypes.RemoteMessage) => {
+        const isSignRequest = this.isSignRequest(message);
+        const shouldShowNotification =
+            isSignRequest && NavigationService.getCurrentScreen() !== AppScreens.Modal.ReviewTransaction;
 
-        // eslint-disable-next-line max-len
-        const shouldShowNotification = this.isSignRequest(notification) && NavigationService.getCurrentScreen() !== AppScreens.Modal.ReviewTransaction;
+        LocalNotificationModule.complete(message.messageId, shouldShowNotification);
 
-        if (shouldShowNotification) {
-            // show the notification
-            if (Platform.OS === 'android') {
-                notification.android.setChannelId('notifications');
-                notification.android.setSmallIcon('ic_stat_icon_xumm_android_notification');
-                notification.android.setLargeIcon('ic_stat_icon_xumm_android_notification');
-            }
-
-            if (Platform.OS === 'ios') {
-                notification.setSound('default');
-            }
-
-            firebase.notifications().displayNotification(notification);
-            // emit event the sign request
+        if (isSignRequest) {
             this.emit('signRequestUpdate');
         }
 
@@ -179,12 +155,8 @@ class PushNotificationsService extends EventEmitter {
     };
 
     /* Handle notifications when app is open from the notification */
-    handleNotificationOpen = (notificationOpen: RNFirebase.notifications.NotificationOpen) => {
-        const { notification } = notificationOpen;
-
+    handleNotificationOpen = (notification: any) => {
         if (!notification) return;
-
-        firebase.notifications().removeDeliveredNotification(notification.notificationId);
 
         if (this.isSignRequest(notification)) {
             // get payload uuid
