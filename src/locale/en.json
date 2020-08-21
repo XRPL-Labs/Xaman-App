@@ -228,7 +228,8 @@
         "UnableToRegisterPushNotifications": "Unable to register push notifications",
         "openXRPToolkitByTowoLabs": "Open XRP Toolkit by Towo Labs",
         "readMore": "Read more",
-        "readLess": "Read less"
+        "readLess": "Read less",
+        "enterPasscode": "Enter Passcode"
     },
     "onboarding":{
         "slideOne": {

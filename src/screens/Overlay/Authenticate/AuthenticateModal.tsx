@@ -137,7 +137,11 @@ class AuthenticateModal extends Component<Props, State> {
     };
 
     requestBiometricAuthenticate = (system: boolean = false) => {
-        FingerprintScanner.authenticate({ description: Localize.t('global.authenticate'), fallbackEnabled: true })
+        FingerprintScanner.authenticate({
+            description: Localize.t('global.authenticate'),
+            fallbackEnabled: true,
+            fallbackTitle: Localize.t('global.enterPasscode'),
+        })
             .then(this.onSuccess)
             .catch((error: any) => {
                 if (system) return;

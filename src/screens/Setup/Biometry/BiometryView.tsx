@@ -43,7 +43,7 @@ class BiometrySetupView extends Component<Props, State> {
             .then((biometryType) => {
                 FingerprintScanner.authenticate({
                     description: Localize.t('global.authenticate'),
-                    fallbackEnabled: true,
+                    fallbackEnabled: false,
                 })
                     .then(() => {
                         let type;

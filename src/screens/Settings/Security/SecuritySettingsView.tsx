@@ -96,7 +96,7 @@ class SecuritySettingsView extends Component<Props, State> {
                 return;
             }
 
-            FingerprintScanner.authenticate({ description: Localize.t('global.authenticate'), fallbackEnabled: true })
+            FingerprintScanner.authenticate({ description: Localize.t('global.authenticate'), fallbackEnabled: false })
                 .then(() => {
                     FingerprintScanner.isSensorAvailable().then((biometryType) => {
                         let type;

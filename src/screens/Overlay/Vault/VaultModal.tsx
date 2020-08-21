@@ -216,6 +216,7 @@ class VaultModal extends Component<Props, State> {
         FingerprintScanner.authenticate({
             description: Localize.t('global.signingTheTransaction'),
             fallbackEnabled: true,
+            fallbackTitle: Localize.t('global.enterPasscode'),
         })
             .then(() => {
                 const { passcode } = coreSettings;
