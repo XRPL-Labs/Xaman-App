@@ -349,7 +349,7 @@ class VaultModal extends Component<Props, State> {
                     ref={(r) => {
                         this.passwordInput = r;
                     }}
-                    placeholder={Localize.t('account.enterPassphrase')}
+                    placeholder={Localize.t('account.enterPassword')}
                     onChange={(passphrase) => {
                         this.setState({ passphrase });
                     }}

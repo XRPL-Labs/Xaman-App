@@ -54,7 +54,6 @@ class AccountSettingsView extends Component<Props, State> {
         AccountRepository.on('accountUpdate', this.onAccountUpdate);
     }
 
-
     componentWillUnmount() {
         AccountRepository.off('accountUpdate', this.onAccountUpdate);
     }
@@ -232,10 +231,11 @@ class AccountSettingsView extends Component<Props, State> {
                             </View>
 
                             <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                                <Text selectable style={[styles.address]}>{account.address}</Text>
+                                <Text selectable style={[styles.address]}>
+                                    {account.address}
+                                </Text>
                             </View>
                         </View>
-
 
                         <TouchableOpacity style={styles.row} onPress={this.accountLabelPressed}>
                             <View style={[AppStyles.flex3]}>
@@ -263,7 +263,7 @@ class AccountSettingsView extends Component<Props, State> {
                                 <Icon size={20} style={[styles.rowIcon]} name="IconChevronRight" />
                             </View>
                         </TouchableOpacity>
-                        {/* <Text style={styles.descriptionText}>{Localize.t('account.passphraseOptionDesc')}</Text> */}
+                        {/* <Text style={styles.descriptionText}>{Localize.t('account.passwordOptionDesc')}</Text> */}
                         {account.accessLevel === AccessLevels.Full && (
                             <Fragment key="security">
                                 {/* Encryption Label */}
@@ -282,7 +282,7 @@ class AccountSettingsView extends Component<Props, State> {
                                 {account.encryptionLevel === EncryptionLevels.Passphrase && (
                                     <TouchableOpacity style={styles.row} onPress={this.showChangePassphrase}>
                                         <View style={[AppStyles.flex3]}>
-                                            <Text style={styles.label}>{Localize.t('account.changePassphrase')}</Text>
+                                            <Text style={styles.label}>{Localize.t('account.changePassword')}</Text>
                                         </View>
                                     </TouchableOpacity>
                                 )}

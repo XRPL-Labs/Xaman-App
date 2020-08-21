@@ -78,8 +78,8 @@ class SecurityStep extends Component<Props, State> {
                         onPress={() => {
                             this.onRadioButtonPress(EncryptionLevels.Passphrase);
                         }}
-                        description={Localize.t('account.passphraseOptionDesc')}
-                        labelSmall={Localize.t('account.signWithPassphrase')}
+                        description={Localize.t('account.passwordOptionDesc')}
+                        labelSmall={Localize.t('account.signWithPassword')}
                         label={Localize.t('global.extraSecurity')}
                         checked={encryptionLevel === EncryptionLevels.Passphrase}
                     />

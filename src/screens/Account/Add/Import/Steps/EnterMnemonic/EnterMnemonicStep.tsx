@@ -249,7 +249,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                                 passphrase: pass,
                             });
                         }}
-                        placeholder={Localize.t('global.passphrase')}
+                        placeholder={Localize.t('global.password')}
                     />
                 )}
             </View>
