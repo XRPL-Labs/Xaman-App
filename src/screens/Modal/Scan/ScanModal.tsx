@@ -204,6 +204,19 @@ class ScanView extends Component<Props, State> {
             // try to decode X Address
             const { to, tag } = NormalizeDestination(destination);
 
+            // unable to parse the address, probably not xrp address
+            if (!to) {
+                Alert.alert(
+                    Localize.t('global.warning'),
+                    Localize.t('scan.invalidQRTryNewOneOrTryAgain'),
+                    [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+                    {
+                        cancelable: false,
+                    },
+                );
+                return;
+            }
+
             // if amount present as XRP pass the amount
             if (!destination.currency && destination.amount) {
                 amount = destination.amount;
