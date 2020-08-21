@@ -105,7 +105,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
             counterParties: availableParties,
             currencies: availableCurrencies,
             selectedParty: head(availableParties),
-            selectedCurrency: head(get(availableCurrencies, head(availableParties).id)),
+            selectedCurrency: head(get(availableCurrencies, head(availableParties)?.id)),
         });
     };
 
