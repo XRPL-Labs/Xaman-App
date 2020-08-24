@@ -99,14 +99,25 @@ class OfferCreate extends BaseTransaction {
     }
 
     get OfferSequence(): number {
-        return get(this, ['tx', 'OfferSequence']);
+        const offerSequence = get(this, ['tx', 'OfferSequence']);
+
+        if (isUndefined(offerSequence)) {
+            return get(this, ['tx', 'Sequence']);
+        }
+
+        return offerSequence;
     }
 
-    get Expiration(): any {
+    get Expiration(): string {
         const date = get(this, ['tx', 'Expiration'], undefined);
         if (isUndefined(date)) return undefined;
         const ledgerDate = new LedgerDate(date);
         return ledgerDate.toISO8601();
+    }
+
+    set Expiration(date: string) {
+        const ledgerDate = new LedgerDate(date);
+        set(this, 'tx.Expiration', ledgerDate.toLedgerTime());
     }
 
     get Executed(): boolean {
@@ -116,6 +127,7 @@ class OfferCreate extends BaseTransaction {
         // this will ensure that order is executed
         const affectedNodes = get(this.meta, 'AffectedNodes', []);
 
+        // partially filled || filled
         affectedNodes.map((node: any) => {
             if (node.ModifiedNode?.LedgerEntryType === 'Offer' || node.DeletedNode?.LedgerEntryType === 'Offer') {
                 foundOrderObject = true;
@@ -140,22 +152,28 @@ class OfferCreate extends BaseTransaction {
         affectedNodes.forEach((node: any) => {
             const { ModifiedNode } = node;
 
-            if (!ModifiedNode || get(ModifiedNode, 'LedgerEntryType') !== ledgerEntryType || takerGot) return;
+            if (!ModifiedNode || get(ModifiedNode, 'LedgerEntryType') !== ledgerEntryType) {
+                return;
+            }
 
             if (isIOU) {
-                if (has(ModifiedNode.FinalFields, 'Balance') && has(ModifiedNode.PreviousFields, 'Balance')) {
+                if (
+                    has(ModifiedNode.FinalFields, 'Balance') &&
+                    has(ModifiedNode.PreviousFields, 'Balance') &&
+                    get(ModifiedNode, 'FinalFields.HighLimit.issuer') === this.Account.address
+                ) {
                     const balance = new BigNumber(ModifiedNode.FinalFields.Balance.value);
                     const prevBalance = new BigNumber(ModifiedNode.PreviousFields.Balance.value);
 
                     takerGot = {
-                        currency: ModifiedNode.FinalFields.Balance.currency,
+                        currency: this.TakerGets.currency,
                         value: balance.minus(prevBalance).decimalPlaces(6).absoluteValue().toString(10),
-                        issuer: ModifiedNode.FinalFields.Balance.issuer,
+                        issuer: this.TakerGets.issuer,
                     };
                 }
             } else {
                 if (
-                    get(ModifiedNode.FinalFields, 'Account') !== this.Account.address &&
+                    get(ModifiedNode.FinalFields, 'Account') === this.Account.address &&
                     has(ModifiedNode.FinalFields, 'Balance') &&
                     has(ModifiedNode.PreviousFields, 'Balance')
                 ) {
@@ -168,6 +186,7 @@ class OfferCreate extends BaseTransaction {
                             .minus(prevBalance)
                             .dividedBy(1000000.0)
                             .absoluteValue()
+                            .minus(this.Fee)
                             .decimalPlaces(6)
                             .toString(10),
                     };
@@ -195,21 +214,26 @@ class OfferCreate extends BaseTransaction {
         affectedNodes.forEach((node: any) => {
             const { ModifiedNode } = node;
 
-            if (!ModifiedNode || get(ModifiedNode, 'LedgerEntryType') !== ledgerEntryType || takerPaid) return;
+            if (!ModifiedNode || get(ModifiedNode, 'LedgerEntryType') !== ledgerEntryType) {
+                return;
+            }
 
             if (isIOU) {
-                if (has(ModifiedNode.FinalFields, 'Balance') && has(ModifiedNode.PreviousFields, 'Balance')) {
+                if (
+                    has(ModifiedNode.FinalFields, 'Balance') &&
+                    has(ModifiedNode.PreviousFields, 'Balance') &&
+                    get(ModifiedNode, 'FinalFields.HighLimit.issuer') === this.Account.address
+                ) {
                     const balance = new BigNumber(ModifiedNode.FinalFields.Balance.value);
                     const prevBalance = new BigNumber(ModifiedNode.PreviousFields.Balance.value);
 
                     takerPaid = {
-                        currency: ModifiedNode.FinalFields.Balance.currency,
+                        currency: this.TakerPays.currency,
                         value: balance.minus(prevBalance).absoluteValue().decimalPlaces(6).toString(10),
-                        issuer: ModifiedNode.FinalFields.Balance.issuer,
+                        issuer: this.TakerPays.issuer,
                     };
                 }
             } else {
-                // this will avoid calculating XRP the fee
                 if (
                     get(ModifiedNode.FinalFields, 'Account') === this.Account.address &&
                     has(ModifiedNode.FinalFields, 'Balance') &&
@@ -222,8 +246,9 @@ class OfferCreate extends BaseTransaction {
                         currency: 'XRP',
                         value: balance
                             .minus(prevBalance)
-                            .absoluteValue()
                             .dividedBy(1000000.0)
+                            .absoluteValue()
+                            .minus(this.Fee)
                             .decimalPlaces(6)
                             .toString(10),
                     };
