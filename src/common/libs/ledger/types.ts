@@ -10,7 +10,7 @@ export interface LedgerTransactionType {
     ledger_hash?: string;
     ledger_index?: number;
     status?: string;
-    transaction: TransactionJSONType;
+    transaction?: TransactionJSONType;
     tx?: TransactionJSONType;
     meta?: any;
     [key: string]: any;

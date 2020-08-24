@@ -43,4 +43,10 @@ ReactNative.NativeModules.UtilsModule = {
     exitApp: jest.fn(() => true),
 };
 
+ReactNative.NativeModules.LocalNotificationModule = {
+    setBadge: jest.fn((badge: number) => Promise.resolve()),
+    getBadge: jest.fn(() => Promise.resolve(1)),
+    complete: jest.fn((messageId: string, show: boolean) => true),
+};
+
 module.exports = ReactNative;
