@@ -145,6 +145,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 ? AccountRepository.getSignableAccounts()
                 : AccountRepository.getSpendableAccounts();
 
+        // if no account for signing is available then just return
         if (isEmpty(availableAccounts)) {
             return;
         }
@@ -152,31 +153,37 @@ class ReviewTransactionModal extends Component<Props, State> {
         // choose preferred account for sign
         let preferredAccount;
 
-        // for CheckCash and CheckCancel
-        if (transaction.Account && transaction.Type === 'CheckCash') {
+        // if any account set from payload
+        if (transaction.Account) {
             preferredAccount = find(availableAccounts, { address: transaction.Account.address });
 
-            // override available Accounts
-            availableAccounts = [preferredAccount];
+            // if CheckCash check if account is imported in the xumm
+            if (transaction.Type === 'CheckCash') {
+                // cannot sign this tx as account is not imported in the XUMM
+                if (!preferredAccount) {
+                    this.setState({
+                        hasError: true,
+                        errorMessage: Localize.t('payload.checkCanOnlyCashByCheckDestination'),
+                    });
 
-            // cannot sign this tx as account is not imported in the XUMM
-            if (!preferredAccount) {
-                this.setState({
-                    hasError: true,
-                    errorMessage: Localize.t('payload.checkCanOnlyCashByCheckDestination'),
-                });
-
-                return;
-            }
-        } else {
-            preferredAccount = find(availableAccounts, { default: true }) || availableAccounts[0];
-
-            // set the default source account
-            if (preferredAccount) {
-                // ignore if it's multisign
-                if (!payload.meta.multisign) {
-                    transaction.Account = { address: preferredAccount.address };
+                    return;
                 }
+                // override available Accounts
+                availableAccounts = [preferredAccount];
+            }
+        }
+
+        // if the preferred account is not set in the payload
+        // choose default || first available account
+        if (!preferredAccount) {
+            preferredAccount = find(availableAccounts, { default: true }) || availableAccounts[0];
+        }
+
+        // set the preffered account to the tx
+        if (preferredAccount && !transaction.Account) {
+            // ignore if it's multisign
+            if (!payload.meta.multisign) {
+                transaction.Account = { address: preferredAccount.address };
             }
         }
 
