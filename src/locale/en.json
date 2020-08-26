@@ -437,6 +437,7 @@
         "familySeed": "Family Seed",
         "familySeedDesc": "Looks like sXXX1234XXX...",
         "mnemonic": "Mnemonic",
+        "scanFromQR": "Scan from QR",
         "mnemonicDesc": "Based on 12,16 or 24 words",
         "readOnlyAccount": "Read only account",
         "pleaseProvideAccountAddress": "Please provide your account address \n(Starts with 'r...')",

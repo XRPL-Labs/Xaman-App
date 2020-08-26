@@ -2,7 +2,8 @@
  * Import Account/Mnemonic Screen
  */
 
-import { get, set } from 'lodash';
+import { get, set, isEmpty } from 'lodash';
+
 import React, { Component } from 'react';
 import {
     SafeAreaView,
@@ -16,9 +17,16 @@ import {
     TouchableOpacity,
     KeyboardEvent,
 } from 'react-native';
+
 import { derive } from 'xrpl-accountlib';
 
+import { StringType, XrplSecret } from 'xumm-string-decode';
+
 import Localize from '@locale';
+
+import { Navigator } from '@common/helpers/navigator';
+import { AppScreens } from '@common/constants';
+
 // components
 import { PasswordInput, Button, Spacer, Switch, Footer } from '@components/General';
 
@@ -38,6 +46,7 @@ export interface State {
     passphrase: string;
     activeRow: number;
     keyboardHeight: number;
+    isLoading: boolean;
 }
 
 /* Component ==================================================================== */
@@ -59,6 +68,7 @@ class EnterMnemonicStep extends Component<Props, State> {
             passphrase: '',
             activeRow: -1,
             keyboardHeight: 0,
+            isLoading: false,
         };
 
         this.inputs = [];
@@ -105,6 +115,10 @@ class EnterMnemonicStep extends Component<Props, State> {
             return;
         }
 
+        this.setState({
+            isLoading: true,
+        });
+
         let options = {};
 
         if (usePassphrase && passphrase) {
@@ -121,8 +135,52 @@ class EnterMnemonicStep extends Component<Props, State> {
                 goNext('ConfirmPublicKey');
             });
         } catch (e) {
+            this.setState({
+                isLoading: false,
+            });
             Alert.alert('Error', Localize.t('account.invalidMnemonic'));
         }
+    };
+
+    onScannerRead = (decoded: XrplSecret) => {
+        const { mnemonic } = decoded;
+
+        let words = [];
+
+        // first try space
+        words = mnemonic.split(' ');
+
+        // if not try line break
+        if (isEmpty(words)) {
+            words = mnemonic.split('\n');
+        }
+
+        if (!isEmpty(words)) {
+            let length = 12;
+            if (words.length > 12 && words.length < 17) {
+                length = 16;
+            }
+
+            if (words.length > 16) {
+                length = 24;
+            }
+
+            this.setState({
+                words,
+                length,
+            });
+        }
+    };
+
+    showScanner = () => {
+        Navigator.showModal(
+            AppScreens.Modal.Scan,
+            {},
+            {
+                onRead: this.onScannerRead,
+                type: StringType.XrplSecret,
+            },
+        );
     };
 
     setValue = (col: number, value: string) => {
@@ -258,7 +316,7 @@ class EnterMnemonicStep extends Component<Props, State> {
 
     render() {
         const { goBack } = this.context;
-        const { length, keyboardHeight } = this.state;
+        const { length, keyboardHeight, isLoading } = this.state;
 
         return (
             <SafeAreaView testID="account-import-enter-mnemonic" style={[AppStyles.container]}>
@@ -312,6 +370,16 @@ class EnterMnemonicStep extends Component<Props, State> {
                     />
                 </View>
 
+                <View style={[AppStyles.stretchSelf, AppStyles.paddingHorizontal, AppStyles.paddingBottomSml]}>
+                    <Button
+                        secondary
+                        onPress={this.showScanner}
+                        roundedSmall
+                        block
+                        label={Localize.t('account.scanFromQR')}
+                    />
+                </View>
+
                 <ScrollView
                     ref={(r) => {
                         this.scrollView = r;
@@ -339,7 +407,12 @@ class EnterMnemonicStep extends Component<Props, State> {
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>
-                        <Button textStyle={AppStyles.strong} label={Localize.t('global.next')} onPress={this.goNext} />
+                        <Button
+                            isLoading={isLoading}
+                            textStyle={AppStyles.strong}
+                            label={Localize.t('global.next')}
+                            onPress={this.goNext}
+                        />
                     </View>
                 </Footer>
             </SafeAreaView>
