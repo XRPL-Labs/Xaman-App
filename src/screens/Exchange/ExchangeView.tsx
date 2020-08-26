@@ -31,7 +31,7 @@ import LedgerExchange from '@common/libs/ledger/exchange';
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
-import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeAmount, NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
 // constants
 import { AppScreens, AppConfig } from '@common/constants';
 
@@ -418,6 +418,12 @@ class ExchangeView extends Component<Props, State> {
         );
     };
 
+    applyAllBalance = () => {
+        this.setState({
+            amount: this.getAvailableBalance().toString(),
+        });
+    };
+
     render() {
         const { trustLine } = this.props;
         const { direction, liquidity, amount, isExchanging, isVerifying } = this.state;
@@ -489,25 +495,18 @@ class ExchangeView extends Component<Props, State> {
                 />
                 <View style={[styles.contentContainer]}>
                     {/* From part */}
+
                     <View style={styles.fromContainer}>
-                        <TouchableOpacity
-                            activeOpacity={1}
-                            onPress={() => {
-                                if (this.amountInput) {
-                                    this.amountInput.focus();
-                                }
-                            }}
-                            style={[AppStyles.row]}
-                        >
+                        <View style={AppStyles.row}>
                             <View style={[AppStyles.row, AppStyles.flex1]}>
                                 {direction === 'sell' ? (
-                                    <View style={[styles.xrpAvatarContainer]}>
-                                        <Image source={Images.IconXrpNew} style={[styles.xrpAvatar]} />
+                                    <View style={[styles.currencyImageContainer, styles.xrpImageContainer]}>
+                                        <Image source={Images.IconXrpNew} style={[styles.currencyImage]} />
                                     </View>
                                 ) : (
-                                    <View style={[styles.brandAvatarContainer]}>
+                                    <View style={[styles.currencyImageContainer, styles.iouImageContainer]}>
                                         <Image
-                                            style={[styles.brandAvatar]}
+                                            style={[styles.currencyImage]}
                                             source={{ uri: trustLine.counterParty.avatar }}
                                         />
                                     </View>
@@ -519,32 +518,51 @@ class ExchangeView extends Component<Props, State> {
                                             : trustLine.currency.name ||
                                               NormalizeCurrencyCode(trustLine.currency.currency)}
                                     </Text>
+                                    <Text style={[styles.subLabel]}>
+                                        {Localize.t('global.spendable')}: {NormalizeBalance(this.getAvailableBalance())}
+                                    </Text>
                                 </View>
                             </View>
-                            <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                <Text style={styles.fromAmount}>-</Text>
-                                <TextInput
-                                    ref={(r) => {
-                                        this.amountInput = r;
-                                    }}
-                                    autoFocus={false}
-                                    onChangeText={this.onAmountChange}
-                                    placeholder="0"
-                                    placeholderTextColor={AppColors.red}
-                                    keyboardType="decimal-pad"
-                                    autoCapitalize="words"
-                                    style={styles.fromAmount}
-                                    value={amount}
-                                    returnKeyType="done"
+                            <View>
+                                <Button
+                                    onPress={this.applyAllBalance}
+                                    style={styles.allButton}
+                                    label="All"
+                                    roundedMini
+                                    textStyle={AppStyles.colorBlue}
+                                    icon="IconArrowDown"
+                                    iconStyle={AppStyles.imgColorBlue}
+                                    iconSize={10}
                                 />
                             </View>
-                        </TouchableOpacity>
-                        <Spacer />
-                        <View>
-                            <Text style={[styles.subLabel]}>
-                                {Localize.t('global.spendable')}: {this.getAvailableBalance()}
-                            </Text>
                         </View>
+                        <Spacer />
+
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            onPress={() => {
+                                if (this.amountInput) {
+                                    this.amountInput.focus();
+                                }
+                            }}
+                            style={[styles.inputContainer]}
+                        >
+                            <Text style={styles.fromAmount}>-</Text>
+                            <TextInput
+                                ref={(r) => {
+                                    this.amountInput = r;
+                                }}
+                                autoFocus={false}
+                                onChangeText={this.onAmountChange}
+                                placeholder="0"
+                                placeholderTextColor={AppColors.red}
+                                keyboardType="decimal-pad"
+                                autoCapitalize="words"
+                                style={styles.fromAmount}
+                                value={amount}
+                                returnKeyType="done"
+                            />
+                        </TouchableOpacity>
 
                         {/* switch button */}
                         <Button
@@ -565,13 +583,13 @@ class ExchangeView extends Component<Props, State> {
                         <View style={[AppStyles.row]}>
                             <View style={[AppStyles.row, AppStyles.flex1]}>
                                 {direction === 'buy' ? (
-                                    <View style={[styles.xrpAvatarContainer]}>
-                                        <Image source={Images.IconXrpNew} style={[styles.xrpAvatar]} />
+                                    <View style={[styles.currencyImageContainer, styles.xrpImageContainer]}>
+                                        <Image source={Images.IconXrpNew} style={[styles.currencyImage]} />
                                     </View>
                                 ) : (
-                                    <View style={[styles.brandAvatarContainer]}>
+                                    <View style={[styles.currencyImageContainer, styles.iouImageContainer]}>
                                         <Image
-                                            style={[styles.brandAvatar]}
+                                            style={[styles.currencyImage]}
                                             source={{ uri: trustLine.counterParty.avatar }}
                                         />
                                     </View>
@@ -583,28 +601,27 @@ class ExchangeView extends Component<Props, State> {
                                             : trustLine.currency.name ||
                                               NormalizeCurrencyCode(trustLine.currency.currency)}
                                     </Text>
+                                    {direction === 'sell' && (
+                                        <Text style={[styles.subLabel]}>
+                                            {trustLine.counterParty.name}{' '}
+                                            {NormalizeCurrencyCode(trustLine.currency.currency)}
+                                        </Text>
+                                    )}
                                 </View>
-                            </View>
-                            <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                <Text style={styles.toAmount}>~</Text>
-                                <TextInput
-                                    keyboardType="decimal-pad"
-                                    autoCapitalize="words"
-                                    style={styles.toAmount}
-                                    placeholderTextColor={AppColors.green}
-                                    placeholder="0"
-                                    value={getsAmount || '0'}
-                                />
                             </View>
                         </View>
                         <Spacer />
-                        <View>
-                            <Text style={[styles.subLabel]}>
-                                {direction === 'sell' &&
-                                    `${trustLine.counterParty.name} ${NormalizeCurrencyCode(
-                                        trustLine.currency.currency,
-                                    )}`}
-                            </Text>
+
+                        <View style={[styles.inputContainer]}>
+                            <Text style={styles.toAmount}>~</Text>
+                            <TextInput
+                                keyboardType="decimal-pad"
+                                autoCapitalize="words"
+                                style={styles.toAmount}
+                                placeholderTextColor={AppColors.green}
+                                placeholder="0"
+                                value={getsAmount || '0'}
+                            />
                         </View>
                     </View>
 
