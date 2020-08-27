@@ -336,8 +336,6 @@ class LedgerService extends EventEmitter {
         return new Promise((resolve, reject) => {
             this.getAccountInfo(account)
                 .then((accountInfo: any) => {
-                    this.logger.debug(`Account info ${account}`, accountInfo);
-
                     // TODO: handle errors
                     if (!accountInfo || has(accountInfo, 'error')) {
                         if (get(accountInfo, 'error') === 'actNotFound') {

@@ -132,7 +132,7 @@ class HomeView extends Component<Props, State> {
      */
     onAppStateChange = () => {
         if (
-            AppService.prevAppState === AppStateStatus.Background &&
+            [AppStateStatus.Background, AppStateStatus.Inactive].indexOf(AppService.prevAppState) > -1 &&
             AppService.currentAppState === AppStateStatus.Active
         ) {
             this.checkClipboardContent();

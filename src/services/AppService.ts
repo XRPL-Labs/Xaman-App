@@ -53,7 +53,7 @@ class AppService extends EventEmitter {
         super();
 
         this.netStatus = NetStateStatus.Connected;
-        this.prevAppState = AppStateStatus.Inactive;
+        this.prevAppState = undefined;
         this.currentAppState = AppStateStatus.Active;
 
         this.logger = LoggerService.createLogger('AppState');
@@ -176,13 +176,11 @@ class AppService extends EventEmitter {
             case 'active':
                 appState = AppStateStatus.Active;
                 break;
-            case 'inactive':
-                break;
             case 'background':
                 appState = AppStateStatus.Background;
                 break;
             default:
-                appState = AppStateStatus.Active;
+                break;
         }
 
         // if changed
