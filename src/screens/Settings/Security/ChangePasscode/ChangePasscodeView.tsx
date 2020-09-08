@@ -146,7 +146,7 @@ class ChangePasscodeView extends Component<Props, State> {
         const { description } = this.state;
 
         return (
-            <View testID="change-passcode-view" style={[styles.container]}>
+            <View testID="change-passcode-screen" style={[styles.container]}>
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',

@@ -66,7 +66,7 @@ class EnterAddressStep extends Component<Props, State> {
             <SafeAreaView
                 onResponderRelease={() => Keyboard.dismiss()}
                 onStartShouldSetResponder={() => true}
-                testID="account-import-enter-address"
+                testID="account-import-enter-address-view"
                 style={[AppStyles.container]}
             >
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
@@ -81,6 +81,7 @@ class EnterAddressStep extends Component<Props, State> {
                     style={[AppStyles.flex1, AppStyles.paddingHorizontal]}
                 >
                     <TextInput
+                        testID="address-input"
                         value={address}
                         onChangeText={(value) => this.setState({ address: value.replace(/[^a-z0-9]/gi, '') })}
                         placeholder={Localize.t('account.pleaseEnterYourAddress')}
@@ -98,6 +99,7 @@ class EnterAddressStep extends Component<Props, State> {
                 <Footer style={[AppStyles.centerAligned, AppStyles.row]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
@@ -108,6 +110,7 @@ class EnterAddressStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
+                            testID="next-button"
                             isDisabled={!address}
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}

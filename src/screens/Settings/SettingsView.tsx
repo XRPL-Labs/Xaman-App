@@ -38,9 +38,10 @@ class SettingsView extends Component<Props, State> {
         Navigator.push(screen);
     };
 
-    renderRow = (icon: any, label: string, screen: string) => {
+    renderRow = (icon: any, label: string, screen: string, testID: string) => {
         return (
             <TouchableOpacity
+                testID={testID}
                 onPress={() => {
                     this.onRowPress(screen);
                 }}
@@ -62,7 +63,7 @@ class SettingsView extends Component<Props, State> {
 
     render() {
         return (
-            <SafeAreaView testID="settings-tab-view" style={[AppStyles.tabContainer]}>
+            <SafeAreaView testID="settings-tab-screen" style={[AppStyles.tabContainer]}>
                 <View style={[AppStyles.headerContainer]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeft, AppStyles.centerContent]}>
                         <Text style={AppStyles.h3}>{Localize.t('global.settings')}</Text>
@@ -73,24 +74,51 @@ class SettingsView extends Component<Props, State> {
                         style={AppStyles.flex1}
                         contentContainerStyle={[AppStyles.paddingRight, AppStyles.paddingLeft]}
                     >
-                        {this.renderRow('IconAccount', Localize.t('global.accounts'), AppScreens.Account.List)}
+                        {this.renderRow(
+                            'IconAccount',
+                            Localize.t('global.accounts'),
+                            AppScreens.Account.List,
+                            'accounts-button',
+                        )}
                         <View style={styles.hr} />
-                        {this.renderRow('IconSlider', Localize.t('global.general'), AppScreens.Settings.General)}
+                        {this.renderRow(
+                            'IconSlider',
+                            Localize.t('global.general'),
+                            AppScreens.Settings.General,
+                            'general-button',
+                        )}
                         {this.renderRow(
                             'IconBook',
                             Localize.t('global.addressBook'),
                             AppScreens.Settings.AddressBook.List,
+                            'address-book-button',
                         )}
                         <View style={styles.hr} />
-                        {this.renderRow('IconShield', Localize.t('global.security'), AppScreens.Settings.Security)}
-                        {this.renderRow('IconActivity', Localize.t('global.advanced'), AppScreens.Settings.Advanced)}
+                        {this.renderRow(
+                            'IconShield',
+                            Localize.t('global.security'),
+                            AppScreens.Settings.Security,
+                            'security-button',
+                        )}
+                        {this.renderRow(
+                            'IconActivity',
+                            Localize.t('global.advanced'),
+                            AppScreens.Settings.Advanced,
+                            'advanced-button',
+                        )}
                         <View style={styles.hr} />
                         {this.renderRow(
                             'IconInfo',
                             Localize.t('settings.termsAndConditions'),
                             AppScreens.Settings.TermOfUse,
+                            'tos-button',
                         )}
-                        {this.renderRow('IconStar', Localize.t('settings.credits'), AppScreens.Settings.Credits)}
+                        {this.renderRow(
+                            'IconStar',
+                            Localize.t('settings.credits'),
+                            AppScreens.Settings.Credits,
+                            'credits-button',
+                        )}
                     </ScrollView>
                 </View>
             </SafeAreaView>

@@ -296,6 +296,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                 <SafeAreaView style={styles.footer}>
                     <Footer>
                         <Button
+                            testID="add-and-sign-button"
                             block
                             isDisabled={!selectedCurrency}
                             onPress={this.addCurrency}
@@ -310,7 +311,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
     render() {
         return (
-            <View style={AppStyles.flex1}>
+            <View testID="add-asset-overlay" style={AppStyles.flex1}>
                 <TouchableWithoutFeedback onPress={this.slideDown}>
                     <Animated.View
                         style={[

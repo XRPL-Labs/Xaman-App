@@ -241,6 +241,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                 >
                     <Text style={[styles.label, isActive && styles.labelActive]}>#{i + 1}</Text>
                     <TextInput
+                        testID={`word-${i}-input`}
                         ref={(r) => {
                             this.inputs[i] = r;
                         }}
@@ -319,7 +320,7 @@ class EnterMnemonicStep extends Component<Props, State> {
         const { length, keyboardHeight, isLoading } = this.state;
 
         return (
-            <SafeAreaView testID="account-import-enter-mnemonic" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-import-enter-mnemonic-view" style={[AppStyles.container]}>
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
                     {Localize.t('account.pleaseEnterYourMnemonic')}
                 </Text>
@@ -342,6 +343,7 @@ class EnterMnemonicStep extends Component<Props, State> {
 
                 <View style={[AppStyles.row, AppStyles.paddingHorizontal, AppStyles.paddingBottomSml]}>
                     <Button
+                        testID="12-words-button"
                         onPress={() => {
                             this.onLengthChange(12);
                         }}
@@ -351,6 +353,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                         label="12"
                     />
                     <Button
+                        testID="16-words-button"
                         onPress={() => {
                             this.onLengthChange(16);
                         }}
@@ -360,6 +363,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                         label="16"
                     />
                     <Button
+                        testID="24-words-button"
                         onPress={() => {
                             this.onLengthChange(24);
                         }}
@@ -398,6 +402,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                 <Footer style={[AppStyles.centerAligned, AppStyles.row]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
@@ -408,6 +413,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
+                            testID="next-button"
                             isLoading={isLoading}
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}

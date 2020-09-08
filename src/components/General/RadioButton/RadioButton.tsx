@@ -17,6 +17,7 @@ interface Props {
     label: string;
     labelSmall?: string;
     description?: string;
+    testID?: string;
 }
 
 /* Component ==================================================================== */
@@ -29,9 +30,10 @@ class RadioButton extends Component<Props> {
     };
 
     render() {
-        const { checked, label, labelSmall, description } = this.props;
+        const { checked, label, labelSmall, description, testID } = this.props;
         return (
             <TouchableOpacity
+                testID={testID}
                 activeOpacity={0.8}
                 onPress={this.onPress}
                 style={[styles.content, checked ? styles.selected : null]}

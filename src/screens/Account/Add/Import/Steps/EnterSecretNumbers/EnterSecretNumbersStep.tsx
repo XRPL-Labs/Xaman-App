@@ -85,6 +85,7 @@ class EnterSecretNumbers extends Component<Props, State> {
                 <Footer style={[AppStyles.centerAligned, AppStyles.row]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
@@ -95,6 +96,7 @@ class EnterSecretNumbers extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
+                            testID="next-button"
                             isDisabled={!allFilled}
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}

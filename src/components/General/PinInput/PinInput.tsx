@@ -16,7 +16,6 @@ import styles from './styles';
 /* Types ==================================================================== */
 
 interface Props {
-    testID?: string;
     codeLength: number;
     autoFocus?: boolean;
     onFinish?: (code: string) => void;
@@ -122,7 +121,7 @@ class PinInput extends Component<Props, State> {
     }
 
     render() {
-        const { codeLength, autoFocus, testID } = this.props;
+        const { codeLength, autoFocus } = this.props;
         const { code } = this.state;
 
         const pins = [];
@@ -160,7 +159,7 @@ class PinInput extends Component<Props, State> {
                     ref={(r) => {
                         this.textInput = r;
                     }}
-                    testID={testID}
+                    testID="pin-input"
                     keyboardType="number-pad"
                     onKeyPress={this.onKeyPress}
                     onChangeText={this.handleEdit}

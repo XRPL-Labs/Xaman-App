@@ -51,6 +51,7 @@ class PickerModal extends Component<Props, State> {
 
         return (
             <TouchableOpacity
+                testID={`${item.value}-item`}
                 key={index}
                 style={styles.rowContainer}
                 onPress={() => {
@@ -73,7 +74,7 @@ class PickerModal extends Component<Props, State> {
         const { title, items, description } = this.props;
 
         return (
-            <View style={styles.container}>
+            <View testID="picker-modal" style={styles.container}>
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',

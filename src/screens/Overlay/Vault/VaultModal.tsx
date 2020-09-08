@@ -347,6 +347,7 @@ class VaultModal extends Component<Props, State> {
                 <Spacer size={40} />
 
                 <PasswordInput
+                    testID="passphrase-input"
                     ref={(r) => {
                         this.passwordInput = r;
                     }}
@@ -360,7 +361,12 @@ class VaultModal extends Component<Props, State> {
                 <Spacer size={20} />
 
                 <View style={[AppStyles.paddingTopSml, AppStyles.row]}>
-                    <Button rounded label={Localize.t('global.sign')} onPress={this.onPassphraseEntered} />
+                    <Button
+                        testID="sign-button"
+                        rounded
+                        label={Localize.t('global.sign')}
+                        onPress={this.onPassphraseEntered}
+                    />
                 </View>
             </View>
         );

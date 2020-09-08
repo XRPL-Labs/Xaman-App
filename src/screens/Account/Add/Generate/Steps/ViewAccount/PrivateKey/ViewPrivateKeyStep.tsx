@@ -76,7 +76,7 @@ class ViewPrivateKeyStep extends Component<Props, State> {
         const abcdefgh = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
         return (
-            <SafeAreaView testID="account-generate-view-private" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-generate-show-private-view" style={[AppStyles.container]}>
                 <Text style={[AppStyles.p, AppStyles.bold]}>
                     {Localize.t('account.secretNumbersOfRow', { row: abcdefgh[currentRow] })}
                 </Text>

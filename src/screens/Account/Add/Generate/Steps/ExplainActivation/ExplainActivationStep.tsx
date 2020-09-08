@@ -30,7 +30,7 @@ class ExplainActivationStep extends Component<Props, State> {
         const { goNext, goBack } = this.context;
 
         return (
-            <SafeAreaView testID="account-generate-explain-activation" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-generate-explain-activation-view" style={[AppStyles.container]}>
                 <View style={[AppStyles.centerAligned, AppStyles.marginVerticalSml]}>
                     <Image style={[styles.headerImage]} source={Images.ImageCoinWallet} />
                 </View>
@@ -58,6 +58,7 @@ class ExplainActivationStep extends Component<Props, State> {
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
@@ -68,6 +69,7 @@ class ExplainActivationStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
+                            testID="next-button"
                             label={Localize.t('global.nextIUnderstand')}
                             onPress={() => {
                                 goNext('SecurityStep');

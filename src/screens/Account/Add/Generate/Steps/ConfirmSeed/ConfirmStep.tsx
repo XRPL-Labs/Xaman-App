@@ -87,7 +87,7 @@ class ConfirmStep extends Component<Props, State> {
         const abcdefgh = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
         return (
-            <SafeAreaView testID="account-generate-step-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-generate-confirm-private-view" style={[AppStyles.container]}>
                 {currentRow < 8 ? (
                     <>
                         <Text style={[AppStyles.p, AppStyles.bold]}>
@@ -129,6 +129,7 @@ class ConfirmStep extends Component<Props, State> {
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
@@ -137,6 +138,7 @@ class ConfirmStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
+                            testID="next-button"
                             isDisabled={!__DEV__ && !allFilled}
                             label={Localize.t('global.next')}
                             onPress={this.goNext}

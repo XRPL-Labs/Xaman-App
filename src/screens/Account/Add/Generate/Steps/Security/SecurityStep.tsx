@@ -62,12 +62,13 @@ class SecurityStep extends Component<Props, State> {
         const { encryptionLevel } = this.state;
 
         return (
-            <SafeAreaView testID="account-generate-finish-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-generate-security-view" style={[AppStyles.container]}>
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
                     {Localize.t('account.chooseWisely')}
                 </Text>
                 <View style={[AppStyles.contentContainer, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <RadioButton
+                        testID="passcode-radio-button"
                         onPress={() => {
                             this.onRadioButtonPress(EncryptionLevels.Passcode);
                         }}
@@ -77,6 +78,7 @@ class SecurityStep extends Component<Props, State> {
                         checked={encryptionLevel === EncryptionLevels.Passcode}
                     />
                     <RadioButton
+                        testID="passphrase-radio-button"
                         onPress={() => {
                             this.onRadioButtonPress(EncryptionLevels.Passphrase);
                         }}
@@ -89,6 +91,7 @@ class SecurityStep extends Component<Props, State> {
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
@@ -99,6 +102,7 @@ class SecurityStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
+                            testID="next-button"
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
                             onPress={() => {

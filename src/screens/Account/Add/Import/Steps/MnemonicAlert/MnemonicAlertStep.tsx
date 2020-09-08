@@ -35,7 +35,7 @@ class MnemonicAlertStep extends Component<Props, State> {
         const { goNext, goBack } = this.context;
 
         return (
-            <SafeAreaView testID="account-generate-explanation-private" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-import-mnemonic-alert-view" style={[AppStyles.container]}>
                 <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.padding]}>
                     <Image style={[AppStyles.emptyIcon]} source={Images.ImageWarningShield} />
 
@@ -70,6 +70,7 @@ class MnemonicAlertStep extends Component<Props, State> {
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
@@ -80,6 +81,7 @@ class MnemonicAlertStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
+                            testID="next-button"
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.nextIUnderstand')}
                             onPress={() => {

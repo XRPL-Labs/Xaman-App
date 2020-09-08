@@ -17,6 +17,7 @@ interface ChildrenProps {
     icon?: Extract<keyof typeof Images, string>;
     iconSize?: number;
     onPress?: () => void;
+    testID?: string;
 }
 
 interface Props {
@@ -59,6 +60,7 @@ const Children = ({
     }
     return (
         <TouchableOpacity
+            testID={children.testID}
             style={[
                 {
                     alignItems: ALIGN_STYLE[placement],

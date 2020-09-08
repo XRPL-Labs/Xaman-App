@@ -453,7 +453,7 @@ class HomeView extends Component<Props, State> {
             }
 
             return (
-                <View style={[AppStyles.flex6]}>
+                <View style={[AppStyles.flex6]} testID="not-activated-account-container">
                     <InfoMessage type="error" label={Localize.t('account.yourAccountIsNotActivated')} />
                     <TouchableOpacity
                         style={[AppStyles.row, AppStyles.centerContent, AppStyles.marginTopSml]}
@@ -476,7 +476,7 @@ class HomeView extends Component<Props, State> {
         }
 
         return (
-            <View style={[AppStyles.flex6, styles.currencyList]}>
+            <View style={[AppStyles.flex6, styles.currencyList]} testID="activated-account-container">
                 <View style={[AppStyles.row, AppStyles.centerContent, styles.trustLinesHeader]}>
                     <View style={[AppStyles.flex5, AppStyles.centerContent]}>
                         <Text style={[AppStyles.pbold]}>{Localize.t('home.otherAssets')}</Text>
@@ -484,6 +484,7 @@ class HomeView extends Component<Props, State> {
                     {isSpendable && (
                         <View style={[AppStyles.flex5]}>
                             <Button
+                                testID="add-asset-button"
                                 label={Localize.t('home.addAsset')}
                                 onPress={this.addCurrency}
                                 roundedSmall
@@ -498,7 +499,7 @@ class HomeView extends Component<Props, State> {
                 </View>
 
                 {isEmpty(account.lines) && (
-                    <View style={[styles.noTrustlineMessage]}>
+                    <View testID="assets-empty-view" style={[styles.noTrustlineMessage]}>
                         <InfoMessage type="warning" label={Localize.t('home.youDonNotHaveOtherAssets')} />
                         <TouchableOpacity
                             style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingSml]}
@@ -520,10 +521,11 @@ class HomeView extends Component<Props, State> {
                 )}
 
                 {!isEmpty(account.lines) && (
-                    <ScrollView style={AppStyles.flex1}>
+                    <ScrollView testID="assets-scroll-view" style={AppStyles.flex1}>
                         {account.lines.map((line: TrustLineSchema, index: number) => {
                             return (
                                 <TouchableOpacity
+                                    testID={`line-${line.currency.issuer}`}
                                     onPress={() => {
                                         if (isSpendable) {
                                             this.showCurrencyOptions(line);
@@ -598,6 +600,7 @@ class HomeView extends Component<Props, State> {
         return (
             <View style={[styles.buttonRow]}>
                 <RaisedButton
+                    testID="send-button"
                     style={[styles.sendButton]}
                     icon="IconCornerLeftUp"
                     iconSize={25}
@@ -609,6 +612,7 @@ class HomeView extends Component<Props, State> {
                     isDisabled={!isSpendable}
                 />
                 <RaisedButton
+                    testID="request-button"
                     style={[styles.requestButton]}
                     icon="IconCornerRightDown"
                     iconSize={25}
@@ -694,6 +698,7 @@ class HomeView extends Component<Props, State> {
                             style={[AppStyles.row, styles.cardAddress]}
                         >
                             <Text
+                                testID="account-address-text"
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
                                 selectable={!discreetMode}
@@ -742,6 +747,7 @@ class HomeView extends Component<Props, State> {
                                         onPress={this.showBalanceExplain}
                                     >
                                         <Text
+                                            testID="account-balance-label"
                                             style={[
                                                 AppStyles.h5,
                                                 AppStyles.monoBold,

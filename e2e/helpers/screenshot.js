@@ -4,8 +4,6 @@ const path = require('path');
 
 const SCREENSHOT_DIR = path.resolve(__dirname, '../screenshots');
 
-console.warn(SCREENSHOT_DIR);
-
 const SCREENSHOT_OPTIONS = {
     timeout: 2000,
     killSignal: 'SIGKILL',

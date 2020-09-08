@@ -176,6 +176,7 @@ class SecurePinInput extends Component<Props, State> {
             if (item === 'X') {
                 return (
                     <TouchableHighlight
+                        testID="x-key"
                         underlayColor={AppColors.grey}
                         style={styles.line}
                         key={index}
@@ -194,6 +195,7 @@ class SecurePinInput extends Component<Props, State> {
                 if (supportBiometric) {
                     return (
                         <TouchableHighlight
+                            testID="y-key"
                             underlayColor={AppColors.grey}
                             style={styles.line}
                             key={index}
@@ -212,6 +214,7 @@ class SecurePinInput extends Component<Props, State> {
             }
             return (
                 <TouchableHighlight
+                    testID={`${item}-key`}
                     underlayColor={AppColors.grey}
                     style={styles.line}
                     activeOpacity={0.7}
@@ -268,10 +271,11 @@ class SecurePinInput extends Component<Props, State> {
         }
 
         return (
-            <TouchableWithoutFeedback onPress={this.focus}>
+            <TouchableWithoutFeedback testID="pin-input-container" onPress={this.focus}>
                 <View style={[styles.container]}>
                     {!virtualKeyboard && (
                         <TextInput
+                            testID="pin-input"
                             autoCorrect={false}
                             disableFullscreenUI
                             returnKeyType="done"
@@ -290,7 +294,11 @@ class SecurePinInput extends Component<Props, State> {
                     )}
                     <View style={styles.digits}>{this.renderDots()}</View>
 
-                    {virtualKeyboard && <View style={styles.keyboardWrap}>{this.renderNum()}</View>}
+                    {virtualKeyboard && (
+                        <View testID="virtual-keyboard" style={styles.keyboardWrap}>
+                            {this.renderNum()}
+                        </View>
+                    )}
                 </View>
             </TouchableWithoutFeedback>
         );

@@ -85,14 +85,23 @@ class ChangeLogModalView extends Component<Props, State> {
         });
 
         return (
-            <Animated.View style={[styles.container, { backgroundColor: interpolateColor }]}>
+            <Animated.View
+                testID="change-log-overlay"
+                style={[styles.container, { backgroundColor: interpolateColor }]}
+            >
                 <Animated.View style={[styles.visibleContent, { opacity: this.animatedOpacity }]}>
                     <View style={styles.headerContainer}>
                         <View style={[AppStyles.flex1]}>
                             <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.whatsNew')}</Text>
                         </View>
                         <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
-                            <Button label={Localize.t('global.close')} roundedSmall secondary onPress={this.dismiss} />
+                            <Button
+                                testID="close-change-log-button"
+                                label={Localize.t('global.close')}
+                                roundedSmall
+                                secondary
+                                onPress={this.dismiss}
+                            />
                         </View>
                     </View>
                     <View style={[AppStyles.flex1, styles.contentContainer]}>

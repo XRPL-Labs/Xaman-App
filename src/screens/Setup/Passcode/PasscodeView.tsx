@@ -209,7 +209,7 @@ class PasscodeSetupView extends Component<Props, State> {
 
         if (step === 'explanation') {
             return (
-                <View testID="pin-code-explanation" style={[AppStyles.flex8, AppStyles.paddingSml]}>
+                <View testID="pin-code-explanation-view" style={[AppStyles.flex8, AppStyles.paddingSml]}>
                     <View style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.centerContent]}>
                         <Image style={[AppStyles.emptyIcon]} source={Images.ImagePincode} />
                     </View>
@@ -228,7 +228,7 @@ class PasscodeSetupView extends Component<Props, State> {
         }
 
         return (
-            <View testID="pin-code-entry" style={[AppStyles.flex8, AppStyles.paddingSml, AppStyles.stretchSelf]}>
+            <View testID="pin-code-entry-view" style={[AppStyles.flex8, AppStyles.paddingSml, AppStyles.stretchSelf]}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerAligned]}>
                     <Text style={[AppStyles.h5, AppStyles.textCenterAligned, AppStyles.stretchSelf]}>
                         {step === 'entry'
@@ -237,7 +237,6 @@ class PasscodeSetupView extends Component<Props, State> {
                     </Text>
                     <Spacer size={30} />
                     <PinInput
-                        testID="pinInput"
                         ref={(r) => {
                             this.pinInput = r;
                         }}
@@ -254,7 +253,7 @@ class PasscodeSetupView extends Component<Props, State> {
 
     render() {
         return (
-            <SafeAreaView testID="setup-passcode-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="setup-passcode-screen" style={[AppStyles.container]}>
                 {this.renderHeader()}
                 {this.renderContent()}
                 {this.renderFooter()}

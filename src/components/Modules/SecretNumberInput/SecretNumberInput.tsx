@@ -271,13 +271,19 @@ class SecretNumberInput extends Component<Props, State> {
                 <View style={[]}>{this.renderRows()}</View>
                 <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingTopSml]}>
                     <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
-                        <TouchableOpacity activeOpacity={0.8} onPress={this.goLeft} style={[styles.buttonRoundBlack]}>
+                        <TouchableOpacity
+                            testID="left-btn"
+                            activeOpacity={0.8}
+                            onPress={this.goLeft}
+                            style={[styles.buttonRoundBlack]}
+                        >
                             <Icon size={25} name="IconChevronLeft" style={[styles.buttonRoundIcon]} />
                         </TouchableOpacity>
                     </View>
 
                     <View style={[AppStyles.flex2, AppStyles.row, AppStyles.centerContent, AppStyles.centerAligned]}>
                         <TouchableOpacity
+                            testID="minus-btn"
                             activeOpacity={0.8}
                             onPress={this.minusValue}
                             style={[styles.buttonMiddleLeft]}
@@ -285,6 +291,7 @@ class SecretNumberInput extends Component<Props, State> {
                             <Icon size={30} name="IconMinus" style={[styles.buttonRoundIcon]} />
                         </TouchableOpacity>
                         <TouchableOpacity
+                            testID="plus-btn"
                             activeOpacity={0.8}
                             onPress={this.plusValue}
                             style={[styles.buttonMiddleRight]}
@@ -294,7 +301,12 @@ class SecretNumberInput extends Component<Props, State> {
                     </View>
 
                     <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
-                        <TouchableOpacity activeOpacity={0.8} onPress={this.goRight} style={[styles.buttonRoundBlack]}>
+                        <TouchableOpacity
+                            testID="right-btn"
+                            activeOpacity={0.8}
+                            onPress={this.goRight}
+                            style={[styles.buttonRoundBlack]}
+                        >
                             <Icon size={25} name="IconChevronRight" style={[styles.buttonRoundIcon]} />
                         </TouchableOpacity>
                     </View>

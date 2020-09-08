@@ -138,7 +138,7 @@ class LockModal extends Component<Props, State> {
         const { error, coreSettings, isSensorAvailable } = this.state;
         return (
             <BlurView style={styles.blurView} blurAmount={Platform.OS === 'ios' ? 15 : 20} blurType="light">
-                <SafeAreaView style={styles.container}>
+                <SafeAreaView testID="lock-overlay" style={styles.container}>
                     <View style={[AppStyles.centerAligned, AppStyles.paddingSml]}>
                         <Image style={styles.logo} source={Images.xummLogo} />
                     </View>

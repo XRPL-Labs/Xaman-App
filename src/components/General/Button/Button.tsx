@@ -169,7 +169,7 @@ export default class Button extends Component<Props> {
 
         if (isDisabled === true) {
             return (
-                <View style={[styles.button, disabledStyle || styles.buttonDisabled, style]}>
+                <View testID={testID} style={[styles.button, disabledStyle || styles.buttonDisabled, style]}>
                     {this.renderInnerContent()}
                 </View>
             );

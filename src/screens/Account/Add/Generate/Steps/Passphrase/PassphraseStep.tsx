@@ -68,7 +68,7 @@ class PassphraseStep extends Component<Props, State> {
         const { goBack } = this.context;
         const { passphrase } = this.state;
         return (
-            <SafeAreaView testID="account-generate-finish-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-generate-passphrase-view" style={[AppStyles.container]}>
                 <Text
                     style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontalSml]}
                 >
@@ -82,6 +82,7 @@ class PassphraseStep extends Component<Props, State> {
                     style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}
                 >
                     <PasswordInput
+                        testID="passphrase-input"
                         editable
                         placeholder={Localize.t('account.enterPassword')}
                         minLength={8}
@@ -93,6 +94,7 @@ class PassphraseStep extends Component<Props, State> {
                     />
 
                     <PasswordInput
+                        testID="passphrase-confirm-input"
                         editable={passphrase.isValid}
                         selectTextOnFocus={passphrase.isValid}
                         placeholder={Localize.t('account.repeatPassword')}
@@ -104,6 +106,7 @@ class PassphraseStep extends Component<Props, State> {
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
                             onPress={() => {
@@ -114,6 +117,7 @@ class PassphraseStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
+                            testID="next-button"
                             isDisabled={!passphrase.isValid}
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}

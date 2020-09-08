@@ -202,9 +202,10 @@ class SecuritySettingsView extends Component<Props, State> {
         const { biometricEnabled, coreSettings } = this.state;
 
         return (
-            <View testID="security-settings-view" style={[styles.container]}>
+            <View testID="security-settings-screen" style={[styles.container]}>
                 <Header
                     leftComponent={{
+                        testID: 'back-button',
                         icon: 'IconChevronLeft',
                         onPress: () => {
                             Navigator.pop();
@@ -216,6 +217,7 @@ class SecuritySettingsView extends Component<Props, State> {
                 <ScrollView>
                     <Text style={styles.descriptionText}>{Localize.t('global.authentication')}</Text>
                     <TouchableOpacity
+                        testID="change-passcode-button"
                         style={styles.row}
                         onPress={() => {
                             Navigator.push(AppScreens.Settings.ChangePasscode, {
@@ -236,7 +238,11 @@ class SecuritySettingsView extends Component<Props, State> {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={[styles.row]} onPress={this.showLogoutTimePicker}>
+                    <TouchableOpacity
+                        testID="auto-lock-button"
+                        style={[styles.row]}
+                        onPress={this.showLogoutTimePicker}
+                    >
                         <View style={[AppStyles.flex3]}>
                             <Text style={styles.label}>{Localize.t('global.autoLock')}</Text>
                         </View>

@@ -747,7 +747,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         return (
             <ImageBackground
-                testID="review-view"
+                testID="review-transaction-modal"
                 source={Images.backgroundPattern}
                 imageStyle={styles.xummAppBackground}
                 style={[styles.container]}
@@ -809,7 +809,10 @@ class ReviewTransactionModal extends Component<Props, State> {
                     verticalOnly
                     animatedNativeDriver
                 >
-                    <View style={[styles.transactionContent, { height: AppSizes.screen.height - 70 }]}>
+                    <View
+                        testID="review-content-container"
+                        style={[styles.transactionContent, { height: AppSizes.screen.height - 70 }]}
+                    >
                         <View style={AppStyles.panelHeader}>
                             <View style={AppStyles.panelHandle} />
                         </View>
@@ -852,6 +855,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                                 ]}
                             >
                                 <Button
+                                    testID="accept-button"
                                     isLoading={isPreparing}
                                     onPress={this.onAcceptPress}
                                     label={Localize.t('global.accept')}
@@ -869,7 +873,10 @@ class ReviewTransactionModal extends Component<Props, State> {
     renderSubmitting = () => {
         const { step } = this.state;
         return (
-            <SafeAreaView style={[AppStyles.container, AppStyles.paddingSml, { backgroundColor: AppColors.light }]}>
+            <SafeAreaView
+                testID="submitting-view"
+                style={[AppStyles.container, AppStyles.paddingSml, { backgroundColor: AppColors.light }]}
+            >
                 <View style={[AppStyles.flex5, AppStyles.centerContent]}>
                     <Image style={styles.backgroundImageStyle} source={Images.IconSend} />
                 </View>
@@ -1020,7 +1027,9 @@ class ReviewTransactionModal extends Component<Props, State> {
                     <View style={styles.detailsCard}>
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}</Text>
                         <Spacer />
-                        <Text style={[AppStyles.p, AppStyles.monoBold]}>{submitResult.engineResult || '-'}</Text>
+                        <Text testID="engine-result-text" style={[AppStyles.p, AppStyles.monoBold]}>
+                            {submitResult.engineResult || '-'}
+                        </Text>
 
                         <Spacer />
                         <View style={AppStyles.hr} />
@@ -1054,6 +1063,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
                 <Footer>
                     <Button
+                        testID="close-button"
                         onPress={this.handleClose}
                         style={{ backgroundColor: submitResult.success ? AppColors.green : AppColors.red }}
                         label={payload.meta.return_url_app ? Localize.t('global.next') : Localize.t('global.close')}

@@ -142,7 +142,6 @@ class AccountSettingsView extends Component<Props, State> {
                     { text: Localize.t('global.cancel') },
                     {
                         text: Localize.t('global.doIt'),
-
                         onPress: () => {
                             // downgrade the access level
                             AccountRepository.downgrade(account);
@@ -163,6 +162,7 @@ class AccountSettingsView extends Component<Props, State> {
                 { text: Localize.t('global.cancel') },
                 {
                     text: Localize.t('global.doIt'),
+                    testID: 'yes-iam-sure-button',
                     onPress: () => {
                         Navigator.push(AppScreens.Account.Import, {}, { upgrade: account });
                     },
@@ -207,7 +207,7 @@ class AccountSettingsView extends Component<Props, State> {
         const { account } = this.state;
 
         return (
-            <View testID="account-edit-view" style={[styles.container]}>
+            <View testID="account-settings-screen" style={[styles.container]}>
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
@@ -227,7 +227,9 @@ class AccountSettingsView extends Component<Props, State> {
 
                         <View style={styles.row}>
                             <View style={[AppStyles.flex3]}>
-                                <Text style={styles.label}>{Localize.t('global.address')}</Text>
+                                <Text style={styles.label} testID="address-label">
+                                    {Localize.t('global.address')}
+                                </Text>
                             </View>
 
                             <View style={[AppStyles.centerAligned, AppStyles.row]}>
@@ -237,7 +239,12 @@ class AccountSettingsView extends Component<Props, State> {
                             </View>
                         </View>
 
-                        <TouchableOpacity style={styles.row} onPress={this.accountLabelPressed}>
+                        {/* Account Label */}
+                        <TouchableOpacity
+                            testID="account-label-button"
+                            style={styles.row}
+                            onPress={this.accountLabelPressed}
+                        >
                             <View style={[AppStyles.flex3]}>
                                 <Text style={styles.label}>{Localize.t('account.accountLabel')}</Text>
                             </View>
@@ -248,8 +255,12 @@ class AccountSettingsView extends Component<Props, State> {
                             </View>
                         </TouchableOpacity>
 
-                        {/* Account Label */}
-                        <TouchableOpacity style={[styles.row]} onPress={this.showAccessLevelPicker}>
+                        {/* Account Access Level */}
+                        <TouchableOpacity
+                            testID="account-access-level-button"
+                            style={[styles.row]}
+                            onPress={this.showAccessLevelPicker}
+                        >
                             <View style={[AppStyles.flex3]}>
                                 <Text style={styles.label}>{Localize.t('account.accessLevel')}</Text>
                             </View>
