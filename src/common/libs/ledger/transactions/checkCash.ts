@@ -121,15 +121,15 @@ class CheckCash extends BaseTransaction {
         return get(this, 'check', undefined);
     }
 
-    isExpired = () => {
+    get isExpired(): boolean {
         const date = get(this, ['Check', 'Expiration'], undefined);
         if (isUndefined(date)) return false;
 
         const exp = moment.utc(date);
         const now = moment().utc();
 
-        return exp.isAfter(now);
-    };
+        return exp.isBefore(now);
+    }
 
     validate = () => {
         /* eslint-disable-next-line */

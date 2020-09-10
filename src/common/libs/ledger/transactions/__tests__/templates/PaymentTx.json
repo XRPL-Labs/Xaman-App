@@ -1,6 +1,20 @@
 {
+   "SimplePayment": {
+      "TransactionType" : "Payment",
+      "Destination" : "ra5nK24KXen9AHvsdFTKHSANinZseWnPcX",
+      "Amount" : {
+         "currency" : "USD",
+         "value" : "1",
+         "issuer" : "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn"
+      },
+      "LastLedgerSequence":32000
+
+   },
     "XRP2XRP":{
        "tx":{
+         "hash":"7F10793B5781BD5DD52F70096520321A08DD2ED19AFC7E3F193AAC293954F7DF",
+         "ledger_index":57913674,
+         "date":"2020-09-02T07:24:11Z",
           "Account":"rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY",
           "Amount":"85532100",
           "Destination":"rLHzPsX6oXkzU2qL12kHCH8G8cnZv1rBJh",
@@ -18,10 +32,10 @@
           ],
           "InvoiceID": "123",
           "Sequence":34306,
-          "SigningPubKey":"03DF3AB842EB1B57F0A848CD7CC2CFD35F66E4AD0625EEACFFE72A45E4D13E49A...",
+          "SigningPubKey":"03DF3AB842EB1B57F0A848CD7CC2CFD35F66E4AD0625EEACFFE72A45E4D13E49A",
           "SourceTag":456,
           "TransactionType":"Payment",
-          "TxnSignature":"304402204ED27C2D29F609772B0E67ACCFC8C205422A85D54C065437179032419..."
+          "TxnSignature":"304402204ED27C2D29F609772B0E67ACCFC8C205422A85D54C065437179032419"
        },
        "meta":{
           "AffectedNodes":[
@@ -68,9 +82,6 @@
           "TransactionIndex":4,
           "TransactionResult":"tesSUCCESS",
           "delivered_amount":"85532100"
-       },
-       "hash":"7F10793B5781BD5DD52F70096520321A08DD2ED19AFC7E3F193AAC293954F7DF",
-       "ledger_index":57913674,
-       "date":"2020-09-02T07:24:11Z"
+       }
     }
  }

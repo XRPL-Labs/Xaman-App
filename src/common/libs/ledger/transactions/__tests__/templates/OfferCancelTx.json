@@ -1,0 +1,9 @@
+{
+    "TransactionType": "OfferCancel",
+    "Account": "ra5nK24KXen9AHvsdFTKHSANinZseWnPcX",
+    "Fee": "12",
+    "Flags": 0,
+    "LastLedgerSequence": 7108629,
+    "OfferSequence": 6,
+    "Sequence": 7
+}

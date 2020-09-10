@@ -2,6 +2,7 @@
  * AccountSet transaction Parser
  */
 
+import BigNumber from 'bignumber.js';
 import { get, isUndefined } from 'lodash';
 import { HexEncoding } from '@common/libs/utils';
 
@@ -13,7 +14,7 @@ import { LedgerTransactionType } from '../types';
 
 /* Class ==================================================================== */
 class AccountSet extends BaseTransaction {
-    constructor(tx: LedgerTransactionType) {
+    constructor(tx?: LedgerTransactionType) {
         super(tx);
 
         // set transaction type if not set
@@ -63,7 +64,13 @@ class AccountSet extends BaseTransaction {
     }
 
     get TransferRate(): number {
-        return get(this, ['tx', 'TransferRate'], undefined);
+        const transferRate = get(this, ['tx', 'TransferRate'], undefined);
+
+        if (transferRate) {
+            return new BigNumber(transferRate).dividedBy(1000000).minus(1000).dividedBy(10).toNumber();
+        }
+
+        return undefined;
     }
 
     get TickSize(): number {

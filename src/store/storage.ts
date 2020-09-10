@@ -128,6 +128,16 @@ export default class Storage {
     };
 
     /**
+     * Purge everything
+     * WARNING: This will delete all objects in the Realm!
+     */
+    purge = (): void => {
+        this.db.write(() => {
+            this.db.deleteAll();
+        });
+    };
+
+    /**
      * Initialize repositories
      */
     async initRepositories(db: Realm): Promise<boolean> {

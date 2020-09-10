@@ -55,7 +55,7 @@ class BaseTransaction {
 
     prepare = async (privateKey: string, multiSign?: boolean) => {
         try {
-            this.signAs = this.Account.address;
+            this.signAs = this.Account?.address;
             this.signer = AccountLib.derive.privatekey(privateKey);
 
             // check if multi sign
@@ -73,6 +73,7 @@ class BaseTransaction {
             if (this.Type) {
                 if (isUndefined(this.Fee)) {
                     const { Fee } = LedgerService.getLedgerStatus();
+
                     if (Fee) {
                         this.Fee = new Amount(this.calculateFee(Fee)).dropsToXrp();
                     } else {
@@ -83,6 +84,7 @@ class BaseTransaction {
                 // if account sequence not set get the latest account sequence
                 if (isUndefined(this.Sequence)) {
                     const accountInfo = await LedgerService.getAccountInfo(this.signAs);
+
                     if (!has(accountInfo, 'error') && has(accountInfo, ['account_data', 'Sequence'])) {
                         const { account_data } = accountInfo;
                         this.Sequence = Number(account_data.Sequence);
@@ -287,9 +289,9 @@ class BaseTransaction {
             encodedMemos = memos.map((m: any) => {
                 return {
                     Memo: {
-                        MemoType: HexEncoding.toHex(m.type).toUpperCase(),
-                        MemoFormat: HexEncoding.toHex(m.format).toUpperCase(),
-                        MemoData: HexEncoding.toHex(m.data).toUpperCase(),
+                        MemoType: m.type && HexEncoding.toHex(m.type).toUpperCase(),
+                        MemoFormat: m.format && HexEncoding.toHex(m.format).toUpperCase(),
+                        MemoData: m.data && HexEncoding.toHex(m.data).toUpperCase(),
                     },
                 };
             });

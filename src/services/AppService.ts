@@ -134,6 +134,20 @@ class AppService extends EventEmitter {
         });
     };
 
+    onInactivityTimeout = (id: string) => {
+        if (id === 'timeout_event') {
+            // clear any listener
+            this.stopInactivityListener();
+
+            if (this.currentAppState !== AppStateStatus.Inactive) {
+                this.prevAppState = this.currentAppState;
+                this.currentAppState = AppStateStatus.Inactive;
+                // emit the appStateChange event
+                this.emit('appStateChange', this.currentAppState, this.prevAppState);
+            }
+        }
+    };
+
     /*
      * start a timer to check for background inactivity
      */
@@ -142,22 +156,11 @@ class AppService extends EventEmitter {
             return;
         }
 
-        // send timeout timer
+        // start timeout timer
         UtilsModule.timeoutEvent('timeout_event', 15000);
 
-        this.inactivityTimeout = Emitter.addListener('Utils.timeout', (id) => {
-            if (id === 'timeout_event') {
-                // clear any listener
-                this.stopInactivityListener();
-
-                if (this.currentAppState !== AppStateStatus.Inactive) {
-                    this.prevAppState = this.currentAppState;
-                    this.currentAppState = AppStateStatus.Inactive;
-                    // emit the appStateChange event
-                    this.emit('appStateChange', this.currentAppState, this.prevAppState);
-                }
-            }
-        });
+        // add event listener for timer
+        this.inactivityTimeout = Emitter.addListener('Utils.timeout', this.onInactivityTimeout);
     };
 
     /*
@@ -180,7 +183,8 @@ class AppService extends EventEmitter {
                 appState = AppStateStatus.Background;
                 break;
             default:
-                break;
+                // ignore inactive state
+                return;
         }
 
         // if changed

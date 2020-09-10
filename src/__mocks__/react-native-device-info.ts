@@ -7,7 +7,7 @@ DeviceInfo.getModel = () => 'mock-device';
 // @ts-ignore
 DeviceInfo.getDeviceId = () => 'mock-device-id';
 // @ts-ignore
-DeviceInfo.getVersion = () => 'foo';
+DeviceInfo.getVersion = () => '0.5.1';
 // @ts-ignore
 DeviceInfo.getBuildNumber = () => 1;
 // @ts-ignore

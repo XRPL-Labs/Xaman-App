@@ -7,8 +7,8 @@ import txTemplates from './templates/PaymentTx.json';
 
 describe('Payment tx', () => {
     it('Should set tx type if not set', () => {
-        const offer = new Payment();
-        expect(offer.Type).toBe('Payment');
+        const payment = new Payment();
+        expect(payment.Type).toBe('Payment');
     });
 
     it('Should return right parsed values for tx XRP->XRP', () => {
