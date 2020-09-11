@@ -67,7 +67,8 @@ class AccountSet extends BaseTransaction {
         const transferRate = get(this, ['tx', 'TransferRate'], undefined);
 
         if (transferRate) {
-            return new BigNumber(transferRate).dividedBy(1000000).minus(1000).dividedBy(10).toNumber();
+            return new BigNumber(transferRate).dividedBy(1000000).minus(1000).dividedBy(10)
+                .toNumber();
         }
 
         return undefined;

@@ -1,13 +1,8 @@
-import DeviceInfo from 'react-native-device-info';
-
-import Preferences from '@common/libs/preferences';
-import { Navigator } from '@common/helpers/navigator';
-
 import AppService, { AppStateStatus } from '../AppService';
 import NavigationService from '../NavigationService';
 import AuthenticationService from '../AuthenticationService';
 
-describe('AppService', () => {
+describe('AuthenticationService', () => {
     const authenticationService = AuthenticationService;
     const appService = AppService;
 
@@ -30,16 +25,16 @@ describe('AppService', () => {
     it('should check for lock when coming from inactive/background state', async () => {
         const spy1 = jest.spyOn(authenticationService, 'checkLockScreen');
 
-        AppService.prevAppState = AppStateStatus.Background;
-        AppService.currentAppState = AppStateStatus.Active;
-        AppService.emit('appStateChange', AppStateStatus.Active);
+        appService.prevAppState = AppStateStatus.Background;
+        appService.currentAppState = AppStateStatus.Active;
+        appService.emit('appStateChange', AppStateStatus.Active);
         expect(spy1).toBeCalled();
 
         const spy2 = jest.spyOn(authenticationService, 'checkLockScreen');
 
-        AppService.prevAppState = AppStateStatus.Inactive;
-        AppService.currentAppState = AppStateStatus.Active;
-        AppService.emit('appStateChange', AppStateStatus.Active);
+        appService.prevAppState = AppStateStatus.Inactive;
+        appService.currentAppState = AppStateStatus.Active;
+        appService.emit('appStateChange', AppStateStatus.Active);
         expect(spy2).toBeCalled();
     });
 });
