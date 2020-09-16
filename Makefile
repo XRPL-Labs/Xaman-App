@@ -1,5 +1,5 @@
 .PHONY: pre-run pre-build clean
-.PHONY: check-style
+.PHONY: validate-style
 .PHONY: start stop
 .PHONY: run run-ios run-android
 .PHONY: build build-ios build-android unsigned-ios unsigned-android ios-sim-x86_64
@@ -45,9 +45,9 @@ pre-run: | node_modules .podinstall build-env ## Installs dependencies
 
 pre-build: | yarn-ci .podinstall build-env ## Install dependencies before building
 
-check-style: node_modules ## Runs eslint
+validate-style: node_modules ## Runs eslint
 	@echo Checking for style guide compliance
-	@yarn run check
+	@yarn run validate
 
 clean: ## Cleans dependencies, previous builds and temp files
 	@echo Cleaning started
@@ -138,31 +138,31 @@ run-android: | check-device-android pre-run ## Runs the app on an Android emulat
 		fi; \
     fi
 
-build: | stop pre-build check-style ## Builds the app for Android & iOS
+build: | stop pre-build validate-style ## Builds the app for Android & iOS
 	$(call start_packager)
 	@echo "Building App"
 	@cd fastlane && BABEL_ENV=production NODE_ENV=production bundle exec fastlane build
 	$(call stop_packager)
 
 
-build-ios: | stop pre-build check-style ## Builds the iOS app
+build-ios: | stop pre-build validate-style ## Builds the iOS app
 	$(call start_packager)
 	@echo "Building iOS app"
 	@cd fastlane && BABEL_ENV=production NODE_ENV=production bundle exec fastlane ios build
 	$(call stop_packager)
 
-build-android: | stop pre-build check-style prepare-android-build ## Build the Android app
+build-android: | stop pre-build validate-style prepare-android-build ## Build the Android app
 	$(call start_packager)
 	@echo "Building Android app"
 	@cd fastlane && BABEL_ENV=production NODE_ENV=production bundle exec fastlane android build
 	$(call stop_packager)
 
-unsigned-ios: stop pre-build check-style ## Build an unsigned version of the iOS app
+unsigned-ios: stop pre-build validate-style ## Build an unsigned version of the iOS app
 	$(call start_packager)
 	@cd fastlane && NODE_ENV=production bundle exec fastlane ios unsigned
 	$(call stop_packager)
 
-ios-sim-x86_64: stop pre-build check-style ## Build an unsigned x86_64 version of the iOS app for iPhone simulator
+ios-sim-x86_64: stop pre-build validate-style ## Build an unsigned x86_64 version of the iOS app for iPhone simulator
 	$(call start_packager)
 	@echo "Building unsigned x86_64 iOS app for iPhone simulator"
 	@cd fastlane && NODE_ENV=production bundle exec fastlane ios unsigned
@@ -174,16 +174,19 @@ ios-sim-x86_64: stop pre-build check-style ## Build an unsigned x86_64 version o
 	@cd fastlane && bundle exec fastlane upload_file_to_s3 file:XUMM-simulator-x86_64.app.zip os_type:iOS
 	$(call stop_packager)
 
-unsigned-android: stop pre-build check-style prepare-android-build ## Build an unsigned version of the Android app
+unsigned-android: stop pre-build validate-style prepare-android-build ## Build an unsigned version of the Android app
 	@cd fastlane && NODE_ENV=production bundle exec fastlane android unsigned
 
-test: | pre-run check-style ## Runs tests
+pre-e2e: | pre-build  ## build for e2e test
+	@yarn detox build e2e --configuration ios.sim.debug
+
+test: | pre-run validate-style ## Runs tests
 	@yarn test
 
-test-e2e: | pre-run ## Runs e2e tests
-	@yarn run test:e2e:ios
+test-e2e: | pre-run pre-e2e ## Runs e2e tests
+	@yarn cucumber-js ./e2e --configuration ios.sim.debug --cleanup
 
-build-pr: | can-build-pr stop pre-build check-style ## Build a PR from the XUMM repo
+build-pr: | can-build-pr stop pre-build validate-style ## Build a PR from the XUMM repo
 	$(call start_packager)
 	@echo "Building App from PR ${PR_ID}"
 	@cd fastlane && BABEL_ENV=production NODE_ENV=production bundle exec fastlane build_pr pr:PR-${PR_ID}

@@ -155,7 +155,7 @@ class PushNotificationsService extends EventEmitter {
     };
 
     /* Handle notifications when app is open from the notification */
-    handleNotificationOpen = (notification: any) => {
+    handleNotificationOpen = async (notification: any) => {
         if (!notification) return;
 
         if (this.isSignRequest(notification)) {
@@ -163,7 +163,7 @@ class PushNotificationsService extends EventEmitter {
             const payloadUUID = get(notification, ['data', 'payload']);
 
             if (payloadUUID) {
-                Payload.from(payloadUUID)
+                await Payload.from(payloadUUID)
                     .then((payload) => {
                         // show review transaction screen
                         Navigator.showModal(

@@ -3,8 +3,18 @@ const { Before, BeforeAll, AfterAll, After } = require('cucumber');
 const config = require('../../package.json').detox;
 const adapter = require('./adapter');
 
+const { startRecordingVideo, stopRecordingVideo } = require('../helpers/artifacts');
+const { startDeviceLogStream } = require('../helpers/simulator');
+
 BeforeAll(async () => {
     await detox.init(config, { launchApp: false, reuse: false });
+
+    // start device log
+    startDeviceLogStream();
+
+    // start recording video
+    startRecordingVideo();
+
     await detox.device.launchApp({
         permissions: { notifications: 'YES', camera: 'YES' },
     });
@@ -20,5 +30,9 @@ After(async (context) => {
 });
 
 AfterAll(async () => {
+    // clean up
     await detox.cleanup();
+
+    // stop recording
+    stopRecordingVideo();
 });

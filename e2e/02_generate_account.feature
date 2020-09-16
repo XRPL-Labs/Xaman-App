@@ -13,7 +13,7 @@ Feature: Generate Account
         Then I write down secret numbers
         Then I tap 'next-button'
         Given I should have 'account-generate-confirm-private-view'
-        # Then I enter my secret number
+        Then I enter my secret number
         Then I tap 'next-button'
         Given I should have 'account-generate-show-address-view'
         Then I read my account address
@@ -41,6 +41,7 @@ Feature: Generate Account
     Scenario: Test signing by adding a asset
         Then I tap 'add-asset-button'
         Given I should have 'add-asset-overlay'
+        Given I should wait 10 sec to see 'add-and-sign-button'
         Then I tap 'add-and-sign-button'
         Given I should have 'review-transaction-modal'
         Then I scroll up 'review-content-container'
@@ -68,7 +69,7 @@ Feature: Generate Account
         Then I write down secret numbers
         Then I tap 'next-button'
         Given I should have 'account-generate-confirm-private-view'
-        # Then I enter my secret number
+        Then I enter my secret number
         Then I tap 'next-button'
         Given I should have 'account-generate-show-address-view'
         Then I read my account address
@@ -101,6 +102,7 @@ Feature: Generate Account
     Scenario: Test signing by adding a asset
         Then I tap 'add-asset-button'
         Given I should have 'add-asset-overlay'
+        Given I should wait 10 sec to see 'add-and-sign-button'
         Then I tap 'add-and-sign-button'
         Given I should have 'review-transaction-modal'
         Then I scroll up 'review-content-container'

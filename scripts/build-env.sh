@@ -6,32 +6,52 @@ echo "Checking Google Services files..."
 GOOGLESERVICE_JSON_PATH="./android/app/google-services.json"
 GOOGLESERVICE_INFO_PATH="./ios/XUMM/GoogleService-Info.plist"
 
-GOOGLESERVICE_JSON_CONTENT='{\n
-\t"project_info": {\n
-\t\t"project_id": "sample",\n
-\t\t"project_number": "000000000000",\n
-\t\t"name": "sample",\n
-\t\t"firebase_url": "https://sample.firebaseio.com"\n
-\t},\n
-\t"client": [\n
-\t\t{\n
-\t\t\t"client_info": {\n
-\t\t\t\t"mobilesdk_app_id": "1:000000000000:android:ffffffffffffffff",\n
-\t\t\t\t"client_id": "android:com.xrpllabs.xumm",\n
-\t\t\t\t"client_type": 1,\n
-\t\t\t\t"android_client_info": {\n
-\t\t\t\t\t"package_name": "com.xrpllabs.xumm",\n
-\t\t\t\t\t"certificate_hash": []\n
-\t\t\t\t}\n
-\t\t\t},\n
-\t\t\t"api_key": [\n
-\t\t\t\t{\n
-\t\t\t\t\t"current_key": "sample"\n
-\t\t\t\t}\n
-\t\t\t]\n
-\t\t}\n
-\t],\n
-\t"configuration_version": "1"\n
+GOOGLESERVICE_JSON_CONTENT='{
+  "project_info": {
+    "project_number": "605969436814",
+    "firebase_url": "https://mock-project-dbf72.firebaseio.com",
+    "project_id": "mock-project-dbf72",
+    "storage_bucket": "mock-project-dbf72.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:605969436814:android:dafa7cd40f21cc153af9df",
+        "android_client_info": {
+          "package_name": "com.xrpllabs.xumm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "605969436814-52cqhk0artfv0je48ud54hgqj9g2kf9q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCh03NeXbJVBFb9bmx0ZCwVtOwk2i6GOk8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "605969436814-52cqhk0artfv0je48ud54hgqj9g2kf9q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "605969436814-fkagbvf14hpkum9k3get2hqckk4upa84.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.xrpllabs.xumm"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
 }'
 
 
@@ -40,40 +60,36 @@ GOOGLESERVICE_INFO_CONTENT='
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
-	<string>ca-app-pub-3940256099942544/2934735716</string>
-	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
-	<string>ca-app-pub-3940256099942544/4411468910</string>
-	<key>API_KEY</key>
-	<string>AIzaSyAzlj4APqi5S58nFtE52Da-fYBOHA2MhaY</string>
-	<key>BUNDLE_ID</key>
-	<string>id</string>
 	<key>CLIENT_ID</key>
-	<string>123456789000-hjugbg6ud799v4c49dim8ce2usclthar.apps.googleusercontent.com</string>
-	<key>DATABASE_URL</key>
-	<string>https://mockproject-1234.firebaseio.com</string>
+	<string>605969436814-fkagbvf14hpkum9k3get2hqckk4upa84.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.605969436814-fkagbvf14hpkum9k3get2hqckk4upa84</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDgFMurMEqDkIXF5V5RSjJdwtqySTPlDAw</string>
 	<key>GCM_SENDER_ID</key>
-	<string>123456789000</string>
-	<key>GOOGLE_APP_ID</key>
-	<string>1:123456789000:ios:f1bf012572b04063</string>
-	<key>IS_ADS_ENABLED</key>
-	<true/>
-	<key>IS_ANALYTICS_ENABLED</key>
-	<true/>
-	<key>IS_APPINVITE_ENABLED</key>
-	<true/>
-	<key>IS_GCM_ENABLED</key>
-	<true/>
-	<key>IS_SIGNIN_ENABLED</key>
-	<true/>
+	<string>605969436814</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.xrpllabs.xumm</string>
 	<key>PROJECT_ID</key>
-	<string>mockproject-1234</string>
-	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.123456789000-hjugbg6ud799v4c49dim8ce2usclthar</string>
+	<string>mock-project-dbf72</string>
 	<key>STORAGE_BUCKET</key>
-	<string>mockproject-1234.appspot.com</string>
+	<string>mock-project-dbf72.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:605969436814:ios:722fee6b295d63fd3af9df</string>
+	<key>DATABASE_URL</key>
+	<string>https://mock-project-dbf72.firebaseio.com</string>
 </dict>
 </plist>
 '

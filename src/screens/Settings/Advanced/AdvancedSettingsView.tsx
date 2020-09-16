@@ -57,7 +57,6 @@ class AdvancedSettingsView extends Component<Props, State> {
         CoreRepository.off('updateSettings', this.updateUI);
     }
 
-
     updateUI = (coreSettings: CoreSchema) => {
         this.setState({
             coreSettings,
@@ -118,7 +117,7 @@ class AdvancedSettingsView extends Component<Props, State> {
         const { coreSettings, profile } = this.state;
 
         return (
-            <View testID="advanced-settings-view" style={[styles.container]}>
+            <View testID="advanced-settings-screen" style={[styles.container]}>
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
@@ -132,6 +131,7 @@ class AdvancedSettingsView extends Component<Props, State> {
                 <ScrollView>
                     <Text style={styles.descriptionText}>{Localize.t('settings.nodeAndExplorer')}</Text>
                     <TouchableOpacity
+                        testID="change-node-button"
                         style={[styles.row]}
                         onPress={() => {
                             Navigator.push(AppScreens.Settings.Node.List);

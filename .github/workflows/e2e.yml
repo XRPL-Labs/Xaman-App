@@ -1,0 +1,67 @@
+name: e2e
+
+on: 
+  push:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_11.2.app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+
+      - run: node --version
+
+      - name: Cache node modules
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Rebuild detox
+        if: steps.cache.outputs.cache-hit == 'true'
+        run: yarn detox clean-framework-cache && yarn detox build-framework-cache
+
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install
+
+      - name: Cache Pods
+        uses: actions/cache@v1
+        id: podcache
+        with:
+          path: ios/Pods
+          key: pods-${{ hashFiles('**/Podfile.lock') }}
+
+      - name: Update Pods
+        run: |
+          gem update cocoapods xcodeproj
+          cd ios && pod install && cd ..
+      - name: Prepare
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+          sh scripts/build-env.sh
+          mv src/app.tsx src/app.tsx.old && cat src/app.tsx.old|perl -pe'BEGIN{undef $/;} s/if \(isJailBroken.+?}/\/\/ No root or jailbreak detection/gms' > src/app.tsx
+    
+      - run: yarn detox build e2e --configuration ios.sim.release
+      - run: yarn cucumber-js ./e2e --configuration ios.sim.release --cleanup --loglevel trace
+
+      - name: Upload artifact files
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact
+          path: e2e/artifacts/

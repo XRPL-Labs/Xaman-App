@@ -46,6 +46,7 @@ Feature: Lock
     Scenario: Add a asset for testing signing
         Then I tap 'add-asset-button'
         Given I should have 'add-asset-overlay'
+        Given I should wait 10 sec to see 'add-and-sign-button'
         Then I tap 'add-and-sign-button'
         Given I should have 'review-transaction-modal'
         Then I scroll up 'review-content-container'
@@ -86,7 +87,6 @@ Feature: Lock
         Then I close the app
         Then I launch the app
         Given I should see 'home-tab-view'
-
 
 
 
