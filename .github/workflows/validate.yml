@@ -1,10 +1,9 @@
 name: validate
 
-on: 
-  push:
+on: [pull_request]
 
 jobs:
-  validate:
+  validate-style:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

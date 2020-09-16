@@ -1,10 +1,9 @@
 name: e2e
 
-on: 
-  push:
+on: [pull_request]
 
 jobs:
-  build:
+  build-run:
     runs-on: macos-latest
 
     env:
