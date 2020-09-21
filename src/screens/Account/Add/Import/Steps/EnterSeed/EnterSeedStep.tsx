@@ -88,7 +88,9 @@ class EnterSeedStep extends Component<Props, State> {
                     <TextInput
                         testID="seed-input"
                         placeholder={Localize.t('account.pleaseEnterYourFamilySeed')}
-                        // containerStyle={styles.searchContainer}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        keyboardType="visible-password"
                         inputStyle={styles.inputText}
                         onChangeText={(value) => this.setState({ familySeed: value.replace(/[^a-z0-9]/gi, '') })}
                         value={familySeed}

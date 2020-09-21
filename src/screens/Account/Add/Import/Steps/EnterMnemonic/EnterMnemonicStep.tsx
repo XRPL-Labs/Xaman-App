@@ -247,6 +247,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                         }}
                         autoCapitalize="none"
                         autoCorrect={false}
+                        keyboardType="visible-password"
                         value={value}
                         style={[styles.input, isActive && styles.inputActive]}
                         returnKeyType={i + 1 === length ? 'done' : 'next'}

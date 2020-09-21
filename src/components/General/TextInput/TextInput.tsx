@@ -102,7 +102,6 @@ class Input extends Component<Props, State> {
                     onBlur={this.onBlur}
                     placeholderTextColor={AppColors.greyDark}
                     autoCapitalize="none"
-                    selectionColor={AppColors.black}
                     autoCorrect={false}
                     multiline={false}
                     underlineColorAndroid="transparent"

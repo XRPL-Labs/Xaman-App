@@ -82,6 +82,9 @@ class EnterAddressStep extends Component<Props, State> {
                 >
                     <TextInput
                         testID="address-input"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        keyboardType="visible-password"
                         value={address}
                         onChangeText={(value) => this.setState({ address: value.replace(/[^a-z0-9]/gi, '') })}
                         placeholder={Localize.t('account.pleaseEnterYourAddress')}
