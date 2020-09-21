@@ -74,7 +74,6 @@ public class MainApplication extends NavigationApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        SoLoader.init(this, /* native exopackage */ false);
         // Update security provider
         upgradeSecurityProvider();
         // Replace default http client

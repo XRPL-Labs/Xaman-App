@@ -7,6 +7,7 @@ if (__DEV__) {
         'Remote debugger is in a background tab which may cause apps to perform slowly',
         'Require cycle:',
         'Setting a timer',
+        'Module AppRegistry is not',
     ];
     const oldConsoleWarn = console.warn;
 
