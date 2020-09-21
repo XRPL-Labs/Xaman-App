@@ -5,12 +5,10 @@
 import { get, find, isEmpty } from 'lodash';
 import React, { Component, Fragment } from 'react';
 import {
-    Animated,
     SafeAreaView,
     ScrollView,
     View,
     Text,
-    Clipboard,
     Alert,
     Linking,
     Image,
@@ -20,6 +18,8 @@ import {
     Keyboard,
     Platform,
 } from 'react-native';
+
+import Clipboard from '@react-native-community/clipboard';
 
 import Interactable from 'react-native-interactable';
 import { BlurView } from '@react-native-community/blur';
@@ -80,7 +80,6 @@ export interface State {
 class ReviewTransactionModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.ReviewTransaction;
 
-    private deltaY: Animated.Value;
     private backHandler: any;
     private panel: any;
     private sourcePicker: AccordionPicker;
@@ -110,8 +109,6 @@ class ReviewTransactionModal extends Component<Props, State> {
             headerHeight: 0,
             coreSettings: CoreRepository.getSettings(),
         };
-
-        this.deltaY = new Animated.Value(0);
     }
 
     componentWillUnmount() {
@@ -803,7 +800,6 @@ class ReviewTransactionModal extends Component<Props, State> {
                         { y: this.getTopOffset(), id: 'up' },
                     ]}
                     boundaries={{ top: this.getTopOffset() - 20 }}
-                    animatedValueY={this.deltaY}
                     onDrag={this.onDrag}
                     onSnap={this.onSnap}
                     verticalOnly

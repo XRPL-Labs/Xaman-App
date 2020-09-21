@@ -51,6 +51,7 @@ class RecipientMenuOverlay extends Component<Props, State> {
 
     panel: any;
     deltaY: Animated.Value;
+    deltaX: Animated.Value;
 
     static options() {
         return {
@@ -75,6 +76,7 @@ class RecipientMenuOverlay extends Component<Props, State> {
         };
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
+        this.deltaX = new Animated.Value(0);
     }
 
     componentDidMount() {
@@ -205,6 +207,7 @@ class RecipientMenuOverlay extends Component<Props, State> {
                     }}
                     initialPosition={{ y: AppSizes.screen.height + 3 }}
                     animatedValueY={this.deltaY}
+                    animatedValueX={this.deltaX}
                 >
                     <View
                         style={[styles.container, { height: contentHeight + 50 }]}

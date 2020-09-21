@@ -56,6 +56,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
     panel: any;
     deltaY: Animated.Value;
+    deltaX: Animated.Value;
 
     constructor(props: Props) {
         super(props);
@@ -68,6 +69,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
         };
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
+        this.deltaX = new Animated.Value(0);
     }
 
     componentDidMount() {
@@ -202,7 +204,12 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
         if (isEmpty(counterParties)) {
             return (
-                <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]} adjustsFontSizeToFit numberOfLines={1}>
+                <Text
+                    key="empty-parties"
+                    style={[AppStyles.subtext, AppStyles.textCenterAligned]}
+                    adjustsFontSizeToFit
+                    numberOfLines={1}
+                >
                     No Item to show
                 </Text>
             );
@@ -338,6 +345,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     boundaries={{ top: AppSizes.heightPercentageToDP(8) }}
                     initialPosition={{ y: AppSizes.screen.height }}
                     animatedValueY={this.deltaY}
+                    animatedValueX={this.deltaX}
                 >
                     {this.renderContent()}
                 </Interactable.View>

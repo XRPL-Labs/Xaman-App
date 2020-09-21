@@ -40,6 +40,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
 
     panel: any;
     deltaY: Animated.Value;
+    deltaX: Animated.Value;
 
     static options() {
         return {
@@ -64,6 +65,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
         this.textInputView = createRef<View>();
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
+        this.deltaX = new Animated.Value(0);
     }
 
     componentDidMount() {
@@ -217,6 +219,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                     }}
                     initialPosition={{ y: AppSizes.screen.height + 3 }}
                     animatedValueY={this.deltaY}
+                    animatedValueX={this.deltaX}
                 >
                     <View
                         style={[styles.container, { height: AppSizes.moderateScale(500) }]}

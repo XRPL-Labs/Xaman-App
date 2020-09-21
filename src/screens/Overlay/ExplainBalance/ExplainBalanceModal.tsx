@@ -42,6 +42,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
     panel: any;
     deltaY: Animated.Value;
+    deltaX: Animated.Value;
 
     constructor(props: Props) {
         super(props);
@@ -52,6 +53,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         };
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
+        this.deltaX = new Animated.Value(0);
     }
 
     componentDidMount() {
@@ -226,6 +228,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                     boundaries={{ top: AppSizes.screen.height * 0.1 }}
                     initialPosition={{ y: AppSizes.screen.height }}
                     animatedValueY={this.deltaY}
+                    animatedValueX={this.deltaX}
                 >
                     <View style={[styles.visibleContent]}>
                         <View style={AppStyles.panelHeader}>

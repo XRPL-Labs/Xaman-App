@@ -47,10 +47,15 @@ class AccountDelete extends BaseTransaction {
 
         if (isUndefined(amount)) return undefined;
 
-        return {
-            currency: 'XRP',
-            value: new Amount(amount).dropsToXrp(),
-        };
+        // as this only will be XRP we only check for string & number
+        if (typeof amount === 'string' || typeof amount === 'number') {
+            return {
+                currency: 'XRP',
+                value: new Amount(amount).dropsToXrp(),
+            };
+        }
+
+        return undefined;
     }
 
     get Destination(): Destination {

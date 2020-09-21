@@ -3,7 +3,9 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Clipboard, ActivityIndicator } from 'react-native';
+import { SafeAreaView, View, Text, ActivityIndicator } from 'react-native';
+
+import Clipboard from '@react-native-community/clipboard';
 
 import { Toast, Prompt } from '@common/helpers/interface';
 

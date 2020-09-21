@@ -200,7 +200,7 @@ class NavigationService extends EventEmitter {
     setCurrentScreen = (currentScreen: string) => {
         if (this.currentScreen !== currentScreen) {
             // broadcast to firebase
-            analytics().setCurrentScreen(currentScreen, currentScreen);
+            analytics().logScreenView({ screen_name: currentScreen });
 
             this.setPrevScreen(this.currentScreen);
             this.currentScreen = currentScreen;

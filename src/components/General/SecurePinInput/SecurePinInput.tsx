@@ -179,7 +179,7 @@ class SecurePinInput extends Component<Props, State> {
                         testID="x-key"
                         underlayColor={AppColors.grey}
                         style={styles.line}
-                        key={index}
+                        key="x-key"
                         onPress={() => {
                             this.onDigitInput('Backspace');
                         }}
@@ -198,7 +198,7 @@ class SecurePinInput extends Component<Props, State> {
                             testID="y-key"
                             underlayColor={AppColors.grey}
                             style={styles.line}
-                            key={index}
+                            key="y-key"
                             onPress={() => {
                                 if (onBiometryPress) {
                                     onBiometryPress();
@@ -210,7 +210,7 @@ class SecurePinInput extends Component<Props, State> {
                     );
                 }
 
-                return <View style={styles.line} />;
+                return <View key={`${index}-line`} style={styles.line} />;
             }
             return (
                 <TouchableHighlight
@@ -218,7 +218,7 @@ class SecurePinInput extends Component<Props, State> {
                     underlayColor={AppColors.grey}
                     style={styles.line}
                     activeOpacity={0.7}
-                    key={index}
+                    key={`${item}-key`}
                     onPress={() => {
                         this.onDigitInput(item);
                     }}
@@ -232,7 +232,7 @@ class SecurePinInput extends Component<Props, State> {
         return BUTTONS.map((item, index) => {
             if (index % 3 === 0) {
                 return (
-                    <View style={styles.numWrap} key={index}>
+                    <View style={styles.numWrap} key={`num-${index}`}>
                         {this.renderNumText(index)}
                     </View>
                 );
@@ -249,7 +249,10 @@ class SecurePinInput extends Component<Props, State> {
         const elements = [];
         for (let i = 0; i < length; i++) {
             elements.push(
-                <View key={i} style={[styles.pinStyle, digits.length > i ? { ...styles.pinActiveStyle } : {}]} />,
+                <View
+                    key={`dot-${i}`}
+                    style={[styles.pinStyle, digits.length > i ? { ...styles.pinActiveStyle } : {}]}
+                />,
             );
         }
 

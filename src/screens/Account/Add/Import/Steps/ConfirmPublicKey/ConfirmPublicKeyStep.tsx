@@ -3,7 +3,9 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Clipboard, ScrollView } from 'react-native';
+import { SafeAreaView, View, Text, ScrollView } from 'react-native';
+
+import Clipboard from '@react-native-community/clipboard';
 
 import { AccountRepository } from '@store/repositories';
 

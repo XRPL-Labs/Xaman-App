@@ -34,6 +34,7 @@ class ShareAccountModal extends Component<Props, State> {
 
     panel: any;
     deltaY: Animated.Value;
+    deltaX: Animated.Value;
     onDismiss: () => void;
 
     static options() {
@@ -52,6 +53,7 @@ class ShareAccountModal extends Component<Props, State> {
         super(props);
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
+        this.deltaX = new Animated.Value(0);
     }
 
     componentDidMount() {
@@ -133,6 +135,7 @@ class ShareAccountModal extends Component<Props, State> {
                     }}
                     initialPosition={{ y: AppSizes.screen.height }}
                     animatedValueY={this.deltaY}
+                    animatedValueX={this.deltaX}
                 >
                     <View style={[styles.visibleContent]}>
                         <View style={AppStyles.panelHeader}>

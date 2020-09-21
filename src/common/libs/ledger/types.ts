@@ -1,6 +1,19 @@
 import { Memo } from './parser/types';
 
 /**
+ * TX Json Transaction Type
+ */
+export type TransactionJSONType = {
+    Account?: string;
+    TransactionType?: string;
+    Memos?: { Memo: Memo }[];
+    Flags?: number;
+    Fulfillment?: string;
+    LastLedgerSequence?: number;
+    [Field: string]: string | number | Array<any> | undefined | object;
+};
+
+/**
  * Ledger Transaction schema from rippled
  */
 export interface LedgerTransactionType {
@@ -15,19 +28,6 @@ export interface LedgerTransactionType {
     meta?: any;
     [key: string]: any;
 }
-
-/**
- * TX Json Transaction Type
- */
-export type TransactionJSONType = {
-    Account?: string;
-    TransactionType?: string;
-    Memos?: { Memo: Memo }[];
-    Flags?: number;
-    Fulfillment?: string;
-    LastLedgerSequence?: number;
-    [Field: string]: string | number | Array<any> | undefined | object;
-};
 
 /**
  * Transaction Signed Type

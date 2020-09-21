@@ -5,7 +5,9 @@
  */
 
 import React, { Component, Fragment } from 'react';
-import { View, Text, SafeAreaView, Image, Clipboard, InteractionManager, BackHandler } from 'react-native';
+import { View, Text, SafeAreaView, Image, InteractionManager, BackHandler } from 'react-native';
+
+import Clipboard from '@react-native-community/clipboard';
 
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';

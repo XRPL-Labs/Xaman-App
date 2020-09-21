@@ -203,7 +203,7 @@ class BaseTransaction {
      * @param {number} netFee in drops
      * @returns {string} calculated fee in drops
      */
-    calculateFee = (netFee?: number) => {
+    calculateFee = (netFee?: number): string => {
         let baseFee;
 
         // if netFee is not set, default to 12 drops
@@ -212,8 +212,10 @@ class BaseTransaction {
         }
 
         // 10 drops × (33 + (Fulfillment size in bytes ÷ 16))
+        // @ts-ignore
         if (this.Type === 'EscrowFinish' && this.Fulfillment) {
             baseFee = new BigNumber(netFee).multipliedBy(
+                // @ts-ignore
                 new BigNumber(Buffer.from(this.Fulfillment).length).dividedBy(16).plus(33),
             );
         }

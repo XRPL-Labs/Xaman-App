@@ -71,7 +71,11 @@ class AuthenticationService extends EventEmitter {
     runAfterSuccessAuth = () => {
         setTimeout(() => {
             while (this.postSuccess.length) {
-                this.postSuccess.shift().call(null);
+                try {
+                    this.postSuccess.shift().call(null);
+                } catch (e) {
+                    this.logger.error(e);
+                }
             }
         }, 500);
     };

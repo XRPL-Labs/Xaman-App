@@ -6,17 +6,9 @@ import NavigationService from '../NavigationService';
 import PushNotificationsService from '../PushNotificationsService';
 import AuthenticationService from '../AuthenticationService';
 
-import StorageBackend from '../../store/storage';
-
 describe('AuthenticationService', () => {
     const authenticationService = AuthenticationService;
     const appService = AppService;
-
-    beforeAll(async () => {
-        const path = '.jest/cache/INTEGRATION_TEST.realm';
-        const storage = new StorageBackend(path);
-        await storage.initialize();
-    });
 
     it('should properly initialize', async () => {
         const spy1 = jest.spyOn(AppService, 'addListener');
@@ -35,31 +27,38 @@ describe('AuthenticationService', () => {
     });
 
     it('should check for lock when coming from inactive/background state', async () => {
-        const spy1 = jest.spyOn(authenticationService, 'checkLockScreen');
+        const spy1 = jest.spyOn(authenticationService, 'checkLockScreen').mockImplementation(jest.fn());
 
         appService.prevAppState = AppStateStatus.Background;
         appService.currentAppState = AppStateStatus.Active;
         appService.emit('appStateChange', AppStateStatus.Active);
         expect(spy1).toBeCalled();
 
-        const spy2 = jest.spyOn(authenticationService, 'checkLockScreen');
+        const spy2 = jest.spyOn(authenticationService, 'checkLockScreen').mockImplementation(jest.fn());
 
         appService.prevAppState = AppStateStatus.Inactive;
         appService.currentAppState = AppStateStatus.Active;
         appService.emit('appStateChange', AppStateStatus.Active);
         expect(spy2).toBeCalled();
+
+        spy1.mockRestore();
+        spy2.mockRestore();
     });
 
-    it('should run the required functions after success auth', async (done) => {
+    it('should run the required functions after success auth', async () => {
         const spyList = [] as any;
-        spyList.push(jest.spyOn(AppService, 'checkShowChangeLog'));
-        spyList.push(jest.spyOn(BackendService, 'ping'));
-        spyList.push(jest.spyOn(SocketService, 'connect'));
-        spyList.push(jest.spyOn(LinkingService, 'checkInitialDeepLink'));
-        spyList.push(jest.spyOn(PushNotificationsService, 'checkInitialNotification'));
+        spyList.push(jest.spyOn(AppService, 'checkShowChangeLog').mockImplementation(jest.fn()));
+        spyList.push(jest.spyOn(BackendService, 'ping').mockImplementation(jest.fn()));
+        spyList.push(jest.spyOn(SocketService, 'connect').mockImplementation(jest.fn()));
+        spyList.push(jest.spyOn(LinkingService, 'checkInitialDeepLink').mockImplementation(jest.fn()));
+        spyList.push(jest.spyOn(PushNotificationsService, 'checkInitialNotification').mockImplementation(jest.fn()));
+
+        jest.useFakeTimers();
 
         // call the method
         authenticationService.runAfterSuccessAuth();
+
+        jest.runAllTimers();
 
         setTimeout(() => {
             for (let i = 0; i < spyList.length; i++) {
@@ -68,8 +67,6 @@ describe('AuthenticationService', () => {
 
             // should clear post success array so won't be run in next success auth
             expect(authenticationService.postSuccess).toBe([]);
-
-            done();
         }, 1000);
     });
 });

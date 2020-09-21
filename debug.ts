@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { LogBox } from 'react-native';
 
 if (__DEV__) {
     // disable some yellow boxes
@@ -20,5 +21,5 @@ if (__DEV__) {
         return oldConsoleWarn.apply(console, args);
     };
 
-    console.disableYellowBox = true;
+    LogBox.ignoreLogs(IGNORED_WARNINGS);
 }
