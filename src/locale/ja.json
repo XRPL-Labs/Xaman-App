@@ -46,7 +46,7 @@
       "selected": "選択済み",
       "share": "共有",
       "status": "状態",
-      "description": "説明",
+      "description": "説明文",
       "memo": "メモ",
       "transactions": "取引",
       "awaiting": "待っています",
@@ -208,6 +208,7 @@
       "signedTransactionDetectedSubmit": "署名されたトランザクションが検出されました。元帳に送信しますか？",
       "signedTransaction": "署名されたトランザクション",
       "nextIUnderstand": "次に、わかりました",
+      "IUnderstand": "わかります",
       "approvePermissions": "権限を承認する",
       "permissionToUseCamera": "カメラの使用許可",
       "weNeedYourPermissionToUseYourCamera": "カメラを使用するにはあなたの許可が必要です",
@@ -219,7 +220,7 @@
       "pressBackAgainToExit": "もう一度押すと終了します",
       "fraudAlert": "詐欺警告",
       "thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution": "このアカウントは詐欺または詐欺のアドレスとして報告されます。注意して続行してください",
-      "biometricIsNotAvailable": "バイオメトリクス（指紋または顔ID）は使用できません。デバイスがバイオメトリクス認証をサポートしている場合は、まずそれを構成してください（OS設定）。",
+      "biometricIsNotAvailable": "バイオメトリクス（指紋または顔ID）は使用できません。デバイスが生体認証をサポートしている場合は、まずそれを構成してください（OS設定）。",
       "clearSearch": "検索をクリア",
       "noNameFound": "名前が見つかりません",
       "readMoreInTheFAQ": "よくある質問を読む",
@@ -228,7 +229,8 @@
       "UnableToRegisterPushNotifications": "プッシュ通知を登録できません",
       "openXRPToolkitByTowoLabs": "Towo LabsによるOpen XRP Toolkit",
       "readMore": "続きを読む",
-      "readLess": "もっと読む"
+      "readLess": "もっと読む",
+      "enterPasscode": "パスコードを入力してください"
    },
    "onboarding": {
       "slideOne": {
@@ -236,7 +238,7 @@
       },
       "slideTwo": {
          "title": "ユーザーフレンドリーなアクセス",
-         "desc": "フルアクセスモードで複数のアカウントを追加するか、読み取り専用にします。フルアクセスアカウントでトランザクションを送信し、リクエストに署名します。"
+         "desc": "フルアクセスモードまたは読み取り専用で複数のアカウントを追加します。フルアクセスアカウントでトランザクションを送信し、リクエストに署名します。"
       },
       "slideThree": {
          "title": "最初にセキュリティ",
@@ -436,6 +438,7 @@
       "familySeed": "家族の種",
       "familySeedDesc": "sXXX1234XXXのように見えます...",
       "mnemonic": "ニモニック",
+      "scanFromQR": "QRからスキャン",
       "mnemonicDesc": "12,16または24語に基づく",
       "readOnlyAccount": "読み取り専用アカウント",
       "pleaseProvideAccountAddress": "アカウントアドレスを入力してください（「r ...」で始まります）",
@@ -491,12 +494,12 @@
       "disableMasterKeyWarning": "トランザクションはアカウントの秘密鍵を無効にします。これはあなたを締め出すかもしれません。これがあなたが望んでいることであると確信していて、あなたがあなたが何をしているかを知っている場合にのみ続けてください。",
       "switchAccount": "アカウントを切り替える",
       "useMnemonicPassphrase": "ニーモニックパスフレーズを使用する",
-      "mnemonicLargeAmountAlert": "アカウントに大きな価値がある場合（たとえば、貯蓄、大量のXRPまたはその他のトークン）にニーモニックアカウントをインポートすることを検討する場合、ニーモニックアカウントをオフラインに保つために、XUMMで新しいアカウントを作成することを検討してください。",
+      "mnemonicLargeAmountAlert": "アカウントが大きな価値を持っているときにニーモニックアカウントをインポートすることを検討する場合（たとえば、貯蓄、大量のXRPまたはその他のトークン）ニーモニックアカウントをオフラインに保つために、XUMMで新しいアカウントを作成することを検討してください。",
       "importExchangeAddressReadonlyWarning": "Exchange（預金）アカウントをインポートすることはできません。これを行うと、取引所で自分の残高を追跡できなくなります。読み取り専用アカウントのインポートは、これがハードウェアウォレットのアカウントのように、自分のアクティブなアカウントである場合にのみ機能します。",
       "walletReserve": "ウォレットリザーブ",
       "accountBalance": "勘定残高",
       "availableForSpending": "支出可能",
-      "deleteAccountWarning": "これはアカウント削除トランザクションです。アカウントに署名すると、削除され、残りのすべての資金（アカウントを削除するためのXRP元帳の料金が5 XRPであるため、最後の5つの予約済みXRPを除く）が構成された宛先に送信されます。宛先を2回確認し、実際にXRP元帳でアカウントを削除する場合にのみ続行してください",
+      "deleteAccountWarning": "これはアカウント削除トランザクションです。アカウントに署名すると、残りのすべての資金（アカウントを削除するためのXRP元帳の料金が5 XRPであるため、最後の5つの予約済みXRPを除く）が構成された宛先に送られます。宛先を2回確認し、実際にXRP元帳でアカウントを削除する場合にのみ続行してください",
       "deleteAccountObjectsExistError": "このアカウントは、他のアセット、分散型Exchangeオファー、エスクロー（作成者または受益者として）などの特定のXRP元帳オブジェクトが含まれているため、削除できません",
       "unableToCheckAccountObjects": "アカウントオブジェクトを確認できません。XRPレジャーノードに接続していることを確認してください",
       "unableGetDestinationAccountInfo": "宛先アカウント情報を取得できません。XRP元帳ノードに接続していることを確認してください",
@@ -505,7 +508,8 @@
       "accountGenerateActivationExplain": "アカウントのアクティブ化は、XRP元帳の要件です。有効にするには、少なくとも20 XRPの初回デポジットを行う必要があります。",
       "accountImportActivationExplain": "XRP元帳に新しいアカウントをインポートしました。アカウントはアクティブ化されていません。アカウントのアクティブ化は、XRP元帳の要件です。有効にするには、少なくとも20 XRPの初回デポジットを行う必要があります。",
       "accountActivateReserveExplain": "アカウントに入金された最初の20 XRPは使用できませんが、アカウントをアクティブに保ち、元帳料金を支払うために予約されます。",
-      "accountReserveNotShownExplain": "予約したXRPはXUMMの残高として表示されませんが、XRP残高の上にあるホーム画面の[残高を説明]ボタンで予約を表示できます。"
+      "accountReserveNotShownExplain": "予約したXRPはXUMMに残高として表示されませんが、XRP残高の上にあるホーム画面の[残高を説明]ボタンで予約を表示できます。",
+      "thisAddressAppearsToBeExchangeAddress": "このアドレスは交換アドレスのようです。続行してもよろしいですか？交換の指示を尊重せずにこのアドレスに送信することはできません。"
    },
    "send": {
       "amountIsBiggerThanYourSpend": "金額があなたが費やすことができる金額よりも大きい（ %{spendable} ）",
@@ -547,7 +551,7 @@
       "memoPublicWarning": "メモ情報はすべての人に公開されます",
       "destinationNotExistTooLittleToCreate": "移行先のアカウントは以前に使用されておらず、残高もありません。 XRP元帳でアカウントをアクティブ化するには、少なくとも20のXRPの初期預金が必要です。",
       "destinationNotExistCreationWarning": "移行先のアカウントは以前に使用されておらず、残高もありません。このアカウントへの送信を続けると、20 XRP %{amount} XRPは、XRP元帳のアカウントをアクティブ化するために使用されます。つまり、20 XRPは使用できません。続行してもよろしいですか？",
-      "destinationCannotActivateWithIOU": "移行先のアカウントは以前に使用されておらず、残高もありません。 XRP元帳でアカウントをアクティブ化するには、少なくとも20のXRPの初期預金をアカウントに送信する必要があります。 XRP以外のアセットは初回デポジットに使用できません。",
+      "destinationCannotActivateWithIOU": "移行先のアカウントは以前に使用されておらず、残高もありません。 XRP元帳でアカウントを有効にするには、少なくとも20のXRPの初期預金をアカウントに送信する必要があります。 XRP以外のアセットは初回デポジットに使用できません。",
       "destinationTagIsRequired": "この支払いを送信するには宛先タグが必要です。",
       "unableGetRecipientAccountInfoPleaseTryAgain": "受信者のアカウント情報を取得できません。もう一度お試しください。",
       "noDestinationTag": "宛先タグなし",
@@ -596,7 +600,7 @@
       "payloadNotFound": "ペイロードが見つかりません",
       "invalidPayloadResult": "無効なペイロード結果",
       "UnableVerifyPayload": "ペイロードの署名を確認できません",
-      "payloadAlreadyResolved": "このペイロードは既に署名または拒否されています。リクエストを生成したプロセスを繰り返し、新しいリクエストをスキャンしてください。",
+      "payloadAlreadyResolved": "このペイロードはすでに署名または拒否されています。リクエストを生成したプロセスを繰り返し、新しいリクエストをスキャンしてください。",
       "payloadCouldNotBeUpdated": "ペイロードを更新できませんでした",
       "payloadExpired": "このペイロードは有効期限が切れています。リクエストを生成したプロセスを繰り返し、新しいリクエストをスキャンしてください。",
       "payloadAlreadySigned": "ペイロードはすでに署名されています",

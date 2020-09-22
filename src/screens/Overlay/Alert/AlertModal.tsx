@@ -155,7 +155,10 @@ class AlertModal extends Component<Props, State> {
             <View style={[AppStyles.row]}>
                 {buttons.map((b: any, index: number) => {
                     return (
-                        <View style={[AppStyles.flex1, index === 0 && buttons.length > 1 && AppStyles.paddingRightSml]}>
+                        <View
+                            key={`${index}`}
+                            style={[AppStyles.flex1, index === 0 && buttons.length > 1 && AppStyles.paddingRightSml]}
+                        >
                             <Button
                                 onPress={() => {
                                     this.dismiss(b.onPress);

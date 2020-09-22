@@ -208,6 +208,7 @@
       "signedTransactionDetectedSubmit": "检测到已签名的交易，提交到分类帐？",
       "signedTransaction": "签署交易",
       "nextIUnderstand": "接下来，我了解",
+      "IUnderstand": "我明白",
       "approvePermissions": "批准权限",
       "permissionToUseCamera": "允许使用相机",
       "weNeedYourPermissionToUseYourCamera": "我们需要您的许可才能使用您的相机",
@@ -228,7 +229,8 @@
       "UnableToRegisterPushNotifications": "无法注册推送通知",
       "openXRPToolkitByTowoLabs": "通过Towo Labs打开XRP工具包",
       "readMore": "阅读更多",
-      "readLess": "少读"
+      "readLess": "少读",
+      "enterPasscode": "输入密码"
    },
    "onboarding": {
       "slideOne": {
@@ -436,6 +438,7 @@
       "familySeed": "家庭种子",
       "familySeedDesc": "看起来像sXXX1234XXX ...",
       "mnemonic": "助记符",
+      "scanFromQR": "从QR扫描",
       "mnemonicDesc": "基于12,16或24个字",
       "readOnlyAccount": "只读帐户",
       "pleaseProvideAccountAddress": "请提供您的帐户地址（以“ r ...”开头）",
@@ -491,13 +494,13 @@
       "disableMasterKeyWarning": "事务禁用该帐户的私钥。这可能会将您拒之门外。仅在完全确定这是您想要的并且知道自己在做什么时，才继续。",
       "switchAccount": "切换帐户",
       "useMnemonicPassphrase": "使用助记密码",
-      "mnemonicLargeAmountAlert": "如果您考虑在您的帐户具有重要价值（例如，储蓄，大量的XRP或其他令牌）时导入助记符帐户，请考虑在XUMM中创建一个新帐户以使助记符帐户保持脱机状态。",
+      "mnemonicLargeAmountAlert": "如果您考虑在您的帐户具有重大价值（例如，您的储蓄，大量的XRP或其他令牌）时导入助记符帐户，请考虑在XUMM中创建一个新帐户以使助记符帐户保持脱机状态。",
       "importExchangeAddressReadonlyWarning": "无法导入您的Exchange（存款）帐户。这样做不允许您跟踪自己在交易所的余额。仅当这是您自己的已激活帐户（例如硬件钱包的帐户）时，才能导入只读帐户。",
       "walletReserve": "钱包储备",
       "accountBalance": "账户余额",
       "availableForSpending": "可用于消费",
-      "deleteAccountWarning": "这是一个帐户删除交易。签名时，您的帐户将被删除，所有剩余资金（最后5个保留的XRP除外，因为删除帐户的XRP分类账上的费用为5 XRP）将被发送到配置的目的地。请检查目的地两次，如果您确实要删除XRP分类帐上的帐户，则仅继续",
-      "deleteAccountObjectsExistError": "您不能删除此帐户，因为您的帐户包含特定的XRP分类帐对象，例如其他资产，分散式Exchange报价，托管（作为创建者或受益人）",
+      "deleteAccountWarning": "这是一个帐户删除交易。签名时，您的帐户将被删除，所有剩余的资金（最后5个保留的XRP除外，因为删除帐户的XRP分类账上的费用为5 XRP）将被发送到配置的目的地。请检查目的地两次，如果您确实要删除XRP分类帐上的帐户，则仅继续",
+      "deleteAccountObjectsExistError": "您无法删除此帐户，因为您的帐户包含特定的XRP分类帐对象，例如其他资产，分散式Exchange报价，托管（作为创建者或受益人）",
       "unableToCheckAccountObjects": "无法检查帐户对象，请确保您已连接到XRP分类帐节点",
       "unableGetDestinationAccountInfo": "无法获取目标帐户信息，请确保您已连接到XRP分类帐节点",
       "destinationAccountIsNotActivated": "目标帐户未激活，必须是XRP分类帐中的注资帐户。",
@@ -505,7 +508,8 @@
       "accountGenerateActivationExplain": "帐户激活是XRP分类帐中的一项要求。要激活，您必须至少存款20 XRP。",
       "accountImportActivationExplain": "您在XRP分类帐上导入了一个新帐户。该帐户未激活。帐户激活是XRP分类帐中的一项要求。要激活，您必须至少存款20 XRP。",
       "accountActivateReserveExplain": "存入您帐户的前20个XRP无法使用，但会保留以保持您的帐户有效并支付分类帐费用。",
-      "accountReserveNotShownExplain": "您保留的XRP不会在XUMM中显示为余额，但是您可以通过XRP余额上方的主屏幕中的“说明我的余额”按钮查看您的保留。"
+      "accountReserveNotShownExplain": "您保留的XRP不会在XUMM中显示为余额，但是您可以通过XRP余额上方的主屏幕中的“说明我的余额”按钮查看您的保留。",
+      "thisAddressAppearsToBeExchangeAddress": "该地址似乎是交换地址，您确定要继续吗？在不遵守交换说明的情况下，您永远无法发送到该地址。"
    },
    "send": {
       "amountIsBiggerThanYourSpend": "金额大于您可以消费的金额（ %{spendable} ）",
@@ -576,8 +580,8 @@
       "liquidityIsNotEnough": "流动资金不足，现在无法兑换！",
       "liquidityIsNotSoMuch": "流动性相对较低。您仍然可以继续，但是您可能无法获得整个交易的最优惠价格！",
       "theMaxAmountYouCanExchangeIs": "您可以兑换的最大金额是%{spendable}%{currency}",
-      "exchangeByThirdPartyMessage": "如果要创建要价以执行的报价，则可以使用第三方启用XUMM的XRP Toolkit应用程序创建限价单。",
-      "requestedLiquidityNotAvailable": "金额无法交换：分散式交易中心没有足够的报价。",
+      "exchangeByThirdPartyMessage": "如果要创建要价以执行的报价，则可以使用第三方启用XUMM的XRP Toolkit应用程序来创建限价单。",
+      "requestedLiquidityNotAvailable": "该金额无法交换：去中心化交易所没有足够的报价。",
       "reverseLiquidityNotAvailable": "该金额无法兑换：由于分散式交易所缺乏报价，您将无法将其兑换回去。",
       "maxSpreadExceeded": "买卖报价之间的价格差异太大。",
       "maxSlippageExceeded": "汇率会很糟糕，因为去中心化交易所没有足够的（优惠）报价。",
@@ -614,7 +618,7 @@
       "notEnoughLiquidityToSendThisPayment": "没有足够的流动性来发送这笔款项。",
       "unableToCheckAssetConversion": "无法检查资产转换，请确保您已连接到XRPL节点",
       "unableToGetNetworkFee": "无法获得网络费用，请确保您已连接到XRPL节点",
-      "checkCanOnlyCashByCheckDestination": "如果在XUMM中以读/写（或常规密钥）模式存在检查目标帐户，则只能兑现检查。",
+      "checkCanOnlyCashByCheckDestination": "如果在XUMM中以“读/写（或常规密钥）”模式存在“检查目标”帐户，则只能兑现支票。",
       "unableToGetCheckObject": "无法获取检查对象，请确保您已连接到XRPL节点",
       "checkObjectDoesNotExist": "无法获取检查对象，请确保该检查存在于XRPL分类帐中。",
       "insufficientCashAmount": "金额不足，可兑现金额： %{amount}%{currency}",

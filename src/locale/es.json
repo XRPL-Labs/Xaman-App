@@ -208,6 +208,7 @@
       "signedTransactionDetectedSubmit": "Se detectó una transacción firmada, ¿enviar al libro mayor?",
       "signedTransaction": "Transacción firmada",
       "nextIUnderstand": "A continuación, entiendo",
+      "IUnderstand": "entiendo",
       "approvePermissions": "Aprobar permisos",
       "permissionToUseCamera": "Permiso para usar la cámara",
       "weNeedYourPermissionToUseYourCamera": "Necesitamos su permiso para usar su cámara",
@@ -228,7 +229,8 @@
       "UnableToRegisterPushNotifications": "No se pueden registrar notificaciones push",
       "openXRPToolkitByTowoLabs": "Abrir el kit de herramientas XRP de Towo Labs",
       "readMore": "Lee mas",
-      "readLess": "Leer menos"
+      "readLess": "Leer menos",
+      "enterPasscode": "Introduce un código de acceso"
    },
    "onboarding": {
       "slideOne": {
@@ -436,6 +438,7 @@
       "familySeed": "Semilla familiar",
       "familySeedDesc": "Parece sXXX1234XXX ...",
       "mnemonic": "Mnemotécnico",
+      "scanFromQR": "Escanear desde QR",
       "mnemonicDesc": "Basado en 12,16 o 24 palabras",
       "readOnlyAccount": "Cuenta de solo lectura",
       "pleaseProvideAccountAddress": "Proporcione la dirección de su cuenta (comienza con 'r ...')",
@@ -457,7 +460,7 @@
       "pleaseChooseAccountLabel": "Ingrese un nombre para esta cuenta, por ejemplo, \"Gastos\" o \"Ahorros\".",
       "pleaseEnterLabel": "Ingrese una nueva etiqueta",
       "accessLevel": "Nivel de acceso",
-      "accessLevelChangeAlert": "Para cambiar del modo de solo lectura al de acceso completo, deberá ingresar la clave secreta de su cuenta",
+      "accessLevelChangeAlert": "El cambio del modo de solo lectura al modo de acceso completo requerirá que ingrese la clave secreta de su cuenta",
       "noAccountYet": "No tienes cuenta aún",
       "myAccounts": "Mis cuentas",
       "getStartedCreateAccount": "Comience agregando su primera cuenta.",
@@ -491,7 +494,7 @@
       "disableMasterKeyWarning": "La transacción DESACTIVA la clave privada de la cuenta. Esto puede bloquearlo. Solo continúe si está absolutamente seguro de que esto es lo que desea y sabe lo que está haciendo.",
       "switchAccount": "Cambiar cuenta",
       "useMnemonicPassphrase": "Usar frase de contraseña mnemotécnica",
-      "mnemonicLargeAmountAlert": "Si considera importar su cuenta mnemotécnica mientras su cuenta tiene un valor significativo (por ejemplo, sus ahorros, cantidades mayores de XRP u otros tokens), considere crear una nueva cuenta en XUMM para mantener su cuenta mnemotécnica fuera de línea.",
+      "mnemonicLargeAmountAlert": "Si considera importar su cuenta mnemotécnica mientras su cuenta tiene un valor significativo (por ejemplo, sus ahorros, cantidades mayores de XRP u otros tokens), considere crear una nueva cuenta en XUMM para mantener su cuenta mnemónica fuera de línea.",
       "importExchangeAddressReadonlyWarning": "No es posible importar su cuenta Exchange (depósito). Hacerlo no le permite realizar un seguimiento de su propio saldo en el intercambio. La importación de una cuenta de solo lectura solo funciona si esta es su propia cuenta activada, como la cuenta de su billetera de hardware.",
       "walletReserve": "Reserva de billetera",
       "accountBalance": "Saldo de la cuenta",
@@ -505,7 +508,8 @@
       "accountGenerateActivationExplain": "La activación de la cuenta es un requisito en el libro mayor de XRP. Para activar, deberá realizar un primer depósito de al menos 20 XRP.",
       "accountImportActivationExplain": "Importó una nueva cuenta en el libro mayor de XRP. La cuenta no está activada. La activación de la cuenta es un requisito en el libro mayor de XRP. Para activar, deberá realizar un primer depósito de al menos 20 XRP.",
       "accountActivateReserveExplain": "Los primeros 20 XRP depositados en su cuenta no se pueden gastar, pero se reservarán para mantener su cuenta activa y pagar las tarifas del libro mayor.",
-      "accountReserveNotShownExplain": "Su XRP reservado no aparecerá como saldo en XUMM, pero puede ver su reserva con el botón \"Explicar mi saldo\" en la pantalla de inicio, arriba de su saldo XRP."
+      "accountReserveNotShownExplain": "Su XRP reservado no aparecerá como saldo en XUMM, pero puede ver su reserva con el botón \"Explicar mi saldo\" en la pantalla de inicio, arriba de su saldo XRP.",
+      "thisAddressAppearsToBeExchangeAddress": "Esta dirección parece ser una dirección de intercambio, ¿está seguro de que desea continuar? Nunca podrá enviar a esta dirección sin respetar las instrucciones de su intercambio."
    },
    "send": {
       "amountIsBiggerThanYourSpend": "La cantidad es mayor de lo que puede gastar ( %{spendable} )",
