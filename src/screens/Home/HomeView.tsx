@@ -598,6 +598,10 @@ class HomeView extends Component<Props, State> {
     renderButtons = () => {
         const { isSpendable } = this.state;
 
+        if (!isSpendable) {
+            return null;
+        }
+
         return (
             <View style={[styles.buttonRow]}>
                 <RaisedButton
@@ -610,7 +614,6 @@ class HomeView extends Component<Props, State> {
                     textStyle={[styles.sendButtonText]}
                     onPress={this.pushSendScreen}
                     activeOpacity={0}
-                    isDisabled={!isSpendable}
                 />
                 <RaisedButton
                     testID="request-button"
