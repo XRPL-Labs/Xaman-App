@@ -7,11 +7,10 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.modules.network.OkHttpClientProvider;
-import com.facebook.soloader.SoLoader;
 
 // Local Libs
 import libs.utils.UtilsPackage;
-import libs.crypto.CryptoPackage;
+import libs.crypto.modules.CryptoPackage;
 import libs.ui.ActionSheetPackage;
 import libs.ui.PromptPackage;
 import libs.ui.QRCodePackage;

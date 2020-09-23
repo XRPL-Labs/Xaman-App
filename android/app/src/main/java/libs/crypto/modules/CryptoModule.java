@@ -1,11 +1,13 @@
-package libs.crypto;
+package libs.crypto.modules;
+
+
+import libs.crypto.encoder.Hex;
 
 import java.security.SecureRandom;
 import java.util.UUID;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.security.InvalidKeyException;
 
 import java.nio.charset.StandardCharsets;
@@ -16,10 +18,6 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.Mac;
 
-import org.spongycastle.crypto.digests.SHA512Digest;
-import org.spongycastle.crypto.generators.PKCS5S2ParametersGenerator;
-import org.spongycastle.crypto.params.KeyParameter;
-import org.spongycastle.util.encoders.Hex;
 
 import android.util.Base64;
 
@@ -67,16 +65,6 @@ public class CryptoModule extends ReactContextBaseJavaModule {
 
             String plain = decrypt(data, keyEnc, iv);
             promise.resolve(plain);
-        } catch (Exception e) {
-            promise.reject("-1", e.getMessage());
-        }
-    }
-
-    @ReactMethod
-    public void pbkdf2(String pwd, String salt, Integer cost, Integer length, Promise promise) {
-        try {
-            String strs = pbkdf2(pwd, salt, cost, length);
-            promise.resolve(strs);
         } catch (Exception e) {
             promise.reject("-1", e.getMessage());
         }
@@ -166,18 +154,9 @@ public class CryptoModule extends ReactContextBaseJavaModule {
         return new String(hexChars);
     }
 
-    private static String pbkdf2(String pwd, String salt, Integer cost, Integer length)
-    throws NoSuchAlgorithmException, InvalidKeySpecException
-    {
-        PKCS5S2ParametersGenerator gen = new PKCS5S2ParametersGenerator(new SHA512Digest());
-        gen.init(pwd.getBytes(StandardCharsets.UTF_8), salt.getBytes(StandardCharsets.UTF_8), cost);
-        byte[] key = ((KeyParameter) gen.generateDerivedParameters(length)).getKey();
-        return bytesToHex(key);
-    }
-
     private static String hmac256(String text, String key) throws NoSuchAlgorithmException, InvalidKeyException  {
         byte[] contentData = text.getBytes(StandardCharsets.UTF_8);
-        byte[] akHexData = Hex.decode(key);
+        byte[] akHexData = Hex.decodeHex(key);
         Mac sha256_HMAC = Mac.getInstance(HMAC_SHA_256);
         SecretKey secret_key = new SecretKeySpec(akHexData, HMAC_SHA_256);
         sha256_HMAC.init(secret_key);
@@ -191,11 +170,11 @@ public class CryptoModule extends ReactContextBaseJavaModule {
             return null;
         }
 
-        byte[] keyBytes = Hex.decode(keyEnc);
+        byte[] keyBytes = Hex.decodeHex(keyEnc);
         SecretKey secretKey = new SecretKeySpec(keyBytes, KEY_ALGORITHM);
 
         Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey, hexIv == null ? emptyIvSpec : new IvParameterSpec(Hex.decode(hexIv)));
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, hexIv == null ? emptyIvSpec : new IvParameterSpec(Hex.decodeHex(hexIv)));
         byte[] encrypted = cipher.doFinal(data.getBytes("UTF-8"));
 
         WritableMap result = Arguments.createMap();
@@ -211,11 +190,11 @@ public class CryptoModule extends ReactContextBaseJavaModule {
             return null;
         }
 
-        byte[] key = Hex.decode(hexKey);
+        byte[] key = Hex.decodeHex(hexKey);
         SecretKey secretKey = new SecretKeySpec(key, KEY_ALGORITHM);
 
         Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-        cipher.init(Cipher.DECRYPT_MODE, secretKey, hexIv == null ? emptyIvSpec : new IvParameterSpec(Hex.decode(hexIv)));
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, hexIv == null ? emptyIvSpec : new IvParameterSpec(Hex.decodeHex(hexIv)));
         byte[] decrypted = cipher.doFinal(Base64.decode(ciphertext, Base64.NO_WRAP));
         return new String(decrypted, "UTF-8");
     }

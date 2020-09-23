@@ -84,20 +84,8 @@
 #------------- realm ------------------
 -keep class io.realm.react.**
 
-#------------- spongcastle/crypto ------------------
--keep class org.spongycastle.jce.provider.**
-
--dontnote org.spongycastle.**
--dontwarn org.spongycastle.x509.util.LDAPStoreHelper
--dontwarn org.spongycastle.pqc.jcajce.provider.**
--dontwarn org.spongycastle.jce.provider.**
--dontwarn org.spongycastle.cert.dane.fetcher.*
-
-
 #------------- Hermes ------------------
 -keep class com.facebook.hermes.unicode.** { *; }
-
-
 
 #------------- Fingerprint ------------------
 # MeiZu Fingerprint

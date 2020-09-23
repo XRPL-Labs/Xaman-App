@@ -22,10 +22,6 @@ const SHA1 = (entry: string): Promise<string> => {
     return CryptoModule.sha1(entry);
 };
 
-const PBKDF2 = (entry: string, salt: string, cost = 100000, length = 128): Promise<string> => {
-    return CryptoModule.pbkdf2(entry, salt, cost, length);
-};
-
 const HMAC256 = (entry: string, key: string): Promise<string> => {
     return CryptoModule.hmac256(entry, key);
 };
@@ -52,4 +48,4 @@ const randomKey = (length: number): Promise<string> => {
     return CryptoModule.randomKey(length);
 };
 
-export { PBKDF2, HMAC256, SHA512, SHA256, SHA1, AES, randomKey };
+export { HMAC256, SHA512, SHA256, SHA1, AES, randomKey };

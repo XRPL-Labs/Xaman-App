@@ -1,4 +1,4 @@
-package libs.crypto;
+package libs.crypto.modules;
 
 import java.util.Arrays;
 import java.util.Collections;

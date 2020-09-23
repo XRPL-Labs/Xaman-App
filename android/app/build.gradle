@@ -237,11 +237,6 @@ dependencies {
     // e2e dependencies
     androidTestImplementation('com.wix:detox:+') { transitive = true } 
     androidTestImplementation 'junit:junit:4.12'
-    // crypto dependencies
-    implementation 'com.madgag.spongycastle:core:1.58.0.0'
-    implementation 'com.madgag.spongycastle:prov:1.54.0.0'
-    implementation 'com.madgag.spongycastle:pkix:1.54.0.0'
-    implementation 'com.madgag.spongycastle:pg:1.54.0.0'
     // qrcode generate dependencies
     implementation 'com.github.kenglxn.QRGen:android:2.6.0'
     // Other
