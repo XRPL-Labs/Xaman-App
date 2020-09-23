@@ -764,9 +764,10 @@ class TransactionDetailsView extends Component<Props, State> {
             }
             case 'OfferCreate': {
                 if (tx.Executed) {
+                    const takerPaid = tx.TakerPaid(account.address);
                     Object.assign(props, {
                         color: styles.incomingColor,
-                        text: `${tx.TakerPaid.value} ${NormalizeCurrencyCode(tx.TakerPaid.currency)}`,
+                        text: `${takerPaid.value} ${NormalizeCurrencyCode(takerPaid.currency)}`,
                         icon: 'IconCornerRightDown',
                     });
                 } else {
@@ -789,11 +790,13 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         if (tx.Type === 'OfferCreate') {
+            const takerGot = tx.TakerGot(account.address);
+
             return (
                 <View style={styles.amountHeaderContainer}>
                     <View style={[AppStyles.row, styles.amountContainerSmall]}>
                         <Text style={[styles.amountTextSmall]} numberOfLines={1}>
-                            {`${tx.TakerGets.value} ${NormalizeCurrencyCode(tx.TakerGets.currency)}`}
+                            {`${takerGot.value} ${NormalizeCurrencyCode(takerGot.currency)}`}
                         </Text>
                     </View>
 

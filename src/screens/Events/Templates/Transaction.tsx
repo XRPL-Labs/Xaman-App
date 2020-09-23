@@ -206,9 +206,17 @@ class TransactionTemplate extends Component<Props, State> {
 
     getDescription = () => {
         const { name, address } = this.state;
-        const { item } = this.props;
+        const { item, account } = this.props;
 
         if (item.Type === 'OfferCreate') {
+            if (item.Executed) {
+                const takerGot = item.TakerGot(account.address);
+                const takerPaid = item.TakerPaid(account.address);
+
+                return `${takerGot.value} ${NormalizeCurrencyCode(takerGot.currency)}/${NormalizeCurrencyCode(
+                    takerPaid.currency,
+                )}`;
+            }
             return `${item.TakerGets.value} ${NormalizeCurrencyCode(item.TakerGets.currency)}/${NormalizeCurrencyCode(
                 item.TakerPays.currency,
             )}`;
@@ -348,10 +356,12 @@ class TransactionTemplate extends Component<Props, State> {
 
         if (item.Type === 'OfferCreate') {
             if (item.Executed) {
+                const takerPaid = item.TakerPaid(account.address);
+
                 return (
                     <Text style={[styles.amount, styles.incomingColor]} numberOfLines={1}>
-                        {item.TakerPaid.value}{' '}
-                        <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.TakerPaid.currency)}</Text>
+                        {takerPaid.value}{' '}
+                        <Text style={[styles.currency]}>{NormalizeCurrencyCode(takerPaid.currency)}</Text>
                     </Text>
                 );
             }

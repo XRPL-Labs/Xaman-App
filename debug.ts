@@ -8,6 +8,7 @@ if (__DEV__) {
         'Require cycle:',
         'Setting a timer',
         'Module AppRegistry is not',
+        'Warning: Failed prop type',
     ];
     const oldConsoleWarn = console.warn;
 

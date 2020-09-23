@@ -212,13 +212,17 @@ class ExchangeView extends Component<Props, State> {
 
         if (verifyResult.success) {
             if (offer.Executed) {
+                // calculate delivered amounts
+                const takerGot = offer.TakerGot(sourceAccount.address);
+                const takerPaid = offer.TakerPaid(sourceAccount.address);
+
                 this.showResultAlert(
                     Localize.t('global.success'),
                     Localize.t('exchange.successfullyExchanged', {
-                        payAmount: offer.TakerGot.value,
-                        payCurrency: NormalizeCurrencyCode(offer.TakerGot.currency),
-                        getAmount: offer.TakerPaid.value,
-                        getCurrency: NormalizeCurrencyCode(offer.TakerPaid.currency),
+                        payAmount: takerGot.value,
+                        payCurrency: NormalizeCurrencyCode(takerGot.currency),
+                        getAmount: takerPaid.value,
+                        getCurrency: NormalizeCurrencyCode(takerPaid.currency),
                     }),
                 );
             } else {

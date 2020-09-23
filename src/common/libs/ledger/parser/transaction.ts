@@ -5,7 +5,7 @@ import { LedgerTransactionType, TransactionJSONType } from '@common/libs/ledger/
 import * as Transactions from '@common/libs/ledger/transactions';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 
-const parserFactory = (tx: LedgerTransactionType | TransactionJSONType): TransactionsType => {
+const transactionFactory = (tx: LedgerTransactionType | TransactionJSONType): TransactionsType => {
     let passedObject = {} as LedgerTransactionType;
     let type;
 
@@ -16,7 +16,6 @@ const parserFactory = (tx: LedgerTransactionType | TransactionJSONType): Transac
         if (!type) {
             type = get(tx, ['tx', 'TransactionType'], undefined);
         }
-        // @ts-ignore
         passedObject = tx;
     } else {
         // or TransactionJSONType
@@ -28,4 +27,4 @@ const parserFactory = (tx: LedgerTransactionType | TransactionJSONType): Transac
     return new Transaction(passedObject);
 };
 
-export default parserFactory;
+export default transactionFactory;

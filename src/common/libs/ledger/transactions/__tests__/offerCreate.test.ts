@@ -24,7 +24,7 @@ describe('OfferCreate tx', () => {
             issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
             value: '0.012136',
         });
-        expect(instance.TakerPaid).toStrictEqual({
+        expect(instance.TakerPaid()).toStrictEqual({
             currency: 'BTC',
             issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
             value: '0.01257',
@@ -33,7 +33,7 @@ describe('OfferCreate tx', () => {
             currency: 'XRP',
             value: '500',
         });
-        expect(instance.TakerGot).toStrictEqual({
+        expect(instance.TakerGot()).toStrictEqual({
             currency: 'XRP',
             value: '500',
         });
@@ -51,7 +51,7 @@ describe('OfferCreate tx', () => {
             currency: 'XRP',
             value: '484.553386',
         });
-        expect(instance.TakerPaid).toStrictEqual({
+        expect(instance.TakerPaid()).toStrictEqual({
             currency: 'XRP',
             value: '501.44754',
         });
@@ -60,7 +60,7 @@ describe('OfferCreate tx', () => {
             issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
             value: '0.01257',
         });
-        expect(instance.TakerGot).toStrictEqual({
+        expect(instance.TakerGot()).toStrictEqual({
             currency: 'BTC',
             issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
             value: '0.01257',
@@ -103,6 +103,34 @@ describe('OfferCreate tx', () => {
             currency: 'BTC',
             issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
             value: '0.012136',
+        });
+    });
+
+    it('Should return right parsed values for executed order from another owner', () => {
+        const instance = new OfferCreate(txTemplates.XRPIOUDifferentOwner);
+
+        expect(instance.Executed).toBe(true);
+        expect(instance.OfferSequence).toBe(56270334);
+        expect(instance.Rate).toBe(0.38076);
+        expect(instance.Expiration).toBe(undefined);
+
+        expect(instance.TakerGets).toStrictEqual({
+            currency: 'XRP',
+            value: '100',
+        });
+        expect(instance.TakerGot('rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ')).toStrictEqual({
+            currency: '534F4C4F00000000000000000000000000000000',
+            issuer: 'rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz',
+            value: '38.465385',
+        });
+        expect(instance.TakerPays).toStrictEqual({
+            currency: '534F4C4F00000000000000000000000000000000',
+            issuer: 'rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz',
+            value: '38.076',
+        });
+        expect(instance.TakerPaid('rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ')).toStrictEqual({
+            currency: 'XRP',
+            value: '100',
         });
     });
 });

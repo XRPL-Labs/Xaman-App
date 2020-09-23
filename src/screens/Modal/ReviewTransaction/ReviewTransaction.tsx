@@ -40,7 +40,7 @@ import { Images } from '@common/helpers/images';
 import { PushNotificationsService, LedgerService, SocketService } from '@services';
 
 // transaction parser
-import parserFactory from '@common/libs/ledger/parser';
+import transactionFactory from '@common/libs/ledger/parser/transaction';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 
 // components
@@ -97,7 +97,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         this.state = {
             accounts: undefined,
-            transaction: parserFactory(props.payload.TxJson),
+            transaction: transactionFactory(props.payload.TxJson),
             source: undefined,
             step: 'review',
             submitResult: undefined,
