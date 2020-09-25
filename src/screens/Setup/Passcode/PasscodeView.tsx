@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 
 import { SafeAreaView, View, Text, Image, LayoutAnimation, Alert } from 'react-native';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import { CoreRepository } from '@store/repositories';
 import { BiometryType } from '@store/types';
@@ -60,35 +61,40 @@ class PasscodeSetupView extends Component<Props, State> {
     onFinishStep = async () => {
         const { passcode } = this.state;
 
-        // save save passcode
-        const encryptedPasscode = await CoreRepository.setPasscode(passcode);
+        try {
+            // encrypt/save passcode
+            const encryptedPasscode = await CoreRepository.setPasscode(passcode);
 
-        // reload the core settings
-        const coreSettings = CoreRepository.getSettings();
+            // reload the core settings
+            const coreSettings = CoreRepository.getSettings();
 
-        // check if passcode is saved correctly
-        if (!encryptedPasscode || !coreSettings || coreSettings.passcode !== encryptedPasscode) {
-            Alert.alert('Error', 'Unable to store the passcode, please try again!');
-            return;
+            // check if passcode is saved correctly
+            if (!encryptedPasscode || !coreSettings || coreSettings.passcode !== encryptedPasscode) {
+                Alert.alert(Localize.t('global.error'), Localize.t('setupPasscode.UnableToStoreThePasscode'));
+                return;
+            }
+            // if biometric auth supported move to page
+            if (await this.isBiometricSupported()) {
+                Navigator.push(AppScreens.Setup.Biometric);
+                return;
+            }
+
+            // biometric is not supported
+            CoreRepository.saveSettings({ biometricMethod: BiometryType.None });
+
+            // if push notification already granted then go to last part
+            const granted = await PushNotificationsService.checkPermission();
+            if (granted) {
+                Navigator.push(AppScreens.Setup.Finish);
+                return;
+            }
+
+            // go to the next step
+            Navigator.push(AppScreens.Setup.PushNotification);
+        } catch (e) {
+            crashlytics().log('Finish Setup Passcode Failed');
+            crashlytics().recordError(e);
         }
-        // if biometric auth supported move to page
-        if (await this.isBiometricSupported()) {
-            Navigator.push(AppScreens.Setup.Biometric);
-            return;
-        }
-
-        // biometric is not supported
-        CoreRepository.saveSettings({ biometricMethod: BiometryType.None });
-
-        // if push notification already granted then go to last part
-        const granted = await PushNotificationsService.checkPermission();
-        if (granted) {
-            Navigator.push(AppScreens.Setup.Finish);
-            return;
-        }
-
-        // go to the next step
-        Navigator.push(AppScreens.Setup.PushNotification);
     };
 
     onNext = () => {

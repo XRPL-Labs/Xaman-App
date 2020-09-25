@@ -158,8 +158,8 @@ class RecipientStep extends Component<Props, State> {
             // search for contacts
             contacts.forEach((item) => {
                 if (
-                    item.name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
-                    item.address.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
+                    item.name?.toLowerCase().indexOf(searchText?.toLowerCase()) !== -1 ||
+                    item.address?.toLowerCase().indexOf(searchText?.toLowerCase()) !== -1
                 ) {
                     searchResult.push({
                         name: item.name,
@@ -173,8 +173,8 @@ class RecipientStep extends Component<Props, State> {
             // search for accounts
             accounts.forEach((item) => {
                 if (
-                    item.label.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
-                    item.address.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
+                    item.label?.toLowerCase().indexOf(searchText?.toLowerCase()) !== -1 ||
+                    item.address?.toLowerCase().indexOf(searchText?.toLowerCase()) !== -1
                 ) {
                     searchResult.push({
                         name: item.label,

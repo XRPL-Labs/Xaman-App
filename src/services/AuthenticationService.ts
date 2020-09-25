@@ -255,7 +255,7 @@ class AuthenticationService extends EventEmitter {
             }
 
             // get encrypted passcode from clear passcode
-            const encryptedPasscode = await CoreRepository.encryptedPasscode(passcode);
+            const encryptedPasscode = await CoreRepository.encryptPasscode(passcode);
 
             // check if passcode is correct
             if (encryptedPasscode === coreSettings.passcode) {

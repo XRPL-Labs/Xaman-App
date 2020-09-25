@@ -79,6 +79,10 @@ class ChangePasscodeView extends Component<Props, State> {
 
         // store the new passcode in the store
         CoreRepository.setPasscode(newPasscode).then(async (newEncPasscode) => {
+            if (!newEncPasscode) {
+                Alert.alert(Localize.t('global.error'), Localize.t('setupPasscode.UnableToStoreThePasscode'));
+                return;
+            }
             // reKey all accounts with new passcode
             const accounts = AccountRepository.findBy('encryptionLevel', EncryptionLevels.Passcode) as Results<
                 AccountSchema
