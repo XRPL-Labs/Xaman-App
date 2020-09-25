@@ -18,11 +18,15 @@ Given('I should have {string}', async (screenId) => {
 });
 
 Given('I should see {string}', async (elementId) => {
-    await expect(element(by.id(elementId))).toBeVisible();
+    await waitFor(element(by.id(elementId)))
+        .toBeVisible()
+        .withTimeout(5000);
 });
 
 Given('I should see {string} in {string}', async (value, elementId) => {
-    await expect(element(by.id(elementId))).toHaveText(value);
+    await waitFor(element(by.id(elementId)))
+        .toHaveText(value)
+        .withTimeout(5000);
 });
 
 Given('I should wait {int} sec to see {string}', async (timeout, elementId) => {

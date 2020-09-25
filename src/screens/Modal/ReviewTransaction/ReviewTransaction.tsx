@@ -805,11 +805,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                     verticalOnly
                     animatedNativeDriver
                 >
-                    <View
-                        testID="review-content-container"
-                        style={[styles.transactionContent, { height: AppSizes.screen.height - 70 }]}
-                    >
-                        <View style={AppStyles.panelHeader}>
+                    <View style={[styles.transactionContent, { height: AppSizes.screen.height - 70 }]}>
+                        <View style={AppStyles.panelHeader} testID="review-content-container">
                             <View style={AppStyles.panelHandle} />
                         </View>
                         <ScrollView

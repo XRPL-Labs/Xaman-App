@@ -121,6 +121,7 @@ class ChangePassphraseView extends Component<Props, State> {
                     style={[AppStyles.flex1, AppStyles.paddingSml]}
                 >
                     <PasswordInput
+                        testID="current-passphrase-input"
                         placeholder={Localize.t('account.currentPassword')}
                         selectTextOnFocus={passphrase.isValid}
                         onChange={(currentPassphrase) => this.setState({ currentPassphrase })}
@@ -129,6 +130,7 @@ class ChangePassphraseView extends Component<Props, State> {
 
                     <Spacer />
                     <PasswordInput
+                        testID="new-passphrase-input"
                         editable
                         placeholder={Localize.t('account.newPassword')}
                         minLength={8}
@@ -140,6 +142,7 @@ class ChangePassphraseView extends Component<Props, State> {
                     />
 
                     <PasswordInput
+                        testID="new-confirm-passphrase-input"
                         editable={passphrase.isValid}
                         placeholder={Localize.t('account.repeatPassword')}
                         selectTextOnFocus={passphrase.isValid}
@@ -150,6 +153,7 @@ class ChangePassphraseView extends Component<Props, State> {
 
                 <Footer safeArea>
                     <Button
+                        testID="save-button"
                         label={Localize.t('global.save')}
                         onPress={() => {
                             this.savePassphrase();

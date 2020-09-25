@@ -246,6 +246,7 @@ class SecretNumberInput extends Component<Props, State> {
         for (let i = 0; i < ROWS; i++) {
             rows.push(
                 <SecretNumberRow
+                    key={`secret-number-row-${i}`}
                     numbers={[...secretNumbers[i]]}
                     readonly={readonly}
                     rowNumber={i}

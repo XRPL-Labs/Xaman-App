@@ -210,6 +210,7 @@ class AccountSettingsView extends Component<Props, State> {
             <View testID="account-settings-screen" style={[styles.container]}>
                 <Header
                     leftComponent={{
+                        testID: 'back-button',
                         icon: 'IconChevronLeft',
                         onPress: () => {
                             Navigator.pop();
@@ -291,7 +292,11 @@ class AccountSettingsView extends Component<Props, State> {
 
                                 {/* Change passphrase */}
                                 {account.encryptionLevel === EncryptionLevels.Passphrase && (
-                                    <TouchableOpacity style={styles.row} onPress={this.showChangePassphrase}>
+                                    <TouchableOpacity
+                                        testID="change-password-button"
+                                        style={styles.row}
+                                        onPress={this.showChangePassphrase}
+                                    >
                                         <View style={[AppStyles.flex3]}>
                                             <Text style={styles.label}>{Localize.t('account.changePassword')}</Text>
                                         </View>

@@ -3,6 +3,7 @@ const { expect, element, by } = require('detox');
 
 let passcode = '111111';
 const passphrase = '&uHCnPv4T=#~;Ca';
+const newPassphrase = '4b<8xu8HbP)%hzpgh';
 
 Then('I enter my passcode', async () => {
     await expect(element(by.id('virtual-keyboard'))).toExist();
@@ -25,4 +26,8 @@ Then('I type my new passcode', async () => {
 
 Then('I enter my passphrase in {string}', async (input) => {
     await element(by.id(input)).typeText(passphrase);
+});
+
+Then('I enter my new passphrase in {string}', async (input) => {
+    await element(by.id(input)).typeText(newPassphrase);
 });

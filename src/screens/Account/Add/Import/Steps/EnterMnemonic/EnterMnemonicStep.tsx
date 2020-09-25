@@ -219,7 +219,7 @@ class EnterMnemonicStep extends Component<Props, State> {
         for (let i = 0; i < length; i++) {
             const isActive = activeRow === i;
 
-            let value = get(words, `[${i}]`, false);
+            let value = get(words, `[${i}]`, '');
 
             if (!isActive) {
                 const valueLength = value.length;
@@ -247,7 +247,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                         }}
                         autoCapitalize="none"
                         autoCorrect={false}
-                        keyboardType="visible-password"
+                        keyboardType={Platform.OS === 'android' ? 'visible-password' : 'default'}
                         value={value}
                         style={[styles.input, isActive && styles.inputActive]}
                         returnKeyType={i + 1 === length ? 'done' : 'next'}

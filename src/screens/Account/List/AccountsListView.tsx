@@ -169,6 +169,7 @@ class AccountListView extends Component<Props, State> {
                     centerComponent={{ text: Localize.t('global.accounts') }}
                     leftComponent={{
                         icon: 'IconChevronLeft',
+                        testID: 'back-button',
                         onPress: () => {
                             Navigator.pop();
                         },

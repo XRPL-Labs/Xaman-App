@@ -120,6 +120,7 @@ class AdvancedSettingsView extends Component<Props, State> {
             <View testID="advanced-settings-screen" style={[styles.container]}>
                 <Header
                     leftComponent={{
+                        testID: 'back-button',
                         icon: 'IconChevronLeft',
                         onPress: () => {
                             Navigator.pop();
