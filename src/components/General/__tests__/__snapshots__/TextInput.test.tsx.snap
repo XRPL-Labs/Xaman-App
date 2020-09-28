@@ -32,7 +32,6 @@ exports[`[TextInput] renders correctly 1`] = `
     onFocus={[Function]}
     placeholderTextColor="#848DB8"
     rejectResponderTermination={true}
-    selectionColor="#000000"
     style={
       Array [
         Object {

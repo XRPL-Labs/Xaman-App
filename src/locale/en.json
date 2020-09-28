@@ -440,7 +440,7 @@
         "familySeedDesc": "Looks like sXXX1234XXX...",
         "mnemonic": "Mnemonic",
         "scanFromQR": "Scan from QR",
-        "mnemonicDesc": "Based on 12,16 or 24 words",
+        "mnemonicDesc": "Based on 12, 16 or 24 words",
         "readOnlyAccount": "Read only account",
         "pleaseProvideAccountAddress": "Please provide your account address \n(Starts with 'r...')",
         "pleaseEnterYourAddress": "Please enter your XRP address",
@@ -510,7 +510,7 @@
         "accountImportActivationExplain": "You imported a new account on the XRP ledger. The account is not activated. Account activation is a requirement on the XRP ledger. To activate, you will have to make a first deposit of at least 20 XRP.",
         "accountActivateReserveExplain": "The first 20 XRP deposited into your account cannot be spent, but will be reserved to keep your account active and pay for on ledger fees.",
         "accountReserveNotShownExplain": "Your reserved XRP will not show up as balance in XUMM, but you can view your reserve with the \"Explain my balance\" button in the home screen, above your XRP balance.",
-        "thisAddressAppearsToBeExchangeAddress": "This address appears to be an exchange address, are you sure you want to continue? You can never send to this address without respecting the instructions of your exchange."
+        "thisAddressAppearsToBeExchangeAddress": "This address appears to be an exchange address, are you sure you want to continue?\n\nYou can never send to this address without respecting the instructions of your exchange."
     },
     "send": {
         "amountIsBiggerThanYourSpend": "Amount is bigger than what you can spend (%{spendable})",

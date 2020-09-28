@@ -87,7 +87,7 @@ class EnterAddressStep extends Component<Props, State> {
                         light: false,
                     },
                     {
-                        text: Localize.t('global.IUnderstand'),
+                        text: Localize.t('global.continue'),
                         onPress: this.goNext,
                         type: 'dismiss',
                         light: true,
@@ -96,7 +96,7 @@ class EnterAddressStep extends Component<Props, State> {
             });
 
             this.setState({
-                isLoading: true,
+                isLoading: false,
             });
             return;
         }
