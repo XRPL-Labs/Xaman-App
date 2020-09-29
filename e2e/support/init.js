@@ -18,6 +18,8 @@ BeforeAll(async () => {
     await detox.device.launchApp({
         permissions: { notifications: 'YES', camera: 'YES' },
     });
+
+    await detox.device.setURLBlacklist(['.*xumm.app.*']);
 });
 
 Before(async (context) => {
