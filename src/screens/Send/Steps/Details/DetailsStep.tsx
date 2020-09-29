@@ -321,6 +321,7 @@ class DetailsStep extends Component {
                                         ref={(r) => {
                                             this.amountInput = r;
                                         }}
+                                        testID="amount-input"
                                         keyboardType="decimal-pad"
                                         autoCapitalize="words"
                                         onChangeText={this.onAmountChange}
@@ -350,6 +351,7 @@ class DetailsStep extends Component {
                 <Footer style={[AppStyles.row]} safeArea>
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
@@ -360,6 +362,7 @@ class DetailsStep extends Component {
                     </View>
                     <View style={[AppStyles.flex2]}>
                         <Button
+                            testID="next-button"
                             textStyle={AppStyles.strong}
                             isDisabled={!amount || parseFloat(amount) === 0}
                             label={Localize.t('global.next')}

@@ -2,7 +2,8 @@
  * Import Account/Mnemonic Screen
  */
 
-import { get, set } from 'lodash';
+import { get, set, isEmpty } from 'lodash';
+
 import React, { Component } from 'react';
 import {
     SafeAreaView,
@@ -16,9 +17,16 @@ import {
     TouchableOpacity,
     KeyboardEvent,
 } from 'react-native';
+
 import { derive } from 'xrpl-accountlib';
 
+import { StringType, XrplSecret } from 'xumm-string-decode';
+
 import Localize from '@locale';
+
+import { Navigator } from '@common/helpers/navigator';
+import { AppScreens } from '@common/constants';
+
 // components
 import { PasswordInput, Button, Spacer, Switch, Footer } from '@components/General';
 
@@ -38,6 +46,7 @@ export interface State {
     passphrase: string;
     activeRow: number;
     keyboardHeight: number;
+    isLoading: boolean;
 }
 
 /* Component ==================================================================== */
@@ -59,6 +68,7 @@ class EnterMnemonicStep extends Component<Props, State> {
             passphrase: '',
             activeRow: -1,
             keyboardHeight: 0,
+            isLoading: false,
         };
 
         this.inputs = [];
@@ -105,6 +115,10 @@ class EnterMnemonicStep extends Component<Props, State> {
             return;
         }
 
+        this.setState({
+            isLoading: true,
+        });
+
         let options = {};
 
         if (usePassphrase && passphrase) {
@@ -121,8 +135,52 @@ class EnterMnemonicStep extends Component<Props, State> {
                 goNext('ConfirmPublicKey');
             });
         } catch (e) {
+            this.setState({
+                isLoading: false,
+            });
             Alert.alert('Error', Localize.t('account.invalidMnemonic'));
         }
+    };
+
+    onScannerRead = (decoded: XrplSecret) => {
+        const { mnemonic } = decoded;
+
+        let words = [];
+
+        // first try space
+        words = mnemonic.split(' ');
+
+        // if not try line break
+        if (isEmpty(words)) {
+            words = mnemonic.split('\n');
+        }
+
+        if (!isEmpty(words)) {
+            let length = 12;
+            if (words.length > 12 && words.length < 17) {
+                length = 16;
+            }
+
+            if (words.length > 16) {
+                length = 24;
+            }
+
+            this.setState({
+                words,
+                length,
+            });
+        }
+    };
+
+    showScanner = () => {
+        Navigator.showModal(
+            AppScreens.Modal.Scan,
+            {},
+            {
+                onRead: this.onScannerRead,
+                type: StringType.XrplSecret,
+            },
+        );
     };
 
     setValue = (col: number, value: string) => {
@@ -161,7 +219,7 @@ class EnterMnemonicStep extends Component<Props, State> {
         for (let i = 0; i < length; i++) {
             const isActive = activeRow === i;
 
-            let value = get(words, `[${i}]`, false);
+            let value = get(words, `[${i}]`, '');
 
             if (!isActive) {
                 const valueLength = value.length;
@@ -183,11 +241,13 @@ class EnterMnemonicStep extends Component<Props, State> {
                 >
                     <Text style={[styles.label, isActive && styles.labelActive]}>#{i + 1}</Text>
                     <TextInput
+                        testID={`word-${i}-input`}
                         ref={(r) => {
                             this.inputs[i] = r;
                         }}
                         autoCapitalize="none"
                         autoCorrect={false}
+                        keyboardType={Platform.OS === 'android' ? 'visible-password' : 'default'}
                         value={value}
                         style={[styles.input, isActive && styles.inputActive]}
                         returnKeyType={i + 1 === length ? 'done' : 'next'}
@@ -249,7 +309,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                                 passphrase: pass,
                             });
                         }}
-                        placeholder={Localize.t('global.passphrase')}
+                        placeholder={Localize.t('global.password')}
                     />
                 )}
             </View>
@@ -258,10 +318,10 @@ class EnterMnemonicStep extends Component<Props, State> {
 
     render() {
         const { goBack } = this.context;
-        const { length, keyboardHeight } = this.state;
+        const { length, keyboardHeight, isLoading } = this.state;
 
         return (
-            <SafeAreaView testID="account-import-enter-mnemonic" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-import-enter-mnemonic-view" style={[AppStyles.container]}>
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
                     {Localize.t('account.pleaseEnterYourMnemonic')}
                 </Text>
@@ -284,6 +344,7 @@ class EnterMnemonicStep extends Component<Props, State> {
 
                 <View style={[AppStyles.row, AppStyles.paddingHorizontal, AppStyles.paddingBottomSml]}>
                     <Button
+                        testID="12-words-button"
                         onPress={() => {
                             this.onLengthChange(12);
                         }}
@@ -293,6 +354,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                         label="12"
                     />
                     <Button
+                        testID="16-words-button"
                         onPress={() => {
                             this.onLengthChange(16);
                         }}
@@ -302,6 +364,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                         label="16"
                     />
                     <Button
+                        testID="24-words-button"
                         onPress={() => {
                             this.onLengthChange(24);
                         }}
@@ -309,6 +372,16 @@ class EnterMnemonicStep extends Component<Props, State> {
                         style={[styles.optionsButton, length === 24 && styles.optionsButtonSelected]}
                         textStyle={[styles.optionsButtonText, length === 24 && styles.optionsButtonSelectedText]}
                         label="24"
+                    />
+                </View>
+
+                <View style={[AppStyles.stretchSelf, AppStyles.paddingHorizontal, AppStyles.paddingBottomSml]}>
+                    <Button
+                        secondary
+                        onPress={this.showScanner}
+                        roundedSmall
+                        block
+                        label={Localize.t('account.scanFromQR')}
                     />
                 </View>
 
@@ -330,6 +403,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                 <Footer style={[AppStyles.centerAligned, AppStyles.row]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
@@ -339,7 +413,13 @@ class EnterMnemonicStep extends Component<Props, State> {
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>
-                        <Button textStyle={AppStyles.strong} label={Localize.t('global.next')} onPress={this.goNext} />
+                        <Button
+                            testID="next-button"
+                            isLoading={isLoading}
+                            textStyle={AppStyles.strong}
+                            label={Localize.t('global.next')}
+                            onPress={this.goNext}
+                        />
                     </View>
                 </Footer>
             </SafeAreaView>

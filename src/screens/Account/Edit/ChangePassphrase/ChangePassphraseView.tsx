@@ -62,17 +62,17 @@ class ChangePassphraseView extends Component<Props, State> {
         const { currentPassphrase, passphrase, passphrase_confirmation } = this.state;
 
         if (!currentPassphrase) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.currentPassphraseShouldNotBeEmpty'));
+            Alert.alert(Localize.t('global.error'), Localize.t('account.currentPasswordShouldNotBeEmpty'));
             return;
         }
 
         if (!passphrase.isValid) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.enterValidPassphrase'));
+            Alert.alert(Localize.t('global.error'), Localize.t('account.enterValidPassword'));
             return;
         }
 
         if (passphrase.value !== passphrase_confirmation) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.passphraseConfirmNotMatch'));
+            Alert.alert(Localize.t('global.error'), Localize.t('account.passwordConfirmNotMatch'));
             return;
         }
 
@@ -80,7 +80,7 @@ class ChangePassphraseView extends Component<Props, State> {
         const privateKey = await Vault.open(account.publicKey, currentPassphrase);
 
         if (!privateKey) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.enteredCurrentPassphraseIsInvalid'));
+            Alert.alert(Localize.t('global.error'), Localize.t('account.enteredCurrentPasswordIsInvalid'));
             return;
         }
 
@@ -89,7 +89,7 @@ class ChangePassphraseView extends Component<Props, State> {
 
         Navigator.pop();
 
-        Alert.alert(Localize.t('global.success'), Localize.t('account.yourAccountPassphraseChangedSuccessfully'));
+        Alert.alert(Localize.t('global.success'), Localize.t('account.yourAccountPasswordChangedSuccessfully'));
     };
 
     // dismiss the keyboard when click outside
@@ -113,7 +113,7 @@ class ChangePassphraseView extends Component<Props, State> {
                             Navigator.pop();
                         },
                     }}
-                    centerComponent={{ text: Localize.t('account.changePassphrase') }}
+                    centerComponent={{ text: Localize.t('account.changePassword') }}
                 />
                 <KeyboardAvoidingView
                     enabled={Platform.OS === 'ios'}
@@ -121,7 +121,8 @@ class ChangePassphraseView extends Component<Props, State> {
                     style={[AppStyles.flex1, AppStyles.paddingSml]}
                 >
                     <PasswordInput
-                        placeholder={Localize.t('account.currentPassphrase')}
+                        testID="current-passphrase-input"
+                        placeholder={Localize.t('account.currentPassword')}
                         selectTextOnFocus={passphrase.isValid}
                         onChange={(currentPassphrase) => this.setState({ currentPassphrase })}
                         validate={false}
@@ -129,8 +130,9 @@ class ChangePassphraseView extends Component<Props, State> {
 
                     <Spacer />
                     <PasswordInput
+                        testID="new-passphrase-input"
                         editable
-                        placeholder={Localize.t('account.newPassphrase')}
+                        placeholder={Localize.t('account.newPassword')}
                         minLength={8}
                         onChange={(value: string, isValid: boolean) => {
                             this.setState({ passphrase: { value, isValid } });
@@ -140,8 +142,9 @@ class ChangePassphraseView extends Component<Props, State> {
                     />
 
                     <PasswordInput
+                        testID="new-confirm-passphrase-input"
                         editable={passphrase.isValid}
-                        placeholder={Localize.t('account.repeatPassphrase')}
+                        placeholder={Localize.t('account.repeatPassword')}
                         selectTextOnFocus={passphrase.isValid}
                         onChange={(passphrase_confirmation) => this.setState({ passphrase_confirmation })}
                         validate={false}
@@ -150,6 +153,7 @@ class ChangePassphraseView extends Component<Props, State> {
 
                 <Footer safeArea>
                     <Button
+                        testID="save-button"
                         label={Localize.t('global.save')}
                         onPress={() => {
                             this.savePassphrase();

@@ -81,23 +81,30 @@
         </activity>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
-        <service android:name="io.invertase.firebase.messaging.RNFirebaseMessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-        <service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService" />
-
-
         <meta-data
-            android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="@string/default_notification_channel_id"/>
-        <meta-data
+            tools:replace="android:resource"
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_stat_icon_xumm_android_notification" />
         <meta-data
+            tools:replace="android:resource"
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/pushIcon" />
+
+        <receiver
+            android:name="libs.notification.NotificationMessageReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="libs.notification.NotificationActionReceiver" android:enabled="true" >
+            <intent-filter>
+                <action android:name="=com.xrpllabs.xumm.ACTION_NOTIFICATION_OPENED" />
+            </intent-filter>
+        </receiver>
+
 
     </application>
 

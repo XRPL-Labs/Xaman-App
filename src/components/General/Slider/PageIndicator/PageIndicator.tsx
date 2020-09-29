@@ -36,7 +36,7 @@ export default class Indicator extends PureComponent<Props, State> {
 
         return (
             <Button
-                testID="ready-slider"
+                testID="slider-start-button"
                 label={Localize.t('global.start')}
                 rounded
                 onPress={onFinish}

@@ -56,6 +56,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
     panel: any;
     deltaY: Animated.Value;
+    deltaX: Animated.Value;
 
     constructor(props: Props) {
         super(props);
@@ -68,6 +69,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
         };
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
+        this.deltaX = new Animated.Value(0);
     }
 
     componentDidMount() {
@@ -105,7 +107,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
             counterParties: availableParties,
             currencies: availableCurrencies,
             selectedParty: head(availableParties),
-            selectedCurrency: head(get(availableCurrencies, head(availableParties).id)),
+            selectedCurrency: head(get(availableCurrencies, head(availableParties)?.id)),
         });
     };
 
@@ -202,7 +204,12 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
         if (isEmpty(counterParties)) {
             return (
-                <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]} adjustsFontSizeToFit numberOfLines={1}>
+                <Text
+                    key="empty-parties"
+                    style={[AppStyles.subtext, AppStyles.textCenterAligned]}
+                    adjustsFontSizeToFit
+                    numberOfLines={1}
+                >
                     No Item to show
                 </Text>
             );
@@ -296,6 +303,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                 <SafeAreaView style={styles.footer}>
                     <Footer>
                         <Button
+                            testID="add-and-sign-button"
                             block
                             isDisabled={!selectedCurrency}
                             onPress={this.addCurrency}
@@ -310,7 +318,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
     render() {
         return (
-            <View style={AppStyles.flex1}>
+            <View testID="add-asset-overlay" style={AppStyles.flex1}>
                 <TouchableWithoutFeedback onPress={this.slideDown}>
                     <Animated.View
                         style={[
@@ -337,6 +345,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     boundaries={{ top: AppSizes.heightPercentageToDP(8) }}
                     initialPosition={{ y: AppSizes.screen.height }}
                     animatedValueY={this.deltaY}
+                    animatedValueX={this.deltaX}
                 >
                     {this.renderContent()}
                 </Interactable.View>

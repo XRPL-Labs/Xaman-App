@@ -64,7 +64,6 @@ class NodeListView extends Component<Props, State> {
         CoreRepository.on('updateSettings', this.updateUI);
     }
 
-
     componentWillUnmount() {
         CoreRepository.off('updateSettings', this.updateUI);
     }
@@ -150,6 +149,7 @@ class NodeListView extends Component<Props, State> {
 
         return (
             <TouchableHighlight
+                testID={`node-${item.url}`}
                 onPress={() => {
                     this.onItemPress(item);
                 }}
@@ -183,9 +183,10 @@ class NodeListView extends Component<Props, State> {
         const { dataSource } = this.state;
 
         return (
-            <View testID="node-list-view" style={[AppStyles.container]}>
+            <View testID="nodes-list-screen" style={[AppStyles.container]}>
                 <Header
                     leftComponent={{
+                        testID: 'back-button',
                         icon: 'IconChevronLeft',
                         onPress: () => {
                             Navigator.pop();

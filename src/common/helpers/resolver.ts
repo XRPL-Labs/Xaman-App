@@ -1,6 +1,7 @@
 import { memoize, isEmpty, has, get, assign } from 'lodash';
 
 import Flag from '@common/libs/ledger/parser/common/flag';
+import Amount from '@common/libs/ledger/parser/common/amount';
 
 import AccountRepository from '@store/repositories/account';
 import ContactRepository from '@store/repositories/contact';
@@ -21,6 +22,7 @@ export interface AccountInfoType {
     exist: boolean;
     risk: 'ERROR' | 'UNKNOWS' | 'PROBABLE' | 'HIGH_PROBABILITY' | 'CONFIRMED';
     requireDestinationTag: boolean;
+    possibleExchange: boolean;
 }
 
 const getAccountName = memoize(
@@ -104,6 +106,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
             exist: true,
             risk: 'UNKNOWS',
             requireDestinationTag: false,
+            possibleExchange: false,
         } as AccountInfoType;
 
         try {
@@ -125,14 +128,22 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                 return reject();
             }
 
+            const { account_data } = accountInfo;
+
+            // if balance is more than 1m possibly exchange account
+            if (has(account_data, ['Balance'])) {
+                if (new Amount(account_data.Balance, true).dropsToXrp(true) > 1000000) {
+                    assign(info, { possibleExchange: true });
+                }
+            }
+
             // check if destination requires the destination tag
-            if (has(accountInfo, ['account_data', 'Flags'])) {
-                const { account_data } = accountInfo;
+            if (has(account_data, ['Flags'])) {
                 const accountFlags = new Flag('Account', account_data.Flags).parse();
 
                 // flag is set
                 if (accountFlags.requireDestinationTag) {
-                    assign(info, { requireDestinationTag: true });
+                    assign(info, { requireDestinationTag: true, possibleExchange: true });
                 } else {
                     const accountTXS = await LedgerService.getTransactions(address, undefined, 200);
                     if (
@@ -163,7 +174,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                         const percentageTag = (incomingTxCountWithTag / incomingTXS.length) * 100;
 
                         if (uniqueSenders >= 10 && percentageTag > 50) {
-                            assign(info, { requireDestinationTag: true });
+                            assign(info, { requireDestinationTag: true, possibleExchange: true });
                         }
                     }
                 }

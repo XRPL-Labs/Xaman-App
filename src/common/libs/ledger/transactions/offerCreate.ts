@@ -1,10 +1,11 @@
 /* eslint-disable no-lonely-if */
 import BigNumber from 'bignumber.js';
-import { get, set, has, isUndefined } from 'lodash';
+import { get, set, find, isUndefined } from 'lodash';
 
 import BaseTransaction from './base';
 import Amount from '../parser/common/amount';
 import LedgerDate from '../parser/common/date';
+import Meta from '../parser/meta';
 
 /* Types ==================================================================== */
 import { AmountType } from '../parser/types';
@@ -99,14 +100,25 @@ class OfferCreate extends BaseTransaction {
     }
 
     get OfferSequence(): number {
-        return get(this, ['tx', 'OfferSequence']);
+        const offerSequence = get(this, ['tx', 'OfferSequence']);
+
+        if (isUndefined(offerSequence)) {
+            return get(this, ['tx', 'Sequence']);
+        }
+
+        return offerSequence;
     }
 
-    get Expiration(): any {
+    get Expiration(): string {
         const date = get(this, ['tx', 'Expiration'], undefined);
         if (isUndefined(date)) return undefined;
         const ledgerDate = new LedgerDate(date);
         return ledgerDate.toISO8601();
+    }
+
+    set Expiration(date: string) {
+        const ledgerDate = new LedgerDate(date);
+        set(this, 'tx.Expiration', ledgerDate.toLedgerTime());
     }
 
     get Executed(): boolean {
@@ -116,6 +128,7 @@ class OfferCreate extends BaseTransaction {
         // this will ensure that order is executed
         const affectedNodes = get(this.meta, 'AffectedNodes', []);
 
+        // partially filled || filled
         affectedNodes.map((node: any) => {
             if (node.ModifiedNode?.LedgerEntryType === 'Offer' || node.DeletedNode?.LedgerEntryType === 'Offer') {
                 foundOrderObject = true;
@@ -127,112 +140,50 @@ class OfferCreate extends BaseTransaction {
         return foundOrderObject;
     }
 
-    get TakerGot(): AmountType {
-        const affectedNodes = get(this, ['meta', 'AffectedNodes']);
+    TakerGot(owner?: string): AmountType {
+        if (!owner) {
+            owner = this.Account.address;
+        }
 
-        if (!affectedNodes) return this.TakerGets;
+        const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
 
-        const ledgerEntryType = this.TakerGets.currency === 'XRP' ? 'AccountRoot' : 'RippleState';
-        const isIOU = this.TakerGets.currency !== 'XRP';
+        const currency = owner === this.Account.address ? this.TakerGets.currency : this.TakerPays.currency;
 
-        let takerGot: AmountType;
-
-        affectedNodes.forEach((node: any) => {
-            const { ModifiedNode } = node;
-
-            if (!ModifiedNode || get(ModifiedNode, 'LedgerEntryType') !== ledgerEntryType || takerGot) return;
-
-            if (isIOU) {
-                if (has(ModifiedNode.FinalFields, 'Balance') && has(ModifiedNode.PreviousFields, 'Balance')) {
-                    const balance = new BigNumber(ModifiedNode.FinalFields.Balance.value);
-                    const prevBalance = new BigNumber(ModifiedNode.PreviousFields.Balance.value);
-
-                    takerGot = {
-                        currency: ModifiedNode.FinalFields.Balance.currency,
-                        value: balance.minus(prevBalance).decimalPlaces(6).absoluteValue().toString(10),
-                        issuer: ModifiedNode.FinalFields.Balance.issuer,
-                    };
-                }
-            } else {
-                if (
-                    get(ModifiedNode.FinalFields, 'Account') !== this.Account.address &&
-                    has(ModifiedNode.FinalFields, 'Balance') &&
-                    has(ModifiedNode.PreviousFields, 'Balance')
-                ) {
-                    const balance = new BigNumber(ModifiedNode.FinalFields.Balance);
-                    const prevBalance = new BigNumber(ModifiedNode.PreviousFields.Balance);
-
-                    takerGot = {
-                        currency: 'XRP',
-                        value: balance
-                            .minus(prevBalance)
-                            .dividedBy(1000000.0)
-                            .absoluteValue()
-                            .decimalPlaces(6)
-                            .toString(10),
-                    };
-                }
-            }
-        });
+        // @ts-ignore
+        const takerGot = find(balanceChanges, (o) => o.currency === currency);
 
         if (!takerGot) {
             return this.TakerGets;
         }
 
+        //  remove fee from end result if xrp
+        if (currency === 'XRP' && owner === this.Account.address) {
+            set(takerGot, 'value', new BigNumber(takerGot.value).minus(this.Fee).decimalPlaces(6).toString(10));
+        }
+
         return takerGot;
     }
 
-    get TakerPaid(): AmountType {
-        const affectedNodes = get(this, ['meta', 'AffectedNodes']);
+    TakerPaid(owner?: string): AmountType {
+        if (!owner) {
+            owner = this.Account.address;
+        }
 
-        if (!affectedNodes) return this.TakerPays;
+        const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
 
-        const ledgerEntryType = this.TakerPays.currency === 'XRP' ? 'AccountRoot' : 'RippleState';
-        const isIOU = this.TakerPays.currency !== 'XRP';
+        // swap in case of order owner is not the same as tx owner
+        const currency = owner === this.Account.address ? this.TakerPays.currency : this.TakerGets.currency;
 
-        let takerPaid: AmountType;
-
-        affectedNodes.forEach((node: any) => {
-            const { ModifiedNode } = node;
-
-            if (!ModifiedNode || get(ModifiedNode, 'LedgerEntryType') !== ledgerEntryType || takerPaid) return;
-
-            if (isIOU) {
-                if (has(ModifiedNode.FinalFields, 'Balance') && has(ModifiedNode.PreviousFields, 'Balance')) {
-                    const balance = new BigNumber(ModifiedNode.FinalFields.Balance.value);
-                    const prevBalance = new BigNumber(ModifiedNode.PreviousFields.Balance.value);
-
-                    takerPaid = {
-                        currency: ModifiedNode.FinalFields.Balance.currency,
-                        value: balance.minus(prevBalance).absoluteValue().decimalPlaces(6).toString(10),
-                        issuer: ModifiedNode.FinalFields.Balance.issuer,
-                    };
-                }
-            } else {
-                // this will avoid calculating XRP the fee
-                if (
-                    get(ModifiedNode.FinalFields, 'Account') === this.Account.address &&
-                    has(ModifiedNode.FinalFields, 'Balance') &&
-                    has(ModifiedNode.PreviousFields, 'Balance')
-                ) {
-                    const balance = new BigNumber(ModifiedNode.FinalFields.Balance);
-                    const prevBalance = new BigNumber(ModifiedNode.PreviousFields.Balance);
-
-                    takerPaid = {
-                        currency: 'XRP',
-                        value: balance
-                            .minus(prevBalance)
-                            .absoluteValue()
-                            .dividedBy(1000000.0)
-                            .decimalPlaces(6)
-                            .toString(10),
-                    };
-                }
-            }
-        });
+        // @ts-ignore
+        const takerPaid = find(balanceChanges, (o) => o.currency === currency);
 
         if (!takerPaid) {
             return this.TakerPays;
+        }
+
+        //  remove fee from end result if xrp and own offer tx
+        if (currency === 'XRP' && owner === this.Account.address) {
+            set(takerPaid, 'value', new BigNumber(takerPaid.value).minus(this.Fee).decimalPlaces(6).toString(10));
         }
 
         return takerPaid;

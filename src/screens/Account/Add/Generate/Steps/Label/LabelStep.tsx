@@ -56,7 +56,7 @@ class LabelStep extends Component<Props, State> {
         const { goBack } = this.context;
         const { label } = this.state;
         return (
-            <SafeAreaView testID="account-generate-finish-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-generate-label-view" style={[AppStyles.container]}>
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
                     {Localize.t('account.pleaseChooseAccountLabel')}
                 </Text>
@@ -68,6 +68,7 @@ class LabelStep extends Component<Props, State> {
                     style={[AppStyles.contentContainer, AppStyles.flexStart, AppStyles.paddingSml]}
                 >
                     <TextInput
+                        testID="label-input"
                         maxLength={16}
                         placeholder={Localize.t('account.accountLabel')}
                         value={label}
@@ -79,6 +80,7 @@ class LabelStep extends Component<Props, State> {
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
                             onPress={() => {
@@ -89,6 +91,7 @@ class LabelStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
+                            testID="next-button"
                             isDisabled={!label.trim()}
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}

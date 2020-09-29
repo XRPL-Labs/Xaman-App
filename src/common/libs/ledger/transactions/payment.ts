@@ -224,7 +224,11 @@ class Payment extends BaseTransaction {
             return;
         }
 
-        const value = new BigNumber(input.value);
+        // XRP
+        if (typeof input === 'string') {
+            set(this, 'tx.DeliverMin', new Amount(input, false).xrpToDrops());
+            return;
+        }
 
         // if transferRate set then add the fee to the value
         // if (this.TransferRate) {
@@ -234,7 +238,7 @@ class Payment extends BaseTransaction {
 
         set(this, 'tx.DeliverMin', {
             currency: input.currency,
-            value: value.toNumber().toString(10),
+            value: new BigNumber(input.value).toNumber().toString(10),
             issuer: input.issuer,
         });
     }
@@ -270,13 +274,16 @@ class Payment extends BaseTransaction {
         return invoiceID;
     }
 
+    set InvoiceID(invoiceId: string) {
+        set(this, 'tx.InvoiceID', invoiceId);
+    }
+
     validate = (source: AccountSchema) => {
         /* eslint-disable-next-line */
         return new Promise(async (resolve, reject) => {
             if (!this.Amount || !this.Amount?.value || this.Amount?.value === '0') {
                 return reject(new Error(Localize.t('send.pleaseEnterAmount')));
             }
-
 
             // this is a multisign tx
             if (source.balance === 0) {

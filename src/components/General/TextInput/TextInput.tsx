@@ -6,7 +6,7 @@
  *
  */
 import React, { Component } from 'react';
-import { View, TouchableHighlight, TextInput, TextInputProps, ViewStyle, TextStyle } from 'react-native';
+import { View, TouchableHighlight, TextInput, TextInputProps, ViewStyle, TextStyle, Platform } from 'react-native';
 
 import { StringType } from 'xumm-string-decode';
 
@@ -33,6 +33,18 @@ interface Props extends TextInputProps {
 interface State {
     focused: boolean;
 }
+
+/* Constants ==================================================================== */
+const DEFAULT_KEYBAORDTYPES = ['default', 'email-address', 'numeric', 'phone-pad', 'number-pad', 'decimal-pad'];
+const IOS_KEYBAORDTYPES = [
+    'ascii-capable',
+    'numbers-and-punctuation',
+    'url',
+    'name-phone-pad',
+    'twitter',
+    'web-search',
+];
+const ANDROID_KEYBAORDTYPES = ['visible-password'];
 
 /* Component ==================================================================== */
 class Input extends Component<Props, State> {
@@ -84,13 +96,34 @@ class Input extends Component<Props, State> {
 
     renderInput = () => {
         const { focused } = this.state;
-        const { containerStyle, activeContainerStyle, activeInputStyle, inputStyle, showScanner } = this.props;
+        const {
+            containerStyle,
+            activeContainerStyle,
+            activeInputStyle,
+            inputStyle,
+            showScanner,
+            keyboardType,
+        } = this.props;
+
+        const filteredProps = { ...this.props };
 
         const scannerPadding = showScanner
             ? AppSizes.heightPercentageToDP(5.5) < 45
                 ? 38
                 : AppSizes.heightPercentageToDP(5.5)
             : 0;
+
+        // fix keyboard type for both ios and android
+        if (keyboardType) {
+            if (
+                (Platform.OS === 'ios' &&
+                    [...DEFAULT_KEYBAORDTYPES, ...IOS_KEYBAORDTYPES].indexOf(keyboardType) === -1) ||
+                (Platform.OS === 'android' &&
+                    [...DEFAULT_KEYBAORDTYPES, ...ANDROID_KEYBAORDTYPES].indexOf(keyboardType) === -1)
+            ) {
+                delete filteredProps.keyboardType;
+            }
+        }
 
         return (
             <View style={[styles.wrapper, containerStyle, focused && activeContainerStyle]}>
@@ -102,12 +135,11 @@ class Input extends Component<Props, State> {
                     onBlur={this.onBlur}
                     placeholderTextColor={AppColors.greyDark}
                     autoCapitalize="none"
-                    selectionColor={AppColors.black}
                     autoCorrect={false}
                     multiline={false}
                     underlineColorAndroid="transparent"
                     style={[styles.input, { paddingRight: scannerPadding }, inputStyle, focused && activeInputStyle]}
-                    {...this.props}
+                    {...filteredProps}
                 />
             </View>
         );

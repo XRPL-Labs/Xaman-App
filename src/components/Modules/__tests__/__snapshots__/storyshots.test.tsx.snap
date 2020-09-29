@@ -789,6 +789,7 @@ exports[`Storyshots RecipientElement Selected 1`] = `
     onResponderTerminate={[Function]}
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
+    testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
     <View
       style={
@@ -963,6 +964,7 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
     onResponderTerminate={[Function]}
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
+    testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
     <View
       style={
@@ -1129,6 +1131,7 @@ exports[`Storyshots RecipientElement default 1`] = `
     onResponderTerminate={[Function]}
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
+    testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
     <View
       style={

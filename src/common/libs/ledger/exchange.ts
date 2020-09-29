@@ -45,9 +45,9 @@ class LedgerExchange {
         };
     }
 
-    initialize = async () => {
+    initialize = () => {
         // fetch liquidity boundaries
-        await ApiService.liquidityBoundaries
+        return ApiService.liquidityBoundaries
             .get({
                 issuer: this.pair.issuer,
                 currency: this.pair.currency,
@@ -59,12 +59,13 @@ class LedgerExchange {
             })
             .catch(() => {
                 // ignore
+            })
+            .finally(() => {
+                // build default params
+                const params = this.getLiquidityCheckParams('sell', 0);
+
+                this.liquidityCheck = new LiquidityCheck(params);
             });
-
-        // build default params
-        const params = this.getLiquidityCheckParams('sell', 0);
-
-        this.liquidityCheck = new LiquidityCheck(params);
     };
 
     getLiquidityCheckParams = (direction: 'sell' | 'buy', amount: number): LiquidityCheckParams => {

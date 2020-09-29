@@ -27,7 +27,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
 // Parses
-import parserFactory from '@common/libs/ledger/parser';
+import transactionFactory from '@common/libs/ledger/parser/transaction';
 import { LedgerMarker } from '@common/libs/ledger/types';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import { Payload } from '@common/libs/payload';
@@ -125,14 +125,12 @@ class EventsView extends Component<Props, State> {
             this.updateDataSource();
         });
 
-
         InteractionManager.runAfterInteractions(() => {
             if (account.isValid()) {
                 this.updateDataSource(true);
             }
         });
     };
-
 
     formatDate = (date: string) => {
         const momentDate = moment(date);
@@ -197,7 +195,7 @@ class EventsView extends Component<Props, State> {
                         shouldLoadMore = false;
                     }
 
-                    const parsedList = flatMap(transactions, parserFactory);
+                    const parsedList = flatMap(transactions, transactionFactory);
 
                     const filtered = filter(parsedList, (t) => {
                         return t.TransactionResult.success;

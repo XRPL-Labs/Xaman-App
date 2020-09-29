@@ -81,10 +81,9 @@ class AccountListView extends Component<Props, State> {
         return false;
     };
 
-    renderItem = (account: { item: AccountSchema }) => {
+    renderItem = (account: { item: AccountSchema; index: number }) => {
         const { signableAccount } = this.state;
         const { item } = account;
-
 
         if (!item.isValid()) return null;
 
@@ -113,6 +112,7 @@ class AccountListView extends Component<Props, State> {
 
         return (
             <TouchableHighlight
+                testID={`account-${item.address}`}
                 style={[styles.touchRow]}
                 onPress={() => {
                     this.onItemPress(item);
@@ -164,17 +164,19 @@ class AccountListView extends Component<Props, State> {
         const { accounts } = this.state;
 
         return (
-            <View testID="account-list-view" style={[AppStyles.container]}>
+            <View testID="accounts-list-screen" style={[AppStyles.container]}>
                 <Header
                     centerComponent={{ text: Localize.t('global.accounts') }}
                     leftComponent={{
                         icon: 'IconChevronLeft',
+                        testID: 'back-button',
                         onPress: () => {
                             Navigator.pop();
                         },
                     }}
                     rightComponent={{
                         icon: 'IconPlus',
+                        testID: 'add-account-button',
                         onPress: () => {
                             Navigator.push(AppScreens.Account.Add);
                         },
@@ -193,7 +195,6 @@ class AccountListView extends Component<Props, State> {
                                 It’s a little bit empty here add your first account.
                             </Text>
                             <Button
-                                testID="add-account-button"
                                 label={Localize.t('home.addAccount')}
                                 icon="IconPlus"
                                 iconStyle={[AppStyles.imgColorWhite]}
@@ -206,7 +207,12 @@ class AccountListView extends Component<Props, State> {
                     </View>
                 ) : (
                     <View style={[AppStyles.contentContainer]}>
-                        <FlatList data={accounts} renderItem={this.renderItem} keyExtractor={(a) => a.address} />
+                        <FlatList
+                            testID="account-list-scroll"
+                            data={accounts}
+                            renderItem={this.renderItem}
+                            keyExtractor={(a) => a.address}
+                        />
                     </View>
                 )}
             </View>

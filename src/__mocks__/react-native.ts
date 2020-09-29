@@ -39,8 +39,14 @@ ReactNative.NativeModules.UtilsModule = {
     hapticFeedback: jest.fn((type: any) => true),
     restartBundle: jest.fn(() => true),
     timeoutEvent: jest.fn((event: string, timeout: number) => true),
-    getElapsedRealtime: jest.fn(() => 123),
+    getElapsedRealtime: jest.fn(() => Promise.resolve(123)),
     exitApp: jest.fn(() => true),
+};
+
+ReactNative.NativeModules.LocalNotificationModule = {
+    setBadge: jest.fn((badge: number) => Promise.resolve()),
+    getBadge: jest.fn(() => Promise.resolve(1)),
+    complete: jest.fn((messageId: string, show: boolean) => true),
 };
 
 module.exports = ReactNative;

@@ -53,7 +53,7 @@ class AppService extends EventEmitter {
         super();
 
         this.netStatus = NetStateStatus.Connected;
-        this.prevAppState = AppStateStatus.Inactive;
+        this.prevAppState = undefined;
         this.currentAppState = AppStateStatus.Active;
 
         this.logger = LoggerService.createLogger('AppState');
@@ -134,6 +134,20 @@ class AppService extends EventEmitter {
         });
     };
 
+    onInactivityTimeout = (id: string) => {
+        if (id === 'timeout_event') {
+            // clear any listener
+            this.stopInactivityListener();
+
+            if (this.currentAppState !== AppStateStatus.Inactive) {
+                this.prevAppState = this.currentAppState;
+                this.currentAppState = AppStateStatus.Inactive;
+                // emit the appStateChange event
+                this.emit('appStateChange', this.currentAppState, this.prevAppState);
+            }
+        }
+    };
+
     /*
      * start a timer to check for background inactivity
      */
@@ -142,22 +156,11 @@ class AppService extends EventEmitter {
             return;
         }
 
-        // send timeout timer
+        // start timeout timer
         UtilsModule.timeoutEvent('timeout_event', 15000);
 
-        this.inactivityTimeout = Emitter.addListener('Utils.timeout', (id) => {
-            if (id === 'timeout_event') {
-                // clear any listener
-                this.stopInactivityListener();
-
-                if (this.currentAppState !== AppStateStatus.Inactive) {
-                    this.prevAppState = this.currentAppState;
-                    this.currentAppState = AppStateStatus.Inactive;
-                    // emit the appStateChange event
-                    this.emit('appStateChange', this.currentAppState, this.prevAppState);
-                }
-            }
-        });
+        // add event listener for timer
+        this.inactivityTimeout = Emitter.addListener('Utils.timeout', this.onInactivityTimeout);
     };
 
     /*
@@ -176,13 +179,12 @@ class AppService extends EventEmitter {
             case 'active':
                 appState = AppStateStatus.Active;
                 break;
-            case 'inactive':
-                break;
             case 'background':
                 appState = AppStateStatus.Background;
                 break;
             default:
-                appState = AppStateStatus.Active;
+                // ignore inactive state
+                return;
         }
 
         // if changed

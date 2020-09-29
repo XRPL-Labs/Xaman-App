@@ -6,7 +6,7 @@
  */
 
 import Realm from 'realm';
-import { sortBy, filter } from 'lodash';
+import { sortBy, omit, values } from 'lodash';
 
 import Vault from '@common/libs/vault';
 
@@ -84,7 +84,7 @@ export default class Storage {
             // @ts-ignore
             return new Realm({
                 ...config,
-                schema: filter(latest.schema, (_, k) => k !== 'migration'),
+                schema: values(omit(latest.schema, ['migration'])),
                 schemaVersion: latest.schemaVersion,
             });
         }
@@ -102,7 +102,7 @@ export default class Storage {
             // @ts-ignore
             const migrationRealm = new Realm({
                 ...config,
-                schema: filter(current.schema, (_, k) => k !== 'migration'),
+                schema: values(omit(current.schema, ['migration'])),
                 schemaVersion: current.schemaVersion,
                 migration: current.migration,
             });
@@ -125,6 +125,16 @@ export default class Storage {
      */
     close = (): void => {
         this.db.close();
+    };
+
+    /**
+     * Purge everything
+     * WARNING: This will delete all objects in the Realm!
+     */
+    purge = (): void => {
+        this.db.write(() => {
+            this.db.deleteAll();
+        });
     };
 
     /**

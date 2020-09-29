@@ -1,0 +1,50 @@
+diff --git a/node_modules/react-native-fingerprint-scanner/index.d.ts b/node_modules/react-native-fingerprint-scanner/index.d.ts
+index 6de5573..e5fcd4c 100644
+--- a/node_modules/react-native-fingerprint-scanner/index.d.ts
++++ b/node_modules/react-native-fingerprint-scanner/index.d.ts
+@@ -1,6 +1,7 @@
+ export type AuthenticateIOS = {
+   description?: string;
+   fallbackEnabled?: boolean;
++  fallbackTitle?: string
+ };
+ export type AuthenticateAndroid = {
+   title?: string;
+diff --git a/node_modules/react-native-fingerprint-scanner/ios/ReactNativeFingerprintScanner.m b/node_modules/react-native-fingerprint-scanner/ios/ReactNativeFingerprintScanner.m
+index e29bad7..c0e2002 100644
+--- a/node_modules/react-native-fingerprint-scanner/ios/ReactNativeFingerprintScanner.m
++++ b/node_modules/react-native-fingerprint-scanner/ios/ReactNativeFingerprintScanner.m
+@@ -55,11 +55,17 @@ @implementation ReactNativeFingerprintScanner
+ 
+ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
+                   fallback: (BOOL)fallbackEnabled
++                  fallbackTitle: (NSString *)fallbackTitle
+                   callback: (RCTResponseSenderBlock)callback)
+ {
+     LAContext *context = [[LAContext alloc] init];
+     NSError *error;
+ 
++    // Apply fallback button title
++    if(fallbackTitle){
++        context.localizedFallbackTitle = fallbackTitle;
++    }
++    
+     // Toggle fallback button
+     if (!fallbackEnabled) {
+         context.localizedFallbackTitle = @"";
+diff --git a/node_modules/react-native-fingerprint-scanner/src/authenticate.ios.js b/node_modules/react-native-fingerprint-scanner/src/authenticate.ios.js
+index 8f7719a..3815cf7 100644
+--- a/node_modules/react-native-fingerprint-scanner/src/authenticate.ios.js
++++ b/node_modules/react-native-fingerprint-scanner/src/authenticate.ios.js
+@@ -3,9 +3,9 @@ import createError from './createError';
+ 
+ const { ReactNativeFingerprintScanner } = NativeModules;
+ 
+-export default ({ description = ' ', fallbackEnabled = true }) => {
++export default ({ description = ' ', fallbackEnabled = true, fallbackTitle = '' }) => {
+   return new Promise((resolve, reject) => {
+-    ReactNativeFingerprintScanner.authenticate(description, fallbackEnabled, error => {
++    ReactNativeFingerprintScanner.authenticate(description, fallbackEnabled, fallbackTitle, error => {
+       if (error) {
+         return reject(createError(error.code, error.message))
+       }

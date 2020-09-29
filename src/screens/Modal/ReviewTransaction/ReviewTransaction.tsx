@@ -5,12 +5,10 @@
 import { get, find, isEmpty } from 'lodash';
 import React, { Component, Fragment } from 'react';
 import {
-    Animated,
     SafeAreaView,
     ScrollView,
     View,
     Text,
-    Clipboard,
     Alert,
     Linking,
     Image,
@@ -20,6 +18,8 @@ import {
     Keyboard,
     Platform,
 } from 'react-native';
+
+import Clipboard from '@react-native-community/clipboard';
 
 import Interactable from 'react-native-interactable';
 import { BlurView } from '@react-native-community/blur';
@@ -40,7 +40,7 @@ import { Images } from '@common/helpers/images';
 import { PushNotificationsService, LedgerService, SocketService } from '@services';
 
 // transaction parser
-import parserFactory from '@common/libs/ledger/parser';
+import transactionFactory from '@common/libs/ledger/parser/transaction';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 
 // components
@@ -80,7 +80,6 @@ export interface State {
 class ReviewTransactionModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.ReviewTransaction;
 
-    private deltaY: Animated.Value;
     private backHandler: any;
     private panel: any;
     private sourcePicker: AccordionPicker;
@@ -98,7 +97,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         this.state = {
             accounts: undefined,
-            transaction: parserFactory(props.payload.TxJson),
+            transaction: transactionFactory(props.payload.TxJson),
             source: undefined,
             step: 'review',
             submitResult: undefined,
@@ -110,8 +109,6 @@ class ReviewTransactionModal extends Component<Props, State> {
             headerHeight: 0,
             coreSettings: CoreRepository.getSettings(),
         };
-
-        this.deltaY = new Animated.Value(0);
     }
 
     componentWillUnmount() {
@@ -145,6 +142,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 ? AccountRepository.getSignableAccounts()
                 : AccountRepository.getSpendableAccounts();
 
+        // if no account for signing is available then just return
         if (isEmpty(availableAccounts)) {
             return;
         }
@@ -152,31 +150,37 @@ class ReviewTransactionModal extends Component<Props, State> {
         // choose preferred account for sign
         let preferredAccount;
 
-        // for CheckCash and CheckCancel
-        if (transaction.Account && transaction.Type === 'CheckCash') {
+        // if any account set from payload
+        if (transaction.Account) {
             preferredAccount = find(availableAccounts, { address: transaction.Account.address });
 
-            // override available Accounts
-            availableAccounts = [preferredAccount];
+            // if CheckCash check if account is imported in the xumm
+            if (transaction.Type === 'CheckCash') {
+                // cannot sign this tx as account is not imported in the XUMM
+                if (!preferredAccount) {
+                    this.setState({
+                        hasError: true,
+                        errorMessage: Localize.t('payload.checkCanOnlyCashByCheckDestination'),
+                    });
 
-            // cannot sign this tx as account is not imported in the XUMM
-            if (!preferredAccount) {
-                this.setState({
-                    hasError: true,
-                    errorMessage: Localize.t('payload.checkCanOnlyCashByCheckDestination'),
-                });
-
-                return;
-            }
-        } else {
-            preferredAccount = find(availableAccounts, { default: true }) || availableAccounts[0];
-
-            // set the default source account
-            if (preferredAccount) {
-                // ignore if it's multisign
-                if (!payload.meta.multisign) {
-                    transaction.Account = { address: preferredAccount.address };
+                    return;
                 }
+                // override available Accounts
+                availableAccounts = [preferredAccount];
+            }
+        }
+
+        // if the preferred account is not set in the payload
+        // choose default || first available account
+        if (!preferredAccount) {
+            preferredAccount = find(availableAccounts, { default: true }) || availableAccounts[0];
+        }
+
+        // set the preffered account to the tx
+        if (preferredAccount && !transaction.Account) {
+            // ignore if it's multisign
+            if (!payload.meta.multisign) {
+                transaction.Account = { address: preferredAccount.address };
             }
         }
 
@@ -740,7 +744,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         return (
             <ImageBackground
-                testID="review-view"
+                testID="review-transaction-modal"
                 source={Images.backgroundPattern}
                 imageStyle={styles.xummAppBackground}
                 style={[styles.container]}
@@ -796,14 +800,13 @@ class ReviewTransactionModal extends Component<Props, State> {
                         { y: this.getTopOffset(), id: 'up' },
                     ]}
                     boundaries={{ top: this.getTopOffset() - 20 }}
-                    animatedValueY={this.deltaY}
                     onDrag={this.onDrag}
                     onSnap={this.onSnap}
                     verticalOnly
                     animatedNativeDriver
                 >
                     <View style={[styles.transactionContent, { height: AppSizes.screen.height - 70 }]}>
-                        <View style={AppStyles.panelHeader}>
+                        <View style={AppStyles.panelHeader} testID="review-content-container">
                             <View style={AppStyles.panelHandle} />
                         </View>
                         <ScrollView
@@ -845,6 +848,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                                 ]}
                             >
                                 <Button
+                                    testID="accept-button"
                                     isLoading={isPreparing}
                                     onPress={this.onAcceptPress}
                                     label={Localize.t('global.accept')}
@@ -862,7 +866,10 @@ class ReviewTransactionModal extends Component<Props, State> {
     renderSubmitting = () => {
         const { step } = this.state;
         return (
-            <SafeAreaView style={[AppStyles.container, AppStyles.paddingSml, { backgroundColor: AppColors.light }]}>
+            <SafeAreaView
+                testID="submitting-view"
+                style={[AppStyles.container, AppStyles.paddingSml, { backgroundColor: AppColors.light }]}
+            >
                 <View style={[AppStyles.flex5, AppStyles.centerContent]}>
                     <Image style={styles.backgroundImageStyle} source={Images.IconSend} />
                 </View>
@@ -1013,7 +1020,9 @@ class ReviewTransactionModal extends Component<Props, State> {
                     <View style={styles.detailsCard}>
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}</Text>
                         <Spacer />
-                        <Text style={[AppStyles.p, AppStyles.monoBold]}>{submitResult.engineResult || '-'}</Text>
+                        <Text testID="engine-result-text" style={[AppStyles.p, AppStyles.monoBold]}>
+                            {submitResult.engineResult || '-'}
+                        </Text>
 
                         <Spacer />
                         <View style={AppStyles.hr} />
@@ -1047,6 +1056,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
                 <Footer>
                     <Button
+                        testID="close-button"
                         onPress={this.handleClose}
                         style={{ backgroundColor: submitResult.success ? AppColors.green : AppColors.red }}
                         label={payload.meta.return_url_app ? Localize.t('global.next') : Localize.t('global.close')}

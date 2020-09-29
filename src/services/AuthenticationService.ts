@@ -71,7 +71,11 @@ class AuthenticationService extends EventEmitter {
     runAfterSuccessAuth = () => {
         setTimeout(() => {
             while (this.postSuccess.length) {
-                this.postSuccess.shift().call(null);
+                try {
+                    this.postSuccess.shift().call(null);
+                } catch (e) {
+                    this.logger.error(e);
+                }
             }
         }, 500);
     };
@@ -251,7 +255,7 @@ class AuthenticationService extends EventEmitter {
             }
 
             // get encrypted passcode from clear passcode
-            const encryptedPasscode = await CoreRepository.encryptedPasscode(passcode);
+            const encryptedPasscode = await CoreRepository.encryptPasscode(passcode);
 
             // check if passcode is correct
             if (encryptedPasscode === coreSettings.passcode) {
@@ -305,7 +309,7 @@ class AuthenticationService extends EventEmitter {
      */
     onAppStateChange = () => {
         if (
-            AppService.prevAppState === AppStateStatus.Background &&
+            [AppStateStatus.Background, AppStateStatus.Inactive].indexOf(AppService.prevAppState) > -1 &&
             AppService.currentAppState === AppStateStatus.Active
         ) {
             this.checkLockScreen();

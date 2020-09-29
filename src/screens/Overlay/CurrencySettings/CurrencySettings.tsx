@@ -89,19 +89,22 @@ class CurrencySettingsModal extends Component<Props, State> {
     }
 
     dismiss = () => {
-        Animated.parallel([
-            Animated.timing(this.animatedColor, {
-                toValue: 0,
-                duration: 350,
-                useNativeDriver: false,
-            }),
-            Animated.timing(this.animatedOpacity, {
-                toValue: 0,
-                duration: 200,
-                useNativeDriver: true,
-            }),
-        ]).start(() => {
-            Navigator.dismissOverlay();
+        return new Promise((resolve) => {
+            Animated.parallel([
+                Animated.timing(this.animatedColor, {
+                    toValue: 0,
+                    duration: 350,
+                    useNativeDriver: false,
+                }),
+                Animated.timing(this.animatedOpacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true,
+                }),
+            ]).start(async () => {
+                await Navigator.dismissOverlay();
+                return resolve();
+            });
         });
     };
 
@@ -328,6 +331,14 @@ class CurrencySettingsModal extends Component<Props, State> {
         );
     };
 
+    showExchangeScreen = () => {
+        const { trustLine } = this.props;
+
+        this.dismiss().then(() => {
+            Navigator.push(AppScreens.Transaction.Exchange, {}, { trustLine });
+        });
+    };
+
     render() {
         const { trustLine } = this.props;
         const { isLoading, canRemove } = this.state;
@@ -409,10 +420,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 iconPosition="right"
                                 label={Localize.t('global.exchange')}
                                 textStyle={[styles.exchangeButtonText]}
-                                onPress={() => {
-                                    this.dismiss();
-                                    Navigator.push(AppScreens.Transaction.Exchange, {}, { trustLine });
-                                }}
+                                onPress={this.showExchangeScreen}
                             />
                         </View>
 

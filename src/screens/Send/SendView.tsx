@@ -238,7 +238,6 @@ class SendView extends Component<Props, State> {
             address: source.address,
         };
 
-
         try {
             await payment.validate(source);
         } catch (e) {
@@ -399,7 +398,7 @@ class SendView extends Component<Props, State> {
 
     render() {
         return (
-            <View onResponderRelease={() => Keyboard.dismiss()} testID="send-view" style={[styles.container]}>
+            <View onResponderRelease={() => Keyboard.dismiss()} testID="send-screen" style={[styles.container]}>
                 {this.renderHeader()}
                 {this.renderStep()}
             </View>

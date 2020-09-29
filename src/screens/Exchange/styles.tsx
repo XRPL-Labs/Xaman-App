@@ -28,28 +28,30 @@ const styles = StyleSheet.create({
     },
     currencyLabel: {
         fontSize: AppFonts.h5.size,
-        fontFamily: AppFonts.base.familyMono,
+        fontFamily: AppFonts.base.familyMonoBold,
     },
-    xrpAvatar: {
-        width: AppSizes.scale(44),
-        height: AppSizes.scale(44),
-        resizeMode: 'cover',
-    },
-    brandAvatarContainer: {
-        height: AppSizes.scale(45),
-        width: AppSizes.scale(45),
+    currencyImageContainer: {
+        height: AppSizes.scale(38),
+        width: AppSizes.scale(38),
         marginRight: 10,
         borderWidth: 1,
-        borderColor: AppColors.light,
         borderRadius: 8,
         justifyContent: 'center',
         overflow: 'hidden',
         alignSelf: 'center',
         alignItems: 'center',
     },
-    brandAvatar: {
-        width: AppSizes.scale(44),
-        height: AppSizes.scale(44),
+    xrpImageContainer: {
+        padding: 10,
+        backgroundColor: AppColors.white,
+        borderColor: AppColors.grey,
+    },
+    iouImageContainer: {
+        borderColor: AppColors.light,
+    },
+    currencyImage: {
+        width: AppSizes.scale(37),
+        height: AppSizes.scale(37),
         resizeMode: 'cover',
     },
     subLabel: {
@@ -57,30 +59,22 @@ const styles = StyleSheet.create({
         fontFamily: AppFonts.base.familyMono,
         color: AppColors.greyDark,
     },
-    xrpAvatarContainer: {
-        height: AppSizes.scale(45),
-        width: AppSizes.scale(45),
-        padding: 10,
-        marginRight: 10,
+
+    inputContainer: {
+        left: 0,
+        right: 0,
+        flexDirection: 'row',
         backgroundColor: AppColors.white,
-        borderWidth: 1,
-        borderColor: AppColors.grey,
-        borderRadius: 8,
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignSelf: 'center',
-    },
-    currencyAvatar: {
-        width: AppSizes.scale(44),
-        height: AppSizes.scale(44),
-        resizeMode: 'contain',
-        marginTop: 1,
-        marginRight: 10,
+        borderRadius: 10,
+        borderColor: AppColors.lightBlue,
+        borderWidth: 2,
+        paddingHorizontal: 15,
+        paddingVertical: 15,
     },
     fromAmount: {
         textAlign: 'right',
         fontFamily: AppFonts.base.familyMonoBold,
-        fontSize: AppFonts.h1.size,
+        fontSize: AppFonts.h3.size,
         fontWeight: '600',
         color: AppColors.red,
         overflow: 'hidden',
@@ -89,7 +83,7 @@ const styles = StyleSheet.create({
         textAlign: 'right',
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
-        fontSize: AppFonts.h1.size,
+        fontSize: AppFonts.h3.size,
         color: AppColors.green,
     },
     switchButton: {
@@ -110,6 +104,9 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         width: AppSizes.scale(130),
         resizeMode: 'contain',
+    },
+    allButton: {
+        backgroundColor: AppColors.lightBlue,
     },
 });
 

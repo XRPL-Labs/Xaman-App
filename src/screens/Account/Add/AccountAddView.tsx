@@ -43,7 +43,7 @@ class AccountAddView extends Component<Props, State> {
 
     render() {
         return (
-            <View testID="account-add-view" style={[AppStyles.container]}>
+            <View testID="account-add-screen" style={[AppStyles.container]}>
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',

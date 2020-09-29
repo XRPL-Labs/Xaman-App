@@ -73,7 +73,7 @@ class EnterSeedStep extends Component<Props, State> {
         const { familySeed } = this.state;
 
         return (
-            <SafeAreaView testID="account-import-enter-family-seed" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-import-enter-family-seed-view" style={[AppStyles.container]}>
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
                     {Localize.t('account.pleaseProvideFamilySeed')}
                 </Text>
@@ -86,8 +86,11 @@ class EnterSeedStep extends Component<Props, State> {
                     style={[AppStyles.flex1, AppStyles.paddingHorizontal]}
                 >
                     <TextInput
+                        testID="seed-input"
                         placeholder={Localize.t('account.pleaseEnterYourFamilySeed')}
-                        // containerStyle={styles.searchContainer}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        keyboardType="visible-password"
                         inputStyle={styles.inputText}
                         onChangeText={(value) => this.setState({ familySeed: value.replace(/[^a-z0-9]/gi, '') })}
                         value={familySeed}
@@ -101,6 +104,7 @@ class EnterSeedStep extends Component<Props, State> {
                 <Footer style={[AppStyles.centerAligned, AppStyles.row]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
@@ -111,6 +115,7 @@ class EnterSeedStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
+                            testID="next-button"
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
                             onPress={() => {

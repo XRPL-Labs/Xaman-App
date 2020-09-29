@@ -46,6 +46,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
     panel: any;
     deltaY: Animated.Value;
+    deltaX: Animated.Value;
     onDismiss: () => void;
 
     static options() {
@@ -71,6 +72,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
         };
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
+        this.deltaX = new Animated.Value(0);
         this.onDismiss = () => {};
     }
 
@@ -215,13 +217,13 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
         return (
             <LinearGradient
+                key={account.address}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 colors={[AppColors.light, AppColors.white]}
                 style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow]}
             >
                 <TouchableOpacity
-                    key={account.address}
                     style={[AppStyles.row, AppStyles.centerAligned]}
                     onPress={() => {
                         this.changeDefaultAccount(account.address);
@@ -298,6 +300,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
                     }}
                     initialPosition={{ y: AppSizes.screen.height }}
                     animatedValueY={this.deltaY}
+                    animatedValueX={this.deltaX}
                 >
                     <View style={[styles.visibleContent, { height: contentHeight + BOUNDARY_HEIGHT }]}>
                         <View style={AppStyles.panelHeader}>

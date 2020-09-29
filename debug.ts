@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { LogBox } from 'react-native';
 
 if (__DEV__) {
     // disable some yellow boxes
@@ -6,6 +7,8 @@ if (__DEV__) {
         'Remote debugger is in a background tab which may cause apps to perform slowly',
         'Require cycle:',
         'Setting a timer',
+        'Module AppRegistry is not',
+        'Warning: Failed prop type',
     ];
     const oldConsoleWarn = console.warn;
 
@@ -20,5 +23,5 @@ if (__DEV__) {
         return oldConsoleWarn.apply(console, args);
     };
 
-    console.disableYellowBox = true;
+    LogBox.ignoreLogs(IGNORED_WARNINGS);
 }

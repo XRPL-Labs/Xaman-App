@@ -309,7 +309,7 @@ class AccountImportView extends Component<Props, State> {
                 title = Localize.t('account.accountLabel');
                 break;
             case 'PassphraseStep':
-                title = Localize.t('global.passphrase');
+                title = Localize.t('global.password');
                 break;
             case 'SecurityStep':
                 title = Localize.t('account.extraSecurity');

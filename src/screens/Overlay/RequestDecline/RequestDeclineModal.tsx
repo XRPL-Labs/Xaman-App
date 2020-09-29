@@ -33,6 +33,7 @@ class RequestDeclineOverlay extends Component<Props, State> {
 
     panel: any;
     deltaY: Animated.Value;
+    deltaX: Animated.Value;
     onDismiss: () => void;
 
     static options() {
@@ -53,6 +54,7 @@ class RequestDeclineOverlay extends Component<Props, State> {
         this.state = {};
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
+        this.deltaX = new Animated.Value(0);
     }
 
     componentDidMount() {
@@ -139,6 +141,7 @@ class RequestDeclineOverlay extends Component<Props, State> {
                     boundaries={{ top: AppSizes.screen.height - AppSizes.moderateScale(400) }}
                     initialPosition={{ y: AppSizes.screen.height + 3 }}
                     animatedValueY={this.deltaY}
+                    animatedValueX={this.deltaX}
                 >
                     <View style={[styles.container]}>
                         <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingVerticalSml]}>

@@ -97,6 +97,7 @@ class RecipientElement extends PureComponent<Props> {
 
         return (
             <TouchableHighlight
+                testID={`recipient-${recipient.address}`}
                 activeOpacity={onPress ? 0.7 : 1}
                 onPress={this.onPress}
                 underlayColor="#FFF"

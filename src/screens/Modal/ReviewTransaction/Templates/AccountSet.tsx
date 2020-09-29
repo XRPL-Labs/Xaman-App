@@ -85,7 +85,7 @@ class AccountSetTemplate extends Component<Props, State> {
                         <Text style={[styles.label]}>{Localize.t('global.transferRate')}</Text>
                         <View style={[styles.contentBox]}>
                             <Text selectable style={[styles.valueSubtext]}>
-                                {transaction.TransferRate}
+                                {transaction.TransferRate} %
                             </Text>
                         </View>
                     </>

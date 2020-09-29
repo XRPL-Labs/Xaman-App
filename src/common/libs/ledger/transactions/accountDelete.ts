@@ -19,7 +19,7 @@ import { LedgerTransactionType } from '../types';
 
 /* Class ==================================================================== */
 class AccountDelete extends BaseTransaction {
-    constructor(tx: LedgerTransactionType) {
+    constructor(tx?: LedgerTransactionType) {
         super(tx);
 
         // set transaction type if not set
@@ -40,20 +40,22 @@ class AccountDelete extends BaseTransaction {
         }
 
         // the delivered_amount will be unavailable in old transactions
+        // not in this tx type, but better to check
         if (amount === 'unavailable') {
             amount = undefined;
         }
 
-        if (!amount) {
-            amount = get(this, ['tx', 'Amount']);
-        }
-
         if (isUndefined(amount)) return undefined;
 
-        return {
-            currency: 'XRP',
-            value: new Amount(amount).dropsToXrp(),
-        };
+        // as this only will be XRP we only check for string & number
+        if (typeof amount === 'string' || typeof amount === 'number') {
+            return {
+                currency: 'XRP',
+                value: new Amount(amount).dropsToXrp(),
+            };
+        }
+
+        return undefined;
     }
 
     get Destination(): Destination {

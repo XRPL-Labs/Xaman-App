@@ -4,7 +4,9 @@
 
 import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Clipboard } from 'react-native';
+import { SafeAreaView, View, Text } from 'react-native';
+
+import Clipboard from '@react-native-community/clipboard';
 
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';

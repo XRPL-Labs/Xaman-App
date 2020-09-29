@@ -1,22 +1,6 @@
 import { Memo } from './parser/types';
 
 /**
- * Ledger Transaction schema from rippled
- */
-export interface LedgerTransactionType {
-    engine_result?: string;
-    engine_result_code?: number;
-    engine_result_message?: string;
-    ledger_hash?: string;
-    ledger_index?: number;
-    status?: string;
-    transaction: TransactionJSONType;
-    tx?: TransactionJSONType;
-    meta?: any;
-    [key: string]: any;
-}
-
-/**
  * TX Json Transaction Type
  */
 export type TransactionJSONType = {
@@ -28,6 +12,22 @@ export type TransactionJSONType = {
     LastLedgerSequence?: number;
     [Field: string]: string | number | Array<any> | undefined | object;
 };
+
+/**
+ * Ledger Transaction schema from rippled
+ */
+export interface LedgerTransactionType {
+    engine_result?: string;
+    engine_result_code?: number;
+    engine_result_message?: string;
+    ledger_hash?: string;
+    ledger_index?: number;
+    status?: string;
+    transaction?: TransactionJSONType;
+    tx?: TransactionJSONType;
+    meta?: any;
+    [key: string]: any;
+}
 
 /**
  * Transaction Signed Type

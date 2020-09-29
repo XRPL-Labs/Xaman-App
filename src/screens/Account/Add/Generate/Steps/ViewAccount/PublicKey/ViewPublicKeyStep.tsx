@@ -3,7 +3,9 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Clipboard, ActivityIndicator } from 'react-native';
+import { SafeAreaView, View, Text, ActivityIndicator } from 'react-native';
+
+import Clipboard from '@react-native-community/clipboard';
 
 import { Toast, Prompt } from '@common/helpers/interface';
 
@@ -51,7 +53,7 @@ class ViewPublicKeyStep extends Component<Props, State> {
         const { generatedAccount, goNext } = this.context;
 
         return (
-            <SafeAreaView testID="account-generate-step-view-public" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-generate-show-address-view" style={[AppStyles.container]}>
                 <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.paddingSml]}>
                     <Text style={[AppStyles.h3]}>{Localize.t('global.great')}</Text>
                     <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
@@ -63,7 +65,7 @@ class ViewPublicKeyStep extends Component<Props, State> {
                     </Text>
                     <View style={[styles.labelWrapper, AppStyles.stretchSelf]}>
                         {generatedAccount ? (
-                            <Text selectable style={[styles.addressField]}>
+                            <Text testID="account-address-text" selectable style={[styles.addressField]}>
                                 {generatedAccount.address}
                             </Text>
                         ) : (
@@ -88,6 +90,7 @@ class ViewPublicKeyStep extends Component<Props, State> {
                 <Footer style={[AppStyles.row]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             // secondary
                             secondary
                             label={Localize.t('global.back')}
@@ -97,6 +100,7 @@ class ViewPublicKeyStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
+                            testID="next-button"
                             isDisabled={!generatedAccount}
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}

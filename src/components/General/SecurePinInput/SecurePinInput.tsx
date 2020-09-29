@@ -176,9 +176,10 @@ class SecurePinInput extends Component<Props, State> {
             if (item === 'X') {
                 return (
                     <TouchableHighlight
+                        testID="x-key"
                         underlayColor={AppColors.grey}
                         style={styles.line}
-                        key={index}
+                        key="x-key"
                         onPress={() => {
                             this.onDigitInput('Backspace');
                         }}
@@ -194,9 +195,10 @@ class SecurePinInput extends Component<Props, State> {
                 if (supportBiometric) {
                     return (
                         <TouchableHighlight
+                            testID="y-key"
                             underlayColor={AppColors.grey}
                             style={styles.line}
-                            key={index}
+                            key="y-key"
                             onPress={() => {
                                 if (onBiometryPress) {
                                     onBiometryPress();
@@ -208,14 +210,15 @@ class SecurePinInput extends Component<Props, State> {
                     );
                 }
 
-                return <View style={styles.line} />;
+                return <View key={`${index}-line`} style={styles.line} />;
             }
             return (
                 <TouchableHighlight
+                    testID={`${item}-key`}
                     underlayColor={AppColors.grey}
                     style={styles.line}
                     activeOpacity={0.7}
-                    key={index}
+                    key={`${item}-key`}
                     onPress={() => {
                         this.onDigitInput(item);
                     }}
@@ -229,7 +232,7 @@ class SecurePinInput extends Component<Props, State> {
         return BUTTONS.map((item, index) => {
             if (index % 3 === 0) {
                 return (
-                    <View style={styles.numWrap} key={index}>
+                    <View style={styles.numWrap} key={`num-${index}`}>
                         {this.renderNumText(index)}
                     </View>
                 );
@@ -246,7 +249,10 @@ class SecurePinInput extends Component<Props, State> {
         const elements = [];
         for (let i = 0; i < length; i++) {
             elements.push(
-                <View key={i} style={[styles.pinStyle, digits.length > i ? { ...styles.pinActiveStyle } : {}]} />,
+                <View
+                    key={`dot-${i}`}
+                    style={[styles.pinStyle, digits.length > i ? { ...styles.pinActiveStyle } : {}]}
+                />,
             );
         }
 
@@ -268,10 +274,11 @@ class SecurePinInput extends Component<Props, State> {
         }
 
         return (
-            <TouchableWithoutFeedback onPress={this.focus}>
+            <TouchableWithoutFeedback testID="pin-input-container" onPress={this.focus}>
                 <View style={[styles.container]}>
                     {!virtualKeyboard && (
                         <TextInput
+                            testID="pin-input"
                             autoCorrect={false}
                             disableFullscreenUI
                             returnKeyType="done"
@@ -290,7 +297,11 @@ class SecurePinInput extends Component<Props, State> {
                     )}
                     <View style={styles.digits}>{this.renderDots()}</View>
 
-                    {virtualKeyboard && <View style={styles.keyboardWrap}>{this.renderNum()}</View>}
+                    {virtualKeyboard && (
+                        <View testID="virtual-keyboard" style={styles.keyboardWrap}>
+                            {this.renderNum()}
+                        </View>
+                    )}
                 </View>
             </TouchableWithoutFeedback>
         );

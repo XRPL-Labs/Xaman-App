@@ -114,7 +114,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     setPartiesDetails = async () => {
-        const { tx } = this.props;
+        const { tx, account } = this.props;
         const { incomingTx } = this.state;
 
         let address = '';
@@ -133,7 +133,12 @@ class TransactionDetailsView extends Component<Props, State> {
                 address = tx.Destination.address;
                 break;
             case 'TrustSet':
-                address = tx.Issuer;
+                // incoming trustline
+                if (tx.Issuer === account.address) {
+                    address = tx.Account.address;
+                } else {
+                    address = tx.Issuer;
+                }
                 break;
             case 'EscrowCreate':
                 address = tx.Destination.address;
@@ -759,9 +764,10 @@ class TransactionDetailsView extends Component<Props, State> {
             }
             case 'OfferCreate': {
                 if (tx.Executed) {
+                    const takerPaid = tx.TakerPaid(account.address);
                     Object.assign(props, {
                         color: styles.incomingColor,
-                        text: `${tx.TakerPaid.value} ${NormalizeCurrencyCode(tx.TakerPaid.currency)}`,
+                        text: `${takerPaid.value} ${NormalizeCurrencyCode(takerPaid.currency)}`,
                         icon: 'IconCornerRightDown',
                     });
                 } else {
@@ -784,11 +790,13 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         if (tx.Type === 'OfferCreate') {
+            const takerGot = tx.TakerGot(account.address);
+
             return (
                 <View style={styles.amountHeaderContainer}>
                     <View style={[AppStyles.row, styles.amountContainerSmall]}>
                         <Text style={[styles.amountTextSmall]} numberOfLines={1}>
-                            {`${tx.TakerGets.value} ${NormalizeCurrencyCode(tx.TakerGets.currency)}`}
+                            {`${takerGot.value} ${NormalizeCurrencyCode(takerGot.currency)}`}
                         </Text>
                     </View>
 
@@ -845,6 +853,16 @@ class TransactionDetailsView extends Component<Props, State> {
                 name: account.label,
                 source: 'internal:accounts',
             });
+        }
+
+        // incoming trustline
+        if (tx.Type === 'TrustSet' && tx.Issuer === account.address) {
+            from = { address: tx.Account.address, ...partiesDetails };
+            to = {
+                address: account.address,
+                name: account.label,
+                source: 'internal:accounts',
+            };
         }
 
         let actionButton;

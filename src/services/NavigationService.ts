@@ -8,7 +8,8 @@ import { last, take, values } from 'lodash';
 
 import { BackHandler, Platform, NativeModules } from 'react-native';
 
-import firebase from 'react-native-firebase';
+import analytics from '@react-native-firebase/analytics';
+
 import {
     Navigation,
     ComponentDidAppearEvent,
@@ -46,7 +47,7 @@ class NavigationService extends EventEmitter {
         return new Promise((resolve, reject) => {
             try {
                 // enable firebase analytics collection
-                firebase.analytics().setAnalyticsCollectionEnabled(true);
+                analytics().setAnalyticsCollectionEnabled(true);
                 // navigation event listeners
                 Navigation.events().registerComponentDidAppearListener(this.componentDidAppear);
                 Navigation.events().registerCommandListener(this.navigatorCommandListener);
@@ -199,7 +200,7 @@ class NavigationService extends EventEmitter {
     setCurrentScreen = (currentScreen: string) => {
         if (this.currentScreen !== currentScreen) {
             // broadcast to firebase
-            firebase.analytics().setCurrentScreen(currentScreen, currentScreen);
+            analytics().logScreenView({ screen_name: currentScreen });
 
             this.setPrevScreen(this.currentScreen);
             this.currentScreen = currentScreen;

@@ -70,13 +70,14 @@ class SecretTypeStep extends Component<Props, State> {
         const { goBack } = this.context;
         const { secretType } = this.state;
         return (
-            <SafeAreaView testID="account-import-account-type" style={[AppStyles.contentContainer]}>
+            <SafeAreaView testID="account-import-secret-type-view" style={[AppStyles.contentContainer]}>
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
                     {Localize.t('account.pleaseSelectAccountSecretType')}
                 </Text>
 
                 <View style={[AppStyles.contentContainer, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <RadioButton
+                        testID="secret-numbers-radio-button"
                         onPress={() => {
                             this.onRadioButtonPress(SecretTypes.SecretNumbers);
                         }}
@@ -86,6 +87,7 @@ class SecretTypeStep extends Component<Props, State> {
                     />
 
                     <RadioButton
+                        testID="family-seed-radio-button"
                         onPress={() => {
                             this.onRadioButtonPress(SecretTypes.FamilySeed);
                         }}
@@ -95,6 +97,7 @@ class SecretTypeStep extends Component<Props, State> {
                     />
 
                     <RadioButton
+                        testID="mnemonic-radio-button"
                         onPress={() => {
                             this.onRadioButtonPress(SecretTypes.Mnemonic);
                         }}
@@ -107,6 +110,7 @@ class SecretTypeStep extends Component<Props, State> {
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
@@ -117,6 +121,7 @@ class SecretTypeStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
+                            testID="next-button"
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
                             onPress={() => {

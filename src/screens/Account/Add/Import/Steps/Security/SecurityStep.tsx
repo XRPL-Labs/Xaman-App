@@ -59,12 +59,13 @@ class SecurityStep extends Component<Props, State> {
         const { encryptionLevel } = this.state;
 
         return (
-            <SafeAreaView testID="account-import-security" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-import-security-view" style={[AppStyles.container]}>
                 <Text style={[AppStyles.p, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
                     {Localize.t('account.chooseWisely')}
                 </Text>
                 <View style={[AppStyles.contentContainer, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <RadioButton
+                        testID="passcode-radio-button"
                         onPress={() => {
                             this.onRadioButtonPress(EncryptionLevels.Passcode);
                         }}
@@ -75,11 +76,12 @@ class SecurityStep extends Component<Props, State> {
                     />
 
                     <RadioButton
+                        testID="passphrase-radio-button"
                         onPress={() => {
                             this.onRadioButtonPress(EncryptionLevels.Passphrase);
                         }}
-                        description={Localize.t('account.passphraseOptionDesc')}
-                        labelSmall={Localize.t('account.signWithPassphrase')}
+                        description={Localize.t('account.passwordOptionDesc')}
+                        labelSmall={Localize.t('account.signWithPassword')}
                         label={Localize.t('global.extraSecurity')}
                         checked={encryptionLevel === EncryptionLevels.Passphrase}
                     />
@@ -88,6 +90,7 @@ class SecurityStep extends Component<Props, State> {
                 <Footer style={[AppStyles.centerAligned, AppStyles.row]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
@@ -98,6 +101,7 @@ class SecurityStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
+                            testID="next-button"
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
                             onPress={() => {

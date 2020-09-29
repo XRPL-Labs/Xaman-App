@@ -10,6 +10,7 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
+    testID?: string;
     editable?: boolean;
     validate?: boolean;
     minLength?: number;
@@ -266,11 +267,12 @@ export default class PasswordInput extends Component<Props, State> {
     }
 
     renderPasswordInput() {
-        const { inputWrapperStyle, inputStyle, editable, placeholder, selectTextOnFocus } = this.props;
+        const { testID, inputWrapperStyle, inputStyle, editable, placeholder, selectTextOnFocus } = this.props;
         const { hidePassword } = this.state;
         return (
             <View style={[styles.inputWrapper, inputWrapperStyle, AppStyles.stretchSelf]}>
                 <TextInput
+                    testID={testID}
                     ref={(r) => {
                         this.instance = r;
                     }}
@@ -310,7 +312,7 @@ export default class PasswordInput extends Component<Props, State> {
             return this.renderPasswordInput();
         }
         return (
-            <Fragment key="PasswordInput">
+            <Fragment key="passphrase-container">
                 {this.renderPasswordInput()}
                 {this.renderPasswordStrength()}
             </Fragment>

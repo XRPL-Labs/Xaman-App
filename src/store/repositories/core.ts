@@ -1,8 +1,9 @@
-import Realm, { ObjectSchema, Results } from 'realm';
-
 import { assign } from 'lodash';
 
+import Realm, { ObjectSchema, Results } from 'realm';
 import DeviceInfo from 'react-native-device-info';
+import crashlytics from '@react-native-firebase/crashlytics';
+
 import { SHA512, HMAC256 } from '@common/libs/crypto';
 
 import { AppConfig } from '@common/constants';
@@ -81,25 +82,42 @@ class CoreRepository extends BaseRepository {
         return undefined;
     };
 
-    encryptedPasscode = async (passcode: string): Promise<string> => {
-        // for better security we mix passcode with device uuid
-        // because it will be used to encrypt private key and storing just passcode-hash is not a good idea
-        const deviceUUID = DeviceInfo.getUniqueId();
+    encryptPasscode = async (passcode: string): Promise<string> => {
+        try {
+            // for better security we mix passcode with device uuid
+            // because it will be used to encrypt private key and storing just passcode-hash is not a good idea
+            const deviceUUID = DeviceInfo.getUniqueId();
 
-        // hash the passcode
-        const hashPasscode = await SHA512(passcode);
-        const encPasscode = await HMAC256(hashPasscode, deviceUUID);
+            // hash the passcode
+            const hashPasscode = await SHA512(passcode);
+            const encPasscode = await HMAC256(hashPasscode, deviceUUID);
 
-        return encPasscode;
+            return encPasscode;
+        } catch (e) {
+            crashlytics().log('Encrypt Passcode Failed');
+            crashlytics().recordError(e);
+            return '';
+        }
     };
 
     setPasscode = async (passcode: string): Promise<string> => {
-        // save in the store
-        const encryptedPasscode = await this.encryptedPasscode(passcode);
+        try {
+            const encryptedPasscode = await this.encryptPasscode(passcode);
 
-        this.saveSettings({ passcode: encryptedPasscode });
+            // unable to encrypt passcode
+            if (!encryptedPasscode) {
+                return '';
+            }
 
-        return encryptedPasscode;
+            // save in the store
+            this.saveSettings({ passcode: encryptedPasscode });
+
+            return encryptedPasscode;
+        } catch (e) {
+            crashlytics().log('Save Passcode Failed');
+            crashlytics().recordError(e);
+            return '';
+        }
     };
 
     /**

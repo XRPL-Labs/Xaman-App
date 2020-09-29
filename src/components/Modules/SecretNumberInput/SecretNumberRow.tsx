@@ -48,7 +48,7 @@ class SecretNumberRow extends Component<Props, State> {
     }
 
     renderColumns = () => {
-        const { numbers, currentColumn, rowChecksumError, readonly } = this.props;
+        const { rowNumber, numbers, currentColumn, rowChecksumError, readonly } = this.props;
 
         const columns = [];
 
@@ -78,6 +78,7 @@ class SecretNumberRow extends Component<Props, State> {
                     ]}
                 >
                     <Text
+                        testID={`${rowNumber}.${i}`}
                         style={[
                             styles.inputText,
                             styles.inputTextActive,

@@ -44,7 +44,7 @@ class OnboardingView extends Component<Props, State> {
     render() {
         return (
             <ImageBackground
-                testID="onboarding-view"
+                testID="onboarding-screen"
                 source={Images.backgroundPattern}
                 style={[styles.container]}
                 imageStyle={styles.backgroundImageStyle}

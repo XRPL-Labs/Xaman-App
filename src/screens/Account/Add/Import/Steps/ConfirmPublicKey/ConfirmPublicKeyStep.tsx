@@ -3,7 +3,9 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Clipboard, ScrollView } from 'react-native';
+import { SafeAreaView, View, Text, ScrollView } from 'react-native';
+
+import Clipboard from '@react-native-community/clipboard';
 
 import { AccountRepository } from '@store/repositories';
 
@@ -121,7 +123,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
         const { importedAccount, goNext } = this.context;
 
         return (
-            <SafeAreaView testID="account-import-account-type" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-import-show-address-view" style={[AppStyles.container]}>
                 <Text style={[AppStyles.p, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
                     {Localize.t('account.pleaseConfirmYourAccountAddress')}
                 </Text>
@@ -135,7 +137,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                     ]}
                 >
                     <View style={[styles.labelWrapper, AppStyles.stretchSelf]}>
-                        <Text selectable style={[styles.addressField]}>
+                        <Text testID="account-address-text" selectable style={[styles.addressField]}>
                             {importedAccount.address}
                         </Text>
                     </View>
@@ -159,6 +161,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
@@ -167,6 +170,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
+                            testID="next-button"
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.confirm')}
                             onPress={() => {

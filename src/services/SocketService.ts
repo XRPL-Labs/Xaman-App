@@ -155,10 +155,12 @@ class SocketService extends EventEmitter {
 
         // on app state changed
         AppService.on('appStateChange', (newState: AppStateStatus, prevState: AppStateStatus) => {
+            // reconnect when app comes from idle state to active
             if (newState === AppStateStatus.Active && prevState === AppStateStatus.Inactive) {
                 this.reconnect();
             }
 
+            // disconnect socket when app is come to idle state
             if (newState === AppStateStatus.Inactive) {
                 this.close();
             }
@@ -243,7 +245,6 @@ class SocketService extends EventEmitter {
     };
 
     sendPayload = (payload: any) => {
-        this.logger.debug('Sending Socket Payload', payload);
         return this.connection.send(payload);
     };
 

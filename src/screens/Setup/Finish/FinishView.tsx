@@ -85,7 +85,6 @@ class FinishView extends Component<Props, State> {
             // run post services after success auth
             AuthenticationService.onSuccessAuthentication();
 
-
             // navigate to default root
             Navigator.startDefault();
         } catch (e) {
@@ -113,7 +112,7 @@ class FinishView extends Component<Props, State> {
     render() {
         const { isLoading, isTOSLoaded } = this.state;
         return (
-            <SafeAreaView testID="agreement-setup-view" style={[AppStyles.flex1]}>
+            <SafeAreaView testID="agreement-setup-screen" style={[AppStyles.flex1]}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerAligned]}>
                     <Image style={styles.logo} source={Images.xummLogo} />
                 </View>

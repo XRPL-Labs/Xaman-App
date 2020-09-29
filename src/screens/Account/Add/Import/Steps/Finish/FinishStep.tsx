@@ -57,6 +57,7 @@ class FinishStep extends Component<Props, State> {
 
                     <Footer>
                         <Button
+                            testID="finish-button"
                             label={Localize.t('account.yeahLetsGo')}
                             onPress={() => {
                                 goNext();

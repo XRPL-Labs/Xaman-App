@@ -46,12 +46,12 @@ class PassphraseStep extends Component<Props, State> {
         const { goNext, setPassphrase } = this.context;
 
         if (!passphrase.isValid) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.passphraseShouldContain'));
+            Alert.alert(Localize.t('global.error'), Localize.t('account.passwordShouldContain'));
             return;
         }
 
         if (passphrase.value !== passphrase_confirmation) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.passphraseConfirmNotMatch'));
+            Alert.alert(Localize.t('global.error'), Localize.t('account.passwordConfirmNotMatch'));
             return;
         }
 
@@ -62,7 +62,7 @@ class PassphraseStep extends Component<Props, State> {
                 goNext('LabelStep');
             });
         } else {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.enterValidPassphrase'));
+            Alert.alert(Localize.t('global.error'), Localize.t('account.enterValidPassword'));
         }
     };
 
@@ -71,9 +71,9 @@ class PassphraseStep extends Component<Props, State> {
         const { passphrase } = this.state;
 
         return (
-            <SafeAreaView testID="account-import-set-passphrase" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-import-passphrase-view" style={[AppStyles.container]}>
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
-                    {Localize.t('account.pleaseEnterSafePassphrase')}
+                    {Localize.t('account.pleaseEnterSafePassword')}
                 </Text>
 
                 <KeyboardAvoidingView
@@ -83,8 +83,9 @@ class PassphraseStep extends Component<Props, State> {
                     style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}
                 >
                     <PasswordInput
+                        testID="passphrase-input"
                         editable
-                        placeholder={Localize.t('account.enterPassphrase')}
+                        placeholder={Localize.t('account.enterPassword')}
                         minLength={8}
                         onChange={(value: string, isValid: boolean) => {
                             this.setState({ passphrase: { value, isValid } });
@@ -94,8 +95,9 @@ class PassphraseStep extends Component<Props, State> {
                     />
 
                     <PasswordInput
+                        testID="passphrase-confirm-input"
                         editable={passphrase.isValid}
-                        placeholder={Localize.t('account.repeatPassphrase')}
+                        placeholder={Localize.t('account.repeatPassword')}
                         selectTextOnFocus={passphrase.isValid}
                         onChange={(passphrase_confirmation) => this.setState({ passphrase_confirmation })}
                         validate={false}
@@ -104,6 +106,7 @@ class PassphraseStep extends Component<Props, State> {
                 <Footer style={[AppStyles.centerAligned, AppStyles.row]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
+                            testID="back-button"
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
@@ -114,6 +117,7 @@ class PassphraseStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
+                            testID="next-button"
                             isDisabled={!passphrase.isValid}
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
