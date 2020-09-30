@@ -48,6 +48,7 @@ describe('AuthenticationService', () => {
     it('should run the required functions after success auth', async () => {
         const spyList = [] as any;
         spyList.push(jest.spyOn(AppService, 'checkShowChangeLog').mockImplementation(jest.fn()));
+        spyList.push(jest.spyOn(AppService, 'checkAppUpdate').mockImplementation(jest.fn()));
         spyList.push(jest.spyOn(BackendService, 'ping').mockImplementation(jest.fn()));
         spyList.push(jest.spyOn(SocketService, 'connect').mockImplementation(jest.fn()));
         spyList.push(jest.spyOn(LinkingService, 'checkInitialDeepLink').mockImplementation(jest.fn()));

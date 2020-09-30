@@ -4,7 +4,7 @@
  */
 import EventEmitter from 'events';
 
-import { AppState, NativeModules, NativeEventEmitter } from 'react-native';
+import { AppState, Platform, NativeModules, NativeEventEmitter } from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
 import DeviceInfo from 'react-native-device-info';
@@ -19,7 +19,7 @@ import { VersionDiff } from '@common/libs/utils';
 import LoggerService from '@services/LoggerService';
 
 /* Constants  ==================================================================== */
-const { UtilsModule } = NativeModules;
+const { UtilsModule, InAppUpdateModule } = NativeModules;
 
 const Emitter = new NativeEventEmitter(UtilsModule);
 
@@ -75,6 +75,7 @@ class AppService extends EventEmitter {
     };
 
     // check if we need to show the App change log
+    // this log will be show after user update the app
     checkShowChangeLog = async () => {
         const currentVersionCode = DeviceInfo.getVersion();
         const savedVersionCode = await Preferences.get(Preferences.keys.LATEST_VERSION_CODE);
@@ -98,6 +99,33 @@ class AppService extends EventEmitter {
             // update the latest version code
             Preferences.set(Preferences.keys.LATEST_VERSION_CODE, currentVersionCode);
         }
+    };
+
+    // check if update available for the app
+    checkAppUpdate = async () => {
+        // this method only works on android
+        if (Platform.OS !== 'android') {
+            return;
+        }
+
+        InAppUpdateModule.checkUpdate().then(async (versionCode: number) => {
+            // if update available
+            if (versionCode) {
+                const ignoredVersionCode = await Preferences.get(Preferences.keys.UPDATE_IGNORE_VERSION_CODE);
+
+                // user already ignored this update
+                if (`${versionCode}` === `${ignoredVersionCode}`) {
+                    return;
+                }
+
+                InAppUpdateModule.startUpdate().catch((e: any) => {
+                    // user canceled this update
+                    if (e.code === 'E_UPDATE_CANCELLED') {
+                        Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`);
+                    }
+                });
+            }
+        });
     };
 
     setNetState = (isConnected: boolean) => {

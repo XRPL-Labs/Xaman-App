@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--    Set Margin Here -->
+    <item
+        android:bottom="10dp"
+        android:left="18dp"
+        android:right="18dp"
+        android:top="10dp">
+
+        <!-- Insert your shape here: -->
+        <shape android:shape="rectangle">
+            <solid android:color="#323232" />
+
+            <!-- Padding for inner text-->
+            <padding
+                android:bottom="10dp"
+                android:left="25dp"
+                android:right="10dp"
+                android:top="10dp" />
+            <corners android:radius="12dp" />
+
+        </shape>
+    </item>
+</layer-list>

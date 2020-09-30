@@ -14,8 +14,9 @@ import libs.crypto.modules.CryptoPackage;
 import libs.ui.ActionSheetPackage;
 import libs.ui.PromptPackage;
 import libs.ui.QRCodePackage;
-import libs.common.SharedPreferencesPackage;
 import libs.notification.LocalNotificationPackage;
+import libs.common.SharedPreferencesPackage;
+import libs.common.InAppUpdatePackage;
 import libs.common.HTTPClientFactory;
 
 // External Dependencies
@@ -56,8 +57,7 @@ public class MainApplication extends NavigationApplication {
                 packages.add(new QRCodePackage());
                 packages.add(new SharedPreferencesPackage());
                 packages.add(new LocalNotificationPackage());
-                // Firebase Dependencies
-
+                packages.add(new InAppUpdatePackage());
                 return packages;
             }
 
