@@ -35,7 +35,7 @@ import com.google.android.play.core.install.model.ActivityResult;
 
 import com.google.android.play.core.tasks.Task;
 
-public class InAppUpdateModule extends ReactContextBaseJavaModule implements InstallStateUpdatedListener, LifecycleEventListener {
+public class AppUpdateModule extends ReactContextBaseJavaModule implements InstallStateUpdatedListener, LifecycleEventListener {
 
     private static ReactApplicationContext reactContext;
 
@@ -49,7 +49,7 @@ public class InAppUpdateModule extends ReactContextBaseJavaModule implements Ins
     private Promise updatePromise;
 
 
-    InAppUpdateModule(ReactApplicationContext context) {
+    AppUpdateModule(ReactApplicationContext context) {
         super(context);
         reactContext = context;
         reactContext.addActivityEventListener(mActivityEventListener);
@@ -63,7 +63,7 @@ public class InAppUpdateModule extends ReactContextBaseJavaModule implements Ins
     @NonNull
     @Override
     public String getName() {
-        return "InAppUpdateModule";
+        return "AppUpdateModule";
     }
 
 
