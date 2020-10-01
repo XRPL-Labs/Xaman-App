@@ -275,7 +275,11 @@ class TransactionDetailsView extends Component<Props, State> {
 
         switch (tx.Type) {
             case 'Payment':
+                if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
+                    return Localize.t('events.exchangedAssets');
+                }
                 return Localize.t('global.payment');
+
             case 'TrustSet':
                 if (tx.Account.address !== account.address) {
                     return Localize.t('events.incomingTrustLineAdded');
@@ -729,6 +733,23 @@ class TransactionDetailsView extends Component<Props, State> {
 
         switch (tx.Type) {
             case 'Payment':
+                if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
+                    const balanceChanges = tx.BalanceChange(account.address);
+                    Object.assign(props, {
+                        color: styles.incomingColor,
+                        text: `${balanceChanges.received.value} ${NormalizeCurrencyCode(
+                            balanceChanges.received.currency,
+                        )}`,
+                        icon: 'IconCornerRightDown',
+                    });
+                } else {
+                    Object.assign(props, {
+                        color: incomingTx ? styles.incomingColor : styles.outgoingColor,
+                        text: `${incomingTx ? '' : '-'}${tx.Amount.value} ${NormalizeCurrencyCode(tx.Amount.currency)}`,
+                    });
+                }
+
+                break;
             case 'AccountDelete': {
                 Object.assign(props, {
                     color: incomingTx ? styles.incomingColor : styles.outgoingColor,
@@ -819,6 +840,62 @@ class TransactionDetailsView extends Component<Props, State> {
             );
         }
 
+        if (tx.Type === 'Payment') {
+            if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
+                const balanceChanges = tx.BalanceChange(account.address);
+
+                return (
+                    <View style={styles.amountHeaderContainer}>
+                        <View style={[AppStyles.row, styles.amountContainerSmall]}>
+                            <Text style={[styles.amountTextSmall]} numberOfLines={1}>
+                                {`${balanceChanges.sent.value} ${NormalizeCurrencyCode(balanceChanges.sent.currency)}`}
+                            </Text>
+                        </View>
+
+                        <Spacer />
+                        <Icon size={20} style={AppStyles.imgColorGreyBlack} name="IconSwitchAccount" />
+                        <Spacer />
+
+                        <View style={[AppStyles.row, styles.amountContainer]}>
+                            {/*
+                        // @ts-ignore */}
+                            <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                            <Text style={[styles.amountText, props.color]} numberOfLines={1}>
+                                {props.text}
+                            </Text>
+                        </View>
+                    </View>
+                );
+            }
+        }
+
+        if (tx.Type === 'OfferCreate') {
+            const takerGot = tx.TakerGot(account.address);
+
+            return (
+                <View style={styles.amountHeaderContainer}>
+                    <View style={[AppStyles.row, styles.amountContainerSmall]}>
+                        <Text style={[styles.amountTextSmall]} numberOfLines={1}>
+                            {`${takerGot.value} ${NormalizeCurrencyCode(takerGot.currency)}`}
+                        </Text>
+                    </View>
+
+                    <Spacer />
+                    <Icon size={20} style={AppStyles.imgColorGreyBlack} name="IconSwitchAccount" />
+                    <Spacer />
+
+                    <View style={[AppStyles.row, styles.amountContainer]}>
+                        {/*
+                    // @ts-ignore */}
+                        <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                        <Text style={[styles.amountText, props.color]} numberOfLines={1}>
+                            {props.text}
+                        </Text>
+                    </View>
+                </View>
+            );
+        }
+
         return (
             <View style={styles.amountHeaderContainer}>
                 <View style={[AppStyles.row, styles.amountContainer]}>
@@ -844,6 +921,8 @@ class TransactionDetailsView extends Component<Props, State> {
             address: tx.Destination?.address,
         } as any;
 
+        let through;
+
         if (incomingTx) {
             from = Object.assign(from, partiesDetails);
             to = Object.assign(to, {
@@ -868,18 +947,28 @@ class TransactionDetailsView extends Component<Props, State> {
             };
         }
 
-        let actionButton;
+        // 3rd party consuming own offer
+        if (tx.Type === 'Payment') {
+            if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
+                from = { address: tx.Account.address };
+                to = { address: tx.Destination?.address };
+                through = { address: account.address, name: account.label, source: 'internal:accounts' };
+            }
+        }
 
+        let actionButton;
         // render action button only when payment
         if (tx.Type === 'Payment') {
-            const label = incomingTx ? Localize.t('events.returnPayment') : Localize.t('events.newPayment');
-            actionButton = <Button onPress={this.onActionButtonPress} rounded block label={label} />;
+            if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) > -1) {
+                const label = incomingTx ? Localize.t('events.returnPayment') : Localize.t('events.newPayment');
+                actionButton = <Button onPress={this.onActionButtonPress} rounded block label={label} />;
+            }
         }
 
         if (!to.address) {
             return (
                 <View style={styles.extraHeaderContainer}>
-                    <Text style={[styles.labelText]}>From</Text>
+                    <Text style={[styles.labelText]}>{Localize.t('global.from')}</Text>
                     <RecipientElement recipient={from} />
                 </View>
             );
@@ -887,14 +976,24 @@ class TransactionDetailsView extends Component<Props, State> {
 
         return (
             <View style={styles.extraHeaderContainer}>
-                <Text style={[styles.labelText]}>From</Text>
+                <Text style={[styles.labelText]}>{Localize.t('global.from')}</Text>
                 <RecipientElement
                     recipient={from}
                     showMoreButton={from.source !== 'internal:accounts'}
                     onMorePress={from.source !== 'internal:accounts' && this.showRecipientMenu}
                 />
+                {!!through && (
+                    <>
+                        <Icon name="IconArrowDown" style={AppStyles.centerSelf} />
+                        <Text style={[styles.labelText]}>{Localize.t('events.throughOfferBy')}</Text>
+                        <RecipientElement
+                            recipient={through}
+                            onMorePress={to.source !== 'internal:accounts' && this.showRecipientMenu}
+                        />
+                    </>
+                )}
                 <Icon name="IconArrowDown" style={AppStyles.centerSelf} />
-                <Text style={[styles.labelText]}>To</Text>
+                <Text style={[styles.labelText]}>{Localize.t('global.to')}</Text>
                 <RecipientElement
                     recipient={to}
                     showMoreButton={to.source !== 'internal:accounts'}

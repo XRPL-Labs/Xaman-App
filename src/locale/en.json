@@ -327,7 +327,8 @@
         "returnPayment": "Return payment",
         "newPayment": "New payment",
         "openWithExplorer": "Open with %{explorer}",
-        "showMemo": "Show memo"
+        "showMemo": "Show memo",
+        "throughOfferBy": "Through offer by"
     },
     "profile": {
         "availableInFuture": "This feature will be available in the future.",

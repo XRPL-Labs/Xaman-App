@@ -150,7 +150,9 @@ class TransactionTemplate extends Component<Props, State> {
 
         switch (item.Type) {
             case 'Payment':
-                if (item.Destination.address === account.address) {
+                if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
+                    iconName = 'IconSwitchAccount';
+                } else if (item.Destination.address === account.address) {
                     iconName = 'IconCornerRightDown';
                     iconColor = styles.incomingColor;
                 } else {
@@ -222,6 +224,16 @@ class TransactionTemplate extends Component<Props, State> {
             )}`;
         }
 
+        if (item.Type === 'Payment') {
+            if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
+                const balanceChanges = item.BalanceChange(account.address);
+
+                return `${balanceChanges.sent.value} ${NormalizeCurrencyCode(
+                    balanceChanges.sent.currency,
+                )}/${NormalizeCurrencyCode(balanceChanges.received.currency)}`;
+            }
+        }
+
         if (name) return name;
         if (address) return Truncate(address, 20);
 
@@ -233,6 +245,9 @@ class TransactionTemplate extends Component<Props, State> {
 
         switch (item.Type) {
             case 'Payment':
+                if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
+                    return Localize.t('events.exchangedAssets');
+                }
                 if (item.Destination.address === account.address) {
                     return Localize.t('events.paymentReceived');
                 }
@@ -300,6 +315,18 @@ class TransactionTemplate extends Component<Props, State> {
         let incoming = item.Destination?.address === account.address;
 
         if (item.Type === 'Payment') {
+            if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
+                const balanceChanges = item.BalanceChange(account.address);
+
+                return (
+                    <Text style={[styles.amount, styles.incomingColor]} numberOfLines={1}>
+                        {balanceChanges.received?.value}{' '}
+                        <Text style={[styles.currency]}>
+                            {NormalizeCurrencyCode(balanceChanges.received?.currency)}
+                        </Text>
+                    </Text>
+                );
+            }
             return (
                 <Text style={[styles.amount, incoming ? styles.incomingColor : styles.outgoingColor]} numberOfLines={1}>
                     {incoming ? '' : '-'}

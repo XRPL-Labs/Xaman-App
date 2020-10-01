@@ -1,6 +1,6 @@
 /* eslint-disable no-lonely-if */
 import BigNumber from 'bignumber.js';
-import { get, set, has, isUndefined, isNumber, toInteger } from 'lodash';
+import { get, set, has, isUndefined, isNumber, toInteger, find } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
 import LedgerService from '@services/LedgerService';
@@ -11,7 +11,9 @@ import { NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
 import Localize from '@locale';
 
 import BaseTransaction from './base';
+
 import Amount from '../parser/common/amount';
+import Meta from '../parser/meta';
 
 /* Types ==================================================================== */
 import { LedgerAmount, Destination, AmountType } from '../parser/types';
@@ -276,6 +278,21 @@ class Payment extends BaseTransaction {
 
     set InvoiceID(invoiceId: string) {
         set(this, 'tx.InvoiceID', invoiceId);
+    }
+
+    BalanceChange(owner?: string) {
+        if (!owner) {
+            owner = this.Account.address;
+        }
+
+        const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
+
+        const changes = {
+            sent: find(balanceChanges, (o) => o.currency === this.Amount.currency),
+            received: find(balanceChanges, (o) => o.currency === this.SendMax?.currency || this.DeliverMin?.currency),
+        } as { sent: AmountType; received: AmountType };
+
+        return changes;
     }
 
     validate = (source: AccountSchema) => {

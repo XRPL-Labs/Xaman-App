@@ -228,7 +228,7 @@
       "noNameFound": "名前が見つかりません",
       "readMoreInTheFAQ": "FAQで詳細を読む",
       "whatsNew": "新着情報",
-      "pushErrorPermissionMessage": "プッシュ通知を登録できません。必要な通知権限を付与するには、システム設定に移動し、XUMM>通知が有効になっていることを確認してください。",
+      "pushErrorPermissionMessage": "プッシュ通知を登録できません。必要な通知権限を付与するには、システム設定に移動し、[XUMM]> [通知]が有効になっていることを確認してください。",
       "UnableToRegisterPushNotifications": "プッシュ通知を登録できません",
       "openXRPToolkitByTowoLabs": "TowoLabsによるXRPツールキットを開く",
       "readMore": "続きを読む",
@@ -327,7 +327,8 @@
       "returnPayment": "返済",
       "newPayment": "新規支払い",
       "openWithExplorer": "で開く%{explorer}",
-      "showMemo": "メモを表示"
+      "showMemo": "メモを表示",
+      "throughOfferBy": "による提供を通じて"
    },
    "profile": {
       "availableInFuture": "この機能は将来利用可能になる予定です。",
@@ -413,7 +414,7 @@
       "publicAddress": "パブリックアドレス",
       "yourPublicAccoutAddress": "あなたのパブリックアカウントアドレス：",
       "pleaseConfirmYourAccountAddress": "アカウントアドレスを確認してください",
-      "hereIsYourPublicKeyConfirm": "派生アカウントのアドレスは次のとおりです。",
+      "hereIsYourPublicKeyConfirm": "これが派生アカウントのアドレスです。",
       "hereIsYourPublicKey": "これがあなたの新しいアカウントです。生成されたパブリックアカウントアドレスに資金を受け取ることができます。",
       "copyAddress": "コピーアドレス",
       "publicKeyCopiedToClipboard": "クリップボードにコピーされたアカウントアドレス",
