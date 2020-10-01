@@ -481,6 +481,7 @@ class EventsView extends Component<Props, State> {
 
                     return (
                         <Button
+                            key={key}
                             onPress={() => {
                                 /* eslint-disable-next-line */
                                 const f = Object.assign({}, filters);

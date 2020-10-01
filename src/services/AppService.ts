@@ -9,6 +9,7 @@ import { AppState, Alert, Linking, Platform, NativeModules, NativeEventEmitter }
 import NetInfo from '@react-native-community/netinfo';
 import DeviceInfo from 'react-native-device-info';
 
+import Localize from '@locale';
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -123,16 +124,16 @@ class AppService extends EventEmitter {
                     });
                 } else {
                     Alert.alert(
-                        'New Version',
-                        `Version ${versionCode} is available on the AppStore.`,
+                        Localize.t('global.newVersion'),
+                        Localize.t('global.versionNumberIsAvailableOnTheAppStore', { versionCode }),
                         [
                             {
-                                text: 'Not Now',
+                                text: Localize.t('global.notNow'),
                                 onPress: () => Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`),
                                 style: 'destructive',
                             },
                             {
-                                text: 'Update',
+                                text: Localize.t('global.update'),
                                 onPress: () => Linking.openURL('https://apps.apple.com/us/app/id1492302343'),
                             },
                         ],

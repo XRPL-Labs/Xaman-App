@@ -124,6 +124,7 @@ class EventsFilterView extends Component<Props, State> {
 
         return (
             <Button
+                key={value}
                 onPress={() => {
                     this.setState({
                         filters: {
