@@ -271,12 +271,15 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     getLabel = () => {
-        const { tx } = this.props;
+        const { tx, account } = this.props;
 
         switch (tx.Type) {
             case 'Payment':
                 return Localize.t('global.payment');
             case 'TrustSet':
+                if (tx.Account.address !== account.address) {
+                    return Localize.t('events.incomingTrustLineAdded');
+                }
                 if (tx.Limit === 0) {
                     return Localize.t('events.removedATrustLine');
                 }
