@@ -2,7 +2,7 @@
  * Transaction Details screen
  */
 import { find, isEmpty, isUndefined } from 'lodash';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import React, { Component } from 'react';
 import {

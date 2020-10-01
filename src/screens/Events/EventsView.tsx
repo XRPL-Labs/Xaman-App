@@ -2,7 +2,7 @@
  * Events Screen
  */
 import Fuse from 'fuse.js';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { isEmpty, flatMap, isUndefined, isEqual, filter, get, uniqBy, groupBy, map } from 'lodash';
 import React, { Component } from 'react';
 import {
@@ -138,10 +138,10 @@ class EventsView extends Component<Props, State> {
         const today = reference.clone().startOf('day');
         const yesterday = reference.clone().subtract(1, 'days').startOf('day');
 
-        if (momentDate.isSame(today, 'd')) {
+        if (momentDate.isSame(today, 'day')) {
             return 'Today';
         }
-        if (momentDate.isSame(yesterday, 'd')) {
+        if (momentDate.isSame(yesterday, 'day')) {
             return 'Yesterday';
         }
 

@@ -5,7 +5,7 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import EventEmitter from 'events';
 import { map, isEmpty, flatMap, forEach, has, get, assign, omitBy } from 'lodash';
 
