@@ -2,47 +2,51 @@
  * App Localization
  */
 
-// libs
-import i18n, { TranslateOptions } from 'i18n-js';
-// locals
-import en from './en.json';
-import zh from './zh-CN.json';
-import ja from './ja.json';
-import es from './es.json';
-import ko from './ko.json';
-
 class Localize {
     instance: any;
 
     constructor() {
-        this.instance = i18n;
-
-        this.init();
+        this.instance = require('i18n-js');
+        this.instance.fallbacks = true;
     }
 
-    init = () => {
-        this.instance.fallbacks = true;
-
-        // define translations
-        this.instance.translations = {
-            en,
-            zh,
-            ja,
-            es,
-            ko,
-        };
-
-        // this.instance.defaultLocale = "en";
-        // this.instance.locale = "en";
-    };
-
     setLocale = (locale: string) => {
-        this.instance.locale = locale;
+        try {
+            // set en
+            this.instance.translations.en = require('./en.json');
+
+            let translations;
+
+            switch (locale) {
+                case 'zh':
+                    translations = require('./zh-CN.json');
+                    break;
+                case 'ja':
+                    translations = require('./ja.json');
+                    break;
+                case 'es':
+                    translations = require('./es.json');
+                    break;
+                case 'ko':
+                    translations = require('./ko.json');
+                    break;
+                default:
+                    break;
+            }
+
+            if (translations) {
+                this.instance.translations[locale] = translations;
+            }
+
+            this.instance.locale = locale;
+        } catch {
+            // ignore
+        }
     };
 
     getCurrentLocale = (): string => this.instance.locale;
 
-    t = (key: string, options?: TranslateOptions) => {
+    t = (key: string, options?: any) => {
         return key ? this.instance.t(key, options) : key;
     };
 }

@@ -15,11 +15,6 @@ import { Navigator } from '@common/helpers/navigator';
 import { CoreRepository } from '@store/repositories';
 import StorageBackend from '@store/storage';
 
-// Locale
-import Localize from '@locale';
-
-// screens
-import * as screens from '@screens';
 // services
 import * as services from '@services';
 
@@ -43,10 +38,10 @@ class Application {
             // all stuff we need to init before boot the app
             const waterfall = [
                 this.configure,
-                this.registerScreens,
                 this.initializeStorage,
                 this.loadAppLocale,
                 this.initServices,
+                this.registerScreens,
             ];
 
             // run them in waterfall
@@ -121,10 +116,13 @@ class Application {
     loadAppLocale = () => {
         return new Promise((resolve, reject) => {
             try {
+                const Localize = require('@locale').default;
+
                 const core = CoreRepository.getSettings();
 
                 if (!core) {
                     this.logger.debug('Locale is not initialized, using default EN');
+                    Localize.setLocale('en');
                     return resolve();
                 }
 
@@ -141,6 +139,10 @@ class Application {
     registerScreens = () => {
         return new Promise((resolve, reject) => {
             try {
+                // load the screens
+                const screens = require('./screens');
+
+                // register
                 Object.keys(screens).map((key) => {
                     // @ts-ignore
                     const Screen = screens[key];
@@ -174,6 +176,8 @@ class Application {
                         if (UIManager.setLayoutAnimationEnabledExperimental) {
                             UIManager.setLayoutAnimationEnabledExperimental(true);
                         }
+
+                        return true;
                     });
                 } else if (Platform.OS === 'ios') {
                     // check for device root
@@ -183,6 +187,8 @@ class Application {
                                 new Error('For your security, XUMM cannot be opened on a Jail Broken phone.'),
                             );
                         }
+
+                        return true;
                     });
                 }
 
