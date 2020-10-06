@@ -18,7 +18,7 @@ if (!window.crypto) {
 
 // set getRandomValues with native module for security porpose
 // @ts-ignore
-window.crypto.getRandomValues = function(byteArray: any[]) {
+window.crypto.getRandomValues = function (byteArray: any[]) {
     const useBuffer = Buffer.from(CryptoModule.randomKeySync(byteArray.length), 'hex');
     for (let i = 0; i < byteArray.length; i++) {
         byteArray[i] = useBuffer[i];

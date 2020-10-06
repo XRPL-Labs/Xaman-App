@@ -78,6 +78,10 @@ static void InitializeFlipper(UIApplication *application) {
   #endif
 }
 
+- (NSArray<id<RCTBridgeModule>> *)extraModulesForBridge:(RCTBridge *)bridge {
+  return [ReactNativeNavigation extraModulesForBridge:bridge];
+}
+
 // hide snapshot in task switcher
 - (void)applicationWillResignActive:(UIApplication *)application {
     

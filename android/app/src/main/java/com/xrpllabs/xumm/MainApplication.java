@@ -86,14 +86,14 @@ public class MainApplication extends NavigationApplication {
      */
     private void upgradeSecurityProvider() {
         ProviderInstaller.installIfNeededAsync(this, new ProviderInstallListener() {
-        @Override
-        public void onProviderInstalled() {
-        }
+            @Override
+                public void onProviderInstalled() {
+            }
 
-        @Override
-        public void onProviderInstallFailed(int errorCode, Intent recoveryIntent) {
-            GooglePlayServicesUtil.showErrorNotification(errorCode, MainApplication.this);
-        }
+            @Override
+            public void onProviderInstallFailed(int errorCode, Intent recoveryIntent) {
+                GooglePlayServicesUtil.showErrorNotification(errorCode, MainApplication.this);
+            }
         });
     }
 
