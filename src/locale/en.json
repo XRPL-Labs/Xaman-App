@@ -304,7 +304,7 @@
         "addedATrustLine": "Added an asset (TrustLine)",
         "removedATrustLine": "Removed an asset (TrustLine)",
         "incomingTrustLineAdded": "Incoming TrustLine added",
-        "addATrustLine": "Add a asset (Trust Line)",
+        "addATrustLine": "Add a asset (TrustLine)",
         "updateAccountAssets": "Update account assets",
         "createOffer": "Create offer",
         "cancelOffer" : "Cancel offer",
