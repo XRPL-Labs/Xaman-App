@@ -4,10 +4,11 @@
 
 import React, { Component } from 'react';
 import { View, ImageBackground, Text, ActivityIndicator, Alert, Linking, BackHandler } from 'react-native';
+import { RNCamera } from 'react-native-camera';
 
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
-import { RNCamera } from 'react-native-camera';
+import { ApiService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
@@ -17,9 +18,9 @@ import { AppScreens } from '@common/constants';
 import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
+import { NormalizeDestination } from '@common/libs/utils';
 
 import { Payload } from '@common/libs/payload';
-import { NormalizeDestination } from '@common/libs/utils';
 
 import Localize from '@locale';
 
@@ -41,6 +42,11 @@ export interface State {
     isLoading: boolean;
     coreSettings: CoreSchema;
 }
+
+/* Constants ==================================================================== */
+const TRANSLATION_REGEX = RegExp(
+    'xumm://translation/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89ABab][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$',
+);
 
 /* Component ==================================================================== */
 class ScanView extends Component<Props, State> {
@@ -105,8 +111,78 @@ class ScanView extends Component<Props, State> {
                 Navigator.push(screen, options, passProps);
             }, 10);
         }
+    };
 
-        // close scan modal
+    loadTranslation = async (uuid: string) => {
+        this.setState({
+            isLoading: true,
+        });
+
+        await ApiService.translation
+            .get({ uuid })
+            .then((res: any) => {
+                const { meta, translation } = res;
+
+                if (meta && meta.valid) {
+                    // set the new local bundle
+                    Localize.setLocaleBundle(meta.language, translation);
+                    // re-render the app
+                    Navigator.reRender();
+                    // close scan modal
+                    Navigator.dismissModal();
+                } else {
+                    Alert.alert(
+                        'Error',
+                        'Unable to load the translations, the request is not valid!',
+                        [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+                        { cancelable: false },
+                    );
+                }
+            })
+            .catch(() => {
+                // ignore
+                Alert.alert(
+                    'Error',
+                    'Unable to load the translations, Please try again!',
+                    [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+                    { cancelable: false },
+                );
+            })
+            .finally(() => {
+                this.setState({
+                    isLoading: false,
+                });
+            });
+    };
+
+    handleTranslationBundle = async (data: string) => {
+        const uuid = data.split(TRANSLATION_REGEX)[1];
+
+        // no uuid exist
+        if (!uuid) {
+            this.setShouldRead(true);
+        }
+
+        Alert.alert(
+            'Translation Detected',
+            'Dynamic translation detected, do you wanna load it to the app?',
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => {
+                        this.setShouldRead(true);
+                    },
+                },
+                {
+                    text: 'Do it',
+                    onPress: () => {
+                        this.loadTranslation(uuid);
+                    },
+                    style: 'default',
+                },
+            ],
+            { cancelable: false },
+        );
     };
 
     handlePayloadReference = async (uuid: string) => {
@@ -334,6 +410,12 @@ class ScanView extends Component<Props, State> {
             // vibrate
             if (coreSettings.hapticFeedback) {
                 VibrateHapticFeedback('impactLight');
+            }
+
+            // check for translation regex before pass to handler
+            if (TRANSLATION_REGEX.test(data)) {
+                this.handleTranslationBundle(data);
+                return;
             }
 
             // handle the content

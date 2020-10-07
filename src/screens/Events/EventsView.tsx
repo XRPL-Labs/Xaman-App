@@ -52,7 +52,9 @@ import styles from './styles';
 import * as Templates from './Templates';
 
 /* types ==================================================================== */
-export interface Props {}
+export interface Props {
+    timestamp?: number;
+}
 
 export interface State {
     isLoading: boolean;
@@ -99,13 +101,15 @@ class EventsView extends Component<Props, State> {
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
         const { dataSource, account, isLoading, shouldLoadMore, isLoadingMore, filters } = this.state;
+        const { timestamp } = this.props;
         return (
             !isEqual(nextState.dataSource, dataSource) ||
             !isEqual(nextState.isLoading, isLoading) ||
             !isEqual(nextState.isLoadingMore, isLoadingMore) ||
             !isEqual(nextState.shouldLoadMore, shouldLoadMore) ||
             !isEqual(nextState.account, account) ||
-            !isEqual(nextState.filters, filters)
+            !isEqual(nextState.filters, filters) ||
+            !isEqual(nextProps.timestamp, timestamp)
         );
     }
 

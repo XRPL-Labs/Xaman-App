@@ -44,6 +44,18 @@ class Localize {
         }
     };
 
+    setLocaleBundle = (locale: string, translations: any) => {
+        if (!locale || !translations) return;
+
+        try {
+            // load a custom translation into the instance
+            this.instance.translations[locale] = translations;
+            this.instance.locale = locale;
+        } catch {
+            // ignore
+        }
+    };
+
     getCurrentLocale = (): string => this.instance.locale;
 
     t = (key: string, options?: any) => {

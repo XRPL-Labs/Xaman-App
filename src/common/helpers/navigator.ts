@@ -92,11 +92,12 @@ const Navigator = {
         Object.keys(AppScreens.TabBar).forEach((tab) => {
             bottomTabsChildren.push({
                 stack: {
-                    id: get(AppScreens.TabBar, tab),
+                    id: `bottomTab-${tab}`,
                     children: [
                         {
                             component: {
                                 name: tab === 'Scan' ? AppScreens.Placeholder : get(AppScreens.TabBar, tab),
+                                id: get(AppScreens.TabBar, tab),
                             },
                         },
                     ],
@@ -271,6 +272,22 @@ const Navigator = {
     mergeOptions(options = {}) {
         const currentScreen = NavigationService.getCurrentScreen();
         Navigation.mergeOptions(currentScreen, options);
+    },
+
+    reRender() {
+        // update the tabbar
+        Object.keys(AppScreens.TabBar).forEach((tab) => {
+            Navigation.mergeOptions(`bottomTab-${tab}`, {
+                bottomTab: {
+                    text: Platform.select({
+                        android: Localize.t(`global.${tab.toLowerCase()}`),
+                        ios: tab !== 'Scan' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
+                    }),
+                },
+            });
+
+            Navigation.updateProps(get(AppScreens.TabBar, tab), { timestamp: +new Date() });
+        });
     },
 };
 
