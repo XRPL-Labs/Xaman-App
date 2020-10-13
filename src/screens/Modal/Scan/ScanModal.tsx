@@ -161,6 +161,7 @@ class ScanView extends Component<Props, State> {
         // no uuid exist
         if (!uuid) {
             this.setShouldRead(true);
+            return;
         }
 
         Alert.alert(
