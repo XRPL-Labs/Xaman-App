@@ -16,6 +16,9 @@ interface Props {
 }
 
 const getInitials = (label: string) => {
+    if (!label) {
+        return '?';
+    }
     const name = label.toUpperCase().split(' ');
     let avatarName = '';
     if (name.length === 1) {

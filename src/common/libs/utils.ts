@@ -43,6 +43,10 @@ const Truncate = (fullString: string, string_length: number): string => {
 const NormalizeAmount = (amount: string): string => {
     let sendAmount = amount;
 
+    if (!sendAmount) {
+        return '0';
+    }
+
     // filter amount
     sendAmount = sendAmount.replace(',', '.');
     sendAmount = sendAmount.replace(/[^0-9.]/g, '');

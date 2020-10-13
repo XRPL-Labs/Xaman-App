@@ -145,6 +145,10 @@ class EnterMnemonicStep extends Component<Props, State> {
     onScannerRead = (decoded: XrplSecret) => {
         const { mnemonic } = decoded;
 
+        if (!mnemonic) {
+            return;
+        }
+
         let words = [];
 
         // first try space
