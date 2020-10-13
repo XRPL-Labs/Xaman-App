@@ -6,7 +6,16 @@
  *
  */
 import React, { Component } from 'react';
-import { View, TouchableHighlight, TextInput, TextInputProps, ViewStyle, TextStyle, Platform } from 'react-native';
+import {
+    View,
+    TouchableHighlight,
+    TextInput,
+    ActivityIndicator,
+    TextInputProps,
+    ViewStyle,
+    TextStyle,
+    Platform,
+} from 'react-native';
 
 import { StringType } from 'xumm-string-decode';
 
@@ -28,6 +37,7 @@ interface Props extends TextInputProps {
     scannerType?: StringType;
     onScannerRead?: (decoded: any) => void;
     scannerFallback?: boolean;
+    isLoading?: boolean;
 }
 
 interface State {
@@ -160,22 +170,26 @@ class Input extends Component<Props, State> {
     };
 
     render() {
-        const { showScanner } = this.props;
+        const { showScanner, isLoading } = this.props;
 
         const input = this.renderInput();
 
-        if (showScanner) {
-            return (
-                <View style={[AppStyles.row]}>
-                    {input}
+        return (
+            <View style={[AppStyles.row]}>
+                {input}
+                {showScanner && (
                     <TouchableHighlight style={styles.scanButton} onPress={this.showScanner}>
                         <Icon size={25} name="IconScan" style={styles.scanIcon} />
                     </TouchableHighlight>
-                </View>
-            );
-        }
+                )}
 
-        return input;
+                {isLoading && (
+                    <View style={styles.loadingOverlay}>
+                        <ActivityIndicator color={AppColors.blue} style={styles.loadingIndicator} />
+                    </View>
+                )}
+            </View>
+        );
     }
 }
 

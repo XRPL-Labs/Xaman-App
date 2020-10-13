@@ -10,6 +10,8 @@ import { StringType, XrplDestination } from 'xumm-string-decode';
 import * as AccountLib from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
 
+import { NormalizeDestination } from '@common/libs/utils';
+import { getAccountName, getPayIdInfo } from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -33,10 +35,11 @@ export interface Props {
 }
 
 export interface State {
-    xAddress?: string;
+    isLoading: boolean;
     address: string;
     name: string;
     tag: string;
+    xAddress: string;
 }
 
 /* Component ==================================================================== */
@@ -53,36 +56,51 @@ class AddContactView extends Component<Props, State> {
         super(props);
 
         this.state = {
-            xAddress: undefined,
+            isLoading: false,
             address: props.address,
             tag: props.tag && props.tag.toString(),
             name: props.name,
+            xAddress: undefined,
         };
     }
 
-    onScannerRead = (result: XrplDestination) => {
-        let address = result.to;
-        let tag = result.tag && result.tag.toString();
-        let xAddress;
+    doNameLookup = async (result: XrplDestination) => {
+        // normalize
+        const { to, tag, xAddress } = NormalizeDestination(result);
 
-        // decode if it's x address
-        if (result.to.startsWith('X')) {
-            try {
-                const decoded = Decode(result.to);
-                if (decoded) {
-                    address = decoded.account;
-                    tag = decoded.tag && decoded.tag.toString();
-                    xAddress = result.to;
-                }
-            } catch {
-                // continue regardless of error
-            }
+        // if everything is fine try to fetch the account name
+        if (to) {
+            const accountInfo = await getAccountName(to, tag);
+
+            this.setState({
+                xAddress,
+                address: to,
+                tag: tag && tag.toString(),
+                name: accountInfo.name,
+            });
         }
-        this.setState({
-            address,
-            tag,
-            xAddress,
-        });
+    };
+
+    onScannerRead = async (result: any) => {
+        try {
+            this.setState({
+                isLoading: true,
+            });
+
+            // if payId try to resolve
+            if (result.payId) {
+                const payIdInfo = await getPayIdInfo(result.payId);
+                await this.doNameLookup({ to: payIdInfo.account, tag: payIdInfo.tag && Number(payIdInfo.tag) });
+            } else {
+                await this.doNameLookup(result);
+            }
+        } catch {
+            // ignore
+        } finally {
+            this.setState({
+                isLoading: false,
+            });
+        }
     };
 
     saveContact = () => {
@@ -130,7 +148,7 @@ class AddContactView extends Component<Props, State> {
     onAddressChange = (text: string) => {
         const address = text.replace(/[^a-z0-9]/gi, '');
         // decode if it's x address
-        if (address.startsWith('X')) {
+        if (address && address.startsWith('X')) {
             try {
                 const decoded = Decode(address);
                 if (decoded) {
@@ -151,7 +169,7 @@ class AddContactView extends Component<Props, State> {
     };
 
     render() {
-        const { name, address, tag, xAddress } = this.state;
+        const { isLoading, name, address, tag, xAddress } = this.state;
 
         return (
             <View
@@ -184,6 +202,7 @@ class AddContactView extends Component<Props, State> {
                                 onChangeText={(value) => this.setState({ name: value })}
                                 value={name}
                                 maxLength={30}
+                                isLoading={isLoading}
                             />
 
                             <Spacer size={20} />
@@ -199,6 +218,7 @@ class AddContactView extends Component<Props, State> {
                                 showScanner
                                 scannerType={StringType.XrplDestination}
                                 onScannerRead={this.onScannerRead}
+                                isLoading={isLoading}
                             />
 
                             <Spacer size={10} />
@@ -206,6 +226,7 @@ class AddContactView extends Component<Props, State> {
                                 placeholder={Localize.t('global.destinationTag')}
                                 onChangeText={this.onDestinationTagChange}
                                 value={tag}
+                                isLoading={isLoading}
                             />
 
                             {xAddress && (

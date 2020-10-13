@@ -102,9 +102,10 @@ const NormalizeCurrencyCode = (currencyCode: string): string => {
     return currencyCode;
 };
 
-const NormalizeDestination = (destination: XrplDestination): XrplDestination => {
+const NormalizeDestination = (destination: XrplDestination): XrplDestination & { xAddress: string } => {
     let to;
     let tag;
+    let xAddress;
 
     try {
         // decode if it's x address
@@ -113,6 +114,8 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination => 
                 const decoded = Decode(destination.to);
                 to = decoded.account;
                 tag = Number(decoded.tag);
+
+                xAddress = destination.to;
             } catch {
                 // ignore
             }
@@ -127,6 +130,7 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination => 
     return {
         to,
         tag,
+        xAddress,
     };
 };
 

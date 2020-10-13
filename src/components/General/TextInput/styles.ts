@@ -41,4 +41,18 @@ export default StyleSheet.create({
         alignSelf: 'center',
         backgroundColor: AppColors.black,
     },
+    // eslint-disable-next-line react-native/no-color-literals
+    loadingOverlay: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        width: '100%',
+        height: '100%',
+    },
+    loadingIndicator: {
+        position: 'absolute',
+        left: '45%',
+        top: '35%',
+    },
 });
