@@ -98,9 +98,6 @@ class CoreRepository extends BaseRepository {
                     // in android it's 64-bit hex, in some devices it can be 15 length
                     deviceUniqueId = '0'.repeat(16 - deviceUniqueId.length) + deviceUniqueId;
                 }
-            } else if (Platform.OS === 'ios') {
-                // in ios it's present as UUIDV4
-                deviceUniqueId = deviceUniqueId.replace(/-/g, '').toLowerCase();
             }
 
             // hash the passcode

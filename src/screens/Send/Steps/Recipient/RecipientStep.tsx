@@ -116,7 +116,7 @@ class RecipientStep extends Component<Props, State> {
         const { destination, setDestination } = this.context;
 
         // if search result only have one result select it
-        if (searchResult.length === 1) {
+        if (searchResult && searchResult.length === 1) {
             const onlyResult = searchResult[0];
             // select as destination
             if (!destination || (onlyResult.address !== destination.address && onlyResult.tag !== destination.tag)) {
@@ -185,7 +185,7 @@ class RecipientStep extends Component<Props, State> {
             });
 
             // if text length is more than 4 do server lookup
-            if (searchText.length >= 4) {
+            if (searchText?.length >= 4) {
                 BackendService.lookup(searchText)
                     .then((res: any) => {
                         if (!isEmpty(res) && res.error !== true) {
@@ -262,7 +262,7 @@ class RecipientStep extends Component<Props, State> {
     getSearchResultSource = (searchResult: any) => {
         const dataSource = [];
 
-        if (searchResult.length > 0) {
+        if (searchResult && searchResult.length > 0) {
             dataSource.push({
                 title: Localize.t('send.searchResults'),
                 data: uniqBy(searchResult, 'address'),
@@ -283,7 +283,7 @@ class RecipientStep extends Component<Props, State> {
             return n.address !== source.address;
         });
 
-        if (myAccountList.length !== 0) {
+        if (myAccountList && myAccountList.length !== 0) {
             dataSource.push({
                 title: Localize.t('account.myAccounts'),
                 data: flatMap(myAccountList, (a) => {
@@ -292,7 +292,7 @@ class RecipientStep extends Component<Props, State> {
             });
         }
 
-        if (contacts.length === 0) {
+        if (contacts && contacts.length === 0) {
             dataSource.push({
                 title: Localize.t('global.contacts'),
                 data: [{ empty: true, title: Localize.t('send.noContact') }],
@@ -524,7 +524,7 @@ class RecipientStep extends Component<Props, State> {
                 <View style={[styles.sectionHeader, AppStyles.row]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         <Text style={[AppStyles.p, AppStyles.bold]}>
-                            {title} {dataSource[0].data.length > 0 && `(${dataSource[0].data.length})`}
+                            {title} {dataSource[0].data?.length > 0 && `(${dataSource[0].data?.length})`}
                         </Text>
                     </View>
                     <View style={[AppStyles.flex1]}>
