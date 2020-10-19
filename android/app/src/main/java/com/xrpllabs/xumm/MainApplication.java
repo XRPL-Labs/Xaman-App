@@ -17,6 +17,7 @@ import libs.ui.QRCodePackage;
 import libs.notification.LocalNotificationPackage;
 import libs.common.SharedPreferencesPackage;
 import libs.common.AppUpdatePackage;
+import libs.common.InAppPurchasePackage;
 import libs.common.HTTPClientFactory;
 
 // External Dependencies
@@ -58,6 +59,7 @@ public class MainApplication extends NavigationApplication {
                 packages.add(new SharedPreferencesPackage());
                 packages.add(new LocalNotificationPackage());
                 packages.add(new AppUpdatePackage());
+                packages.add(new InAppPurchasePackage());
                 return packages;
             }
 

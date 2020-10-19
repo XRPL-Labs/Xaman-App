@@ -7,14 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00E356F31AD99517003FC87E /* XUMMTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* XUMMTests.m */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		2DCD954D1E0B4F2C00145EB5 /* XUMMTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* XUMMTests.m */; };
 		A20C14202524C8A000686A2A /* AppUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = A20C141F2524C8A000686A2A /* AppUpdate.m */; };
 		A2805CE224D1982400B5552E /* LocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = A2805CE124D1982400B5552E /* LocalNotification.m */; };
 		A2AFF12E243E79C30007005E /* Proxima Nova Alt Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */; };
@@ -41,6 +39,10 @@
 		A2AFF143243E79C30007005E /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF12D243E79C30007005E /* Utils.m */; };
 		A2B145CB243E935F00E952B6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A2B145CA243E935F00E952B6 /* LaunchScreen.storyboard */; };
 		A2B9D13E2449BAA400259841 /* SharedPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = A2B9D13D2449B83C00259841 /* SharedPreferences.m */; };
+		A2ED1312252DC717002AFC09 /* InAppPurchase.m in Sources */ = {isa = PBXBuildFile; fileRef = A2ED1311252DC717002AFC09 /* InAppPurchase.m */; };
+		A2ED131C252F113A002AFC09 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2ED131B252F113A002AFC09 /* StoreKit.framework */; };
+		A2ED132625387157002AFC09 /* CryptoUnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A2ED132525387157002AFC09 /* CryptoUnitTests.m */; };
+		A2ED132B25387191002AFC09 /* CryptoUnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A2ED132525387157002AFC09 /* CryptoUnitTests.m */; };
 		A9D21D31CB0C2E9A70896AC6 /* libPods-XUMM-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 913E7999E87D8F92F99879C6 /* libPods-XUMM-tvOS.a */; };
 		AF183A228FA57E1A744F7A7E /* libPods-XUMM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D6E99E796CFBF5178ACD2C5 /* libPods-XUMM.a */; };
 		D3BA7DAE63C1288B14E8A182 /* libPods-XUMM-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AEBEBC98D364D29B690CA9A4 /* libPods-XUMM-tvOSTests.a */; };
@@ -68,7 +70,6 @@
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* XUMMTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XUMMTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* XUMMTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XUMMTests.m; sourceTree = "<group>"; };
 		01EBF6B3C6B53B459AC2194B /* Pods-XUMM-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-XUMM-tvOSTests/Pods-XUMM-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* XUMM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XUMM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = XUMM/AppDelegate.h; sourceTree = "<group>"; };
@@ -124,6 +125,10 @@
 		A2B145CC243F734600E952B6 /* XUMM.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = XUMM.entitlements; path = XUMM/XUMM.entitlements; sourceTree = "<group>"; };
 		A2B9D13C2449B83900259841 /* SharedPreferences.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedPreferences.h; sourceTree = "<group>"; };
 		A2B9D13D2449B83C00259841 /* SharedPreferences.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedPreferences.m; sourceTree = "<group>"; };
+		A2ED1310252DC6FE002AFC09 /* InAppPurchase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InAppPurchase.h; sourceTree = "<group>"; };
+		A2ED1311252DC717002AFC09 /* InAppPurchase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InAppPurchase.m; sourceTree = "<group>"; };
+		A2ED131B252F113A002AFC09 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		A2ED132525387157002AFC09 /* CryptoUnitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CryptoUnitTests.m; sourceTree = "<group>"; };
 		AEBEBC98D364D29B690CA9A4 /* libPods-XUMM-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-XUMM-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2847B09898C17B496C31E94 /* Pods-XUMM-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-XUMM-tvOS/Pods-XUMM-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		BACDB40E729D2A2F5ABFFF06 /* Pods-XUMM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM.debug.xcconfig"; path = "Target Support Files/Pods-XUMM/Pods-XUMM.debug.xcconfig"; sourceTree = "<group>"; };
@@ -145,6 +150,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A2ED131C252F113A002AFC09 /* StoreKit.framework in Frameworks */,
 				AF183A228FA57E1A744F7A7E /* libPods-XUMM.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -171,7 +177,7 @@
 		00E356EF1AD99517003FC87E /* XUMMTests */ = {
 			isa = PBXGroup;
 			children = (
-				00E356F21AD99517003FC87E /* XUMMTests.m */,
+				A2ED132525387157002AFC09 /* CryptoUnitTests.m */,
 				00E356F01AD99517003FC87E /* Supporting Files */,
 			);
 			path = XUMMTests;
@@ -206,6 +212,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A2ED131B252F113A002AFC09 /* StoreKit.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				1D6E99E796CFBF5178ACD2C5 /* libPods-XUMM.a */,
@@ -341,6 +348,8 @@
 		A2B9D13B2449B81800259841 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				A2ED1311252DC717002AFC09 /* InAppPurchase.m */,
+				A2ED1310252DC6FE002AFC09 /* InAppPurchase.h */,
 				A20C141E2524C8A000686A2A /* AppUpdate.h */,
 				A20C141F2524C8A000686A2A /* AppUpdate.m */,
 				A2B9D13D2449B83C00259841 /* SharedPreferences.m */,
@@ -762,7 +771,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00E356F31AD99517003FC87E /* XUMMTests.m in Sources */,
+				A2ED132625387157002AFC09 /* CryptoUnitTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -773,6 +782,7 @@
 				A2B9D13E2449BAA400259841 /* SharedPreferences.m in Sources */,
 				A20C14202524C8A000686A2A /* AppUpdate.m in Sources */,
 				A2AFF142243E79C30007005E /* Crypto.m in Sources */,
+				A2ED1312252DC717002AFC09 /* InAppPurchase.m in Sources */,
 				A2AFF143243E79C30007005E /* Utils.m in Sources */,
 				A2AFF141243E79C30007005E /* UIView+Toast.m in Sources */,
 				A2AFF13D243E79C30007005E /* Toast.m in Sources */,
@@ -800,7 +810,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2DCD954D1E0B4F2C00145EB5 /* XUMMTests.m in Sources */,
+				A2ED132B25387191002AFC09 /* CryptoUnitTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
