@@ -12,7 +12,7 @@
 @implementation InAppPurchaseModule
 
 
-#define kXUMMProProductIdentifier @"com.xrpllabs.xumm.pro.test2"
+#define kXUMMProProductIdentifier @"com.xrpllabs.xumm.pro.test"
 
 #define E_UNABLE_TO_MAKE_PAYMENTS @"E_UNABLE_TO_MAKE_PAYMENTS"
 #define E_PRODUCT_IS_NOT_AVAILABLE @"E_PRODUCT_IS_NOT_AVAILABLE"

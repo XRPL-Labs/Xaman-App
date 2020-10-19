@@ -33,9 +33,8 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
 
     private static final String TAG = "InAppPurchaseModule";
 
-    // private static final String XUMMProProductIdentifier = "com.xrpllabs.xumm.pro.test2";
-    private static final String XUMMProProductIdentifier = "android.test.purchased";
-    private static final String XUMMProProductType = BillingClient.SkuType.INAPP;
+    private static final String XUMMProProductIdentifier = "com.xrpllabs.xumm.pro.test";
+    private static final String XUMMProProductType = BillingClient.SkuType.SUBS;
 
     private static final String E_UNABLE_TO_INIT_MODULE = "E_UNABLE_TO_INIT_MODULE";
     private static final String E_CLIENT_IS_NOT_READY = "E_CLIENT_IS_NOT_READY";
