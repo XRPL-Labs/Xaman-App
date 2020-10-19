@@ -1,6 +1,7 @@
 import { assign } from 'lodash';
-
+import { Platform } from 'react-native';
 import Realm, { ObjectSchema, Results } from 'realm';
+
 import DeviceInfo from 'react-native-device-info';
 import crashlytics from '@react-native-firebase/crashlytics';
 
@@ -84,13 +85,27 @@ class CoreRepository extends BaseRepository {
 
     encryptPasscode = async (passcode: string): Promise<string> => {
         try {
-            // for better security we mix passcode with device uuid
-            // because it will be used to encrypt private key and storing just passcode-hash is not a good idea
-            const deviceUUID = DeviceInfo.getUniqueId();
+            // for better security we mix passcode with device unique id
+            let deviceUniqueId = DeviceInfo.getUniqueId();
+
+            if (!deviceUniqueId) {
+                return '';
+            }
+
+            // as device unique id will pass to the HMAC256 method as hex we need to normalize it's value
+            if (Platform.OS === 'android') {
+                if (deviceUniqueId.length < 16) {
+                    // in android it's 64-bit hex, in some devices it can be 15 length
+                    deviceUniqueId = '0'.repeat(16 - deviceUniqueId.length) + deviceUniqueId;
+                }
+            } else if (Platform.OS === 'ios') {
+                // in ios it's present as UUIDV4
+                deviceUniqueId = deviceUniqueId.replace(/-/g, '').toLowerCase();
+            }
 
             // hash the passcode
             const hashPasscode = await SHA512(passcode);
-            const encPasscode = await HMAC256(hashPasscode, deviceUUID);
+            const encPasscode = await HMAC256(hashPasscode, deviceUniqueId);
 
             return encPasscode;
         } catch (e) {
