@@ -17,14 +17,9 @@ import {
     Share,
 } from 'react-native';
 
-import Clipboard from '@react-native-community/clipboard';
-
-import { StringTypeDetector, StringType, StringDecoder } from 'xumm-string-decode';
-
 import { Navigation } from 'react-native-navigation';
 
-import { LedgerService, LinkingService, SocketService, AppService } from '@services';
-import { AppStateStatus } from '@services/AppService';
+import { LedgerService, SocketService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
@@ -51,11 +46,8 @@ export interface Props {}
 
 export interface State {
     account: AccountSchema;
-    canSendPayment: boolean;
     isSpendable: boolean;
     discreetMode: boolean;
-    clipboardDetected: StringTypeDetector;
-    ignoreClipboardContent: Array<string>;
 }
 
 /* Component ==================================================================== */
@@ -78,10 +70,7 @@ class HomeView extends Component<Props, State> {
         this.state = {
             account: AccountRepository.getDefaultAccount(),
             isSpendable: false,
-            canSendPayment: false,
             discreetMode: coreSettings.discreetMode,
-            clipboardDetected: undefined,
-            ignoreClipboardContent: [],
         };
     }
 
@@ -94,9 +83,6 @@ class HomeView extends Component<Props, State> {
         AccountRepository.on('accountRemove', this.updateSpendableStatus);
 
         CoreRepository.on('updateSettings', this.updateDiscreetMode);
-
-        // check for the clipboard content when app come from background
-        AppService.on('appStateChange', this.onAppStateChange);
 
         // listen for screen appear event
         Navigation.events().bindComponent(this);
@@ -113,8 +99,6 @@ class HomeView extends Component<Props, State> {
                 // update account details
                 LedgerService.updateAccountsDetails([account.address]);
             }
-            // check for XRPL destination and payload in clipboard
-            this.checkClipboardContent();
         });
     }
 
@@ -124,47 +108,6 @@ class HomeView extends Component<Props, State> {
         if (has(changes, 'discreetMode') && discreetMode !== changes.discreetMode) {
             this.setState({
                 discreetMode: coreSettings.discreetMode,
-            });
-        }
-    };
-
-    /**
-     * Listen for app state change to check for clipboard content
-     */
-    onAppStateChange = () => {
-        if (
-            [AppStateStatus.Background, AppStateStatus.Inactive].indexOf(AppService.prevAppState) > -1 &&
-            AppService.currentAppState === AppStateStatus.Active
-        ) {
-            this.checkClipboardContent();
-        }
-    };
-
-    /**
-     * Check the app for XRPL destination and XUMM payloads
-     */
-    checkClipboardContent = async () => {
-        const { ignoreClipboardContent } = this.state;
-
-        // get clipboard content
-        const clipboardContent = await Clipboard.getString();
-
-        // if empty or it's in ignore list return
-        if (!clipboardContent || ignoreClipboardContent.indexOf(clipboardContent) > -1) return;
-
-        const detected = new StringTypeDetector(clipboardContent);
-
-        if (
-            [StringType.XrplDestination, StringType.PayId, StringType.XummPayloadReference].indexOf(
-                detected.getType(),
-            ) > -1
-        ) {
-            this.setState({
-                clipboardDetected: detected,
-            });
-        } else {
-            this.setState({
-                clipboardDetected: undefined,
             });
         }
     };
@@ -192,7 +135,6 @@ class HomeView extends Component<Props, State> {
             this.setState({
                 account,
                 isSpendable: !!find(spendableAccounts, { address: account.address }),
-                canSendPayment: spendableAccounts.length > 0,
             });
         }
     };
@@ -280,21 +222,6 @@ class HomeView extends Component<Props, State> {
         });
     };
 
-    onClipboardGuideClick = (ignore?: boolean) => {
-        const { clipboardDetected, ignoreClipboardContent } = this.state;
-
-        const rawClipboard = clipboardDetected.getRawInput();
-
-        this.setState({
-            ignoreClipboardContent: ignoreClipboardContent.concat(rawClipboard),
-            clipboardDetected: undefined,
-        });
-
-        if (!ignore) {
-            LinkingService.handle(clipboardDetected);
-        }
-    };
-
     showShareOverlay = () => {
         const { account } = this.state;
 
@@ -312,71 +239,6 @@ class HomeView extends Component<Props, State> {
 
     pushSendScreen = () => {
         Navigator.push(AppScreens.Transaction.Payment);
-    };
-
-    renderClipboardGuide = () => {
-        const { clipboardDetected, canSendPayment, account } = this.state;
-
-        // if no clipboard detected or spendable accounts is empty return
-        if (!clipboardDetected || !canSendPayment) return null;
-
-        let title = '';
-        let content = '';
-
-        const parsed = new StringDecoder(clipboardDetected).getAny();
-
-        // ignore if copied content belong to the default address
-        if (clipboardDetected.getType() === StringType.XrplDestination) {
-            if (parsed.to === account.address) {
-                return null;
-            }
-        }
-
-        switch (clipboardDetected.getType()) {
-            case StringType.XummPayloadReference:
-                title = Localize.t('home.openSignRequest');
-                break;
-            case StringType.XrplDestination:
-                title = Localize.t('home.sendPaymentTo');
-                content = parsed.to;
-                break;
-            case StringType.PayId:
-                title = Localize.t('home.sendPaymentTo');
-                content = parsed.payId;
-                break;
-            default:
-                break;
-        }
-
-        return (
-            <TouchableOpacity
-                style={styles.clipboardGuideContainer}
-                activeOpacity={0.8}
-                onPress={() => {
-                    this.onClipboardGuideClick();
-                }}
-            >
-                <View style={[AppStyles.centerContent, AppStyles.flex1]}>
-                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorWhite]}>{title}</Text>
-                    {!!content && (
-                        <>
-                            <Spacer size={4} />
-                            <Text style={[AppStyles.monoSubText, AppStyles.colorWhite]}>{content}</Text>
-                        </>
-                    )}
-                </View>
-                <TouchableOpacity
-                    hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
-                    activeOpacity={0.5}
-                    onPress={() => {
-                        this.onClipboardGuideClick(true);
-                    }}
-                    style={[AppStyles.centerContent]}
-                >
-                    <Icon name="IconX" size={25} style={AppStyles.imgColorWhite} />
-                </TouchableOpacity>
-            </TouchableOpacity>
-        );
     };
 
     renderHeader = () => {
@@ -769,8 +631,6 @@ class HomeView extends Component<Props, State> {
                     </View>
                     {this.renderAssets()}
                 </View>
-
-                {this.renderClipboardGuide()}
             </SafeAreaView>
         );
     }

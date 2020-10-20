@@ -4,6 +4,8 @@
 
 import React, { Component } from 'react';
 import { View, ImageBackground, Text, ActivityIndicator, Alert, Linking, BackHandler } from 'react-native';
+
+import Clipboard from '@react-native-community/clipboard';
 import { RNCamera } from 'react-native-camera';
 
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
@@ -424,6 +426,13 @@ class ScanView extends Component<Props, State> {
         }
     };
 
+    checkClipboardContent = async () => {
+        // get clipboard content
+        const clipboardContent = await Clipboard.getString();
+        // pass it as qr code scanned content
+        this.onReadCode({ data: clipboardContent });
+    };
+
     onClose = () => {
         Navigator.dismissModal();
         return true;
@@ -519,6 +528,14 @@ class ScanView extends Component<Props, State> {
                         <Text style={[AppStyles.p, AppStyles.colorWhite]}>{description}</Text>
                     </View>
                     <View style={[AppStyles.centerSelf]}>
+                        <Button
+                            onPress={this.checkClipboardContent}
+                            label={Localize.t('scan.importFromClipboard')}
+                            icon="IconClipboard"
+                            secondary
+                            roundedSmall
+                        />
+                        <Spacer size={20} />
                         <Button
                             activeOpacity={0.9}
                             label={Localize.t('global.close')}
