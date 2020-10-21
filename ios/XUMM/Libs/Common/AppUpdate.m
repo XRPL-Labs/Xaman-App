@@ -14,7 +14,7 @@ RCT_EXPORT_METHOD(checkUpdate: (RCTPromiseResolveBlock)resolve rejecter:(RCTProm
   if ([lookup[@"resultCount"] integerValue] == 1){
     NSString* appStoreVersion = lookup[@"results"][0][@"version"];
     NSString* currentVersion = infoDictionary[@"CFBundleShortVersionString"];
-    if (![appStoreVersion isEqualToString:currentVersion]){
+    if ([appStoreVersion intValue] > [currentVersion intValue]){
       NSLog(@"Need to update [%@ != %@]", appStoreVersion, currentVersion);
       return resolve(appStoreVersion);
     }
