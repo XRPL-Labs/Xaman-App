@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableHighlight } from 'react-native';
+import { View, Text, TouchableHighlight, Image } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
@@ -7,7 +7,7 @@ import { AccountSchema } from '@store/schemas/latest';
 
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
-import { NormalizeCurrencyCode, Truncate } from '@common/libs/utils';
+import { NormalizeCurrencyCode, FormatNumber } from '@common/libs/utils';
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
@@ -31,6 +31,8 @@ export interface State {
 
 /* Component ==================================================================== */
 class TransactionTemplate extends Component<Props, State> {
+    private mounted: boolean;
+
     constructor(props: Props) {
         super(props);
 
@@ -50,9 +52,15 @@ class TransactionTemplate extends Component<Props, State> {
     componentDidMount() {
         const { name } = this.state;
 
+        this.mounted = true;
+
         if (!name) {
             this.lookUpRecipientName();
         }
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
     }
 
     getRecipientDetails = () => {
@@ -129,9 +137,11 @@ class TransactionTemplate extends Component<Props, State> {
         getAccountName(address, tag)
             .then((res: any) => {
                 if (!isEmpty(res) && res.name) {
-                    this.setState({
-                        name: res.name,
-                    });
+                    if (this.mounted) {
+                        this.setState({
+                            name: res.name,
+                        });
+                    }
                 }
             })
             .catch(() => {});
@@ -144,9 +154,14 @@ class TransactionTemplate extends Component<Props, State> {
 
     getIcon = () => {
         const { item, account } = this.props;
+        const { address } = this.state;
 
         let iconName = '' as any;
         let iconColor;
+
+        if (address) {
+            return <Image style={styles.avatarImage} source={{ uri: `https://xumm.app/avatar/${address}.png` }} />;
+        }
 
         switch (item.Type) {
             case 'Payment':
@@ -162,6 +177,9 @@ class TransactionTemplate extends Component<Props, State> {
                 break;
             case 'OfferCreate':
                 iconName = 'IconSwitchAccount';
+                break;
+            case 'OfferCancel':
+                iconName = 'IconX';
                 break;
             case 'TrustSet':
                 if (item.Limit === 0) {
@@ -203,10 +221,10 @@ class TransactionTemplate extends Component<Props, State> {
                 break;
         }
 
-        return <Icon size={25} style={[styles.icon, iconColor]} name={iconName} />;
+        return <Icon size={20} style={[styles.icon, iconColor]} name={iconName} />;
     };
 
-    getDescription = () => {
+    getLabel = () => {
         const { name, address } = this.state;
         const { item, account } = this.props;
 
@@ -215,32 +233,32 @@ class TransactionTemplate extends Component<Props, State> {
                 const takerGot = item.TakerGot(account.address);
                 const takerPaid = item.TakerPaid(account.address);
 
-                return `${takerGot.value} ${NormalizeCurrencyCode(takerGot.currency)}/${NormalizeCurrencyCode(
-                    takerPaid.currency,
-                )}`;
+                return `${FormatNumber(takerGot.value)} ${NormalizeCurrencyCode(
+                    takerGot.currency,
+                )}/${NormalizeCurrencyCode(takerPaid.currency)}`;
             }
-            return `${item.TakerGets.value} ${NormalizeCurrencyCode(item.TakerGets.currency)}/${NormalizeCurrencyCode(
-                item.TakerPays.currency,
-            )}`;
+            return `${FormatNumber(item.TakerGets.value)} ${NormalizeCurrencyCode(
+                item.TakerGets.currency,
+            )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
         }
 
         if (item.Type === 'Payment') {
             if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
                 const balanceChanges = item.BalanceChange(account.address);
 
-                return `${balanceChanges.sent.value} ${NormalizeCurrencyCode(
+                return `${FormatNumber(balanceChanges.sent.value)} ${NormalizeCurrencyCode(
                     balanceChanges.sent.currency,
                 )}/${NormalizeCurrencyCode(balanceChanges.received.currency)}`;
             }
         }
 
         if (name) return name;
-        if (address) return Truncate(address, 20);
+        if (address) return address;
 
         return Localize.t('global.unknown');
     };
 
-    getLabel = () => {
+    getDescription = () => {
         const { item, account } = this.props;
 
         switch (item.Type) {
@@ -319,8 +337,8 @@ class TransactionTemplate extends Component<Props, State> {
                 const balanceChanges = item.BalanceChange(account.address);
 
                 return (
-                    <Text style={[styles.amount, styles.incomingColor]} numberOfLines={1}>
-                        {balanceChanges.received?.value}{' '}
+                    <Text style={[styles.amount]} numberOfLines={1}>
+                        {FormatNumber(balanceChanges.received?.value)}{' '}
                         <Text style={[styles.currency]}>
                             {NormalizeCurrencyCode(balanceChanges.received?.currency)}
                         </Text>
@@ -328,9 +346,9 @@ class TransactionTemplate extends Component<Props, State> {
                 );
             }
             return (
-                <Text style={[styles.amount, incoming ? styles.incomingColor : styles.outgoingColor]} numberOfLines={1}>
+                <Text style={[styles.amount, !incoming && styles.outgoingColor]} numberOfLines={1}>
                     {incoming ? '' : '-'}
-                    {item.Amount.value}{' '}
+                    {FormatNumber(item.Amount.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
                 </Text>
             );
@@ -338,9 +356,9 @@ class TransactionTemplate extends Component<Props, State> {
 
         if (item.Type === 'AccountDelete') {
             return (
-                <Text style={[styles.amount, incoming ? styles.incomingColor : styles.outgoingColor]} numberOfLines={1}>
+                <Text style={[styles.amount, !incoming && styles.outgoingColor]} numberOfLines={1}>
                     {incoming ? '' : '-'}
-                    {item.Amount.value}{' '}
+                    {FormatNumber(item.Amount.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
                 </Text>
             );
@@ -349,7 +367,7 @@ class TransactionTemplate extends Component<Props, State> {
         if (item.Type === 'EscrowCreate') {
             return (
                 <Text style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]} numberOfLines={1}>
-                    -{item.Amount.value}{' '}
+                    -{FormatNumber(item.Amount.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
                 </Text>
             );
@@ -357,8 +375,8 @@ class TransactionTemplate extends Component<Props, State> {
 
         if (item.Type === 'EscrowFinish') {
             return (
-                <Text style={[styles.amount, incoming ? styles.incomingColor : styles.naturalColor]} numberOfLines={1}>
-                    {item.Amount.value}{' '}
+                <Text style={[styles.amount, !incoming && styles.naturalColor]} numberOfLines={1}>
+                    {FormatNumber(item.Amount.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
                 </Text>
             );
@@ -367,7 +385,7 @@ class TransactionTemplate extends Component<Props, State> {
         if (item.Type === 'CheckCreate') {
             return (
                 <Text style={[styles.amount, styles.naturalColor]} numberOfLines={1}>
-                    {item.SendMax.value}{' '}
+                    {FormatNumber(item.SendMax.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.SendMax.currency)}</Text>
                 </Text>
             );
@@ -377,9 +395,10 @@ class TransactionTemplate extends Component<Props, State> {
             const amount = item.Amount || item.DeliverMin;
             incoming = item.Account.address === account.address;
             return (
-                <Text style={[styles.amount, incoming ? styles.incomingColor : styles.outgoingColor]} numberOfLines={1}>
+                <Text style={[styles.amount, !incoming && styles.outgoingColor]} numberOfLines={1}>
                     {incoming ? '' : '-'}
-                    {amount.value} <Text style={[styles.currency]}>{NormalizeCurrencyCode(amount.currency)}</Text>
+                    {FormatNumber(amount.value)}{' '}
+                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(amount.currency)}</Text>
                 </Text>
             );
         }
@@ -389,15 +408,15 @@ class TransactionTemplate extends Component<Props, State> {
                 const takerPaid = item.TakerPaid(account.address);
 
                 return (
-                    <Text style={[styles.amount, styles.incomingColor]} numberOfLines={1}>
-                        {takerPaid.value}{' '}
+                    <Text style={[styles.amount]} numberOfLines={1}>
+                        {FormatNumber(takerPaid.value)}{' '}
                         <Text style={[styles.currency]}>{NormalizeCurrencyCode(takerPaid.currency)}</Text>
                     </Text>
                 );
             }
             return (
                 <Text style={[styles.amount, styles.naturalColor]} numberOfLines={1}>
-                    {item.TakerPays.value}{' '}
+                    {FormatNumber(item.TakerPays.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.TakerPays.currency)}</Text>
                 </Text>
             );

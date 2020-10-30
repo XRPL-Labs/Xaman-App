@@ -218,10 +218,12 @@ class AddCurrencyOverlay extends Component<Props, State> {
         return counterParties.map((c, index) => {
             if (!c.isValid()) return null;
 
+            const selected = selectedParty.id === c.id;
+
             return (
                 <TouchableOpacity
                     key={index}
-                    style={[styles.listItem, selectedParty.id === c.id ? styles.selectedRow : null]}
+                    style={[styles.listItem, selected && styles.selectedRow]}
                     onPress={() => {
                         this.setState({
                             selectedParty: c,
@@ -235,7 +237,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                         </View>
                         <View style={[AppStyles.flex3]}>
                             <Text
-                                style={[AppStyles.subtext, selectedParty.id === c.id ? styles.selectedText : null]}
+                                style={[AppStyles.subtext, selected && styles.selectedText]}
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
                             >

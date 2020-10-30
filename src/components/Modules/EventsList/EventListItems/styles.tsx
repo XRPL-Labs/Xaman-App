@@ -14,6 +14,12 @@ const styles = StyleSheet.create({
     row: {
         paddingTop: 10,
     },
+    avatarImage: {
+        width: AppSizes.scale(25),
+        height: AppSizes.scale(25),
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     iconContainer: {
         borderColor: AppColors.grey,
         alignItems: 'center',
@@ -30,15 +36,15 @@ const styles = StyleSheet.create({
     avatar: {
         alignSelf: 'center',
         borderRadius: 10,
-        width: AppSizes.scale(40),
-        height: AppSizes.scale(40),
+        width: AppSizes.scale(25),
+        height: AppSizes.scale(25),
     },
     label: {
         fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.base.size,
+        fontSize: AppFonts.subtext.size,
     },
     description: {
-        fontFamily: AppFonts.subtext.family,
+        fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.subtext.size * 0.9,
         color: AppColors.greyDark,
     },
@@ -55,7 +61,7 @@ const styles = StyleSheet.create({
         tintColor: AppColors.red,
     },
     incomingColor: {
-        color: AppColors.green,
+        color: AppColors.black,
         tintColor: AppColors.green,
     },
     orangeColor: {

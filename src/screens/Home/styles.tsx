@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
     cardAddressText: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size * 0.9,
+        color: AppColors.black,
         alignSelf: 'center',
         paddingHorizontal: 10,
     },

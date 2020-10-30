@@ -58,6 +58,7 @@
         "trustset": "TrustSet",
         "escrow": "Escrow",
         "offer": "Offer",
+        "check": "Check",
         "other": "Other",
         "filter": "Filter",
         "expense": "Expense",

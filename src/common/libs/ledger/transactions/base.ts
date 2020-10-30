@@ -51,6 +51,8 @@ class BaseTransaction {
             'SigningPubKey',
             'TxnSignature',
         ];
+
+        this.ClassName = 'Transaction';
     }
 
     prepare = async (privateKey: string, multiSign?: boolean) => {
@@ -410,6 +412,14 @@ class BaseTransaction {
 
     set LastLedgerSequence(ledgerSequence: number) {
         set(this, ['tx', 'LastLedgerSequence'], ledgerSequence);
+    }
+
+    set PreviousTxnID(id: string) {
+        set(this, ['tx', 'PreviousTxnID'], id);
+    }
+
+    get PreviousTxnID(): string {
+        return get(this, ['tx', 'PreviousTxnID'], undefined);
     }
 }
 

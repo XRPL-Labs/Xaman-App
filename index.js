@@ -1,4 +1,4 @@
-// import './.storybook';
+// import './storybook';
 
 // fix some stuff for dev
 import './debug';

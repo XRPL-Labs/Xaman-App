@@ -47,7 +47,7 @@ class RequestTemplate extends Component<Props, State> {
                             <Image source={{ uri: item.application.icon_url }} style={styles.avatar} />
                         </View>
                     </View>
-                    <View style={[AppStyles.flex4, AppStyles.centerContent]}>
+                    <View style={[AppStyles.flex5, AppStyles.centerContent]}>
                         <Text style={[styles.label]}>{item.application.name}</Text>
                         <Text style={[styles.description]}>Sign Request</Text>
                     </View>

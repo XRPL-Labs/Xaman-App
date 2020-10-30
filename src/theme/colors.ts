@@ -18,6 +18,7 @@ const colors = {
     transparent: 'transparent',
     transparentBlack: 'rgba(0, 0, 0, 0.7)',
 
+    lightGrey: '#F9FAFE',
     lightBlue: '#F0F3FF',
     lightOrange: '#FFF9ED',
     lightGreen: '#E6FAF2',

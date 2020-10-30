@@ -29,12 +29,16 @@ const styles = StyleSheet.create({
     },
     extraHeaderContainer: {
         padding: 25,
-        borderBottomColor: AppColors.grey,
-        borderBottomWidth: 1,
         borderTopColor: AppColors.grey,
         borderTopWidth: 1,
     },
+    actionButtonsContainer: {
+        paddingHorizontal: 25,
+        paddingBottom: 25,
+    },
     detailsContainer: {
+        borderTopColor: AppColors.grey,
+        borderTopWidth: 1,
         width: AppSizes.screen.width,
         padding: 25,
     },

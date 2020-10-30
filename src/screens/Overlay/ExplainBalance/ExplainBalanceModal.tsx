@@ -110,14 +110,14 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         }
     };
 
-    renderAccountObject = (item: any) => {
+    renderAccountObject = (item: any, index: number) => {
         const { LedgerEntryType } = item;
 
         // ignore trustline as we handle them in better way
         if (LedgerEntryType === 'RippleState') return null;
 
         return (
-            <View style={[styles.currencyItemCard]}>
+            <View key={`object-${index}`} style={[styles.currencyItemCard]}>
                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[styles.xrpAvatarContainer]}>
                         <Icon name="IconInfo" size={16} style={[AppStyles.imgColorGreyDark]} />
@@ -140,7 +140,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             <>
                 {account.lines.map((line: TrustLineSchema, index: number) => {
                     return (
-                        <View key={index} style={[styles.currencyItemCard]}>
+                        <View key={`line-${index}`} style={[styles.currencyItemCard]}>
                             <View style={[AppStyles.flex5, AppStyles.row, AppStyles.centerAligned]}>
                                 <View style={[styles.xrpAvatarContainer]}>
                                     <Image style={[styles.currencyAvatar]} source={{ uri: line.counterParty.avatar }} />

@@ -48,6 +48,9 @@ const styles = StyleSheet.create({
         color: AppColors.blue,
         fontFamily: AppFonts.base.familyBold,
     },
+    text: {
+        color: AppColors.black,
+    },
     footer: {
         marginBottom: AppSizes.navigationBarHeight * 1.1,
     },

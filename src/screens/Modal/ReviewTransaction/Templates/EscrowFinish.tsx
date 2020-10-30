@@ -2,6 +2,8 @@ import isEmpty from 'lodash/isEmpty';
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
+import { LedgerService } from '@services';
+
 import { EscrowFinish } from '@common/libs/ledger/transactions';
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
@@ -29,19 +31,26 @@ class EscrowFinishTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            isLoading: false,
+            isLoading: true,
             ownerDetails: {
                 name: '',
                 source: '',
             },
         };
     }
-    componentDidMount() {
+    async componentDidMount() {
         const { transaction } = this.props;
 
-        this.setState({
-            isLoading: true,
-        });
+        // in case of OfferSequence is not exist and PreviousTxnID is set fetch the sequence
+        // from transaction id
+        if (!transaction.OfferSequence && transaction.PreviousTxnID) {
+            await LedgerService.getTransaction(transaction.PreviousTxnID).then((tx: any) => {
+                const { Sequence } = tx;
+                if (Sequence) {
+                    transaction.OfferSequence = Sequence;
+                }
+            });
+        }
 
         getAccountName(transaction.Owner)
             .then((res: any) => {

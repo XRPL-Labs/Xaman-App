@@ -6,7 +6,7 @@ import * as AccountLib from 'xrpl-accountlib';
 import LedgerService from '@services/LedgerService';
 
 import { AccountSchema } from '@store/schemas/latest';
-import { NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
+import { NormalizeCurrencyCode, FormatNumber } from '@common/libs/utils';
 
 import Localize from '@locale';
 
@@ -333,7 +333,7 @@ class Payment extends BaseTransaction {
 
                     if (!line) return resolve();
 
-                    if (Number(this.Amount.value) > Number(NormalizeBalance(line.balance))) {
+                    if (Number(this.Amount.value) > Number(FormatNumber(line.balance))) {
                         return reject(
                             new Error(
                                 Localize.t('send.insufficientBalanceSpendableBalance', {

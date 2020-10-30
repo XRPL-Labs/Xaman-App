@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Text, TextStyle, TouchableOpacity, View, ViewStyle, Platform } from 'react-native';
+import { Platform, Text, TextStyle, TouchableOpacity, View, ViewStyle, ImageStyle } from 'react-native';
 
 import { Images } from '@common/helpers/images';
 import { Icon } from '@components/General/Icon';
@@ -12,12 +12,14 @@ import styles from './styles';
 type placementType = 'left' | 'right' | 'center';
 
 interface ChildrenProps {
+    testID?: string;
     text?: string;
     textStyle?: TextStyle;
     icon?: Extract<keyof typeof Images, string>;
     iconSize?: number;
+    iconStyle?: ImageStyle;
+    render?: any;
     onPress?: () => void;
-    testID?: string;
 }
 
 interface Props {
@@ -26,6 +28,7 @@ interface Props {
     centerComponent?: ChildrenProps;
     rightComponent?: ChildrenProps;
     backgroundColor?: string;
+    containerStyle?: ViewStyle;
 }
 
 /* Constants ==================================================================== */
@@ -58,6 +61,11 @@ const Children = ({
             />
         );
     }
+
+    if (children.render) {
+        return React.createElement(children.render);
+    }
+
     return (
         <TouchableOpacity
             testID={children.testID}
@@ -75,7 +83,7 @@ const Children = ({
                 <View style={[AppStyles.row]}>
                     {(placement === 'left' || placement === 'center') && (
                         <Icon
-                            style={[styles.iconStyle, AppStyles.marginRightSml]}
+                            style={[styles.iconStyle, AppStyles.marginRightSml, children.iconStyle]}
                             size={children.iconSize || 30}
                             name={children.icon}
                         />
@@ -83,7 +91,7 @@ const Children = ({
                     <Text style={[styles.textStyleSmall, children.textStyle]}>{children.text}</Text>
                     {placement === 'right' && (
                         <Icon
-                            style={[styles.iconStyle, AppStyles.marginLeftSml]}
+                            style={[styles.iconStyle, AppStyles.marginLeftSml, children.iconStyle]}
                             size={children.iconSize || 30}
                             name={children.icon}
                         />
@@ -94,7 +102,9 @@ const Children = ({
                 <Text style={[styles.textStyle, children.textStyle]}>{children.text}</Text>
             )}
 
-            {children.icon && !children.text && <Icon size={children.iconSize || 30} name={children.icon} />}
+            {children.icon && !children.text && (
+                <Icon size={children.iconSize || 30} name={children.icon} style={children.iconStyle} />
+            )}
         </TouchableOpacity>
     );
 };
@@ -109,10 +119,17 @@ class Header extends PureComponent<Props> {
     };
 
     render() {
-        const { leftComponent, centerComponent, rightComponent, backgroundColor, placement } = this.props;
+        const {
+            leftComponent,
+            centerComponent,
+            rightComponent,
+            backgroundColor,
+            placement,
+            containerStyle,
+        } = this.props;
 
         return (
-            <View style={[styles.container, backgroundColor && { backgroundColor }]}>
+            <View style={[styles.container, backgroundColor && { backgroundColor }, containerStyle]}>
                 <Children style={placement === 'center' && styles.rightLeftContainer} placement="left">
                     {leftComponent}
                 </Children>

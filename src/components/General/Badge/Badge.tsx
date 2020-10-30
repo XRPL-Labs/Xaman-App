@@ -6,7 +6,7 @@ import { TouchableOpacity, Text, ViewStyle } from 'react-native';
 import { AppColors, AppFonts } from '@theme';
 import styles from './styles';
 
-type BadgeType = 'bithomp' | 'xrplns' | 'xrpscan' | 'payid' | 'success';
+type BadgeType = 'bithomp' | 'xrplns' | 'xrpscan' | 'payid' | 'success' | 'planned';
 
 interface Props {
     containerStyle?: ViewStyle | ViewStyle[];
@@ -22,6 +22,7 @@ const COLORS = {
     xrpscan: AppColors.xrpscan,
     payid: AppColors.payid,
     success: AppColors.green,
+    planned: AppColors.blue,
 };
 
 const SIZES = {
@@ -59,6 +60,8 @@ export default class Badge extends PureComponent<Props> {
                 return <Text style={style}>PayID</Text>;
             case 'success':
                 return <Text style={style}>Success</Text>;
+            case 'planned':
+                return <Text style={style}>Planned</Text>;
             default:
                 return null;
         }
