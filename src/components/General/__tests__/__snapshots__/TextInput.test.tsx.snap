@@ -5,50 +5,62 @@ exports[`[TextInput] renders correctly 1`] = `
   style={
     Array [
       Object {
-        "alignItems": "stretch",
-        "alignSelf": "stretch",
-        "backgroundColor": "#EDEFF6",
-        "borderColor": "#EDEFF6",
-        "borderRadius": 10,
-        "borderWidth": 2,
         "flexDirection": "row",
-        "height": 93.5,
-        "justifyContent": "center",
-        "minHeight": 55,
-        "paddingHorizontal": 15,
-        "width": "100%",
+        "left": 0,
+        "right": 0,
       },
-      undefined,
-      false,
     ]
   }
 >
-  <TextInput
-    allowFontScaling={true}
-    autoCapitalize="none"
-    autoCorrect={false}
-    multiline={false}
-    onBlur={[Function]}
-    onFocus={[Function]}
-    placeholderTextColor="#848DB8"
-    rejectResponderTermination={true}
+  <View
     style={
       Array [
         Object {
-          "color": "#3052FF",
-          "flex": 1,
-          "fontFamily": "UbuntuMono-Bold",
-          "fontSize": 32.14285714285714,
-          "fontWeight": "600",
-        },
-        Object {
-          "paddingRight": 0,
+          "alignItems": "stretch",
+          "alignSelf": "stretch",
+          "backgroundColor": "#EDEFF6",
+          "borderColor": "#EDEFF6",
+          "borderRadius": 10,
+          "borderWidth": 2,
+          "flexDirection": "row",
+          "height": 93.5,
+          "justifyContent": "center",
+          "minHeight": 55,
+          "paddingHorizontal": 15,
+          "width": "100%",
         },
         undefined,
         false,
       ]
     }
-    underlineColorAndroid="transparent"
-  />
+  >
+    <TextInput
+      allowFontScaling={true}
+      autoCapitalize="none"
+      autoCorrect={false}
+      multiline={false}
+      onBlur={[Function]}
+      onFocus={[Function]}
+      placeholderTextColor="#848DB8"
+      rejectResponderTermination={true}
+      style={
+        Array [
+          Object {
+            "color": "#3052FF",
+            "flex": 1,
+            "fontFamily": "UbuntuMono-Bold",
+            "fontSize": 32.14285714285714,
+            "fontWeight": "600",
+          },
+          Object {
+            "paddingRight": 0,
+          },
+          undefined,
+          false,
+        ]
+      }
+      underlineColorAndroid="transparent"
+    />
+  </View>
 </View>
 `;
