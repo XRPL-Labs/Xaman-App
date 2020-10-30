@@ -246,11 +246,11 @@ class HomeView extends Component<Props, State> {
 
         return (
             <Fragment key="header">
-                <View style={[AppStyles.flex1, AppStyles.paddingLeft, AppStyles.centerContent]}>
+                <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                     <Image style={[styles.logo]} source={Images.xummLogo} />
                 </View>
                 {!isEmpty(account) && account.isValid() && (
-                    <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
+                    <View style={[AppStyles.flex1]}>
                         <Button
                             onPress={() => {
                                 Navigator.showOverlay(AppScreens.Overlay.SwitchAccount, {
@@ -415,11 +415,11 @@ class HomeView extends Component<Props, State> {
                                                 {line.currency.issuer === account.address
                                                     ? Localize.t('home.selfIssued')
                                                     : `${line.counterParty.name} ${
-                                                        // eslint-disable-next-line max-len
-                                                        line.currency.name
-                                                            ? NormalizeCurrencyCode(line.currency.currency)
-                                                            : ''
-                                                    }`}
+                                                          // eslint-disable-next-line max-len
+                                                          line.currency.name
+                                                              ? NormalizeCurrencyCode(line.currency.currency)
+                                                              : ''
+                                                      }`}
                                             </Text>
                                         </View>
                                     </View>

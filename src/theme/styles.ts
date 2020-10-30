@@ -31,11 +31,13 @@ export default StyleSheet.create({
     headerContainer: {
         backgroundColor: Colors.transparent,
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
         zIndex: 99999,
         height: Sizes.moderateScale(60),
         marginTop: isIOS10() ? 20 : 0,
+        paddingTop: 0,
+        paddingHorizontal: Sizes.padding,
     },
     headerBorder: {
         borderBottomWidth: 1,
@@ -256,12 +258,13 @@ export default StyleSheet.create({
     subtext: {
         fontFamily: Fonts.subtext.family,
         fontSize: Fonts.subtext.size,
+        color: Colors.black,
     },
     monoSubText: {
         fontFamily: Fonts.base.familyMono,
         fontSize: Fonts.subtext.size - 1,
+        color: Colors.black,
     },
-
     mono: {
         fontFamily: Fonts.base.familyMono,
     },
