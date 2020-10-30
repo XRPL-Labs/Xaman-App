@@ -25,7 +25,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
 import Preferences from '@common/libs/preferences';
-import { NormalizeAmount, NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
+import { NormalizeAmount, NormalizeCurrencyCode, FormatNumber } from '@common/libs/utils';
 
 // components
 import { Button, AccordionPicker, Footer, Spacer, TextInput, Header } from '@components/General';
@@ -186,6 +186,8 @@ class SummaryStep extends Component {
     };
 
     renderCurrencyItem = (item: any) => {
+        const { source } = this.context;
+
         // XRP
         if (typeof item === 'string') {
             return (
@@ -197,7 +199,7 @@ class SummaryStep extends Component {
                         <View style={[AppStyles.column, AppStyles.centerContent]}>
                             <Text style={[styles.currencyItemLabel]}>XRP</Text>
                             <Text style={[styles.currencyBalance]}>
-                                {Localize.t('global.available')}: {this.getAvailableBalance()}
+                                {Localize.t('global.available')}: {FormatNumber(source.balance)}
                             </Text>
                         </View>
                     </View>
@@ -218,7 +220,7 @@ class SummaryStep extends Component {
                             {item.currency.name && <Text style={[AppStyles.subtext]}> - {item.currency.name}</Text>}
                         </Text>
                         <Text style={[styles.currencyBalance]}>
-                            {Localize.t('global.balance')}: {NormalizeBalance(item.balance)}
+                            {Localize.t('global.balance')}: {FormatNumber(item.balance)}
                         </Text>
                     </View>
                 </View>

@@ -16,7 +16,7 @@ import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import LedgerService from '@services/LedgerService';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode, FormatNumber } from '@common/libs/utils';
 // components
 import { Button, Icon, Spacer } from '@components/General';
 
@@ -280,7 +280,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                                     style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}
                                 >
                                     <Text style={[AppStyles.h5, AppStyles.monoBold, AppStyles.colorGreyDark]}>
-                                        {account.balance}
+                                        {FormatNumber(account.balance)}
                                     </Text>
                                 </View>
                             </View>
@@ -298,7 +298,9 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                                 <View
                                     style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}
                                 >
-                                    <Text style={[AppStyles.h5, AppStyles.monoBold]}>{account.availableBalance}</Text>
+                                    <Text style={[AppStyles.h5, AppStyles.monoBold]}>
+                                        {FormatNumber(account.availableBalance)}
+                                    </Text>
                                 </View>
                             </View>
                             <Spacer size={30} />

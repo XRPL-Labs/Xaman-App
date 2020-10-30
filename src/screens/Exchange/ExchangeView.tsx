@@ -31,7 +31,7 @@ import LedgerExchange from '@common/libs/ledger/exchange';
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
-import { NormalizeAmount, NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
+import { NormalizeAmount, NormalizeCurrencyCode, FormatNumber } from '@common/libs/utils';
 // constants
 import { AppScreens, AppConfig } from '@common/constants';
 
@@ -523,7 +523,7 @@ class ExchangeView extends Component<Props, State> {
                                               NormalizeCurrencyCode(trustLine.currency.currency)}
                                     </Text>
                                     <Text style={[styles.subLabel]}>
-                                        {Localize.t('global.spendable')}: {NormalizeBalance(this.getAvailableBalance())}
+                                        {Localize.t('global.spendable')}: {FormatNumber(this.getAvailableBalance())}
                                     </Text>
                                 </View>
                             </View>

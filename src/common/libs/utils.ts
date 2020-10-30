@@ -138,8 +138,8 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination & {
     };
 };
 
-const NormalizeBalance = (balance: number) => {
-    return new BigNumber(balance).decimalPlaces(6).toString(10);
+const FormatNumber = (n: number) => {
+    return new BigNumber(n).decimalPlaces(6).toFormat();
 };
 
 /**
@@ -198,7 +198,7 @@ export {
     Truncate,
     FormatDate,
     NormalizeAmount,
-    NormalizeBalance,
+    FormatNumber,
     NormalizeCurrencyCode,
     NormalizeDestination,
     VersionDiff,

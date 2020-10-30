@@ -24,7 +24,7 @@ import { LedgerService, SocketService } from '@services';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
 
-import { NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
+import { NormalizeCurrencyCode, FormatNumber } from '@common/libs/utils';
 // constants
 import { AppScreens } from '@common/constants';
 
@@ -445,7 +445,7 @@ class HomeView extends Component<Props, State> {
                                                 discreetMode && AppStyles.colorGreyDark,
                                             ]}
                                         >
-                                            {discreetMode ? '••••••••' : NormalizeBalance(line.balance)}
+                                            {discreetMode ? '••••••••' : FormatNumber(line.balance)}
                                         </Text>
                                     </View>
                                 </TouchableOpacity>
@@ -620,7 +620,7 @@ class HomeView extends Component<Props, State> {
                                                 discreetMode && AppStyles.colorGreyDark,
                                             ]}
                                         >
-                                            {discreetMode ? '••••••••' : account.availableBalance}
+                                            {discreetMode ? '••••••••' : FormatNumber(account.availableBalance)}
                                         </Text>
                                     </TouchableOpacity>
                                 </View>
