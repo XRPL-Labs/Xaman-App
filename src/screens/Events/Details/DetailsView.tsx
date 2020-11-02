@@ -1082,6 +1082,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     {actionButtons.map((e, i) => (
                         <>
                             <Button
+                                key={`actionButton-${i}`}
                                 rounded
                                 block
                                 secondary={e.secondary}

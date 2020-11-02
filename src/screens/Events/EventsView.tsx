@@ -52,7 +52,7 @@ export interface Props {
 export interface State {
     isLoading: boolean;
     isLoadingMore: boolean;
-    shouldLoadMore: boolean;
+    canLoadMore: boolean;
     filters: FilterProps;
     searchText: string;
     section: typeof SECTIONS[number];
@@ -83,7 +83,7 @@ class EventsView extends Component<Props, State> {
         this.state = {
             isLoading: true,
             isLoadingMore: false,
-            shouldLoadMore: true,
+            canLoadMore: true,
             searchText: undefined,
             filters: undefined,
             section: SECTIONS[0],
@@ -97,13 +97,13 @@ class EventsView extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        const { dataSource, account, isLoading, shouldLoadMore, isLoadingMore, filters } = this.state;
+        const { dataSource, account, isLoading, canLoadMore, isLoadingMore, filters } = this.state;
         const { timestamp } = this.props;
         return (
             !isEqual(nextState.dataSource, dataSource) ||
             !isEqual(nextState.isLoading, isLoading) ||
             !isEqual(nextState.isLoadingMore, isLoadingMore) ||
-            !isEqual(nextState.shouldLoadMore, shouldLoadMore) ||
+            !isEqual(nextState.canLoadMore, canLoadMore) ||
             !isEqual(nextState.account, account) ||
             !isEqual(nextState.filters, filters) ||
             !isEqual(nextProps.timestamp, timestamp)
@@ -145,7 +145,7 @@ class EventsView extends Component<Props, State> {
                 transactions: [],
             },
             () => {
-                this.updateDataSource();
+                this.updateDataSource(true);
             },
         );
     };
@@ -181,7 +181,7 @@ class EventsView extends Component<Props, State> {
     };
 
     loadTransactions = (loadMore?: boolean): Promise<TransactionsType[]> => {
-        const { account, lastMarker } = this.state;
+        const { transactions, account, lastMarker } = this.state;
 
         return new Promise((resolve) => {
             // return if no account exist
@@ -191,22 +191,25 @@ class EventsView extends Component<Props, State> {
 
             return LedgerService.getTransactions(account.address, loadMore && lastMarker, 100)
                 .then((resp) => {
-                    const { transactions, marker } = resp;
-                    let shouldLoadMore = true;
+                    const { transactions: txResp, marker } = resp;
+                    let canLoadMore = true;
 
-                    // if we got less than 20 transaction, means there is no transaction
-                    if (transactions.length < 100) {
-                        shouldLoadMore = false;
+                    // if we got less than 100 transaction, means there is no transaction
+                    // also only handle recent 1000 transactions
+                    if (txResp.length < 100 || transactions.length >= 1000) {
+                        canLoadMore = false;
                     }
 
-                    const parsedList = flatMap(transactions, transactionFactory);
-
-                    const filtered = filter(parsedList, (t) => {
+                    let parsedList = filter(flatMap(txResp, transactionFactory), (t) => {
                         return t.TransactionResult.success;
                     });
 
-                    this.setState({ transactions: filtered, lastMarker: marker, shouldLoadMore }, () => {
-                        return resolve(filtered);
+                    if (loadMore) {
+                        parsedList = uniqBy([...transactions, ...parsedList], 'Hash');
+                    }
+
+                    this.setState({ transactions: parsedList, lastMarker: marker, canLoadMore }, () => {
+                        return resolve(parsedList);
                     });
                 })
                 .catch(() => {
@@ -217,33 +220,22 @@ class EventsView extends Component<Props, State> {
     };
 
     loadMore = async () => {
-        const {
-            pendingRequests,
-            shouldLoadMore,
-            filters,
-            searchText,
-            transactions,
-            isLoadingMore,
-            section,
-        } = this.state;
+        const { canLoadMore, filters, searchText, isLoadingMore, isLoading, section } = this.state;
 
-        if (section === 'Planned' || section === 'Requests') {
-            return;
-        }
-
-        if (isLoadingMore || !shouldLoadMore || filters || searchText) return;
+        if (isLoading || isLoadingMore || !canLoadMore || ['Planned', 'Requests'].indexOf(section) > -1) return;
 
         this.setState({ isLoadingMore: true });
 
-        const moreTransactions = await this.loadTransactions(true);
+        await this.loadTransactions(true);
 
-        const mixedTransactions = uniqBy([...transactions, ...moreTransactions], 'Hash');
+        this.setState({ isLoadingMore: false });
 
-        this.setState({
-            isLoadingMore: false,
-            transactions: mixedTransactions,
-            dataSource: this.buildDataSource(mixedTransactions, pendingRequests),
-        });
+        // apply any new search ad filter to the new sources
+        if (searchText) {
+            this.applySearch(searchText);
+        } else {
+            this.applyFilters(filters);
+        }
     };
 
     buildDataSource = (transactions: any, pendingRequests: any, plannedTransactions?: any) => {
@@ -328,14 +320,21 @@ class EventsView extends Component<Props, State> {
 
         // apply any new search ad filter to the new sources
         if (searchText) {
-            this.onSearchChange(searchText);
+            this.applySearch(searchText);
         } else {
             this.applyFilters(filters);
         }
     };
 
     applyFilters = (filters: FilterProps) => {
-        const { account, transactions, pendingRequests, plannedTransactions } = this.state;
+        const { section, account, transactions, pendingRequests, plannedTransactions, canLoadMore } = this.state;
+
+        if (section === 'Requests') {
+            this.setState({
+                dataSource: this.buildDataSource(transactions, pendingRequests, plannedTransactions),
+            });
+            return;
+        }
 
         // check if filters are empty
         let isEmptyFilters = true;
@@ -358,20 +357,38 @@ class EventsView extends Component<Props, State> {
             return;
         }
 
-        let newTransactions = transactions;
+        let newTransactions = [];
+
+        if (section === 'All') {
+            newTransactions = transactions;
+        } else {
+            newTransactions = plannedTransactions;
+        }
 
         if (filters.Amount && filters.AmountIndicator) {
             newTransactions = filter(newTransactions, (t) => {
                 if (filters.AmountIndicator === 'Bigger') {
-                    return parseFloat(get(t, 'Amount.value')) >= parseFloat(filters.Amount);
+                    return (
+                        parseFloat(get(t, 'Amount.value')) >= parseFloat(filters.Amount) ||
+                        parseFloat(get(t, 'DeliverMin.value')) >= parseFloat(filters.Amount) ||
+                        parseFloat(get(t, 'SendMax.value')) >= parseFloat(filters.Amount)
+                    );
                 }
-                return parseFloat(get(t, 'Amount.value')) <= parseFloat(filters.Amount);
+                return (
+                    parseFloat(get(t, 'Amount.value')) <= parseFloat(filters.Amount) ||
+                    parseFloat(get(t, 'DeliverMin.value')) <= parseFloat(filters.Amount) ||
+                    parseFloat(get(t, 'SendMax.value')) <= parseFloat(filters.Amount)
+                );
             });
         }
 
         if (filters.Currency) {
             newTransactions = filter(newTransactions, (t) => {
-                return get(t, 'Amount.currency') === filters.Currency;
+                return (
+                    get(t, 'Amount.currency') === filters.Currency ||
+                    get(t, 'DeliverMin.currency') === filters.Currency ||
+                    get(t, 'SendMax.currency') === filters.Currency
+                );
             });
         }
 
@@ -394,18 +411,18 @@ class EventsView extends Component<Props, State> {
                     includeTypes.push('TrustSet');
                     break;
                 case 'Escrow':
-                    includeTypes.push(...['EscrowCancel', 'EscrowCreate', 'EscrowFinish']);
+                    includeTypes.push(...['EscrowCancel', 'EscrowCreate', 'EscrowFinish', 'Escrow']);
                     break;
                 case 'Offer':
-                    includeTypes.push(...['OfferCancel', 'OfferCreate']);
+                    includeTypes.push(...['OfferCancel', 'OfferCreate', 'Offer']);
+                    break;
+                case 'Check':
+                    includeTypes.push(...['CheckCancel', 'CheckCreate', 'CheckCash', 'Check']);
                     break;
                 case 'Other':
                     includeTypes.push(
                         ...[
                             'AccountSet',
-                            'CheckCancel',
-                            'CheckCash',
-                            'CheckCreate',
                             'PaymentChannelClaim',
                             'PaymentChannelCreate',
                             'PaymentChannelFund',
@@ -423,14 +440,32 @@ class EventsView extends Component<Props, State> {
             });
         }
 
-        this.setState({
-            dataSource: this.buildDataSource(newTransactions, [], plannedTransactions),
-            filters,
-        });
+        if (section === 'All') {
+            if (isEmpty(newTransactions) && canLoadMore) {
+                this.setState(
+                    {
+                        filters,
+                    },
+                    () => {
+                        this.loadMore();
+                    },
+                );
+            } else {
+                this.setState({
+                    dataSource: this.buildDataSource(newTransactions, [], plannedTransactions),
+                    filters,
+                });
+            }
+        } else {
+            this.setState({
+                dataSource: this.buildDataSource(transactions, [], newTransactions),
+                filters,
+            });
+        }
     };
 
-    onSearchChange = (text: string) => {
-        const { plannedTransactions, pendingRequests, transactions } = this.state;
+    applySearch = (text: string) => {
+        const { plannedTransactions, pendingRequests, transactions, section, canLoadMore } = this.state;
 
         if (isEmpty(text)) {
             this.setState({
@@ -440,13 +475,15 @@ class EventsView extends Component<Props, State> {
             return;
         }
 
+        let newTransactions = transactions;
+        let newPendingRequests = pendingRequests;
+        let newPlannedTransactions = plannedTransactions;
+
         const payloadFilter = new Fuse(pendingRequests, {
             keys: ['application.name'],
             shouldSort: false,
             includeScore: false,
         });
-
-        const newPendingPayloads = flatMap(payloadFilter.search(text), 'item');
 
         const transactionFilter = new Fuse(transactions, {
             keys: [
@@ -461,15 +498,47 @@ class EventsView extends Component<Props, State> {
             shouldSort: false,
             includeScore: false,
         });
-        const newTransactions = flatMap(transactionFilter.search(text), 'item');
 
-        const newPlannedTransactions = plannedTransactions;
-
-        this.setState({
-            searchText: text,
-            dataSource: this.buildDataSource(newTransactions, newPendingPayloads, newPlannedTransactions),
-            filters: undefined,
+        const plannedTransactionFilter = new Fuse(plannedTransactions, {
+            keys: [
+                'Account.address',
+                'Destination.address',
+                'Destination.name',
+                'Destination.tag',
+                'Amount.value',
+                'Amount.currency',
+                'Hash',
+            ],
+            shouldSort: false,
+            includeScore: false,
         });
+
+        if (section === 'All') {
+            newPendingRequests = flatMap(payloadFilter.search(text), 'item');
+            newTransactions = flatMap(transactionFilter.search(text), 'item');
+        } else if (section === 'Planned') {
+            newPlannedTransactions = flatMap(plannedTransactionFilter.search(text), 'item');
+        } else if (section === 'Requests') {
+            newPendingRequests = flatMap(payloadFilter.search(text), 'item');
+        }
+
+        if (section === 'All' && isEmpty(newTransactions) && canLoadMore) {
+            this.setState(
+                {
+                    searchText: text,
+                    filters: undefined,
+                },
+                () => {
+                    this.loadMore();
+                },
+            );
+        } else {
+            this.setState({
+                searchText: text,
+                dataSource: this.buildDataSource(newTransactions, newPendingRequests, newPlannedTransactions),
+                filters: undefined,
+            });
+        }
     };
 
     onFilterRemove = (keys: Array<string>) => {
@@ -531,7 +600,11 @@ class EventsView extends Component<Props, State> {
     };
 
     renderListHeader = () => {
-        const { filters } = this.state;
+        const { filters, section } = this.state;
+
+        if (section === 'Requests') {
+            return null;
+        }
 
         return <EventsFilterChip filters={filters} onRemovePress={this.onFilterRemove} />;
     };
@@ -574,7 +647,7 @@ class EventsView extends Component<Props, State> {
 
                 <SearchBar
                     containerStyle={AppStyles.marginHorizontalSml}
-                    onChangeText={this.onSearchChange}
+                    onChangeText={this.applySearch}
                     placeholder={Localize.t('global.search')}
                 />
                 <Spacer size={10} />

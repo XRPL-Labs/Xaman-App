@@ -24,6 +24,7 @@ import styles from './styles';
 export enum TransactionTypes {
     Escrow = 'Escrow',
     Offer = 'Offer',
+    Check = 'Check',
     Payment = 'Payment',
     TrustSet = 'TrustSet',
     Other = 'Other',
@@ -194,6 +195,11 @@ class EventsFilterView extends Component<Props, State> {
                                 'TransactionType',
                                 Localize.t(`global.${TransactionTypes.Offer.toLowerCase()}`),
                                 TransactionTypes.Offer,
+                            )}
+                            {this.renderButton(
+                                'TransactionType',
+                                Localize.t(`global.${TransactionTypes.Check.toLowerCase()}`),
+                                TransactionTypes.Check,
                             )}
                             {this.renderButton(
                                 'TransactionType',
