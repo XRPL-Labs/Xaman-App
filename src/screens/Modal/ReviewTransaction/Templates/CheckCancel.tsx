@@ -23,7 +23,7 @@ export interface Props {
 
 export interface State {
     isLoading: boolean;
-    sourceDetails: AccountNameType;
+    destinationDetails: AccountNameType;
 }
 
 /* Component ==================================================================== */
@@ -35,7 +35,7 @@ class CheckCancelTemplate extends Component<Props, State> {
 
         this.state = {
             isLoading: false,
-            sourceDetails: { name: '', source: '' },
+            destinationDetails: { name: '', source: '' },
         };
     }
 
@@ -60,11 +60,11 @@ class CheckCancelTemplate extends Component<Props, State> {
                     transaction.Check = new CheckCreate(checkObject);
 
                     // fetch destination details
-                    getAccountName(transaction.Check.Account.address)
+                    getAccountName(transaction.Check?.Destination.address)
                         .then((r: any) => {
                             if (!isEmpty(res)) {
                                 this.setState({
-                                    sourceDetails: r,
+                                    destinationDetails: r,
                                 });
                             }
                         })
@@ -87,13 +87,13 @@ class CheckCancelTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoading, sourceDetails } = this.state;
+        const { isLoading, destinationDetails } = this.state;
 
         return (
             <>
                 <View style={styles.label}>
                     <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                        {Localize.t('global.from')}
+                        {Localize.t('global.to')}
                     </Text>
                 </View>
 
@@ -102,8 +102,9 @@ class CheckCancelTemplate extends Component<Props, State> {
                     isLoading={isLoading}
                     showAvatar={false}
                     recipient={{
-                        address: transaction.Check?.Account.address,
-                        ...sourceDetails,
+                        address: transaction.Check?.Destination.address,
+                        tag: transaction.Check?.Destination.tag,
+                        ...destinationDetails,
                     }}
                 />
 
