@@ -4,7 +4,7 @@
 
 /* eslint-disable spellcheck/spell-checker */
 import { StyleSheet } from 'react-native';
-import { isIOS10 } from '@common/helpers/device';
+import { IsIOS10 } from '@common/helpers/device';
 
 import Colors from './colors';
 import Fonts from './fonts';
@@ -35,7 +35,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         zIndex: 99999,
         height: Sizes.moderateScale(60),
-        marginTop: isIOS10() ? 20 : 0,
+        marginTop: IsIOS10() ? 20 : 0,
         paddingTop: 0,
         paddingHorizontal: Sizes.padding,
     },

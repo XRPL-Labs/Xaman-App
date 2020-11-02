@@ -1,6 +1,12 @@
-import { Dimensions, Platform, PixelRatio } from 'react-native';
+import { Dimensions, Platform, PixelRatio, NativeModules } from 'react-native';
 
-const isIOS10 = (): boolean => {
+const { UtilsModule } = NativeModules;
+
+/**
+ * IOS: Check if device is a IPhone 10
+ * @returns boolean
+ */
+const IsIOS10 = (): boolean => {
     if (Platform.OS !== 'ios') return false;
 
     // @ts-ignore
@@ -13,6 +19,11 @@ const isIOS10 = (): boolean => {
     return false;
 };
 
+/**
+ * IOS: Check if device is a IPhoneX
+ * @returns boolean
+ */
+
 const IsIPhoneX = (): boolean => {
     const { height, width } = Dimensions.get('window');
     return (
@@ -23,7 +34,11 @@ const IsIPhoneX = (): boolean => {
     );
 };
 
-const getBottomTabScale = (factor?: number): number => {
+/**
+ * IOS: Get bottom tab scale base on pixel ratio
+ * @returns number
+ */
+const GetBottomTabScale = (factor?: number): number => {
     if (Platform.OS !== 'ios') return 0;
     const ratio = PixelRatio.get();
 
@@ -46,5 +61,95 @@ const getBottomTabScale = (factor?: number): number => {
     return scale;
 };
 
+/**
+ * Android: Check if flagSecure is set on current activity
+ * @returns Promise<boolean>
+ */
+const IsFlagSecure = (): Promise<boolean> => {
+    if (Platform.OS !== 'android') {
+        return Promise.resolve(false);
+    }
+    return UtilsModule.isFlagSecure();
+};
+
+/**
+ * Android: turn on/off flagSecure flag on current activity
+ */
+const FlagSecure = (enable: boolean): void => {
+    if (Platform.OS !== 'android') {
+        return;
+    }
+
+    UtilsModule.flagSecure(enable);
+};
+
+/**
+ * IOS: check if device is jail broken
+ * @returns Promise<boolean>
+ */
+const IsDeviceJailBroken = (): Promise<boolean> => {
+    if (Platform.OS !== 'ios') {
+        return Promise.resolve(false);
+    }
+    return UtilsModule.isJailBroken();
+};
+
+/**
+ * Android: check if device is rooted
+ * @returns Promise<boolean>
+ */
+const IsDeviceRooted = (): Promise<boolean> => {
+    if (Platform.OS !== 'android') {
+        return Promise.resolve(false);
+    }
+    return UtilsModule.isRooted();
+};
+
+/**
+ * Get device default timezone
+ * @returns Promise<string>
+ */
+const GetDeviceTimeZone = (): Promise<string> => {
+    return UtilsModule.getTimeZone();
+};
+
+/**
+ * Get the latest real time base on device CPU ticks
+ * @returns Promise<number>
+ */
+const GetElapsedRealtime = (): Promise<number> => {
+    return new Promise((resolve) => {
+        UtilsModule.getElapsedRealtime().then((ts: string) => {
+            return resolve(Number(ts));
+        });
+    });
+};
+
+/**
+ * Restart react native bundler
+ */
+const RestartBundle = (): void => {
+    UtilsModule.restartBundle();
+};
+
+/**
+ * hard close the app proccess
+ */
+const ExitApp = (): void => {
+    NativeModules.exitApp();
+};
+
 /* Export ==================================================================== */
-export { IsIPhoneX, isIOS10, getBottomTabScale };
+export {
+    IsIPhoneX,
+    IsIOS10,
+    GetBottomTabScale,
+    IsFlagSecure,
+    FlagSecure,
+    IsDeviceJailBroken,
+    IsDeviceRooted,
+    GetDeviceTimeZone,
+    GetElapsedRealtime,
+    RestartBundle,
+    ExitApp,
+};

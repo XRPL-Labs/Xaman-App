@@ -61,6 +61,23 @@ public class UtilsModule extends ReactContextBaseJavaModule {
                 }
             });
         }
+
+        promise.resolve(true);
+    }
+
+
+    @ReactMethod
+    public void isFlagSecure(Promise promise) {
+        final Activity activity = getCurrentActivity();
+
+        if ((activity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_SECURE) != 0) {
+            promise.resolve(true);
+        }else{
+            promise.resolve(false);
+        }
+
+
+
     }
 
 

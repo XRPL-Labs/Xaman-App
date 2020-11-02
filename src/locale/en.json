@@ -385,7 +385,8 @@
         "eraseData": "Erase data",
         "eraseDataDescription": "Erase all data after 10 failed passcode attempts",
         "viewChangeLog": "View changelog",
-        "hideBalanceByDefault": "Hide balance by default"
+        "hideBalanceByDefault": "Hide balance by default",
+        "blockTakingScreenshots": "Block taking screenshots"
     },
     "account": {
         "addAccount": "Add an account",

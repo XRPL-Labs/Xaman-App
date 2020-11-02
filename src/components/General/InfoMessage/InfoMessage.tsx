@@ -19,22 +19,25 @@ interface Props {
     icon?: Extract<keyof typeof Images, string>;
     iconSize?: number;
     label?: string;
-    type: 'info' | 'warning' | 'error' | 'success';
+    type: 'info' | 'warning' | 'error' | 'success' | 'neutral';
+    flat?: boolean;
 }
 
 /* Component ==================================================================== */
 class InfoMessage extends Component<Props> {
     render() {
-        const { children, icon, iconSize, label, type } = this.props;
+        const { children, icon, iconSize, label, type, flat } = this.props;
 
         return (
             <View
                 style={[
                     styles.messageBox,
+                    flat && styles.messageBoxFlat,
                     type === 'info' ? styles.info : null,
                     type === 'warning' ? styles.warning : null,
                     type === 'error' ? styles.error : null,
                     type === 'success' ? styles.success : null,
+                    type === 'neutral' ? styles.neutral : null,
                 ]}
             >
                 {icon && (
@@ -47,6 +50,7 @@ class InfoMessage extends Component<Props> {
                                 type === 'warning' ? styles.warningIcon : null,
                                 type === 'error' ? styles.errorIcon : null,
                                 type === 'success' ? styles.successIcon : null,
+                                type === 'neutral' ? styles.neutralIcon : null,
                             ]}
                         />
                     </View>
@@ -63,6 +67,7 @@ class InfoMessage extends Component<Props> {
                                 type === 'warning' ? AppStyles.colorOrange : null,
                                 type === 'error' ? AppStyles.colorRed : null,
                                 type === 'success' ? AppStyles.colorGreen : null,
+                                type === 'neutral' ? AppStyles.colorGreyBlack : null,
                                 // eslint-disable-next-line
                                 { textAlign: icon ? 'left' : 'center' },
                             ]}

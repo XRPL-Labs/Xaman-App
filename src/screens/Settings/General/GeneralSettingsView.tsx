@@ -4,10 +4,11 @@
 
 import filter from 'lodash/filter';
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, NativeModules } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+import { RestartBundle } from '@common/helpers/device';
 
 import { AppScreens, AppConfig } from '@common/constants';
 
@@ -75,7 +76,6 @@ class GeneralSettingsView extends Component<Props, State> {
 
     changeLanguage = (selected: any) => {
         const { value } = selected;
-        const { UtilsModule } = NativeModules;
 
         // save in store
         CoreRepository.saveSettings({ language: value });
@@ -83,7 +83,7 @@ class GeneralSettingsView extends Component<Props, State> {
         // change it from local instance
         Localize.setLocale(value);
 
-        UtilsModule.restartBundle();
+        RestartBundle();
     };
 
     onLanguageSelected = (selected: any) => {

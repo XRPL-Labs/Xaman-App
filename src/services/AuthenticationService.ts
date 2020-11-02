@@ -2,11 +2,11 @@
  * Authentication Service
  */
 
-import { NativeModules } from 'react-native';
 import EventEmitter from 'events';
 
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
+import { GetElapsedRealtime } from '@common/helpers/device';
 
 import CoreRepository from '@store/repositories/core';
 import AccountRepository from '@store/repositories/account';
@@ -82,19 +82,6 @@ class AuthenticationService extends EventEmitter {
     };
 
     /**
-     * Get the latest real time base on device CPU ticks
-     * @returns Promise<number>
-     */
-    getRealTime = (): Promise<number> => {
-        const { UtilsModule } = NativeModules;
-        return new Promise((resolve) => {
-            UtilsModule.getElapsedRealtime().then((ts: string) => {
-                return resolve(Number(ts));
-            });
-        });
-    };
-
-    /**
      * reset the entire app
      * WARNING: this action cannot be undo, used carefully
      */
@@ -141,7 +128,7 @@ class AuthenticationService extends EventEmitter {
      */
     onSuccessAuthentication = async (ts?: number) => {
         if (!ts) {
-            ts = await this.getRealTime();
+            ts = await GetElapsedRealtime();
         }
         // change to unlocked
         this.locked = false;
@@ -164,7 +151,7 @@ class AuthenticationService extends EventEmitter {
      */
     onWrongPasscodeInput = async (coreSettings: any, ts?: number) => {
         if (!ts) {
-            ts = await this.getRealTime();
+            ts = await GetElapsedRealtime();
         }
         // TODO: check for purge on too many failed attempt
         CoreRepository.saveSettings({
@@ -208,10 +195,10 @@ class AuthenticationService extends EventEmitter {
         }
 
         if (!ts) {
-            ts = await this.getRealTime();
+            ts = await GetElapsedRealtime();
         }
 
-        const realTime = await this.getRealTime();
+        const realTime = await GetElapsedRealtime();
         // check if attempts is exceed
         if (coreSettings.passcodeFailedAttempts > 5) {
             // calculate potential wait time
@@ -246,7 +233,7 @@ class AuthenticationService extends EventEmitter {
         return new Promise(async (resolve, reject) => {
             const coreSettings = CoreRepository.getSettings();
 
-            const realTime = await this.getRealTime();
+            const realTime = await GetElapsedRealtime();
 
             // check if passcode input is blocked
             const blockTime = await this.getInputBlockTime(coreSettings, realTime);
@@ -281,7 +268,7 @@ class AuthenticationService extends EventEmitter {
 
             const coreSettings = CoreRepository.getSettings();
 
-            const realTime = await this.getRealTime();
+            const realTime = await GetElapsedRealtime();
 
             if (
                 coreSettings.lastUnlockedTimestamp === 0 ||

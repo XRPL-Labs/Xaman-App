@@ -1,7 +1,7 @@
 /**
  * Application class
  */
-import { UIManager, Platform, Alert, Text, TextInput, NativeModules } from 'react-native';
+import { UIManager, Platform, Alert, Text, TextInput } from 'react-native';
 
 // modules
 import moment from 'moment-timezone';
@@ -10,6 +10,7 @@ import { Navigation } from 'react-native-navigation';
 
 // helpers
 import { Navigator } from '@common/helpers/navigator';
+import { GetDeviceTimeZone, FlagSecure, IsDeviceJailBroken, IsDeviceRooted } from '@common/helpers/device';
 
 // Storage
 import { CoreRepository } from '@store/repositories';
@@ -160,17 +161,15 @@ class Application {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             try {
-                const { UtilsModule } = NativeModules;
-
                 if (Platform.OS === 'android') {
                     // check for device root
-                    await UtilsModule.isRooted().then((rooted: boolean) => {
+                    await IsDeviceRooted().then((rooted: boolean) => {
                         if (rooted && !__DEV__) {
                             return reject(new Error('For your security, XUMM cannot be opened on a rooted phone.'));
                         }
 
                         // set secure flag for the app
-                        UtilsModule.flagSecure(true);
+                        FlagSecure(true);
 
                         // enable layout animation
                         if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -181,7 +180,7 @@ class Application {
                     });
                 } else if (Platform.OS === 'ios') {
                     // check for device root
-                    await UtilsModule.isJailBroken().then((isJailBroken: boolean) => {
+                    await IsDeviceJailBroken().then((isJailBroken: boolean) => {
                         if (isJailBroken && !__DEV__) {
                             return reject(
                                 new Error('For your security, XUMM cannot be opened on a Jail Broken phone.'),
@@ -193,7 +192,7 @@ class Application {
                 }
 
                 // set timezone
-                UtilsModule.getTimeZone()
+                GetDeviceTimeZone()
                     .then((tz: string) => {
                         moment.tz.setDefault(tz);
                     })
