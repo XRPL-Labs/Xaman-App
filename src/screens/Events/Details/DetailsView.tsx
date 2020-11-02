@@ -369,7 +369,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 } else {
                     currency = account.lines.find(
                         // eslint-disable-next-line max-len
-                        (l: any) => l.currency.currency === tx.Amount.currency && l.currency.issuer === tx.Amount.issuer,
+                        (l: any) =>
+                            l.currency.currency === tx.Amount.currency && l.currency.issuer === tx.Amount.issuer,
                     );
                 }
                 Object.assign(params, { amount: tx.Amount.value, currency });
@@ -407,7 +408,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case 'EscrowFinish':
                 Object.assign(transaction, {
-                    TransactionType: 'EscrowCancel',
+                    TransactionType: 'EscrowFinish',
                     Owner: tx.Account.address,
                     PreviousTxnID: tx.PreviousTxnID,
                 });
