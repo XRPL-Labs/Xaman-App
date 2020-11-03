@@ -69,7 +69,7 @@ export const styles = StyleSheet.create({
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size * 1.1,
         textAlign: 'center',
-        color: AppColors.white,
+        color: AppColors.black,
         paddingHorizontal: 5,
     },
 });

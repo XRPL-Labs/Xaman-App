@@ -218,6 +218,9 @@ const styles = StyleSheet.create({
 
     requestButtonIcon: { marginLeft: 5, tintColor: AppColors.green },
     requestButtonText: { color: AppColors.green },
+
+    QRButtonText: { fontSize: AppFonts.base.size },
+
     accountRow: {
         paddingRight: 20,
         paddingLeft: 20,

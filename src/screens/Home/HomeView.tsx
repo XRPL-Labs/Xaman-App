@@ -458,39 +458,53 @@ class HomeView extends Component<Props, State> {
     };
 
     renderButtons = () => {
-        const { isSpendable } = this.state;
+        const { isSpendable, account } = this.state;
 
-        if (!isSpendable) {
-            return null;
-        }
-
-        return (
-            <View style={[styles.buttonRow]}>
+        if (account.balance === 0) {
+            return (
                 <RaisedButton
-                    testID="send-button"
-                    style={[styles.sendButton]}
-                    icon="IconCornerLeftUp"
-                    iconSize={25}
-                    iconStyle={[styles.sendButtonIcon]}
-                    label={Localize.t('global.send')}
-                    textStyle={[styles.sendButtonText]}
-                    onPress={this.pushSendScreen}
-                    activeOpacity={0}
-                />
-                <RaisedButton
-                    testID="request-button"
-                    style={[styles.requestButton]}
-                    icon="IconCornerRightDown"
-                    iconSize={25}
-                    iconStyle={[styles.requestButtonIcon]}
-                    iconPosition="right"
-                    label={Localize.t('global.request')}
-                    textStyle={[styles.requestButtonText]}
+                    testID="qr-button"
+                    icon="IconQR"
+                    iconSize={20}
+                    label={Localize.t('account.showAccountQR')}
+                    textStyle={[styles.QRButtonText]}
                     onPress={this.showShareOverlay}
                     activeOpacity={0}
                 />
-            </View>
-        );
+            );
+        }
+
+        if (isSpendable) {
+            return (
+                <View style={[styles.buttonRow]}>
+                    <RaisedButton
+                        testID="send-button"
+                        style={[styles.sendButton]}
+                        icon="IconCornerLeftUp"
+                        iconSize={25}
+                        iconStyle={[styles.sendButtonIcon]}
+                        label={Localize.t('global.send')}
+                        textStyle={[styles.sendButtonText]}
+                        onPress={this.pushSendScreen}
+                        activeOpacity={0}
+                    />
+                    <RaisedButton
+                        testID="request-button"
+                        style={[styles.requestButton]}
+                        icon="IconCornerRightDown"
+                        iconSize={25}
+                        iconStyle={[styles.requestButtonIcon]}
+                        iconPosition="right"
+                        label={Localize.t('global.request')}
+                        textStyle={[styles.requestButtonText]}
+                        onPress={this.showShareOverlay}
+                        activeOpacity={0}
+                    />
+                </View>
+            );
+        }
+
+        return null;
     };
 
     renderEmpty = () => {
