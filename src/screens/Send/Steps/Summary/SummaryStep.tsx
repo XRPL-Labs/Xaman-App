@@ -80,7 +80,7 @@ class SummaryStep extends Component {
         const { setDestination, destination } = this.context;
         const destinationTag = text.replace(/[^0-9]/g, '');
 
-        if (Number(destinationTag) < Number.MAX_SAFE_INTEGER) {
+        if (Number(destinationTag) < 2 ** 32) {
             Object.assign(destination, { tag: destinationTag });
         }
 
@@ -147,7 +147,7 @@ class SummaryStep extends Component {
     };
 
     showEnterDestinationTag = () => {
-        const { destination, setDestination } = this.context;
+        const { setDestination, destination } = this.context;
 
         Navigator.showOverlay(
             AppScreens.Overlay.EnterDestinationTag,
@@ -164,6 +164,14 @@ class SummaryStep extends Component {
                     Object.assign(destination, { tag: destinationTag });
                     setDestination(destination);
                 },
+                onScannerRead: ({ tag }: { tag: number }) => {
+                    Object.assign(destination, { tag: String(tag) });
+                    setDestination(destination);
+
+                    this.showEnterDestinationTag();
+                },
+
+                onScannerClose: this.showEnterDestinationTag,
             },
         );
     };

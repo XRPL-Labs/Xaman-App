@@ -6,6 +6,8 @@ import { Animated, View, Text, Platform, Keyboard, Image, TouchableWithoutFeedba
 
 import Interactable from 'react-native-interactable';
 
+import { StringType } from 'xumm-string-decode';
+
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
@@ -26,6 +28,8 @@ export interface Props {
     destination: any;
     onClose?: () => void;
     onFinish: (destinationTag: string) => void;
+    onScannerRead?: (content: any) => void;
+    onScannerClose?: () => void;
 }
 
 export interface State {
@@ -38,9 +42,11 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.EnterDestinationTag;
     private textInputView: React.RefObject<View>;
 
+    textInput: TextInput;
     panel: any;
     deltaY: Animated.Value;
     deltaX: Animated.Value;
+    keyboardShow: boolean;
 
     static options() {
         return {
@@ -66,21 +72,20 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
         this.deltaX = new Animated.Value(0);
+
+        this.keyboardShow = false;
     }
 
     componentDidMount() {
         this.slideUp();
 
-        if (Platform.OS === 'ios') {
-            Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
-            Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
-        } else {
-            Keyboard.addListener('keyboardDidShow', this.onKeyboardShow);
-            Keyboard.addListener('keyboardDidHide', this.onKeyboardHide);
-        }
+        // add listeners with delay as a bug in ios 14
+        setTimeout(() => {
+            this.addKeyboardListeners();
+        }, 500);
     }
 
-    componentWillUnmount() {
+    removeKeyboardListeners = () => {
         if (Platform.OS === 'ios') {
             Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
             Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
@@ -88,9 +93,23 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
             Keyboard.removeListener('keyboardDidShow', this.onKeyboardShow);
             Keyboard.removeListener('keyboardDidHide', this.onKeyboardHide);
         }
-    }
+    };
+
+    addKeyboardListeners = () => {
+        if (Platform.OS === 'ios') {
+            Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
+            Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
+        } else {
+            Keyboard.addListener('keyboardDidShow', this.onKeyboardShow);
+            Keyboard.addListener('keyboardDidHide', this.onKeyboardHide);
+        }
+    };
 
     onKeyboardShow = (e: KeyboardEvent) => {
+        if (this.keyboardShow) return;
+
+        this.keyboardShow = true;
+
         if (this.textInputView && this.textInputView.current) {
             this.textInputView.current.measure((x, y, width, height, pageX, pageY) => {
                 if (!pageY) return;
@@ -108,6 +127,10 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
     };
 
     onKeyboardHide = () => {
+        if (!this.keyboardShow) return;
+
+        this.keyboardShow = false;
+
         this.setState({ offsetBottom: 0 }, () => {
             this.panel.snapTo({ index: 1 });
         });
@@ -122,13 +145,15 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
     };
 
     slideDown = () => {
+        this.removeKeyboardListeners();
+
         Keyboard.dismiss();
 
         setTimeout(() => {
             if (this.panel) {
                 this.panel.snapTo({ index: 0 });
             }
-        }, 10);
+        }, 20);
     };
 
     onSnap = async (event: any) => {
@@ -160,7 +185,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
     onDestinationTagChange = (text: string) => {
         const destinationTag = text.replace(/[^0-9]/g, '');
 
-        if (Number(destinationTag) < Number.MAX_SAFE_INTEGER) {
+        if (Number(destinationTag) < 2 ** 32) {
             this.setState({
                 destinationTag,
             });
@@ -168,7 +193,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
     };
 
     render() {
-        const { destination, buttonType } = this.props;
+        const { onScannerRead, onScannerClose, destination, buttonType } = this.props;
         const { offsetBottom, destinationTag } = this.state;
 
         return (
@@ -243,9 +268,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                                     light
                                     roundedSmall
                                     isDisabled={false}
-                                    onPress={() => {
-                                        this.slideDown();
-                                    }}
+                                    onPress={this.slideDown}
                                     textStyle={[AppStyles.subtext, AppStyles.bold]}
                                     label={Localize.t('global.cancel')}
                                 />
@@ -286,6 +309,9 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                             ]}
                         >
                             <TextInput
+                                ref={(r) => {
+                                    this.textInput = r;
+                                }}
                                 value={destinationTag}
                                 onChangeText={this.onDestinationTagChange}
                                 keyboardType="number-pad"
@@ -293,6 +319,11 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                                 placeholder={Localize.t('send.enterDestinationTag')}
                                 numberOfLines={1}
                                 inputStyle={styles.textInput}
+                                showScanner
+                                scannerType={StringType.XrplDestinationTag}
+                                onScannerRead={onScannerRead}
+                                onScannerClose={onScannerClose}
+                                onScannerOpen={this.slideDown}
                             />
                         </View>
 
@@ -305,9 +336,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                             ]}
                         >
                             <Button
-                                isDisabled={
-                                    Number(destinationTag) > Number.MAX_SAFE_INTEGER || Number(destinationTag) <= 0
-                                }
+                                isDisabled={Number(destinationTag) > 2 ** 32 || Number(destinationTag) <= 0}
                                 onPress={this.onFinish}
                                 style={styles.nextButton}
                                 label={buttonType === 'next' ? Localize.t('global.next') : Localize.t('global.apply')}

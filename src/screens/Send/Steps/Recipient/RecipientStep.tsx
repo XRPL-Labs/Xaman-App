@@ -316,6 +316,36 @@ class RecipientStep extends Component<Props, State> {
         });
     };
 
+    showEnterDestinationTag = () => {
+        const { setDestination, destination, goNext } = this.context;
+
+        Navigator.showOverlay(
+            AppScreens.Overlay.EnterDestinationTag,
+            {
+                layout: {
+                    backgroundColor: 'transparent',
+                    componentBackgroundColor: 'transparent',
+                },
+            },
+            {
+                buttonType: 'next',
+                destination,
+                onFinish: (destinationTag: string) => {
+                    Object.assign(destination, { tag: destinationTag });
+                    setDestination(destination);
+                    goNext();
+                },
+                onScannerRead: ({ tag }: { tag: number }) => {
+                    Object.assign(destination, { tag: String(tag) });
+                    setDestination(destination);
+
+                    this.showEnterDestinationTag();
+                },
+                onScannerClose: this.showEnterDestinationTag,
+            },
+        );
+    };
+
     checkAndNext = async () => {
         const { setDestination, setDestinationInfo, amount, currency, destination, source, goNext } = this.context;
 
@@ -474,24 +504,7 @@ class RecipientStep extends Component<Props, State> {
             }
 
             if (destinationInfo.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
-                Navigator.showOverlay(
-                    AppScreens.Overlay.EnterDestinationTag,
-                    {
-                        layout: {
-                            backgroundColor: 'transparent',
-                            componentBackgroundColor: 'transparent',
-                        },
-                    },
-                    {
-                        buttonType: 'next',
-                        destination,
-                        onFinish: (destinationTag: string) => {
-                            Object.assign(destination, { tag: destinationTag });
-                            setDestination(destination);
-                            goNext();
-                        },
-                    },
-                );
+                this.showEnterDestinationTag();
 
                 // don't move to next step
                 return;
