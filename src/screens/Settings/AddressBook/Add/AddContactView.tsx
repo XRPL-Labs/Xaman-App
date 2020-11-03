@@ -138,7 +138,7 @@ class AddContactView extends Component<Props, State> {
     onDestinationTagChange = (text: string) => {
         const destinationTag = text.replace(/[^0-9]/g, '');
 
-        if (Number(destinationTag) < Number.MAX_SAFE_INTEGER) {
+        if (Number(destinationTag) < 2 ** 32) {
             this.setState({
                 tag: destinationTag,
             });

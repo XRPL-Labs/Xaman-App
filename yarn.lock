@@ -17914,10 +17914,10 @@ xtend@^4.0.0, xtend@~4.0.1:
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
 
-xumm-string-decode@0.4.5:
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/xumm-string-decode/-/xumm-string-decode-0.4.5.tgz#07e1a374c34fe5468a8d6b0144c9a5a5ade1b89b"
-  integrity sha512-6ADdUg9MSoLm/Em1rCTWoupTU+eY+f+sISqRW9An02UpdAWoU8UC3Z0/DWB/8aH+C2ekhzk2A8We9CB8lqLHHw==
+xumm-string-decode@0.4.7:
+  version "0.4.7"
+  resolved "https://registry.yarnpkg.com/xumm-string-decode/-/xumm-string-decode-0.4.7.tgz#b56861238fb3ea5c7307286d0a5c4af7d2fee8a2"
+  integrity sha512-Ly6d3KMpgNCYCYKJfmUp/MepqyZeh7r0qKAdW8lKLpE5047nsc56laALW5893lqolofkaA5lmln2kIjll5dfpQ==
   dependencies:
     "@ungap/url-search-params" "^0.1.4"
     debug "^4.1.1"

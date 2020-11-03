@@ -45,11 +45,6 @@ export interface State {
     coreSettings: CoreSchema;
 }
 
-/* Constants ==================================================================== */
-const TRANSLATION_REGEX = RegExp(
-    'xumm://translation/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89ABab][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$',
-);
-
 /* Component ==================================================================== */
 class ScanView extends Component<Props, State> {
     static screenName = AppScreens.Modal.Scan;
@@ -157,9 +152,7 @@ class ScanView extends Component<Props, State> {
             });
     };
 
-    handleTranslationBundle = async (data: string) => {
-        const uuid = data.split(TRANSLATION_REGEX)[1];
-
+    handleTranslationBundle = async (uuid: string) => {
         // no uuid exist
         if (!uuid) {
             this.setShouldRead(true);
@@ -388,6 +381,9 @@ class ScanView extends Component<Props, State> {
             case StringType.PayId:
                 this.handleXrplDestination(parsed);
                 break;
+            case StringType.XummTranslation:
+                this.handleTranslationBundle(parsed.uuid);
+                break;
             default:
                 Alert.alert(
                     Localize.t('global.warning'),
@@ -413,12 +409,6 @@ class ScanView extends Component<Props, State> {
             // vibrate
             if (coreSettings.hapticFeedback) {
                 VibrateHapticFeedback('impactLight');
-            }
-
-            // check for translation regex before pass to handler
-            if (TRANSLATION_REGEX.test(data)) {
-                this.handleTranslationBundle(data);
-                return;
             }
 
             // handle the content

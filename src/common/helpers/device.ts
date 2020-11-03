@@ -136,7 +136,7 @@ const RestartBundle = (): void => {
  * hard close the app proccess
  */
 const ExitApp = (): void => {
-    NativeModules.exitApp();
+    UtilsModule.exitApp();
 };
 
 /* Export ==================================================================== */
