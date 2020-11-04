@@ -18,7 +18,7 @@ import { AppScreens } from '@common/constants';
 import { ContactRepository } from '@store/repositories';
 import { ContactSchema } from '@store/schemas/latest';
 
-import { Header, Button, SearchBar, TextAvatar } from '@components/General';
+import { Header, Button, SearchBar, Avatar } from '@components/General';
 
 import Localize from '@locale';
 // style
@@ -146,9 +146,9 @@ class AddressBookView extends Component<Props, State> {
                 underlayColor="rgba(154, 154, 154, 0.25)"
             >
                 <View style={[styles.row]}>
-                    <TextAvatar label={item.name} />
+                    <Avatar source={{ uri: `https://xumm.app/avatar/${item.address}.png` }} />
 
-                    <View style={[AppStyles.paddingLeftSml]}>
+                    <View>
                         <Text style={styles.name}>{item.name}</Text>
                         <Text style={styles.address}>{item.address}</Text>
                     </View>
