@@ -296,9 +296,9 @@ class DetailsStep extends Component {
                                 items={
                                     source
                                         ? [
-                                              'XRP',
-                                              ...filter(source.lines, (l) => l.balance > 0 || l.obligation === true),
-                                          ]
+                                            'XRP',
+                                            ...filter(source.lines, (l) => l.balance > 0 || l.obligation === true),
+                                        ]
                                         : []
                                 }
                                 renderItem={this.renderCurrencyItem}

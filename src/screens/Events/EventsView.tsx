@@ -497,6 +497,8 @@ class EventsView extends Component<Props, State> {
             ],
             shouldSort: false,
             includeScore: false,
+            threshold: 0.0,
+            minMatchCharLength: 2,
         });
 
         const plannedTransactionFilter = new Fuse(plannedTransactions, {
@@ -511,6 +513,8 @@ class EventsView extends Component<Props, State> {
             ],
             shouldSort: false,
             includeScore: false,
+            threshold: 0.0,
+            minMatchCharLength: 2,
         });
 
         if (section === 'All') {
