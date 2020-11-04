@@ -7,7 +7,7 @@ import Fuse from 'fuse.js';
 import { Results } from 'realm';
 
 import React, { Component } from 'react';
-import { View, Text, SectionList, TouchableHighlight, Image, ImageBackground } from 'react-native';
+import { View, Text, SectionList, TouchableOpacity, Image, ImageBackground } from 'react-native';
 
 import { Navigation } from 'react-native-navigation';
 
@@ -139,11 +139,11 @@ class AddressBookView extends Component<Props, State> {
         const { item } = contact;
 
         return (
-            <TouchableHighlight
+            <TouchableOpacity
                 onPress={() => {
                     this.onItemPress(item);
                 }}
-                underlayColor="rgba(154, 154, 154, 0.25)"
+                activeOpacity={0.8}
             >
                 <View style={[styles.row]}>
                     <Avatar source={{ uri: `https://xumm.app/avatar/${item.address}.png` }} />
@@ -153,7 +153,7 @@ class AddressBookView extends Component<Props, State> {
                         <Text style={styles.address}>{item.address}</Text>
                     </View>
                 </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
         );
     };
 

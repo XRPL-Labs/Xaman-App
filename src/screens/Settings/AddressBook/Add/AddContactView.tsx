@@ -65,6 +65,7 @@ class AddContactView extends Component<Props, State> {
     }
 
     doNameLookup = async (result: XrplDestination) => {
+        const { name } = this.state;
         // normalize
         const { to, tag, xAddress } = NormalizeDestination(result);
 
@@ -76,7 +77,7 @@ class AddContactView extends Component<Props, State> {
                 xAddress,
                 address: to,
                 tag: tag && tag.toString(),
-                name: accountInfo.name,
+                name: name || accountInfo.name,
             });
         }
     };
