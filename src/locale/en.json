@@ -607,6 +607,7 @@
         "scannedQRIsNotXummPayload":"Scanned QR code is not a XUMM payload!",
         "theQRIsNotWhatWeExpect": "This QR code is not what we expect!",
         "invalidQRTryNewOneOrTryAgain": "Invalid QR code (for XUMM), try a new one or try again",
+        "invalidClipboardDateTryNewOneOrTryAgain": "Invalid clipboard data (for XUMM), try a new one or try again",
         "importFromClipboard": "Import from Clipboard"
     },
     "payload": {

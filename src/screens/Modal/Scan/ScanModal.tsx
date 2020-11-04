@@ -315,7 +315,7 @@ class ScanView extends Component<Props, State> {
         }
     };
 
-    handle = (content: string) => {
+    handle = (content: string, clipboard?: boolean) => {
         const { onRead, type, fallback } = this.props;
 
         const detected = new StringTypeDetector(content);
@@ -387,7 +387,9 @@ class ScanView extends Component<Props, State> {
             default:
                 Alert.alert(
                     Localize.t('global.warning'),
-                    Localize.t('scan.invalidQRTryNewOneOrTryAgain'),
+                    clipboard
+                        ? Localize.t('scan.invalidClipboardDateTryNewOneOrTryAgain')
+                        : Localize.t('scan.invalidQRTryNewOneOrTryAgain'),
                     [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
                     {
                         cancelable: false,
@@ -419,8 +421,17 @@ class ScanView extends Component<Props, State> {
     checkClipboardContent = async () => {
         // get clipboard content
         const clipboardContent = await Clipboard.getString();
-        // pass it as qr code scanned content
-        this.onReadCode({ data: clipboardContent });
+
+        if (clipboardContent) {
+            // return if we don't need to read again
+            if (!this.shouldRead) return;
+
+            // should not read anymore until we decide about detect value
+            this.setShouldRead(false);
+
+            // handle the content
+            this.handle(clipboardContent, true);
+        }
     };
 
     onClose = () => {
