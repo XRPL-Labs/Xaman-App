@@ -4,23 +4,23 @@ import { AppSizes, AppColors, AppFonts } from '@theme';
 
 const styles = StyleSheet.create({
     container: {
-        height: AppSizes.scale(45),
+        height: AppSizes.scale(65),
         flexDirection: 'row',
         justifyContent: 'space-between',
         overflow: 'hidden',
     },
     button: {
         flex: 1,
-        marginVertical: 3,
+        marginVertical: 15,
     },
     selectedButton: {
         backgroundColor: AppColors.white,
         borderRadius: 12,
         shadowColor: AppColors.blue,
-        shadowOffset: { width: 0, height: 8 },
-        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 4 },
+        shadowRadius: 4,
         shadowOpacity: 0.1,
-        elevation: 1,
+        // elevation: 1,
     },
     textContainer: {
         flex: 1,

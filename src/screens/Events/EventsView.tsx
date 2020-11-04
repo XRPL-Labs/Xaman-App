@@ -31,7 +31,7 @@ import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterView';
 import { LedgerService, BackendService, PushNotificationsService } from '@services';
 
 // Components
-import { SearchBar, Button, SegmentButton, Spacer, Header } from '@components/General';
+import { SearchBar, Button, SegmentButton, Header } from '@components/General';
 import { EventsFilterChip, EventsList } from '@components/Modules';
 
 // Locale
@@ -650,13 +650,12 @@ class EventsView extends Component<Props, State> {
                     onChangeText={this.applySearch}
                     placeholder={Localize.t('global.search')}
                 />
-                <Spacer size={10} />
+
                 <SegmentButton
-                    containerStyle={AppStyles.marginHorizontalSml}
+                    containerStyle={AppStyles.paddingHorizontalSml}
                     buttons={SECTIONS}
                     onPress={this.onSectionChange}
                 />
-                <Spacer size={10} />
 
                 <EventsList
                     account={account}
