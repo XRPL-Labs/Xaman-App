@@ -10,7 +10,13 @@ import { Navigation } from 'react-native-navigation';
 
 // helpers
 import { Navigator } from '@common/helpers/navigator';
-import { GetDeviceTimeZone, FlagSecure, IsDeviceJailBroken, IsDeviceRooted } from '@common/helpers/device';
+import {
+    GetDeviceTimeZone,
+    GetDeviceLocaleSettings,
+    FlagSecure,
+    IsDeviceJailBroken,
+    IsDeviceRooted,
+} from '@common/helpers/device';
 
 // Storage
 import { CoreRepository } from '@store/repositories';
@@ -115,20 +121,23 @@ class Application {
     };
 
     loadAppLocale = () => {
-        return new Promise((resolve, reject) => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
             try {
                 const Localize = require('@locale').default;
 
                 const core = CoreRepository.getSettings();
 
+                const localeSettings = await GetDeviceLocaleSettings();
+                // app is not initialized yet, set to default EN
                 if (!core) {
                     this.logger.debug('Locale is not initialized, using default EN');
-                    Localize.setLocale('en');
+                    Localize.setLocale('en', localeSettings);
                     return resolve();
                 }
 
                 this.logger.debug(`Locale set to: ${core.language.toUpperCase()}`);
-                Localize.setLocale(core.language);
+                Localize.setLocale(core.language, core.useSystemSeparators ? localeSettings : undefined);
 
                 return resolve();
             } catch (e) {

@@ -304,7 +304,30 @@ RCT_EXPORT_METHOD(getTimeZone:(RCTPromiseResolveBlock)resolve
     [info setValue:exception.name forKey:@"ExceptionName"];
     [info setValue:exception.reason forKey:@"ExceptionReason"];
     [info setValue:exception.userInfo forKey:@"ExceptionUserInfo"];
-    NSError *error = [[NSError alloc] initWithDomain:@"Root Detection Module" code:0 userInfo:info];
+    NSError *error = [[NSError alloc] initWithDomain:@"getTimeZone Module" code:0 userInfo:info];
+    reject(@"failed to execute",@"",error);
+  }
+}
+
+RCT_EXPORT_METHOD(getLocalSetting:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+  @try{
+    NSLocale *locale = [NSLocale currentLocale];
+    NSString *languageCode = [[NSLocale preferredLanguages] objectAtIndex:0];
+
+    resolve(@{
+      @"locale": [locale localeIdentifier],
+      @"languageCode": [languageCode lowercaseString],
+      @"separator": [locale objectForKey:NSLocaleDecimalSeparator],
+      @"delimiter": [locale objectForKey:NSLocaleGroupingSeparator],
+    });
+  }
+  @catch(NSException *exception){
+    NSMutableDictionary * info = [NSMutableDictionary dictionary];
+    [info setValue:exception.name forKey:@"ExceptionName"];
+    [info setValue:exception.reason forKey:@"ExceptionReason"];
+    [info setValue:exception.userInfo forKey:@"ExceptionUserInfo"];
+    NSError *error = [[NSError alloc] initWithDomain:@"getLocalSetting Module" code:0 userInfo:info];
     reject(@"failed to execute",@"",error);
   }
 }

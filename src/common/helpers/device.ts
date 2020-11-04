@@ -114,6 +114,22 @@ const GetDeviceTimeZone = (): Promise<string> => {
 };
 
 /**
+ * Get device local settings
+ * @returns Promise<object>
+ */
+const GetDeviceLocaleSettings = (): Promise<any> => {
+    return new Promise((resolve) => {
+        UtilsModule.getLocalSetting()
+            .then((settings: any) => {
+                resolve(settings);
+            })
+            .catch(() => {
+                resolve({ delimiter: ',', languageCode: 'en', locale: 'en_US', separator: '.' });
+            });
+    });
+};
+
+/**
  * Get the latest real time base on device CPU ticks
  * @returns Promise<number>
  */
@@ -126,14 +142,14 @@ const GetElapsedRealtime = (): Promise<number> => {
 };
 
 /**
- * Restart react native bundler
+ * Restart react native bundle
  */
 const RestartBundle = (): void => {
     UtilsModule.restartBundle();
 };
 
 /**
- * hard close the app proccess
+ * hard close the app process
  */
 const ExitApp = (): void => {
     UtilsModule.exitApp();
@@ -149,6 +165,7 @@ export {
     IsDeviceJailBroken,
     IsDeviceRooted,
     GetDeviceTimeZone,
+    GetDeviceLocaleSettings,
     GetElapsedRealtime,
     RestartBundle,
     ExitApp,

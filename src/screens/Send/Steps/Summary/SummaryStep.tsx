@@ -25,7 +25,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
 import Preferences from '@common/libs/preferences';
-import { NormalizeAmount, NormalizeCurrencyCode, FormatNumber } from '@common/libs/utils';
+import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
 import { Button, AccordionPicker, Footer, Spacer, TextInput, Header } from '@components/General';
@@ -207,7 +207,7 @@ class SummaryStep extends Component {
                         <View style={[AppStyles.column, AppStyles.centerContent]}>
                             <Text style={[styles.currencyItemLabel]}>XRP</Text>
                             <Text style={[styles.currencyBalance]}>
-                                {Localize.t('global.available')}: {FormatNumber(source.balance)}
+                                {Localize.t('global.available')}: {Localize.formatNumber(source.balance)}
                             </Text>
                         </View>
                     </View>
@@ -228,7 +228,7 @@ class SummaryStep extends Component {
                             {item.currency.name && <Text style={[AppStyles.subtext]}> - {item.currency.name}</Text>}
                         </Text>
                         <Text style={[styles.currencyBalance]}>
-                            {Localize.t('global.balance')}: {FormatNumber(item.balance)}
+                            {Localize.t('global.balance')}: {Localize.formatNumber(item.balance)}
                         </Text>
                     </View>
                 </View>

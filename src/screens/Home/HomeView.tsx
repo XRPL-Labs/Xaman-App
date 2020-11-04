@@ -24,7 +24,7 @@ import { LedgerService, SocketService } from '@services';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
 
-import { NormalizeCurrencyCode, FormatNumber } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/libs/utils';
 // constants
 import { AppScreens } from '@common/constants';
 
@@ -415,11 +415,11 @@ class HomeView extends Component<Props, State> {
                                                 {line.currency.issuer === account.address
                                                     ? Localize.t('home.selfIssued')
                                                     : `${line.counterParty.name} ${
-                                                        // eslint-disable-next-line max-len
-                                                        line.currency.name
-                                                            ? NormalizeCurrencyCode(line.currency.currency)
-                                                            : ''
-                                                    }`}
+                                                          // eslint-disable-next-line max-len
+                                                          line.currency.name
+                                                              ? NormalizeCurrencyCode(line.currency.currency)
+                                                              : ''
+                                                      }`}
                                             </Text>
                                         </View>
                                     </View>
@@ -445,7 +445,7 @@ class HomeView extends Component<Props, State> {
                                                 discreetMode && AppStyles.colorGreyDark,
                                             ]}
                                         >
-                                            {discreetMode ? '••••••••' : FormatNumber(line.balance)}
+                                            {discreetMode ? '••••••••' : Localize.formatNumber(line.balance)}
                                         </Text>
                                     </View>
                                 </TouchableOpacity>
@@ -634,7 +634,9 @@ class HomeView extends Component<Props, State> {
                                                 discreetMode && AppStyles.colorGreyDark,
                                             ]}
                                         >
-                                            {discreetMode ? '••••••••' : FormatNumber(account.availableBalance)}
+                                            {discreetMode
+                                                ? '••••••••'
+                                                : Localize.formatNumber(account.availableBalance)}
                                         </Text>
                                     </TouchableOpacity>
                                 </View>

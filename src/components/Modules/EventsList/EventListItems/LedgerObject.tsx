@@ -7,7 +7,7 @@ import { AccountSchema } from '@store/schemas/latest';
 
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
-import { NormalizeCurrencyCode, FormatNumber } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/libs/utils';
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
@@ -147,7 +147,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
         const { item } = this.props;
 
         if (item.Type === 'Offer') {
-            return `${FormatNumber(item.TakerGets.value)} ${NormalizeCurrencyCode(
+            return `${Localize.formatNumber(item.TakerGets.value)} ${NormalizeCurrencyCode(
                 item.TakerGets.currency,
             )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
         }
@@ -181,7 +181,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
         if (item.Type === 'Escrow') {
             return (
                 <Text style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]} numberOfLines={1}>
-                    -{FormatNumber(item.Amount.value)}{' '}
+                    -{Localize.formatNumber(item.Amount.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
                 </Text>
             );
@@ -190,7 +190,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
         if (item.Type === 'Check') {
             return (
                 <Text style={[styles.amount, styles.naturalColor]} numberOfLines={1}>
-                    {FormatNumber(item.SendMax.value)}{' '}
+                    {Localize.formatNumber(item.SendMax.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.SendMax.currency)}</Text>
                 </Text>
             );
@@ -202,14 +202,14 @@ class LedgerObjectTemplate extends Component<Props, State> {
 
                 return (
                     <Text style={[styles.amount]} numberOfLines={1}>
-                        {FormatNumber(takerPaid.value)}{' '}
+                        {Localize.formatNumber(takerPaid.value)}{' '}
                         <Text style={[styles.currency]}>{NormalizeCurrencyCode(takerPaid.currency)}</Text>
                     </Text>
                 );
             }
             return (
                 <Text style={[styles.amount, styles.naturalColor]} numberOfLines={1}>
-                    {FormatNumber(item.TakerPays.value)}{' '}
+                    {Localize.formatNumber(item.TakerPays.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.TakerPays.currency)}</Text>
                 </Text>
             );

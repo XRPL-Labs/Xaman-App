@@ -139,15 +139,12 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination & {
 };
 
 /**
- * format the number
- * @param date
- * @returns string 1,333.855222
+ * normalize balance
+ * @param n number
+ * @returns string 1333.855222
  */
-const FormatNumber = (n: number) => {
-    if (!n) {
-        return '0';
-    }
-    return new BigNumber(n).decimalPlaces(6).toFormat();
+const NormalizeBalance = (balance: number) => {
+    return new BigNumber(balance).decimalPlaces(6).toString(10);
 };
 
 /**
@@ -206,7 +203,7 @@ export {
     Truncate,
     FormatDate,
     NormalizeAmount,
-    FormatNumber,
+    NormalizeBalance,
     NormalizeCurrencyCode,
     NormalizeDestination,
     VersionDiff,

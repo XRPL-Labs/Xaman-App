@@ -24,7 +24,7 @@ import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import { Images } from '@common/helpers/images';
 import { Prompt } from '@common/helpers/interface';
-import { NormalizeAmount, NormalizeCurrencyCode, FormatNumber } from '@common/libs/utils';
+import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
 import { Header, Button, AccordionPicker, Footer } from '@components/General';
@@ -210,7 +210,7 @@ class DetailsStep extends Component {
                                     selected ? AppStyles.colorBlue : AppStyles.colorGreyDark,
                                 ]}
                             >
-                                {Localize.t('global.available')}: {FormatNumber(source.availableBalance)}
+                                {Localize.t('global.available')}: {Localize.formatNumber(source.availableBalance)}
                             </Text>
                         </View>
                     </View>
@@ -233,7 +233,7 @@ class DetailsStep extends Component {
                         <Text
                             style={[styles.currencyBalance, selected ? AppStyles.colorBlue : AppStyles.colorGreyDark]}
                         >
-                            {Localize.t('global.balance')}: {FormatNumber(item.balance)}
+                            {Localize.t('global.balance')}: {Localize.formatNumber(item.balance)}
                         </Text>
                     </View>
                 </View>
@@ -296,9 +296,9 @@ class DetailsStep extends Component {
                                 items={
                                     source
                                         ? [
-                                            'XRP',
-                                            ...filter(source.lines, (l) => l.balance > 0 || l.obligation === true),
-                                        ]
+                                              'XRP',
+                                              ...filter(source.lines, (l) => l.balance > 0 || l.obligation === true),
+                                          ]
                                         : []
                                 }
                                 renderItem={this.renderCurrencyItem}

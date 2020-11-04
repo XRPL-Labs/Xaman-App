@@ -4,16 +4,23 @@
 
 class Localize {
     instance: any;
+    settings: any;
 
     constructor() {
         this.instance = require('i18n-js');
         this.instance.fallbacks = true;
+        this.settings = undefined;
     }
 
-    setLocale = (locale: string) => {
+    setLocale = (locale: string, settings?: any) => {
         try {
             // set en
             this.instance.translations.en = require('./en.json');
+
+            // set locale settings
+            if (settings) {
+                this.settings = settings;
+            }
 
             let translations;
 
@@ -44,6 +51,10 @@ class Localize {
         }
     };
 
+    setSettings = (settings: any) => {
+        this.settings = settings;
+    };
+
     setLocaleBundle = (locale: string, translations: any) => {
         if (!locale || !translations) return;
 
@@ -57,6 +68,22 @@ class Localize {
     };
 
     getCurrentLocale = (): string => this.instance.locale;
+
+    /**
+     * format the number
+     * @param n number
+     * @returns string 1,333.855222
+     */
+    formatNumber = (n: number): string => {
+        const options = { precision: 6, strip_insignificant_zeros: true };
+
+        if (this.settings) {
+            const { separator, delimiter } = this.settings;
+            Object.assign(options, { separator, delimiter });
+        }
+
+        return this.instance.toNumber(n, options);
+    };
 
     t = (key: string, options?: any) => {
         return key ? this.instance.t(key, options) : key;

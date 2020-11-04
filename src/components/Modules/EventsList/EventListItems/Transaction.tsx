@@ -7,7 +7,7 @@ import { AccountSchema } from '@store/schemas/latest';
 
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
-import { NormalizeCurrencyCode, FormatNumber } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/libs/utils';
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
@@ -233,11 +233,11 @@ class TransactionTemplate extends Component<Props, State> {
                 const takerGot = item.TakerGot(account.address);
                 const takerPaid = item.TakerPaid(account.address);
 
-                return `${FormatNumber(takerGot.value)} ${NormalizeCurrencyCode(
+                return `${Localize.formatNumber(takerGot.value)} ${NormalizeCurrencyCode(
                     takerGot.currency,
                 )}/${NormalizeCurrencyCode(takerPaid.currency)}`;
             }
-            return `${FormatNumber(item.TakerGets.value)} ${NormalizeCurrencyCode(
+            return `${Localize.formatNumber(item.TakerGets.value)} ${NormalizeCurrencyCode(
                 item.TakerGets.currency,
             )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
         }
@@ -246,7 +246,7 @@ class TransactionTemplate extends Component<Props, State> {
             if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
                 const balanceChanges = item.BalanceChange(account.address);
 
-                return `${FormatNumber(balanceChanges.sent.value)} ${NormalizeCurrencyCode(
+                return `${Localize.formatNumber(balanceChanges.sent.value)} ${NormalizeCurrencyCode(
                     balanceChanges.sent.currency,
                 )}/${NormalizeCurrencyCode(balanceChanges.received.currency)}`;
             }
@@ -338,7 +338,7 @@ class TransactionTemplate extends Component<Props, State> {
 
                 return (
                     <Text style={[styles.amount]} numberOfLines={1}>
-                        {FormatNumber(balanceChanges.received?.value)}{' '}
+                        {Localize.formatNumber(balanceChanges.received?.value)}{' '}
                         <Text style={[styles.currency]}>
                             {NormalizeCurrencyCode(balanceChanges.received?.currency)}
                         </Text>
@@ -348,7 +348,7 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <Text style={[styles.amount, !incoming && styles.outgoingColor]} numberOfLines={1}>
                     {incoming ? '' : '-'}
-                    {FormatNumber(item.Amount.value)}{' '}
+                    {Localize.formatNumber(item.Amount.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
                 </Text>
             );
@@ -358,7 +358,7 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <Text style={[styles.amount, !incoming && styles.outgoingColor]} numberOfLines={1}>
                     {incoming ? '' : '-'}
-                    {FormatNumber(item.Amount.value)}{' '}
+                    {Localize.formatNumber(item.Amount.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
                 </Text>
             );
@@ -367,7 +367,7 @@ class TransactionTemplate extends Component<Props, State> {
         if (item.Type === 'EscrowCreate') {
             return (
                 <Text style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]} numberOfLines={1}>
-                    -{FormatNumber(item.Amount.value)}{' '}
+                    -{Localize.formatNumber(item.Amount.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
                 </Text>
             );
@@ -376,7 +376,7 @@ class TransactionTemplate extends Component<Props, State> {
         if (item.Type === 'EscrowFinish') {
             return (
                 <Text style={[styles.amount, !incoming && styles.naturalColor]} numberOfLines={1}>
-                    {FormatNumber(item.Amount.value)}{' '}
+                    {Localize.formatNumber(item.Amount.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
                 </Text>
             );
@@ -385,7 +385,7 @@ class TransactionTemplate extends Component<Props, State> {
         if (item.Type === 'CheckCreate') {
             return (
                 <Text style={[styles.amount, styles.naturalColor]} numberOfLines={1}>
-                    {FormatNumber(item.SendMax.value)}{' '}
+                    {Localize.formatNumber(item.SendMax.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.SendMax.currency)}</Text>
                 </Text>
             );
@@ -397,7 +397,7 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <Text style={[styles.amount, !incoming && styles.outgoingColor]} numberOfLines={1}>
                     {incoming ? '' : '-'}
-                    {FormatNumber(amount.value)}{' '}
+                    {Localize.formatNumber(amount.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(amount.currency)}</Text>
                 </Text>
             );
@@ -409,14 +409,14 @@ class TransactionTemplate extends Component<Props, State> {
 
                 return (
                     <Text style={[styles.amount]} numberOfLines={1}>
-                        {FormatNumber(takerPaid.value)}{' '}
+                        {Localize.formatNumber(takerPaid.value)}{' '}
                         <Text style={[styles.currency]}>{NormalizeCurrencyCode(takerPaid.currency)}</Text>
                     </Text>
                 );
             }
             return (
                 <Text style={[styles.amount, styles.naturalColor]} numberOfLines={1}>
-                    {FormatNumber(item.TakerPays.value)}{' '}
+                    {Localize.formatNumber(item.TakerPays.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.TakerPays.currency)}</Text>
                 </Text>
             );
