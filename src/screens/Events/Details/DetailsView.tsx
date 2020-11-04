@@ -425,6 +425,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 { modalPresentationStyle: 'fullScreen' },
                 {
                     payload,
+                    onResolve: Navigator.pop,
                 },
             );
         }

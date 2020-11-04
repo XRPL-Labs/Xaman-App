@@ -58,6 +58,8 @@ import * as Templates from './Templates';
 /* types ==================================================================== */
 export interface Props {
     payload: Payload;
+    onResolve?: () => void;
+    onDecline?: () => void;
 }
 
 export interface State {
@@ -190,7 +192,7 @@ class ReviewTransactionModal extends Component<Props, State> {
     };
 
     onDecline = () => {
-        const { payload } = this.props;
+        const { onDecline, payload } = this.props;
 
         // reject the payload
         payload.reject();
@@ -201,7 +203,11 @@ class ReviewTransactionModal extends Component<Props, State> {
         }, 1000);
 
         // close modal
-        Navigator.dismissModal();
+        Navigator.dismissModal().then(() => {
+            if (typeof onDecline === 'function') {
+                onDecline();
+            }
+        });
     };
 
     onAccept = () => {
@@ -529,7 +535,7 @@ class ReviewTransactionModal extends Component<Props, State> {
     };
 
     handleClose = () => {
-        const { payload } = this.props;
+        const { onResolve, payload } = this.props;
 
         const { return_url_app } = payload.meta;
 
@@ -542,7 +548,11 @@ class ReviewTransactionModal extends Component<Props, State> {
                 }
             });
         }
-        Navigator.dismissModal();
+        Navigator.dismissModal().then(() => {
+            if (typeof onResolve === 'function') {
+                onResolve();
+            }
+        });
     };
 
     getTopOffset = () => {
