@@ -373,7 +373,7 @@
         "changePasscode": "Change passcode",
         "biometricAuthentication": "Biometric authentication",
         "hapticFeedback": "Haptic feedback",
-        "useSystemSeparators": "Use system separators",
+        "useSystemSeparators": "System currency formatting",
         "enterOldPasscode": "Enter your old passcode",
         "enterNewPasscode": "Enter your new passcode",
         "enterNewPasscodeAgain": "Enter your new passcode again",
