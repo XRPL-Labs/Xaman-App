@@ -13,7 +13,6 @@ import {
     View,
     Image,
     Text,
-    TextInput,
     Alert,
     Platform,
     KeyboardAvoidingView,
@@ -24,10 +23,10 @@ import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import { Images } from '@common/helpers/images';
 import { Prompt } from '@common/helpers/interface';
-import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { Header, Button, AccordionPicker, Footer } from '@components/General';
+import { Header, Button, AccordionPicker, AmountInput, Footer } from '@components/General';
 
 import Localize from '@locale';
 
@@ -40,7 +39,7 @@ import { StepsContext } from '../../Context';
 /* Component ==================================================================== */
 class DetailsStep extends Component {
     gradientHeight: Animated.Value;
-    amountInput: TextInput;
+    amountInput: AmountInput;
 
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
@@ -56,7 +55,10 @@ class DetailsStep extends Component {
 
         if (height === 0) return;
 
-        Animated.timing(this.gradientHeight, { toValue: height, useNativeDriver: false }).start();
+        Animated.timing(this.gradientHeight, {
+            toValue: height,
+            useNativeDriver: false,
+        }).start();
     };
 
     goNext = () => {
@@ -88,7 +90,7 @@ class DetailsStep extends Component {
             Prompt(
                 Localize.t('global.error'),
                 Localize.t('send.theMaxAmountYouCanSendIs', {
-                    spendable: availableBalance,
+                    spendable: Localize.formatNumber(availableBalance),
                     currency: this.getCurrencyName(),
                 }),
                 [
@@ -140,9 +142,8 @@ class DetailsStep extends Component {
 
     onAmountChange = (amount: string) => {
         const { setAmount } = this.context;
-        const sendAmount = NormalizeAmount(amount);
 
-        setAmount(sendAmount);
+        setAmount(amount);
     };
 
     onAccountChange = (item: AccountSchema) => {
@@ -296,9 +297,9 @@ class DetailsStep extends Component {
                                 items={
                                     source
                                         ? [
-                                            'XRP',
-                                            ...filter(source.lines, (l) => l.balance > 0 || l.obligation === true),
-                                        ]
+                                              'XRP',
+                                              ...filter(source.lines, (l) => l.balance > 0 || l.obligation === true),
+                                          ]
                                         : []
                                 }
                                 renderItem={this.renderCurrencyItem}
@@ -317,16 +318,13 @@ class DetailsStep extends Component {
                             </View>
                             <View style={[AppStyles.row]}>
                                 <View style={AppStyles.flex1}>
-                                    <TextInput
+                                    <AmountInput
                                         ref={(r) => {
                                             this.amountInput = r;
                                         }}
                                         testID="amount-input"
-                                        keyboardType="decimal-pad"
-                                        autoCapitalize="words"
-                                        onChangeText={this.onAmountChange}
+                                        onChange={this.onAmountChange}
                                         returnKeyType="done"
-                                        placeholder="0"
                                         style={[styles.amountInput]}
                                         placeholderTextColor={AppColors.greyDark}
                                         value={amount}
@@ -355,9 +353,7 @@ class DetailsStep extends Component {
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            onPress={() => {
-                                goBack();
-                            }}
+                            onPress={goBack}
                         />
                     </View>
                     <View style={[AppStyles.flex2]}>
@@ -369,9 +365,7 @@ class DetailsStep extends Component {
                             icon="IconChevronRight"
                             iconPosition="right"
                             iconStyle={AppStyles.imgColorWhite}
-                            onPress={() => {
-                                this.goNext();
-                            }}
+                            onPress={this.goNext}
                         />
                     </View>
                 </Footer>

@@ -1,13 +1,13 @@
 import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { View, TextInput, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 
 import { CheckCreate } from '@common/libs/ledger/transactions';
 
-import { NormalizeAmount, NormalizeCurrencyCode, FormatDate } from '@common/libs/utils';
+import { NormalizeCurrencyCode, FormatDate } from '@common/libs/utils';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { Button } from '@components/General';
+import { AmountInput, Button } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
@@ -29,7 +29,7 @@ export interface State {
 
 /* Component ==================================================================== */
 class CheckCreateTemplate extends Component<Props, State> {
-    amountInput: TextInput;
+    amountInput: AmountInput;
 
     constructor(props: Props) {
         super(props);
@@ -76,20 +76,18 @@ class CheckCreateTemplate extends Component<Props, State> {
     onSendMaxChange = (amount: string) => {
         const { transaction } = this.props;
 
-        const sendMaxAmount = NormalizeAmount(amount);
-
         this.setState({
-            amount: sendMaxAmount,
+            amount,
         });
 
-        if (sendMaxAmount) {
+        if (amount) {
             if (!transaction.SendMax || transaction.SendMax.currency === 'XRP') {
                 // @ts-ignore
-                transaction.SendMax = sendMaxAmount;
+                transaction.SendMax = amount;
             } else {
                 transaction.SendMax = {
                     ...transaction.SendMax,
-                    ...{ value: sendMaxAmount },
+                    ...{ value: amount },
                 };
             }
         }
@@ -131,15 +129,11 @@ class CheckCreateTemplate extends Component<Props, State> {
                         }}
                     >
                         <View style={[AppStyles.row, AppStyles.flex1]}>
-                            <TextInput
+                            <AmountInput
                                 ref={(r) => {
                                     this.amountInput = r;
                                 }}
-                                keyboardType="decimal-pad"
-                                autoCapitalize="words"
-                                onChangeText={this.onSendMaxChange}
-                                returnKeyType="done"
-                                placeholder="0"
+                                onChange={this.onSendMaxChange}
                                 style={[styles.amountInput]}
                                 value={amount}
                                 editable={editableAmount}

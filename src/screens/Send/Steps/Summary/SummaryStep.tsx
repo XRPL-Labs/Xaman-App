@@ -9,7 +9,6 @@ import {
     View,
     Image,
     Text,
-    TextInput as RNTextInput,
     KeyboardAvoidingView,
     Alert,
     ScrollView,
@@ -25,10 +24,10 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
 import Preferences from '@common/libs/preferences';
-import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { Button, AccordionPicker, Footer, Spacer, TextInput, Header } from '@components/General';
+import { AmountInput, Button, AccordionPicker, Footer, Spacer, TextInput, Header } from '@components/General';
 
 // locale
 import Localize from '@locale';
@@ -42,7 +41,7 @@ import { StepsContext } from '../../Context';
 /* Component ==================================================================== */
 class SummaryStep extends Component {
     gradientHeight: Animated.Value;
-    amountInput: RNTextInput;
+    amountInput: AmountInput;
     destinationTagInput: TextInput;
 
     static contextType = StepsContext;
@@ -116,10 +115,8 @@ class SummaryStep extends Component {
 
     onAmountChange = (amount: string) => {
         const { setAmount } = this.context;
-        const sendAmount = NormalizeAmount(amount);
-
         // set amount
-        setAmount(sendAmount);
+        setAmount(amount);
     };
 
     showMemoAlert = async () => {
@@ -271,7 +268,7 @@ class SummaryStep extends Component {
             Prompt(
                 Localize.t('global.error'),
                 Localize.t('send.theMaxAmountYouCanSendIs', {
-                    spendable: availableBalance,
+                    spendable: Localize.formatNumber(availableBalance),
                     currency: this.getCurrencyName(),
                 }),
                 [
@@ -407,15 +404,11 @@ class SummaryStep extends Component {
 
                             <View style={AppStyles.row}>
                                 <View style={AppStyles.flex1}>
-                                    <RNTextInput
+                                    <AmountInput
                                         ref={(r) => {
                                             this.amountInput = r;
                                         }}
-                                        keyboardType="decimal-pad"
-                                        autoCapitalize="words"
-                                        onChangeText={this.onAmountChange}
-                                        returnKeyType="done"
-                                        placeholder="0"
+                                        onChange={this.onAmountChange}
                                         style={[styles.amountInput]}
                                         value={amount}
                                     />

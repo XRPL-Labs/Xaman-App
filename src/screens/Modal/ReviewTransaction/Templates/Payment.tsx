@@ -1,17 +1,17 @@
 import BigNumber from 'bignumber.js';
 import { isEmpty, isEqual, has } from 'lodash';
 import React, { Component } from 'react';
-import { View, Alert, TextInput, Text, Platform, TouchableOpacity, InteractionManager } from 'react-native';
+import { View, Alert, Text, Platform, TouchableOpacity, InteractionManager } from 'react-native';
 
 import LedgerExchange from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { LedgerService } from '@services';
-import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/libs/utils';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { Button, InfoMessage, Spacer } from '@components/General';
+import { AmountInput, Button, InfoMessage, Spacer } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
@@ -37,7 +37,7 @@ export interface State {
 
 /* Component ==================================================================== */
 class PaymentTemplate extends Component<Props, State> {
-    amountInput: TextInput;
+    amountInput: AmountInput;
 
     constructor(props: Props) {
         super(props);
@@ -146,7 +146,10 @@ class PaymentTemplate extends Component<Props, State> {
                     // add PartialPayment
                     const issuerAccountInfo = await LedgerService.getAccountInfo(transaction.Amount.issuer);
                     // eslint-disable-next-line max-len
-                    if (has(issuerAccountInfo, ['account_data', 'TransferRate']) || account === transaction.Amount.issuer) {
+                    if (
+                        has(issuerAccountInfo, ['account_data', 'TransferRate']) ||
+                        account === transaction.Amount.issuer
+                    ) {
                         transaction.Flags = [txFlags.Payment.PartialPayment];
                     }
 
@@ -192,19 +195,17 @@ class PaymentTemplate extends Component<Props, State> {
     onAmountChange = (amount: string) => {
         const { transaction } = this.props;
 
-        const sendAmount = NormalizeAmount(amount);
-
         this.setState({
-            amount: sendAmount,
+            amount,
         });
 
-        if (sendAmount) {
+        if (amount) {
             if (!transaction.Amount || transaction.Amount.currency === 'XRP') {
                 // @ts-ignore
-                transaction.Amount = sendAmount;
+                transaction.Amount = amount;
             } else {
                 const payAmount = { ...transaction.Amount };
-                Object.assign(payAmount, { value: sendAmount });
+                Object.assign(payAmount, { value: amount });
                 transaction.Amount = payAmount;
             }
         }
@@ -254,15 +255,11 @@ class PaymentTemplate extends Component<Props, State> {
                         }}
                     >
                         <View style={[AppStyles.row, AppStyles.flex1]}>
-                            <TextInput
+                            <AmountInput
                                 ref={(r) => {
                                     this.amountInput = r;
                                 }}
-                                keyboardType="decimal-pad"
-                                autoCapitalize="words"
-                                onChangeText={this.onAmountChange}
-                                returnKeyType="done"
-                                placeholder="0"
+                                onChange={this.onAmountChange}
                                 style={[styles.amountInput]}
                                 value={amount}
                                 editable={editableAmount}

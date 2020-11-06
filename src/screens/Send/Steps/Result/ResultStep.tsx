@@ -90,7 +90,7 @@ class ResultStep extends Component<Props, State> {
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.amount')}:</Text>
                         <Spacer />
                         <Text style={[AppStyles.h4, AppStyles.monoBold]}>
-                            {`${amount} ${
+                            {`${Localize.formatNumber(Number(amount))} ${
                                 typeof currency === 'string' ? 'XRP' : NormalizeCurrencyCode(currency.currency.currency)
                             }`}
                         </Text>

@@ -315,7 +315,7 @@ class Payment extends BaseTransaction {
                     return reject(
                         new Error(
                             Localize.t('send.insufficientBalanceSpendableBalance', {
-                                spendable: source.availableBalance,
+                                spendable: Localize.formatNumber(source.availableBalance),
                                 currency: 'XRP',
                             }),
                         ),
@@ -337,7 +337,7 @@ class Payment extends BaseTransaction {
                         return reject(
                             new Error(
                                 Localize.t('send.insufficientBalanceSpendableBalance', {
-                                    spendable: line.balance,
+                                    spendable: Localize.formatNumber(line.balance),
                                     currency: NormalizeCurrencyCode(line.currency.currency),
                                 }),
                             ),
@@ -357,9 +357,11 @@ class Payment extends BaseTransaction {
                         return reject(
                             new Error(
                                 Localize.t('send.trustLineLimitExceeded', {
-                                    balance: Math.abs(trustLine.balance),
-                                    peer_limit: trustLine.limit_peer,
-                                    available: Number(trustLine.limit_peer - Math.abs(trustLine.balance)),
+                                    balance: Localize.formatNumber(Math.abs(trustLine.balance)),
+                                    peer_limit: Localize.formatNumber(trustLine.limit_peer),
+                                    available: Localize.formatNumber(
+                                        Number(trustLine.limit_peer - Math.abs(trustLine.balance)),
+                                    ),
                                 }),
                             ),
                         );

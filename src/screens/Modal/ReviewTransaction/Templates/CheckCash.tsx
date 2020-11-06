@@ -1,15 +1,15 @@
 import { get, isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { View, TextInput, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 
 import { LedgerService } from '@services';
 
 import { CheckCash, CheckCreate } from '@common/libs/ledger/transactions';
 
-import { NormalizeAmount, NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/libs/utils';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { Button } from '@components/General';
+import { AmountInput, Button } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
@@ -32,7 +32,7 @@ export interface State {
 
 /* Component ==================================================================== */
 class CheckCashTemplate extends Component<Props, State> {
-    amountInput: TextInput;
+    amountInput: AmountInput;
 
     constructor(props: Props) {
         super(props);
@@ -95,20 +95,18 @@ class CheckCashTemplate extends Component<Props, State> {
         const { transaction } = this.props;
         const { amountField } = this.state;
 
-        const cashAmount = NormalizeAmount(amount);
-
         this.setState({
-            cashAmount,
+            cashAmount: amount,
         });
 
-        if (cashAmount) {
+        if (amount) {
             if (!transaction[amountField] || transaction[amountField].currency === 'XRP') {
                 // @ts-ignore
-                transaction[amountField] = cashAmount;
+                transaction[amountField] = amount;
             } else {
                 transaction[amountField] = {
                     ...transaction[amountField],
-                    ...{ value: cashAmount },
+                    ...{ value: amount },
                 };
             }
         }
@@ -160,15 +158,11 @@ class CheckCashTemplate extends Component<Props, State> {
                         }}
                     >
                         <View style={[AppStyles.row, AppStyles.flex1]}>
-                            <TextInput
+                            <AmountInput
                                 ref={(r) => {
                                     this.amountInput = r;
                                 }}
-                                keyboardType="decimal-pad"
-                                autoCapitalize="words"
-                                onChangeText={this.onAmountChange}
-                                returnKeyType="done"
-                                placeholder="0"
+                                onChange={this.onAmountChange}
                                 style={[styles.amountInput]}
                                 value={cashAmount}
                                 editable={editableAmount}

@@ -369,7 +369,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 } else {
                     currency = account.lines.find(
                         // eslint-disable-next-line max-len
-                        (l: any) => l.currency.currency === tx.Amount.currency && l.currency.issuer === tx.Amount.issuer,
+                        (l: any) =>
+                            l.currency.currency === tx.Amount.currency && l.currency.issuer === tx.Amount.issuer,
                     );
                 }
                 Object.assign(params, { amount: tx.Amount.value, currency });
@@ -836,7 +837,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     const balanceChanges = tx.BalanceChange(account.address);
                     Object.assign(props, {
                         color: styles.incomingColor,
-                        text: `${balanceChanges.received.value} ${NormalizeCurrencyCode(
+                        text: `${Localize.formatNumber(balanceChanges.received.value)} ${NormalizeCurrencyCode(
                             balanceChanges.received.currency,
                         )}`,
                         icon: 'IconCornerRightDown',
@@ -844,7 +845,9 @@ class TransactionDetailsView extends Component<Props, State> {
                 } else {
                     Object.assign(props, {
                         color: incomingTx ? styles.incomingColor : styles.outgoingColor,
-                        text: `${incomingTx ? '' : '-'}${tx.Amount.value} ${NormalizeCurrencyCode(tx.Amount.currency)}`,
+                        text: `${incomingTx ? '' : '-'}${Localize.formatNumber(
+                            tx.Amount.value,
+                        )} ${NormalizeCurrencyCode(tx.Amount.currency)}`,
                     });
                 }
 
@@ -852,27 +855,29 @@ class TransactionDetailsView extends Component<Props, State> {
             case 'AccountDelete': {
                 Object.assign(props, {
                     color: incomingTx ? styles.incomingColor : styles.outgoingColor,
-                    text: `${incomingTx ? '' : '-'}${tx.Amount.value} ${NormalizeCurrencyCode(tx.Amount.currency)}`,
+                    text: `${incomingTx ? '' : '-'}${Localize.formatNumber(tx.Amount.value)} ${NormalizeCurrencyCode(
+                        tx.Amount.currency,
+                    )}`,
                 });
                 break;
             }
             case 'EscrowCreate':
                 Object.assign(props, {
                     color: incomingTx ? styles.orangeColor : styles.outgoingColor,
-                    text: `-${tx.Amount.value} ${NormalizeCurrencyCode(tx.Amount.currency)}`,
+                    text: `-${Localize.formatNumber(tx.Amount.value)} ${NormalizeCurrencyCode(tx.Amount.currency)}`,
                 });
                 break;
             case 'EscrowFinish':
                 Object.assign(props, {
                     color: incomingTx ? styles.orangeColor : styles.naturalColor,
-                    text: `${tx.Amount.value} ${NormalizeCurrencyCode(tx.Amount.currency)}`,
+                    text: `${Localize.formatNumber(tx.Amount.value)} ${NormalizeCurrencyCode(tx.Amount.currency)}`,
                     icon: 'IconCornerRightDown',
                 });
                 break;
             case 'CheckCreate':
                 Object.assign(props, {
                     color: styles.naturalColor,
-                    text: `${tx.SendMax.value} ${NormalizeCurrencyCode(tx.SendMax.currency)}`,
+                    text: `${Localize.formatNumber(tx.SendMax.value)} ${NormalizeCurrencyCode(tx.SendMax.currency)}`,
                 });
                 break;
             case 'CheckCash': {
@@ -881,7 +886,9 @@ class TransactionDetailsView extends Component<Props, State> {
 
                 Object.assign(props, {
                     color: incoming ? styles.incomingColor : styles.outgoingColor,
-                    text: `${incoming ? '' : '-'}${amount.value} ${NormalizeCurrencyCode(amount.currency)}`,
+                    text: `${incoming ? '' : '-'}${Localize.formatNumber(amount.value)} ${NormalizeCurrencyCode(
+                        amount.currency,
+                    )}`,
                 });
                 break;
             }
@@ -890,13 +897,15 @@ class TransactionDetailsView extends Component<Props, State> {
                     const takerPaid = tx.TakerPaid(account.address);
                     Object.assign(props, {
                         color: styles.incomingColor,
-                        text: `${takerPaid.value} ${NormalizeCurrencyCode(takerPaid.currency)}`,
+                        text: `${Localize.formatNumber(takerPaid.value)} ${NormalizeCurrencyCode(takerPaid.currency)}`,
                         icon: 'IconCornerRightDown',
                     });
                 } else {
                     Object.assign(props, {
                         color: styles.naturalColor,
-                        text: `${tx.TakerPays.value} ${NormalizeCurrencyCode(tx.TakerPays.currency)}`,
+                        text: `${Localize.formatNumber(tx.TakerPays.value)} ${NormalizeCurrencyCode(
+                            tx.TakerPays.currency,
+                        )}`,
                         icon: 'IconCornerRightDown',
                     });
                 }
