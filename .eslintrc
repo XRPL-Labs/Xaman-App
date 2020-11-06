@@ -52,7 +52,7 @@
       "global-require": 0,
       "quote-props": 0,
       "lines-between-class-members": "off",
-      "indent": [2, 4, {"SwitchCase": 1}],
+      "indent": "off",
       "react/jsx-indent": [2, 4],
       "camelcase": 0,
       "arrow-parens": 0,

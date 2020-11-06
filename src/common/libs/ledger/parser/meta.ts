@@ -75,8 +75,8 @@ class Meta {
             address: node.finalFields.Account || node.newFields.Account,
             balance: {
                 currency: 'XRP',
-                value: new BigNumber(value).absoluteValue().dividedBy(1000000.0).decimalPlaces(6)
-                    .toString(10),
+                // eslint-disable-next-line newline-per-chained-call
+                value: new BigNumber(value).absoluteValue().dividedBy(1000000.0).decimalPlaces(6).toString(10),
             },
         };
     };

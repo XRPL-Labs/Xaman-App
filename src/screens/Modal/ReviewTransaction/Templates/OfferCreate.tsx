@@ -11,7 +11,6 @@ import { FormatDate, NormalizeCurrencyCode } from '@common/libs/utils';
 
 import Localize from '@locale';
 
-
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -96,7 +95,6 @@ class OfferCreateTemplate extends Component<Props, State> {
                     </Text>
                 </View>
 
-
                 <Text style={[styles.label]}>{Localize.t('global.inExchangeForReceive')}</Text>
                 <View style={[styles.contentBox]}>
                     <Text style={[styles.amount]}>
@@ -111,7 +109,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                     showAvatar={false}
                     recipient={{
                         address: transaction.TakerGets.issuer || transaction.TakerPays.issuer,
-                        ...takerGetsIssuerDetails || takerPaysIssuerDetails,
+                        ...(takerGetsIssuerDetails || takerPaysIssuerDetails),
                     }}
                 />
 

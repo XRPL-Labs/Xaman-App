@@ -27,7 +27,7 @@ class SignerListSet extends BaseTransaction {
     get SignerEntries(): Array<SignerEntry> {
         const entries = get(this, ['tx', 'SignerEntries']);
 
-        return flatMap(entries, e => {
+        return flatMap(entries, (e) => {
             return { account: e.SignerEntry.Account, weight: e.SignerEntry.SignerWeight };
         });
     }

@@ -109,7 +109,7 @@ class CheckCreate extends BaseTransaction {
                     return reject(
                         new Error(
                             Localize.t('send.insufficientBalanceSpendableBalance', {
-                                spendable: source.availableBalance,
+                                spendable: Localize.formatNumber(source.availableBalance),
                                 currency: 'XRP',
                             }),
                         ),
@@ -126,7 +126,7 @@ class CheckCreate extends BaseTransaction {
                     return reject(
                         new Error(
                             Localize.t('send.insufficientBalanceSpendableBalance', {
-                                spendable: line.balance,
+                                spendable: Localize.formatNumber(line.balance),
                                 currency: NormalizeCurrencyCode(line.currency.currency),
                             }),
                         ),

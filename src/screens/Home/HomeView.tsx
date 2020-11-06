@@ -415,11 +415,11 @@ class HomeView extends Component<Props, State> {
                                                 {line.currency.issuer === account.address
                                                     ? Localize.t('home.selfIssued')
                                                     : `${line.counterParty.name} ${
-                                                        // eslint-disable-next-line max-len
-                                                        line.currency.name
-                                                            ? NormalizeCurrencyCode(line.currency.currency)
-                                                            : ''
-                                                    }`}
+                                                          // eslint-disable-next-line max-len
+                                                          line.currency.name
+                                                              ? NormalizeCurrencyCode(line.currency.currency)
+                                                              : ''
+                                                      }`}
                                             </Text>
                                         </View>
                                     </View>
