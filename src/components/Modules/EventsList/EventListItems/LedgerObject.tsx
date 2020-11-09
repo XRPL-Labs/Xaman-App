@@ -199,7 +199,8 @@ class LedgerObjectTemplate extends Component<Props, State> {
         if (item.Type === 'Escrow') {
             return (
                 <Text style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]} numberOfLines={1}>
-                    -{Localize.formatNumber(item.Amount.value)}{' '}
+                    {!incoming && '-'}
+                    {Localize.formatNumber(item.Amount.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
                 </Text>
             );

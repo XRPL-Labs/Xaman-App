@@ -858,6 +858,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             }
             case 'EscrowCreate':
+            case 'Escrow':
                 Object.assign(props, {
                     color: incomingTx ? styles.orangeColor : styles.outgoingColor,
                     text: `-${Localize.formatNumber(tx.Amount.value)} ${NormalizeCurrencyCode(tx.Amount.currency)}`,
@@ -871,6 +872,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
                 break;
             case 'CheckCreate':
+            case 'Check':
                 Object.assign(props, {
                     color: styles.naturalColor,
                     text: `${Localize.formatNumber(tx.SendMax.value)} ${NormalizeCurrencyCode(tx.SendMax.currency)}`,
@@ -888,7 +890,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
                 break;
             }
-            case 'OfferCreate': {
+            case 'OfferCreate':
+            case 'Offer': {
                 if (tx.Executed) {
                     const takerPaid = tx.TakerPaid(account.address);
                     Object.assign(props, {

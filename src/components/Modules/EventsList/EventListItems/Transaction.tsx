@@ -270,9 +270,11 @@ class TransactionTemplate extends Component<Props, State> {
             if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
                 const balanceChanges = item.BalanceChange(account.address);
 
-                return `${Localize.formatNumber(balanceChanges.sent.value)} ${NormalizeCurrencyCode(
-                    balanceChanges.sent.currency,
-                )}/${NormalizeCurrencyCode(balanceChanges.received.currency)}`;
+                if (balanceChanges.sent) {
+                    return `${Localize.formatNumber(balanceChanges.sent.value)} ${NormalizeCurrencyCode(
+                        balanceChanges.sent.currency,
+                    )}/${NormalizeCurrencyCode(balanceChanges.received.currency)}`;
+                }
             }
         }
 
@@ -391,7 +393,8 @@ class TransactionTemplate extends Component<Props, State> {
         if (item.Type === 'EscrowCreate') {
             return (
                 <Text style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]} numberOfLines={1}>
-                    -{Localize.formatNumber(item.Amount.value)}{' '}
+                    {!incoming && '-'}
+                    {Localize.formatNumber(item.Amount.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
                 </Text>
             );
@@ -400,6 +403,7 @@ class TransactionTemplate extends Component<Props, State> {
         if (item.Type === 'EscrowFinish') {
             return (
                 <Text style={[styles.amount, !incoming && styles.naturalColor]} numberOfLines={1}>
+                    {!incoming && '-'}
                     {Localize.formatNumber(item.Amount.value)}{' '}
                     <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
                 </Text>
