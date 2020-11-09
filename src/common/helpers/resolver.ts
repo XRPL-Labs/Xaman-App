@@ -14,6 +14,7 @@ export interface PayIDInfo {
     tag: string;
 }
 export interface AccountNameType {
+    address?: string;
     name: string;
     source: string;
 }
@@ -30,6 +31,7 @@ const getAccountName = memoize(
         return new Promise((resolve) => {
             if (!address) {
                 return resolve({
+                    address,
                     name: '',
                     source: '',
                 });
@@ -41,6 +43,7 @@ const getAccountName = memoize(
                 const contact = ContactRepository.findOne(filter);
                 if (!isEmpty(contact)) {
                     return resolve({
+                        address,
                         name: contact.name,
                         source: 'internal:contacts',
                     });
@@ -54,6 +57,7 @@ const getAccountName = memoize(
                 const account = AccountRepository.findOne({ address });
                 if (!isEmpty(account)) {
                     return resolve({
+                        address,
                         name: account.label,
                         source: 'internal:accounts',
                     });
@@ -65,6 +69,7 @@ const getAccountName = memoize(
             // only lookup for local result
             if (internal) {
                 return resolve({
+                    address,
                     name: '',
                     source: '',
                 });
@@ -75,17 +80,20 @@ const getAccountName = memoize(
                 .then((res: any) => {
                     if (!isEmpty(res)) {
                         return resolve({
+                            address,
                             name: res.name,
                             source: res.source,
                         });
                     }
                     return resolve({
+                        address,
                         name: '',
                         source: '',
                     });
                 })
                 .catch(() => {
                     return resolve({
+                        address,
                         name: '',
                         source: '',
                     });

@@ -488,6 +488,8 @@ class EventsView extends Component<Props, State> {
         const transactionFilter = new Fuse(transactions, {
             keys: [
                 'Account.address',
+                'Account.tag',
+                'Account.name',
                 'Destination.address',
                 'Destination.name',
                 'Destination.tag',
@@ -497,13 +499,15 @@ class EventsView extends Component<Props, State> {
             ],
             shouldSort: false,
             includeScore: false,
-            threshold: 0.0,
+            threshold: 0.1,
             minMatchCharLength: 2,
         });
 
         const plannedTransactionFilter = new Fuse(plannedTransactions, {
             keys: [
                 'Account.address',
+                'Account.tag',
+                'Account.name',
                 'Destination.address',
                 'Destination.name',
                 'Destination.tag',
@@ -513,7 +517,7 @@ class EventsView extends Component<Props, State> {
             ],
             shouldSort: false,
             includeScore: false,
-            threshold: 0.0,
+            threshold: 0.1,
             minMatchCharLength: 2,
         });
 

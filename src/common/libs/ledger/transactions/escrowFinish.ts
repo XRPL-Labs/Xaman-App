@@ -1,4 +1,4 @@
-import { get, set, isUndefined, findKey } from 'lodash';
+import { has, get, set, isUndefined, findKey } from 'lodash';
 
 import BaseTransaction from './base';
 import Amount from '../parser/common/amount';
@@ -51,12 +51,19 @@ class EscrowFinish extends BaseTransaction {
             return {
                 address: finalFields.Destination,
                 tag: finalFields.DestinationTag,
+                name: get(this, ['tx', 'DestinationName']),
             };
         }
 
         return {
             address: '',
         };
+    }
+
+    set Destination(destination: Destination) {
+        if (has(destination, 'name')) {
+            set(this, 'tx.DestinationName', destination.name);
+        }
     }
 
     set Owner(owner: string) {

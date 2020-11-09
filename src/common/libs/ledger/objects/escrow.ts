@@ -1,13 +1,13 @@
 import moment from 'moment-timezone';
 
-import { get, isUndefined } from 'lodash';
+import { get, has, set, isUndefined } from 'lodash';
 
 import BaseLedgerObject from './base';
 import Amount from '../parser/common/amount';
 import LedgerDate from '../parser/common/date';
 
 /* Types ==================================================================== */
-import { AmountType, Account, Destination } from '../parser/types';
+import { AmountType, Destination } from '../parser/types';
 
 /* Class ==================================================================== */
 class Escrow extends BaseLedgerObject {
@@ -15,20 +15,6 @@ class Escrow extends BaseLedgerObject {
 
     constructor(object?: any) {
         super(object);
-    }
-
-    get Account(): Account {
-        const source = get(this, ['object', 'Account'], undefined);
-        const sourceTag = get(this, ['object', 'SourceTag'], undefined);
-        const sourceName = get(this, ['object', 'AccountLabel'], undefined);
-
-        if (isUndefined(source)) return undefined;
-
-        return {
-            name: sourceName,
-            address: source,
-            tag: sourceTag,
-        };
     }
 
     get Amount(): AmountType {
@@ -54,6 +40,12 @@ class Escrow extends BaseLedgerObject {
             address: destination,
             tag: destinationTag,
         };
+    }
+
+    set Destination(destination: Destination) {
+        if (has(destination, 'name')) {
+            set(this, 'object.DestinationName', destination.name);
+        }
     }
 
     get Condition(): string {

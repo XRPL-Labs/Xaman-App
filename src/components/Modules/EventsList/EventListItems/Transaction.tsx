@@ -27,6 +27,7 @@ export interface State {
     name: string;
     address: string;
     tag: number;
+    key: string;
 }
 
 /* Component ==================================================================== */
@@ -42,6 +43,7 @@ class TransactionTemplate extends Component<Props, State> {
             name: recipientDetails.name,
             address: recipientDetails.address,
             tag: recipientDetails.tag,
+            key: recipientDetails.key,
         };
     }
 
@@ -50,12 +52,17 @@ class TransactionTemplate extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { name } = this.state;
+        const { name, key } = this.state;
+        const { item } = this.props;
 
         this.mounted = true;
 
         if (!name) {
             this.lookUpRecipientName();
+        } else if (key) {
+            item[key] = {
+                name,
+            };
         }
     }
 
@@ -68,28 +75,35 @@ class TransactionTemplate extends Component<Props, State> {
 
         let address;
         let tag;
+        let key;
 
         switch (item.Type) {
             case 'Payment':
                 if (item.Destination.address === account.address) {
                     address = item.Account.address;
+                    key = 'Account';
                 } else {
                     address = item.Destination.address;
                     tag = item.Destination.tag;
+                    key = 'Destination';
                 }
                 break;
             case 'AccountDelete':
                 address = item.Account.address;
+                key = 'Account';
                 break;
             case 'CheckCreate':
                 address = item.Destination.address;
                 tag = item.Destination.tag;
+                key = 'Destination';
                 break;
             case 'CheckCash':
                 address = item.Account.address;
+                key = 'Account';
                 break;
             case 'CheckCancel':
                 address = item.Account.address;
+                key = 'Account';
                 break;
             case 'TrustSet':
                 address = item.Issuer;
@@ -97,10 +111,12 @@ class TransactionTemplate extends Component<Props, State> {
             case 'EscrowCreate':
                 address = item.Destination.address;
                 tag = item.Destination.tag;
+                key = 'Destination';
                 break;
             case 'EscrowFinish':
                 address = item.Destination.address;
                 tag = item.Destination.tag;
+                key = 'Destination';
                 break;
             case 'DepositPreauth':
                 address = item.Authorize || item.Unauthorize;
@@ -121,6 +137,7 @@ class TransactionTemplate extends Component<Props, State> {
                 address,
                 tag,
                 name: account.label,
+                key: 'Account',
             };
         }
 
@@ -128,16 +145,23 @@ class TransactionTemplate extends Component<Props, State> {
             address,
             tag,
             name: undefined,
+            key,
         };
     };
 
     lookUpRecipientName = () => {
-        const { address, tag } = this.state;
+        const { address, tag, key } = this.state;
+        const { item } = this.props;
 
         getAccountName(address, tag)
             .then((res: any) => {
                 if (!isEmpty(res) && res.name) {
                     if (this.mounted) {
+                        if (key) {
+                            item[key] = {
+                                name: res.name,
+                            };
+                        }
                         this.setState({
                             name: res.name,
                         });

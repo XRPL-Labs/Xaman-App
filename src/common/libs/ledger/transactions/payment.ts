@@ -89,11 +89,14 @@ class Payment extends BaseTransaction {
     }
 
     set Destination(destination: Destination) {
-        if (!AccountLib.utils.isValidAddress(destination.address)) {
-            throw new Error(`${destination.address} is not a valid XRP Address`);
+        if (has(destination, 'address')) {
+            if (!AccountLib.utils.isValidAddress(destination.address)) {
+                throw new Error(`${destination.address} is not a valid XRP Address`);
+            }
+            set(this, 'tx.Destination', destination.address);
         }
 
-        if (destination.tag) {
+        if (has(destination, 'tag')) {
             if (!isNumber(destination.tag)) {
                 // try to convert to number
                 set(this, 'tx.DestinationTag', toInteger(destination.tag));
@@ -107,8 +110,6 @@ class Payment extends BaseTransaction {
         if (has(destination, 'name')) {
             set(this, 'tx.DestinationName', destination.name);
         }
-
-        set(this, 'tx.Destination', destination.address);
     }
 
     // @ts-ignore

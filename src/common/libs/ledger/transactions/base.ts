@@ -248,7 +248,7 @@ class BaseTransaction {
     get Account(): Account {
         const source = get(this, ['tx', 'Account'], undefined);
         const sourceTag = get(this, ['tx', 'SourceTag'], undefined);
-        const sourceName = get(this, ['tx', 'AccountLabel'], undefined);
+        const sourceName = get(this, ['tx', 'AccountName'], undefined);
 
         if (isUndefined(source)) return undefined;
 
@@ -260,9 +260,11 @@ class BaseTransaction {
     }
 
     set Account(account: Account) {
-        set(this, 'tx.Account', account.address);
+        if (has(account, 'address')) {
+            set(this, 'tx.Account', account.address);
+        }
         if (has(account, 'name')) {
-            set(this, 'tx.AccountLabel', account.name);
+            set(this, 'tx.AccountName', account.name);
         }
         if (has(account, 'tag')) {
             set(this, 'tx.SourceTag', account.tag);

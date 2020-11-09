@@ -1,6 +1,6 @@
 import moment from 'moment-timezone';
 
-import { get, isUndefined } from 'lodash';
+import { get, set, has, isUndefined } from 'lodash';
 
 import Amount from '../parser/common/amount';
 import LedgerDate from '../parser/common/date';
@@ -8,7 +8,7 @@ import LedgerDate from '../parser/common/date';
 import BaseLedgerObject from './base';
 
 /* Types ==================================================================== */
-import { AmountType, Account, Destination } from '../parser/types';
+import { AmountType, Destination } from '../parser/types';
 
 /* Class ==================================================================== */
 class Check extends BaseLedgerObject {
@@ -16,20 +16,6 @@ class Check extends BaseLedgerObject {
 
     constructor(object?: any) {
         super(object);
-    }
-
-    get Account(): Account {
-        const source = get(this, ['object', 'Account'], undefined);
-        const sourceTag = get(this, ['object', 'SourceTag'], undefined);
-        const sourceName = get(this, ['object', 'AccountLabel'], undefined);
-
-        if (isUndefined(source)) return undefined;
-
-        return {
-            name: sourceName,
-            address: source,
-            tag: sourceTag,
-        };
     }
 
     get SendMax(): AmountType {
@@ -65,6 +51,12 @@ class Check extends BaseLedgerObject {
             address: destination,
             tag: destinationTag,
         };
+    }
+
+    set Destination(destination: Destination) {
+        if (has(destination, 'name')) {
+            set(this, ['object', 'DestinationName'], destination.name);
+        }
     }
 
     get Date(): any {

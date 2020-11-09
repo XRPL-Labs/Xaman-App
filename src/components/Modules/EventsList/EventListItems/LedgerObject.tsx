@@ -27,6 +27,7 @@ export interface State {
     name: string;
     address: string;
     tag: number;
+    key: string;
 }
 
 /* Component ==================================================================== */
@@ -42,6 +43,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
             name: recipientDetails.name,
             address: recipientDetails.address,
             tag: recipientDetails.tag,
+            key: recipientDetails.key,
         };
     }
 
@@ -50,12 +52,17 @@ class LedgerObjectTemplate extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { name } = this.state;
+        const { name, key } = this.state;
+        const { item } = this.props;
 
         this.mounted = true;
 
         if (!name) {
             this.lookUpRecipientName();
+        } else if (key) {
+            item[key] = {
+                name,
+            };
         }
     }
 
@@ -68,15 +75,18 @@ class LedgerObjectTemplate extends Component<Props, State> {
 
         let address;
         let tag;
+        let key;
 
         switch (item.Type) {
             case 'Check':
                 address = item.Destination.address;
                 tag = item.Destination.tag;
+                key = 'Destination';
                 break;
             case 'Escrow':
                 address = item.Destination.address;
                 tag = item.Destination.tag;
+                key = 'Destination';
                 break;
             default:
                 break;
@@ -88,6 +98,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
                 address,
                 tag,
                 name: account.label,
+                key: 'Account',
             };
         }
 
@@ -95,16 +106,23 @@ class LedgerObjectTemplate extends Component<Props, State> {
             address,
             tag,
             name: undefined,
+            key,
         };
     };
 
     lookUpRecipientName = () => {
-        const { address, tag } = this.state;
+        const { address, tag, key } = this.state;
+        const { item } = this.props;
 
         getAccountName(address, tag)
             .then((res: any) => {
                 if (!isEmpty(res) && res.name) {
                     if (this.mounted) {
+                        if (key) {
+                            item[key] = {
+                                name: res.name,
+                            };
+                        }
                         this.setState({
                             name: res.name,
                         });

@@ -45,17 +45,13 @@ import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface PartiesDetails extends AccountNameType {
-    address: string;
-}
-
 export interface Props {
     tx: TransactionsType;
     account: AccountSchema;
 }
 
 export interface State {
-    partiesDetails: PartiesDetails;
+    partiesDetails: AccountNameType;
     coreSettings: CoreSchema;
     spendableAccounts: AccountSchema[];
     connectedChain: NodeChain;
@@ -369,7 +365,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 } else {
                     currency = account.lines.find(
                         // eslint-disable-next-line max-len
-                        (l: any) => l.currency.currency === tx.Amount.currency && l.currency.issuer === tx.Amount.issuer,
+                        (l: any) =>
+                            l.currency.currency === tx.Amount.currency && l.currency.issuer === tx.Amount.issuer,
                     );
                 }
                 Object.assign(params, { amount: tx.Amount.value, currency });
