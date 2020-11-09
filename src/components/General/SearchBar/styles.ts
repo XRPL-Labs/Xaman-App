@@ -22,6 +22,7 @@ export default StyleSheet.create({
         flex: 1,
         height: '100%',
         paddingLeft: 50,
+        paddingRight: 50,
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.p.size,
         fontWeight: '600',
