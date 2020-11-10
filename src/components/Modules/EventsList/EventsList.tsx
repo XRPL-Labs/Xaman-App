@@ -26,12 +26,6 @@ interface Props {
 
 /* Component ==================================================================== */
 class EventsList extends PureComponent<Props> {
-    static defaultProps = {
-        showMoreButton: false,
-        showAvatar: true,
-        showTag: true,
-    };
-
     formatDate = (date: string) => {
         const momentDate = moment(date);
         const reference = moment();

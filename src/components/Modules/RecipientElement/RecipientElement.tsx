@@ -89,7 +89,9 @@ class RecipientElement extends PureComponent<Props> {
                 key={recipient.id}
             >
                 <View style={[styles.itemRow, selected && styles.itemSelected, containerStyle]}>
-                    {showAvatar && <Avatar source={{ uri: `https://xumm.app/avatar/${recipient.address}.png` }} />}
+                    {showAvatar && (
+                        <Avatar source={{ uri: `https://xumm.app/avatar/${recipient.address}_180_50.png` }} />
+                    )}
 
                     {/* eslint-disable-next-line react-native/no-inline-styles */}
                     <View style={{ paddingLeft: 10 }}>

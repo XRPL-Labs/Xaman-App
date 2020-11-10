@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableHighlight, Image } from 'react-native';
+import { View, Text, TouchableHighlight } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
@@ -12,7 +12,7 @@ import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
 
-import { Icon } from '@components/General';
+import { Icon, Avatar } from '@components/General';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -145,7 +145,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
         let iconColor;
 
         if (address) {
-            return <Image style={styles.avatarImage} source={{ uri: `https://xumm.app/avatar/${address}.png` }} />;
+            return <Avatar size={40} border source={{ uri: `https://xumm.app/avatar/${address}_180_50.png` }} />;
         }
 
         switch (item.Type) {
@@ -157,7 +157,11 @@ class LedgerObjectTemplate extends Component<Props, State> {
                 break;
         }
 
-        return <Icon size={20} style={[styles.icon, iconColor]} name={iconName} />;
+        return (
+            <View style={styles.iconContainer}>
+                <Icon size={20} style={[styles.icon, iconColor]} name={iconName} />
+            </View>
+        );
     };
 
     getLabel = () => {
@@ -241,9 +245,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
         return (
             <TouchableHighlight onPress={this.onPress} underlayColor="#FFF">
                 <View style={[AppStyles.row, styles.container]}>
-                    <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                        <View style={styles.iconContainer}>{this.getIcon()}</View>
-                    </View>
+                    <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
                     <View style={[AppStyles.flex3, AppStyles.centerContent]}>
                         <Text style={[styles.label]} numberOfLines={1}>
                             {this.getLabel()}

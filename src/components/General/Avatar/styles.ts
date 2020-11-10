@@ -12,4 +12,9 @@ export default StyleSheet.create({
     image: {
         resizeMode: 'contain',
     },
+    border: {
+        borderColor: AppColors.grey,
+        borderWidth: 1,
+        borderRadius: 10,
+    },
 });

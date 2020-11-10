@@ -14,12 +14,6 @@ const styles = StyleSheet.create({
     row: {
         paddingTop: 10,
     },
-    avatarImage: {
-        width: AppSizes.scale(25),
-        height: AppSizes.scale(25),
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     iconContainer: {
         borderColor: AppColors.grey,
         alignItems: 'center',

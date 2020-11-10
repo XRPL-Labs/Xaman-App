@@ -55,6 +55,7 @@ export interface State {
     coreSettings: CoreSchema;
     spendableAccounts: AccountSchema[];
     connectedChain: NodeChain;
+    balanceChanges: any;
     incomingTx: boolean;
     scamAlert: boolean;
     showMemo: boolean;
@@ -82,6 +83,7 @@ class TransactionDetailsView extends Component<Props, State> {
             coreSettings: CoreRepository.getSettings(),
             spendableAccounts: AccountRepository.getSpendableAccounts(),
             connectedChain: SocketService.chain,
+            balanceChanges: undefined,
             incomingTx: props.tx.Destination?.address === props.account.address,
             scamAlert: false,
             showMemo: true,
@@ -92,8 +94,19 @@ class TransactionDetailsView extends Component<Props, State> {
         InteractionManager.runAfterInteractions(() => {
             this.checkForScamAlert();
             this.setPartiesDetails();
+            this.setBalanceChanges();
         });
     }
+
+    setBalanceChanges = () => {
+        const { tx, account } = this.props;
+
+        if (tx.Type === 'Payment') {
+            this.setState({
+                balanceChanges: tx.BalanceChange(account.address),
+            });
+        }
+    };
 
     checkForScamAlert = async () => {
         const { tx } = this.props;
@@ -286,11 +299,14 @@ class TransactionDetailsView extends Component<Props, State> {
 
     getLabel = () => {
         const { tx, account } = this.props;
+        const { balanceChanges } = this.state;
 
         switch (tx.Type) {
             case 'Payment':
                 if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
-                    return Localize.t('events.exchangedAssets');
+                    if (balanceChanges?.sent || balanceChanges?.received) {
+                        return Localize.t('events.exchangedAssets');
+                    }
                 }
                 return Localize.t('global.payment');
 
@@ -816,7 +832,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
     renderAmount = () => {
         const { tx, account } = this.props;
-        const { incomingTx } = this.state;
+        const { incomingTx, balanceChanges } = this.state;
 
         let shouldShowAmount = true;
 
@@ -829,14 +845,22 @@ class TransactionDetailsView extends Component<Props, State> {
         switch (tx.Type) {
             case 'Payment':
                 if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
-                    const balanceChanges = tx.BalanceChange(account.address);
-                    Object.assign(props, {
-                        color: styles.incomingColor,
-                        text: `${Localize.formatNumber(balanceChanges.received.value)} ${NormalizeCurrencyCode(
-                            balanceChanges.received.currency,
-                        )}`,
-                        icon: 'IconCornerRightDown',
-                    });
+                    if (balanceChanges?.received) {
+                        Object.assign(props, {
+                            color: styles.incomingColor,
+                            text: `${Localize.formatNumber(balanceChanges.received.value)} ${NormalizeCurrencyCode(
+                                balanceChanges.received.currency,
+                            )}`,
+                            icon: 'IconCornerRightDown',
+                        });
+                    } else {
+                        Object.assign(props, {
+                            color: styles.outgoingColor,
+                            text: `${'-'}${Localize.formatNumber(tx.Amount.value)} ${NormalizeCurrencyCode(
+                                tx.Amount.currency,
+                            )}`,
+                        });
+                    }
                 } else {
                     Object.assign(props, {
                         color: incomingTx ? styles.incomingColor : styles.outgoingColor,
@@ -948,30 +972,32 @@ class TransactionDetailsView extends Component<Props, State> {
 
         if (tx.Type === 'Payment') {
             if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
-                const balanceChanges = tx.BalanceChange(account.address);
+                if (balanceChanges?.sent) {
+                    return (
+                        <View style={styles.amountHeaderContainer}>
+                            <View style={[AppStyles.row, styles.amountContainerSmall]}>
+                                <Text style={[styles.amountTextSmall]} numberOfLines={1}>
+                                    {`${balanceChanges.sent.value} ${NormalizeCurrencyCode(
+                                        balanceChanges.sent.currency,
+                                    )}`}
+                                </Text>
+                            </View>
 
-                return (
-                    <View style={styles.amountHeaderContainer}>
-                        <View style={[AppStyles.row, styles.amountContainerSmall]}>
-                            <Text style={[styles.amountTextSmall]} numberOfLines={1}>
-                                {`${balanceChanges.sent.value} ${NormalizeCurrencyCode(balanceChanges.sent.currency)}`}
-                            </Text>
-                        </View>
+                            <Spacer />
+                            <Icon size={20} style={AppStyles.imgColorGreyBlack} name="IconSwitchAccount" />
+                            <Spacer />
 
-                        <Spacer />
-                        <Icon size={20} style={AppStyles.imgColorGreyBlack} name="IconSwitchAccount" />
-                        <Spacer />
-
-                        <View style={[AppStyles.row, styles.amountContainer]}>
-                            {/*
+                            <View style={[AppStyles.row, styles.amountContainer]}>
+                                {/*
                         // @ts-ignore */}
-                            <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
-                            <Text style={[styles.amountText, props.color]} numberOfLines={1}>
-                                {props.text}
-                            </Text>
+                                <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                                <Text style={[styles.amountText, props.color]} numberOfLines={1}>
+                                    {props.text}
+                                </Text>
+                            </View>
                         </View>
-                    </View>
-                );
+                    );
+                }
             }
         }
 
@@ -1110,7 +1136,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
     renderSourceDestination = () => {
         const { tx, account } = this.props;
-        const { partiesDetails, incomingTx } = this.state;
+        const { partiesDetails, incomingTx, balanceChanges } = this.state;
 
         let from = {
             address: tx.Account.address,
@@ -1123,16 +1149,20 @@ class TransactionDetailsView extends Component<Props, State> {
 
         if (incomingTx) {
             from = Object.assign(from, partiesDetails);
-            to = Object.assign(to, {
-                name: account.label,
-                source: 'internal:accounts',
-            });
+            if (to.address === account.address) {
+                to = Object.assign(to, {
+                    name: account.label,
+                    source: 'internal:accounts',
+                });
+            }
         } else {
             to = Object.assign(to, partiesDetails);
-            from = Object.assign(from, {
-                name: account.label,
-                source: 'internal:accounts',
-            });
+            if (from.address === account.address) {
+                from = Object.assign(from, {
+                    name: account.label,
+                    source: 'internal:accounts',
+                });
+            }
         }
 
         // incoming trustline
@@ -1148,9 +1178,11 @@ class TransactionDetailsView extends Component<Props, State> {
         // 3rd party consuming own offer
         if (tx.Type === 'Payment') {
             if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
-                from = { address: tx.Account.address };
-                to = { address: tx.Destination?.address };
-                through = { address: account.address, name: account.label, source: 'internal:accounts' };
+                if (balanceChanges?.sent || balanceChanges?.received) {
+                    from = { address: tx.Account.address };
+                    to = { address: tx.Destination?.address };
+                    through = { address: account.address, name: account.label, source: 'internal:accounts' };
+                }
             }
         }
 

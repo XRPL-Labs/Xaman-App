@@ -15,14 +15,19 @@ import styles from './styles';
 interface Props {
     source: ImageSourcePropType;
     size?: number;
+    border?: boolean;
 }
 
 /* Component ==================================================================== */
-const Avatar: React.SFC<Props> = ({ source, size = 45 }) => (
+const Avatar: React.SFC<Props> = ({ source, size = 40, border = false }) => (
     <View style={[styles.container, { height: AppSizes.scale(size), width: AppSizes.scale(size) }]}>
         <Image
             source={source}
-            style={[styles.image, { height: AppSizes.scale(size * 0.6), width: AppSizes.scale(size * 0.6) }]}
+            style={[
+                styles.image,
+                border && styles.border,
+                { height: AppSizes.scale(size), width: AppSizes.scale(size) },
+            ]}
         />
     </View>
 );

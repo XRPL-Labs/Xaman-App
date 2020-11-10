@@ -146,9 +146,8 @@ class AddressBookView extends Component<Props, State> {
                 activeOpacity={0.8}
             >
                 <View style={[styles.row]}>
-                    <Avatar source={{ uri: `https://xumm.app/avatar/${item.address}.png` }} />
-
-                    <View>
+                    <Avatar size={40} source={{ uri: `https://xumm.app/avatar/${item.address}_180_50.png` }} />
+                    <View style={styles.contentContainer}>
                         <Text style={styles.name}>{item.name}</Text>
                         <Text style={styles.address}>{item.address}</Text>
                     </View>

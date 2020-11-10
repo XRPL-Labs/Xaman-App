@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableHighlight, Image } from 'react-native';
+import { View, Text, TouchableHighlight } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
@@ -12,7 +12,7 @@ import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
 
-import { Icon } from '@components/General';
+import { Icon, Avatar } from '@components/General';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -113,6 +113,9 @@ class TransactionTemplate extends Component<Props, State> {
                 tag = item.Destination.tag;
                 key = 'Destination';
                 break;
+            case 'EscrowCancel':
+                address = item.Owner;
+                break;
             case 'EscrowFinish':
                 address = item.Destination.address;
                 tag = item.Destination.tag;
@@ -177,75 +180,29 @@ class TransactionTemplate extends Component<Props, State> {
     };
 
     getIcon = () => {
-        const { item, account } = this.props;
         const { address } = this.state;
+        const { item } = this.props;
 
+        if (address) {
+            return <Avatar size={40} border source={{ uri: `https://xumm.app/avatar/${address}_180_50.png` }} />;
+        }
         let iconName = '' as any;
         let iconColor;
 
-        if (address) {
-            return <Image style={styles.avatarImage} source={{ uri: `https://xumm.app/avatar/${address}.png` }} />;
-        }
-
         switch (item.Type) {
-            case 'Payment':
-                if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
-                    iconName = 'IconSwitchAccount';
-                } else if (item.Destination.address === account.address) {
-                    iconName = 'IconCornerRightDown';
-                    iconColor = styles.incomingColor;
-                } else {
-                    iconName = 'IconCornerLeftUp';
-                    iconColor = styles.outgoingColor;
-                }
-                break;
             case 'OfferCreate':
                 iconName = 'IconSwitchAccount';
-                break;
-            case 'OfferCancel':
-                iconName = 'IconX';
-                break;
-            case 'TrustSet':
-                if (item.Limit === 0) {
-                    iconName = 'IconMinus';
-                } else {
-                    iconName = 'IconPlus';
-                }
-                break;
-            case 'EscrowFinish':
-                iconName = 'IconCheck';
-                break;
-            case 'EscrowCreate':
-                iconName = 'IconCornerLeftUp';
-                break;
-            case 'EscrowCancel':
-                iconName = 'IconX';
-                break;
-            case 'CheckCreate':
-                if (item.Account.address === account.address) {
-                    iconName = 'IconCornerLeftUp';
-                    iconColor = styles.incomingColor;
-                } else {
-                    iconName = 'IconCornerRightDown';
-                    iconColor = styles.outgoingColor;
-                }
-                break;
-            case 'CheckCash':
-                if (item.Account.address === account.address) {
-                    iconName = 'IconCornerRightDown';
-                } else {
-                    iconName = 'IconCornerLeftUp';
-                }
-                break;
-            case 'CheckCancel':
-                iconName = 'IconX';
                 break;
             default:
                 iconName = 'IconAccount';
                 break;
         }
 
-        return <Icon size={20} style={[styles.icon, iconColor]} name={iconName} />;
+        return (
+            <View style={styles.iconContainer}>
+                <Icon size={20} style={[styles.icon, iconColor]} name={iconName} />
+            </View>
+        );
     };
 
     getLabel = () => {
@@ -270,12 +227,11 @@ class TransactionTemplate extends Component<Props, State> {
             if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
                 const balanceChanges = item.BalanceChange(account.address);
 
-                if (balanceChanges.sent) {
+                if (balanceChanges?.sent && balanceChanges?.received) {
                     return `${Localize.formatNumber(balanceChanges.sent.value)} ${NormalizeCurrencyCode(
                         balanceChanges.sent.currency,
                     )}/${NormalizeCurrencyCode(balanceChanges.received.currency)}`;
                 }
-                return '';
             }
         }
 
@@ -291,7 +247,11 @@ class TransactionTemplate extends Component<Props, State> {
         switch (item.Type) {
             case 'Payment':
                 if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
-                    return Localize.t('events.exchangedAssets');
+                    const balanceChanges = item.BalanceChange(account.address);
+                    if (balanceChanges?.sent && balanceChanges?.received) {
+                        return Localize.t('events.exchangedAssets');
+                    }
+                    return Localize.t('global.payment');
                 }
                 if (item.Destination.address === account.address) {
                     return Localize.t('events.paymentReceived');
@@ -363,14 +323,16 @@ class TransactionTemplate extends Component<Props, State> {
             if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
                 const balanceChanges = item.BalanceChange(account.address);
 
-                return (
-                    <Text style={[styles.amount]} numberOfLines={1}>
-                        {Localize.formatNumber(balanceChanges.received?.value)}{' '}
-                        <Text style={[styles.currency]}>
-                            {NormalizeCurrencyCode(balanceChanges.received?.currency)}
+                if (balanceChanges?.received) {
+                    return (
+                        <Text style={[styles.amount]} numberOfLines={1}>
+                            {Localize.formatNumber(balanceChanges.received?.value)}{' '}
+                            <Text style={[styles.currency]}>
+                                {NormalizeCurrencyCode(balanceChanges.received?.currency)}
+                            </Text>
                         </Text>
-                    </Text>
-                );
+                    );
+                }
             }
             return (
                 <Text style={[styles.amount, !incoming && styles.outgoingColor]} numberOfLines={1}>
@@ -458,9 +420,7 @@ class TransactionTemplate extends Component<Props, State> {
         return (
             <TouchableHighlight onPress={this.onPress} underlayColor="#FFF">
                 <View style={[AppStyles.row, styles.container]}>
-                    <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                        <View style={styles.iconContainer}>{this.getIcon()}</View>
-                    </View>
+                    <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
                     <View style={[AppStyles.flex3, AppStyles.centerContent]}>
                         <Text style={[styles.label]} numberOfLines={1}>
                             {this.getLabel()}

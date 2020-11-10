@@ -17,12 +17,6 @@ interface Props {
 
 /* Component ==================================================================== */
 class EventsFilterChip extends Component<Props> {
-    static defaultProps = {
-        showMoreButton: false,
-        showAvatar: true,
-        showTag: true,
-    };
-
     shouldComponentUpdate(nextProps: Props) {
         const { filters } = this.props;
         return !isEqual(nextProps.filters, filters);
