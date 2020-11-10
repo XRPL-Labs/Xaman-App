@@ -275,6 +275,7 @@ class TransactionTemplate extends Component<Props, State> {
                         balanceChanges.sent.currency,
                     )}/${NormalizeCurrencyCode(balanceChanges.received.currency)}`;
                 }
+                return '';
             }
         }
 
