@@ -8,7 +8,11 @@ import moment from 'moment-timezone';
 import DeviceInfo from 'react-native-device-info';
 import { Navigation } from 'react-native-navigation';
 
+// constants
+import { ErrorMessages } from '@common/constants';
+
 // helpers
+import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import {
     GetDeviceTimeZone,
@@ -16,6 +20,8 @@ import {
     FlagSecure,
     IsDeviceJailBroken,
     IsDeviceRooted,
+    ExitApp,
+    RestartBundle,
 } from '@common/helpers/device';
 
 // Storage
@@ -61,16 +67,60 @@ class Application {
                     this.initialized = true;
                     this.boot();
                 })
-                .catch((e: any) => {
-                    if (typeof e.toString === 'function') {
-                        Alert.alert('Error', e.toString());
-                    } else {
-                        Alert.alert('Error', 'Unexpected error happened');
-                    }
-                });
+                .catch(this.handleError);
         });
     }
 
+    // handle errors in app startup
+    handleError = (exception: any) => {
+        if (typeof exception.toString === 'function') {
+            const message = exception.toString();
+
+            if (message.indexOf('Realm file decryption failed') > 0) {
+                Prompt(
+                    'Error',
+                    ErrorMessages.storageDecryptionFailed,
+                    [
+                        {
+                            text: 'Try again later',
+                            onPress: ExitApp,
+                        },
+                        { text: 'WIPE XUMM', style: 'destructive', onPress: this.wipeStorage },
+                    ],
+                    { type: 'default' },
+                );
+            } else {
+                Alert.alert('Error', exception.toString());
+            }
+        } else {
+            Alert.alert('Error', 'Unexpected error happened');
+        }
+
+        services.LoggerService.recordError('APP RUN ERROR', exception);
+    };
+
+    wipeStorage = () => {
+        Prompt(
+            'WARNING',
+            'You are wiping XUMM, This action cannot be undone. Are you sure?',
+            [
+                {
+                    text: 'No',
+                },
+                {
+                    text: 'Yes',
+                    style: 'destructive',
+                    onPress: () => {
+                        this.storage.wipe();
+                        RestartBundle();
+                    },
+                },
+            ],
+            { type: 'default' },
+        );
+    };
+
+    // boot the app
     boot = () => {
         const { AuthenticationService } = services;
 
@@ -88,10 +138,12 @@ class Application {
         }
     };
 
+    // initialize the storage
     initializeStorage = () => {
         return this.storage.initialize();
     };
 
+    // initialize all the services
     initServices = () => {
         return new Promise((resolve, reject) => {
             try {
@@ -120,6 +172,7 @@ class Application {
         });
     };
 
+    // load app locals and settings
     loadAppLocale = () => {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
@@ -146,6 +199,7 @@ class Application {
         });
     };
 
+    // register all screens
     registerScreens = () => {
         return new Promise((resolve, reject) => {
             try {
@@ -166,6 +220,7 @@ class Application {
         });
     };
 
+    // configure app settings
     configure = () => {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
@@ -177,7 +232,7 @@ class Application {
                             return reject(new Error('For your security, XUMM cannot be opened on a rooted phone.'));
                         }
 
-                        // set secure flag for the app
+                        // set secure flag for the app by default
                         FlagSecure(true);
 
                         // enable layout animation
@@ -201,12 +256,12 @@ class Application {
                 }
 
                 // set timezone
-                GetDeviceTimeZone()
+                await GetDeviceTimeZone()
                     .then((tz: string) => {
                         moment.tz.setDefault(tz);
                     })
                     .catch(() => {
-                        // ignore
+                        // ignore in case of error
                     });
 
                 // Disable accessibility fonts

@@ -128,13 +128,11 @@ export default class Storage {
     };
 
     /**
-     * Purge everything
+     * WIPTE everything
      * WARNING: This will delete all objects in the Realm!
      */
-    purge = (): void => {
-        this.db.write(() => {
-            this.db.deleteAll();
-        });
+    wipe = (): void => {
+        Realm.deleteFile({ path: this.path });
     };
 
     /**
@@ -167,7 +165,7 @@ export default class Storage {
         const dbFileExist = Realm.exists({ path: this.path });
 
         if (!encryptionKeyExist && dbFileExist) {
-            Realm.deleteFile({ path: this.path });
+            this.wipe();
         }
 
         // set encryption key

@@ -6,7 +6,6 @@ import React, { Component } from 'react';
 
 import { SafeAreaView, View, Text, Image, LayoutAnimation, Alert } from 'react-native';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
-import crashlytics from '@react-native-firebase/crashlytics';
 
 import { CoreRepository } from '@store/repositories';
 import { BiometryType } from '@store/types';
@@ -14,7 +13,7 @@ import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
-import { PushNotificationsService } from '@services';
+import { PushNotificationsService, LoggerService } from '@services';
 
 // components
 import { Button, Spacer, Footer, PinInput, InfoMessage } from '@components/General';
@@ -92,8 +91,7 @@ class PasscodeSetupView extends Component<Props, State> {
             // go to the next step
             Navigator.push(AppScreens.Setup.PushNotification);
         } catch (e) {
-            crashlytics().log('Finish Setup Passcode Failed');
-            crashlytics().recordError(e);
+            LoggerService.recordError('Finish Setup Passcode Failed', e);
         }
     };
 

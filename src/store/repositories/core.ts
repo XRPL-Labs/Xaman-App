@@ -3,11 +3,12 @@ import { Platform } from 'react-native';
 import Realm, { ObjectSchema, Results } from 'realm';
 
 import DeviceInfo from 'react-native-device-info';
-import crashlytics from '@react-native-firebase/crashlytics';
 
 import { SHA512, HMAC256 } from '@common/libs/crypto';
 
 import { AppConfig } from '@common/constants';
+
+import LoggerService from '@services/LoggerService';
 
 import { CoreSchema } from '@store/schemas/latest';
 import { NodeChain } from '@store/types';
@@ -106,8 +107,7 @@ class CoreRepository extends BaseRepository {
 
             return encPasscode;
         } catch (e) {
-            crashlytics().log('Encrypt Passcode Failed');
-            crashlytics().recordError(e);
+            LoggerService.recordError('Encrypt Passcode Failed', e);
             return '';
         }
     };
@@ -126,8 +126,7 @@ class CoreRepository extends BaseRepository {
 
             return encryptedPasscode;
         } catch (e) {
-            crashlytics().log('Save Passcode Failed');
-            crashlytics().recordError(e);
+            LoggerService.recordError('Save Passcode Failed', e);
             return '';
         }
     };
