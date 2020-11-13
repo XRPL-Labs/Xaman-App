@@ -162,7 +162,7 @@ class ScanView extends Component<Props, State> {
         Alert.alert(
             'Translation detected',
             'XUMM Translation Portal language file detected. Do you want to load it into the app?' +
-            'To revert to the default translation, force quit XUMM and start XUMM again.',
+            '(To revert to the default translation, force quit XUMM and start XUMM again)',
             [
                 {
                     text: 'Cancel',
