@@ -6,7 +6,6 @@ import { AppColors, AppSizes } from '@theme';
 const styles = StyleSheet.create({
     container: {
         backgroundColor: AppColors.lightGrey,
-        marginBottom: AppSizes.tabbarHeight,
     },
     filterIcon: {
         tintColor: AppColors.blue,

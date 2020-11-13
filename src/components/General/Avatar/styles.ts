@@ -6,12 +6,10 @@ export default StyleSheet.create({
     container: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 8,
         backgroundColor: AppColors.white,
+        borderRadius: 10,
     },
-    image: {
-        resizeMode: 'contain',
-    },
+    image: {},
     border: {
         borderColor: AppColors.grey,
         borderWidth: 1,

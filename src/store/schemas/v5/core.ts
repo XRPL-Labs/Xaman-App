@@ -53,7 +53,7 @@ class Core extends Realm.Object {
 
     public static migration(oldRealm: any, newRealm: any) {
         /*  eslint-disable-next-line */
-        console.log('migrating Core model to v4');
+        console.log('migrating Core model to v5');
 
         const newObjects = newRealm.objects('Core') as Core[];
 

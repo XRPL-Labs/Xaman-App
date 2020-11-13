@@ -576,6 +576,7 @@ class EventsView extends Component<Props, State> {
             <SafeAreaView testID="events-tab-empty-view" style={[AppStyles.tabContainer]}>
                 {/* Header */}
                 <Header
+                    placement="left"
                     containerStyle={AppStyles.headerContainer}
                     leftComponent={{
                         text: Localize.t('global.events'),

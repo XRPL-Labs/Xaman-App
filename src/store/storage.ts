@@ -107,7 +107,7 @@ export default class Storage {
                 migration: current.migration,
             });
 
-            this.logger.warn(`Successfully migrate to ${current.schemaVersion}`);
+            this.logger.warn(`Successfully migrate to v${current.schemaVersion}`);
 
             // if last migration then return instance
             if (current.schemaVersion === latest.schemaVersion) {
