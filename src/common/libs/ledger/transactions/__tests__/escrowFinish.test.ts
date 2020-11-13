@@ -17,6 +17,7 @@ describe('EscrowFinish tx', () => {
 
         expect(instance.Destination).toStrictEqual({
             tag: undefined,
+            name: undefined,
             address: 'rKwJaGmB5Hz24Qs2iyCaTdUuL1WsEXUWy5',
         });
         expect(instance.Amount).toStrictEqual({
