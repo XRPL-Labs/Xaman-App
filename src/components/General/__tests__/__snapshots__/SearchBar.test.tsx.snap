@@ -8,7 +8,7 @@ exports[`[SearchBar] renders correctly 1`] = `
         "backgroundColor": "#EDEFF6",
         "borderRadius": 15,
         "flexDirection": "row",
-        "height": 86.5,
+        "height": 73.5,
         "marginHorizontal": 10,
       },
       undefined,
@@ -40,7 +40,9 @@ exports[`[SearchBar] renders correctly 1`] = `
             "height": 31.428571428571427,
             "width": 31.428571428571427,
           },
-          undefined,
+          Object {
+            "tintColor": "#626984",
+          },
         ]
       }
     />
@@ -69,6 +71,7 @@ exports[`[SearchBar] renders correctly 1`] = `
             "fontWeight": "600",
             "height": "100%",
             "paddingLeft": 50,
+            "paddingRight": 50,
           },
           undefined,
         ]
@@ -137,7 +140,7 @@ exports[`[SearchBar] should clear text 1`] = `
         "backgroundColor": "#EDEFF6",
         "borderRadius": 15,
         "flexDirection": "row",
-        "height": 86.5,
+        "height": 73.5,
         "marginHorizontal": 10,
       },
       undefined,
@@ -169,7 +172,9 @@ exports[`[SearchBar] should clear text 1`] = `
             "height": 31.428571428571427,
             "width": 31.428571428571427,
           },
-          undefined,
+          Object {
+            "tintColor": "#626984",
+          },
         ]
       }
     />
@@ -198,6 +203,7 @@ exports[`[SearchBar] should clear text 1`] = `
             "fontWeight": "600",
             "height": "100%",
             "paddingLeft": 50,
+            "paddingRight": 50,
           },
           undefined,
         ]
@@ -266,7 +272,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
         "backgroundColor": "#EDEFF6",
         "borderRadius": 15,
         "flexDirection": "row",
-        "height": 86.5,
+        "height": 73.5,
         "marginHorizontal": 10,
       },
       undefined,
@@ -298,7 +304,9 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
             "height": 31.428571428571427,
             "width": 31.428571428571427,
           },
-          undefined,
+          Object {
+            "tintColor": "#626984",
+          },
         ]
       }
     />
@@ -327,6 +335,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
             "fontWeight": "600",
             "height": "100%",
             "paddingLeft": 50,
+            "paddingRight": 50,
           },
           undefined,
         ]

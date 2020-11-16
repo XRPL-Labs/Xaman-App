@@ -90,19 +90,19 @@ RCT_EXPORT_MODULE()
     return nil;
 }
 
-+ (NSDictionary *) encrypt: (NSString *)clearText key: (NSString *)key {
++ (NSDictionary *) encrypt: (NSString *)input key: (NSString *)key {
     NSString *keyEnc = [self sha256:key];
     NSString *iv = [self randomKey:16];
-    NSData *result = [self AES128CBC:@"encrypt" data:[clearText dataUsingEncoding:NSUTF8StringEncoding] key:keyEnc iv:iv];
+    NSData *result = [self AES128CBC:@"encrypt" data:[input dataUsingEncoding:NSUTF8StringEncoding] key:keyEnc iv:iv];
     return @{
         @"cipher": [result base64EncodedStringWithOptions:0],
         @"iv": iv
     };
 }
 
-+ (NSString *) decrypt: (NSString *)cipherText key: (NSString *)key iv: (NSString *)iv {
++ (NSString *) decrypt: (NSString *)input key: (NSString *)key iv: (NSString *)iv {
     NSString *keyEnc = [self sha256:key];
-    NSData *result = [self AES128CBC:@"decrypt" data:[[NSData alloc] initWithBase64EncodedString:cipherText options:0] key:keyEnc iv:iv];
+    NSData *result = [self AES128CBC:@"decrypt" data:[[NSData alloc] initWithBase64EncodedString:input options:0] key:keyEnc iv:iv];
     return [[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding];
 }
 
@@ -159,11 +159,11 @@ RCT_EXPORT_MODULE()
     return [self toHex:data];
 }
 
-RCT_EXPORT_METHOD(encrypt:(NSString *)data key:(NSString *)key
+RCT_EXPORT_METHOD(encrypt:(NSString *)input key:(NSString *)key
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSError *error = nil;
-    NSDictionary *result = [CryptoModule encrypt:data key:key];
+    NSDictionary *result = [CryptoModule encrypt:input key:key];
     if (result == nil) {
         reject(@"encrypt_fail", @"Encrypt error", error);
     } else {
@@ -171,11 +171,11 @@ RCT_EXPORT_METHOD(encrypt:(NSString *)data key:(NSString *)key
     }
 }
 
-RCT_EXPORT_METHOD(decrypt:(NSString *)base64 key:(NSString *)key iv:(NSString *)iv
+RCT_EXPORT_METHOD(decrypt:(NSString *)input key:(NSString *)key iv:(NSString *)iv
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSError *error = nil;
-    NSString *data = [CryptoModule decrypt:base64 key:key iv:iv];
+    NSString *data = [CryptoModule decrypt:input key:key iv:iv];
     if (data == nil) {
         reject(@"decrypt_fail", @"Decrypt failed", error);
     } else {
@@ -183,24 +183,11 @@ RCT_EXPORT_METHOD(decrypt:(NSString *)base64 key:(NSString *)key iv:(NSString *)
     }
 }
 
-RCT_EXPORT_METHOD(pbkdf2:(NSString *)password salt:(NSString *)salt
-                  cost:(NSInteger)cost length:(NSInteger)length
+RCT_EXPORT_METHOD(hmac256:(NSString *)input key:(NSString *)key
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSError *error = nil;
-    NSString *data = [CryptoModule pbkdf2:password salt:salt cost:cost length:length];
-    if (data == nil) {
-        reject(@"keygen_fail", @"Key generation failed", error);
-    } else {
-        resolve(data);
-    }
-}
-
-RCT_EXPORT_METHOD(hmac256:(NSString *)base64 key:(NSString *)key
-                  resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
-    NSError *error = nil;
-    NSString *data = [CryptoModule hmac256:base64 key:key];
+    NSString *data = [CryptoModule hmac256:input key:key];
     if (data == nil) {
         reject(@"hmac_fail", @"HMAC error", error);
     } else {
@@ -208,11 +195,11 @@ RCT_EXPORT_METHOD(hmac256:(NSString *)base64 key:(NSString *)key
     }
 }
 
-RCT_EXPORT_METHOD(sha1:(NSString *)text
+RCT_EXPORT_METHOD(sha1:(NSString *)input
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSError *error = nil;
-    NSString *data = [CryptoModule sha1:text];
+    NSString *data = [CryptoModule sha1:input];
     if (data == nil) {
         reject(@"sha1_fail", @"Hash error", error);
     } else {
@@ -220,11 +207,11 @@ RCT_EXPORT_METHOD(sha1:(NSString *)text
     }
 }
 
-RCT_EXPORT_METHOD(sha256:(NSString *)text
+RCT_EXPORT_METHOD(sha256:(NSString *)input
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSError *error = nil;
-    NSString *data = [CryptoModule sha256:text];
+    NSString *data = [CryptoModule sha256:input];
     if (data == nil) {
         reject(@"sha256_fail", @"Hash error", error);
     } else {
@@ -232,11 +219,11 @@ RCT_EXPORT_METHOD(sha256:(NSString *)text
     }
 }
 
-RCT_EXPORT_METHOD(sha512:(NSString *)text
+RCT_EXPORT_METHOD(sha512:(NSString *)input
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSError *error = nil;
-    NSString *data = [CryptoModule sha512:text];
+    NSString *data = [CryptoModule sha512:input];
     if (data == nil) {
         reject(@"sha512_fail", @"Hash error", error);
     } else {

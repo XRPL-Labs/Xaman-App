@@ -1,25 +1,33 @@
 /**
  * Application class
  */
-import { UIManager, Platform, Alert, Text, TextInput, NativeModules } from 'react-native';
+import { UIManager, Platform, Alert, Text, TextInput } from 'react-native';
 
 // modules
 import moment from 'moment-timezone';
 import DeviceInfo from 'react-native-device-info';
 import { Navigation } from 'react-native-navigation';
 
+// constants
+import { ErrorMessages } from '@common/constants';
+
 // helpers
+import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+import {
+    GetDeviceTimeZone,
+    GetDeviceLocaleSettings,
+    FlagSecure,
+    IsDeviceJailBroken,
+    IsDeviceRooted,
+    ExitApp,
+    RestartBundle,
+} from '@common/helpers/device';
 
 // Storage
 import { CoreRepository } from '@store/repositories';
 import StorageBackend from '@store/storage';
 
-// Locale
-import Localize from '@locale';
-
-// screens
-import * as screens from '@screens';
 // services
 import * as services from '@services';
 
@@ -43,10 +51,10 @@ class Application {
             // all stuff we need to init before boot the app
             const waterfall = [
                 this.configure,
-                this.registerScreens,
                 this.initializeStorage,
                 this.loadAppLocale,
                 this.initServices,
+                this.registerScreens,
             ];
 
             // run them in waterfall
@@ -59,16 +67,60 @@ class Application {
                     this.initialized = true;
                     this.boot();
                 })
-                .catch((e: any) => {
-                    if (typeof e.toString === 'function') {
-                        Alert.alert('Error', e.toString());
-                    } else {
-                        Alert.alert('Error', 'Unexpected error happened');
-                    }
-                });
+                .catch(this.handleError);
         });
     }
 
+    // handle errors in app startup
+    handleError = (exception: any) => {
+        if (typeof exception.toString === 'function') {
+            const message = exception.toString();
+
+            if (message.indexOf('Realm file decryption failed') > 0) {
+                Prompt(
+                    'Error',
+                    ErrorMessages.storageDecryptionFailed,
+                    [
+                        {
+                            text: 'Try again later',
+                            onPress: ExitApp,
+                        },
+                        { text: 'WIPE XUMM', style: 'destructive', onPress: this.wipeStorage },
+                    ],
+                    { type: 'default' },
+                );
+            } else {
+                Alert.alert('Error', exception.toString());
+            }
+        } else {
+            Alert.alert('Error', 'Unexpected error happened');
+        }
+
+        services.LoggerService.recordError('APP RUN ERROR', exception);
+    };
+
+    wipeStorage = () => {
+        Prompt(
+            'WARNING',
+            'You are wiping XUMM, This action cannot be undone. Are you sure?',
+            [
+                {
+                    text: 'No',
+                },
+                {
+                    text: 'Yes',
+                    style: 'destructive',
+                    onPress: () => {
+                        this.storage.wipe();
+                        RestartBundle();
+                    },
+                },
+            ],
+            { type: 'default' },
+        );
+    };
+
+    // boot the app
     boot = () => {
         const { AuthenticationService } = services;
 
@@ -86,10 +138,12 @@ class Application {
         }
     };
 
+    // initialize the storage
     initializeStorage = () => {
         return this.storage.initialize();
     };
 
+    // initialize all the services
     initServices = () => {
         return new Promise((resolve, reject) => {
             try {
@@ -118,18 +172,25 @@ class Application {
         });
     };
 
+    // load app locals and settings
     loadAppLocale = () => {
-        return new Promise((resolve, reject) => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
             try {
+                const Localize = require('@locale').default;
+
                 const core = CoreRepository.getSettings();
 
+                const localeSettings = await GetDeviceLocaleSettings();
+                // app is not initialized yet, set to default EN
                 if (!core) {
                     this.logger.debug('Locale is not initialized, using default EN');
+                    Localize.setLocale('en', localeSettings);
                     return resolve();
                 }
 
                 this.logger.debug(`Locale set to: ${core.language.toUpperCase()}`);
-                Localize.setLocale(core.language);
+                Localize.setLocale(core.language, core.useSystemSeparators ? localeSettings : undefined);
 
                 return resolve();
             } catch (e) {
@@ -138,9 +199,14 @@ class Application {
         });
     };
 
+    // register all screens
     registerScreens = () => {
         return new Promise((resolve, reject) => {
             try {
+                // load the screens
+                const screens = require('./screens');
+
+                // register
                 Object.keys(screens).map((key) => {
                     // @ts-ignore
                     const Screen = screens[key];
@@ -154,45 +220,48 @@ class Application {
         });
     };
 
+    // configure app settings
     configure = () => {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             try {
-                const { UtilsModule } = NativeModules;
-
                 if (Platform.OS === 'android') {
                     // check for device root
-                    await UtilsModule.isRooted().then((rooted: boolean) => {
+                    await IsDeviceRooted().then((rooted: boolean) => {
                         if (rooted && !__DEV__) {
                             return reject(new Error('For your security, XUMM cannot be opened on a rooted phone.'));
                         }
 
-                        // set secure flag for the app
-                        UtilsModule.flagSecure(true);
+                        // set secure flag for the app by default
+                        FlagSecure(true);
 
                         // enable layout animation
                         if (UIManager.setLayoutAnimationEnabledExperimental) {
                             UIManager.setLayoutAnimationEnabledExperimental(true);
                         }
+
+                        return true;
                     });
                 } else if (Platform.OS === 'ios') {
                     // check for device root
-                    await UtilsModule.isJailBroken().then((isJailBroken: boolean) => {
+                    await IsDeviceJailBroken().then((isJailBroken: boolean) => {
                         if (isJailBroken && !__DEV__) {
                             return reject(
                                 new Error('For your security, XUMM cannot be opened on a Jail Broken phone.'),
                             );
                         }
+
+                        return true;
                     });
                 }
 
                 // set timezone
-                UtilsModule.getTimeZone()
+                await GetDeviceTimeZone()
                     .then((tz: string) => {
                         moment.tz.setDefault(tz);
                     })
                     .catch(() => {
-                        // ignore
+                        // ignore in case of error
                     });
 
                 // Disable accessibility fonts

@@ -3,7 +3,7 @@
  */
 import { find } from 'lodash';
 import React, { Component } from 'react';
-import { Text, ScrollView, View, TouchableOpacity, Alert } from 'react-native';
+import { Text, ScrollView, View, TouchableOpacity, Alert, Platform } from 'react-native';
 
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
@@ -14,6 +14,7 @@ import { CoreSchema } from '@store/schemas/latest';
 import { BiometryType } from '@store/types';
 
 import { Navigator } from '@common/helpers/navigator';
+import { IsFlagSecure, FlagSecure } from '@common/helpers/device';
 
 import { Header, Switch, Icon, InfoMessage } from '@components/General';
 
@@ -28,6 +29,7 @@ export interface Props {}
 export interface State {
     biometricEnabled: boolean;
     isSensorAvailable: boolean;
+    isFlagSecure: boolean;
     coreSettings: CoreSchema;
 }
 
@@ -64,6 +66,7 @@ class SecuritySettingsView extends Component<Props, State> {
             coreSettings,
             isSensorAvailable: false,
             biometricEnabled: coreSettings.biometricMethod !== BiometryType.None,
+            isFlagSecure: true,
         };
     }
 
@@ -77,6 +80,12 @@ class SecuritySettingsView extends Component<Props, State> {
                 });
             })
             .catch(() => {});
+
+        IsFlagSecure().then((enabled) => {
+            this.setState({
+                isFlagSecure: enabled,
+            });
+        });
     }
 
     componentWillUnmount() {
@@ -198,8 +207,18 @@ class SecuritySettingsView extends Component<Props, State> {
         });
     };
 
+    toggleFlagSecure = (value: boolean) => {
+        // apply to the current activity
+        FlagSecure(value);
+
+        // update the state
+        this.setState({
+            isFlagSecure: value,
+        });
+    };
+
     render() {
-        const { biometricEnabled, coreSettings } = this.state;
+        const { biometricEnabled, coreSettings, isFlagSecure } = this.state;
 
         return (
             <View testID="security-settings-screen" style={[styles.container]}>
@@ -273,7 +292,7 @@ class SecuritySettingsView extends Component<Props, State> {
                             <Switch checked={coreSettings.purgeOnBruteForce} onChange={this.eraseDataChange} />
                         </View>
                     </View>
-                    <InfoMessage label={Localize.t('settings.eraseDataDescription')} type="error" />
+                    <InfoMessage flat label={Localize.t('settings.eraseDataDescription')} type="error" />
 
                     <Text style={styles.descriptionText}>{Localize.t('global.other')}</Text>
                     <View style={styles.row}>
@@ -284,6 +303,19 @@ class SecuritySettingsView extends Component<Props, State> {
                             <Switch checked={coreSettings.discreetMode} onChange={this.discreetModeChange} />
                         </View>
                     </View>
+
+                    {Platform.OS === 'android' && (
+                        <>
+                            <View style={styles.row}>
+                                <View style={[AppStyles.flex3]}>
+                                    <Text style={styles.label}>{Localize.t('settings.blockTakingScreenshots')}</Text>
+                                </View>
+                                <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                                    <Switch checked={isFlagSecure} onChange={this.toggleFlagSecure} />
+                                </View>
+                            </View>
+                        </>
+                    )}
                 </ScrollView>
             </View>
         );

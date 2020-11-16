@@ -9,7 +9,9 @@ ReactNative.NativeModules.CryptoModule = {
     sha512: jest.fn((value) => Promise.resolve(crypto.createHash('sha512').update(value).digest('hex'))),
     sha256: jest.fn((value) => Promise.resolve(crypto.createHash('sha256').update(value).digest('hex'))),
     sha1: jest.fn((value) => Promise.resolve(crypto.createHash('sha1').update(value).digest('hex'))),
-    hmac256: jest.fn((value, key) => Promise.resolve(crypto.createHmac('sha256', key).update(value).digest('hex'))),
+    hmac256: jest.fn((value, key) =>
+        Promise.resolve(crypto.createHmac('sha256', Buffer.from(key, 'hex')).update(value).digest('hex')),
+    ),
     encrypt: jest.fn((entry, key) => {
         const ivHex = crypto.randomBytes(16).toString('hex').toUpperCase();
         const keyEnc = crypto.createHash('sha256').update(key).digest();

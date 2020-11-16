@@ -6,7 +6,16 @@
  *
  */
 import React, { Component } from 'react';
-import { View, TouchableHighlight, TextInput, TextInputProps, ViewStyle, TextStyle, Platform } from 'react-native';
+import {
+    View,
+    TouchableHighlight,
+    TextInput,
+    ActivityIndicator,
+    TextInputProps,
+    ViewStyle,
+    TextStyle,
+    Platform,
+} from 'react-native';
 
 import { StringType } from 'xumm-string-decode';
 
@@ -27,7 +36,10 @@ interface Props extends TextInputProps {
     showScanner?: boolean;
     scannerType?: StringType;
     onScannerRead?: (decoded: any) => void;
+    onScannerOpen?: () => void;
+    onScannerClose?: () => void;
     scannerFallback?: boolean;
+    isLoading?: boolean;
 }
 
 interface State {
@@ -146,7 +158,11 @@ class Input extends Component<Props, State> {
     };
 
     showScanner = () => {
-        const { onScannerRead, scannerType, scannerFallback } = this.props;
+        const { onScannerOpen, onScannerClose, onScannerRead, scannerType, scannerFallback } = this.props;
+
+        if (typeof onScannerOpen === 'function') {
+            onScannerOpen();
+        }
 
         Navigator.showModal(
             AppScreens.Modal.Scan,
@@ -154,28 +170,33 @@ class Input extends Component<Props, State> {
             {
                 type: scannerType,
                 onRead: onScannerRead,
+                onClose: onScannerClose,
                 fallback: scannerFallback,
             },
         );
     };
 
     render() {
-        const { showScanner } = this.props;
+        const { showScanner, isLoading } = this.props;
 
         const input = this.renderInput();
 
-        if (showScanner) {
-            return (
-                <View style={[AppStyles.row]}>
-                    {input}
+        return (
+            <View style={[AppStyles.row]}>
+                {input}
+                {showScanner && (
                     <TouchableHighlight style={styles.scanButton} onPress={this.showScanner}>
                         <Icon size={25} name="IconScan" style={styles.scanIcon} />
                     </TouchableHighlight>
-                </View>
-            );
-        }
+                )}
 
-        return input;
+                {isLoading && (
+                    <View style={styles.loadingOverlay}>
+                        <ActivityIndicator color={AppColors.blue} style={styles.loadingIndicator} />
+                    </View>
+                )}
+            </View>
+        );
     }
 }
 

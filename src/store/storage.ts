@@ -107,7 +107,7 @@ export default class Storage {
                 migration: current.migration,
             });
 
-            this.logger.warn(`Successfully migrate to ${current.schemaVersion}`);
+            this.logger.warn(`Successfully migrate to v${current.schemaVersion}`);
 
             // if last migration then return instance
             if (current.schemaVersion === latest.schemaVersion) {
@@ -128,13 +128,11 @@ export default class Storage {
     };
 
     /**
-     * Purge everything
+     * WIPTE everything
      * WARNING: This will delete all objects in the Realm!
      */
-    purge = (): void => {
-        this.db.write(() => {
-            this.db.deleteAll();
-        });
+    wipe = (): void => {
+        Realm.deleteFile({ path: this.path });
     };
 
     /**
@@ -167,7 +165,7 @@ export default class Storage {
         const dbFileExist = Realm.exists({ path: this.path });
 
         if (!encryptionKeyExist && dbFileExist) {
-            Realm.deleteFile({ path: this.path });
+            this.wipe();
         }
 
         // set encryption key

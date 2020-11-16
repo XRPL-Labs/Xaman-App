@@ -6,7 +6,7 @@
 import EventEmitter from 'events';
 import { last, take, values } from 'lodash';
 
-import { BackHandler, Platform, NativeModules } from 'react-native';
+import { BackHandler, Platform } from 'react-native';
 
 import analytics from '@react-native-firebase/analytics';
 
@@ -21,6 +21,8 @@ import {
 } from 'react-native-navigation';
 
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
+import { ExitApp } from '@common/helpers/device';
+
 import { AppScreens } from '@common/constants';
 
 import Locale from '@locale';
@@ -188,8 +190,7 @@ class NavigationService extends EventEmitter {
         if (soft) {
             BackHandler.exitApp();
         } else {
-            const { UtilsModule } = NativeModules;
-            UtilsModule.exitApp();
+            ExitApp();
         }
     };
 

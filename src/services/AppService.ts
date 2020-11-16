@@ -4,11 +4,12 @@
  */
 import EventEmitter from 'events';
 
-import { AppState, NativeModules, NativeEventEmitter } from 'react-native';
+import { AppState, Alert, Linking, Platform, NativeModules, NativeEventEmitter } from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
 import DeviceInfo from 'react-native-device-info';
 
+import Localize from '@locale';
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -19,7 +20,7 @@ import { VersionDiff } from '@common/libs/utils';
 import LoggerService from '@services/LoggerService';
 
 /* Constants  ==================================================================== */
-const { UtilsModule } = NativeModules;
+const { UtilsModule, AppUpdateModule } = NativeModules;
 
 const Emitter = new NativeEventEmitter(UtilsModule);
 
@@ -75,6 +76,7 @@ class AppService extends EventEmitter {
     };
 
     // check if we need to show the App change log
+    // this log will be show after user update the app
     checkShowChangeLog = async () => {
         const currentVersionCode = DeviceInfo.getVersion();
         const savedVersionCode = await Preferences.get(Preferences.keys.LATEST_VERSION_CODE);
@@ -98,6 +100,48 @@ class AppService extends EventEmitter {
             // update the latest version code
             Preferences.set(Preferences.keys.LATEST_VERSION_CODE, currentVersionCode);
         }
+    };
+
+    // check if update available for the app
+    checkAppUpdate = async () => {
+        AppUpdateModule.checkUpdate().then(async (versionCode: number) => {
+            // if update available
+            if (versionCode) {
+                const ignoredVersionCode = await Preferences.get(Preferences.keys.UPDATE_IGNORE_VERSION_CODE);
+
+                // user already ignored this update
+                if (`${versionCode}` === `${ignoredVersionCode}`) {
+                    return;
+                }
+
+                // this method only works on android
+                if (Platform.OS === 'android') {
+                    AppUpdateModule.startUpdate().catch((e: any) => {
+                        // user canceled this update
+                        if (e.code === 'E_UPDATE_CANCELLED') {
+                            Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`);
+                        }
+                    });
+                } else {
+                    Alert.alert(
+                        Localize.t('global.newVersion'),
+                        Localize.t('global.versionNumberIsAvailableOnTheAppStore', { versionCode }),
+                        [
+                            {
+                                text: Localize.t('global.notNow'),
+                                onPress: () => Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`),
+                                style: 'destructive',
+                            },
+                            {
+                                text: Localize.t('global.update'),
+                                onPress: () => Linking.openURL('https://apps.apple.com/us/app/id1492302343'),
+                            },
+                        ],
+                        { cancelable: true },
+                    );
+                }
+            }
+        });
     };
 
     setNetState = (isConnected: boolean) => {

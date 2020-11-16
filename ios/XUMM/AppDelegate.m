@@ -11,6 +11,8 @@
 
 
 #import "Libs/Notification/LocalNotification.h"
+#import "Libs/Common/InAppPurchase.h"
+
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -57,7 +59,7 @@ static void InitializeFlipper(UIApplication *application) {
   // bootstrap rnn
   [ReactNativeNavigation bootstrapWithDelegate:self launchOptions:launchOptions];
   
-  // bootstrap lcoal notification
+  // bootstrap local notification
   [LocalNotificationModule initialise];
   
   // init firebase app
@@ -78,8 +80,17 @@ static void InitializeFlipper(UIApplication *application) {
   #endif
 }
 
+- (NSArray<id<RCTBridgeModule>> *)extraModulesForBridge:(RCTBridge *)bridge {
+  return [ReactNativeNavigation extraModulesForBridge:bridge];
+}
+
 // hide snapshot in task switcher
 - (void)applicationWillResignActive:(UIApplication *)application {
+  
+    // prevent from showing blur view if user is purchasing
+    if([InAppPurchaseModule isUserPurchasing]){
+      return;
+    }
     
     self.window.backgroundColor = [UIColor clearColor];
 
@@ -97,10 +108,17 @@ static void InitializeFlipper(UIApplication *application) {
     [UIView animateWithDuration:0.5 animations:^{
         blurEffectView.alpha = 1;
     }];
+  
+    blureViewActive = YES;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    
+  
+    // ignore if blureview is not present
+    if(!blureViewActive){
+      return;
+    }
+  
     // grab a reference to our custom blur view
     UIView *blurEffectView = [self.window viewWithTag:1234];
 
@@ -111,6 +129,8 @@ static void InitializeFlipper(UIApplication *application) {
         // remove when finished fading
         [blurEffectView removeFromSuperview];
     }];
+  
+  blureViewActive = NO;
 }
 
 

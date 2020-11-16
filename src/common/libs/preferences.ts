@@ -12,6 +12,7 @@ const { SharedPreferencesModule } = NativeModules;
 enum Keys {
     DISPLAYED_MEMO_ALERT = 'DISPLAYED_MEMO_ALERT',
     LATEST_VERSION_CODE = 'LATEST_VERSION_CODE',
+    UPDATE_IGNORE_VERSION_CODE = 'UPDATE_IGNORE_VERSION_CODE',
 }
 
 /* Lib ==================================================================== */

@@ -4,10 +4,10 @@
 
 import filter from 'lodash/filter';
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, NativeModules } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 
-import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+import { GetDeviceLocaleSettings } from '@common/helpers/device';
 
 import { AppScreens, AppConfig } from '@common/constants';
 
@@ -73,35 +73,31 @@ class GeneralSettingsView extends Component<Props, State> {
         );
     };
 
-    changeLanguage = (selected: any) => {
-        const { value } = selected;
-        const { UtilsModule } = NativeModules;
-
+    onLanguageSelected = ({ value }: { value: string }) => {
         // save in store
         CoreRepository.saveSettings({ language: value });
 
         // change it from local instance
         Localize.setLocale(value);
 
-        UtilsModule.restartBundle();
+        // re-render the app
+        Navigator.reRender();
     };
 
-    onLanguageSelected = (selected: any) => {
-        Prompt(
-            Localize.t('global.warning'),
-            Localize.t('global.changingLanguageNeedsRestartToTakeEffect'),
-            [
-                { text: Localize.t('global.cancel') },
-                {
-                    text: Localize.t('global.doIt'),
-                    onPress: () => {
-                        this.changeLanguage(selected);
-                    },
-                    style: 'destructive',
-                },
-            ],
-            { type: 'default' },
-        );
+    onSystemSeparatorChange = async (value: boolean) => {
+        CoreRepository.saveSettings({
+            useSystemSeparators: value,
+        });
+
+        if (value) {
+            const localeSettings = await GetDeviceLocaleSettings();
+            Localize.setSettings(localeSettings);
+        } else {
+            Localize.setSettings(undefined);
+        }
+
+        // re-render the app
+        Navigator.reRender();
     };
 
     hapticFeedbackChange = (value: boolean) => {
@@ -145,6 +141,18 @@ class GeneralSettingsView extends Component<Props, State> {
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
                             <Switch checked={coreSettings.hapticFeedback} onChange={this.hapticFeedbackChange} />
+                        </View>
+                    </View>
+
+                    <View style={styles.row}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text style={styles.label}>{Localize.t('settings.useSystemSeparators')}</Text>
+                        </View>
+                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Switch
+                                checked={coreSettings.useSystemSeparators}
+                                onChange={this.onSystemSeparatorChange}
+                            />
                         </View>
                     </View>
                 </ScrollView>

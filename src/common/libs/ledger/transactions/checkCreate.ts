@@ -1,4 +1,6 @@
-import { get, set, isUndefined } from 'lodash';
+import { has, get, set, isUndefined, isNumber, toInteger } from 'lodash';
+
+import * as AccountLib from 'xrpl-accountlib';
 
 import { AccountSchema } from '@store/schemas/latest';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
@@ -81,6 +83,30 @@ class CheckCreate extends BaseTransaction {
         };
     }
 
+    set Destination(destination: Destination) {
+        if (has(destination, 'address')) {
+            if (!AccountLib.utils.isValidAddress(destination.address)) {
+                throw new Error(`${destination.address} is not a valid XRP Address`);
+            }
+            set(this, 'tx.Destination', destination.address);
+        }
+
+        if (has(destination, 'tag')) {
+            if (!isNumber(destination.tag)) {
+                // try to convert to number
+                set(this, 'tx.DestinationTag', toInteger(destination.tag));
+            } else {
+                set(this, 'tx.DestinationTag', destination.tag);
+            }
+        } else {
+            set(this, 'tx.DestinationTag', undefined);
+        }
+
+        if (has(destination, 'name')) {
+            set(this, 'tx.DestinationName', destination.name);
+        }
+    }
+
     get Expiration(): any {
         const date = get(this, ['tx', 'Expiration'], undefined);
         if (isUndefined(date)) return undefined;
@@ -109,7 +135,7 @@ class CheckCreate extends BaseTransaction {
                     return reject(
                         new Error(
                             Localize.t('send.insufficientBalanceSpendableBalance', {
-                                spendable: source.availableBalance,
+                                spendable: Localize.formatNumber(source.availableBalance),
                                 currency: 'XRP',
                             }),
                         ),
@@ -126,7 +152,7 @@ class CheckCreate extends BaseTransaction {
                     return reject(
                         new Error(
                             Localize.t('send.insufficientBalanceSpendableBalance', {
-                                spendable: line.balance,
+                                spendable: Localize.formatNumber(line.balance),
                                 currency: NormalizeCurrencyCode(line.currency.currency),
                             }),
                         ),

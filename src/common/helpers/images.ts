@@ -91,4 +91,5 @@ export const Images = {
     IconGlobe: buildImageSource('IconGlobe', 'icon_globe'),
     IconArrowDown: buildImageSource('IconArrowDown', 'icon_arrow_down'),
     IconFileText: buildImageSource('IconFileText', 'icon_file_text'),
+    IconQR: buildImageSource('IconQR', 'icon_qr'),
 };

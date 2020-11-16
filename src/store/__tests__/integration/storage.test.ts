@@ -17,7 +17,7 @@ describe('Storage', () => {
         });
 
         afterAll(() => {
-            storage.purge();
+            storage.wipe();
             storage.close();
         });
     });

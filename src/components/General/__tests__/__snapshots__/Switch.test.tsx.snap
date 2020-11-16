@@ -8,8 +8,6 @@ exports[`[Switch] renders correctly 1`] = `
       "flex": 1,
       "flexDirection": "row",
       "justifyContent": "space-between",
-      "paddingBottom": 5,
-      "paddingTop": 5,
     }
   }
 >
@@ -52,8 +50,6 @@ exports[`[Switch] renders with given label 1`] = `
       "flex": 1,
       "flexDirection": "row",
       "justifyContent": "space-between",
-      "paddingBottom": 5,
-      "paddingTop": 5,
     }
   }
 >

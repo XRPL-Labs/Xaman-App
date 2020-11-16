@@ -21,3 +21,6 @@ export * from './SecurePinInput';
 export * from './PinInput';
 export * from './PasswordInput';
 export * from './ReadMore';
+export * from './SegmentButton';
+export * from './DerivationPathInput';
+export * from './AmountInput';

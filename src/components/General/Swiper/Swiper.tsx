@@ -55,7 +55,7 @@ class Swiper extends Component<Props, State> {
 
         return (
             <ScrollView
-                ref={r => {
+                ref={(r) => {
                     this.scroll = r;
                 }}
                 horizontal
@@ -74,7 +74,7 @@ class Swiper extends Component<Props, State> {
                 {items.map((item: any, index: number) => {
                     return (
                         <View
-                            ref={r => {
+                            ref={(r) => {
                                 this.views.set(index, r);
                             }}
                             key={index}

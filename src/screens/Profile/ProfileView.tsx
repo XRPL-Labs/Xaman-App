@@ -9,8 +9,10 @@ import { SafeAreaView, View, Text, ImageBackground, Image } from 'react-native';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Spacer } from '@components/General';
+import { Header, Button, Spacer } from '@components/General';
 import { Images } from '@common/helpers/images';
+
+// import IAP from '@common/libs/iap';
 
 import Localize from '@locale';
 
@@ -20,7 +22,10 @@ import { AppStyles, AppColors } from '@theme';
 /* types ==================================================================== */
 export interface Props {}
 
-export interface State {}
+export interface State {
+    paid: boolean;
+    isLoading: boolean;
+}
 
 /* Component ==================================================================== */
 class ProfileView extends Component<Props, State> {
@@ -34,14 +39,63 @@ class ProfileView extends Component<Props, State> {
         };
     }
 
+    // constructor(props: Props) {
+    //     super(props);
+
+    //     this.state = {
+    //         paid: false,
+    //         isLoading: false,
+    //     };
+    // }
+
+    // this is a sample to add in app purchase
+    // onSuccessPurchase = () => {
+    //     this.setState({
+    //         isLoading: false,
+    //         paid: true,
+    //     });
+    // };
+
+    // this is a sample to add in app purchase
+    // purchase = async () => {
+    //     try {
+    //         this.setState({
+    //             isLoading: true,
+    //         });
+
+    //         const status = await IAP.status();
+
+    //         if (status === IAP.SUCCESS_PURCHASE_CODE) {
+    //             this.onSuccessPurchase();
+    //         } else if (status === IAP.ERRORS.E_NO_PURCHASE_HISTORY) {
+    //             await IAP.purchase().then((purchaseResult) => {
+    //                 if (purchaseResult === IAP.SUCCESS_PURCHASE_CODE) {
+    //                     this.onSuccessPurchase();
+    //                     return;
+    //                 }
+    //                 Alert.alert('ERROR', purchaseResult);
+    //             });
+    //         } else {
+    //             Alert.alert('ERROR', status);
+    //         }
+    //     } finally {
+    //         this.setState({
+    //             isLoading: false,
+    //         });
+    //     }
+    // };
+
     render() {
         return (
             <SafeAreaView testID="profile-tab-view" style={[AppStyles.tabContainer]}>
-                <View style={[AppStyles.headerContainer]}>
-                    <View style={[AppStyles.flex1, AppStyles.paddingLeft, AppStyles.centerContent]}>
-                        <Text style={AppStyles.h3}>{Localize.t('global.profile')}</Text>
-                    </View>
-                </View>
+                <Header
+                    placement="left"
+                    containerStyle={AppStyles.headerContainer}
+                    leftComponent={{
+                        text: Localize.t('global.profile'),
+                        textStyle: AppStyles.h3,
+                    }}
+                />
 
                 <View style={[AppStyles.contentContainer, AppStyles.padding]}>
                     <View style={[AppStyles.flex4, AppStyles.centerAligned, AppStyles.centerContent]}>
@@ -67,7 +121,6 @@ class ProfileView extends Component<Props, State> {
                             </Text>
                             <Spacer size={30} />
                             <Button
-                                activeOpacity={1}
                                 label={Localize.t('global.comingSoon')}
                                 icon="IconProfile"
                                 iconStyle={[AppStyles.imgColorWhite]}

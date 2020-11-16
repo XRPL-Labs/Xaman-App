@@ -1,8 +1,5 @@
 package libs.crypto.modules;
 
-
-import libs.crypto.encoder.Hex;
-
 import java.security.SecureRandom;
 import java.util.UUID;
 
@@ -18,7 +15,6 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.Mac;
 
-
 import android.util.Base64;
 
 import com.facebook.react.bridge.Promise;
@@ -28,6 +24,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 
+import libs.crypto.encoder.Hex;
 
 public class CryptoModule extends ReactContextBaseJavaModule {
 
@@ -47,11 +44,7 @@ public class CryptoModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void encrypt(String data, String key, Promise promise) {
         try {
-
-            String keyEnc = shaX(key, "SHA-256");
-            String hexIv = random(16);
-
-            WritableMap result = encrypt(data, keyEnc, hexIv);
+            WritableMap result = encrypt(data, key);
             promise.resolve(result);
         } catch (Exception e) {
             promise.reject("-1", e.getMessage());
@@ -61,9 +54,7 @@ public class CryptoModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void decrypt(String data, String key, String iv, Promise promise) {
         try {
-            String keyEnc = shaX(key, "SHA-256");
-
-            String plain = decrypt(data, keyEnc, iv);
+            String plain = decrypt(data, key, iv);
             promise.resolve(plain);
         } catch (Exception e) {
             promise.reject("-1", e.getMessage());
@@ -136,7 +127,7 @@ public class CryptoModule extends ReactContextBaseJavaModule {
     }
 
 
-    private String shaX(String data, String algorithm) throws Exception {
+    private static String shaX(String data, String algorithm) throws Exception {
         MessageDigest md = MessageDigest.getInstance(algorithm);
         md.update(data.getBytes());
         byte[] digest = md.digest();
@@ -165,10 +156,15 @@ public class CryptoModule extends ReactContextBaseJavaModule {
 
     final static IvParameterSpec emptyIvSpec = new IvParameterSpec(new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
 
-    private static WritableMap encrypt(String data, String keyEnc, String hexIv) throws Exception {
+    private static WritableMap encrypt(String data, String key) throws Exception {
         if (data == null || data.length() == 0) {
             return null;
         }
+
+        // encrypt key
+        String keyEnc = shaX(key, "SHA-256");
+        // generate random IV
+        String hexIv = random(16);
 
         byte[] keyBytes = Hex.decodeHex(keyEnc);
         SecretKey secretKey = new SecretKeySpec(keyBytes, KEY_ALGORITHM);
@@ -185,17 +181,19 @@ public class CryptoModule extends ReactContextBaseJavaModule {
         return result;
     }
 
-    private static String decrypt(String ciphertext, String hexKey, String hexIv) throws Exception {
-        if(ciphertext == null || ciphertext.length() == 0) {
+    private static String decrypt(String cipherText, String key, String hexIv) throws Exception {
+        if(cipherText == null || cipherText.length() == 0) {
             return null;
         }
+        // encrypt key
+        String keyEnc = shaX(key, "SHA-256");
 
-        byte[] key = Hex.decodeHex(hexKey);
-        SecretKey secretKey = new SecretKeySpec(key, KEY_ALGORITHM);
+        byte[] keyBytes = Hex.decodeHex(keyEnc);
+        SecretKey secretKey = new SecretKeySpec(keyBytes, KEY_ALGORITHM);
 
         Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, secretKey, hexIv == null ? emptyIvSpec : new IvParameterSpec(Hex.decodeHex(hexIv)));
-        byte[] decrypted = cipher.doFinal(Base64.decode(ciphertext, Base64.NO_WRAP));
+        byte[] decrypted = cipher.doFinal(Base64.decode(cipherText, Base64.NO_WRAP));
         return new String(decrypted, "UTF-8");
     }
 

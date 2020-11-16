@@ -1,4 +1,4 @@
-import { get, isUndefined } from 'lodash';
+import { get, set, isUndefined } from 'lodash';
 
 import BaseTransaction from './base';
 
@@ -19,8 +19,16 @@ class EscrowCancel extends BaseTransaction {
         this.fields = this.fields.concat(['OfferSequence', 'Owner']);
     }
 
+    set Owner(owner: string) {
+        set(this, ['tx', 'Owner'], owner);
+    }
+
     get Owner(): string {
         return get(this, ['tx', 'Owner']);
+    }
+
+    set OfferSequence(sequence: number) {
+        set(this, ['tx', 'OfferSequence'], sequence);
     }
 
     get OfferSequence(): number {

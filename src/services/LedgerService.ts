@@ -5,7 +5,7 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import EventEmitter from 'events';
 import { map, isEmpty, flatMap, forEach, has, get, assign, omitBy } from 'lodash';
 
@@ -425,7 +425,11 @@ class LedgerService extends EventEmitter {
                     // ignore incoming trustline
                     let filteredLines = flatMap(
                         omitBy(lines, (l: any) => {
-                            return Number(l.balance) < 0 || (Number(l.limit) === 0 && Number(l.limit_peer) > 0);
+                            return (
+                                Number(l.balance) < 0 ||
+                                (Number(l.limit) === 0 && Number(l.limit_peer) > 0) ||
+                                (Number(l.balance) === 0 && Number(l.limit) === 0 && Number(l.limit_peer) === 0)
+                            );
                         }),
                     );
 

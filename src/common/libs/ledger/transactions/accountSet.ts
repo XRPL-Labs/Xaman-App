@@ -68,7 +68,7 @@ class AccountSet extends BaseTransaction {
 
         if (transferRate) {
             return new BigNumber(transferRate).dividedBy(1000000).minus(1000).dividedBy(10)
-                .toNumber();
+.toNumber();
         }
 
         return undefined;

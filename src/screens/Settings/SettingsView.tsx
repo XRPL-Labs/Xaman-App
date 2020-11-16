@@ -8,7 +8,7 @@ import { SafeAreaView, View, Text, ScrollView, TouchableOpacity } from 'react-na
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-import { Icon } from '@components/General';
+import { Header, Icon } from '@components/General';
 
 import Localize from '@locale';
 
@@ -64,11 +64,15 @@ class SettingsView extends Component<Props, State> {
     render() {
         return (
             <SafeAreaView testID="settings-tab-screen" style={[AppStyles.tabContainer]}>
-                <View style={[AppStyles.headerContainer]}>
-                    <View style={[AppStyles.flex1, AppStyles.paddingLeft, AppStyles.centerContent]}>
-                        <Text style={AppStyles.h3}>{Localize.t('global.settings')}</Text>
-                    </View>
-                </View>
+                <Header
+                    placement="left"
+                    containerStyle={AppStyles.headerContainer}
+                    leftComponent={{
+                        text: Localize.t('global.settings'),
+                        textStyle: AppStyles.h3,
+                    }}
+                />
+
                 <View style={[AppStyles.contentContainer]}>
                     <ScrollView
                         style={AppStyles.flex1}

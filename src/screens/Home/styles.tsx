@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
     cardAddressText: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size * 0.9,
+        color: AppColors.black,
         alignSelf: 'center',
         paddingHorizontal: 10,
     },
@@ -217,6 +218,9 @@ const styles = StyleSheet.create({
 
     requestButtonIcon: { marginLeft: 5, tintColor: AppColors.green },
     requestButtonText: { color: AppColors.green },
+
+    QRButtonText: { fontSize: AppFonts.base.size },
+
     accountRow: {
         paddingRight: 20,
         paddingLeft: 20,

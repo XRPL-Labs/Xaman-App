@@ -37,6 +37,11 @@ export class Payload {
     meta: MetaType;
     application: ApplicationType;
     payload: PayloadReferenceType;
+    ClassName: string;
+
+    constructor() {
+        this.ClassName = 'Payload';
+    }
 
     /**
      * get payload object from payload UUID or payload Json
@@ -88,6 +93,13 @@ export class Payload {
         };
 
         return Payload.from(payload);
+    }
+
+    /**
+     * Get Payload create date
+     */
+    get Date(): Date {
+        return this.payload.created_at;
     }
 
     /**

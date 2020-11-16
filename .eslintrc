@@ -52,7 +52,7 @@
       "global-require": 0,
       "quote-props": 0,
       "lines-between-class-members": "off",
-      "indent": [2, 4, {"SwitchCase": 1}],
+      "indent": "off",
       "react/jsx-indent": [2, 4],
       "camelcase": 0,
       "arrow-parens": 0,
@@ -126,7 +126,7 @@
           "Devnet", "Mainnet", "Swiper", "calc", "abcdefgh", "cancelable", "uniqBy", "memoize", "Memoized", "html", "len", "fg", "bg", "ctx", "checksum",
           "ecc", "uniq", "Truthy", "Responder", "ter", "ko", "zh", "mailto", "tabbar", "https", "gcm", "tf", "xlight", "aps", "tec", "barcodes", "Barcode",
           "txblob", "tos", "gif", "ic", "asf", "ok", "Sig", "haptic", "Signable", "Unauthorize", "Preauth", "payid", "Biometrics", "Towo", "tz", "xrpscan",
-          "xrplorer", "bithomp", "xpring", "xrplns", "Pincode"
+          "xrplorer", "bithomp", "xpring", "xrplns", "Pincode", "Txn", "iap", "Realtime", "datastore", "decrypted"
         ],
         "skipIfMatch": [
           "http://[^s]*",

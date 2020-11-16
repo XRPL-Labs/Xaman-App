@@ -24,5 +24,6 @@ export default {
         ['lookup', '/v1/app/handle-lookup'],
         ['accountAdvisory', '/v1/app/account-advisory'],
         ['liquidityBoundaries', '/v1/app/liquidity-boundaries/{issuer}/{currency}'],
+        ['translation', '/v1/app/translation/{uuid}'],
     ]),
 };

@@ -1,4 +1,6 @@
-import { get, isUndefined } from 'lodash';
+import { has, get, set, isUndefined, isNumber, toInteger } from 'lodash';
+
+import * as AccountLib from 'xrpl-accountlib';
 
 import BaseTransaction from './base';
 import Amount from '../parser/common/amount';
@@ -52,6 +54,30 @@ class EscrowCreate extends BaseTransaction {
             address: destination,
             tag: destinationTag,
         };
+    }
+
+    set Destination(destination: Destination) {
+        if (has(destination, 'address')) {
+            if (!AccountLib.utils.isValidAddress(destination.address)) {
+                throw new Error(`${destination.address} is not a valid XRP Address`);
+            }
+            set(this, 'tx.Destination', destination.address);
+        }
+
+        if (has(destination, 'tag')) {
+            if (!isNumber(destination.tag)) {
+                // try to convert to number
+                set(this, 'tx.DestinationTag', toInteger(destination.tag));
+            } else {
+                set(this, 'tx.DestinationTag', destination.tag);
+            }
+        } else {
+            set(this, 'tx.DestinationTag', undefined);
+        }
+
+        if (has(destination, 'name')) {
+            set(this, 'tx.DestinationName', destination.name);
+        }
     }
 
     get Condition(): string {

@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         padding: AppSizes.padding,
     },
     bottomContainer: {
-        padding: AppSizes.padding,
+        paddingHorizontal: AppSizes.padding,
     },
     currencyLabel: {
         fontSize: AppFonts.h5.size,
@@ -78,6 +78,8 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: AppColors.red,
         overflow: 'hidden',
+        padding: 0,
+        margin: 0,
     },
     toAmount: {
         textAlign: 'right',
@@ -85,6 +87,8 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         fontSize: AppFonts.h3.size,
         color: AppColors.green,
+        padding: 0,
+        margin: 0,
     },
     switchButton: {
         position: 'absolute',

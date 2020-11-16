@@ -1,6 +1,6 @@
 /* eslint-disable no-lonely-if */
 import BigNumber from 'bignumber.js';
-import { get, set, has, isUndefined, isNumber, toInteger } from 'lodash';
+import { get, set, has, isUndefined, isNumber, toInteger, find } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
 import LedgerService from '@services/LedgerService';
@@ -11,7 +11,9 @@ import { NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
 import Localize from '@locale';
 
 import BaseTransaction from './base';
+
 import Amount from '../parser/common/amount';
+import Meta from '../parser/meta';
 
 /* Types ==================================================================== */
 import { LedgerAmount, Destination, AmountType } from '../parser/types';
@@ -87,11 +89,14 @@ class Payment extends BaseTransaction {
     }
 
     set Destination(destination: Destination) {
-        if (!AccountLib.utils.isValidAddress(destination.address)) {
-            throw new Error(`${destination.address} is not a valid XRP Address`);
+        if (has(destination, 'address')) {
+            if (!AccountLib.utils.isValidAddress(destination.address)) {
+                throw new Error(`${destination.address} is not a valid XRP Address`);
+            }
+            set(this, 'tx.Destination', destination.address);
         }
 
-        if (destination.tag) {
+        if (has(destination, 'tag')) {
             if (!isNumber(destination.tag)) {
                 // try to convert to number
                 set(this, 'tx.DestinationTag', toInteger(destination.tag));
@@ -105,8 +110,6 @@ class Payment extends BaseTransaction {
         if (has(destination, 'name')) {
             set(this, 'tx.DestinationName', destination.name);
         }
-
-        set(this, 'tx.Destination', destination.address);
     }
 
     // @ts-ignore
@@ -278,6 +281,21 @@ class Payment extends BaseTransaction {
         set(this, 'tx.InvoiceID', invoiceId);
     }
 
+    BalanceChange(owner?: string) {
+        if (!owner) {
+            owner = this.Account.address;
+        }
+
+        const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
+
+        const changes = {
+            sent: find(balanceChanges, (o) => o.currency === this.Amount.currency),
+            received: find(balanceChanges, (o) => o.currency === this.SendMax?.currency || this.DeliverMin?.currency),
+        } as { sent: AmountType; received: AmountType };
+
+        return changes;
+    }
+
     validate = (source: AccountSchema) => {
         /* eslint-disable-next-line */
         return new Promise(async (resolve, reject) => {
@@ -298,7 +316,7 @@ class Payment extends BaseTransaction {
                     return reject(
                         new Error(
                             Localize.t('send.insufficientBalanceSpendableBalance', {
-                                spendable: source.availableBalance,
+                                spendable: Localize.formatNumber(source.availableBalance),
                                 currency: 'XRP',
                             }),
                         ),
@@ -320,7 +338,7 @@ class Payment extends BaseTransaction {
                         return reject(
                             new Error(
                                 Localize.t('send.insufficientBalanceSpendableBalance', {
-                                    spendable: line.balance,
+                                    spendable: Localize.formatNumber(line.balance),
                                     currency: NormalizeCurrencyCode(line.currency.currency),
                                 }),
                             ),
@@ -340,9 +358,11 @@ class Payment extends BaseTransaction {
                         return reject(
                             new Error(
                                 Localize.t('send.trustLineLimitExceeded', {
-                                    balance: Math.abs(trustLine.balance),
-                                    peer_limit: trustLine.limit_peer,
-                                    available: Number(trustLine.limit_peer - Math.abs(trustLine.balance)),
+                                    balance: Localize.formatNumber(Math.abs(trustLine.balance)),
+                                    peer_limit: Localize.formatNumber(trustLine.limit_peer),
+                                    available: Localize.formatNumber(
+                                        Number(trustLine.limit_peer - Math.abs(trustLine.balance)),
+                                    ),
                                 }),
                             ),
                         );

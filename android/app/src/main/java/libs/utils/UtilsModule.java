@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import android.os.Build;
 import android.os.Debug;
 import android.content.pm.ApplicationInfo;
 import android.app.Activity;
@@ -16,9 +17,14 @@ import android.os.Handler;
 
 import java.util.TimeZone;
 import java.util.Calendar;
+import java.util.Locale;
+
+import java.text.DecimalFormatSymbols;
 
 import android.os.Vibrator;
 
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -61,6 +67,23 @@ public class UtilsModule extends ReactContextBaseJavaModule {
                 }
             });
         }
+
+        promise.resolve(true);
+    }
+
+
+    @ReactMethod
+    public void isFlagSecure(Promise promise) {
+        final Activity activity = getCurrentActivity();
+
+        if ((activity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_SECURE) != 0) {
+            promise.resolve(true);
+        }else{
+            promise.resolve(false);
+        }
+
+
+
     }
 
 
@@ -124,6 +147,35 @@ public class UtilsModule extends ReactContextBaseJavaModule {
             Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
             TimeZone zone = calendar.getTimeZone();
             promise.resolve(zone.getID());
+        }catch (Exception e){
+            promise.reject(e);
+        }
+    }
+
+    @ReactMethod
+    public void getLocalSetting(Promise promise) {
+        try {
+
+            WritableMap settings = Arguments.createMap();
+
+            Locale locale;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+                locale =  getReactApplicationContext().getResources().getConfiguration().getLocales().get(0);
+            } else{
+                locale = getReactApplicationContext().getResources().getConfiguration().locale;
+            }
+
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
+
+            String languageCode = Locale.getDefault().getLanguage();
+
+            settings.putString("locale", String.valueOf(locale));
+            settings.putString("languageCode", languageCode);
+            settings.putString("separator", String.valueOf(symbols.getDecimalSeparator()));
+            settings.putString("delimiter", String.valueOf(symbols.getGroupingSeparator()));
+
+            promise.resolve(settings);
+
         }catch (Exception e){
             promise.reject(e);
         }

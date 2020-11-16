@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { View, Text, TouchableHighlight, TouchableOpacity, ActivityIndicator, Platform, ViewStyle } from 'react-native';
 
 import { Avatar, Badge, Icon } from '@components/General';
-import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
 
@@ -67,19 +66,6 @@ class RecipientElement extends PureComponent<Props> {
         return null;
     };
 
-    getAvatar = () => {
-        const { recipient } = this.props;
-
-        switch (recipient.source) {
-            case 'internal:contacts':
-                return Images.IconProfile;
-            case 'internal:accounts':
-                return Images.IconAccount;
-            default:
-                return Images.IconGlobe;
-        }
-    };
-
     render() {
         const {
             recipient,
@@ -93,7 +79,6 @@ class RecipientElement extends PureComponent<Props> {
         } = this.props;
 
         const badge = this.getBadge();
-        const avatar = this.getAvatar();
 
         return (
             <TouchableHighlight
@@ -104,7 +89,9 @@ class RecipientElement extends PureComponent<Props> {
                 key={recipient.id}
             >
                 <View style={[styles.itemRow, selected && styles.itemSelected, containerStyle]}>
-                    {showAvatar && <Avatar source={avatar} />}
+                    {showAvatar && (
+                        <Avatar source={{ uri: `https://xumm.app/avatar/${recipient.address}_180_50.png` }} />
+                    )}
 
                     {/* eslint-disable-next-line react-native/no-inline-styles */}
                     <View style={{ paddingLeft: 10 }}>

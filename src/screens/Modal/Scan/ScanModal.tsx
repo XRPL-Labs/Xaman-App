@@ -5,9 +5,12 @@
 import React, { Component } from 'react';
 import { View, ImageBackground, Text, ActivityIndicator, Alert, Linking, BackHandler } from 'react-native';
 
+import Clipboard from '@react-native-community/clipboard';
+import { RNCamera } from 'react-native-camera';
+
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
-import { RNCamera } from 'react-native-camera';
+import { ApiService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
@@ -17,9 +20,9 @@ import { AppScreens } from '@common/constants';
 import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
+import { NormalizeDestination } from '@common/libs/utils';
 
 import { Payload } from '@common/libs/payload';
-import { NormalizeDestination } from '@common/libs/utils';
 
 import Localize from '@locale';
 
@@ -105,8 +108,78 @@ class ScanView extends Component<Props, State> {
                 Navigator.push(screen, options, passProps);
             }, 10);
         }
+    };
 
-        // close scan modal
+    loadTranslation = async (uuid: string) => {
+        this.setState({
+            isLoading: true,
+        });
+
+        await ApiService.translation
+            .get({ uuid })
+            .then((res: any) => {
+                const { meta, translation } = res;
+
+                if (meta && meta.valid) {
+                    // set the new local bundle
+                    Localize.setLocaleBundle(meta.language, translation);
+                    // re-render the app
+                    Navigator.reRender();
+                    // close scan modal
+                    Navigator.dismissModal();
+                } else {
+                    Alert.alert(
+                        'Error',
+                        'Unable to load the translations, the request is not valid!',
+                        [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+                        { cancelable: false },
+                    );
+                }
+            })
+            .catch(() => {
+                // ignore
+                Alert.alert(
+                    'Error',
+                    'Unable to load the translations, Please try again!',
+                    [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+                    { cancelable: false },
+                );
+            })
+            .finally(() => {
+                this.setState({
+                    isLoading: false,
+                });
+            });
+    };
+
+    handleTranslationBundle = async (uuid: string) => {
+        // no uuid exist
+        if (!uuid) {
+            this.setShouldRead(true);
+            return;
+        }
+
+        Alert.alert(
+            'Translation detected',
+            'XUMM Translation Portal language file detected. Do you want to load it into the app?' +
+            'To revert to the default translation, force quit XUMM and start XUMM again.',
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => {
+                        this.setShouldRead(true);
+                    },
+                },
+                {
+                    text: 'Do it',
+                    onPress: () => {
+                        this.loadTranslation(uuid);
+                    },
+                    style: 'default',
+                },
+            ],
+            { cancelable: false },
+        );
     };
 
     handlePayloadReference = async (uuid: string) => {
@@ -243,7 +316,7 @@ class ScanView extends Component<Props, State> {
         }
     };
 
-    handle = (content: string) => {
+    handle = (content: string, clipboard?: boolean) => {
         const { onRead, type, fallback } = this.props;
 
         const detected = new StringTypeDetector(content);
@@ -309,10 +382,15 @@ class ScanView extends Component<Props, State> {
             case StringType.PayId:
                 this.handleXrplDestination(parsed);
                 break;
+            case StringType.XummTranslation:
+                this.handleTranslationBundle(parsed.uuid);
+                break;
             default:
                 Alert.alert(
                     Localize.t('global.warning'),
-                    Localize.t('scan.invalidQRTryNewOneOrTryAgain'),
+                    clipboard
+                        ? Localize.t('scan.invalidClipboardDateTryNewOneOrTryAgain')
+                        : Localize.t('scan.invalidQRTryNewOneOrTryAgain'),
                     [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
                     {
                         cancelable: false,
@@ -338,6 +416,22 @@ class ScanView extends Component<Props, State> {
 
             // handle the content
             this.handle(data);
+        }
+    };
+
+    checkClipboardContent = async () => {
+        // get clipboard content
+        const clipboardContent = await Clipboard.getString();
+
+        if (clipboardContent) {
+            // return if we don't need to read again
+            if (!this.shouldRead) return;
+
+            // should not read anymore until we decide about detect value
+            this.setShouldRead(false);
+
+            // handle the content
+            this.handle(clipboardContent, true);
         }
     };
 
@@ -436,6 +530,14 @@ class ScanView extends Component<Props, State> {
                         <Text style={[AppStyles.p, AppStyles.colorWhite]}>{description}</Text>
                     </View>
                     <View style={[AppStyles.centerSelf]}>
+                        <Button
+                            onPress={this.checkClipboardContent}
+                            label={Localize.t('scan.importFromClipboard')}
+                            icon="IconClipboard"
+                            secondary
+                            roundedSmall
+                        />
+                        <Spacer size={20} />
                         <Button
                             activeOpacity={0.9}
                             label={Localize.t('global.close')}

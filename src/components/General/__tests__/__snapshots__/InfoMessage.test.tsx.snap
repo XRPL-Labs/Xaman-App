@@ -12,6 +12,7 @@ exports[`[InfoMessage] renders correctly Error 1`] = `
         "paddingHorizontal": 20,
         "paddingVertical": 10,
       },
+      undefined,
       null,
       null,
       Object {
@@ -19,6 +20,7 @@ exports[`[InfoMessage] renders correctly Error 1`] = `
         "borderColor": "#FFF9F9",
         "tintColor": "#FF5B5B",
       },
+      null,
       null,
     ]
   }
@@ -47,6 +49,7 @@ exports[`[InfoMessage] renders correctly Error 1`] = `
             "color": "#FF5B5B",
           },
           null,
+          null,
           Object {
             "textAlign": "center",
           },
@@ -71,11 +74,13 @@ exports[`[InfoMessage] renders correctly Info 1`] = `
         "paddingHorizontal": 20,
         "paddingVertical": 10,
       },
+      undefined,
       Object {
         "backgroundColor": "#F0F3FF",
         "borderColor": "#3052FF",
         "tintColor": "#3052FF",
       },
+      null,
       null,
       null,
       null,
@@ -106,6 +111,7 @@ exports[`[InfoMessage] renders correctly Info 1`] = `
           null,
           null,
           null,
+          null,
           Object {
             "textAlign": "center",
           },
@@ -130,12 +136,14 @@ exports[`[InfoMessage] renders correctly Warning 1`] = `
         "paddingHorizontal": 20,
         "paddingVertical": 10,
       },
+      undefined,
       null,
       Object {
         "backgroundColor": "#FFF9ED",
         "borderColor": "#F8BF4C",
         "tintColor": "#F8BF4C",
       },
+      null,
       null,
       null,
     ]
@@ -165,6 +173,7 @@ exports[`[InfoMessage] renders correctly Warning 1`] = `
           },
           null,
           null,
+          null,
           Object {
             "textAlign": "center",
           },
@@ -189,6 +198,7 @@ exports[`[InfoMessage] should render with icon Error 1`] = `
         "paddingHorizontal": 20,
         "paddingVertical": 10,
       },
+      undefined,
       null,
       null,
       Object {
@@ -196,6 +206,7 @@ exports[`[InfoMessage] should render with icon Error 1`] = `
         "borderColor": "#FFF9F9",
         "tintColor": "#FF5B5B",
       },
+      null,
       null,
     ]
   }
@@ -230,6 +241,7 @@ exports[`[InfoMessage] should render with icon Error 1`] = `
               "tintColor": "#FF5B5B",
             },
             null,
+            null,
           ],
         ]
       }
@@ -259,6 +271,7 @@ exports[`[InfoMessage] should render with icon Error 1`] = `
             "color": "#FF5B5B",
           },
           null,
+          null,
           Object {
             "textAlign": "left",
           },
@@ -283,11 +296,13 @@ exports[`[InfoMessage] should render with icon Info 1`] = `
         "paddingHorizontal": 20,
         "paddingVertical": 10,
       },
+      undefined,
       Object {
         "backgroundColor": "#F0F3FF",
         "borderColor": "#3052FF",
         "tintColor": "#3052FF",
       },
+      null,
       null,
       null,
       null,
@@ -324,6 +339,7 @@ exports[`[InfoMessage] should render with icon Info 1`] = `
             null,
             null,
             null,
+            null,
           ],
         ]
       }
@@ -353,6 +369,7 @@ exports[`[InfoMessage] should render with icon Info 1`] = `
           null,
           null,
           null,
+          null,
           Object {
             "textAlign": "left",
           },
@@ -377,12 +394,14 @@ exports[`[InfoMessage] should render with icon Warning 1`] = `
         "paddingHorizontal": 20,
         "paddingVertical": 10,
       },
+      undefined,
       null,
       Object {
         "backgroundColor": "#FFF9ED",
         "borderColor": "#F8BF4C",
         "tintColor": "#F8BF4C",
       },
+      null,
       null,
       null,
     ]
@@ -418,6 +437,7 @@ exports[`[InfoMessage] should render with icon Warning 1`] = `
             },
             null,
             null,
+            null,
           ],
         ]
       }
@@ -445,6 +465,7 @@ exports[`[InfoMessage] should render with icon Warning 1`] = `
           Object {
             "color": "#F8BF4C",
           },
+          null,
           null,
           null,
           Object {

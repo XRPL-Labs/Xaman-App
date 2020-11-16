@@ -5,6 +5,7 @@
  */
 
 import { ErrorMessages } from '@common/constants';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 /* Types  ==================================================================== */
 type levels = 'debug' | 'warn' | 'error';
@@ -32,6 +33,11 @@ class LoggerService {
             error: { priority: 50 },
         };
     }
+
+    recordError = (msg: string, e: any) => {
+        crashlytics().log(msg);
+        crashlytics().recordError(e);
+    };
 
     /**
      * normalize error message

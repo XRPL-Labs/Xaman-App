@@ -138,44 +138,19 @@ run-android: | check-device-android pre-run ## Runs the app on an Android emulat
 		fi; \
     fi
 
-build: | stop pre-build validate-style ## Builds the app for Android & iOS
-	$(call start_packager)
-	@echo "Building App"
-	@cd fastlane && BABEL_ENV=production NODE_ENV=production bundle exec fastlane build
-	$(call stop_packager)
-
-
 build-ios: | stop pre-build validate-style ## Builds the iOS app
 	$(call start_packager)
 	@echo "Building iOS app"
-	@cd fastlane && BABEL_ENV=production NODE_ENV=production bundle exec fastlane ios build
+	@cd ios
+	@xcodebuild -scheme XUMM archivexcodebuild -scheme XUMM archive
 	$(call stop_packager)
 
-build-android: | stop pre-build validate-style prepare-android-build ## Build the Android app
+build-android: | stop pre-build validate-style ## Build the Android app
 	$(call start_packager)
 	@echo "Building Android app"
-	@cd fastlane && BABEL_ENV=production NODE_ENV=production bundle exec fastlane android build
+	@cd android
+	@./gradlew assembleRelease
 	$(call stop_packager)
-
-unsigned-ios: stop pre-build validate-style ## Build an unsigned version of the iOS app
-	$(call start_packager)
-	@cd fastlane && NODE_ENV=production bundle exec fastlane ios unsigned
-	$(call stop_packager)
-
-ios-sim-x86_64: stop pre-build validate-style ## Build an unsigned x86_64 version of the iOS app for iPhone simulator
-	$(call start_packager)
-	@echo "Building unsigned x86_64 iOS app for iPhone simulator"
-	@cd fastlane && NODE_ENV=production bundle exec fastlane ios unsigned
-	@mkdir -p build-ios
-	@cd ios/ && xcodebuild -workspace XUMM.xcworkspace/ -scheme XUMM -arch x86_64 -sdk iphonesimulator -configuration Release -parallelizeTargets -resultBundlePath ../build-ios/result -derivedDataPath ../build-ios/ ENABLE_BITCODE=NO CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ENABLE_BITCODE=NO
-	@cd build-ios/Build/Products/Release-iphonesimulator/ && zip -r XUMM-simulator-x86_64.app.zip XUMM.app/
-	@mv build-ios/Build/Products/Release-iphonesimulator/XUMM-simulator-x86_64.app.zip .
-	@rm -rf build-ios/
-	@cd fastlane && bundle exec fastlane upload_file_to_s3 file:XUMM-simulator-x86_64.app.zip os_type:iOS
-	$(call stop_packager)
-
-unsigned-android: stop pre-build validate-style prepare-android-build ## Build an unsigned version of the Android app
-	@cd fastlane && NODE_ENV=production bundle exec fastlane android unsigned
 
 pre-e2e: | pre-build  ## build for e2e test
 	@yarn detox build e2e --configuration ios.sim.debug
@@ -185,18 +160,6 @@ test: | pre-run validate-style ## Runs tests
 
 test-e2e: | pre-run pre-e2e ## Runs e2e tests
 	@yarn cucumber-js ./e2e --configuration ios.sim.debug --cleanup
-
-build-pr: | can-build-pr stop pre-build validate-style ## Build a PR from the XUMM repo
-	$(call start_packager)
-	@echo "Building App from PR ${PR_ID}"
-	@cd fastlane && BABEL_ENV=production NODE_ENV=production bundle exec fastlane build_pr pr:PR-${PR_ID}
-	$(call stop_packager)
-
-can-build-pr:
-	@if [ -z ${PR_ID} ]; then \
-		echo a PR number needs to be specified; \
-		exit 1; \
-	fi
 
 ## Help documentation https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:

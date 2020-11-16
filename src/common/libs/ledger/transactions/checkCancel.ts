@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import { set, get, isUndefined } from 'lodash';
 
@@ -57,7 +57,7 @@ class CheckCancel extends BaseTransaction {
             // If the Check has expired, any address can cancel it.
             if (!this.isExpired) {
                 if (
-                    this.Account.address !== this.Check.Destination.address ||
+                    this.Account.address !== this.Check.Destination.address &&
                     this.Account.address !== this.Check.Account.address
                 ) {
                     return reject(new Error(Localize.t('payload.nonExpiredCheckCanOnlyCancelByCreatedAccount')));

@@ -115,6 +115,7 @@ exports[`[RadioButton] renders checked correctly 1`] = `
       style={
         Array [
           Object {
+            "color": "#000000",
             "fontFamily": "ProximaNova-Regular",
             "fontSize": 30,
           },
@@ -230,6 +231,7 @@ exports[`[RadioButton] renders correctly 1`] = `
       style={
         Array [
           Object {
+            "color": "#000000",
             "fontFamily": "ProximaNova-Regular",
             "fontSize": 30,
           },

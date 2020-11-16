@@ -47,8 +47,6 @@ class AccountAddView extends Component<Props, State> {
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        // iconSize: 22,
-                        // text: Localize.t('global.back'),
                         onPress: () => {
                             Navigator.pop();
                         },

@@ -770,6 +770,347 @@ exports[`Storyshots Badge XRPScan 1`] = `
 </View>
 `;
 
+exports[`Storyshots EventsFilterChip default 1`] = `
+<View
+  style={
+    Object {
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "flexDirection": "row",
+          "flexWrap": "wrap",
+          "left": 0,
+          "paddingTop": 20,
+          "right": 0,
+        },
+      ]
+    }
+  >
+    <View
+      accessibilityRole="button"
+      accessible={true}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "alignSelf": "center",
+          "backgroundColor": "#3052FF",
+          "borderColor": "transparent",
+          "borderRadius": 20,
+          "borderWidth": 1,
+          "flexDirection": "row",
+          "height": 47.14285714285714,
+          "justifyContent": "center",
+          "marginBottom": 5,
+          "marginLeft": 2,
+          "marginRight": 0,
+          "marginTop": 5,
+          "opacity": 1,
+          "paddingHorizontal": 18,
+          "paddingLeft": 10,
+          "paddingRight": 10,
+        }
+      }
+    >
+      <View
+        style={
+          Array [
+            Object {
+              "alignItems": "center",
+              "flexDirection": "row",
+            },
+          ]
+        }
+      >
+        <Text
+          adjustsFontSizeToFit={false}
+          allowFontScaling={false}
+          numberOfLines={2}
+          style={
+            Array [
+              Object {
+                "color": "#FFFFFF",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 35.357142857142854,
+                "paddingHorizontal": 5,
+                "textAlign": "center",
+              },
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              Object {
+                "fontSize": 28.928571428571427,
+              },
+              undefined,
+              undefined,
+              Array [
+                Object {
+                  "color": "#FFFFFF",
+                  "fontFamily": "ProximaNova-Bold",
+                  "fontSize": 27,
+                  "paddingRight": 2,
+                },
+              ],
+            ]
+          }
+        >
+          &lt; 25 XRP
+        </Text>
+        <Image
+          resizeMode="contain"
+          source={
+            Object {
+              "uri": "IconX",
+            }
+          }
+          style={
+            Array [
+              Object {
+                "height": 31.428571428571427,
+                "width": 31.428571428571427,
+              },
+              Array [
+                Object {
+                  "marginLeft": 3,
+                },
+                undefined,
+                Object {
+                  "tintColor": "#FFFFFF",
+                },
+              ],
+            ]
+          }
+        />
+      </View>
+    </View>
+    <View
+      accessibilityRole="button"
+      accessible={true}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "alignSelf": "center",
+          "backgroundColor": "#3052FF",
+          "borderColor": "transparent",
+          "borderRadius": 20,
+          "borderWidth": 1,
+          "flexDirection": "row",
+          "height": 47.14285714285714,
+          "justifyContent": "center",
+          "marginBottom": 5,
+          "marginLeft": 2,
+          "marginRight": 0,
+          "marginTop": 5,
+          "opacity": 1,
+          "paddingHorizontal": 18,
+          "paddingLeft": 10,
+          "paddingRight": 10,
+        }
+      }
+    >
+      <View
+        style={
+          Array [
+            Object {
+              "alignItems": "center",
+              "flexDirection": "row",
+            },
+          ]
+        }
+      >
+        <Text
+          adjustsFontSizeToFit={false}
+          allowFontScaling={false}
+          numberOfLines={2}
+          style={
+            Array [
+              Object {
+                "color": "#FFFFFF",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 35.357142857142854,
+                "paddingHorizontal": 5,
+                "textAlign": "center",
+              },
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              Object {
+                "fontSize": 28.928571428571427,
+              },
+              undefined,
+              undefined,
+              Array [
+                Object {
+                  "color": "#FFFFFF",
+                  "fontFamily": "ProximaNova-Bold",
+                  "fontSize": 27,
+                  "paddingRight": 2,
+                },
+              ],
+            ]
+          }
+        >
+          [missing "en.global.income" translation]
+        </Text>
+        <Image
+          resizeMode="contain"
+          source={
+            Object {
+              "uri": "IconX",
+            }
+          }
+          style={
+            Array [
+              Object {
+                "height": 31.428571428571427,
+                "width": 31.428571428571427,
+              },
+              Array [
+                Object {
+                  "marginLeft": 3,
+                },
+                undefined,
+                Object {
+                  "tintColor": "#FFFFFF",
+                },
+              ],
+            ]
+          }
+        />
+      </View>
+    </View>
+    <View
+      accessibilityRole="button"
+      accessible={true}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "alignSelf": "center",
+          "backgroundColor": "#3052FF",
+          "borderColor": "transparent",
+          "borderRadius": 20,
+          "borderWidth": 1,
+          "flexDirection": "row",
+          "height": 47.14285714285714,
+          "justifyContent": "center",
+          "marginBottom": 5,
+          "marginLeft": 2,
+          "marginRight": 0,
+          "marginTop": 5,
+          "opacity": 1,
+          "paddingHorizontal": 18,
+          "paddingLeft": 10,
+          "paddingRight": 10,
+        }
+      }
+    >
+      <View
+        style={
+          Array [
+            Object {
+              "alignItems": "center",
+              "flexDirection": "row",
+            },
+          ]
+        }
+      >
+        <Text
+          adjustsFontSizeToFit={false}
+          allowFontScaling={false}
+          numberOfLines={2}
+          style={
+            Array [
+              Object {
+                "color": "#FFFFFF",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 35.357142857142854,
+                "paddingHorizontal": 5,
+                "textAlign": "center",
+              },
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              Object {
+                "fontSize": 28.928571428571427,
+              },
+              undefined,
+              undefined,
+              Array [
+                Object {
+                  "color": "#FFFFFF",
+                  "fontFamily": "ProximaNova-Bold",
+                  "fontSize": 27,
+                  "paddingRight": 2,
+                },
+              ],
+            ]
+          }
+        >
+          [missing "en.global.payment" translation]
+        </Text>
+        <Image
+          resizeMode="contain"
+          source={
+            Object {
+              "uri": "IconX",
+            }
+          }
+          style={
+            Array [
+              Object {
+                "height": 31.428571428571427,
+                "width": 31.428571428571427,
+              },
+              Array [
+                Object {
+                  "marginLeft": 3,
+                },
+                undefined,
+                Object {
+                  "tintColor": "#FFFFFF",
+                },
+              ],
+            ]
+          }
+        />
+      </View>
+    </View>
+  </View>
+</View>
+`;
+
 exports[`Storyshots RecipientElement Selected 1`] = `
 <View
   style={
@@ -819,31 +1160,31 @@ exports[`Storyshots RecipientElement Selected 1`] = `
             Object {
               "alignItems": "center",
               "backgroundColor": "#FFFFFF",
-              "borderRadius": 8,
+              "borderRadius": 10,
               "justifyContent": "center",
             },
+            false,
             Object {
-              "height": 96.42857142857143,
-              "width": 96.42857142857143,
+              "height": 85.71428571428571,
+              "width": 85.71428571428571,
             },
           ]
         }
       >
         <Image
+          borderRadius={10}
+          resizeMode="cover"
           source={
             Object {
-              "uri": "IconGlobe",
+              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
             }
           }
           style={
             Array [
+              Object {},
               Object {
-                "resizeMode": "contain",
-              },
-              Object {
-                "height": 53.03571428571429,
-                "tintColor": "#848DB8",
-                "width": 53.03571428571429,
+                "height": 85.71428571428571,
+                "width": 85.71428571428571,
               },
             ]
           }
@@ -990,31 +1331,31 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
             Object {
               "alignItems": "center",
               "backgroundColor": "#FFFFFF",
-              "borderRadius": 8,
+              "borderRadius": 10,
               "justifyContent": "center",
             },
+            false,
             Object {
-              "height": 96.42857142857143,
-              "width": 96.42857142857143,
+              "height": 85.71428571428571,
+              "width": 85.71428571428571,
             },
           ]
         }
       >
         <Image
+          borderRadius={10}
+          resizeMode="cover"
           source={
             Object {
-              "uri": "IconGlobe",
+              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
             }
           }
           style={
             Array [
+              Object {},
               Object {
-                "resizeMode": "contain",
-              },
-              Object {
-                "height": 53.03571428571429,
-                "tintColor": "#848DB8",
-                "width": 53.03571428571429,
+                "height": 85.71428571428571,
+                "width": 85.71428571428571,
               },
             ]
           }
@@ -1157,31 +1498,31 @@ exports[`Storyshots RecipientElement default 1`] = `
             Object {
               "alignItems": "center",
               "backgroundColor": "#FFFFFF",
-              "borderRadius": 8,
+              "borderRadius": 10,
               "justifyContent": "center",
             },
+            false,
             Object {
-              "height": 96.42857142857143,
-              "width": 96.42857142857143,
+              "height": 85.71428571428571,
+              "width": 85.71428571428571,
             },
           ]
         }
       >
         <Image
+          borderRadius={10}
+          resizeMode="cover"
           source={
             Object {
-              "uri": "IconProfile",
+              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
             }
           }
           style={
             Array [
+              Object {},
               Object {
-                "resizeMode": "contain",
-              },
-              Object {
-                "height": 53.03571428571429,
-                "tintColor": "#848DB8",
-                "width": 53.03571428571429,
+                "height": 85.71428571428571,
+                "width": 85.71428571428571,
               },
             ]
           }
@@ -1255,6 +1596,179 @@ exports[`Storyshots RecipientElement default 1`] = `
           }
         >
           rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1
+        </Text>
+      </View>
+    </View>
+  </View>
+</View>
+`;
+
+exports[`Storyshots SegmentButton Three Button 1`] = `
+<View
+  style={
+    Object {
+      "backgroundColor": "#F0F3FF",
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "flexDirection": "row",
+          "height": 139.28571428571428,
+          "justifyContent": "space-between",
+          "overflow": "hidden",
+        },
+        undefined,
+      ]
+    }
+  >
+    <View
+      accessible={true}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "backgroundColor": "#FFFFFF",
+          "borderRadius": 12,
+          "flex": 1,
+          "marginVertical": 15,
+          "opacity": 1,
+          "shadowColor": "#3052FF",
+          "shadowOffset": Object {
+            "height": 4,
+            "width": 0,
+          },
+          "shadowOpacity": 0.1,
+          "shadowRadius": 4,
+        }
+      }
+    >
+      <View
+        style={
+          Array [
+            Object {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+            },
+          ]
+        }
+      >
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#626984",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 32.14285714285714,
+              },
+              Object {
+                "color": "#3052FF",
+              },
+            ]
+          }
+        >
+          All
+        </Text>
+      </View>
+    </View>
+    <View
+      accessible={true}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "flex": 1,
+          "marginVertical": 15,
+          "opacity": 1,
+        }
+      }
+    >
+      <View
+        style={
+          Array [
+            Object {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+            },
+          ]
+        }
+      >
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#626984",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 32.14285714285714,
+              },
+              false,
+            ]
+          }
+        >
+          Planned
+        </Text>
+      </View>
+    </View>
+    <View
+      accessible={true}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "flex": 1,
+          "marginVertical": 15,
+          "opacity": 1,
+        }
+      }
+    >
+      <View
+        style={
+          Array [
+            Object {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+            },
+          ]
+        }
+      >
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#626984",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 32.14285714285714,
+              },
+              false,
+            ]
+          }
+        >
+          Requests
         </Text>
       </View>
     </View>

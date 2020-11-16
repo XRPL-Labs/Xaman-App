@@ -195,7 +195,7 @@ class SendView extends Component<Props, State> {
 
                 // TODO: show error
                 // not enough liquidity
-                if (!liquidity.safe || liquidity.errors.length > 0) {
+                if (!liquidity.safe || liquidity.errors?.length > 0) {
                     // TODO: handle better
                     Navigator.showAlertModal({
                         type: 'error',

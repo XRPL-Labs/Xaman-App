@@ -13,12 +13,6 @@ const styles = StyleSheet.create({
         marginHorizontal: AppSizes.paddingSml,
         marginBottom: 15,
     },
-    avatarImage: {
-        width: AppSizes.screen.width * 0.07,
-        height: AppSizes.screen.width * 0.07,
-        tintColor: AppColors.greyDark,
-        resizeMode: 'contain',
-    },
     row: {
         width: AppSizes.screen.width,
         left: 0,
@@ -28,11 +22,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: AppSizes.paddingSml + 3,
         paddingVertical: 10,
     },
-    rowIcon: {
-        width: AppSizes.screen.width * 0.08,
-        height: AppSizes.screen.width * 0.08,
-        resizeMode: 'contain',
-        tintColor: AppColors.greyDark,
+    contentContainer: {
+        paddingLeft: 10,
     },
     name: {
         fontSize: 16,

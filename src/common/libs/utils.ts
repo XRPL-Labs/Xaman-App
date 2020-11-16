@@ -8,7 +8,6 @@ import BigNumber from 'bignumber.js';
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
 import { XrplDestination } from 'xumm-string-decode';
-
 /* Hex Encoding  ==================================================================== */
 const HexEncoding = {
     toBinary: (hex: string): Buffer => {
@@ -38,36 +37,6 @@ const Truncate = (fullString: string, string_length: number): string => {
     const backChars = Math.floor(charsToShow / 2);
 
     return fullString.substr(0, frontChars) + separator + fullString.substr(fullString.length - backChars);
-};
-
-const NormalizeAmount = (amount: string): string => {
-    let sendAmount = amount;
-
-    // filter amount
-    sendAmount = sendAmount.replace(',', '.');
-    sendAmount = sendAmount.replace(/[^0-9.]/g, '');
-    if (sendAmount.split('.').length > 2) {
-        sendAmount = sendAmount.replace(/\.+$/, '');
-    }
-
-    // not more than 6 decimal places
-    if (sendAmount.split('.')[1] && sendAmount.split('.').reverse()[0].length >= 6) {
-        sendAmount = `${sendAmount.split('.').reverse()[1]}.${sendAmount.split('.').reverse()[0].slice(0, 6)}`;
-    }
-
-    // "01" to "1"
-    if (sendAmount.length === 2 && sendAmount[0] === '0' && sendAmount[1] !== '.') {
-        // eslint-disable-next-line
-        sendAmount = sendAmount[1];
-    }
-
-    // "." to "0."
-    if (sendAmount.length === 1 && sendAmount[0] === '.') {
-        // eslint-disable-next-line
-        sendAmount = '0.';
-    }
-
-    return sendAmount;
 };
 
 const NormalizeCurrencyCode = (currencyCode: string): string => {
@@ -102,9 +71,10 @@ const NormalizeCurrencyCode = (currencyCode: string): string => {
     return currencyCode;
 };
 
-const NormalizeDestination = (destination: XrplDestination): XrplDestination => {
+const NormalizeDestination = (destination: XrplDestination): XrplDestination & { xAddress: string } => {
     let to;
     let tag;
+    let xAddress;
 
     try {
         // decode if it's x address
@@ -113,6 +83,8 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination => 
                 const decoded = Decode(destination.to);
                 to = decoded.account;
                 tag = Number(decoded.tag);
+
+                xAddress = destination.to;
             } catch {
                 // ignore
             }
@@ -127,9 +99,15 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination => 
     return {
         to,
         tag,
+        xAddress,
     };
 };
 
+/**
+ * normalize balance
+ * @param n number
+ * @returns string 1333.855222
+ */
 const NormalizeBalance = (balance: number) => {
     return new BigNumber(balance).decimalPlaces(6).toString(10);
 };
@@ -189,7 +167,6 @@ export {
     HexEncoding,
     Truncate,
     FormatDate,
-    NormalizeAmount,
     NormalizeBalance,
     NormalizeCurrencyCode,
     NormalizeDestination,

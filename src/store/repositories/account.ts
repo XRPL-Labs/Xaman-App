@@ -117,7 +117,10 @@ class AccountRepository extends BaseRepository {
                     const accountFlags = flags.parse();
 
                     // eslint-disable-next-line max-len
-                    const regularKeyImported = !this.query({ address: account.regularKey, accessLevel: AccessLevels.Full }).isEmpty();
+                    const regularKeyImported = !this.query({
+                        address: account.regularKey,
+                        accessLevel: AccessLevels.Full,
+                    }).isEmpty();
 
                     if ((accountFlags.disableMasterKey && regularKeyImported) || !accountFlags.disableMasterKey) {
                         availableAccounts.push(account);

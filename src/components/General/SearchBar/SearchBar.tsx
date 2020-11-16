@@ -72,7 +72,7 @@ class SearchBar extends PureComponent<Props, State> {
         return (
             <View style={[styles.searchContainer, containerStyle]}>
                 <Animated.View style={[styles.searchIcon]}>
-                    <Icon name="IconSearch" size={20} />
+                    <Icon name="IconSearch" size={20} style={AppStyles.imgColorGreyBlack} />
                 </Animated.View>
 
                 <View style={AppStyles.flex1}>

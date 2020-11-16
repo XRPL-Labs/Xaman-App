@@ -1,4 +1,4 @@
-import { get, isUndefined, findKey } from 'lodash';
+import { has, get, set, isUndefined, findKey } from 'lodash';
 
 import BaseTransaction from './base';
 import Amount from '../parser/common/amount';
@@ -51,6 +51,7 @@ class EscrowFinish extends BaseTransaction {
             return {
                 address: finalFields.Destination,
                 tag: finalFields.DestinationTag,
+                name: get(this, ['tx', 'DestinationName']),
             };
         }
 
@@ -59,19 +60,41 @@ class EscrowFinish extends BaseTransaction {
         };
     }
 
+    set Destination(destination: Destination) {
+        if (has(destination, 'name')) {
+            set(this, 'tx.DestinationName', destination.name);
+        }
+    }
+
+    set Owner(owner: string) {
+        set(this, ['tx', 'Owner'], owner);
+    }
+
     get Owner(): string {
         return get(this, ['tx', 'Owner']);
     }
 
-    get Fulfillment(): number {
+    set Fulfillment(fulfillment: string) {
+        set(this, ['tx', 'Fulfillment'], fulfillment);
+    }
+
+    get Fulfillment(): string {
         return get(this, ['tx', 'Fulfillment']);
+    }
+
+    set Condition(condition: string) {
+        set(this, ['tx', 'Condition'], condition);
     }
 
     get Condition(): string {
         return get(this, ['tx', 'Condition']);
     }
 
-    get OfferSequence(): string {
+    set OfferSequence(sequence: number) {
+        set(this, ['tx', 'OfferSequence'], sequence);
+    }
+
+    get OfferSequence(): number {
         return get(this, ['tx', 'OfferSequence']);
     }
 }

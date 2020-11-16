@@ -20,7 +20,7 @@ describe('Vault', () => {
 
     describe('Create', () => {
         it('should create a vault', async () => {
-            await Vault.create(name, entry, key).then(r => expect(r).toBe(true));
+            await Vault.create(name, entry, key).then((r) => expect(r).toBe(true));
         });
 
         it('should call setInternetCredentials method on keychain', async () => {
@@ -32,7 +32,7 @@ describe('Vault', () => {
 
     describe('Save', () => {
         it('should save a entry into the keychain', async () => {
-            await Vault.save(iv, { iv, cipher }).then(r => expect(r).toBe(true));
+            await Vault.save(iv, { iv, cipher }).then((r) => expect(r).toBe(true));
         });
 
         it('should call setInternetCredentials method on keychain', async () => {
@@ -44,13 +44,13 @@ describe('Vault', () => {
 
     describe('Retrieve', () => {
         it('should get a vault from keychain', async () => {
-            await Vault.retrieve(name).then(data => {
+            await Vault.retrieve(name).then((data) => {
                 expect(data).toEqual({ iv, cipher });
             });
         });
 
         it('should return empty vault entry on no exist vault', async () => {
-            await Vault.retrieve('nonexist').then(data => {
+            await Vault.retrieve('nonexist').then((data) => {
                 expect(data).toEqual({ iv: '', cipher: '' });
             });
         });
@@ -64,19 +64,19 @@ describe('Vault', () => {
 
     describe('reKey', () => {
         it('should Rekey vault entry', async () => {
-            await Vault.reKey(name, key, 'newKey').then(data => {
+            await Vault.reKey(name, key, 'newKey').then((data) => {
                 expect(data).toEqual(true);
             });
         });
 
         it('should return false on no exist vault', async () => {
-            await Vault.reKey('nonexist', key, 'newKey').then(data => {
+            await Vault.reKey('nonexist', key, 'newKey').then((data) => {
                 expect(data).toEqual(false);
             });
         });
 
         it('should return false on invalid key', async () => {
-            await Vault.reKey(name, 'invalidkey', 'newKey').then(data => {
+            await Vault.reKey(name, 'invalidkey', 'newKey').then((data) => {
                 expect(data).toEqual(false);
             });
         });
@@ -84,19 +84,19 @@ describe('Vault', () => {
 
     describe('Open', () => {
         it('should open/decrypt a vault', async () => {
-            await Vault.open(name, key).then(data => {
+            await Vault.open(name, key).then((data) => {
                 expect(data).toBe(entry);
             });
         });
 
         it('should return false on invalid key', async () => {
-            await Vault.open(name, 'invalidkey').then(data => {
+            await Vault.open(name, 'invalidkey').then((data) => {
                 expect(data).toEqual('');
             });
         });
 
         it('should return empty non exist vault', async () => {
-            await Vault.open('nonexist', key).then(data => {
+            await Vault.open('nonexist', key).then((data) => {
                 expect(data).toEqual('');
             });
         });

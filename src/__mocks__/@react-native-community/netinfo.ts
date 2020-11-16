@@ -5,7 +5,7 @@
 const NetInfo = jest.mock('@react-native-community/netinfo');
 
 // @ts-ignore
-NetInfo.addEventListener = jest.fn(state => {
+NetInfo.addEventListener = jest.fn((state) => {
     console.log(`szw listener (mock)`);
     return jest.fn();
 });

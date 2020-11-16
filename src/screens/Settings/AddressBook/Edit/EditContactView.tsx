@@ -5,12 +5,14 @@ import { filter, isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, KeyboardAvoidingView, Text, Alert, Keyboard, Platform, ScrollView } from 'react-native';
 
-import { StringType, XrplDestination } from 'xumm-string-decode';
+import { StringType } from 'xumm-string-decode';
 import * as AccountLib from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
 
+import { NormalizeDestination } from '@common/libs/utils';
+import { getAccountName, getPayIdInfo } from '@common/helpers/resolver';
 import { Toast, Prompt } from '@common/helpers/interface';
-import { getAccountName } from '@common/helpers/resolver';
+
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
@@ -32,10 +34,11 @@ export interface Props {
 }
 
 export interface State {
-    xAddress?: string;
+    isLoading: boolean;
     address: string;
     name: string;
     tag: string;
+    xAddress: string;
 }
 
 /* Component ==================================================================== */
@@ -52,6 +55,7 @@ class EditContactView extends Component<Props, State> {
         super(props);
 
         this.state = {
+            isLoading: false,
             xAddress: undefined,
             address: props.contact.address,
             tag: props.contact.destinationTag,
@@ -70,27 +74,36 @@ class EditContactView extends Component<Props, State> {
         );
     };
 
-    onScannerRead = (result: XrplDestination) => {
-        let address = result.to;
-        let tag = result.tag && result.tag.toString();
-        let xAddress;
+    onScannerRead = async (result: any) => {
+        try {
+            // if payId try to resolve
+            if (result.payId) {
+                this.setState({
+                    isLoading: true,
+                });
 
-        // decode if it's x address
-        if (result.to.startsWith('X')) {
-            try {
-                const decoded = Decode(result.to);
-                address = decoded.account;
-                tag = decoded.tag && decoded.tag.toString();
-                xAddress = result.to;
-            } catch {
-                // continue regardless of error
+                const payIdInfo = await getPayIdInfo(result.payId);
+
+                this.setState({
+                    address: payIdInfo.account,
+                    tag: payIdInfo.tag,
+                });
+            } else {
+                const { to, tag, xAddress } = NormalizeDestination(result);
+
+                this.setState({
+                    address: to,
+                    tag: tag && tag.toString(),
+                    xAddress,
+                });
             }
+        } catch {
+            // ignore
+        } finally {
+            this.setState({
+                isLoading: false,
+            });
         }
-        this.setState({
-            address,
-            tag,
-            xAddress,
-        });
     };
 
     saveContact = () => {
@@ -164,7 +177,7 @@ class EditContactView extends Component<Props, State> {
     onDestinationTagChange = (text: string) => {
         const destinationTag = text.replace(/[^0-9]/g, '');
 
-        if (Number(destinationTag) < Number.MAX_SAFE_INTEGER) {
+        if (Number(destinationTag) < 2 ** 32) {
             this.setState({
                 tag: destinationTag,
             });
@@ -174,7 +187,7 @@ class EditContactView extends Component<Props, State> {
     onAddressChange = (text: string) => {
         const address = text.replace(/[^a-z0-9]/gi, '');
         // decode if it's x address
-        if (address.startsWith('X')) {
+        if (address && address.startsWith('X')) {
             try {
                 const decoded = Decode(address);
                 if (decoded) {
@@ -195,7 +208,7 @@ class EditContactView extends Component<Props, State> {
     };
 
     render() {
-        const { name, address, tag, xAddress } = this.state;
+        const { isLoading, name, address, tag, xAddress } = this.state;
         return (
             <View
                 testID="address-book-edit"
@@ -245,6 +258,7 @@ class EditContactView extends Component<Props, State> {
                                 showScanner
                                 scannerType={StringType.XrplDestination}
                                 onScannerRead={this.onScannerRead}
+                                isLoading={isLoading}
                             />
                             <Spacer size={10} />
                             <TextInput
@@ -252,6 +266,7 @@ class EditContactView extends Component<Props, State> {
                                 inputStyle={styles.textInput}
                                 onChangeText={this.onDestinationTagChange}
                                 value={tag}
+                                isLoading={isLoading}
                             />
 
                             {xAddress && (

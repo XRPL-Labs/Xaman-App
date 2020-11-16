@@ -28,7 +28,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 // components
-import { PasswordInput, Button, Spacer, Switch, Footer } from '@components/General';
+import { PasswordInput, DerivationPathInput, Button, Spacer, Switch, Footer } from '@components/General';
 
 // style
 import { AppStyles } from '@theme';
@@ -43,7 +43,9 @@ export interface State {
     words: string[];
     length: number;
     usePassphrase: boolean;
+    useAlternativePath: boolean;
     passphrase: string;
+    derivationPath: any;
     activeRow: number;
     keyboardHeight: number;
     isLoading: boolean;
@@ -56,6 +58,7 @@ class EnterMnemonicStep extends Component<Props, State> {
 
     scrollView: ScrollView;
     inputs: TextInput[];
+    derivationPathInput: DerivationPathInput;
     scrollToBottomY: number;
 
     constructor(props: Props) {
@@ -65,7 +68,9 @@ class EnterMnemonicStep extends Component<Props, State> {
             words: Array(16),
             length: 16,
             usePassphrase: false,
+            useAlternativePath: false,
             passphrase: '',
+            derivationPath: undefined,
             activeRow: -1,
             keyboardHeight: 0,
             isLoading: false,
@@ -108,7 +113,7 @@ class EnterMnemonicStep extends Component<Props, State> {
 
     goNext = () => {
         const { goNext, setImportedAccount } = this.context;
-        const { words, usePassphrase, passphrase } = this.state;
+        const { words, usePassphrase, passphrase, useAlternativePath, derivationPath } = this.state;
 
         if (words.filter(Boolean).length < 6) {
             Alert.alert('Error', Localize.t('account.pleaseEnterAllWords'));
@@ -123,6 +128,10 @@ class EnterMnemonicStep extends Component<Props, State> {
 
         if (usePassphrase && passphrase) {
             options = Object.assign(options, { passphrase });
+        }
+
+        if (useAlternativePath && derivationPath) {
+            options = Object.assign(options, derivationPath);
         }
 
         try {
@@ -144,6 +153,10 @@ class EnterMnemonicStep extends Component<Props, State> {
 
     onScannerRead = (decoded: XrplSecret) => {
         const { mnemonic } = decoded;
+
+        if (!mnemonic) {
+            return;
+        }
 
         let words = [];
 
@@ -209,6 +222,12 @@ class EnterMnemonicStep extends Component<Props, State> {
                 });
             }
         }
+    };
+
+    onDerivationPathChange = (path: any) => {
+        this.setState({
+            derivationPath: path,
+        });
     };
 
     renderRows = () => {
@@ -277,9 +296,8 @@ class EnterMnemonicStep extends Component<Props, State> {
         const { usePassphrase } = this.state;
 
         return (
-            <View style={[AppStyles.flex1, AppStyles.paddingVerticalSml]}>
+            <View style={[AppStyles.flex1]}>
                 <View style={AppStyles.hr} />
-
                 <View style={[AppStyles.row, AppStyles.paddingVerticalSml]}>
                     <View style={[AppStyles.leftAligned]}>
                         <Switch
@@ -304,12 +322,55 @@ class EnterMnemonicStep extends Component<Props, State> {
 
                 {usePassphrase && (
                     <PasswordInput
+                        inputWrapperStyle={[AppStyles.marginBottomSml]}
                         onChange={(pass) => {
                             this.setState({
                                 passphrase: pass,
                             });
                         }}
-                        placeholder={Localize.t('global.password')}
+                        placeholder={Localize.t('account.mnemonicPassphrase')}
+                    />
+                )}
+            </View>
+        );
+    };
+
+    renderDerivationPath = () => {
+        const { useAlternativePath } = this.state;
+
+        return (
+            <View style={[AppStyles.flex1]}>
+                <View style={AppStyles.hr} />
+
+                <View style={[AppStyles.row, AppStyles.paddingVerticalSml]}>
+                    <View style={[AppStyles.leftAligned]}>
+                        <Switch
+                            onChange={(enabled) => {
+                                this.setState({ useAlternativePath: enabled });
+
+                                setTimeout(() => {
+                                    if (this.scrollView) {
+                                        this.scrollView.scrollTo({ y: this.scrollToBottomY });
+                                    }
+                                }, 100);
+                            }}
+                            checked={useAlternativePath}
+                        />
+                    </View>
+                    <View style={[AppStyles.flex1, AppStyles.paddingLeftSml, AppStyles.centerContent]}>
+                        <Text style={[AppStyles.subtext, AppStyles.bold]}>
+                            {Localize.t('account.alternativeDerivationPath')}
+                        </Text>
+                    </View>
+                </View>
+
+                {useAlternativePath && (
+                    <DerivationPathInput
+                        autoFocus
+                        ref={(r) => {
+                            this.derivationPathInput = r;
+                        }}
+                        onChange={this.onDerivationPathChange}
                     />
                 )}
             </View>
@@ -398,6 +459,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                 >
                     {this.renderRows()}
                     {this.renderPassphrase()}
+                    {this.renderDerivationPath()}
                 </ScrollView>
 
                 <Footer style={[AppStyles.centerAligned, AppStyles.row]}>

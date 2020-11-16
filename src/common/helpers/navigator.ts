@@ -2,7 +2,7 @@ import { get } from 'lodash';
 import { Platform, InteractionManager } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 
-import { getBottomTabScale, isIOS10 } from '@common/helpers/device';
+import { GetBottomTabScale, IsIOS10 } from '@common/helpers/device';
 import { Images } from '@common/helpers/images';
 
 import { AppScreens } from '@common/constants';
@@ -56,28 +56,28 @@ const TabBarIcons = {
     [AppScreens.TabBar.Home]: {
         icon: Images.IconTabBarHome,
         iconSelected: Images.IconTabBarHomeSelected,
-        scale: getBottomTabScale(),
+        scale: GetBottomTabScale(),
     },
     [AppScreens.TabBar.Events]: {
         icon: Images.IconTabBarEvents,
         iconSelected: Images.IconTabBarEventsSelected,
-        scale: getBottomTabScale(),
+        scale: GetBottomTabScale(),
     },
     [AppScreens.TabBar.Scan]: {
         icon: Images.IconTabBarScan,
         iconSelected: Images.IconTabBarScan,
-        offset: { top: isIOS10() && 6, right: 0, bottom: isIOS10() && -6, left: 0 },
-        scale: getBottomTabScale(0.7),
+        offset: { top: IsIOS10() && 6, right: 0, bottom: IsIOS10() && -6, left: 0 },
+        scale: GetBottomTabScale(0.7),
     },
     [AppScreens.TabBar.Profile]: {
         icon: Images.IconTabBarProfile,
         iconSelected: Images.IconTabBarProfileSelected,
-        scale: getBottomTabScale(),
+        scale: GetBottomTabScale(),
     },
     [AppScreens.TabBar.Settings]: {
         icon: Images.IconTabBarSettings,
         iconSelected: Images.IconTabBarSettingsSelected,
-        scale: getBottomTabScale(),
+        scale: GetBottomTabScale(),
     },
 };
 
@@ -92,11 +92,12 @@ const Navigator = {
         Object.keys(AppScreens.TabBar).forEach((tab) => {
             bottomTabsChildren.push({
                 stack: {
-                    id: get(AppScreens.TabBar, tab),
+                    id: `bottomTab-${tab}`,
                     children: [
                         {
                             component: {
                                 name: tab === 'Scan' ? AppScreens.Placeholder : get(AppScreens.TabBar, tab),
+                                id: get(AppScreens.TabBar, tab),
                             },
                         },
                     ],
@@ -271,6 +272,22 @@ const Navigator = {
     mergeOptions(options = {}) {
         const currentScreen = NavigationService.getCurrentScreen();
         Navigation.mergeOptions(currentScreen, options);
+    },
+
+    reRender() {
+        // update the tabbar
+        Object.keys(AppScreens.TabBar).forEach((tab) => {
+            Navigation.mergeOptions(`bottomTab-${tab}`, {
+                bottomTab: {
+                    text: Platform.select({
+                        android: Localize.t(`global.${tab.toLowerCase()}`),
+                        ios: tab !== 'Scan' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
+                    }),
+                },
+            });
+
+            Navigation.updateProps(get(AppScreens.TabBar, tab), { timestamp: +new Date() });
+        });
     },
 };
 

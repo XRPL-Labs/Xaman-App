@@ -191,9 +191,7 @@ class AccountListView extends Component<Props, State> {
                             style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent]}
                         >
                             <Image style={[AppStyles.emptyIcon]} source={Images.ImageFirstAccount} />
-                            <Text style={[AppStyles.emptyText]}>
-                                It’s a little bit empty here add your first account.
-                            </Text>
+                            <Text style={[AppStyles.emptyText]}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
                             <Button
                                 label={Localize.t('home.addAccount')}
                                 icon="IconPlus"

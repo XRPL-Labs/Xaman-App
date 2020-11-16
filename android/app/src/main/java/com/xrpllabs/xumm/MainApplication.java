@@ -14,8 +14,10 @@ import libs.crypto.modules.CryptoPackage;
 import libs.ui.ActionSheetPackage;
 import libs.ui.PromptPackage;
 import libs.ui.QRCodePackage;
-import libs.common.SharedPreferencesPackage;
 import libs.notification.LocalNotificationPackage;
+import libs.common.SharedPreferencesPackage;
+import libs.common.AppUpdatePackage;
+import libs.common.InAppPurchasePackage;
 import libs.common.HTTPClientFactory;
 
 // External Dependencies
@@ -56,8 +58,8 @@ public class MainApplication extends NavigationApplication {
                 packages.add(new QRCodePackage());
                 packages.add(new SharedPreferencesPackage());
                 packages.add(new LocalNotificationPackage());
-                // Firebase Dependencies
-
+                packages.add(new AppUpdatePackage());
+                packages.add(new InAppPurchasePackage());
                 return packages;
             }
 
@@ -86,14 +88,14 @@ public class MainApplication extends NavigationApplication {
      */
     private void upgradeSecurityProvider() {
         ProviderInstaller.installIfNeededAsync(this, new ProviderInstallListener() {
-        @Override
-        public void onProviderInstalled() {
-        }
+            @Override
+                public void onProviderInstalled() {
+            }
 
-        @Override
-        public void onProviderInstallFailed(int errorCode, Intent recoveryIntent) {
-            GooglePlayServicesUtil.showErrorNotification(errorCode, MainApplication.this);
-        }
+            @Override
+            public void onProviderInstallFailed(int errorCode, Intent recoveryIntent) {
+                GooglePlayServicesUtil.showErrorNotification(errorCode, MainApplication.this);
+            }
         });
     }
 

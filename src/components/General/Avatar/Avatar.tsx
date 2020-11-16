@@ -1,32 +1,37 @@
 /**
  * Image Avatar
  *
-    <Avatar source={''} size={45} />
+    <Avatar source={{uri: ""}} size={45} />
  *
  */
 import React from 'react';
 
 import { View, Image, ImageSourcePropType } from 'react-native';
 
-import { AppSizes, AppColors } from '@theme';
+import { AppSizes } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
     source: ImageSourcePropType;
     size?: number;
-    color?: string;
+    border?: boolean;
 }
 
 /* Component ==================================================================== */
-const Avatar: React.SFC<Props> = ({ source, size = 45, color = AppColors.greyDark }) => (
-    <View style={[styles.container, { height: AppSizes.scale(size), width: AppSizes.scale(size) }]}>
+const Avatar: React.SFC<Props> = ({ source, size = 40, border = false }) => (
+    <View
+        style={[
+            styles.container,
+            border && styles.border,
+            { height: AppSizes.scale(size), width: AppSizes.scale(size) },
+        ]}
+    >
         <Image
+            resizeMode="cover"
+            borderRadius={10}
             source={source}
-            style={[
-                styles.image,
-                { height: AppSizes.scale(size * 0.55), width: AppSizes.scale(size * 0.55), tintColor: color },
-            ]}
+            style={[styles.image, { height: AppSizes.scale(size), width: AppSizes.scale(size) }]}
         />
     </View>
 );

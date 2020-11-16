@@ -31,12 +31,12 @@ import LedgerExchange from '@common/libs/ledger/exchange';
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
-import { NormalizeAmount, NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/libs/utils';
 // constants
 import { AppScreens, AppConfig } from '@common/constants';
 
 // components
-import { Header, Spacer, Icon, Button, InfoMessage } from '@components/General';
+import { AmountInput, Header, Spacer, Icon, Button, InfoMessage } from '@components/General';
 
 import Localize from '@locale';
 
@@ -66,7 +66,7 @@ class ExchangeView extends Component<Props, State> {
     timeout: any;
     sequence: number;
     ledgerExchange: LedgerExchange;
-    amountInput: TextInput;
+    amountInput: AmountInput;
 
     static options() {
         return {
@@ -219,9 +219,9 @@ class ExchangeView extends Component<Props, State> {
                 this.showResultAlert(
                     Localize.t('global.success'),
                     Localize.t('exchange.successfullyExchanged', {
-                        payAmount: takerGot.value,
+                        payAmount: Localize.formatNumber(Number(takerGot.value)),
                         payCurrency: NormalizeCurrencyCode(takerGot.currency),
-                        getAmount: takerPaid.value,
+                        getAmount: Localize.formatNumber(Number(takerPaid.value)),
                         getCurrency: NormalizeCurrencyCode(takerPaid.currency),
                     }),
                 );
@@ -271,7 +271,7 @@ class ExchangeView extends Component<Props, State> {
             Prompt(
                 Localize.t('global.error'),
                 Localize.t('exchange.theMaxAmountYouCanExchangeIs', {
-                    spendable: availableBalance,
+                    spendable: Localize.formatNumber(availableBalance),
                     currency: direction === 'sell' ? 'XRP' : NormalizeCurrencyCode(trustLine.currency.currency),
                 }),
                 [
@@ -293,9 +293,9 @@ class ExchangeView extends Component<Props, State> {
         Prompt(
             Localize.t('global.pleaseNote'),
             Localize.t('exchange.doYouWantToExchange', {
-                payAmount: amount,
+                payAmount: Localize.formatNumber(Number(amount)),
                 payCurrency: direction === 'sell' ? 'XRP' : NormalizeCurrencyCode(trustLine.currency.currency),
-                getAmount: getsAmount,
+                getAmount: Localize.formatNumber(Number(getsAmount)),
                 getCurrency: direction === 'sell' ? NormalizeCurrencyCode(trustLine.currency.currency) : 'XRP',
             }),
             [
@@ -331,11 +331,9 @@ class ExchangeView extends Component<Props, State> {
     };
 
     onAmountChange = (amount: string) => {
-        const normalizedAmount = NormalizeAmount(amount);
-
         this.setState(
             {
-                amount: normalizedAmount,
+                amount,
             },
             () => {
                 this.checkLiquidity();
@@ -409,7 +407,7 @@ class ExchangeView extends Component<Props, State> {
         return (
             <>
                 <Text style={[styles.subLabel, AppStyles.textCenterAligned]}>
-                    {Localize.t('exchange.exchangeRate', { exchangeRate })}
+                    {Localize.t('exchange.exchangeRate', { exchangeRate: Localize.formatNumber(Number(exchangeRate)) })}
                 </Text>
                 <Spacer size={40} />
                 <Button
@@ -523,7 +521,8 @@ class ExchangeView extends Component<Props, State> {
                                               NormalizeCurrencyCode(trustLine.currency.currency)}
                                     </Text>
                                     <Text style={[styles.subLabel]}>
-                                        {Localize.t('global.spendable')}: {NormalizeBalance(this.getAvailableBalance())}
+                                        {Localize.t('global.spendable')}:{' '}
+                                        {Localize.formatNumber(this.getAvailableBalance())}
                                     </Text>
                                 </View>
                             </View>
@@ -552,19 +551,14 @@ class ExchangeView extends Component<Props, State> {
                             style={[styles.inputContainer]}
                         >
                             <Text style={styles.fromAmount}>-</Text>
-                            <TextInput
+                            <AmountInput
                                 ref={(r) => {
                                     this.amountInput = r;
                                 }}
-                                autoFocus={false}
-                                onChangeText={this.onAmountChange}
-                                placeholder="0"
+                                onChange={this.onAmountChange}
                                 placeholderTextColor={AppColors.red}
-                                keyboardType="decimal-pad"
-                                autoCapitalize="words"
                                 style={styles.fromAmount}
                                 value={amount}
-                                returnKeyType="done"
                             />
                         </TouchableOpacity>
 
@@ -619,12 +613,11 @@ class ExchangeView extends Component<Props, State> {
                         <View style={[styles.inputContainer]}>
                             <Text style={styles.toAmount}>~</Text>
                             <TextInput
-                                keyboardType="decimal-pad"
-                                autoCapitalize="words"
                                 style={styles.toAmount}
                                 placeholderTextColor={AppColors.green}
                                 placeholder="0"
-                                value={getsAmount || '0'}
+                                value={Localize.formatNumber(Number(getsAmount)) || '0'}
+                                editable={false}
                             />
                         </View>
                     </View>

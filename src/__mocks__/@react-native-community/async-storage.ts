@@ -8,7 +8,7 @@ const DATA = {
     XUMM_VERSION: '2',
 };
 // @ts-ignore
-AsyncStorage.getItem = jest.fn(key => Promise.resolve(DATA[key]));
+AsyncStorage.getItem = jest.fn((key) => Promise.resolve(DATA[key]));
 // @ts-ignore
 AsyncStorage.setItem = jest.fn(() => Promise.resolve());
 // @ts-ignore

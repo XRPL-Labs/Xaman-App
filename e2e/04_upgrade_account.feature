@@ -62,7 +62,6 @@ Feature: Upgrade Account
         Then I tap 'accept-button'
         Then I type my passcode
         Given I should see 'submitting-view'
-        Given I should wait 20 sec to see 'result-view'
-        Given I should see 'tesSUCCESS' in 'engine-result-text'
+        Given I should wait 20 sec to see 'success-result-view'
         Then I tap 'close-button'
         Given I should have 'assets-scroll-view'

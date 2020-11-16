@@ -5,7 +5,7 @@ import { AppSizes, AppColors, AppFonts } from '@theme';
 export default StyleSheet.create({
     searchContainer: {
         flexDirection: 'row',
-        height: AppSizes.heightPercentageToDP(6.5),
+        height: AppSizes.heightPercentageToDP(5.5),
         marginHorizontal: 10,
         borderRadius: 15,
         backgroundColor: AppColors.grey,
@@ -22,6 +22,7 @@ export default StyleSheet.create({
         flex: 1,
         height: '100%',
         paddingLeft: 50,
+        paddingRight: 50,
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.p.size,
         fontWeight: '600',

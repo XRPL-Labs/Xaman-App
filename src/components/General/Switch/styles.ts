@@ -8,8 +8,6 @@ export default StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingTop: 5,
-        paddingBottom: 5,
     },
     title: {
         fontSize: AppFonts.base.size,
