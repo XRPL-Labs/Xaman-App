@@ -33,7 +33,7 @@ class ResultStep extends Component<Props, State> {
 
         return (
             <SafeAreaView
-                testID="send-result-view"
+                testID="success-result-view"
                 style={[styles.container, { backgroundColor: AppColors.lightGreen }]}
             >
                 <View style={[AppStyles.flex1, AppStyles.paddingSml]}>
@@ -50,6 +50,7 @@ class ResultStep extends Component<Props, State> {
 
                 <Footer style={[]}>
                     <Button
+                        testID="close-button"
                         style={{ backgroundColor: AppColors.green }}
                         onPress={onFinish}
                         label={payload.meta.return_url_app ? Localize.t('global.next') : Localize.t('global.close')}
@@ -63,7 +64,10 @@ class ResultStep extends Component<Props, State> {
         const { transaction, payload, onFinish } = this.context;
 
         return (
-            <SafeAreaView testID="send-result-view" style={[styles.container, { backgroundColor: AppColors.lightRed }]}>
+            <SafeAreaView
+                testID="failed-result-view"
+                style={[styles.container, { backgroundColor: AppColors.lightRed }]}
+            >
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <Text style={[AppStyles.h3, AppStyles.strong, AppStyles.colorRed, AppStyles.textCenterAligned]}>
                         {Localize.t('send.submitFailed')}
@@ -107,6 +111,7 @@ class ResultStep extends Component<Props, State> {
 
                 <Footer style={[]}>
                     <Button
+                        testID="close-button"
                         style={{ backgroundColor: AppColors.red }}
                         onPress={onFinish}
                         label={payload.meta.return_url_app ? Localize.t('global.next') : Localize.t('global.close')}
@@ -120,7 +125,10 @@ class ResultStep extends Component<Props, State> {
         const { transaction, payload, onFinish } = this.context;
 
         return (
-            <SafeAreaView testID="result-view" style={[AppStyles.container, { backgroundColor: AppColors.lightBlue }]}>
+            <SafeAreaView
+                testID="signed-result-view"
+                style={[AppStyles.container, { backgroundColor: AppColors.lightBlue }]}
+            >
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                     <Fragment key="success">
                         <Text

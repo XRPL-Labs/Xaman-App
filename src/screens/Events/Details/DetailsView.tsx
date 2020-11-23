@@ -1175,6 +1175,16 @@ class TransactionDetailsView extends Component<Props, State> {
             };
         }
 
+        // incoming trustline
+        if (tx.Type === 'CheckCash' && tx.Account.address !== account.address) {
+            to = { address: tx.Account.address, ...partiesDetails };
+            from = {
+                address: account.address,
+                name: account.label,
+                source: 'internal:accounts',
+            };
+        }
+
         // 3rd party consuming own offer
         if (tx.Type === 'Payment') {
             if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {

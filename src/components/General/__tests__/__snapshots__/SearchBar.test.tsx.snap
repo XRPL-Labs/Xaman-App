@@ -71,6 +71,7 @@ exports[`[SearchBar] renders correctly 1`] = `
             "fontWeight": "600",
             "height": "100%",
             "paddingLeft": 50,
+            "paddingRight": 50,
           },
           undefined,
         ]
@@ -202,6 +203,7 @@ exports[`[SearchBar] should clear text 1`] = `
             "fontWeight": "600",
             "height": "100%",
             "paddingLeft": 50,
+            "paddingRight": 50,
           },
           undefined,
         ]
@@ -333,6 +335,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
             "fontWeight": "600",
             "height": "100%",
             "paddingLeft": 50,
+            "paddingRight": 50,
           },
           undefined,
         ]

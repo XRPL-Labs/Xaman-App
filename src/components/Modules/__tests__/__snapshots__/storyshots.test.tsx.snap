@@ -1160,31 +1160,31 @@ exports[`Storyshots RecipientElement Selected 1`] = `
             Object {
               "alignItems": "center",
               "backgroundColor": "#FFFFFF",
-              "borderRadius": 8,
+              "borderRadius": 10,
               "justifyContent": "center",
             },
+            false,
             Object {
-              "height": 96.42857142857143,
-              "width": 96.42857142857143,
+              "height": 85.71428571428571,
+              "width": 85.71428571428571,
             },
           ]
         }
       >
         <Image
+          borderRadius={10}
+          resizeMode="cover"
           source={
             Object {
-              "uri": "IconGlobe",
+              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
             }
           }
           style={
             Array [
+              Object {},
               Object {
-                "resizeMode": "contain",
-              },
-              Object {
-                "height": 53.03571428571429,
-                "tintColor": "#848DB8",
-                "width": 53.03571428571429,
+                "height": 85.71428571428571,
+                "width": 85.71428571428571,
               },
             ]
           }
@@ -1331,31 +1331,31 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
             Object {
               "alignItems": "center",
               "backgroundColor": "#FFFFFF",
-              "borderRadius": 8,
+              "borderRadius": 10,
               "justifyContent": "center",
             },
+            false,
             Object {
-              "height": 96.42857142857143,
-              "width": 96.42857142857143,
+              "height": 85.71428571428571,
+              "width": 85.71428571428571,
             },
           ]
         }
       >
         <Image
+          borderRadius={10}
+          resizeMode="cover"
           source={
             Object {
-              "uri": "IconGlobe",
+              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
             }
           }
           style={
             Array [
+              Object {},
               Object {
-                "resizeMode": "contain",
-              },
-              Object {
-                "height": 53.03571428571429,
-                "tintColor": "#848DB8",
-                "width": 53.03571428571429,
+                "height": 85.71428571428571,
+                "width": 85.71428571428571,
               },
             ]
           }
@@ -1498,31 +1498,31 @@ exports[`Storyshots RecipientElement default 1`] = `
             Object {
               "alignItems": "center",
               "backgroundColor": "#FFFFFF",
-              "borderRadius": 8,
+              "borderRadius": 10,
               "justifyContent": "center",
             },
+            false,
             Object {
-              "height": 96.42857142857143,
-              "width": 96.42857142857143,
+              "height": 85.71428571428571,
+              "width": 85.71428571428571,
             },
           ]
         }
       >
         <Image
+          borderRadius={10}
+          resizeMode="cover"
           source={
             Object {
-              "uri": "IconProfile",
+              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
             }
           }
           style={
             Array [
+              Object {},
               Object {
-                "resizeMode": "contain",
-              },
-              Object {
-                "height": 53.03571428571429,
-                "tintColor": "#848DB8",
-                "width": 53.03571428571429,
+                "height": 85.71428571428571,
+                "width": 85.71428571428571,
               },
             ]
           }
@@ -1618,7 +1618,7 @@ exports[`Storyshots SegmentButton Three Button 1`] = `
       Array [
         Object {
           "flexDirection": "row",
-          "height": 96.42857142857143,
+          "height": 139.28571428571428,
           "justifyContent": "space-between",
           "overflow": "hidden",
         },
@@ -1640,17 +1640,16 @@ exports[`Storyshots SegmentButton Three Button 1`] = `
         Object {
           "backgroundColor": "#FFFFFF",
           "borderRadius": 12,
-          "elevation": 1,
           "flex": 1,
-          "marginVertical": 3,
+          "marginVertical": 15,
           "opacity": 1,
           "shadowColor": "#3052FF",
           "shadowOffset": Object {
-            "height": 8,
+            "height": 4,
             "width": 0,
           },
           "shadowOpacity": 0.1,
-          "shadowRadius": 8,
+          "shadowRadius": 4,
         }
       }
     >
@@ -1696,7 +1695,7 @@ exports[`Storyshots SegmentButton Three Button 1`] = `
       style={
         Object {
           "flex": 1,
-          "marginVertical": 3,
+          "marginVertical": 15,
           "opacity": 1,
         }
       }
@@ -1741,7 +1740,7 @@ exports[`Storyshots SegmentButton Three Button 1`] = `
       style={
         Object {
           "flex": 1,
-          "marginVertical": 3,
+          "marginVertical": 15,
           "opacity": 1,
         }
       }

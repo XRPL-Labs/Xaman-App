@@ -14,7 +14,7 @@ const guidelineBaseHeight = 680;
 
 // bottomTabs height
 const tabbarHeight = Platform.select({
-    ios: IsIPhoneX() ? 95 : 60,
+    ios: IsIPhoneX() ? 95 : 50,
     android: 60,
     default: 0,
 });
