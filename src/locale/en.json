@@ -235,22 +235,14 @@
         "readLess": "Read less",
         "enterPasscode": "Enter Passcode"
     },
-    "onboarding":{
-        "slideOne": {
-            "title": "Payments and\npayment requests\non the XRP ledger"
-        },
-        "slideTwo": {
-            "title": "User friendly access",
-            "desc": "Add multiple accounts, in full access mode, or read only. Send transactions and sign requests with your full access accounts."
-        },
-        "slideThree": {
-            "title": "Security first",
-            "desc": "The xumm application and platform are built with security in mind. Never enter your secrets again, sign a transaction from your own, trusted device."
-        },
-        "slideFour": {
-            "title": "Send and receive",
-            "desc": "You can send and receive XRP and other trusted assets (IOU's) as well"
-        }
+    "onboarding": {
+        "slideOne_title": "Payments and\npayment requests\non the XRP ledger",
+        "slideTwo_title": "User friendly access",
+        "slideTwo_desc": "Add multiple accounts, in full access mode, or read only. Send transactions and sign requests with your full access accounts.",
+        "slideThree_title": "Security first",
+        "slideThree_desc": "The xumm application and platform are built with security in mind. Never enter your secrets again, sign a transaction from your own, trusted device.",
+        "slideFour_title": "Send and receive",
+        "slideFour_desc": "You can send and receive XRP and other trusted assets (IOU's) as well"
     },
     "setupPasscode": {
         "setupAPasscode" : "Setup a passcode",
