@@ -279,6 +279,9 @@
         "selfIssued": "Self issued"
     },
     "events": {
+        "eventTypeAll ": "All",
+        "eventTypePlanned": "Planned",
+        "eventTypeRequests": "Requests",
         "noTransaction" : "No transactions",
         "shareAccount": "Share account address",
         "transactionType": "Transaction type",
