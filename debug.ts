@@ -24,4 +24,5 @@ if (__DEV__) {
     };
 
     LogBox.ignoreLogs(IGNORED_WARNINGS);
+    LogBox.ignoreAllLogs();
 }

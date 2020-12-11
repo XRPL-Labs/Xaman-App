@@ -2,14 +2,23 @@
  * Base Ledger transaction parser
  */
 import BigNumber from 'bignumber.js';
-
-import * as AccountLib from 'xrpl-accountlib';
-
 import { set, get, has, isUndefined } from 'lodash';
 
 import LedgerService from '@services/LedgerService';
 
+import { AccountSchema } from '@store/schemas/latest';
+
+import { AppScreens } from '@common/constants';
+import { Navigator } from '@common/helpers/navigator';
+
 import { HexEncoding } from '@common/libs/utils';
+import {
+    SignedObjectType,
+    TransactionJSONType,
+    LedgerTransactionType,
+    SubmitResultType,
+    VerifyResultType,
+} from '@common/libs/ledger/types';
 
 import LedgerDate from '../parser/common/date';
 import Amount from '../parser/common/amount';
@@ -18,11 +27,9 @@ import { txFlags } from '../parser/common/flags/txFlags';
 
 /* Types ==================================================================== */
 import { TransactionResult, Account, Memo } from '../parser/types';
-import { TransactionJSONType, LedgerTransactionType, SubmitResultType, VerifyResultType } from '../types';
 
 /* Class ==================================================================== */
 class BaseTransaction {
-    SignedTX: string;
     [key: string]: any;
 
     constructor(_transaction?: LedgerTransactionType) {
@@ -34,8 +41,6 @@ class BaseTransaction {
             this.meta = {};
             this.tx = {};
         }
-
-        this.SignedTX = undefined;
 
         this.fields = [
             'TransactionType',
@@ -55,21 +60,12 @@ class BaseTransaction {
         this.ClassName = 'Transaction';
     }
 
-    prepare = async (privateKey: string, multiSign?: boolean) => {
+    /**
+    Preprare the transaction for signing
+    * @returns {Promise<void>}
+    */
+    prepare = async () => {
         try {
-            this.signAs = this.Account?.address;
-            this.signer = AccountLib.derive.privatekey(privateKey);
-
-            // check if multi sign
-            if (multiSign) {
-                this.signer = this.signer.signAs(this.signer.address);
-            }
-
-            // if account not set , set the signing account
-            if (isUndefined(this.Account)) {
-                this.Account = { address: this.signer.address };
-            }
-
             // if fee not set then get current network fee
             // just for known tx types
             if (this.Type) {
@@ -79,19 +75,19 @@ class BaseTransaction {
                     if (Fee) {
                         this.Fee = new Amount(this.calculateFee(Fee)).dropsToXrp();
                     } else {
-                        throw new Error('Unable to set transaction Fee');
+                        throw new Error('Unable to set transaction Fee, check you are connected to the internet.');
                     }
                 }
 
                 // if account sequence not set get the latest account sequence
                 if (isUndefined(this.Sequence)) {
-                    const accountInfo = await LedgerService.getAccountInfo(this.signAs);
+                    const accountInfo = await LedgerService.getAccountInfo(this.Account.address);
 
                     if (!has(accountInfo, 'error') && has(accountInfo, ['account_data', 'Sequence'])) {
                         const { account_data } = accountInfo;
                         this.Sequence = Number(account_data.Sequence);
                     } else {
-                        throw new Error('Unable to set account Sequence');
+                        throw new Error('Unable to set account Sequence, check you are connected to the internet.');
                     }
                 }
 
@@ -112,23 +108,72 @@ class BaseTransaction {
                 }
             }
         } catch (e) {
-            throw new Error(`Unable to prepare the transaction, ${e.message}`);
+            throw new Error(`Unable to prepare the transaction, ${e?.message}`);
         }
     };
 
-    /*
-    Sign the transaction with provided privateKey
+    /**
+    Sign the transaction with provided account
+    * @param {AccountSchema} account object sign with
+    * @param {bool} multiSign indicates if transaction should sign for multi signing
+    * @returns {Promise<string>} signed tx blob
     */
-    sign = (): string => {
-        try {
-            const signedObject = AccountLib.sign(this.Json, this.signer);
-            this.Hash = signedObject.id;
-            this.SignedTX = signedObject.signedTransaction;
+    sign = (account: AccountSchema, multiSign = false): Promise<string> => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+            try {
+                if (this.TxnSignature) {
+                    reject(new Error('Transaction already signed!'));
+                    return;
+                }
 
-            return this.SignedTX;
-        } catch (e) {
-            throw new Error('Unable sign the transaction, please try again!');
-        }
+                // if account not set , set the signing account
+                if (isUndefined(this.Account)) {
+                    this.Account = {
+                        address: account.address,
+                    };
+                }
+
+                // prepare tranaction for signing
+                await this.prepare();
+
+                Navigator.showOverlay(
+                    AppScreens.Overlay.Vault,
+                    {
+                        overlay: {
+                            handleKeyboardEvents: true,
+                        },
+                        layout: {
+                            backgroundColor: 'transparent',
+                            componentBackgroundColor: 'transparent',
+                        },
+                    },
+                    {
+                        account,
+                        txJson: this.Json,
+                        multiSign,
+                        onSign: (signedObject: SignedObjectType) => {
+                            const { id, signedTransaction } = signedObject;
+
+                            if (!id || !signedTransaction) {
+                                reject(new Error('Unable sign the transaction, please try again!'));
+                                return;
+                            }
+
+                            this.Hash = signedObject.id;
+                            this.TxnSignature = signedObject.signedTransaction;
+
+                            resolve(this.TxnSignature);
+                        },
+                        onDismissed: () => {
+                            reject();
+                        },
+                    },
+                );
+            } catch (e) {
+                reject(e);
+            }
+        });
     };
 
     /*
@@ -149,25 +194,16 @@ class BaseTransaction {
     };
 
     /*
-    Submit the transaction to the Ledger
+    Submit the signed transaction to the Ledger
     */
-    submit = async (privateKey?: string, multiSign?: boolean): Promise<SubmitResultType> => {
+    submit = async (account?: AccountSchema, multiSign?: boolean): Promise<SubmitResultType> => {
         try {
-            if (!this.SignedTX && !privateKey) {
-                throw new Error('transaction is not signed');
+            // if not signed trigger sing function
+            if (!this.TxnSignature) {
+                await this.sign(account, multiSign);
             }
 
-            // prepare transaction if not set
-            if (!this.signer && privateKey) {
-                // prepare the transaction
-                await this.prepare(privateKey, multiSign);
-            }
-
-            if (!this.SignedTX) {
-                this.sign();
-            }
-
-            const submitResult = await LedgerService.submitTX(this.SignedTX);
+            const submitResult = await LedgerService.submitTX(this.TxnSignature);
 
             const { engineResult, message, success, transactionId } = submitResult;
 
@@ -188,14 +224,14 @@ class BaseTransaction {
             // temporary set the result
             this.TransactionResult = {
                 code: 'telFAILED',
-                message: e.message,
+                message: e?.message,
                 success: false,
             };
 
             return {
                 success: false,
                 engineResult: 'telFAILED',
-                message: e.message,
+                message: e?.message,
             };
         }
     };
@@ -356,7 +392,7 @@ class BaseTransaction {
 
     set TransactionResult(result: TransactionResult) {
         set(this, ['meta', 'TransactionResult'], result.code);
-        set(this, ['meta', 'TransactionResultMessage'], result.message);
+        set(this, ['meta', 'TransactionResultMessage'], result?.message);
     }
 
     get Hash(): string {
@@ -422,6 +458,14 @@ class BaseTransaction {
 
     get PreviousTxnID(): string {
         return get(this, ['tx', 'PreviousTxnID'], undefined);
+    }
+
+    set TxnSignature(signature: string) {
+        set(this, ['tx', 'TxnSignature'], signature);
+    }
+
+    get TxnSignature(): string {
+        return get(this, ['tx', 'TxnSignature'], undefined);
     }
 }
 

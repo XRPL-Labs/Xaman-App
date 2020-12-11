@@ -66,6 +66,7 @@ class SendView extends Component<Props, State> {
             payment: new Payment(),
             scanResult: props.scanResult || undefined,
             coreSettings: CoreRepository.getSettings(),
+            isLoading: false,
         };
     }
 
@@ -112,34 +113,47 @@ class SendView extends Component<Props, State> {
         });
     };
 
-    commit = async () => {
-        const { source } = this.state;
-
-        // show vault overlay
-        Navigator.showOverlay(
-            AppScreens.Overlay.Vault,
-            {
-                overlay: {
-                    handleKeyboardEvents: true,
-                },
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            {
-                account: source,
-                onOpen: (privateKey: string) => {
-                    this.submit(privateKey);
-                },
-            },
-        );
-    };
-
-    submit = async (privateKey: string) => {
-        const { currency, amount, destination, source, payment, coreSettings } = this.state;
+    submit = () => {
+        const { payment, coreSettings } = this.state;
 
         this.changeView(Steps.Submitting);
+
+        // submit payment to the ledger
+        payment.submit().then((submitResult) => {
+            if (submitResult.success) {
+                this.setState(
+                    {
+                        currentStep: Steps.Verifying,
+                    },
+                    () => {
+                        payment.verify().then((result) => {
+                            if (coreSettings.hapticFeedback) {
+                                if (result.success) {
+                                    VibrateHapticFeedback('notificationSuccess');
+                                } else {
+                                    VibrateHapticFeedback('notificationError');
+                                }
+                            }
+
+                            this.changeView(Steps.Result);
+                        });
+                    },
+                );
+            } else {
+                if (coreSettings.hapticFeedback) {
+                    VibrateHapticFeedback('notificationError');
+                }
+                this.changeView(Steps.Result);
+            }
+        });
+    };
+
+    send = async () => {
+        const { currency, amount, destination, source, payment } = this.state;
+
+        this.setState({
+            isLoading: true,
+        });
 
         // XRP
         if (typeof currency === 'string') {
@@ -208,8 +222,6 @@ class SendView extends Component<Props, State> {
                             },
                         ],
                     });
-
-                    this.changeView(Steps.Summary);
                     return;
                 }
 
@@ -239,52 +251,31 @@ class SendView extends Component<Props, State> {
         };
 
         try {
+            // validate payment for all possible mistakes
             await payment.validate(source);
+
+            // sign the transaction
+            await payment.sign(source).then(this.submit);
         } catch (e) {
-            Navigator.showAlertModal({
-                type: 'error',
-                text: e.message,
-                buttons: [
-                    {
-                        text: Localize.t('global.ok'),
-                        onPress: () => {},
-                        light: false,
-                    },
-                ],
-            });
+            if (e) {
+                Navigator.showAlertModal({
+                    type: 'error',
+                    text: e.message,
+                    buttons: [
+                        {
+                            text: Localize.t('global.ok'),
+                            onPress: () => {},
+                            light: false,
+                        },
+                    ],
+                });
+            }
             return;
         } finally {
-            this.changeView(Steps.Summary);
+            this.setState({
+                isLoading: false,
+            });
         }
-
-        // submit payment to the ledger
-        payment.submit(privateKey).then((submitResult) => {
-            if (submitResult.success) {
-                this.setState(
-                    {
-                        currentStep: Steps.Verifying,
-                    },
-                    () => {
-                        payment.verify().then((result) => {
-                            if (coreSettings.hapticFeedback) {
-                                if (result.success) {
-                                    VibrateHapticFeedback('notificationSuccess');
-                                } else {
-                                    VibrateHapticFeedback('notificationError');
-                                }
-                            }
-
-                            this.changeView(Steps.Result);
-                        });
-                    },
-                );
-            } else {
-                if (coreSettings.hapticFeedback) {
-                    VibrateHapticFeedback('notificationError');
-                }
-                this.changeView(Steps.Result);
-            }
-        });
     };
 
     goNext = () => {
@@ -301,7 +292,7 @@ class SendView extends Component<Props, State> {
                 this.changeView(Steps.Summary);
                 break;
             case Steps.Summary:
-                this.commit();
+                this.send();
                 break;
             default:
                 break;

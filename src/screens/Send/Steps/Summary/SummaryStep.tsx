@@ -305,7 +305,7 @@ class SummaryStep extends Component {
     };
 
     render() {
-        const { source, accounts, amount, destination, currency } = this.context;
+        const { source, accounts, amount, destination, currency, isLoading } = this.context;
 
         return (
             <View testID="send-summary-view" style={[styles.container]}>
@@ -451,7 +451,12 @@ class SummaryStep extends Component {
                         <Button secondary label={Localize.t('global.back')} onPress={this.goBack} />
                     </View>
                     <View style={[AppStyles.flex2]}>
-                        <Button textStyle={AppStyles.strong} label={Localize.t('global.send')} onPress={this.goNext} />
+                        <Button
+                            textStyle={AppStyles.strong}
+                            label={Localize.t('global.send')}
+                            onPress={this.goNext}
+                            isLoading={isLoading}
+                        />
                     </View>
                 </Footer>
             </View>

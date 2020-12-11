@@ -13,6 +13,7 @@
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		A20B9293256FCE670066FECA /* Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20B9292256FCE670066FECA /* Empty.swift */; };
 		A20C14202524C8A000686A2A /* AppUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = A20C141F2524C8A000686A2A /* AppUpdate.m */; };
 		A2805CE224D1982400B5552E /* LocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = A2805CE124D1982400B5552E /* LocalNotification.m */; };
 		A2AFF12E243E79C30007005E /* Proxima Nova Alt Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */; };
@@ -86,6 +87,8 @@
 		74D6A149EDF1C81847FF5446 /* Pods-XUMM-XUMMTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM-XUMMTests.debug.xcconfig"; path = "Target Support Files/Pods-XUMM-XUMMTests/Pods-XUMM-XUMMTests.debug.xcconfig"; sourceTree = "<group>"; };
 		913E7999E87D8F92F99879C6 /* libPods-XUMM-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-XUMM-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		99DCD7E3B9A59DFC1B4B0B24 /* Pods-XUMM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM.release.xcconfig"; path = "Target Support Files/Pods-XUMM/Pods-XUMM.release.xcconfig"; sourceTree = "<group>"; };
+		A20B9291256FCE670066FECA /* XUMM-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XUMM-Bridging-Header.h"; sourceTree = "<group>"; };
+		A20B9292256FCE670066FECA /* Empty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Empty.swift; sourceTree = "<group>"; };
 		A20C141E2524C8A000686A2A /* AppUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppUpdate.h; sourceTree = "<group>"; };
 		A20C141F2524C8A000686A2A /* AppUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppUpdate.m; sourceTree = "<group>"; };
 		A2805CE124D1982400B5552E /* LocalNotification.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocalNotification.m; sourceTree = "<group>"; };
@@ -205,6 +208,8 @@
 				A2B145CA243E935F00E952B6 /* LaunchScreen.storyboard */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				A20B9292256FCE670066FECA /* Empty.swift */,
+				A20B9291256FCE670066FECA /* XUMM-Bridging-Header.h */,
 			);
 			name = XUMM;
 			sourceTree = "<group>";
@@ -472,7 +477,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = LK5BBJNJZ6;
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1220;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -666,10 +671,12 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-XUMM/Pods-XUMM-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/TangemSdk/TangemSdk.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TangemSdk.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -694,10 +701,12 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-XUMM-XUMMTests/Pods-XUMM-XUMMTests-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/TangemSdk/TangemSdk.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TangemSdk.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -784,6 +793,7 @@
 				A2AFF142243E79C30007005E /* Crypto.m in Sources */,
 				A2ED1312252DC717002AFC09 /* InAppPurchase.m in Sources */,
 				A2AFF143243E79C30007005E /* Utils.m in Sources */,
+				A20B9293256FCE670066FECA /* Empty.swift in Sources */,
 				A2AFF141243E79C30007005E /* UIView+Toast.m in Sources */,
 				A2AFF13D243E79C30007005E /* Toast.m in Sources */,
 				A2AFF13C243E79C30007005E /* UIView+QRCode.m in Sources */,
@@ -834,6 +844,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 74D6A149EDF1C81847FF5446 /* Pods-XUMM-XUMMTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -857,6 +868,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E3710C82B35A2281F001D5BB /* Pods-XUMM-XUMMTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = XUMMTests/Info.plist;
@@ -899,6 +911,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.xrpllabs.xumm;
 				PRODUCT_NAME = XUMM;
+				SWIFT_OBJC_BRIDGING_HEADER = "XUMM-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -926,6 +939,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.xrpllabs.xumm;
 				PRODUCT_NAME = XUMM;
+				SWIFT_OBJC_BRIDGING_HEADER = "XUMM-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1092,7 +1106,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1145,7 +1158,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;

@@ -16,6 +16,7 @@ import { PushNotificationsService, LedgerService, SocketService } from '@service
 import { CoreRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
+import { SignedObjectType } from '@common/libs/ledger/types';
 // transaction parser
 import transactionFactory from '@common/libs/ledger/parser/transaction';
 
@@ -144,27 +145,31 @@ class ReviewTransactionModal extends Component<Props, State> {
         return type;
     };
 
-    signTransaction = () => {
-        const { source } = this.state;
+    prepareAndSignTransaction = async () => {
+        const { source, transaction } = this.state;
+        const { payload } = this.props;
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.Vault,
-            {
-                overlay: {
-                    handleKeyboardEvents: true,
-                },
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            {
-                account: source,
-                onOpen: (privateKey: string) => {
-                    this.submit(privateKey);
-                },
-            },
-        );
+        this.setState({
+            isPreparing: true,
+        });
+
+        await transaction
+            .sign(source, payload.isMultiSign())
+            .then(this.submit)
+            .catch((e) => {
+                if (e) {
+                    if (typeof e.toString === 'function') {
+                        Alert.alert(Localize.t('global.error'), e.toString());
+                    } else {
+                        Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+                    }
+                }
+
+                this.setState({
+                    currentStep: Steps.Review,
+                    isPreparing: false,
+                });
+            });
     };
 
     onDecline = () => {
@@ -270,7 +275,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                     },
                     {
                         text: Localize.t('global.continue'),
-                        onPress: this.signTransaction,
+                        onPress: this.prepareAndSignTransaction,
                         type: 'dismiss',
                         light: true,
                     },
@@ -292,7 +297,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                     },
                     {
                         text: Localize.t('global.continue'),
-                        onPress: this.signTransaction,
+                        onPress: this.prepareAndSignTransaction,
                         type: 'dismiss',
                         light: true,
                     },
@@ -301,7 +306,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             return;
         }
 
-        this.signTransaction();
+        this.prepareAndSignTransaction();
     };
 
     setError = (message: string) => {
@@ -327,25 +332,16 @@ class ReviewTransactionModal extends Component<Props, State> {
         });
     };
 
-    submit = async (privateKey: string) => {
+    submit = async () => {
         const { payload } = this.props;
         const { transaction, coreSettings } = this.state;
 
         try {
-            this.setState({
-                isPreparing: true,
-            });
-
-            // prepare the transaction
-            await transaction.prepare(privateKey, payload.meta.multisign);
-            // sign the payload
-            const singedBlob = await transaction.sign();
-
             // create patch object
             const patch = {
-                signed_blob: singedBlob,
+                signed_blob: transaction.TxnSignature,
                 tx_id: transaction.Hash,
-                multisigned: payload.meta.multisign ? transaction.signer.address : '',
+                multisigned: payload.meta.multisign ? transaction.Account.address : '',
                 permission: {
                     push: true,
                     days: 365,
@@ -415,12 +411,10 @@ class ReviewTransactionModal extends Component<Props, State> {
 
             this.setState({
                 currentStep: Steps.Result,
-                isPreparing: false,
             });
         } catch (e) {
             this.setState({
                 currentStep: Steps.Review,
-                isPreparing: false,
             });
             if (typeof e.toString === 'function') {
                 Alert.alert(Localize.t('global.error'), e.toString());

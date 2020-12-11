@@ -68,7 +68,7 @@ class HomeView extends Component<Props, State> {
         const coreSettings = CoreRepository.getSettings();
 
         this.state = {
-            account: AccountRepository.getDefaultAccount(),
+            account: undefined,
             isSpendable: false,
             discreetMode: coreSettings.discreetMode,
         };
@@ -76,19 +76,19 @@ class HomeView extends Component<Props, State> {
 
     componentDidMount() {
         // update UI on accounts update
-        AccountRepository.on('accountUpdate', this.updateUI);
+        AccountRepository.on('accountUpdate', this.updateDefaultAccount);
 
         // update spendable accounts on account add/remove
-        AccountRepository.on('accountCreate', this.updateSpendableStatus);
-        AccountRepository.on('accountRemove', this.updateSpendableStatus);
+        AccountRepository.on('accountCreate', this.getDefaultAccount);
+        AccountRepository.on('accountRemove', this.getDefaultAccount);
 
         CoreRepository.on('updateSettings', this.updateDiscreetMode);
 
         // listen for screen appear event
         Navigation.events().bindComponent(this);
 
-        // update spendable status
-        this.updateSpendableStatus();
+        // set default account
+        this.getDefaultAccount();
     }
 
     componentDidAppear() {
@@ -112,7 +112,8 @@ class HomeView extends Component<Props, State> {
         }
     };
 
-    updateUI = (updatedAccount: AccountSchema) => {
+    updateDefaultAccount = (updatedAccount: AccountSchema) => {
+        console.log('updateDefaultAccount');
         if (updatedAccount.isValid() && updatedAccount.default) {
             // update the UI
             this.setState(
@@ -125,6 +126,18 @@ class HomeView extends Component<Props, State> {
                 },
             );
         }
+    };
+
+    getDefaultAccount = () => {
+        this.setState(
+            {
+                account: AccountRepository.getDefaultAccount(),
+            },
+            () => {
+                // when account balance changed update spendable accounts
+                this.updateSpendableStatus();
+            },
+        );
     };
 
     // eslint-disable-next-line react/destructuring-assignment

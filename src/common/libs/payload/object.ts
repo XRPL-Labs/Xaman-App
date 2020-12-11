@@ -210,6 +210,13 @@ export class Payload {
     };
 
     /**
+     * Return true if should sign as multi sign
+     */
+    isMultiSign = (): boolean => {
+        return !!this.meta.multisign;
+    };
+
+    /**
      * reject the payload
      */
     reject = () => {

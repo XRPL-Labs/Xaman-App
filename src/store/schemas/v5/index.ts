@@ -1,9 +1,12 @@
-import ContactSchema from '@store/schemas/v1/contact';
-import AccountSchema from '@store/schemas/v2/account';
-import CounterPartySchema from '@store/schemas/v4/counterParty';
-import CurrencySchema from '@store/schemas/v4/currency';
-import TrustLineSchema from '@store/schemas/v4/trustLine';
-import ProfileSchema from '@store/schemas/v4/profile';
+import {
+    ContactSchema,
+    CounterPartySchema,
+    CurrencySchema,
+    TrustLineSchema,
+    ProfileSchema,
+    AccountSchema,
+} from '@store/schemas/v4/';
+
 // changed
 import CoreSchema from '@store/schemas/v5/core';
 

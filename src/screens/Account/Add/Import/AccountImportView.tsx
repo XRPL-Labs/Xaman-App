@@ -7,12 +7,12 @@ import { dropRight, last, isEmpty, has, get } from 'lodash';
 import React, { Component } from 'react';
 import { View, Keyboard, Alert } from 'react-native';
 
-import { XRPL_Account } from 'xrpl-accountlib';
+import { utils, XRPL_Account } from 'xrpl-accountlib';
 
 import { getAccountName } from '@common/helpers/resolver';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccessLevels, EncryptionLevels } from '@store/types';
+import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
 
 import { Navigator } from '@common/helpers/navigator';
 
@@ -56,10 +56,14 @@ class AccountImportView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        const initStep = props.upgrade ? 'SecretType' : props.tangemCard ? 'ConfirmPublicKey' : 'AccessLevel';
+
         this.state = {
-            currentStep: props.upgrade ? 'SecretType' : 'AccessLevel',
+            currentStep: initStep,
             prevSteps: [],
-            account: {},
+            account: {
+                type: AccountTypes.Regular,
+            },
             importedAccount: undefined,
             passphrase: undefined,
             upgrade: props.upgrade,
@@ -67,13 +71,43 @@ class AccountImportView extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { upgrade } = this.props;
+        const { upgrade, tangemCard } = this.props;
 
         // set the access level if it's upgrade
         if (upgrade) {
             this.setAccessLevel(AccessLevels.Full);
         }
+
+        // populate tangem account details
+        if (tangemCard) {
+            this.populateTangemCard();
+        }
     }
+
+    populateTangemCard = () => {
+        const { tangemCard } = this.props;
+
+        const { walletPublicKey } = tangemCard;
+
+        const publicKey = utils.compressPubKey(walletPublicKey);
+        const address = utils.deriveAddress(publicKey);
+
+        const account = new XRPL_Account({ address, keypair: { publicKey, privateKey: undefined } });
+
+        this.setState({
+            importedAccount: account,
+            account: {
+                type: AccountTypes.Tangem,
+                publicKey: account.keypair.publicKey,
+                address: account.address,
+                default: true,
+                encryptionLevel: EncryptionLevels.Physical,
+                accessLevel: AccessLevels.Full,
+                accountType: AccountTypes.Tangem,
+                additionalInfoString: JSON.stringify(tangemCard),
+            },
+        });
+    };
 
     setEncryptionLevel = (encryptionLevel: EncryptionLevels, callback?: any) => {
         const { account } = this.state;
@@ -104,6 +138,24 @@ class AccountImportView extends Component<Props, State> {
     setAccessLevel = (accessLevel: AccessLevels, callback?: any) => {
         const { account } = this.state;
         this.setState({ account: Object.assign(account, { accessLevel }) }, () => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    };
+
+    setAccountType = (type: AccountTypes, callback?: any) => {
+        const { account } = this.state;
+        this.setState({ account: Object.assign(account, { type }) }, () => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    };
+
+    setAdditionalInfo = (info: Object, callback?: any) => {
+        const { account } = this.state;
+        this.setState({ account: Object.assign(account, { additionalInfoString: JSON.stringify(info) }) }, () => {
             if (typeof callback === 'function') {
                 callback();
             }
@@ -235,6 +287,11 @@ class AccountImportView extends Component<Props, State> {
             } else {
                 encryptionKey = CoreRepository.getSettings().passcode;
             }
+            // import account as full access
+            AccountRepository.add(account, importedAccount.keypair.privateKey, encryptionKey);
+        } else {
+            // import account as readonly
+            AccountRepository.add(account);
         }
 
         // update catch for this account
@@ -244,8 +301,6 @@ class AccountImportView extends Component<Props, State> {
                 resolve({ name: account.label, source: 'internal:accounts' });
             }),
         );
-        // add account to store
-        AccountRepository.add(account, importedAccount.keypair.privateKey, encryptionKey);
     };
 
     renderStep = () => {
@@ -265,6 +320,8 @@ class AccountImportView extends Component<Props, State> {
                     setLabel: this.setLabel,
                     setPassphrase: this.setPassphrase,
                     setImportedAccount: this.setImportedAccount,
+                    setAccountType: this.setAccountType,
+                    setAdditionalInfo: this.setAdditionalInfo,
                 }}
             >
                 <Step />

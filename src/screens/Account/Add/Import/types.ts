@@ -1,5 +1,6 @@
 import { XRPL_Account } from 'xrpl-accountlib';
 
+import { Card } from 'tangem-sdk-react-native';
 import { AccountSchema } from '@store/schemas/latest';
 
 export type ImportSteps =
@@ -18,7 +19,8 @@ export type ImportSteps =
     | 'FinishStep';
 
 export interface Props {
-    upgrade: AccountSchema;
+    upgrade?: AccountSchema;
+    tangemCard?: Card;
 }
 
 export interface State {

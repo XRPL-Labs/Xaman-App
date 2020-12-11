@@ -30,6 +30,7 @@ export interface State {
     payment: Payment;
     scanResult: XrplDestination;
     coreSettings: CoreSchema;
+    isLoading: boolean;
 }
 
 export interface ContextProps extends State {

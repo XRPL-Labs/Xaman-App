@@ -2,7 +2,7 @@ import React from 'react';
 
 import { XRPL_Account } from 'xrpl-accountlib';
 
-import { EncryptionLevels, AccessLevels } from '@store/types';
+import { EncryptionLevels, AccessLevels, AccountTypes } from '@store/types';
 
 import { ImportSteps, State } from './types';
 
@@ -12,6 +12,8 @@ interface ContextProps extends State {
     setPassphrase: (passphrase: string, callback?: any) => void;
     setEncryptionLevel: (encryptionLevel: EncryptionLevels, callback?: any) => void;
     setAccessLevel: (accessLevels: AccessLevels, callback?: any) => void;
+    setAccountType: (type: AccountTypes, callback?: any) => void;
+    setAdditionalInfo: (info: Object, callback?: any) => void;
     goNext: (step?: ImportSteps) => void;
     goBack: () => void;
 }

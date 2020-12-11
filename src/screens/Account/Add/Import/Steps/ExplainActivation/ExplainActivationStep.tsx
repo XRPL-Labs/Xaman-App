@@ -5,6 +5,7 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Image } from 'react-native';
 
+import { AccountTypes } from '@store/types';
 // components
 import { Button, Spacer, Footer } from '@components/General';
 import { Images } from '@common/helpers/images';
@@ -27,8 +28,18 @@ class ExplainActivationStep extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
+    goNext = () => {
+        const { goNext, account } = this.context;
+
+        if (account.type === AccountTypes.Regular) {
+            goNext('SecurityStep');
+        } else {
+            goNext('LabelStep');
+        }
+    };
+
     render() {
-        const { goNext, goBack } = this.context;
+        const { goBack } = this.context;
 
         return (
             <SafeAreaView testID="account-import-explain-activation-view" style={[AppStyles.container]}>
@@ -72,9 +83,7 @@ class ExplainActivationStep extends Component<Props, State> {
                         <Button
                             testID="next-button"
                             label={Localize.t('global.nextIUnderstand')}
-                            onPress={() => {
-                                goNext('SecurityStep');
-                            }}
+                            onPress={this.goNext}
                             textStyle={AppStyles.strong}
                         />
                     </View>

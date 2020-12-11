@@ -18,10 +18,8 @@ import { StepsContext } from '../../Context';
 /* types ==================================================================== */
 export enum SecretTypes {
     SecretNumbers = 'secretNumbers',
-    Passphrase = 'passphrase',
     FamilySeed = 'familySeed',
     Mnemonic = 'mnemonic',
-    Hex = 'hex',
 }
 
 export interface Props {}

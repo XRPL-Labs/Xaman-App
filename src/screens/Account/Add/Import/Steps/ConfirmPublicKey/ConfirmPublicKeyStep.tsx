@@ -8,6 +8,7 @@ import { SafeAreaView, View, Text, ScrollView } from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
 
 import { AccountRepository } from '@store/repositories';
+import { AccountTypes } from '@store/types';
 
 import { Toast, Prompt } from '@common/helpers/interface';
 
@@ -51,6 +52,16 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
             ],
             { type: 'default' },
         );
+    };
+
+    goNext = () => {
+        const { goNext, account } = this.context;
+
+        if (account.type === AccountTypes.Regular) {
+            goNext('SecurityStep');
+        } else {
+            goNext('LabelStep');
+        }
     };
 
     renderRegularKeys = () => {
@@ -120,7 +131,11 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
     };
 
     render() {
-        const { importedAccount, goNext } = this.context;
+        const { importedAccount } = this.context;
+
+        if (!importedAccount) {
+            return null;
+        }
 
         return (
             <SafeAreaView testID="account-import-show-address-view" style={[AppStyles.container]}>
@@ -173,9 +188,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                             testID="next-button"
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.confirm')}
-                            onPress={() => {
-                                goNext('SecurityStep');
-                            }}
+                            onPress={this.goNext}
                         />
                     </View>
                 </Footer>

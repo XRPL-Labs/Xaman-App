@@ -5,7 +5,7 @@ import Flag from '@common/libs/ledger/parser/common/flag';
 import Vault from '@common/libs/vault';
 
 import { AccountSchema } from '@store/schemas/latest';
-import { AccessLevels, EncryptionLevels } from '@store/types';
+import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
 
 import BaseRepository from './base';
 
@@ -29,7 +29,7 @@ class AccountRepository extends BaseRepository {
     }
 
     /**
-     * add new account to the store
+     * add new regular account to the store
      * this will store private key in the vault if full access
      */
     add = (account: Partial<AccountSchema>, privateKey?: string, encryptionKey?: string): Promise<AccountSchema> => {
@@ -42,9 +42,8 @@ class AccountRepository extends BaseRepository {
             });
         }
 
-        // READONLY
-        if (account.accessLevel === AccessLevels.Readonly) {
-            // create
+        // READONLY || TANGEM CARD
+        if (account.accessLevel === AccessLevels.Readonly || account.type === AccountTypes.Tangem) {
             return this.create(account).then((createdAccount: AccountSchema) => {
                 this.emit('accountCreate', createdAccount);
                 this.emit('changeDefaultAccount', createdAccount);

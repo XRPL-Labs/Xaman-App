@@ -122,6 +122,8 @@ const Vault = {
      */
     reKey: async (name: string, oldKey: string, newKey: string): Promise<boolean> => {
         try {
+            if (!name) return false;
+
             const entry = await Vault.open(name, oldKey);
 
             if (!entry) {
@@ -135,9 +137,14 @@ const Vault = {
         }
     },
 
-    // Delete Vault & Privatekey from keychain
+    // Delete Vault & PrivateKey from keychain
     purge: async (name: string): Promise<void> => {
-        return Keychain.resetInternetCredentials(name);
+        try {
+            if (!name) return;
+            await Keychain.resetInternetCredentials(name);
+        } catch (e) {
+            logger.error(`Unable purge account ${name}`, e);
+        }
     },
 };
 

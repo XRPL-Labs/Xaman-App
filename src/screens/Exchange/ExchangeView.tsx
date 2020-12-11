@@ -27,6 +27,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 import { AccountRepository } from '@store/repositories';
 
+import { SignedObjectType } from '@common/libs/ledger/types';
 import LedgerExchange from '@common/libs/ledger/exchange';
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
@@ -54,7 +55,9 @@ export interface State {
     direction: 'sell' | 'buy';
     amount: string;
     liquidity: LiquidityResult;
+    offer: OfferCreate;
     isLoading: boolean;
+    isPreparing: boolean;
     isExchanging: boolean;
     isVerifying: boolean;
 }
@@ -82,7 +85,9 @@ class ExchangeView extends Component<Props, State> {
             direction: 'sell',
             amount: '',
             liquidity: undefined,
+            offer: new OfferCreate(),
             isLoading: true,
+            isPreparing: false,
             isExchanging: false,
             isVerifying: false,
         };
@@ -159,83 +164,6 @@ class ExchangeView extends Component<Props, State> {
         );
     };
 
-    createOffer = async (privateKey: string) => {
-        const { trustLine } = this.props;
-        const { sourceAccount, amount, direction, liquidity } = this.state;
-
-        this.setState({ isExchanging: true });
-
-        const XRPL_PAIR = { issuer: trustLine.currency.issuer, currency: trustLine.currency.currency };
-
-        const paddedExchangeRate = new BigNumber(liquidity.rate).dividedBy(
-            (100 + this.ledgerExchange.boundaryOptions.maxSlippagePercentage) / 100,
-        );
-
-        const getsAmount = new BigNumber(amount).multipliedBy(paddedExchangeRate).decimalPlaces(6).toString(10);
-
-        // create offer transaction
-        const offer = new OfferCreate();
-
-        if (direction === 'sell') {
-            offer.TakerGets = { currency: 'XRP', value: amount };
-            offer.TakerPays = { value: getsAmount, ...XRPL_PAIR };
-        } else {
-            offer.TakerGets = { value: amount, ...XRPL_PAIR };
-            offer.TakerPays = { currency: 'XRP', value: getsAmount };
-        }
-
-        // ImmediateOrCancel & Sell flag
-        offer.Flags = [txFlags.OfferCreate.ImmediateOrCancel, txFlags.OfferCreate.Sell];
-
-        // set source account
-        offer.Account = { address: sourceAccount.address };
-
-        // submit to the ledger
-        const submitResult = await offer.submit(privateKey);
-
-        if (!submitResult.success) {
-            this.showResultAlert(
-                Localize.t('global.error'),
-                Localize.t('exchange.errorDuringExchange', { error: submitResult.message }),
-            );
-            this.setState({ isExchanging: false });
-            return;
-        }
-
-        this.setState({ isVerifying: true });
-
-        // transaction submitted successfully
-        // verify
-        const verifyResult = await offer.verify();
-
-        this.setState({ isExchanging: false });
-
-        if (verifyResult.success) {
-            if (offer.Executed) {
-                // calculate delivered amounts
-                const takerGot = offer.TakerGot(sourceAccount.address);
-                const takerPaid = offer.TakerPaid(sourceAccount.address);
-
-                this.showResultAlert(
-                    Localize.t('global.success'),
-                    Localize.t('exchange.successfullyExchanged', {
-                        payAmount: Localize.formatNumber(Number(takerGot.value)),
-                        payCurrency: NormalizeCurrencyCode(takerGot.currency),
-                        getAmount: Localize.formatNumber(Number(takerPaid.value)),
-                        getCurrency: NormalizeCurrencyCode(takerPaid.currency),
-                    }),
-                );
-            } else {
-                this.showResultAlert(Localize.t('global.failed'), Localize.t('exchange.failedExchange'));
-            }
-        } else {
-            this.showResultAlert(
-                Localize.t('global.error'),
-                Localize.t('exchange.errorDuringExchange', { error: submitResult.message }),
-            );
-        }
-    };
-
     showResultAlert = (title: string, message: string) => {
         Prompt(
             title,
@@ -303,31 +231,106 @@ class ExchangeView extends Component<Props, State> {
                 {
                     text: Localize.t('global.doIt'),
 
-                    onPress: () => {
-                        Navigator.showOverlay(
-                            AppScreens.Overlay.Vault,
-                            {
-                                overlay: {
-                                    handleKeyboardEvents: true,
-                                },
-                                layout: {
-                                    backgroundColor: 'transparent',
-                                    componentBackgroundColor: 'transparent',
-                                },
-                            },
-                            {
-                                account: AccountRepository.getDefaultAccount(),
-                                onOpen: (privateKey: string) => {
-                                    this.createOffer(privateKey);
-                                },
-                            },
-                        );
-                    },
+                    onPress: this.prepareAndSign,
                     style: 'destructive',
                 },
             ],
             { type: 'default' },
         );
+    };
+
+    prepareAndSign = async () => {
+        const { trustLine } = this.props;
+        const { sourceAccount, offer, amount, direction, liquidity } = this.state;
+
+        this.setState({ isPreparing: true });
+
+        const XRPL_PAIR = { issuer: trustLine.currency.issuer, currency: trustLine.currency.currency };
+
+        const paddedExchangeRate = new BigNumber(liquidity.rate).dividedBy(
+            (100 + this.ledgerExchange.boundaryOptions.maxSlippagePercentage) / 100,
+        );
+
+        const getsAmount = new BigNumber(amount).multipliedBy(paddedExchangeRate).decimalPlaces(6).toString(10);
+
+        if (direction === 'sell') {
+            offer.TakerGets = { currency: 'XRP', value: amount };
+            offer.TakerPays = { value: getsAmount, ...XRPL_PAIR };
+        } else {
+            offer.TakerGets = { value: amount, ...XRPL_PAIR };
+            offer.TakerPays = { currency: 'XRP', value: getsAmount };
+        }
+
+        // ImmediateOrCancel & Sell flag
+        offer.Flags = [txFlags.OfferCreate.ImmediateOrCancel, txFlags.OfferCreate.Sell];
+
+        // set source account
+        offer.Account = { address: sourceAccount.address };
+
+        offer
+            .sign(sourceAccount)
+            .then(this.submit)
+            .catch((e) => {
+                if (e) {
+                    Alert.alert(Localize.t('global.error'), e.message);
+                }
+            })
+            .finally(() => {
+                this.setState({
+                    isPreparing: false,
+                });
+            });
+    };
+
+    submit = async () => {
+        const { sourceAccount, offer } = this.state;
+
+        this.setState({ isExchanging: true });
+
+        // submit to the ledger
+        const submitResult = await offer.submit();
+
+        if (!submitResult.success) {
+            this.showResultAlert(
+                Localize.t('global.error'),
+                Localize.t('exchange.errorDuringExchange', { error: submitResult.message }),
+            );
+            this.setState({ isExchanging: false });
+            return;
+        }
+
+        this.setState({ isVerifying: true });
+
+        // transaction submitted successfully
+        // verify
+        const verifyResult = await offer.verify();
+
+        this.setState({ isExchanging: false });
+
+        if (verifyResult.success) {
+            if (offer.Executed) {
+                // calculate delivered amounts
+                const takerGot = offer.TakerGot(sourceAccount.address);
+                const takerPaid = offer.TakerPaid(sourceAccount.address);
+
+                this.showResultAlert(
+                    Localize.t('global.success'),
+                    Localize.t('exchange.successfullyExchanged', {
+                        payAmount: Localize.formatNumber(Number(takerGot.value)),
+                        payCurrency: NormalizeCurrencyCode(takerGot.currency),
+                        getAmount: Localize.formatNumber(Number(takerPaid.value)),
+                        getCurrency: NormalizeCurrencyCode(takerPaid.currency),
+                    }),
+                );
+            } else {
+                this.showResultAlert(Localize.t('global.failed'), Localize.t('exchange.failedExchange'));
+            }
+        } else {
+            this.showResultAlert(
+                Localize.t('global.error'),
+                Localize.t('exchange.errorDuringExchange', { error: submitResult.message }),
+            );
+        }
     };
 
     onAmountChange = (amount: string) => {
@@ -357,7 +360,7 @@ class ExchangeView extends Component<Props, State> {
     };
 
     renderBottomContainer = () => {
-        const { direction, liquidity, amount, isExchanging, isLoading } = this.state;
+        const { direction, liquidity, amount, isPreparing, isLoading } = this.state;
 
         if (isLoading || !liquidity) {
             return <ActivityIndicator color={AppColors.blue} />;
@@ -412,7 +415,7 @@ class ExchangeView extends Component<Props, State> {
                 <Spacer size={40} />
                 <Button
                     onPress={this.exchange}
-                    isLoading={isExchanging}
+                    isLoading={isPreparing}
                     isDisabled={!amount || amount === '0' || !liquidity.rate || isLoading}
                     label={Localize.t('global.exchange')}
                 />

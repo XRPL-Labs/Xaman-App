@@ -177,10 +177,6 @@ class AccountSettingsView extends Component<Props, State> {
         Navigator.push(AppScreens.Account.Edit.ChangePassphrase, {}, { account });
     };
 
-    showChangeSecurityLevel = () => {
-        Alert.alert(Localize.t('global.unavailable'), Localize.t('account.unavailableChangeSecurityLevel'));
-    };
-
     removeAccount = () => {
         const { account } = this.state;
 
@@ -279,16 +275,15 @@ class AccountSettingsView extends Component<Props, State> {
                         {account.accessLevel === AccessLevels.Full && (
                             <Fragment key="security">
                                 {/* Encryption Label */}
-                                <TouchableOpacity style={[styles.row]} onPress={this.showChangeSecurityLevel}>
+                                <View style={[styles.row]}>
                                     <View style={[AppStyles.flex3]}>
                                         <Text style={styles.label}>{Localize.t('account.securityLevel')}</Text>
                                     </View>
 
                                     <View style={[AppStyles.centerAligned, AppStyles.row]}>
                                         <Text style={[styles.value]}>{account.encryptionLevel}</Text>
-                                        <Icon size={20} style={[styles.rowIcon]} name="IconChevronRight" />
                                     </View>
-                                </TouchableOpacity>
+                                </View>
 
                                 {/* Change passphrase */}
                                 {account.encryptionLevel === EncryptionLevels.Passphrase && (

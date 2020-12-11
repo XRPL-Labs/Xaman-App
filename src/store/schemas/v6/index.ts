@@ -4,15 +4,14 @@ import {
     CurrencySchema,
     TrustLineSchema,
     ProfileSchema,
-    AccountSchema,
-} from '@store/schemas/v2/';
-
+    CoreSchema,
+} from '@store/schemas/v5/';
 // changed
-import CoreSchema from '@store/schemas/v3/core';
+import AccountSchema from '@store/schemas/v6/account';
 
 /* Migration ==================================================================== */
 export const migration = (oldRealm: any, newRealm: any) => {
-    CoreSchema.migration(oldRealm, newRealm);
+    AccountSchema.migration(oldRealm, newRealm);
 };
 
 /* Schemas ==================================================================== */

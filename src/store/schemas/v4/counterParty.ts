@@ -1,5 +1,5 @@
 import Realm from 'realm';
-import CurrencySchema from './currency';
+import CurrencySchema from '@store/schemas/v4/currency';
 
 /**
  * Counter Parties Model
