@@ -113,7 +113,6 @@ class HomeView extends Component<Props, State> {
     };
 
     updateDefaultAccount = (updatedAccount: AccountSchema) => {
-        console.log('updateDefaultAccount');
         if (updatedAccount.isValid() && updatedAccount.default) {
             // update the UI
             this.setState(

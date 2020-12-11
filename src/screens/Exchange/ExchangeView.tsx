@@ -27,7 +27,6 @@ import { Navigator } from '@common/helpers/navigator';
 import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 import { AccountRepository } from '@store/repositories';
 
-import { SignedObjectType } from '@common/libs/ledger/types';
 import LedgerExchange from '@common/libs/ledger/exchange';
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';

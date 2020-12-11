@@ -16,7 +16,6 @@ import { PushNotificationsService, LedgerService, SocketService } from '@service
 import { CoreRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
-import { SignedObjectType } from '@common/libs/ledger/types';
 // transaction parser
 import transactionFactory from '@common/libs/ledger/parser/transaction';
 
