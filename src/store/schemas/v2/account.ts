@@ -10,7 +10,6 @@ import TrustLineSchema from '@store/schemas/v1/trustLine';
 
 import { EncryptionLevels, AccessLevels } from '@store/types';
 
-// @ts-ignore
 class Account extends Realm.Object {
     public static schema: Realm.ObjectSchema = {
         name: 'Account',
@@ -49,7 +48,6 @@ class Account extends Realm.Object {
     public registerAt?: Date;
     public updatedAt?: Date;
 
-    public isValid?: () => boolean;
     [index: string]: any;
 
     constructor(obj: Partial<Account>) {

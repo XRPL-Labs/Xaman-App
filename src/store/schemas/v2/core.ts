@@ -5,7 +5,6 @@ import { BiometryType } from '@store/types';
 /**
  * App Core Schema
  */
-// @ts-ignore
 class Core extends Realm.Object {
     public static schema: Realm.ObjectSchema = {
         name: 'Core',

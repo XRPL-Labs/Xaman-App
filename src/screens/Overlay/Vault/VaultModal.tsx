@@ -495,7 +495,6 @@ class VaultModal extends Component<Props, State> {
 
         return (
             <Animated.View
-                onResponderRelease={this.dismiss}
                 onStartShouldSetResponder={() => true}
                 style={[styles.container, { backgroundColor: interpolateColor }]}
             >

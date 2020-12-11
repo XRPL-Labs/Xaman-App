@@ -218,11 +218,7 @@ class AuthenticateModal extends Component<Props, State> {
         });
 
         return (
-            <Animated.View
-                onResponderRelease={this.dismiss}
-                onStartShouldSetResponder={() => true}
-                style={[styles.container, { backgroundColor: interpolateColor }]}
-            >
+            <Animated.View style={[styles.container, { backgroundColor: interpolateColor }]}>
                 <View
                     ref={(r) => {
                         this.contentView = r;

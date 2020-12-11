@@ -338,11 +338,7 @@ class CurrencySettingsModal extends Component<Props, State> {
         });
 
         return (
-            <Animated.View
-                onResponderRelease={this.dismiss}
-                onStartShouldSetResponder={() => true}
-                style={[styles.container, { backgroundColor: interpolateColor }]}
-            >
+            <Animated.View style={[styles.container, { backgroundColor: interpolateColor }]}>
                 <Animated.View style={[styles.visibleContent, { opacity: this.animatedOpacity }]}>
                     <View style={styles.headerContainer}>
                         <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>

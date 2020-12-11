@@ -3,7 +3,6 @@ import Realm from 'realm';
 /**
  * XUMM Profile Model
  */
-// @ts-ignore
 class Profile extends Realm.Object {
     public static schema: Realm.ObjectSchema = {
         name: 'Profile',
