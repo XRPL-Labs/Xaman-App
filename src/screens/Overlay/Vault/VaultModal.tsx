@@ -342,7 +342,18 @@ class VaultModal extends Component<Props, State> {
 
                 const sig = signature instanceof Array ? signature[0] : signature;
 
-                const signedObject = AccountLib.rawSecp256k1P1363.complete(preparedTx, sig);
+                let signedObject = undefined as SignedObjectType;
+
+                if (multiSign) {
+                    signedObject = AccountLib.rawSecp256k1P1363.completeMultiSigned(txJson, [
+                        {
+                            pubKey: walletPublicKey,
+                            signature: sig,
+                        },
+                    ]);
+                } else {
+                    signedObject = AccountLib.rawSecp256k1P1363.complete(preparedTx, sig);
+                }
 
                 setTimeout(() => {
                     this.onSign(signedObject);
