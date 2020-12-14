@@ -30,4 +30,5 @@ export interface State {
     importedAccount: XRPL_Account;
     passphrase?: string;
     upgrade: AccountSchema;
+    isLoading: boolean;
 }

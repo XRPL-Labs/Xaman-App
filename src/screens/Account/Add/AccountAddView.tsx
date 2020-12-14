@@ -5,10 +5,12 @@
 import React, { Component } from 'react';
 import { View, Text, Image, ImageBackground, Alert } from 'react-native';
 
-import RNTangemSdk from 'tangem-sdk-react-native';
+import RNTangemSdk, { Card, CardStatus } from 'tangem-sdk-react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
+import { Prompt } from '@common/helpers/interface';
+
 import { AppScreens } from '@common/constants';
 
 // components
@@ -43,15 +45,46 @@ class AccountAddView extends Component<Props, State> {
         Navigator.push(AppScreens.Account.Generate);
     };
 
+    createTangemWallet = (card: Card) => {
+        const { cardId } = card;
+
+        RNTangemSdk.createWallet(cardId)
+            .then((resp) => {
+                this.goToImport({ tangemCard: { ...card, ...resp } });
+            })
+            .catch(() => {
+                // ignore
+            });
+    };
+
     scanTangemCard = () => {
         RNTangemSdk.scanCard()
             .then((card) => {
-                const { cardData } = card;
+                const { cardData, status } = card;
 
-                if (cardData.blockchainName === 'XRP') {
-                    this.goToImport({ tangemCard: card });
-                } else {
+                if (cardData.blockchainName !== 'XRP') {
                     Alert.alert(Localize.t('global.error'), Localize.t('account.scannedCardIsNotATangemXRPCard'));
+                    return;
+                }
+
+                if (status === CardStatus.Empty) {
+                    Prompt(
+                        Localize.t('global.notice'),
+                        Localize.t('account.tangemCardEmptyGenerateWalletAlert'),
+                        [
+                            { text: Localize.t('global.cancel') },
+                            {
+                                text: Localize.t('account.generateAccount'),
+                                onPress: () => {
+                                    this.createTangemWallet(card);
+                                },
+                            },
+
+                        ],
+                        { type: 'default' },
+                    );
+                } else {
+                    this.goToImport({ tangemCard: card });
                 }
             })
             .catch(() => {
@@ -111,7 +144,7 @@ class AccountAddView extends Component<Props, State> {
                                 <Button
                                     style={AppStyles.buttonBlack}
                                     testID="account-import-button"
-                                    label={Localize.t('account.importTangemCard')}
+                                    label={Localize.t('account.addTangemCard')}
                                     onPress={this.scanTangemCard}
                                 />
                             </View>

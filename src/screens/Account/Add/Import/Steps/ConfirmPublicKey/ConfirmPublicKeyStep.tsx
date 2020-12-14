@@ -131,7 +131,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
     };
 
     render() {
-        const { importedAccount } = this.context;
+        const { importedAccount, isLoading } = this.context;
 
         if (!importedAccount) {
             return null;
@@ -189,6 +189,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.confirm')}
                             onPress={this.goNext}
+                            isLoading={isLoading}
                         />
                     </View>
                 </Footer>

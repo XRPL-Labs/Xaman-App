@@ -67,6 +67,7 @@ class AccountImportView extends Component<Props, State> {
             importedAccount: undefined,
             passphrase: undefined,
             upgrade: props.upgrade,
+            isLoading: false,
         };
     }
 
@@ -216,6 +217,10 @@ class AccountImportView extends Component<Props, State> {
             // check if account is activated
             // if not  -> show the activation explain step
             if (currentStep === 'ConfirmPublicKey') {
+                this.setState({
+                    isLoading: true,
+                });
+
                 await LedgerService.getAccountInfo(importedAccount.address)
                     .then((accountInfo: any) => {
                         if (!accountInfo || has(accountInfo, 'error')) {
@@ -228,6 +233,11 @@ class AccountImportView extends Component<Props, State> {
                     })
                     .catch(() => {
                         // ignore
+                    })
+                    .finally(() => {
+                        this.setState({
+                            isLoading: false,
+                        });
                     });
             }
 
