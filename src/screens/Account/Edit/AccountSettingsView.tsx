@@ -182,7 +182,7 @@ class AccountSettingsView extends Component<Props, State> {
 
         Prompt(
             Localize.t('global.warning'),
-            Localize.t('account.accountDestroyWarning'),
+            Localize.t('account.accountRemoveWarning'),
             [
                 { text: Localize.t('global.cancel') },
                 {
@@ -303,7 +303,7 @@ class AccountSettingsView extends Component<Props, State> {
                         <Spacer size={50} />
 
                         <Button
-                            label={Localize.t('account.destroyAccount')}
+                            label={Localize.t('account.removeFromXUMM')}
                             icon="IconTrash"
                             iconStyle={AppStyles.imgColorWhite}
                             style={[AppStyles.marginSml, AppStyles.buttonRed]}
