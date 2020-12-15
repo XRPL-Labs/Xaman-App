@@ -19,7 +19,7 @@ class Localize {
             return {
                 code: localeCode,
                 name: this.meta[localeCode].name.en,
-                nameLocal: this.meta[localeCode].name[localeCode]
+                nameLocal: this.meta[localeCode].name[localeCode],
             };
         });
     }
@@ -29,7 +29,7 @@ class Localize {
             return locale;
         }
 
-        const fallback = locale.toLowerCase().replace(/_/g, '-').split('-')[0]
+        const fallback = locale.toLowerCase().replace(/_/g, '-').split('-')[0];
         if (Object.keys(this.meta).indexOf(fallback) > -1) {
             return fallback;
         }
@@ -40,7 +40,7 @@ class Localize {
     setLocale = (locale: string, settings?: any) => {
         try {
             // set en
-            this.instance.translations.en = require('./generated/en.json');
+            this.instance.translations.en = require('./en.json');
 
             // set locale settings
             if (settings) {
@@ -49,9 +49,11 @@ class Localize {
 
             let translations;
 
-            const resolvedLocale = this.resolveLocale(locale)
+            const resolvedLocale = this.resolveLocale(locale);
             if (resolvedLocale !== '') {
-                translations = require('./generated/' + this.meta[resolvedLocale].source);
+                const g = 'generated/';
+                const resolvedPath = `./${resolvedLocale === 'en' ? '' : g}${this.meta[resolvedLocale].source}`;
+                translations = require(resolvedPath); // eslint-disable-line import/no-dynamic-require
                 this.instance.translations[locale] = translations;
             }
 
