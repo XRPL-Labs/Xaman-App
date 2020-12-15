@@ -3,9 +3,9 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, Image, ImageBackground, Alert } from 'react-native';
+import { View, Text, Image, ImageBackground, Alert, InteractionManager } from 'react-native';
 
-import RNTangemSdk, { Card, CardStatus } from 'tangem-sdk-react-native';
+import RNTangemSdk, { Card, CardStatus, EventCallback } from 'tangem-sdk-react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
@@ -25,7 +25,10 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {}
 
-export interface State {}
+export interface State {
+    NFCSupported: boolean;
+    NFCEnabled: boolean;
+}
 
 /* Component ==================================================================== */
 class AccountAddView extends Component<Props, State> {
@@ -36,6 +39,45 @@ class AccountAddView extends Component<Props, State> {
             bottomTabs: { visible: false },
         };
     }
+
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            NFCSupported: false,
+            NFCEnabled: false,
+        };
+    }
+
+    componentDidMount() {
+        InteractionManager.runAfterInteractions(() => {
+            // on NFC state change (Android)
+            RNTangemSdk.on('NFCStateChange', this.onNFCStateChange);
+
+            // get current NFC status
+
+            RNTangemSdk.getNFCStatus().then((status) => {
+                const { support, enabled } = status;
+
+                this.setState({
+                    NFCSupported: support,
+                    NFCEnabled: enabled,
+                });
+            });
+        });
+    }
+
+    componentWillUnmount() {
+        RNTangemSdk.removeListener('NFCStateChange', this.onNFCStateChange);
+
+        RNTangemSdk.stopSession();
+    }
+
+    onNFCStateChange = ({ enabled }: EventCallback) => {
+        this.setState({
+            NFCEnabled: enabled,
+        });
+    };
 
     goToImport = (props?: any) => {
         Navigator.push(AppScreens.Account.Import, {}, props);
@@ -61,12 +103,10 @@ class AccountAddView extends Component<Props, State> {
         RNTangemSdk.scanCard()
             .then((card) => {
                 const { cardData, status } = card;
-
                 if (cardData.blockchainName !== 'XRP') {
                     Alert.alert(Localize.t('global.error'), Localize.t('account.scannedCardIsNotATangemXRPCard'));
                     return;
                 }
-
                 if (status === CardStatus.Empty) {
                     Prompt(
                         Localize.t('global.notice'),
@@ -79,7 +119,6 @@ class AccountAddView extends Component<Props, State> {
                                     this.createTangemWallet(card);
                                 },
                             },
-
                         ],
                         { type: 'default' },
                     );
@@ -90,6 +129,21 @@ class AccountAddView extends Component<Props, State> {
             .catch(() => {
                 // ignore
             });
+    };
+
+    onAddTangemCardPress = () => {
+        const { NFCSupported, NFCEnabled } = this.state;
+
+        if (!NFCSupported) {
+            Alert.alert(Localize.t('global.error'), Localize.t('account.tangemNFCNotSupportedDeviceAlert'));
+            return;
+        }
+
+        RNTangemSdk.startSession();
+
+        if (NFCEnabled) {
+            this.scanTangemCard();
+        }
     };
 
     render() {
@@ -145,7 +199,7 @@ class AccountAddView extends Component<Props, State> {
                                     style={AppStyles.buttonBlack}
                                     testID="account-import-button"
                                     label={Localize.t('account.addTangemCard')}
-                                    onPress={this.scanTangemCard}
+                                    onPress={this.onAddTangemCardPress}
                                 />
                             </View>
                         </View>

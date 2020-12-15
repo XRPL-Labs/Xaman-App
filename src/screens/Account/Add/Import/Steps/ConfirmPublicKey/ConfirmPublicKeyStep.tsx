@@ -35,23 +35,27 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
     context: React.ContextType<typeof StepsContext>;
 
     goBack = () => {
-        const { goBack } = this.context;
+        const { goBack, account } = this.context;
 
-        Prompt(
-            Localize.t('global.pleaseNote'),
-            Localize.t('account.goBackRefillTheInput'),
-            [
-                {
-                    text: Localize.t('global.goBack'),
-                    onPress: () => {
-                        goBack();
+        if (account.type !== AccountTypes.Tangem) {
+            Prompt(
+                Localize.t('global.pleaseNote'),
+                Localize.t('account.goBackRefillTheInput'),
+                [
+                    {
+                        text: Localize.t('global.goBack'),
+                        onPress: () => {
+                            goBack();
+                        },
+                        style: 'destructive',
                     },
-                    style: 'destructive',
-                },
-                { text: Localize.t('global.cancel') },
-            ],
-            { type: 'default' },
-        );
+                    { text: Localize.t('global.cancel') },
+                ],
+                { type: 'default' },
+            );
+        } else {
+            goBack();
+        }
     };
 
     goNext = () => {

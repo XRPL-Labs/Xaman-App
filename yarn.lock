@@ -15161,7 +15161,7 @@ ripple-address-codec@^4.1.0, ripple-address-codec@^4.1.1:
     base-x "3.0.7"
     create-hash "^1.1.2"
 
-ripple-binary-codec@1.1.0:
+ripple-binary-codec@1.1.0, ripple-binary-codec@^1.1.0-beta.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/ripple-binary-codec/-/ripple-binary-codec-1.1.0.tgz#829c8ecb4c5d1b6808372f2959dc912ab16efb44"
   integrity sha512-kziWFi6TjE0TB3uNbIWU4QPkht8FiOUqDO6v5cEA4l1OEY/MnTvQS0WSN+vib3oRO72mVfhDCSHtfnUDqDYBkA==
@@ -15227,7 +15227,7 @@ ripple-bs58check@latest:
     create-hash "^1.1.0"
     ripple-bs58 "^4.0.0"
 
-ripple-hashes@latest:
+ripple-hashes@^0.3.4, ripple-hashes@latest:
   version "0.3.4"
   resolved "https://registry.yarnpkg.com/ripple-hashes/-/ripple-hashes-0.3.4.tgz#d06f78fc39dde27749b33ad2461b39ba873c94ec"
   integrity sha512-u2kgg9Yu9D44HWnC9R2lNg+amVLllJkMQmXZEEM2DAMFXigr4+ph1O8LLxLv+k0fbdjAjos4aUyWwcw6cxzYMw==
@@ -16373,10 +16373,10 @@ tail@^2.0.0:
   resolved "https://registry.yarnpkg.com/tail/-/tail-2.0.3.tgz#37567adc4624a70b35f1d146c3376fa3d6ef7c04"
   integrity sha512-s9NOGkLqqiDEtBttQZI7acLS8ycYK5sTlDwNjGnpXG9c8AWj0cfAtwEIzo/hVRMMiC5EYz+bXaJWC1u1u0GPpQ==
 
-tangem-sdk-react-native@1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/tangem-sdk-react-native/-/tangem-sdk-react-native-1.0.4.tgz#5b1fbfe40d43ecb5188e578f45c63a7f542fa7e4"
-  integrity sha512-H+Ljg9u0JhzMCrhRaK0xSmol3iYzRbszPmMetuVobMpQ2H51AYVCiWCNkKWw5H5H0UCfKQMiIZ6DLcQKUurjcQ==
+tangem-sdk-react-native@1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/tangem-sdk-react-native/-/tangem-sdk-react-native-1.1.2.tgz#ccf9eeb8469f41b7f3e133a3355a482d0a506aa8"
+  integrity sha512-e1J0jLomaQD5Hiye7rQ8Wne8GrqN+9f+FSzDeMfjDUwFZRY2IasrcbnPmv3h8Kfq7TanxsNVf/RB1smY93RjXA==
 
 tapable@^1.0.0, tapable@^1.1.3:
   version "1.1.3"
@@ -17741,10 +17741,10 @@ xregexp@^4.2.4:
   dependencies:
     "@babel/runtime-corejs3" "^7.8.3"
 
-xrpl-accountlib@0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/xrpl-accountlib/-/xrpl-accountlib-0.4.0.tgz#4d65138da6f9bea5ab9ce58867aed7e414eaade5"
-  integrity sha512-0am2e/diwtXQY8I/zAmxIQ89HicZA0XD6HV1PZfH8DDUMgGiDKQA2PjfQQ7sR+hpMyAG72WewTx0We75qIfbYA==
+xrpl-accountlib@0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/xrpl-accountlib/-/xrpl-accountlib-0.5.1.tgz#cf35bcad95993829682a27582682d748d610863e"
+  integrity sha512-ubZT6bbJXQSDqLnWIYn47QKcR0Y6/ExycsVuLPDGvld1i4X6E0o15ObTwt37u/wX1pYTgS5PN+IJiUMECHnuCA==
   dependencies:
     assert "^2.0.0"
     bip32 "^2.0.5"
@@ -17753,7 +17753,8 @@ xrpl-accountlib@0.4.0:
     elliptic "^6.5.3"
     hash.js "^1.1.7"
     ripple-address-codec "^4.1.0"
-    ripple-binary-codec "^0.2.7"
+    ripple-binary-codec "^1.1.0-beta.0"
+    ripple-hashes "^0.3.4"
     ripple-keypairs "^1.0.0"
     ripple-lib "^1.6.4"
     ripple-secret-codec "^1.0.2"

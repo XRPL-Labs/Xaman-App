@@ -26,6 +26,7 @@ const screens = {
         Edit: {
             Settings: 'app.Account.Settings',
             ChangePassphrase: 'app.Account.ChangePassphrase',
+            ChangeTangemSecurityEnforce: 'app.Account.ChangeTangemSecurityEnforce',
         },
     },
     Modal: {

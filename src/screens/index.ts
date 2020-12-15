@@ -18,6 +18,7 @@ import AccountGenerate from './Account/Add/Generate';
 import AccountList from './Account/List';
 import AccountEdit from './Account/Edit';
 import AccountChangePassphrase from './Account/Edit/ChangePassphrase';
+import AccountChangeTangemSecurity from './Account/Edit/ChangeTangemSecurity';
 
 // Modals
 import HomeSettings from './Modal/HomeSettings';
@@ -91,6 +92,7 @@ export {
     AccountList,
     AccountEdit,
     AccountChangePassphrase,
+    AccountChangeTangemSecurity,
     AccountImport,
     AccountGenerate,
     // Modals

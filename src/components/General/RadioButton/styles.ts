@@ -48,6 +48,8 @@ export default StyleSheet.create({
     labelSmall: {
         fontSize: AppFonts.subtext.size,
         fontFamily: AppFonts.base.familyBold,
-        marginBottom: 10,
+    },
+    descriptionText: {
+        marginTop: 10,
     },
 });

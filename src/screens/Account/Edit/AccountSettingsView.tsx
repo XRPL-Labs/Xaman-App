@@ -13,7 +13,7 @@ import { AppScreens } from '@common/constants';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
-import { AccessLevels, EncryptionLevels } from '@store/types';
+import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
 
 import { Header, Spacer, Icon, Button } from '@components/General';
 
@@ -177,6 +177,11 @@ class AccountSettingsView extends Component<Props, State> {
         Navigator.push(AppScreens.Account.Edit.ChangePassphrase, {}, { account });
     };
 
+    showChangeTangemSecurity = () => {
+        const { account } = this.props;
+        Navigator.push(AppScreens.Account.Edit.ChangeTangemSecurityEnforce, {}, { account });
+    };
+
     removeAccount = () => {
         const { account } = this.state;
 
@@ -298,6 +303,25 @@ class AccountSettingsView extends Component<Props, State> {
                                     </TouchableOpacity>
                                 )}
                             </Fragment>
+                        )}
+
+                        {account.type === AccountTypes.Tangem && (
+                            <TouchableOpacity style={[styles.row]} onPress={this.showChangeTangemSecurity}>
+                                <View style={[AppStyles.flex3]}>
+                                    <Text style={styles.label}>{Localize.t('account.cardEnforcedSecurity')}</Text>
+                                </View>
+
+                                <View style={[AppStyles.centerAligned, AppStyles.row]}>
+                                    <Text style={[styles.value]}>
+                                        {/*
+                                        // @ts-ignore */}
+                                        {account.additionalInfo?.isPin2Default
+                                            ? Localize.t('global.longTap')
+                                            : Localize.t('global.passcode')}
+                                    </Text>
+                                </View>
+                                <Icon size={20} style={[styles.rowIcon]} name="IconChevronRight" />
+                            </TouchableOpacity>
                         )}
 
                         <Spacer size={50} />
