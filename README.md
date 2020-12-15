@@ -11,7 +11,6 @@ You can download our app from the [App Store](https://apps.apple.com/us/app/id14
 
 If you are a developer and you wish to engage with XUMM users, please take a look at the [XUMM Developer Dashboard](https://apps.xumm.dev/) and [read the docs](https://xumm.readme.io/).
 
-
 ## Contributing
 
 ### Development
@@ -19,6 +18,13 @@ If you are a developer and you wish to engage with XUMM users, please take a loo
 XUMM is written in JavaScript with React Native. To get started with the code, follow this docs:
 
 * [Environment Setup](docs/environment-setup.md)
+
+#### Translations
+Before being able to run the code, please generate the locale files. This will fetch the translations from the XUMM Translation Portal:
+
+```bash
+npm run generate-locale
+```
 
 Further reading:
 

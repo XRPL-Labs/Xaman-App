@@ -12,7 +12,8 @@
     "update-snapshots": "jest --updateSnapshot",
     "storybook": "start-storybook -p 7007",
     "postinstall": "make post-install",
-    "prestorybook": "rnstl"
+    "prestorybook": "rnstl",
+    "generate-locale": "node src/locale/__generate.js"
   },
   "dependencies": {
     "@react-native-community/blur": "3.6.0",
