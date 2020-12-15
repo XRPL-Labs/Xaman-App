@@ -24,6 +24,19 @@ class Localize {
         });
     }
 
+    resolveLocale = (locale: string) => {
+        if (Object.keys(this.meta).indexOf(locale) > -1) {
+            return locale;
+        }
+
+        const fallback = locale.toLowerCase().replace(/_/g, '-').split('-')[0]
+        if (Object.keys(this.meta).indexOf(fallback) > -1) {
+            return fallback;
+        }
+
+        return 'en';
+    }
+
     setLocale = (locale: string, settings?: any) => {
         try {
             // set en
@@ -36,17 +49,9 @@ class Localize {
 
             let translations;
 
-            if (Object.keys(this.meta).indexOf(locale) > -1) {
-                translations = require('./generated/' + this.meta[locale].source);
-            } else {
-                // Try fallback
-                const fallback = locale.toLowerCase().replace(/_/g, '-').split('-')[0]
-                if (Object.keys(this.meta).indexOf(fallback) > -1) {
-                    translations = require('./generated/' + this.meta[fallback].source);
-                }
-            }
-
-            if (translations) {
+            const resolvedLocale = this.resolveLocale(locale)
+            if (resolvedLocale !== '') {
+                translations = require('./generated/' + this.meta[resolvedLocale].source);
                 this.instance.translations[locale] = translations;
             }
 
