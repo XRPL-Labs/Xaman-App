@@ -45,10 +45,14 @@ class EnterSeedStep extends Component<Props, State> {
         try {
             let account;
 
+            // normal family seed
             if (familySeed.startsWith('s')) {
                 account = derive.familySeed(familySeed);
-            } else {
+            } else if (familySeed.length === 66 && familySeed.startsWith('00')) {
+                // hex private key
                 account = derive.privatekey(familySeed);
+            } else {
+                throw new Error('Unsupported');
             }
 
             // set imported account
