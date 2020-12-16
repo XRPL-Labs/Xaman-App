@@ -243,6 +243,7 @@ class EditContactView extends Component<Props, State> {
                                 onChangeText={(value) => this.setState({ name: value })}
                                 value={name}
                                 maxLength={30}
+                                autoCapitalize="sentences"
                             />
 
                             <Spacer size={20} />

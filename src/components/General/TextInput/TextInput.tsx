@@ -115,6 +115,7 @@ class Input extends Component<Props, State> {
             inputStyle,
             showScanner,
             keyboardType,
+            autoCapitalize,
         } = this.props;
 
         const filteredProps = { ...this.props };
@@ -146,7 +147,7 @@ class Input extends Component<Props, State> {
                     onFocus={this.onFocus}
                     onBlur={this.onBlur}
                     placeholderTextColor={AppColors.greyDark}
-                    autoCapitalize="none"
+                    autoCapitalize={autoCapitalize || 'none'}
                     autoCorrect={false}
                     multiline={false}
                     underlineColorAndroid="transparent"

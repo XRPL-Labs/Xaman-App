@@ -204,6 +204,7 @@ class AddContactView extends Component<Props, State> {
                                 value={name}
                                 maxLength={30}
                                 isLoading={isLoading}
+                                autoCapitalize="sentences"
                             />
 
                             <Spacer size={20} />

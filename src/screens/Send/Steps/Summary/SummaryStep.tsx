@@ -441,6 +441,7 @@ class SummaryStep extends Component {
                                 inputStyle={styles.inputStyle}
                                 maxLength={300}
                                 returnKeyType="done"
+                                autoCapitalize="sentences"
                             />
                         </View>
                     </ScrollView>
