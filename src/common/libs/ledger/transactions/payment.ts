@@ -97,11 +97,16 @@ class Payment extends BaseTransaction {
         }
 
         if (has(destination, 'tag')) {
-            if (!isNumber(destination.tag)) {
-                // try to convert to number
-                set(this, 'tx.DestinationTag', toInteger(destination.tag));
+            const tag = get(destination, 'tag', undefined);
+            if (tag !== undefined && tag !== null) {
+                // try to convert to number if not
+                if (!isNumber(tag)) {
+                    set(this, 'tx.DestinationTag', toInteger(tag));
+                } else {
+                    set(this, 'tx.DestinationTag', tag);
+                }
             } else {
-                set(this, 'tx.DestinationTag', destination.tag);
+                set(this, 'tx.DestinationTag', undefined);
             }
         } else {
             set(this, 'tx.DestinationTag', undefined);
