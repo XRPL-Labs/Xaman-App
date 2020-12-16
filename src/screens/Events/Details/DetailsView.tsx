@@ -455,8 +455,7 @@ class TransactionDetailsView extends Component<Props, State> {
             <>
                 <Text style={[styles.labelText]}>{Localize.t('global.status')}</Text>
                 <Text style={[styles.contentText]}>
-                    {Localize.t('events.thisTransactionWasSuccessful')}
-                    {Localize.t('events.andValidatedInLedger')}
+                    {Localize.t('events.thisTransactionWasSuccessful')} {Localize.t('events.andValidatedInLedger')}
                     <Text style={AppStyles.monoBold}> {tx.LedgerIndex} </Text>
                     {Localize.t('events.onDate')}
                     <Text style={AppStyles.monoBold}> {moment(tx.Date).format('LLLL')}</Text>
