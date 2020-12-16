@@ -5,11 +5,36 @@
 class Localize {
     instance: any;
     settings: any;
+    meta: any;
 
     constructor() {
         this.instance = require('i18n-js');
+        this.meta = require('./meta.json');
         this.instance.fallbacks = true;
         this.settings = undefined;
+    }
+
+    getLocales = () => {
+        return Object.keys(this.meta).map(localeCode => {
+            return {
+                code: localeCode,
+                name: this.meta[localeCode].name.en,
+                nameLocal: this.meta[localeCode].name[localeCode],
+            };
+        });
+    }
+
+    resolveLocale = (locale: string) => {
+        if (Object.keys(this.meta).indexOf(locale) > -1) {
+            return locale;
+        }
+
+        const fallback = locale.toLowerCase().replace(/_/g, '-').split('-')[0];
+        if (Object.keys(this.meta).indexOf(fallback) > -1) {
+            return fallback;
+        }
+
+        return 'en';
     }
 
     setLocale = (locale: string, settings?: any) => {
@@ -24,24 +49,11 @@ class Localize {
 
             let translations;
 
-            switch (locale) {
-                case 'zh':
-                    translations = require('./zh-CN.json');
-                    break;
-                case 'ja':
-                    translations = require('./ja.json');
-                    break;
-                case 'es':
-                    translations = require('./es.json');
-                    break;
-                case 'ko':
-                    translations = require('./ko.json');
-                    break;
-                default:
-                    break;
-            }
-
-            if (translations) {
+            const resolvedLocale = this.resolveLocale(locale);
+            if (resolvedLocale !== '') {
+                const g = 'generated/';
+                const resolvedPath = `./${resolvedLocale === 'en' ? '' : g}${this.meta[resolvedLocale].source}`;
+                translations = require(resolvedPath); // eslint-disable-line import/no-dynamic-require
                 this.instance.translations[locale] = translations;
             }
 
