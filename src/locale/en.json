@@ -278,7 +278,11 @@
     "emptyAccountAddFirstAccount": "It feels a little bit empty here. Add your first account.",
     "openSignRequest": "Open Sign Request",
     "sendPaymentTo": "Send payment to",
-    "selfIssued": "Self issued"
+    "selfIssued": "Self issued",
+    "shareReadonlyAccountWarning": "Do you own the keys to this Read Only account, or is this your exchange account?",
+    "iOwnTheKeys": "I own the keys",
+    "exchangeAccount": "Exchange Account",
+    "exchangeAccountReadonlyExplain": "You cannot deposit directly to your exchange account: you need a destination tag to do so. Please get your destination tag from your exchange, and deposit manually."
   },
   "events": {
     "eventTypeAll ": "All",

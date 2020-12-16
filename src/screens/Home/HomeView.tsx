@@ -15,12 +15,14 @@ import {
     ImageBackground,
     InteractionManager,
     Share,
+    Alert,
 } from 'react-native';
 
 import { Navigation } from 'react-native-navigation';
 
 import { LedgerService, SocketService } from '@services';
 
+import { AccessLevels } from '@store/types';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
 
@@ -30,7 +32,7 @@ import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
-import { VibrateHapticFeedback } from '@common/helpers/interface';
+import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
 
 import Localize from '@locale';
 
@@ -232,6 +234,35 @@ class HomeView extends Component<Props, State> {
         CoreRepository.saveSettings({
             discreetMode: !discreetMode,
         });
+    };
+
+    showExchangeAccountAlert = () => {
+        Alert.alert(Localize.t('global.warning'), Localize.t('home.exchangeAccountReadonlyExplain'));
+    };
+
+    onShowAccountQRPress = () => {
+        const { account } = this.state;
+
+        if (account.accessLevel === AccessLevels.Readonly) {
+            Prompt(
+                Localize.t('global.warning'),
+                Localize.t('home.shareReadonlyAccountWarning'),
+                [
+                    {
+                        text: Localize.t('home.exchangeAccount'),
+                        style: 'destructive',
+                        onPress: this.showExchangeAccountAlert,
+                    },
+                    {
+                        text: Localize.t('home.iOwnTheKeys'),
+                        onPress: this.showShareOverlay,
+                    },
+                ],
+                { type: 'default' },
+            );
+        } else {
+            this.showShareOverlay();
+        }
     };
 
     showShareOverlay = () => {
@@ -470,25 +501,11 @@ class HomeView extends Component<Props, State> {
     };
 
     renderButtons = () => {
-        const { isSpendable, account } = this.state;
-
-        if (account.balance === 0) {
-            return (
-                <RaisedButton
-                    testID="qr-button"
-                    icon="IconQR"
-                    iconSize={20}
-                    label={Localize.t('account.showAccountQR')}
-                    textStyle={[styles.QRButtonText]}
-                    onPress={this.showShareOverlay}
-                    activeOpacity={0}
-                />
-            );
-        }
+        const { isSpendable } = this.state;
 
         if (isSpendable) {
             return (
-                <View style={[styles.buttonRow]}>
+                <View style={[styles.buttonRow, styles.buttonRowHalf]}>
                     <RaisedButton
                         testID="send-button"
                         style={[styles.sendButton]}
@@ -509,14 +526,26 @@ class HomeView extends Component<Props, State> {
                         iconPosition="right"
                         label={Localize.t('global.request')}
                         textStyle={[styles.requestButtonText]}
-                        onPress={this.showShareOverlay}
+                        onPress={this.onShowAccountQRPress}
                         activeOpacity={0}
                     />
                 </View>
             );
         }
 
-        return null;
+        return (
+            <View style={[styles.buttonRow]}>
+                <RaisedButton
+                    testID="qr-button"
+                    icon="IconQR"
+                    iconSize={20}
+                    label={Localize.t('account.showAccountQR')}
+                    textStyle={[styles.QRButtonText]}
+                    onPress={this.onShowAccountQRPress}
+                    activeOpacity={0}
+                />
+            </View>
+        );
     };
 
     renderEmpty = () => {
