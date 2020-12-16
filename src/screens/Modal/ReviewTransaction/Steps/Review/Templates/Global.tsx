@@ -7,7 +7,7 @@ import { Amount } from '@common/libs/ledger/parser/common';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 
 // components
-// import { Spacer } from '@components/General';
+import { InfoMessage } from '@components/General';
 
 import Localize from '@locale';
 
@@ -67,6 +67,16 @@ class GlobalTemplate extends Component<Props, State> {
         }
     }
 
+    renderWarnings = () => {
+        const { transaction } = this.props;
+
+        if (transaction.Type === 'AccountDelete') {
+            return <InfoMessage type="error" label={Localize.t('payload.accountDeleteExchangeSupportWarning')} />;
+        }
+
+        return null;
+    };
+
     render() {
         const { transaction } = this.props;
         const { networkFee } = this.state;
@@ -96,6 +106,8 @@ class GlobalTemplate extends Component<Props, State> {
                 <View style={[styles.contentBox]}>
                     <Text style={styles.value}>{transaction.Fee || networkFee} XRP</Text>
                 </View>
+
+                {this.renderWarnings()}
             </>
         );
     }
