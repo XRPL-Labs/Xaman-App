@@ -27,12 +27,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         resizeMode: 'contain',
     },
-    avatar: {
-        alignSelf: 'center',
-        borderRadius: 10,
-        width: AppSizes.scale(25),
-        height: AppSizes.scale(25),
-    },
     label: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.subtext.size,

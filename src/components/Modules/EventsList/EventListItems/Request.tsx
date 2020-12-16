@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableHighlight } from 'react-native';
+import { View, Text, TouchableHighlight } from 'react-native';
 
 import { AccountSchema } from '@store/schemas/latest';
 import { Payload } from '@common/libs/payload';
@@ -7,6 +7,9 @@ import { Payload } from '@common/libs/payload';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
+
+import { Avatar } from '@components/General';
+
 import { AppStyles } from '@theme';
 
 import styles from './styles';
@@ -43,9 +46,7 @@ class RequestTemplate extends Component<Props, State> {
             >
                 <View style={[AppStyles.row, styles.row]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                        <View style={styles.iconContainer}>
-                            <Image source={{ uri: item.application.icon_url }} style={styles.avatar} />
-                        </View>
+                        <Avatar size={40} border source={{ uri: item.application.icon_url }} />
                     </View>
                     <View style={[AppStyles.flex5, AppStyles.centerContent]}>
                         <Text style={[styles.label]}>{item.application.name}</Text>

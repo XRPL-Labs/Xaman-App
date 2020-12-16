@@ -4,7 +4,7 @@
 
 import { isEmpty, get, find } from 'lodash';
 import React, { Component } from 'react';
-import { ImageBackground, ScrollView, View, Text, Image, Platform, LayoutChangeEvent } from 'react-native';
+import { ImageBackground, ScrollView, View, Text, Platform, LayoutChangeEvent } from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
@@ -17,7 +17,7 @@ import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
 // components
-import { Button, AccordionPicker, Spacer } from '@components/General';
+import { Button, AccordionPicker, Spacer, Avatar } from '@components/General';
 
 import Localize from '@locale';
 // style
@@ -318,19 +318,19 @@ class ReviewStep extends Component<Props, State> {
                 <View onLayout={this.setHeaderHeight} style={[styles.collapsingHeader, AppStyles.centerContent]}>
                     <View style={[AppStyles.row, AppStyles.paddingSml]}>
                         <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
-                            <Image source={{ uri: payload.application.icon_url }} style={[styles.xummAppIcon]} />
+                            <Avatar size={60} border source={{ uri: payload.application.icon_url }} />
 
-                            <Text style={[styles.xummAppTitle]}>{payload.application.name}</Text>
+                            <Text style={[styles.appTitle]}>{payload.application.name}</Text>
 
                             {!!payload.meta.custom_instruction && (
                                 <>
-                                    <Text style={[styles.xummAppLabelText]}>{Localize.t('global.details')}</Text>
-                                    <Text style={[styles.xummAppLabelInfo]}>{payload.meta.custom_instruction}</Text>
+                                    <Text style={[styles.descriptionLabel]}>{Localize.t('global.details')}</Text>
+                                    <Text style={[styles.instructionText]}>{payload.meta.custom_instruction}</Text>
                                 </>
                             )}
 
-                            <Text style={[styles.xummAppLabelText]}>{Localize.t('global.type')}</Text>
-                            <Text style={[styles.xummAppLabelInfo, AppStyles.colorBlue, AppStyles.bold]}>
+                            <Text style={[styles.descriptionLabel]}>{Localize.t('global.type')}</Text>
+                            <Text style={[styles.instructionText, AppStyles.colorBlue, AppStyles.bold]}>
                                 {getTransactionLabel()}
                             </Text>
                         </View>
