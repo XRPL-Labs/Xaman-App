@@ -182,10 +182,12 @@ class Application {
                 const core = CoreRepository.getSettings();
 
                 const localeSettings = await GetDeviceLocaleSettings();
+
                 // app is not initialized yet, set to default EN
                 if (!core) {
-                    this.logger.debug('Locale is not initialized, using default EN');
-                    Localize.setLocale('en', localeSettings);
+                    this.logger.debug('Locale is not initialized, setting base on device languageCode');
+                    const locale = Localize.setLocale(localeSettings.languageCode, localeSettings);
+                    CoreRepository.saveSettings({ language: locale });
                     return resolve();
                 }
 

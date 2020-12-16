@@ -23,7 +23,7 @@ XUMM is written in JavaScript with React Native. To get started with the code, f
 Before being able to run the code, please generate the locale files. This will fetch the translations from the XUMM Translation Portal:
 
 ```bash
-npm run generate-locale
+make generate-locales
 ```
 
 Further reading:

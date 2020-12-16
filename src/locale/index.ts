@@ -15,14 +15,14 @@ class Localize {
     }
 
     getLocales = () => {
-        return Object.keys(this.meta).map(localeCode => {
+        return Object.keys(this.meta).map((localeCode) => {
             return {
                 code: localeCode,
                 name: this.meta[localeCode].name.en,
                 nameLocal: this.meta[localeCode].name[localeCode],
             };
         });
-    }
+    };
 
     resolveLocale = (locale: string) => {
         if (Object.keys(this.meta).indexOf(locale) > -1) {
@@ -35,9 +35,9 @@ class Localize {
         }
 
         return 'en';
-    }
+    };
 
-    setLocale = (locale: string, settings?: any) => {
+    setLocale = (locale: string, settings?: any): string => {
         try {
             // set en
             this.instance.translations.en = require('./en.json');
@@ -47,19 +47,20 @@ class Localize {
                 this.settings = settings;
             }
 
-            let translations;
-
             const resolvedLocale = this.resolveLocale(locale);
-            if (resolvedLocale !== '') {
-                const g = 'generated/';
-                const resolvedPath = `./${resolvedLocale === 'en' ? '' : g}${this.meta[resolvedLocale].source}`;
-                translations = require(resolvedPath); // eslint-disable-line import/no-dynamic-require
-                this.instance.translations[locale] = translations;
+
+            if (resolvedLocale !== '' && resolvedLocale !== 'en') {
+                const generateLocals = require('./generated').default;
+                this.instance.translations[resolvedLocale] = generateLocals[resolvedLocale];
+                this.instance.locale = resolvedLocale;
+                return resolvedLocale;
             }
 
-            this.instance.locale = locale;
-        } catch {
-            // ignore
+            // fallback to EN if we don't support the locale
+            this.instance.locale = 'en';
+            return 'en';
+        } catch (e) {
+            return 'en';
         }
     };
 

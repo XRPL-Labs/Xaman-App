@@ -2,14 +2,13 @@
  * General Settings Screen
  */
 
-import filter from 'lodash/filter';
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetDeviceLocaleSettings } from '@common/helpers/device';
 
-import { AppScreens, AppConfig } from '@common/constants';
+import { AppScreens } from '@common/constants';
 
 import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
@@ -27,6 +26,7 @@ export interface Props {}
 
 export interface State {
     coreSettings: CoreSchema;
+    locales: any;
 }
 
 /* Component ==================================================================== */
@@ -42,7 +42,7 @@ class GeneralSettingsView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        this.state = { coreSettings: CoreRepository.getSettings() };
+        this.state = { coreSettings: CoreRepository.getSettings(), locales: Localize.getLocales() };
     }
 
     componentDidMount() {
@@ -58,7 +58,16 @@ class GeneralSettingsView extends Component<Props, State> {
     };
 
     showLanguagePicker = () => {
-        const { coreSettings } = this.state;
+        const { coreSettings, locales } = this.state;
+
+        const normalizedLocales = [];
+
+        for (const locale of locales) {
+            normalizedLocales.push({
+                value: locale.code,
+                title: locale.nameLocal,
+            });
+        }
 
         Navigator.push(
             AppScreens.Modal.Picker,
@@ -66,7 +75,7 @@ class GeneralSettingsView extends Component<Props, State> {
             {
                 title: Localize.t('global.language'),
                 description: Localize.t('settings.selectLanguage'),
-                items: AppConfig.language.supported,
+                items: normalizedLocales,
                 selected: coreSettings.language,
                 onSelect: this.onLanguageSelected,
             },
@@ -106,12 +115,16 @@ class GeneralSettingsView extends Component<Props, State> {
         });
     };
 
+    getLanguageTitle = (): string => {
+        const { coreSettings, locales } = this.state;
+
+        const locale = locales.find((x: any) => x.code === coreSettings.language);
+
+        return locale.nameLocal;
+    };
+
     render() {
         const { coreSettings } = this.state;
-
-        const language = filter(AppConfig.language.supported, (l) => {
-            return l.value === coreSettings.language;
-        })[0];
 
         return (
             <View testID="general-settings-view" style={[styles.container]}>
@@ -130,7 +143,7 @@ class GeneralSettingsView extends Component<Props, State> {
                             <Text style={styles.label}>{Localize.t('global.language')}</Text>
                         </View>
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                            <Text style={[styles.value]}>{language.title}</Text>
+                            <Text style={[styles.value]}>{this.getLanguageTitle()}</Text>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
                     </TouchableOpacity>

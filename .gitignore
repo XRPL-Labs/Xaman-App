@@ -69,4 +69,4 @@ src/.vscode/settings.json
 #others
 e2e/screenshots/*
 src/locale/*.json
-src/locale/generated/*.json
+src/locale/generated/*

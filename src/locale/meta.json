@@ -85,7 +85,7 @@
   "iw-IL": {
     "name": {
       "en": "Hebrew",
-      "he": "עברית"
+      "iw-IL": "עברית"
     },
     "source": "he.json"
   },
@@ -141,7 +141,7 @@
   "es_MX": {
     "name": {
       "en": "Spanish (Latin America)",
-      "es-419": "Español (Latinoamericanos)"
+      "es_MX": "Español (Latinoamericanos)"
     },
     "source": "es-419.json"
   },
