@@ -2,6 +2,7 @@
  * General Settings Screen
  */
 
+import { uniqBy } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 
@@ -60,7 +61,7 @@ class GeneralSettingsView extends Component<Props, State> {
     showLanguagePicker = () => {
         const { coreSettings, locales } = this.state;
 
-        const normalizedLocales = [];
+        let normalizedLocales = [];
 
         for (const locale of locales) {
             normalizedLocales.push({
@@ -68,6 +69,8 @@ class GeneralSettingsView extends Component<Props, State> {
                 title: locale.nameLocal,
             });
         }
+
+        normalizedLocales = uniqBy(normalizedLocales, 'title');
 
         Navigator.push(
             AppScreens.Modal.Picker,
