@@ -22,6 +22,8 @@ import transactionFactory from '@common/libs/ledger/parser/transaction';
 // components
 import { Button, Icon, Spacer } from '@components/General';
 
+import { PayloadOrigin } from '@common/libs/payload';
+
 // localize
 import Localize from '@locale';
 
@@ -349,8 +351,9 @@ class ReviewTransactionModal extends Component<Props, State> {
             const patch = {
                 signed_blob: transaction.TxnSignature,
                 tx_id: transaction.Hash,
-                multisigned: payload.meta.multisign ? transaction.Account.address : '',
                 signmethod: transaction.SignMethod,
+                multisigned: payload.meta.multisign ? transaction.Account.address : '',
+                origintype: payload.origin || PayloadOrigin.EVENT_LIST,
                 permission: {
                     push: true,
                     days: 365,

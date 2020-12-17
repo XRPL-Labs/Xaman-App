@@ -10,7 +10,7 @@ import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messag
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-import { Payload } from '@common/libs/payload';
+import { Payload, PayloadOrigin } from '@common/libs/payload';
 
 import LoggerService from '@services/LoggerService';
 import NavigationService from '@services/NavigationService';
@@ -163,7 +163,7 @@ class PushNotificationsService extends EventEmitter {
             const payloadUUID = get(notification, ['data', 'payload']);
 
             if (payloadUUID) {
-                await Payload.from(payloadUUID)
+                await Payload.from(payloadUUID, PayloadOrigin.PUSH_NOTIFICATION)
                     .then((payload) => {
                         // show review transaction screen
                         Navigator.showModal(

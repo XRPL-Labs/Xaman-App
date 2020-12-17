@@ -24,6 +24,7 @@ import {
     PatchSuccessType,
     PatchRejectType,
     PayloadReferenceType,
+    PayloadOrigin,
 } from './types';
 
 // errors
@@ -37,6 +38,7 @@ export class Payload {
     meta: MetaType;
     application: ApplicationType;
     payload: PayloadReferenceType;
+    origin: PayloadOrigin;
     ClassName: string;
 
     constructor() {
@@ -47,9 +49,13 @@ export class Payload {
      * get payload object from payload UUID or payload Json
      * @param args
      */
-    static async from(args: string | PayloadType): Promise<Payload> {
+    static async from(args: string | PayloadType, origin?: PayloadOrigin): Promise<Payload> {
         const payload = new Payload();
-        // TODO: better error handling
+
+        // set payload origin if set
+        if (origin) {
+            payload.setOrigin(origin);
+        }
 
         // if Payload UUID passed then fetch the payload from backend
         if (isString(args)) {
@@ -126,6 +132,14 @@ export class Payload {
         }
 
         return false;
+    };
+
+    /**
+     *  Assign payload origin to object
+     * @param origin PayloadOrigin
+     */
+    setOrigin = (origin: PayloadOrigin) => {
+        this.origin = origin;
     };
 
     /**

@@ -10,11 +10,12 @@ import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId }
 
 import NavigationService from '@services/NavigationService';
 
-import { NormalizeDestination } from '@common/libs/utils';
-import { Payload } from '@common/libs/payload';
+import { Payload, PayloadOrigin } from '@common/libs/payload';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
+
+import { NormalizeDestination } from '@common/libs/utils';
 
 import Localize from '@locale';
 
@@ -48,7 +49,7 @@ class LinkingService extends EventEmitter {
     handlePayloadReference = async (uuid: string) => {
         try {
             // fetch the payload
-            const payload = await Payload.from(uuid);
+            const payload = await Payload.from(uuid, PayloadOrigin.DEEP_LINK);
 
             // review the transaction
             Navigator.showModal(

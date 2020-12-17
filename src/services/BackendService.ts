@@ -144,8 +144,9 @@ class BackendService {
 
                 return [];
             })
-            .catch((error: string) => {
+            .catch((error: string): any => {
                 this.logger.error('Fetch Pending Payloads Error: ', error);
+                return [];
             });
     };
 

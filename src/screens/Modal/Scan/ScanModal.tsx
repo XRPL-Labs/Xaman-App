@@ -22,7 +22,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 import { NormalizeDestination } from '@common/libs/utils';
 
-import { Payload } from '@common/libs/payload';
+import { Payload, PayloadOrigin } from '@common/libs/payload';
 
 import Localize from '@locale';
 
@@ -162,7 +162,7 @@ class ScanView extends Component<Props, State> {
         Alert.alert(
             'Translation detected',
             'XUMM Translation Portal language file detected. Do you want to load it into the app?' +
-            '(To revert to the default translation, force quit XUMM and start XUMM again)',
+                '(To revert to the default translation, force quit XUMM and start XUMM again)',
             [
                 {
                     text: 'Cancel',
@@ -189,7 +189,7 @@ class ScanView extends Component<Props, State> {
 
         try {
             // fetch the payload
-            const payload = await Payload.from(uuid);
+            const payload = await Payload.from(uuid, PayloadOrigin.QR);
 
             // review the transaction
             this.routeUser(
