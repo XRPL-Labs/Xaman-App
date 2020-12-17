@@ -3,6 +3,12 @@ import { XRPL_Account } from 'xrpl-accountlib';
 import { Card } from 'tangem-sdk-react-native';
 import { AccountSchema } from '@store/schemas/latest';
 
+export enum SecretTypes {
+    SecretNumbers = 'secretNumbers',
+    FamilySeed = 'familySeed',
+    Mnemonic = 'mnemonic',
+}
+
 export type ImportSteps =
     | 'AccessLevel'
     | 'SecretType'
@@ -29,6 +35,7 @@ export interface State {
     account: Partial<AccountSchema>;
     importedAccount: XRPL_Account;
     passphrase?: string;
+    secretType?: SecretTypes;
     upgrade: AccountSchema;
     isLoading: boolean;
 }

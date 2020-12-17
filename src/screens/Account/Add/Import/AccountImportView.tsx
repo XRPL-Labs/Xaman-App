@@ -38,7 +38,7 @@ import Steps from './Steps';
 import { StepsContext } from './Context';
 
 /* types ==================================================================== */
-import { ImportSteps, Props, State } from './types';
+import { ImportSteps, SecretTypes, Props, State } from './types';
 
 /* Component ==================================================================== */
 class AccountImportView extends Component<Props, State> {
@@ -66,6 +66,7 @@ class AccountImportView extends Component<Props, State> {
             },
             importedAccount: undefined,
             passphrase: undefined,
+            secretType: SecretTypes.SecretNumbers,
             upgrade: props.upgrade,
             isLoading: false,
         };
@@ -157,6 +158,14 @@ class AccountImportView extends Component<Props, State> {
     setAdditionalInfo = (info: Object, callback?: any) => {
         const { account } = this.state;
         this.setState({ account: Object.assign(account, { additionalInfoString: JSON.stringify(info) }) }, () => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    };
+
+    setSecretType = (type: SecretTypes, callback?: any) => {
+        this.setState({ secretType: type }, () => {
             if (typeof callback === 'function') {
                 callback();
             }
@@ -332,6 +341,7 @@ class AccountImportView extends Component<Props, State> {
                     setImportedAccount: this.setImportedAccount,
                     setAccountType: this.setAccountType,
                     setAdditionalInfo: this.setAdditionalInfo,
+                    setSecretType: this.setSecretType,
                 }}
             >
                 <Step />

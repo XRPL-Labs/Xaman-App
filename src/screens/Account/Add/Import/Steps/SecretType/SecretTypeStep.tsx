@@ -14,42 +14,27 @@ import { AppStyles } from '@theme';
 // import styles from './styles';
 
 import { StepsContext } from '../../Context';
+import { SecretTypes } from '../../types';
 
 /* types ==================================================================== */
-export enum SecretTypes {
-    SecretNumbers = 'secretNumbers',
-    FamilySeed = 'familySeed',
-    Mnemonic = 'mnemonic',
-}
-
 export interface Props {}
 
-export interface State {
-    secretType: SecretTypes;
-}
+export interface State {}
 
 /* Component ==================================================================== */
 class SecretTypeStep extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
-    constructor(props: Props) {
-        super(props);
-
-        this.state = {
-            secretType: SecretTypes.SecretNumbers,
-        };
-    }
-
     onRadioButtonPress = (type: SecretTypes) => {
-        this.setState({
-            secretType: type,
-        });
+        const { setSecretType } = this.context;
+
+        setSecretType(type);
     };
 
     goNext = () => {
-        const { goNext } = this.context;
-        const { secretType } = this.state;
+        const { goNext, secretType } = this.context;
+
         switch (secretType) {
             case SecretTypes.SecretNumbers:
                 goNext('EnterSecretNumbers');
@@ -65,8 +50,8 @@ class SecretTypeStep extends Component<Props, State> {
         }
     };
     render() {
-        const { goBack } = this.context;
-        const { secretType } = this.state;
+        const { goBack, secretType } = this.context;
+
         return (
             <SafeAreaView testID="account-import-secret-type-view" style={[AppStyles.contentContainer]}>
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>

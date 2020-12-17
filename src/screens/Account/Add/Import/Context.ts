@@ -4,7 +4,7 @@ import { XRPL_Account } from 'xrpl-accountlib';
 
 import { EncryptionLevels, AccessLevels, AccountTypes } from '@store/types';
 
-import { ImportSteps, State } from './types';
+import { ImportSteps, SecretTypes, State } from './types';
 
 interface ContextProps extends State {
     setImportedAccount: (importedAccount: XRPL_Account, callback?: any) => void;
@@ -14,6 +14,7 @@ interface ContextProps extends State {
     setAccessLevel: (accessLevels: AccessLevels, callback?: any) => void;
     setAccountType: (type: AccountTypes, callback?: any) => void;
     setAdditionalInfo: (info: Object, callback?: any) => void;
+    setSecretType: (type: SecretTypes, callback?: any) => void;
     goNext: (step?: ImportSteps) => void;
     goBack: () => void;
 }
