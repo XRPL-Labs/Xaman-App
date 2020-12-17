@@ -41,9 +41,6 @@ import Localize from '@locale';
 import { AppStyles } from '@theme';
 import styles from './styles';
 
-/* Constants ==================================================================== */
-const SECTIONS = ['All', 'Planned', 'Requests'];
-
 /* types ==================================================================== */
 export interface Props {
     timestamp?: number;
@@ -55,7 +52,7 @@ export interface State {
     canLoadMore: boolean;
     filters: FilterProps;
     searchText: string;
-    section: typeof SECTIONS[number];
+    sectionIndex: number;
     lastMarker: LedgerMarker;
     account: AccountSchema;
     transactions: Array<TransactionsType>;
@@ -86,7 +83,7 @@ class EventsView extends Component<Props, State> {
             canLoadMore: true,
             searchText: undefined,
             filters: undefined,
-            section: SECTIONS[0],
+            sectionIndex: 0,
             lastMarker: undefined,
             account: AccountRepository.getDefaultAccount(),
             transactions: [],
@@ -220,9 +217,9 @@ class EventsView extends Component<Props, State> {
     };
 
     loadMore = async () => {
-        const { canLoadMore, filters, searchText, isLoadingMore, isLoading, section } = this.state;
+        const { canLoadMore, filters, searchText, isLoadingMore, isLoading, sectionIndex } = this.state;
 
-        if (isLoading || isLoadingMore || !canLoadMore || ['Planned', 'Requests'].indexOf(section) > -1) return;
+        if (isLoading || isLoadingMore || !canLoadMore || sectionIndex !== 0) return;
 
         this.setState({ isLoadingMore: true });
 
@@ -239,7 +236,7 @@ class EventsView extends Component<Props, State> {
     };
 
     buildDataSource = (transactions: any, pendingRequests: any, plannedTransactions?: any) => {
-        const { section } = this.state;
+        const { sectionIndex } = this.state;
 
         if (isEmpty(pendingRequests) && isEmpty(transactions) && isEmpty(plannedTransactions)) {
             return [];
@@ -247,7 +244,7 @@ class EventsView extends Component<Props, State> {
 
         let items = [] as any;
 
-        if (section === 'Planned') {
+        if (sectionIndex === 1) {
             const open = sortBy(
                 filter(plannedTransactions, (p) => p.Type === 'Offer' || p.Type === 'Check'),
                 ['Date'],
@@ -265,7 +262,7 @@ class EventsView extends Component<Props, State> {
             }
 
             if (!isEmpty(planned)) {
-                dataSource.push({ title: 'Planned on', type: 'string', data: [] });
+                dataSource.push({ title: Localize.t('events.plannedOn'), type: 'string', data: [] });
                 const grouped = groupBy(planned, (item) => {
                     return moment(item.Date, 'YYYY-MM-DD').format('YYYY-MM-DD');
                 });
@@ -277,7 +274,7 @@ class EventsView extends Component<Props, State> {
 
             return dataSource;
         }
-        if (section === 'Requests') {
+        if (sectionIndex === 2) {
             items = [...pendingRequests];
         } else {
             items = [...pendingRequests, ...transactions];
@@ -296,15 +293,15 @@ class EventsView extends Component<Props, State> {
     };
 
     updateDataSource = async (background = false) => {
-        const { filters, searchText, section } = this.state;
+        const { filters, searchText, sectionIndex } = this.state;
 
         if (!background) {
             this.setState({ isLoading: true });
         }
 
-        if (section === 'Planned') {
+        if (sectionIndex === 1) {
             await this.loadPlannedTransactions();
-        } else if (section === 'Requests') {
+        } else if (sectionIndex === 2) {
             await this.loadPendingRequests();
         } else {
             // update all sources
@@ -327,9 +324,9 @@ class EventsView extends Component<Props, State> {
     };
 
     applyFilters = (filters: FilterProps) => {
-        const { section, account, transactions, pendingRequests, plannedTransactions, canLoadMore } = this.state;
+        const { sectionIndex, account, transactions, pendingRequests, plannedTransactions, canLoadMore } = this.state;
 
-        if (section === 'Requests') {
+        if (sectionIndex === 2) {
             this.setState({
                 dataSource: this.buildDataSource(transactions, pendingRequests, plannedTransactions),
             });
@@ -359,7 +356,7 @@ class EventsView extends Component<Props, State> {
 
         let newTransactions = [];
 
-        if (section === 'All') {
+        if (sectionIndex === 0) {
             newTransactions = transactions;
         } else {
             newTransactions = plannedTransactions;
@@ -440,7 +437,7 @@ class EventsView extends Component<Props, State> {
             });
         }
 
-        if (section === 'All') {
+        if (sectionIndex === 0) {
             if (isEmpty(newTransactions) && canLoadMore) {
                 this.setState(
                     {
@@ -465,7 +462,7 @@ class EventsView extends Component<Props, State> {
     };
 
     applySearch = (text: string) => {
-        const { plannedTransactions, pendingRequests, transactions, section, canLoadMore } = this.state;
+        const { plannedTransactions, pendingRequests, transactions, sectionIndex, canLoadMore } = this.state;
 
         if (isEmpty(text)) {
             this.setState({
@@ -521,16 +518,16 @@ class EventsView extends Component<Props, State> {
             minMatchCharLength: 2,
         });
 
-        if (section === 'All') {
+        if (sectionIndex === 0) {
             newPendingRequests = flatMap(payloadFilter.search(text), 'item');
             newTransactions = flatMap(transactionFilter.search(text), 'item');
-        } else if (section === 'Planned') {
+        } else if (sectionIndex === 1) {
             newPlannedTransactions = flatMap(plannedTransactionFilter.search(text), 'item');
-        } else if (section === 'Requests') {
+        } else if (sectionIndex === 2) {
             newPendingRequests = flatMap(payloadFilter.search(text), 'item');
         }
 
-        if (section === 'All' && isEmpty(newTransactions) && canLoadMore) {
+        if (sectionIndex === 0 && isEmpty(newTransactions) && canLoadMore) {
             this.setState(
                 {
                     searchText: text,
@@ -563,7 +560,7 @@ class EventsView extends Component<Props, State> {
     onSectionChange = (index: number) => {
         this.setState(
             {
-                section: SECTIONS[index],
+                sectionIndex: index,
             },
             () => {
                 this.updateDataSource();
@@ -609,9 +606,9 @@ class EventsView extends Component<Props, State> {
     };
 
     renderListHeader = () => {
-        const { filters, section } = this.state;
+        const { filters, sectionIndex } = this.state;
 
-        if (section === 'Requests') {
+        if (sectionIndex === 2) {
             return null;
         }
 
@@ -620,6 +617,7 @@ class EventsView extends Component<Props, State> {
 
     render() {
         const { dataSource, isLoading, isLoadingMore, filters, account } = this.state;
+        const { timestamp } = this.props;
 
         if (isEmpty(account)) {
             return this.renderEmptyAccount();
@@ -662,7 +660,11 @@ class EventsView extends Component<Props, State> {
 
                 <SegmentButton
                     containerStyle={AppStyles.paddingHorizontalSml}
-                    buttons={SECTIONS}
+                    buttons={[
+                        Localize.t('events.eventTypeAll'),
+                        Localize.t('events.eventTypePlanned'),
+                        Localize.t('events.eventTypeRequests'),
+                    ]}
                     onPress={this.onSectionChange}
                 />
 
@@ -674,6 +676,7 @@ class EventsView extends Component<Props, State> {
                     isLoadingMore={isLoadingMore}
                     onEndReached={this.loadMore}
                     onRefresh={this.updateDataSource}
+                    timestamp={timestamp}
                 />
             </SafeAreaView>
         );

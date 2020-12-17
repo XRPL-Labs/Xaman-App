@@ -729,7 +729,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.labelText]}>Description</Text>
+                <Text style={[styles.labelText]}>{Localize.t('global.description')}</Text>
                 <Text style={[styles.contentText]}>{content}</Text>
             </>
         );
@@ -784,9 +784,9 @@ class TransactionDetailsView extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.labelText]}>Transaction cost</Text>
+                <Text style={[styles.labelText]}>{Localize.t('events.transactionCost')}</Text>
                 <Text style={[styles.contentText]}>
-                    Sending this transaction consumed <Text style={AppStyles.monoBold}>{tx.Fee} XRP</Text>
+                    {Localize.t('events.sendingThisTransactionConsumed', { fee: tx.Fee })}
                 </Text>
             </>
         );
@@ -798,7 +798,7 @@ class TransactionDetailsView extends Component<Props, State> {
         if (tx.ClassName === 'LedgerObject') {
             return (
                 <>
-                    <Text style={[styles.labelText]}>Ledger Index</Text>
+                    <Text style={[styles.labelText]}>{Localize.t('events.ledgerIndex')}</Text>
                     <Text selectable style={[styles.hashText]}>
                         {tx.Index}
                     </Text>
@@ -807,7 +807,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
         return (
             <>
-                <Text style={[styles.labelText]}>Transaction id</Text>
+                <Text style={[styles.labelText]}>{Localize.t('events.transactionId')}</Text>
                 <Text selectable style={[styles.hashText]}>
                     {tx.Hash}
                 </Text>

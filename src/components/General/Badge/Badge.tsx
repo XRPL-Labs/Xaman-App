@@ -3,6 +3,8 @@ import React, { PureComponent } from 'react';
 
 import { TouchableOpacity, Text, ViewStyle } from 'react-native';
 
+import Localize from '@locale';
+
 import { AppColors, AppFonts } from '@theme';
 import styles from './styles';
 
@@ -59,9 +61,9 @@ export default class Badge extends PureComponent<Props> {
             case 'payid':
                 return <Text style={style}>PayID</Text>;
             case 'success':
-                return <Text style={style}>Success</Text>;
+                return <Text style={style}>{Localize.t('global.success')}</Text>;
             case 'planned':
-                return <Text style={style}>Planned</Text>;
+                return <Text style={style}>{Localize.t('events.eventTypePlanned')}</Text>;
             default:
                 return null;
         }

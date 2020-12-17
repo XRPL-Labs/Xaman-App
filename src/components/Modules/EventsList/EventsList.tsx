@@ -20,6 +20,7 @@ interface Props {
     isLoadingMore?: boolean;
     dataSource: any;
     headerComponent?: any;
+    timestamp?: number;
     onRefresh?: () => void;
     onEndReached?: () => void;
 }
@@ -33,10 +34,10 @@ class EventsList extends PureComponent<Props> {
         const yesterday = reference.clone().subtract(1, 'days').startOf('day');
 
         if (momentDate.isSame(today, 'day')) {
-            return 'Today';
+            return Localize.t('global.today');
         }
         if (momentDate.isSame(yesterday, 'day')) {
-            return 'Yesterday';
+            return Localize.t('global.yesterday');
         }
 
         // same year, don't show year
@@ -66,9 +67,9 @@ class EventsList extends PureComponent<Props> {
     };
 
     renderItem = ({ item }: { item: any }): React.ReactElement => {
-        const { account } = this.props;
+        const { account, timestamp } = this.props;
 
-        const passProps = { item, account };
+        const passProps = { item, account, timestamp };
 
         switch (item.ClassName) {
             case 'Payload':
