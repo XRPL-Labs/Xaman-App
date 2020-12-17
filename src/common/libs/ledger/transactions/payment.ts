@@ -108,8 +108,6 @@ class Payment extends BaseTransaction {
             } else {
                 set(this, 'tx.DestinationTag', undefined);
             }
-        } else {
-            set(this, 'tx.DestinationTag', undefined);
         }
 
         if (has(destination, 'name')) {
