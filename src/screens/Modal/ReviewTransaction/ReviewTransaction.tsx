@@ -350,6 +350,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 signed_blob: transaction.TxnSignature,
                 tx_id: transaction.Hash,
                 multisigned: payload.meta.multisign ? transaction.Account.address : '',
+                signmethod: transaction.SignMethod,
                 permission: {
                     push: true,
                     days: 365,

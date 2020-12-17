@@ -162,6 +162,7 @@ class BaseTransaction {
 
                             this.Hash = signedObject.id;
                             this.TxnSignature = signedObject.signedTransaction;
+                            this.SignMethod = signedObject.signMethod || 'OTHER';
 
                             resolve(this.TxnSignature);
                         },

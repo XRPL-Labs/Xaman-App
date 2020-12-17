@@ -38,6 +38,7 @@ export type SignedObjectType = {
     signedTransaction: string;
     txJson?: Object;
     signers?: string[];
+    signMethod?: 'PIN' | 'BIOMETRIC' | 'PASSPHRASE' | 'TANGEM' | 'OTHER';
 };
 
 /**

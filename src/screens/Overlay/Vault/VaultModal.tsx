@@ -37,6 +37,15 @@ import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
+
+enum AuthMethods {
+    PIN = 'PIN',
+    BIOMETRIC = 'BIOMETRIC',
+    PASSPHRASE = 'PASSPHRASE',
+    TANGEM = 'TANGEM',
+    OTHER = 'OTHER',
+}
+
 export interface Props {
     account: AccountSchema;
     txJson: TransactionJSONType;
@@ -265,17 +274,12 @@ class VaultModal extends Component<Props, State> {
     };
 
     requestBiometricAuthenticate = (system: boolean = false) => {
-        const { coreSettings } = this.state;
-
         FingerprintScanner.authenticate({
             description: Localize.t('global.signingTheTransaction'),
             fallbackEnabled: true,
             fallbackTitle: Localize.t('global.enterPasscode'),
         })
-            .then(() => {
-                const { passcode } = coreSettings;
-                this.openVault(passcode);
-            })
+            .then(this.onSuccessBiometricAuthenticate)
             .catch((error: any) => {
                 if (system) return;
                 if (error.name !== 'UserCancel') {
@@ -287,12 +291,19 @@ class VaultModal extends Component<Props, State> {
             });
     };
 
+    onSuccessBiometricAuthenticate = () => {
+        const { coreSettings } = this.state;
+
+        const { passcode } = coreSettings;
+        this.openVault(passcode, AuthMethods.BIOMETRIC);
+    };
+
     onPasscodeEntered = (passcode: string) => {
         const { coreSettings } = this.state;
 
         AuthenticationService.checkPasscode(passcode)
             .then((encryptedPasscode) => {
-                this.openVault(encryptedPasscode);
+                this.openVault(encryptedPasscode, AuthMethods.PIN);
             })
             .catch((e) => {
                 // wrong passcode entered
@@ -306,10 +317,10 @@ class VaultModal extends Component<Props, State> {
 
     onPassphraseEntered = () => {
         const { passphrase } = this.state;
-        this.openVault(passphrase);
+        this.openVault(passphrase, AuthMethods.PASSPHRASE);
     };
 
-    openVault = async (encryptionKey: string) => {
+    openVault = async (encryptionKey: string, method: AuthMethods) => {
         const { signWith, coreSettings } = this.state;
 
         if (!encryptionKey) {
@@ -319,7 +330,7 @@ class VaultModal extends Component<Props, State> {
         const privateKey = await Vault.open(signWith.publicKey, encryptionKey);
 
         if (privateKey) {
-            this.signWithPrivateKey(privateKey);
+            this.signWithPrivateKey(privateKey, method);
         } else {
             if (coreSettings.hapticFeedback) {
                 VibrateHapticFeedback('notificationError');
@@ -355,6 +366,9 @@ class VaultModal extends Component<Props, State> {
                     signedObject = AccountLib.rawSecp256k1P1363.complete(preparedTx, sig);
                 }
 
+                // include sign method
+                signedObject = { ...signedObject, signMethod: AuthMethods.TANGEM };
+
                 setTimeout(() => {
                     this.onSign(signedObject);
                 }, 2000);
@@ -362,7 +376,7 @@ class VaultModal extends Component<Props, State> {
             .catch(this.dismiss);
     };
 
-    signWithPrivateKey = async (privateKey: string) => {
+    signWithPrivateKey = async (privateKey: string, method: AuthMethods) => {
         const { txJson, multiSign } = this.props;
 
         let signer = AccountLib.derive.privatekey(privateKey);
@@ -372,12 +386,14 @@ class VaultModal extends Component<Props, State> {
             signer = signer.signAs(signer.address);
         }
 
-        const signedObject = AccountLib.sign(txJson, signer);
+        let signedObject = AccountLib.sign(txJson, signer) as SignedObjectType;
+
+        signedObject = { ...signedObject, signMethod: method };
 
         this.onSign(signedObject);
     };
 
-    onSign = (signedObject: any) => {
+    onSign = (signedObject: SignedObjectType) => {
         const { onSign } = this.props;
 
         if (typeof onSign === 'function') {
