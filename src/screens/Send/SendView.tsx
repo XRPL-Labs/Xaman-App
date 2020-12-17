@@ -379,7 +379,10 @@ class SendView extends Component<Props, State> {
                 leftComponent={{
                     icon: 'IconChevronLeft',
                     onPress: () => {
-                        Navigator.pop();
+                        Keyboard.dismiss();
+                        setTimeout(() => {
+                            Navigator.pop();
+                        }, 0);
                     },
                 }}
                 centerComponent={{ text: title }}
