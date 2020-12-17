@@ -362,6 +362,13 @@ class SendView extends Component<Props, State> {
         );
     };
 
+    onHeaderBackPress = () => {
+        Keyboard.dismiss();
+        setTimeout(() => {
+            Navigator.pop();
+        }, 0);
+    };
+
     renderHeader = () => {
         const { currentStep } = this.state;
 
@@ -378,12 +385,7 @@ class SendView extends Component<Props, State> {
             <Header
                 leftComponent={{
                     icon: 'IconChevronLeft',
-                    onPress: () => {
-                        Keyboard.dismiss();
-                        setTimeout(() => {
-                            Navigator.pop();
-                        }, 0);
-                    },
+                    onPress: this.onHeaderBackPress,
                 }}
                 centerComponent={{ text: title }}
             />
