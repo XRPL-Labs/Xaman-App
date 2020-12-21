@@ -23,6 +23,7 @@ const logger = LoggerService.createLogger('Vault');
 
 const options = {
     accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+    // NOTE: Items with this attribute do not migrate to a new device.
 };
 
 /* Lib ==================================================================== */
@@ -108,7 +109,7 @@ const Vault = {
         return Keychain.getInternetCredentials(keyName).then((data: any) => {
             if (!data) {
                 return randomKey(64).then((key: string) => {
-                    return Keychain.setInternetCredentials(keyName, 'empty', key).then(() => {
+                    return Keychain.setInternetCredentials(keyName, 'empty', key, options).then(() => {
                         return HexEncoding.toBinary(key);
                     });
                 });
