@@ -46,7 +46,7 @@ class AddressBookView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const contacts = ContactRepository.getContacts().snapshot();
+        const contacts = ContactRepository.getContacts();
 
         this.state = {
             contacts,

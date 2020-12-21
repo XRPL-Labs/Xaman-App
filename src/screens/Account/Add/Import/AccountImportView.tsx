@@ -212,7 +212,7 @@ class AccountImportView extends Component<Props, State> {
             if ((nextStep === 'ConfirmPublicKey' || nextStep === 'LabelStep') && !upgrade) {
                 const exist = AccountRepository.findOne({ address: importedAccount.address });
 
-                if (!isEmpty(exist)) {
+                if (exist) {
                     if (exist.accessLevel === AccessLevels.Full) {
                         Alert.alert(Localize.t('global.error'), Localize.t('account.accountAlreadyExist'));
                         return;

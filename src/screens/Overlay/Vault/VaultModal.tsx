@@ -3,7 +3,6 @@
  * Sign json tx and return blob/signature
  */
 
-import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Animated, Text, Alert, Platform, Keyboard, KeyboardEvent, LayoutAnimation } from 'react-native';
 
@@ -210,7 +209,7 @@ class VaultModal extends Component<Props, State> {
                 // check if regular key is imported in XUMM
                 const regularAccount = AccountRepository.findOne({ address: account.regularKey }) as AccountSchema;
 
-                if (isEmpty(regularAccount)) {
+                if (!regularAccount) {
                     return reject(new Error(Localize.t('account.masterKeyForThisAccountDisableRegularKeyNotFound')));
                 }
 
@@ -277,6 +276,7 @@ class VaultModal extends Component<Props, State> {
         FingerprintScanner.authenticate({
             description: Localize.t('global.signingTheTransaction'),
             fallbackEnabled: true,
+            // @ts-ignore
             fallbackTitle: Localize.t('global.enterPasscode'),
         })
             .then(this.onSuccessBiometricAuthenticate)

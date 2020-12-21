@@ -2,7 +2,7 @@
  * Home Screen
  */
 
-import { isEmpty, find, has } from 'lodash';
+import { find, has } from 'lodash';
 
 import React, { Component, Fragment } from 'react';
 import {
@@ -97,7 +97,7 @@ class HomeView extends Component<Props, State> {
         const { account } = this.state;
 
         InteractionManager.runAfterInteractions(() => {
-            if (!isEmpty(account) && account.isValid() && SocketService.isConnected()) {
+            if (account?.isValid() && SocketService.isConnected()) {
                 // update account details
                 LedgerService.updateAccountsDetails([account.address]);
             }
@@ -115,7 +115,7 @@ class HomeView extends Component<Props, State> {
     };
 
     updateDefaultAccount = (updatedAccount: AccountSchema) => {
-        if (updatedAccount.isValid() && updatedAccount.default) {
+        if (updatedAccount?.isValid() && updatedAccount.default) {
             // update the UI
             this.setState(
                 {
@@ -143,7 +143,7 @@ class HomeView extends Component<Props, State> {
 
     // eslint-disable-next-line react/destructuring-assignment
     updateSpendableStatus = (account = this.state.account) => {
-        if (!isEmpty(account) && account.isValid()) {
+        if (account?.isValid()) {
             const spendableAccounts = AccountRepository.getSpendableAccounts();
 
             this.setState({
@@ -292,7 +292,7 @@ class HomeView extends Component<Props, State> {
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                     <Image style={[styles.logo]} source={Images.xummLogo} />
                 </View>
-                {!isEmpty(account) && account.isValid() && (
+                {account?.isValid() && (
                     <View style={[AppStyles.flex1]}>
                         <Button
                             onPress={() => {
@@ -404,7 +404,7 @@ class HomeView extends Component<Props, State> {
                     )}
                 </View>
 
-                {isEmpty(account.lines) && (
+                {account.lines.length === 0 && (
                     <View testID="assets-empty-view" style={[styles.noTrustlineMessage]}>
                         <InfoMessage type="warning" label={Localize.t('home.youDonNotHaveOtherAssets')} />
                         <TouchableOpacity
@@ -426,7 +426,7 @@ class HomeView extends Component<Props, State> {
                     </View>
                 )}
 
-                {!isEmpty(account.lines) && (
+                {account.lines.length > 0 && (
                     <ScrollView testID="assets-scroll-view" style={AppStyles.flex1}>
                         {account.lines.map((line: TrustLineSchema, index: number) => {
                             return (
@@ -580,7 +580,7 @@ class HomeView extends Component<Props, State> {
     render() {
         const { account, discreetMode } = this.state;
 
-        if (isEmpty(account) || !account.isValid()) {
+        if (!account?.isValid()) {
             return this.renderEmpty();
         }
 

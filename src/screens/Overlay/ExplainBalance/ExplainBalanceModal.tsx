@@ -2,7 +2,7 @@
  * Add Currency Screen
  */
 
-import { sortBy, isEmpty } from 'lodash';
+import { sortBy } from 'lodash';
 import React, { Component } from 'react';
 import { Animated, View, Text, TouchableWithoutFeedback, Image, ScrollView, ActivityIndicator } from 'react-native';
 
@@ -134,7 +134,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
     renderAccountLines = () => {
         const { account } = this.props;
 
-        if (isEmpty(account.lines)) return null;
+        if (account.lines.length === 0) return null;
 
         return (
             <>

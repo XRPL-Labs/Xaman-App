@@ -80,7 +80,7 @@ export default class BaseRepository extends EventEmitter {
         const result = this.realm.objects(this.schema.name).filtered(this.normalizeQuery(query));
 
         if (result.length === 0) {
-            return result;
+            return undefined;
         }
 
         if (result.length === 1) {

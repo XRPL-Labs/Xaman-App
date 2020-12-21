@@ -2,7 +2,6 @@
  * Send Result Screen
  */
 
-import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text } from 'react-native';
 
@@ -42,7 +41,7 @@ class ResultStep extends Component<Props, State> {
         const contact = ContactRepository.findBy('address', destination.address);
         const account = AccountRepository.findBy('address', destination.address);
 
-        if (!isEmpty(contact) || !isEmpty(account)) {
+        if (contact.isEmpty() || account.isEmpty()) {
             return null;
         }
 

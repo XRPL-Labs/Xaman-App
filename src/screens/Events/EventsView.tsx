@@ -121,7 +121,7 @@ class EventsView extends Component<Props, State> {
 
         // update data source after component mount
         InteractionManager.runAfterInteractions(() => {
-            if (account.isValid()) {
+            if (account?.isValid()) {
                 this.updateDataSource(true);
             }
         });
@@ -152,7 +152,7 @@ class EventsView extends Component<Props, State> {
 
         return new Promise((resolve) => {
             // return if no account exist
-            if (isEmpty(account)) {
+            if (!account) {
                 return resolve([]);
             }
             return LedgerService.getAccountObjects(account.address).then((res: any) => {
@@ -182,7 +182,7 @@ class EventsView extends Component<Props, State> {
 
         return new Promise((resolve) => {
             // return if no account exist
-            if (isEmpty(account)) {
+            if (!account) {
                 return resolve([]);
             }
 
@@ -619,7 +619,7 @@ class EventsView extends Component<Props, State> {
         const { dataSource, isLoading, isLoadingMore, filters, account } = this.state;
         const { timestamp } = this.props;
 
-        if (isEmpty(account)) {
+        if (!account) {
             return this.renderEmptyAccount();
         }
 

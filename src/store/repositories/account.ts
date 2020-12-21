@@ -1,4 +1,4 @@
-import { has, isEmpty, filter } from 'lodash';
+import { has, filter } from 'lodash';
 import Realm, { Results, ObjectSchema } from 'realm';
 
 import Flag from '@common/libs/ledger/parser/common/flag';
@@ -35,7 +35,7 @@ class AccountRepository extends BaseRepository {
     add = (account: Partial<AccountSchema>, privateKey?: string, encryptionKey?: string): Promise<AccountSchema> => {
         // remove default flag from any other account
         const defaultAccount = this.getDefaultAccount();
-        if (!isEmpty(defaultAccount) && defaultAccount.address !== account.address) {
+        if (defaultAccount && defaultAccount.address !== account.address) {
             this.update({
                 address: defaultAccount.address,
                 default: false,
@@ -155,7 +155,7 @@ class AccountRepository extends BaseRepository {
 
         // set the current account default -> false
         // if any exist
-        if (!isEmpty(current)) {
+        if (current) {
             this.update({
                 address: current.address,
                 default: false,

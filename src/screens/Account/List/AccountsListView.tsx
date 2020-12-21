@@ -2,7 +2,7 @@
  * Accounts List Screen
  */
 
-import { isEmpty, find } from 'lodash';
+import { find } from 'lodash';
 import { Results } from 'realm';
 
 import React, { Component } from 'react';
@@ -85,7 +85,7 @@ class AccountListView extends Component<Props, State> {
         const { signableAccount } = this.state;
         const { item } = account;
 
-        if (!item.isValid()) return null;
+        if (!item?.isValid()) return null;
 
         // default full access
         let accessLevelLabel = Localize.t('account.fullAccess');
@@ -183,7 +183,7 @@ class AccountListView extends Component<Props, State> {
                     }}
                 />
 
-                {isEmpty(accounts) ? (
+                {accounts.isEmpty() ? (
                     <View style={[AppStyles.contentContainer, AppStyles.padding]}>
                         <ImageBackground
                             source={Images.BackgroundShapes}

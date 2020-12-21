@@ -140,6 +140,7 @@ class AuthenticateModal extends Component<Props, State> {
         FingerprintScanner.authenticate({
             description: Localize.t('global.authenticate'),
             fallbackEnabled: true,
+            // @ts-ignore
             fallbackTitle: Localize.t('global.enterPasscode'),
         })
             .then(this.onSuccess)

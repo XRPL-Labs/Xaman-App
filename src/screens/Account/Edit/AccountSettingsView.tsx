@@ -60,7 +60,7 @@ class AccountSettingsView extends Component<Props, State> {
 
     onAccountUpdate = (updateAccount: AccountSchema) => {
         const { account } = this.state;
-        if (account.isValid() && updateAccount.address === account.address) {
+        if (account?.isValid() && updateAccount.address === account.address) {
             this.setState({ account: updateAccount });
         }
     };

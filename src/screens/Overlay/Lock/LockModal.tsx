@@ -125,6 +125,7 @@ class LockModal extends Component<Props, State> {
         FingerprintScanner.authenticate({
             description: Localize.t('global.unlock'),
             fallbackEnabled: true,
+            // @ts-ignore
             fallbackTitle: Localize.t('global.enterPasscode'),
         })
             .then(this.onBiometricAuthenticateSuccess)
