@@ -4,9 +4,7 @@
 
 import { isEmpty, get, find } from 'lodash';
 import React, { Component } from 'react';
-import { ImageBackground, ScrollView, View, Text, Platform, LayoutChangeEvent } from 'react-native';
-
-import Interactable from 'react-native-interactable';
+import { ImageBackground, ScrollView, View, Text } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -33,9 +31,6 @@ export interface Props {}
 
 export interface State {
     accounts: Array<AccountSchema>;
-    headerHeight: number;
-    panelExpanded: boolean;
-    canScroll: boolean;
 }
 
 /* Component ==================================================================== */
@@ -43,7 +38,6 @@ class ReviewStep extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
-    private panel: any;
     private sourcePicker: AccordionPicker;
 
     constructor(props: Props) {
@@ -51,9 +45,6 @@ class ReviewStep extends Component<Props, State> {
 
         this.state = {
             accounts: undefined,
-            canScroll: false,
-            panelExpanded: false,
-            headerHeight: 0,
         };
     }
 
@@ -113,82 +104,6 @@ class ReviewStep extends Component<Props, State> {
         });
 
         setSource(preferredAccount);
-    };
-
-    onScroll = (event: any) => {
-        const { contentOffset } = event.nativeEvent;
-        if (contentOffset.y <= 0) {
-            this.setState({ canScroll: false });
-        }
-    };
-
-    onSourcePickerPress = () => {
-        const { panelExpanded, accounts } = this.state;
-
-        if (accounts.length < 2) return;
-
-        if (!panelExpanded) {
-            this.slideUp();
-
-            setTimeout(() => {
-                this.sourcePicker.open();
-            }, 1000);
-        } else {
-            this.sourcePicker.open();
-        }
-    };
-
-    getTopOffset = () => {
-        const { headerHeight } = this.state;
-
-        return -headerHeight + 20;
-    };
-
-    setHeaderHeight = (event: LayoutChangeEvent) => {
-        const { headerHeight } = this.state;
-        const { height } = event.nativeEvent.layout;
-
-        if (height === 0 || headerHeight) return;
-
-        this.setState({ headerHeight: height });
-    };
-
-    onSnap = () => {
-        if (Platform.OS === 'android') {
-            setTimeout(() => {
-                this.sourcePicker.updateContainerPosition();
-            }, 500);
-        } else {
-            this.sourcePicker.updateContainerPosition();
-        }
-    };
-
-    onDrag = (event: any) => {
-        const { targetSnapPointId, state } = event.nativeEvent;
-
-        if (state === 'end' && targetSnapPointId === 'up') {
-            this.setState({ canScroll: true, panelExpanded: true });
-        }
-
-        if (state === 'end' && targetSnapPointId === 'down') {
-            this.setState({ panelExpanded: false });
-        }
-    };
-
-    slideUp = () => {
-        setTimeout(() => {
-            if (this.panel) {
-                this.panel.snapTo({ index: 1 });
-            }
-        }, 10);
-    };
-
-    slideDown = () => {
-        setTimeout(() => {
-            if (this.panel) {
-                this.panel.snapTo({ index: 0 });
-            }
-        }, 10);
     };
 
     renderDetails = () => {
@@ -284,7 +199,7 @@ class ReviewStep extends Component<Props, State> {
     };
 
     render() {
-        const { accounts, canScroll } = this.state;
+        const { accounts } = this.state;
 
         const { payload, source, isPreparing, setSource, onAccept, onClose, getTransactionLabel } = this.context;
 
@@ -315,96 +230,71 @@ class ReviewStep extends Component<Props, State> {
                         </View>
                     </View>
                 </View>
-                <View onLayout={this.setHeaderHeight} style={[styles.collapsingHeader, AppStyles.centerContent]}>
-                    <View style={[AppStyles.row, AppStyles.paddingSml]}>
-                        <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
-                            <Avatar size={60} border source={{ uri: payload.application.icon_url }} />
+                <ScrollView>
+                    <View style={[styles.collapsingHeader, AppStyles.centerContent]}>
+                        <View style={[AppStyles.row, AppStyles.paddingSml]}>
+                            <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
+                                <Avatar size={60} border source={{ uri: payload.application.icon_url }} />
 
-                            <Text style={[styles.appTitle]}>{payload.application.name}</Text>
+                                <Text style={[styles.appTitle]}>{payload.application.name}</Text>
 
-                            {!!payload.meta.custom_instruction && (
-                                <>
-                                    <Text style={[styles.descriptionLabel]}>{Localize.t('global.details')}</Text>
-                                    <Text style={[styles.instructionText]}>{payload.meta.custom_instruction}</Text>
-                                </>
-                            )}
+                                {!!payload.meta.custom_instruction && (
+                                    <>
+                                        <Text style={[styles.descriptionLabel]}>{Localize.t('global.details')}</Text>
+                                        <Text style={[styles.instructionText]}>{payload.meta.custom_instruction}</Text>
+                                    </>
+                                )}
 
-                            <Text style={[styles.descriptionLabel]}>{Localize.t('global.type')}</Text>
-                            <Text style={[styles.instructionText, AppStyles.colorBlue, AppStyles.bold]}>
-                                {getTransactionLabel()}
-                            </Text>
+                                <Text style={[styles.descriptionLabel]}>{Localize.t('global.type')}</Text>
+                                <Text style={[styles.instructionText, AppStyles.colorBlue, AppStyles.bold]}>
+                                    {getTransactionLabel()}
+                                </Text>
+                            </View>
                         </View>
                     </View>
-                </View>
 
-                <Interactable.View
-                    ref={(r) => {
-                        this.panel = r;
-                    }}
-                    snapPoints={[
-                        { y: 0, id: 'down' },
-                        { y: this.getTopOffset(), id: 'up' },
-                    ]}
-                    boundaries={{ top: this.getTopOffset() - 20 }}
-                    onDrag={this.onDrag}
-                    onSnap={this.onSnap}
-                    verticalOnly
-                    animatedNativeDriver
-                >
                     <View style={[styles.transactionContent, { height: AppSizes.screen.height - 70 }]}>
-                        <View style={AppStyles.panelHeader} testID="review-content-container">
-                            <View style={AppStyles.panelHandle} />
+                        <View style={[AppStyles.paddingHorizontalSml]}>
+                            <View style={styles.rowLabel}>
+                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                                    {payload.payload.tx_type === 'SignIn' || payload.meta.multisign
+                                        ? Localize.t('global.signAs')
+                                        : Localize.t('global.signWith')}
+                                </Text>
+                            </View>
+                            <AccordionPicker
+                                ref={(r) => {
+                                    this.sourcePicker = r;
+                                }}
+                                onSelect={setSource}
+                                items={accounts}
+                                renderItem={this.renderAccountItem}
+                                selectedItem={source}
+                                keyExtractor={(i) => i.address}
+                            />
                         </View>
-                        <ScrollView
-                            onScroll={this.onScroll}
-                            scrollEnabled={canScroll}
-                            showsVerticalScrollIndicator={false}
-                            scrollEventThrottle={16}
-                            bounces={false}
+
+                        <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingVerticalSml]}>
+                            {this.renderDetails()}
+                        </View>
+                        <View
+                            style={[
+                                AppStyles.flex1,
+                                AppStyles.paddingHorizontalSml,
+                                { paddingBottom: AppSizes.navigationBarHeight },
+                            ]}
                         >
-                            <View style={[AppStyles.paddingHorizontalSml]}>
-                                <View style={styles.rowLabel}>
-                                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                                        {payload.payload.tx_type === 'SignIn' || payload.meta.multisign
-                                            ? Localize.t('global.signAs')
-                                            : Localize.t('global.signWith')}
-                                    </Text>
-                                </View>
-                                <AccordionPicker
-                                    ref={(r) => {
-                                        this.sourcePicker = r;
-                                    }}
-                                    onSelect={setSource}
-                                    items={accounts}
-                                    renderItem={this.renderAccountItem}
-                                    selectedItem={source}
-                                    keyExtractor={(i) => i.address}
-                                    onPress={this.onSourcePickerPress}
-                                />
-                            </View>
+                            <Button
+                                testID="accept-button"
+                                isLoading={isPreparing}
+                                onPress={onAccept}
+                                label={Localize.t('global.accept')}
+                            />
+                        </View>
 
-                            <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingVerticalSml]}>
-                                {this.renderDetails()}
-                            </View>
-                            <View
-                                style={[
-                                    AppStyles.flex1,
-                                    AppStyles.paddingHorizontalSml,
-                                    { paddingBottom: AppSizes.navigationBarHeight },
-                                ]}
-                            >
-                                <Button
-                                    testID="accept-button"
-                                    isLoading={isPreparing}
-                                    onPress={onAccept}
-                                    label={Localize.t('global.accept')}
-                                />
-                            </View>
-
-                            <Spacer size={50} />
-                        </ScrollView>
+                        <Spacer size={50} />
                     </View>
-                </Interactable.View>
+                </ScrollView>
             </ImageBackground>
         );
     }

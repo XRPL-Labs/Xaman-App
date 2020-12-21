@@ -90,6 +90,9 @@ class AccordionPicker extends Component<Props, State> {
         const { onExpand } = this.props;
 
         if (!expanded) {
+            // update content position before expand
+            this.setContainerPosition();
+
             this.setState({
                 expanded: true,
             });
