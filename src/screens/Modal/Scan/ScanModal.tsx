@@ -351,18 +351,24 @@ class ScanView extends Component<Props, State> {
 
             switch (type) {
                 case StringType.XrplDestination:
-                    message = Localize.t('scan.scannedQRIsNotXRPAddress');
+                    message = clipboard
+                        ? Localize.t('scan.theClipboardDataIsNotContainXummPayload')
+                        : Localize.t('scan.scannedQRIsNotXRPAddress');
                     break;
                 // @ts-ignore
                 case StringType.XummPayloadReference:
-                    message = Localize.t('scan.scannedQRIsNotXummPayload');
+                    message = clipboard
+                        ? Localize.t('scan.theClipboardDataIsNotContainXRPAddress')
+                        : Localize.t('scan.scannedQRIsNotXummPayload');
                     break;
                 default:
-                    message = Localize.t('scan.theQRIsNotWhatWeExpect');
+                    message = clipboard
+                        ? Localize.t('scan.theClipboardDataIsNotWhatWeExpect')
+                        : Localize.t('scan.theQRIsNotWhatWeExpect');
             }
 
             Alert.alert(
-                Localize.t('global.warning'),
+                Localize.t('global.error'),
                 message,
                 [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
                 { cancelable: false },

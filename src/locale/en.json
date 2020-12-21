@@ -664,8 +664,11 @@
     "aimAtTheCode": "Aim at the code",
     "pleaseScanXRPAddress": "Please scan XRP address QR code",
     "scannedQRIsNotXRPAddress": "Scanned QR code is not a valid XRP address code!",
+    "theClipboardDataIsNotContainXRPAddress": "The clipboard data is not contain valid XRP address!",
     "scannedQRIsNotXummPayload": "Scanned QR code is not a XUMM payload!",
+    "theClipboardDataIsNotContainXummPayload": "The clipboard data is not contain valid XUMM payload!",
     "theQRIsNotWhatWeExpect": "This QR code is not what we expect!",
+    "theClipboardDataIsNotWhatWeExpect": "The clipboard data is not what we expect!",
     "invalidQRTryNewOneOrTryAgain": "Invalid QR code (for XUMM). Try a new one or try again",
     "invalidClipboardDateTryNewOneOrTryAgain": "Invalid clipboard data (for XUMM). Try a new one or try again",
     "importFromClipboard": "Import from Clipboard"
