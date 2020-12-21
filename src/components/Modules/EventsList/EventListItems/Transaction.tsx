@@ -68,6 +68,15 @@ class TransactionTemplate extends Component<Props, State> {
         }
     }
 
+    componentDidUpdate(prevProps: Props) {
+        const { timestamp } = this.props;
+
+        // force the lookup if timestamp changed
+        if (timestamp !== prevProps.timestamp) {
+            this.lookUpRecipientName();
+        }
+    }
+
     componentWillUnmount() {
         this.mounted = false;
     }

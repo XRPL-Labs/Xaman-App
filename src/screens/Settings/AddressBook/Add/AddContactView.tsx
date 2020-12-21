@@ -149,6 +149,9 @@ class AddContactView extends Component<Props, State> {
 
         Toast(Localize.t('settings.contactSuccessSaved'));
 
+        // force re-render the app
+        Navigator.reRender();
+
         // close screen
         Navigator.pop();
     };

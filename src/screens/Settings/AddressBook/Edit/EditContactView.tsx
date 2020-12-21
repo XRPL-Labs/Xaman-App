@@ -156,6 +156,9 @@ class EditContactView extends Component<Props, State> {
 
         Toast(Localize.t('settings.contactSuccessUpdated'));
 
+        // force re-render the app
+        Navigator.reRender();
+
         // close screen
         Navigator.pop();
     };
