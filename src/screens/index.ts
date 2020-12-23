@@ -22,7 +22,6 @@ import AccountChangePassphrase from './Account/Edit/ChangePassphrase';
 import AccountChangeTangemSecurity from './Account/Edit/ChangeTangemSecurity';
 
 // Modals
-import HomeSettings from './Modal/HomeSettings';
 import ReviewTransaction from './Modal/ReviewTransaction';
 import Scan from './Modal/Scan';
 import Submit from './Modal/Submit';
@@ -98,7 +97,6 @@ export {
     AccountImport,
     AccountGenerate,
     // Modals
-    HomeSettings,
     ReviewTransaction,
     Scan,
     Submit,

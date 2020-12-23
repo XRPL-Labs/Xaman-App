@@ -30,7 +30,6 @@ const screens = {
         },
     },
     Modal: {
-        HomeSettings: 'modal.HomeSettings',
         ReviewTransaction: 'modal.ReviewTransaction',
         FilterEvents: 'modal.FilterEvents',
         Scan: 'modal.Scan',
