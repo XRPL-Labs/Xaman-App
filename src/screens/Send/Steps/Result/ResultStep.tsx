@@ -36,22 +36,34 @@ class ResultStep extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
+    private mounted: boolean;
+
     constructor(props: Props) {
         super(props);
 
         this.state = {
             showDetailsCard: false,
         };
+
+        this.mounted = false;
     }
 
     componentDidMount() {
         const { payment } = this.context;
 
+        this.mounted = true;
+
         if (payment.TransactionResult?.success) {
             setTimeout(() => {
-                this.showDetailsCard();
+                if (this.mounted) {
+                    this.showDetailsCard();
+                }
             }, 4500);
         }
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
     }
 
     showDetailsCard = () => {
