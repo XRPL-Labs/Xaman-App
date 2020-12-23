@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 
 import RNTangemSdk, { Card } from 'tangem-sdk-react-native';
 
@@ -53,7 +53,7 @@ class ChangeTangemSecurityView extends Component<Props, State> {
 
         const { isPin2Default } = props.account.additionalInfo as Card;
 
-        const current = isPin2Default === true ? TangemSecurity.LongTap : TangemSecurity.Passcode;
+        const current = isPin2Default ? TangemSecurity.LongTap : TangemSecurity.Passcode;
 
         this.state = {
             currentSecurity: current,
@@ -67,20 +67,26 @@ class ChangeTangemSecurityView extends Component<Props, State> {
         });
     };
 
+    onSuccessChange = (isPin2Default: boolean) => {
+        const { account } = this.props;
+
+        AccountRepository.update({
+            address: account.address,
+            additionalInfoString: JSON.stringify({
+                ...account.additionalInfo,
+                ...{ isPin2Default },
+            }),
+        });
+
+        Navigator.pop();
+    };
+
     removePasscode = () => {
         const { account } = this.props;
         const { cardId } = account.additionalInfo as Card;
 
         RNTangemSdk.changePin2(cardId, '000')
-            .then(() => {
-                AccountRepository.update({
-                    address: account.address,
-                    additionalInfoString: JSON.stringify({
-                        ...account.additionalInfo,
-                        ...{ isPin2Default: true },
-                    }),
-                });
-            })
+            .then(this.onSuccessChange.bind(null, true))
             .catch(() => {
                 // ignore
             });
@@ -91,14 +97,7 @@ class ChangeTangemSecurityView extends Component<Props, State> {
         const { cardId } = account.additionalInfo as Card;
 
         RNTangemSdk.changePin2(cardId, '')
-            .then(() => {
-                AccountRepository.update({
-                    address: account.address,
-                    additionalInfoString: JSON.stringify({ ...account.additionalInfo, ...{ isPin2Default: false } }),
-                });
-
-                Alert.alert('Success');
-            })
+            .then(this.onSuccessChange.bind(null, false))
             .catch(() => {
                 // ignore
             });
