@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text } from 'react-native';
+import { SafeAreaView, View, Text, Image, TouchableWithoutFeedback, LayoutAnimation } from 'react-native';
 
 import Clipboard from '@react-native-community/clipboard';
 
@@ -27,12 +27,39 @@ import { StepsContext } from '../../Context';
 /* types ==================================================================== */
 export interface Props {}
 
-export interface State {}
+export interface State {
+    showDetailsCard: boolean;
+}
 
 /* Component ==================================================================== */
 class ResultStep extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
+
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            showDetailsCard: false,
+        };
+    }
+
+    componentDidMount() {
+        const { payment } = this.context;
+
+        if (payment.TransactionResult?.success) {
+            setTimeout(() => {
+                this.showDetailsCard();
+            }, 4500);
+        }
+    }
+
+    showDetailsCard = () => {
+        LayoutAnimation.spring();
+        this.setState({
+            showDetailsCard: true,
+        });
+    };
 
     renderAddToContactButton = () => {
         const { destination } = this.context;
@@ -65,8 +92,34 @@ class ResultStep extends Component<Props, State> {
         );
     };
 
-    renderSuccess = () => {
+    renderDetailsCard = () => {
         const { destination, amount, currency } = this.context;
+
+        return (
+            <View style={styles.detailsCard}>
+                <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.amount')}:</Text>
+                <Spacer />
+                <Text style={[AppStyles.h4, AppStyles.monoBold]}>
+                    {`${Localize.formatNumber(Number(amount))} ${
+                        typeof currency === 'string' ? 'XRP' : NormalizeCurrencyCode(currency.currency.currency)
+                    }`}
+                </Text>
+
+                <Spacer />
+                <View style={AppStyles.hr} />
+                <Spacer />
+                <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.recipient')}:</Text>
+                <Spacer />
+                <Text style={[AppStyles.p, AppStyles.bold, AppStyles.colorBlue]}>{destination.name}</Text>
+                <Text style={[AppStyles.subtext, AppStyles.mono]}>{destination.address}</Text>
+
+                {this.renderAddToContactButton()}
+            </View>
+        );
+    };
+
+    renderSuccess = () => {
+        const { showDetailsCard } = this.state;
 
         return (
             <SafeAreaView
@@ -85,25 +138,13 @@ class ResultStep extends Component<Props, State> {
                 </View>
 
                 <View style={[AppStyles.flex2]}>
-                    <View style={styles.detailsCard}>
-                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.amount')}:</Text>
-                        <Spacer />
-                        <Text style={[AppStyles.h4, AppStyles.monoBold]}>
-                            {`${Localize.formatNumber(Number(amount))} ${
-                                typeof currency === 'string' ? 'XRP' : NormalizeCurrencyCode(currency.currency.currency)
-                            }`}
-                        </Text>
-
-                        <Spacer />
-                        <View style={AppStyles.hr} />
-                        <Spacer />
-                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.recipient')}:</Text>
-                        <Spacer />
-                        <Text style={[AppStyles.p, AppStyles.bold, AppStyles.colorBlue]}>{destination.name}</Text>
-                        <Text style={[AppStyles.subtext, AppStyles.mono]}>{destination.address}</Text>
-
-                        {this.renderAddToContactButton()}
-                    </View>
+                    {showDetailsCard ? (
+                        this.renderDetailsCard()
+                    ) : (
+                        <TouchableWithoutFeedback onPress={this.showDetailsCard}>
+                            <Image style={styles.successImage} source={require('@common/assets/success.gif')} />
+                        </TouchableWithoutFeedback>
+                    )}
                 </View>
 
                 <Footer style={[]}>
@@ -137,14 +178,18 @@ class ResultStep extends Component<Props, State> {
                     <View style={styles.detailsCard}>
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}:</Text>
                         <Spacer />
-                        <Text style={[AppStyles.p, AppStyles.monoBold]}>{payment.TransactionResult.code}</Text>
+                        <Text style={[AppStyles.p, AppStyles.monoBold]}>
+                            {payment.TransactionResult?.code || 'Error'}
+                        </Text>
 
                         <Spacer />
                         <View style={AppStyles.hr} />
                         <Spacer />
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
                         <Spacer />
-                        <Text style={[AppStyles.subtext]}>{payment.TransactionResult.message || 'No Description'}</Text>
+                        <Text style={[AppStyles.subtext]}>
+                            {payment.TransactionResult?.message || 'No Description'}
+                        </Text>
 
                         <Spacer size={50} />
 
@@ -155,7 +200,7 @@ class ResultStep extends Component<Props, State> {
                             style={AppStyles.stretchSelf}
                             onPress={() => {
                                 Clipboard.setString(
-                                    payment.TransactionResult.message || payment.TransactionResult.code,
+                                    payment.TransactionResult?.message || payment.TransactionResult?.code || 'Error',
                                 );
                                 Toast(Localize.t('send.resultCopiedToClipboard'));
                             }}
@@ -179,7 +224,7 @@ class ResultStep extends Component<Props, State> {
     render() {
         const { payment } = this.context;
 
-        if (payment.TransactionResult.success) {
+        if (payment.TransactionResult?.success) {
             return this.renderSuccess();
         }
 
