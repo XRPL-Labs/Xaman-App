@@ -56,6 +56,8 @@ export interface State {
 class HomeView extends Component<Props, State> {
     static screenName = AppScreens.TabBar.Home;
 
+    private navigationListener: any;
+
     static options() {
         return {
             topBar: {
@@ -87,10 +89,16 @@ class HomeView extends Component<Props, State> {
         CoreRepository.on('updateSettings', this.updateDiscreetMode);
 
         // listen for screen appear event
-        Navigation.events().bindComponent(this);
+        this.navigationListener = Navigation.events().bindComponent(this);
 
         // set default account
         this.getDefaultAccount();
+    }
+
+    componentWillUnmount() {
+        if (this.navigationListener) {
+            this.navigationListener.remove();
+        }
     }
 
     componentDidAppear() {

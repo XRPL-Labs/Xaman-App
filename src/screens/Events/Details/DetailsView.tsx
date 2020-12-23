@@ -3,6 +3,7 @@
  */
 import { find, isEmpty, isUndefined } from 'lodash';
 import moment from 'moment-timezone';
+import { Navigation } from 'react-native-navigation';
 
 import React, { Component } from 'react';
 import {
@@ -65,6 +66,9 @@ export interface State {
 class TransactionDetailsView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Details;
 
+    private forceFetchDetails: boolean;
+    private navigationListener: any;
+
     static options() {
         return {
             bottomTabs: { visible: false },
@@ -88,14 +92,38 @@ class TransactionDetailsView extends Component<Props, State> {
             scamAlert: false,
             showMemo: true,
         };
+
+        this.forceFetchDetails = false;
     }
 
     componentDidMount() {
+        this.navigationListener = Navigation.events().bindComponent(this);
+
         InteractionManager.runAfterInteractions(() => {
             this.checkForScamAlert();
             this.setPartiesDetails();
             this.setBalanceChanges();
         });
+    }
+
+    componentWillUnmount() {
+        if (this.navigationListener) {
+            this.navigationListener.remove();
+        }
+    }
+
+    componentDidAppear() {
+        if (this.forceFetchDetails) {
+            this.forceFetchDetails = false;
+
+            InteractionManager.runAfterInteractions(() => {
+                this.setPartiesDetails();
+            });
+        }
+    }
+
+    componentDidDisappear() {
+        this.forceFetchDetails = true;
     }
 
     setBalanceChanges = () => {

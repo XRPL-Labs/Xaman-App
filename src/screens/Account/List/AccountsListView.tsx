@@ -40,6 +40,8 @@ export interface State {
 class AccountListView extends Component<Props, State> {
     static screenName = AppScreens.Account.List;
 
+    private navigationListener: any;
+
     static options() {
         return {
             topBar: { visible: false },
@@ -54,8 +56,16 @@ class AccountListView extends Component<Props, State> {
             accounts: AccountRepository.getAccounts(),
             signableAccount: AccountRepository.getSignableAccounts(),
         };
+    }
 
-        Navigation.events().bindComponent(this);
+    componentDidMount() {
+        this.navigationListener = Navigation.events().bindComponent(this);
+    }
+
+    componentWillUnmount() {
+        if (this.navigationListener) {
+            this.navigationListener.remove();
+        }
     }
 
     componentDidAppear() {
