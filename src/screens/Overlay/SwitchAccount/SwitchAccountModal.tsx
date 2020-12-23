@@ -40,6 +40,7 @@ export interface State {
 }
 
 const BOUNDARY_HEIGHT = 50;
+const ROW_ITEM_HEIGHT = AppSizes.scale(70);
 /* Component ==================================================================== */
 class SwitchAccountOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.SwitchAccount;
@@ -91,13 +92,13 @@ class SwitchAccountOverlay extends Component<Props, State> {
             android: AppSizes.navigationBarHeight * 1.1,
         });
 
-        let contentHeight = count * (AppSizes.scale(60) + 10) + bottomGap + headerContentHeight;
+        let contentHeight = count * (ROW_ITEM_HEIGHT + 10) + bottomGap + headerContentHeight;
 
         let paddingBottom = 0;
 
         if (contentHeight > AppSizes.screen.height * 0.9) {
             contentHeight = AppSizes.screen.height * 0.9;
-            paddingBottom = AppSizes.scale(60) + bottomGap;
+            paddingBottom = ROW_ITEM_HEIGHT + bottomGap;
         }
 
         this.setState(
@@ -197,14 +198,23 @@ class SwitchAccountOverlay extends Component<Props, State> {
             return (
                 <View
                     key={account.address}
-                    style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow, styles.accountRowSelected]}
+                    style={[
+                        AppStyles.row,
+                        AppStyles.centerAligned,
+                        styles.accountRow,
+                        styles.accountRowSelected,
+                        { height: ROW_ITEM_HEIGHT },
+                    ]}
                 >
                     <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
                         <View style={[AppStyles.flex3]}>
                             <Text style={[styles.accountLabel]}>{account.label}</Text>
-                            <View style={[styles.accessLevelContainer]}>
-                                <Icon size={13} name={accessLevelIcon} style={AppStyles.imgColorBlack} />
-                                <Text style={[styles.accessLevelLabel, AppStyles.colorBlack]}>{accessLevelLabel}</Text>
+                            <Text style={[styles.accountAddress]}>{account.address}</Text>
+                            <View style={[styles.accessLevelBadge, styles.accessLevelBadgeSelected]}>
+                                <Icon size={11} name={accessLevelIcon} style={AppStyles.imgColorWhite} />
+                                <Text style={[styles.accessLevelLabel, styles.accessLevelLabelSelected]}>
+                                    {accessLevelLabel}
+                                </Text>
                             </View>
                         </View>
                     </View>
@@ -221,7 +231,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 colors={[AppColors.light, AppColors.white]}
-                style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow]}
+                style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow, { height: ROW_ITEM_HEIGHT }]}
             >
                 <TouchableOpacity
                     style={[AppStyles.row, AppStyles.centerAligned]}
@@ -232,8 +242,9 @@ class SwitchAccountOverlay extends Component<Props, State> {
                 >
                     <View style={[AppStyles.flex3]}>
                         <Text style={[styles.accountLabel]}>{account.label}</Text>
-                        <View style={[styles.accessLevelContainer]}>
-                            <Icon size={13} name={accessLevelIcon} style={AppStyles.imgColorGreyDark} />
+                        <Text style={[styles.accountAddress]}>{account.address}</Text>
+                        <View style={[styles.accessLevelBadge]}>
+                            <Icon size={11} name={accessLevelIcon} style={AppStyles.imgColorGreyDark} />
                             <Text style={[styles.accessLevelLabel]}>{accessLevelLabel}</Text>
                         </View>
                     </View>

@@ -24,20 +24,13 @@ const styles = StyleSheet.create({
     },
     accountRow: {
         paddingRight: 20,
-        paddingLeft: 18,
+        paddingLeft: 15,
         paddingTop: 6,
         paddingBottom: 6,
         marginTop: 10,
-        // marginBottom: 5,
-        height: AppSizes.scale(60),
         borderRadius: AppSizes.scale(50) / 3,
-        // borderRadius: 20,
-        // borderBottomWidth: 1,
-        // borderBottomColor: AppColors.red,
     },
     accountRowSelected: {
-        // borderWidth: 2,
-        // borderColor: AppColors.green,
         borderBottomWidth: 0,
         borderRadius: 20,
         backgroundColor: AppColors.lightGreen,
@@ -50,8 +43,6 @@ const styles = StyleSheet.create({
     iconKey: {
         tintColor: AppColors.blue,
         marginRight: 5,
-        // borderWidth: 1,
-        // borderColor: AppColors.red,
         alignSelf: 'center',
     },
     accountLabel: {
@@ -59,11 +50,22 @@ const styles = StyleSheet.create({
         fontSize: AppFonts.p.size,
         color: AppColors.black,
     },
-    accessLevelContainer: {
-        left: 0,
-        right: 0,
+    accountAddress: {
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontSize: AppFonts.small.size,
+        color: AppColors.black,
+    },
+    accessLevelBadge: {
         flexDirection: 'row',
-        marginTop: 3,
+        paddingHorizontal: 5,
+        paddingVertical: 2,
+        borderRadius: 10,
+        marginTop: 7,
+        alignSelf: 'flex-start',
+        backgroundColor: AppColors.grey,
+    },
+    accessLevelBadgeSelected: {
+        backgroundColor: AppColors.black,
     },
     accessLevelLabel: {
         marginLeft: 5,
@@ -71,6 +73,9 @@ const styles = StyleSheet.create({
         fontFamily: AppFonts.base.familyBold,
         color: AppColors.greyDark,
         includeFontPadding: false,
+    },
+    accessLevelLabelSelected: {
+        color: AppColors.white,
     },
     radioCircle: {
         width: AppSizes.scale(23),
@@ -86,15 +91,6 @@ const styles = StyleSheet.create({
         borderColor: AppColors.green,
         borderRadius: AppSizes.scale(23) / 2,
         backgroundColor: AppColors.white,
-    },
-    switchButton: {
-        backgroundColor: AppColors.black,
-    },
-    switchButtonText: {
-        fontSize: AppFonts.base.size * 0.8,
-    },
-    addAccountButton: {
-        alignSelf: 'flex-end',
     },
 });
 
