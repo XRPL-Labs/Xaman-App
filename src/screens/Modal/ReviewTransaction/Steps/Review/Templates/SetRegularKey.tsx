@@ -38,6 +38,10 @@ class SetRegularKeyTemplate extends Component<Props, State> {
     componentDidMount() {
         const { transaction } = this.props;
 
+        if (!transaction.RegularKey) {
+            return;
+        }
+
         this.setState({
             isLoading: true,
         });
@@ -70,15 +74,22 @@ class SetRegularKeyTemplate extends Component<Props, State> {
                         {Localize.t('global.regularKey')}
                     </Text>
                 </View>
-                <RecipientElement
-                    containerStyle={[styles.contentBox, styles.addressContainer]}
-                    isLoading={isLoading}
-                    showAvatar={false}
-                    recipient={{
-                        address: transaction.RegularKey,
-                        ...regularKeyDetails,
-                    }}
-                />
+
+                {transaction.RegularKey ? (
+                    <RecipientElement
+                        containerStyle={[styles.contentBox, styles.addressContainer]}
+                        isLoading={isLoading}
+                        showAvatar={false}
+                        recipient={{
+                            address: transaction.RegularKey,
+                            ...regularKeyDetails,
+                        }}
+                    />
+                ) : (
+                    <View style={[styles.contentBox]}>
+                        <Text style={[styles.value]}>{Localize.t('global.empty')}</Text>
+                    </View>
+                )}
             </>
         );
     }
