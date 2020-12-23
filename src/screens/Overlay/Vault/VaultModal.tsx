@@ -345,7 +345,7 @@ class VaultModal extends Component<Props, State> {
 
         const { cardId, walletPublicKey } = signWith.additionalInfo as Card;
 
-        const preparedTx = AccountLib.rawSecp256k1P1363.prepare(txJson, walletPublicKey, multiSign);
+        const preparedTx = AccountLib.rawSigning.prepare(txJson, walletPublicKey, multiSign);
 
         await RNTangemSdk.sign(cardId, [preparedTx.hashToSign])
             .then((resp) => {
@@ -356,14 +356,14 @@ class VaultModal extends Component<Props, State> {
                 let signedObject = undefined as SignedObjectType;
 
                 if (multiSign) {
-                    signedObject = AccountLib.rawSecp256k1P1363.completeMultiSigned(txJson, [
+                    signedObject = AccountLib.rawSigning.completeMultiSigned(txJson, [
                         {
                             pubKey: walletPublicKey,
                             signature: sig,
                         },
                     ]);
                 } else {
-                    signedObject = AccountLib.rawSecp256k1P1363.complete(preparedTx, sig);
+                    signedObject = AccountLib.rawSigning.complete(preparedTx, sig);
                 }
 
                 // include sign method

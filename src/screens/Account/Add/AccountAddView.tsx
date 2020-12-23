@@ -102,11 +102,7 @@ class AccountAddView extends Component<Props, State> {
     scanTangemCard = () => {
         RNTangemSdk.scanCard()
             .then((card) => {
-                const { cardData, status } = card;
-                if (cardData.blockchainName !== 'XRP') {
-                    Alert.alert(Localize.t('global.error'), Localize.t('account.scannedCardIsNotATangemXRPCard'));
-                    return;
-                }
+                const { status } = card;
                 if (status === CardStatus.Empty) {
                     Prompt(
                         Localize.t('global.notice'),
