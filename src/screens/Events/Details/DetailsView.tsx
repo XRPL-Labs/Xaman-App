@@ -339,7 +339,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 return Localize.t('global.payment');
 
             case 'TrustSet':
-                if (tx.Account.address !== account.address) {
+                if (tx.Account.address !== account.address && tx.Limit !== 0) {
                     return Localize.t('events.incomingTrustLineAdded');
                 }
                 if (tx.Limit === 0) {

@@ -269,7 +269,7 @@ class TransactionTemplate extends Component<Props, State> {
                 }
                 return Localize.t('events.paymentSent');
             case 'TrustSet':
-                if (item.Account.address !== account.address) {
+                if (item.Account.address !== account.address && item.Limit !== 0) {
                     return Localize.t('events.incomingTrustLineAdded');
                 }
                 if (item.Limit === 0) {
