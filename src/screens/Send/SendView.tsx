@@ -304,7 +304,7 @@ class SendView extends Component<Props, State> {
 
         switch (currentStep) {
             case Steps.Details:
-                Navigator.popToRoot();
+                Navigator.pop();
                 break;
             case Steps.Recipient:
                 this.changeView(Steps.Details);
