@@ -19,7 +19,7 @@ import { Button, AccordionPicker, Spacer, Avatar } from '@components/General';
 
 import Localize from '@locale';
 // style
-import { AppStyles, AppSizes } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 // transaction templates
@@ -230,8 +230,8 @@ class ReviewStep extends Component<Props, State> {
                         </View>
                     </View>
                 </View>
-                <ScrollView>
-                    <View style={[styles.collapsingHeader, AppStyles.centerContent]}>
+                <ScrollView bounces={false}>
+                    <View style={[styles.topContent, AppStyles.centerContent]}>
                         <View style={[AppStyles.row, AppStyles.paddingSml]}>
                             <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
                                 <Avatar size={60} border source={{ uri: payload.application.icon_url }} />
@@ -253,7 +253,7 @@ class ReviewStep extends Component<Props, State> {
                         </View>
                     </View>
 
-                    <View style={[styles.transactionContent, { height: AppSizes.screen.height - 70 }]}>
+                    <View style={[styles.transactionContent]}>
                         <View style={[AppStyles.paddingHorizontalSml]}>
                             <View style={styles.rowLabel}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
@@ -277,13 +277,7 @@ class ReviewStep extends Component<Props, State> {
                         <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingVerticalSml]}>
                             {this.renderDetails()}
                         </View>
-                        <View
-                            style={[
-                                AppStyles.flex1,
-                                AppStyles.paddingHorizontalSml,
-                                { paddingBottom: AppSizes.navigationBarHeight },
-                            ]}
-                        >
+                        <View style={[AppStyles.flex1, AppStyles.paddingHorizontalSml]}>
                             <Button
                                 testID="accept-button"
                                 isLoading={isPreparing}

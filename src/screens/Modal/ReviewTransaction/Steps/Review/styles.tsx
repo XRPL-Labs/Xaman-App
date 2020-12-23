@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: AppSizes.paddingSml,
         paddingBottom: 10,
     },
-    collapsingHeader: {
+    topContent: {
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
