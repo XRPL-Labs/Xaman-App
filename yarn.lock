@@ -15294,9 +15294,9 @@ ripple-secret-codec@^1.0.2:
     base-x "^3.0.3"
     bignumber.js "^5.0.0"
 
-"ripple-sign-keypairs@https://github.com/WietseWind/node-ripple-sign-keypairs.git":
+"ripple-sign-keypairs@git+https://github.com/WietseWind/node-ripple-sign-keypairs.git":
   version "1.0.2"
-  resolved "https://github.com/WietseWind/node-ripple-sign-keypairs.git#9470af370c26fe0cebc6dbc11f59c758ea07cb38"
+  resolved "git+https://github.com/WietseWind/node-ripple-sign-keypairs.git#9470af370c26fe0cebc6dbc11f59c758ea07cb38"
   dependencies:
     big-integer latest
     ripple-binary-codec latest
@@ -17741,10 +17741,10 @@ xregexp@^4.2.4:
   dependencies:
     "@babel/runtime-corejs3" "^7.8.3"
 
-xrpl-accountlib@0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/xrpl-accountlib/-/xrpl-accountlib-0.5.1.tgz#cf35bcad95993829682a27582682d748d610863e"
-  integrity sha512-ubZT6bbJXQSDqLnWIYn47QKcR0Y6/ExycsVuLPDGvld1i4X6E0o15ObTwt37u/wX1pYTgS5PN+IJiUMECHnuCA==
+xrpl-accountlib@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/xrpl-accountlib/-/xrpl-accountlib-1.0.0.tgz#c73e6f70a20cd388d4897011314f4c1ba31c14b8"
+  integrity sha512-P1bsxkhFI0b1ZpYXQEFzFp7fIJ8GANnCoRfj02cSz5t/fzJb6GfqjwH7GvRypKIEj9E974NJBzu/N05Rs47iGQ==
   dependencies:
     assert "^2.0.0"
     bip32 "^2.0.5"
@@ -17792,10 +17792,10 @@ xtend@^4.0.0, xtend@~4.0.1:
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
 
-xumm-string-decode@0.4.7:
-  version "0.4.7"
-  resolved "https://registry.yarnpkg.com/xumm-string-decode/-/xumm-string-decode-0.4.7.tgz#b56861238fb3ea5c7307286d0a5c4af7d2fee8a2"
-  integrity sha512-Ly6d3KMpgNCYCYKJfmUp/MepqyZeh7r0qKAdW8lKLpE5047nsc56laALW5893lqolofkaA5lmln2kIjll5dfpQ==
+xumm-string-decode@0.4.8:
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/xumm-string-decode/-/xumm-string-decode-0.4.8.tgz#e4dad6bcf03e1685d06b43defd898436cd8668e0"
+  integrity sha512-LpJ9DCZ6TBN8sGdBUmxXORKx7ZFgf4oofh5HMxyRIYv8dgkmdFwz8qTX8bQ2RBZlGluoH7JksGUhw+4eSmbSlQ==
   dependencies:
     "@ungap/url-search-params" "^0.1.4"
     debug "^4.1.1"
