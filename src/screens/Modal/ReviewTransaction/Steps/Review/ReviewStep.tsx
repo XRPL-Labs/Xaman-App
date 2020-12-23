@@ -4,7 +4,7 @@
 
 import { isEmpty, get, find } from 'lodash';
 import React, { Component } from 'react';
-import { ImageBackground, ScrollView, View, Text } from 'react-native';
+import { ImageBackground, ScrollView, View, Text, KeyboardAvoidingView, Platform } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -230,65 +230,75 @@ class ReviewStep extends Component<Props, State> {
                         </View>
                     </View>
                 </View>
-                <ScrollView bounces={false}>
-                    <View style={[styles.topContent, AppStyles.centerContent]}>
-                        <View style={[AppStyles.row, AppStyles.paddingSml]}>
-                            <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
-                                <Avatar size={60} border source={{ uri: payload.application.icon_url }} />
+                <KeyboardAvoidingView
+                    enabled={Platform.OS === 'ios'}
+                    behavior="padding"
+                    style={styles.keyboardAvoidViewStyle}
+                >
+                    <ScrollView bounces={false}>
+                        <View style={[styles.topContent, AppStyles.centerContent]}>
+                            <View style={[AppStyles.row, AppStyles.paddingSml]}>
+                                <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
+                                    <Avatar size={60} border source={{ uri: payload.application.icon_url }} />
 
-                                <Text style={[styles.appTitle]}>{payload.application.name}</Text>
+                                    <Text style={[styles.appTitle]}>{payload.application.name}</Text>
 
-                                {!!payload.meta.custom_instruction && (
-                                    <>
-                                        <Text style={[styles.descriptionLabel]}>{Localize.t('global.details')}</Text>
-                                        <Text style={[styles.instructionText]}>{payload.meta.custom_instruction}</Text>
-                                    </>
-                                )}
+                                    {!!payload.meta.custom_instruction && (
+                                        <>
+                                            <Text style={[styles.descriptionLabel]}>
+                                                {Localize.t('global.details')}
+                                            </Text>
+                                            <Text style={[styles.instructionText]}>
+                                                {payload.meta.custom_instruction}
+                                            </Text>
+                                        </>
+                                    )}
 
-                                <Text style={[styles.descriptionLabel]}>{Localize.t('global.type')}</Text>
-                                <Text style={[styles.instructionText, AppStyles.colorBlue, AppStyles.bold]}>
-                                    {getTransactionLabel()}
-                                </Text>
+                                    <Text style={[styles.descriptionLabel]}>{Localize.t('global.type')}</Text>
+                                    <Text style={[styles.instructionText, AppStyles.colorBlue, AppStyles.bold]}>
+                                        {getTransactionLabel()}
+                                    </Text>
+                                </View>
                             </View>
                         </View>
-                    </View>
 
-                    <View style={[styles.transactionContent]}>
-                        <View style={[AppStyles.paddingHorizontalSml]}>
-                            <View style={styles.rowLabel}>
-                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                                    {payload.payload.tx_type === 'SignIn' || payload.meta.multisign
-                                        ? Localize.t('global.signAs')
-                                        : Localize.t('global.signWith')}
-                                </Text>
+                        <View style={[styles.transactionContent]}>
+                            <View style={[AppStyles.paddingHorizontalSml]}>
+                                <View style={styles.rowLabel}>
+                                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                                        {payload.payload.tx_type === 'SignIn' || payload.meta.multisign
+                                            ? Localize.t('global.signAs')
+                                            : Localize.t('global.signWith')}
+                                    </Text>
+                                </View>
+                                <AccordionPicker
+                                    ref={(r) => {
+                                        this.sourcePicker = r;
+                                    }}
+                                    onSelect={setSource}
+                                    items={accounts}
+                                    renderItem={this.renderAccountItem}
+                                    selectedItem={source}
+                                    keyExtractor={(i) => i.address}
+                                />
                             </View>
-                            <AccordionPicker
-                                ref={(r) => {
-                                    this.sourcePicker = r;
-                                }}
-                                onSelect={setSource}
-                                items={accounts}
-                                renderItem={this.renderAccountItem}
-                                selectedItem={source}
-                                keyExtractor={(i) => i.address}
-                            />
-                        </View>
 
-                        <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingVerticalSml]}>
-                            {this.renderDetails()}
-                        </View>
-                        <View style={[AppStyles.flex1, AppStyles.paddingHorizontalSml]}>
-                            <Button
-                                testID="accept-button"
-                                isLoading={isPreparing}
-                                onPress={onAccept}
-                                label={Localize.t('global.accept')}
-                            />
-                        </View>
+                            <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingVerticalSml]}>
+                                {this.renderDetails()}
+                            </View>
+                            <View style={[AppStyles.flex1, AppStyles.paddingHorizontalSml]}>
+                                <Button
+                                    testID="accept-button"
+                                    isLoading={isPreparing}
+                                    onPress={onAccept}
+                                    label={Localize.t('global.accept')}
+                                />
+                            </View>
 
-                        <Spacer size={50} />
-                    </View>
-                </ScrollView>
+                            <Spacer size={50} />
+                        </View>
+                    </ScrollView>
+                </KeyboardAvoidingView>
             </ImageBackground>
         );
     }

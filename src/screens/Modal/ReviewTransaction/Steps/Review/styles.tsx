@@ -77,6 +77,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    keyboardAvoidViewStyle: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+    },
 });
 
 export default styles;
