@@ -3,7 +3,8 @@ import Onboarding from './Onboarding';
 import PasscodeSetup from './Setup/Passcode';
 import BiometrySetup from './Setup/Biometry';
 import PermissionsSetup from './Setup/Permissions';
-import Finish from './Setup/Finish';
+import DisclaimersSetup from './Setup/Disclaimers';
+import FinishSetup from './Setup/Finish';
 
 // TabBar
 import Home from './Home';
@@ -81,7 +82,8 @@ export {
     PasscodeSetup,
     BiometrySetup,
     PermissionsSetup,
-    Finish,
+    DisclaimersSetup,
+    FinishSetup,
     // Tab bar
     Home,
     Events,

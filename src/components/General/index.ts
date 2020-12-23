@@ -24,3 +24,7 @@ export * from './ReadMore';
 export * from './SegmentButton';
 export * from './DerivationPathInput';
 export * from './AmountInput';
+export * from './NumberSteps';
+export * from './HorizontalLine';
+export * from './ProgressBar';
+export * from './CheckBox';

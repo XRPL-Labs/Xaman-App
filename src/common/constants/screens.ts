@@ -8,7 +8,7 @@ const screens = {
         Passcode: 'app.Setup.Passcode',
         Biometric: 'app.Setup.Biometric',
         PushNotification: 'app.Setup.PushNotification',
-        Agreement: 'app.Setup.Agreement',
+        Disclaimers: 'app.Setup.Disclaimers',
         Finish: 'app.Setup.Finish',
     },
     TabBar: {
