@@ -206,10 +206,11 @@ class BackendService {
         return ApiService.ping
             .post(null, { appVersion: DeviceInfo.getReadableVersion(), appLanguage: Localize.getCurrentLocale() })
             .then((res: any) => {
-                const { auth, badge, tosAndPrivacyPolicyVersion } = res;
+                const { auth, badge, env, tosAndPrivacyPolicyVersion } = res;
 
                 if (auth) {
                     const { user, device } = auth;
+                    const { hasPro } = env;
 
                     // update the profile
                     ProfileRepository.saveProfile({
@@ -218,6 +219,7 @@ class BackendService {
                         uuid: user.uuidv4,
                         deviceUUID: device.uuidv4,
                         lastSync: new Date(),
+                        hasPro,
                     });
 
                     // check for tos version
