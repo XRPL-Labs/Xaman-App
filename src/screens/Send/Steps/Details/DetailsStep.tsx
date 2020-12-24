@@ -31,7 +31,7 @@ import { Header, Button, AccordionPicker, AmountInput, Footer } from '@component
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles, AppColors, AppSizes } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
@@ -248,13 +248,12 @@ class DetailsStep extends Component {
 
         return (
             <View testID="send-details-view" style={[styles.container]}>
-                <KeyboardAvoidingView
-                    enabled={Platform.OS === 'ios'}
-                    keyboardVerticalOffset={Header.Height}
-                    behavior="padding"
-                    style={[AppStyles.flex1, AppStyles.stretchSelf]}
-                >
-                    <ScrollView style={[AppStyles.flex1]}>
+                <ScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
+                    <KeyboardAvoidingView
+                        enabled={Platform.OS === 'ios'}
+                        keyboardVerticalOffset={Header.Height + AppSizes.extraKeyBoardPadding}
+                        behavior="position"
+                    >
                         {/* Source Account */}
                         <View
                             onLayout={this.setGradientHeight}
@@ -342,8 +341,8 @@ class DetailsStep extends Component {
                                 />
                             </View>
                         </View>
-                    </ScrollView>
-                </KeyboardAvoidingView>
+                    </KeyboardAvoidingView>
+                </ScrollView>
 
                 {/* Bottom Bar */}
                 <Footer style={[AppStyles.row]} safeArea>

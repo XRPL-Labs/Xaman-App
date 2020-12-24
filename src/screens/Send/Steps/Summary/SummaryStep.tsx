@@ -2,6 +2,7 @@
  * Send Summary Step
  */
 
+import { isNil } from 'lodash';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import {
@@ -27,7 +28,7 @@ import Preferences from '@common/libs/preferences';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { AmountInput, Button, AccordionPicker, Footer, Spacer, TextInput, Header } from '@components/General';
+import { AmountInput, Button, AccordionPicker, Footer, Spacer, TextInput } from '@components/General';
 
 // locale
 import Localize from '@locale';
@@ -316,7 +317,7 @@ class SummaryStep extends Component<Props, State> {
             return;
         }
 
-        if (destination.tag !== undefined && destination.tag !== confirmedDestinationTag) {
+        if (!isNil(destination.tag) && destination.tag !== confirmedDestinationTag) {
             Navigator.showOverlay(
                 AppScreens.Overlay.ConfirmDestinationTag,
                 {
@@ -352,13 +353,8 @@ class SummaryStep extends Component<Props, State> {
 
         return (
             <View testID="send-summary-view" style={[styles.container]}>
-                <KeyboardAvoidingView
-                    enabled={Platform.OS === 'ios'}
-                    keyboardVerticalOffset={Header.Height}
-                    behavior="padding"
-                    style={[AppStyles.flex1, AppStyles.stretchSelf]}
-                >
-                    <ScrollView style={[AppStyles.flex1]}>
+                <ScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
+                    <KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior="position">
                         <View onLayout={this.setGradientHeight} style={[styles.rowItem, styles.rowItemGrey]}>
                             <Animated.Image
                                 source={Images.SideGradient}
@@ -488,8 +484,8 @@ class SummaryStep extends Component<Props, State> {
                                 numberOfLines={1}
                             />
                         </View>
-                    </ScrollView>
-                </KeyboardAvoidingView>
+                    </KeyboardAvoidingView>
+                </ScrollView>
                 {/* Bottom Bar */}
                 <Footer style={[AppStyles.row]} safeArea>
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
