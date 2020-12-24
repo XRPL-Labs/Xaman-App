@@ -2,16 +2,17 @@
  * Switch Account Overlay
  */
 import React, { Component } from 'react';
-import { Animated, View, Text, TouchableWithoutFeedback, Share } from 'react-native';
+import { Animated, View, Text, TouchableWithoutFeedback, Share, Clipboard } from 'react-native';
 
 import Interactable from 'react-native-interactable';
+
+import { Toast } from '@common/helpers/interface';
 
 import { AccountSchema } from '@store/schemas/latest';
 
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
-
 // components
 import { Button, QRCode, Spacer } from '@components/General';
 
@@ -96,8 +97,18 @@ class ShareAccountModal extends Component<Props, State> {
         }).catch(() => {});
     };
 
+    onCopyAddressPress = () => {
+        const { account } = this.props;
+
+        this.slideDown();
+
+        Clipboard.setString(account.address);
+        Toast(Localize.t('account.publicKeyCopiedToClipboard'));
+    };
+
     render() {
         const { account } = this.props;
+
         return (
             <View style={AppStyles.flex1}>
                 <TouchableWithoutFeedback
@@ -128,10 +139,10 @@ class ShareAccountModal extends Component<Props, State> {
                     verticalOnly
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
-                        { y: AppSizes.screen.height - (AppSizes.moderateScale(370) + AppSizes.navigationBarHeight) },
+                        { y: AppSizes.screen.height - (AppSizes.moderateScale(430) + AppSizes.navigationBarHeight) },
                     ]}
                     boundaries={{
-                        top: AppSizes.screen.height - (AppSizes.moderateScale(390) + AppSizes.navigationBarHeight),
+                        top: AppSizes.screen.height - (AppSizes.moderateScale(450) + AppSizes.navigationBarHeight),
                     }}
                     initialPosition={{ y: AppSizes.screen.height }}
                     animatedValueY={this.deltaY}
@@ -152,6 +163,7 @@ class ShareAccountModal extends Component<Props, State> {
                         <Text style={styles.addressText}>{account.address}</Text>
 
                         <Spacer size={20} />
+
                         <Button
                             light
                             rounded
@@ -159,6 +171,16 @@ class ShareAccountModal extends Component<Props, State> {
                             iconStyle={AppStyles.imgColorBlue}
                             label={Localize.t('global.share')}
                             onPress={this.onSharePress}
+                        />
+                        <Spacer size={20} />
+
+                        <Button
+                            light
+                            rounded
+                            label={Localize.t('account.copyAddress')}
+                            icon="IconClipboard"
+                            iconStyle={AppStyles.imgColorBlue}
+                            onPress={this.onCopyAddressPress}
                         />
                     </View>
                 </Interactable.View>
