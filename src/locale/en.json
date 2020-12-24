@@ -237,7 +237,9 @@
     "readLess": "Read less",
     "enterPasscode": "Enter Passcode",
     "today": "Today",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "change": "Change",
+    "looksGood": "Looks good"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",
@@ -284,7 +286,7 @@
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "I will keep my secrets safe, offline, so I can re-enter them if I get a new phone",
     "questionsAndSupport": "Questions & support",
     "questionsAndSupportExplain": "If you have questions, you can read FAQ's and ask questions at https://support.xumm.app.\n\nThis is THE ONLY trustworthy channel for XUMM support.",
-    "IOnlyTrustAnswersFromXUMMSupportTeam": "I will only trust answers from the XUMM support team at https://support.xumm.app ]",
+    "IOnlyTrustAnswersFromXUMMSupportTeam": "I will only trust answers from the XUMM support team at: https://support.xumm.app",
     "pleaseReadTheTextAboveCarefully" : "Please read the text above carefully"
   },
   "home": {
@@ -654,7 +656,9 @@
     "thisAddressRequiredDestinationTag": "This address requires a destination tag.",
     "pleaseEnterAmount": "Please enter the amount of transaction",
     "trustLineLimitExceeded": "TrustLine limit is exceeded, now: %{balance}, max: %{peer_limit}, available for issuing: %{available}. The recipient can update the TrustLine limit.",
-    "unableToSendPaymentNotEnoughLiquidity": "Unable to send the payment right now due to lack of liquidity."
+    "unableToSendPaymentNotEnoughLiquidity": "Unable to send the payment right now due to lack of liquidity.",
+    "destinationTagWarningConfirm": "You are sending to an account with destination tag. Please double check the destination tag: if you send to the wrong tag, you will need support of the Destination to retrieve your funds.",
+    "doubleCheckDestinationTag": "Double check destination tag"
   },
   "asset": {
     "addAsset": "Add an asset",

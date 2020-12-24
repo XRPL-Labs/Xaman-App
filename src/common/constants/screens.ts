@@ -52,6 +52,7 @@ const screens = {
         ChangeLog: 'overlay.ChangeLog',
         ConnectionIssue: 'overlay.ConnectionIssue',
         RecipientMenu: 'overlay.RecipientMenu',
+        ConfirmDestinationTag: 'overlay.ConfirmDestinationTag',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',

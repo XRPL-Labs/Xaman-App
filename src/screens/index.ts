@@ -44,6 +44,7 @@ import ExplainBalance from './Overlay/ExplainBalance';
 import ChangeLog from './Overlay/ChangeLog';
 import ConnectionIssue from './Overlay/ConnectionIssue';
 import RecipientMenu from './Overlay/RecipientMenu';
+import ConfirmDestinationTag from './Overlay/ConfirmDestinationTag';
 
 // Transaction
 import Send from './Send';
@@ -118,6 +119,7 @@ export {
     ChangeLog,
     ConnectionIssue,
     RecipientMenu,
+    ConfirmDestinationTag,
     // transaction
     Send,
     Exchange,

@@ -38,8 +38,15 @@ import styles from './styles';
 
 import { StepsContext } from '../../Context';
 
+/* types ==================================================================== */
+export interface Props {}
+
+export interface State {
+    confirmedDestinationTag: number;
+}
+
 /* Component ==================================================================== */
-class SummaryStep extends Component {
+class SummaryStep extends Component<Props, State> {
     gradientHeight: Animated.Value;
     amountInput: AmountInput;
     destinationTagInput: TextInput;
@@ -47,8 +54,12 @@ class SummaryStep extends Component {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
-    constructor(props: undefined) {
+    constructor(props: Props) {
         super(props);
+
+        this.state = {
+            confirmedDestinationTag: undefined,
+        };
 
         this.gradientHeight = new Animated.Value(0);
     }
@@ -173,6 +184,19 @@ class SummaryStep extends Component {
         );
     };
 
+    onDestinationTagConfirm = () => {
+        const { destination } = this.context;
+
+        this.setState(
+            {
+                confirmedDestinationTag: destination.tag,
+            },
+            () => {
+                this.goNext();
+            },
+        );
+    };
+
     renderAccountItem = (account: AccountSchema, selected: boolean) => {
         return (
             <View style={[styles.pickerItem]}>
@@ -245,6 +269,7 @@ class SummaryStep extends Component {
     };
 
     goNext = () => {
+        const { confirmedDestinationTag } = this.state;
         const { goNext, currency, source, amount, destination, destinationInfo, setAmount } = this.context;
 
         const bAmount = new BigNumber(amount);
@@ -288,6 +313,24 @@ class SummaryStep extends Component {
         // check if destination requires the destination tag
         if (destinationInfo.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
             Alert.alert(Localize.t('global.warning'), Localize.t('send.destinationTagIsRequired'));
+            return;
+        }
+
+        if (destination.tag !== undefined && destination.tag !== confirmedDestinationTag) {
+            Navigator.showOverlay(
+                AppScreens.Overlay.ConfirmDestinationTag,
+                {
+                    layout: {
+                        backgroundColor: 'transparent',
+                        componentBackgroundColor: 'transparent',
+                    },
+                },
+                {
+                    destinationTag: destination.tag,
+                    onConfirm: this.onDestinationTagConfirm,
+                    onChange: this.showEnterDestinationTag,
+                },
+            );
             return;
         }
 
@@ -442,6 +485,7 @@ class SummaryStep extends Component {
                                 maxLength={300}
                                 returnKeyType="done"
                                 autoCapitalize="sentences"
+                                numberOfLines={1}
                             />
                         </View>
                     </ScrollView>
