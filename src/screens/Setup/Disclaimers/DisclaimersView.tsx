@@ -82,7 +82,7 @@ class DisclaimersView extends Component<Props, State> {
             agreed: true,
         });
 
-        if (currentStep === 6) {
+        if (currentStep === 6 || __DEV__) {
             Navigator.push(AppScreens.Setup.Finish);
             return;
         }
