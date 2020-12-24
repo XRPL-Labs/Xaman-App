@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, TouchableOpacity, View, Text, Image, Linking } from 'react-native';
+import { SafeAreaView, TouchableOpacity, View, Text, Image, Linking, Alert } from 'react-native';
 
 // components
 import { Button, Icon, Footer, Spacer } from '@components/General';
@@ -28,7 +28,14 @@ class MnemonicAlertStep extends Component<Props, State> {
 
     openFAQ = () => {
         const url = 'https://support.xumm.app/en/articles/3852597-how-does-xumm-security-compare-to-a-hardware-wallet';
-        Linking.openURL(url);
+
+        Linking.canOpenURL(url).then((supported) => {
+            if (supported) {
+                Linking.openURL(url);
+            } else {
+                Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
+            }
+        });
     };
 
     render() {

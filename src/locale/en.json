@@ -239,7 +239,13 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "change": "Change",
-    "looksGood": "Looks good"
+    "looksGood": "Looks good",
+    "incorrectPassword": "Incorrect password",
+    "incorrectPasscode": "Incorrect passcode",
+    "thePasswordYouEnteredIsIncorrectExplain": "The password you entered is incorrect. To sign a transaction, you need to enter the right password. You entered this password when you added the account you want to sign with to XUMM.",
+    "thePasscodeYouEnteredIsIncorrectExplain": "The passcode you entered is incorrect. To sign a transaction, you need to enter the right passcode. You entered this passcode when you setup XUMM for the first time.",
+    "troubleshoot": "Troubleshoot",
+    "tryAgain": "Try again"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",
