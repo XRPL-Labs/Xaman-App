@@ -116,7 +116,7 @@ class AccountListView extends Component<Props, State> {
         const regularKeyFor = this.isRegularKey(item);
 
         if (regularKeyFor) {
-            accessLevelLabel = `${Localize.t('account.regularKeyFor')} (${regularKeyFor})`;
+            accessLevelLabel = `${Localize.t('account.regularKeyFor')} ${regularKeyFor}`;
             accessLevelIcon = 'IconKey';
         }
 
