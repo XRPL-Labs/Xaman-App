@@ -63,6 +63,8 @@ const styles = StyleSheet.create({
         marginTop: 7,
         alignSelf: 'flex-start',
         backgroundColor: AppColors.grey,
+        justifyContent: 'center',
+        alignContent: 'center',
     },
     accessLevelBadgeSelected: {
         backgroundColor: AppColors.black,

@@ -244,7 +244,11 @@ class SwitchAccountOverlay extends Component<Props, State> {
                         <Text style={[styles.accountLabel]}>{account.label}</Text>
                         <Text style={[styles.accountAddress]}>{account.address}</Text>
                         <View style={[styles.accessLevelBadge]}>
-                            <Icon size={11} name={accessLevelIcon} style={AppStyles.imgColorGreyDark} />
+                            <Icon
+                                size={11}
+                                name={accessLevelIcon}
+                                style={[AppStyles.imgColorGreyDark, AppStyles.centerSelf]}
+                            />
                             <Text style={[styles.accessLevelLabel]}>{accessLevelLabel}</Text>
                         </View>
                     </View>
