@@ -47,22 +47,8 @@ class CheckBox extends PureComponent<Props> {
                 </View>
                 <View style={AppStyles.flex6}>
                     <Text style={[styles.label, checked && styles.labelSelected]}>{label}</Text>
-                    {labelSmall && (
-                        <Text style={[styles.labelSmall, checked ? AppStyles.colorBlue : AppStyles.colorGreyDark]}>
-                            {labelSmall}
-                        </Text>
-                    )}
-                    {description && (
-                        <Text
-                            style={[
-                                AppStyles.subtext,
-                                styles.descriptionText,
-                                checked ? AppStyles.colorBlue : AppStyles.colorGreyDark,
-                            ]}
-                        >
-                            {description}
-                        </Text>
-                    )}
+                    {labelSmall && <Text style={[styles.labelSmall]}>{labelSmall}</Text>}
+                    {description && <Text style={[AppStyles.subtext, styles.descriptionText]}>{description}</Text>}
                 </View>
             </TouchableOpacity>
         );

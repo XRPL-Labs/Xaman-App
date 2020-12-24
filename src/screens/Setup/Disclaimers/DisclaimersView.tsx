@@ -62,7 +62,7 @@ class DisclaimersView extends Component<Props, State> {
             agreed: false,
         });
 
-        this.progressBar.fill(5000, () => {
+        this.progressBar.fill(10000, () => {
             this.setState({
                 isProgressing: false,
             });
