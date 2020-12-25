@@ -148,21 +148,15 @@ class ConfirmDestinationTagModal extends Component<Props, State> {
 
                     <View style={[AppStyles.centerAligned, AppStyles.paddingHorizontalSml]}>
                         <Text adjustsFontSizeToFit numberOfLines={1} style={styles.destinationTagText}>
-                            {destinationTag.split('').join(' ')}
+                            {String(destinationTag).split('').join(' ')}
                         </Text>
                     </View>
 
-                    <Spacer size={50} />
+                    <Spacer size={30} />
 
-                    <View style={[AppStyles.row]}>
-                        <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
-                            <Button secondary onPress={this.onChangePress} label={Localize.t('global.change')} />
-                        </View>
-
-                        <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
-                            <Button onPress={this.onConfirmPress} label={Localize.t('global.looksGood')} />
-                        </View>
-                    </View>
+                    <Button onPress={this.onConfirmPress} label={Localize.t('global.looksGood')} />
+                    <Spacer size={10} />
+                    <Button secondary onPress={this.onChangePress} label={Localize.t('global.change')} />
                 </Animated.View>
             </Animated.View>
         );
