@@ -53,6 +53,7 @@ const screens = {
         ConnectionIssue: 'overlay.ConnectionIssue',
         RecipientMenu: 'overlay.RecipientMenu',
         ConfirmDestinationTag: 'overlay.ConfirmDestinationTag',
+        SelectAccount: 'overlay.SelectAccount',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',

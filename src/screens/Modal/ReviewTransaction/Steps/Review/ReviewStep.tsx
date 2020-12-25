@@ -15,7 +15,8 @@ import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
 // components
-import { Button, AccordionPicker, Spacer, Avatar } from '@components/General';
+import { Button, Spacer, Avatar } from '@components/General';
+import { AccountPicker } from '@components/Modules';
 
 import Localize from '@locale';
 // style
@@ -37,8 +38,6 @@ export interface State {
 class ReviewStep extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
-
-    private sourcePicker: AccordionPicker;
 
     constructor(props: Props) {
         super(props);
@@ -271,16 +270,7 @@ class ReviewStep extends Component<Props, State> {
                                             : Localize.t('global.signWith')}
                                     </Text>
                                 </View>
-                                <AccordionPicker
-                                    ref={(r) => {
-                                        this.sourcePicker = r;
-                                    }}
-                                    onSelect={setSource}
-                                    items={accounts}
-                                    renderItem={this.renderAccountItem}
-                                    selectedItem={source}
-                                    keyExtractor={(i) => i.address}
-                                />
+                                <AccountPicker onSelect={setSource} accounts={accounts} selectedItem={source} />
                             </View>
 
                             <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingVerticalSml]}>

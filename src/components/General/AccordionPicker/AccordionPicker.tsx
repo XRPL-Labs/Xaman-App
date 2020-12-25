@@ -66,7 +66,7 @@ class AccordionPicker extends Component<Props, State> {
             });
         }
 
-        if (selected) {
+        if (selected !== -1) {
             return {
                 selectedIndex: selected,
             };

@@ -28,7 +28,8 @@ import Preferences from '@common/libs/preferences';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { AmountInput, Button, AccordionPicker, Footer, Spacer, TextInput } from '@components/General';
+import { AmountInput, Button, Footer, Spacer, TextInput } from '@components/General';
+import { AccountPicker } from '@components/Modules';
 
 // locale
 import Localize from '@locale';
@@ -198,23 +199,6 @@ class SummaryStep extends Component<Props, State> {
         );
     };
 
-    renderAccountItem = (account: AccountSchema, selected: boolean) => {
-        return (
-            <View style={[styles.pickerItem]}>
-                <Text style={[styles.pickerItemTitle, selected ? AppStyles.colorBlue : AppStyles.colorBlack]}>
-                    {account.label}
-                </Text>
-                <Text
-                    style={[styles.pickerItemSub, selected ? AppStyles.colorBlue : AppStyles.colorGreyDark]}
-                    adjustsFontSizeToFit
-                    numberOfLines={1}
-                >
-                    {account.address}
-                </Text>
-            </View>
-        );
-    };
-
     renderCurrencyItem = (item: any) => {
         const { source } = this.context;
 
@@ -366,14 +350,9 @@ class SummaryStep extends Component<Props, State> {
                                     {Localize.t('global.from')}
                                 </Text>
                             </View>
-                            <AccordionPicker
-                                onSelect={this.onAccountChange}
-                                items={accounts}
-                                renderItem={this.renderAccountItem}
-                                selectedItem={source}
-                                keyExtractor={(i) => i.address}
-                                containerStyle={{ backgroundColor: AppColors.transparent }}
-                            />
+
+                            <AccountPicker onSelect={this.onAccountChange} accounts={accounts} selectedItem={source} />
+
                             <Spacer size={20} />
 
                             <View style={[styles.rowTitle]}>

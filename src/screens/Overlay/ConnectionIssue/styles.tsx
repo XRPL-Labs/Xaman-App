@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
     },
     title: {
         ...AppStyles.h5,
+        textAlign: 'center',
     },
     subTitle: {
         ...AppStyles.p,
