@@ -664,7 +664,8 @@
     "trustLineLimitExceeded": "TrustLine limit is exceeded, now: %{balance}, max: %{peer_limit}, available for issuing: %{available}. The recipient can update the TrustLine limit.",
     "unableToSendPaymentNotEnoughLiquidity": "Unable to send the payment right now due to lack of liquidity.",
     "destinationTagWarningConfirm": "You are sending to an account with destination tag. Please double check the destination tag: if you send to the wrong tag, you will need support of the Destination to retrieve your funds.",
-    "doubleCheckDestinationTag": "Double check destination tag"
+    "doubleCheckDestinationTag": "Double check destination tag",
+    "sendToAccountWithDisallowXrpFlagWarning": "The destination account indicates that it doesn't want to receive XRP payments. Only non-XRP (IOU) payments can be sent to this destination."
   },
   "asset": {
     "addAsset": "Add an asset",

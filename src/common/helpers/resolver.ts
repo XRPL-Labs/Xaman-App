@@ -24,6 +24,7 @@ export interface AccountInfoType {
     risk: 'ERROR' | 'UNKNOWS' | 'PROBABLE' | 'HIGH_PROBABILITY' | 'CONFIRMED';
     requireDestinationTag: boolean;
     possibleExchange: boolean;
+    disallowIncomingXRP: boolean;
 }
 
 const getAccountName = memoize(
@@ -116,6 +117,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
             risk: 'UNKNOWS',
             requireDestinationTag: false,
             possibleExchange: false,
+            disallowIncomingXRP: false,
         } as AccountInfoType;
 
         try {
@@ -149,6 +151,10 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
             // check if destination requires the destination tag
             if (has(account_data, ['Flags'])) {
                 const accountFlags = new Flag('Account', account_data.Flags).parse();
+
+                if (accountFlags.disallowIncomingXRP) {
+                    assign(info, { disallowIncomingXRP: true });
+                }
 
                 // flag is set
                 if (accountFlags.requireDestinationTag) {
