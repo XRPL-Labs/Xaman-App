@@ -2,7 +2,9 @@
  * Switch Account Overlay
  */
 import React, { Component } from 'react';
-import { Animated, View, Text, TouchableWithoutFeedback, Share, Clipboard } from 'react-native';
+import { Animated, View, Text, TouchableWithoutFeedback, Share } from 'react-native';
+
+import Clipboard from '@react-native-community/clipboard';
 
 import Interactable from 'react-native-interactable';
 
