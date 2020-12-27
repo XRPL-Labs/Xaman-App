@@ -493,14 +493,6 @@ class RecipientStep extends Component<Props, State> {
                 return;
             }
 
-            // check for destination tag require
-            if (destinationInfo.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
-                this.showEnterDestinationTag();
-
-                // don't move to next step
-                return;
-            }
-
             // check for xrp income disallow
             if (destinationInfo.disallowIncomingXRP && typeof currency === 'string') {
                 Navigator.showAlertModal({
@@ -521,6 +513,14 @@ class RecipientStep extends Component<Props, State> {
                         },
                     ],
                 });
+
+                // don't move to next step
+                return;
+            }
+
+            // check for destination tag require
+            if (destinationInfo.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
+                this.showEnterDestinationTag();
 
                 // don't move to next step
                 return;
