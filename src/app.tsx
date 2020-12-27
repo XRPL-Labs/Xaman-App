@@ -183,16 +183,21 @@ class Application {
 
                 const localeSettings = await GetDeviceLocaleSettings();
 
-                // app is not initialized yet, set to default EN
+                let locale;
+
+                // app is not initialized yet, set to default device locale
                 if (!core) {
                     this.logger.debug('Locale is not initialized, setting base on device languageCode');
-                    const locale = Localize.setLocale(localeSettings.languageCode, localeSettings);
+                    locale = Localize.setLocale(localeSettings.languageCode, localeSettings);
                     CoreRepository.saveSettings({ language: locale });
-                    return resolve();
+                } else {
+                    // use locale set in settings
+                    this.logger.debug(`Locale set to: ${core.language.toUpperCase()}`);
+                    locale = Localize.setLocale(core.language, core.useSystemSeparators ? localeSettings : undefined);
                 }
 
-                this.logger.debug(`Locale set to: ${core.language.toUpperCase()}`);
-                Localize.setLocale(core.language, core.useSystemSeparators ? localeSettings : undefined);
+                // set locale to moment
+                moment.locale(locale);
 
                 return resolve();
             } catch (e) {

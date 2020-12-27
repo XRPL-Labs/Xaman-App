@@ -49,6 +49,7 @@ class Localize {
 
             const resolvedLocale = this.resolveLocale(locale);
 
+            // none EN locale found
             if (resolvedLocale !== '' && resolvedLocale !== 'en') {
                 const generateLocals = require('./generated').default;
                 this.instance.translations[resolvedLocale] = generateLocals[resolvedLocale];
