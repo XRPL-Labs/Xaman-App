@@ -38,7 +38,7 @@ class CheckBox extends PureComponent<Props> {
                 testID={testID}
                 activeOpacity={0.8}
                 onPress={this.onPress}
-                style={[styles.content, checked ? styles.selected : null]}
+                style={[styles.content, checked && styles.selected]}
             >
                 <View style={AppStyles.flex1}>
                     <View style={[styles.box, checked ? styles.boxSelected : null]}>

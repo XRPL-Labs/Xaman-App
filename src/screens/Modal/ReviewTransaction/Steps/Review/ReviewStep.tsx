@@ -234,7 +234,7 @@ class ReviewStep extends Component<Props, State> {
                     behavior="padding"
                     style={styles.keyboardAvoidViewStyle}
                 >
-                    <ScrollView bounces={false}>
+                    <ScrollView bounces={false} testID="review-content-container">
                         <View style={[styles.topContent, AppStyles.centerContent]}>
                             <View style={[AppStyles.row, AppStyles.paddingSml]}>
                                 <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
