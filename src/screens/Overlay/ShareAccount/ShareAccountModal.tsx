@@ -92,11 +92,13 @@ class ShareAccountModal extends Component<Props, State> {
 
         this.slideDown();
 
-        Share.share({
-            title: Localize.t('home.shareAccount'),
-            message: account.address,
-            url: undefined,
-        }).catch(() => {});
+        setTimeout(() => {
+            Share.share({
+                title: Localize.t('home.shareAccount'),
+                message: account.address,
+                url: undefined,
+            }).catch(() => {});
+        }, 1000);
     };
 
     onCopyAddressPress = () => {
