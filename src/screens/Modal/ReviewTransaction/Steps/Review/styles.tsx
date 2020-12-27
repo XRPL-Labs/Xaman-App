@@ -11,8 +11,7 @@ const styles = StyleSheet.create({
     },
     transactionContent: {
         backgroundColor: AppColors.white,
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
+        borderRadius: 30,
         paddingTop: 28,
     },
     rowLabel: {
