@@ -5,6 +5,7 @@ import { UIManager, Platform, Alert, Text, TextInput } from 'react-native';
 
 // modules
 import moment from 'moment-timezone';
+
 import DeviceInfo from 'react-native-device-info';
 import { Navigation } from 'react-native-navigation';
 
