@@ -22,13 +22,23 @@ const styles = StyleSheet.create({
         marginRight: 15,
         opacity: 1,
     },
-    accountRow: {
+    accountRowContainer: {
+        alignItems: 'center',
+        left: 0,
+        right: 0,
+        flexDirection: 'row',
         paddingRight: 20,
         paddingLeft: 15,
         paddingTop: 6,
         paddingBottom: 6,
         marginTop: 10,
         borderRadius: AppSizes.scale(50) / 3,
+    },
+    accountRow: {
+        alignItems: 'center',
+        left: 0,
+        right: 0,
+        flexDirection: 'row',
     },
     accountRowSelected: {
         borderBottomWidth: 0,

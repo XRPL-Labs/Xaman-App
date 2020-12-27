@@ -156,31 +156,35 @@ class SelectAccountOverlay extends Component<Props, State> {
         const isSelected = account.address === selected.address;
 
         return (
-            <LinearGradient
-                key={account.address}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                colors={[AppColors.light, AppColors.white]}
-                style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow, { height: ROW_ITEM_HEIGHT }]}
+            <TouchableOpacity
+                onPress={() => {
+                    this.onSelect(account);
+                }}
+                activeOpacity={0.9}
             >
-                <TouchableOpacity
-                    style={[AppStyles.row, AppStyles.centerAligned]}
-                    onPress={() => {
-                        this.onSelect(account);
-                    }}
-                    activeOpacity={0.9}
+                <LinearGradient
+                    key={account.address}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    colors={[AppColors.light, AppColors.white]}
+                    style={[styles.accountRowContainer, { height: ROW_ITEM_HEIGHT }]}
                 >
-                    <View style={[AppStyles.flex3]}>
-                        <Text style={[styles.accountLabel]}>{account.label}</Text>
-                        <Text style={[styles.accountAddress]}>{account.address}</Text>
+                    <View style={[styles.accountRow]}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text style={[styles.accountLabel]}>{account.label}</Text>
+                            <Text style={[styles.accountAddress]}>{account.address}</Text>
+                        </View>
+                        <View style={[AppStyles.flex1]}>
+                            <View
+                                style={[
+                                    isSelected ? styles.radioCircleSelected : styles.radioCircle,
+                                    AppStyles.rightSelf,
+                                ]}
+                            />
+                        </View>
                     </View>
-                    <View style={[AppStyles.flex1]}>
-                        <View
-                            style={[isSelected ? styles.radioCircleSelected : styles.radioCircle, AppStyles.rightSelf]}
-                        />
-                    </View>
-                </TouchableOpacity>
-            </LinearGradient>
+                </LinearGradient>
+            </TouchableOpacity>
         );
     };
 

@@ -109,31 +109,25 @@ class AccountPicker extends Component<Props, State> {
         }
 
         return (
-            <View style={[styles.pickerContainer, containerStyle]}>
-                <TouchableOpacity
-                    activeOpacity={0.9}
-                    onPress={this.showPicker}
-                    style={[styles.pickerDropDownItem, AppStyles.centerContent]}
-                >
-                    <View style={[AppStyles.row]}>
-                        <View style={[AppStyles.flex1]}>
-                            <Text style={[styles.accountItemTitle]}>{selectedItem.label}</Text>
-                            <Text style={[styles.accountItemSub]} adjustsFontSizeToFit numberOfLines={1}>
-                                {selectedItem.address}
-                            </Text>
-                        </View>
-                        {accounts.length > 1 && (
-                            <TouchableOpacity style={[styles.collapseButton]} onPress={this.showPicker}>
-                                <Icon
-                                    name={expanded ? 'IconChevronUp' : 'IconChevronDown'}
-                                    size={20}
-                                    style={styles.collapseIcon}
-                                />
-                            </TouchableOpacity>
-                        )}
+            <TouchableOpacity activeOpacity={0.9} onPress={this.showPicker} style={[styles.pickerContainer]}>
+                <View style={[AppStyles.row]}>
+                    <View style={[AppStyles.flex1]}>
+                        <Text style={[styles.accountItemTitle]}>{selectedItem.label}</Text>
+                        <Text style={[styles.accountItemSub]} adjustsFontSizeToFit numberOfLines={1}>
+                            {selectedItem.address}
+                        </Text>
                     </View>
-                </TouchableOpacity>
-            </View>
+                    {accounts.length > 1 && (
+                        <TouchableOpacity style={[styles.collapseButton]} onPress={this.showPicker}>
+                            <Icon
+                                name={expanded ? 'IconChevronUp' : 'IconChevronDown'}
+                                size={20}
+                                style={styles.collapseIcon}
+                            />
+                        </TouchableOpacity>
+                    )}
+                </View>
+            </TouchableOpacity>
         );
     }
 }

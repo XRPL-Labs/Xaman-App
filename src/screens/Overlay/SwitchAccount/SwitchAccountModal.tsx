@@ -226,37 +226,38 @@ class SwitchAccountOverlay extends Component<Props, State> {
         }
 
         return (
-            <LinearGradient
-                key={account.address}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                colors={[AppColors.light, AppColors.white]}
-                style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow, { height: ROW_ITEM_HEIGHT }]}
+            <TouchableOpacity
+                onPress={() => {
+                    this.changeDefaultAccount(account.address);
+                }}
+                activeOpacity={0.9}
             >
-                <TouchableOpacity
-                    style={[AppStyles.row, AppStyles.centerAligned]}
-                    onPress={() => {
-                        this.changeDefaultAccount(account.address);
-                    }}
-                    activeOpacity={0.9}
+                <LinearGradient
+                    key={account.address}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    colors={[AppColors.light, AppColors.white]}
+                    style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow, { height: ROW_ITEM_HEIGHT }]}
                 >
-                    <View style={[AppStyles.flex3]}>
-                        <Text style={[styles.accountLabel]}>{account.label}</Text>
-                        <Text style={[styles.accountAddress]}>{account.address}</Text>
-                        <View style={[styles.accessLevelBadge]}>
-                            <Icon
-                                size={11}
-                                name={accessLevelIcon}
-                                style={[AppStyles.imgColorGreyDark, AppStyles.centerSelf]}
-                            />
-                            <Text style={[styles.accessLevelLabel]}>{accessLevelLabel}</Text>
+                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text style={[styles.accountLabel]}>{account.label}</Text>
+                            <Text style={[styles.accountAddress]}>{account.address}</Text>
+                            <View style={[styles.accessLevelBadge]}>
+                                <Icon
+                                    size={11}
+                                    name={accessLevelIcon}
+                                    style={[AppStyles.imgColorGreyDark, AppStyles.centerSelf]}
+                                />
+                                <Text style={[styles.accessLevelLabel]}>{accessLevelLabel}</Text>
+                            </View>
+                        </View>
+                        <View style={[AppStyles.flex1]}>
+                            <View style={[styles.radioCircle, AppStyles.rightSelf]} />
                         </View>
                     </View>
-                    <View style={[AppStyles.flex1]}>
-                        <View style={[styles.radioCircle, AppStyles.rightSelf]} />
-                    </View>
-                </TouchableOpacity>
-            </LinearGradient>
+                </LinearGradient>
+            </TouchableOpacity>
         );
     };
 

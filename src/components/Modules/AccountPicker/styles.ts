@@ -5,30 +5,10 @@ import { AppColors, AppStyles, AppFonts } from '@theme';
 export default StyleSheet.create({
     pickerContainer: {
         borderRadius: 15,
-        padding: 5,
         backgroundColor: AppColors.light,
-    },
-    pickerDropDownItem: {
-        height: 70,
-        marginTop: 2,
-        borderRadius: 12,
-        backgroundColor: AppColors.transparent,
-        // padding: 10,
-        // paddingTop: 12,
-        // paddingVertical: 13,
-        paddingHorizontal: 12,
-        // borderTopWidth: 1,
-        // borderTopColor: AppColors.grey,
-    },
-    pickerDropDownItemActive: {
-        height: 70,
-        marginTop: 2,
-        borderRadius: 12,
-        backgroundColor: AppColors.lightBlue,
-        // padding: 10,
-        // paddingHorizontal: 12,
-        // paddingVertical: 13,
-        paddingHorizontal: 12,
+        height: 80,
+        paddingHorizontal: 17,
+        justifyContent: 'center',
     },
     collapseButton: {
         backgroundColor: AppColors.black,
