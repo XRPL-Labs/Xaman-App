@@ -570,7 +570,7 @@ class TransactionDetailsView extends Component<Props, State> {
         let content = Localize.t('events.escrowFinishTransactionExplain', {
             address: tx.Account.address,
             amount: tx.Amount.value,
-            Destination: tx.Destination.address,
+            destination: tx.Destination.address,
         });
         if (tx.Destination.tag) {
             content += '\n';
