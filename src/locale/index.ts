@@ -8,6 +8,7 @@ class Localize {
     meta: any;
 
     constructor() {
+        require('moment/min/locales');
         this.instance = require('i18n-js');
         this.meta = require('./meta.json');
         this.instance.fallbacks = true;
@@ -49,6 +50,7 @@ class Localize {
 
             const resolvedLocale = this.resolveLocale(locale);
 
+            // none EN locale found
             if (resolvedLocale !== '' && resolvedLocale !== 'en') {
                 const generateLocals = require('./generated').default;
                 this.instance.translations[resolvedLocale] = generateLocals[resolvedLocale];

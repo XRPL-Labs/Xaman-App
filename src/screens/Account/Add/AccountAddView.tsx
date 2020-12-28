@@ -193,7 +193,7 @@ class AccountAddView extends Component<Props, State> {
 
                                 <Button
                                     style={AppStyles.buttonBlack}
-                                    testID="account-import-button"
+                                    testID="tangem-import-button"
                                     label={Localize.t('account.addTangemCard')}
                                     onPress={this.onAddTangemCardPress}
                                 />

@@ -346,6 +346,16 @@ class RecipientStep extends Component<Props, State> {
         );
     };
 
+    clearDestination = () => {
+        const { setDestination } = this.context;
+
+        setDestination(undefined);
+
+        this.setState({
+            searchText: '',
+        });
+    };
+
     checkAndNext = async () => {
         const { setDestination, setDestinationInfo, amount, currency, destination, source, goNext } = this.context;
 
@@ -401,12 +411,7 @@ class RecipientStep extends Component<Props, State> {
                         buttons: [
                             {
                                 text: Localize.t('global.back'),
-                                onPress: () => {
-                                    setDestination(undefined);
-                                    this.setState({
-                                        searchText: '',
-                                    });
-                                },
+                                onPress: this.clearDestination,
                                 type: 'dismiss',
                                 light: false,
                             },
@@ -425,12 +430,7 @@ class RecipientStep extends Component<Props, State> {
                         buttons: [
                             {
                                 text: Localize.t('global.back'),
-                                onPress: () => {
-                                    setDestination(undefined);
-                                    this.setState({
-                                        searchText: '',
-                                    });
-                                },
+                                onPress: this.clearDestination,
                                 type: 'dismiss',
                                 light: true,
                             },
@@ -456,12 +456,7 @@ class RecipientStep extends Component<Props, State> {
                     buttons: [
                         {
                             text: Localize.t('global.back'),
-                            onPress: () => {
-                                setDestination(undefined);
-                                this.setState({
-                                    searchText: '',
-                                });
-                            },
+                            onPress: this.clearDestination,
                             type: 'dismiss',
                             light: false,
                         },
@@ -487,12 +482,7 @@ class RecipientStep extends Component<Props, State> {
                     buttons: [
                         {
                             text: Localize.t('global.back'),
-                            onPress: () => {
-                                setDestination(undefined);
-                                this.setState({
-                                    searchText: '',
-                                });
-                            },
+                            onPress: this.clearDestination,
                             type: 'dismiss',
                             light: false,
                         },
@@ -503,6 +493,32 @@ class RecipientStep extends Component<Props, State> {
                 return;
             }
 
+            // check for xrp income disallow
+            if (destinationInfo.disallowIncomingXRP && typeof currency === 'string') {
+                Navigator.showAlertModal({
+                    type: 'warning',
+                    text: Localize.t('send.sendToAccountWithDisallowXrpFlagWarning'),
+                    buttons: [
+                        {
+                            text: Localize.t('global.back'),
+                            onPress: this.clearDestination,
+                            type: 'dismiss',
+                            light: false,
+                        },
+                        {
+                            text: Localize.t('global.continue'),
+                            onPress: goNext,
+                            type: 'continue',
+                            light: true,
+                        },
+                    ],
+                });
+
+                // don't move to next step
+                return;
+            }
+
+            // check for destination tag require
             if (destinationInfo.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
                 this.showEnterDestinationTag();
 

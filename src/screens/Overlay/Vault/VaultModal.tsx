@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Animated, Text, Alert, Platform, Keyboard, KeyboardEvent, LayoutAnimation } from 'react-native';
+import { View, Animated, Text, Alert, Platform, Keyboard, KeyboardEvent, LayoutAnimation, Linking } from 'react-native';
 
 import * as AccountLib from 'xrpl-accountlib';
 
@@ -22,7 +22,7 @@ import Vault from '@common/libs/vault';
 
 import { AuthenticationService } from '@services';
 
-import { VibrateHapticFeedback } from '@common/helpers/interface';
+import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
@@ -298,20 +298,58 @@ class VaultModal extends Component<Props, State> {
         this.openVault(passcode, AuthMethods.BIOMETRIC);
     };
 
-    onPasscodeEntered = (passcode: string) => {
+    onInvalidAuth = (method: AuthMethods) => {
         const { coreSettings } = this.state;
 
+        // wrong passcode entered
+        if (coreSettings.hapticFeedback) {
+            VibrateHapticFeedback('notificationError');
+        }
+
+        let title = '';
+        let content = '';
+
+        switch (method) {
+            case AuthMethods.PIN:
+                title = Localize.t('global.incorrectPasscode');
+                content = Localize.t('global.thePasscodeYouEnteredIsIncorrectExplain');
+                break;
+            case AuthMethods.PASSPHRASE:
+                title = Localize.t('global.incorrectPassword');
+                content = Localize.t('global.thePasswordYouEnteredIsIncorrectExplain');
+                break;
+            default:
+                title = Localize.t('global.error');
+                content = Localize.t('global.invalidAuth');
+        }
+
+        Prompt(
+            title,
+            content,
+            [
+                {
+                    text: Localize.t('global.troubleshoot'),
+                    onPress: this.openTroubleshootLink,
+                },
+                { text: Localize.t('global.tryAgain') },
+            ],
+            { type: 'default' },
+        );
+    };
+
+    onPasscodeEntered = (passcode: string) => {
         AuthenticationService.checkPasscode(passcode)
             .then((encryptedPasscode) => {
                 this.openVault(encryptedPasscode, AuthMethods.PIN);
             })
             .catch((e) => {
-                // wrong passcode entered
-                if (coreSettings.hapticFeedback) {
-                    VibrateHapticFeedback('notificationError');
-                }
                 this.securePinInput.clearInput();
-                Alert.alert(Localize.t('global.error'), e.message);
+
+                if (e?.message === Localize.t('global.invalidPasscode')) {
+                    this.onInvalidAuth(AuthMethods.PIN);
+                } else {
+                    Alert.alert(Localize.t('global.error'), e.message);
+                }
             });
     };
 
@@ -320,8 +358,19 @@ class VaultModal extends Component<Props, State> {
         this.openVault(passphrase, AuthMethods.PASSPHRASE);
     };
 
+    openTroubleshootLink = () => {
+        const url = `http://xumm.app/redir/faq/account-signing-password/${Localize.getCurrentLocale()}`;
+        Linking.canOpenURL(url).then((supported) => {
+            if (supported) {
+                Linking.openURL(url);
+            } else {
+                Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
+            }
+        });
+    };
+
     openVault = async (encryptionKey: string, method: AuthMethods) => {
-        const { signWith, coreSettings } = this.state;
+        const { signWith } = this.state;
 
         if (!encryptionKey) {
             return;
@@ -332,10 +381,7 @@ class VaultModal extends Component<Props, State> {
         if (privateKey) {
             this.signWithPrivateKey(privateKey, method);
         } else {
-            if (coreSettings.hapticFeedback) {
-                VibrateHapticFeedback('notificationError');
-            }
-            Alert.alert(Localize.t('global.error'), Localize.t('global.invalidAuth'));
+            this.onInvalidAuth(method);
         }
     };
 

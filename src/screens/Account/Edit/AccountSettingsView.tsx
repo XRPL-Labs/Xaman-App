@@ -286,7 +286,11 @@ class AccountSettingsView extends Component<Props, State> {
                                     </View>
 
                                     <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                                        <Text style={[styles.value]}>{account.encryptionLevel}</Text>
+                                        <Text style={[styles.value]}>
+                                            {account.encryptionLevel === EncryptionLevels.Passphrase
+                                                ? 'Password'
+                                                : account.encryptionLevel}
+                                        </Text>
                                     </View>
                                 </View>
 

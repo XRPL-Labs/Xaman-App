@@ -1,9 +1,6 @@
 /**
- * Switch Account Overlay
+ * Select Account Overlay
  */
-
-import { Results } from 'realm';
-import { find } from 'lodash';
 
 import React, { Component } from 'react';
 import { Animated, View, Text, TouchableWithoutFeedback, TouchableOpacity, Platform, ScrollView } from 'react-native';
@@ -11,17 +8,14 @@ import { Animated, View, Text, TouchableWithoutFeedback, TouchableOpacity, Platf
 import Interactable from 'react-native-interactable';
 import LinearGradient from 'react-native-linear-gradient';
 
-import { AccessLevels } from '@store/types';
-import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
-import { Images } from '@common/helpers/images';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Icon } from '@components/General';
+import { Button } from '@components/General';
 
 import Localize from '@locale';
 
@@ -30,11 +24,14 @@ import { AppStyles, AppSizes, AppColors } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {}
+export interface Props {
+    accounts: Array<AccountSchema>;
+    selected: AccountSchema;
+    onSelect: (account: AccountSchema) => void;
+    onClose: () => void;
+}
 
 export interface State {
-    accounts: Results<AccountSchema>;
-    signableAccount: Array<AccountSchema>;
     contentHeight: number;
     paddingBottom: number;
 }
@@ -42,8 +39,8 @@ export interface State {
 const BOUNDARY_HEIGHT = 50;
 const ROW_ITEM_HEIGHT = AppSizes.scale(70);
 /* Component ==================================================================== */
-class SwitchAccountOverlay extends Component<Props, State> {
-    static screenName = AppScreens.Overlay.SwitchAccount;
+class SelectAccountOverlay extends Component<Props, State> {
+    static screenName = AppScreens.Overlay.SelectAccount;
 
     panel: any;
     deltaY: Animated.Value;
@@ -66,8 +63,6 @@ class SwitchAccountOverlay extends Component<Props, State> {
         super(props);
 
         this.state = {
-            accounts: undefined,
-            signableAccount: undefined,
             contentHeight: 0,
             paddingBottom: 0,
         };
@@ -78,8 +73,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const accounts = AccountRepository.getAccounts().sorted([['default', true]]);
-        const signableAccount = AccountRepository.getSignableAccounts();
+        const { accounts } = this.props;
 
         // accounts count or as 3 item height
         const count = accounts.length < 3 ? 3 : accounts.length;
@@ -103,8 +97,6 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
         this.setState(
             {
-                accounts,
-                signableAccount,
                 contentHeight,
                 paddingBottom,
             },
@@ -123,6 +115,12 @@ class SwitchAccountOverlay extends Component<Props, State> {
     };
 
     slideDown = () => {
+        const { onClose } = this.props;
+
+        if (typeof onClose === 'function') {
+            onClose();
+        }
+
         setTimeout(() => {
             if (this.panel) {
                 this.panel.snapTo({ index: 0 });
@@ -138,97 +136,29 @@ class SwitchAccountOverlay extends Component<Props, State> {
         }
     };
 
-    onAddPressed = () => {
-        if (Platform.OS === 'ios') {
-            this.slideDown();
-            setTimeout(() => {
-                Navigator.push(AppScreens.Account.Add);
-            }, 300);
-        } else {
-            Navigator.dismissOverlay();
-            setTimeout(() => {
-                Navigator.push(AppScreens.Account.Add);
-            }, 100);
-        }
-    };
-
-    changeDefaultAccount = (address: string) => {
-        AccountRepository.setDefaultAccount(address);
+    onCancelPress = () => {
         this.slideDown();
     };
 
-    isRegularKey = (account: AccountSchema) => {
-        const { accounts } = this.state;
+    onSelect = (account: AccountSchema) => {
+        const { onSelect } = this.props;
 
-        const found = find(accounts, { regularKey: account.address });
-
-        if (found) {
-            return found.label;
+        if (typeof onSelect === 'function') {
+            onSelect(account);
         }
 
-        return false;
+        this.slideDown();
     };
 
     renderRow = (account: AccountSchema) => {
-        const { signableAccount } = this.state;
-        // default full access
-        let accessLevelLabel = Localize.t('account.fullAccess');
-        let accessLevelIcon = 'IconCornerLeftUp' as Extract<keyof typeof Images, string>;
+        const { selected } = this.props;
 
-        const signable = find(signableAccount, { address: account.address });
-
-        if (!signable) {
-            accessLevelLabel = Localize.t('account.readOnly');
-            accessLevelIcon = 'IconLock';
-        }
-
-        // promoted by regular key
-        if (account.accessLevel === AccessLevels.Readonly && signable) {
-            accessLevelIcon = 'IconKey';
-        }
-
-        const regularKeyFor = this.isRegularKey(account);
-
-        if (regularKeyFor) {
-            accessLevelLabel = `${Localize.t('account.regularKeyFor')} ${regularKeyFor}`;
-            accessLevelIcon = 'IconKey';
-        }
-
-        if (account.default) {
-            return (
-                <View
-                    key={account.address}
-                    style={[
-                        AppStyles.row,
-                        AppStyles.centerAligned,
-                        styles.accountRow,
-                        styles.accountRowSelected,
-                        { height: ROW_ITEM_HEIGHT },
-                    ]}
-                >
-                    <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
-                        <View style={[AppStyles.flex3]}>
-                            <Text style={[styles.accountLabel]}>{account.label}</Text>
-                            <Text style={[styles.accountAddress]}>{account.address}</Text>
-                            <View style={[styles.accessLevelBadge, styles.accessLevelBadgeSelected]}>
-                                <Icon size={11} name={accessLevelIcon} style={AppStyles.imgColorWhite} />
-                                <Text style={[styles.accessLevelLabel, styles.accessLevelLabelSelected]}>
-                                    {accessLevelLabel}
-                                </Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={[AppStyles.flex1]}>
-                        <View style={[styles.radioCircleSelected, AppStyles.rightSelf]} />
-                    </View>
-                </View>
-            );
-        }
+        const isSelected = account.address === selected.address;
 
         return (
             <TouchableOpacity
                 onPress={() => {
-                    this.changeDefaultAccount(account.address);
+                    this.onSelect(account);
                 }}
                 activeOpacity={0.9}
             >
@@ -237,23 +167,20 @@ class SwitchAccountOverlay extends Component<Props, State> {
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     colors={[AppColors.light, AppColors.white]}
-                    style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow, { height: ROW_ITEM_HEIGHT }]}
+                    style={[styles.accountRowContainer, { height: ROW_ITEM_HEIGHT }]}
                 >
-                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                    <View style={[styles.accountRow]}>
                         <View style={[AppStyles.flex3]}>
                             <Text style={[styles.accountLabel]}>{account.label}</Text>
                             <Text style={[styles.accountAddress]}>{account.address}</Text>
-                            <View style={[styles.accessLevelBadge]}>
-                                <Icon
-                                    size={11}
-                                    name={accessLevelIcon}
-                                    style={[AppStyles.imgColorGreyDark, AppStyles.centerSelf]}
-                                />
-                                <Text style={[styles.accessLevelLabel]}>{accessLevelLabel}</Text>
-                            </View>
                         </View>
                         <View style={[AppStyles.flex1]}>
-                            <View style={[styles.radioCircle, AppStyles.rightSelf]} />
+                            <View
+                                style={[
+                                    isSelected ? styles.radioCircleSelected : styles.radioCircle,
+                                    AppStyles.rightSelf,
+                                ]}
+                            />
                         </View>
                     </View>
                 </LinearGradient>
@@ -262,7 +189,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
     };
 
     renderContent = () => {
-        const { accounts } = this.state;
+        const { accounts } = this.props;
 
         if (accounts.length === 0) {
             return (
@@ -278,7 +205,8 @@ class SwitchAccountOverlay extends Component<Props, State> {
     };
 
     render() {
-        const { accounts, contentHeight, paddingBottom } = this.state;
+        const { contentHeight, paddingBottom } = this.state;
+        const { accounts } = this.props;
 
         if (!accounts) return null;
 
@@ -329,13 +257,12 @@ class SwitchAccountOverlay extends Component<Props, State> {
                             </View>
                             <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                                 <Button
-                                    label={Localize.t('home.addAccount')}
-                                    icon="IconPlus"
-                                    iconStyle={[AppStyles.imgColorBlue]}
-                                    roundedSmall
                                     light
+                                    roundedSmall
                                     isDisabled={false}
-                                    onPress={this.onAddPressed}
+                                    onPress={this.onCancelPress}
+                                    textStyle={[AppStyles.subtext, AppStyles.bold]}
+                                    label={Localize.t('global.cancel')}
                                 />
                             </View>
                         </View>
@@ -348,4 +275,4 @@ class SwitchAccountOverlay extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default SwitchAccountOverlay;
+export default SelectAccountOverlay;

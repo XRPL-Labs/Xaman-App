@@ -323,5 +323,12 @@
       "ta-IN": "தமிழ் Tamiḻ"
     },
     "source": "ta-IN.json"
+  },
+  "en-AU": {
+    "name": {
+      "en": "English (Australian)",
+      "en-AU": "English (Australian)"
+    },
+    "source": "en-AU.json"
   }
 }

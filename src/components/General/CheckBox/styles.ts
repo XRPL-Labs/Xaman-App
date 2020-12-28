@@ -41,11 +41,13 @@ export default StyleSheet.create({
     labelSmall: {
         fontSize: AppFonts.subtext.size,
         fontFamily: AppFonts.base.familyBold,
+        color: AppColors.blue,
     },
     labelSelected: {
         color: AppColors.blue,
     },
     descriptionText: {
+        color: AppColors.blue,
         marginTop: 10,
     },
 });

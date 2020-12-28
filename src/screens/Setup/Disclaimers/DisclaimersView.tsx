@@ -62,7 +62,9 @@ class DisclaimersView extends Component<Props, State> {
             agreed: false,
         });
 
-        this.progressBar.fill(5000, () => {
+        const waitTime = __DEV__ ? 1000 : 10000;
+
+        this.progressBar.fill(waitTime, () => {
             this.setState({
                 isProgressing: false,
             });
@@ -156,7 +158,7 @@ class DisclaimersView extends Component<Props, State> {
         const content = this.getStepContent();
 
         return (
-            <SafeAreaView style={[styles.container]}>
+            <SafeAreaView testID="disclaimers-setup-screen" style={[styles.container]}>
                 <View style={[AppStyles.centerContent, AppStyles.centerAligned]}>
                     <Image style={styles.logo} source={Images.xummLogo} />
                 </View>
@@ -164,7 +166,7 @@ class DisclaimersView extends Component<Props, State> {
                 <Spacer size={20} />
                 <NumberSteps currentStep={currentStep} length={7} onStepChange={this.onStepChange} />
 
-                <View style={styles.contentContainer}>
+                <View testID="disclaimer-content-view" style={styles.contentContainer}>
                     <Text style={AppStyles.h5}>
                         {currentStep + 1}. {content.title}
                     </Text>
@@ -191,6 +193,7 @@ class DisclaimersView extends Component<Props, State> {
                             </View>
                         ) : (
                             <CheckBox
+                                testID="agree-check-box"
                                 checked={agreed}
                                 onPress={this.onAgreePress}
                                 label={Localize.t('global.IUnderstand')}

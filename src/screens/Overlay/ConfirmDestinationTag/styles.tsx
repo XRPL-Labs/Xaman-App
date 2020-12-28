@@ -2,7 +2,7 @@
 
 import { StyleSheet } from 'react-native';
 
-import { AppStyles, AppColors, AppSizes } from '@theme';
+import { AppStyles, AppColors, AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({
@@ -10,7 +10,6 @@ const styles = StyleSheet.create({
 
     visibleContent: {
         width: AppSizes.screen.width * 0.9,
-        alignItems: 'center',
         backgroundColor: AppColors.white,
         borderRadius: AppSizes.screen.width * 0.07,
         shadowColor: AppColors.black,
@@ -33,25 +32,21 @@ const styles = StyleSheet.create({
         tintColor: AppColors.green,
     },
     title: {
-        ...AppStyles.h5,
-        textAlign: 'center',
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.h5.size * 0.9,
+        color: AppColors.orange,
     },
     subTitle: {
-        ...AppStyles.p,
+        fontFamily: AppFonts.base.family,
+        fontSize: AppFonts.base.size,
         color: AppColors.black,
         textAlign: 'center',
     },
-    titleError: {
-        color: AppColors.red,
-    },
-    titleWarning: {
-        color: AppColors.orange,
-    },
-    titleInfo: {
-        color: AppColors.lightBlue,
-    },
-    titleSuccess: {
-        color: AppColors.green,
+    destinationTagText: {
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontSize: AppFonts.h3.size,
+        color: AppColors.black,
+        textAlign: 'center',
     },
 });
 

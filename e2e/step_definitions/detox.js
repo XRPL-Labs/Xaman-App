@@ -2,6 +2,9 @@ const { Given, Then } = require('cucumber');
 const { waitFor, expect, element, by, device } = require('detox');
 
 Then('I tap {string}', async (buttonId) => {
+    await waitFor(element(by.id(buttonId)))
+        .toBeVisible()
+        .withTimeout(5000);
     await element(by.id(buttonId)).tap();
 });
 

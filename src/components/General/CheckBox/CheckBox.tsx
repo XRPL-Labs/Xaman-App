@@ -38,7 +38,7 @@ class CheckBox extends PureComponent<Props> {
                 testID={testID}
                 activeOpacity={0.8}
                 onPress={this.onPress}
-                style={[styles.content, checked ? styles.selected : null]}
+                style={[styles.content, checked && styles.selected]}
             >
                 <View style={AppStyles.flex1}>
                     <View style={[styles.box, checked ? styles.boxSelected : null]}>
@@ -47,22 +47,8 @@ class CheckBox extends PureComponent<Props> {
                 </View>
                 <View style={AppStyles.flex6}>
                     <Text style={[styles.label, checked && styles.labelSelected]}>{label}</Text>
-                    {labelSmall && (
-                        <Text style={[styles.labelSmall, checked ? AppStyles.colorBlue : AppStyles.colorGreyDark]}>
-                            {labelSmall}
-                        </Text>
-                    )}
-                    {description && (
-                        <Text
-                            style={[
-                                AppStyles.subtext,
-                                styles.descriptionText,
-                                checked ? AppStyles.colorBlue : AppStyles.colorGreyDark,
-                            ]}
-                        >
-                            {description}
-                        </Text>
-                    )}
+                    {labelSmall && <Text style={[styles.labelSmall]}>{labelSmall}</Text>}
+                    {description && <Text style={[AppStyles.subtext, styles.descriptionText]}>{description}</Text>}
                 </View>
             </TouchableOpacity>
         );
