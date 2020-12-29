@@ -204,7 +204,7 @@ class Application {
                 }
 
                 // set locale to moment
-                moment.locale(locale);
+                // moment.locale(locale);
 
                 return resolve();
             } catch (e) {
