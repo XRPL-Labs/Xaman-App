@@ -136,9 +136,11 @@ class RequestDeclineOverlay extends Component<Props, State> {
                     verticalOnly
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
-                        { y: AppSizes.screen.height - AppSizes.moderateScale(350) },
+                        { y: AppSizes.screen.height - (AppSizes.moderateScale(350) + AppSizes.navigationBarHeight) },
                     ]}
-                    boundaries={{ top: AppSizes.screen.height - AppSizes.moderateScale(400) }}
+                    boundaries={{
+                        top: AppSizes.screen.height - (AppSizes.moderateScale(400) + AppSizes.navigationBarHeight),
+                    }}
                     initialPosition={{ y: AppSizes.screen.height + 3 }}
                     animatedValueY={this.deltaY}
                     animatedValueX={this.deltaX}
@@ -161,13 +163,7 @@ class RequestDeclineOverlay extends Component<Props, State> {
                                 {Localize.t('payload.willRejectTheSignRequest')}
                             </Text>
                         </View>
-                        <View
-                            style={[
-                                AppStyles.flex2,
-                                AppStyles.paddingHorizontalSml,
-                                { marginBottom: AppSizes.navigationBarHeight },
-                            ]}
-                        >
+                        <View style={[AppStyles.flex2, AppStyles.paddingHorizontalSml]}>
                             <Button
                                 onPress={this.onClose}
                                 style={styles.closeButton}

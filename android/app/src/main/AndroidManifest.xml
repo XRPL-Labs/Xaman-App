@@ -109,7 +109,7 @@
 
         <receiver android:name="libs.notification.NotificationActionReceiver" android:enabled="true" >
             <intent-filter>
-                <action android:name="=com.xrpllabs.xumm.ACTION_NOTIFICATION_OPENED" />
+                <action android:name="com.xrpllabs.xumm.ACTION_NOTIFICATION_OPENED" />
             </intent-filter>
         </receiver>
 

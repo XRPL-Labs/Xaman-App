@@ -2,7 +2,9 @@
  * General Settings Screen
  */
 
+import moment from 'moment-timezone';
 import { uniqBy } from 'lodash';
+
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 
@@ -90,7 +92,10 @@ class GeneralSettingsView extends Component<Props, State> {
         CoreRepository.saveSettings({ language: value });
 
         // change it from local instance
-        Localize.setLocale(value);
+        const newLocale = Localize.setLocale(value);
+
+        // set locale to moment
+        moment.locale(newLocale);
 
         // re-render the app
         Navigator.reRender();
