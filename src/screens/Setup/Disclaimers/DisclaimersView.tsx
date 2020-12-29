@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 
-import { View, SafeAreaView, Image, Text, LayoutAnimation } from 'react-native';
+import { View, SafeAreaView, Image, Text, Platform, LayoutAnimation } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
@@ -90,7 +90,9 @@ class DisclaimersView extends Component<Props, State> {
         }
 
         setTimeout(() => {
-            LayoutAnimation.easeInEaseOut();
+            if (Platform.OS === 'ios') {
+                LayoutAnimation.easeInEaseOut();
+            }
 
             this.setState(
                 {

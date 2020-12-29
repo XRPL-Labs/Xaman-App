@@ -21,7 +21,7 @@ import LoggerService from '@services/LoggerService';
 
 /* events  ==================================================================== */
 declare interface LedgerService {
-    on(event: 'onTransaction', listener: (name: string) => void): this;
+    on(event: 'transaction', listener: (name: string) => void): this;
     on(event: string, listener: Function): this;
 }
 

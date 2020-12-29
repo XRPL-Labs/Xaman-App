@@ -366,7 +366,7 @@ class SendView extends Component<Props, State> {
         Keyboard.dismiss();
         setTimeout(() => {
             Navigator.pop();
-        }, 0);
+        }, 10);
     };
 
     renderHeader = () => {
