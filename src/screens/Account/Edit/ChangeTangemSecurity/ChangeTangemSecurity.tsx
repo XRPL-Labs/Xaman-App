@@ -61,6 +61,14 @@ class ChangeTangemSecurityView extends Component<Props, State> {
         };
     }
 
+    componentDidMount() {
+        RNTangemSdk.startSession();
+    }
+
+    componentWillUnmount() {
+        RNTangemSdk.stopSession();
+    }
+
     onSecurityChange = (security: TangemSecurity) => {
         this.setState({
             chosenSecurity: security,

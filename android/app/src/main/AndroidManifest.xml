@@ -78,6 +78,14 @@
                     android:pathPrefix="/sign"
                     android:scheme="https" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED"/>
+            </intent-filter>
+
+            <meta-data android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech_filter" />
+            
         </activity>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
@@ -101,7 +109,7 @@
 
         <receiver android:name="libs.notification.NotificationActionReceiver" android:enabled="true" >
             <intent-filter>
-                <action android:name="=com.xrpllabs.xumm.ACTION_NOTIFICATION_OPENED" />
+                <action android:name="com.xrpllabs.xumm.ACTION_NOTIFICATION_OPENED" />
             </intent-filter>
         </receiver>
 

@@ -8,7 +8,7 @@ class Localize {
     meta: any;
 
     constructor() {
-        require('moment/min/locales');
+        // require('moment/min/locales');
         this.instance = require('i18n-js');
         this.meta = require('./meta.json');
         this.instance.fallbacks = true;
