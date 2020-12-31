@@ -548,6 +548,7 @@ class TransactionDetailsView extends Component<Props, State> {
         if (tx.Destination.tag) {
             content += '\n';
             content += Localize.t('events.theEscrowHasADestinationTag', { tag: tx.Destination.tag });
+            content += ' ';
         }
         content += '\n';
         content += Localize.t('events.itEscrowed', { amount: tx.Amount.value });
@@ -575,6 +576,7 @@ class TransactionDetailsView extends Component<Props, State> {
         if (tx.Destination.tag) {
             content += '\n';
             content += Localize.t('events.theEscrowHasADestinationTag', { tag: tx.Destination.tag });
+            content += ' ';
         }
 
         content += '\n';
@@ -589,11 +591,11 @@ class TransactionDetailsView extends Component<Props, State> {
         let content = '';
         if (tx.Account.tag) {
             content += Localize.t('events.thePaymentHasASourceTag', { tag: tx.Account.tag });
-            content += '\n';
+            content += ' \n';
         }
         if (tx.Destination.tag) {
             content += Localize.t('events.thePaymentHasADestinationTag', { tag: tx.Destination.tag });
-            content += '\n';
+            content += ' \n';
         }
 
         content += Localize.t('events.itWasInstructedToDeliver', {
