@@ -41,3 +41,22 @@ index dd905ff..2e5b166 100644
               numberOfModalsDismissed:@(viewControllers.count)];
      }
  }
+diff --git a/node_modules/react-native-navigation/lib/ios/RNNOverlayWindow.m b/node_modules/react-native-navigation/lib/ios/RNNOverlayWindow.m
+index 1fadf53..23e7c56 100644
+--- a/node_modules/react-native-navigation/lib/ios/RNNOverlayWindow.m
++++ b/node_modules/react-native-navigation/lib/ios/RNNOverlayWindow.m
+@@ -1,12 +1,12 @@
+ #import "RNNOverlayWindow.h"
++#import "RNNReactView.h"
+ 
+ @implementation RNNOverlayWindow
+ 
+ - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+     UIView *hitTestResult = [super hitTest:point withEvent:event];
+     
+-    if ([hitTestResult isKindOfClass:[UIWindow class]] ||
+-        [hitTestResult isMemberOfClass:UIView.class]) {
++    if ([hitTestResult isKindOfClass:[UIWindow class]] || ([hitTestResult.subviews count] > 0 && [hitTestResult.subviews[0] isKindOfClass:RNNReactView.class])) {
+         return nil;
+     }
+     
