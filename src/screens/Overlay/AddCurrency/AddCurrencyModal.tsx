@@ -161,7 +161,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
     renderCurrencies = () => {
         const { counterParties, selectedParty, selectedCurrency, currencies } = this.state;
 
-        if (!counterParties) {
+        if (isEmpty(counterParties)) {
             return (
                 <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]} adjustsFontSizeToFit numberOfLines={1}>
                     No Item to show
@@ -202,7 +202,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
     renderParties = () => {
         const { counterParties, selectedParty, currencies } = this.state;
 
-        if (!counterParties) {
+        if (isEmpty(counterParties)) {
             return (
                 <Text
                     key="empty-parties"
