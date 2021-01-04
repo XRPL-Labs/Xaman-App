@@ -544,6 +544,16 @@ class RecipientStep extends Component<Props, State> {
         }
     };
 
+    goBack = () => {
+        const { goBack, setDestination, setDestinationInfo } = this.context;
+
+        // clear destination on go back
+        setDestination(undefined);
+        setDestinationInfo(undefined);
+
+        goBack();
+    };
+
     renderSectionHeader = ({ section: { title } }: any) => {
         const { setDestination } = this.context;
         const { dataSource } = this.state;
@@ -651,7 +661,7 @@ class RecipientStep extends Component<Props, State> {
     };
 
     render() {
-        const { goBack, destination } = this.context;
+        const { destination } = this.context;
         const { searchText, isSearching, isLoading, dataSource } = this.state;
 
         if (!dataSource) return null;
@@ -693,13 +703,7 @@ class RecipientStep extends Component<Props, State> {
                 {/* Bottom Bar */}
                 <Footer style={[AppStyles.row]} safeArea>
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
-                        <Button
-                            secondary
-                            label={Localize.t('global.back')}
-                            onPress={() => {
-                                goBack();
-                            }}
-                        />
+                        <Button secondary label={Localize.t('global.back')} onPress={this.goBack} />
                     </View>
                     <View style={[AppStyles.flex2]}>
                         <Button
