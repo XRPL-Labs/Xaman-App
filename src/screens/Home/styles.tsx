@@ -194,11 +194,13 @@ const styles = StyleSheet.create({
         marginRight: 38,
     },
     buttonRow: {
-        width: '50%',
         justifyContent: 'space-between',
         flexDirection: 'row',
         marginTop: 12,
         marginBottom: 3,
+    },
+    buttonRowHalf: {
+        width: '50%',
     },
     // SEND BUTTON
     sendButton: {

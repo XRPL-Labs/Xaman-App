@@ -2,7 +2,7 @@
  * Accounts List Screen
  */
 
-import { isEmpty, find } from 'lodash';
+import { find } from 'lodash';
 import { Results } from 'realm';
 
 import React, { Component } from 'react';
@@ -40,6 +40,8 @@ export interface State {
 class AccountListView extends Component<Props, State> {
     static screenName = AppScreens.Account.List;
 
+    private navigationListener: any;
+
     static options() {
         return {
             topBar: { visible: false },
@@ -54,8 +56,16 @@ class AccountListView extends Component<Props, State> {
             accounts: AccountRepository.getAccounts(),
             signableAccount: AccountRepository.getSignableAccounts(),
         };
+    }
 
-        Navigation.events().bindComponent(this);
+    componentDidMount() {
+        this.navigationListener = Navigation.events().bindComponent(this);
+    }
+
+    componentWillUnmount() {
+        if (this.navigationListener) {
+            this.navigationListener.remove();
+        }
     }
 
     componentDidAppear() {
@@ -85,7 +95,7 @@ class AccountListView extends Component<Props, State> {
         const { signableAccount } = this.state;
         const { item } = account;
 
-        if (!item.isValid()) return null;
+        if (!item?.isValid()) return null;
 
         // default full access
         let accessLevelLabel = Localize.t('account.fullAccess');
@@ -106,7 +116,7 @@ class AccountListView extends Component<Props, State> {
         const regularKeyFor = this.isRegularKey(item);
 
         if (regularKeyFor) {
-            accessLevelLabel = `${Localize.t('account.regularKeyFor')} (${regularKeyFor})`;
+            accessLevelLabel = `${Localize.t('account.regularKeyFor')} ${regularKeyFor}`;
             accessLevelIcon = 'IconKey';
         }
 
@@ -183,7 +193,7 @@ class AccountListView extends Component<Props, State> {
                     }}
                 />
 
-                {isEmpty(accounts) ? (
+                {accounts.isEmpty() ? (
                     <View style={[AppStyles.contentContainer, AppStyles.padding]}>
                         <ImageBackground
                             source={Images.BackgroundShapes}

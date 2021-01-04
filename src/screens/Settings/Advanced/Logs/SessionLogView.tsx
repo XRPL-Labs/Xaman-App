@@ -7,8 +7,6 @@ import { View, Text, FlatList, Platform, Linking, Alert } from 'react-native';
 
 import Clipboard from '@react-native-community/clipboard';
 
-import { Navigation } from 'react-native-navigation';
-
 import { ActionSheet, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -37,14 +35,6 @@ class SessionLogView extends Component<Props, State> {
         return {
             bottomTabs: { visible: false },
         };
-    }
-
-    constructor(props: Props) {
-        super(props);
-
-        this.state = {};
-
-        Navigation.events().bindComponent(this);
     }
 
     navigationButtonPressed({ buttonId }: { buttonId: string }) {

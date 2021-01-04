@@ -2,7 +2,7 @@
  * Home Screen
  */
 
-import { isEmpty, find, has } from 'lodash';
+import { find, has } from 'lodash';
 
 import React, { Component, Fragment } from 'react';
 import {
@@ -15,12 +15,14 @@ import {
     ImageBackground,
     InteractionManager,
     Share,
+    Alert,
 } from 'react-native';
 
 import { Navigation } from 'react-native-navigation';
 
 import { LedgerService, SocketService } from '@services';
 
+import { AccessLevels } from '@store/types';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
 
@@ -30,7 +32,7 @@ import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
-import { VibrateHapticFeedback } from '@common/helpers/interface';
+import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
 
 import Localize from '@locale';
 
@@ -54,6 +56,8 @@ export interface State {
 class HomeView extends Component<Props, State> {
     static screenName = AppScreens.TabBar.Home;
 
+    private navigationListener: any;
+
     static options() {
         return {
             topBar: {
@@ -68,7 +72,7 @@ class HomeView extends Component<Props, State> {
         const coreSettings = CoreRepository.getSettings();
 
         this.state = {
-            account: AccountRepository.getDefaultAccount(),
+            account: undefined,
             isSpendable: false,
             discreetMode: coreSettings.discreetMode,
         };
@@ -76,26 +80,32 @@ class HomeView extends Component<Props, State> {
 
     componentDidMount() {
         // update UI on accounts update
-        AccountRepository.on('accountUpdate', this.updateUI);
+        AccountRepository.on('accountUpdate', this.updateDefaultAccount);
 
         // update spendable accounts on account add/remove
-        AccountRepository.on('accountCreate', this.updateSpendableStatus);
-        AccountRepository.on('accountRemove', this.updateSpendableStatus);
+        AccountRepository.on('accountCreate', this.getDefaultAccount);
+        AccountRepository.on('accountRemove', this.getDefaultAccount);
 
         CoreRepository.on('updateSettings', this.updateDiscreetMode);
 
         // listen for screen appear event
-        Navigation.events().bindComponent(this);
+        this.navigationListener = Navigation.events().bindComponent(this);
 
-        // update spendable status
-        this.updateSpendableStatus();
+        // set default account
+        this.getDefaultAccount();
+    }
+
+    componentWillUnmount() {
+        if (this.navigationListener) {
+            this.navigationListener.remove();
+        }
     }
 
     componentDidAppear() {
         const { account } = this.state;
 
         InteractionManager.runAfterInteractions(() => {
-            if (!isEmpty(account) && account.isValid() && SocketService.isConnected()) {
+            if (account?.isValid() && SocketService.isConnected()) {
                 // update account details
                 LedgerService.updateAccountsDetails([account.address]);
             }
@@ -112,8 +122,8 @@ class HomeView extends Component<Props, State> {
         }
     };
 
-    updateUI = (updatedAccount: AccountSchema) => {
-        if (updatedAccount.isValid() && updatedAccount.default) {
+    updateDefaultAccount = (updatedAccount: AccountSchema) => {
+        if (updatedAccount?.isValid() && updatedAccount.default) {
             // update the UI
             this.setState(
                 {
@@ -127,9 +137,21 @@ class HomeView extends Component<Props, State> {
         }
     };
 
+    getDefaultAccount = () => {
+        this.setState(
+            {
+                account: AccountRepository.getDefaultAccount(),
+            },
+            () => {
+                // when account balance changed update spendable accounts
+                this.updateSpendableStatus();
+            },
+        );
+    };
+
     // eslint-disable-next-line react/destructuring-assignment
     updateSpendableStatus = (account = this.state.account) => {
-        if (!isEmpty(account) && account.isValid()) {
+        if (account?.isValid()) {
             const spendableAccounts = AccountRepository.getSpendableAccounts();
 
             this.setState({
@@ -222,6 +244,35 @@ class HomeView extends Component<Props, State> {
         });
     };
 
+    showExchangeAccountAlert = () => {
+        Alert.alert(Localize.t('global.warning'), Localize.t('home.exchangeAccountReadonlyExplain'));
+    };
+
+    onShowAccountQRPress = () => {
+        const { account } = this.state;
+
+        if (account.accessLevel === AccessLevels.Readonly) {
+            Prompt(
+                Localize.t('global.warning'),
+                Localize.t('home.shareReadonlyAccountWarning'),
+                [
+                    {
+                        text: Localize.t('home.exchangeAccount'),
+                        style: 'destructive',
+                        onPress: this.showExchangeAccountAlert,
+                    },
+                    {
+                        text: Localize.t('home.iOwnTheKeys'),
+                        onPress: this.showShareOverlay,
+                    },
+                ],
+                { type: 'default' },
+            );
+        } else {
+            this.showShareOverlay();
+        }
+    };
+
     showShareOverlay = () => {
         const { account } = this.state;
 
@@ -249,7 +300,7 @@ class HomeView extends Component<Props, State> {
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                     <Image style={[styles.logo]} source={Images.xummLogo} />
                 </View>
-                {!isEmpty(account) && account.isValid() && (
+                {account?.isValid() && (
                     <View style={[AppStyles.flex1]}>
                         <Button
                             onPress={() => {
@@ -361,7 +412,7 @@ class HomeView extends Component<Props, State> {
                     )}
                 </View>
 
-                {isEmpty(account.lines) && (
+                {account.lines.length === 0 && (
                     <View testID="assets-empty-view" style={[styles.noTrustlineMessage]}>
                         <InfoMessage type="warning" label={Localize.t('home.youDonNotHaveOtherAssets')} />
                         <TouchableOpacity
@@ -383,7 +434,7 @@ class HomeView extends Component<Props, State> {
                     </View>
                 )}
 
-                {!isEmpty(account.lines) && (
+                {account.lines.length > 0 && (
                     <ScrollView testID="assets-scroll-view" style={AppStyles.flex1}>
                         {account.lines.map((line: TrustLineSchema, index: number) => {
                             return (
@@ -458,25 +509,11 @@ class HomeView extends Component<Props, State> {
     };
 
     renderButtons = () => {
-        const { isSpendable, account } = this.state;
-
-        if (account.balance === 0) {
-            return (
-                <RaisedButton
-                    testID="qr-button"
-                    icon="IconQR"
-                    iconSize={20}
-                    label={Localize.t('account.showAccountQR')}
-                    textStyle={[styles.QRButtonText]}
-                    onPress={this.showShareOverlay}
-                    activeOpacity={0}
-                />
-            );
-        }
+        const { isSpendable } = this.state;
 
         if (isSpendable) {
             return (
-                <View style={[styles.buttonRow]}>
+                <View style={[styles.buttonRow, styles.buttonRowHalf]}>
                     <RaisedButton
                         testID="send-button"
                         style={[styles.sendButton]}
@@ -497,14 +534,26 @@ class HomeView extends Component<Props, State> {
                         iconPosition="right"
                         label={Localize.t('global.request')}
                         textStyle={[styles.requestButtonText]}
-                        onPress={this.showShareOverlay}
+                        onPress={this.onShowAccountQRPress}
                         activeOpacity={0}
                     />
                 </View>
             );
         }
 
-        return null;
+        return (
+            <View style={[styles.buttonRow]}>
+                <RaisedButton
+                    testID="qr-button"
+                    icon="IconQR"
+                    iconSize={20}
+                    label={Localize.t('account.showAccountQR')}
+                    textStyle={[styles.QRButtonText]}
+                    onPress={this.onShowAccountQRPress}
+                    activeOpacity={0}
+                />
+            </View>
+        );
     };
 
     renderEmpty = () => {
@@ -539,7 +588,7 @@ class HomeView extends Component<Props, State> {
     render() {
         const { account, discreetMode } = this.state;
 
-        if (isEmpty(account) || !account.isValid()) {
+        if (!account?.isValid()) {
             return this.renderEmpty();
         }
 

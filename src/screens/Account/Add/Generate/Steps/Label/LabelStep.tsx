@@ -75,6 +75,7 @@ class LabelStep extends Component<Props, State> {
                         onChangeText={(l) => this.setState({ label: l })}
                         inputStyle={styles.inputText}
                         containerStyle={styles.inputContainer}
+                        autoCapitalize="sentences"
                     />
                 </KeyboardAvoidingView>
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>

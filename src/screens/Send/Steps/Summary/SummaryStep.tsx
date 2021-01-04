@@ -2,6 +2,7 @@
  * Send Summary Step
  */
 
+import { isNil } from 'lodash';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import {
@@ -27,7 +28,8 @@ import Preferences from '@common/libs/preferences';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { AmountInput, Button, AccordionPicker, Footer, Spacer, TextInput, Header } from '@components/General';
+import { AmountInput, Button, Footer, Spacer, TextInput } from '@components/General';
+import { AccountPicker } from '@components/Modules';
 
 // locale
 import Localize from '@locale';
@@ -38,8 +40,15 @@ import styles from './styles';
 
 import { StepsContext } from '../../Context';
 
+/* types ==================================================================== */
+export interface Props {}
+
+export interface State {
+    confirmedDestinationTag: number;
+}
+
 /* Component ==================================================================== */
-class SummaryStep extends Component {
+class SummaryStep extends Component<Props, State> {
     gradientHeight: Animated.Value;
     amountInput: AmountInput;
     destinationTagInput: TextInput;
@@ -47,8 +56,12 @@ class SummaryStep extends Component {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
-    constructor(props: undefined) {
+    constructor(props: Props) {
         super(props);
+
+        this.state = {
+            confirmedDestinationTag: undefined,
+        };
 
         this.gradientHeight = new Animated.Value(0);
     }
@@ -173,20 +186,16 @@ class SummaryStep extends Component {
         );
     };
 
-    renderAccountItem = (account: AccountSchema, selected: boolean) => {
-        return (
-            <View style={[styles.pickerItem]}>
-                <Text style={[styles.pickerItemTitle, selected ? AppStyles.colorBlue : AppStyles.colorBlack]}>
-                    {account.label}
-                </Text>
-                <Text
-                    style={[styles.pickerItemSub, selected ? AppStyles.colorBlue : AppStyles.colorGreyDark]}
-                    adjustsFontSizeToFit
-                    numberOfLines={1}
-                >
-                    {account.address}
-                </Text>
-            </View>
+    onDestinationTagConfirm = () => {
+        const { destination } = this.context;
+
+        this.setState(
+            {
+                confirmedDestinationTag: destination.tag,
+            },
+            () => {
+                this.goNext();
+            },
         );
     };
 
@@ -204,7 +213,7 @@ class SummaryStep extends Component {
                         <View style={[AppStyles.column, AppStyles.centerContent]}>
                             <Text style={[styles.currencyItemLabel]}>XRP</Text>
                             <Text style={[styles.currencyBalance]}>
-                                {Localize.t('global.available')}: {Localize.formatNumber(source.balance)}
+                                {Localize.t('global.available')}: {Localize.formatNumber(source.availableBalance)}
                             </Text>
                         </View>
                     </View>
@@ -245,6 +254,7 @@ class SummaryStep extends Component {
     };
 
     goNext = () => {
+        const { confirmedDestinationTag } = this.state;
         const { goNext, currency, source, amount, destination, destinationInfo, setAmount } = this.context;
 
         const bAmount = new BigNumber(amount);
@@ -291,6 +301,24 @@ class SummaryStep extends Component {
             return;
         }
 
+        if (!isNil(destination.tag) && destination.tag !== confirmedDestinationTag) {
+            Navigator.showOverlay(
+                AppScreens.Overlay.ConfirmDestinationTag,
+                {
+                    layout: {
+                        backgroundColor: 'transparent',
+                        componentBackgroundColor: 'transparent',
+                    },
+                },
+                {
+                    destinationTag: destination.tag,
+                    onConfirm: this.onDestinationTagConfirm,
+                    onChange: this.showEnterDestinationTag,
+                },
+            );
+            return;
+        }
+
         // go to next screen
         goNext();
     };
@@ -305,17 +333,12 @@ class SummaryStep extends Component {
     };
 
     render() {
-        const { source, accounts, amount, destination, currency } = this.context;
+        const { source, accounts, amount, destination, currency, isLoading } = this.context;
 
         return (
             <View testID="send-summary-view" style={[styles.container]}>
-                <KeyboardAvoidingView
-                    enabled={Platform.OS === 'ios'}
-                    keyboardVerticalOffset={Header.Height}
-                    behavior="padding"
-                    style={[AppStyles.flex1, AppStyles.stretchSelf]}
-                >
-                    <ScrollView style={[AppStyles.flex1]}>
+                <ScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
+                    <KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior="position">
                         <View onLayout={this.setGradientHeight} style={[styles.rowItem, styles.rowItemGrey]}>
                             <Animated.Image
                                 source={Images.SideGradient}
@@ -327,14 +350,9 @@ class SummaryStep extends Component {
                                     {Localize.t('global.from')}
                                 </Text>
                             </View>
-                            <AccordionPicker
-                                onSelect={this.onAccountChange}
-                                items={accounts}
-                                renderItem={this.renderAccountItem}
-                                selectedItem={source}
-                                keyExtractor={(i) => i.address}
-                                containerStyle={{ backgroundColor: AppColors.transparent }}
-                            />
+
+                            <AccountPicker onSelect={this.onAccountChange} accounts={accounts} selectedItem={source} />
+
                             <Spacer size={20} />
 
                             <View style={[styles.rowTitle]}>
@@ -441,17 +459,24 @@ class SummaryStep extends Component {
                                 inputStyle={styles.inputStyle}
                                 maxLength={300}
                                 returnKeyType="done"
+                                autoCapitalize="sentences"
+                                numberOfLines={1}
                             />
                         </View>
-                    </ScrollView>
-                </KeyboardAvoidingView>
+                    </KeyboardAvoidingView>
+                </ScrollView>
                 {/* Bottom Bar */}
                 <Footer style={[AppStyles.row]} safeArea>
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
                         <Button secondary label={Localize.t('global.back')} onPress={this.goBack} />
                     </View>
                     <View style={[AppStyles.flex2]}>
-                        <Button textStyle={AppStyles.strong} label={Localize.t('global.send')} onPress={this.goNext} />
+                        <Button
+                            textStyle={AppStyles.strong}
+                            label={Localize.t('global.send')}
+                            onPress={this.goNext}
+                            isLoading={isLoading}
+                        />
                     </View>
                 </Footer>
             </View>

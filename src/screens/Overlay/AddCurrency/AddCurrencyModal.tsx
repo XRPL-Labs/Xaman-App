@@ -82,7 +82,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
         const counterParties = CounterPartyRepository.query({ shortlist: true }) as any;
 
-        if (isEmpty(counterParties)) return;
+        if (counterParties.isEmpty()) return;
 
         const availableParties = [] as CounterPartySchema[];
         const availableCurrencies = [] as any;
@@ -161,7 +161,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
     renderCurrencies = () => {
         const { counterParties, selectedParty, selectedCurrency, currencies } = this.state;
 
-        if (isEmpty(counterParties)) {
+        if (!counterParties) {
             return (
                 <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]} adjustsFontSizeToFit numberOfLines={1}>
                     No Item to show
@@ -202,7 +202,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
     renderParties = () => {
         const { counterParties, selectedParty, currencies } = this.state;
 
-        if (isEmpty(counterParties)) {
+        if (!counterParties) {
             return (
                 <Text
                     key="empty-parties"
@@ -216,7 +216,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
         }
 
         return counterParties.map((c, index) => {
-            if (!c.isValid()) return null;
+            if (!c?.isValid()) return null;
 
             const selected = selectedParty.id === c.id;
 

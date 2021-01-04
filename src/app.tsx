@@ -1,10 +1,12 @@
 /**
  * Application class
  */
+
+import moment from 'moment-timezone';
+
 import { UIManager, Platform, Alert, Text, TextInput } from 'react-native';
 
-// modules
-import moment from 'moment-timezone';
+import messaging from '@react-native-firebase/messaging';
 import DeviceInfo from 'react-native-device-info';
 import { Navigation } from 'react-native-navigation';
 
@@ -30,6 +32,11 @@ import StorageBackend from '@store/storage';
 
 // services
 import * as services from '@services';
+
+messaging().setBackgroundMessageHandler(async () => {
+    // FIXME: temporary fix for error
+    // Invariant Violation: Module AppRegistry is not a registered callable module (calling startHeadlessTask)
+});
 
 class Application {
     storage: StorageBackend;
@@ -182,15 +189,22 @@ class Application {
                 const core = CoreRepository.getSettings();
 
                 const localeSettings = await GetDeviceLocaleSettings();
-                // app is not initialized yet, set to default EN
+
+                let locale;
+
+                // app is not initialized yet, set to default device locale
                 if (!core) {
-                    this.logger.debug('Locale is not initialized, using default EN');
-                    Localize.setLocale('en', localeSettings);
-                    return resolve();
+                    this.logger.debug('Locale is not initialized, setting base on device languageCode');
+                    locale = Localize.setLocale(localeSettings.languageCode, localeSettings);
+                    CoreRepository.saveSettings({ language: locale });
+                } else {
+                    // use locale set in settings
+                    this.logger.debug(`Locale set to: ${core.language.toUpperCase()}`);
+                    locale = Localize.setLocale(core.language, core.useSystemSeparators ? localeSettings : undefined);
                 }
 
-                this.logger.debug(`Locale set to: ${core.language.toUpperCase()}`);
-                Localize.setLocale(core.language, core.useSystemSeparators ? localeSettings : undefined);
+                // set locale to moment
+                // moment.locale(locale);
 
                 return resolve();
             } catch (e) {

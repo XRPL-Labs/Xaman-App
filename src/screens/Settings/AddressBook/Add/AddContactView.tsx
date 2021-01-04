@@ -104,23 +104,33 @@ class AddContactView extends Component<Props, State> {
         }
     };
 
-    saveContact = () => {
+    onSavePress = () => {
         const { name, address, tag } = this.state;
 
         if (!name) {
-            return Alert.alert(Localize.t('settings.enterName'));
+            Alert.alert(Localize.t('settings.enterName'));
+            return;
         }
 
         if (!AccountLib.utils.isValidAddress(address)) {
-            return Alert.alert(Localize.t('global.invalidAddress'));
+            Alert.alert(Localize.t('global.invalidAddress'));
+            return;
         }
 
         // check if any contact is already exist with this address and tag
         const existContacts = ContactRepository.query({ address, destinationTag: tag });
 
         if (!existContacts.isEmpty()) {
-            return Alert.alert(Localize.t('settings.contactAlreadyExist'));
+            Alert.alert(Localize.t('settings.contactAlreadyExist'));
+            return;
         }
+
+        // everything is fine, save contact
+        this.saveContact();
+    };
+
+    saveContact = () => {
+        const { name, address, tag } = this.state;
 
         ContactRepository.create({
             id: uuidv4(),
@@ -129,11 +139,21 @@ class AddContactView extends Component<Props, State> {
             destinationTag: tag || '',
         });
 
+        // update catch for this contact
+        getAccountName.cache.set(
+            `${address}${tag || ''}`,
+            new Promise((resolve) => {
+                resolve({ name, source: 'internal:contacts' });
+            }),
+        );
+
         Toast(Localize.t('settings.contactSuccessSaved'));
 
-        Navigator.pop();
+        // force re-render the app
+        Navigator.reRender();
 
-        return null;
+        // close screen
+        Navigator.pop();
     };
 
     onDestinationTagChange = (text: string) => {
@@ -204,6 +224,7 @@ class AddContactView extends Component<Props, State> {
                                 value={name}
                                 maxLength={30}
                                 isLoading={isLoading}
+                                autoCapitalize="sentences"
                             />
 
                             <Spacer size={20} />
@@ -247,7 +268,7 @@ class AddContactView extends Component<Props, State> {
                 </View>
 
                 <Footer safeArea>
-                    <Button label={Localize.t('global.save')} onPress={this.saveContact} />
+                    <Button label={Localize.t('global.save')} onPress={this.onSavePress} />
                 </Footer>
             </View>
         );

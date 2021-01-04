@@ -3,6 +3,7 @@
  */
 import { find, isEmpty, isUndefined } from 'lodash';
 import moment from 'moment-timezone';
+import { Navigation } from 'react-native-navigation';
 
 import React, { Component } from 'react';
 import {
@@ -65,6 +66,9 @@ export interface State {
 class TransactionDetailsView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Details;
 
+    private forceFetchDetails: boolean;
+    private navigationListener: any;
+
     static options() {
         return {
             bottomTabs: { visible: false },
@@ -88,14 +92,38 @@ class TransactionDetailsView extends Component<Props, State> {
             scamAlert: false,
             showMemo: true,
         };
+
+        this.forceFetchDetails = false;
     }
 
     componentDidMount() {
+        this.navigationListener = Navigation.events().bindComponent(this);
+
         InteractionManager.runAfterInteractions(() => {
             this.checkForScamAlert();
             this.setPartiesDetails();
             this.setBalanceChanges();
         });
+    }
+
+    componentWillUnmount() {
+        if (this.navigationListener) {
+            this.navigationListener.remove();
+        }
+    }
+
+    componentDidAppear() {
+        if (this.forceFetchDetails) {
+            this.forceFetchDetails = false;
+
+            InteractionManager.runAfterInteractions(() => {
+                this.setPartiesDetails();
+            });
+        }
+    }
+
+    componentDidDisappear() {
+        this.forceFetchDetails = true;
     }
 
     setBalanceChanges = () => {
@@ -311,7 +339,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 return Localize.t('global.payment');
 
             case 'TrustSet':
-                if (tx.Account.address !== account.address) {
+                if (tx.Account.address !== account.address && tx.Limit !== 0) {
                     return Localize.t('events.incomingTrustLineAdded');
                 }
                 if (tx.Limit === 0) {
@@ -455,8 +483,7 @@ class TransactionDetailsView extends Component<Props, State> {
             <>
                 <Text style={[styles.labelText]}>{Localize.t('global.status')}</Text>
                 <Text style={[styles.contentText]}>
-                    {Localize.t('events.thisTransactionWasSuccessful')}
-                    {Localize.t('events.andValidatedInLedger')}
+                    {Localize.t('events.thisTransactionWasSuccessful')} {Localize.t('events.andValidatedInLedger')}
                     <Text style={AppStyles.monoBold}> {tx.LedgerIndex} </Text>
                     {Localize.t('events.onDate')}
                     <Text style={AppStyles.monoBold}> {moment(tx.Date).format('LLLL')}</Text>
@@ -470,22 +497,33 @@ class TransactionDetailsView extends Component<Props, State> {
 
         let content;
 
-        content =
-            `${tx.Account.address} offered to pay ${tx.TakerGets.value} ${NormalizeCurrencyCode(
-                tx.TakerGets.currency,
-            )}` +
-            ` in order to receive ${tx.TakerPays.value} ${NormalizeCurrencyCode(tx.TakerPays.currency)}\n` +
-            `The exchange rate for this offer is ${tx.Rate} ` +
-            `${NormalizeCurrencyCode(tx.TakerPays.currency)}/${NormalizeCurrencyCode(tx.TakerGets.currency)}`;
+        content = Localize.t('events.offerTransactionExplain', {
+            address: tx.Account.address,
+            takerGetsValue: tx.TakerGets.value,
+            takerGetsCurrency: NormalizeCurrencyCode(tx.TakerGets.currency),
+            takerPaysValue: tx.TakerPays.value,
+            takerPaysCurrency: NormalizeCurrencyCode(tx.TakerPays.currency),
+        });
+        content += '\n';
+        content += Localize.t('events.theExchangeRateForThisOfferIs', {
+            rate: tx.Rate,
+            takerPaysCurrency: NormalizeCurrencyCode(tx.TakerPays.currency),
+            takerGetsCurrency: NormalizeCurrencyCode(tx.TakerGets.currency),
+        });
 
         if (tx.OfferSequence) {
-            content += `\nThe transaction will also cancel ${tx.Account.address} 's existing offer ${tx.OfferSequence}`;
+            content += '\n';
+            content += Localize.t('events.theTransactionIsAlsoCancelOffer', {
+                address: tx.Account.address,
+                offerSequence: tx.OfferSequence,
+            });
         }
 
         if (tx.Expiration) {
-            content += `\nThe offer expires at ${moment(tx.Expiration).format(
-                'LLLL',
-            )} unless canceled or consumed before then.`;
+            content += '\n';
+            content += Localize.t('events.theOfferExpiresAtUnlessCanceledOrConsumed', {
+                expiration: moment(tx.Expiration).format('LLLL'),
+            });
         }
 
         return content;
@@ -493,24 +531,36 @@ class TransactionDetailsView extends Component<Props, State> {
 
     renderOfferCancel = () => {
         const { tx } = this.props;
-        return `The transaction will cancel ${tx.Account.address} offer #${tx.OfferSequence}`;
+
+        return Localize.t('events.theTransactionWillCancelOffer', {
+            address: tx.Account.address,
+            offerSequence: tx.OfferSequence,
+        });
     };
 
     renderEscrowCreate = () => {
         const { tx } = this.props;
 
-        let content = `The escrow is from ${tx.Account.address} to ${tx.Destination.address}`;
+        let content = Localize.t('events.theEscrowIsFromTo', {
+            account: tx.Account.address,
+            destination: tx.Destination.address,
+        });
         if (tx.Destination.tag) {
-            content += `\nThe escrow has a destination tag: ${tx.Destination.tag}\n`;
+            content += '\n';
+            content += Localize.t('events.theEscrowHasADestinationTag', { tag: tx.Destination.tag });
+            content += ' ';
         }
-        content += `\nIt escrowed ${tx.Amount.value} XRP`;
+        content += '\n';
+        content += Localize.t('events.itEscrowed', { amount: tx.Amount.value });
 
         if (tx.CancelAfter) {
-            content += `\nIt can be cancelled after ${moment(tx.CancelAfter).format('LLLL')}`;
+            content += '\n';
+            content += Localize.t('events.itCanBeCanceledAfter', { date: moment(tx.CancelAfter).format('LLLL') });
         }
 
         if (tx.FinishAfter) {
-            content += `\nIt can be finished after ${moment(tx.FinishAfter).format('LLLL')}`;
+            content += '\n';
+            content += Localize.t('events.itCanBeFinishedAfter', { date: moment(tx.FinishAfter).format('LLLL') });
         }
         return content;
     };
@@ -518,12 +568,19 @@ class TransactionDetailsView extends Component<Props, State> {
     renderEscrowFinish = () => {
         const { tx } = this.props;
 
-        let content = `Completion was triggered by ${tx.Account.address}`;
-        content += `\nThe escrowed amount of ${tx.Amount.value} XRP was delivered to ${tx.Destination.address}`;
+        let content = Localize.t('events.escrowFinishTransactionExplain', {
+            address: tx.Account.address,
+            amount: tx.Amount.value,
+            destination: tx.Destination.address,
+        });
         if (tx.Destination.tag) {
-            content += `\nThe escrow has a destination tag: ${tx.Destination.tag}\n`;
+            content += '\n';
+            content += Localize.t('events.theEscrowHasADestinationTag', { tag: tx.Destination.tag });
+            content += ' ';
         }
-        content += `\nThe escrow was created by ${tx.Owner}`;
+
+        content += '\n';
+        content += Localize.t('events.theEscrowWasCreatedBy', { owner: tx.Owner });
 
         return content;
     };
@@ -533,14 +590,25 @@ class TransactionDetailsView extends Component<Props, State> {
 
         let content = '';
         if (tx.Account.tag) {
-            content += `The payment has a source tag:${tx.Account.tag}\n`;
+            content += Localize.t('events.thePaymentHasASourceTag', { tag: tx.Account.tag });
+            content += ' \n';
         }
         if (tx.Destination.tag) {
-            content += `The payment has a destination tag: ${tx.Destination.tag}\n`;
+            content += Localize.t('events.thePaymentHasADestinationTag', { tag: tx.Destination.tag });
+            content += ' \n';
         }
-        content += `It was instructed to deliver ${tx.Amount.value} ${NormalizeCurrencyCode(tx.Amount.currency)}`;
+
+        content += Localize.t('events.itWasInstructedToDeliver', {
+            amount: tx.Amount.value,
+            currency: NormalizeCurrencyCode(tx.Amount.currency),
+        });
+
         if (tx.SendMax) {
-            content += ` by spending up to ${tx.SendMax.value} ${NormalizeCurrencyCode(tx.SendMax.currency)}`;
+            content += ' ';
+            content += Localize.t('events.bySpendingUpTo', {
+                amount: tx.SendMax.value,
+                currency: NormalizeCurrencyCode(tx.SendMax.currency),
+            });
         }
         return content;
     };
@@ -548,17 +616,22 @@ class TransactionDetailsView extends Component<Props, State> {
     renderAccountDelete = () => {
         const { tx } = this.props;
 
-        let content = `It deleted account ${tx.Account.address}`;
+        let content = Localize.t('events.itDeletedAccount', { address: tx.Account.address });
 
-        content += `\n\nIt was instructed to deliver the remaining balance of ${
-            tx.Amount.value
-        } ${NormalizeCurrencyCode(tx.Amount.currency)} to ${tx.Destination.address}`;
+        content += '\n\n';
+        content += Localize.t('events.itWasInstructedToDeliverTheRemainingBalanceOf', {
+            amount: tx.Amount.value,
+            currency: NormalizeCurrencyCode(tx.Amount.currency),
+            destination: tx.Destination.address,
+        });
 
         if (tx.Account.tag) {
-            content += `\nThe transaction has a source tag:${tx.Account.tag}`;
+            content += '\n';
+            content += Localize.t('events.theTransactionHasASourceTag', { tag: tx.Account.tag });
         }
         if (tx.Destination.tag) {
-            content += `\nThe transaction has a destination tag: ${tx.Destination.tag}`;
+            content += '\n';
+            content += Localize.t('events.theTransactionHasADestinationTag', { tag: tx.Destination.tag });
         }
 
         return content;
@@ -567,16 +640,25 @@ class TransactionDetailsView extends Component<Props, State> {
     renderCheckCreate = () => {
         const { tx } = this.props;
 
-        let content = `The check is from ${tx.Account.address} to ${tx.Destination.address}`;
+        let content = Localize.t('events.theCheckIsFromTo', {
+            address: tx.Account.address,
+            destination: tx.Destination.address,
+        });
+
         if (tx.Account.tag) {
-            content += `\nThe check has a source tag:${tx.Account.tag}`;
+            content += '\n';
+            content += Localize.t('events.theCheckHasASourceTag', { tag: tx.Account.tag });
         }
         if (tx.Destination.tag) {
-            content += `\nThe check has a destination tag: ${tx.Destination.tag}`;
+            content += '\n';
+            content += Localize.t('events.theCheckHasADestinationTag', { tag: tx.Destination.tag });
         }
-        content += `\n\nMaximum amount of source currency the Check is allowed to debit the sender is ${
-            tx.SendMax.value
-        } ${NormalizeCurrencyCode(tx.SendMax.currency)}`;
+
+        content += '\n\n';
+        content += Localize.t('events.maximumAmountCheckIsAllowToDebit', {
+            amount: tx.SendMax.value,
+            currency: NormalizeCurrencyCode(tx.SendMax.currency),
+        });
 
         return content;
     };
@@ -586,38 +668,47 @@ class TransactionDetailsView extends Component<Props, State> {
 
         const amount = tx.Amount || tx.DeliverMin;
 
-        const content = `It was instructed to deliver ${amount.value} ${NormalizeCurrencyCode(amount.currency)} to ${
-            tx.Account.address
-        } by cashing check with ID ${tx.CheckID}`;
+        const content = Localize.t('events.itWasInstructedToDeliverByCashingCheck', {
+            amount: amount.value,
+            currency: NormalizeCurrencyCode(amount.currency),
+            checkId: tx.CheckID,
+        });
 
         return content;
     };
 
     renderCheckCancel = () => {
         const { tx } = this.props;
-        return `The transaction will cancel check with ID ${tx.CheckID}`;
+
+        return Localize.t('events.theTransactionWillCancelCheckWithId', { checkId: tx.CheckID });
     };
 
     renderDepositPreauth = () => {
         const { tx } = this.props;
 
         if (tx.Authorize) {
-            return `It authorizes ${tx.Authorize} to send payments to this account`;
+            return Localize.t('events.itAuthorizesSendingPaymentsToThisAccount', { address: tx.Authorize });
         }
 
-        return `It removes the authorization for ${tx.Unauthorize} to send payments to this account`;
+        return Localize.t('events.itRemovesAuthorizesSendingPaymentsToThisAccount', { address: tx.Unauthorize });
     };
 
     renderTrustSet = () => {
         const { tx } = this.props;
 
         if (tx.Limit === 0) {
-            return `It removed TrustLine currency ${NormalizeCurrencyCode(tx.Currency)} to ${tx.Issuer}`;
+            return Localize.t('events.itRemovedTrustLineCurrencyTo', {
+                currency: NormalizeCurrencyCode(tx.Currency),
+                issuer: tx.Issuer,
+            });
         }
-        return (
-            `It establishes ${tx.Limit} as the maximum amount of ${NormalizeCurrencyCode(tx.Currency)} ` +
-            `from ${tx.Issuer} that ${tx.Account.address} is willing to hold.`
-        );
+
+        return Localize.t('events.itEstablishesTrustLineTo', {
+            limit: tx.Limit,
+            currency: NormalizeCurrencyCode(tx.Currency),
+            issuer: tx.Issuer,
+            address: tx.Account.address,
+        });
     };
 
     renderAccountSet = () => {
@@ -637,43 +728,49 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         if (tx.Domain !== undefined) {
+            content += '\n';
             if (tx.Domain === '') {
-                content += '\nIt removes the account domain';
+                content += Localize.t('events.itRemovesTheAccountDomain');
             } else {
-                content += `\nIt sets the account domain to ${tx.Domain}`;
+                content += Localize.t('events.itSetsAccountDomainTo', { domain: tx.Domain });
             }
         }
 
         if (tx.EmailHash !== undefined) {
+            content += '\n';
             if (tx.EmailHash === '') {
-                content += '\nIt removes the account email hash';
+                content += Localize.t('events.itRemovesTheAccountEmailHash');
             } else {
-                content += `\nIt sets the account email hash to ${tx.EmailHash}`;
+                content += Localize.t('events.itSetsAccountEmailHashTo', { emailHash: tx.EmailHash });
             }
         }
 
         if (tx.MessageKey !== undefined) {
+            content += '\n';
             if (tx.MessageKey === '') {
-                content += '\nIt removes the account message key';
+                content += Localize.t('events.itRemovesTheAccountMessageKey');
             } else {
-                content += `\nIt sets the account message key to ${tx.MessageKey}`;
+                content += Localize.t('events.itSetsAccountMessageKeyTo', { messageKey: tx.MessageKey });
             }
         }
 
         if (tx.TransferRate !== undefined) {
-            if (tx.TransferRate === '') {
-                content += '\nIt removes the account transfer rate';
+            content += '\n';
+            if (tx.MessageKey === '') {
+                content += Localize.t('events.itRemovesTheAccountTransferRate');
             } else {
-                content += `\nIt sets the account transfer rates to ${tx.TransferRate}`;
+                content += Localize.t('events.itSetsAccountTransferRateTo', { transferRate: tx.TransferRate });
             }
         }
 
         if (tx.SetFlag !== undefined) {
-            content += `\nIt sets the account flag ${tx.SetFlag}`;
+            content += '\n';
+            content += Localize.t('events.itSetsTheAccountFlag', { flag: tx.SetFlag });
         }
 
         if (tx.ClearFlag !== undefined) {
-            content += `\nIt clears the account flag ${tx.ClearFlag}`;
+            content += '\n';
+            content += Localize.t('events.itClearsTheAccountFlag', { flag: tx.ClearFlag });
         }
 
         return content;
@@ -730,7 +827,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.labelText]}>Description</Text>
+                <Text style={[styles.labelText]}>{Localize.t('global.description')}</Text>
                 <Text style={[styles.contentText]}>{content}</Text>
             </>
         );
@@ -785,9 +882,9 @@ class TransactionDetailsView extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.labelText]}>Transaction cost</Text>
+                <Text style={[styles.labelText]}>{Localize.t('events.transactionCost')}</Text>
                 <Text style={[styles.contentText]}>
-                    Sending this transaction consumed <Text style={AppStyles.monoBold}>{tx.Fee} XRP</Text>
+                    {Localize.t('events.sendingThisTransactionConsumed', { fee: tx.Fee })}
                 </Text>
             </>
         );
@@ -799,7 +896,7 @@ class TransactionDetailsView extends Component<Props, State> {
         if (tx.ClassName === 'LedgerObject') {
             return (
                 <>
-                    <Text style={[styles.labelText]}>Ledger Index</Text>
+                    <Text style={[styles.labelText]}>{Localize.t('events.ledgerIndex')}</Text>
                     <Text selectable style={[styles.hashText]}>
                         {tx.Index}
                     </Text>
@@ -808,7 +905,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
         return (
             <>
-                <Text style={[styles.labelText]}>Transaction id</Text>
+                <Text style={[styles.labelText]}>{Localize.t('events.transactionId')}</Text>
                 <Text selectable style={[styles.hashText]}>
                     {tx.Hash}
                 </Text>

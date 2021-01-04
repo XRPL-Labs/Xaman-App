@@ -37,17 +37,18 @@ const styles = StyleSheet.create({
         marginRight: 10,
         marginBottom: 3,
     },
-    pickerItem: {
-        // paddingLeft: 13,
-        // paddingTop: 10,
-        // paddingBottom: 10,
+    accountPickerContainer: {
+        // borderRadius: 15,
+        // height: 70,
+        // paddingHorizontal: 14,
+        // paddingVertical: 20,
     },
-    pickerItemTitle: {
+    accountItemTitle: {
         fontSize: AppStyles.baseText.fontSize,
         fontWeight: 'bold',
         marginBottom: 3,
     },
-    pickerItemSub: {
+    accountItemSub: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: 16,
         color: AppColors.greyDark,

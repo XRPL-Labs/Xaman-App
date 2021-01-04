@@ -13,7 +13,7 @@ import { AppScreens } from '@common/constants';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
-import { AccessLevels, EncryptionLevels } from '@store/types';
+import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
 
 import { Header, Spacer, Icon, Button } from '@components/General';
 
@@ -60,7 +60,7 @@ class AccountSettingsView extends Component<Props, State> {
 
     onAccountUpdate = (updateAccount: AccountSchema) => {
         const { account } = this.state;
-        if (account.isValid() && updateAccount.address === account.address) {
+        if (account?.isValid() && updateAccount.address === account.address) {
             this.setState({ account: updateAccount });
         }
     };
@@ -177,8 +177,9 @@ class AccountSettingsView extends Component<Props, State> {
         Navigator.push(AppScreens.Account.Edit.ChangePassphrase, {}, { account });
     };
 
-    showChangeSecurityLevel = () => {
-        Alert.alert(Localize.t('global.unavailable'), Localize.t('account.unavailableChangeSecurityLevel'));
+    showChangeTangemSecurity = () => {
+        const { account } = this.props;
+        Navigator.push(AppScreens.Account.Edit.ChangeTangemSecurityEnforce, {}, { account });
     };
 
     removeAccount = () => {
@@ -186,7 +187,7 @@ class AccountSettingsView extends Component<Props, State> {
 
         Prompt(
             Localize.t('global.warning'),
-            Localize.t('account.accountDestroyWarning'),
+            Localize.t('account.accountRemoveWarning'),
             [
                 { text: Localize.t('global.cancel') },
                 {
@@ -279,16 +280,19 @@ class AccountSettingsView extends Component<Props, State> {
                         {account.accessLevel === AccessLevels.Full && (
                             <Fragment key="security">
                                 {/* Encryption Label */}
-                                <TouchableOpacity style={[styles.row]} onPress={this.showChangeSecurityLevel}>
+                                <View style={[styles.row]}>
                                     <View style={[AppStyles.flex3]}>
                                         <Text style={styles.label}>{Localize.t('account.securityLevel')}</Text>
                                     </View>
 
                                     <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                                        <Text style={[styles.value]}>{account.encryptionLevel}</Text>
-                                        <Icon size={20} style={[styles.rowIcon]} name="IconChevronRight" />
+                                        <Text style={[styles.value]}>
+                                            {account.encryptionLevel === EncryptionLevels.Passphrase
+                                                ? 'Password'
+                                                : account.encryptionLevel}
+                                        </Text>
                                     </View>
-                                </TouchableOpacity>
+                                </View>
 
                                 {/* Change passphrase */}
                                 {account.encryptionLevel === EncryptionLevels.Passphrase && (
@@ -305,10 +309,29 @@ class AccountSettingsView extends Component<Props, State> {
                             </Fragment>
                         )}
 
+                        {account.type === AccountTypes.Tangem && (
+                            <TouchableOpacity style={[styles.row]} onPress={this.showChangeTangemSecurity}>
+                                <View style={[AppStyles.flex3]}>
+                                    <Text style={styles.label}>{Localize.t('account.cardEnforcedSecurity')}</Text>
+                                </View>
+
+                                <View style={[AppStyles.centerAligned, AppStyles.row]}>
+                                    <Text style={[styles.value]}>
+                                        {/*
+                                        // @ts-ignore */}
+                                        {account.additionalInfo?.isPin2Default
+                                            ? Localize.t('global.longTap')
+                                            : Localize.t('global.passcode')}
+                                    </Text>
+                                </View>
+                                <Icon size={20} style={[styles.rowIcon]} name="IconChevronRight" />
+                            </TouchableOpacity>
+                        )}
+
                         <Spacer size={50} />
 
                         <Button
-                            label={Localize.t('account.destroyAccount')}
+                            label={Localize.t('account.removeFromXUMM')}
                             icon="IconTrash"
                             iconStyle={AppStyles.imgColorWhite}
                             style={[AppStyles.marginSml, AppStyles.buttonRed]}

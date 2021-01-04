@@ -1,5 +1,4 @@
-import ContactSchema from '@store/schemas/v1/contact';
-import AccountSchema from '@store/schemas/v2/account';
+import { ContactSchema, AccountSchema } from '@store/schemas/v3';
 // changed
 import CoreSchema from '@store/schemas/v4/core';
 import CounterPartySchema from '@store/schemas/v4/counterParty';

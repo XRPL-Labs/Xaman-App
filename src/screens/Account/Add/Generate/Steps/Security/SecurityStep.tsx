@@ -30,36 +30,31 @@ class SecurityStep extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
-    constructor(props: Props) {
-        super(props);
+    componentDidMount() {
+        const { account, setEncryptionLevel } = this.context;
 
-        this.state = {
-            encryptionLevel: EncryptionLevels.Passcode,
-        };
+        if (!account.encryptionLevel) {
+            setEncryptionLevel(EncryptionLevels.Passcode);
+        }
     }
 
-    onRadioButtonPress = (option: EncryptionLevels) => {
-        this.setState({
-            encryptionLevel: option,
-        });
+    onRadioButtonPress = (level: EncryptionLevels) => {
+        const { setEncryptionLevel } = this.context;
+
+        setEncryptionLevel(level);
     };
 
     goNext = () => {
-        const { goNext, setEncryptionLevel } = this.context;
-        const { encryptionLevel } = this.state;
+        const { goNext, account } = this.context;
 
-        // set the encryption key
-        setEncryptionLevel(encryptionLevel);
-
-        if (encryptionLevel === EncryptionLevels.Passphrase) {
+        if (account.encryptionLevel === EncryptionLevels.Passphrase) {
             goNext('PassphraseStep');
         } else {
             goNext('LabelStep');
         }
     };
     render() {
-        const { goBack } = this.context;
-        const { encryptionLevel } = this.state;
+        const { goBack, account } = this.context;
 
         return (
             <SafeAreaView testID="account-generate-security-view" style={[AppStyles.container]}>
@@ -75,7 +70,7 @@ class SecurityStep extends Component<Props, State> {
                         description={Localize.t('account.passcodeOptionDesc')}
                         labelSmall={Localize.t('account.signWithPasscode')}
                         label={Localize.t('global.standard')}
-                        checked={encryptionLevel === EncryptionLevels.Passcode}
+                        checked={account.encryptionLevel === EncryptionLevels.Passcode}
                     />
                     <RadioButton
                         testID="passphrase-radio-button"
@@ -85,7 +80,7 @@ class SecurityStep extends Component<Props, State> {
                         description={Localize.t('account.passwordOptionDesc')}
                         labelSmall={Localize.t('account.signWithPassword')}
                         label={Localize.t('global.extraSecurity')}
-                        checked={encryptionLevel === EncryptionLevels.Passphrase}
+                        checked={account.encryptionLevel === EncryptionLevels.Passphrase}
                     />
                 </View>
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>

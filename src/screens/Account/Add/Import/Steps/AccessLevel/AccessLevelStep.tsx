@@ -20,49 +20,44 @@ import { StepsContext } from '../../Context';
 /* types ==================================================================== */
 export interface Props {}
 
-export interface State {
-    accessLevel: AccessLevels;
-}
+export interface State {}
 
 /* Component ==================================================================== */
 class AccessLevelStep extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
-    constructor(props: Props) {
-        super(props);
+    componentDidMount() {
+        const { setAccessLevel, account } = this.context;
 
-        this.state = {
-            accessLevel: AccessLevels.Full,
-        };
+        // set default access level
+        if (!account.accessLevel) {
+            setAccessLevel(AccessLevels.Full);
+        }
     }
 
     onRadioButtonPress = (level: AccessLevels) => {
-        this.setState({
-            accessLevel: level,
-        });
+        const { setAccessLevel } = this.context;
+        setAccessLevel(level);
     };
 
     goNext = () => {
-        const { goNext, setAccessLevel, setEncryptionLevel } = this.context;
-        const { accessLevel } = this.state;
+        const { goNext, setEncryptionLevel, account } = this.context;
 
         // set access level for account
-        setAccessLevel(accessLevel, () => {
-            if (accessLevel === 'Full') {
-                goNext('SecretType');
-            } else {
-                // if the account is readonly then set the encryption level to None
-                setEncryptionLevel(EncryptionLevels.None, () => {
-                    goNext('EnterAddress');
-                });
-            }
-        });
+        if (account.accessLevel === 'Full') {
+            goNext('SecretType');
+        } else {
+            // if the account is readonly then set the encryption level to None
+            setEncryptionLevel(EncryptionLevels.None, () => {
+                goNext('EnterAddress');
+            });
+        }
     };
 
     render() {
-        const { goBack } = this.context;
-        const { accessLevel } = this.state;
+        const { goBack, account } = this.context;
+
         return (
             <SafeAreaView testID="account-import-access-level-view" style={[AppStyles.contentContainer]}>
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
@@ -76,7 +71,7 @@ class AccessLevelStep extends Component<Props, State> {
                         }}
                         label={Localize.t('account.fullAccess')}
                         description={Localize.t('account.fullAccessDesc')}
-                        checked={accessLevel === 'Full'}
+                        checked={account.accessLevel === AccessLevels.Full}
                     />
                     <RadioButton
                         testID="readonly-radio-button"
@@ -85,7 +80,7 @@ class AccessLevelStep extends Component<Props, State> {
                         }}
                         label={Localize.t('account.readOnly')}
                         description={Localize.t('account.readOnlyDesc')}
-                        checked={accessLevel === 'Readonly'}
+                        checked={account.accessLevel === AccessLevels.Readonly}
                     />
 
                     <InfoMessage

@@ -84,7 +84,7 @@ class PasscodeSetupView extends Component<Props, State> {
             // if push notification already granted then go to last part
             const granted = await PushNotificationsService.checkPermission();
             if (granted) {
-                Navigator.push(AppScreens.Setup.Finish);
+                Navigator.push(AppScreens.Setup.Disclaimers);
                 return;
             }
 

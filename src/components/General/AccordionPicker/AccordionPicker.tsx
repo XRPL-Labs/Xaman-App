@@ -66,7 +66,7 @@ class AccordionPicker extends Component<Props, State> {
             });
         }
 
-        if (selected) {
+        if (selected !== -1) {
             return {
                 selectedIndex: selected,
             };
@@ -90,6 +90,9 @@ class AccordionPicker extends Component<Props, State> {
         const { onExpand } = this.props;
 
         if (!expanded) {
+            // update content position before expand
+            this.setContainerPosition();
+
             this.setState({
                 expanded: true,
             });

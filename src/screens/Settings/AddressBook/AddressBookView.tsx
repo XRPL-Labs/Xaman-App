@@ -37,6 +37,8 @@ export interface State {
 class AddressBookView extends Component<Props, State> {
     static screenName = AppScreens.Settings.AddressBook.List;
 
+    private navigationListener: any;
+
     static options() {
         return {
             bottomTabs: { visible: false },
@@ -46,14 +48,22 @@ class AddressBookView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const contacts = ContactRepository.getContacts().snapshot();
+        const contacts = ContactRepository.getContacts();
 
         this.state = {
             contacts,
             dataSource: this.convertContactsArrayToMap(contacts),
         };
+    }
 
-        Navigation.events().bindComponent(this);
+    componentDidMount() {
+        this.navigationListener = Navigation.events().bindComponent(this);
+    }
+
+    componentWillUnmount() {
+        if (this.navigationListener) {
+            this.navigationListener.remove();
+        }
     }
 
     componentDidAppear() {

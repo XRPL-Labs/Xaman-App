@@ -21,6 +21,7 @@ import styles from './styles';
 export interface Props {
     account: AccountSchema;
     item: TransactionsType;
+    timestamp?: number;
 }
 
 export interface State {
@@ -48,7 +49,8 @@ class LedgerObjectTemplate extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        return !isEqual(nextState, this.state);
+        const { timestamp } = this.props;
+        return !isEqual(nextState, this.state) || !isEqual(nextProps.timestamp, timestamp);
     }
 
     componentDidMount() {
@@ -63,6 +65,15 @@ class LedgerObjectTemplate extends Component<Props, State> {
             item[key] = {
                 name,
             };
+        }
+    }
+
+    componentDidUpdate(prevProps: Props) {
+        const { timestamp } = this.props;
+
+        // force the lookup if timestamp changed
+        if (timestamp !== prevProps.timestamp) {
+            this.lookUpRecipientName();
         }
     }
 

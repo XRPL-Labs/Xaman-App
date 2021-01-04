@@ -57,7 +57,7 @@ class OnboardingView extends Component<Props, State> {
                         <Slide>
                             <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                                 <Text style={[AppStyles.h4, AppStyles.strong]}>
-                                    {Localize.t('onboarding.slideOne.title')}
+                                    {Localize.t('onboarding.slideOne_title')}
                                 </Text>
                             </View>
                         </Slide>
@@ -66,11 +66,11 @@ class OnboardingView extends Component<Props, State> {
                                 <Image style={[AppStyles.emptyIcon]} source={Images.ImageManageAccounts} />
                                 <Spacer size={50} />
                                 <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
-                                    {Localize.t('onboarding.slideTwo.title')}
+                                    {Localize.t('onboarding.slideTwo_title')}
                                 </Text>
                                 <Spacer size={10} />
                                 <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                                    {Localize.t('onboarding.slideTwo.desc')}
+                                    {Localize.t('onboarding.slideTwo_desc')}
                                 </Text>
                             </View>
                         </Slide>
@@ -79,11 +79,11 @@ class OnboardingView extends Component<Props, State> {
                                 <Image style={[AppStyles.emptyIcon]} source={Images.ImageSecurityFirst} />
                                 <Spacer size={50} />
                                 <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
-                                    {Localize.t('onboarding.slideThree.title')}
+                                    {Localize.t('onboarding.slideThree_title')}
                                 </Text>
                                 <Spacer size={10} />
                                 <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                                    {Localize.t('onboarding.slideThree.desc')}
+                                    {Localize.t('onboarding.slideThree_desc')}
                                 </Text>
                             </View>
                         </Slide>
@@ -92,11 +92,11 @@ class OnboardingView extends Component<Props, State> {
                                 <Image style={[AppStyles.emptyIcon]} source={Images.ImageSendReceive} />
                                 <Spacer size={50} />
                                 <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
-                                    {Localize.t('onboarding.slideFour.title')}
+                                    {Localize.t('onboarding.slideFour_title')}
                                 </Text>
                                 <Spacer size={10} />
                                 <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                                    {Localize.t('onboarding.slideFour.desc')}
+                                    {Localize.t('onboarding.slideFour_desc')}
                                 </Text>
                             </View>
                         </Slide>

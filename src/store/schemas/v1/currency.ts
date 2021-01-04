@@ -3,7 +3,6 @@ import Realm from 'realm';
 /**
  * Counter Parties Currencies Model
  */
-// @ts-ignore
 class Currency extends Realm.Object {
     public static schema: Realm.ObjectSchema = {
         name: 'Currency',

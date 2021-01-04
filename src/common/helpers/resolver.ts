@@ -1,4 +1,4 @@
-import { memoize, isEmpty, has, get, assign } from 'lodash';
+import { memoize, has, get, assign } from 'lodash';
 
 import Flag from '@common/libs/ledger/parser/common/flag';
 import Amount from '@common/libs/ledger/parser/common/amount';
@@ -24,6 +24,7 @@ export interface AccountInfoType {
     risk: 'ERROR' | 'UNKNOWS' | 'PROBABLE' | 'HIGH_PROBABILITY' | 'CONFIRMED';
     requireDestinationTag: boolean;
     possibleExchange: boolean;
+    disallowIncomingXRP: boolean;
 }
 
 const getAccountName = memoize(
@@ -41,7 +42,8 @@ const getAccountName = memoize(
             try {
                 const filter = { address, destinationTag: tag };
                 const contact = ContactRepository.findOne(filter);
-                if (!isEmpty(contact)) {
+
+                if (contact) {
                     return resolve({
                         address,
                         name: contact.name,
@@ -55,7 +57,7 @@ const getAccountName = memoize(
             try {
                 // check in accounts list
                 const account = AccountRepository.findOne({ address });
-                if (!isEmpty(account)) {
+                if (account) {
                     return resolve({
                         address,
                         name: account.label,
@@ -78,7 +80,7 @@ const getAccountName = memoize(
             // check the backend
             return BackendService.getAddressInfo(address)
                 .then((res: any) => {
-                    if (!isEmpty(res)) {
+                    if (res) {
                         return resolve({
                             address,
                             name: res.name,
@@ -115,6 +117,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
             risk: 'UNKNOWS',
             requireDestinationTag: false,
             possibleExchange: false,
+            disallowIncomingXRP: false,
         } as AccountInfoType;
 
         try {
@@ -148,6 +151,10 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
             // check if destination requires the destination tag
             if (has(account_data, ['Flags'])) {
                 const accountFlags = new Flag('Account', account_data.Flags).parse();
+
+                if (accountFlags.disallowIncomingXRP) {
+                    assign(info, { disallowIncomingXRP: true });
+                }
 
                 // flag is set
                 if (accountFlags.requireDestinationTag) {
@@ -199,8 +206,8 @@ const getPayIdInfo = (payId: string): Promise<PayIDInfo> => {
     return new Promise((resolve) => {
         BackendService.lookup(payId)
             .then((res: any) => {
-                if (!isEmpty(res) && res.error !== true) {
-                    if (!isEmpty(res.matches)) {
+                if (res && res.error !== true) {
+                    if (res.matches) {
                         const match = res.matches[0];
                         return resolve({
                             account: match.account,

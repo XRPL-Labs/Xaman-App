@@ -81,3 +81,10 @@ export interface PayloadSubmitResult {
     submitResult?: SubmitResultType;
     signedObject: SignedObjectType;
 }
+
+export enum PayloadOrigin {
+    QR = 'QR',
+    DEEP_LINK = 'DEEP_LINK',
+    PUSH_NOTIFICATION = 'PUSH_NOTIFICATION',
+    EVENT_LIST = 'EVENT_LIST',
+}

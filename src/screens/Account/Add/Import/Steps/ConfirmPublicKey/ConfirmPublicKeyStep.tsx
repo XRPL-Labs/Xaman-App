@@ -8,6 +8,7 @@ import { SafeAreaView, View, Text, ScrollView } from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
 
 import { AccountRepository } from '@store/repositories';
+import { AccountTypes } from '@store/types';
 
 import { Toast, Prompt } from '@common/helpers/interface';
 
@@ -34,23 +35,37 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
     context: React.ContextType<typeof StepsContext>;
 
     goBack = () => {
-        const { goBack } = this.context;
+        const { goBack, account } = this.context;
 
-        Prompt(
-            Localize.t('global.pleaseNote'),
-            Localize.t('account.goBackRefillTheInput'),
-            [
-                {
-                    text: Localize.t('global.goBack'),
-                    onPress: () => {
-                        goBack();
+        if (account.type !== AccountTypes.Tangem) {
+            Prompt(
+                Localize.t('global.pleaseNote'),
+                Localize.t('account.goBackRefillTheInput'),
+                [
+                    {
+                        text: Localize.t('global.goBack'),
+                        onPress: () => {
+                            goBack();
+                        },
+                        style: 'destructive',
                     },
-                    style: 'destructive',
-                },
-                { text: Localize.t('global.cancel') },
-            ],
-            { type: 'default' },
-        );
+                    { text: Localize.t('global.cancel') },
+                ],
+                { type: 'default' },
+            );
+        } else {
+            goBack();
+        }
+    };
+
+    goNext = () => {
+        const { goNext, account } = this.context;
+
+        if (account.type === AccountTypes.Regular) {
+            goNext('SecurityStep');
+        } else {
+            goNext('LabelStep');
+        }
     };
 
     renderRegularKeys = () => {
@@ -120,7 +135,11 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
     };
 
     render() {
-        const { importedAccount, goNext } = this.context;
+        const { importedAccount, isLoading } = this.context;
+
+        if (!importedAccount) {
+            return null;
+        }
 
         return (
             <SafeAreaView testID="account-import-show-address-view" style={[AppStyles.container]}>
@@ -173,9 +192,8 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                             testID="next-button"
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.confirm')}
-                            onPress={() => {
-                                goNext('SecurityStep');
-                            }}
+                            onPress={this.goNext}
+                            isLoading={isLoading}
                         />
                     </View>
                 </Footer>

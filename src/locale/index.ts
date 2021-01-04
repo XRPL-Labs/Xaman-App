@@ -5,14 +5,40 @@
 class Localize {
     instance: any;
     settings: any;
+    meta: any;
 
     constructor() {
+        // require('moment/min/locales');
         this.instance = require('i18n-js');
+        this.meta = require('./meta.json');
         this.instance.fallbacks = true;
         this.settings = undefined;
     }
 
-    setLocale = (locale: string, settings?: any) => {
+    getLocales = () => {
+        return Object.keys(this.meta).map((localeCode) => {
+            return {
+                code: localeCode,
+                name: this.meta[localeCode].name.en,
+                nameLocal: this.meta[localeCode].name[localeCode],
+            };
+        });
+    };
+
+    resolveLocale = (locale: string) => {
+        if (Object.keys(this.meta).indexOf(locale) > -1) {
+            return locale;
+        }
+
+        const fallback = locale.toLowerCase().replace(/_/g, '-').split('-')[0];
+        if (Object.keys(this.meta).indexOf(fallback) > -1) {
+            return fallback;
+        }
+
+        return 'en';
+    };
+
+    setLocale = (locale: string, settings?: any): string => {
         try {
             // set en
             this.instance.translations.en = require('./en.json');
@@ -22,32 +48,21 @@ class Localize {
                 this.settings = settings;
             }
 
-            let translations;
+            const resolvedLocale = this.resolveLocale(locale);
 
-            switch (locale) {
-                case 'zh':
-                    translations = require('./zh-CN.json');
-                    break;
-                case 'ja':
-                    translations = require('./ja.json');
-                    break;
-                case 'es':
-                    translations = require('./es.json');
-                    break;
-                case 'ko':
-                    translations = require('./ko.json');
-                    break;
-                default:
-                    break;
+            // none EN locale found
+            if (resolvedLocale !== '' && resolvedLocale !== 'en') {
+                const generateLocals = require('./generated').default;
+                this.instance.translations[resolvedLocale] = generateLocals[resolvedLocale];
+                this.instance.locale = resolvedLocale;
+                return resolvedLocale;
             }
 
-            if (translations) {
-                this.instance.translations[locale] = translations;
-            }
-
-            this.instance.locale = locale;
-        } catch {
-            // ignore
+            // fallback to EN if we don't support the locale
+            this.instance.locale = 'en';
+            return 'en';
+        } catch (e) {
+            return 'en';
         }
     };
 

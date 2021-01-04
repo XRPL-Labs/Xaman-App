@@ -13,6 +13,8 @@ import { Button, TextInput, Spacer, Footer } from '@components/General';
 // locale
 import Localize from '@locale';
 
+import { AccountTypes } from '@store/types';
+
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -23,6 +25,7 @@ export interface Props {}
 
 export interface State {
     label: string;
+    isLoading: boolean;
 }
 
 /* Component ==================================================================== */
@@ -34,26 +37,50 @@ class LabelStep extends Component<Props, State> {
         super(props);
 
         this.state = {
+            isLoading: true,
             label: '',
         };
     }
 
     componentDidMount() {
-        const { importedAccount } = this.context;
+        const { account } = this.context;
 
-        getAccountName(importedAccount.address)
+        if (account.accountType === AccountTypes.Tangem) {
+            this.setState({
+                label: '💳 ',
+            });
+        }
+
+        getAccountName(account.address)
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     const name = get(res, 'name');
 
                     if (name) {
-                        this.setState({
-                            label: res.name,
-                        });
+                        if (account.type === AccountTypes.Tangem) {
+                            if (name.starsWith('💳')) {
+                                this.setState({
+                                    label: res.name,
+                                });
+                            } else {
+                                this.setState({
+                                    label: `💳 ${res.name}`,
+                                });
+                            }
+                        } else {
+                            this.setState({
+                                label: res.name,
+                            });
+                        }
                     }
                 }
             })
-            .catch(() => {});
+            .catch(() => {})
+            .finally(() => {
+                this.setState({
+                    isLoading: false,
+                });
+            });
     }
 
     goNext = () => {
@@ -74,7 +101,8 @@ class LabelStep extends Component<Props, State> {
 
     render() {
         const { goBack } = this.context;
-        const { label } = this.state;
+        const { label, isLoading } = this.state;
+
         return (
             <SafeAreaView testID="account-import-label-view" style={[AppStyles.container]}>
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
@@ -94,6 +122,9 @@ class LabelStep extends Component<Props, State> {
                         value={label}
                         inputStyle={styles.inputText}
                         onChangeText={(l) => this.setState({ label: l })}
+                        autoCapitalize="sentences"
+                        isLoading={isLoading}
+                        autoFocus
                     />
                 </KeyboardAvoidingView>
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>

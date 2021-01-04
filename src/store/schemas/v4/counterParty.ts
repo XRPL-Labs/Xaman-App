@@ -1,10 +1,9 @@
 import Realm from 'realm';
-import CurrencySchema from './currency';
+import CurrencySchema from '@store/schemas/v4/currency';
 
 /**
  * Counter Parties Model
  */
-// @ts-ignore
 class CounterParty extends Realm.Object {
     public static schema: Realm.ObjectSchema = {
         name: 'CounterParty',
@@ -29,7 +28,6 @@ class CounterParty extends Realm.Object {
     public registerAt?: Date;
     public updatedAt?: Date;
     public currencies?: CurrencySchema[];
-    public isValid?: () => boolean;
 
     constructor(obj: Partial<CounterParty>) {
         super();

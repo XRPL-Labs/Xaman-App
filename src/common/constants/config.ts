@@ -82,16 +82,7 @@ export default {
     },
 
     // localization config
-    language: {
-        default: 'en',
-        supported: [
-            { value: 'en', title: 'English' },
-            { value: 'es', title: 'Spanish' },
-            { value: 'ko', title: '韓國語' },
-            { value: 'ja', title: '日本語' },
-            { value: 'zh', title: '中文' },
-        ],
-    },
+    defaultLanguage: 'en',
 
     // app theme config
     theme: {

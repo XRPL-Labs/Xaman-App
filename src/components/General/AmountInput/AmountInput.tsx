@@ -89,7 +89,7 @@ class AmountInput extends PureComponent<Props, State> {
             return '';
         }
 
-        const { separator } = Localize.settings;
+        const separator = Localize.settings?.separator || '.';
 
         if (separator === ',') {
             formatted = formatted.replace('.', ',');

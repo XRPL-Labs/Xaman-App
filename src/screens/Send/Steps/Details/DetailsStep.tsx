@@ -23,15 +23,17 @@ import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import { Images } from '@common/helpers/images';
 import { Prompt } from '@common/helpers/interface';
+
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
 import { Header, Button, AccordionPicker, AmountInput, Footer } from '@components/General';
+import { AccountPicker } from '@components/Modules';
 
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles, AppColors, AppSizes } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
@@ -148,9 +150,11 @@ class DetailsStep extends Component {
 
     onAccountChange = (item: AccountSchema) => {
         const { setSource, setCurrency } = this.context;
+
+        // restore currency to default XRP
         setCurrency('XRP');
 
-        // set item
+        // set new source
         setSource(item);
     };
 
@@ -163,26 +167,6 @@ class DetailsStep extends Component {
         } else {
             setCurrency(item);
         }
-    };
-
-    renderAccountItem = (account: AccountSchema, selected: boolean) => {
-        // console.log({ account });
-        // if (account.default) {
-        return (
-            <View style={[styles.pickerItem]}>
-                <Text style={[styles.pickerItemTitle, selected ? AppStyles.colorBlue : AppStyles.colorBlack]}>
-                    {account.label}
-                </Text>
-                <Text
-                    style={[styles.pickerItemSub, selected ? AppStyles.colorBlue : AppStyles.colorGreyDark]}
-                    adjustsFontSizeToFit
-                    numberOfLines={1}
-                >
-                    {account.address}
-                </Text>
-            </View>
-        );
-        // }
     };
 
     renderCurrencyItem = (item: any, selected: boolean) => {
@@ -248,13 +232,12 @@ class DetailsStep extends Component {
 
         return (
             <View testID="send-details-view" style={[styles.container]}>
-                <KeyboardAvoidingView
-                    enabled={Platform.OS === 'ios'}
-                    keyboardVerticalOffset={Header.Height}
-                    behavior="padding"
-                    style={[AppStyles.flex1, AppStyles.stretchSelf]}
-                >
-                    <ScrollView style={[AppStyles.flex1]}>
+                <ScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
+                    <KeyboardAvoidingView
+                        enabled={Platform.OS === 'ios'}
+                        keyboardVerticalOffset={Header.Height + AppSizes.extraKeyBoardPadding}
+                        behavior="position"
+                    >
                         {/* Source Account */}
                         <View
                             onLayout={this.setGradientHeight}
@@ -276,14 +259,7 @@ class DetailsStep extends Component {
                                     {Localize.t('global.from')}
                                 </Text>
                             </View>
-                            <AccordionPicker
-                                onSelect={this.onAccountChange}
-                                items={accounts}
-                                renderItem={this.renderAccountItem}
-                                selectedItem={source}
-                                keyExtractor={(i) => i.address}
-                                containerStyle={{ backgroundColor: AppColors.transparent }}
-                            />
+                            <AccountPicker onSelect={this.onAccountChange} accounts={accounts} selectedItem={source} />
                         </View>
                         {/* Currency */}
                         <View style={[styles.rowItem]}>
@@ -342,8 +318,8 @@ class DetailsStep extends Component {
                                 />
                             </View>
                         </View>
-                    </ScrollView>
-                </KeyboardAvoidingView>
+                    </KeyboardAvoidingView>
+                </ScrollView>
 
                 {/* Bottom Bar */}
                 <Footer style={[AppStyles.row]} safeArea>

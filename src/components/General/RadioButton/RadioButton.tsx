@@ -55,7 +55,13 @@ class RadioButton extends Component<Props> {
                         </Text>
                     )}
                     {description && (
-                        <Text style={[AppStyles.subtext, checked ? AppStyles.colorBlue : AppStyles.colorGreyDark]}>
+                        <Text
+                            style={[
+                                AppStyles.subtext,
+                                styles.descriptionText,
+                                checked ? AppStyles.colorBlue : AppStyles.colorGreyDark,
+                            ]}
+                        >
                             {description}
                         </Text>
                     )}

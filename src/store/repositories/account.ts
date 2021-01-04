@@ -1,11 +1,11 @@
-import { has, isEmpty, filter } from 'lodash';
+import { has, filter } from 'lodash';
 import Realm, { Results, ObjectSchema } from 'realm';
 
 import Flag from '@common/libs/ledger/parser/common/flag';
 import Vault from '@common/libs/vault';
 
 import { AccountSchema } from '@store/schemas/latest';
-import { AccessLevels, EncryptionLevels } from '@store/types';
+import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
 
 import BaseRepository from './base';
 
@@ -29,22 +29,21 @@ class AccountRepository extends BaseRepository {
     }
 
     /**
-     * add new account to the store
+     * add new regular account to the store
      * this will store private key in the vault if full access
      */
     add = (account: Partial<AccountSchema>, privateKey?: string, encryptionKey?: string): Promise<AccountSchema> => {
         // remove default flag from any other account
         const defaultAccount = this.getDefaultAccount();
-        if (!isEmpty(defaultAccount) && defaultAccount.address !== account.address) {
+        if (defaultAccount && defaultAccount.address !== account.address) {
             this.update({
                 address: defaultAccount.address,
                 default: false,
             });
         }
 
-        // READONLY
-        if (account.accessLevel === AccessLevels.Readonly) {
-            // create
+        // READONLY || TANGEM CARD
+        if (account.accessLevel === AccessLevels.Readonly || account.type === AccountTypes.Tangem) {
             return this.create(account).then((createdAccount: AccountSchema) => {
                 this.emit('accountCreate', createdAccount);
                 this.emit('changeDefaultAccount', createdAccount);
@@ -156,7 +155,7 @@ class AccountRepository extends BaseRepository {
 
         // set the current account default -> false
         // if any exist
-        if (!isEmpty(current)) {
+        if (current) {
             this.update({
                 address: current.address,
                 default: false,

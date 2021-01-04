@@ -11,8 +11,7 @@ const styles = StyleSheet.create({
     },
     transactionContent: {
         backgroundColor: AppColors.white,
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
+        borderRadius: 30,
         paddingTop: 28,
     },
     rowLabel: {
@@ -23,29 +22,20 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         opacity: 0.03,
     },
-    xummAppTitle: {
+    appTitle: {
         fontSize: AppFonts.pb.size,
         fontFamily: AppFonts.pb.family,
+        marginTop: 15,
         marginBottom: 15,
     },
-    xummAppIcon: {
-        width: 60,
-        height: 60,
-        borderRadius: 15,
-        backgroundColor: AppColors.white,
-        borderColor: AppColors.greyDark,
-        borderWidth: StyleSheet.hairlineWidth,
-        marginBottom: 10,
-        marginTop: 10,
-    },
-    xummAppLabelText: {
+    descriptionLabel: {
         fontSize: AppFonts.small.size,
         fontFamily: AppFonts.subtext.family,
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 3,
     },
-    xummAppLabelInfo: {
+    instructionText: {
         fontSize: AppFonts.subtext.size,
         fontFamily: AppFonts.subtext.family,
         textAlign: 'center',
@@ -81,10 +71,15 @@ const styles = StyleSheet.create({
         paddingHorizontal: AppSizes.paddingSml,
         paddingBottom: 10,
     },
-    collapsingHeader: {
+    topContent: {
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    keyboardAvoidViewStyle: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
     },
 });
 

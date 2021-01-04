@@ -64,7 +64,7 @@ class PushNotificationSetupView extends Component<Props, State> {
     };
 
     nextStep = () => {
-        Navigator.push(AppScreens.Setup.Finish);
+        Navigator.push(AppScreens.Setup.Disclaimers);
     };
 
     render() {

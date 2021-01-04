@@ -3,7 +3,6 @@ import Realm from 'realm';
 /**
  * Counter Parties Currencies Model
  */
-// @ts-ignore
 class Currency extends Realm.Object {
     public static schema: Realm.ObjectSchema = {
         name: 'Currency',
@@ -25,7 +24,6 @@ class Currency extends Realm.Object {
     public name: string;
     public avatar: string;
     public shortlist: boolean;
-    public isValid?: () => boolean;
 
     constructor(obj: Partial<Currency>) {
         super();

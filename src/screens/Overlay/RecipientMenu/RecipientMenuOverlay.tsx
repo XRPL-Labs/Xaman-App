@@ -145,7 +145,7 @@ class RecipientMenuOverlay extends Component<Props, State> {
                 message: recipient.address,
                 url: undefined,
             }).catch(() => {});
-        }, 500);
+        }, 1000);
     };
 
     openAccountLink = () => {

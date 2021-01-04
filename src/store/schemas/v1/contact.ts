@@ -2,7 +2,6 @@ import Realm from 'realm';
 /**
  * Contact Model ( aka Address book )
  */
-// @ts-ignore
 class Contact extends Realm.Object {
     public static schema: Realm.ObjectSchema = {
         name: 'Contact',

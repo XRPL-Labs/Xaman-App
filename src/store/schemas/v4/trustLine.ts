@@ -5,7 +5,6 @@ import { Truncate } from '@common/libs/utils';
 /**
  * Account Trust Lines Model
  */
-// @ts-ignore
 class TrustLine extends Realm.Object {
     public static schema: Realm.ObjectSchema = {
         name: 'TrustLine',
@@ -42,7 +41,6 @@ class TrustLine extends Realm.Object {
     public freeze?: boolean;
     public freeze_peer?: boolean;
     public obligation?: boolean;
-    public isValid?: () => boolean;
 
     constructor(obj: Partial<TrustLine>) {
         super();

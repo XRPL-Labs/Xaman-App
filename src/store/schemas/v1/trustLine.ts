@@ -5,7 +5,6 @@ import { Truncate } from '@common/libs/utils';
 /**
  * Account Trust Lines Model
  */
-// @ts-ignore
 class TrustLine extends Realm.Object {
     public static schema: Realm.ObjectSchema = {
         name: 'TrustLine',

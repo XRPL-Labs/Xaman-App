@@ -1,0 +1,43 @@
+diff --git a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/viewcontrollers/modal/ModalStack.java b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/viewcontrollers/modal/ModalStack.java
+index 46a5c23..00a303d 100644
+--- a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/viewcontrollers/modal/ModalStack.java
++++ b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/viewcontrollers/modal/ModalStack.java
+@@ -76,8 +76,8 @@ public class ModalStack {
+             presenter.dismissModal(toDismiss, toAdd, root, new CommandListenerAdapter(listener) {
+                 @Override
+                 public void onSuccess(String childId) {
+-                    eventEmitter.emitModalDismissed(toDismiss.getId(), toDismiss.getCurrentComponentName(), 1);
+-                    super.onSuccess(toDismiss.getId());
++                    eventEmitter.emitModalDismissed(componentId, toDismiss.getCurrentComponentName(), 1);
++                    super.onSuccess(componentId);
+                 }
+             });
+             return true;
+diff --git a/node_modules/react-native-navigation/lib/ios/RNNModalManagerEventHandler.m b/node_modules/react-native-navigation/lib/ios/RNNModalManagerEventHandler.m
+index dd905ff..2e5b166 100644
+--- a/node_modules/react-native-navigation/lib/ios/RNNModalManagerEventHandler.m
++++ b/node_modules/react-native-navigation/lib/ios/RNNModalManagerEventHandler.m
+@@ -13,12 +13,12 @@ - (instancetype)initWithEventEmitter:(RNNEventEmitter *)eventEmitter {
+ 
+ - (void)dismissedModal:(UIViewController *)viewController {
+     [_eventEmitter
+-        sendModalsDismissedEvent:viewController.topMostViewController.layoutInfo.componentId
++        sendModalsDismissedEvent:viewController.layoutInfo.componentId
+          numberOfModalsDismissed:@(1)];
+ }
+ 
+ - (void)attemptedToDismissModal:(UIViewController *)viewController {
+-    [_eventEmitter sendModalAttemptedToDismissEvent:viewController.topMostViewController.layoutInfo
++    [_eventEmitter sendModalAttemptedToDismissEvent:viewController.layoutInfo
+                                                         .componentId];
+ }
+ 
+@@ -27,7 +27,7 @@ - (void)dismissedMultipleModals:(NSArray *)viewControllers {
+         UIViewController *lastViewController =
+             [viewControllers.lastObject presentedComponentViewController];
+         [_eventEmitter
+-            sendModalsDismissedEvent:lastViewController.topMostViewController.layoutInfo.componentId
++            sendModalsDismissedEvent:lastViewController.layoutInfo.componentId
+              numberOfModalsDismissed:@(viewControllers.count)];
+     }
+ }

@@ -140,6 +140,7 @@ class AuthenticateModal extends Component<Props, State> {
         FingerprintScanner.authenticate({
             description: Localize.t('global.authenticate'),
             fallbackEnabled: true,
+            // @ts-ignore
             fallbackTitle: Localize.t('global.enterPasscode'),
         })
             .then(this.onSuccess)
@@ -218,11 +219,7 @@ class AuthenticateModal extends Component<Props, State> {
         });
 
         return (
-            <Animated.View
-                onResponderRelease={this.dismiss}
-                onStartShouldSetResponder={() => true}
-                style={[styles.container, { backgroundColor: interpolateColor }]}
-            >
+            <Animated.View style={[styles.container, { backgroundColor: interpolateColor }]}>
                 <View
                     ref={(r) => {
                         this.contentView = r;

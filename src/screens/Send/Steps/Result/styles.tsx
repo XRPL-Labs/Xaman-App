@@ -20,6 +20,12 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         padding: 20,
     },
+    successImage: {
+        alignSelf: 'center',
+        width: AppSizes.scale(250),
+        height: AppSizes.scale(250),
+        resizeMode: 'contain',
+    },
 });
 
 export default styles;

@@ -8,7 +8,7 @@ const screens = {
         Passcode: 'app.Setup.Passcode',
         Biometric: 'app.Setup.Biometric',
         PushNotification: 'app.Setup.PushNotification',
-        Agreement: 'app.Setup.Agreement',
+        Disclaimers: 'app.Setup.Disclaimers',
         Finish: 'app.Setup.Finish',
     },
     TabBar: {
@@ -26,10 +26,10 @@ const screens = {
         Edit: {
             Settings: 'app.Account.Settings',
             ChangePassphrase: 'app.Account.ChangePassphrase',
+            ChangeTangemSecurityEnforce: 'app.Account.ChangeTangemSecurityEnforce',
         },
     },
     Modal: {
-        HomeSettings: 'modal.HomeSettings',
         ReviewTransaction: 'modal.ReviewTransaction',
         FilterEvents: 'modal.FilterEvents',
         Scan: 'modal.Scan',
@@ -52,6 +52,8 @@ const screens = {
         ChangeLog: 'overlay.ChangeLog',
         ConnectionIssue: 'overlay.ConnectionIssue',
         RecipientMenu: 'overlay.RecipientMenu',
+        ConfirmDestinationTag: 'overlay.ConfirmDestinationTag',
+        SelectAccount: 'overlay.SelectAccount',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',

@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
         fontSize: AppFonts.p.size,
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
-        textAlign: 'center',
+        textAlign: 'left',
     },
     editButton: {
         backgroundColor: AppColors.grey,

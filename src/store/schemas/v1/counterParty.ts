@@ -4,7 +4,6 @@ import CurrencySchema from './currency';
 /**
  * Counter Parties Model
  */
-// @ts-ignore
 class CounterParty extends Realm.Object {
     public static schema: Realm.ObjectSchema = {
         name: 'CounterParty',

@@ -33,6 +33,9 @@
         ".(json)$"
       ]
     },
+    "ignorePatterns": [
+      "__generate.js"
+    ],
     "rules": {
       "prettier/prettier": [0, {	
         "printWidth": 120,	
@@ -126,7 +129,8 @@
           "Devnet", "Mainnet", "Swiper", "calc", "abcdefgh", "cancelable", "uniqBy", "memoize", "Memoized", "html", "len", "fg", "bg", "ctx", "checksum",
           "ecc", "uniq", "Truthy", "Responder", "ter", "ko", "zh", "mailto", "tabbar", "https", "gcm", "tf", "xlight", "aps", "tec", "barcodes", "Barcode",
           "txblob", "tos", "gif", "ic", "asf", "ok", "Sig", "haptic", "Signable", "Unauthorize", "Preauth", "payid", "Biometrics", "Towo", "tz", "xrpscan",
-          "xrplorer", "bithomp", "xpring", "xrplns", "Pincode", "Txn", "iap", "Realtime", "datastore", "decrypted"
+          "xrplorer", "bithomp", "xpring", "xrplns", "Pincode", "Txn", "iap", "Realtime", "datastore", "decrypted", "Tangem", "Sdk", "Secp256k1", "blockchain",
+          "Escrowed"
         ],
         "skipIfMatch": [
           "http://[^s]*",

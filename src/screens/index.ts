@@ -3,7 +3,8 @@ import Onboarding from './Onboarding';
 import PasscodeSetup from './Setup/Passcode';
 import BiometrySetup from './Setup/Biometry';
 import PermissionsSetup from './Setup/Permissions';
-import Finish from './Setup/Finish';
+import DisclaimersSetup from './Setup/Disclaimers';
+import FinishSetup from './Setup/Finish';
 
 // TabBar
 import Home from './Home';
@@ -18,9 +19,9 @@ import AccountGenerate from './Account/Add/Generate';
 import AccountList from './Account/List';
 import AccountEdit from './Account/Edit';
 import AccountChangePassphrase from './Account/Edit/ChangePassphrase';
+import AccountChangeTangemSecurity from './Account/Edit/ChangeTangemSecurity';
 
 // Modals
-import HomeSettings from './Modal/HomeSettings';
 import ReviewTransaction from './Modal/ReviewTransaction';
 import Scan from './Modal/Scan';
 import Submit from './Modal/Submit';
@@ -43,6 +44,8 @@ import ExplainBalance from './Overlay/ExplainBalance';
 import ChangeLog from './Overlay/ChangeLog';
 import ConnectionIssue from './Overlay/ConnectionIssue';
 import RecipientMenu from './Overlay/RecipientMenu';
+import ConfirmDestinationTag from './Overlay/ConfirmDestinationTag';
+import SelectAccount from './Overlay/SelectAccount';
 
 // Transaction
 import Send from './Send';
@@ -80,7 +83,8 @@ export {
     PasscodeSetup,
     BiometrySetup,
     PermissionsSetup,
-    Finish,
+    DisclaimersSetup,
+    FinishSetup,
     // Tab bar
     Home,
     Events,
@@ -91,10 +95,10 @@ export {
     AccountList,
     AccountEdit,
     AccountChangePassphrase,
+    AccountChangeTangemSecurity,
     AccountImport,
     AccountGenerate,
     // Modals
-    HomeSettings,
     ReviewTransaction,
     Scan,
     Submit,
@@ -116,6 +120,8 @@ export {
     ChangeLog,
     ConnectionIssue,
     RecipientMenu,
+    ConfirmDestinationTag,
+    SelectAccount,
     // transaction
     Send,
     Exchange,

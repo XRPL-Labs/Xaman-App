@@ -9,7 +9,6 @@ import React, { Component } from 'react';
 import { View, Animated, Text, Image, Alert, InteractionManager } from 'react-native';
 
 import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
-import { AccountRepository } from '@store/repositories';
 
 import { TrustSet, Payment } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
@@ -134,13 +133,12 @@ class CurrencySettingsModal extends Component<Props, State> {
             });
     };
 
-    clearDustAmounts = (privateKey: string) => {
+    clearDustAmounts = () => {
+        const { latestLineBalance } = this.state;
+        const { trustLine, account } = this.props;
+
         /* eslint-disable-next-line */
         return new Promise(async (resolve, reject) => {
-            const { latestLineBalance } = this.state;
-
-            const { trustLine, account } = this.props;
-
             const payment = new Payment();
 
             payment.Destination = {
@@ -162,21 +160,17 @@ class CurrencySettingsModal extends Component<Props, State> {
 
             payment.Flags = [txFlags.Payment.PartialPayment];
 
-            // submit payment to the ledger
+            // sign & submit the partial payment to clear dust balance
             await payment
-                .submit(privateKey)
+                .sign(account)
                 .then(() => {
-                    payment
-                        .verify()
-                        .then(() => {
-                            return resolve();
-                        })
-                        .catch(() => {
-                            return reject();
-                        });
+                    return payment.verify();
                 })
-                .catch(() => {
-                    return reject();
+                .then(() => {
+                    return resolve();
+                })
+                .catch((e) => {
+                    return reject(e);
                 });
         });
     };
@@ -208,79 +202,93 @@ class CurrencySettingsModal extends Component<Props, State> {
         });
     };
 
-    removeTrustLine = async (privateKey: string) => {
+    removeTrustLine = async () => {
         const { trustLine, account } = this.props;
         const { latestLineBalance } = this.state;
 
-        this.setState({
-            isLoading: true,
-        });
+        try {
+            this.setState({
+                isLoading: true,
+            });
 
-        // there is dust balance in the account
-        if (latestLineBalance !== 0) {
-            try {
-                await this.clearDustAmounts(privateKey);
-            } catch {
-                InteractionManager.runAfterInteractions(() => {
-                    Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
-                });
+            // there is dust balance in the account
+            if (latestLineBalance !== 0) {
+                try {
+                    await this.clearDustAmounts();
+                } catch {
+                    InteractionManager.runAfterInteractions(() => {
+                        Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
+                    });
 
-                this.dismiss();
-                return;
+                    this.dismiss();
+                    return;
+                }
             }
-        }
 
-        // parse account flags
-        const accountFlags = new Flag('Account', account.flags).parse();
+            // parse account flags
+            const accountFlags = new Flag('Account', account.flags).parse();
 
-        let transactionFlags = 2097152; // tfClearFreeze
+            let transactionFlags = 2097152; // tfClearFreeze
 
-        // If the (own) account DOES HAVE the defaultRipple flag,
-        //  CLEAR the noRipple flag on the Trust Line, so set: tfClearNoRipple
-        if (accountFlags.defaultRipple) {
-            transactionFlags |= 262144;
-        } else {
-            // If the (own) account DOES NOT HAVE the defaultRipple flag SET the tfSetNoRipple flag
-            transactionFlags |= 131072; // tfClearNoRipple
-        }
+            // If the (own) account DOES HAVE the defaultRipple flag,
+            //  CLEAR the noRipple flag on the Trust Line, so set: tfClearNoRipple
+            if (accountFlags.defaultRipple) {
+                transactionFlags |= 262144;
+            } else {
+                // If the (own) account DOES NOT HAVE the defaultRipple flag SET the tfSetNoRipple flag
+                transactionFlags |= 131072; // tfClearNoRipple
+            }
 
-        const newTrustline = new TrustSet({
-            transaction: {
-                Account: account.address,
-                LimitAmount: {
-                    currency: trustLine.currency.currency,
-                    issuer: trustLine.currency.issuer,
-                    value: 0,
+            const clearTrustline = new TrustSet({
+                transaction: {
+                    Account: account.address,
+                    LimitAmount: {
+                        currency: trustLine.currency.currency,
+                        issuer: trustLine.currency.issuer,
+                        value: 0,
+                    },
+                    Flags: transactionFlags,
                 },
-                Flags: transactionFlags,
-            },
-        });
+            });
 
-        // sign and submit
-        const submitResult = await newTrustline.submit(privateKey);
+            await clearTrustline.sign(account);
 
-        if (submitResult.success) {
-            const verifyResult = await newTrustline.verify();
+            // sign and submit
+            const submitResult = await clearTrustline.submit();
 
-            if (verifyResult.success) {
-                InteractionManager.runAfterInteractions(() => {
-                    Alert.alert(Localize.t('global.success'), Localize.t('asset.successRemoved'));
-                });
+            if (submitResult.success) {
+                const verifyResult = await clearTrustline.verify();
+
+                if (verifyResult.success) {
+                    InteractionManager.runAfterInteractions(() => {
+                        Alert.alert(Localize.t('global.success'), Localize.t('asset.successRemoved'));
+                    });
+                } else {
+                    InteractionManager.runAfterInteractions(() => {
+                        Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
+                    });
+                }
             } else {
                 InteractionManager.runAfterInteractions(() => {
                     Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
                 });
             }
-        } else {
-            InteractionManager.runAfterInteractions(() => {
-                Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
+
+            this.dismiss();
+        } catch (e) {
+            if (e) {
+                InteractionManager.runAfterInteractions(() => {
+                    Alert.alert(Localize.t('global.error'), e.message);
+                });
+            }
+        } finally {
+            this.setState({
+                isLoading: false,
             });
         }
-
-        this.dismiss();
     };
 
-    showRemoveAlert = async () => {
+    onRemovePress = async () => {
         this.setState({
             isLoading: true,
         });
@@ -304,26 +312,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                 {
                     text: Localize.t('global.doIt'),
 
-                    onPress: () => {
-                        Navigator.showOverlay(
-                            AppScreens.Overlay.Vault,
-                            {
-                                overlay: {
-                                    handleKeyboardEvents: true,
-                                },
-                                layout: {
-                                    backgroundColor: 'transparent',
-                                    componentBackgroundColor: 'transparent',
-                                },
-                            },
-                            {
-                                account: AccountRepository.getDefaultAccount(),
-                                onOpen: (privateKey: string) => {
-                                    this.removeTrustLine(privateKey);
-                                },
-                            },
-                        );
-                    },
+                    onPress: this.removeTrustLine,
                     style: 'destructive',
                 },
             ],
@@ -349,11 +338,7 @@ class CurrencySettingsModal extends Component<Props, State> {
         });
 
         return (
-            <Animated.View
-                onResponderRelease={this.dismiss}
-                onStartShouldSetResponder={() => true}
-                style={[styles.container, { backgroundColor: interpolateColor }]}
-            >
+            <Animated.View style={[styles.container, { backgroundColor: interpolateColor }]}>
                 <Animated.View style={[styles.visibleContent, { opacity: this.animatedOpacity }]}>
                     <View style={styles.headerContainer}>
                         <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
@@ -434,7 +419,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                             iconStyle={[styles.removeButtonIcon]}
                             label={Localize.t('global.remove')}
                             textStyle={[styles.removeButtonText]}
-                            onPress={this.showRemoveAlert}
+                            onPress={this.onRemovePress}
                         />
                     </View>
                 </Animated.View>

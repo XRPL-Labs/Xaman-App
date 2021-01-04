@@ -6,7 +6,7 @@ import { Animated, View, Text, Platform, Keyboard, Image, TouchableWithoutFeedba
 
 import Interactable from 'react-native-interactable';
 
-import { StringType } from 'xumm-string-decode';
+import { StringTypeDetector, StringDecoder, StringType } from 'xumm-string-decode';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
@@ -182,12 +182,21 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
         }
     };
 
-    onDestinationTagChange = (text: string) => {
-        const destinationTag = text.replace(/[^0-9]/g, '');
-
-        if (Number(destinationTag) < 2 ** 32) {
+    onDestinationTagChange = (destinationTag: string) => {
+        if (destinationTag === '') {
             this.setState({
-                destinationTag,
+                destinationTag: '',
+            });
+            return;
+        }
+
+        const detected = new StringTypeDetector(destinationTag);
+
+        if (detected.getType() === StringType.XrplDestinationTag) {
+            const { tag } = new StringDecoder(detected).getXrplDestinationTag();
+
+            this.setState({
+                destinationTag: String(tag),
             });
         }
     };

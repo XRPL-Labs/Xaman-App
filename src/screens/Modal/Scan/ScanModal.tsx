@@ -22,7 +22,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 import { NormalizeDestination } from '@common/libs/utils';
 
-import { Payload } from '@common/libs/payload';
+import { Payload, PayloadOrigin } from '@common/libs/payload';
 
 import Localize from '@locale';
 
@@ -162,7 +162,7 @@ class ScanView extends Component<Props, State> {
         Alert.alert(
             'Translation detected',
             'XUMM Translation Portal language file detected. Do you want to load it into the app?' +
-            'To revert to the default translation, force quit XUMM and start XUMM again.',
+                '(To revert to the default translation, force quit XUMM and start XUMM again)',
             [
                 {
                     text: 'Cancel',
@@ -189,7 +189,7 @@ class ScanView extends Component<Props, State> {
 
         try {
             // fetch the payload
-            const payload = await Payload.from(uuid);
+            const payload = await Payload.from(uuid, PayloadOrigin.QR);
 
             // review the transaction
             this.routeUser(
@@ -351,18 +351,24 @@ class ScanView extends Component<Props, State> {
 
             switch (type) {
                 case StringType.XrplDestination:
-                    message = Localize.t('scan.scannedQRIsNotXRPAddress');
+                    message = clipboard
+                        ? Localize.t('scan.theClipboardDataIsNotContainXummPayload')
+                        : Localize.t('scan.scannedQRIsNotXRPAddress');
                     break;
                 // @ts-ignore
                 case StringType.XummPayloadReference:
-                    message = Localize.t('scan.scannedQRIsNotXummPayload');
+                    message = clipboard
+                        ? Localize.t('scan.theClipboardDataIsNotContainXRPAddress')
+                        : Localize.t('scan.scannedQRIsNotXummPayload');
                     break;
                 default:
-                    message = Localize.t('scan.theQRIsNotWhatWeExpect');
+                    message = clipboard
+                        ? Localize.t('scan.theClipboardDataIsNotWhatWeExpect')
+                        : Localize.t('scan.theQRIsNotWhatWeExpect');
             }
 
             Alert.alert(
-                Localize.t('global.warning'),
+                Localize.t('global.error'),
                 message,
                 [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
                 { cancelable: false },

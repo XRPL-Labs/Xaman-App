@@ -2,6 +2,7 @@
  * Events Filter Screen
  */
 
+import { uniqBy, flatMap, map } from 'lodash';
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, ScrollView, BackHandler } from 'react-native';
 
@@ -142,6 +143,19 @@ class EventsFilterView extends Component<Props, State> {
         );
     };
 
+    renderAccountCurrencies = () => {
+        const { account } = this.state;
+
+        const currencies = flatMap(
+            uniqBy(account.lines, 'currency.currency'),
+            (l: TrustLineSchema) => l.currency.currency,
+        );
+
+        return map(currencies, (value: string) => {
+            return this.renderButton('Currency', NormalizeCurrencyCode(value), value);
+        });
+    };
+
     render() {
         const { account } = this.state;
 
@@ -212,18 +226,11 @@ class EventsFilterView extends Component<Props, State> {
                         <Text style={AppStyles.h5}>{Localize.t('global.asset')}</Text>
                         <View style={[styles.row]}>
                             {this.renderButton('Currency', 'XRP')}
-                            {account.lines &&
-                                account.lines.map((line: TrustLineSchema) => {
-                                    return this.renderButton(
-                                        'Currency',
-                                        NormalizeCurrencyCode(line.currency.currency),
-                                        line.currency.currency,
-                                    );
-                                })}
+                            {account.lines && this.renderAccountCurrencies()}
                         </View>
 
                         <Spacer size={15} />
-                        <Text style={AppStyles.h5}>Amount</Text>
+                        <Text style={AppStyles.h5}>{Localize.t('global.amount')}</Text>
                         <View style={[styles.row]}>
                             {this.renderButton('AmountIndicator', Localize.t('events.smallerThan'), 'Smaller')}
                             {this.renderButton('AmountIndicator', Localize.t('events.biggerThan'), 'Bigger')}

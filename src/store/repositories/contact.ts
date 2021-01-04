@@ -13,7 +13,7 @@ class ContactRepository extends BaseRepository {
         this.schema = ContactSchema.schema;
     }
 
-    update = (object: ContactSchema) => {
+    update = (object: Partial<ContactSchema>) => {
         // the primary key should be in the object
         if (!has(object, 'address')) {
             throw new Error('Update require primary key to be set');

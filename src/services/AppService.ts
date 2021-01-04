@@ -104,44 +104,48 @@ class AppService extends EventEmitter {
 
     // check if update available for the app
     checkAppUpdate = async () => {
-        AppUpdateModule.checkUpdate().then(async (versionCode: number) => {
-            // if update available
-            if (versionCode) {
-                const ignoredVersionCode = await Preferences.get(Preferences.keys.UPDATE_IGNORE_VERSION_CODE);
+        AppUpdateModule.checkUpdate()
+            .then(async (versionCode: number) => {
+                // if update available
+                if (versionCode) {
+                    const ignoredVersionCode = await Preferences.get(Preferences.keys.UPDATE_IGNORE_VERSION_CODE);
 
-                // user already ignored this update
-                if (`${versionCode}` === `${ignoredVersionCode}`) {
-                    return;
-                }
+                    // user already ignored this update
+                    if (`${versionCode}` === `${ignoredVersionCode}`) {
+                        return;
+                    }
 
-                // this method only works on android
-                if (Platform.OS === 'android') {
-                    AppUpdateModule.startUpdate().catch((e: any) => {
-                        // user canceled this update
-                        if (e.code === 'E_UPDATE_CANCELLED') {
-                            Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`);
-                        }
-                    });
-                } else {
-                    Alert.alert(
-                        Localize.t('global.newVersion'),
-                        Localize.t('global.versionNumberIsAvailableOnTheAppStore', { versionCode }),
-                        [
-                            {
-                                text: Localize.t('global.notNow'),
-                                onPress: () => Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`),
-                                style: 'destructive',
-                            },
-                            {
-                                text: Localize.t('global.update'),
-                                onPress: () => Linking.openURL('https://apps.apple.com/us/app/id1492302343'),
-                            },
-                        ],
-                        { cancelable: true },
-                    );
+                    // this method only works on android
+                    if (Platform.OS === 'android') {
+                        AppUpdateModule.startUpdate().catch((e: any) => {
+                            // user canceled this update
+                            if (e.code === 'E_UPDATE_CANCELLED') {
+                                Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`);
+                            }
+                        });
+                    } else {
+                        Alert.alert(
+                            Localize.t('global.newVersion'),
+                            Localize.t('global.versionNumberIsAvailableOnTheAppStore', { versionCode }),
+                            [
+                                {
+                                    text: Localize.t('global.notNow'),
+                                    onPress: () => Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`),
+                                    style: 'destructive',
+                                },
+                                {
+                                    text: Localize.t('global.update'),
+                                    onPress: () => Linking.openURL('https://apps.apple.com/us/app/id1492302343'),
+                                },
+                            ],
+                            { cancelable: true },
+                        );
+                    }
                 }
-            }
-        });
+            })
+            .catch(() => {
+                // ignore
+            });
     };
 
     setNetState = (isConnected: boolean) => {
