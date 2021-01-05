@@ -2,7 +2,7 @@ import { StyleSheet, Platform } from 'react-native';
 
 import { AppSizes, AppFonts, AppColors } from '@theme';
 
-import { IsIPhoneX } from '@common/helpers/device';
+import { hasNotch } from '@common/helpers/device';
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({
     container: {
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     headerContainer: {
         backgroundColor: AppColors.white,
         alignItems: 'center',
-        paddingTop: IsIPhoneX() ? 50 : Platform.OS === 'android' ? 10 : 30,
+        paddingTop: hasNotch() ? 50 : Platform.OS === 'android' ? 10 : 30,
         paddingHorizontal: AppSizes.paddingSml,
         paddingBottom: 10,
     },

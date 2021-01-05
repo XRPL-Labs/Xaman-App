@@ -6,13 +6,14 @@
  */
 
 import merge from 'lodash/merge';
-import DeviceInfo from 'react-native-device-info';
 
 import { ProfileRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 
 import { SHA256 } from '@common/libs/crypto';
 import { AppConfig, ErrorMessages, APIConfig } from '@common/constants';
+
+import { GetDeviceUniqueId } from '@common/helpers/device';
 
 import LoggerService from '@services/LoggerService';
 
@@ -84,7 +85,7 @@ class ApiService {
                     }
                 }
 
-                this.uniqueDeviceIdentifier = DeviceInfo.getUniqueId();
+                this.uniqueDeviceIdentifier = GetDeviceUniqueId();
 
                 return resolve();
             } catch (e) {
@@ -217,7 +218,7 @@ class ApiService {
                     // Something else? Just log an error
                 } else {
                     this.logger.warn(
-                        "You provided params, but it wasn't an object!",
+                        'You provided params, but it wasn\'t an object!',
                         this.apiUrl + endpoint + urlParams,
                     );
                 }

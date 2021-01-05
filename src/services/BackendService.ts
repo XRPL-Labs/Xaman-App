@@ -8,10 +8,10 @@ import { map, isEmpty, flatMap } from 'lodash';
 
 import { Platform } from 'react-native';
 
-import DeviceInfo from 'react-native-device-info';
-
 import { AppScreens } from '@common/constants';
+
 import { Navigator } from '@common/helpers/navigator';
+import { GetAppReadableVersion, GetDeviceUniqueId } from '@common/helpers/device';
 
 import { CurrencySchema } from '@store/schemas/latest';
 
@@ -179,7 +179,7 @@ class BackendService {
                 .post(
                     null,
                     {
-                        uniqueDeviceIdentifier: DeviceInfo.getUniqueId(),
+                        uniqueDeviceIdentifier: GetDeviceUniqueId(),
                         devicePlatform: Platform.OS,
                         devicePushToken: await PushNotificationsService.getToken(),
                     },
@@ -204,7 +204,7 @@ class BackendService {
     */
     ping = () => {
         return ApiService.ping
-            .post(null, { appVersion: DeviceInfo.getReadableVersion(), appLanguage: Localize.getCurrentLocale() })
+            .post(null, { appVersion: GetAppReadableVersion(), appLanguage: Localize.getCurrentLocale() })
             .then((res: any) => {
                 const { auth, badge, env, tosAndPrivacyPolicyVersion } = res;
 

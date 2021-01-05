@@ -4,13 +4,13 @@
 import EventEmitter from 'events';
 import { Platform } from 'react-native';
 import RippledWsClient from 'rippled-ws-client';
-import DeviceInfo from 'react-native-device-info';
 
 import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 import { NodeChain } from '@store/types';
 
 import { Navigator } from '@common/helpers/navigator';
+import { GetAppReadableVersion } from '@common/helpers/device';
 
 import { AppConfig, AppScreens } from '@common/constants';
 
@@ -99,7 +99,7 @@ class SocketService extends EventEmitter {
         this.chain = null;
         this.connection = null;
         this.connectionTimeout = 5;
-        this.origin = `https://xumm.app/#${Platform.OS}/${DeviceInfo.getReadableVersion()}`;
+        this.origin = `https://xumm.app/#${Platform.OS}/${GetAppReadableVersion()}`;
         this.status = SocketStateStatus.Disconnected;
         this.logger = LoggerService.createLogger('Socket');
 

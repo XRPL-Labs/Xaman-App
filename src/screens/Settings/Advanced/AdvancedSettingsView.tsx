@@ -6,13 +6,13 @@ import { find } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 
-import DeviceInfo from 'react-native-device-info';
-
 import { CoreRepository, ProfileRepository } from '@store/repositories';
 import { CoreSchema, ProfileSchema } from '@store/schemas/latest';
 
 import { AppScreens, AppConfig } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
+
+import { GetAppVersionCode, GetAppReadableVersion } from '@common/helpers/device';
 
 import { Header, Icon } from '@components/General';
 
@@ -96,7 +96,7 @@ class AdvancedSettingsView extends Component<Props, State> {
     };
 
     showChangeLog = () => {
-        const currentVersionCode = DeviceInfo.getVersion();
+        const currentVersionCode = GetAppVersionCode();
 
         Navigator.showOverlay(
             AppScreens.Overlay.ChangeLog,
@@ -165,7 +165,7 @@ class AdvancedSettingsView extends Component<Props, State> {
 
                         <TouchableOpacity style={[AppStyles.centerAligned, AppStyles.row]} onPress={this.showChangeLog}>
                             <Text selectable style={[styles.value]}>
-                                {DeviceInfo.getReadableVersion()}
+                                {GetAppReadableVersion()}
                             </Text>
                         </TouchableOpacity>
                     </View>

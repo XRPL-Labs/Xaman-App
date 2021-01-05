@@ -7,7 +7,6 @@ import moment from 'moment-timezone';
 import { UIManager, Platform, Alert, Text, TextInput } from 'react-native';
 
 import messaging from '@react-native-firebase/messaging';
-import DeviceInfo from 'react-native-device-info';
 import { Navigation } from 'react-native-navigation';
 
 // constants
@@ -17,6 +16,7 @@ import { ErrorMessages } from '@common/constants';
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import {
+    GetAppReadableVersion,
     GetDeviceTimeZone,
     GetDeviceLocaleSettings,
     FlagSecure,
@@ -51,7 +51,7 @@ class Application {
 
     run() {
         // start the app
-        this.logger.debug(`XUMM version ${DeviceInfo.getReadableVersion()}`);
+        this.logger.debug(`XUMM version ${GetAppReadableVersion()}`);
 
         // on app start
         Navigation.events().registerAppLaunchedListener(() => {

@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { View, Text, ActivityIndicator, BackHandler } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import { IsIPhoneX } from '@common/helpers/device';
+import { hasNotch } from '@common/helpers/device';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens, AppConfig } from '@common/constants';
@@ -112,7 +112,7 @@ class TermOfUseView extends Component<Props, State> {
         const { asModal } = this.props;
         const { uri, isTOSLoaded, shouldShowAgreement } = this.state;
 
-        const paddingBottom = IsIPhoneX() && !shouldShowAgreement ? 20 : 0;
+        const paddingBottom = hasNotch() && !shouldShowAgreement ? 20 : 0;
 
         return (
             <View testID="term-of-use-view" style={[styles.container]}>

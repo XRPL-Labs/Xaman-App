@@ -7,12 +7,12 @@ import EventEmitter from 'events';
 import { AppState, Alert, Linking, Platform, NativeModules, NativeEventEmitter } from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
-import DeviceInfo from 'react-native-device-info';
 
 import Localize from '@locale';
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
+import { GetAppVersionCode } from '@common/helpers/device';
 
 import Preferences from '@common/libs/preferences';
 import { VersionDiff } from '@common/libs/utils';
@@ -78,7 +78,7 @@ class AppService extends EventEmitter {
     // check if we need to show the App change log
     // this log will be show after user update the app
     checkShowChangeLog = async () => {
-        const currentVersionCode = DeviceInfo.getVersion();
+        const currentVersionCode = GetAppVersionCode();
         const savedVersionCode = await Preferences.get(Preferences.keys.LATEST_VERSION_CODE);
 
         if (!savedVersionCode || VersionDiff(currentVersionCode, savedVersionCode) > 0) {

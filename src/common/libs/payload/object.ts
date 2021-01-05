@@ -1,7 +1,5 @@
 import { isString, isObject, has, get } from 'lodash';
 
-import DeviceInfo from 'react-native-device-info';
-
 import codec from 'ripple-binary-codec';
 
 // Services
@@ -11,6 +9,7 @@ import SocketService from '@services/SocketService';
 
 import { SHA1 } from '@common/libs/crypto';
 
+import { GetDeviceUniqueId } from '@common/helpers/device';
 // locale
 import Localize from '@locale';
 
@@ -121,7 +120,7 @@ export class Payload {
      * @returns Promise<boolean>
      */
     verify = async (payload: PayloadReferenceType): Promise<boolean> => {
-        const deviceId = DeviceInfo.getUniqueId();
+        const deviceId = GetDeviceUniqueId();
 
         const encodedTX = codec.encode(payload.request_json);
 

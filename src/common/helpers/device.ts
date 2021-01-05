@@ -1,4 +1,6 @@
-import { Dimensions, Platform, PixelRatio, NativeModules } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
+
+import { Platform, PixelRatio, NativeModules } from 'react-native';
 
 const { UtilsModule } = NativeModules;
 
@@ -20,18 +22,12 @@ const IsIOS10 = (): boolean => {
 };
 
 /**
- * IOS: Check if device is a IPhoneX
+ * Check if device have notch
  * @returns boolean
  */
 
-const IsIPhoneX = (): boolean => {
-    const { height, width } = Dimensions.get('window');
-    return (
-        Platform.OS === 'ios' &&
-        !Platform.isPad &&
-        !Platform.isTVOS &&
-        (height === 812 || width === 812 || height === 896 || width === 896 || height === 926 || width === 926)
-    );
+const hasNotch = (): boolean => {
+    return DeviceInfo.hasNotch();
 };
 
 /**
@@ -142,6 +138,30 @@ const GetElapsedRealtime = (): Promise<number> => {
 };
 
 /**
+ * Get app readable version
+ * @returns string
+ */
+const GetAppReadableVersion = (): string => {
+    return DeviceInfo.getReadableVersion();
+};
+
+/**
+ * Get device unique id
+ * @returns string
+ */
+const GetDeviceUniqueId = (): string => {
+    return DeviceInfo.getUniqueId();
+};
+
+/**
+ * Get app version code
+ * @returns string
+ */
+const GetAppVersionCode = (): string => {
+    return DeviceInfo.getVersion();
+};
+
+/**
  * Restart react native bundle
  */
 const RestartBundle = (): void => {
@@ -157,7 +177,7 @@ const ExitApp = (): void => {
 
 /* Export ==================================================================== */
 export {
-    IsIPhoneX,
+    hasNotch,
     IsIOS10,
     GetBottomTabScale,
     IsFlagSecure,
@@ -167,6 +187,9 @@ export {
     GetDeviceTimeZone,
     GetDeviceLocaleSettings,
     GetElapsedRealtime,
+    GetAppReadableVersion,
+    GetDeviceUniqueId,
+    GetAppVersionCode,
     RestartBundle,
     ExitApp,
 };

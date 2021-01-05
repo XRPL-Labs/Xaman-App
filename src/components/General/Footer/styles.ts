@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { IsIPhoneX } from '@common/helpers/device';
+import { hasNotch } from '@common/helpers/device';
 import { AppSizes } from '@theme';
 
 const styles = StyleSheet.create({
@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     safeArea: {
-        paddingBottom: AppSizes.paddingSml + (IsIPhoneX() ? 34 : 0),
+        paddingBottom: AppSizes.paddingSml + (hasNotch() ? 34 : 0),
     },
 });
 

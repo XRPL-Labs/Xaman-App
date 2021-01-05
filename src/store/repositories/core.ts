@@ -2,11 +2,9 @@ import { assign } from 'lodash';
 import { Platform } from 'react-native';
 import Realm, { ObjectSchema, Results } from 'realm';
 
-import DeviceInfo from 'react-native-device-info';
-
-import { SHA512, HMAC256 } from '@common/libs/crypto';
-
 import { AppConfig } from '@common/constants';
+import { GetDeviceUniqueId } from '@common/helpers/device';
+import { SHA512, HMAC256 } from '@common/libs/crypto';
 
 import LoggerService from '@services/LoggerService';
 
@@ -87,7 +85,7 @@ class CoreRepository extends BaseRepository {
     encryptPasscode = async (passcode: string): Promise<string> => {
         try {
             // for better security we mix passcode with device unique id
-            let deviceUniqueId = DeviceInfo.getUniqueId();
+            let deviceUniqueId = GetDeviceUniqueId();
 
             if (!deviceUniqueId) {
                 return '';

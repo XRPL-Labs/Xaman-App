@@ -1,16 +1,16 @@
 import { StyleSheet } from 'react-native';
 
-import { IsIPhoneX } from '@common/helpers/device';
+import { hasNotch } from '@common/helpers/device';
 import { AppColors } from '@theme';
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: AppColors.transparent,
-        height: IsIPhoneX() ? 75 : 45,
+        height: hasNotch() ? 75 : 45,
         alignItems: 'center',
         flexDirection: 'row',
-        marginBottom: IsIPhoneX() ? 0 : 12,
+        marginBottom: hasNotch() ? 0 : 12,
     },
     leftContent: {
         flex: 1,

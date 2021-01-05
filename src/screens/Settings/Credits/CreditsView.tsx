@@ -8,7 +8,7 @@ import { WebView } from 'react-native-webview';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens, AppConfig } from '@common/constants';
 
-import { IsIPhoneX } from '@common/helpers/device';
+import { hasNotch } from '@common/helpers/device';
 
 import { Header } from '@components/General';
 
@@ -52,7 +52,7 @@ class CreditsView extends Component<Props, State> {
     render() {
         const { uri } = this.state;
 
-        const paddingBottom = IsIPhoneX() ? 20 : 0;
+        const paddingBottom = hasNotch() ? 20 : 0;
 
         return (
             <View testID="credits-view" style={[AppStyles.flex1]}>
