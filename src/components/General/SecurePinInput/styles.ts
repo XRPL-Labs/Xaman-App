@@ -46,19 +46,27 @@ export default StyleSheet.create({
     },
     numWrap: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-evenly',
     },
     line: {
-        flex: 1,
-        padding: 15,
+        margin: 5,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 50,
+        borderRadius: 45,
+        width: 90,
+        height: 90,
     },
-    numText: {
+    numTextInt: {
         color: AppColors.black,
+        textAlign: 'center',
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.h3.size,
+    },
+    numTextAlpha: {
+        fontSize: 12,
+        textAlign: 'center',
+        color: AppColors.black,
+        letterSpacing: 2,
     },
     bottomWrap: {
         flexDirection: 'row',
