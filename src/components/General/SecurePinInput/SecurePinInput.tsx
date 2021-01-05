@@ -212,6 +212,24 @@ class SecurePinInput extends Component<Props, State> {
 
                 return <View key={`${index}-line`} style={styles.line} />;
             }
+
+            const alpha = (n: string | number): string => {
+                const alphabet = 'ABC.DEF.GHI.JKL.MNO.PQRS.TUV.WXYZ';
+                switch (n) {
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                        return alphabet.split('.')[n - 2];
+                    default:
+                        return '';
+                }
+            };
+
             return (
                 <TouchableHighlight
                     testID={`${item}-key`}
@@ -223,7 +241,10 @@ class SecurePinInput extends Component<Props, State> {
                         this.onDigitInput(item);
                     }}
                 >
-                    <Text style={styles.numText}>{item}</Text>
+                    <>
+                        <Text style={styles.numTextInt}>{item}</Text>
+                        <Text style={styles.numTextAlpha}>{alpha(item)}</Text>
+                    </>
                 </TouchableHighlight>
             );
         });

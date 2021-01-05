@@ -46,19 +46,28 @@ export default StyleSheet.create({
     },
     numWrap: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-evenly',
     },
     line: {
-        flex: 1,
-        padding: 15,
+        margin: 5,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 50,
+        borderRadius: 45,
+        // backgroundColor: 'red',
+        width: AppSizes.moderateScale(90),
+        height: AppSizes.verticalScale(65),
     },
-    numText: {
+    numTextInt: {
         color: AppColors.black,
+        textAlign: 'center',
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.h3.size,
+    },
+    numTextAlpha: {
+        fontSize: AppFonts.base.size * 0.65,
+        textAlign: 'center',
+        color: AppColors.black,
+        letterSpacing: 2,
     },
     bottomWrap: {
         flexDirection: 'row',
