@@ -53,8 +53,9 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 45,
-        width: 90,
-        height: 90,
+        // backgroundColor: 'red',
+        width: AppSizes.moderateScale(90),
+        height: AppSizes.verticalScale(65),
     },
     numTextInt: {
         color: AppColors.black,
@@ -63,7 +64,7 @@ export default StyleSheet.create({
         fontSize: AppFonts.h3.size,
     },
     numTextAlpha: {
-        fontSize: 12,
+        fontSize: AppFonts.base.size * 0.65,
         textAlign: 'center',
         color: AppColors.black,
         letterSpacing: 2,

@@ -241,10 +241,10 @@ class SecurePinInput extends Component<Props, State> {
                         this.onDigitInput(item);
                     }}
                 >
-                    <View>
+                    <>
                         <Text style={styles.numTextInt}>{item}</Text>
                         <Text style={styles.numTextAlpha}>{alpha(item)}</Text>
-                    </View>
+                    </>
                 </TouchableHighlight>
             );
         });
