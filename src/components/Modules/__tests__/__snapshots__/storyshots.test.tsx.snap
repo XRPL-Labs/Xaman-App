@@ -361,7 +361,7 @@ exports[`Storyshots Badge Success 1`] = `
           ]
         }
       >
-        Success
+        [missing "en.global.success" translation]
       </Text>
     </View>
   </View>
@@ -408,7 +408,7 @@ exports[`Storyshots Badge Success 1`] = `
           ]
         }
       >
-        Success
+        [missing "en.global.success" translation]
       </Text>
     </View>
   </View>
@@ -455,7 +455,7 @@ exports[`Storyshots Badge Success 1`] = `
           ]
         }
       >
-        Success
+        [missing "en.global.success" translation]
       </Text>
     </View>
   </View>
@@ -1154,42 +1154,25 @@ exports[`Storyshots RecipientElement Selected 1`] = `
         ]
       }
     >
-      <View
+      <Image
+        borderRadius={10}
+        resizeMode="cover"
+        source={
+          Object {
+            "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
+          }
+        }
         style={
           Array [
-            Object {
-              "alignItems": "center",
-              "backgroundColor": "#FFFFFF",
-              "borderRadius": 10,
-              "justifyContent": "center",
-            },
-            false,
+            Object {},
             Object {
               "height": 85.71428571428571,
               "width": 85.71428571428571,
             },
+            false,
           ]
         }
-      >
-        <Image
-          borderRadius={10}
-          resizeMode="cover"
-          source={
-            Object {
-              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
-            }
-          }
-          style={
-            Array [
-              Object {},
-              Object {
-                "height": 85.71428571428571,
-                "width": 85.71428571428571,
-              },
-            ]
-          }
-        />
-      </View>
+      />
       <View
         style={
           Object {
@@ -1325,42 +1308,25 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
         ]
       }
     >
-      <View
+      <Image
+        borderRadius={10}
+        resizeMode="cover"
+        source={
+          Object {
+            "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
+          }
+        }
         style={
           Array [
-            Object {
-              "alignItems": "center",
-              "backgroundColor": "#FFFFFF",
-              "borderRadius": 10,
-              "justifyContent": "center",
-            },
-            false,
+            Object {},
             Object {
               "height": 85.71428571428571,
               "width": 85.71428571428571,
             },
+            false,
           ]
         }
-      >
-        <Image
-          borderRadius={10}
-          resizeMode="cover"
-          source={
-            Object {
-              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
-            }
-          }
-          style={
-            Array [
-              Object {},
-              Object {
-                "height": 85.71428571428571,
-                "width": 85.71428571428571,
-              },
-            ]
-          }
-        />
-      </View>
+      />
       <View
         style={
           Object {
@@ -1492,42 +1458,25 @@ exports[`Storyshots RecipientElement default 1`] = `
         ]
       }
     >
-      <View
+      <Image
+        borderRadius={10}
+        resizeMode="cover"
+        source={
+          Object {
+            "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
+          }
+        }
         style={
           Array [
-            Object {
-              "alignItems": "center",
-              "backgroundColor": "#FFFFFF",
-              "borderRadius": 10,
-              "justifyContent": "center",
-            },
-            false,
+            Object {},
             Object {
               "height": 85.71428571428571,
               "width": 85.71428571428571,
             },
+            false,
           ]
         }
-      >
-        <Image
-          borderRadius={10}
-          resizeMode="cover"
-          source={
-            Object {
-              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
-            }
-          }
-          style={
-            Array [
-              Object {},
-              Object {
-                "height": 85.71428571428571,
-                "width": 85.71428571428571,
-              },
-            ]
-          }
-        />
-      </View>
+      />
       <View
         style={
           Object {

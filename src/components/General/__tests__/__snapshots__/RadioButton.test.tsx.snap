@@ -101,7 +101,6 @@ exports[`[RadioButton] renders checked correctly 1`] = `
           Object {
             "fontFamily": "ProximaNova-Bold",
             "fontSize": 30,
-            "marginBottom": 10,
           },
           Object {
             "color": "#3052FF",
@@ -118,6 +117,9 @@ exports[`[RadioButton] renders checked correctly 1`] = `
             "color": "#000000",
             "fontFamily": "ProximaNova-Regular",
             "fontSize": 30,
+          },
+          Object {
+            "marginTop": 10,
           },
           Object {
             "color": "#3052FF",
@@ -217,7 +219,6 @@ exports[`[RadioButton] renders correctly 1`] = `
           Object {
             "fontFamily": "ProximaNova-Bold",
             "fontSize": 30,
-            "marginBottom": 10,
           },
           Object {
             "color": "#848DB8",
@@ -234,6 +235,9 @@ exports[`[RadioButton] renders correctly 1`] = `
             "color": "#000000",
             "fontFamily": "ProximaNova-Regular",
             "fontSize": 30,
+          },
+          Object {
+            "marginTop": 10,
           },
           Object {
             "color": "#848DB8",
