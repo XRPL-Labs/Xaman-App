@@ -141,3 +141,5 @@ In order to develop and build the XUMM mobile app you'll need to get a copy of t
     ```
 
 4.  Run `make pre-run` in order to install all the dependencies.
+
+5.  Run ` ./scripts/build-env.sh` to generate some environment data 
