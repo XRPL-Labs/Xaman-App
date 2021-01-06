@@ -129,7 +129,16 @@
   "zh": {
     "name": {
       "en": "Chinese (Simplified)",
-      "zh": "简体中文"
+      "zh": "简体中文",
+      "zh-CN": "简体中文"
+    },
+    "source": "zh.json"
+  },
+  "zh-CN": {
+    "name": {
+      "en": "Chinese (Simplified)",
+      "zh": "简体中文",
+      "zh-CN": "简体中文"
     },
     "source": "zh.json"
   },
@@ -201,7 +210,16 @@
   "no-NO": {
     "name": {
       "en": "Norwegian",
-      "no-NO": "Norsk"
+      "no-NO": "Norsk",
+      "nn": "Norsk"
+    },
+    "source": "no-NO.json"
+  },
+  "nn": {
+    "name": {
+      "en": "Norwegian",
+      "no-NO": "Norsk",
+      "nn": "Norsk"
     },
     "source": "no-NO.json"
   },
@@ -330,5 +348,12 @@
       "en-AU": "English (Australian)"
     },
     "source": "en-AU.json"
+  },
+  "fil": {
+    "name": {
+      "en": "Filipino",
+      "fil": "Wikang Filipino"
+    },
+    "source": "fil.json"
   }
 }

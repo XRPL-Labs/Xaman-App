@@ -93,9 +93,6 @@ class GeneralSettingsView extends Component<Props, State> {
         // change it from local instance
         Localize.setLocale(value);
 
-        // set locale to moment
-        // moment.locale(newLocale);
-
         // re-render the app
         Navigator.reRender();
     };
