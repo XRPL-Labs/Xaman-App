@@ -321,7 +321,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                                 ref={(r) => {
                                     this.textInput = r;
                                 }}
-                                value={destinationTag}
+                                value={String(destinationTag)}
                                 onChangeText={this.onDestinationTagChange}
                                 keyboardType="number-pad"
                                 returnKeyType="done"
