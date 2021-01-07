@@ -46,11 +46,7 @@ class TermOfUseView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        let uri = `${AppConfig.termOfUseURL}${Localize.getCurrentLocale()}`;
-
-        if (__DEV__) {
-            uri = uri.replace('https://xumm.app', 'http://10.100.189.74:3001');
-        }
+        const uri = `${AppConfig.termOfUseURL}${Localize.getCurrentLocale()}`;
 
         this.state = {
             TOSVersion: undefined,

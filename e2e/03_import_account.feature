@@ -46,7 +46,7 @@ Feature: Import Account
         Given I should have 'review-transaction-modal'
         Then I scroll up 'review-content-container'
         Given I should see 'accept-button'
-        Then I tap 'accept-button'
+        Then I slide right 'accept-button'
         Then I type my passcode
         Given I should see 'submitting-view'
         Given I should wait 20 sec to see 'success-result-view'
@@ -101,7 +101,7 @@ Feature: Import Account
         Given I should have 'review-transaction-modal'
         Then I scroll up 'review-content-container'
         Given I should see 'accept-button'
-        Then I tap 'accept-button'
+        Then I slide right 'accept-button'
         Then I type my passcode
         Given I should see 'submitting-view'
         Given I should wait 20 sec to see 'success-result-view'
@@ -160,7 +160,7 @@ Feature: Import Account
         Given I should have 'review-transaction-modal'
         Then I scroll up 'review-content-container'
         Given I should see 'accept-button'
-        Then I tap 'accept-button'
+        Then I slide right 'accept-button'
         Then I type my passcode
         Given I should see 'submitting-view'
         Given I should wait 20 sec to see 'success-result-view'
@@ -221,7 +221,7 @@ Feature: Import Account
         Given I should have 'review-transaction-modal'
         Then I scroll up 'review-content-container'
         Given I should see 'accept-button'
-        Then I tap 'accept-button'
+        Then I slide right 'accept-button'
         Then I enter my passphrase in 'passphrase-input'
         Then I tap 'sign-button'
         Given I should see 'submitting-view'
