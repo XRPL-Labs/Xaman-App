@@ -28,3 +28,4 @@ export * from './NumberSteps';
 export * from './HorizontalLine';
 export * from './ProgressBar';
 export * from './CheckBox';
+export * from './SwipeButton';

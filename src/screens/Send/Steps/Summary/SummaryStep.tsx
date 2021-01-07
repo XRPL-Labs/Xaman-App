@@ -28,7 +28,7 @@ import Preferences from '@common/libs/preferences';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { AmountInput, Button, Footer, Spacer, TextInput } from '@components/General';
+import { AmountInput, Button, Footer, Spacer, TextInput, SwipeButton } from '@components/General';
 import { AccountPicker } from '@components/Modules';
 
 // locale
@@ -466,18 +466,13 @@ class SummaryStep extends Component<Props, State> {
                     </KeyboardAvoidingView>
                 </ScrollView>
                 {/* Bottom Bar */}
-                <Footer style={[AppStyles.row]} safeArea>
-                    <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
-                        <Button secondary label={Localize.t('global.back')} onPress={this.goBack} />
-                    </View>
-                    <View style={[AppStyles.flex2]}>
-                        <Button
-                            textStyle={AppStyles.strong}
-                            label={Localize.t('global.send')}
-                            onPress={this.goNext}
-                            isLoading={isLoading}
-                        />
-                    </View>
+                <Footer safeArea>
+                    <SwipeButton
+                        label={Localize.t('global.slideToSend')}
+                        onSwipeSuccess={this.goNext}
+                        isLoading={isLoading}
+                        shouldResetAfterSuccess
+                    />
                 </Footer>
             </View>
         );

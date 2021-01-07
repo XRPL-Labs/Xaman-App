@@ -15,7 +15,7 @@ import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
 // components
-import { Button, Spacer, Avatar } from '@components/General';
+import { Button, SwipeButton, Spacer, Avatar } from '@components/General';
 import { AccountPicker } from '@components/Modules';
 
 import Localize from '@locale';
@@ -32,6 +32,7 @@ export interface Props {}
 
 export interface State {
     accounts: Array<AccountSchema>;
+    canScroll: boolean;
 }
 
 /* Component ==================================================================== */
@@ -44,6 +45,7 @@ class ReviewStep extends Component<Props, State> {
 
         this.state = {
             accounts: undefined,
+            canScroll: true,
         };
     }
 
@@ -103,6 +105,14 @@ class ReviewStep extends Component<Props, State> {
         });
 
         setSource(preferredAccount);
+    };
+
+    toggleCanScroll = () => {
+        const { canScroll } = this.state;
+
+        this.setState({
+            canScroll: !canScroll,
+        });
     };
 
     renderDetails = () => {
@@ -198,7 +208,7 @@ class ReviewStep extends Component<Props, State> {
     };
 
     render() {
-        const { accounts } = this.state;
+        const { accounts, canScroll } = this.state;
 
         const { payload, source, isPreparing, setSource, onAccept, onClose, getTransactionLabel } = this.context;
 
@@ -234,7 +244,7 @@ class ReviewStep extends Component<Props, State> {
                     behavior="padding"
                     style={styles.keyboardAvoidViewStyle}
                 >
-                    <ScrollView bounces={false} testID="review-content-container">
+                    <ScrollView canCancelContentTouches={canScroll} bounces={false} testID="review-content-container">
                         <View style={[styles.topContent, AppStyles.centerContent]}>
                             <View style={[AppStyles.row, AppStyles.paddingSml]}>
                                 <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
@@ -277,11 +287,14 @@ class ReviewStep extends Component<Props, State> {
                                 {this.renderDetails()}
                             </View>
                             <View style={[AppStyles.flex1, AppStyles.paddingHorizontalSml]}>
-                                <Button
+                                <SwipeButton
                                     testID="accept-button"
                                     isLoading={isPreparing}
-                                    onPress={onAccept}
-                                    label={Localize.t('global.accept')}
+                                    onSwipeSuccess={onAccept}
+                                    label={Localize.t('global.slideToAccept')}
+                                    shouldResetAfterSuccess
+                                    onPanResponderGrant={this.toggleCanScroll}
+                                    onPanResponderRelease={this.toggleCanScroll}
                                 />
                             </View>
 
