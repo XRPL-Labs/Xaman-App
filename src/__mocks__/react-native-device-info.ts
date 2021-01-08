@@ -16,5 +16,7 @@ DeviceInfo.getUniqueID = () => 'e988b7a9-f685-4674-87bc-0ad52a52faa5';
 DeviceInfo.getDeviceLocale = () => 'en_US';
 // @ts-ignore
 DeviceInfo.getReadableVersion = () => 'foo';
+// @ts-ignore
+DeviceInfo.hasNotch = () => true;
 
 export default DeviceInfo;
