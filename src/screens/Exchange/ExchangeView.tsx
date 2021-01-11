@@ -532,7 +532,7 @@ class ExchangeView extends Component<Props, State> {
                                 <Button
                                     onPress={this.applyAllBalance}
                                     style={styles.allButton}
-                                    label="All"
+                                    label={Localize.t('global.all')}
                                     roundedMini
                                     textStyle={AppStyles.colorBlue}
                                     icon="IconArrowDown"
@@ -572,7 +572,7 @@ class ExchangeView extends Component<Props, State> {
                             iconStyle={AppStyles.imgColorBlue}
                             iconSize={15}
                             textStyle={AppStyles.colorBlue}
-                            label="Switch"
+                            label={Localize.t('global.switch')}
                             style={styles.switchButton}
                             hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
                         />
