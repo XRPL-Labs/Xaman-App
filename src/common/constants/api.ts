@@ -9,7 +9,7 @@ export default {
 
     // Map short names to the actual endpoints, so that we can
     // use them like so: AppAPI.ENDPOINT_NAME.METHOD()
-    //  NOTE: They should start with a /
+    // NOTE: They should start with a /
 
     endpoints: new Map([
         ['ping', '/v1/app/ping'],
@@ -25,5 +25,6 @@ export default {
         ['accountAdvisory', '/v1/app/account-advisory'],
         ['liquidityBoundaries', '/v1/app/liquidity-boundaries/{issuer}/{currency}'],
         ['translation', '/v1/app/translation/{uuid}'],
+        ['xAppsShortList', '/v1/app/xapp/shortlist/{account}/{version}/{locale}'],
     ]),
 };

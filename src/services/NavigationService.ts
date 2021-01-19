@@ -16,8 +16,6 @@ import {
     BottomTabLongPressedEvent,
     BottomTabPressedEvent,
     ModalDismissedEvent,
-    OptionsModalPresentationStyle,
-    OptionsModalTransitionStyle,
 } from 'react-native-navigation';
 
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
@@ -80,22 +78,19 @@ class NavigationService extends EventEmitter {
                 );
                 Navigation.events().registerBottomTabPressedListener(({ tabIndex }: BottomTabPressedEvent) => {
                     if (tabIndex === 2) {
-                        const currentScreen = this.getCurrentScreen();
-                        if (currentScreen !== AppScreens.Modal.Scan) {
-                            Navigation.showModal({
-                                stack: {
-                                    children: [
-                                        {
-                                            component: {
-                                                name: AppScreens.Modal.Scan,
-                                                id: AppScreens.Modal.Scan,
-                                                options: {
-                                                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                                                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-                                                },
-                                            },
+                        const currentOverlay = this.getCurrentOverlay();
+                        if (currentOverlay !== AppScreens.Overlay.HomeActions) {
+                            Navigation.showOverlay({
+                                component: {
+                                    name: AppScreens.Overlay.HomeActions,
+                                    id: AppScreens.Overlay.HomeActions,
+                                    passProps: {},
+                                    options: {
+                                        layout: {
+                                            backgroundColor: 'transparent',
+                                            componentBackgroundColor: 'transparent',
                                         },
-                                    ],
+                                    },
                                 },
                             });
                         }

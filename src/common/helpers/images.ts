@@ -94,4 +94,6 @@ export const Images = {
     IconQR: buildImageSource('IconQR', 'icon_qr'),
     IconArrowRightLong: buildImageSource('IconArrowRightLong', 'icon_arrow_right_long'),
     IconCheckXumm: buildImageSource('IconCheckXumm', 'icon_check_xumm'),
+    IconApps: buildImageSource('IconApps', 'icon_apps'),
+    IconTabbarActions: buildImageSource('IconTabbarActions', 'icon_tabbar_actions'),
 };

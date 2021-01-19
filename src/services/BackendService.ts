@@ -11,7 +11,7 @@ import { Platform } from 'react-native';
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
-import { GetAppReadableVersion, GetDeviceUniqueId } from '@common/helpers/device';
+import { GetAppReadableVersion, GetAppVersionCode, GetDeviceUniqueId } from '@common/helpers/device';
 
 import { CurrencySchema } from '@store/schemas/latest';
 
@@ -268,6 +268,13 @@ class BackendService {
     */
     getAccountRisk = (address: string) => {
         return ApiService.accountAdvisory.get(address);
+    };
+
+    getXAppShortList = (account: string) => {
+        const version = GetAppVersionCode();
+        const locale = Localize.getCurrentLocale();
+
+        return ApiService.xAppsShortList.get({ account, version, locale });
     };
 }
 

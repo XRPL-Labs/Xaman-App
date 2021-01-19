@@ -63,11 +63,11 @@ const TabBarIcons = {
         iconSelected: Images.IconTabBarEventsSelected,
         scale: GetBottomTabScale(),
     },
-    [AppScreens.TabBar.Scan]: {
-        icon: Images.IconTabBarScan,
-        iconSelected: Images.IconTabBarScan,
+    [AppScreens.TabBar.Actions]: {
+        icon: Images.IconTabbarActions,
+        iconSelected: Images.IconTabbarActions,
         offset: { top: IsIOS10() && 6, right: 0, bottom: IsIOS10() && -6, left: 0 },
-        scale: GetBottomTabScale(0.7),
+        scale: GetBottomTabScale(0.65),
     },
     [AppScreens.TabBar.Profile]: {
         icon: Images.IconTabBarProfile,
@@ -96,18 +96,18 @@ const Navigator = {
                     children: [
                         {
                             component: {
-                                name: tab === 'Scan' ? AppScreens.Placeholder : get(AppScreens.TabBar, tab),
+                                name: tab === 'Actions' ? AppScreens.Placeholder : get(AppScreens.TabBar, tab),
                                 id: get(AppScreens.TabBar, tab),
                             },
                         },
                     ],
                     options: {
                         bottomTab: {
-                            selectTabOnPress: tab !== 'Scan',
+                            selectTabOnPress: tab !== 'Actions',
                             iconInsets: { ...TabBarIcons[get(AppScreens.TabBar, tab)].offset },
                             text: Platform.select({
                                 android: Localize.t(`global.${tab.toLowerCase()}`),
-                                ios: tab !== 'Scan' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
+                                ios: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
                             }),
                             icon: {
                                 scale: TabBarIcons[get(AppScreens.TabBar, tab)].scale,
