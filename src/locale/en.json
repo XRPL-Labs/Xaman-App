@@ -550,6 +550,7 @@
     "howManyWordsYourMnemonicIs": "How many words does your mnemonic have?",
     "pleaseEnterYourSecretNumber": "Please enter your secret numbers",
     "invalidFamilySeed": "Invalid Family Seed",
+    "invalidHexPrivateKey": "Invalid HEX private key, a HEX private key should be 66 HEX characters (A-F, 0-9) long.",
     "pleaseProvideFamilySeed": "Please provide your account secret/family Seed.",
     "pleaseEnterYourFamilySeed": "Please enter your family seed",
     "accountImportCompleted": "Account import complete!",

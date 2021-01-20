@@ -22,7 +22,7 @@ import { StepsContext } from '../../Context';
 export interface Props {}
 
 export interface State {
-    familySeed: string;
+    privateKey: string;
 }
 
 /* Component ==================================================================== */
@@ -34,31 +34,52 @@ class EnterSeedStep extends Component<Props, State> {
         super(props);
 
         this.state = {
-            familySeed: null,
+            privateKey: null,
         };
     }
 
-    goNext = () => {
+    driveFamilySeed = () => {
+        const { privateKey } = this.state;
+        try {
+            const account = derive.familySeed(privateKey);
+            this.goNext(account);
+        } catch (e) {
+            Alert.alert(Localize.t('global.error'), Localize.t('account.invalidFamilySeed'));
+        }
+    };
+
+    derivePrivateKey = () => {
+        const { privateKey } = this.state;
+        try {
+            const account = derive.privatekey(privateKey);
+            this.goNext(account);
+        } catch (e) {
+            Alert.alert(Localize.t('global.error'), Localize.t('account.invalidHexPrivateKey'));
+        }
+    };
+
+    goNext = (account: any) => {
         const { goNext, setImportedAccount } = this.context;
-        const { familySeed } = this.state;
+
+        // set imported account
+        setImportedAccount(account, () => {
+            goNext('ConfirmPublicKey');
+        });
+    };
+
+    onNextPress = () => {
+        const { privateKey } = this.state;
 
         try {
-            let account;
-
             // normal family seed
-            if (familySeed.startsWith('s')) {
-                account = derive.familySeed(familySeed);
-            } else if (familySeed.length === 66 && familySeed.startsWith('00')) {
+            if (privateKey.startsWith('s')) {
+                this.driveFamilySeed();
+            } else if (privateKey.length === 66 && privateKey.startsWith('00')) {
                 // hex private key
-                account = derive.privatekey(familySeed);
+                this.derivePrivateKey();
             } else {
-                throw new Error('Unsupported');
+                Alert.alert(Localize.t('global.error'), Localize.t('account.invalidFamilySeed'));
             }
-
-            // set imported account
-            setImportedAccount(account, () => {
-                goNext('ConfirmPublicKey');
-            });
         } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.invalidFamilySeed'));
         }
@@ -67,14 +88,18 @@ class EnterSeedStep extends Component<Props, State> {
     onQRCodeRead = (result: XrplSecret) => {
         if (result.familySeed) {
             this.setState({
-                familySeed: result.familySeed,
+                privateKey: result.familySeed,
             });
         }
     };
 
+    onTextChange = (value: string) => {
+        this.setState({ privateKey: value.replace(/[^a-z0-9]/gi, '') });
+    };
+
     render() {
         const { goBack } = this.context;
-        const { familySeed } = this.state;
+        const { privateKey } = this.state;
 
         return (
             <SafeAreaView testID="account-import-enter-family-seed-view" style={[AppStyles.container]}>
@@ -96,8 +121,8 @@ class EnterSeedStep extends Component<Props, State> {
                         autoCorrect={false}
                         keyboardType="visible-password"
                         inputStyle={styles.inputText}
-                        onChangeText={(value) => this.setState({ familySeed: value.replace(/[^a-z0-9]/gi, '') })}
-                        value={familySeed}
+                        onChangeText={this.onTextChange}
+                        value={privateKey}
                         showScanner
                         scannerType={StringType.XrplSecret}
                         onScannerRead={this.onQRCodeRead}
@@ -122,9 +147,7 @@ class EnterSeedStep extends Component<Props, State> {
                             testID="next-button"
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
-                            onPress={() => {
-                                this.goNext();
-                            }}
+                            onPress={this.onNextPress}
                         />
                     </View>
                 </Footer>
