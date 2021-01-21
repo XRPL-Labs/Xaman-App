@@ -507,8 +507,14 @@ class TransactionDetailsView extends Component<Props, State> {
         content += '\n';
         content += Localize.t('events.theExchangeRateForThisOfferIs', {
             rate: tx.Rate,
-            takerPaysCurrency: NormalizeCurrencyCode(tx.TakerPays.currency),
-            takerGetsCurrency: NormalizeCurrencyCode(tx.TakerGets.currency),
+            takerPaysCurrency:
+                tx.TakerGets.currency === 'XRP'
+                    ? NormalizeCurrencyCode(tx.TakerPays.currency)
+                    : NormalizeCurrencyCode(tx.TakerGets.currency),
+            takerGetsCurrency:
+                tx.TakerGets.currency !== 'XRP'
+                    ? NormalizeCurrencyCode(tx.TakerPays.currency)
+                    : NormalizeCurrencyCode(tx.TakerGets.currency),
         });
 
         if (tx.OfferSequence) {
