@@ -1041,13 +1041,19 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         if (tx.Type === 'OfferCreate') {
-            const takerGot = tx.TakerGot(account.address);
+            let takerGets;
+
+            if (tx.Executed) {
+                takerGets = tx.TakerGot(account.address);
+            } else {
+                takerGets = tx.TakerGets;
+            }
 
             return (
                 <View style={styles.amountHeaderContainer}>
                     <View style={[AppStyles.row, styles.amountContainerSmall]}>
                         <Text style={[styles.amountTextSmall]} numberOfLines={1}>
-                            {`${takerGot.value} ${NormalizeCurrencyCode(takerGot.currency)}`}
+                            {`${takerGets.value} ${NormalizeCurrencyCode(takerGets.currency)}`}
                         </Text>
                     </View>
 
