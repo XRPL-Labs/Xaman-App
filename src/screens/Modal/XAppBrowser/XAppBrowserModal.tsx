@@ -2,9 +2,15 @@
  * XApp Browser modal
  */
 
+import { has, get } from 'lodash';
+
 import React, { Component } from 'react';
-import { View, ActivityIndicator, BackHandler } from 'react-native';
+import { View, ActivityIndicator, BackHandler, Alert } from 'react-native';
 import { WebView } from 'react-native-webview';
+
+import { StringType } from 'xumm-string-decode';
+
+import { Payload, PayloadOrigin } from '@common/libs/payload';
 
 import { Navigator } from '@common/helpers/navigator';
 
@@ -12,6 +18,8 @@ import { hasNotch } from '@common/helpers/device';
 import { AppScreens } from '@common/constants';
 
 import { Header } from '@components/General';
+
+import Localize from '@locale';
 
 // style
 import { AppStyles, AppColors } from '@theme';
@@ -32,6 +40,7 @@ export interface State {
 class XAppBrowserModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.XAppBrowser;
     private backHandler: any;
+    private webView: WebView;
 
     static options() {
         return {
@@ -62,18 +71,87 @@ class XAppBrowserModal extends Component<Props, State> {
         return true;
     };
 
-    openSignRequest = (uuid: string) => {
-        // NOT IMPLEMENTED yet
-        // eslint-disable-next-line no-console
-        console.log(uuid);
+    handleSignRequest = async (data: any) => {
+        if (!has(data, 'uuid')) {
+            return;
+        }
+
+        const uuid = get(data, 'uuid');
+
+        // validate passed data is uuid
+        const uuidRegExp = new RegExp('^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$', 'i');
+        if (typeof uuid !== 'string' || !uuidRegExp.test(uuid)) {
+            return;
+        }
+
+        try {
+            // fetch the payload
+            const payload = await Payload.from(uuid, PayloadOrigin.XAPP);
+
+            // review the transaction
+            Navigator.showModal(
+                AppScreens.Modal.ReviewTransaction,
+                { modalPresentationStyle: 'fullScreen' },
+                { payload },
+            );
+        } catch (e) {
+            Alert.alert(Localize.t('global.error'), e.message, [{ text: 'OK' }], { cancelable: false });
+        }
+    };
+
+    onScannerRead = (data: string) => {
+        if (this.webView) {
+            this.webView.postMessage(JSON.stringify({ method: 'scanQr', qrContents: data, reason: 'SCANNED' }));
+        }
+    };
+
+    onScannerClose = () => {
+        if (this.webView) {
+            this.webView.postMessage(JSON.stringify({ method: 'scanQr', qrContents: null, reason: 'USER_CLOSE' }));
+        }
+    };
+
+    showScanner = () => {
+        Navigator.showModal(
+            AppScreens.Modal.Scan,
+            {},
+            {
+                onRead: this.onScannerRead,
+                onClose: this.onScannerClose,
+                blackList: [StringType.XrplSecret, StringType.XummPairingToken],
+            },
+        );
     };
 
     onMessage = (event: any) => {
         const { data } = event.nativeEvent;
-        const jsonData = JSON.parse(data);
-        // NOT IMPLEMENTED yet
-        // eslint-disable-next-line no-console
-        console.log(jsonData);
+        let parsedData;
+
+        try {
+            parsedData = JSON.parse(data);
+        } catch {
+            // it's not a json object
+            return;
+        }
+
+        // ignore if no command present
+        if (!has(parsedData, 'command')) {
+            return;
+        }
+
+        switch (get(parsedData, 'command')) {
+            case 'openSignRequest':
+                this.handleSignRequest(parsedData);
+                break;
+            case 'scanQr':
+                this.showScanner();
+                break;
+            case 'close':
+                this.onClose();
+                break;
+            default:
+                break;
+        }
     };
 
     render() {
@@ -91,6 +169,9 @@ class XAppBrowserModal extends Component<Props, State> {
                 />
 
                 <WebView
+                    ref={(r) => {
+                        this.webView = r;
+                    }}
                     containerStyle={[AppStyles.flex1, { paddingBottom }]}
                     startInLoadingState
                     renderLoading={() => (

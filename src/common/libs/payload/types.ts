@@ -87,4 +87,5 @@ export enum PayloadOrigin {
     DEEP_LINK = 'DEEP_LINK',
     PUSH_NOTIFICATION = 'PUSH_NOTIFICATION',
     EVENT_LIST = 'EVENT_LIST',
+    XAPP = 'XAPP',
 }

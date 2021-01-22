@@ -36,6 +36,8 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     onRead: (decoded: any) => void;
+    onClose?: () => void;
+    blackList?: StringType[];
     type: StringType;
     fallback?: boolean;
 }
@@ -317,7 +319,7 @@ class ScanView extends Component<Props, State> {
     };
 
     handle = (content: string, clipboard?: boolean) => {
-        const { onRead, type, fallback } = this.props;
+        const { onRead, type, fallback, blackList } = this.props;
 
         const detected = new StringTypeDetector(content);
 
@@ -326,6 +328,14 @@ class ScanView extends Component<Props, State> {
 
         if (detectedType === StringType.PayId) {
             detectedType = StringType.XrplDestination;
+        }
+
+        if (!type && onRead && blackList) {
+            if (blackList.indexOf(detectedType) === -1) {
+                Navigator.dismissModal();
+                onRead(content);
+            }
+            return;
         }
 
         // just return scanned content
@@ -442,7 +452,16 @@ class ScanView extends Component<Props, State> {
     };
 
     onClose = () => {
+        const { onClose } = this.props;
+
+        // close scan modal
         Navigator.dismissModal();
+
+        // call callback function
+        if (typeof onClose === 'function') {
+            onClose();
+        }
+
         return true;
     };
 
