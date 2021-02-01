@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
         color: AppColors.blue,
-        paddingVertical: 15,
+        paddingVertical: Platform.OS === 'ios' ? 15 : 10,
     },
     amountRateContainer: {
         left: 0,
