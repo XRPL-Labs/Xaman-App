@@ -36,10 +36,20 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>ilp</string>
+			<string>xrp</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>ilp</string>
+				<string>xrp</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>xumm</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>xumm</string>
 			</array>
 		</dict>
 	</array>
