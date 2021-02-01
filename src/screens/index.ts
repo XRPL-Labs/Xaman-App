@@ -29,6 +29,7 @@ import FilterEvents from './Modal/FilterEvents';
 import Picker from './Modal/Picker';
 import Help from './Modal/Help';
 import XAppBrowser from './Modal/XAppBrowser';
+import CurrencyPicker from './Modal/CurrencyPicker';
 
 // Overlay
 import SwitchAccount from './Overlay/SwitchAccount';
@@ -108,6 +109,7 @@ export {
     Picker,
     Help,
     XAppBrowser,
+    CurrencyPicker,
     // overlay
     SwitchAccount,
     ShareAccount,

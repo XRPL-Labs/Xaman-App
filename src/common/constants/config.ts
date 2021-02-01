@@ -84,6 +84,9 @@ export default {
     // localization config
     defaultLanguage: 'en',
 
+    // default Currency
+    defaultCurrency: 'USD',
+
     // app theme config
     theme: {
         light: 'Light',

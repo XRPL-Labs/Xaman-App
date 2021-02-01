@@ -17,12 +17,15 @@ import {
     Platform,
     KeyboardAvoidingView,
     LayoutChangeEvent,
+    InteractionManager,
 } from 'react-native';
 
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
+import { BackendService } from '@services';
+
 import { Images } from '@common/helpers/images';
-import { Prompt } from '@common/helpers/interface';
+import { Prompt, Toast } from '@common/helpers/interface';
 
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
@@ -38,8 +41,16 @@ import styles from './styles';
 
 import { StepsContext } from '../../Context';
 
+/* Types  ==================================================================== */
+interface Props {}
+
+interface State {
+    currencyRate: any;
+    amountRate: string;
+}
+
 /* Component ==================================================================== */
-class DetailsStep extends Component {
+class DetailsStep extends Component<Props, State> {
     gradientHeight: Animated.Value;
     amountInput: AmountInput;
 
@@ -49,8 +60,33 @@ class DetailsStep extends Component {
     constructor(props: undefined) {
         super(props);
 
+        this.state = {
+            currencyRate: undefined,
+            amountRate: '',
+        };
+
         this.gradientHeight = new Animated.Value(0);
     }
+
+    componentDidMount() {
+        InteractionManager.runAfterInteractions(this.fetchCurrencyRate);
+    }
+
+    fetchCurrencyRate = () => {
+        const { coreSettings } = this.context;
+
+        const { currency } = coreSettings;
+
+        BackendService.getCurrencyRate(currency)
+            .then((r) => {
+                this.setState({
+                    currencyRate: r,
+                });
+            })
+            .catch(() => {
+                Toast(Localize.t('global.unableToFetchCurrencyRate'));
+            });
+    };
 
     setGradientHeight = (event: LayoutChangeEvent) => {
         const { height } = event.nativeEvent.layout;
@@ -143,9 +179,25 @@ class DetailsStep extends Component {
     };
 
     onAmountChange = (amount: string) => {
+        const { currencyRate } = this.state;
         const { setAmount } = this.context;
 
         setAmount(amount);
+
+        if (!amount) {
+            this.setState({
+                amountRate: '',
+            });
+
+            return;
+        }
+
+        if (currencyRate) {
+            const inRate = Number(amount) * currencyRate.lastRate;
+            this.setState({
+                amountRate: String(inRate),
+            });
+        }
     };
 
     onAccountChange = (item: AccountSchema) => {
@@ -226,9 +278,28 @@ class DetailsStep extends Component {
         );
     };
 
+    onRateAmountChange = (amount: string) => {
+        const { setAmount } = this.context;
+        const { currencyRate } = this.state;
+
+        this.setState({
+            amountRate: amount,
+        });
+
+        if (!amount) {
+            setAmount('');
+            return;
+        }
+
+        if (currencyRate) {
+            const inXRP = Number(amount) / currencyRate.lastRate;
+            setAmount(String(inXRP));
+        }
+    };
+
     render() {
-        const { goBack } = this.context;
-        const { accounts, source, currency, amount } = this.context;
+        const { amountRate, currencyRate } = this.state;
+        const { goBack, accounts, source, currency, amount, coreSettings } = this.context;
 
         return (
             <View testID="send-details-view" style={[styles.container]}>
@@ -292,7 +363,7 @@ class DetailsStep extends Component {
                                     {Localize.t('global.amount')}
                                 </Text>
                             </View>
-                            <View style={[AppStyles.row]}>
+                            <View style={[styles.amountContainer]}>
                                 <View style={AppStyles.flex1}>
                                     <AmountInput
                                         ref={(r) => {
@@ -312,10 +383,31 @@ class DetailsStep extends Component {
                                     }}
                                     style={styles.editButton}
                                     roundedSmall
-                                    iconSize={13}
+                                    iconSize={15}
+                                    iconStyle={AppStyles.imgColorGreyDark}
                                     light
                                     icon="IconEdit"
                                 />
+                            </View>
+
+                            <View style={[styles.amountRateContainer]}>
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <Text style={[styles.amountRateInput]}>~ </Text>
+                                </View>
+                                <View style={AppStyles.flex1}>
+                                    <AmountInput
+                                        editable={!!currencyRate}
+                                        testID="amount-rate-input"
+                                        onChange={this.onRateAmountChange}
+                                        returnKeyType="done"
+                                        style={[styles.amountRateInput]}
+                                        placeholderTextColor={AppColors.greyDark}
+                                        value={amountRate}
+                                    />
+                                </View>
+                                <View style={styles.currencySymbolTextContainer}>
+                                    <Text style={[styles.currencySymbolText]}>{coreSettings.currency}</Text>
+                                </View>
                             </View>
                         </View>
                     </KeyboardAvoidingView>

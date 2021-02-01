@@ -102,6 +102,14 @@ const styles = StyleSheet.create({
         backgroundColor: AppColors.lightRed,
         borderColor: AppColors.lightRed,
     },
+    rateContainer: {
+        paddingTop: 15,
+    },
+    rateText: {
+        fontFamily: AppFonts.base.familyMono,
+        fontSize: AppFonts.base.size,
+        color: AppColors.greyBlack,
+    },
 });
 
 export default styles;

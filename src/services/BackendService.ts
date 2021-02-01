@@ -1,10 +1,11 @@
 /**
- * Sync service
- * Sync Stuff with XUMM Backend
+ * Backend service
+ * Interact with xumm backend
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import { map, isEmpty, flatMap } from 'lodash';
+import { map, isEmpty, flatMap, get } from 'lodash';
+import moment from 'moment-timezone';
 
 import { Platform } from 'react-native';
 
@@ -33,10 +34,13 @@ import Localize from '@locale';
 
 /* Service  ==================================================================== */
 class BackendService {
-    logger: any;
+    private logger: any;
+    private currencyRate: any;
 
     constructor() {
         this.logger = LoggerService.createLogger('Backend');
+
+        this.currencyRate = undefined;
     }
 
     initialize = () => {
@@ -275,6 +279,43 @@ class BackendService {
         const locale = Localize.getCurrentLocale();
 
         return ApiService.xAppsShortList.get({ account, version, locale });
+    };
+
+    getCurrenciesList = () => {
+        const locale = Localize.getCurrentLocale();
+        return ApiService.currencies.get({ locale });
+    };
+
+    getCurrencyRate = (currency: string) => {
+        return new Promise((resolve, reject) => {
+            // prevent unnecessary requests
+            if (this.currencyRate && this.currencyRate.code === currency) {
+                const passedSeconds = moment().diff(moment.unix(this.currencyRate.lastSync), 'second');
+
+                // cache currency rate for 60 seconds
+                if (passedSeconds <= 60) {
+                    resolve(this.currencyRate);
+                    return;
+                }
+            }
+
+            // update the rate from backend
+            ApiService.rates
+                .get({ currency })
+                .then((r: any) => {
+                    const rate = get(r, 'XRP');
+                    const symbol = get(r, '__meta.currency.symbol');
+
+                    this.currencyRate = {
+                        code: currency,
+                        symbol,
+                        lastRate: rate,
+                        lastSync: moment().unix(),
+                    };
+                    resolve(this.currencyRate);
+                })
+                .catch(reject);
+        });
     };
 }
 

@@ -8,7 +8,6 @@ const styles = StyleSheet.create({
         marginBottom: AppSizes.tabbarHeight,
     },
     contentCard: {
-        // width: '92%',
         marginHorizontal: 22,
         marginBottom: 30,
         backgroundColor: AppColors.white,
@@ -27,23 +26,17 @@ const styles = StyleSheet.create({
         backgroundColor: AppColors.light,
         marginBottom: 20,
         padding: 16,
-        // borderWidth: 1,
-        // borderColor: AppColors.grey,
         borderRadius: 16,
-        // shadowColor: AppColors.blue,
-        // shadowOffset: { width: 0, height: 2 },
-        // shadowRadius: 4,
-        // shadowOpacity: 0.07,
     },
-    cardLabel: {
+    balanceLabel: {
         fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.subtext.size,
+        fontSize: AppFonts.base.size,
         color: AppColors.black,
     },
     cardSmallLabel: {
         fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.subtext.size * 0.7,
-        color: AppColors.greyDark,
+        fontSize: AppFonts.subtext.size * 0.8,
+        color: AppColors.greyBlack,
         textAlign: 'center',
     },
     iconSettings: {
@@ -56,28 +49,24 @@ const styles = StyleSheet.create({
         marginTop: 12,
         marginRight: 3,
     },
+    iconShare: {
+        tintColor: AppColors.greyDark,
+        marginTop: 12,
+        marginRight: 3,
+    },
     cardAddress: {
         backgroundColor: AppColors.white,
-        // backgroundColor: AppColors.lightGreen,
-        // backgroundColor: '#EDF3FC',
         color: AppColors.blue,
-        // width: '115%',
-        // left: -20,
-        // paddingLeft: 15,
         marginVertical: 15,
-        // paddingBottom: 8,
         borderRadius: 5,
         overflow: 'hidden',
         textAlign: 'left',
-        // alignContent: 'center',
         justifyContent: 'center',
     },
     cardAddressText: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size * 0.9,
-        color: AppColors.black,
-        alignSelf: 'center',
-        paddingHorizontal: 10,
+        color: AppColors.greyBlack,
     },
     shareIconContainer: {
         padding: 8,
@@ -106,10 +95,20 @@ const styles = StyleSheet.create({
     currencyList: {
         paddingHorizontal: 10,
     },
-    currencyItemCard: {
-        justifyContent: 'space-between',
+    balanceContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
         flexDirection: 'row',
+        paddingVertical: 10,
         marginTop: 10,
+        backgroundColor: AppColors.grey,
+        borderRadius: 8,
+    },
+    balanceText: {
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontSize: AppFonts.h4.size,
+        color: AppColors.black,
+        paddingRight: 8,
     },
     currencyItem: {
         paddingTop: 10,
@@ -132,8 +131,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginRight: 10,
         marginBottom: 3,
-        // borderWidth: 1,
-        // borderColor: 'red',
     },
     issuerLabel: {
         fontSize: AppFonts.subtext.size,
@@ -165,8 +162,6 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     brandAvatar: {
-        // width: AppSizes.screen.width * 0.1,
-        // height: AppSizes.screen.width * 0.1,
         height: AppSizes.scale(35),
         width: AppSizes.scale(35),
         resizeMode: 'cover',
@@ -182,16 +177,6 @@ const styles = StyleSheet.create({
         width: AppSizes.scale(120),
         height: AppSizes.scale(30),
         resizeMode: 'contain',
-    },
-    moreIcon: {
-        marginVertical: 10,
-        marginHorizontal: 20,
-        marginRight: 30,
-    },
-    IconSwitchAccount: {
-        marginVertical: 12,
-        marginHorizontal: 20,
-        marginRight: 38,
     },
     buttonRow: {
         justifyContent: 'space-between',
@@ -251,24 +236,11 @@ const styles = StyleSheet.create({
         paddingLeft: 1,
         paddingRight: 0,
     },
-    /* eslint-disable-next-line */
-    clipboardGuideContainer: {
-        flexDirection: 'row',
-        position: 'absolute',
-        backgroundColor: 'rgba(48, 82, 255, 0.95)',
-        height: AppSizes.verticalScale(50),
-        minHeight: 70,
-        width: '90%',
-        bottom: '2%',
-        left: '5%',
-        justifyContent: 'center',
-        borderRadius: AppSizes.verticalScale(15),
-        paddingHorizontal: 15,
-        paddingVertical: 15,
-        shadowColor: AppColors.blue,
-        shadowOffset: { width: 0, height: 4 },
-        shadowRadius: 8,
-        shadowOpacity: 0.5,
+    rateLoader: {
+        paddingVertical: 4,
+    },
+    xrpIcon: {
+        paddingRight: 40,
     },
 });
 

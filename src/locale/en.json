@@ -248,7 +248,11 @@
     "thePasscodeYouEnteredIsIncorrectExplain": "The passcode you entered is incorrect. To sign a transaction, you need to enter the right passcode. You entered this passcode when you setup XUMM for the first time.",
     "troubleshoot": "Troubleshoot",
     "tryAgain": "Try again",
-    "all": "All"
+    "all": "All",
+    "currency": "Currency",
+    "currencies": "Currencies",
+    "noResultFound": "No result found",
+    "unableToFetchCurrencyRate": "Unable to fetch currency rate, please make sure you are connected to the internet"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",
@@ -428,6 +432,7 @@
     "editContact": "Edit contact",
     "getStartedCreateContact": "Get started by adding your first contact.",
     "enterNameOrAddress": "Enter name or address",
+    "enterCurrencyCodeOrName": "Enter currency code or name",
     "enterName": "Please enter a name",
     "contactAlreadyExist": "Contact already exists",
     "contactSuccessSaved": "Contact successfully added",
@@ -468,7 +473,8 @@
     "eraseDataDescription": "Erase all data after 10 failed passcode attempts",
     "viewChangeLog": "View changelog",
     "hideBalanceByDefault": "Hide balance by default",
-    "blockTakingScreenshots": "Block taking screenshots"
+    "blockTakingScreenshots": "Block taking screenshots",
+    "unableToLoadListOfCurrencies": "Unable to load list of currencies!"
   },
   "account": {
     "addAccount": "Add an account",

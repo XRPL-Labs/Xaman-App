@@ -26,5 +26,7 @@ export default {
         ['liquidityBoundaries', '/v1/app/liquidity-boundaries/{issuer}/{currency}'],
         ['translation', '/v1/app/translation/{uuid}'],
         ['xAppsShortList', '/v1/app/xapp/shortlist/{account}/{version}/{locale}'],
+        ['currencies', '/v1/app/currencies/{locale}'],
+        ['rates', '/v1/app/rates/{currency}'],
     ]),
 };

@@ -125,6 +125,15 @@ const styles = StyleSheet.create({
         left: 0,
         top: 0,
     },
+    rateContainer: {
+        paddingLeft: 15,
+        paddingTop: 15,
+    },
+    rateText: {
+        fontFamily: AppFonts.base.familyMono,
+        fontSize: AppFonts.base.size,
+        color: AppColors.greyBlack,
+    },
 });
 
 export default styles;

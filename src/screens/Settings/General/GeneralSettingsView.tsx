@@ -86,6 +86,24 @@ class GeneralSettingsView extends Component<Props, State> {
         );
     };
 
+    showCurrencyPicker = () => {
+        const { coreSettings } = this.state;
+
+        Navigator.push(
+            AppScreens.Modal.CurrencyPicker,
+            {},
+            {
+                selected: coreSettings.currency,
+                onSelect: this.onCurrencySelected,
+            },
+        );
+    };
+
+    onCurrencySelected = (currencyCode: string) => {
+        // save in store
+        CoreRepository.saveSettings({ currency: currencyCode });
+    };
+
     onLanguageSelected = ({ value }: { value: string }) => {
         // save in store
         CoreRepository.saveSettings({ language: value });
@@ -148,6 +166,16 @@ class GeneralSettingsView extends Component<Props, State> {
                         </View>
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
                             <Text style={[styles.value]}>{this.getLanguageTitle()}</Text>
+                            <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.row]} onPress={this.showCurrencyPicker}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text style={styles.label}>{Localize.t('global.currency')}</Text>
+                        </View>
+                        <View style={[AppStyles.centerAligned, AppStyles.row]}>
+                            <Text style={[styles.value]}>{coreSettings.currency}</Text>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
                     </TouchableOpacity>

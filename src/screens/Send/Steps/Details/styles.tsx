@@ -19,15 +19,43 @@ const styles = StyleSheet.create({
         borderTopColor: AppColors.grey,
         borderTopWidth: 1,
     },
+    amountContainer: {
+        left: 0,
+        right: 0,
+        flexDirection: 'row',
+        marginTop: Platform.OS === 'ios' ? 20 : 10,
+        paddingLeft: 20,
+        marginLeft: 15,
+        backgroundColor: AppColors.lightGrey,
+        borderRadius: 15,
+    },
     amountInput: {
         padding: 0,
         margin: 0,
-        paddingTop: Platform.OS === 'ios' ? 20 : 10,
-        paddingLeft: 15,
-        fontSize: AppFonts.h1.size,
+        fontSize: AppFonts.h2.size,
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
         color: AppColors.blue,
+        paddingVertical: 15,
+    },
+    amountRateContainer: {
+        left: 0,
+        right: 0,
+        flexDirection: 'row',
+        marginTop: Platform.OS === 'ios' ? 20 : 10,
+        paddingLeft: 20,
+        marginLeft: 15,
+        backgroundColor: AppColors.lightGrey,
+        borderRadius: 15,
+    },
+    amountRateInput: {
+        padding: 0,
+        margin: 0,
+        fontSize: AppFonts.h4.size,
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontWeight: '600',
+        color: AppColors.black,
+        paddingVertical: 15,
     },
     currencyItemLabelSmall: {
         fontSize: AppFonts.p.size,
@@ -87,45 +115,28 @@ const styles = StyleSheet.create({
         color: AppColors.greyDark,
     },
     editButton: {
-        backgroundColor: AppColors.grey,
-        borderRadius: 8,
-        height: 25,
-        width: 40,
+        justifyContent: 'center',
+        alignSelf: 'center',
+    },
+    currencySymbolTextContainer: {
         justifyContent: 'center',
         alignSelf: 'center',
         marginRight: 15,
-        marginTop: Platform.OS === 'ios' ? 20 : 10,
     },
-    /*
-    brandAvatarContainer: {
-        marginRight: 10,
-        borderWidth: 1,
-        borderColor: AppColors.red,
-        // borderRadius: 10,
-        justifyContent: 'center',
-        // overflow: 'hidden',
+    currencySymbolText: {
+        fontFamily: AppFonts.base.familyMonoBold,
+        color: AppColors.greyDark,
+        fontSize: AppFonts.h5.size * 0.9,
     },
-    brandAvatar: {
-        width: AppSizes.screen.width * 0.1,
-        height: AppSizes.screen.width * 0.1,
-        resizeMode: 'contain',
+    rateContainer: {
+        paddingLeft: 15,
+        paddingTop: 15,
     },
-    xrpAvatarContainer: {
-        backgroundColor: AppColors.white,
-        padding: 10,
-        marginRight: 10,
-        borderWidth: 1,
-        borderColor: AppColors.red,
-        borderRadius: 10,
-        justifyContent: 'center',
-        // overflow: 'hidden',
+    rateText: {
+        fontFamily: AppFonts.base.familyMono,
+        fontSize: AppFonts.base.size,
+        color: AppColors.greyBlack,
     },
-    xrpAvatar: {
-        width: AppSizes.screen.width * 0.05,
-        height: AppSizes.screen.width * 0.05,
-        resizeMode: 'contain',
-    },
-    */
 });
 
 export default styles;

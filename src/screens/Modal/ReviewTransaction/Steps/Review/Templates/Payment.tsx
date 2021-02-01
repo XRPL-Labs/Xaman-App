@@ -3,16 +3,21 @@ import { isEmpty, isEqual, has } from 'lodash';
 import React, { Component } from 'react';
 import { View, Alert, Text, Platform, TouchableOpacity, InteractionManager } from 'react-native';
 
+import { BackendService, LedgerService } from '@services';
+
+import { CoreRepository } from '@store/repositories';
+
 import LedgerExchange from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
-import { LedgerService } from '@services';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { AmountInput, Button, InfoMessage, Spacer } from '@components/General';
 import { RecipientElement } from '@components/Modules';
+
+import { Toast } from '@common/helpers/interface';
 
 import Localize from '@locale';
 
@@ -33,6 +38,8 @@ export interface State {
     isPartialPayment: boolean;
     exchangeRate: number;
     xrpRoundedUp: string;
+    currencyRate: any;
+    isLoadingRate: boolean;
 }
 
 /* Component ==================================================================== */
@@ -51,6 +58,8 @@ class PaymentTemplate extends Component<Props, State> {
             isPartialPayment: false,
             exchangeRate: undefined,
             xrpRoundedUp: undefined,
+            currencyRate: undefined,
+            isLoadingRate: false,
         };
     }
 
@@ -60,6 +69,9 @@ class PaymentTemplate extends Component<Props, State> {
 
         // Payload payment request in IOU amount: handle conversion if required:
         this.checkForConversationRequired();
+
+        // if XRP then show equal amount in selected currency
+        this.fetchCurrencyRate();
     }
 
     static getDerivedStateFromProps(nextProps: Props, prevState: State) {
@@ -78,6 +90,35 @@ class PaymentTemplate extends Component<Props, State> {
             });
         }
     }
+
+    fetchCurrencyRate = () => {
+        const { transaction } = this.props;
+
+        // only for XRP payments
+        if (transaction.Amount && transaction.Amount.currency !== 'XRP') {
+            return;
+        }
+
+        this.setState({
+            isLoadingRate: true,
+        });
+
+        const { currency } = CoreRepository.getSettings();
+
+        BackendService.getCurrencyRate(currency)
+            .then((r) => {
+                this.setState({
+                    currencyRate: r,
+                    isLoadingRate: false,
+                });
+            })
+            .catch(() => {
+                this.setState({
+                    isLoadingRate: false,
+                });
+                Toast(Localize.t('global.unableToFetchCurrencyRate'));
+            });
+    };
 
     checkForConversationRequired = async () => {
         const { transaction } = this.props;
@@ -211,6 +252,34 @@ class PaymentTemplate extends Component<Props, State> {
         }
     };
 
+    renderAmountRate = () => {
+        const { amount, isLoadingRate, currencyRate } = this.state;
+
+        if (isLoadingRate) {
+            return (
+                <View style={[styles.rateContainer]}>
+                    <Text style={styles.rateText}>Loading ...</Text>
+                </View>
+            );
+        }
+
+        // only show rate for XRP
+        if (currencyRate && amount) {
+            const rate = Number(amount) * currencyRate.lastRate;
+            if (rate > 0) {
+                return (
+                    <View style={[styles.rateContainer]}>
+                        <Text style={styles.rateText}>
+                            ~{currencyRate.code} {Localize.formatNumber(rate)}
+                        </Text>
+                    </View>
+                );
+            }
+        }
+
+        return null;
+    };
+
     render() {
         const { transaction } = this.props;
         const {
@@ -307,6 +376,8 @@ class PaymentTemplate extends Component<Props, State> {
                                 />
                             </>
                         ))}
+
+                    {this.renderAmountRate()}
                 </View>
 
                 {transaction.InvoiceID && (

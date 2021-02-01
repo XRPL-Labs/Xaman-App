@@ -35,6 +35,7 @@ const screens = {
         Scan: 'modal.Scan',
         Submit: 'modal.Submit',
         Picker: 'modal.Picker',
+        CurrencyPicker: 'modal.CurrencyPickerModal',
         Help: 'modal.Help',
         XAppBrowser: 'modal.XAppBrowser',
     },
