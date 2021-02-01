@@ -106,7 +106,7 @@ const Navigator = {
                             selectTabOnPress: tab !== 'Actions',
                             iconInsets: { ...TabBarIcons[get(AppScreens.TabBar, tab)].offset },
                             text: Platform.select({
-                                android: Localize.t(`global.${tab.toLowerCase()}`),
+                                android: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : 'XUMM',
                                 ios: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
                             }),
                             icon: {

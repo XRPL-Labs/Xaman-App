@@ -41,7 +41,7 @@ import Localize from '@locale';
 import { Button, RaisedButton, InfoMessage, Spacer, Icon } from '@components/General';
 
 // style
-import { AppStyles } from '@theme';
+import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -699,7 +699,7 @@ class HomeView extends Component<Props, State> {
                     {!discreetMode && !showRate && <Icon name="IconXrp" size={16} style={styles.xrpIcon} />}
 
                     {isLoadingRate ? (
-                        <ActivityIndicator style={styles.rateLoader} />
+                        <ActivityIndicator color={AppColors.greyBlack} style={styles.rateLoader} />
                     ) : (
                         <Text
                             testID="account-balance-label"
