@@ -448,6 +448,30 @@ class RecipientStep extends Component<Props, State> {
                 }
             }
 
+            // if account is set to black hole then reject sending
+            if (destinationInfo.blackHole) {
+                Navigator.showAlertModal({
+                    type: 'warning',
+                    text: Localize.t('send.theDestinationAccountIsSetAsBlackHole'),
+                    buttons: [
+                        {
+                            text: Localize.t('global.back'),
+                            onPress: () => {
+                                setDestination(undefined);
+                                this.setState({
+                                    searchText: '',
+                                });
+                            },
+                            type: 'dismiss',
+                            light: false,
+                        },
+                    ],
+                });
+
+                // don't move to next step
+                return;
+            }
+
             // check for account risk and scam
             if (destinationInfo.risk === 'PROBABLE' || destinationInfo.risk === 'HIGH_PROBABILITY') {
                 Navigator.showAlertModal({
