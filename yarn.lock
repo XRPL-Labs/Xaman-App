@@ -3329,35 +3329,35 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/clipboard/-/clipboard-1.5.1.tgz#32abb3ea2eb91ee3f9c5fb1d32d5783253c9fabe"
   integrity sha512-AHAmrkLEH5UtPaDiRqoULERHh3oNv7Dgs0bTC0hO5Z2GdNokAMPT5w8ci8aMcRemcwbtdHjxChgtjbeA38GBdA==
 
-"@react-native-community/netinfo@5.9.9":
-  version "5.9.9"
-  resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-5.9.9.tgz#5e022637f5e08bd74bf94a0c3315748acd4589f9"
-  integrity sha512-Gp0XV4BgabvzkL4Dp6JAsA2l9LcmgBAq3erCLdvRZmEFz7guCWTogQWVfFtl+IbU0uqfwfo9fm2+mQiwdudLCw==
+"@react-native-community/netinfo@5.9.10":
+  version "5.9.10"
+  resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-5.9.10.tgz#97d3a9fa62a3a4838ec7a6ec91cfec5a26e365b6"
+  integrity sha512-1NPlBA2Hu/KWc3EnQcDRPRX0x8Dg9tuQlQQVWVQjlg+u+PjCq7ANEtbikOFKp5yQqfF8tqzU5+84/IfDO8zpiA==
 
-"@react-native-firebase/analytics@10.2.0":
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/analytics/-/analytics-10.2.0.tgz#472a0ab14bbedeab9cd6629c3bb199094435c4cf"
-  integrity sha512-75JeFK0mnXMjY6MMRCyDCMz269Tv2GYBGunAWy5KFeNMpftEP9SGhDV/0dEsaF+1OwLE7TLAg7y5Xvdve1ziZQ==
+"@react-native-firebase/analytics@10.5.1":
+  version "10.5.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/analytics/-/analytics-10.5.1.tgz#cfe6980d55261e0ea93ae1491654d7a01a8ed8da"
+  integrity sha512-qfxgQtRfF5e7cHUnK2se90EyndItH7GKxe6EnY4+vJEcpRjzgJXi3S8sH+VR2xGZr6nFslZBn3iY1peYUUBYgA==
 
-"@react-native-firebase/app@10.2.0":
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-10.2.0.tgz#9c2b1fd2337cd1673f357517dddbab674ca79472"
-  integrity sha512-vyGhE8DJ3NqtiiphiAuzwfVxecVOL1cbIKRQ2gI1sauTf5LigcorxmGxiBQKbuyV1K8pzJwUchb4qktUdbrmjQ==
+"@react-native-firebase/app@10.5.0":
+  version "10.5.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-10.5.0.tgz#aa46cd3a62d2117914a6f81ffea0d1b3b9ef15c6"
+  integrity sha512-pEINud4A90RlwfTcE51m/5cOEGI4jiSi5Q4jsQ5UGGlsYqtbOw4Ja7b17x19o2OViJEQVjScpq4pH2bq9vie7Q==
   dependencies:
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"
 
-"@react-native-firebase/crashlytics@10.2.0":
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/crashlytics/-/crashlytics-10.2.0.tgz#b2075b2829caba1621f947143fdd305201c7ab3a"
-  integrity sha512-eRym+yYfVmAnu90d5Kh9Zv2SE3M7DWOKEFmy/yCicEMybzcR21cnmuWE0Xaskg7QkfTPh/c/xRwEXw6jaB7knQ==
+"@react-native-firebase/crashlytics@10.5.1":
+  version "10.5.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/crashlytics/-/crashlytics-10.5.1.tgz#8911ce15a0ee9c658cec44233e731c423a2900bf"
+  integrity sha512-czH0p6KWf7gIJScqyPRUWSrRUbgYK4NpqESW0vc57V1KlkGSv+MivuFTEeDQNvH8Hwgi3W5m8L5dZ4r6pTRzSw==
   dependencies:
     stacktrace-js "^2.0.0"
 
-"@react-native-firebase/messaging@10.2.0":
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-10.2.0.tgz#a02b69e9ec616b05ea85ab6c31cc209c6f4bac59"
-  integrity sha512-HHf35avpA38SWNdPe1Dp/W0d0KCeRgbw5M3AEsoTs3B9oE/NLAQVdz5sSJzdgyVXnCKGInGsHkLn6Q3WSAvemw==
+"@react-native-firebase/messaging@10.5.1":
+  version "10.5.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-10.5.1.tgz#f4b833f6ff6a7c234e790bae1f01289ac08199d8"
+  integrity sha512-cpx87M3vaR34vUYEFdpsFQk0/A29225tD5lqqvKW+l/u8FHD9KHyjm+XoEenV2eCayF8IxkmO9PQKsufgg4FHQ==
 
 "@sinonjs/commons@^1.7.0":
   version "1.7.1"
@@ -7476,6 +7476,13 @@ debug@^3.0.0, debug@^3.1.0, debug@^3.2.5, debug@^3.2.6:
   dependencies:
     ms "^2.1.1"
 
+debug@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.1.tgz#f0d229c505e0c6d8c49ac553d1b13dc183f6b2ee"
+  integrity sha512-doEwdvm4PCeK4K3RQN2ZC2BYUBaxwLARCqZmMjtF8a51J2Rb0xpVloFRnCODwqjpwnAoao4pelN8l3RJdv3gRQ==
+  dependencies:
+    ms "2.1.2"
+
 decamelize@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
@@ -9431,10 +9438,10 @@ funpermaproxy@^1.0.1:
   resolved "https://registry.yarnpkg.com/funpermaproxy/-/funpermaproxy-1.0.1.tgz#4650e69b7c334d9717c06beba9b339cc08ac3335"
   integrity sha512-9pEzs5vnNtR7ZGihly98w/mQ7blsvl68Wj30ZCDAXy7qDN4CWLLjdfjtH/P2m6whsnaJkw15hysCNHMXue+wdA==
 
-fuse.js@6.4.3:
-  version "6.4.3"
-  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-6.4.3.tgz#aadd6ac34aab5b1d6e6c60462fcb4d1c3f53bb01"
-  integrity sha512-JNgngolukIrqwayWnvy6NLH63hmwKPhm63o0uyBg51jPD0j09IvAzlV1rTXfAsgxpghI7khAo6Mv+EmvjDWXig==
+fuse.js@6.4.6:
+  version "6.4.6"
+  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-6.4.6.tgz#62f216c110e5aa22486aff20be7896d19a059b79"
+  integrity sha512-/gYxR/0VpXmWSfZOIPS3rWwU8SHgsRTwWuXhyb2O6s7aRuVtHtxCkR33bNYu3wyLyNx/Wpv0vU7FZy8Vj53VNw==
 
 fuse.js@^3.4.6, fuse.js@^3.6.1:
   version "3.6.1"
@@ -12721,7 +12728,7 @@ ms@2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.1.tgz#30a5864eb3ebb0a66f2ebe6d727af06a09d86e0a"
   integrity sha512-tgp+dl5cGk28utYktBsrFqA7HKgrhgPsg6Z/EfhWI4gl1Hwq8B/GmY/0oXZ6nF8hDVesS/FpnYaD/kOWhYQvyg==
 
-ms@^2.1.1:
+ms@2.1.2, ms@^2.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
@@ -14419,17 +14426,17 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-native-camera@3.40.0:
-  version "3.40.0"
-  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-3.40.0.tgz#69845991e46b0892cc2b50322d49b18f292c3202"
-  integrity sha512-Ur0hZqZcl3SntTVMB9GxuiLYpQxqwgzhQVb+7EGae4WjfDzQEwlGF0bJ7UpZyeUTb1oZmsiSib58xUckn11XMw==
+react-native-camera@3.42.0:
+  version "3.42.0"
+  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-3.42.0.tgz#e9778b77a2da96e42d604d1766ca331281b5b85f"
+  integrity sha512-DFsZeRy9TKP/pGef5iLX1AWxP9eAnlbGcA76fEoFXse6EP56sdgjYe+wudJsGZ//arGrYBqjq6wog13HMsJaoQ==
   dependencies:
     prop-types "^15.6.2"
 
-react-native-device-info@7.3.1:
-  version "7.3.1"
-  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-7.3.1.tgz#6c4b0120d57872a2f7534332323306b386828a3d"
-  integrity sha512-RQP3etbmXsOlcaxHeHNug68nRli02S9iGC7TbaXpkvyyevIuRogfnrI71sWtqmlT91kdpYAOYKmNfRL9LOSKVw==
+react-native-device-info@8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-8.0.1.tgz#23a038ab39a9fe3ea8963feb366361ee7c03a2a1"
+  integrity sha512-5fIcrEfxsyIJ0HZ/pHd+DeYwC81wi5tupFkPSASYXz/7QhatF8W0W6qR+YlvI6gJVSFNgQKgrPrh18RGMgbZdg==
 
 react-native-fingerprint-scanner@6.0.0:
   version "6.0.0"
@@ -14451,10 +14458,10 @@ react-native-linear-gradient@2.5.6:
   resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"
   integrity sha512-HDwEaXcQIuXXCV70O+bK1rizFong3wj+5Q/jSyifKFLg0VWF95xh8XQgfzXwtq0NggL9vNjPKXa016KuFu+VFg==
 
-react-native-navigation@7.6.0:
-  version "7.6.0"
-  resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-7.6.0.tgz#8f28018f8801b9871d085b105f6300c1c12039d1"
-  integrity sha512-loCSdGCoic8UtcANm0uPugWBJTJgxDlfQgvgkH7dFtMkj/bqRpKOvJD1Pt79Tx9v2McZzNTrNu2symkmmN6tGg==
+react-native-navigation@7.8.4:
+  version "7.8.4"
+  resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-7.8.4.tgz#7f4594c072408f36881d61e60f3cef45f34c4acf"
+  integrity sha512-uqJ+KY89d+xYKxJXaYKpmj7MpbSHPs+OY1i1ZiFAeuwYc9hDhJ1JX3jDQ/igtnc4vJOvlW2FVXg/zbyc4MAmGQ==
   dependencies:
     hoist-non-react-statics "3.x.x"
     lodash "4.17.x"
@@ -14478,10 +14485,10 @@ react-native-swipe-gestures@^1.0.4:
   resolved "https://registry.yarnpkg.com/react-native-swipe-gestures/-/react-native-swipe-gestures-1.0.5.tgz#a172cb0f3e7478ccd681fd36b8bfbcdd098bde7c"
   integrity sha512-Ns7Bn9H/Tyw278+5SQx9oAblDZ7JixyzeOczcBK8dipQk2pD7Djkcfnf1nB/8RErAmMLL9iXgW0QHqiII8AhKw==
 
-react-native-webview@11.0.2:
-  version "11.0.2"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.0.2.tgz#c88e84fa470f04ff070ff8a2c7f4d7295d46bb06"
-  integrity sha512-GDyIBRbCZ2wbMUGCxA7LufSEbSoWKOzkFB8YljmAffA15tzN6ccvGEquB/hkk5KhvoYy300kwJyEmyBeG6d/AA==
+react-native-webview@11.2.1:
+  version "11.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.2.1.tgz#abe68c38808f34aeed0a10740b2efba74ac610b8"
+  integrity sha512-dfChyqqWVJe0kdCuDZ4mJt+RgOYNie+rCjCrZ55OW6X7f/rvNVd3Mbnv/1mbYjU8wm5C3/1/oqVJoTB/7GAGjQ==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
@@ -15294,9 +15301,9 @@ ripple-secret-codec@^1.0.2:
     base-x "^3.0.3"
     bignumber.js "^5.0.0"
 
-"ripple-sign-keypairs@git+https://github.com/WietseWind/node-ripple-sign-keypairs.git":
+"ripple-sign-keypairs@https://github.com/WietseWind/node-ripple-sign-keypairs.git":
   version "1.0.2"
-  resolved "git+https://github.com/WietseWind/node-ripple-sign-keypairs.git#9470af370c26fe0cebc6dbc11f59c758ea07cb38"
+  resolved "https://github.com/WietseWind/node-ripple-sign-keypairs.git#9470af370c26fe0cebc6dbc11f59c758ea07cb38"
   dependencies:
     big-integer latest
     ripple-binary-codec latest
@@ -17792,13 +17799,13 @@ xtend@^4.0.0, xtend@~4.0.1:
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
 
-xumm-string-decode@0.4.8:
-  version "0.4.8"
-  resolved "https://registry.yarnpkg.com/xumm-string-decode/-/xumm-string-decode-0.4.8.tgz#e4dad6bcf03e1685d06b43defd898436cd8668e0"
-  integrity sha512-LpJ9DCZ6TBN8sGdBUmxXORKx7ZFgf4oofh5HMxyRIYv8dgkmdFwz8qTX8bQ2RBZlGluoH7JksGUhw+4eSmbSlQ==
+xumm-string-decode@0.4.11:
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/xumm-string-decode/-/xumm-string-decode-0.4.11.tgz#057b44c495535a11c50e64c1337b64aacef737ac"
+  integrity sha512-D5DgP26VpZT8AZs83HRjWdynsO1EH98eLknf24+h2drv/MC0xgie7XHxpjHSkCvOKOzBj1G+AeoUi68RfBUGrA==
   dependencies:
     "@ungap/url-search-params" "^0.1.4"
-    debug "^4.1.1"
+    debug "^4.3.1"
     url "^0.11.0"
 
 y18n@^4.0.0:
