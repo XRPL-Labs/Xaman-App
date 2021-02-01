@@ -79,9 +79,12 @@ class DetailsStep extends Component<Props, State> {
 
         BackendService.getCurrencyRate(currency)
             .then((r) => {
-                this.setState({
-                    currencyRate: r,
-                });
+                this.setState(
+                    {
+                        currencyRate: r,
+                    },
+                    this.onUpdateRate,
+                );
             })
             .catch(() => {
                 Toast(Localize.t('global.unableToFetchCurrencyRate'));
@@ -178,6 +181,18 @@ class DetailsStep extends Component<Props, State> {
         return availableBalance;
     };
 
+    onUpdateRate = () => {
+        const { currencyRate } = this.state;
+        const { amount } = this.context;
+
+        if (amount && currencyRate) {
+            const inRate = Number(amount) * currencyRate.lastRate;
+            this.setState({
+                amountRate: String(inRate),
+            });
+        }
+    };
+
     onAmountChange = (amount: string) => {
         const { currencyRate } = this.state;
         const { setAmount } = this.context;
@@ -197,6 +212,25 @@ class DetailsStep extends Component<Props, State> {
             this.setState({
                 amountRate: String(inRate),
             });
+        }
+    };
+
+    onRateAmountChange = (amount: string) => {
+        const { setAmount } = this.context;
+        const { currencyRate } = this.state;
+
+        this.setState({
+            amountRate: amount,
+        });
+
+        if (!amount) {
+            setAmount('');
+            return;
+        }
+
+        if (currencyRate) {
+            const inXRP = Number(amount) / currencyRate.lastRate;
+            setAmount(String(inXRP));
         }
     };
 
@@ -276,25 +310,6 @@ class DetailsStep extends Component<Props, State> {
                 </View>
             </View>
         );
-    };
-
-    onRateAmountChange = (amount: string) => {
-        const { setAmount } = this.context;
-        const { currencyRate } = this.state;
-
-        this.setState({
-            amountRate: amount,
-        });
-
-        if (!amount) {
-            setAmount('');
-            return;
-        }
-
-        if (currencyRate) {
-            const inXRP = Number(amount) / currencyRate.lastRate;
-            setAmount(String(inXRP));
-        }
     };
 
     render() {
