@@ -2,7 +2,7 @@
  * General Settings Screen
  */
 
-import { uniqBy } from 'lodash';
+import { uniqBy, sortBy } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
@@ -71,7 +71,7 @@ class GeneralSettingsView extends Component<Props, State> {
             });
         }
 
-        normalizedLocales = uniqBy(normalizedLocales, 'title');
+        normalizedLocales = sortBy(uniqBy(normalizedLocales, 'title'), 'title');
 
         Navigator.push(
             AppScreens.Modal.Picker,
