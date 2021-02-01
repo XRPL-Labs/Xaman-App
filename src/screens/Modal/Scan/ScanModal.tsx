@@ -318,6 +318,26 @@ class ScanView extends Component<Props, State> {
         }
     };
 
+    handleUndetectedType = (content: string, clipboard?: boolean) => {
+        // some users scan QR on tangem card, navigate them to the account add screen
+        if (content === 'https://xumm.app/tangem') {
+            this.routeUser(AppScreens.Account.Add, {}, {});
+            return;
+        }
+
+        // show error message base on origin
+        Alert.alert(
+            Localize.t('global.warning'),
+            clipboard
+                ? Localize.t('scan.invalidClipboardDateTryNewOneOrTryAgain')
+                : Localize.t('scan.invalidQRTryNewOneOrTryAgain'),
+            [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+            {
+                cancelable: false,
+            },
+        );
+    };
+
     handle = (content: string, clipboard?: boolean) => {
         const { onRead, type, fallback, blackList } = this.props;
 
@@ -402,16 +422,8 @@ class ScanView extends Component<Props, State> {
                 this.handleTranslationBundle(parsed.uuid);
                 break;
             default:
-                Alert.alert(
-                    Localize.t('global.warning'),
-                    clipboard
-                        ? Localize.t('scan.invalidClipboardDateTryNewOneOrTryAgain')
-                        : Localize.t('scan.invalidQRTryNewOneOrTryAgain'),
-                    [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
-                    {
-                        cancelable: false,
-                    },
-                );
+                this.handleUndetectedType(content, clipboard);
+                break;
         }
     };
 
