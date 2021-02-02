@@ -55,6 +55,13 @@ class Application {
 
         // on app start
         Navigation.events().registerAppLaunchedListener(() => {
+            // if already initialized then boot
+            // NOTE: this should never happen
+            if (this.initialized) {
+                this.boot();
+                return;
+            }
+
             // all stuff we need to init before boot the app
             const waterfall = [
                 this.configure,
