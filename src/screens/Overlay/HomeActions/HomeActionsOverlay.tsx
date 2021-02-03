@@ -18,10 +18,9 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 import Interactable from 'react-native-interactable';
 
 import { Navigator } from '@common/helpers/navigator';
-import { GetAppVersionCode } from '@common/helpers/device';
 
-import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccountSchema, CoreSchema } from '@store/schemas/latest';
+import { AccountRepository } from '@store/repositories';
+import { AccountSchema } from '@store/schemas/latest';
 
 import { BackendService } from '@services';
 
@@ -29,8 +28,6 @@ import { AppScreens } from '@common/constants';
 
 // components
 import { Button, Icon, Spacer, HorizontalLine } from '@components/General';
-
-import Localize from '@locale';
 
 // style
 import { AppStyles, AppSizes, AppColors } from '@theme';
@@ -41,7 +38,6 @@ export interface Props {}
 
 export interface State {
     account: AccountSchema;
-    coreSettings: CoreSchema;
     isLoading: boolean;
     apps: any;
     moreUrl: string;
@@ -72,7 +68,6 @@ class HomeActionsOverlay extends Component<Props, State> {
 
         this.state = {
             account: AccountRepository.getDefaultAccount(),
-            coreSettings: CoreRepository.getSettings(),
             isLoading: true,
             apps: [],
             moreUrl: '',
@@ -152,18 +147,9 @@ class HomeActionsOverlay extends Component<Props, State> {
     };
 
     openURL = (location: string, title: string) => {
-        const { account, coreSettings } = this.state;
+        const { account } = this.state;
 
         this.slideDown();
-
-        const headers = {
-            'X-XUMM-Account': account.address,
-            'X-XUMM-Version': GetAppVersionCode(),
-            'X-XUMM-Locale': Localize.getCurrentLocale(),
-            'X-XUMM-AccountType': account.type,
-            'X-XUMM-AccountAccess': account.accessLevel,
-            'X-XUMM-Style': coreSettings.theme,
-        };
 
         setTimeout(() => {
             Navigator.showModal(
@@ -175,7 +161,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                 {
                     uri: location,
                     title,
-                    headers,
+                    account,
                 },
             );
         }, 800);

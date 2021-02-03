@@ -3,19 +3,20 @@
  */
 
 import { has, get } from 'lodash';
-
 import React, { Component } from 'react';
 import { View, ActivityIndicator, BackHandler, Alert } from 'react-native';
 import { WebView } from 'react-native-webview';
-
 import { StringType } from 'xumm-string-decode';
+
+import { Navigator } from '@common/helpers/navigator';
+import { hasNotch, GetAppVersionCode } from '@common/helpers/device';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
 
-import { Navigator } from '@common/helpers/navigator';
-
-import { hasNotch } from '@common/helpers/device';
 import { AppScreens } from '@common/constants';
+
+import { AccountSchema, CoreSchema } from '@store/schemas/latest';
+import { CoreRepository } from '@store/repositories';
 
 import { Header } from '@components/General';
 
@@ -29,11 +30,12 @@ import styles from './styles';
 export interface Props {
     uri: string;
     title: string;
-    headers: object;
+    account?: AccountSchema
 }
 
 export interface State {
     paddingBottom: number;
+    coreSettings: CoreSchema;
 }
 
 /* Component ==================================================================== */
@@ -53,6 +55,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
         this.state = {
             paddingBottom: hasNotch() ? 20 : 0,
+            coreSettings: CoreRepository.getSettings(),
         };
     }
 
@@ -154,8 +157,31 @@ class XAppBrowserModal extends Component<Props, State> {
         }
     };
 
+    getHeaders = () => {
+        const { account } = this.props;
+        const { coreSettings } = this.state;
+
+        // default headers
+        const headers = {
+            'X-XUMM-Version': GetAppVersionCode(),
+            'X-XUMM-Locale': Localize.getCurrentLocale(),
+            'X-XUMM-Style': coreSettings.theme,
+        };
+
+        // assign account headers
+        if (account) {
+                Object.assign(headers, {
+                    'X-XUMM-Account': account.address,
+                    'X-XUMM-AccountType': account.type,
+                    'X-XUMM-AccountAccess': account.accessLevel,
+                });
+        }
+
+        return headers;
+    }
+
     render() {
-        const { uri, title, headers } = this.props;
+        const { uri, title } = this.props;
         const { paddingBottom } = this.state;
 
         return (
@@ -177,7 +203,7 @@ class XAppBrowserModal extends Component<Props, State> {
                     renderLoading={() => (
                         <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
                     )}
-                    source={{ uri, headers }}
+                    source={{ uri, headers: this.getHeaders() }}
                     onMessage={this.onMessage}
                 />
             </View>

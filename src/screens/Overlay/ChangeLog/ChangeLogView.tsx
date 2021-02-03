@@ -5,8 +5,10 @@ import React, { Component } from 'react';
 import { View, Text, Animated, ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import { Navigator } from '@common/helpers/navigator';
+import { CoreSchema } from '@store/schemas/latest';
+import { CoreRepository } from '@store/repositories';
 
+import { Navigator } from '@common/helpers/navigator';
 import { AppScreens, AppConfig } from '@common/constants';
 
 import { Button } from '@components/General';
@@ -22,7 +24,9 @@ export interface Props {
     version: string;
 }
 
-export interface State {}
+export interface State {
+    coreSettings: CoreSchema;
+}
 
 /* Component ==================================================================== */
 class ChangeLogModalView extends Component<Props, State> {
@@ -36,6 +40,10 @@ class ChangeLogModalView extends Component<Props, State> {
 
         this.animatedColor = new Animated.Value(0);
         this.animatedOpacity = new Animated.Value(0);
+
+        this.state = {
+            coreSettings: CoreRepository.getSettings(),
+        };
     }
 
     static options() {
@@ -76,9 +84,21 @@ class ChangeLogModalView extends Component<Props, State> {
         });
     };
 
-    render() {
+    getHeaders = () => {
+        const { coreSettings } = this.state;
+
+        return {
+            'X-XUMM-Style': coreSettings.theme,
+        };
+    };
+
+    getURI = () => {
         const { version } = this.props;
 
+        return `${AppConfig.changeLogURL}${version}`;
+    };
+
+    render() {
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],
             outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)'],
@@ -111,7 +131,7 @@ class ChangeLogModalView extends Component<Props, State> {
                             renderLoading={() => (
                                 <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
                             )}
-                            source={{ uri: `${AppConfig.changeLogURL}${version}` }}
+                            source={{ uri: this.getURI(), headers: this.getHeaders() }}
                         />
                     </View>
                 </Animated.View>

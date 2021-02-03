@@ -11,7 +11,9 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens, AppConfig } from '@common/constants';
 
-import { ProfileRepository } from '@store/repositories';
+import { ProfileRepository, CoreRepository } from '@store/repositories';
+import { CoreSchema } from '@store/schemas/latest';
+
 import { Header, Footer, Spacer, Button } from '@components/General';
 
 import Localize from '@locale';
@@ -29,7 +31,7 @@ export interface State {
     TOSVersion: number;
     isTOSLoaded: boolean;
     shouldShowAgreement: boolean;
-    uri: string;
+    coreSettings: CoreSchema;
 }
 
 /* Component ==================================================================== */
@@ -46,13 +48,11 @@ class TermOfUseView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const uri = `${AppConfig.termOfUseURL}${Localize.getCurrentLocale()}`;
-
         this.state = {
             TOSVersion: undefined,
             isTOSLoaded: false,
             shouldShowAgreement: false,
-            uri,
+            coreSettings: CoreRepository.getSettings(),
         };
     }
 
@@ -104,9 +104,24 @@ class TermOfUseView extends Component<Props, State> {
         }
     };
 
+    getHeaders = () => {
+        const { coreSettings } = this.state;
+
+        if (coreSettings) {
+            return {
+                'X-XUMM-Style': coreSettings.theme,
+            };
+        }
+        return {};
+    };
+
+    getURI = () => {
+        return `${AppConfig.termOfUseURL}${Localize.getCurrentLocale()}`;
+    };
+
     render() {
         const { asModal } = this.props;
-        const { uri, isTOSLoaded, shouldShowAgreement } = this.state;
+        const { isTOSLoaded, shouldShowAgreement } = this.state;
 
         const paddingBottom = hasNotch() && !shouldShowAgreement ? 20 : 0;
 
@@ -140,7 +155,7 @@ class TermOfUseView extends Component<Props, State> {
                     renderLoading={() => (
                         <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
                     )}
-                    source={{ uri }}
+                    source={{ uri: this.getURI(), headers: this.getHeaders() }}
                 />
 
                 {shouldShowAgreement && (
