@@ -7,6 +7,8 @@ import { Alert, NativeModules } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 
+import { AccountRepository } from '@store/repositories';
+
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
@@ -30,7 +32,8 @@ declare interface PushNotificationsService {
 
 export enum NotificationType {
     SignRequest = 'SignRequest',
-    OpenXApp = 'OpenXApp'
+    OpenXApp = 'OpenXApp',
+    OpenTx = 'OpenTx'
 }
 
 /* Service  ==================================================================== */
@@ -138,6 +141,8 @@ class PushNotificationsService extends EventEmitter {
                 return NotificationType.SignRequest;
             case 'OPENXAPP':
                 return NotificationType.OpenXApp;
+            case 'TXPUSH':
+                return NotificationType.OpenTx;
             default:
                 return undefined;
         }
@@ -209,6 +214,17 @@ class PushNotificationsService extends EventEmitter {
         );
     }
 
+    handleOpenTx = (notification: any) => {
+        const hash = get(notification, ['data', 'tx']);
+        const address = get(notification, ['data', 'account']);
+
+        // check if account exist in xumm
+        const account = AccountRepository.findOne({ address });
+        if (!account) return;
+
+        Navigator.showModal(AppScreens.Transaction.Details, {}, { hash, account, asModal: true });
+    }
+
     /* Handle notifications when app is open from the notification */
     handleNotificationOpen = async (notification: any) => {
         if (!notification) return;
@@ -219,6 +235,9 @@ class PushNotificationsService extends EventEmitter {
                 break;
             case NotificationType.OpenXApp:
                 this.handleOpenXApp(notification);
+                break;
+            case NotificationType.OpenTx:
+                this.handleOpenTx(notification);
                 break;
             default:
                 break;

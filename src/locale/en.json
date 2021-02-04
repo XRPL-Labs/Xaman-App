@@ -366,6 +366,7 @@
     "setARegularKey": "Set a Regular Key",
     "setRegularKey": "Set Regular Key",
     "canNotFetchTransactions": "Can not fetch account transactions!",
+    "unableToLoadTheTransaction": "Unable to load the transaction, please make sure you are connected to internet!",
     "emptyEventsNoAccount": "There are no events because you do not have an account.",
     "returnPayment": "Return payment",
     "newPayment": "New payment",

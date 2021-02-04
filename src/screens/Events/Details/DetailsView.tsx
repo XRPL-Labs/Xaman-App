@@ -1,11 +1,11 @@
 /**
  * Transaction Details screen
  */
-import { find, isEmpty, isUndefined } from 'lodash';
+import { find, isEmpty, isUndefined, get } from 'lodash';
 import moment from 'moment-timezone';
 import { Navigation } from 'react-native-navigation';
 
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import {
     View,
     Text,
@@ -16,9 +16,11 @@ import {
     InteractionManager,
     TouchableOpacity,
     Share,
+    ImageBackground,
+    ActivityIndicator,
 } from 'react-native';
 
-import { BackendService, SocketService } from '@services';
+import { BackendService, SocketService, LedgerService } from '@services';
 
 import { NodeChain } from '@store/types';
 import { CoreSchema, AccountSchema } from '@store/schemas/latest';
@@ -27,11 +29,13 @@ import AccountRepository from '@store/repositories/account';
 
 import { Payload } from '@common/libs/payload';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import transactionFactory from '@common/libs/ledger/parser/transaction';
 
+import { NormalizeCurrencyCode } from '@common/libs/utils';
 import { AppScreens, AppConfig } from '@common/constants';
 
-import { ActionSheet } from '@common/helpers/interface';
+import { ActionSheet, Toast } from '@common/helpers/interface';
+import { Images } from '@common/helpers/images';
 import { Navigator } from '@common/helpers/navigator';
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
@@ -42,16 +46,19 @@ import { RecipientElement } from '@components/Modules';
 import Localize from '@locale';
 
 // style
-import { AppStyles } from '@theme';
+import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    tx: TransactionsType;
+    tx?: TransactionsType;
+    hash?: string
     account: AccountSchema;
+    asModal?: boolean
 }
 
 export interface State {
+    tx: TransactionsType;
     partiesDetails: AccountNameType;
     coreSettings: CoreSchema;
     spendableAccounts: AccountSchema[];
@@ -60,6 +67,7 @@ export interface State {
     incomingTx: boolean;
     scamAlert: boolean;
     showMemo: boolean;
+    isLoading: boolean
 }
 
 /* Component ==================================================================== */
@@ -79,6 +87,7 @@ class TransactionDetailsView extends Component<Props, State> {
         super(props);
 
         this.state = {
+            tx: props.tx,
             partiesDetails: {
                 address: '',
                 name: '',
@@ -88,21 +97,26 @@ class TransactionDetailsView extends Component<Props, State> {
             spendableAccounts: AccountRepository.getSpendableAccounts(),
             connectedChain: SocketService.chain,
             balanceChanges: undefined,
-            incomingTx: props.tx.Destination?.address === props.account.address,
+            incomingTx: props.tx?.Destination?.address === props.account.address,
             scamAlert: false,
             showMemo: true,
+            isLoading: !props.tx,
         };
 
         this.forceFetchDetails = false;
     }
 
     componentDidMount() {
+        const { tx } = this.props;
+
         this.navigationListener = Navigation.events().bindComponent(this);
 
         InteractionManager.runAfterInteractions(() => {
-            this.checkForScamAlert();
-            this.setPartiesDetails();
-            this.setBalanceChanges();
+            if (tx) {
+                this.loadDetails();
+            } else {
+                this.loadTransaction();
+            }
         });
     }
 
@@ -126,8 +140,51 @@ class TransactionDetailsView extends Component<Props, State> {
         this.forceFetchDetails = true;
     }
 
+    close = () => {
+        const { asModal } = this.props;
+
+        if (asModal) {
+            Navigator.dismissModal();
+        } else {
+            Navigator.pop();
+        }
+    }
+
+    loadTransaction = () => {
+        const { hash, account } = this.props;
+
+        if (!hash) return;
+
+        LedgerService.getTransaction(hash).then((resp: any) => {
+                if (get(resp, 'error')) {
+                    throw new Error('Not found');
+                }
+
+                const { meta } = resp;
+                delete resp.meta;
+
+                const transaction = transactionFactory({ tx: resp, meta });
+
+                this.setState({
+                    tx: transaction,
+                    isLoading: false,
+                    incomingTx: transaction.Destination?.address === account.address,
+                }, this.loadDetails);
+        }).catch(() => {
+            Toast(Localize.t('events.unableToLoadTheTransaction'));
+            setTimeout(this.close, 2000);
+        });
+    }
+
+    loadDetails = () => {
+        this.checkForScamAlert();
+        this.setPartiesDetails();
+        this.setBalanceChanges();
+    }
+
     setBalanceChanges = () => {
-        const { tx, account } = this.props;
+        const { tx } = this.state;
+        const { account } = this.props;
 
         if (tx.Type === 'Payment') {
             this.setState({
@@ -137,8 +194,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     checkForScamAlert = async () => {
-        const { tx } = this.props;
-        const { incomingTx } = this.state;
+        const { incomingTx, tx } = this.state;
 
         if (incomingTx) {
             BackendService.getAccountRisk(tx.Account.address)
@@ -155,8 +211,8 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     setPartiesDetails = async () => {
-        const { tx, account } = this.props;
-        const { incomingTx } = this.state;
+        const { account } = this.props;
+        const { incomingTx, tx } = this.state;
 
         let address = '';
         let tag;
@@ -238,8 +294,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     getTransactionLink = () => {
-        const { connectedChain, coreSettings } = this.state;
-        const { tx } = this.props;
+        const { tx, connectedChain, coreSettings } = this.state;
 
         const net = connectedChain === NodeChain.Main ? 'main' : 'test';
 
@@ -294,8 +349,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     showRecipientMenu = () => {
-        const { tx } = this.props;
-        const { partiesDetails, incomingTx } = this.state;
+        const { partiesDetails, incomingTx, tx } = this.state;
 
         let recipient = undefined as any;
 
@@ -326,8 +380,8 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     getLabel = () => {
-        const { tx, account } = this.props;
-        const { balanceChanges } = this.state;
+        const { account } = this.props;
+        const { balanceChanges, tx } = this.state;
 
         switch (tx.Type) {
             case 'Payment':
@@ -390,8 +444,8 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     onActionButtonPress = async (type: string) => {
-        const { incomingTx } = this.state;
-        const { tx, account } = this.props;
+        const { tx, incomingTx } = this.state;
+        const { account } = this.props;
 
         if (type === 'Payment') {
             const params = {
@@ -472,7 +526,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderStatus = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         // ignore if it's ledger object
         if (tx.ClassName !== 'Transaction') {
@@ -493,7 +547,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderOfferCreate = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         let content;
 
@@ -536,7 +590,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderOfferCancel = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         return Localize.t('events.theTransactionWillCancelOffer', {
             address: tx.Account.address,
@@ -545,7 +599,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderEscrowCreate = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         let content = Localize.t('events.theEscrowIsFromTo', {
             account: tx.Account.address,
@@ -572,7 +626,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderEscrowFinish = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         let content = Localize.t('events.escrowFinishTransactionExplain', {
             address: tx.Account.address,
@@ -592,7 +646,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderPayment = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         let content = '';
         if (tx.Account.tag) {
@@ -620,7 +674,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderAccountDelete = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         let content = Localize.t('events.itDeletedAccount', { address: tx.Account.address });
 
@@ -644,7 +698,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderCheckCreate = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         let content = Localize.t('events.theCheckIsFromTo', {
             address: tx.Account.address,
@@ -670,7 +724,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderCheckCash = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         const amount = tx.Amount || tx.DeliverMin;
 
@@ -684,13 +738,13 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderCheckCancel = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         return Localize.t('events.theTransactionWillCancelCheckWithId', { checkId: tx.CheckID });
     };
 
     renderDepositPreauth = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         if (tx.Authorize) {
             return Localize.t('events.itAuthorizesSendingPaymentsToThisAccount', { address: tx.Authorize });
@@ -700,7 +754,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderTrustSet = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         if (tx.Limit === 0) {
             return Localize.t('events.itRemovedTrustLineCurrencyTo', {
@@ -718,7 +772,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderAccountSet = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         let content = `This is an ${tx.Type} transaction`;
 
@@ -783,7 +837,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderDescription = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         let content = '';
 
@@ -840,7 +894,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderMemos = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
         const { showMemo, scamAlert } = this.state;
 
         if (!tx.Memos) return null;
@@ -879,7 +933,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderFee = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         // ignore if it's ledger object
         if (tx.ClassName !== 'Transaction') {
@@ -897,7 +951,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderTransactionId = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         if (tx.ClassName === 'LedgerObject') {
             return (
@@ -920,7 +974,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderHeader = () => {
-        const { tx } = this.props;
+        const { tx } = this.state;
 
         return (
             <View style={styles.headerContainer}>
@@ -934,8 +988,8 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderAmount = () => {
-        const { tx, account } = this.props;
-        const { incomingTx, balanceChanges } = this.state;
+        const { account } = this.props;
+        const { tx, incomingTx, balanceChanges } = this.state;
 
         let shouldShowAmount = true;
 
@@ -1152,8 +1206,8 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderActionButtons = () => {
-        const { tx, account } = this.props;
-        const { incomingTx, spendableAccounts } = this.state;
+        const { account } = this.props;
+        const { tx, incomingTx, spendableAccounts } = this.state;
 
         // just return is the account is not an spendable account
         if (!find(spendableAccounts, { address: account.address })) {
@@ -1223,9 +1277,8 @@ class TransactionDetailsView extends Component<Props, State> {
             return (
                 <View style={styles.actionButtonsContainer}>
                     {actionButtons.map((e, i) => (
-                        <>
+                        <Fragment key={`actionButton-${i}`}>
                             <Button
-                                key={`actionButton-${i}`}
                                 rounded
                                 block
                                 secondary={e.secondary}
@@ -1234,7 +1287,7 @@ class TransactionDetailsView extends Component<Props, State> {
                                 onPress={this.onActionButtonPress.bind(null, e.type)}
                             />
                             <Spacer size={i + 1 < actionButtons.length ? 15 : 0} />
-                        </>
+                        </Fragment>
                     ))}
                 </View>
             );
@@ -1244,8 +1297,8 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderSourceDestination = () => {
-        const { tx, account } = this.props;
-        const { partiesDetails, incomingTx, balanceChanges } = this.state;
+        const { account } = this.props;
+        const { tx, partiesDetails, incomingTx, balanceChanges } = this.state;
 
         let from = {
             address: tx.Account.address,
@@ -1343,25 +1396,42 @@ class TransactionDetailsView extends Component<Props, State> {
         );
     };
 
+    renderLoading = () => {
+        return (
+            <ImageBackground source={Images.BackgroundShapes} style={[AppStyles.container, AppStyles.paddingSml]}>
+                <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                    <ActivityIndicator color={AppColors.blue} size="large" />
+                    <Spacer />
+                    <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
+                        {Localize.t('global.pleaseWait')}
+                    </Text>
+                </View>
+            </ImageBackground>
+            );
+    }
+
     render() {
-        const { scamAlert } = this.state;
+        const { asModal } = this.props;
+        const { isLoading, scamAlert } = this.state;
+
+        if (isLoading) {
+            return this.renderLoading();
+        }
 
         return (
             <View style={AppStyles.container}>
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: () => {
-                            Navigator.pop();
-                        },
+                        onPress: this.close,
                     }}
                     centerComponent={{ text: Localize.t('events.transactionDetails') }}
                     rightComponent={{
                         icon: 'IconMoreHorizontal',
-                        onPress: () => {
-                            this.showMenu();
-                        },
+                        onPress: this.showMenu,
                     }}
+                    // eslint-disable-next-line react-native/no-inline-styles
+                    containerStyle={asModal && { paddingTop: 0 }}
                 />
 
                 {scamAlert && (
