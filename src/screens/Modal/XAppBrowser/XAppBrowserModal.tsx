@@ -29,8 +29,9 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     uri: string;
-    title: string;
+    title?: string;
     account?: AccountSchema
+    origin?: PayloadOrigin
 }
 
 export interface State {
@@ -158,7 +159,7 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     getHeaders = () => {
-        const { account } = this.props;
+        const { account, origin } = this.props;
         const { coreSettings } = this.state;
 
         // default headers
@@ -167,6 +168,13 @@ class XAppBrowserModal extends Component<Props, State> {
             'X-XUMM-Locale': Localize.getCurrentLocale(),
             'X-XUMM-Style': coreSettings.theme,
         };
+
+        // assign origin to the headers
+        if (origin) {
+            Object.assign(headers, {
+                'X-XUMM-Origin': origin,
+            });
+        }
 
         // assign account headers
         if (account) {
@@ -187,7 +195,7 @@ class XAppBrowserModal extends Component<Props, State> {
         return (
             <View testID="xapp-browser-modal" style={[styles.container]}>
                 <Header
-                    centerComponent={{ text: title }}
+                    centerComponent={{ text: title || 'XAPP' }}
                     leftComponent={{
                         icon: 'IconChevronLeft',
                         onPress: this.onClose,

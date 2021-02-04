@@ -252,7 +252,9 @@
     "currency": "Currency",
     "currencies": "Currencies",
     "noResultFound": "No result found",
-    "unableToFetchCurrencyRate": "Unable to fetch currency rate, please make sure you are connected to the internet"
+    "unableToFetchCurrencyRate": "Unable to fetch currency rate, please make sure you are connected to the internet",
+    "signRequest": "Sign Request",
+    "openForDetails": "Open for detail"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",

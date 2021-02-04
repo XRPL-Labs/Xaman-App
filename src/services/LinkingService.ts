@@ -5,6 +5,7 @@
 
 import EventEmitter from 'events';
 import { Linking, Alert } from 'react-native';
+import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
@@ -22,7 +23,7 @@ import Localize from '@locale';
 /* Service  ==================================================================== */
 class LinkingService extends EventEmitter {
     initialize = () => {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             try {
                 NavigationService.on('setRoot', async (root: string) => {
                     if (root === 'DefaultStack') {
@@ -122,7 +123,23 @@ class LinkingService extends EventEmitter {
         );
     };
 
-    handle = (detected: StringTypeDetector) => {
+    handleXAPPLink = (url: string) => {
+        Navigator.showModal(
+            AppScreens.Modal.XAppBrowser,
+            {
+                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+            },
+            {
+                uri: url,
+                origin: PayloadOrigin.DEEP_LINK,
+            },
+        );
+    }
+
+    handle = (url: string) => {
+        const detected = new StringTypeDetector(url);
+
         // normalize detected type
         let detectedType = detected.getType();
 
@@ -151,11 +168,14 @@ class LinkingService extends EventEmitter {
 
     handleDeepLink = async ({ url }: { url: string }) => {
         // ignore if the app is not initialized or not url
-        if (!url) return;
+        if (!url || typeof (url) !== 'string') return;
 
-        const detected = new StringTypeDetector(url);
+        if (url.startsWith('https://xumm.app/detect/')) {
+            this.handleXAPPLink(url);
+            return;
+        }
 
-        this.handle(detected);
+        this.handle(url);
     };
 }
 

@@ -44,7 +44,7 @@ class BackendService {
     }
 
     initialize = () => {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             try {
                 // sync the details after moving to default stack
                 NavigationService.on('setRoot', (root: string) => {

@@ -47,7 +47,7 @@ class AuthenticationService extends EventEmitter {
 
     initialize = () => {
         /* eslint-disable-next-line */
-        return new Promise(async (resolve, reject) => {
+        return new Promise<void>(async (resolve, reject) => {
             try {
                 // we just need to require the lock if user initialized the app the
                 NavigationService.on('setRoot', (root: string) => {

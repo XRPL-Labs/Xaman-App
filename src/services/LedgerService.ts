@@ -38,7 +38,7 @@ class LedgerService extends EventEmitter {
     }
 
     initialize = () => {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             try {
                 this.loadAccounts();
 
@@ -333,7 +333,7 @@ class LedgerService extends EventEmitter {
      * Update account info, contain balance etc ...
      */
     updateAccountInfo = (account: string) => {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             this.getAccountInfo(account)
                 .then((accountInfo: any) => {
                     // TODO: handle errors
@@ -415,7 +415,7 @@ class LedgerService extends EventEmitter {
      * Update account trustLines
      */
     updateAccountLines = (account: string) => {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             this.getAccountLines(account)
                 .then(async (accountLines: any) => {
                     const { lines } = accountLines;

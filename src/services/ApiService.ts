@@ -74,7 +74,7 @@ class ApiService {
     }
 
     initialize(coreSettings: CoreSchema) {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             try {
                 // if the app is initialized and the access token set
                 if (coreSettings && coreSettings.initialized) {

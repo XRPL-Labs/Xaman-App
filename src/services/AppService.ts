@@ -62,7 +62,7 @@ class AppService extends EventEmitter {
 
     initialize = () => {
         /* eslint-disable-next-line */
-        return new Promise(async (resolve, reject) => {
+        return new Promise<void>(async (resolve, reject) => {
             try {
                 // setup listeners
                 await this.setNetInfoListener();

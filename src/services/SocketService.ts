@@ -115,7 +115,7 @@ class SocketService extends EventEmitter {
     }
 
     initialize = (coreSettings: CoreSchema) => {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             try {
                 // get/set default node
                 let defaultNode = __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0];
@@ -307,7 +307,7 @@ class SocketService extends EventEmitter {
     };
 
     establish = (node: string) => {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             try {
                 new RippledWsClient(node, {
                     Origin: this.origin,

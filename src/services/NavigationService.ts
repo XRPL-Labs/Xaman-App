@@ -44,7 +44,7 @@ class NavigationService extends EventEmitter {
     }
 
     initialize = () => {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             try {
                 // enable firebase analytics collection
                 analytics().setAnalyticsCollectionEnabled(true);
