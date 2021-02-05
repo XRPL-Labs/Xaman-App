@@ -625,7 +625,8 @@
     "thisAddressAppearsToBeExchangeAddress": "This address appears to be an exchange address, are you sure you want to continue?\r\n\r\nYou can never send to this address without respecting the instructions of your exchange.",
     "accountDestroyWarning": "Your account will be deleted PERMANENTLY, are you sure?",
     "destroyAccount": "Delete this account",
-    "importTangemCard": "Import Tangem Card"
+    "importTangemCard": "Import Tangem Card",
+    "unableToHideAllAccountsError": "Unable to hide this account, at least one account should be visible."
   },
   "send": {
     "amountIsBiggerThanYourSpend": "This amount is bigger than what you can spend (%{spendable})",

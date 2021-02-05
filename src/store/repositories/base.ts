@@ -155,7 +155,7 @@ export default class BaseRepository extends EventEmitter {
     };
 
     deleteBy = (key: string, val: string): Promise<any> => {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             try {
                 const items = this.realm.objects(this.schema.name).filtered(`${key} == "${val}"`);
                 const item = items[0];

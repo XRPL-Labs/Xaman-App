@@ -1,4 +1,4 @@
-import { has, filter } from 'lodash';
+import { first, has, filter } from 'lodash';
 import Realm, { Results, ObjectSchema } from 'realm';
 
 import Flag from '@common/libs/ledger/parser/common/flag';
@@ -6,6 +6,8 @@ import Vault from '@common/libs/vault';
 
 import { AccountSchema } from '@store/schemas/latest';
 import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
+
+import Localize from '@locale';
 
 import BaseRepository from './base';
 
@@ -97,7 +99,7 @@ class AccountRepository extends BaseRepository {
     getSpendableAccounts = (): Array<AccountSchema> => {
         const signableAccounts = this.getSignableAccounts();
 
-        return filter(signableAccounts, (a) => a.balance > 0);
+        return filter(signableAccounts, (a) => a.balance > 0 && !a.hidden);
     };
 
     /**
@@ -196,6 +198,40 @@ class AccountRepository extends BaseRepository {
     };
 
     /**
+     * Change account visibility
+     */
+    changeAccountVisibility = (account: AccountSchema, hidden: boolean) => {
+        return new Promise<void>((resolve, reject) => {
+            // if enable check prevent if this is the latest account getting hidden
+            if (hidden === true) {
+                const allAccounts = this.getAccounts();
+                const hiddenAccounts = this.getAccounts({ hidden: true });
+
+                if (allAccounts.length - hiddenAccounts.length === 1) {
+                    reject(new Error(Localize.t('account.unableToHideAllAccountsError')));
+                    return;
+                }
+
+                // if account is default change default to another account
+                if (account.default) {
+                    const newDefaultAccount = first(filter(allAccounts, (a) => a.address !== account.address));
+                    if (newDefaultAccount) {
+                        this.setDefaultAccount(newDefaultAccount.address);
+                    }
+                }
+            }
+
+            // update account hidden value
+            this.update({
+                address: account.address,
+                hidden,
+            });
+
+            resolve();
+        });
+    };
+
+    /**
      * Remove account
      * WARNING: this will be permanently and cannot be undo
      */
@@ -214,7 +250,14 @@ class AccountRepository extends BaseRepository {
             const accounts = this.getAccounts();
 
             if (accounts.length > 0) {
-                this.setDefaultAccount(accounts[0].address);
+                const newDefaultAccount = first(accounts);
+                if (newDefaultAccount.hidden) {
+                    this.update({
+                        address: newDefaultAccount.address,
+                        hidden: false,
+                    });
+                }
+                this.setDefaultAccount(newDefaultAccount.address);
             }
         }
 

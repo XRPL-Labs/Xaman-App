@@ -15,7 +15,7 @@ import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
 
-import { Header, Spacer, Icon, Button } from '@components/General';
+import { Header, Spacer, Icon, Button, Switch } from '@components/General';
 
 import Localize from '@locale';
 
@@ -204,6 +204,14 @@ class AccountSettingsView extends Component<Props, State> {
         );
     };
 
+    onHiddenChange = (value: boolean) => {
+        const { account } = this.props;
+
+        AccountRepository.changeAccountVisibility(account, value).catch((e) => {
+            Alert.alert(Localize.t('global.error'), e.message);
+        });
+    };
+
     render() {
         const { account } = this.state;
 
@@ -327,6 +335,15 @@ class AccountSettingsView extends Component<Props, State> {
                                 <Icon size={20} style={[styles.rowIcon]} name="IconChevronRight" />
                             </TouchableOpacity>
                         )}
+
+                        <View style={styles.row}>
+                            <View style={[AppStyles.flex3]}>
+                                <Text style={styles.label}>Hidden</Text>
+                            </View>
+                            <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                                <Switch checked={account.hidden} onChange={this.onHiddenChange} />
+                            </View>
+                        </View>
 
                         <Spacer size={50} />
 
