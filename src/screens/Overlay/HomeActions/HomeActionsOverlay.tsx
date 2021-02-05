@@ -27,7 +27,9 @@ import { BackendService } from '@services';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Icon, Spacer, HorizontalLine } from '@components/General';
+import { Button, Spacer, HorizontalLine } from '@components/General';
+
+import Localize from '@locale';
 
 // style
 import { AppStyles, AppSizes, AppColors } from '@theme';
@@ -200,20 +202,20 @@ class HomeActionsOverlay extends Component<Props, State> {
                     verticalOnly
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
-                        { y: AppSizes.screen.height - AppSizes.moderateScale(480) - AppSizes.navigationBarHeight },
+                        { y: AppSizes.screen.height - AppSizes.moderateScale(430) - AppSizes.navigationBarHeight },
                         {
-                            y: AppSizes.screen.height - AppSizes.moderateScale(480) - AppSizes.navigationBarHeight,
+                            y: AppSizes.screen.height - AppSizes.moderateScale(430) - AppSizes.navigationBarHeight,
                         },
                     ]}
                     boundaries={{
-                        top: AppSizes.screen.height - AppSizes.moderateScale(530) - AppSizes.navigationBarHeight,
+                        top: AppSizes.screen.height - AppSizes.moderateScale(480) - AppSizes.navigationBarHeight,
                     }}
                     initialPosition={{ y: AppSizes.screen.height + 3 }}
                     animatedValueY={this.deltaY}
                     animatedValueX={this.deltaX}
                 >
                     <View
-                        style={[styles.container, { height: AppSizes.moderateScale(530) }]}
+                        style={[styles.container, { height: AppSizes.moderateScale(480) }]}
                         onStartShouldSetResponder={() => true}
                     >
                         <View style={AppStyles.panelHeader}>
@@ -221,7 +223,9 @@ class HomeActionsOverlay extends Component<Props, State> {
                         </View>
 
                         <View style={[AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
-                            <Text style={[AppStyles.h5, AppStyles.strong]}>What do you want to do?</Text>
+                            <Text style={[AppStyles.h5, AppStyles.strong]}>
+                                {Localize.t('payload.whatDoYouWantToDo')}
+                            </Text>
                         </View>
 
                         <View style={[AppStyles.row, AppStyles.centerAligned]}>
@@ -230,7 +234,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                             </View>
                             <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                                 <Button
-                                    label="View more xApps"
+                                    label={Localize.t('home.viewMoreXApps')}
                                     icon="IconApps"
                                     iconStyle={[AppStyles.imgColorBlue]}
                                     iconSize={17}
@@ -274,27 +278,14 @@ class HomeActionsOverlay extends Component<Props, State> {
                                 { marginBottom: AppSizes.navigationBarHeight },
                             ]}
                         >
-                            <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {}}
-                                    style={[styles.actionButton, styles.actionButtonLight]}
-                                >
-                                    <Icon size={30} name="IconClipboard" />
-                                    <Spacer />
-                                    <Text style={[styles.actionButtonText]}>Copy from clipboard</Text>
-                                </TouchableOpacity>
-                            </View>
                             <View style={[AppStyles.flex1]}>
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
+                                <Button
+                                    label={Localize.t('global.scanAQRCode')}
                                     onPress={this.onScanButtonPress}
-                                    style={[styles.actionButton, styles.actionButtonBlack]}
-                                >
-                                    <Icon size={26} name="IconScan" style={AppStyles.imgColorWhite} />
-                                    <Spacer />
-                                    <Text style={[styles.actionButtonText, AppStyles.colorWhite]}>Scan a QR code</Text>
-                                </TouchableOpacity>
+                                    style={styles.actionButtonBlack}
+                                    icon="IconScan"
+                                    iconStyle={AppStyles.imgColorWhite}
+                                />
                             </View>
                         </View>
                     </View>

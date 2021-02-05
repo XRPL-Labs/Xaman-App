@@ -254,7 +254,8 @@
     "noResultFound": "No result found",
     "unableToFetchCurrencyRate": "Unable to fetch currency rate, please make sure you are connected to the internet",
     "signRequest": "Sign Request",
-    "openForDetails": "Open for detail"
+    "openForDetails": "Open for detail",
+    "scanAQRCode": "Scan a QR code"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",
@@ -324,7 +325,8 @@
     "shareReadonlyAccountWarning": "Do you own the keys to this Read Only account or is this your exchange account?",
     "iOwnTheKeys": "I own the keys",
     "exchangeAccount": "Exchange Account",
-    "exchangeAccountReadonlyExplain": "You cannot deposit directly to your exchange account: you need a destination tag to do so. Please get your destination tag from your exchange, and deposit manually."
+    "exchangeAccountReadonlyExplain": "You cannot deposit directly to your exchange account: you need a destination tag to do so. Please get your destination tag from your exchange, and deposit manually.",
+    "viewMoreXApps": "View more xApps"
   },
   "events": {
     "eventTypeAll": "All",
