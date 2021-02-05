@@ -88,7 +88,7 @@ class CurrencySettingsModal extends Component<Props, State> {
     }
 
     dismiss = () => {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             Animated.parallel([
                 Animated.timing(this.animatedColor, {
                     toValue: 0,
@@ -138,7 +138,7 @@ class CurrencySettingsModal extends Component<Props, State> {
         const { trustLine, account } = this.props;
 
         /* eslint-disable-next-line */
-        return new Promise(async (resolve, reject) => {
+        return new Promise<void>(async (resolve, reject) => {
             const payment = new Payment();
 
             payment.Destination = {
@@ -178,7 +178,7 @@ class CurrencySettingsModal extends Component<Props, State> {
     checkForIssuerState = () => {
         const { trustLine } = this.props;
 
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             LedgerService.getAccountInfo(trustLine.currency.issuer)
                 .then((issuerAccountInfo: any) => {
                     const issuerFlags = new Flag(

@@ -167,7 +167,7 @@ class AppService extends EventEmitter {
      * record net info changes
      */
     setNetInfoListener = () => {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             NetInfo.fetch()
                 .then((state) => {
                     this.setNetState(state.isConnected);
@@ -256,7 +256,7 @@ class AppService extends EventEmitter {
      * init app state change  listener
      */
     setAppStateListener() {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             AppState.addEventListener('change', this.handleAppStateChange);
             return resolve();
         });

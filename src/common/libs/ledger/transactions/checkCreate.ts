@@ -120,7 +120,7 @@ class CheckCreate extends BaseTransaction {
 
     validate = (source: AccountSchema) => {
         /* eslint-disable-next-line */
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             if (!this.SendMax || !this.SendMax?.value || this.SendMax?.value === '0') {
                 return reject(new Error(Localize.t('send.pleaseEnterAmount')));
             }

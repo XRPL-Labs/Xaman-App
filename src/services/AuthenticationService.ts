@@ -263,7 +263,7 @@ class AuthenticationService extends EventEmitter {
      */
     checkLockScreen = async () => {
         /* eslint-disable-next-line */
-        return new Promise(async (resolve) => {
+        return new Promise<void>(async (resolve) => {
             if (this.locked) return resolve();
 
             const coreSettings = CoreRepository.getSettings();

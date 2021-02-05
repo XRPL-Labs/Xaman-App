@@ -74,7 +74,7 @@ class AccountDelete extends BaseTransaction {
 
     validate = (account: AccountSchema) => {
         /* eslint-disable-next-line */
-        return new Promise(async (resolve, reject) => {
+        return new Promise<void>(async (resolve, reject) => {
             if (this.Account.address === this.Destination.address) {
                 return reject(new Error(Localize.t('account.destinationAccountAndSourceCannotBeSame')));
             }

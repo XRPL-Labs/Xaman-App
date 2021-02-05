@@ -157,6 +157,7 @@ class SelectAccountOverlay extends Component<Props, State> {
 
         return (
             <TouchableOpacity
+                key={account.address}
                 onPress={() => {
                     this.onSelect(account);
                 }}

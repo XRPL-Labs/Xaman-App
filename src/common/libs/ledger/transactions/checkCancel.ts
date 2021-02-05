@@ -48,7 +48,7 @@ class CheckCancel extends BaseTransaction {
 
     validate = () => {
         /* eslint-disable-next-line */
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             if (!this.Check) {
                 return reject(new Error(Localize.t('payload.unableToGetCheckObject')));
             }

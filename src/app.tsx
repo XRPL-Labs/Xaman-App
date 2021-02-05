@@ -159,7 +159,7 @@ class Application {
 
     // initialize all the services
     initServices = () => {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             try {
                 const coreSettings = CoreRepository.getSettings();
                 const servicesPromise = [] as Array<Promise<any>>;
@@ -189,7 +189,7 @@ class Application {
     // load app locals and settings
     loadAppLocale = () => {
         // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async (resolve, reject) => {
+        return new Promise<void>(async (resolve, reject) => {
             try {
                 const Localize = require('@locale').default;
 
@@ -216,7 +216,7 @@ class Application {
 
     // register all screens
     registerScreens = () => {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             try {
                 // load the screens
                 const screens = require('./screens');
@@ -238,7 +238,7 @@ class Application {
     // configure app settings
     configure = () => {
         // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async (resolve, reject) => {
+        return new Promise<void>(async (resolve, reject) => {
             try {
                 if (Platform.OS === 'android') {
                     // check for device root

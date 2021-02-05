@@ -117,7 +117,7 @@ class Payment extends BaseTransaction {
 
     // @ts-ignore
     get Amount(): AmountType {
-        let amount;
+        let amount = undefined as AmountType;
 
         if (has(this, ['meta', 'DeliveredAmount'])) {
             amount = get(this, ['meta', 'DeliveredAmount']);
@@ -126,6 +126,7 @@ class Payment extends BaseTransaction {
         }
 
         // the delivered_amount will be unavailable in old transactions
+        // @ts-ignore
         if (amount === 'unavailable') {
             amount = undefined;
         }
@@ -301,7 +302,7 @@ class Payment extends BaseTransaction {
 
     validate = (source: AccountSchema) => {
         /* eslint-disable-next-line */
-        return new Promise(async (resolve, reject) => {
+        return new Promise<void>(async (resolve, reject) => {
             if (!this.Amount || !this.Amount?.value || this.Amount?.value === '0') {
                 return reject(new Error(Localize.t('send.pleaseEnterAmount')));
             }
