@@ -2,6 +2,7 @@
  * Select Account Overlay
  */
 
+import { sortBy } from 'lodash';
 import React, { Component } from 'react';
 import { Animated, View, Text, TouchableWithoutFeedback, TouchableOpacity, Platform, ScrollView } from 'react-native';
 
@@ -200,7 +201,7 @@ class SelectAccountOverlay extends Component<Props, State> {
             );
         }
 
-        return accounts.map((account) => {
+        return sortBy(accounts, ['order'], [false]).map((account) => {
             return this.renderRow(account);
         });
     };
@@ -209,7 +210,7 @@ class SelectAccountOverlay extends Component<Props, State> {
         const { contentHeight, paddingBottom } = this.state;
         const { accounts } = this.props;
 
-        if (!accounts) return null;
+        if (!accounts || !contentHeight) return null;
 
         return (
             <View style={AppStyles.flex1}>

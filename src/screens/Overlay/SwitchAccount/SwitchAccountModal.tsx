@@ -78,7 +78,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const accounts = AccountRepository.getAccounts({ hidden: false }).sorted([['default', true]]);
+        const accounts = AccountRepository.getAccounts({ hidden: false }).sorted([['order', false]]);
         const signableAccount = AccountRepository.getSignableAccounts();
 
         // accounts count or as 3 item height

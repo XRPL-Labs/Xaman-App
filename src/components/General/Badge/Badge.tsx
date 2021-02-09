@@ -8,6 +8,7 @@ import Localize from '@locale';
 import { AppColors, AppFonts } from '@theme';
 import styles from './styles';
 
+/* Types ==================================================================== */
 type BadgeType = 'bithomp' | 'xrplns' | 'xrpscan' | 'payid' | 'success' | 'planned';
 
 interface Props {
@@ -33,6 +34,7 @@ const SIZES = {
     large: AppFonts.base.size,
 };
 
+/* Component ==================================================================== */
 export default class Badge extends PureComponent<Props> {
     static defaultProps = {
         size: 'small',

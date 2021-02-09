@@ -4,16 +4,26 @@ import { AppColors, AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({
-    touchRow: {
-        flexDirection: 'column',
-        alignItems: 'center',
+    rowContainer: {
+        width: AppSizes.screen.width * 0.9,
+        height: AppSizes.scale(130),
         paddingHorizontal: AppSizes.paddingSml,
         paddingVertical: AppSizes.paddingSml,
         borderWidth: 1,
         borderColor: AppColors.grey,
         borderRadius: 15,
         marginHorizontal: 20,
-        marginBottom: 10,
+        backgroundColor: AppColors.white,
+    },
+    rowAddContainer: {
+        height: AppSizes.scale(90),
+        borderWidth: 1,
+        borderColor: AppColors.grey,
+        borderRadius: 15,
+        marginHorizontal: 20,
+        backgroundColor: AppColors.white,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     rowHeader: {
         paddingTop: 0,
@@ -33,6 +43,9 @@ const styles = StyleSheet.create({
     },
     rowIcon: {
         tintColor: AppColors.blue,
+    },
+    reorderIcon: {
+        tintColor: AppColors.greyDark,
     },
     rowText: {
         color: AppColors.blue,

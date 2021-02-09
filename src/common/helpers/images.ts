@@ -96,4 +96,6 @@ export const Images = {
     IconCheckXumm: buildImageSource('IconCheckXumm', 'icon_check_xumm'),
     IconApps: buildImageSource('IconApps', 'icon_apps'),
     IconTabbarActions: buildImageSource('IconTabbarActions', 'icon_tabbar_actions'),
+    IconReorder: buildImageSource('IconReorder', 'icon_reorder'),
+    IconReorderHandle: buildImageSource('IconReorderHandle', 'icon_reorder_handle'),
 };

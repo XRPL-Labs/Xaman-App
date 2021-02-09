@@ -628,7 +628,8 @@
     "accountDestroyWarning": "Your account will be deleted PERMANENTLY, are you sure?",
     "destroyAccount": "Delete this account",
     "importTangemCard": "Import Tangem Card",
-    "unableToHideAllAccountsError": "Unable to hide this account, at least one account should be visible."
+    "unableToHideAllAccountsError": "Unable to hide this account, at least one account should be visible.",
+    "tapAndHoldToReorder": "Tap and hold on an item to reorder by the desired priority"
   },
   "send": {
     "amountIsBiggerThanYourSpend": "This amount is bigger than what you can spend (%{spendable})",
