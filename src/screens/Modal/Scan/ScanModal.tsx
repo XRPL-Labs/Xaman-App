@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import { View, ImageBackground, Text, ActivityIndicator, Alert, Linking, BackHandler } from 'react-native';
+import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import Clipboard from '@react-native-community/clipboard';
 import { RNCamera } from 'react-native-camera';
@@ -318,6 +319,20 @@ class ScanView extends Component<Props, State> {
         }
     };
 
+    handleXAPPLink = (url: string) => {
+        this.routeUser(
+            AppScreens.Modal.XAppBrowser,
+            {
+                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+            },
+            {
+                uri: url,
+                origin: PayloadOrigin.QR,
+            },
+        );
+    };
+
     handleUndetectedType = (content: string, clipboard?: boolean) => {
         // some users scan QR on tangem card, navigate them to the account add screen
         if (content === 'https://xumm.app/tangem') {
@@ -407,6 +422,11 @@ class ScanView extends Component<Props, State> {
         }
 
         // the screen will handle the content
+        if (content.startsWith('https://xumm.app/detect/')) {
+            this.handleXAPPLink(content);
+            return;
+        }
+
         switch (detected.getType()) {
             case StringType.XummPayloadReference:
                 this.handlePayloadReference(parsed.uuid);
