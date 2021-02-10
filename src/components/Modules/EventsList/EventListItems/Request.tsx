@@ -27,7 +27,7 @@ export interface State {}
 
 export enum RequestType {
     SignRequest = 'SignRequest',
-    OpenXApp = 'OpenXApp'
+    OpenXApp = 'OpenXApp',
 }
 
 /* Component ==================================================================== */
@@ -50,7 +50,7 @@ class RequestTemplate extends Component<Props, State> {
                 },
             );
         }
-    }
+    };
 
     openSignRequest = () => {
         const { item } = this.props;
@@ -62,13 +62,13 @@ class RequestTemplate extends Component<Props, State> {
                 payload: item,
             },
         );
-    }
+    };
 
     onPress = () => {
         switch (this.getType()) {
             case RequestType.OpenXApp:
-                 this.openXApp();
-                 break;
+                this.openXApp();
+                break;
             case RequestType.SignRequest:
                 this.openSignRequest();
                 break;
@@ -85,7 +85,7 @@ class RequestTemplate extends Component<Props, State> {
         }
 
         return RequestType.SignRequest;
-    }
+    };
 
     getDescription = () => {
         const { item } = this.props;
@@ -98,23 +98,20 @@ class RequestTemplate extends Component<Props, State> {
             default:
                 return Localize.t('global.signRequest');
         }
-    }
+    };
 
     render() {
         const { item } = this.props;
 
         return (
-            <TouchableHighlight
-                onPress={this.onPress}
-                underlayColor="#FFF"
-            >
+            <TouchableHighlight onPress={this.onPress} underlayColor="#FFF">
                 <View style={[AppStyles.row, styles.row]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         <Avatar size={40} border source={{ uri: item.application.icon_url }} />
                     </View>
                     <View style={[AppStyles.flex5, AppStyles.centerContent]}>
                         <Text style={[styles.label]}>{item.application.name}</Text>
-                        <Text style={[styles.description]}>Sign Request</Text>
+                        <Text style={[styles.description]}>{this.getDescription()}</Text>
                     </View>
                 </View>
             </TouchableHighlight>
