@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     appIcon: {
         width: AppSizes.scale(60),
         height: AppSizes.scale(60),
+        borderRadius: AppSizes.scale(10),
     },
     appTitle: {
         fontFamily: AppFonts.base.familyBold,
