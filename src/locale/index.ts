@@ -13,6 +13,7 @@ class Localize {
         this.meta = require('./meta.json');
         this.moment = require('moment-timezone');
         this.instance.fallbacks = true;
+        this.instance.defaultLocale = 'en';
         this.settings = undefined;
     }
 

@@ -281,7 +281,7 @@ const Navigator = {
                 bottomTab: {
                     text: Platform.select({
                         android: Localize.t(`global.${tab.toLowerCase()}`),
-                        ios: tab !== 'Scan' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
+                        ios: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
                     }),
                 },
             });
