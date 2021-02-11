@@ -99,7 +99,7 @@ const Children = ({
                 </View>
             )}
             {children.text && !children.icon && (
-                <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.textStyle, children.textStyle]}>
+                <Text numberOfLines={1} style={[styles.textStyle, children.textStyle]}>
                     {children.text}
                 </Text>
             )}

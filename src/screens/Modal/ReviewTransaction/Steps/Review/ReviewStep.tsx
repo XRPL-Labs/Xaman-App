@@ -153,25 +153,26 @@ class ReviewStep extends Component<Props, State> {
     };
 
     renderEmptyOverlay = () => {
+        const { onClose } = this.context;
+
         return (
             <View style={styles.blurView}>
                 <View style={styles.absolute}>
                     <View style={[styles.headerContainer]}>
                         <View style={[AppStyles.row]}>
                             <View style={[AppStyles.flex1, AppStyles.leftAligned]}>
-                                <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
+                                <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>
                                     {Localize.t('global.reviewTransaction')}
                                 </Text>
                             </View>
                             <View style={[AppStyles.rightAligned]}>
                                 <Button
-                                    testID="back-button"
+                                    testID="close-button"
+                                    numberOfLines={1}
                                     roundedSmall
                                     style={AppStyles.buttonBlack}
                                     label={Localize.t('global.close')}
-                                    onPress={() => {
-                                        Navigator.dismissModal();
-                                    }}
+                                    onPress={onClose}
                                 />
                             </View>
                         </View>
@@ -224,13 +225,15 @@ class ReviewStep extends Component<Props, State> {
                 {/* header */}
                 <View style={[styles.headerContainer]}>
                     <View style={[AppStyles.row]}>
-                        <View style={[AppStyles.flex1, AppStyles.leftAligned]}>
-                            <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
+                        <View style={[AppStyles.flex1, AppStyles.leftAligned, AppStyles.paddingRightSml]}>
+                            <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>
                                 {Localize.t('global.reviewTransaction')}
                             </Text>
                         </View>
                         <View style={[AppStyles.rightAligned]}>
                             <Button
+                                testID="close-button"
+                                numberOfLines={1}
                                 roundedSmall
                                 style={AppStyles.buttonBlack}
                                 label={Localize.t('global.close')}

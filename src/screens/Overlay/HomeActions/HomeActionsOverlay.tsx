@@ -223,7 +223,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                         </View>
 
                         <View style={[AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
-                            <Text style={[AppStyles.h5, AppStyles.strong]}>
+                            <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
                                 {Localize.t('payload.whatDoYouWantToDo')}
                             </Text>
                         </View>
@@ -234,6 +234,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                             </View>
                             <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                                 <Button
+                                    numberOfLines={1}
                                     label={Localize.t('home.viewMoreXApps')}
                                     icon="IconApps"
                                     iconStyle={[AppStyles.imgColorBlue]}
@@ -280,6 +281,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                         >
                             <View style={[AppStyles.flex1]}>
                                 <Button
+                                    numberOfLines={1}
                                     label={Localize.t('global.scanAQRCode')}
                                     onPress={this.onScanButtonPress}
                                     style={styles.actionButtonBlack}

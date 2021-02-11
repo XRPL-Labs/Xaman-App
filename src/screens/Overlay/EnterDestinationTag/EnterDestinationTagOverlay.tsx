@@ -266,7 +266,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
 
                         <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                             <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                                <Text style={[AppStyles.h5, AppStyles.strong]}>
+                                <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
                                     {Localize.t('global.destinationTag')}
                                 </Text>
                             </View>
@@ -284,7 +284,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                             </View>
                         </View>
                         <View style={[AppStyles.paddingHorizontalSml]}>
-                            <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
+                            <Text numberOfLines={1} style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
                                 {buttonType === 'next'
                                     ? Localize.t('send.thisAddressRequiredDestinationTag')
                                     : Localize.t('send.pleaseEnterTheDestinationTag')}
@@ -345,6 +345,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                             ]}
                         >
                             <Button
+                                numberOfLines={1}
                                 isDisabled={Number(destinationTag) > 2 ** 32 || Number(destinationTag) <= 0}
                                 onPress={this.onFinish}
                                 style={styles.nextButton}

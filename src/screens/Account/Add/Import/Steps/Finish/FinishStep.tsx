@@ -56,13 +56,7 @@ class FinishStep extends Component<Props, State> {
                     </View>
 
                     <Footer>
-                        <Button
-                            testID="finish-button"
-                            label={Localize.t('account.yeahLetsGo')}
-                            onPress={() => {
-                                goNext();
-                            }}
-                        />
+                        <Button testID="finish-button" label={Localize.t('account.yeahLetsGo')} onPress={goNext} />
                     </Footer>
                 </ImageBackground>
             </SafeAreaView>

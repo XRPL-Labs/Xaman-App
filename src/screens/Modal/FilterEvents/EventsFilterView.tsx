@@ -163,11 +163,21 @@ class EventsFilterView extends Component<Props, State> {
             <SafeAreaView testID="events-filter-view" style={[AppStyles.container]}>
                 {/* Header */}
                 <View style={[AppStyles.row, AppStyles.paddingVerticalSml, styles.headerContainer]}>
-                    <View style={[AppStyles.flex1, AppStyles.paddingLeft, AppStyles.centerContent]}>
-                        <Text style={AppStyles.h4}>{Localize.t('global.filter')}</Text>
+                    <View
+                        style={[
+                            AppStyles.flex1,
+                            AppStyles.paddingLeft,
+                            AppStyles.paddingRightSml,
+                            AppStyles.centerContent,
+                        ]}
+                    >
+                        <Text numberOfLines={1} style={AppStyles.h4}>
+                            {Localize.t('global.filter')}
+                        </Text>
                     </View>
                     <View style={[AppStyles.paddingRightSml, AppStyles.rightAligned, AppStyles.centerContent]}>
                         <Button
+                            numberOfLines={1}
                             roundedSmall
                             onPress={this.dismiss}
                             style={styles.cancelButton}
@@ -180,7 +190,9 @@ class EventsFilterView extends Component<Props, State> {
                 <View style={[AppStyles.flex8]}>
                     <ScrollView style={[AppStyles.flex1, AppStyles.padding, AppStyles.paddingTopSml]}>
                         {/* Expense */}
-                        <Text style={AppStyles.h5}>{Localize.t('global.direction')}</Text>
+                        <Text numberOfLines={1} style={AppStyles.h5}>
+                            {Localize.t('global.direction')}
+                        </Text>
                         <View style={[styles.row]}>
                             {this.renderButton('ExpenseType', Localize.t('global.income'), 'Income')}
                             {this.renderButton('ExpenseType', Localize.t('global.outcome'), 'Outcome')}
@@ -188,7 +200,9 @@ class EventsFilterView extends Component<Props, State> {
 
                         <Spacer size={15} />
                         {/* Transaction Type */}
-                        <Text style={AppStyles.h5}>{Localize.t('events.transactionType')}</Text>
+                        <Text numberOfLines={1} style={AppStyles.h5}>
+                            {Localize.t('events.transactionType')}
+                        </Text>
                         <View style={[styles.row]}>
                             {this.renderButton(
                                 'TransactionType',
@@ -223,14 +237,18 @@ class EventsFilterView extends Component<Props, State> {
                         </View>
 
                         <Spacer size={15} />
-                        <Text style={AppStyles.h5}>{Localize.t('global.asset')}</Text>
+                        <Text numberOfLines={1} style={AppStyles.h5}>
+                            {Localize.t('global.asset')}
+                        </Text>
                         <View style={[styles.row]}>
                             {this.renderButton('Currency', 'XRP')}
                             {account.lines && this.renderAccountCurrencies()}
                         </View>
 
                         <Spacer size={15} />
-                        <Text style={AppStyles.h5}>{Localize.t('global.amount')}</Text>
+                        <Text numberOfLines={1} style={AppStyles.h5}>
+                            {Localize.t('global.amount')}
+                        </Text>
                         <View style={[styles.row]}>
                             {this.renderButton('AmountIndicator', Localize.t('events.smallerThan'), 'Smaller')}
                             {this.renderButton('AmountIndicator', Localize.t('events.biggerThan'), 'Bigger')}

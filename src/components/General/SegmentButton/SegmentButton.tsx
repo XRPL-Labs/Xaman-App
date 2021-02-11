@@ -58,7 +58,10 @@ class SegmentButton extends PureComponent<Props, State> {
                         style={[styles.button, selectedIndex === i && styles.selectedButton]}
                     >
                         <View style={[styles.textContainer]}>
-                            <Text style={[styles.buttonText, selectedIndex === i && { color: AppColors.blue }]}>
+                            <Text
+                                numberOfLines={1}
+                                style={[styles.buttonText, selectedIndex === i && { color: AppColors.blue }]}
+                            >
                                 {button}
                             </Text>
                         </View>

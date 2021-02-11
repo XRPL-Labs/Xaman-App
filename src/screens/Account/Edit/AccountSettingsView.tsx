@@ -237,7 +237,7 @@ class AccountSettingsView extends Component<Props, State> {
 
                         <View style={styles.row}>
                             <View style={[AppStyles.flex3]}>
-                                <Text style={styles.label} testID="address-label">
+                                <Text numberOfLines={1} style={styles.label} testID="address-label">
                                     {Localize.t('global.address')}
                                 </Text>
                             </View>
@@ -256,7 +256,9 @@ class AccountSettingsView extends Component<Props, State> {
                             onPress={this.accountLabelPressed}
                         >
                             <View style={[AppStyles.flex3]}>
-                                <Text style={styles.label}>{Localize.t('account.accountLabel')}</Text>
+                                <Text numberOfLines={1} style={styles.label}>
+                                    {Localize.t('account.accountLabel')}
+                                </Text>
                             </View>
 
                             <View style={[AppStyles.centerAligned, AppStyles.row]}>
@@ -272,7 +274,9 @@ class AccountSettingsView extends Component<Props, State> {
                             onPress={this.showAccessLevelPicker}
                         >
                             <View style={[AppStyles.flex3]}>
-                                <Text style={styles.label}>{Localize.t('account.accessLevel')}</Text>
+                                <Text numberOfLines={1} style={styles.label}>
+                                    {Localize.t('account.accessLevel')}
+                                </Text>
                             </View>
 
                             <View style={[AppStyles.centerAligned, AppStyles.row]}>
@@ -290,7 +294,9 @@ class AccountSettingsView extends Component<Props, State> {
                                 {/* Encryption Label */}
                                 <View style={[styles.row]}>
                                     <View style={[AppStyles.flex3]}>
-                                        <Text style={styles.label}>{Localize.t('account.securityLevel')}</Text>
+                                        <Text numberOfLines={1} style={styles.label}>
+                                            {Localize.t('account.securityLevel')}
+                                        </Text>
                                     </View>
 
                                     <View style={[AppStyles.centerAligned, AppStyles.row]}>
@@ -320,7 +326,9 @@ class AccountSettingsView extends Component<Props, State> {
                         {account.type === AccountTypes.Tangem && (
                             <TouchableOpacity style={[styles.row]} onPress={this.showChangeTangemSecurity}>
                                 <View style={[AppStyles.flex3]}>
-                                    <Text style={styles.label}>{Localize.t('account.cardEnforcedSecurity')}</Text>
+                                    <Text numberOfLines={1} style={styles.label}>
+                                        {Localize.t('account.cardEnforcedSecurity')}
+                                    </Text>
                                 </View>
 
                                 <View style={[AppStyles.centerAligned, AppStyles.row]}>
@@ -338,7 +346,9 @@ class AccountSettingsView extends Component<Props, State> {
 
                         <View style={styles.row}>
                             <View style={[AppStyles.flex3]}>
-                                <Text style={styles.label}>Hidden</Text>
+                                <Text numberOfLines={1} style={styles.label}>
+                                    {Localize.t('global.hidden')}
+                                </Text>
                             </View>
                             <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
                                 <Switch checked={account.hidden} onChange={this.onHiddenChange} />
@@ -348,6 +358,7 @@ class AccountSettingsView extends Component<Props, State> {
                         <Spacer size={50} />
 
                         <Button
+                            numberOfLines={1}
                             label={Localize.t('account.removeFromXUMM')}
                             icon="IconTrash"
                             iconStyle={AppStyles.imgColorWhite}

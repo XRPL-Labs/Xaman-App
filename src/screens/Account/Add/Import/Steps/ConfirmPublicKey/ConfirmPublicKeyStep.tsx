@@ -68,6 +68,13 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
         }
     };
 
+    copyPubKeyToClipboard = () => {
+        const { importedAccount } = this.context;
+
+        Clipboard.setString(importedAccount.address);
+        Toast(Localize.t('account.publicKeyCopiedToClipboard'));
+    };
+
     renderRegularKeys = () => {
         const { importedAccount } = this.context;
 
@@ -166,10 +173,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                         style={AppStyles.buttonBlueLight}
                         iconStyle={AppStyles.imgColorGreyDark}
                         textStyle={[AppStyles.colorGreyDark]}
-                        onPress={() => {
-                            Clipboard.setString(importedAccount.address);
-                            Toast(Localize.t('account.publicKeyCopiedToClipboard'));
-                        }}
+                        onPress={this.copyPubKeyToClipboard}
                         roundedSmall
                         outline
                     />

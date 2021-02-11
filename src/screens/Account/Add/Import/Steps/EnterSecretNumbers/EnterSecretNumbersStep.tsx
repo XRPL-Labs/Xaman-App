@@ -57,6 +57,12 @@ class EnterSecretNumbers extends Component<Props, State> {
         }
     };
 
+    onAllFilled = (filled: boolean) => {
+        this.setState({
+            allFilled: filled,
+        });
+    };
+
     render() {
         const { allFilled } = this.state;
         const { goBack } = this.context;
@@ -74,11 +80,7 @@ class EnterSecretNumbers extends Component<Props, State> {
                         ref={(r) => {
                             this.secretNumberInput = r;
                         }}
-                        onAllFilled={(filled) => {
-                            this.setState({
-                                allFilled: filled,
-                            });
-                        }}
+                        onAllFilled={this.onAllFilled}
                     />
                 </View>
 
@@ -89,9 +91,7 @@ class EnterSecretNumbers extends Component<Props, State> {
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            onPress={() => {
-                                goBack();
-                            }}
+                            onPress={goBack}
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>
@@ -100,9 +100,7 @@ class EnterSecretNumbers extends Component<Props, State> {
                             isDisabled={!allFilled}
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
-                            onPress={() => {
-                                this.goNext();
-                            }}
+                            onPress={this.goNext}
                         />
                     </View>
                 </Footer>

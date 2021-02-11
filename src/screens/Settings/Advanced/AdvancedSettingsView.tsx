@@ -130,7 +130,9 @@ class AdvancedSettingsView extends Component<Props, State> {
                 />
 
                 <ScrollView>
-                    <Text style={styles.descriptionText}>{Localize.t('settings.nodeAndExplorer')}</Text>
+                    <Text numberOfLines={1} style={styles.descriptionText}>
+                        {Localize.t('settings.nodeAndExplorer')}
+                    </Text>
                     <TouchableOpacity
                         testID="change-node-button"
                         style={[styles.row]}
@@ -139,28 +141,40 @@ class AdvancedSettingsView extends Component<Props, State> {
                         }}
                     >
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('global.node')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('global.node')}
+                            </Text>
                         </View>
 
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                            <Text style={[styles.value]}>{coreSettings.defaultNode}</Text>
+                            <Text numberOfLines={1} style={[styles.value]}>
+                                {coreSettings.defaultNode}
+                            </Text>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.row]} onPress={this.showExplorerPicker}>
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('global.explorer')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('global.explorer')}
+                            </Text>
                         </View>
 
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                            <Text style={[styles.value]}>{this.getCurrentExplorerTitle()}</Text>
+                            <Text numberOfLines={1} style={[styles.value]}>
+                                {this.getCurrentExplorerTitle()}
+                            </Text>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
                     </TouchableOpacity>
-                    <Text style={styles.descriptionText}>{Localize.t('settings.releaseInformation')}</Text>
+                    <Text numberOfLines={1} style={styles.descriptionText}>
+                        {Localize.t('settings.releaseInformation')}
+                    </Text>
                     <View style={[styles.row]}>
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('global.version')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('global.version')}
+                            </Text>
                         </View>
 
                         <TouchableOpacity style={[AppStyles.centerAligned, AppStyles.row]} onPress={this.showChangeLog}>
@@ -171,7 +185,9 @@ class AdvancedSettingsView extends Component<Props, State> {
                     </View>
                     <TouchableOpacity style={[styles.row]} onPress={this.showChangeLog}>
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('settings.viewChangeLog')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.viewChangeLog')}
+                            </Text>
                         </View>
 
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
@@ -179,10 +195,14 @@ class AdvancedSettingsView extends Component<Props, State> {
                         </View>
                     </TouchableOpacity>
 
-                    <Text style={styles.descriptionText}>{Localize.t('global.debug')}</Text>
+                    <Text numberOfLines={1} style={styles.descriptionText}>
+                        {Localize.t('global.debug')}
+                    </Text>
                     <View style={[styles.row]}>
                         <View style={[AppStyles.flex1]}>
-                            <Text style={styles.label}>{Localize.t('global.deviceUUID')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('global.deviceUUID')}
+                            </Text>
                         </View>
 
                         <View style={[AppStyles.flex2]}>
@@ -198,7 +218,9 @@ class AdvancedSettingsView extends Component<Props, State> {
                         }}
                     >
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('settings.sessionLog')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.sessionLog')}
+                            </Text>
                         </View>
 
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>

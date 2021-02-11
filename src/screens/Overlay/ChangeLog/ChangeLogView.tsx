@@ -68,20 +68,7 @@ class ChangeLogModalView extends Component<Props, State> {
     }
 
     dismiss = () => {
-        Animated.parallel([
-            Animated.timing(this.animatedColor, {
-                toValue: 0,
-                duration: 350,
-                useNativeDriver: false,
-            }),
-            Animated.timing(this.animatedOpacity, {
-                toValue: 0,
-                duration: 200,
-                useNativeDriver: true,
-            }),
-        ]).start(() => {
-            Navigator.dismissOverlay();
-        });
+        Navigator.dismissOverlay();
     };
 
     getHeaders = () => {
@@ -112,10 +99,13 @@ class ChangeLogModalView extends Component<Props, State> {
                 <Animated.View style={[styles.visibleContent, { opacity: this.animatedOpacity }]}>
                     <View style={styles.headerContainer}>
                         <View style={[AppStyles.flex1]}>
-                            <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.whatsNew')}</Text>
+                            <Text numberOfLines={1} style={[AppStyles.p, AppStyles.bold]}>
+                                {Localize.t('global.whatsNew')}
+                            </Text>
                         </View>
                         <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                             <Button
+                                numberOfLines={1}
                                 testID="close-change-log-button"
                                 label={Localize.t('global.close')}
                                 roundedSmall

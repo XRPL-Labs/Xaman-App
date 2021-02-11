@@ -97,9 +97,7 @@ class AccessLevelStep extends Component<Props, State> {
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            onPress={() => {
-                                goBack();
-                            }}
+                            onPress={goBack}
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>
@@ -107,9 +105,7 @@ class AccessLevelStep extends Component<Props, State> {
                             testID="next-button"
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
-                            onPress={() => {
-                                this.goNext();
-                            }}
+                            onPress={this.goNext}
                         />
                     </View>
                 </Footer>

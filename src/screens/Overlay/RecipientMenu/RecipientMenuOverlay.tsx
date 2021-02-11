@@ -225,6 +225,7 @@ class RecipientMenuOverlay extends Component<Props, State> {
                                 <>
                                     <Spacer size={20} />
                                     <Button
+                                        numberOfLines={1}
                                         onPress={this.addContact}
                                         icon="IconPlus"
                                         block
@@ -238,6 +239,7 @@ class RecipientMenuOverlay extends Component<Props, State> {
 
                             <Spacer size={20} />
                             <Button
+                                numberOfLines={1}
                                 onPress={this.shareAddress}
                                 icon="IconShare"
                                 block
@@ -249,6 +251,7 @@ class RecipientMenuOverlay extends Component<Props, State> {
 
                             <Spacer size={20} />
                             <Button
+                                numberOfLines={1}
                                 onPress={this.openAccountLink}
                                 icon="IconLink"
                                 label={Localize.t('events.openWithExplorer', { explorer: explorer.title })}

@@ -587,11 +587,14 @@ class VaultModal extends Component<Props, State> {
                     style={[styles.visibleContent, { marginBottom: offsetBottom }]}
                 >
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                            <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.signing')}</Text>
+                        <View style={[AppStyles.flex1, AppStyles.paddingLeftSml, AppStyles.paddingRightSml]}>
+                            <Text numberOfLines={1} style={[AppStyles.p, AppStyles.bold]}>
+                                {Localize.t('global.signing')}
+                            </Text>
                         </View>
                         <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                             <Button
+                                numberOfLines={1}
                                 label={Localize.t('global.cancel')}
                                 roundedSmall
                                 secondary

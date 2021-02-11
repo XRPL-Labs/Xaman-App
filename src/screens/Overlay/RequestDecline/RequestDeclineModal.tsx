@@ -147,7 +147,7 @@ class RequestDeclineOverlay extends Component<Props, State> {
                 >
                     <View style={[styles.container]}>
                         <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingVerticalSml]}>
-                            <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
+                            <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>
                                 {Localize.t('payload.whatDoYouWantToDo')}
                             </Text>
                         </View>
@@ -165,6 +165,7 @@ class RequestDeclineOverlay extends Component<Props, State> {
                         </View>
                         <View style={[AppStyles.flex2, AppStyles.paddingHorizontalSml]}>
                             <Button
+                                numberOfLines={1}
                                 onPress={this.onClose}
                                 style={styles.closeButton}
                                 label={Localize.t('global.close')}

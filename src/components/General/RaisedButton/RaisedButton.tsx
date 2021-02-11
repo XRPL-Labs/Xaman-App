@@ -180,7 +180,11 @@ export default class RaisedButton extends Component<Props, State> {
                 {icon && iconPosition === 'left' && (
                     <Icon name={icon} size={iconSize} style={[styles.iconLeft, iconStyle]} />
                 )}
-                {label && <Text style={[styles.textButton, textStyle]}>{label}</Text>}
+                {label && (
+                    <Text numberOfLines={1} style={[styles.textButton, textStyle]}>
+                        {label}
+                    </Text>
+                )}
                 {icon && iconPosition === 'right' && (
                     <Icon name={icon} size={iconSize} style={[styles.iconRight, iconStyle]} />
                 )}

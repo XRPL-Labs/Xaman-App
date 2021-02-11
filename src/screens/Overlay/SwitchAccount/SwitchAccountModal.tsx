@@ -227,13 +227,13 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
         return (
             <TouchableOpacity
+                key={account.address}
                 onPress={() => {
                     this.changeDefaultAccount(account.address);
                 }}
                 activeOpacity={0.9}
             >
                 <LinearGradient
-                    key={account.address}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     colors={[AppColors.light, AppColors.white]}
@@ -325,7 +325,9 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
                         <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                             <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                                <Text style={[AppStyles.h5]}>{Localize.t('account.myAccounts')}</Text>
+                                <Text numberOfLines={1} style={[AppStyles.h5]}>
+                                    {Localize.t('account.myAccounts')}
+                                </Text>
                             </View>
                             <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                                 <Button

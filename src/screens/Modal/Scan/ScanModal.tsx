@@ -584,10 +584,13 @@ class ScanView extends Component<Props, State> {
                         <View style={styles.bottomRight} />
                     </View>
                     <View style={[AppStyles.centerSelf, styles.tip]}>
-                        <Text style={[AppStyles.p, AppStyles.colorWhite]}>{description}</Text>
+                        <Text numberOfLines={1} style={[AppStyles.p, AppStyles.colorWhite]}>
+                            {description}
+                        </Text>
                     </View>
                     <View style={[AppStyles.centerSelf]}>
                         <Button
+                            numberOfLines={1}
                             onPress={this.checkClipboardContent}
                             label={Localize.t('scan.importFromClipboard')}
                             icon="IconClipboard"
@@ -596,6 +599,7 @@ class ScanView extends Component<Props, State> {
                         />
                         <Spacer size={20} />
                         <Button
+                            numberOfLines={1}
                             activeOpacity={0.9}
                             label={Localize.t('global.close')}
                             rounded

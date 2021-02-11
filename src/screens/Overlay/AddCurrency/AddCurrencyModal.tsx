@@ -5,16 +5,7 @@
 import { head, first, forEach, isEmpty, get } from 'lodash';
 
 import React, { Component } from 'react';
-import {
-    Animated,
-    View,
-    Text,
-    Image,
-    TouchableWithoutFeedback,
-    TouchableOpacity,
-    ScrollView,
-    SafeAreaView,
-} from 'react-native';
+import { Animated, View, Text, Image, TouchableWithoutFeedback, TouchableOpacity, ScrollView } from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
@@ -262,7 +253,9 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                        <Text style={[AppStyles.h5, AppStyles.strong]}>{Localize.t('asset.addAsset')}</Text>
+                        <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
+                            {Localize.t('asset.addAsset')}
+                        </Text>
                     </View>
                     <View style={[AppStyles.row, AppStyles.flex1, AppStyles.paddingRightSml, AppStyles.flexEnd]}>
                         <Button
@@ -278,20 +271,26 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     </View>
                 </View>
                 <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.marginBottomSml]}>
-                    <Text style={[AppStyles.p, AppStyles.subtext]}>
+                    <Text numberOfLines={3} style={[AppStyles.p, AppStyles.subtext]}>
                         {Localize.t('asset.selectAnExchangeAndSelectAsset')}
                     </Text>
                 </View>
 
                 <View style={[AppStyles.row, AppStyles.paddingExtraSml]}>
                     <View style={[AppStyles.flex1]}>
-                        <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}>
+                        <Text
+                            numberOfLines={1}
+                            style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}
+                        >
                             {Localize.t('global.exchanges')}:
                         </Text>
                     </View>
                     <View style={styles.separator} />
                     <View style={[AppStyles.flex1]}>
-                        <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}>
+                        <Text
+                            numberOfLines={1}
+                            style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}
+                        >
                             {Localize.t('global.assets')}:
                         </Text>
                     </View>
@@ -302,18 +301,17 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     <ScrollView style={[AppStyles.flex1]}>{this.renderCurrencies()}</ScrollView>
                 </View>
 
-                <SafeAreaView style={styles.footer}>
-                    <Footer>
-                        <Button
-                            testID="add-and-sign-button"
-                            block
-                            isDisabled={!selectedCurrency}
-                            onPress={this.addCurrency}
-                            style={[AppStyles.buttonGreen]}
-                            label={Localize.t('asset.addAndSign')}
-                        />
-                    </Footer>
-                </SafeAreaView>
+                <Footer safeArea style={styles.footer}>
+                    <Button
+                        numberOfLines={1}
+                        testID="add-and-sign-button"
+                        block
+                        isDisabled={!selectedCurrency}
+                        onPress={this.addCurrency}
+                        style={[AppStyles.buttonGreen]}
+                        label={Localize.t('asset.addAndSign')}
+                    />
+                </Footer>
             </View>
         );
     };

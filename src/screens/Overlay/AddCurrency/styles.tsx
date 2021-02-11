@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         color: AppColors.black,
     },
     footer: {
-        marginBottom: AppSizes.navigationBarHeight * 1.1,
+        marginBottom: AppSizes.navigationBarHeight * 1.2,
     },
 });
 

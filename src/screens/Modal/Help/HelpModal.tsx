@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, ImageBackground, BackHandler } from 'react-native';
+import { View, Text, ImageBackground, BackHandler, ScrollView } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
@@ -81,9 +81,9 @@ class HelpView extends Component<Props, State> {
                     </View>
                 </View>
 
-                <View style={[AppStyles.flex1, AppStyles.padding]}>
+                <ScrollView bounces={false} style={AppStyles.padding} contentContainerStyle={[AppStyles.flex1]}>
                     <Text style={AppStyles.p}>{content}</Text>
-                </View>
+                </ScrollView>
             </ImageBackground>
         );
     }

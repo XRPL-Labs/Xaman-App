@@ -84,10 +84,8 @@ class LabelStep extends Component<Props, State> {
                             testID="back-button"
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            onPress={() => {
-                                goBack();
-                            }}
                             secondary
+                            onPress={goBack}
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>
@@ -96,9 +94,7 @@ class LabelStep extends Component<Props, State> {
                             isDisabled={!label.trim()}
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
-                            onPress={() => {
-                                this.goNext();
-                            }}
+                            onPress={this.goNext}
                         />
                     </View>
                 </Footer>

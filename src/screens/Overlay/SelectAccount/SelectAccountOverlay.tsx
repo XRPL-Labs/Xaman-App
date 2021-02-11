@@ -255,10 +255,13 @@ class SelectAccountOverlay extends Component<Props, State> {
 
                         <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                             <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                                <Text style={[AppStyles.h5]}>{Localize.t('account.myAccounts')}</Text>
+                                <Text numberOfLines={1} style={[AppStyles.h5]}>
+                                    {Localize.t('account.myAccounts')}
+                                </Text>
                             </View>
                             <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                                 <Button
+                                    numberOfLines={1}
                                     light
                                     roundedSmall
                                     isDisabled={false}

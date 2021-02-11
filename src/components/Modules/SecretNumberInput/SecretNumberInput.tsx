@@ -59,13 +59,16 @@ class SecretNumberInput extends Component<Props, State> {
             rowChecksumError: false,
         };
 
+        this.allFilled = false;
+    }
+
+    componentDidMount() {
+        const { readonly } = this.props;
         // set first row/col value if not readonly
-        if (!props.readonly) {
+        if (!readonly) {
             const defaultValue = Math.floor(Math.random() * 9);
             this.setValue(0, 0, defaultValue);
         }
-
-        this.allFilled = false;
     }
 
     static getDerivedStateFromProps(props: Props, state: State) {

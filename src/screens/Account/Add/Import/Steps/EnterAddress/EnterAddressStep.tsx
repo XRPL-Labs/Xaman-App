@@ -158,9 +158,7 @@ class EnterAddressStep extends Component<Props, State> {
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            onPress={() => {
-                                goBack();
-                            }}
+                            onPress={goBack}
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>

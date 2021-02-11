@@ -464,11 +464,14 @@ class HomeView extends Component<Props, State> {
             <View style={[AppStyles.flex6, styles.currencyList]} testID="activated-account-container">
                 <View style={[AppStyles.row, AppStyles.centerContent, styles.trustLinesHeader]}>
                     <View style={[AppStyles.flex5, AppStyles.centerContent]}>
-                        <Text style={[AppStyles.pbold]}>{Localize.t('home.otherAssets')}</Text>
+                        <Text numberOfLines={1} style={[AppStyles.pbold]}>
+                            {Localize.t('home.otherAssets')}
+                        </Text>
                     </View>
                     {isSpendable && (
                         <View style={[AppStyles.flex5]}>
                             <Button
+                                numberOfLines={1}
                                 testID="add-asset-button"
                                 label={Localize.t('home.addAsset')}
                                 onPress={this.addCurrency}
@@ -674,7 +677,9 @@ class HomeView extends Component<Props, State> {
         return (
             <>
                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                    <Text style={[AppStyles.flex1, styles.balanceLabel]}>{Localize.t('global.balance')}</Text>
+                    <Text numberOfLines={1} style={[AppStyles.flex1, styles.balanceLabel]}>
+                        {Localize.t('global.balance')}
+                    </Text>
 
                     <TouchableOpacity style={AppStyles.paddingRightSml} onPress={this.toggleDiscreetMode}>
                         <Text style={[styles.cardSmallLabel]}>

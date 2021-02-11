@@ -80,7 +80,7 @@ class PushNotificationSetupView extends Component<Props, State> {
                     </View>
 
                     <View style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                        <Text style={[AppStyles.h5, AppStyles.strong]}>
+                        <Text style={[AppStyles.h5, AppStyles.strong, AppStyles.textCenterAligned]}>
                             {Localize.t('setupPermissions.enableNotifications')}
                         </Text>
                         <Spacer size={20} />
@@ -91,9 +91,9 @@ class PushNotificationSetupView extends Component<Props, State> {
                 </View>
 
                 <Footer style={[AppStyles.paddingBottom]}>
-                    <Button light label={Localize.t('global.maybeLater')} onPress={this.nextStep} />
+                    <Button numberOfLines={1} light label={Localize.t('global.maybeLater')} onPress={this.nextStep} />
                     <Spacer />
-                    <Button label={Localize.t('global.yes')} onPress={this.requestPermission} />
+                    <Button numberOfLines={1} label={Localize.t('global.yes')} onPress={this.requestPermission} />
                 </Footer>
             </SafeAreaView>
         );

@@ -136,7 +136,9 @@ class NodeListView extends Component<Props, State> {
     renderSectionHeader = ({ section: { title } }: any) => {
         return (
             <View style={styles.sectionHeader}>
-                <Text style={styles.sectionHeaderText}>{title}</Text>
+                <Text numberOfLines={1} style={styles.sectionHeaderText}>
+                    {title}
+                </Text>
             </View>
         );
     };

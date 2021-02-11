@@ -26,8 +26,13 @@ class ExplainActivationStep extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
+    goNext = () => {
+        const { goNext } = this.context;
+        goNext('SecurityStep');
+    };
+
     render() {
-        const { goNext, goBack } = this.context;
+        const { goBack } = this.context;
 
         return (
             <SafeAreaView testID="account-generate-explain-activation-view" style={[AppStyles.container]}>
@@ -62,18 +67,14 @@ class ExplainActivationStep extends Component<Props, State> {
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            onPress={() => {
-                                goBack();
-                            }}
+                            onPress={goBack}
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
                             testID="next-button"
                             label={Localize.t('global.nextIUnderstand')}
-                            onPress={() => {
-                                goNext('SecurityStep');
-                            }}
+                            onPress={this.goNext}
                             textStyle={AppStyles.strong}
                         />
                     </View>

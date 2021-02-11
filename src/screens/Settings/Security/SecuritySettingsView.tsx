@@ -249,7 +249,9 @@ class SecuritySettingsView extends Component<Props, State> {
                         }}
                     >
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('settings.changePasscode')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.changePasscode')}
+                            </Text>
                         </View>
 
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
@@ -263,11 +265,13 @@ class SecuritySettingsView extends Component<Props, State> {
                         onPress={this.showLogoutTimePicker}
                     >
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('global.autoLock')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('global.autoLock')}
+                            </Text>
                         </View>
 
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                            <Text style={[styles.value]}>
+                            <Text numberOfLines={1} style={[styles.value]}>
                                 {find(TIME_ITEMS, { value: coreSettings.minutesAutoLock }).title}
                             </Text>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
@@ -276,17 +280,23 @@ class SecuritySettingsView extends Component<Props, State> {
 
                     <View style={styles.row}>
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('settings.biometricAuthentication')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.biometricAuthentication')}
+                            </Text>
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
                             <Switch checked={biometricEnabled} onChange={this.biometricMethodChange} />
                         </View>
                     </View>
 
-                    <Text style={styles.descriptionText}>{Localize.t('settings.additionalSecurity')}</Text>
+                    <Text numberOfLines={1} style={styles.descriptionText}>
+                        {Localize.t('settings.additionalSecurity')}
+                    </Text>
                     <View style={styles.row}>
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('settings.eraseData')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.eraseData')}
+                            </Text>
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
                             <Switch checked={coreSettings.purgeOnBruteForce} onChange={this.eraseDataChange} />
@@ -294,10 +304,14 @@ class SecuritySettingsView extends Component<Props, State> {
                     </View>
                     <InfoMessage flat label={Localize.t('settings.eraseDataDescription')} type="error" />
 
-                    <Text style={styles.descriptionText}>{Localize.t('global.other')}</Text>
+                    <Text numberOfLines={1} style={styles.descriptionText}>
+                        {Localize.t('global.other')}
+                    </Text>
                     <View style={styles.row}>
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('settings.hideBalanceByDefault')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.hideBalanceByDefault')}
+                            </Text>
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
                             <Switch checked={coreSettings.discreetMode} onChange={this.discreetModeChange} />
@@ -308,7 +322,9 @@ class SecuritySettingsView extends Component<Props, State> {
                         <>
                             <View style={styles.row}>
                                 <View style={[AppStyles.flex3]}>
-                                    <Text style={styles.label}>{Localize.t('settings.blockTakingScreenshots')}</Text>
+                                    <Text numberOfLines={1} style={styles.label}>
+                                        {Localize.t('settings.blockTakingScreenshots')}
+                                    </Text>
                                 </View>
                                 <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
                                     <Switch checked={isFlagSecure} onChange={this.toggleFlagSecure} />

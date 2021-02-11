@@ -64,6 +64,14 @@ class PassphraseStep extends Component<Props, State> {
         }
     };
 
+    onPassphraseChange = (value: string, isValid: boolean) => {
+        this.setState({ passphrase: { value, isValid } });
+    };
+
+    onPassphraseConfirmChange = (passphrase_confirmation: string) => {
+        this.setState({ passphrase_confirmation });
+    };
+
     render() {
         const { goBack } = this.context;
         const { passphrase } = this.state;
@@ -86,9 +94,7 @@ class PassphraseStep extends Component<Props, State> {
                         editable
                         placeholder={Localize.t('account.enterPassword')}
                         minLength={8}
-                        onChange={(value: string, isValid: boolean) => {
-                            this.setState({ passphrase: { value, isValid } });
-                        }}
+                        onChange={this.onPassphraseChange}
                         validate
                         autoFocus
                     />
@@ -98,7 +104,7 @@ class PassphraseStep extends Component<Props, State> {
                         editable={passphrase.isValid}
                         selectTextOnFocus={passphrase.isValid}
                         placeholder={Localize.t('account.repeatPassword')}
-                        onChange={(passphrase_confirmation) => this.setState({ passphrase_confirmation })}
+                        onChange={this.onPassphraseConfirmChange}
                         validate={false}
                     />
                 </KeyboardAvoidingView>
@@ -109,10 +115,8 @@ class PassphraseStep extends Component<Props, State> {
                             testID="back-button"
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            onPress={() => {
-                                goBack();
-                            }}
                             secondary
+                            onPress={goBack}
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>
@@ -121,9 +125,7 @@ class PassphraseStep extends Component<Props, State> {
                             isDisabled={!passphrase.isValid}
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
-                            onPress={() => {
-                                this.goNext();
-                            }}
+                            onPress={this.goNext}
                         />
                     </View>
                 </Footer>

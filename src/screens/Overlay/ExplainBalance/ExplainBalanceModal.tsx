@@ -237,12 +237,15 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
                         <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                             <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                                <Text style={[AppStyles.h5, AppStyles.strong]}>{Localize.t('global.balance')}</Text>
+                                <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
+                                    {Localize.t('global.balance')}
+                                </Text>
                             </View>
                             <View
                                 style={[AppStyles.row, AppStyles.flex1, AppStyles.paddingRightSml, AppStyles.flexEnd]}
                             >
                                 <Button
+                                    numberOfLines={1}
                                     light
                                     roundedSmall
                                     isDisabled={false}

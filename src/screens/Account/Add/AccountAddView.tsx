@@ -172,6 +172,7 @@ class AccountAddView extends Component<Props, State> {
                             </Text>
                             <View style={[AppStyles.centerAligned, AppStyles.centerContent]}>
                                 <Button
+                                    numberOfLines={1}
                                     testID="account-generate-button"
                                     label={Localize.t('account.generateNewAccount')}
                                     onPress={this.goToGenerate}
@@ -180,6 +181,7 @@ class AccountAddView extends Component<Props, State> {
                                 <Spacer />
 
                                 <Button
+                                    numberOfLines={1}
                                     testID="account-import-button"
                                     label={Localize.t('account.importExisting')}
                                     onPress={this.goToImport}

@@ -169,6 +169,7 @@ class ShareAccountModal extends Component<Props, State> {
                         <Spacer size={20} />
 
                         <Button
+                            numberOfLines={1}
                             light
                             rounded
                             icon="IconShare"
@@ -179,6 +180,7 @@ class ShareAccountModal extends Component<Props, State> {
                         <Spacer size={20} />
 
                         <Button
+                            numberOfLines={1}
                             light
                             rounded
                             label={Localize.t('account.copyAddress')}

@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native';
 
-import { hasNotch } from '@common/helpers/device';
 import { AppSizes } from '@theme';
 
 const styles = StyleSheet.create({
@@ -9,9 +8,6 @@ const styles = StyleSheet.create({
         padding: AppSizes.paddingSml,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    safeArea: {
-        paddingBottom: AppSizes.paddingSml + (hasNotch() ? 34 : 0),
     },
 });
 

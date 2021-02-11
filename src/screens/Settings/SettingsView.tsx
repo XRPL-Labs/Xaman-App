@@ -50,10 +50,12 @@ class SettingsView extends Component<Props, State> {
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         <Icon size={25} name={icon} />
                     </View>
-                    <View style={[AppStyles.flex3, AppStyles.centerContent]}>
-                        <Text style={[styles.rowLabel]}>{label}</Text>
+                    <View style={[AppStyles.flex4, AppStyles.centerContent]}>
+                        <Text numberOfLines={1} style={[styles.rowLabel]}>
+                            {label}
+                        </Text>
                     </View>
-                    <View style={[AppStyles.flex2, AppStyles.rightAligned]}>
+                    <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
                         <Icon size={25} name="IconChevronRight" />
                     </View>
                 </View>

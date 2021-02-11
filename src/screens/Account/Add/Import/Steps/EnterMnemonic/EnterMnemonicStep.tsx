@@ -383,13 +383,17 @@ class EnterMnemonicStep extends Component<Props, State> {
 
         return (
             <SafeAreaView testID="account-import-enter-mnemonic-view" style={[AppStyles.container]}>
-                <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
+                <Text
+                    numberOfLines={1}
+                    style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}
+                >
                     {Localize.t('account.pleaseEnterYourMnemonic')}
                 </Text>
 
                 <Spacer size={10} />
 
                 <Text
+                    numberOfLines={1}
                     style={[
                         AppStyles.subtext,
                         AppStyles.bold,
@@ -438,6 +442,7 @@ class EnterMnemonicStep extends Component<Props, State> {
 
                 <View style={[AppStyles.stretchSelf, AppStyles.paddingHorizontal, AppStyles.paddingBottomSml]}>
                     <Button
+                        numberOfLines={1}
                         secondary
                         onPress={this.showScanner}
                         roundedSmall
@@ -469,9 +474,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                             secondary
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            onPress={() => {
-                                goBack();
-                            }}
+                            onPress={goBack}
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>

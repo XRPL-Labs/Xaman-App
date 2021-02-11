@@ -126,6 +126,7 @@
     "setFlag": "Set Flag",
     "clearFlag": "Clear Flag",
     "messageKey": "MessageKey",
+    "hidden": "Hidden",
     "transferRate": "TransferRate",
     "emailHash": "EmailHash",
     "domain": "Domain",
