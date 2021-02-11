@@ -1609,11 +1609,13 @@ exports[`Storyshots SegmentButton Three Button 1`] = `
               "alignItems": "center",
               "flex": 1,
               "justifyContent": "center",
+              "paddingHorizontal": 10,
             },
           ]
         }
       >
         <Text
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1656,11 +1658,13 @@ exports[`Storyshots SegmentButton Three Button 1`] = `
               "alignItems": "center",
               "flex": 1,
               "justifyContent": "center",
+              "paddingHorizontal": 10,
             },
           ]
         }
       >
         <Text
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1701,11 +1705,13 @@ exports[`Storyshots SegmentButton Three Button 1`] = `
               "alignItems": "center",
               "flex": 1,
               "justifyContent": "center",
+              "paddingHorizontal": 10,
             },
           ]
         }
       >
         <Text
+          numberOfLines={1}
           style={
             Array [
               Object {
