@@ -11,6 +11,7 @@ import { View, Text, Image, ImageBackground, ScrollView } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 
 // helpers
+import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
@@ -123,6 +124,20 @@ class AccountListView extends Component<Props, State> {
         this.setState({
             reorderEnabled: !reorderEnabled,
         });
+    };
+
+    onItemDragStart = () => {
+        this.setState({
+            scrollEnabled: false,
+        });
+        VibrateHapticFeedback('impactLight');
+    };
+
+    onItemDragEnd = () => {
+        this.setState({
+            scrollEnabled: true,
+        });
+        VibrateHapticFeedback('impactLight');
     };
 
     renderItem = (item: AccountSchema) => {
@@ -257,6 +272,7 @@ class AccountListView extends Component<Props, State> {
                         style={[AppStyles.flex1]}
                         horizontal={false}
                         directionalLockEnabled
+                        contentContainerStyle={AppStyles.flex1}
                     >
                         <View style={[styles.rowAddContainer]}>
                             {reorderEnabled ? (
@@ -292,16 +308,8 @@ class AccountListView extends Component<Props, State> {
                             marginChildrenTop={10}
                             keyExtractor={(item, index) => `${item.address}${index}` || String(index)}
                             renderItem={this.renderItem}
-                            onDragStart={() => {
-                                this.setState({
-                                    scrollEnabled: false,
-                                });
-                            }}
-                            onDragEnd={() => {
-                                this.setState({
-                                    scrollEnabled: true,
-                                });
-                            }}
+                            onDragStart={this.onItemDragStart}
+                            onDragEnd={this.onItemDragEnd}
                             onDataChange={this.onAccountReorder}
                             onClickItem={this.onItemPress}
                             sortable={reorderEnabled}
