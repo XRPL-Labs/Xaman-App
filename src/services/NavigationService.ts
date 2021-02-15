@@ -118,10 +118,15 @@ class NavigationService extends EventEmitter {
 
     navigatorCommandListener = (name: string, params: any) => {
         switch (name) {
+            case 'push':
+                this.setCurrentScreen(params.componentId);
+                break;
+            case 'showModal':
+                this.setCurrentScreen(params.layout.children[0].id);
+                break;
             case 'showOverlay':
                 this.setCurrentOverlay(params.layout.id);
                 break;
-
             case 'setRoot':
                 this.setCurrentRoot(params.layout.root.id);
                 this.emit('setRoot', params.layout.root.id);
