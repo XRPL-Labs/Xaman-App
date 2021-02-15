@@ -318,12 +318,13 @@ class DetailsStep extends Component<Props, State> {
 
         return (
             <View testID="send-details-view" style={[styles.container]}>
-                <ScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
-                    <KeyboardAvoidingView
-                        enabled={Platform.OS === 'ios'}
-                        keyboardVerticalOffset={Header.Height + AppSizes.extraKeyBoardPadding}
-                        behavior="position"
-                    >
+                <KeyboardAvoidingView
+                    enabled={Platform.OS === 'ios'}
+                    behavior="padding"
+                    style={[AppStyles.flex1, AppStyles.stretchSelf]}
+                    keyboardVerticalOffset={Header.Height + AppSizes.extraKeyBoardPadding}
+                >
+                    <ScrollView>
                         {/* Source Account */}
                         <View
                             onLayout={this.setGradientHeight}
@@ -425,8 +426,8 @@ class DetailsStep extends Component<Props, State> {
                                 </View>
                             </View>
                         </View>
-                    </KeyboardAvoidingView>
-                </ScrollView>
+                    </ScrollView>
+                </KeyboardAvoidingView>
 
                 {/* Bottom Bar */}
                 <Footer style={[AppStyles.row]} safeArea>

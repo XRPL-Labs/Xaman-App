@@ -57,7 +57,7 @@ const Sizes = {
 
     borderRadius: 8,
 
-    extraKeyBoardPadding: 40,
+    extraKeyBoardPadding: 20,
 
     scale: (size: number) => (width / guidelineBaseWidth) * size,
     verticalScale: (size: number) => (height / guidelineBaseHeight) * size,

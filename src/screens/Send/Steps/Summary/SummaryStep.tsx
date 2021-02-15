@@ -31,14 +31,14 @@ import Preferences from '@common/libs/preferences';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { AmountInput, Button, Footer, Spacer, TextInput, SwipeButton } from '@components/General';
+import { AmountInput, Button, Footer, Spacer, TextInput, SwipeButton, Header } from '@components/General';
 import { AccountPicker } from '@components/Modules';
 
 // locale
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles, AppColors, AppSizes } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
@@ -384,8 +384,13 @@ class SummaryStep extends Component<Props, State> {
 
         return (
             <View testID="send-summary-view" style={[styles.container]}>
-                <ScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
-                    <KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior="position">
+                <KeyboardAvoidingView
+                    enabled={Platform.OS === 'ios'}
+                    behavior="padding"
+                    style={[AppStyles.flex1, AppStyles.stretchSelf]}
+                    keyboardVerticalOffset={Header.Height + AppSizes.extraKeyBoardPadding}
+                >
+                    <ScrollView>
                         <View onLayout={this.setGradientHeight} style={[styles.rowItem, styles.rowItemGrey]}>
                             <Animated.Image
                                 source={Images.SideGradient}
@@ -511,8 +516,8 @@ class SummaryStep extends Component<Props, State> {
                                 numberOfLines={1}
                             />
                         </View>
-                    </KeyboardAvoidingView>
-                </ScrollView>
+                    </ScrollView>
+                </KeyboardAvoidingView>
                 {/* Bottom Bar */}
                 <Footer safeArea>
                     <SwipeButton
