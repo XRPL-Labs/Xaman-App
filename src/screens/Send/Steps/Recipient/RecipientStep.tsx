@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import { Results } from 'realm';
-import { isEmpty, flatMap, remove, get, uniqBy, toNumber } from 'lodash';
+import { isEmpty, flatMap, remove, get, uniqBy, toNumber, findIndex } from 'lodash';
 import { View, Text, SectionList, Alert, ActivityIndicator } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
@@ -16,7 +16,7 @@ import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
-import { BackendService } from '@services';
+import { BackendService, LedgerService } from '@services';
 
 // components
 import { Button, TextInput, Footer, InfoMessage } from '@components/General';
@@ -448,6 +448,34 @@ class RecipientStep extends Component<Props, State> {
                 }
             }
 
+            // check if recipient have same trustline for sending IOU
+            if (typeof currency === 'object') {
+                const destinationLines = await LedgerService.getAccountLines(destination.address);
+                const { lines } = destinationLines;
+
+                const haveSameTrustLine =
+                    findIndex(lines, (l: any) => {
+                        return l.currency === currency.currency.currency && l.account === currency.currency.issuer;
+                    }) !== -1;
+
+                if (!haveSameTrustLine && currency.currency.issuer !== destination.address) {
+                    Navigator.showAlertModal({
+                        type: 'error',
+                        text: Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine'),
+                        buttons: [
+                            {
+                                text: Localize.t('global.ok'),
+                                onPress: this.clearDestination,
+                                light: false,
+                            },
+                        ],
+                    });
+
+                    // don't move to next step
+                    return;
+                }
+            }
+
             // if account is set to black hole then reject sending
             if (destinationInfo.blackHole) {
                 Navigator.showAlertModal({
@@ -456,12 +484,7 @@ class RecipientStep extends Component<Props, State> {
                     buttons: [
                         {
                             text: Localize.t('global.back'),
-                            onPress: () => {
-                                setDestination(undefined);
-                                this.setState({
-                                    searchText: '',
-                                });
-                            },
+                            onPress: this.clearDestination,
                             type: 'dismiss',
                             light: false,
                         },

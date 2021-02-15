@@ -2,8 +2,7 @@
  * Send Screen
  */
 
-import { findIndex, find } from 'lodash';
-import BigNumber from 'bignumber.js';
+import { find } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Keyboard } from 'react-native';
@@ -11,13 +10,11 @@ import { View, Keyboard } from 'react-native';
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
-import { LedgerService } from '@services';
 import { AppScreens } from '@common/constants';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
-import LedgerExchange from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
 import { Destination } from '@common/libs/ledger/parser/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
@@ -162,79 +159,27 @@ class SendView extends Component<Props, State> {
         } else {
             // IOU
 
-            // get destination trust lines
-            const destinationLines = await LedgerService.getAccountLines(destination.address);
-            const { lines } = destinationLines;
+            // IF issuer has transfer rate:
+            if (currency.transfer_rate) {
+                // FIXME
+                /**
+                 *      NOTIFICATION (question) to user: who pays fee of 0.X % (transfer rate?)
+                 *          Me (1.002 » 1):
+                 *              DeliverMin + Transfer Rate
+                 *          Recipient (1 » deliver 0.998):
+                 *              DeliverMin
+                 */
 
-            const haveSameTrustLine =
-                findIndex(lines, (l: any) => {
-                    return l.currency === currency.currency.currency && l.account === currency.currency.issuer;
-                }) !== -1;
+                payment.TransferRate = currency.transfer_rate;
+            }
 
-            // IF destination has same Trust Line or it's the issuer
-            if (haveSameTrustLine || currency.currency.issuer === destination.address) {
-                // IF issuer has transfer rate:
-                if (currency.transfer_rate) {
-                    // FIXME
-                    /**
-                     *      NOTIFICATION (question) to user: who pays fee of 0.X % (transfer rate?)
-                     *          Me (1.002 » 1):
-                     *              DeliverMin + Transfer Rate
-                     *          Recipient (1 » deliver 0.998):
-                     *              DeliverMin
-                     */
+            payment.Amount = {
+                currency: currency.currency.currency,
+                issuer: currency.currency.issuer,
+                value: amount,
+            };
 
-                    payment.TransferRate = currency.transfer_rate;
-                }
-
-                payment.Amount = {
-                    currency: currency.currency.currency,
-                    issuer: currency.currency.issuer,
-                    value: amount,
-                };
-
-                if (currency.transfer_rate || currency.currency.issuer === source.address) {
-                    payment.Flags = [txFlags.Payment.PartialPayment];
-                }
-            } else {
-                // *  Amount = XRP rounded up
-                // *  SendMax = IOU
-                const PAIR = { issuer: currency.currency.issuer, currency: currency.currency.currency };
-                const ledgerExchange = new LedgerExchange(PAIR);
-                // sync with latest order book
-                await ledgerExchange.initialize();
-
-                // get liquidity
-                const liquidity = await ledgerExchange.getLiquidity('buy', Number(amount));
-
-                // TODO: show error
-                // not enough liquidity
-                if (!liquidity.safe || liquidity.errors?.length > 0) {
-                    // TODO: handle better
-                    Navigator.showAlertModal({
-                        type: 'error',
-                        text: Localize.t('send.unableToSendPaymentNotEnoughLiquidity'),
-                        buttons: [
-                            {
-                                text: Localize.t('global.ok'),
-                                onPress: () => {},
-                                light: false,
-                            },
-                        ],
-                    });
-                    return;
-                }
-
-                const xrpRoundedUp = new BigNumber(amount).multipliedBy(liquidity.rate).decimalPlaces(6).toString(10);
-
-                // @ts-ignore
-                payment.Amount = xrpRoundedUp;
-                payment.SendMax = {
-                    currency: currency.currency.currency,
-                    issuer: currency.currency.issuer,
-                    value: amount,
-                };
-
+            if (currency.transfer_rate || currency.currency.issuer === source.address) {
                 payment.Flags = [txFlags.Payment.PartialPayment];
             }
         }
