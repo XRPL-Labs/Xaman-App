@@ -27,8 +27,7 @@ class MnemonicAlertStep extends Component<Props, State> {
     context: React.ContextType<typeof StepsContext>;
 
     openFAQ = () => {
-        const url =
-            'https://support.xumm.app/hc/en-us/articles/360018166039-How-does-XUMM-security-compare-to-a-hardware-wallet-';
+        const url = 'http://xumm.app/redir/faq/security-hardware/en';
 
         Linking.canOpenURL(url).then((supported) => {
             if (supported) {
