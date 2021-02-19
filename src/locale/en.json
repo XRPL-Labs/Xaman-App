@@ -256,7 +256,8 @@
     "unableToFetchCurrencyRate": "Unable to fetch currency rate, please make sure you are connected to the internet",
     "signRequest": "Sign Request",
     "openForDetails": "Open for detail",
-    "scanAQRCode": "Scan a QR code"
+    "scanAQRCode": "Scan a QR code",
+    "unableToLoadXApp": "Unable to load the xApp!"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",

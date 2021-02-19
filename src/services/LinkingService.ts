@@ -133,9 +133,10 @@ class LinkingService extends EventEmitter {
             {
                 uri: url,
                 origin: PayloadOrigin.DEEP_LINK,
+                originData: { url },
             },
         );
-    }
+    };
 
     handle = (url: string) => {
         const detected = new StringTypeDetector(url);
@@ -168,7 +169,7 @@ class LinkingService extends EventEmitter {
 
     handleDeepLink = async ({ url }: { url: string }) => {
         // ignore if the app is not initialized or not url
-        if (!url || typeof (url) !== 'string') return;
+        if (!url || typeof url !== 'string') return;
 
         if (url.startsWith('https://xumm.app/detect/')) {
             this.handleXAPPLink(url);

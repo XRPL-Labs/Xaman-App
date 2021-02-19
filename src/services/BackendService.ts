@@ -12,7 +12,7 @@ import { Platform } from 'react-native';
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
-import { GetAppReadableVersion, GetAppVersionCode, GetDeviceUniqueId } from '@common/helpers/device';
+import { GetAppReadableVersion, GetDeviceUniqueId } from '@common/helpers/device';
 
 import { CurrencySchema } from '@store/schemas/latest';
 
@@ -139,7 +139,7 @@ class BackendService {
             .then(async (res: { payloads: PayloadType[] }) => {
                 const { payloads } = res;
 
-                PushNotificationsService.setBadge(payloads.length);
+                PushNotificationsService.updateBadge(payloads.length);
 
                 if (!isEmpty(payloads)) {
                     const result = await Promise.all(flatMap(payloads, Payload.from));
@@ -245,7 +245,7 @@ class BackendService {
                 }
 
                 if (badge) {
-                    PushNotificationsService.setBadge(badge);
+                    PushNotificationsService.updateBadge(badge);
                 }
             })
             .catch((error: string) => {
@@ -274,11 +274,12 @@ class BackendService {
         return ApiService.accountAdvisory.get(address);
     };
 
-    getXAppShortList = (account: string) => {
-        const version = GetAppVersionCode();
-        const locale = Localize.getCurrentLocale();
+    getXAppShortList = () => {
+        return ApiService.xAppsShortList.get();
+    };
 
-        return ApiService.xAppsShortList.get({ account, version, locale });
+    getXAppLaunchToken = (xAppId: string, data: any) => {
+        return ApiService.xAppLaunch.post({ xAppId }, data);
     };
 
     getCurrenciesList = () => {

@@ -42,7 +42,6 @@ export interface State {
     account: AccountSchema;
     isLoading: boolean;
     apps: any;
-    moreUrl: string;
 }
 
 /* Component ==================================================================== */
@@ -72,7 +71,6 @@ class HomeActionsOverlay extends Component<Props, State> {
             account: AccountRepository.getDefaultAccount(),
             isLoading: true,
             apps: [],
-            moreUrl: '',
         };
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
@@ -86,15 +84,12 @@ class HomeActionsOverlay extends Component<Props, State> {
     }
 
     fetchApps = () => {
-        const { account } = this.state;
-
-        BackendService.getXAppShortList(account.address).then((resp: any) => {
-            const { apps, moreUrl } = resp;
+        BackendService.getXAppShortList().then((resp: any) => {
+            const { apps } = resp;
 
             this.setState({
                 apps,
                 isLoading: false,
-                moreUrl,
             });
         });
     };
@@ -135,20 +130,20 @@ class HomeActionsOverlay extends Component<Props, State> {
     };
 
     onViewMoreAppsPress = () => {
-        const { moreUrl } = this.state;
+        const moreIdentifier = 'xumm.more';
 
-        this.openURL(moreUrl, 'XApps');
+        this.openXApp(moreIdentifier, 'XApps');
     };
 
     onAppPress = (index: number) => {
         const { apps } = this.state;
 
-        const { location, title } = apps[index];
+        const { identifier, title } = apps[index];
 
-        this.openURL(location, title);
+        this.openXApp(identifier, title);
     };
 
-    openURL = (location: string, title: string) => {
+    openXApp = (identifier: string, title: string) => {
         const { account } = this.state;
 
         this.slideDown();
@@ -161,7 +156,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                     modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                 },
                 {
-                    uri: location,
+                    identifier,
                     title,
                     account,
                 },

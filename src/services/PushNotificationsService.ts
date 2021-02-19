@@ -33,7 +33,7 @@ declare interface PushNotificationsService {
 export enum NotificationType {
     SignRequest = 'SignRequest',
     OpenXApp = 'OpenXApp',
-    OpenTx = 'OpenTx'
+    OpenTx = 'OpenTx',
 }
 
 /* Service  ==================================================================== */
@@ -68,7 +68,7 @@ class PushNotificationsService extends EventEmitter {
         });
     };
 
-    setBadge = async (badge?: number) => {
+    updateBadge = async (badge?: number) => {
         // this.badge = badge;
         // set badge count on tabbar
         if (typeof badge !== 'undefined') {
@@ -146,7 +146,7 @@ class PushNotificationsService extends EventEmitter {
             default:
                 return undefined;
         }
-    }
+    };
 
     isSignRequest = (notification: any) => {
         return get(notification, ['data', 'category']) === 'SIGNTX';
@@ -162,18 +162,15 @@ class PushNotificationsService extends EventEmitter {
 
     /* Handle notifications within the app when app is running in foreground */
     handleNotification = (message: FirebaseMessagingTypes.RemoteMessage) => {
-        const isSignRequest = this.isSignRequest(message);
-        const shouldShowNotification =
-            isSignRequest && NavigationService.getCurrentScreen() !== AppScreens.Modal.ReviewTransaction;
+        const shouldShowNotification = NavigationService.getCurrentScreen() !== AppScreens.Modal.ReviewTransaction;
 
         LocalNotificationModule.complete(message.messageId, shouldShowNotification);
 
-        if (isSignRequest) {
-            this.emit('signRequestUpdate');
-        }
+        // emit the event so we can update the event list
+        this.emit('signRequestUpdate');
 
         // update badge
-        this.setBadge();
+        this.updateBadge();
     };
 
     handleSingRequest = async (notification: any) => {
@@ -196,10 +193,11 @@ class PushNotificationsService extends EventEmitter {
                     this.logger.error('Cannot fetch payload from backend', payloadUUID);
                 });
         }
-    }
+    };
 
     handleOpenXApp = (notification: any) => {
-        const xappUrl = get(notification, ['data', 'xappUrl']);
+        const xappIdentifier = get(notification, ['data', 'xappIdentifier']);
+        const xappTitle = get(notification, ['data', 'xappTitle']);
 
         Navigator.showModal(
             AppScreens.Modal.XAppBrowser,
@@ -208,11 +206,13 @@ class PushNotificationsService extends EventEmitter {
                 modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
             },
             {
-                uri: xappUrl,
+                identifier: xappIdentifier,
+                title: xappTitle,
                 origin: PayloadOrigin.PUSH_NOTIFICATION,
+                originData: get(notification, 'data'),
             },
         );
-    }
+    };
 
     handleOpenTx = (notification: any) => {
         const hash = get(notification, ['data', 'tx']);
@@ -223,7 +223,7 @@ class PushNotificationsService extends EventEmitter {
         if (!account) return;
 
         Navigator.showModal(AppScreens.Transaction.Details, {}, { hash, account, asModal: true });
-    }
+    };
 
     /* Handle notifications when app is open from the notification */
     handleNotificationOpen = async (notification: any) => {

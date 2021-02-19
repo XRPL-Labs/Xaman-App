@@ -1,8 +1,14 @@
 import { StyleSheet } from 'react-native';
+import { hasNotch } from '@common/helpers/device';
 
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({
     container: { flex: 1 },
+    webViewContainer: {
+        flex: 1,
+        paddingBottom: hasNotch() ? 20 : 0,
+    },
+
     loadingStyle: {
         position: 'absolute',
         left: 0,
