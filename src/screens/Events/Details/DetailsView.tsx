@@ -3,7 +3,7 @@
  */
 import { find, isEmpty, isUndefined, get } from 'lodash';
 import moment from 'moment-timezone';
-import { Navigation } from 'react-native-navigation';
+import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import React, { Component, Fragment } from 'react';
 import {
@@ -27,7 +27,7 @@ import { CoreSchema, AccountSchema } from '@store/schemas/latest';
 import CoreRepository from '@store/repositories/core';
 import AccountRepository from '@store/repositories/account';
 
-import { Payload } from '@common/libs/payload';
+import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import transactionFactory from '@common/libs/ledger/parser/transaction';
 
@@ -52,9 +52,9 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     tx?: TransactionsType;
-    hash?: string
+    hash?: string;
     account: AccountSchema;
-    asModal?: boolean
+    asModal?: boolean;
 }
 
 export interface State {
@@ -67,7 +67,7 @@ export interface State {
     incomingTx: boolean;
     scamAlert: boolean;
     showMemo: boolean;
-    isLoading: boolean
+    isLoading: boolean;
 }
 
 /* Component ==================================================================== */
@@ -148,14 +148,15 @@ class TransactionDetailsView extends Component<Props, State> {
         } else {
             Navigator.pop();
         }
-    }
+    };
 
     loadTransaction = () => {
         const { hash, account } = this.props;
 
         if (!hash) return;
 
-        LedgerService.getTransaction(hash).then((resp: any) => {
+        LedgerService.getTransaction(hash)
+            .then((resp: any) => {
                 if (get(resp, 'error')) {
                     throw new Error('Not found');
                 }
@@ -165,22 +166,26 @@ class TransactionDetailsView extends Component<Props, State> {
 
                 const transaction = transactionFactory({ tx: resp, meta });
 
-                this.setState({
-                    tx: transaction,
-                    isLoading: false,
-                    incomingTx: transaction.Destination?.address === account.address,
-                }, this.loadDetails);
-        }).catch(() => {
-            Toast(Localize.t('events.unableToLoadTheTransaction'));
-            setTimeout(this.close, 2000);
-        });
-    }
+                this.setState(
+                    {
+                        tx: transaction,
+                        isLoading: false,
+                        incomingTx: transaction.Destination?.address === account.address,
+                    },
+                    this.loadDetails,
+                );
+            })
+            .catch(() => {
+                Toast(Localize.t('events.unableToLoadTheTransaction'));
+                setTimeout(this.close, 2000);
+            });
+    };
 
     loadDetails = () => {
         this.checkForScamAlert();
         this.setPartiesDetails();
         this.setBalanceChanges();
-    }
+    };
 
     setBalanceChanges = () => {
         const { tx } = this.state;
@@ -447,6 +452,22 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx, incomingTx } = this.state;
         const { account } = this.props;
 
+        if (type === 'OpenXapp') {
+            Navigator.showModal(
+                AppScreens.Modal.XAppBrowser,
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+                },
+                {
+                    identifier: tx.getXappIdentifier(),
+                    origin: PayloadOrigin.TRANSACTION_MEMO,
+                    originData: { txid: tx.Hash },
+                },
+            );
+            return;
+        }
+
         if (type === 'Payment') {
             const params = {
                 scanResult: {
@@ -469,6 +490,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 Object.assign(params, { amount: tx.Amount.value, currency });
             }
             Navigator.push(AppScreens.Transaction.Payment, {}, params);
+            return;
         }
 
         let transaction = { Account: account.address };
@@ -895,9 +917,30 @@ class TransactionDetailsView extends Component<Props, State> {
 
     renderMemos = () => {
         const { tx } = this.state;
-        const { showMemo, scamAlert } = this.state;
+        const { showMemo, scamAlert, incomingTx } = this.state;
 
+        // if no memo or the transaction contain xApp memo return null
         if (!tx.Memos) return null;
+
+        // check for xapp memo
+        // only for payments and incoming transactions
+        if (incomingTx && !scamAlert) {
+            const xAppIdentifier = tx.getXappIdentifier();
+            if (xAppIdentifier) {
+                return (
+                    <View style={styles.memoContainer}>
+                        <Button
+                            rounded
+                            block
+                            label="Open xApp"
+                            secondary
+                            // eslint-disable-next-line react/jsx-no-bind
+                            onPress={this.onActionButtonPress.bind(null, 'OpenXapp')}
+                        />
+                    </View>
+                );
+            }
+        }
 
         return (
             <View style={styles.memoContainer}>
@@ -1402,13 +1445,11 @@ class TransactionDetailsView extends Component<Props, State> {
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                     <ActivityIndicator color={AppColors.blue} size="large" />
                     <Spacer />
-                    <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                        {Localize.t('global.pleaseWait')}
-                    </Text>
+                    <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>{Localize.t('global.pleaseWait')}</Text>
                 </View>
             </ImageBackground>
-            );
-    }
+        );
+    };
 
     render() {
         const { asModal } = this.props;
