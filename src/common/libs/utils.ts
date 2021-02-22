@@ -113,6 +113,15 @@ const NormalizeBalance = (balance: number) => {
 };
 
 /**
+ * normalize amount
+ * @param n number
+ * @returns string 1333.855222
+ */
+const NormalizeAmount = (amount: number) => {
+    return new BigNumber(amount).decimalPlaces(6).toString(10);
+};
+
+/**
  * format the date
  * @param date
  * @returns string September 4 1986 8:30 PM
@@ -168,6 +177,7 @@ export {
     Truncate,
     FormatDate,
     NormalizeBalance,
+    NormalizeAmount,
     NormalizeCurrencyCode,
     NormalizeDestination,
     VersionDiff,

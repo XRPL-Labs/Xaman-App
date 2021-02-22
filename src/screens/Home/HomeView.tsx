@@ -276,6 +276,10 @@ class HomeView extends Component<Props, State> {
         Alert.alert(Localize.t('global.warning'), Localize.t('home.exchangeAccountReadonlyExplain'));
     };
 
+    onRequestPress = () => {
+        Navigator.push(AppScreens.Transaction.Request);
+    };
+
     onShowAccountQRPress = () => {
         const { account } = this.state;
 
@@ -608,7 +612,7 @@ class HomeView extends Component<Props, State> {
                         iconPosition="right"
                         label={Localize.t('global.request')}
                         textStyle={[styles.requestButtonText]}
-                        onPress={this.onShowAccountQRPress}
+                        onPress={this.onRequestPress}
                         activeOpacity={0}
                     />
                 </View>

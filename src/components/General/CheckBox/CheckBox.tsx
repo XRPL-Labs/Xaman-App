@@ -16,7 +16,7 @@ import styles from './styles';
 interface Props {
     onPress: () => void;
     checked: boolean;
-    label: string;
+    label?: string;
     labelSmall?: string;
     description?: string;
     testID?: string;

@@ -52,6 +52,7 @@ import HomeActions from './Overlay/HomeActions';
 
 // Transaction
 import Send from './Send';
+import Request from './Request';
 import Exchange from './Exchange';
 import TransactionDetails from './Events/Details';
 
@@ -130,6 +131,7 @@ export {
     HomeActions,
     // transaction
     Send,
+    Request,
     Exchange,
     TransactionDetails,
     // addressBook

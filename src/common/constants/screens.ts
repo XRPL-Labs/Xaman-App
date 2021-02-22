@@ -60,6 +60,7 @@ const screens = {
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',
+        Request: 'app.Transaction.Request',
         Details: 'app.Transaction.Details',
         Exchange: 'app.Transaction.Exchange',
     },
