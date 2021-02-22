@@ -22,6 +22,7 @@
     "@react-native-firebase/app": "10.6.3",
     "@react-native-firebase/crashlytics": "10.6.3",
     "@react-native-firebase/messaging": "10.6.3",
+    "@veriff/react-native-sdk": "^2.3.2",
     "bignumber.js": "9.0.1",
     "fuse.js": "6.4.6",
     "i18n-js": "3.8.0",

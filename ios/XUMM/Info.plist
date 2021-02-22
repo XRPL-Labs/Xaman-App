@@ -79,6 +79,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Access to microphone is needed for KYC propose and video identification</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Enabling camera access allows you to use your camera to scan Sign Request QR-codes.</string>
 	<key>NSFaceIDUsageDescription</key>

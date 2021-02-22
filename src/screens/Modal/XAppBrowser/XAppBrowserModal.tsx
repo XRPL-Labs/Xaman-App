@@ -5,6 +5,7 @@
 import { has, get, assign } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, ActivityIndicator, BackHandler, Alert, InteractionManager } from 'react-native';
+import VeriffSdk from '@veriff/react-native-sdk';
 import { WebView } from 'react-native-webview';
 import { StringType } from 'xumm-string-decode';
 
@@ -142,6 +143,20 @@ class XAppBrowserModal extends Component<Props, State> {
         );
     };
 
+    launchVeriffKYC = async (data: any) => {
+        const { sessionUrl } = data;
+
+        if (!sessionUrl) return;
+
+        const result = await VeriffSdk.launchVeriff({
+            sessionUrl,
+        });
+        // pass the result to the xApp
+        if (this.webView) {
+            this.webView.postMessage(JSON.stringify({ method: 'kycVeriff', result }));
+        }
+    };
+
     navigateTo = (data: any) => {
         const { xApp, title } = data;
 
@@ -173,6 +188,9 @@ class XAppBrowserModal extends Component<Props, State> {
         switch (get(parsedData, 'command')) {
             case 'xAppNavigate':
                 this.navigateTo(parsedData);
+                break;
+            case 'kycVeriff':
+                this.launchVeriffKYC(parsedData);
                 break;
             case 'openSignRequest':
                 this.handleSignRequest(parsedData);
