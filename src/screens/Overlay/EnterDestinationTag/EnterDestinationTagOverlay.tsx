@@ -47,6 +47,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
     deltaY: Animated.Value;
     deltaX: Animated.Value;
     keyboardShow: boolean;
+    isOpening: boolean;
 
     static options() {
         return {
@@ -74,6 +75,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
         this.deltaX = new Animated.Value(0);
 
         this.keyboardShow = false;
+        this.isOpening = true;
     }
 
     componentDidMount() {
@@ -156,17 +158,23 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
         }, 20);
     };
 
-    onSnap = async (event: any) => {
-        const { onClose } = this.props;
+    onAlert = (event: any) => {
+        const { top, bottom } = event.nativeEvent;
 
-        const { index } = event.nativeEvent;
+        if (top && bottom) return;
 
-        if (index === 0) {
-            Navigator.dismissOverlay();
+        if (top === 'enter' && this.isOpening) {
+            this.isOpening = false;
+        }
+
+        if (bottom === 'leave' && !this.isOpening) {
+            const { onClose } = this.props;
 
             if (typeof onClose === 'function') {
                 onClose();
             }
+
+            Navigator.dismissOverlay();
         }
     };
 
@@ -207,11 +215,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
 
         return (
             <View style={AppStyles.flex1}>
-                <TouchableWithoutFeedback
-                    onPress={() => {
-                        this.slideDown();
-                    }}
-                >
+                <TouchableWithoutFeedback onPress={this.slideDown}>
                     <Animated.View
                         style={[
                             AppStyles.shadowContent,
@@ -231,7 +235,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                         this.panel = r;
                     }}
                     animatedNativeDriver
-                    onSnap={this.onSnap}
+                    onAlert={this.onAlert}
                     verticalOnly
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
@@ -242,6 +246,16 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                                 AppSizes.moderateScale(450) -
                                 AppSizes.navigationBarHeight -
                                 offsetBottom,
+                        },
+                    ]}
+                    alertAreas={[
+                        { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
+                        {
+                            id: 'top',
+                            influenceArea: {
+                                top:
+                                    AppSizes.screen.height - AppSizes.moderateScale(450) - AppSizes.navigationBarHeight,
+                            },
                         },
                     ]}
                     boundaries={{

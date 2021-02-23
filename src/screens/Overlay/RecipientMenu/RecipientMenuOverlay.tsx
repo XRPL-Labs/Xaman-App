@@ -52,6 +52,7 @@ class RecipientMenuOverlay extends Component<Props, State> {
     panel: any;
     deltaY: Animated.Value;
     deltaX: Animated.Value;
+    isOpening: boolean;
 
     static options() {
         return {
@@ -101,17 +102,23 @@ class RecipientMenuOverlay extends Component<Props, State> {
         }, 10);
     };
 
-    onSnap = async (event: any) => {
-        const { onClose } = this.props;
+    onAlert = (event: any) => {
+        const { top, bottom } = event.nativeEvent;
 
-        const { index } = event.nativeEvent;
+        if (top && bottom) return;
 
-        if (index === 0) {
-            Navigator.dismissOverlay();
+        if (top === 'enter' && this.isOpening) {
+            this.isOpening = false;
+        }
+
+        if (bottom === 'leave' && !this.isOpening) {
+            const { onClose } = this.props;
 
             if (typeof onClose === 'function') {
                 onClose();
             }
+
+            Navigator.dismissOverlay();
         }
     };
 
@@ -196,11 +203,20 @@ class RecipientMenuOverlay extends Component<Props, State> {
                         this.panel = r;
                     }}
                     animatedNativeDriver
-                    onSnap={this.onSnap}
                     verticalOnly
+                    onAlert={this.onAlert}
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
                         { y: AppSizes.screen.height - contentHeight - AppSizes.navigationBarHeight },
+                    ]}
+                    alertAreas={[
+                        { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
+                        {
+                            id: 'top',
+                            influenceArea: {
+                                top: AppSizes.screen.height - contentHeight - AppSizes.navigationBarHeight,
+                            },
+                        },
                     ]}
                     boundaries={{
                         top: AppSizes.screen.height - contentHeight - AppSizes.navigationBarHeight - 50,

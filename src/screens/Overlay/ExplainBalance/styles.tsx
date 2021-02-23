@@ -6,7 +6,7 @@ import { AppColors, AppSizes, AppFonts } from '@theme';
 const styles = StyleSheet.create({
     visibleContent: {
         // height: Sizes.screen.heightHalf + 100,
-        height: AppSizes.screen.height * 0.9,
+        height: AppSizes.heightPercentageToDP(92),
         backgroundColor: AppColors.white,
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,

@@ -46,7 +46,7 @@ class SelectAccountOverlay extends Component<Props, State> {
     panel: any;
     deltaY: Animated.Value;
     deltaX: Animated.Value;
-    onDismiss: () => void;
+    isOpening: boolean;
 
     static options() {
         return {
@@ -70,7 +70,8 @@ class SelectAccountOverlay extends Component<Props, State> {
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
         this.deltaX = new Animated.Value(0);
-        this.onDismiss = () => {};
+
+        this.isOpening = true;
     }
 
     componentDidMount() {
@@ -116,12 +117,6 @@ class SelectAccountOverlay extends Component<Props, State> {
     };
 
     slideDown = () => {
-        const { onClose } = this.props;
-
-        if (typeof onClose === 'function') {
-            onClose();
-        }
-
         setTimeout(() => {
             if (this.panel) {
                 this.panel.snapTo({ index: 0 });
@@ -129,16 +124,24 @@ class SelectAccountOverlay extends Component<Props, State> {
         }, 10);
     };
 
-    onSnap = async (event: any) => {
-        const { index } = event.nativeEvent;
+    onAlert = (event: any) => {
+        const { top, bottom } = event.nativeEvent;
 
-        if (index === 0) {
+        if (top && bottom) return;
+
+        if (top === 'enter' && this.isOpening) {
+            this.isOpening = false;
+        }
+
+        if (bottom === 'leave' && !this.isOpening) {
+            const { onClose } = this.props;
+
+            if (typeof onClose === 'function') {
+                onClose();
+            }
+
             Navigator.dismissOverlay();
         }
-    };
-
-    onCancelPress = () => {
-        this.slideDown();
     };
 
     onSelect = (account: AccountSchema) => {
@@ -214,11 +217,7 @@ class SelectAccountOverlay extends Component<Props, State> {
 
         return (
             <View style={AppStyles.flex1}>
-                <TouchableWithoutFeedback
-                    onPress={() => {
-                        this.slideDown();
-                    }}
-                >
+                <TouchableWithoutFeedback onPress={this.slideDown}>
                     <Animated.View
                         style={[
                             AppStyles.shadowContent,
@@ -238,12 +237,19 @@ class SelectAccountOverlay extends Component<Props, State> {
                         this.panel = r;
                     }}
                     animatedNativeDriver
-                    onSnap={this.onSnap}
+                    onAlert={this.onAlert}
                     verticalOnly
-                    snapPoints={[{ y: AppSizes.screen.height + 3 }, { y: AppSizes.screen.height - contentHeight }]}
+                    snapPoints={[
+                        { y: AppSizes.screen.height + 3, id: 'bottom' },
+                        { y: AppSizes.screen.height - contentHeight, id: 'top' },
+                    ]}
                     boundaries={{
                         top: AppSizes.screen.height - (contentHeight + BOUNDARY_HEIGHT),
                     }}
+                    alertAreas={[
+                        { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
+                        { id: 'top', influenceArea: { top: AppSizes.screen.height - contentHeight } },
+                    ]}
                     initialPosition={{ y: AppSizes.screen.height }}
                     animatedValueY={this.deltaY}
                     animatedValueX={this.deltaX}
@@ -265,7 +271,7 @@ class SelectAccountOverlay extends Component<Props, State> {
                                     light
                                     roundedSmall
                                     isDisabled={false}
-                                    onPress={this.onCancelPress}
+                                    onPress={this.slideDown}
                                     textStyle={[AppStyles.subtext, AppStyles.bold]}
                                     label={Localize.t('global.cancel')}
                                 />

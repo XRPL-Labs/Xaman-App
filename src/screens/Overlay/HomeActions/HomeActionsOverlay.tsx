@@ -51,6 +51,7 @@ class HomeActionsOverlay extends Component<Props, State> {
     panel: any;
     deltaY: Animated.Value;
     deltaX: Animated.Value;
+    isOpening: boolean;
 
     static options() {
         return {
@@ -75,6 +76,8 @@ class HomeActionsOverlay extends Component<Props, State> {
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
         this.deltaX = new Animated.Value(0);
+
+        this.isOpening = true;
     }
 
     componentDidMount() {
@@ -110,10 +113,16 @@ class HomeActionsOverlay extends Component<Props, State> {
         }, 20);
     };
 
-    onSnap = async (event: any) => {
-        const { index } = event.nativeEvent;
+    onAlert = (event: any) => {
+        const { top, bottom } = event.nativeEvent;
 
-        if (index === 0) {
+        if (top && bottom) return;
+
+        if (top && this.isOpening) {
+            this.isOpening = false;
+        }
+
+        if (bottom && !this.isOpening) {
             Navigator.dismissOverlay();
         }
     };
@@ -169,11 +178,7 @@ class HomeActionsOverlay extends Component<Props, State> {
 
         return (
             <View style={AppStyles.flex1}>
-                <TouchableWithoutFeedback
-                    onPress={() => {
-                        this.slideDown();
-                    }}
-                >
+                <TouchableWithoutFeedback onPress={this.slideDown}>
                     <Animated.View
                         style={[
                             AppStyles.shadowContent,
@@ -193,13 +198,20 @@ class HomeActionsOverlay extends Component<Props, State> {
                         this.panel = r;
                     }}
                     animatedNativeDriver
-                    onSnap={this.onSnap}
+                    onAlert={this.onAlert}
                     verticalOnly
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
                         { y: AppSizes.screen.height - AppSizes.moderateScale(430) - AppSizes.navigationBarHeight },
+                    ]}
+                    alertAreas={[
+                        { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
                         {
-                            y: AppSizes.screen.height - AppSizes.moderateScale(430) - AppSizes.navigationBarHeight,
+                            id: 'top',
+                            influenceArea: {
+                                top:
+                                    AppSizes.screen.height - AppSizes.moderateScale(430) - AppSizes.navigationBarHeight,
+                            },
                         },
                     ]}
                     boundaries={{

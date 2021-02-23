@@ -43,6 +43,19 @@ class ExplainBalanceOverlay extends Component<Props, State> {
     panel: any;
     deltaY: Animated.Value;
     deltaX: Animated.Value;
+    isOpening: boolean;
+
+    static options() {
+        return {
+            statusBar: {
+                visible: true,
+                style: 'light',
+            },
+            topBar: {
+                visible: false,
+            },
+        };
+    }
 
     constructor(props: Props) {
         super(props);
@@ -54,6 +67,8 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
         this.deltaX = new Animated.Value(0);
+
+        this.isOpening = true;
     }
 
     componentDidMount() {
@@ -102,10 +117,16 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         });
     };
 
-    onSnap = (event: any) => {
-        const { index } = event.nativeEvent;
+    onAlert = (event: any) => {
+        const { top, bottom } = event.nativeEvent;
 
-        if (index === 0) {
+        if (top && bottom) return;
+
+        if (top === 'enter' && this.isOpening) {
+            this.isOpening = false;
+        }
+
+        if (bottom === 'leave' && !this.isOpening) {
             Navigator.dismissOverlay();
         }
     };
@@ -222,11 +243,15 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         this.panel = r;
                     }}
                     animatedNativeDriver
-                    onSnap={this.onSnap}
+                    onAlert={this.onAlert}
                     verticalOnly
-                    snapPoints={[{ y: AppSizes.screen.height + 3 }, { y: AppSizes.screen.height * 0.12 }]}
-                    boundaries={{ top: AppSizes.screen.height * 0.1 }}
+                    snapPoints={[{ y: AppSizes.screen.height + 3 }, { y: AppSizes.heightPercentageToDP(10) }]}
+                    boundaries={{ top: AppSizes.heightPercentageToDP(8) }}
                     initialPosition={{ y: AppSizes.screen.height }}
+                    alertAreas={[
+                        { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
+                        { id: 'top', influenceArea: { top: AppSizes.heightPercentageToDP(10) } },
+                    ]}
                     animatedValueY={this.deltaY}
                     animatedValueX={this.deltaX}
                 >
