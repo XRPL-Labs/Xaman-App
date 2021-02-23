@@ -405,26 +405,28 @@ class DetailsStep extends Component<Props, State> {
                                     icon="IconEdit"
                                 />
                             </View>
-
-                            <View style={[styles.amountRateContainer]}>
-                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={[styles.amountRateInput]}>~ </Text>
+                            {/* only show rate for XRP payments */}
+                            {typeof currency === 'string' && (
+                                <View style={[styles.amountRateContainer]}>
+                                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                        <Text style={[styles.amountRateInput]}>~ </Text>
+                                    </View>
+                                    <View style={AppStyles.flex1}>
+                                        <AmountInput
+                                            editable={!!currencyRate}
+                                            testID="amount-rate-input"
+                                            onChange={this.onRateAmountChange}
+                                            returnKeyType="done"
+                                            style={[styles.amountRateInput]}
+                                            placeholderTextColor={AppColors.greyDark}
+                                            value={amountRate}
+                                        />
+                                    </View>
+                                    <View style={styles.currencySymbolTextContainer}>
+                                        <Text style={[styles.currencySymbolText]}>{coreSettings.currency}</Text>
+                                    </View>
                                 </View>
-                                <View style={AppStyles.flex1}>
-                                    <AmountInput
-                                        editable={!!currencyRate}
-                                        testID="amount-rate-input"
-                                        onChange={this.onRateAmountChange}
-                                        returnKeyType="done"
-                                        style={[styles.amountRateInput]}
-                                        placeholderTextColor={AppColors.greyDark}
-                                        value={amountRate}
-                                    />
-                                </View>
-                                <View style={styles.currencySymbolTextContainer}>
-                                    <Text style={[styles.currencySymbolText]}>{coreSettings.currency}</Text>
-                                </View>
-                            </View>
+                            )}
                         </View>
                     </ScrollView>
                 </KeyboardAvoidingView>
