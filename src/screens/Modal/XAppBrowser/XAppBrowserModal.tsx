@@ -148,12 +148,20 @@ class XAppBrowserModal extends Component<Props, State> {
 
         if (!sessionUrl) return;
 
-        const result = await VeriffSdk.launchVeriff({
-            sessionUrl,
-        });
-        // pass the result to the xApp
-        if (this.webView) {
-            this.webView.postMessage(JSON.stringify({ method: 'kycVeriff', result }));
+        try {
+            const result = await VeriffSdk.launchVeriff({
+                branding: {
+                    themeColor: AppColors.blue,
+                    buttonCornerRadius: 28,
+                },
+                sessionUrl,
+            });
+            // pass the result to the xApp
+            if (this.webView) {
+                this.webView.postMessage(JSON.stringify({ method: 'kycVeriff', result }));
+            }
+        } catch {
+            // ignore
         }
     };
 
