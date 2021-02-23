@@ -10,19 +10,20 @@ const styles = StyleSheet.create({
         backgroundColor: AppColors.white,
     },
     qrCodeContainer: {
+        width: '90%',
+        backgroundColor: AppColors.light,
+        alignSelf: 'center',
+        borderRadius: 20,
+        marginBottom: 25,
+    },
+    qrCode: {
         borderRadius: 14,
         borderWidth: 5,
         alignSelf: 'center',
         alignItems: 'center',
         borderColor: AppColors.grey,
         padding: 5,
-        margin: 10,
-        marginBottom: 25,
-    },
-    qrCode: {
-        borderRadius: 5,
-        borderWidth: 5,
-        borderColor: AppColors.light,
+        margin: 30,
     },
     editButton: {
         justifyContent: 'center',
@@ -34,11 +35,10 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
     },
     rowTitle: {
-        paddingLeft: 15,
+        paddingLeft: 10,
     },
     accountPickerContainer: {
         marginTop: Platform.OS === 'ios' ? 20 : 10,
-        paddingLeft: 15,
     },
     amountContainer: {
         left: 0,
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: Platform.OS === 'ios' ? 20 : 10,
         paddingLeft: 20,
-        marginLeft: 15,
+        marginLeft: 10,
         backgroundColor: AppColors.lightGrey,
         borderRadius: 15,
     },
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: Platform.OS === 'ios' ? 20 : 10,
         paddingLeft: 20,
-        marginLeft: 15,
+        marginLeft: 10,
         backgroundColor: AppColors.lightGrey,
         borderRadius: 15,
     },

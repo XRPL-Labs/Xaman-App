@@ -194,11 +194,9 @@ class RequestView extends Component<Props, State> {
                 >
                     <ScrollView>
                         <View style={styles.qrCodeContainer}>
-                            <QRCode
-                                size={AppSizes.moderateScale(150)}
-                                value={this.getQRContent()}
-                                style={styles.qrCode}
-                            />
+                            <View style={styles.qrCode}>
+                                <QRCode size={AppSizes.moderateScale(150)} value={this.getQRContent()} />
+                            </View>
                         </View>
 
                         <HorizontalLine />
@@ -227,7 +225,7 @@ class RequestView extends Component<Props, State> {
                             >
                                 <View style={AppStyles.flex5}>
                                     <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                                        Request with amount:
+                                        {Localize.t('global.requestWithAmount')}
                                     </Text>
                                 </View>
                                 <View style={AppStyles.flex1}>

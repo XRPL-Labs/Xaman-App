@@ -257,7 +257,8 @@
     "signRequest": "Sign Request",
     "openForDetails": "Open for detail",
     "scanAQRCode": "Scan a QR code",
-    "unableToLoadXApp": "Unable to load the xApp!"
+    "unableToLoadXApp": "Unable to load the xApp!",
+    "requestWithAmount": "Request with amount"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",
