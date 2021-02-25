@@ -4,7 +4,16 @@
 
 import { sortBy } from 'lodash';
 import React, { Component } from 'react';
-import { Animated, View, Text, TouchableWithoutFeedback, Image, ScrollView, ActivityIndicator } from 'react-native';
+import {
+    Animated,
+    View,
+    Text,
+    TouchableWithoutFeedback,
+    Image,
+    ScrollView,
+    ActivityIndicator,
+    InteractionManager,
+} from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
@@ -72,9 +81,9 @@ class ExplainBalanceOverlay extends Component<Props, State> {
     }
 
     componentDidMount() {
-        this.loadAccountObjects();
-
         this.slideUp();
+
+        InteractionManager.runAfterInteractions(this.loadAccountObjects);
     }
 
     loadAccountObjects = () => {
@@ -132,10 +141,12 @@ class ExplainBalanceOverlay extends Component<Props, State> {
     };
 
     renderAccountObject = (item: any, index: number) => {
-        const { LedgerEntryType } = item;
+        const { account } = this.props;
+        const { LedgerEntryType, Account } = item;
 
         // ignore trustline as we handle them in better way
-        if (LedgerEntryType === 'RippleState') return null;
+        // ignore incoming escrow or objects
+        if (LedgerEntryType === 'RippleState' || (Account && Account !== account.address)) return null;
 
         return (
             <View key={`object-${index}`} style={[styles.currencyItemCard]}>
@@ -160,6 +171,9 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         return (
             <>
                 {account.lines.map((line: TrustLineSchema, index: number) => {
+                    // don't render obligation trustlines
+                    if (line.obligation) return null;
+
                     return (
                         <View key={`line-${index}`} style={[styles.currencyItemCard]}>
                             <View style={[AppStyles.flex5, AppStyles.row, AppStyles.centerAligned]}>
