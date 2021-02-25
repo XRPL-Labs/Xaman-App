@@ -1,6 +1,6 @@
 /* eslint-disable no-lonely-if */
 import BigNumber from 'bignumber.js';
-import { get, set, has, isUndefined, isNumber, toInteger, find } from 'lodash';
+import { get, set, has, isUndefined, isNumber, toInteger, find, findIndex } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
 import LedgerService from '@services/LedgerService';
@@ -312,10 +312,11 @@ class Payment extends BaseTransaction {
                 return resolve();
             }
 
-            // if XRP check XRP Balance
+            // Sending XRP
             if (this.Amount.currency === 'XRP' || (this.SendMax && this.SendMax.currency === 'XRP')) {
                 const XRPAmount = (this.SendMax && this.SendMax.value) || this.Amount.value;
 
+                // ===== check balance =====
                 if (Number(XRPAmount) > Number(source.availableBalance)) {
                     return reject(
                         new Error(
@@ -327,6 +328,22 @@ class Payment extends BaseTransaction {
                     );
                 }
             } else {
+                // Sending IOU
+
+                // ===== check if recipient have same trustline for sending IOU =====
+                const destinationLinesResp = await LedgerService.getAccountLines(this.Destination.address);
+                const { lines: destinationLines } = destinationLinesResp;
+
+                const haveSameTrustLine =
+                    findIndex(destinationLines, (l: any) => {
+                        return l.currency === this.Amount.currency && l.account === this.Amount.issuer;
+                    }) !== -1;
+
+                if (!haveSameTrustLine && this.Amount.issuer !== this.Destination.address) {
+                    return reject(new Error(Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine')));
+                }
+
+                // ===== check balances =====
                 // sender is not issuer
                 if (source.address !== this.Amount.issuer) {
                     // check IOU balance
@@ -348,6 +365,7 @@ class Payment extends BaseTransaction {
                             ),
                         );
                     }
+                    // sender is the issuer
                 } else {
                     // check for exceed the trustline Limit on obligations
                     const sourceLines = await LedgerService.getAccountLines(source.address);
