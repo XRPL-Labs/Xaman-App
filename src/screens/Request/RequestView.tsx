@@ -119,9 +119,26 @@ class RequestView extends Component<Props, State> {
     };
 
     onAmountChange = (amount: string) => {
+        const { currencyRate } = this.state;
+
         this.setState({
             amount,
         });
+
+        if (!amount) {
+            this.setState({
+                amountRate: '',
+            });
+
+            return;
+        }
+
+        if (currencyRate) {
+            const inRate = Number(amount) * currencyRate.lastRate;
+            this.setState({
+                amountRate: String(inRate),
+            });
+        }
     };
 
     onRateAmountChange = (amount: string) => {
