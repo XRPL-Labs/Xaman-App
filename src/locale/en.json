@@ -274,6 +274,7 @@
     "passCodeDescription": "We use the passcode to lock the app, confirm settings and to keep your account secure.",
     "setPasscode": "Please set your passcode",
     "repeatPasscode": "Please repeat your new passcode",
+    "passcodeDoNotMatch": "The passcode do not match!",
     "warnNeedPasscode": "You will need your passcode to unlock the app",
     "UnableToStoreThePasscode": "Unable to store the passcode. This should not happen. A bug report was sent to the XUMM support team. Please contact us at support@xumm.app for more information."
   },
