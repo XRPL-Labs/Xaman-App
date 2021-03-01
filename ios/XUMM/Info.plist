@@ -79,14 +79,12 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Access to microphone is needed for KYC propose and video identification</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Enabling camera access allows you to use your camera to scan Sign Request QR-codes.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Enabling Face ID allows you quick and secure access to your account.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Enabling location services (when the app is in use) allows us to select the XRPL node closest to you for a faster connection.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Access to microphone is needed for KYC propose and video identification</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Enabling access to your Photo Library allows you to store your account QR code for offline use.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

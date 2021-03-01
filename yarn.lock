@@ -4695,7 +4695,7 @@
   resolved "https://registry.yarnpkg.com/@ungap/url-search-params/-/url-search-params-0.1.4.tgz#727e9b4c811beaa6be6d7e4cc0516663c884cfd0"
   integrity sha512-RLwrxCTDNiNev9hpr9rDq8NyeQ8Nn0X1we4Wu7Tlf368I8r+7hBj3uObhifhuLk74egaYaSX5nUsBlWz6kjj+A==
 
-"@veriff/react-native-sdk@^2.3.2":
+"@veriff/react-native-sdk@2.3.2":
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/@veriff/react-native-sdk/-/react-native-sdk-2.3.2.tgz#a3a92b2db8c3f5fc63b518acce800e7823e50831"
   integrity sha512-cltESn8vSAWgZH06K1eGYQlkG9kmpPYzoPdkI2d/i5KqJnJ5LCKJ05RgdvlmbCuI5PzOz9wl1/EMQzzWi/R5WA==
