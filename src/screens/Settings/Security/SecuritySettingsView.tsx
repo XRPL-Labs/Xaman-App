@@ -31,21 +31,8 @@ export interface State {
     isSensorAvailable: boolean;
     isFlagSecure: boolean;
     coreSettings: CoreSchema;
+    timeItems: Array<any>;
 }
-
-const TIME_ITEMS = [
-    { value: 0, title: `0 ${Localize.t('global.seconds')}` },
-    { value: 1, title: `1 ${Localize.t('global.minutes')}` },
-    { value: 5, title: `5 ${Localize.t('global.minutes')}` },
-    { value: 10, title: `10 ${Localize.t('global.minutes')}` },
-    { value: 15, title: `15 ${Localize.t('global.minutes')}` },
-    { value: 30, title: `30 ${Localize.t('global.minutes')}` },
-    { value: 60, title: `1 ${Localize.t('global.hour')}` },
-    { value: 240, title: `4 ${Localize.t('global.hours')}` },
-    { value: 480, title: `8 ${Localize.t('global.hours')}` },
-    { value: 1440, title: `1 ${Localize.t('global.day')}` },
-    { value: 10080, title: `1 ${Localize.t('global.week')}` },
-];
 
 /* Component ==================================================================== */
 class SecuritySettingsView extends Component<Props, State> {
@@ -67,6 +54,19 @@ class SecuritySettingsView extends Component<Props, State> {
             isSensorAvailable: false,
             biometricEnabled: coreSettings.biometricMethod !== BiometryType.None,
             isFlagSecure: true,
+            timeItems: [
+                { value: 0, title: `0 ${Localize.t('global.seconds')}` },
+                { value: 1, title: `1 ${Localize.t('global.minutes')}` },
+                { value: 5, title: `5 ${Localize.t('global.minutes')}` },
+                { value: 10, title: `10 ${Localize.t('global.minutes')}` },
+                { value: 15, title: `15 ${Localize.t('global.minutes')}` },
+                { value: 30, title: `30 ${Localize.t('global.minutes')}` },
+                { value: 60, title: `1 ${Localize.t('global.hour')}` },
+                { value: 240, title: `4 ${Localize.t('global.hours')}` },
+                { value: 480, title: `8 ${Localize.t('global.hours')}` },
+                { value: 1440, title: `1 ${Localize.t('global.day')}` },
+                { value: 10080, title: `1 ${Localize.t('global.week')}` },
+            ],
         };
     }
 
@@ -180,7 +180,7 @@ class SecuritySettingsView extends Component<Props, State> {
     };
 
     showLogoutTimePicker = () => {
-        const { coreSettings } = this.state;
+        const { coreSettings, timeItems } = this.state;
 
         Navigator.push(
             AppScreens.Modal.Picker,
@@ -188,7 +188,7 @@ class SecuritySettingsView extends Component<Props, State> {
             {
                 title: Localize.t('global.autoLock'),
                 description: Localize.t('settings.autoLockAfter'),
-                items: TIME_ITEMS,
+                items: timeItems,
                 selected: coreSettings.minutesAutoLock,
                 onSelect: this.onLogoutTimeSelected,
             },
@@ -218,7 +218,7 @@ class SecuritySettingsView extends Component<Props, State> {
     };
 
     render() {
-        const { biometricEnabled, coreSettings, isFlagSecure } = this.state;
+        const { biometricEnabled, coreSettings, isFlagSecure, timeItems } = this.state;
 
         return (
             <View testID="security-settings-screen" style={[styles.container]}>
@@ -272,7 +272,7 @@ class SecuritySettingsView extends Component<Props, State> {
 
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
                             <Text numberOfLines={1} style={[styles.value]}>
-                                {find(TIME_ITEMS, { value: coreSettings.minutesAutoLock }).title}
+                                {find(timeItems, { value: coreSettings.minutesAutoLock }).title}
                             </Text>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
