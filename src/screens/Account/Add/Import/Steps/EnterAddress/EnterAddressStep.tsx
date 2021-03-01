@@ -76,6 +76,10 @@ class EnterAddressStep extends Component<Props, State> {
         // check for exchange account
         const destinationInfo = await getAccountInfo(address);
 
+        this.setState({
+            isLoading: false,
+        });
+
         if (destinationInfo.possibleExchange) {
             Navigator.showAlertModal({
                 type: 'warning',
@@ -95,9 +99,6 @@ class EnterAddressStep extends Component<Props, State> {
                 ],
             });
 
-            this.setState({
-                isLoading: false,
-            });
             return;
         }
 

@@ -193,7 +193,7 @@ class AccountImportView extends Component<Props, State> {
     };
 
     goNext = async (nextStep: ImportSteps) => {
-        const { upgrade, importedAccount, currentStep, prevSteps } = this.state;
+        const { account, upgrade, importedAccount, currentStep, prevSteps } = this.state;
 
         if (currentStep === 'FinishStep') {
             this.importAccount();
@@ -213,7 +213,8 @@ class AccountImportView extends Component<Props, State> {
                 const exist = AccountRepository.findOne({ address: importedAccount.address });
 
                 if (exist) {
-                    if (exist.accessLevel === AccessLevels.Full) {
+                    // if exist as full access or importing as readonly and exist is then show error
+                    if (exist.accessLevel === AccessLevels.Full || account.accessLevel === AccessLevels.Readonly) {
                         Alert.alert(Localize.t('global.error'), Localize.t('account.accountAlreadyExist'));
                         return;
                     }
