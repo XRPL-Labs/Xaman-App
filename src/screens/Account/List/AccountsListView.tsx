@@ -78,8 +78,11 @@ class AccountListView extends Component<Props, State> {
     }
 
     componentDidAppear() {
+        const accounts = AccountRepository.getAccounts().sorted([['order', false]]);
+
         this.setState({
-            accounts: AccountRepository.getAccounts().sorted([['order', false]]),
+            accounts,
+            dataSource: [...accounts],
             signableAccount: AccountRepository.getSignableAccounts(),
         });
     }
