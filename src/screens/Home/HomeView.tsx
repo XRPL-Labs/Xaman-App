@@ -672,7 +672,9 @@ class HomeView extends Component<Props, State> {
 
         if (!isLoadingRate) {
             if (showRate) {
-                balance = `${currencyRate.symbol} ${Localize.formatNumber(account.balance * currencyRate.lastRate)}`;
+                balance = `${currencyRate.symbol} ${Localize.formatNumber(
+                    Number(account.availableBalance) * Number(currencyRate.lastRate),
+                )}`;
             } else {
                 balance = Localize.formatNumber(account.availableBalance);
             }
