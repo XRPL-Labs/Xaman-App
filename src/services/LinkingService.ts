@@ -123,7 +123,7 @@ class LinkingService extends EventEmitter {
         );
     };
 
-    handleXAPPLink = (url: string) => {
+    handleXAPPLink = (url: string, parsed: { xapp: string; path: string; params: any }) => {
         Navigator.showModal(
             AppScreens.Modal.XAppBrowser,
             {
@@ -131,9 +131,11 @@ class LinkingService extends EventEmitter {
                 modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
             },
             {
-                uri: url,
+                identifier: parsed.xapp,
                 origin: PayloadOrigin.DEEP_LINK,
                 originData: { url },
+                path: parsed.path,
+                params: parsed.params,
             },
         );
     };
@@ -162,6 +164,9 @@ class LinkingService extends EventEmitter {
             case StringType.PayId:
                 this.handleXrplDestination(parsed);
                 break;
+            case StringType.XummXapp:
+                this.handleXAPPLink(url, parsed);
+                break;
             default:
                 break;
         }
@@ -170,11 +175,6 @@ class LinkingService extends EventEmitter {
     handleDeepLink = async ({ url }: { url: string }) => {
         // ignore if the app is not initialized or not url
         if (!url || typeof url !== 'string') return;
-
-        if (url.startsWith('https://xumm.app/detect/')) {
-            this.handleXAPPLink(url);
-            return;
-        }
 
         this.handle(url);
     };

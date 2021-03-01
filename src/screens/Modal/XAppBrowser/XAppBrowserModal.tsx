@@ -32,6 +32,8 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     identifier: string;
+    path?: string;
+    params?: any;
     title?: string;
     account?: AccountSchema;
     origin?: PayloadOrigin;
@@ -215,7 +217,7 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     fetchOTT = () => {
-        const { identifier, account, origin, originData } = this.props;
+        const { identifier, account, origin, originData, params } = this.props;
         const { appVersionCode, coreSettings, isLoading } = this.state;
 
         if (!isLoading) {
@@ -240,6 +242,10 @@ class XAppBrowserModal extends Component<Props, State> {
                     data: originData,
                 },
             });
+        }
+
+        if (params) {
+            assign(data, params);
         }
 
         // assign account headers

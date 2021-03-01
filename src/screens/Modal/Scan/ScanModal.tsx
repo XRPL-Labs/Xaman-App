@@ -319,16 +319,19 @@ class ScanView extends Component<Props, State> {
         }
     };
 
-    handleXAPPLink = (url: string) => {
-        this.routeUser(
+    handleXAPPLink = (content: string, parsed: { xapp: string; path: string; params: any }) => {
+        Navigator.showModal(
             AppScreens.Modal.XAppBrowser,
             {
                 modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
                 modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
             },
             {
-                uri: url,
+                identifier: parsed.xapp,
                 origin: PayloadOrigin.QR,
+                originData: { content },
+                path: parsed.path,
+                params: parsed.params,
             },
         );
     };
@@ -421,12 +424,6 @@ class ScanView extends Component<Props, State> {
             return;
         }
 
-        // the screen will handle the content
-        if (content.startsWith('https://xumm.app/detect/')) {
-            this.handleXAPPLink(content);
-            return;
-        }
-
         switch (detected.getType()) {
             case StringType.XummPayloadReference:
                 this.handlePayloadReference(parsed.uuid);
@@ -440,6 +437,9 @@ class ScanView extends Component<Props, State> {
                 break;
             case StringType.XummTranslation:
                 this.handleTranslationBundle(parsed.uuid);
+                break;
+            case StringType.XummXapp:
+                this.handleXAPPLink(content, parsed);
                 break;
             default:
                 this.handleUndetectedType(content, clipboard);
