@@ -563,8 +563,10 @@ class ExchangeView extends Component<Props, State> {
                                 value={amount}
                             />
                         </TouchableOpacity>
+                    </View>
 
-                        {/* switch button */}
+                    {/* switch button */}
+                    <View>
                         <Button
                             onPress={this.switchDirection}
                             roundedSmall

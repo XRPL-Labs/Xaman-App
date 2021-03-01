@@ -5,7 +5,6 @@ import { AppColors, AppFonts, AppSizes } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({
     container: {
-        position: 'relative',
         flex: 1,
         flexDirection: 'column',
     },
@@ -92,9 +91,9 @@ const styles = StyleSheet.create({
     },
     switchButton: {
         position: 'absolute',
-        bottom: -20,
+        top: -20,
         backgroundColor: AppColors.lightBlue,
-        zIndex: 99999,
+        zIndex: 99999999,
     },
     backgroundImageStyle: {
         height: AppSizes.scale(200),
