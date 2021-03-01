@@ -2,7 +2,7 @@
  * Send Summary Step
  */
 
-import { isNil } from 'lodash';
+import { isEmpty } from 'lodash';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import {
@@ -283,7 +283,7 @@ class SummaryStep extends Component<Props, State> {
             return;
         }
 
-        if (!isNil(destination.tag) && destination.tag !== confirmedDestinationTag) {
+        if (!isEmpty(destination.tag) && destination.tag !== confirmedDestinationTag) {
             Navigator.showOverlay(
                 AppScreens.Overlay.ConfirmDestinationTag,
                 {

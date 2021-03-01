@@ -98,7 +98,7 @@ class Payment extends BaseTransaction {
 
         if (has(destination, 'tag')) {
             const tag = get(destination, 'tag', undefined);
-            if (tag !== undefined && tag !== null) {
+            if (tag !== undefined && tag !== null && tag !== '') {
                 // try to convert to number if not
                 if (!isNumber(tag)) {
                     set(this, 'tx.DestinationTag', toInteger(tag));
