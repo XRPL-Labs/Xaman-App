@@ -275,48 +275,49 @@ class AccountListView extends Component<Props, State> {
                         style={[AppStyles.flex1]}
                         horizontal={false}
                         directionalLockEnabled
-                        contentContainerStyle={AppStyles.flex1}
                     >
-                        <View style={[styles.rowAddContainer]}>
-                            {reorderEnabled ? (
-                                <View style={[AppStyles.paddingHorizontalSml]}>
-                                    <Text
-                                        adjustsFontSizeToFit
-                                        numberOfLines={2}
-                                        style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}
-                                    >
-                                        {Localize.t('account.tapAndHoldToReorder')}
-                                    </Text>
-                                </View>
-                            ) : (
-                                <Button
-                                    label={Localize.t('home.addAccount')}
-                                    icon="IconPlus"
-                                    iconStyle={[AppStyles.imgColorBlue]}
-                                    roundedSmall
-                                    secondary
-                                    textStyle={[AppStyles.colorBlue]}
-                                    onPress={() => {
-                                        Navigator.push(AppScreens.Account.Add);
-                                    }}
-                                />
-                            )}
-                        </View>
+                        <View style={AppStyles.flex1}>
+                            <View style={[styles.rowAddContainer]}>
+                                {reorderEnabled ? (
+                                    <View style={[AppStyles.paddingHorizontalSml]}>
+                                        <Text
+                                            adjustsFontSizeToFit
+                                            numberOfLines={2}
+                                            style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}
+                                        >
+                                            {Localize.t('account.tapAndHoldToReorder')}
+                                        </Text>
+                                    </View>
+                                ) : (
+                                    <Button
+                                        label={Localize.t('home.addAccount')}
+                                        icon="IconPlus"
+                                        iconStyle={[AppStyles.imgColorBlue]}
+                                        roundedSmall
+                                        secondary
+                                        textStyle={[AppStyles.colorBlue]}
+                                        onPress={() => {
+                                            Navigator.push(AppScreens.Account.Add);
+                                        }}
+                                    />
+                                )}
+                            </View>
 
-                        <DragSortableView
-                            parentWidth={AppSizes.screen.width}
-                            childrenWidth={AppSizes.screen.width}
-                            childrenHeight={styles.rowContainer.height}
-                            dataSource={dataSource}
-                            marginChildrenTop={10}
-                            keyExtractor={(item, index) => `${item.address}${index}` || String(index)}
-                            renderItem={this.renderItem}
-                            onDragStart={this.onItemDragStart}
-                            onDragEnd={this.onItemDragEnd}
-                            onDataChange={this.onAccountReorder}
-                            onClickItem={this.onItemPress}
-                            sortable={reorderEnabled}
-                        />
+                            <DragSortableView
+                                parentWidth={AppSizes.screen.width}
+                                childrenWidth={AppSizes.screen.width}
+                                childrenHeight={styles.rowContainer.height}
+                                dataSource={dataSource}
+                                marginChildrenTop={10}
+                                keyExtractor={(item, index) => `${item.address}${index}` || String(index)}
+                                renderItem={this.renderItem}
+                                onDragStart={this.onItemDragStart}
+                                onDragEnd={this.onItemDragEnd}
+                                onDataChange={this.onAccountReorder}
+                                onClickItem={this.onItemPress}
+                                sortable={reorderEnabled}
+                            />
+                        </View>
                     </ScrollView>
                 )}
             </View>
