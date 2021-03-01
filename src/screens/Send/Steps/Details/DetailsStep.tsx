@@ -139,7 +139,7 @@ class DetailsStep extends Component<Props, State> {
                     {
                         text: Localize.t('global.update'),
                         onPress: () => {
-                            setAmount(availableBalance.toString());
+                            this.onAmountChange(availableBalance.toString());
                         },
                     },
                 ],
