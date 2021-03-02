@@ -11,6 +11,7 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
+    columnsNumber: number;
     rowNumber: number;
     rowActive: boolean;
     currentColumn: number;
@@ -22,12 +23,13 @@ interface Props {
 
 interface State {}
 
-/* Constants ==================================================================== */
-const COLUMNS = 6;
-
 /* Component ==================================================================== */
 class SecretNumberRow extends Component<Props, State> {
     rowAnimatedValue: Animated.Value;
+
+    static defaultProps = {
+        columnsNumber: 6,
+    };
 
     constructor(props: Props) {
         super(props);
@@ -48,11 +50,11 @@ class SecretNumberRow extends Component<Props, State> {
     }
 
     renderColumns = () => {
-        const { rowNumber, numbers, currentColumn, rowChecksumError, readonly } = this.props;
+        const { rowNumber, numbers, currentColumn, rowChecksumError, readonly, columnsNumber } = this.props;
 
         const columns = [];
 
-        for (let i = 0; i < COLUMNS; i++) {
+        for (let i = 0; i < columnsNumber; i++) {
             const colActive = i === currentColumn;
 
             const value = get(numbers, `[${i}]`, false);

@@ -25,7 +25,6 @@ import { Header } from '@components/General';
 import Localize from '@locale';
 
 import { AppStyles } from '@theme';
-// import styles from './styles';
 
 // steps
 import Steps from './Steps';
@@ -64,6 +63,9 @@ class AccountImportView extends Component<Props, State> {
             case props.alternativeSeedAlphabet !== undefined:
                 initStep = 'EnterSeed';
                 break;
+            case props.importOfflineSecretNumber !== undefined:
+                initStep = 'EnterSecretNumbers';
+                break;
             default:
                 initStep = 'AccessLevel';
                 break;
@@ -80,17 +82,18 @@ class AccountImportView extends Component<Props, State> {
             secretType: SecretTypes.SecretNumbers,
             upgradeAccount: props.upgradeAccount,
             alternativeSeedAlphabet: props.alternativeSeedAlphabet,
+            importOfflineSecretNumber: props.importOfflineSecretNumber,
             isLoading: false,
         };
     }
 
     componentDidMount() {
         const { tangemCard } = this.props;
-        const { upgradeAccount, alternativeSeedAlphabet } = this.state;
+        const { upgradeAccount, alternativeSeedAlphabet, importOfflineSecretNumber } = this.state;
 
         // set the access level if it's upgrade or using alternative seed alphabet
         // as we just move to importing seed section setting this is mandatory
-        if (upgradeAccount || alternativeSeedAlphabet) {
+        if (upgradeAccount || alternativeSeedAlphabet || importOfflineSecretNumber) {
             this.setAccessLevel(AccessLevels.Full);
         }
 

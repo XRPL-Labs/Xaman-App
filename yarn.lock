@@ -15709,9 +15709,9 @@ ripple-secret-codec@^1.0.2:
     base-x "^3.0.3"
     bignumber.js "^5.0.0"
 
-"ripple-sign-keypairs@https://github.com/WietseWind/node-ripple-sign-keypairs.git":
+"ripple-sign-keypairs@git+https://github.com/WietseWind/node-ripple-sign-keypairs.git":
   version "1.0.2"
-  resolved "https://github.com/WietseWind/node-ripple-sign-keypairs.git#9470af370c26fe0cebc6dbc11f59c758ea07cb38"
+  resolved "git+https://github.com/WietseWind/node-ripple-sign-keypairs.git#9470af370c26fe0cebc6dbc11f59c758ea07cb38"
   dependencies:
     big-integer latest
     ripple-binary-codec latest
@@ -18192,10 +18192,10 @@ xregexp@^4.2.4:
   dependencies:
     "@babel/runtime-corejs3" "^7.8.3"
 
-xrpl-accountlib@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/xrpl-accountlib/-/xrpl-accountlib-1.0.0.tgz#c73e6f70a20cd388d4897011314f4c1ba31c14b8"
-  integrity sha512-P1bsxkhFI0b1ZpYXQEFzFp7fIJ8GANnCoRfj02cSz5t/fzJb6GfqjwH7GvRypKIEj9E974NJBzu/N05Rs47iGQ==
+xrpl-accountlib@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/xrpl-accountlib/-/xrpl-accountlib-1.1.0.tgz#82dfeec5c68bcace1f30ebe4bd3d2d70b576b625"
+  integrity sha512-0e1JZel3drnhA9sVmq9fg0AO7X9k4E6/NwjaQIR74Tv+2GOdmEgmaYoGeXQC+F1aL+fRnQ70ZbJJzYqsYuc8zg==
   dependencies:
     assert "^2.0.0"
     bip32 "^2.0.5"

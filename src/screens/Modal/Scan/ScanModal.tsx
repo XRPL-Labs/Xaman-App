@@ -18,7 +18,7 @@ import { CoreSchema } from '@store/schemas/latest';
 
 import { AppScreens } from '@common/constants';
 
-import { VibrateHapticFeedback } from '@common/helpers/interface';
+import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 import { NormalizeDestination } from '@common/libs/utils';
@@ -343,13 +343,51 @@ class ScanView extends Component<Props, State> {
     }) => {
         const { alphabet } = parsed;
         if (alphabet) {
-            this.routeUser(AppScreens.Account.Import, {}, {
-                alternativeSeedAlphabet: parsed,
-            });
+            this.routeUser(
+                AppScreens.Account.Import,
+                {},
+                {
+                    alternativeSeedAlphabet: parsed,
+                },
+            );
+        } else {
+            this.handleUndetectedType();
         }
     };
 
-    handleUndetectedType = (content: string, clipboard?: boolean) => {
+    handleXummFeature = (parsed: { feature: string; type: string; params?: Record<string, unknown> }) => {
+        const { feature, type } = parsed;
+
+        // Feature: allow import of Secret Numbers without Checksum
+        if (feature === 'secret' && type === 'offline-secret-numbers') {
+            Prompt(
+                Localize.t('global.warning'),
+                Localize.t('account.importSecretWithoutChecksumWarning'),
+                [
+                    {
+                        text: Localize.t('global.cancel'),
+                        onPress: () => this.setShouldRead(true),
+                    },
+                    {
+                        text: Localize.t('global.continue'),
+                        style: 'destructive',
+                        onPress: () => {
+                            this.routeUser(
+                                AppScreens.Account.Import,
+                                {},
+                                {
+                                    importOfflineSecretNumber: true,
+                                },
+                            );
+                        },
+                    },
+                ],
+                { type: 'default' },
+            );
+        }
+    };
+
+    handleUndetectedType = (content?: string, clipboard?: boolean) => {
         // some users scan QR on tangem card, navigate them to the account add screen
         if (content === 'https://xumm.app/tangem') {
             this.routeUser(AppScreens.Account.Add, {}, {});
@@ -456,6 +494,9 @@ class ScanView extends Component<Props, State> {
                 break;
             case StringType.XrplAltFamilySeedAlphabet:
                 this.handleAlternativeSeedCodec(parsed);
+                break;
+            case StringType.XummFeature:
+                this.handleXummFeature(parsed);
                 break;
             default:
                 this.handleUndetectedType(content, clipboard);

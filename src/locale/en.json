@@ -642,7 +642,8 @@
     "toTurnYourSecretIntoXrplLedgerAccountPleaseEnterYourSecret": "To turn your secret into an XRP Ledger account, please enter your secret.",
     "enterSecret": "Enter secret",
     "yourChainAddressWas": "Your %{chain} address was:",
-    "yourXRPLedgerAccountIsGoingToBe": "Your XRP Ledger account is going to be:"
+    "yourXRPLedgerAccountIsGoingToBe": "Your XRP Ledger account is going to be:",
+    "importSecretWithoutChecksumWarning": "If you continue, you will import an XRP Ledger account from Secret Numbers. The Secret Numbers should be generated **by you** using an offline method (eg. with dice). You **must** have stored your generated secret numbers (eg. stamped in metal, written down).\nONLY CONTINUE IF YOU KNOW WHAT YOU ARE DOING."
   },
   "send": {
     "amountIsBiggerThanYourSpend": "This amount is bigger than what you can spend (%{spendable})",

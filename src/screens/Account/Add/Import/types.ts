@@ -35,6 +35,7 @@ export interface Props {
     upgradeAccount?: AccountSchema;
     tangemCard?: Card;
     alternativeSeedAlphabet?: XrplAltFamilySeedAlphabet;
+    importOfflineSecretNumber?: boolean;
 }
 
 export interface State {
@@ -46,5 +47,6 @@ export interface State {
     secretType?: SecretTypes;
     upgradeAccount?: AccountSchema;
     alternativeSeedAlphabet?: XrplAltFamilySeedAlphabet;
+    importOfflineSecretNumber?: boolean;
     isLoading: boolean;
 }

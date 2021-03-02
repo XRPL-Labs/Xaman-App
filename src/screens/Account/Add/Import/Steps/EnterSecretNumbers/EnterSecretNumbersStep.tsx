@@ -40,12 +40,12 @@ class EnterSecretNumbers extends Component<Props, State> {
     }
 
     goNext = () => {
-        const { goNext, setImportedAccount } = this.context;
+        const { goNext, setImportedAccount, importOfflineSecretNumber } = this.context;
 
         const secretNumber = this.secretNumberInput.getNumbers();
 
         try {
-            const account = derive.secretNumbers(secretNumber);
+            const account = derive.secretNumbers(secretNumber, importOfflineSecretNumber);
 
             // set imported account
             setImportedAccount(account, () => {
@@ -65,7 +65,7 @@ class EnterSecretNumbers extends Component<Props, State> {
 
     render() {
         const { allFilled } = this.state;
-        const { goBack } = this.context;
+        const { goBack, importOfflineSecretNumber } = this.context;
 
         return (
             <SafeAreaView testID="account-import-enter-secretNumbers" style={[AppStyles.container]}>
@@ -81,6 +81,7 @@ class EnterSecretNumbers extends Component<Props, State> {
                             this.secretNumberInput = r;
                         }}
                         onAllFilled={this.onAllFilled}
+                        checksum={!importOfflineSecretNumber}
                     />
                 </View>
 
