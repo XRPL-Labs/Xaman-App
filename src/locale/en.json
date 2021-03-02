@@ -483,7 +483,11 @@
     "viewChangeLog": "View changelog",
     "hideBalanceByDefault": "Hide balance by default",
     "blockTakingScreenshots": "Block taking screenshots",
-    "unableToLoadListOfCurrencies": "Unable to load list of currencies!"
+    "unableToLoadListOfCurrencies": "Unable to load list of currencies!",
+    "pushNotifications": "Push Notifications",
+    "reRegisterForPushNotifications": "Re-register for push notifications",
+    "successfullyReRegisteredForPushNotifications": "Successfully re-registered for push notifications.",
+    "unableToReRegisteredForPushNotifications": "Unable to re-registered for push notifications. An unexpected error occurred!"
   },
   "account": {
     "addAccount": "Add an account",

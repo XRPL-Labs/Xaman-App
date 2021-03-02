@@ -4,7 +4,9 @@
 
 import { find } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
+
+import { PushNotificationsService, ApiService } from '@services';
 
 import { CoreRepository, ProfileRepository } from '@store/repositories';
 import { CoreSchema, ProfileSchema } from '@store/schemas/latest';
@@ -113,6 +115,37 @@ class AdvancedSettingsView extends Component<Props, State> {
         );
     };
 
+    reRegisterPushToken = async () => {
+        try {
+            const hasPermission = await PushNotificationsService.checkPermission();
+
+            if (hasPermission) {
+                const devicePushToken = await PushNotificationsService.getToken();
+
+                ApiService.updateDevice
+                    .post(null, {
+                        devicePushToken,
+                    })
+                    .then(() => {
+                        Alert.alert(
+                            Localize.t('global.success'),
+                            Localize.t('settings.successfullyReRegisteredForPushNotifications'),
+                        );
+                    })
+                    .catch(() => {
+                        Alert.alert(
+                            Localize.t('global.error'),
+                            Localize.t('settings.unableToReRegisteredForPushNotifications'),
+                        );
+                    });
+            } else {
+                Alert.alert(Localize.t('global.error'), Localize.t('global.pushErrorPermissionMessage'));
+            }
+        } catch {
+            Alert.alert(Localize.t('global.error'), Localize.t('settings.unableToReRegisteredForPushNotifications'));
+        }
+    };
+
     render() {
         const { coreSettings, profile } = this.state;
 
@@ -130,6 +163,7 @@ class AdvancedSettingsView extends Component<Props, State> {
                 />
 
                 <ScrollView>
+                    {/* node & explorer section */}
                     <Text numberOfLines={1} style={styles.descriptionText}>
                         {Localize.t('settings.nodeAndExplorer')}
                     </Text>
@@ -167,6 +201,20 @@ class AdvancedSettingsView extends Component<Props, State> {
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
                     </TouchableOpacity>
+
+                    {/* push notification section */}
+                    <Text numberOfLines={1} style={styles.descriptionText}>
+                        {Localize.t('settings.pushNotifications')}
+                    </Text>
+                    <TouchableOpacity style={[styles.row]} onPress={this.reRegisterPushToken}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.reRegisterForPushNotifications')}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    {/* release information section */}
                     <Text numberOfLines={1} style={styles.descriptionText}>
                         {Localize.t('settings.releaseInformation')}
                     </Text>
@@ -195,6 +243,7 @@ class AdvancedSettingsView extends Component<Props, State> {
                         </View>
                     </TouchableOpacity>
 
+                    {/* debug section */}
                     <Text numberOfLines={1} style={styles.descriptionText}>
                         {Localize.t('global.debug')}
                     </Text>
