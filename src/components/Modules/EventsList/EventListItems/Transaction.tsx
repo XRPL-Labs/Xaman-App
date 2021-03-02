@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableHighlight } from 'react-native';
+import { View, Text, TouchableHighlight, Image } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
@@ -7,6 +7,7 @@ import { AccountSchema } from '@store/schemas/latest';
 
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
+import { Images } from '@common/helpers/images';
 import { NormalizeCurrencyCode } from '@common/libs/utils';
 import { AppScreens } from '@common/constants';
 
@@ -315,6 +316,11 @@ class TransactionTemplate extends Component<Props, State> {
 
     renderMemoIcon = () => {
         const { item } = this.props;
+
+        // if memo contain xApp identifier then show xApp Icon
+        if (item.getXappIdentifier()) {
+            return <Image source={Images.IconXApp} style={[styles.xAppsIcon]} />;
+        }
 
         if (item.Memos) {
             return (

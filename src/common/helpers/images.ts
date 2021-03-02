@@ -98,4 +98,6 @@ export const Images = {
     IconTabbarActions: buildImageSource('IconTabbarActions', 'icon_tabbar_actions'),
     IconReorder: buildImageSource('IconReorder', 'icon_reorder'),
     IconReorderHandle: buildImageSource('IconReorderHandle', 'icon_reorder_handle'),
+    IconXApps: buildImageSource('IconXApps', 'icon_xapps'),
+    IconXApp: buildImageSource('IconXApp', 'icon_xapp'),
 };

@@ -16,26 +16,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 25,
         paddingVertical: 15,
     },
-    actionButton: {
-        height: AppSizes.scale(100),
-        borderWidth: 1,
-        borderRadius: AppSizes.scale(75) / 4,
-        paddingHorizontal: 15,
-        alignSelf: 'stretch',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderColor: AppColors.transparent,
-    },
     actionButtonBlack: {
         backgroundColor: AppColors.black,
-    },
-    actionButtonLight: {
-        backgroundColor: AppColors.grey,
-    },
-    actionButtonText: {
-        fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.subtext.size,
-        textAlign: 'center',
     },
     appIcon: {
         width: AppSizes.scale(60),
@@ -49,6 +31,11 @@ const styles = StyleSheet.create({
     },
     activityIndicator: {
         height: AppSizes.scale(130),
+    },
+    xAppsIcon: {
+        resizeMode: 'contain',
+        height: AppSizes.scale(20),
+        width: AppSizes.scale(80),
     },
 });
 

@@ -18,6 +18,7 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 import Interactable from 'react-native-interactable';
 
 import { Navigator } from '@common/helpers/navigator';
+import { Images } from '@common/helpers/images';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -237,7 +238,7 @@ class HomeActionsOverlay extends Component<Props, State> {
 
                         <View style={[AppStyles.row, AppStyles.centerAligned]}>
                             <View style={[AppStyles.flex1]}>
-                                <Text style={[AppStyles.h5]}>xApps</Text>
+                                <Image source={Images.IconXApps} resizeMode="contain" style={styles.xAppsIcon} />
                             </View>
                             <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                                 <Button

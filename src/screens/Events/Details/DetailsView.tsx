@@ -932,7 +932,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         <Button
                             rounded
                             block
-                            label="Open xApp"
+                            label={Localize.t('global.openXApp')}
                             secondary
                             // eslint-disable-next-line react/jsx-no-bind
                             onPress={this.onActionButtonPress.bind(null, 'OpenXapp')}

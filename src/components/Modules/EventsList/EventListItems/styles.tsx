@@ -27,6 +27,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         resizeMode: 'contain',
     },
+    xAppsIcon: {
+        tintColor: AppColors.greyBlack,
+        marginLeft: 8,
+        resizeMode: 'contain',
+        height: 15,
+        width: 35,
+    },
     label: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.subtext.size,
