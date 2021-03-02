@@ -12,6 +12,8 @@ import Localize from '@locale';
 // components
 import { Button, TextInput, Spacer, Footer } from '@components/General';
 
+import { ConvertCodecAlphabet } from '@common/libs/utils';
+
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -22,7 +24,7 @@ import { StepsContext } from '../../Context';
 export interface Props {}
 
 export interface State {
-    privateKey: string;
+    secret: string;
 }
 
 /* Component ==================================================================== */
@@ -34,14 +36,23 @@ class EnterSeedStep extends Component<Props, State> {
         super(props);
 
         this.state = {
-            privateKey: null,
+            secret: null,
         };
     }
 
     driveFamilySeed = () => {
-        const { privateKey } = this.state;
+        const { alternativeSeedAlphabet } = this.context;
+        const { secret } = this.state;
         try {
-            const account = derive.familySeed(privateKey);
+            let xrplSecret = secret;
+            // if alternative alphabet set then change
+            if (alternativeSeedAlphabet) {
+                const { alphabet } = alternativeSeedAlphabet;
+                if (typeof alphabet === 'string') {
+                    xrplSecret = ConvertCodecAlphabet(secret, alphabet);
+                }
+            }
+            const account = derive.familySeed(xrplSecret);
             this.goNext(account);
         } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.invalidFamilySeed'));
@@ -49,9 +60,9 @@ class EnterSeedStep extends Component<Props, State> {
     };
 
     derivePrivateKey = () => {
-        const { privateKey } = this.state;
+        const { secret } = this.state;
         try {
-            const account = derive.privatekey(privateKey);
+            const account = derive.privatekey(secret);
             this.goNext(account);
         } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.invalidHexPrivateKey'));
@@ -68,13 +79,13 @@ class EnterSeedStep extends Component<Props, State> {
     };
 
     onNextPress = () => {
-        const { privateKey } = this.state;
+        const { secret } = this.state;
 
         try {
             // normal family seed
-            if (privateKey.startsWith('s')) {
+            if (secret.startsWith('s')) {
                 this.driveFamilySeed();
-            } else if (privateKey.length === 66 && privateKey.startsWith('00')) {
+            } else if (secret.length === 66 && secret.startsWith('00')) {
                 // hex private key
                 this.derivePrivateKey();
             } else {
@@ -88,23 +99,25 @@ class EnterSeedStep extends Component<Props, State> {
     onQRCodeRead = (result: XrplSecret) => {
         if (result.familySeed) {
             this.setState({
-                privateKey: result.familySeed,
+                secret: result.familySeed,
             });
         }
     };
 
     onTextChange = (value: string) => {
-        this.setState({ privateKey: value.replace(/[^a-z0-9]/gi, '') });
+        this.setState({ secret: value.replace(/[^a-z0-9]/gi, '') });
     };
 
     render() {
-        const { goBack } = this.context;
-        const { privateKey } = this.state;
+        const { goBack, alternativeSeedAlphabet } = this.context;
+        const { secret } = this.state;
 
         return (
             <SafeAreaView testID="account-import-enter-family-seed-view" style={[AppStyles.container]}>
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
-                    {Localize.t('account.pleaseProvideFamilySeed')}
+                    {alternativeSeedAlphabet
+                        ? Localize.t('account.toTurnYourSecretIntoXrplLedgerAccountPleaseEnterYourSecret')
+                        : Localize.t('account.pleaseProvideFamilySeed')}
                 </Text>
 
                 <Spacer size={50} />
@@ -116,13 +129,17 @@ class EnterSeedStep extends Component<Props, State> {
                 >
                     <TextInput
                         testID="seed-input"
-                        placeholder={Localize.t('account.pleaseEnterYourFamilySeed')}
+                        placeholder={
+                            alternativeSeedAlphabet
+                                ? Localize.t('account.enterSecret')
+                                : Localize.t('account.pleaseEnterYourFamilySeed')
+                        }
                         autoCapitalize="none"
                         autoCorrect={false}
                         keyboardType="visible-password"
                         inputStyle={styles.inputText}
                         onChangeText={this.onTextChange}
-                        value={privateKey}
+                        value={secret}
                         showScanner
                         scannerType={StringType.XrplSecret}
                         onScannerRead={this.onQRCodeRead}

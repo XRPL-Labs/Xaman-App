@@ -4,7 +4,7 @@ import { AppColors, AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({
-    labelWrapper: {
+    addressContainer: {
         backgroundColor: AppColors.lightBlue,
         justifyContent: 'center',
         paddingHorizontal: 5,
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
         fontSize: AppFonts.base.size,
         color: AppColors.blue,
         textAlign: 'center',
-        paddingBottom: 10,
+        paddingBottom: AppSizes.paddingSml,
     },
     addressField: {
         color: AppColors.blue,

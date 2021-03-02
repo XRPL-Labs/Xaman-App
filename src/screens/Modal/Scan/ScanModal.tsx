@@ -336,6 +336,19 @@ class ScanView extends Component<Props, State> {
         );
     };
 
+    handleAlternativeSeedCodec = (parsed: {
+        name: string;
+        alphabet: string | boolean;
+        params?: Record<string, unknown>;
+    }) => {
+        const { alphabet } = parsed;
+        if (alphabet) {
+            this.routeUser(AppScreens.Account.Import, {}, {
+                alternativeSeedAlphabet: parsed,
+            });
+        }
+    };
+
     handleUndetectedType = (content: string, clipboard?: boolean) => {
         // some users scan QR on tangem card, navigate them to the account add screen
         if (content === 'https://xumm.app/tangem') {
@@ -440,6 +453,9 @@ class ScanView extends Component<Props, State> {
                 break;
             case StringType.XummXapp:
                 this.handleXAPPLink(content, parsed);
+                break;
+            case StringType.XrplAltFamilySeedAlphabet:
+                this.handleAlternativeSeedCodec(parsed);
                 break;
             default:
                 this.handleUndetectedType(content, clipboard);

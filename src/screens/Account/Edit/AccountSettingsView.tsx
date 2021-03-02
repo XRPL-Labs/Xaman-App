@@ -164,7 +164,7 @@ class AccountSettingsView extends Component<Props, State> {
                     text: Localize.t('global.doIt'),
                     testID: 'yes-iam-sure-button',
                     onPress: () => {
-                        Navigator.push(AppScreens.Account.Import, {}, { upgrade: account });
+                        Navigator.push(AppScreens.Account.Import, {}, { upgradeAccount: account });
                     },
                 },
             ],

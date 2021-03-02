@@ -140,6 +140,23 @@ class LinkingService extends EventEmitter {
         );
     };
 
+    handleAlternativeSeedCodec = (parsed: {
+        name: string;
+        alphabet: string | boolean;
+        params?: Record<string, unknown>;
+    }) => {
+        const { alphabet } = parsed;
+        if (alphabet) {
+            Navigator.push(
+                AppScreens.Account.Import,
+                {},
+                {
+                    alternativeSeedAlphabet: parsed,
+                },
+            );
+        }
+    };
+
     handle = (url: string) => {
         const detected = new StringTypeDetector(url);
 
@@ -166,6 +183,9 @@ class LinkingService extends EventEmitter {
                 break;
             case StringType.XummXapp:
                 this.handleXAPPLink(url, parsed);
+                break;
+            case StringType.XrplAltFamilySeedAlphabet:
+                this.handleAlternativeSeedCodec(parsed);
                 break;
             default:
                 break;

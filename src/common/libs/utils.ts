@@ -171,6 +171,14 @@ const VersionDiff = (v1: string, v2: string) => {
     return v1parts.length < v2parts.length ? -1 : 1;
 };
 
+const ConvertCodecAlphabet = (seed: string, alphabet: string, toXRPL = true) => {
+    const xrplAlphabet = 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz';
+    return seed
+        .split('')
+        .map((char) => (toXRPL ? xrplAlphabet[alphabet.indexOf(char)] : alphabet[xrplAlphabet.indexOf(char)]))
+        .join('');
+};
+
 /* Export ==================================================================== */
 export {
     HexEncoding,
@@ -180,5 +188,6 @@ export {
     NormalizeAmount,
     NormalizeCurrencyCode,
     NormalizeDestination,
+    ConvertCodecAlphabet,
     VersionDiff,
 };

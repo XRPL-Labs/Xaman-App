@@ -9,6 +9,13 @@ export enum SecretTypes {
     Mnemonic = 'mnemonic',
 }
 
+type XrplAltFamilySeedAlphabet = {
+    name: string;
+    alphabet: string | boolean;
+    params?: Record<string, unknown>;
+    xapp?: string;
+};
+
 export type ImportSteps =
     | 'AccessLevel'
     | 'SecretType'
@@ -25,8 +32,9 @@ export type ImportSteps =
     | 'FinishStep';
 
 export interface Props {
-    upgrade?: AccountSchema;
+    upgradeAccount?: AccountSchema;
     tangemCard?: Card;
+    alternativeSeedAlphabet?: XrplAltFamilySeedAlphabet;
 }
 
 export interface State {
@@ -36,6 +44,7 @@ export interface State {
     importedAccount: XRPL_Account;
     passphrase?: string;
     secretType?: SecretTypes;
-    upgrade: AccountSchema;
+    upgradeAccount?: AccountSchema;
+    alternativeSeedAlphabet?: XrplAltFamilySeedAlphabet;
     isLoading: boolean;
 }

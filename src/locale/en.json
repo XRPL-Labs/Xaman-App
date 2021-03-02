@@ -637,7 +637,12 @@
     "destroyAccount": "Delete this account",
     "importTangemCard": "Import Tangem Card",
     "unableToHideAllAccountsError": "Unable to hide this account, at least one account should be visible.",
-    "tapAndHoldToReorder": "Tap and hold on an item to reorder by the desired priority"
+    "tapAndHoldToReorder": "Tap and hold on an item to reorder by the desired priority",
+    "importSecret": "Import secret",
+    "toTurnYourSecretIntoXrplLedgerAccountPleaseEnterYourSecret": "To turn your secret into an XRP Ledger account, please enter your secret.",
+    "enterSecret": "Enter secret",
+    "yourChainAddressWas": "Your %{chain} address was:",
+    "yourXRPLedgerAccountIsGoingToBe": "Your XRP Ledger account is going to be:"
   },
   "send": {
     "amountIsBiggerThanYourSpend": "This amount is bigger than what you can spend (%{spendable})",
