@@ -354,7 +354,7 @@ class AccountImportView extends Component<Props, State> {
             );
 
             // close the screen
-            Navigator.pop().then(() => {
+            Navigator.popToRoot().then(() => {
                 // if account imported with alternative seed alphabet and xApp present
                 // route user to the xApp
                 if (has(alternativeSeedAlphabet, 'params.xapp')) {

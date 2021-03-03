@@ -113,6 +113,7 @@ class NodeListView extends Component<Props, State> {
                     { text: Localize.t('global.cancel') },
                     {
                         text: Localize.t('global.doIt'),
+                        style: 'destructive',
                         onPress: () => {
                             CoreRepository.saveSettings({
                                 defaultNode: item.url,
