@@ -50,11 +50,11 @@ class Amount {
         return drops.toString(10);
     }
 
-    toString(decimalPlaces = 6): string {
+    toString(decimalPlaces = 8): string {
         return new BigNumber(this.amount).decimalPlaces(decimalPlaces).toString(10);
     }
 
-    toNumber(decimalPlaces = 6): number {
+    toNumber(decimalPlaces = 8): number {
         return new BigNumber(this.amount).decimalPlaces(decimalPlaces).toNumber();
     }
 }

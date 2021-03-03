@@ -76,13 +76,13 @@ class Meta {
             balance: {
                 currency: 'XRP',
                 // eslint-disable-next-line newline-per-chained-call
-                value: new BigNumber(value).absoluteValue().dividedBy(1000000.0).decimalPlaces(6).toString(10),
+                value: new BigNumber(value).absoluteValue().dividedBy(1000000.0).decimalPlaces(8).toString(10),
             },
         };
     };
 
     private flipTrustlinePerspective = (quantity: any) => {
-        const absoluteBalance = new BigNumber(quantity.balance.value).absoluteValue().decimalPlaces(6).toString(10);
+        const absoluteBalance = new BigNumber(quantity.balance.value).absoluteValue().decimalPlaces(8).toString(10);
         return {
             address: quantity.balance.issuer,
             balance: {

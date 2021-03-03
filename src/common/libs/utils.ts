@@ -109,7 +109,7 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination & {
  * @returns string 1333.855222
  */
 const NormalizeBalance = (balance: number) => {
-    return new BigNumber(balance).decimalPlaces(6).toString(10);
+    return new BigNumber(balance).decimalPlaces(8).toString(10);
 };
 
 /**
@@ -118,7 +118,7 @@ const NormalizeBalance = (balance: number) => {
  * @returns string 1333.855222
  */
 const NormalizeAmount = (amount: number) => {
-    return new BigNumber(amount).decimalPlaces(6).toString(10);
+    return new BigNumber(amount).decimalPlaces(8).toString(10);
 };
 
 /**

@@ -170,7 +170,7 @@ class PaymentTemplate extends Component<Props, State> {
 
                     const sendMaxXRP = new BigNumber(transaction.Amount.value)
                         .multipliedBy(liquidity.rate)
-                        .decimalPlaces(6)
+                        .decimalPlaces(8)
                         .toString(10);
 
                     // @ts-ignore
@@ -179,7 +179,7 @@ class PaymentTemplate extends Component<Props, State> {
 
                     this.setState({
                         isPartialPayment: true,
-                        exchangeRate: new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(6).toNumber(),
+                        exchangeRate: new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(8).toNumber(),
                         xrpRoundedUp: sendMaxXRP,
                     });
                 } else {

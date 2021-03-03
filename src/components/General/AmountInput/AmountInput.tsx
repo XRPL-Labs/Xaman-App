@@ -103,12 +103,12 @@ class AmountInput extends PureComponent<Props, State> {
             formatted = formatted.replace(new RegExp(`\\${separator}+$`), '');
         }
 
-        // not more than 6 decimal places
-        if (formatted.split(separator)[1] && formatted.split(separator).reverse()[0].length >= 6) {
+        // not more than 8 decimal places
+        if (formatted.split(separator)[1] && formatted.split(separator).reverse()[0].length >= 8) {
             formatted = `${formatted.split(separator).reverse()[1]}${separator}${formatted
                 .split(separator)
                 .reverse()[0]
-                .slice(0, 6)}`;
+                .slice(0, 8)}`;
         }
 
         // "01" to "1"

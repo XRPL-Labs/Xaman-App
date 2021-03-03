@@ -94,7 +94,7 @@ class Localize {
      * @returns string 1,333.855222
      */
     formatNumber = (n: number): string => {
-        const options = { precision: 6, strip_insignificant_zeros: true };
+        const options = { precision: 8, strip_insignificant_zeros: true };
 
         if (this.settings) {
             const { separator, delimiter } = this.settings;

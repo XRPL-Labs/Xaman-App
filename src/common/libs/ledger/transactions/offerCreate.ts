@@ -158,7 +158,7 @@ class OfferCreate extends BaseTransaction {
 
         //  remove fee from end result if xrp
         if (currency === 'XRP' && owner === this.Account.address) {
-            set(takerGot, 'value', new BigNumber(takerGot.value).minus(this.Fee).decimalPlaces(6).toString(10));
+            set(takerGot, 'value', new BigNumber(takerGot.value).minus(this.Fee).decimalPlaces(8).toString(10));
         }
 
         return takerGot;
@@ -183,7 +183,7 @@ class OfferCreate extends BaseTransaction {
 
         //  remove fee from end result if xrp and own offer tx
         if (currency === 'XRP' && owner === this.Account.address) {
-            set(takerPaid, 'value', new BigNumber(takerPaid.value).minus(this.Fee).decimalPlaces(6).toString(10));
+            set(takerPaid, 'value', new BigNumber(takerPaid.value).minus(this.Fee).decimalPlaces(8).toString(10));
         }
 
         return takerPaid;

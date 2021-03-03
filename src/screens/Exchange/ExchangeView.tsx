@@ -250,7 +250,7 @@ class ExchangeView extends Component<Props, State> {
             (100 + this.ledgerExchange.boundaryOptions.maxSlippagePercentage) / 100,
         );
 
-        const getsAmount = new BigNumber(amount).multipliedBy(paddedExchangeRate).decimalPlaces(6).toString(10);
+        const getsAmount = new BigNumber(amount).multipliedBy(paddedExchangeRate).decimalPlaces(8).toString(10);
 
         if (direction === 'sell') {
             offer.TakerGets = { currency: 'XRP', value: amount };
@@ -404,7 +404,7 @@ class ExchangeView extends Component<Props, State> {
         const exchangeRate =
             direction === 'sell'
                 ? liquidity.rate
-                : new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(6).toString(10);
+                : new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(8).toString(10);
 
         return (
             <>
