@@ -28,7 +28,7 @@ export default {
     // xrpl explorers
     explorer: [
         {
-            value: 'xpring',
+            value: 'ripplex',
             title: 'XRPL.org',
             tx: {
                 main: 'https://livenet.xrpl.org/transactions/',
