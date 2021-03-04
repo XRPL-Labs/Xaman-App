@@ -75,6 +75,18 @@ export default {
                 test: 'https://test.bithomp.com/explorer/',
             },
         },
+        {
+            value: 'xrpintel',
+            title: 'xrpintel',
+            tx: {
+                main: 'https://xrpintel.com/tx/',
+                test: 'https://test.bithomp.com/explorer/',
+            },
+            account: {
+                main: 'https://xrpintel.com/account/',
+                test: 'https://test.bithomp.com/explorer/',
+            },
+        },
     ],
 
     thirdParty: {
