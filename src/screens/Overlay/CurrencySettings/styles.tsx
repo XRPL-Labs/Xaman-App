@@ -94,6 +94,14 @@ const styles = StyleSheet.create({
     exchangeButtonIcon: { marginLeft: 5 },
     exchangeButtonText: { color: AppColors.black },
 
+    infoButton: {
+        marginLeft: 1.5,
+        borderTopLeftRadius: 0,
+        borderBottomLeftRadius: 0,
+    },
+    infoButtonIcon: { marginLeft: 5 },
+    infoButtonText: { color: AppColors.black },
+
     removeButtonIcon: { marginLeft: 5, tintColor: AppColors.red },
     removeButtonText: { color: AppColors.red },
 });

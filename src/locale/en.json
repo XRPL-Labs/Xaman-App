@@ -261,6 +261,7 @@
     "requestWithAmount": "Request with amount",
     "openXApp": "Open xApp",
     "reallySmallAmount": "Really small amount",
+    "about": "About",
     "theAmountIsTooSmallToDisplay": "The amount is to small to display:\n%{amount}"
   },
   "onboarding": {
