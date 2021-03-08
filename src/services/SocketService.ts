@@ -193,9 +193,9 @@ class SocketService extends EventEmitter {
         }
 
         // THIS IS DURRING BETA
-        // if it's main net and the default node is not xrpl.ws revert
-        if (chain === NodeChain.Main && node !== 'wss://xrpl.ws') {
-            this.node = 'wss://xrpl.ws';
+        // if it's main net and the default node is not default node revert
+        if (chain === NodeChain.Main && node !== AppConfig.nodes.default) {
+            this.node = AppConfig.nodes.default;
 
             // update the database
             CoreRepository.saveSettings({

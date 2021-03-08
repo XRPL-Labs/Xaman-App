@@ -21,7 +21,8 @@ export default {
 
     // xrpl nodes
     nodes: {
-        main: ['wss://xrpl.ws', 'wss://xrpl.link', 'wss://s2.ripple.com'],
+        default: 'wss://xrplcluster.com',
+        main: ['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'],
         test: ['wss://testnet.xrpl-labs.com', 'wss://s.altnet.rippletest.net:51233'],
     },
 
