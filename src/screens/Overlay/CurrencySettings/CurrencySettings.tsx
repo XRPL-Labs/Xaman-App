@@ -24,7 +24,7 @@ import { AppScreens } from '@common/constants';
 import LedgerService from '@services/LedgerService';
 
 // components
-import { Button, Spacer, RaisedButton } from '@components/General';
+import { Button, Spacer, RaisedButton, AmountText } from '@components/General';
 
 import Localize from '@locale';
 
@@ -375,9 +375,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 {trustLine.currency.avatar && (
                                     <Image style={styles.currencyAvatar} source={{ uri: trustLine.currency.avatar }} />
                                 )}
-                                <Text style={[AppStyles.pbold, AppStyles.monoBold]}>
-                                    {Localize.formatNumber(trustLine.balance)}
-                                </Text>
+                                <AmountText value={trustLine.balance} style={[AppStyles.pbold, AppStyles.monoBold]} />
                             </View>
                         </View>
 

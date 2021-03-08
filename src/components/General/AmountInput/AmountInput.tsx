@@ -17,6 +17,7 @@ interface Props {
     style?: TextStyle | TextStyle[];
     value?: string;
     editable?: boolean;
+    fractional?: boolean;
     returnKeyType?: ReturnKeyTypeOptions;
     placeholderTextColor?: string;
     onChange?: (value: string) => void;
@@ -31,11 +32,15 @@ interface State {
 class AmountInput extends PureComponent<Props, State> {
     instance: TextInput;
 
+    static defaultProps = {
+        fractional: true,
+    };
+
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            formatted: props.value ? AmountInput.format(props.value) : '',
+            formatted: props.value ? AmountInput.format(props.value, props.fractional) : '',
             value: props.value ? AmountInput.normalize(props.value) : '',
         };
     }
@@ -62,9 +67,9 @@ class AmountInput extends PureComponent<Props, State> {
         return value;
     };
 
-    static getDerivedStateFromProps(props: Props) {
-        const formatted = props.value ? AmountInput.format(props.value) : '';
-        const value = props.value ? AmountInput.normalize(props.value) : '';
+    static getDerivedStateFromProps(nextProps: Props) {
+        const formatted = nextProps.value ? AmountInput.format(nextProps.value, nextProps.fractional) : '';
+        const value = nextProps.value ? AmountInput.normalize(nextProps.value) : '';
 
         return {
             formatted,
@@ -82,12 +87,12 @@ class AmountInput extends PureComponent<Props, State> {
         return value.replace(',', '.');
     };
 
-    static format = (value: string): string => {
-        let formatted = value;
-
-        if (!formatted) {
+    static format = (value: string, fractional?: boolean): string => {
+        if (!value) {
             return '';
         }
+
+        let formatted = value;
 
         const separator = Localize.settings?.separator || '.';
 
@@ -97,18 +102,29 @@ class AmountInput extends PureComponent<Props, State> {
             formatted = formatted.replace(',', '.');
         }
 
-        // filter amount
-        formatted = formatted.replace(new RegExp(`[^0-9${separator}]`, 'g'), '');
-        if (formatted.split(separator).length > 2) {
-            formatted = formatted.replace(new RegExp(`\\${separator}+$`), '');
-        }
+        if (fractional) {
+            // filter amount
+            formatted = formatted.replace(new RegExp(`[^0-9${separator}]`, 'g'), '');
+            if (formatted.split(separator).length > 2) {
+                formatted = formatted.replace(new RegExp(`\\${separator}+$`), '');
+            }
 
-        // not more than 8 decimal places
-        if (formatted.split(separator)[1] && formatted.split(separator).reverse()[0].length >= 8) {
-            formatted = `${formatted.split(separator).reverse()[1]}${separator}${formatted
-                .split(separator)
-                .reverse()[0]
-                .slice(0, 8)}`;
+            // not more than 8 decimal places
+            if (formatted.split(separator)[1] && formatted.split(separator).reverse()[0].length >= 8) {
+                formatted = `${formatted.split(separator).reverse()[1]}${separator}${formatted
+                    .split(separator)
+                    .reverse()[0]
+                    .slice(0, 8)}`;
+            }
+
+            // "." to "0."
+            if (formatted.length === 1 && formatted[0] === separator) {
+                // eslint-disable-next-line
+                formatted = `0${separator}`;
+            }
+        } else {
+            // filter amount
+            formatted = formatted.replace(new RegExp('[^0-9]', 'g'), '');
         }
 
         // "01" to "1"
@@ -117,19 +133,13 @@ class AmountInput extends PureComponent<Props, State> {
             formatted = formatted[1];
         }
 
-        // "." to "0."
-        if (formatted.length === 1 && formatted[0] === separator) {
-            // eslint-disable-next-line
-            formatted = `0${separator}`;
-        }
-
         return formatted;
     };
 
     onValueChange = (value: string) => {
-        const { onChange } = this.props;
+        const { onChange, fractional } = this.props;
 
-        const formatted = AmountInput.format(value);
+        const formatted = AmountInput.format(value, fractional);
         const clean = AmountInput.normalize(formatted);
 
         this.setState(

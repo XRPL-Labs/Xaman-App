@@ -38,7 +38,7 @@ import { VibrateHapticFeedback, Prompt, Toast } from '@common/helpers/interface'
 import Localize from '@locale';
 
 // components
-import { Button, RaisedButton, InfoMessage, Spacer, Icon } from '@components/General';
+import { Button, RaisedButton, InfoMessage, Spacer, Icon, AmountText } from '@components/General';
 
 // style
 import { AppStyles, AppColors } from '@theme';
@@ -567,15 +567,19 @@ class HomeView extends Component<Props, State> {
                                                 source={{ uri: line.currency.avatar }}
                                             />
                                         )}
-                                        <Text
-                                            style={[
-                                                AppStyles.pbold,
-                                                AppStyles.monoBold,
-                                                discreetMode && AppStyles.colorGreyDark,
-                                            ]}
-                                        >
-                                            {discreetMode ? '••••••••' : Localize.formatNumber(line.balance)}
-                                        </Text>
+
+                                        {discreetMode ? (
+                                            <Text
+                                                style={[AppStyles.pbold, AppStyles.monoBold, AppStyles.colorGreyDark]}
+                                            >
+                                                ••••••••
+                                            </Text>
+                                        ) : (
+                                            <AmountText
+                                                value={line.balance}
+                                                style={[AppStyles.pbold, AppStyles.monoBold]}
+                                            />
+                                        )}
                                     </View>
                                 </TouchableOpacity>
                             );

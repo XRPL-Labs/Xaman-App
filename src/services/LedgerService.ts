@@ -454,10 +454,11 @@ class LedgerService extends EventEmitter {
                                 const { TransferRate } = issuerAccountInfo.account_data;
                                 transfer_rate = TransferRate;
                             }
+
                             // add to trustLines list
                             normalizedList.push({
                                 currency,
-                                balance: new Amount(l.balance, false).toNumber(15),
+                                balance: new Amount(l.balance, false).toNumber(),
                                 transfer_rate,
                                 no_ripple: l.no_ripple || false,
                                 no_ripple_peer: l.no_ripple_peer || false,

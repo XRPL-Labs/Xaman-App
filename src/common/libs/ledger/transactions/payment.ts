@@ -6,7 +6,7 @@ import * as AccountLib from 'xrpl-accountlib';
 import LedgerService from '@services/LedgerService';
 
 import { AccountSchema } from '@store/schemas/latest';
-import { NormalizeCurrencyCode, NormalizeBalance } from '@common/libs/utils';
+import { NormalizeCurrencyCode, NormalizeAmount } from '@common/libs/utils';
 
 import Localize from '@locale';
 
@@ -355,11 +355,11 @@ class Payment extends BaseTransaction {
 
                     if (!line) return resolve();
 
-                    if (Number(this.Amount.value) > Number(NormalizeBalance(line.balance))) {
+                    if (Number(this.Amount.value) > Number(line.balance)) {
                         return reject(
                             new Error(
                                 Localize.t('send.insufficientBalanceSpendableBalance', {
-                                    spendable: Localize.formatNumber(line.balance),
+                                    spendable: Localize.formatNumber(NormalizeAmount(line.balance)),
                                     currency: NormalizeCurrencyCode(line.currency.currency),
                                 }),
                             ),
@@ -380,10 +380,10 @@ class Payment extends BaseTransaction {
                         return reject(
                             new Error(
                                 Localize.t('send.trustLineLimitExceeded', {
-                                    balance: Localize.formatNumber(Math.abs(trustLine.balance)),
-                                    peer_limit: Localize.formatNumber(trustLine.limit_peer),
+                                    balance: Localize.formatNumber(NormalizeAmount(Math.abs(trustLine.balance))),
+                                    peer_limit: Localize.formatNumber(NormalizeAmount(trustLine.limit_peer)),
                                     available: Localize.formatNumber(
-                                        Number(trustLine.limit_peer - Math.abs(trustLine.balance)),
+                                        NormalizeAmount(Number(trustLine.limit_peer - Math.abs(trustLine.balance))),
                                     ),
                                 }),
                             ),

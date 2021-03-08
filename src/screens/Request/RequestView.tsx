@@ -158,7 +158,7 @@ class RequestView extends Component<Props, State> {
         if (currencyRate) {
             const inXRP = Number(amount) / currencyRate.lastRate;
             this.setState({
-                amount: NormalizeAmount(inXRP),
+                amount: String(NormalizeAmount(inXRP)),
             });
         }
     };

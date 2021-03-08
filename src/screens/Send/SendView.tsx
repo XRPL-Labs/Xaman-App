@@ -19,6 +19,7 @@ import { Payment } from '@common/libs/ledger/transactions';
 import { Destination } from '@common/libs/ledger/parser/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
+import { XRPLValueToNFT, NFTValueToXRPL } from '@common/libs/utils';
 // components
 import { Header } from '@components/General';
 
@@ -59,6 +60,7 @@ class SendView extends Component<Props, State> {
             destination: undefined,
             destinationInfo: undefined,
             currency: props.currency || 'XRP',
+            sendingNFT: false,
             amount: props.amount || '',
             payment: new Payment(),
             scanResult: props.scanResult || undefined,
@@ -84,7 +86,14 @@ class SendView extends Component<Props, State> {
     };
 
     setCurrency = (currency: TrustLineSchema | string) => {
-        this.setState({ currency });
+        let isNFT = false;
+        if (typeof currency !== 'string' && XRPLValueToNFT(currency.balance)) {
+            isNFT = true;
+        }
+        this.setState({
+            currency,
+            sendingNFT: isNFT,
+        });
     };
 
     setAmount = (amount: string) => {
@@ -146,7 +155,7 @@ class SendView extends Component<Props, State> {
     };
 
     send = async () => {
-        const { currency, amount, destination, source, payment } = this.state;
+        const { currency, amount, destination, source, payment, sendingNFT } = this.state;
 
         this.setState({
             isLoading: true,
@@ -176,7 +185,7 @@ class SendView extends Component<Props, State> {
             payment.Amount = {
                 currency: currency.currency.currency,
                 issuer: currency.currency.issuer,
-                value: amount,
+                value: sendingNFT ? NFTValueToXRPL(amount) : amount,
             };
 
             if (currency.transfer_rate || currency.currency.issuer === source.address) {

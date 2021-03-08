@@ -17,8 +17,8 @@ class Amount {
 
         // Converting to BigNumber and then back to string should remove any
         // decimal point followed by zeros, e.g. '1.00'.
-        // Important: specify base 10 to avoid exponential notation, e.g. '1e-7'.
-        const newAmount = new BigNumber(amount).toString(10);
+        // Important: specify to fixed to avoid exponential notation, e.g. '1e-7'.
+        const newAmount = new BigNumber(amount).toFixed();
 
         if (drops) {
             // drops are only whole units
@@ -50,12 +50,12 @@ class Amount {
         return drops.toString(10);
     }
 
-    toString(decimalPlaces = 8): string {
-        return new BigNumber(this.amount).decimalPlaces(decimalPlaces).toString(10);
+    toString(): string {
+        return new BigNumber(this.amount).toFixed();
     }
 
-    toNumber(decimalPlaces = 8): number {
-        return new BigNumber(this.amount).decimalPlaces(decimalPlaces).toNumber();
+    toNumber(): number {
+        return new BigNumber(this.amount).toNumber();
     }
 }
 

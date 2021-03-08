@@ -8,6 +8,7 @@ import BigNumber from 'bignumber.js';
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
 import { XrplDestination } from 'xumm-string-decode';
+
 /* Hex Encoding  ==================================================================== */
 const HexEncoding = {
     toBinary: (hex: string): Buffer => {
@@ -23,7 +24,12 @@ const HexEncoding = {
     },
 };
 
-// Truncate text ABC...EFG
+/**
+ * normalize XRPL currency code
+ * @param fullString string
+ * @param string_length number expected output length
+ * @returns stringTruncate text ABC...EFG
+ */
 const Truncate = (fullString: string, string_length: number): string => {
     if (fullString.length <= string_length) {
         return fullString;
@@ -39,6 +45,11 @@ const Truncate = (fullString: string, string_length: number): string => {
     return fullString.substr(0, frontChars) + separator + fullString.substr(fullString.length - backChars);
 };
 
+/**
+ * normalize XRPL currency code
+ * @param currencyCode string
+ * @returns normalized XRPL currency code
+ */
 const NormalizeCurrencyCode = (currencyCode: string): string => {
     if (!currencyCode) return '';
 
@@ -71,6 +82,11 @@ const NormalizeCurrencyCode = (currencyCode: string): string => {
     return currencyCode;
 };
 
+/**
+ * normalize XRPL destination
+ * @param destination XrplDestination
+ * @returns normalized XrplDestination
+ */
 const NormalizeDestination = (destination: XrplDestination): XrplDestination & { xAddress: string } => {
     let to;
     let tag;
@@ -104,12 +120,70 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination & {
 };
 
 /**
- * normalize balance
- * @param n number
- * @returns string 1333.855222
+ * Convert XRPL value to NFT value
+ * @param value number
+ * @returns number in NFT value or false if XRPL value is not NFT
  */
-const NormalizeBalance = (balance: number) => {
-    return new BigNumber(balance).decimalPlaces(8).toString(10);
+const XRPLValueToNFT = (value: number): number | boolean => {
+    const data = String(Number(value)).split(/e/i);
+
+    const finish = (returnValue: string) => {
+        const unsignedReturnValue = returnValue.replace(/^-/, '');
+        if (data.length > 1 && unsignedReturnValue.slice(0, 2) === '0.' && Number(data[1]) < -70) {
+            // Positive below zero amount, could be NFT
+            return (
+                // eslint-disable-next-line @typescript-eslint/no-use-before-define
+                (sign === '-' ? -1 : 1) *
+                Number((unsignedReturnValue.slice(2) + '0'.repeat(83 - unsignedReturnValue.length)).replace(/^0+/, ''))
+            );
+        }
+        return false;
+    };
+
+    if (data.length === 1) {
+        // Regular (non-exponent)
+        return false;
+    }
+
+    let z = '';
+    const sign = value < 0 ? '-' : '';
+    const str = data[0].replace('.', '');
+    let mag = Number(data[1]) + 1;
+
+    if (mag < 0) {
+        z = `${sign}0.`;
+        while (mag++) {
+            z += '0';
+        }
+        return finish(z + str.replace(/^-/, ''));
+    }
+    mag -= str.length;
+
+    while (mag--) {
+        z += '0';
+    }
+    return finish(str + z);
+};
+
+/**
+ * Convert NFT value to XRPL value
+ * @param value string
+ * @param balance number XRPL string notation, optional, if intention to force NFT check
+ * @returns string in XRPL value
+ */
+const NFTValueToXRPL = (value: string, balance?: number): string => {
+    const unsignedValue = String(value).replace(/^-/, '');
+    const sign = unsignedValue.length < String(value).length ? '-' : '';
+
+    // accountBalance: xrpl string notation, optional, if intention to force NFT check
+    if (typeof balance !== 'undefined' && XRPLValueToNFT(balance) === false) {
+        throw new Error('Source balance is not NFT-like');
+    }
+    if (!unsignedValue.match(/^[0-9]+$/)) {
+        throw new Error('Only non-float & non-scientific notation values accepted');
+    }
+
+    return `${sign}0.${'0'.repeat(81 - unsignedValue.length)}${unsignedValue}`;
 };
 
 /**
@@ -117,8 +191,12 @@ const NormalizeBalance = (balance: number) => {
  * @param n number
  * @returns string 1333.855222
  */
-const NormalizeAmount = (amount: number) => {
-    return new BigNumber(amount).decimalPlaces(8).toString(10);
+const NormalizeAmount = (amount: number): number => {
+    const nftValue = XRPLValueToNFT(amount);
+    if (nftValue) {
+        return Number(nftValue);
+    }
+    return new BigNumber(amount).decimalPlaces(8).toNumber();
 };
 
 /**
@@ -171,9 +249,16 @@ const VersionDiff = (v1: string, v2: string) => {
     return v1parts.length < v2parts.length ? -1 : 1;
 };
 
-const ConvertCodecAlphabet = (seed: string, alphabet: string, toXRPL = true) => {
+/**
+ * Convert seed/address to another alphabet
+ * @param value string
+ * @param alphabet string
+ * @param toXRPL boolean
+ * @returns seed/address in new alphabet
+ */
+const ConvertCodecAlphabet = (value: string, alphabet: string, toXRPL = true) => {
     const xrplAlphabet = 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz';
-    return seed
+    return value
         .split('')
         .map((char) => (toXRPL ? xrplAlphabet[alphabet.indexOf(char)] : alphabet[xrplAlphabet.indexOf(char)]))
         .join('');
@@ -184,10 +269,11 @@ export {
     HexEncoding,
     Truncate,
     FormatDate,
-    NormalizeBalance,
     NormalizeAmount,
     NormalizeCurrencyCode,
     NormalizeDestination,
     ConvertCodecAlphabet,
+    XRPLValueToNFT,
+    NFTValueToXRPL,
     VersionDiff,
 };

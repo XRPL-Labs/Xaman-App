@@ -13,10 +13,9 @@ import { Navigator } from '@common/helpers/navigator';
 import { ContactRepository, AccountRepository } from '@store/repositories';
 
 import { AppScreens } from '@common/constants';
-import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { Button, Footer, Spacer } from '@components/General';
+import { Button, Footer, AmountText, Spacer } from '@components/General';
 import Localize from '@locale';
 // style
 import { AppStyles, AppColors } from '@theme';
@@ -111,11 +110,12 @@ class ResultStep extends Component<Props, State> {
             <View style={styles.detailsCard}>
                 <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.amount')}:</Text>
                 <Spacer />
-                <Text style={[AppStyles.h4, AppStyles.monoBold]}>
-                    {`${Localize.formatNumber(Number(amount))} ${
-                        typeof currency === 'string' ? 'XRP' : NormalizeCurrencyCode(currency.currency.currency)
-                    }`}
-                </Text>
+
+                <AmountText
+                    style={[AppStyles.h4, AppStyles.monoBold]}
+                    value={amount}
+                    currency={typeof currency === 'string' ? 'XRP' : currency.currency.currency}
+                />
 
                 <Spacer />
                 <View style={AppStyles.hr} />

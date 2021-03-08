@@ -40,7 +40,7 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { Header, Button, Badge, Spacer, Icon, ReadMore } from '@components/General';
+import { Header, Button, Badge, Spacer, Icon, ReadMore, AmountText } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
@@ -484,7 +484,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 } else {
                     currency = account.lines.find(
                         // eslint-disable-next-line max-len
-                        (l: any) => l.currency.currency === tx.Amount.currency && l.currency.issuer === tx.Amount.issuer,
+                        (l: any) =>
+                            l.currency.currency === tx.Amount.currency && l.currency.issuer === tx.Amount.issuer,
                     );
                 }
                 Object.assign(params, { amount: tx.Amount.value, currency });
@@ -1039,7 +1040,9 @@ class TransactionDetailsView extends Component<Props, State> {
         const props = {
             icon: incomingTx ? 'IconCornerRightDown' : 'IconCornerLeftUp',
             color: {},
-            text: '',
+            prefix: '',
+            value: 0,
+            currency: '',
         };
 
         switch (tx.Type) {
@@ -1048,25 +1051,24 @@ class TransactionDetailsView extends Component<Props, State> {
                     if (balanceChanges?.received) {
                         Object.assign(props, {
                             color: styles.incomingColor,
-                            text: `${Localize.formatNumber(balanceChanges.received.value)} ${NormalizeCurrencyCode(
-                                balanceChanges.received.currency,
-                            )}`,
+                            value: balanceChanges.received.value,
+                            currency: balanceChanges.received.currency,
                             icon: 'IconCornerRightDown',
                         });
                     } else {
                         Object.assign(props, {
                             color: styles.outgoingColor,
-                            text: `${'-'}${Localize.formatNumber(tx.Amount.value)} ${NormalizeCurrencyCode(
-                                tx.Amount.currency,
-                            )}`,
+                            prefix: '-',
+                            value: tx.Amount.value,
+                            currency: tx.Amount.currency,
                         });
                     }
                 } else {
                     Object.assign(props, {
                         color: incomingTx ? styles.incomingColor : styles.outgoingColor,
-                        text: `${incomingTx ? '' : '-'}${Localize.formatNumber(
-                            tx.Amount.value,
-                        )} ${NormalizeCurrencyCode(tx.Amount.currency)}`,
+                        prefix: incomingTx ? '' : '-',
+                        value: tx.Amount.value,
+                        currency: tx.Amount.currency,
                     });
                 }
 
@@ -1074,9 +1076,9 @@ class TransactionDetailsView extends Component<Props, State> {
             case 'AccountDelete': {
                 Object.assign(props, {
                     color: incomingTx ? styles.incomingColor : styles.outgoingColor,
-                    text: `${incomingTx ? '' : '-'}${Localize.formatNumber(tx.Amount.value)} ${NormalizeCurrencyCode(
-                        tx.Amount.currency,
-                    )}`,
+                    prefix: incomingTx ? '' : '-',
+                    value: tx.Amount.value,
+                    currency: tx.Amount.currency,
                 });
                 break;
             }
@@ -1084,21 +1086,26 @@ class TransactionDetailsView extends Component<Props, State> {
             case 'Escrow':
                 Object.assign(props, {
                     color: incomingTx ? styles.orangeColor : styles.outgoingColor,
-                    text: `-${Localize.formatNumber(tx.Amount.value)} ${NormalizeCurrencyCode(tx.Amount.currency)}`,
+                    prefix: '-',
+                    value: tx.Amount.value,
+                    currency: tx.Amount.currency,
                 });
                 break;
             case 'EscrowFinish':
                 Object.assign(props, {
                     color: incomingTx ? styles.orangeColor : styles.naturalColor,
-                    text: `${Localize.formatNumber(tx.Amount.value)} ${NormalizeCurrencyCode(tx.Amount.currency)}`,
                     icon: 'IconCornerRightDown',
+                    value: tx.Amount.value,
+                    currency: tx.Amount.currency,
                 });
                 break;
             case 'CheckCreate':
             case 'Check':
                 Object.assign(props, {
                     color: styles.naturalColor,
-                    text: `${Localize.formatNumber(tx.SendMax.value)} ${NormalizeCurrencyCode(tx.SendMax.currency)}`,
+                    icon: 'IconCornerRightDown',
+                    value: tx.SendMax.value,
+                    currency: tx.SendMax.currency,
                 });
                 break;
             case 'CheckCash': {
@@ -1107,9 +1114,9 @@ class TransactionDetailsView extends Component<Props, State> {
 
                 Object.assign(props, {
                     color: incoming ? styles.incomingColor : styles.outgoingColor,
-                    text: `${incoming ? '' : '-'}${Localize.formatNumber(amount.value)} ${NormalizeCurrencyCode(
-                        amount.currency,
-                    )}`,
+                    prefix: incoming ? '' : '-',
+                    value: amount.value,
+                    currency: amount.currency,
                 });
                 break;
             }
@@ -1119,16 +1126,16 @@ class TransactionDetailsView extends Component<Props, State> {
                     const takerPaid = tx.TakerPaid(account.address);
                     Object.assign(props, {
                         color: styles.incomingColor,
-                        text: `${Localize.formatNumber(takerPaid.value)} ${NormalizeCurrencyCode(takerPaid.currency)}`,
                         icon: 'IconCornerRightDown',
+                        value: takerPaid.value,
+                        currency: takerPaid.currency,
                     });
                 } else {
                     Object.assign(props, {
                         color: styles.naturalColor,
-                        text: `${Localize.formatNumber(tx.TakerPays.value)} ${NormalizeCurrencyCode(
-                            tx.TakerPays.currency,
-                        )}`,
                         icon: 'IconCornerRightDown',
+                        value: tx.TakerPays.value,
+                        currency: tx.TakerPays.currency,
                     });
                 }
 
@@ -1155,9 +1162,11 @@ class TransactionDetailsView extends Component<Props, State> {
             return (
                 <View style={styles.amountHeaderContainer}>
                     <View style={[AppStyles.row, styles.amountContainerSmall]}>
-                        <Text style={[styles.amountTextSmall]} numberOfLines={1}>
-                            {`${takerGets.value} ${NormalizeCurrencyCode(takerGets.currency)}`}
-                        </Text>
+                        <AmountText
+                            value={takerGets.value}
+                            currency={takerGets.currency}
+                            style={[styles.amountTextSmall]}
+                        />
                     </View>
 
                     <Spacer />
@@ -1168,9 +1177,12 @@ class TransactionDetailsView extends Component<Props, State> {
                         {/*
                     // @ts-ignore */}
                         <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
-                        <Text style={[styles.amountText, props.color]} numberOfLines={1}>
-                            {props.text}
-                        </Text>
+                        <AmountText
+                            value={props.value}
+                            currency={props.currency}
+                            prefix={props.prefix}
+                            style={[styles.amountText, props.color]}
+                        />
                     </View>
                 </View>
             );
@@ -1182,11 +1194,11 @@ class TransactionDetailsView extends Component<Props, State> {
                     return (
                         <View style={styles.amountHeaderContainer}>
                             <View style={[AppStyles.row, styles.amountContainerSmall]}>
-                                <Text style={[styles.amountTextSmall]} numberOfLines={1}>
-                                    {`${balanceChanges.sent.value} ${NormalizeCurrencyCode(
-                                        balanceChanges.sent.currency,
-                                    )}`}
-                                </Text>
+                                <AmountText
+                                    value={balanceChanges.sent.value}
+                                    currency={balanceChanges.sent.currency}
+                                    style={[styles.amountTextSmall]}
+                                />
                             </View>
 
                             <Spacer />
@@ -1197,9 +1209,12 @@ class TransactionDetailsView extends Component<Props, State> {
                                 {/*
                         // @ts-ignore */}
                                 <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
-                                <Text style={[styles.amountText, props.color]} numberOfLines={1}>
-                                    {props.text}
-                                </Text>
+                                <AmountText
+                                    value={props.value}
+                                    currency={props.currency}
+                                    prefix={props.prefix}
+                                    style={[styles.amountText, props.color]}
+                                />
                             </View>
                         </View>
                     );
@@ -1213,9 +1228,11 @@ class TransactionDetailsView extends Component<Props, State> {
             return (
                 <View style={styles.amountHeaderContainer}>
                     <View style={[AppStyles.row, styles.amountContainerSmall]}>
-                        <Text style={[styles.amountTextSmall]} numberOfLines={1}>
-                            {`${takerGot.value} ${NormalizeCurrencyCode(takerGot.currency)}`}
-                        </Text>
+                        <AmountText
+                            value={takerGot.value}
+                            currency={takerGot.currency}
+                            style={[styles.amountTextSmall]}
+                        />
                     </View>
 
                     <Spacer />
@@ -1226,9 +1243,12 @@ class TransactionDetailsView extends Component<Props, State> {
                         {/*
                     // @ts-ignore */}
                         <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
-                        <Text style={[styles.amountText, props.color]} numberOfLines={1}>
-                            {props.text}
-                        </Text>
+                        <AmountText
+                            value={props.value}
+                            currency={props.currency}
+                            prefix={props.prefix}
+                            style={[styles.amountText, props.color]}
+                        />
                     </View>
                 </View>
             );
@@ -1240,9 +1260,12 @@ class TransactionDetailsView extends Component<Props, State> {
                     {/*
                         // @ts-ignore */}
                     <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
-                    <Text style={[styles.amountText, props.color]} numberOfLines={1}>
-                        {props.text}
-                    </Text>
+                    <AmountText
+                        value={props.value}
+                        currency={props.currency}
+                        prefix={props.prefix}
+                        style={[styles.amountText, props.color]}
+                    />
                 </View>
             </View>
         );
