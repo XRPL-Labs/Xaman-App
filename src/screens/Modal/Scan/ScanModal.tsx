@@ -320,7 +320,7 @@ class ScanView extends Component<Props, State> {
     };
 
     handleXAPPLink = (content: string, parsed: { xapp: string; path: string; params: any }) => {
-        Navigator.showModal(
+        this.routeUser(
             AppScreens.Modal.XAppBrowser,
             {
                 modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
