@@ -218,7 +218,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
     fetchOTT = () => {
         const { identifier, account, origin, originData, params } = this.props;
-        const { appVersionCode, coreSettings, isLoading } = this.state;
+        const { appVersionCode, title, coreSettings, isLoading } = this.state;
 
         if (!isLoading) {
             this.setState({
@@ -259,7 +259,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
         BackendService.getXAppLaunchToken(identifier, data)
             .then((res: any) => {
-                const { error, ott } = res;
+                const { error, ott, title: newTitle } = res;
 
                 if (error) {
                     this.setState({
@@ -269,6 +269,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 } else {
                     this.setState({
                         ott,
+                        title: title || newTitle,
                         error: undefined,
                     });
                 }
