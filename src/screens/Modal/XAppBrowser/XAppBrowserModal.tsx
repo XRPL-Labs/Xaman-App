@@ -2,7 +2,7 @@
  * XApp Browser modal
  */
 
-import { has, get, assign } from 'lodash';
+import { has, get, assign, toUpper } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, ActivityIndicator, BackHandler, Alert, InteractionManager } from 'react-native';
 import VeriffSdk from '@veriff/react-native-sdk';
@@ -288,9 +288,11 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     getUrl = () => {
-        const { identifier, ott } = this.state;
+        const { identifier, ott, coreSettings } = this.state;
 
-        const uri = `https://xumm.app/detect/xapp:${identifier}?xAppToken=${ott}`;
+        const uri = `https://xumm.app/detect/xapp:${identifier}?xAppToken=${ott}&xAppStyle=${toUpper(
+            coreSettings.theme,
+        )}`;
 
         return uri;
     };
