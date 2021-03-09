@@ -96,6 +96,25 @@ class AccountDelete extends BaseTransaction {
                 return reject(new Error(Localize.t('account.deleteAccountObjectsExistError')));
             }
 
+            // check if account sequence is met the account delete condition
+            const { LastLedger } = LedgerService.getLedgerStatus();
+
+            if (LastLedger === 0) {
+                return reject(new Error(Localize.t('account.unableToFetchLedgerSequence')));
+            }
+
+            const remainingSequence = Number(account.sequence) + 256 - LastLedger;
+
+            if (remainingSequence > 0) {
+                return reject(
+                    new Error(
+                        Localize.t('account.deleteAccountSequenceIsNotEnoughError', {
+                            remainingSequence,
+                        }),
+                    ),
+                );
+            }
+
             return resolve();
         });
     };
