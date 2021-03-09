@@ -259,7 +259,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
         BackendService.getXAppLaunchToken(identifier, data)
             .then((res: any) => {
-                const { error, ott, title: newTitle } = res;
+                const { error, ott, xappTitle } = res;
 
                 if (error) {
                     this.setState({
@@ -269,7 +269,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 } else {
                     this.setState({
                         ott,
-                        title: title || newTitle,
+                        title: title || xappTitle,
                         error: undefined,
                     });
                 }

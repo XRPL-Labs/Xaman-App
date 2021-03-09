@@ -356,7 +356,7 @@ class TransactionTemplate extends Component<Props, State> {
                     value={item.Amount.value}
                     currency={item.Amount.currency}
                     prefix={!incoming && '-'}
-                    style={(styles.amount, !incoming && styles.outgoingColor)}
+                    style={[styles.amount, !incoming && styles.outgoingColor]}
                     currencyStyle={styles.currency}
                 />
             );
