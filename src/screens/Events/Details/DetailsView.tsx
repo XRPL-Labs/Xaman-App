@@ -1149,7 +1149,7 @@ class TransactionDetailsView extends Component<Props, State> {
             return null;
         }
 
-        if (tx.Type === 'OfferCreate') {
+        if (tx.Type === 'OfferCreate' || tx.Type === 'Offer') {
             let takerGets;
 
             if (tx.Executed) {
@@ -1219,38 +1219,6 @@ class TransactionDetailsView extends Component<Props, State> {
                     );
                 }
             }
-        }
-
-        if (tx.Type === 'OfferCreate') {
-            const takerGot = tx.TakerGot(account.address);
-
-            return (
-                <View style={styles.amountHeaderContainer}>
-                    <View style={[AppStyles.row, styles.amountContainerSmall]}>
-                        <AmountText
-                            value={takerGot.value}
-                            currency={takerGot.currency}
-                            style={[styles.amountTextSmall]}
-                        />
-                    </View>
-
-                    <Spacer />
-                    <Icon size={20} style={AppStyles.imgColorGreyBlack} name="IconSwitchAccount" />
-                    <Spacer />
-
-                    <View style={[AppStyles.row, styles.amountContainer]}>
-                        {/*
-                    // @ts-ignore */}
-                        <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
-                        <AmountText
-                            value={props.value}
-                            currency={props.currency}
-                            prefix={props.prefix}
-                            style={[styles.amountText, props.color]}
-                        />
-                    </View>
-                </View>
-            );
         }
 
         return (
