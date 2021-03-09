@@ -96,10 +96,10 @@ class AccountRepository extends BaseRepository {
     /**
      * get list of available accounts for spending
      */
-    getSpendableAccounts = (): Array<AccountSchema> => {
+    getSpendableAccounts = (includeHidden = false): Array<AccountSchema> => {
         const signableAccounts = this.getSignableAccounts();
 
-        return filter(signableAccounts, (a) => a.balance > 0 && !a.hidden);
+        return filter(signableAccounts, (a) => a.balance > 0 && (includeHidden ? true : !a.hidden));
     };
 
     /**

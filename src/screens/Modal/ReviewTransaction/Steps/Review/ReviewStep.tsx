@@ -2,7 +2,7 @@
  * Review Step
  */
 
-import { isEmpty, get, find } from 'lodash';
+import { isEmpty, get, find, filter } from 'lodash';
 import React, { Component } from 'react';
 import { ImageBackground, ScrollView, View, Text, KeyboardAvoidingView, Platform } from 'react-native';
 
@@ -60,7 +60,7 @@ class ReviewStep extends Component<Props, State> {
         let availableAccounts =
             payload.payload.tx_type === 'SignIn' || payload.meta.multisign
                 ? AccountRepository.getSignableAccounts()
-                : AccountRepository.getSpendableAccounts();
+                : AccountRepository.getSpendableAccounts(true);
 
         // if no account for signing is available then just return
         if (isEmpty(availableAccounts)) {
@@ -68,7 +68,7 @@ class ReviewStep extends Component<Props, State> {
         }
 
         // choose preferred account for sign
-        let preferredAccount;
+        let preferredAccount = undefined as AccountSchema;
 
         // if any account set from payload
         if (transaction.Account) {
@@ -99,6 +99,9 @@ class ReviewStep extends Component<Props, State> {
                 transaction.Account = { address: preferredAccount.address };
             }
         }
+
+        // remove hidden accounts but keep preffered account even if hiddemn
+        availableAccounts = filter(availableAccounts, (a) => !a.hidden || a.address === preferredAccount.address);
 
         this.setState({
             accounts: availableAccounts,
