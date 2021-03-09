@@ -232,7 +232,12 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             case 'AccountDelete':
-                address = tx.Destination.address;
+                if (incomingTx) {
+                    address = tx.Account.address;
+                } else {
+                    address = tx.Destination.address;
+                    tag = tx.Destination.tag;
+                }
                 break;
             case 'TrustSet':
                 // incoming trustline
