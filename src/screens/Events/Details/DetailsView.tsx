@@ -459,6 +459,7 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx, incomingTx } = this.state;
         const { account } = this.props;
 
+        // open the XApp
         if (type === 'OpenXapp') {
             Navigator.showModal(
                 AppScreens.Modal.XAppBrowser,
@@ -475,6 +476,7 @@ class TransactionDetailsView extends Component<Props, State> {
             return;
         }
 
+        // handle return or new payment process
         if (type === 'Payment') {
             const params = {
                 scanResult: {
@@ -497,6 +499,23 @@ class TransactionDetailsView extends Component<Props, State> {
                 Object.assign(params, { amount: tx.Amount.value, currency });
             }
             Navigator.push(AppScreens.Transaction.Payment, {}, params);
+            return;
+        }
+
+        // when the Escrow is eligible for release, we'll leave out the button if an escrow has a condition,
+        // in which case we will show a message and return
+        if (type === 'EscrowFinish' && tx.Condition) {
+            Navigator.showAlertModal({
+                type: 'warning',
+                text: Localize.t('events.pleaseReleaseThisEscrowUsingTheToolUsedToCreateTheEscrow'),
+                buttons: [
+                    {
+                        text: Localize.t('global.ok'),
+                        onPress: () => {},
+                        light: false,
+                    },
+                ],
+            });
             return;
         }
 

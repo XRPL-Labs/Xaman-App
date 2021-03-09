@@ -430,7 +430,8 @@
     "itSetsAccountTransferRateTo": "It sets the account's transfer rate to %{transferRate}.",
     "itSetsTheAccountFlag": "It sets the account's flag %{flag}.",
     "itClearsTheAccountFlag": "It clears the account's flag %{flag}.",
-    "itCreatesTicketForThisAccount": "It creates %{ticketCount} ticket for this account."
+    "itCreatesTicketForThisAccount": "It creates %{ticketCount} ticket for this account.",
+    "pleaseReleaseThisEscrowUsingTheToolUsedToCreateTheEscrow": "Please release this escrow using the tool / platform used to create the escrow. XUMM can not release the escrow as there is an Escrow Condition present on the escrow."
   },
   "profile": {
     "availableInFuture": "This feature will be available soon!",
