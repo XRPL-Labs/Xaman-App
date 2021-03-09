@@ -136,6 +136,7 @@
     "passcode": "Passcode",
     "longTap": "Long Tap",
     "offerSequence": "Offer Sequence",
+    "ticketCount": "Ticket Count",
     "finishAfter": "Finish After",
     "cancelAfter": "Cancel After",
     "expireAfter": "Expire After",
@@ -372,6 +373,7 @@
     "unauthorizeDeposit": "Unauthorize deposit ",
     "deleteAccount": "Delete Account",
     "setSignerList": "Set Signer List",
+    "createTicket": "Create ticket",
     "updateAccountSettings": "Update account settings",
     "setARegularKey": "Set a Regular Key",
     "setRegularKey": "Set Regular Key",
@@ -427,7 +429,8 @@
     "itRemovesTheAccountTransferRate": "It removes the account's transfer rate.",
     "itSetsAccountTransferRateTo": "It sets the account's transfer rate to %{transferRate}.",
     "itSetsTheAccountFlag": "It sets the account's flag %{flag}.",
-    "itClearsTheAccountFlag": "It clears the account's flag %{flag}."
+    "itClearsTheAccountFlag": "It clears the account's flag %{flag}.",
+    "itCreatesTicketForThisAccount": "It creates %{ticketCount} ticket for this account."
   },
   "profile": {
     "availableInFuture": "This feature will be available soon!",

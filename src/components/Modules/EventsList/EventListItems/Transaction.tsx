@@ -136,6 +136,9 @@ class TransactionTemplate extends Component<Props, State> {
             case 'DepositPreauth':
                 address = item.Authorize || item.Unauthorize;
                 break;
+            case 'TicketCreate':
+                address = item.Account.address;
+                break;
             default:
                 break;
         }
@@ -309,6 +312,8 @@ class TransactionTemplate extends Component<Props, State> {
                 return Localize.t('events.cashCheck');
             case 'CheckCancel':
                 return Localize.t('events.cancelCheck');
+            case 'TicketCreate':
+                return Localize.t('events.createTicket');
             default:
                 return item.Type;
         }

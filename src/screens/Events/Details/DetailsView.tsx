@@ -448,6 +448,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 return Localize.t('global.escrow');
             case 'Check':
                 return Localize.t('global.check');
+            case 'TicketCreate':
+                return Localize.t('events.createTicket');
             default:
                 return tx.Type;
         }
@@ -780,6 +782,12 @@ class TransactionDetailsView extends Component<Props, State> {
         return Localize.t('events.itRemovesAuthorizesSendingPaymentsToThisAccount', { address: tx.Unauthorize });
     };
 
+    renderTicketCreate = () => {
+        const { tx } = this.state;
+
+        return Localize.t('events.itCreatesTicketForThisAccount', { ticketCount: tx.TicketCount });
+    };
+
     renderTrustSet = () => {
         const { tx } = this.state;
 
@@ -907,6 +915,9 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case 'AccountSet':
                 content += this.renderAccountSet();
+                break;
+            case 'TicketCreate':
+                content += this.renderTicketCreate();
                 break;
             default:
                 content += `This is a ${tx.Type} transaction`;
