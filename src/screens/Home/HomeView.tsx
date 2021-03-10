@@ -19,7 +19,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 
-import { Navigation } from 'react-native-navigation';
+import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { LedgerService, SocketService, BackendService } from '@services';
 
@@ -261,6 +261,26 @@ class HomeView extends Component<Props, State> {
                 },
             },
             { trustLine, account },
+        );
+    };
+
+    showNFTDetails = (trustLine: TrustLineSchema) => {
+        const { account } = this.state;
+
+        Navigator.showModal(
+            AppScreens.Modal.XAppBrowser,
+            {
+                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+            },
+            {
+                identifier: 'xumm.nft-info',
+                account,
+                params: {
+                    issuer: trustLine.currency.issuer,
+                    token: trustLine.currency.currency,
+                },
+            },
         );
     };
 
@@ -521,6 +541,8 @@ class HomeView extends Component<Props, State> {
                                     onPress={() => {
                                         if (isSpendable) {
                                             this.showCurrencyOptions(line);
+                                        } else if (line.isNFT) {
+                                            this.showNFTDetails(line);
                                         }
                                     }}
                                     activeOpacity={isSpendable ? 0.5 : 1}
@@ -747,7 +769,7 @@ class HomeView extends Component<Props, State> {
                         {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
                     </Text>
                 </View>
-                <TouchableOpacity hitSlop={{ left: 25, right: 25 }} onPress={this.showShareOverlay}>
+                <TouchableOpacity hitSlop={{ left: 25, right: 25 }} onPress={this.onShowAccountQRPress}>
                     <Icon style={[styles.iconShare]} size={16} name="IconShare" />
                 </TouchableOpacity>
             </View>
