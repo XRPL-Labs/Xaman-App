@@ -31,7 +31,7 @@ import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import transactionFactory from '@common/libs/ledger/parser/transaction';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/libs/utils';
 import { AppScreens, AppConfig } from '@common/constants';
 
 import { ActionSheet, Toast } from '@common/helpers/interface';
@@ -599,25 +599,32 @@ class TransactionDetailsView extends Component<Props, State> {
 
         let content;
 
+        const takerGetsNFT = XRPLValueToNFT(tx.TakerGets.value);
+        const takerPaysNFT = XRPLValueToNFT(tx.TakerPays.value);
+
         content = Localize.t('events.offerTransactionExplain', {
             address: tx.Account.address,
-            takerGetsValue: tx.TakerGets.value,
+            takerGetsValue: takerGetsNFT || tx.TakerGets.value,
             takerGetsCurrency: NormalizeCurrencyCode(tx.TakerGets.currency),
-            takerPaysValue: tx.TakerPays.value,
+            takerPaysValue: takerPaysNFT || tx.TakerPays.value,
             takerPaysCurrency: NormalizeCurrencyCode(tx.TakerPays.currency),
         });
-        content += '\n';
-        content += Localize.t('events.theExchangeRateForThisOfferIs', {
-            rate: tx.Rate,
-            takerPaysCurrency:
-                tx.TakerGets.currency === 'XRP'
-                    ? NormalizeCurrencyCode(tx.TakerPays.currency)
-                    : NormalizeCurrencyCode(tx.TakerGets.currency),
-            takerGetsCurrency:
-                tx.TakerGets.currency !== 'XRP'
-                    ? NormalizeCurrencyCode(tx.TakerPays.currency)
-                    : NormalizeCurrencyCode(tx.TakerGets.currency),
-        });
+
+        // hide showing exchange rate if NFT
+        if (!takerPaysNFT && !takerGetsNFT) {
+            content += '\n';
+            content += Localize.t('events.theExchangeRateForThisOfferIs', {
+                rate: tx.Rate,
+                takerPaysCurrency:
+                    tx.TakerGets.currency === 'XRP'
+                        ? NormalizeCurrencyCode(tx.TakerPays.currency)
+                        : NormalizeCurrencyCode(tx.TakerGets.currency),
+                takerGetsCurrency:
+                    tx.TakerGets.currency !== 'XRP'
+                        ? NormalizeCurrencyCode(tx.TakerPays.currency)
+                        : NormalizeCurrencyCode(tx.TakerGets.currency),
+            });
+        }
 
         if (tx.OfferSequence) {
             content += '\n';

@@ -7,7 +7,7 @@ import { AccountSchema } from '@store/schemas/latest';
 
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode, NormalizeAmount } from '@common/libs/utils';
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
@@ -180,7 +180,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
         const { item } = this.props;
 
         if (item.Type === 'Offer') {
-            return `${Localize.formatNumber(item.TakerGets.value)} ${NormalizeCurrencyCode(
+            return `${Localize.formatNumber(NormalizeAmount(item.TakerGets.value))} ${NormalizeCurrencyCode(
                 item.TakerGets.currency,
             )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
         }

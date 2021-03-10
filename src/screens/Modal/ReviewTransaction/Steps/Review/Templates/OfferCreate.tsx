@@ -5,9 +5,10 @@ import isEmpty from 'lodash/isEmpty';
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
+import { AmountText } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
-import { FormatDate, NormalizeCurrencyCode } from '@common/libs/utils';
+import { FormatDate } from '@common/libs/utils';
 
 import Localize from '@locale';
 
@@ -90,16 +91,20 @@ class OfferCreateTemplate extends Component<Props, State> {
             <>
                 <Text style={[styles.label]}>{Localize.t('global.selling')}</Text>
                 <View style={[styles.contentBox]}>
-                    <Text style={[styles.amount]}>
-                        {`${transaction.TakerGets.value} ${NormalizeCurrencyCode(transaction.TakerGets.currency)}`}
-                    </Text>
+                    <AmountText
+                        value={transaction.TakerGets.value}
+                        currency={transaction.TakerGets.currency}
+                        style={styles.amount}
+                    />
                 </View>
 
                 <Text style={[styles.label]}>{Localize.t('global.inExchangeForReceive')}</Text>
                 <View style={[styles.contentBox]}>
-                    <Text style={[styles.amount]}>
-                        {`${transaction.TakerPays.value} ${NormalizeCurrencyCode(transaction.TakerPays.currency)}`}
-                    </Text>
+                    <AmountText
+                        value={transaction.TakerPays.value}
+                        currency={transaction.TakerPays.currency}
+                        style={styles.amount}
+                    />
                 </View>
 
                 <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>

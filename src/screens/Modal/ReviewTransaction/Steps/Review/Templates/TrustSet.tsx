@@ -10,6 +10,7 @@ import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 import Localize from '@locale';
 
+import { AmountText } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import { AppStyles } from '@theme';
@@ -87,7 +88,7 @@ class TrustSetTemplate extends Component<Props, State> {
                 <Text style={[styles.label]}>{Localize.t('global.balanceLimit')}</Text>
                 <View style={[styles.contentBox]}>
                     {transaction.Limit ? (
-                        <Text style={[styles.value]}>{transaction.Limit}</Text>
+                        <AmountText style={[styles.value]} value={transaction.Limit} />
                     ) : (
                         <Text style={[styles.value, AppStyles.colorRed]}>{Localize.t('asset.removeAsset')}</Text>
                     )}
