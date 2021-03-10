@@ -26,6 +26,8 @@ export const Images = {
     ImageCloudAlert: buildImageSource('ImageCloudAlert', 'image_cloud_alert'),
     ImageWarningShield: buildImageSource('ImageWarningShield', 'image_warning_shield'),
     ImageCoinWallet: buildImageSource('ImageCoinWallet', 'image_coin_wallet'),
+    ImageUnknownTrustLine: buildImageSource('ImageUnknownTrustLine', 'image_unknown_trustline'),
+    ImageUnknownNFT: buildImageSource('ImageUnknownNFT', 'image_unknown_nft'),
     // Xumm
     xummLogo: buildImageSource('XummLogo', 'xumm_logo'),
     xummIcon: buildImageSource('XummIcon', 'xumm_icon'),
