@@ -293,8 +293,8 @@ class Payment extends BaseTransaction {
         const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
 
         const changes = {
-            sent: find(balanceChanges, (o) => o.currency === this.Amount.currency),
-            received: find(balanceChanges, (o) => o.currency === this.SendMax?.currency || this.DeliverMin?.currency),
+            sent: find(balanceChanges, (o) => o.action === 'DEC'),
+            received: find(balanceChanges, (o) => o.action === 'INC'),
         } as { sent: AmountType; received: AmountType };
 
         return changes;

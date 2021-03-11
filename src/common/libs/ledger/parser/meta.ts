@@ -3,7 +3,7 @@
 import { groupBy, mapValues, map, isEmpty, compact, flatten } from 'lodash';
 import BigNumber from 'bignumber.js';
 
-import { AmountType } from './types';
+import { BalanceChangeType } from './types';
 
 class Meta {
     nodes: any[];
@@ -71,24 +71,28 @@ class Meta {
             return null;
         }
 
+        const valueNumber = new BigNumber(value);
+
         return {
             address: node.finalFields.Account || node.newFields.Account,
             balance: {
                 currency: 'XRP',
                 // eslint-disable-next-line newline-per-chained-call
-                value: new BigNumber(value).absoluteValue().dividedBy(1000000.0).decimalPlaces(8).toString(10),
+                value: valueNumber.absoluteValue().dividedBy(1000000.0).decimalPlaces(8).toString(10),
+                action: valueNumber.isNegative() ? 'DEC' : 'INC',
             },
         };
     };
 
     private flipTrustlinePerspective = (quantity: any) => {
-        const absoluteBalance = new BigNumber(quantity.balance.value).absoluteValue().decimalPlaces(8).toString(10);
+        const negatedBalance = new BigNumber(quantity.balance.value).negated();
         return {
             address: quantity.balance.issuer,
             balance: {
                 issuer: quantity.address,
                 currency: quantity.balance.currency,
-                value: absoluteBalance,
+                value: negatedBalance.absoluteValue().decimalPlaces(8).toString(10),
+                action: negatedBalance.isNegative() ? 'DEC' : 'INC',
             },
         };
     };
@@ -119,7 +123,7 @@ class Meta {
         return [result, this.flipTrustlinePerspective(result)];
     };
 
-    parseBalanceChanges = (): { [key: string]: AmountType[] } => {
+    parseBalanceChanges = (): { [key: string]: BalanceChangeType[] } => {
         const values = this.nodes.map((node) => {
             if (node.entryType === 'AccountRoot') {
                 return [this.parseXRPQuantity(node, this.computeBalanceChange)];

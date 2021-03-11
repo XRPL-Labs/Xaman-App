@@ -1,3 +1,7 @@
+export interface BalanceChangeType extends AmountType {
+    action: 'DEC' | 'INC';
+}
+
 export interface AmountType extends Issuer {
     value: string;
 }

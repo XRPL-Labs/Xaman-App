@@ -147,17 +147,15 @@ class OfferCreate extends BaseTransaction {
 
         const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
 
-        const currency = owner === this.Account.address ? this.TakerGets.currency : this.TakerPays.currency;
-
         // @ts-ignore
-        const takerGot = find(balanceChanges, (o) => o.currency === currency);
+        const takerGot = find(balanceChanges, (o) => o.action === 'DEC');
 
         if (!takerGot) {
             return this.TakerGets;
         }
 
         //  remove fee from end result if xrp
-        if (currency === 'XRP' && owner === this.Account.address) {
+        if (takerGot.currency === 'XRP' && owner === this.Account.address) {
             set(takerGot, 'value', new BigNumber(takerGot.value).minus(this.Fee).decimalPlaces(8).toString(10));
         }
 
@@ -171,18 +169,14 @@ class OfferCreate extends BaseTransaction {
 
         const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
 
-        // swap in case of order owner is not the same as tx owner
-        const currency = owner === this.Account.address ? this.TakerPays.currency : this.TakerGets.currency;
-
-        // @ts-ignore
-        const takerPaid = find(balanceChanges, (o) => o.currency === currency);
+        const takerPaid = find(balanceChanges, (o) => o.action === 'INC');
 
         if (!takerPaid) {
             return this.TakerPays;
         }
 
         //  remove fee from end result if xrp and own offer tx
-        if (currency === 'XRP' && owner === this.Account.address) {
+        if (takerPaid.currency === 'XRP' && owner === this.Account.address) {
             set(takerPaid, 'value', new BigNumber(takerPaid.value).minus(this.Fee).decimalPlaces(8).toString(10));
         }
 
