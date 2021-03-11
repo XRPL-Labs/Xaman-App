@@ -287,7 +287,7 @@ class HomeView extends Component<Props, State> {
     toggleDiscreetMode = () => {
         const { discreetMode } = this.state;
 
-        CoreRepository.saveSettings({
+        this.setState({
             discreetMode: !discreetMode,
         });
     };
