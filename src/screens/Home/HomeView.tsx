@@ -752,7 +752,7 @@ class HomeView extends Component<Props, State> {
             <>
                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
                     <Text numberOfLines={1} style={[AppStyles.flex1, styles.balanceLabel]}>
-                        {Localize.t('global.balance')}
+                        {Localize.t('home.balance')}
                     </Text>
 
                     <TouchableOpacity style={AppStyles.paddingRightSml} onPress={this.toggleDiscreetMode}>

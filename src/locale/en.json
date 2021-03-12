@@ -315,6 +315,7 @@
     "pleaseReadTheTextAboveCarefully": "Please carefully read the above text."
   },
   "home": {
+    "balance": "Balance",
     "addAsset": "Add",
     "shareAccount": "Share Account Address",
     "addressBalance": "Address & Balance:",
