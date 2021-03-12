@@ -23,7 +23,7 @@ import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle 
 
 import { LedgerService, SocketService, BackendService } from '@services';
 
-import { AccessLevels } from '@store/types';
+import { AccessLevels, NodeChain } from '@store/types';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
 
@@ -41,7 +41,7 @@ import Localize from '@locale';
 import { Button, RaisedButton, InfoMessage, Spacer, Icon, AmountText } from '@components/General';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles, AppColors, AppFonts } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -49,6 +49,7 @@ export interface Props {}
 
 export interface State {
     account: AccountSchema;
+    coreSettings: CoreSchema;
     isSpendable: boolean;
     discreetMode: boolean;
     isLoadingRate: boolean;
@@ -63,14 +64,6 @@ class HomeView extends Component<Props, State> {
 
     private navigationListener: any;
 
-    static options() {
-        return {
-            topBar: {
-                visible: false,
-            },
-        };
-    }
-
     constructor(props: Props) {
         super(props);
 
@@ -79,6 +72,7 @@ class HomeView extends Component<Props, State> {
         this.state = {
             account: undefined,
             isSpendable: false,
+            coreSettings,
             currency: coreSettings.currency,
             discreetMode: coreSettings.discreetMode,
             isLoadingRate: false,
@@ -100,8 +94,13 @@ class HomeView extends Component<Props, State> {
         // listen for screen appear event
         this.navigationListener = Navigation.events().bindComponent(this);
 
-        // set default account
-        this.getDefaultAccount();
+        InteractionManager.runAfterInteractions(() => {
+            // set default account
+            this.getDefaultAccount();
+
+            // set dev mode header
+            this.setNodeChainHeader();
+        });
     }
 
     componentWillUnmount() {
@@ -152,6 +151,12 @@ class HomeView extends Component<Props, State> {
                 },
             );
         }
+
+        if (has(changes, 'developerMode') || has(changes, 'defaultNode')) {
+            setTimeout(() => {
+                this.setNodeChainHeader(coreSettings);
+            }, 500);
+        }
     };
 
     updateDefaultAccount = (updatedAccount: AccountSchema) => {
@@ -175,6 +180,43 @@ class HomeView extends Component<Props, State> {
             // when account balance changed update spendable accounts
             this.updateSpendableStatus,
         );
+    };
+
+    setNodeChainHeader = (settings?: CoreSchema) => {
+        // @ts-ignore
+        const { componentId } = this.props;
+        const { coreSettings } = this.state;
+
+        if (settings ? settings.developerMode : coreSettings.developerMode) {
+            Navigator.mergeOptions(
+                {
+                    topBar: {
+                        hideOnScroll: true,
+                        visible: true,
+                        animate: true,
+                        background: {
+                            color: SocketService.chain === NodeChain.Main ? AppColors.blue : AppColors.green,
+                        },
+                        title: {
+                            text: SocketService.chain === NodeChain.Main ? 'MAINNET' : 'TESTNET',
+                            color: 'white',
+                            fontFamily: AppFonts.base.familyExtraBold,
+                            fontSize: AppFonts.h5.size,
+                        },
+                    },
+                },
+                componentId,
+            );
+        } else {
+            Navigator.mergeOptions(
+                {
+                    topBar: {
+                        visible: false,
+                    },
+                },
+                componentId,
+            );
+        }
     };
 
     // eslint-disable-next-line react/destructuring-assignment

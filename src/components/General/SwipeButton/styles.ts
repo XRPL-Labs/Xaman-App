@@ -12,6 +12,10 @@ const Styles = StyleSheet.create({
         backgroundColor: AppColors.blue,
         borderColor: AppColors.blue,
     },
+    containerSecondary: {
+        backgroundColor: AppColors.green,
+        borderColor: AppColors.green,
+    },
     label: {
         alignSelf: 'center',
         position: 'absolute',
@@ -32,6 +36,9 @@ const Styles = StyleSheet.create({
         width: AppSizes.scale(45),
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    iconContainerSecondary: {
+        backgroundColor: AppColors.transparentGreen,
     },
     spinner: {
         flex: 1,

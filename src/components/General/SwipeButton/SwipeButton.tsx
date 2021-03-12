@@ -26,6 +26,7 @@ interface Props {
     testID?: string;
     label?: string;
     isLoading?: boolean;
+    secondary?: boolean;
     onSwipeSuccess: () => void;
     onPanResponderGrant?: () => void;
     onPanResponderRelease?: () => void;
@@ -161,7 +162,7 @@ class SwipeButton extends Component<Props, State> {
     };
 
     render() {
-        const { label, isLoading, testID } = this.props;
+        const { label, isLoading, secondary, testID } = this.props;
 
         if (isLoading) {
             return (
@@ -172,7 +173,7 @@ class SwipeButton extends Component<Props, State> {
         }
 
         return (
-            <View style={[styles.container]} onLayout={this.onLayoutChange}>
+            <View style={[styles.container, secondary && styles.containerSecondary]} onLayout={this.onLayoutChange}>
                 <Text importantForAccessibility="no-hide-descendants" style={[styles.label]}>
                     {label}
                 </Text>
@@ -182,7 +183,7 @@ class SwipeButton extends Component<Props, State> {
                     // eslint-disable-next-line react/jsx-props-no-spreading
                     {...this.panResponder.panHandlers}
                 >
-                    <View style={styles.iconContainer}>
+                    <View style={[styles.iconContainer, secondary && styles.iconContainerSecondary]}>
                         <Icon size={30} name="IconArrowRightLong" />
                     </View>
                 </Animated.View>

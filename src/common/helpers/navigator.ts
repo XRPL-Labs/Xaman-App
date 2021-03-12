@@ -269,8 +269,8 @@ const Navigator = {
         );
     },
 
-    mergeOptions(options = {}) {
-        const currentScreen = NavigationService.getCurrentScreen();
+    mergeOptions(options = {}, componentId?: string) {
+        const currentScreen = componentId || NavigationService.getCurrentScreen();
         Navigation.mergeOptions(currentScreen, options);
     },
 

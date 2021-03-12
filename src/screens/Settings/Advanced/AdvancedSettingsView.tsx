@@ -16,7 +16,7 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { GetAppVersionCode, GetAppReadableVersion } from '@common/helpers/device';
 
-import { Header, Icon } from '@components/General';
+import { Header, Icon, Switch } from '@components/General';
 
 import Localize from '@locale';
 
@@ -146,6 +146,11 @@ class AdvancedSettingsView extends Component<Props, State> {
         }
     };
 
+    developerModeChange = (value: boolean) => {
+        // save in store
+        CoreRepository.saveSettings({ developerMode: value });
+    };
+
     render() {
         const { coreSettings, profile } = this.state;
 
@@ -247,6 +252,7 @@ class AdvancedSettingsView extends Component<Props, State> {
                     <Text numberOfLines={1} style={styles.descriptionText}>
                         {Localize.t('global.debug')}
                     </Text>
+
                     <View style={[styles.row]}>
                         <View style={[AppStyles.flex1]}>
                             <Text numberOfLines={1} style={styles.label}>
@@ -258,6 +264,16 @@ class AdvancedSettingsView extends Component<Props, State> {
                             <Text selectable numberOfLines={1} adjustsFontSizeToFit style={[styles.value]}>
                                 {profile.deviceUUID.toUpperCase()}
                             </Text>
+                        </View>
+                    </View>
+                    <View style={styles.row}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.developerMode')}
+                            </Text>
+                        </View>
+                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Switch checked={coreSettings.developerMode} onChange={this.developerModeChange} />
                         </View>
                     </View>
                     <TouchableOpacity

@@ -25,6 +25,7 @@ class Core extends Realm.Object {
             hapticFeedback: { type: 'bool', default: true }, // enable haptic feedback
             discreetMode: { type: 'bool', default: false }, // Discreet Mode
             useSystemSeparators: { type: 'bool', default: true }, // Use system separators
+            developerMode: { type: 'bool', default: false }, // Developer mode
             theme: { type: 'string', default: AppConfig.theme.light }, // app theme
         },
     };
@@ -45,6 +46,7 @@ class Core extends Realm.Object {
     public hapticFeedback: boolean;
     public discreetMode: boolean;
     public useSystemSeparators: boolean;
+    public developerMode: boolean;
     public theme: string;
 
     constructor(obj: Partial<Core>) {
@@ -60,6 +62,7 @@ class Core extends Realm.Object {
 
         for (let i = 0; i < newObjects.length; i++) {
             newObjects[i].currency = AppConfig.defaultCurrency;
+            newObjects[i].developerMode = false;
         }
     }
 }

@@ -19,8 +19,9 @@ import {
 } from 'react-native';
 
 import { AccountSchema } from '@store/schemas/latest';
+import { NodeChain } from '@store/types';
 
-import { BackendService } from '@services';
+import { BackendService, SocketService } from '@services';
 
 import { AppScreens } from '@common/constants';
 import { Prompt, Toast } from '@common/helpers/interface';
@@ -316,6 +317,12 @@ class SummaryStep extends Component<Props, State> {
         goBack();
     };
 
+    shouldShowTestnet = () => {
+        const { coreSettings } = this.context;
+
+        return coreSettings.developerMode && SocketService.chain === NodeChain.Test;
+    };
+
     renderCurrencyItem = (item: any) => {
         const { source } = this.context;
 
@@ -526,6 +533,7 @@ class SummaryStep extends Component<Props, State> {
                 {/* Bottom Bar */}
                 <Footer safeArea>
                     <SwipeButton
+                        secondary={this.shouldShowTestnet()}
                         label={Localize.t('global.slideToSend')}
                         onSwipeSuccess={this.goNext}
                         isLoading={isLoading}

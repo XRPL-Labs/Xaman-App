@@ -477,6 +477,7 @@
     "changePasscode": "Change passcode",
     "biometricAuthentication": "Biometric authentication",
     "hapticFeedback": "Haptic feedback",
+    "developerMode": "Developer mode",
     "useSystemSeparators": "Use system currency format",
     "enterOldPasscode": "Enter your old passcode",
     "enterNewPasscode": "Enter your new passcode",

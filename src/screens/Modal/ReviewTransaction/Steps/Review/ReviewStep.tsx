@@ -11,8 +11,11 @@ import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
+import { SocketService } from '@services';
+
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
+import { NodeChain } from '@store/types';
 
 // components
 import { Button, SwipeButton, Spacer, Avatar } from '@components/General';
@@ -116,6 +119,12 @@ class ReviewStep extends Component<Props, State> {
         this.setState({
             canScroll: !canScroll,
         });
+    };
+
+    shouldShowTestnet = () => {
+        const { coreSettings } = this.context;
+
+        return coreSettings.developerMode && SocketService.chain === NodeChain.Test;
     };
 
     renderDetails = () => {
@@ -295,6 +304,7 @@ class ReviewStep extends Component<Props, State> {
                             <View style={[AppStyles.flex1, AppStyles.paddingHorizontalSml]}>
                                 <SwipeButton
                                     testID="accept-button"
+                                    secondary={this.shouldShowTestnet()}
                                     isLoading={isPreparing}
                                     onSwipeSuccess={onAccept}
                                     label={Localize.t('global.slideToAccept')}
