@@ -51,9 +51,11 @@ export class Payload {
     static async from(args: string | PayloadType, origin?: PayloadOrigin): Promise<Payload> {
         const payload = new Payload();
 
-        // set payload origin if set
+        // set payload origin
         if (origin) {
             payload.setOrigin(origin);
+        } else {
+            payload.setOrigin(PayloadOrigin.UNKNOWN);
         }
 
         // if Payload UUID passed then fetch the payload from backend
@@ -164,7 +166,7 @@ export class Payload {
     fetch = (uuid: string) => {
         return new Promise((resolve, reject) => {
             ApiService.payload
-                .get(uuid)
+                .get({ uuid, from: this.origin })
                 .then(async (res: PayloadType) => {
                     // get verification status
                     const verified = await this.verify(res.payload);

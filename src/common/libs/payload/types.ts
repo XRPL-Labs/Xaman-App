@@ -90,4 +90,5 @@ export enum PayloadOrigin {
     TRANSACTION_MEMO = 'TRANSACTION_MEMO',
     XAPP = 'XAPP',
     IMPORT_ACCOUNT = 'IMPORT_ACCOUNT',
+    UNKNOWN = 'UNKNOWN',
 }
