@@ -118,11 +118,11 @@ class HomeActionsOverlay extends Component<Props, State> {
 
         if (top && bottom) return;
 
-        if (top && this.isOpening) {
+        if (top === 'enter' && this.isOpening) {
             this.isOpening = false;
         }
 
-        if (bottom && !this.isOpening) {
+        if (bottom === 'leave' && !this.isOpening) {
             Navigator.dismissOverlay();
         }
     };

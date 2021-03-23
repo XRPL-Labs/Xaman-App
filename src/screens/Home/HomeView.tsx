@@ -702,26 +702,24 @@ class HomeView extends Component<Props, State> {
             <SafeAreaView testID="home-tab-empty-view" style={[AppStyles.tabContainer]}>
                 <View style={[AppStyles.headerContainer]}>{this.renderHeader()}</View>
 
-                <View style={[AppStyles.contentContainer, AppStyles.padding]}>
-                    <ImageBackground
-                        source={StyleService.getImage('BackgroundShapes')}
-                        imageStyle={AppStyles.BackgroundShapes}
-                        style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent, styles.BackgroundShapes]}
-                    >
-                        <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageFirstAccount')} />
-                        <Text style={[AppStyles.emptyText]}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
-                        <Button
-                            testID="add-account-button"
-                            label={Localize.t('home.addAccount')}
-                            icon="IconPlus"
-                            iconStyle={[AppStyles.imgColorWhite]}
-                            rounded
-                            onPress={() => {
-                                Navigator.push(AppScreens.Account.Add);
-                            }}
-                        />
-                    </ImageBackground>
-                </View>
+                <ImageBackground
+                    source={StyleService.getImage('BackgroundShapes')}
+                    imageStyle={AppStyles.BackgroundShapes}
+                    style={[AppStyles.contentContainer, AppStyles.padding]}
+                >
+                    <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageFirstAccount')} />
+                    <Text style={[AppStyles.emptyText]}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
+                    <Button
+                        testID="add-account-button"
+                        label={Localize.t('home.addAccount')}
+                        icon="IconPlus"
+                        iconStyle={[AppStyles.imgColorWhite]}
+                        rounded
+                        onPress={() => {
+                            Navigator.push(AppScreens.Account.Add);
+                        }}
+                    />
+                </ImageBackground>
             </SafeAreaView>
         );
     };

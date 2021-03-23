@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, ImageBackground, Image } from 'react-native';
+import { SafeAreaView, Text, ImageBackground, Image } from 'react-native';
 
 // constants
 import { AppScreens } from '@common/constants';
@@ -96,39 +96,35 @@ class ProfileView extends Component<Props, State> {
                     }}
                 />
 
-                <View style={[AppStyles.contentContainer, AppStyles.padding]}>
-                    <View style={[AppStyles.flex4, AppStyles.centerAligned, AppStyles.centerContent]}>
-                        <ImageBackground
-                            source={StyleService.getImage('BackgroundShapes')}
-                            imageStyle={AppStyles.BackgroundShapes}
-                            style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent]}
-                        >
-                            <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageProfile')} />
-                            <Text style={[AppStyles.emptyText]}>{Localize.t('profile.availableInFuture')}</Text>
-                            <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}>
-                                {Localize.t('profile.profileBenefits')}
-                            </Text>
-                            <Spacer size={10} />
-                            <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
-                                {Localize.t('profile.personalPage')}
-                            </Text>
-                            <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
-                                {Localize.t('profile.connectMobile')}
-                            </Text>
-                            <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
-                                {Localize.t('profile.earnBadge')}
-                            </Text>
-                            <Spacer size={30} />
-                            <Button
-                                label={Localize.t('global.comingSoon')}
-                                icon="IconProfile"
-                                iconStyle={[AppStyles.imgColorWhite]}
-                                style={{ backgroundColor: AppColors.red }}
-                                rounded
-                            />
-                        </ImageBackground>
-                    </View>
-                </View>
+                <ImageBackground
+                    source={StyleService.getImage('BackgroundShapes')}
+                    imageStyle={AppStyles.BackgroundShapes}
+                    style={[AppStyles.contentContainer, AppStyles.padding]}
+                >
+                    <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageProfile')} />
+                    <Text style={[AppStyles.emptyText]}>{Localize.t('profile.availableInFuture')}</Text>
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}>
+                        {Localize.t('profile.profileBenefits')}
+                    </Text>
+                    <Spacer size={10} />
+                    <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
+                        {Localize.t('profile.personalPage')}
+                    </Text>
+                    <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
+                        {Localize.t('profile.connectMobile')}
+                    </Text>
+                    <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
+                        {Localize.t('profile.earnBadge')}
+                    </Text>
+                    <Spacer size={30} />
+                    <Button
+                        label={Localize.t('global.comingSoon')}
+                        icon="IconProfile"
+                        iconStyle={[AppStyles.imgColorWhite]}
+                        style={{ backgroundColor: AppColors.red }}
+                        rounded
+                    />
+                </ImageBackground>
             </SafeAreaView>
         );
     }

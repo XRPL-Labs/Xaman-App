@@ -5,7 +5,7 @@ import Fuse from 'fuse.js';
 import moment from 'moment-timezone';
 import { isEmpty, flatMap, isUndefined, isEqual, filter, get, uniqBy, groupBy, map, without, sortBy } from 'lodash';
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, InteractionManager, ImageBackground, Image } from 'react-native';
+import { SafeAreaView, Text, InteractionManager, ImageBackground, Image } from 'react-native';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -579,27 +579,24 @@ class EventsView extends Component<Props, State> {
                         textStyle: AppStyles.h3,
                     }}
                 />
-
-                <View style={[AppStyles.contentContainer, AppStyles.padding]}>
-                    <ImageBackground
-                        source={StyleService.getImage('BackgroundShapes')}
-                        imageStyle={AppStyles.BackgroundShapes}
-                        style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent]}
-                    >
-                        <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageNoEvents')} />
-                        <Text style={[AppStyles.emptyText]}>{Localize.t('events.emptyEventsNoAccount')}</Text>
-                        <Button
-                            testID="add-account-button"
-                            label={Localize.t('home.addAccount')}
-                            icon="IconPlus"
-                            iconStyle={[AppStyles.imgColorWhite]}
-                            rounded
-                            onPress={() => {
-                                Navigator.push(AppScreens.Account.Add);
-                            }}
-                        />
-                    </ImageBackground>
-                </View>
+                <ImageBackground
+                    source={StyleService.getImage('BackgroundShapes')}
+                    imageStyle={AppStyles.BackgroundShapes}
+                    style={[AppStyles.contentContainer, AppStyles.padding]}
+                >
+                    <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageNoEvents')} />
+                    <Text style={[AppStyles.emptyText]}>{Localize.t('events.emptyEventsNoAccount')}</Text>
+                    <Button
+                        testID="add-account-button"
+                        label={Localize.t('home.addAccount')}
+                        icon="IconPlus"
+                        iconStyle={[AppStyles.imgColorWhite]}
+                        rounded
+                        onPress={() => {
+                            Navigator.push(AppScreens.Account.Add);
+                        }}
+                    />
+                </ImageBackground>
             </SafeAreaView>
         );
     };

@@ -3,7 +3,6 @@ import { Platform, InteractionManager } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 
 import { GetBottomTabScale, IsIOS10 } from '@common/helpers/device';
-import { Images } from '@common/helpers/images';
 
 import { AppScreens } from '@common/constants';
 
@@ -50,37 +49,29 @@ const getDefaultOptions = () => {
 const getTabBarIcons = () => {
     return {
         [AppScreens.TabBar.Home]: {
-            icon: Images.IconTabBarHome,
-            iconSelected: StyleService.isDarkMode()
-                ? Images.IconTabBarHomeSelectedLight
-                : Images.IconTabBarHomeSelected,
+            icon: StyleService.getImage('IconTabBarHome'),
+            iconSelected: StyleService.getImage('IconTabBarHomeSelected'),
             scale: GetBottomTabScale(),
         },
         [AppScreens.TabBar.Events]: {
-            icon: Images.IconTabBarEvents,
-            iconSelected: StyleService.isDarkMode()
-                ? Images.IconTabBarEventsSelectedLight
-                : Images.IconTabBarEventsSelected,
+            icon: StyleService.getImage('IconTabBarEvents'),
+            iconSelected: StyleService.getImage('IconTabBarEventsSelected'),
             scale: GetBottomTabScale(),
         },
         [AppScreens.TabBar.Actions]: {
-            icon: StyleService.isDarkMode() ? Images.IconTabBarActionsLight : Images.IconTabBarActions,
-            iconSelected: StyleService.isDarkMode() ? Images.IconTabBarActionsLight : Images.IconTabBarActions,
+            icon: StyleService.getImage('IconTabBarActions'),
+            iconSelected: StyleService.getImage('IconTabBarActions'),
             offset: { top: IsIOS10() && 6, right: 0, bottom: IsIOS10() && -6, left: 0 },
             scale: GetBottomTabScale(0.65),
         },
         [AppScreens.TabBar.Profile]: {
-            icon: Images.IconTabBarProfile,
-            iconSelected: StyleService.isDarkMode()
-                ? Images.IconTabBarProfileSelectedLight
-                : Images.IconTabBarProfileSelected,
+            icon: StyleService.getImage('IconTabBarProfile'),
+            iconSelected: StyleService.getImage('IconTabBarProfileSelected'),
             scale: GetBottomTabScale(),
         },
         [AppScreens.TabBar.Settings]: {
-            icon: Images.IconTabBarSettings,
-            iconSelected: StyleService.isDarkMode()
-                ? Images.IconTabBarSettingsSelectedLight
-                : Images.IconTabBarSettingsSelected,
+            icon: StyleService.getImage('IconTabBarSettings'),
+            iconSelected: StyleService.getImage('IconTabBarSettingsSelected'),
             scale: GetBottomTabScale(),
         },
     };
@@ -121,10 +112,7 @@ const Navigator = {
                         bottomTab: {
                             selectTabOnPress: tab !== 'Actions',
                             iconInsets: { ...TabBarIcons[get(AppScreens.TabBar, tab)].offset },
-                            text: Platform.select({
-                                android: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : 'XUMM',
-                                ios: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
-                            }),
+                            text: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
                             icon: {
                                 scale: TabBarIcons[get(AppScreens.TabBar, tab)].scale,
                                 ...TabBarIcons[get(AppScreens.TabBar, tab)].icon,

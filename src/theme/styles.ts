@@ -495,6 +495,7 @@ export default StyleService.create({
     emptyIcon: {
         // width: Sizes.screen.width * 0.3,
         // height: Sizes.screen.width * 0.3,
+        resizeMode: 'contain',
         width: Sizes.scale(140),
         height: Sizes.scale(140),
         alignSelf: 'center',
@@ -513,7 +514,7 @@ export default StyleService.create({
     },
     BackgroundShapes: {
         resizeMode: 'contain',
-        tintColor: '$tint',
+        opacity: 0.4,
     },
     BackgroundShapesWH: {
         width: '100%',
