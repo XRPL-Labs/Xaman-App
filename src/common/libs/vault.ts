@@ -8,7 +8,7 @@
 import * as Keychain from 'react-native-keychain';
 
 import { AES, randomKey } from '@common/libs/crypto';
-import { HexEncoding } from '@common/libs/utils';
+import { HexEncoding } from '@common/utils/string';
 
 import LoggerService from '@services/LoggerService';
 

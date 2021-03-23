@@ -74,7 +74,6 @@ class LabelStep extends Component<Props, State> {
                         value={label}
                         onChangeText={(l) => this.setState({ label: l })}
                         inputStyle={styles.inputText}
-                        containerStyle={styles.inputContainer}
                         autoCapitalize="sentences"
                     />
                 </KeyboardAvoidingView>
@@ -84,7 +83,7 @@ class LabelStep extends Component<Props, State> {
                             testID="back-button"
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            secondary
+                            light
                             onPress={goBack}
                         />
                     </View>

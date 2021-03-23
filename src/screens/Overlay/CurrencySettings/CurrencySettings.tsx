@@ -15,7 +15,7 @@ import { TrustSet, Payment } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import Flag from '@common/libs/ledger/parser/common/flag';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';

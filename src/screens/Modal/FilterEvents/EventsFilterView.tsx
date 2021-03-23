@@ -9,7 +9,7 @@ import { SafeAreaView, View, Text, ScrollView, BackHandler } from 'react-native'
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';

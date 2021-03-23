@@ -15,7 +15,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { GetAppVersionCode } from '@common/helpers/device';
 
 import Preferences from '@common/libs/preferences';
-import { VersionDiff } from '@common/libs/utils';
+import { VersionDiff } from '@common/utils/version';
 
 import LoggerService from '@services/LoggerService';
 

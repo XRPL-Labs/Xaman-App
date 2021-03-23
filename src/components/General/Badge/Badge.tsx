@@ -20,10 +20,10 @@ interface Props {
 }
 
 const COLORS = {
-    bithomp: AppColors.bithomp,
-    xrplns: AppColors.xrplns,
-    xrpscan: AppColors.xrpscan,
-    payid: AppColors.payid,
+    bithomp: AppColors.brandBithomp,
+    xrplns: AppColors.brandXrplns,
+    xrpscan: AppColors.brandXrpscan,
+    payid: AppColors.brandPayid,
     success: AppColors.green,
     planned: AppColors.blue,
 };

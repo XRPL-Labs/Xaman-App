@@ -7,16 +7,17 @@ import React, { Component } from 'react';
 import { View, SafeAreaView, Image, Text, Platform, LayoutAnimation } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
+
+import StyleService from '@services/StyleService';
 
 import Localize from '@locale';
 
 // component
-import { Footer, NumberSteps, Spacer, ProgressBar, CheckBox, HorizontalLine } from '@components/General';
+import { Footer, NumberSteps, Spacer, ProgressBar, CheckBox } from '@components/General';
 
 // style
-import { AppStyles, AppSizes, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -162,13 +163,13 @@ class DisclaimersView extends Component<Props, State> {
         return (
             <SafeAreaView testID="disclaimers-setup-screen" style={[styles.container]}>
                 <View style={[AppStyles.centerContent, AppStyles.centerAligned]}>
-                    <Image style={styles.logo} source={Images.xummLogo} />
+                    <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
                 </View>
 
                 <Spacer size={20} />
                 <NumberSteps currentStep={currentStep} length={7} onStepChange={this.onStepChange} />
 
-                <View testID="disclaimer-content-view" style={styles.contentContainer}>
+                <View testID="disclaimer-content-view" style={[styles.contentContainer]}>
                     <Text style={AppStyles.h5}>
                         {currentStep + 1}. {content.title}
                     </Text>
@@ -176,30 +177,33 @@ class DisclaimersView extends Component<Props, State> {
                     <Text style={AppStyles.subtext}>{content.content}</Text>
                 </View>
 
-                <HorizontalLine height={5} width={AppSizes.screen.width} color={AppColors.lightBlue} />
-
-                <ProgressBar
-                    ref={(r) => {
-                        this.progressBar = r;
-                    }}
-                    visible={isProgressing}
-                />
-
-                <Footer>
-                    <View style={AppStyles.paddingVerticalSml}>
+                <Footer style={[styles.footerStyle]}>
+                    <ProgressBar
+                        ref={(r) => {
+                            this.progressBar = r;
+                        }}
+                        visible={isProgressing}
+                        style={[styles.progressBar]}
+                    />
+                    <View style={[styles.footerContent]}>
                         {isProgressing ? (
-                            <View style={styles.footerTextContainer}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, AppStyles.colorBlue]}>
-                                    {Localize.t('setupTermOfService.pleaseReadTheTextAboveCarefully')}
-                                </Text>
-                            </View>
+                            <Text
+                                style={[
+                                    AppStyles.subtext,
+                                    AppStyles.strong,
+                                    AppStyles.colorBlue,
+                                    AppStyles.textCenterAligned,
+                                ]}
+                            >
+                                {Localize.t('setupTermOfService.pleaseReadTheTextAboveCarefully')}
+                            </Text>
                         ) : (
                             <CheckBox
                                 testID="agree-check-box"
                                 checked={agreed}
                                 onPress={this.onAgreePress}
                                 label={Localize.t('global.IUnderstand')}
-                                labelSmall={content.button}
+                                description={content.button}
                             />
                         )}
                     </View>

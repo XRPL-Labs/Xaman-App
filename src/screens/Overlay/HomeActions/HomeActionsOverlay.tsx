@@ -18,17 +18,16 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 import Interactable from 'react-native-interactable';
 
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
-import { BackendService } from '@services';
+import { BackendService, StyleService } from '@services';
 
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Spacer, HorizontalLine } from '@components/General';
+import { Button, Spacer } from '@components/General';
 
 import Localize from '@locale';
 
@@ -203,7 +202,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                     verticalOnly
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
-                        { y: AppSizes.screen.height - AppSizes.moderateScale(430) - AppSizes.navigationBarHeight },
+                        { y: AppSizes.screen.height - AppSizes.moderateScale(400) - AppSizes.navigationBarHeight },
                     ]}
                     alertAreas={[
                         { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
@@ -211,19 +210,19 @@ class HomeActionsOverlay extends Component<Props, State> {
                             id: 'top',
                             influenceArea: {
                                 top:
-                                    AppSizes.screen.height - AppSizes.moderateScale(430) - AppSizes.navigationBarHeight,
+                                    AppSizes.screen.height - AppSizes.moderateScale(400) - AppSizes.navigationBarHeight,
                             },
                         },
                     ]}
                     boundaries={{
-                        top: AppSizes.screen.height - AppSizes.moderateScale(480) - AppSizes.navigationBarHeight,
+                        top: AppSizes.screen.height - AppSizes.moderateScale(450) - AppSizes.navigationBarHeight,
                     }}
                     initialPosition={{ y: AppSizes.screen.height + 3 }}
                     animatedValueY={this.deltaY}
                     animatedValueX={this.deltaX}
                 >
                     <View
-                        style={[styles.container, { height: AppSizes.moderateScale(480) }]}
+                        style={[styles.container, { height: AppSizes.moderateScale(450) }]}
                         onStartShouldSetResponder={() => true}
                     >
                         <View style={AppStyles.panelHeader}>
@@ -238,7 +237,11 @@ class HomeActionsOverlay extends Component<Props, State> {
 
                         <View style={[AppStyles.row, AppStyles.centerAligned]}>
                             <View style={[AppStyles.flex1]}>
-                                <Image source={Images.IconXApps} resizeMode="contain" style={styles.xAppsIcon} />
+                                <Image
+                                    source={StyleService.getImage('IconXApps')}
+                                    resizeMode="contain"
+                                    style={styles.xAppsIcon}
+                                />
                             </View>
                             <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                                 <Button
@@ -278,23 +281,14 @@ class HomeActionsOverlay extends Component<Props, State> {
                             </View>
                         )}
 
-                        <HorizontalLine />
-
-                        <View
-                            style={[
-                                AppStyles.row,
-                                AppStyles.paddingVertical,
-                                { marginBottom: AppSizes.navigationBarHeight },
-                            ]}
-                        >
+                        <View style={[AppStyles.row, { marginBottom: AppSizes.navigationBarHeight }]}>
                             <View style={[AppStyles.flex1]}>
                                 <Button
+                                    contrast
                                     numberOfLines={1}
                                     label={Localize.t('global.scanAQRCode')}
                                     onPress={this.onScanButtonPress}
-                                    style={styles.actionButtonBlack}
                                     icon="IconScan"
-                                    iconStyle={AppStyles.imgColorWhite}
                                 />
                             </View>
                         </View>

@@ -1,19 +1,18 @@
-import { StyleSheet } from 'react-native';
-
-import { AppColors, AppFonts } from '@theme';
+import StyleService from '@services/StyleService';
+import { AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     privateKeyRowId: {
-        backgroundColor: AppColors.white,
+        backgroundColor: '$white',
         // paddingTop: 4,
         fontSize: AppFonts.h4.size,
         fontFamily: AppFonts.base.familyMonoBold,
         paddingRight: 15,
-        color: AppColors.greyDark,
+        color: '$grey',
     },
     privateKeyRowIdActive: {
-        color: AppColors.orange,
+        color: '$orange',
     },
     rowStyle: {
         marginBottom: 6,
@@ -24,21 +23,21 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         borderTopWidth: 8,
         borderBottomWidth: 8,
-        borderColor: AppColors.grey,
+        borderColor: '$grey',
     },
     rowStyleInnerActive: {
         borderRadius: 10,
         overflow: 'hidden',
         borderTopWidth: 8,
         borderBottomWidth: 8,
-        borderColor: AppColors.lightOrange,
+        borderColor: '$lightOrange',
     },
     borderLeft: {
         borderLeftWidth: 1,
     },
     privateKeyNum: {
-        backgroundColor: AppColors.grey,
-        borderColor: AppColors.greyDark,
+        backgroundColor: '$grey',
+        borderColor: '$grey',
         padding: 2,
         fontSize: AppFonts.h4.size,
         fontFamily: AppFonts.base.familyMonoBold,
@@ -51,16 +50,16 @@ const styles = StyleSheet.create({
 
     // Active states
     privateKeyRowActive: {
-        backgroundColor: AppColors.red,
+        backgroundColor: '$red',
     },
     privateKeyNumActive: {
-        backgroundColor: AppColors.lightOrange,
+        backgroundColor: '$lightOrange',
         // borderWidth: 2,
-        borderColor: AppColors.orange,
-        // borderColor: AppColors.grey,
+        borderColor: '$orange',
+        // borderColor: '$grey,
     },
     privateKeyNumTextActive: {
-        color: AppColors.orange,
+        color: '$orange',
     },
 
     rowAlphabetContainer: {},

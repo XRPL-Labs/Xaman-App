@@ -1,23 +1,23 @@
 {
   "images" : [
     {
-      "idiom" : "universal",
       "filename" : "icon-addaccount.png",
+      "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "icon-addaccount@2x.png",
       "idiom" : "universal",
-      "filename" : "icon-addaccount-1.png",
       "scale" : "2x"
     },
     {
+      "filename" : "icon-addaccount@3x.png",
       "idiom" : "universal",
-      "filename" : "icon-addaccount-2.png",
       "scale" : "3x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }

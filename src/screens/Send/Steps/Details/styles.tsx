@@ -1,13 +1,15 @@
-import { StyleSheet, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
-import { AppStyles, AppSizes, AppColors, AppFonts } from '@theme';
+import StyleService from '@services/StyleService';
 
+import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '$background',
     },
     rowTitle: {
         paddingLeft: 15,
@@ -16,7 +18,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: AppSizes.paddingSml,
         paddingTop: AppSizes.paddingSml,
         paddingBottom: 10,
-        borderTopColor: AppColors.grey,
+        borderTopColor: '$lightGrey',
         borderTopWidth: 1,
     },
     amountContainer: {
@@ -26,7 +28,7 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 20 : 10,
         paddingLeft: 20,
         marginLeft: 15,
-        backgroundColor: AppColors.lightGrey,
+        backgroundColor: '$lightGrey',
         borderRadius: 15,
     },
     amountInput: {
@@ -35,7 +37,7 @@ const styles = StyleSheet.create({
         fontSize: AppFonts.h2.size,
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
-        color: AppColors.blue,
+        color: '$blue',
         paddingVertical: Platform.OS === 'ios' ? 15 : 10,
     },
     amountRateContainer: {
@@ -45,7 +47,7 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 20 : 10,
         paddingLeft: 20,
         marginLeft: 15,
-        backgroundColor: AppColors.lightGrey,
+        backgroundColor: '$lightGrey',
         borderRadius: 15,
     },
     amountRateInput: {
@@ -54,32 +56,8 @@ const styles = StyleSheet.create({
         fontSize: AppFonts.h4.size,
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
-        color: AppColors.black,
+        color: '$textPrimary',
         paddingVertical: 15,
-    },
-    currencyItemLabelSmall: {
-        fontSize: AppFonts.p.size,
-        fontFamily: AppFonts.base.familyMono,
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        marginRight: 10,
-        marginBottom: 3,
-    },
-    accountPickerContainer: {
-        // borderRadius: 15,
-        // height: 70,
-        // paddingHorizontal: 14,
-        // paddingVertical: 20,
-    },
-    accountItemTitle: {
-        fontSize: AppStyles.baseText.fontSize,
-        fontWeight: 'bold',
-        marginBottom: 3,
-    },
-    accountItemSub: {
-        fontFamily: AppFonts.base.familyMono,
-        fontSize: 16,
-        color: AppColors.greyDark,
     },
     // Currency
     pickerItemCurrency: {
@@ -87,14 +65,14 @@ const styles = StyleSheet.create({
         // paddingTop: 10,
         // paddingBottom: 10,
         // borderWidth: 1,
-        // borderColor: AppColors.green,
+        // borderColor: '$green,
     },
     currencyImageContainer: {
-        backgroundColor: AppColors.white,
+        backgroundColor: '$white',
         // padding: 10,
         marginRight: 10,
         borderWidth: 1,
-        borderColor: AppColors.light,
+        borderColor: '$light',
         borderRadius: 10,
         justifyContent: 'center',
     },
@@ -108,11 +86,15 @@ const styles = StyleSheet.create({
         fontFamily: AppFonts.base.familyMonoBold,
         alignItems: 'flex-start',
         justifyContent: 'center',
+        color: '$textPrimary',
+    },
+    currencyItemLabelSelected: {
+        color: '$blue',
     },
     currencyBalance: {
         fontSize: AppFonts.subtext.size * 0.9,
         fontFamily: AppFonts.base.familyMono,
-        color: AppColors.greyDark,
+        color: '$grey',
     },
     editButton: {
         justifyContent: 'center',
@@ -125,7 +107,7 @@ const styles = StyleSheet.create({
     },
     currencySymbolText: {
         fontFamily: AppFonts.base.familyMonoBold,
-        color: AppColors.greyDark,
+        color: '$grey',
         fontSize: AppFonts.h5.size * 0.9,
     },
     rateContainer: {
@@ -135,7 +117,7 @@ const styles = StyleSheet.create({
     rateText: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size,
-        color: AppColors.greyBlack,
+        color: '$greyBlack',
     },
 });
 

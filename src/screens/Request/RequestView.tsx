@@ -3,6 +3,7 @@
  */
 
 import { find } from 'lodash';
+import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
 import {
@@ -21,8 +22,6 @@ import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
-
-import { NormalizeAmount } from '@common/libs/utils';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, CoreSchema } from '@store/schemas/latest';
@@ -134,7 +133,7 @@ class RequestView extends Component<Props, State> {
         }
 
         if (currencyRate) {
-            const inRate = Number(amount) * currencyRate.lastRate;
+            const inRate = new BigNumber(amount).multipliedBy(currencyRate.lastRate).decimalPlaces(8).toFixed();
             this.setState({
                 amountRate: String(inRate),
             });
@@ -156,9 +155,9 @@ class RequestView extends Component<Props, State> {
         }
 
         if (currencyRate) {
-            const inXRP = Number(amount) / currencyRate.lastRate;
+            const inXRP = new BigNumber(amount).dividedBy(currencyRate.lastRate).decimalPlaces(8).toFixed();
             this.setState({
-                amount: String(NormalizeAmount(inXRP)),
+                amount: String(inXRP),
             });
         }
     };
@@ -220,7 +219,7 @@ class RequestView extends Component<Props, State> {
 
                         <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                                     {Localize.t('global.to')}
                                 </Text>
                             </View>
@@ -240,8 +239,8 @@ class RequestView extends Component<Props, State> {
                                 style={[AppStyles.row, styles.rowTitle]}
                                 onPress={this.toggleUseAmount}
                             >
-                                <View style={AppStyles.flex5}>
-                                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                                <View style={[AppStyles.flex5, AppStyles.centerContent]}>
+                                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                                         {Localize.t('global.requestWithAmount')}
                                     </Text>
                                 </View>
@@ -259,7 +258,7 @@ class RequestView extends Component<Props, State> {
                                                 onChange={this.onAmountChange}
                                                 returnKeyType="done"
                                                 style={[styles.amountInput]}
-                                                placeholderTextColor={AppColors.greyDark}
+                                                placeholderTextColor={AppColors.grey}
                                                 value={amount}
                                             />
                                         </View>
@@ -276,7 +275,7 @@ class RequestView extends Component<Props, State> {
                                                 onChange={this.onRateAmountChange}
                                                 returnKeyType="done"
                                                 style={[styles.amountRateInput]}
-                                                placeholderTextColor={AppColors.greyDark}
+                                                placeholderTextColor={AppColors.grey}
                                                 value={amountRate}
                                             />
                                         </View>

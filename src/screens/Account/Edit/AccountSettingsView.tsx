@@ -263,7 +263,7 @@ class AccountSettingsView extends Component<Props, State> {
 
                             <View style={[AppStyles.centerAligned, AppStyles.row]}>
                                 <Text style={[styles.value]}>{account.label}</Text>
-                                <Icon size={20} style={[styles.rowIcon]} name="IconChevronRight" />
+                                <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                             </View>
                         </TouchableOpacity>
 
@@ -285,7 +285,7 @@ class AccountSettingsView extends Component<Props, State> {
                                         ? Localize.t('account.fullAccess')
                                         : Localize.t('account.readOnly')}
                                 </Text>
-                                <Icon size={20} style={[styles.rowIcon]} name="IconChevronRight" />
+                                <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                             </View>
                         </TouchableOpacity>
                         {/* <Text style={styles.descriptionText}>{Localize.t('account.passwordOptionDesc')}</Text> */}
@@ -334,13 +334,13 @@ class AccountSettingsView extends Component<Props, State> {
                                 <View style={[AppStyles.centerAligned, AppStyles.row]}>
                                     <Text style={[styles.value]}>
                                         {/*
-                                        // @ts-ignore */}
+                                         // @ts-ignore */}
                                         {account.additionalInfo?.isPin2Default
                                             ? Localize.t('global.longTap')
                                             : Localize.t('global.passcode')}
                                     </Text>
                                 </View>
-                                <Icon size={20} style={[styles.rowIcon]} name="IconChevronRight" />
+                                <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                             </TouchableOpacity>
                         )}
 

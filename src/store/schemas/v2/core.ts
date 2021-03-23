@@ -20,7 +20,7 @@ class Core extends Realm.Object {
             passcodeFallback: { type: 'bool', default: false }, // fallback to passcode in case of biometric fail
             language: { type: 'string', default: AppConfig.defaultLanguage }, // default app language
             defaultNode: { type: 'string', default: __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0] },
-            theme: { type: 'string', default: AppConfig.theme.light }, // app theme
+            theme: { type: 'string', default: AppConfig.defaultTheme }, // app theme
             showMemoAlert: { type: 'bool', default: true }, // show memo alert
         },
     };
@@ -55,7 +55,7 @@ class Core extends Realm.Object {
             newObjects[i].passcodeFailedAttempts = 0;
             newObjects[i].lastUnlockedTimestamp = 0;
             newObjects[i].purgeOnBruteForce = false;
-            newObjects[i].theme = AppConfig.theme.light;
+            newObjects[i].theme = AppConfig.defaultTheme;
         }
     }
 }

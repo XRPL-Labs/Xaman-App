@@ -4,7 +4,8 @@ import { View, Text, TouchableOpacity } from 'react-native';
 
 import { CheckCreate } from '@common/libs/ledger/transactions';
 
-import { NormalizeCurrencyCode, FormatDate } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { FormatDate } from '@common/utils/date';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { AmountInput, Button } from '@components/General';
@@ -99,7 +100,7 @@ class CheckCreateTemplate extends Component<Props, State> {
         return (
             <>
                 <View style={styles.label}>
-                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                         {Localize.t('global.to')}
                     </Text>
                 </View>

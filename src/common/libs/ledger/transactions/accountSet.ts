@@ -4,7 +4,7 @@
 
 import BigNumber from 'bignumber.js';
 import { get, isUndefined } from 'lodash';
-import { HexEncoding } from '@common/libs/utils';
+import { HexEncoding } from '@common/utils/string';
 
 import BaseTransaction from './base';
 import Flag from '../parser/common/flag';

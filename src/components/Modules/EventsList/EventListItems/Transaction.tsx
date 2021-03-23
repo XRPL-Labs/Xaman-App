@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import { View, Text, TouchableHighlight, Image } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
 
+import StyleService from '@services/StyleService';
+
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import { AccountSchema } from '@store/schemas/latest';
 
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
 import { Images } from '@common/helpers/images';
-import { NormalizeCurrencyCode, NormalizeAmount } from '@common/libs/utils';
+import { NormalizeCurrencyCode, NormalizeAmount } from '@common/utils/amount';
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
@@ -328,9 +330,7 @@ class TransactionTemplate extends Component<Props, State> {
         }
 
         if (item.Memos) {
-            return (
-                <Icon name="IconFileText" style={[AppStyles.imgColorGreyDark, AppStyles.paddingLeftSml]} size={12} />
-            );
+            return <Icon name="IconFileText" style={[AppStyles.imgColorGrey, AppStyles.paddingLeftSml]} size={12} />;
         }
 
         return null;
@@ -455,7 +455,11 @@ class TransactionTemplate extends Component<Props, State> {
 
     render() {
         return (
-            <TouchableHighlight onPress={this.onPress} underlayColor="#FFF">
+            <TouchableHighlight
+                onPress={this.onPress}
+                underlayColor={StyleService.value('$tint')}
+                style={styles.touchHighlight}
+            >
                 <View style={[AppStyles.row, styles.container]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
                     <View style={[AppStyles.flex3, AppStyles.centerContent]}>

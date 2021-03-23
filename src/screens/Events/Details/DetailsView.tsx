@@ -31,7 +31,7 @@ import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import transactionFactory from '@common/libs/ledger/parser/transaction';
 
-import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/libs/utils';
+import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 import { AppScreens, AppConfig } from '@common/constants';
 
 import { ActionSheet, Toast } from '@common/helpers/interface';
@@ -344,7 +344,6 @@ class TransactionDetailsView extends Component<Props, State> {
         ActionSheet(
             {
                 options: Platform.OS === 'ios' ? IosButtons : AndroidButtons,
-
                 cancelButtonIndex: 2,
             },
             (buttonIndex: number) => {
@@ -973,7 +972,6 @@ class TransactionDetailsView extends Component<Props, State> {
                     <View style={styles.memoContainer}>
                         <Button
                             rounded
-                            block
                             label={Localize.t('global.openXApp')}
                             secondary
                             // eslint-disable-next-line react/jsx-no-bind
@@ -1211,12 +1209,12 @@ class TransactionDetailsView extends Component<Props, State> {
                     </View>
 
                     <Spacer />
-                    <Icon size={20} style={AppStyles.imgColorGreyBlack} name="IconSwitchAccount" />
+                    <Icon size={20} style={AppStyles.imgColorGrey} name="IconSwitchAccount" />
                     <Spacer />
 
                     <View style={[AppStyles.row, styles.amountContainer]}>
                         {/*
-                    // @ts-ignore */}
+                     // @ts-ignore */}
                         <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
                         <AmountText
                             value={props.value}
@@ -1243,12 +1241,12 @@ class TransactionDetailsView extends Component<Props, State> {
                             </View>
 
                             <Spacer />
-                            <Icon size={20} style={AppStyles.imgColorGreyBlack} name="IconSwitchAccount" />
+                            <Icon size={20} style={AppStyles.imgColorGrey} name="IconSwitchAccount" />
                             <Spacer />
 
                             <View style={[AppStyles.row, styles.amountContainer]}>
                                 {/*
-                        // @ts-ignore */}
+                         // @ts-ignore */}
                                 <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
                                 <AmountText
                                     value={props.value}
@@ -1267,7 +1265,7 @@ class TransactionDetailsView extends Component<Props, State> {
             <View style={styles.amountHeaderContainer}>
                 <View style={[AppStyles.row, styles.amountContainer]}>
                     {/*
-                        // @ts-ignore */}
+                         // @ts-ignore */}
                     <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
                     <AmountText
                         value={props.value}
@@ -1355,7 +1353,6 @@ class TransactionDetailsView extends Component<Props, State> {
                         <Fragment key={`actionButton-${i}`}>
                             <Button
                                 rounded
-                                block
                                 secondary={e.secondary}
                                 label={e.label}
                                 // eslint-disable-next-line react/jsx-no-bind
@@ -1452,7 +1449,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 />
                 {!!through && (
                     <>
-                        <Icon name="IconArrowDown" style={AppStyles.centerSelf} />
+                        <Icon name="IconArrowDown" style={[AppStyles.centerSelf, styles.iconArrow]} />
                         <Text style={[styles.labelText]}>{Localize.t('events.throughOfferBy')}</Text>
                         <RecipientElement
                             recipient={through}
@@ -1460,7 +1457,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         />
                     </>
                 )}
-                <Icon name="IconArrowDown" style={AppStyles.centerSelf} />
+                <Icon name="IconArrowDown" style={[AppStyles.centerSelf, styles.iconArrow]} />
                 <Text style={[styles.labelText]}>{Localize.t('global.to')}</Text>
                 <RecipientElement
                     recipient={to}

@@ -11,7 +11,7 @@ import { AccountSchema } from '@store/schemas/latest';
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
-import { HexEncoding } from '@common/libs/utils';
+import { HexEncoding } from '@common/utils/string';
 import {
     SignedObjectType,
     TransactionJSONType,

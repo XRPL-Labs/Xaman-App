@@ -21,18 +21,17 @@ import {
 
 import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
-import { LedgerService, SocketService, BackendService } from '@services';
+import { LedgerService, SocketService, BackendService, StyleService } from '@services';
 
 import { AccessLevels, NodeChain } from '@store/types';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 // constants
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 import { VibrateHapticFeedback, Prompt, Toast } from '@common/helpers/interface';
 
 import Localize from '@locale';
@@ -435,7 +434,7 @@ class HomeView extends Component<Props, State> {
         return (
             <Fragment key="header">
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                    <Image style={[styles.logo]} source={Images.xummLogo} />
+                    <Image style={[styles.logo]} source={StyleService.getImage('XummLogo')} />
                 </View>
                 {account?.isValid() && (
                     <View style={[AppStyles.flex1]}>
@@ -448,12 +447,10 @@ class HomeView extends Component<Props, State> {
                                     },
                                 });
                             }}
-                            style={styles.switchAccountButton}
-                            textStyle={styles.switchAccountButtonText}
                             light
                             roundedSmall
+                            style={styles.switchAccountButton}
                             iconSize={14}
-                            iconStyle={AppStyles.imgColorBlue}
                             icon="IconSwitchAccount"
                             label={Localize.t('account.switchAccount')}
                         />
@@ -516,7 +513,7 @@ class HomeView extends Component<Props, State> {
                                 AppStyles.subtext,
                                 AppStyles.textCenterAligned,
                                 AppStyles.link,
-                                AppStyles.colorGreyDark,
+                                AppStyles.colorGrey,
                             ]}
                         >
                             {Localize.t('home.howActivateMyAccount')}
@@ -537,16 +534,15 @@ class HomeView extends Component<Props, State> {
                     {isSpendable && (
                         <View style={[AppStyles.flex5]}>
                             <Button
+                                light
+                                roundedSmall
                                 numberOfLines={1}
                                 testID="add-asset-button"
                                 label={Localize.t('home.addAsset')}
                                 onPress={this.addCurrency}
-                                roundedSmall
                                 icon="IconPlus"
-                                iconStyle={[AppStyles.imgColorBlue]}
                                 iconSize={20}
                                 style={[AppStyles.rightSelf]}
-                                light
                             />
                         </View>
                     )}
@@ -555,6 +551,7 @@ class HomeView extends Component<Props, State> {
                 {account.lines.length === 0 && (
                     <View testID="assets-empty-view" style={[styles.noTrustlineMessage]}>
                         <InfoMessage type="warning" label={Localize.t('home.youDonNotHaveOtherAssets')} />
+
                         <TouchableOpacity
                             style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingSml]}
                             onPress={this.openTrustLineDescription}
@@ -565,7 +562,7 @@ class HomeView extends Component<Props, State> {
                                     AppStyles.subtext,
                                     AppStyles.textCenterAligned,
                                     AppStyles.link,
-                                    AppStyles.colorGreyDark,
+                                    AppStyles.colorGrey,
                                 ]}
                             >
                                 {Localize.t('home.whatAreOtherAssets')}
@@ -633,9 +630,7 @@ class HomeView extends Component<Props, State> {
                                         )}
 
                                         {discreetMode ? (
-                                            <Text
-                                                style={[AppStyles.pbold, AppStyles.monoBold, AppStyles.colorGreyDark]}
-                                            >
+                                            <Text style={[AppStyles.pbold, AppStyles.monoBold, AppStyles.colorGrey]}>
                                                 ••••••••
                                             </Text>
                                         ) : (
@@ -709,11 +704,11 @@ class HomeView extends Component<Props, State> {
 
                 <View style={[AppStyles.contentContainer, AppStyles.padding]}>
                     <ImageBackground
-                        source={Images.BackgroundShapes}
+                        source={StyleService.getImage('BackgroundShapes')}
                         imageStyle={AppStyles.BackgroundShapes}
-                        style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent]}
+                        style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent, styles.BackgroundShapes]}
                     >
-                        <Image style={[AppStyles.emptyIcon]} source={Images.ImageFirstAccount} />
+                        <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageFirstAccount')} />
                         <Text style={[AppStyles.emptyText]}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
                         <Button
                             testID="add-account-button"
@@ -758,7 +753,7 @@ class HomeView extends Component<Props, State> {
                     <TouchableOpacity style={AppStyles.paddingRightSml} onPress={this.toggleDiscreetMode}>
                         <Text style={[styles.cardSmallLabel]}>
                             <Icon
-                                style={[AppStyles.imgColorGreyDark]}
+                                style={[AppStyles.imgColorGrey]}
                                 size={12}
                                 name={discreetMode ? 'IconEyeOff' : 'IconEye'}
                             />
@@ -769,7 +764,7 @@ class HomeView extends Component<Props, State> {
 
                     <TouchableOpacity onPress={this.showBalanceExplain}>
                         <Text style={[styles.cardSmallLabel]}>
-                            <Icon style={[AppStyles.imgColorGreyDark]} size={12} name="IconInfo" />
+                            <Icon style={[AppStyles.imgColorGrey]} size={12} name="IconInfo" />
                             {'  '}Explain
                         </Text>
                     </TouchableOpacity>
@@ -778,11 +773,11 @@ class HomeView extends Component<Props, State> {
                     {!discreetMode && !showRate && <Icon name="IconXrp" size={16} style={styles.xrpIcon} />}
 
                     {isLoadingRate ? (
-                        <ActivityIndicator color={AppColors.greyBlack} style={styles.rateLoader} />
+                        <ActivityIndicator color={AppColors.grey} style={styles.rateLoader} />
                     ) : (
                         <Text
                             testID="account-balance-label"
-                            style={[styles.balanceText, discreetMode && AppStyles.colorGreyDark]}
+                            style={[styles.balanceText, discreetMode && AppStyles.colorGrey]}
                         >
                             {discreetMode ? '••••••••' : balance}
                         </Text>
@@ -806,7 +801,7 @@ class HomeView extends Component<Props, State> {
                         adjustsFontSizeToFit
                         numberOfLines={1}
                         selectable={!discreetMode}
-                        style={[styles.cardAddressText, discreetMode && AppStyles.colorGreyDark]}
+                        style={[styles.cardAddressText, discreetMode && AppStyles.colorGrey]}
                     >
                         {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
                     </Text>

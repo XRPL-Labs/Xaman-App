@@ -1,12 +1,18 @@
 /* eslint-disable react-native/no-color-literals */
 
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
 import { AppSizes, AppColors } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+const styles = StyleService.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'stretch',
+        backgroundColor: '$background',
+    },
     logo: {
         width: AppSizes.screen.width * 0.4,
         height: AppSizes.screen.height * 0.1,
@@ -14,9 +20,9 @@ const styles = StyleSheet.create({
     },
     detailsCard: {
         width: AppSizes.screen.width * 0.85,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$tint',
         borderRadius: AppSizes.screen.width * 0.06,
-        shadowColor: AppColors.greyDark,
+        shadowColor: '$grey',
         shadowOffset: { width: 0, height: 5 },
         shadowRadius: 15,
         shadowOpacity: 0.2,
@@ -28,6 +34,18 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         tintColor: AppColors.grey,
         opacity: 0.5,
+    },
+    containerSuccess: {
+        backgroundColor: '$lightGreen',
+    },
+    containerFailed: {
+        backgroundColor: '$lightRed',
+    },
+    successImage: {
+        alignSelf: 'center',
+        width: AppSizes.scale(250),
+        height: AppSizes.scale(250),
+        resizeMode: 'contain',
     },
     loaderStyle: {
         alignSelf: 'center',

@@ -1,9 +1,9 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts, AppSizes } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
-export default StyleSheet.create({
+export default StyleService.create({
     container: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -34,11 +34,11 @@ export default StyleSheet.create({
         marginLeft: 12,
         borderRadius: 9,
         opacity: 0.3,
-        backgroundColor: AppColors.greyDark,
+        backgroundColor: '$silver',
     },
     pinActiveStyle: {
         opacity: 1.0,
-        backgroundColor: AppColors.blue,
+        backgroundColor: '$blue',
     },
     keyboardWrap: {
         width: AppSizes.screen.width,
@@ -58,7 +58,7 @@ export default StyleSheet.create({
         height: AppSizes.verticalScale(65),
     },
     numTextInt: {
-        color: AppColors.black,
+        color: '$textPrimary',
         textAlign: 'center',
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.h3.size,
@@ -66,11 +66,14 @@ export default StyleSheet.create({
     numTextAlpha: {
         fontSize: AppFonts.base.size * 0.65,
         textAlign: 'center',
-        color: AppColors.black,
+        color: '$textPrimary',
         letterSpacing: 2,
     },
     bottomWrap: {
         flexDirection: 'row',
         justifyContent: 'space-around',
+    },
+    iconStyle: {
+        tintColor: '$contrast',
     },
 });

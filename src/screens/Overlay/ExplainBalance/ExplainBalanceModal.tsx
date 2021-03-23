@@ -25,7 +25,7 @@ import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import LedgerService from '@services/LedgerService';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 // components
 import { Button, Icon, Spacer } from '@components/General';
 
@@ -152,7 +152,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             <View key={`object-${index}`} style={[styles.currencyItemCard]}>
                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[styles.xrpAvatarContainer]}>
-                        <Icon name="IconInfo" size={16} style={[AppStyles.imgColorGreyDark]} />
+                        <Icon name="IconInfo" size={16} style={[AppStyles.imgColorGrey]} />
                     </View>
                     <Text style={[styles.rowLabel]}>{LedgerEntryType}</Text>
                 </View>
@@ -207,7 +207,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                 <View style={[styles.currencyItemCard]}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
                         <View style={[styles.xrpAvatarContainer]}>
-                            <Icon name="IconAccount" size={15} style={[AppStyles.imgColorGreyDark]} />
+                            <Icon name="IconAccount" size={15} style={[AppStyles.imgColorGrey]} />
                         </View>
                         <Text style={[styles.rowLabel]}>{Localize.t('account.walletReserve')}</Text>
                     </View>
@@ -314,14 +314,14 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                             <View style={[styles.currencyItemCard]}>
                                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
                                     <View style={[styles.xrpAvatarContainer]}>
-                                        <Icon name="IconXrp" size={20} style={[AppStyles.imgColorGreyDark]} />
+                                        <Icon name="IconXrp" size={20} style={[AppStyles.imgColorGrey]} />
                                     </View>
-                                    <Text style={[styles.currencyItemLabel, AppStyles.colorGreyDark]}>XRP</Text>
+                                    <Text style={[styles.currencyItemLabel, AppStyles.colorGrey]}>XRP</Text>
                                 </View>
                                 <View
                                     style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}
                                 >
-                                    <Text style={[AppStyles.h5, AppStyles.monoBold, AppStyles.colorGreyDark]}>
+                                    <Text style={[AppStyles.h5, AppStyles.monoBold, AppStyles.colorGrey]}>
                                         {Localize.formatNumber(account.balance)}
                                     </Text>
                                 </View>

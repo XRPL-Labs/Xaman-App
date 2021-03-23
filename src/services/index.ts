@@ -8,6 +8,7 @@ import LinkingService from './LinkingService';
 import SocketService from './SocketService';
 import LedgerService from './LedgerService';
 import BackendService from './BackendService';
+import StyleService from './StyleService';
 
 export {
     LoggerService,
@@ -20,4 +21,5 @@ export {
     SocketService,
     LedgerService,
     BackendService,
+    StyleService,
 };

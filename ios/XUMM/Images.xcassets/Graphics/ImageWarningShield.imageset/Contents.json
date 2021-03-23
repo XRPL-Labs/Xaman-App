@@ -6,12 +6,12 @@
       "scale" : "1x"
     },
     {
-      "filename" : "image_warning_shield-1.png",
+      "filename" : "image_warning_shield@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "image_warning_shield-2.png",
+      "filename" : "image_warning_shield@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

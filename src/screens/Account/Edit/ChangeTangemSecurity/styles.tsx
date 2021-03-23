@@ -1,9 +1,11 @@
 import { StyleSheet } from 'react-native';
 
-import { AppColors, AppSizes, AppFonts } from '@theme';
+import StyleService from '@services/StyleService';
+
+import { AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         position: 'relative',
         flex: 1,
@@ -12,14 +14,14 @@ const styles = StyleSheet.create({
     accountIcon: {
         width: AppSizes.screen.width * 0.07,
         height: AppSizes.screen.width * 0.07,
-        tintColor: AppColors.greyDark,
+        tintColor: '$grey',
         resizeMode: 'contain',
     },
     rowIcon: {
         width: AppSizes.screen.width * 0.07,
         height: AppSizes.screen.width * 0.07,
         resizeMode: 'contain',
-        tintColor: AppColors.greyDark,
+        tintColor: '$grey',
         marginRight: -10,
     },
     row: {
@@ -28,34 +30,34 @@ const styles = StyleSheet.create({
         paddingVertical: AppSizes.paddingSml,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: AppColors.white,
+        backgroundColor: '$white',
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderTopWidth: StyleSheet.hairlineWidth,
-        borderColor: AppColors.greyDark,
+        borderColor: '$grey',
     },
 
     label: {
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.subtext.size,
-        color: AppColors.black,
+        color: '$black',
     },
     destructionLabel: {
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.subtext.size,
-        color: AppColors.red,
+        color: '$red',
         textAlign: 'center',
     },
     value: {
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.subtext.size,
         textAlign: 'right',
-        color: AppColors.greyDark,
+        color: '$grey',
     },
     descriptionText: {
         padding: AppSizes.paddingSml,
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.base.size * 0.8,
-        color: AppColors.black,
+        color: '$black',
     },
 });
 

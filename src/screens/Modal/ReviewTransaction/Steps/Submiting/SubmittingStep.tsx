@@ -12,7 +12,7 @@ import { Images } from '@common/helpers/images';
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
@@ -34,10 +34,7 @@ class SubmittingStep extends Component<Props, State> {
     render() {
         const { currentStep } = this.context;
         return (
-            <SafeAreaView
-                testID="submitting-view"
-                style={[AppStyles.container, AppStyles.paddingSml, { backgroundColor: AppColors.light }]}
-            >
+            <SafeAreaView testID="submitting-view" style={[AppStyles.container, AppStyles.paddingSml]}>
                 <View style={[AppStyles.flex5, AppStyles.centerContent]}>
                     <Image style={styles.backgroundImageStyle} source={Images.IconSend} />
                 </View>

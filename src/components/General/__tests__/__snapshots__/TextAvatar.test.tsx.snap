@@ -19,7 +19,7 @@ exports[`[TextAvatar] renders correctly 1`] = `
     style={
       Array [
         Object {
-          "color": "#FFFFFF",
+          "color": "#ffffff",
           "fontFamily": "UbuntuMono-Regular",
           "fontSize": 42.857142857142854,
           "textTransform": "uppercase",
@@ -51,7 +51,7 @@ exports[`[TextAvatar] should render label correctly 1`] = `
     style={
       Array [
         Object {
-          "color": "#FFFFFF",
+          "color": "#ffffff",
           "fontFamily": "UbuntuMono-Regular",
           "fontSize": 42.857142857142854,
           "textTransform": "uppercase",
@@ -83,7 +83,7 @@ exports[`[TextAvatar] should render two label correctly 1`] = `
     style={
       Array [
         Object {
-          "color": "#FFFFFF",
+          "color": "#ffffff",
           "fontFamily": "UbuntuMono-Regular",
           "fontSize": 42.857142857142854,
           "textTransform": "uppercase",

@@ -8,8 +8,7 @@ import React from 'react';
 
 import { View } from 'react-native';
 
-import { AppColors } from '@theme';
-
+import StyleService from '@services/StyleService';
 /* Types ==================================================================== */
 interface Props {
     width?: number;
@@ -18,7 +17,7 @@ interface Props {
 }
 
 /* Component ==================================================================== */
-const HorizontalLine: React.SFC<Props> = ({ width = '100%', height = 2, color = AppColors.grey }) => (
+const HorizontalLine: React.SFC<Props> = ({ width = '100%', height = 2, color = StyleService.value('$lightGrey') }) => (
     <View
         style={{
             borderBottomColor: color,

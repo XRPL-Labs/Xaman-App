@@ -1,17 +1,16 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors } from '@theme';
 /* Styles ==================================================================== */
-export default StyleSheet.create({
+export default StyleService.create({
     container: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: AppColors.white,
+        backgroundColor: '$white',
         borderRadius: 10,
     },
     image: {},
     border: {
-        borderColor: AppColors.grey,
+        borderColor: '$lightGrey',
         borderWidth: 1,
         borderRadius: 10,
     },

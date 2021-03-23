@@ -1,8 +1,7 @@
-import { StyleSheet } from 'react-native';
-
-import { AppColors, AppFonts } from '@theme';
+import StyleService from '@services/StyleService';
+import { AppFonts } from '@theme';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     listContainer: { padding: 5 },
     logRow: {
         paddingBottom: 2,
@@ -10,13 +9,13 @@ const styles = StyleSheet.create({
         fontSize: AppFonts.base.size * 0.7,
     },
     debug: {
-        color: AppColors.black,
+        color: '$textPrimary',
     },
     warn: {
-        color: AppColors.orange,
+        color: '$orange',
     },
     error: {
-        color: AppColors.red,
+        color: '$red',
     },
 });
 

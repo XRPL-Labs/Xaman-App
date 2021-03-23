@@ -1,15 +1,14 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppSizes, AppFonts } from '@theme';
-
+import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     visibleContent: {
         height: AppSizes.heightPercentageToDP(92),
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
-        shadowColor: AppColors.black,
+        shadowColor: '$black',
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 5,
         shadowOpacity: 0.3,
@@ -17,7 +16,7 @@ const styles = StyleSheet.create({
     },
     cancelButton: {
         height: AppSizes.screen.heightHalf * 0.1,
-        backgroundColor: AppColors.grey,
+        backgroundColor: '$grey',
     },
     avatar: {
         width: AppSizes.moderateScale(30),
@@ -31,7 +30,7 @@ const styles = StyleSheet.create({
     },
     separator: {
         borderLeftWidth: 1.2,
-        borderLeftColor: AppColors.lightBlue,
+        borderLeftColor: '$lightBlue',
         marginHorizontal: 10,
     },
     listItem: {
@@ -42,14 +41,14 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     selectedRow: {
-        backgroundColor: AppColors.grey,
+        backgroundColor: '$tint',
     },
     selectedText: {
-        color: AppColors.blue,
+        color: '$blue',
         fontFamily: AppFonts.base.familyBold,
     },
     text: {
-        color: AppColors.black,
+        color: '$black',
     },
     footer: {
         marginBottom: AppSizes.navigationBarHeight * 1.2,

@@ -9,9 +9,8 @@ import { ImageBackground, ScrollView, View, Text, KeyboardAvoidingView, Platform
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 
-import { SocketService } from '@services';
+import { SocketService, StyleService } from '@services';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -179,10 +178,10 @@ class ReviewStep extends Component<Props, State> {
                             </View>
                             <View style={[AppStyles.rightAligned]}>
                                 <Button
+                                    contrast
                                     testID="close-button"
                                     numberOfLines={1}
                                     roundedSmall
-                                    style={AppStyles.buttonBlack}
                                     label={Localize.t('global.close')}
                                     onPress={onClose}
                                 />
@@ -228,7 +227,7 @@ class ReviewStep extends Component<Props, State> {
         return (
             <ImageBackground
                 testID="review-transaction-modal"
-                source={Images.backgroundPattern}
+                source={StyleService.getImage('BackgroundPattern')}
                 imageStyle={styles.xummAppBackground}
                 style={[styles.container]}
             >
@@ -244,10 +243,10 @@ class ReviewStep extends Component<Props, State> {
                         </View>
                         <View style={[AppStyles.rightAligned]}>
                             <Button
+                                contrast
                                 testID="close-button"
                                 numberOfLines={1}
                                 roundedSmall
-                                style={AppStyles.buttonBlack}
                                 label={Localize.t('global.close')}
                                 onPress={onClose}
                             />
@@ -289,7 +288,7 @@ class ReviewStep extends Component<Props, State> {
                         <View style={[styles.transactionContent]}>
                             <View style={[AppStyles.paddingHorizontalSml]}>
                                 <View style={styles.rowLabel}>
-                                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                                         {payload.payload.tx_type === 'SignIn' || payload.meta.multisign
                                             ? Localize.t('global.signAs')
                                             : Localize.t('global.signWith')}

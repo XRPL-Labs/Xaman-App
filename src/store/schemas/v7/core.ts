@@ -1,6 +1,6 @@
 import Realm from 'realm';
 import { AppConfig } from '@common/constants';
-import { BiometryType } from '@store/types';
+import { BiometryType, Themes } from '@store/types';
 
 /**
  * App Core Schema
@@ -26,7 +26,7 @@ class Core extends Realm.Object {
             discreetMode: { type: 'bool', default: false }, // Discreet Mode
             useSystemSeparators: { type: 'bool', default: true }, // Use system separators
             developerMode: { type: 'bool', default: false }, // Developer mode
-            theme: { type: 'string', default: AppConfig.theme.light }, // app theme
+            theme: { type: 'string', default: AppConfig.defaultTheme }, // app theme
         },
     };
 
@@ -47,7 +47,7 @@ class Core extends Realm.Object {
     public discreetMode: boolean;
     public useSystemSeparators: boolean;
     public developerMode: boolean;
-    public theme: string;
+    public theme: Themes;
 
     constructor(obj: Partial<Core>) {
         super();

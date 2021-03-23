@@ -1,9 +1,9 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppSizes, AppFonts } from '@theme';
+import { AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     row: {
         width: AppSizes.screen.width,
@@ -11,11 +11,11 @@ const styles = StyleSheet.create({
         paddingVertical: AppSizes.paddingSml,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
     },
     url: {
         fontSize: AppFonts.subtext.size,
-        color: AppColors.black,
+        color: '$textPrimary',
     },
     chainLabel: {
         marginLeft: 10,
@@ -23,18 +23,18 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     chainLabelMain: {
-        backgroundColor: AppColors.lightGreen,
+        backgroundColor: '$lightGreen',
     },
     chainLabelTest: {
-        backgroundColor: AppColors.lightOrange,
+        backgroundColor: '$lightOrange',
     },
     sectionHeader: {
         paddingVertical: 10,
         paddingHorizontal: 10,
-        borderTopColor: AppColors.lightBlue,
+        borderTopColor: '$tint',
         borderTopWidth: 1,
-        backgroundColor: AppColors.white,
-        shadowColor: AppColors.white,
+        backgroundColor: '$background',
+        shadowColor: '$background',
         shadowOffset: { width: 0, height: 5 },
         shadowRadius: 5,
         shadowOpacity: 1,
@@ -43,10 +43,10 @@ const styles = StyleSheet.create({
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size,
         paddingLeft: 8,
-        color: AppColors.black,
+        color: '$textPrimary',
     },
     checkIcon: {
-        tintColor: AppColors.blue,
+        tintColor: '$blue',
     },
 });
 

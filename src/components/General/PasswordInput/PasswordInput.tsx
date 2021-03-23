@@ -1,11 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import { View, TouchableOpacity, TextInput, Text, ViewStyle, Animated } from 'react-native';
 
+import StyleService from '@services/StyleService';
 import { Icon } from '@components/General/Icon';
 
 import Localize from '@locale';
 
-import { AppSizes, AppColors, AppStyles } from '@theme';
+import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -71,7 +72,7 @@ const LEVELS = [
     },
 ];
 
-const barColor = '#f1f3f4';
+const barColor = StyleService.value('$tint');
 
 /* Component ==================================================================== */
 export default class PasswordInput extends Component<Props, State> {
@@ -277,7 +278,7 @@ export default class PasswordInput extends Component<Props, State> {
                         this.instance = r;
                     }}
                     editable={editable}
-                    placeholderTextColor={AppColors.greyDark}
+                    placeholderTextColor={StyleService.value('$grey')}
                     secureTextEntry={hidePassword}
                     autoCapitalize="none"
                     autoCorrect={false}
@@ -298,7 +299,7 @@ export default class PasswordInput extends Component<Props, State> {
                     <Icon
                         size={22}
                         name={hidePassword ? 'IconEye' : 'IconEyeOff'}
-                        style={[styles.eyeIcon, !editable ? { tintColor: AppColors.greyDark } : null]}
+                        style={[styles.eyeIcon, !editable ? { tintColor: StyleService.value('$grey') } : null]}
                     />
                 </TouchableOpacity>
             </View>

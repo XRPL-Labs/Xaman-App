@@ -1,19 +1,17 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppSizes, AppFonts } from '@theme';
-
+import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
-    // container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: AppColors.lightBlue },
+const styles = StyleService.create({
+    // container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '$lightBlue },
     contentBox: {
         marginBottom: AppSizes.paddingSml,
         paddingHorizontal: 5,
-        // borderColor: AppColors.red,
+        // borderColor: '$red,
         // borderWidth: 1,
     },
     addressContainer: {
         borderRadius: 15,
-        backgroundColor: AppColors.light,
         zIndex: 2,
         padding: 20,
         marginBottom: AppSizes.paddingSml,
@@ -22,7 +20,7 @@ const styles = StyleSheet.create({
         fontFamily: AppFonts.subtext.family,
         fontSize: AppFonts.subtext.size,
         fontWeight: 'bold',
-        color: AppColors.greyDark,
+        color: '$grey',
         paddingLeft: 5,
         marginBottom: 10,
     },
@@ -31,37 +29,37 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         width: '100%',
         borderTopWidth: 1,
-        borderTopColor: AppColors.grey,
+        borderTopColor: '$grey',
     },
     amount: {
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
         fontSize: AppFonts.h5.size,
-        color: AppColors.black,
+        color: '$black',
     },
     amountRed: {
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
         fontSize: AppFonts.h5.size,
-        color: AppColors.red,
+        color: '$red',
     },
     value: {
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
         fontSize: AppFonts.base.size,
-        color: AppColors.black,
+        color: '$textPrimary',
     },
     valueSubtext: {
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
         fontSize: AppFonts.subtext.size,
-        color: AppColors.black,
+        color: '$black',
     },
     address: {
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
         fontSize: AppFonts.subtext.size,
-        color: AppColors.greyDark,
+        color: '$grey',
     },
     logo: {
         width: AppSizes.screen.width * 0.2,
@@ -75,7 +73,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     editButton: {
-        backgroundColor: AppColors.grey,
+        backgroundColor: '$grey',
         borderRadius: 8,
         height: 20,
         width: 40,
@@ -87,7 +85,7 @@ const styles = StyleSheet.create({
         fontSize: AppFonts.h3.size,
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
-        color: AppColors.blue,
+        color: '$blue',
         alignSelf: 'center',
         margin: 0,
         padding: 0,
@@ -99,8 +97,8 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         paddingHorizontal: 20,
         paddingVertical: 10,
-        backgroundColor: AppColors.lightRed,
-        borderColor: AppColors.lightRed,
+        backgroundColor: '$lightRed',
+        borderColor: '$lightRed',
     },
     rateContainer: {
         paddingTop: 15,
@@ -108,7 +106,7 @@ const styles = StyleSheet.create({
     rateText: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size,
-        color: AppColors.greyBlack,
+        color: '$greyBlack',
     },
 });
 

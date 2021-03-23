@@ -12,7 +12,7 @@ import Localize from '@locale';
 // components
 import { Button, TextInput, Spacer, Footer } from '@components/General';
 
-import { ConvertCodecAlphabet } from '@common/libs/utils';
+import { ConvertCodecAlphabet } from '@common/utils/codec';
 
 // style
 import { AppStyles } from '@theme';
@@ -151,7 +151,7 @@ class EnterSeedStep extends Component<Props, State> {
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
-                            secondary
+                            light
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
                             onPress={goBack}

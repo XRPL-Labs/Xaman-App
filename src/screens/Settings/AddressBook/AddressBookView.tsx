@@ -11,8 +11,9 @@ import { View, Text, SectionList, TouchableOpacity, Image, ImageBackground } fro
 
 import { Navigation } from 'react-native-navigation';
 
+import StyleService from '@services/StyleService';
+
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
 import { ContactRepository } from '@store/repositories';
@@ -183,11 +184,11 @@ class AddressBookView extends Component<Props, State> {
                     />
                     <View style={[AppStyles.contentContainer, AppStyles.padding]}>
                         <ImageBackground
-                            source={Images.BackgroundShapes}
+                            source={StyleService.getImage('BackgroundShapes')}
                             imageStyle={AppStyles.BackgroundShapes}
                             style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent]}
                         >
-                            <Image style={[AppStyles.emptyIcon]} source={Images.ImageNoContacts} />
+                            <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageNoContacts')} />
                             <Text style={[AppStyles.emptyText]}>{Localize.t('settings.getStartedCreateContact')}</Text>
                             <Button
                                 rounded

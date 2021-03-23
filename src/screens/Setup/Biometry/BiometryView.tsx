@@ -9,12 +9,17 @@ import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import { CoreRepository } from '@store/repositories';
 import { BiometryType } from '@store/types';
+
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
-import { PushNotificationsService } from '@services';
-import Localize from '@locale';
+
+import { PushNotificationsService, StyleService } from '@services';
+
 import { Button, Spacer, Footer } from '@components/General';
+
+import Localize from '@locale';
+
 import { AppStyles } from '@theme';
 
 import styles from './styles';
@@ -101,7 +106,7 @@ class BiometrySetupView extends Component<Props, State> {
         return (
             <SafeAreaView testID="biometric-setup-view" style={[AppStyles.container]}>
                 <View style={[AppStyles.flex2, AppStyles.centerContent]}>
-                    <Image style={styles.logo} source={Images.xummLogo} />
+                    <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
                 </View>
 
                 <View style={[AppStyles.flex8, AppStyles.paddingSml]}>

@@ -5,11 +5,11 @@
 import React, { Component } from 'react';
 import { Text, ImageBackground, Image, SafeAreaView, View } from 'react-native';
 
-import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
+import StyleService from '@services/StyleService';
 
-// constants
+import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
+
 // locale
 import Localize from '@locale';
 
@@ -45,12 +45,12 @@ class OnboardingView extends Component<Props, State> {
         return (
             <ImageBackground
                 testID="onboarding-screen"
-                source={Images.backgroundPattern}
+                source={StyleService.getImage('BackgroundPattern')}
                 style={[styles.container]}
                 imageStyle={styles.backgroundImageStyle}
             >
                 <SafeAreaView style={[AppStyles.flex1, AppStyles.centerAligned, AppStyles.padding]}>
-                    <Image style={styles.logo} source={Images.xummLogo} />
+                    <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
                 </SafeAreaView>
                 <SafeAreaView style={[AppStyles.flex8]}>
                     <Slider onFinish={this.onFinish}>
@@ -63,7 +63,10 @@ class OnboardingView extends Component<Props, State> {
                         </Slide>
                         <Slide>
                             <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                                <Image style={[AppStyles.emptyIcon]} source={Images.ImageManageAccounts} />
+                                <Image
+                                    style={[AppStyles.emptyIcon]}
+                                    source={StyleService.getImage('ImageManageAccounts')}
+                                />
                                 <Spacer size={50} />
                                 <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
                                     {Localize.t('onboarding.slideTwo_title')}
@@ -76,7 +79,10 @@ class OnboardingView extends Component<Props, State> {
                         </Slide>
                         <Slide>
                             <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                                <Image style={[AppStyles.emptyIcon]} source={Images.ImageSecurityFirst} />
+                                <Image
+                                    style={[AppStyles.emptyIcon]}
+                                    source={StyleService.getImage('ImageSecurityFirst')}
+                                />
                                 <Spacer size={50} />
                                 <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
                                     {Localize.t('onboarding.slideThree_title')}
@@ -89,7 +95,10 @@ class OnboardingView extends Component<Props, State> {
                         </Slide>
                         <Slide>
                             <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                                <Image style={[AppStyles.emptyIcon]} source={Images.ImageSendReceive} />
+                                <Image
+                                    style={[AppStyles.emptyIcon]}
+                                    source={StyleService.getImage('ImageSendReceive')}
+                                />
                                 <Spacer size={50} />
                                 <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
                                     {Localize.t('onboarding.slideFour_title')}

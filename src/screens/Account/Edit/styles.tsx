@@ -1,23 +1,25 @@
 import { StyleSheet } from 'react-native';
 
-import { AppColors, AppSizes, AppFonts } from '@theme';
+import StyleService from '@services/StyleService';
+
+import { AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         position: 'relative',
         flex: 1,
         flexDirection: 'column',
-        // backgroundColor: AppColors.grey,
+        // backgroundColor: '$grey,
     },
     accountIcon: {
         width: AppSizes.screen.width * 0.07,
         height: AppSizes.screen.width * 0.07,
-        tintColor: AppColors.greyDark,
+        tintColor: '$grey',
         resizeMode: 'contain',
     },
     rowIcon: {
-        tintColor: AppColors.greyDark,
+        tintColor: '$blue',
         marginRight: -10,
     },
     row: {
@@ -27,40 +29,40 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingHorizontal: AppSizes.paddingSml,
         paddingVertical: AppSizes.paddingSml,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderTopWidth: StyleSheet.hairlineWidth,
-        borderColor: AppColors.lightBlue,
+        borderColor: '$tint',
     },
 
     label: {
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.subtext.size,
-        color: AppColors.black,
+        color: '$textPrimary',
     },
     destructionLabel: {
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.subtext.size,
-        color: AppColors.red,
+        color: '$red',
         textAlign: 'center',
     },
     value: {
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.subtext.size,
         textAlign: 'right',
-        color: AppColors.greyDark,
+        color: '$grey',
     },
     address: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.small.size,
         textAlign: 'right',
-        color: AppColors.greyDark,
+        color: '$grey',
     },
     descriptionText: {
         padding: AppSizes.paddingSml,
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size,
-        color: AppColors.black,
+        color: '$textPrimary',
     },
 });
 

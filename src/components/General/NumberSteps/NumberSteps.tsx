@@ -109,7 +109,7 @@ export default class NumberSteps extends Component<Props, State> {
                 items.push(
                     <HorizontalLine
                         key={`line-${i}`}
-                        color={AppColors.grey}
+                        color={AppColors.silver}
                         height={4}
                         width={AppSizes.widthPercentageToDP(6)}
                     />,

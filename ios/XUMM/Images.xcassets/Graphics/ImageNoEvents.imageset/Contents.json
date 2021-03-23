@@ -1,23 +1,23 @@
 {
   "images" : [
     {
-      "idiom" : "universal",
       "filename" : "icon-noevents.png",
+      "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "icon-noevents@2x.png",
       "idiom" : "universal",
-      "filename" : "icon-noevents-1.png",
       "scale" : "2x"
     },
     {
+      "filename" : "icon-noevents@3x.png",
       "idiom" : "universal",
-      "filename" : "icon-noevents-2.png",
       "scale" : "3x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }

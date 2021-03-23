@@ -43,7 +43,7 @@ exports[`Storyshots Badge Bithomp 1`] = `
         style={
           Array [
             Object {
-              "color": "#FFFFFF",
+              "color": "#ffffff",
               "fontFamily": "ProximaNova-Bold",
               "fontSize": 18,
             },
@@ -90,7 +90,7 @@ exports[`Storyshots Badge Bithomp 1`] = `
         style={
           Array [
             Object {
-              "color": "#FFFFFF",
+              "color": "#ffffff",
               "fontFamily": "ProximaNova-Bold",
               "fontSize": 18,
             },
@@ -137,7 +137,7 @@ exports[`Storyshots Badge Bithomp 1`] = `
         style={
           Array [
             Object {
-              "color": "#FFFFFF",
+              "color": "#ffffff",
               "fontFamily": "ProximaNova-Bold",
               "fontSize": 18,
             },
@@ -197,7 +197,7 @@ exports[`Storyshots Badge PayId 1`] = `
         style={
           Array [
             Object {
-              "color": "#FFFFFF",
+              "color": "#ffffff",
               "fontFamily": "ProximaNova-Bold",
               "fontSize": 18,
             },
@@ -244,7 +244,7 @@ exports[`Storyshots Badge PayId 1`] = `
         style={
           Array [
             Object {
-              "color": "#FFFFFF",
+              "color": "#ffffff",
               "fontFamily": "ProximaNova-Bold",
               "fontSize": 18,
             },
@@ -291,7 +291,7 @@ exports[`Storyshots Badge PayId 1`] = `
         style={
           Array [
             Object {
-              "color": "#FFFFFF",
+              "color": "#ffffff",
               "fontFamily": "ProximaNova-Bold",
               "fontSize": 18,
             },
@@ -351,7 +351,7 @@ exports[`Storyshots Badge Success 1`] = `
         style={
           Array [
             Object {
-              "color": "#FFFFFF",
+              "color": "#ffffff",
               "fontFamily": "ProximaNova-Bold",
               "fontSize": 18,
             },
@@ -398,7 +398,7 @@ exports[`Storyshots Badge Success 1`] = `
         style={
           Array [
             Object {
-              "color": "#FFFFFF",
+              "color": "#ffffff",
               "fontFamily": "ProximaNova-Bold",
               "fontSize": 18,
             },
@@ -445,7 +445,7 @@ exports[`Storyshots Badge Success 1`] = `
         style={
           Array [
             Object {
-              "color": "#FFFFFF",
+              "color": "#ffffff",
               "fontFamily": "ProximaNova-Bold",
               "fontSize": 18,
             },
@@ -505,7 +505,7 @@ exports[`Storyshots Badge XRPLNS 1`] = `
         style={
           Array [
             Object {
-              "color": "#FFFFFF",
+              "color": "#ffffff",
               "fontFamily": "ProximaNova-Bold",
               "fontSize": 18,
             },
@@ -552,7 +552,7 @@ exports[`Storyshots Badge XRPLNS 1`] = `
         style={
           Array [
             Object {
-              "color": "#FFFFFF",
+              "color": "#ffffff",
               "fontFamily": "ProximaNova-Bold",
               "fontSize": 18,
             },
@@ -599,7 +599,7 @@ exports[`Storyshots Badge XRPLNS 1`] = `
         style={
           Array [
             Object {
-              "color": "#FFFFFF",
+              "color": "#ffffff",
               "fontFamily": "ProximaNova-Bold",
               "fontSize": 18,
             },
@@ -659,7 +659,7 @@ exports[`Storyshots Badge XRPScan 1`] = `
         style={
           Array [
             Object {
-              "color": "#FFFFFF",
+              "color": "#ffffff",
               "fontFamily": "ProximaNova-Bold",
               "fontSize": 18,
             },
@@ -706,7 +706,7 @@ exports[`Storyshots Badge XRPScan 1`] = `
         style={
           Array [
             Object {
-              "color": "#FFFFFF",
+              "color": "#ffffff",
               "fontFamily": "ProximaNova-Bold",
               "fontSize": 18,
             },
@@ -753,7 +753,7 @@ exports[`Storyshots Badge XRPScan 1`] = `
         style={
           Array [
             Object {
-              "color": "#FFFFFF",
+              "color": "#ffffff",
               "fontFamily": "ProximaNova-Bold",
               "fontSize": 18,
             },
@@ -818,7 +818,7 @@ exports[`Storyshots EventsFilterChip default 1`] = `
           "marginRight": 0,
           "marginTop": 5,
           "opacity": 1,
-          "paddingHorizontal": 18,
+          "paddingHorizontal": 15,
           "paddingLeft": 10,
           "paddingRight": 10,
         }
@@ -841,13 +841,12 @@ exports[`Storyshots EventsFilterChip default 1`] = `
           style={
             Array [
               Object {
-                "color": "#FFFFFF",
+                "color": "#ffffff",
                 "fontFamily": "ProximaNova-Bold",
                 "fontSize": 35.357142857142854,
                 "paddingHorizontal": 5,
                 "textAlign": "center",
               },
-              undefined,
               undefined,
               undefined,
               undefined,
@@ -859,7 +858,7 @@ exports[`Storyshots EventsFilterChip default 1`] = `
               undefined,
               Array [
                 Object {
-                  "color": "#FFFFFF",
+                  "color": "#ffffff",
                   "fontFamily": "ProximaNova-Bold",
                   "fontSize": 27,
                   "paddingRight": 2,
@@ -886,10 +885,12 @@ exports[`Storyshots EventsFilterChip default 1`] = `
               Array [
                 Object {
                   "marginLeft": 3,
+                  "tintColor": "#ffffff",
                 },
                 undefined,
+                undefined,
                 Object {
-                  "tintColor": "#FFFFFF",
+                  "tintColor": "#ffffff",
                 },
               ],
             ]
@@ -923,7 +924,7 @@ exports[`Storyshots EventsFilterChip default 1`] = `
           "marginRight": 0,
           "marginTop": 5,
           "opacity": 1,
-          "paddingHorizontal": 18,
+          "paddingHorizontal": 15,
           "paddingLeft": 10,
           "paddingRight": 10,
         }
@@ -946,13 +947,12 @@ exports[`Storyshots EventsFilterChip default 1`] = `
           style={
             Array [
               Object {
-                "color": "#FFFFFF",
+                "color": "#ffffff",
                 "fontFamily": "ProximaNova-Bold",
                 "fontSize": 35.357142857142854,
                 "paddingHorizontal": 5,
                 "textAlign": "center",
               },
-              undefined,
               undefined,
               undefined,
               undefined,
@@ -964,7 +964,7 @@ exports[`Storyshots EventsFilterChip default 1`] = `
               undefined,
               Array [
                 Object {
-                  "color": "#FFFFFF",
+                  "color": "#ffffff",
                   "fontFamily": "ProximaNova-Bold",
                   "fontSize": 27,
                   "paddingRight": 2,
@@ -991,10 +991,12 @@ exports[`Storyshots EventsFilterChip default 1`] = `
               Array [
                 Object {
                   "marginLeft": 3,
+                  "tintColor": "#ffffff",
                 },
                 undefined,
+                undefined,
                 Object {
-                  "tintColor": "#FFFFFF",
+                  "tintColor": "#ffffff",
                 },
               ],
             ]
@@ -1028,7 +1030,7 @@ exports[`Storyshots EventsFilterChip default 1`] = `
           "marginRight": 0,
           "marginTop": 5,
           "opacity": 1,
-          "paddingHorizontal": 18,
+          "paddingHorizontal": 15,
           "paddingLeft": 10,
           "paddingRight": 10,
         }
@@ -1051,13 +1053,12 @@ exports[`Storyshots EventsFilterChip default 1`] = `
           style={
             Array [
               Object {
-                "color": "#FFFFFF",
+                "color": "#ffffff",
                 "fontFamily": "ProximaNova-Bold",
                 "fontSize": 35.357142857142854,
                 "paddingHorizontal": 5,
                 "textAlign": "center",
               },
-              undefined,
               undefined,
               undefined,
               undefined,
@@ -1069,7 +1070,7 @@ exports[`Storyshots EventsFilterChip default 1`] = `
               undefined,
               Array [
                 Object {
-                  "color": "#FFFFFF",
+                  "color": "#ffffff",
                   "fontFamily": "ProximaNova-Bold",
                   "fontSize": 27,
                   "paddingRight": 2,
@@ -1096,10 +1097,12 @@ exports[`Storyshots EventsFilterChip default 1`] = `
               Array [
                 Object {
                   "marginLeft": 3,
+                  "tintColor": "#ffffff",
                 },
                 undefined,
+                undefined,
                 Object {
-                  "tintColor": "#FFFFFF",
+                  "tintColor": "#ffffff",
                 },
               ],
             ]
@@ -1130,6 +1133,11 @@ exports[`Storyshots RecipientElement Selected 1`] = `
     onResponderTerminate={[Function]}
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "opacity": 1,
+      }
+    }
     testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
     <View
@@ -1137,8 +1145,8 @@ exports[`Storyshots RecipientElement Selected 1`] = `
         Array [
           Object {
             "alignItems": "center",
-            "backgroundColor": "#F8FAFD",
-            "borderColor": "#F8FAFD",
+            "backgroundColor": "#F3F6FA",
+            "borderColor": "#F3F6FA",
             "borderRadius": 12,
             "borderWidth": 2,
             "flexDirection": "row",
@@ -1146,7 +1154,7 @@ exports[`Storyshots RecipientElement Selected 1`] = `
             "padding": 5,
           },
           Object {
-            "backgroundColor": "#F0F3FF",
+            "backgroundColor": "rgba(48,82,255,0.06)",
             "borderColor": "#3052FF",
             "borderWidth": 2,
           },
@@ -1233,7 +1241,7 @@ exports[`Storyshots RecipientElement Selected 1`] = `
               style={
                 Array [
                   Object {
-                    "color": "#FFFFFF",
+                    "color": "#ffffff",
                     "fontFamily": "ProximaNova-Bold",
                     "fontSize": 18,
                   },
@@ -1251,7 +1259,7 @@ exports[`Storyshots RecipientElement Selected 1`] = `
           style={
             Array [
               Object {
-                "color": "#848DB8",
+                "color": "#606885",
                 "fontFamily": "UbuntuMono-Regular",
                 "fontSize": 25.71428571428571,
               },
@@ -1288,6 +1296,11 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
     onResponderTerminate={[Function]}
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "opacity": 1,
+      }
+    }
     testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
     <View
@@ -1295,8 +1308,8 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
         Array [
           Object {
             "alignItems": "center",
-            "backgroundColor": "#F8FAFD",
-            "borderColor": "#F8FAFD",
+            "backgroundColor": "#F3F6FA",
+            "borderColor": "#F3F6FA",
             "borderRadius": 12,
             "borderWidth": 2,
             "flexDirection": "row",
@@ -1385,7 +1398,7 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
               style={
                 Array [
                   Object {
-                    "color": "#FFFFFF",
+                    "color": "#ffffff",
                     "fontFamily": "ProximaNova-Bold",
                     "fontSize": 18,
                   },
@@ -1403,7 +1416,7 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
           style={
             Array [
               Object {
-                "color": "#848DB8",
+                "color": "#606885",
                 "fontFamily": "UbuntuMono-Regular",
                 "fontSize": 25.71428571428571,
               },
@@ -1438,6 +1451,11 @@ exports[`Storyshots RecipientElement default 1`] = `
     onResponderTerminate={[Function]}
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "opacity": 1,
+      }
+    }
     testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
     <View
@@ -1445,8 +1463,8 @@ exports[`Storyshots RecipientElement default 1`] = `
         Array [
           Object {
             "alignItems": "center",
-            "backgroundColor": "#F8FAFD",
-            "borderColor": "#F8FAFD",
+            "backgroundColor": "#F3F6FA",
+            "borderColor": "#F3F6FA",
             "borderRadius": 12,
             "borderWidth": 2,
             "flexDirection": "row",
@@ -1536,7 +1554,7 @@ exports[`Storyshots RecipientElement default 1`] = `
           style={
             Array [
               Object {
-                "color": "#848DB8",
+                "color": "#606885",
                 "fontFamily": "UbuntuMono-Regular",
                 "fontSize": 25.71428571428571,
               },
@@ -1587,12 +1605,12 @@ exports[`Storyshots SegmentButton Three Button 1`] = `
       onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "backgroundColor": "#FFFFFF",
+          "backgroundColor": "#F3F6FA",
           "borderRadius": 12,
           "flex": 1,
           "marginVertical": 15,
           "opacity": 1,
-          "shadowColor": "#3052FF",
+          "shadowColor": "#ffffff",
           "shadowOffset": Object {
             "height": 4,
             "width": 0,
@@ -1619,12 +1637,12 @@ exports[`Storyshots SegmentButton Three Button 1`] = `
           style={
             Array [
               Object {
-                "color": "#626984",
+                "color": "#606885",
                 "fontFamily": "ProximaNova-Bold",
                 "fontSize": 32.14285714285714,
               },
               Object {
-                "color": "#3052FF",
+                "color": "#000000",
               },
             ]
           }
@@ -1668,7 +1686,7 @@ exports[`Storyshots SegmentButton Three Button 1`] = `
           style={
             Array [
               Object {
-                "color": "#626984",
+                "color": "#606885",
                 "fontFamily": "ProximaNova-Bold",
                 "fontSize": 32.14285714285714,
               },
@@ -1715,7 +1733,7 @@ exports[`Storyshots SegmentButton Three Button 1`] = `
           style={
             Array [
               Object {
-                "color": "#626984",
+                "color": "#606885",
                 "fontFamily": "ProximaNova-Bold",
                 "fontSize": 32.14285714285714,
               },

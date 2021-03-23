@@ -8,7 +8,7 @@ import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 import { AmountText } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
-import { FormatDate } from '@common/libs/utils';
+import { FormatDate } from '@common/utils/date';
 
 import Localize from '@locale';
 

@@ -7,7 +7,7 @@ import { AccountSchema } from '@store/schemas/latest';
 
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
-import { NormalizeCurrencyCode, NormalizeAmount } from '@common/libs/utils';
+import { NormalizeCurrencyCode, NormalizeAmount } from '@common/utils/amount';
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';

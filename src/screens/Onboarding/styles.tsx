@@ -1,17 +1,19 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppSizes } from '@theme';
+import { AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: 'center' },
-    backgroundImageStyle: { opacity: 0.01, height: AppSizes.screen.height },
+const styles = StyleService.create({
+    container: { flex: 1, justifyContent: 'center', backgroundColor: '$background' },
+    backgroundImageStyle: {
+        height: AppSizes.screen.height,
+        opacity: StyleService.isDarkMode() ? 0.04 : 0.02,
+    },
     logo: {
         width: AppSizes.screen.width * 0.4,
         height: AppSizes.screen.height * 0.1,
         resizeMode: 'contain',
     },
-    header: { textAlign: 'center', color: AppColors.black },
 });
 
 export default styles;

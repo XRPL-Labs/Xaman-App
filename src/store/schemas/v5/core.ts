@@ -24,7 +24,7 @@ class Core extends Realm.Object {
             hapticFeedback: { type: 'bool', default: true }, // enable haptic feedback
             discreetMode: { type: 'bool', default: false }, // Discreet Mode
             useSystemSeparators: { type: 'bool', default: true }, // Use system separators
-            theme: { type: 'string', default: AppConfig.theme.light }, // app theme
+            theme: { type: 'string', default: AppConfig.defaultTheme }, // app theme
         },
     };
 

@@ -19,7 +19,7 @@ import { Payment } from '@common/libs/ledger/transactions';
 import { Destination } from '@common/libs/ledger/parser/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
-import { XRPLValueToNFT, NFTValueToXRPL } from '@common/libs/utils';
+import { XRPLValueToNFT, NFTValueToXRPL } from '@common/utils/amount';
 // components
 import { Header } from '@components/General';
 

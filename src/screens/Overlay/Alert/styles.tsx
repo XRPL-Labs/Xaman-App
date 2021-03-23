@@ -1,18 +1,18 @@
 /* eslint-disable react-native/no-color-literals */
 
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppStyles, AppColors, AppSizes } from '@theme';
+import { AppStyles, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 
     visibleContent: {
         width: AppSizes.screen.width * 0.9,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         borderRadius: AppSizes.screen.width * 0.07,
-        shadowColor: AppColors.black,
+        shadowColor: '$light',
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 1,
         shadowOpacity: 0.4,
@@ -20,36 +20,35 @@ const styles = StyleSheet.create({
     },
 
     iconError: {
-        tintColor: AppColors.red,
+        tintColor: '$red',
     },
     iconWarning: {
-        tintColor: AppColors.orange,
+        tintColor: '$orange',
     },
     iconInfo: {
-        tintColor: AppColors.lightBlue,
+        tintColor: '$blue',
     },
     iconSuccess: {
-        tintColor: AppColors.green,
+        tintColor: '$green',
     },
     title: {
         ...AppStyles.h5,
     },
     subTitle: {
         ...AppStyles.p,
-        color: AppColors.black,
         textAlign: 'center',
     },
     titleError: {
-        color: AppColors.red,
+        color: '$red',
     },
     titleWarning: {
-        color: AppColors.orange,
+        color: '$orange',
     },
     titleInfo: {
-        color: AppColors.lightBlue,
+        color: '$blue',
     },
     titleSuccess: {
-        color: AppColors.green,
+        color: '$green',
     },
 });
 

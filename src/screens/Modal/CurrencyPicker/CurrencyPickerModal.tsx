@@ -8,7 +8,6 @@ import React, { Component } from 'react';
 import { View, Text, SectionList, TouchableOpacity, ActivityIndicator, InteractionManager } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
-
 import { AppScreens } from '@common/constants';
 
 import { BackendService } from '@services';

@@ -2,7 +2,7 @@ import moment from 'moment-timezone';
 
 import { set, get, isUndefined } from 'lodash';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import Localize from '@locale';
 

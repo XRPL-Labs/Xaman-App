@@ -70,7 +70,7 @@ class SetRegularKeyTemplate extends Component<Props, State> {
         return (
             <>
                 <View style={styles.label}>
-                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                         {Localize.t('global.regularKey')}
                     </Text>
                 </View>

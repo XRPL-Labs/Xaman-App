@@ -10,9 +10,8 @@ import { AppScreens } from '@common/constants';
 
 // components
 import { Header, Button, Spacer } from '@components/General';
-import { Images } from '@common/helpers/images';
 
-// import IAP from '@common/libs/iap';
+import StyleService from '@services/StyleService';
 
 import Localize from '@locale';
 
@@ -100,11 +99,11 @@ class ProfileView extends Component<Props, State> {
                 <View style={[AppStyles.contentContainer, AppStyles.padding]}>
                     <View style={[AppStyles.flex4, AppStyles.centerAligned, AppStyles.centerContent]}>
                         <ImageBackground
-                            source={Images.BackgroundShapes}
+                            source={StyleService.getImage('BackgroundShapes')}
                             imageStyle={AppStyles.BackgroundShapes}
                             style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent]}
                         >
-                            <Image style={[AppStyles.emptyIcon]} source={Images.ImageProfile} />
+                            <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageProfile')} />
                             <Text style={[AppStyles.emptyText]}>{Localize.t('profile.availableInFuture')}</Text>
                             <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}>
                                 {Localize.t('profile.profileBenefits')}

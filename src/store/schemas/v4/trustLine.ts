@@ -1,6 +1,7 @@
 import Realm from 'realm';
 
-import { Truncate, XRPLValueToNFT } from '@common/libs/utils';
+import { Truncate } from '@common/utils/string';
+import { XRPLValueToNFT } from '@common/utils/amount';
 import { Images } from '@common/helpers/images';
 
 /**

@@ -100,7 +100,7 @@ class ReadMore extends Component<Props, State> {
             onPress={this.onPressMore}
         >
             <Text style={[styles.viewMoreText]}>{Localize.t('global.readMore')}</Text>
-            <Icon name="IconChevronDown" style={AppStyles.colorGreyBlack} size={20} />
+            <Icon name="IconChevronDown" style={AppStyles.colorGrey} size={20} />
         </TouchableOpacity>
     );
 
@@ -111,7 +111,7 @@ class ReadMore extends Component<Props, State> {
             onPress={this.onPressLess}
         >
             <Text style={[styles.viewMoreText]}>{Localize.t('global.readLess')}</Text>
-            <Icon name="IconChevronUp" style={AppStyles.colorGreyBlack} size={20} />
+            <Icon name="IconChevronUp" style={AppStyles.colorGrey} size={20} />
         </TouchableOpacity>
     );
 

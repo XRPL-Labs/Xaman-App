@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native';
 
-import { AppSizes, AppFonts, AppColors } from '@theme';
+import StyleService from '@services/StyleService';
+import { AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: { position: 'relative', flex: 1, flexDirection: 'column' },
     rowContainer: {
         width: '100%',
@@ -11,20 +12,20 @@ const styles = StyleSheet.create({
         paddingVertical: AppSizes.paddingSml,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderTopWidth: StyleSheet.hairlineWidth,
-        borderColor: AppColors.grey,
+        borderColor: '$tint',
     },
     checkIcon: {
-        tintColor: AppColors.blue,
+        tintColor: '$blue',
     },
     descriptionText: {
         // paddingVertical: AppSizes.paddingSml,
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.base.size,
         fontWeight: 'bold',
-        color: AppColors.black,
+        color: '$textPrimary',
     },
 });
 

@@ -1,9 +1,8 @@
-import { StyleSheet } from 'react-native';
-
-import { AppSizes, AppFonts, AppColors } from '@theme';
+import StyleService from '@services/StyleService';
+import { AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: { position: 'relative', flex: 1, flexDirection: 'column' },
     rowContainer: {
         width: '100%',
@@ -12,29 +11,23 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         alignSelf: 'center',
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         borderBottomWidth: 1,
-        borderColor: AppColors.grey,
+        borderColor: '$tint',
     },
     checkIcon: {
-        tintColor: AppColors.blue,
-    },
-    descriptionText: {
-        fontFamily: AppFonts.base.family,
-        fontSize: AppFonts.base.size,
-        fontWeight: 'bold',
-        color: AppColors.black,
+        tintColor: '$blue',
     },
     sectionHeader: {
         paddingVertical: 7,
         paddingHorizontal: 10,
         borderRadius: 5,
-        backgroundColor: AppColors.lightGrey,
+        backgroundColor: '$lightGrey',
     },
     sectionHeaderText: {
         fontSize: AppFonts.base.size,
         fontFamily: AppFonts.base.familyExtraBold,
-        color: AppColors.blue,
+        color: '$blue',
     },
     searchContainer: {
         marginHorizontal: AppSizes.paddingSml,

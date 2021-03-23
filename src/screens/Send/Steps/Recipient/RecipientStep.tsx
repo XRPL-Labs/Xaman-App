@@ -15,6 +15,7 @@ import { AppScreens } from '@common/constants';
 import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+import { NormalizeDestination } from '@common/utils/codec';
 
 import { BackendService, LedgerService } from '@services';
 
@@ -24,8 +25,6 @@ import { RecipientElement } from '@components/Modules';
 
 // locale
 import Localize from '@locale';
-
-import { NormalizeDestination } from '@common/libs/utils';
 
 // style
 import { AppStyles, AppColors } from '@theme';
@@ -627,7 +626,6 @@ class RecipientStep extends Component<Props, State> {
                             }}
                             style={styles.clearSearchButton}
                             light
-                            roundedMini
                             label={Localize.t('global.clearSearch')}
                         />
                     </View>
@@ -695,7 +693,7 @@ class RecipientStep extends Component<Props, State> {
                             }}
                             style={styles.clearSearchButton}
                             light
-                            roundedMini
+                            roundedSmall
                             label={Localize.t('global.clearSearch')}
                         />
                     </View>
@@ -750,7 +748,7 @@ class RecipientStep extends Component<Props, State> {
                 {/* Bottom Bar */}
                 <Footer style={[AppStyles.row]} safeArea>
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
-                        <Button secondary label={Localize.t('global.back')} onPress={this.goBack} />
+                        <Button light label={Localize.t('global.back')} onPress={this.goBack} />
                     </View>
                     <View style={[AppStyles.flex2]}>
                         <Button
@@ -758,9 +756,7 @@ class RecipientStep extends Component<Props, State> {
                             textStyle={AppStyles.strong}
                             isDisabled={!destination}
                             label={Localize.t('global.next')}
-                            onPress={() => {
-                                this.checkAndNext();
-                            }}
+                            onPress={this.checkAndNext}
                         />
                     </View>
                 </Footer>

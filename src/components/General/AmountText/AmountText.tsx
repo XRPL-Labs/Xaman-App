@@ -10,7 +10,7 @@ import React, { Component } from 'react';
 import { Text, TextStyle, Pressable, Alert } from 'react-native';
 import BigNumber from 'bignumber.js';
 
-import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/libs/utils';
+import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 
 import Localize from '@locale';
 

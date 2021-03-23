@@ -178,15 +178,15 @@ class AccountListView extends Component<Props, State> {
                         <View style={[AppStyles.flex1]}>
                             <Text style={[styles.accountLabel]}>{item.label}</Text>
                             <View style={[styles.accessLevelContainer]}>
-                                <Icon size={13} name={accessLevelIcon} style={AppStyles.imgColorGreyDark} />
-                                <Text style={[styles.accessLevelLabel, AppStyles.colorBlack]}>{accessLevelLabel}</Text>
+                                <Icon size={13} name={accessLevelIcon} style={AppStyles.imgColorGrey} />
+                                <Text style={[styles.accessLevelLabel]}>{accessLevelLabel}</Text>
                             </View>
                         </View>
                     </View>
                     <View style={[AppStyles.flex2]}>
                         {reorderEnabled ? (
                             <View style={AppStyles.rightAligned}>
-                                <Icon size={20} name="IconReorderHandle" style={AppStyles.imgColorGreyDark} />
+                                <Icon size={20} name="IconReorderHandle" style={AppStyles.imgColorGrey} />
                             </View>
                         ) : (
                             <Button
@@ -195,7 +195,7 @@ class AccountListView extends Component<Props, State> {
                                 icon="IconEdit"
                                 iconStyle={[styles.rowIcon]}
                                 iconSize={15}
-                                textStyle={styles.rowText}
+                                textStyle={styles.buttonEditText}
                                 label={Localize.t('global.edit')}
                                 onPress={() => {
                                     this.onItemPress(item);
@@ -206,7 +206,7 @@ class AccountListView extends Component<Props, State> {
                 </View>
                 <View style={[AppStyles.row, styles.subRow]}>
                     <View style={[AppStyles.flex1]}>
-                        <Text style={[AppStyles.monoBold, AppStyles.colorGreyDark, styles.subLabel]}>
+                        <Text style={[AppStyles.monoBold, AppStyles.colorGrey, styles.subLabel]}>
                             {Localize.t('global.address')}:
                         </Text>
                         <Text style={[AppStyles.monoSubText, AppStyles.colorBlue]}>{item.address}</Text>
@@ -292,10 +292,8 @@ class AccountListView extends Component<Props, State> {
                                     <Button
                                         label={Localize.t('home.addAccount')}
                                         icon="IconPlus"
-                                        iconStyle={[AppStyles.imgColorBlue]}
                                         roundedSmall
                                         secondary
-                                        textStyle={[AppStyles.colorBlue]}
                                         onPress={() => {
                                             Navigator.push(AppScreens.Account.Add);
                                         }}

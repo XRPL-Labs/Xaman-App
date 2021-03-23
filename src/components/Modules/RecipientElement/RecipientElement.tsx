@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, TouchableHighlight, TouchableOpacity, ActivityIndicator, Platform, ViewStyle } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, Platform, ViewStyle } from 'react-native';
 
 import { Avatar, Badge, Icon } from '@components/General';
 
@@ -81,11 +81,11 @@ class RecipientElement extends PureComponent<Props> {
         const badge = this.getBadge();
 
         return (
-            <TouchableHighlight
+            <TouchableOpacity
                 testID={`recipient-${recipient.address}`}
                 activeOpacity={onPress ? 0.7 : 1}
                 onPress={this.onPress}
-                underlayColor="#FFF"
+                style={styles.touchRow}
                 key={recipient.id}
             >
                 <View style={[styles.itemRow, selected && styles.itemSelected, containerStyle]}>
@@ -122,7 +122,7 @@ class RecipientElement extends PureComponent<Props> {
 
                         {!!recipient.tag && showTag && (
                             <View style={styles.destinationTagContainer}>
-                                <Text style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
+                                <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
                                     {Localize.t('global.destinationTag')}:{' '}
                                     <Text style={AppStyles.colorBlue}>{recipient.tag}</Text>
                                 </Text>
@@ -136,11 +136,11 @@ class RecipientElement extends PureComponent<Props> {
                             activeOpacity={0.7}
                             style={[AppStyles.flex1, AppStyles.rightAligned, AppStyles.centerContent]}
                         >
-                            <Icon name="IconMoreVertical" size={30} style={AppStyles.imgColorGreyDark} />
+                            <Icon name="IconMoreVertical" size={30} style={AppStyles.imgColorGrey} />
                         </TouchableOpacity>
                     )}
                 </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
         );
     }
 }

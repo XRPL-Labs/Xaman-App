@@ -1,9 +1,9 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts } from '@theme';
+import { AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
-export default StyleSheet.create({
+export default StyleService.create({
     content: {
         // minHeight: AppSizes.screen.height * 0.12,
         width: '100%',
@@ -14,8 +14,9 @@ export default StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: AppColors.grey,
-        borderColor: AppColors.grey,
+        backgroundColor: '$lightGrey',
+        borderColor: '$lightGrey',
+        color: '$silver',
         borderWidth: 3,
         marginBottom: 20,
     },
@@ -24,32 +25,37 @@ export default StyleSheet.create({
         width: 26,
         borderRadius: 12,
         borderWidth: 2,
-        borderColor: AppColors.greyDark,
+        borderColor: '$grey',
         marginTop: 4,
         alignItems: 'center',
         justifyContent: 'center',
     },
     dotSelected: {
-        borderColor: AppColors.blue,
+        borderColor: '$blue',
     },
     filled: {
         height: 15,
         width: 15,
         borderRadius: 8,
-        backgroundColor: AppColors.blue,
-        color: AppColors.blue,
+        backgroundColor: '$blue',
+        color: '$blue',
     },
 
     selected: {
-        backgroundColor: AppColors.white,
-        borderColor: AppColors.blue,
-        color: AppColors.blue,
+        backgroundColor: '$tint',
+        borderColor: '$blue',
+    },
+    textColor: {
+        color: '$grey',
+    },
+    textColorSelected: {
+        color: '$textPrimary',
     },
     labelSmall: {
         fontSize: AppFonts.subtext.size,
         fontFamily: AppFonts.base.familyBold,
     },
     descriptionText: {
-        marginTop: 10,
+        marginTop: 4,
     },
 });

@@ -4,7 +4,7 @@ import { Platform, Text, TextStyle, TouchableOpacity, View, ViewStyle, ImageStyl
 import { Images } from '@common/helpers/images';
 import { Icon } from '@components/General/Icon';
 
-import { AppColors, AppStyles, AppSizes } from '@theme';
+import { AppStyles, AppSizes } from '@theme';
 
 import styles from './styles';
 /* Types ==================================================================== */
@@ -82,11 +82,7 @@ const Children = ({
             {children.text && children.icon && (
                 <View style={[AppStyles.row]}>
                     {(placement === 'left' || placement === 'center') && (
-                        <Icon
-                            style={[styles.iconStyle, AppStyles.marginRightSml, children.iconStyle]}
-                            size={children.iconSize || 30}
-                            name={children.icon}
-                        />
+                        <Icon style={styles.iconStyle} size={children.iconSize || 30} name={children.icon} />
                     )}
                     <Text style={[styles.textStyleSmall, children.textStyle]}>{children.text}</Text>
                     {placement === 'right' && (
@@ -105,7 +101,11 @@ const Children = ({
             )}
 
             {children.icon && !children.text && (
-                <Icon size={children.iconSize || 30} name={children.icon} style={children.iconStyle} />
+                <Icon
+                    size={children.iconSize || 30}
+                    name={children.icon}
+                    style={[styles.iconStyle, children.iconStyle]}
+                />
             )}
         </TouchableOpacity>
     );
@@ -117,7 +117,6 @@ class Header extends PureComponent<Props> {
 
     static defaultProps = {
         placement: 'center',
-        backgroundColor: AppColors.white,
     };
 
     render() {
@@ -129,7 +128,6 @@ class Header extends PureComponent<Props> {
             placement,
             containerStyle,
         } = this.props;
-
         return (
             <View style={[styles.container, backgroundColor && { backgroundColor }, containerStyle]}>
                 <Children style={placement === 'center' && styles.rightLeftContainer} placement="left">

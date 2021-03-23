@@ -1,15 +1,15 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppSizes, AppFonts } from '@theme';
+import { AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         // height: Sizes.screen.heightHalf + 100,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
-        shadowColor: AppColors.black,
+        shadowColor: '$black',
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 5,
         shadowOpacity: 0.3,
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
     },
     actionButtonBlack: {
-        backgroundColor: AppColors.black,
+        backgroundColor: '$contrast',
     },
     appIcon: {
         width: AppSizes.scale(60),
@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.subtext.size,
         textAlign: 'center',
+        color: '$textPrimary',
     },
     activityIndicator: {
         height: AppSizes.scale(130),

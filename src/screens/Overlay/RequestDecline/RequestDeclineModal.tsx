@@ -141,10 +141,10 @@ class RequestDeclineOverlay extends Component<Props, State> {
                     verticalOnly
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
-                        { y: AppSizes.screen.height - (AppSizes.moderateScale(350) + AppSizes.navigationBarHeight) },
+                        { y: AppSizes.screen.height - (AppSizes.moderateScale(360) + AppSizes.navigationBarHeight) },
                     ]}
                     boundaries={{
-                        top: AppSizes.screen.height - (AppSizes.moderateScale(400) + AppSizes.navigationBarHeight),
+                        top: AppSizes.screen.height - (AppSizes.moderateScale(410) + AppSizes.navigationBarHeight),
                     }}
                     alertAreas={[
                         { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
@@ -153,7 +153,7 @@ class RequestDeclineOverlay extends Component<Props, State> {
                             influenceArea: {
                                 top:
                                     AppSizes.screen.height -
-                                    (AppSizes.moderateScale(350) + AppSizes.navigationBarHeight),
+                                    (AppSizes.moderateScale(360) + AppSizes.navigationBarHeight),
                             },
                         },
                     ]}
@@ -169,9 +169,7 @@ class RequestDeclineOverlay extends Component<Props, State> {
                         </View>
                         <View style={[AppStyles.flex1, AppStyles.paddingHorizontalSml]}>
                             <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                                <Text style={[AppStyles.bold, AppStyles.colorGreyDark]}>
-                                    {Localize.t('global.close')}{' '}
-                                </Text>
+                                <Text style={[AppStyles.bold, AppStyles.colorGrey]}>{Localize.t('global.close')} </Text>
                                 {Localize.t('payload.willIgnoreTheRequestAndClose')}{' '}
                                 <Text style={[AppStyles.bold, AppStyles.colorRed]}>
                                     {Localize.t('global.decline')}{' '}
@@ -181,9 +179,9 @@ class RequestDeclineOverlay extends Component<Props, State> {
                         </View>
                         <View style={[AppStyles.flex2, AppStyles.paddingHorizontalSml]}>
                             <Button
+                                secondary
                                 numberOfLines={1}
                                 onPress={this.onClose}
-                                style={styles.closeButton}
                                 label={Localize.t('global.close')}
                             />
                             <Spacer size={20} />
@@ -192,7 +190,6 @@ class RequestDeclineOverlay extends Component<Props, State> {
                                 style={styles.declineButton}
                                 label={Localize.t('global.decline')}
                                 icon="IconTrash"
-                                iconStyle={AppStyles.imgColorWhite}
                             />
                         </View>
                     </View>

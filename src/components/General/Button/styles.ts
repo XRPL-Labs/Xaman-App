@@ -1,8 +1,8 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts, AppSizes } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     buttonWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -12,27 +12,23 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderWidth: 1,
         borderRadius: AppSizes.scale(75) / 4,
-        // borderRadius: 16,
         paddingHorizontal: 15,
         alignSelf: 'stretch',
         justifyContent: 'center',
-        // alignItems: 'center',
-        borderColor: AppColors.transparent,
-        backgroundColor: AppColors.blue,
+        borderColor: '$transparent',
+        backgroundColor: '$blue',
     },
     textButton: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size * 1.1,
         textAlign: 'center',
-        color: AppColors.white,
         paddingHorizontal: 5,
-        // borderWidth: 1,
-        // borderColor: AppColors.red,
+        color: '$white',
     },
-    // Active
 
+    // Active
     activeButton: {
-        backgroundColor: AppColors.red,
+        backgroundColor: '$red',
     },
 
     // Modifiers
@@ -42,61 +38,61 @@ const styles = StyleSheet.create({
 
     // Secondary
     buttonSecondary: {
-        backgroundColor: AppColors.grey,
+        backgroundColor: '$grey',
     },
     textButtonSecondary: {
-        fontFamily: AppFonts.base.familyBold,
-        color: AppColors.black,
-        fontSize: AppFonts.base.size * 1.1,
-    },
-    iconButtonSecondary: {
-        tintColor: AppColors.black,
+        color: '$white',
     },
 
     // Light
     buttonLight: {
-        backgroundColor: AppColors.light,
+        backgroundColor: '$tint',
     },
     textButtonLight: {
-        fontFamily: AppFonts.base.familyBold,
-        color: AppColors.blue,
-        fontSize: AppFonts.base.size * 1.1,
+        color: '$textPrimary',
+    },
+    iconButtonLight: {
+        tintColor: '$textPrimary',
+    },
+    iconButtonContrast: {
+        tintColor: '$textContrast',
     },
 
-    // Outline
-    buttonOutline: {
-        backgroundColor: AppColors.white,
-        borderColor: AppColors.blue,
-        borderWidth: 1.5,
+    // Rounded Small
+    buttonRoundedSmall: {
+        height: AppSizes.scale(33),
+        // paddingHorizontal: 18,
+        alignSelf: 'center',
+        borderRadius: AppSizes.scale(33) / 2,
     },
-    textButtonOutline: {
-        color: AppColors.blue,
+    textButtonRoundedSmall: {
+        fontSize: AppFonts.base.size * 0.9,
     },
-
-    // Clear
-    buttonClear: {
-        backgroundColor: AppColors.white,
-        borderColor: AppColors.transparent,
-        borderWidth: 1.5,
-        height: AppSizes.heightPercentageToDP(5.5),
-        minHeight: 45,
-        paddingHorizontal: 5,
+    // Rounded Small Block
+    buttonRoundedSmallBlock: {
+        height: AppSizes.scale(33),
+        paddingHorizontal: 18,
+        alignSelf: 'stretch',
+        borderRadius: AppSizes.scale(33) / 2,
     },
-    textButtonClear: {
-        color: AppColors.black,
-        fontSize: AppFonts.base.size * 1,
+    textButtonRoundedSmallBlock: {
+        fontSize: AppFonts.base.size * 0.9,
     },
 
     // Disabled
     buttonDisabled: {
-        borderColor: AppColors.transparent,
-        // backgroundColor: AppColors.greyDark,
-        opacity: 0.5,
-    },
-    textButtonDisabled: {
-        // color: AppColors.greyDark,
+        opacity: 0.4,
     },
 
+    // Contrast
+    buttonContrast: {
+        backgroundColor: '$contrast',
+    },
+    textButtonContrast: {
+        fontFamily: AppFonts.base.familyBold,
+        color: '$textContrast',
+        fontSize: AppFonts.base.size * 1.1,
+    },
     // Rounded
     buttonRounded: {
         height: AppSizes.scale(42),
@@ -105,6 +101,38 @@ const styles = StyleSheet.create({
         borderRadius: AppSizes.scale(42) / 2,
     },
     textButtonRounded: {
+        fontSize: AppFonts.base.size * 1,
+    },
+    /*
+    // Light
+    buttonLight: {
+        backgroundColor: '$lightGrey,
+    },
+    textButtonLight: {
+        fontFamily: AppFonts.base.familyBold,
+        color: '$blue,
+        fontSize: AppFonts.base.size * 1.1,
+    },
+    // Outline
+    buttonOutline: {
+        backgroundColor: '$white,
+        borderColor: '$blue,
+        borderWidth: 1.5,
+    },
+    textButtonOutline: {
+        color: '$blue,
+    },
+    // Clear
+    buttonClear: {
+        backgroundColor: '$white,
+        borderColor: '$transparent,
+        borderWidth: 1.5,
+        height: AppSizes.heightPercentageToDP(5.5),
+        minHeight: 45,
+        paddingHorizontal: 5,
+    },
+    textButtonClear: {
+        color: '$black,
         fontSize: AppFonts.base.size * 1,
     },
 
@@ -121,18 +149,21 @@ const styles = StyleSheet.create({
     // Rounded Mini
     buttonRoundedMini: {
         height: AppSizes.scale(20),
-        paddingHorizontal: 8,
+        paddingHorizontal: 80,
         alignSelf: 'center',
         borderRadius: AppSizes.scale(33) / 2,
     },
     textButtonRoundedMini: {
         fontSize: AppFonts.base.size * 0.7,
     },
+    */
     iconLeft: {
         marginRight: 3,
+        tintColor: '$white',
     },
     iconRight: {
         marginLeft: 3,
+        tintColor: '$white',
     },
     spinner: {
         flex: 1,

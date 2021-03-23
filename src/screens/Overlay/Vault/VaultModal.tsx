@@ -594,11 +594,10 @@ class VaultModal extends Component<Props, State> {
                         </View>
                         <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                             <Button
+                                light
                                 numberOfLines={1}
                                 label={Localize.t('global.cancel')}
                                 roundedSmall
-                                secondary
-                                isDisabled={false}
                                 onPress={this.dismiss}
                             />
                         </View>

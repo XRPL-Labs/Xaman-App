@@ -67,7 +67,7 @@ class InfoMessage extends Component<Props> {
                                 type === 'warning' ? AppStyles.colorOrange : null,
                                 type === 'error' ? AppStyles.colorRed : null,
                                 type === 'success' ? AppStyles.colorGreen : null,
-                                type === 'neutral' ? AppStyles.colorGreyBlack : null,
+                                type === 'neutral' ? AppStyles.colorGrey : null,
                                 // eslint-disable-next-line
                                 { textAlign: icon ? 'left' : 'center' },
                             ]}

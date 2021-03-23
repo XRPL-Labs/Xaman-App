@@ -1,22 +1,22 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppSizes, AppStyles, AppColors, AppFonts } from '@theme';
-
+import { AppSizes, AppStyles, AppFonts } from '@theme';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'stretch',
+        backgroundColor: '$background',
     },
     rowItemGrey: {
-        backgroundColor: AppColors.light,
+        backgroundColor: '$background',
     },
     rowItem: {
         paddingHorizontal: AppSizes.paddingSml,
         paddingVertical: AppSizes.paddingSml,
-        borderTopColor: AppColors.grey,
+        borderTopColor: '$lightGrey',
         borderTopWidth: 1,
     },
     rowTitle: {
@@ -33,11 +33,12 @@ const styles = StyleSheet.create({
         fontSize: AppStyles.baseText.fontSize,
         fontWeight: 'bold',
         marginBottom: 3,
+        color: '$textPrimary',
     },
     pickerItemSub: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: 16,
-        color: AppColors.greyDark,
+        color: '$grey',
     },
     currencyAvatar: {
         width: AppSizes.screen.width * 0.035,
@@ -49,12 +50,12 @@ const styles = StyleSheet.create({
     currencyBalance: {
         fontSize: AppFonts.subtext.size * 0.9,
         fontFamily: AppFonts.base.familyMono,
-        color: AppColors.greyDark,
+        color: '$grey',
     },
     brandAvatarContainer: {
         marginRight: 10,
         borderWidth: 1,
-        borderColor: AppColors.greyDark,
+        borderColor: '$grey',
         borderRadius: 8,
         justifyContent: 'center',
         overflow: 'hidden',
@@ -65,11 +66,11 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
     },
     xrpAvatarContainer: {
-        backgroundColor: AppColors.white,
+        backgroundColor: '$white',
         padding: 10,
         marginRight: 10,
         borderWidth: 1,
-        borderColor: AppColors.greyDark,
+        borderColor: '$grey',
         borderRadius: 8,
         justifyContent: 'center',
 
@@ -87,6 +88,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginRight: 10,
         marginBottom: 3,
+        color: '$textPrimary',
     },
     currencyItemLabel: {
         fontSize: AppFonts.h5.size,
@@ -94,6 +96,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         alignItems: 'flex-start',
         justifyContent: 'center',
+        color: '$textPrimary',
     },
     amountInput: {
         padding: 0,
@@ -102,7 +105,7 @@ const styles = StyleSheet.create({
         fontSize: AppFonts.h3.size,
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
-        color: AppColors.blue,
+        color: '$blue',
     },
     inputStyle: {
         fontSize: AppFonts.p.size,
@@ -111,19 +114,13 @@ const styles = StyleSheet.create({
         textAlign: 'left',
     },
     editButton: {
-        backgroundColor: AppColors.grey,
+        backgroundColor: '$tint',
         borderRadius: 8,
         height: 25,
         width: 40,
         justifyContent: 'center',
         alignSelf: 'center',
         marginRight: 15,
-    },
-    gradientImage: {
-        width: 7,
-        position: 'absolute',
-        left: 0,
-        top: 0,
     },
     rateContainer: {
         paddingLeft: 15,
@@ -132,7 +129,7 @@ const styles = StyleSheet.create({
     rateText: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size,
-        color: AppColors.greyBlack,
+        color: '$grey',
     },
 });
 

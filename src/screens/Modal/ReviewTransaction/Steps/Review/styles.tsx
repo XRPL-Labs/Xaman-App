@@ -1,16 +1,18 @@
-import { StyleSheet, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
-import { AppSizes, AppFonts, AppColors } from '@theme';
+import StyleService from '@services/StyleService';
+
+import { AppSizes, AppFonts } from '@theme';
 
 import { hasNotch } from '@common/helpers/device';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         flex: 1,
-        backgroundColor: AppColors.light,
+        backgroundColor: '$lightGrey',
     },
     transactionContent: {
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         borderRadius: 30,
         paddingTop: 28,
     },
@@ -27,6 +29,7 @@ const styles = StyleSheet.create({
         fontFamily: AppFonts.pb.family,
         marginTop: 15,
         marginBottom: 15,
+        color: '$textPrimary',
     },
     descriptionLabel: {
         fontSize: AppFonts.small.size,
@@ -34,6 +37,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 3,
+        color: '$textPrimary',
     },
     instructionText: {
         fontSize: AppFonts.subtext.size,
@@ -41,6 +45,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 15,
         paddingHorizontal: 10,
+        color: '$textPrimary',
     },
     // eslint-disable-next-line
     blurView: {
@@ -65,7 +70,7 @@ const styles = StyleSheet.create({
         height: AppSizes.screen.height,
     },
     headerContainer: {
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         alignItems: 'center',
         paddingTop: hasNotch() ? 50 : Platform.OS === 'android' ? 10 : 30,
         paddingHorizontal: AppSizes.paddingSml,

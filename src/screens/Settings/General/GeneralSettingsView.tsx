@@ -8,12 +8,14 @@ import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
-import { GetDeviceLocaleSettings } from '@common/helpers/device';
+import { GetDeviceLocaleSettings, RestartBundle } from '@common/helpers/device';
+import { Prompt } from '@common/helpers/interface';
 
 import { AppScreens } from '@common/constants';
 
 import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
+import { Themes } from '@store/types';
 
 import { Header, Icon, Switch } from '@components/General';
 
@@ -30,6 +32,26 @@ export interface State {
     coreSettings: CoreSchema;
     locales: any;
 }
+
+/* Constants ==================================================================== */
+const THEMES = {
+    light: {
+        title: 'Default',
+        description: 'Fresh and bright',
+    },
+    dark: {
+        title: 'Dark',
+        description: 'Really dark',
+    },
+    moonlight: {
+        title: 'Moonlight',
+        description: 'A touch of moon',
+    },
+    royal: {
+        title: 'Royal',
+        description: 'Royal blue blue',
+    },
+};
 
 /* Component ==================================================================== */
 class GeneralSettingsView extends Component<Props, State> {
@@ -145,6 +167,84 @@ class GeneralSettingsView extends Component<Props, State> {
         return locale.nameLocal;
     };
 
+    changeTheme = (theme: Themes) => {
+        // save in store
+        CoreRepository.saveSettings({ theme });
+
+        // restart app
+        RestartBundle();
+    };
+
+    onThemeSelect = (selected: Themes) => {
+        Prompt(
+            Localize.t('global.warning'),
+            Localize.t('settings.changingThemeNeedsRestartToTakeEffect'),
+            [
+                { text: Localize.t('global.cancel') },
+                {
+                    text: Localize.t('global.doIt'),
+                    onPress: () => {
+                        this.changeTheme(selected);
+                    },
+                    style: 'destructive',
+                },
+            ],
+            { type: 'default' },
+        );
+    };
+
+    renderThemeButton = (theme: Themes, { title, description }: any) => {
+        const { coreSettings } = this.state;
+
+        let previewStyle;
+
+        switch (theme) {
+            case 'light':
+                previewStyle = styles.themePreviewLight;
+                break;
+            case 'dark':
+                previewStyle = styles.themePreviewDark;
+                break;
+            case 'moonlight':
+                previewStyle = styles.themePreviewMoonlight;
+                break;
+            case 'royal':
+                previewStyle = styles.themePreviewRoyal;
+                break;
+            default:
+                break;
+        }
+
+        const selected = coreSettings.theme === theme;
+
+        return (
+            <TouchableOpacity
+                key={theme}
+                testID={`theme-${theme}`}
+                activeOpacity={0.8}
+                onPress={() => {
+                    this.onThemeSelect(theme);
+                }}
+                style={[styles.themeItem, selected && styles.themeItemSelected]}
+            >
+                <View style={AppStyles.flex1}>
+                    <View style={[styles.themeItemDot, selected && styles.themeItemDotSelected]}>
+                        {selected && <View style={styles.themeItemFilled} />}
+                    </View>
+                </View>
+                <View style={AppStyles.flex5}>
+                    <Text style={[styles.themeItemLabelText, selected && styles.themeItemSelectedText]}>{title}</Text>
+                    <Text style={[styles.themeItemLabelSmall, selected && styles.themeItemSelectedText]}>
+                        {description}
+                    </Text>
+                </View>
+                <View style={[AppStyles.flex1, styles.themePreview, previewStyle]}>
+                    <Text style={[AppStyles.p, AppStyles.strong, previewStyle]}>Aa</Text>
+                </View>
+            </TouchableOpacity>
+        );
+    };
+
     render() {
         const { coreSettings } = this.state;
 
@@ -160,6 +260,18 @@ class GeneralSettingsView extends Component<Props, State> {
                     centerComponent={{ text: Localize.t('settings.generalSettings') }}
                 />
                 <ScrollView>
+                    <View style={styles.row}>
+                        <View style={[AppStyles.flex1]}>
+                            <Text style={AppStyles.pbold}>Theme</Text>
+                        </View>
+                    </View>
+                    <View style={[styles.rowNoBorder]}>
+                        <View style={[AppStyles.flex1]}>
+                            {/* @ts-ignore */}
+                            {Object.keys(THEMES).map((key: Themes) => this.renderThemeButton(key, THEMES[key]))}
+                        </View>
+                    </View>
+
                     <TouchableOpacity style={[styles.row]} onPress={this.showLanguagePicker}>
                         <View style={[AppStyles.flex3]}>
                             <Text numberOfLines={1} style={styles.label}>

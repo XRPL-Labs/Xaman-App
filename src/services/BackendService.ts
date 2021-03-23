@@ -66,15 +66,15 @@ class BackendService {
     sync = async () => {
         this.logger.debug('Start Syncing with backend');
         await this.syncCuratedIous();
-        await this.syncContacts();
+        // await this.syncContacts();
     };
 
     /*
     Sync the contacts
     */
-    syncContacts = () => {
-        this.logger.debug('Syncing contacts ...');
-    };
+    // syncContacts = () => {
+    // this.logger.debug('Syncing contacts ...');
+    // };
 
     /*
     Update IOUs from backend

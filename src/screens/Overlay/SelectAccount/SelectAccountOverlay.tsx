@@ -7,7 +7,6 @@ import React, { Component } from 'react';
 import { Animated, View, Text, TouchableWithoutFeedback, TouchableOpacity, Platform, ScrollView } from 'react-native';
 
 import Interactable from 'react-native-interactable';
-import LinearGradient from 'react-native-linear-gradient';
 
 import { AccountSchema } from '@store/schemas/latest';
 
@@ -21,7 +20,7 @@ import { Button } from '@components/General';
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppSizes, AppColors } from '@theme';
+import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -38,7 +37,7 @@ export interface State {
 }
 
 const BOUNDARY_HEIGHT = 50;
-const ROW_ITEM_HEIGHT = AppSizes.scale(70);
+const ROW_ITEM_HEIGHT = AppSizes.scale(80);
 /* Component ==================================================================== */
 class SelectAccountOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.SelectAccount;
@@ -167,17 +166,24 @@ class SelectAccountOverlay extends Component<Props, State> {
                 }}
                 activeOpacity={0.9}
             >
-                <LinearGradient
+                <View
                     key={account.address}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    colors={[AppColors.light, AppColors.white]}
-                    style={[styles.accountRowContainer, { height: ROW_ITEM_HEIGHT }]}
+                    style={[
+                        AppStyles.row,
+                        AppStyles.centerAligned,
+                        styles.accountRow,
+                        isSelected && styles.accountRowSelected,
+                        { height: ROW_ITEM_HEIGHT },
+                    ]}
                 >
-                    <View style={[styles.accountRow]}>
+                    <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
                         <View style={[AppStyles.flex3]}>
-                            <Text style={[styles.accountLabel]}>{account.label}</Text>
-                            <Text style={[styles.accountAddress]}>{account.address}</Text>
+                            <Text style={[styles.accountLabel, isSelected && styles.accountLabelSelected]}>
+                                {account.label}
+                            </Text>
+                            <Text style={[styles.accountAddress, isSelected && styles.accountAddressSelected]}>
+                                {account.address}
+                            </Text>
                         </View>
                         <View style={[AppStyles.flex1]}>
                             <View
@@ -188,7 +194,7 @@ class SelectAccountOverlay extends Component<Props, State> {
                             />
                         </View>
                     </View>
-                </LinearGradient>
+                </View>
             </TouchableOpacity>
         );
     };

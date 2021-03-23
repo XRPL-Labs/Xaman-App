@@ -31,7 +31,7 @@ import LedgerExchange from '@common/libs/ledger/exchange';
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 // constants
 import { AppScreens, AppConfig } from '@common/constants';
 
@@ -387,7 +387,7 @@ class ExchangeView extends Component<Props, State> {
                         <Button
                             onPress={this.openXRPToolkit}
                             icon="IconLink"
-                            iconStyle={AppStyles.imgColorGreyDark}
+                            iconStyle={AppStyles.imgColorGrey}
                             light
                             rounded
                             label={Localize.t('global.openXRPToolkitByTowoLabs')}
@@ -530,13 +530,11 @@ class ExchangeView extends Component<Props, State> {
                             </View>
                             <View>
                                 <Button
+                                    secondary
+                                    roundedSmall
                                     onPress={this.applyAllBalance}
-                                    style={styles.allButton}
                                     label={Localize.t('global.all')}
-                                    roundedMini
-                                    textStyle={AppStyles.colorBlue}
                                     icon="IconArrowDown"
-                                    iconStyle={AppStyles.imgColorBlue}
                                     iconSize={10}
                                 />
                             </View>
@@ -566,14 +564,12 @@ class ExchangeView extends Component<Props, State> {
                     </View>
 
                     {/* switch button */}
-                    <View>
+                    <View style={styles.separator}>
                         <Button
-                            onPress={this.switchDirection}
                             roundedSmall
+                            onPress={this.switchDirection}
                             icon="IconCornerRightUp"
-                            iconStyle={AppStyles.imgColorBlue}
                             iconSize={15}
-                            textStyle={AppStyles.colorBlue}
                             label={Localize.t('global.switch')}
                             style={styles.switchButton}
                             hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}

@@ -2,6 +2,8 @@
 
 import { Platform, ActionSheetIOS, ToastAndroid, Alert, NativeModules } from 'react-native';
 
+import StyleService from '@services/StyleService';
+
 const Toast = (message: string, duration?: number) => {
     const toast = Platform.OS === 'android' ? ToastAndroid : NativeModules.Toast;
     toast.showWithGravity(
@@ -12,8 +14,9 @@ const Toast = (message: string, duration?: number) => {
 };
 
 const ActionSheet = (options: any, callback: any) => {
+    const defaultOptions = { userInterfaceStyle: StyleService.isDarkMode() ? 'dark' : 'light' };
     const actionSheet = Platform.OS === 'android' ? NativeModules.ActionSheetAndroid : ActionSheetIOS;
-    actionSheet.showActionSheetWithOptions(options, callback);
+    actionSheet.showActionSheetWithOptions({ ...defaultOptions, ...options }, callback);
 };
 
 const Prompt = (title: string, message: string, callbackOrButtons: any, options: any) => {
@@ -25,7 +28,7 @@ const Prompt = (title: string, message: string, callbackOrButtons: any, options:
 
         // platform === ios
         if (Platform.OS === 'ios') {
-            Alert.prompt(title, message, callbackOrButtons, options.type, options.defaultValue, options.keyboardType);
+            Alert.prompt('title', message, callbackOrButtons, options.type, options.defaultValue, options.keyboardType);
             return;
         }
 

@@ -1,12 +1,11 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
 import { hasNotch } from '@common/helpers/device';
-import { AppColors } from '@theme';
 
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         flex: 1,
-        backgroundColor: AppColors.transparent,
+        backgroundColor: '$transparent',
         height: hasNotch() ? 75 : 45,
         alignItems: 'center',
         flexDirection: 'row',
@@ -31,17 +30,17 @@ const styles = StyleSheet.create({
         paddingLeft: 40,
     },
     dot: {
-        backgroundColor: AppColors.black,
+        backgroundColor: '$silver',
         borderRadius: 5,
         width: 10,
         height: 10,
         margin: 4,
     },
     nextDisabled: {
-        color: AppColors.grey,
+        color: '$grey',
     },
     readyText: {
-        color: AppColors.blue,
+        color: '$blue',
     },
 });
 

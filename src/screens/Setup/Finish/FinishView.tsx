@@ -10,10 +10,9 @@ import { WebView } from 'react-native-webview';
 
 import { CoreRepository, ProfileRepository } from '@store/repositories';
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 import { AppScreens, AppConfig } from '@common/constants';
 
-import { BackendService, AuthenticationService } from '@services';
+import { BackendService, AuthenticationService, StyleService } from '@services';
 
 import Localize from '@locale';
 
@@ -112,12 +111,12 @@ class FinishView extends Component<Props, State> {
     render() {
         const { isLoading, isTOSLoaded } = this.state;
         return (
-            <SafeAreaView testID="agreement-setup-screen" style={[AppStyles.flex1]}>
+            <SafeAreaView testID="agreement-setup-screen" style={[styles.container]}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerAligned]}>
-                    <Image style={styles.logo} source={Images.xummLogo} />
+                    <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
                 </View>
 
-                <View style={[AppStyles.flex8, AppStyles.centerContent]}>
+                <View style={[AppStyles.flex8, AppStyles.centerContent, styles.contentArea]}>
                     <WebView
                         startInLoadingState
                         onMessage={this.fetchTOSVersion}
@@ -130,6 +129,7 @@ class FinishView extends Component<Props, State> {
                             <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
                         )}
                         source={{ uri: AppConfig.termOfUseURL }}
+                        style={styles.webView}
                     />
                 </View>
 

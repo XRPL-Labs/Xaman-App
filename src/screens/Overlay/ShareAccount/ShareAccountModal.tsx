@@ -5,16 +5,14 @@ import React, { Component } from 'react';
 import { Animated, View, Text, TouchableWithoutFeedback, Share } from 'react-native';
 
 import Clipboard from '@react-native-community/clipboard';
-
 import Interactable from 'react-native-interactable';
 
 import { Toast } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+import { AppScreens } from '@common/constants';
 
 import { AccountSchema } from '@store/schemas/latest';
 
-import { Navigator } from '@common/helpers/navigator';
-
-import { AppScreens } from '@common/constants';
 // components
 import { Button, QRCode, Spacer } from '@components/General';
 
@@ -177,11 +175,10 @@ class ShareAccountModal extends Component<Props, State> {
                                 value={`${account.address}`}
                                 style={styles.qrCode}
                             />
+                            <Text style={styles.addressText}>{account.address}</Text>
                         </View>
 
-                        <Text style={styles.addressText}>{account.address}</Text>
-
-                        <Spacer size={20} />
+                        {/* <Spacer size={10} /> */}
 
                         <Button
                             numberOfLines={1}
@@ -192,7 +189,7 @@ class ShareAccountModal extends Component<Props, State> {
                             label={Localize.t('global.share')}
                             onPress={this.onSharePress}
                         />
-                        <Spacer size={20} />
+                        <Spacer size={10} />
 
                         <Button
                             numberOfLines={1}

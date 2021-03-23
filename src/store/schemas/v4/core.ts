@@ -23,7 +23,7 @@ class Core extends Realm.Object {
             defaultExplorer: { type: 'string', default: AppConfig.explorer[0].value }, // default explorer
             hapticFeedback: { type: 'bool', default: true }, // enable haptic feedback
             discreetMode: { type: 'bool', default: false }, // Discreet Mode
-            theme: { type: 'string', default: AppConfig.theme.light }, // app theme
+            theme: { type: 'string', default: AppConfig.defaultTheme }, // app theme
         },
     };
 

@@ -115,7 +115,7 @@ class PassphraseStep extends Component<Props, State> {
                             testID="back-button"
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            secondary
+                            light
                             onPress={goBack}
                         />
                     </View>

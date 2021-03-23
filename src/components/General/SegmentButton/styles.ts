@@ -1,8 +1,8 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppSizes, AppColors, AppFonts } from '@theme';
+import { AppSizes, AppFonts } from '@theme';
 
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         height: AppSizes.scale(65),
         flexDirection: 'row',
@@ -14,13 +14,16 @@ const styles = StyleSheet.create({
         marginVertical: 15,
     },
     selectedButton: {
-        backgroundColor: AppColors.white,
+        backgroundColor: '$tint',
         borderRadius: 12,
-        shadowColor: AppColors.blue,
+        shadowColor: '$background',
         shadowOffset: { width: 0, height: 4 },
         shadowRadius: 4,
         shadowOpacity: 0.1,
         // elevation: 1,
+    },
+    selectedButtonText: {
+        color: '$textPrimary',
     },
     textContainer: {
         flex: 1,
@@ -31,7 +34,7 @@ const styles = StyleSheet.create({
     buttonText: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size,
-        color: AppColors.greyBlack,
+        color: '$grey',
     },
 });
 

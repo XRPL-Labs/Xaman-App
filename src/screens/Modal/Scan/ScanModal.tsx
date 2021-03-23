@@ -21,7 +21,7 @@ import { AppScreens } from '@common/constants';
 import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
-import { NormalizeDestination } from '@common/libs/utils';
+import { NormalizeDestination } from '@common/utils/codec';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
 

@@ -1,27 +1,27 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppSizes, AppFonts } from '@theme';
+import { AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     rowContainer: {
         width: AppSizes.screen.width * 0.9,
         height: AppSizes.scale(130),
         paddingHorizontal: AppSizes.paddingSml,
         paddingVertical: AppSizes.paddingSml,
-        borderWidth: 1,
-        borderColor: AppColors.grey,
-        borderRadius: 15,
+        borderWidth: 2,
+        borderColor: '$tint',
+        borderRadius: 20,
         marginHorizontal: 20,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
     },
     rowAddContainer: {
         height: AppSizes.scale(90),
-        borderWidth: 1,
-        borderColor: AppColors.grey,
+        borderWidth: 2,
+        borderColor: '$tint',
         borderRadius: 15,
         marginHorizontal: 20,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -29,26 +29,21 @@ const styles = StyleSheet.create({
         paddingTop: 0,
         paddingBottom: 15,
         borderBottomWidth: 1,
-        borderBottomColor: AppColors.grey,
+        borderBottomColor: '$tint',
         paddingRight: 0,
     },
-    accountIcon: {
-        tintColor: AppColors.black,
-        resizeMode: 'contain',
-        marginTop: 5,
-        marginRight: 10,
+    buttonEditIcon: {
+        tintColor: '$textPrimary',
+        marginLeft: 10,
     },
-    rowHeaderText: {
-        marginTop: 5,
-    },
-    rowIcon: {
-        tintColor: AppColors.blue,
+    buttonEditText: {
+        color: '$textPrimary',
     },
     reorderIcon: {
-        tintColor: AppColors.greyDark,
+        tintColor: '$grey',
     },
     rowText: {
-        color: AppColors.blue,
+        color: '$blue',
     },
     subRow: {
         paddingTop: 12,
@@ -56,26 +51,10 @@ const styles = StyleSheet.create({
     subLabel: {
         paddingBottom: 5,
     },
-    tag: {
-        flexDirection: 'row',
-        paddingHorizontal: 7,
-        paddingVertical: 5,
-        marginLeft: 10,
-        borderRadius: 5,
-        overflow: 'hidden',
-        backgroundColor: AppColors.lightBlue,
-    },
-    tagText: {
-        textAlign: 'left',
-        fontSize: 10,
-        fontFamily: AppFonts.subtext.family,
-        color: AppColors.blue,
-        paddingTop: 1,
-    },
     accountLabel: {
         fontFamily: AppFonts.h5.family,
         fontSize: AppFonts.p.size,
-        color: AppColors.black,
+        color: '$textPrimary',
     },
     accessLevelContainer: {
         left: 0,
@@ -87,7 +66,7 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         fontSize: AppFonts.base.size * 0.7,
         fontFamily: AppFonts.base.familyBold,
-        color: AppColors.greyDark,
+        color: '$grey',
         includeFontPadding: false,
     },
 });

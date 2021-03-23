@@ -410,6 +410,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                 <View style={[AppStyles.row, AppStyles.paddingHorizontal, AppStyles.paddingBottomSml]}>
                     <Button
                         testID="12-words-button"
+                        light
                         onPress={() => {
                             this.onLengthChange(12);
                         }}
@@ -423,6 +424,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                         onPress={() => {
                             this.onLengthChange(16);
                         }}
+                        light
                         roundedSmall
                         style={[styles.optionsButton, length === 16 && styles.optionsButtonSelected]}
                         textStyle={[styles.optionsButtonText, length === 16 && styles.optionsButtonSelectedText]}
@@ -433,6 +435,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                         onPress={() => {
                             this.onLengthChange(24);
                         }}
+                        light
                         roundedSmall
                         style={[styles.optionsButton, length === 24 && styles.optionsButtonSelected]}
                         textStyle={[styles.optionsButtonText, length === 24 && styles.optionsButtonSelectedText]}
@@ -446,7 +449,6 @@ class EnterMnemonicStep extends Component<Props, State> {
                         secondary
                         onPress={this.showScanner}
                         roundedSmall
-                        block
                         label={Localize.t('account.scanFromQR')}
                     />
                 </View>
@@ -471,7 +473,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
-                            secondary
+                            light
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
                             onPress={goBack}

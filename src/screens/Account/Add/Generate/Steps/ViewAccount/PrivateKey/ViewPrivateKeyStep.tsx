@@ -96,7 +96,8 @@ class ViewPrivateKeyStep extends Component<Props, State> {
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[AppStyles.flex8]}>
                         <Button
-                            secondary
+                            testID="back-button"
+                            light
                             textStyle={AppStyles.strong}
                             icon="IconChevronLeft"
                             label={currentRow === 0 ? Localize.t('global.back') : Localize.t('global.previous')}

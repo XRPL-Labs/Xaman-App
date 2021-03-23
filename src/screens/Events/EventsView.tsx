@@ -14,7 +14,6 @@ import { AccountSchema } from '@store/schemas/latest';
 import { AppScreens } from '@common/constants';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 
 // Parses
 import transactionFactory from '@common/libs/ledger/parser/transaction';
@@ -28,7 +27,7 @@ import { Payload } from '@common/libs/payload';
 import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterView';
 
 // Services
-import { LedgerService, BackendService, PushNotificationsService } from '@services';
+import { LedgerService, BackendService, PushNotificationsService, StyleService } from '@services';
 
 // Components
 import { SearchBar, Button, SegmentButton, Header } from '@components/General';
@@ -583,11 +582,11 @@ class EventsView extends Component<Props, State> {
 
                 <View style={[AppStyles.contentContainer, AppStyles.padding]}>
                     <ImageBackground
-                        source={Images.BackgroundShapes}
+                        source={StyleService.getImage('BackgroundShapes')}
                         imageStyle={AppStyles.BackgroundShapes}
                         style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent]}
                     >
-                        <Image style={[AppStyles.emptyIcon]} source={Images.ImageNoEvents} />
+                        <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageNoEvents')} />
                         <Text style={[AppStyles.emptyText]}>{Localize.t('events.emptyEventsNoAccount')}</Text>
                         <Button
                             testID="add-account-button"

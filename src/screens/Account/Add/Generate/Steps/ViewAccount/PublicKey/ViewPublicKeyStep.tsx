@@ -86,14 +86,11 @@ class ViewPublicKeyStep extends Component<Props, State> {
                         )}
                     </View>
                     <Button
+                        light
                         label={Localize.t('account.copyAddress')}
                         icon="IconClipboard"
-                        style={AppStyles.buttonGreyOutline}
-                        iconStyle={AppStyles.imgColorGreyDark}
-                        textStyle={[AppStyles.colorGreyDark]}
                         onPress={this.copyPubKeyToClipboard}
                         roundedSmall
-                        outline
                     />
                 </View>
 
@@ -101,8 +98,7 @@ class ViewPublicKeyStep extends Component<Props, State> {
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
-                            // secondary
-                            secondary
+                            light
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
                             onPress={this.goBack}

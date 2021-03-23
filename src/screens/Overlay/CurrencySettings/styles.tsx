@@ -1,19 +1,18 @@
 /* eslint-disable react-native/no-color-literals */
 
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppSizes, AppFonts } from '@theme';
-
+import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     visibleContent: {
         width: AppSizes.screen.width * 0.9,
-        backgroundColor: AppColors.light,
+        backgroundColor: '$tint',
         borderRadius: 20,
     },
     headerContainer: {
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         borderTopRightRadius: 20,
         borderTopLeftRadius: 20,
         left: 0,
@@ -21,7 +20,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: AppSizes.paddingSml,
-        shadowColor: AppColors.blue,
+        shadowColor: '$background',
         shadowOffset: { width: 0, height: 3 },
         shadowRadius: 3,
         shadowOpacity: 0.1,
@@ -39,7 +38,7 @@ const styles = StyleSheet.create({
     brandAvatarContainer: {
         marginRight: 10,
         borderWidth: 1,
-        borderColor: AppColors.light,
+        borderColor: '$light',
         borderRadius: 8,
         justifyContent: 'center',
         overflow: 'hidden',
@@ -56,13 +55,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginRight: 10,
         marginBottom: 3,
+        color: '$textPrimary',
         // borderWidth: 1,
         // borderColor: 'red',
     },
     issuerLabel: {
         fontSize: AppFonts.subtext.size,
         fontFamily: AppFonts.base.familyMono,
-        color: AppColors.greyDark,
+        color: '$grey',
     },
     currencyAvatar: {
         width: AppSizes.screen.width * 0.035,
@@ -83,16 +83,18 @@ const styles = StyleSheet.create({
         marginRight: 1.5,
         borderTopRightRadius: 0,
         borderBottomRightRadius: 0,
+        backgroundColor: StyleService.isDarkMode() ? '$blue' : '$white',
     },
-    sendButtonIcon: { marginRight: 5, tintColor: AppColors.blue },
-    sendButtonText: { color: AppColors.blue },
+    sendButtonIcon: { marginRight: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$blue' },
+    sendButtonText: { color: StyleService.isDarkMode() ? '$white' : '$blue' },
     exchangeButton: {
         marginLeft: 1.5,
         borderTopLeftRadius: 0,
         borderBottomLeftRadius: 0,
+        backgroundColor: StyleService.isDarkMode() ? '$grey' : '$white',
     },
-    exchangeButtonIcon: { marginLeft: 5 },
-    exchangeButtonText: { color: AppColors.black },
+    exchangeButtonIcon: { marginLeft: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$blue' },
+    exchangeButtonText: { color: StyleService.isDarkMode() ? '$white' : '$black' },
 
     infoButton: {
         marginLeft: 1.5,
@@ -100,10 +102,10 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 0,
     },
     infoButtonIcon: { marginLeft: 5 },
-    infoButtonText: { color: AppColors.black },
+    infoButtonText: { color: '$black' },
 
-    removeButtonIcon: { marginLeft: 5, tintColor: AppColors.red },
-    removeButtonText: { color: AppColors.red },
+    removeButtonIcon: { marginLeft: 5, tintColor: '$red' },
+    removeButtonText: { color: '$red' },
 });
 
 export default styles;

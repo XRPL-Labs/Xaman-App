@@ -6,7 +6,7 @@ import isEmpty from 'lodash/isEmpty';
 import { TrustSet } from '@common/libs/ledger/transactions';
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import Localize from '@locale';
 
@@ -68,7 +68,7 @@ class TrustSetTemplate extends Component<Props, State> {
         return (
             <>
                 <View style={styles.label}>
-                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                         {Localize.t('global.issuer')}
                     </Text>
                 </View>

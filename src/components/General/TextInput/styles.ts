@@ -1,36 +1,36 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts, AppSizes } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
-export default StyleSheet.create({
+export default StyleService.create({
     wrapper: {
-        backgroundColor: AppColors.grey,
+        backgroundColor: '$tint',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'stretch',
         alignSelf: 'stretch',
         paddingHorizontal: 15,
-        borderColor: AppColors.grey,
+        borderColor: '$tint',
         height: AppSizes.heightPercentageToDP(7),
         minHeight: 55,
         width: '100%',
         borderWidth: 2,
-        borderRadius: 10,
+        borderRadius: 14,
     },
     input: {
         flex: 1,
         fontSize: AppFonts.base.size,
-        color: AppColors.blue,
+        color: '$blue',
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
     },
     scanIcon: {
-        tintColor: AppColors.white,
+        tintColor: '$white',
     },
     scanButton: {
         position: 'absolute',
-        right: 3,
+        right: 4,
         height: AppSizes.heightPercentageToDP(6),
         width: AppSizes.heightPercentageToDP(6),
         minHeight: 45,
@@ -39,14 +39,15 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'center',
-        backgroundColor: AppColors.black,
+        backgroundColor: '$black',
     },
     // eslint-disable-next-line react-native/no-color-literals
     loadingOverlay: {
         position: 'absolute',
         left: 0,
         top: 0,
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        borderRadius: 14,
+        backgroundColor: '$lightGrey',
         width: '100%',
         height: '100%',
     },

@@ -1,9 +1,9 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts, AppSizes } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         left: 0,
         right: 0,
@@ -14,8 +14,15 @@ const styles = StyleSheet.create({
     row: {
         paddingTop: 10,
     },
+    touchHighlight: {
+        borderRadius: 10,
+        paddingLeft: 5,
+        marginLeft: -5,
+        marginRight: -5,
+    },
     iconContainer: {
-        borderColor: AppColors.grey,
+        borderColor: '$lightGrey',
+        backgroundColor: '$tint',
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
@@ -26,9 +33,10 @@ const styles = StyleSheet.create({
     icon: {
         alignItems: 'center',
         resizeMode: 'contain',
+        tintColor: '$contrast',
     },
     xAppsIcon: {
-        tintColor: AppColors.greyBlack,
+        tintColor: '$lightGrey',
         marginLeft: 8,
         resizeMode: 'contain',
         height: 15,
@@ -37,35 +45,37 @@ const styles = StyleSheet.create({
     label: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.subtext.size,
+        color: '$textPrimary',
     },
     description: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.subtext.size * 0.9,
-        color: AppColors.greyDark,
+        color: '$grey',
     },
     amount: {
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.base.size,
+        color: '$textPrimary',
     },
     currency: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.subtext.size * 0.9,
     },
     outgoingColor: {
-        color: AppColors.red,
-        tintColor: AppColors.red,
+        color: '$red',
+        tintColor: '$red',
     },
     incomingColor: {
-        color: AppColors.black,
-        tintColor: AppColors.green,
+        color: '$textPrimary',
+        tintColor: '$green',
     },
     orangeColor: {
-        color: AppColors.orange,
-        tintColor: AppColors.orange,
+        color: '$orange',
+        tintColor: '$orange',
     },
     naturalColor: {
-        color: AppColors.greyDark,
-        tintColor: AppColors.greyDark,
+        color: '$grey',
+        tintColor: '$grey',
     },
 });
 

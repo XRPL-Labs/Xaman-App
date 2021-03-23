@@ -101,8 +101,5 @@ export default {
     defaultCurrency: 'USD',
 
     // app theme config
-    theme: {
-        light: 'Light',
-        dark: 'Dark',
-    },
+    defaultTheme: 'light',
 };

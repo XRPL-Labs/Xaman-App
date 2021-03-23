@@ -324,7 +324,6 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     <Button
                         numberOfLines={1}
                         testID="add-and-sign-button"
-                        block
                         isDisabled={!selectedCurrency}
                         onPress={this.addCurrency}
                         style={[AppStyles.buttonGreen]}

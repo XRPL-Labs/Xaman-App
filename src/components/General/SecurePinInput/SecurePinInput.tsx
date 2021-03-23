@@ -16,11 +16,11 @@ import {
     TextInputKeyPressEventData,
 } from 'react-native';
 
-import { VibrateHapticFeedback } from '@common/helpers/interface';
+import StyleService from '@services/StyleService';
 
+import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Icon } from '@components/General/Icon';
 
-import { AppColors } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -177,7 +177,7 @@ class SecurePinInput extends Component<Props, State> {
                 return (
                     <TouchableHighlight
                         testID="x-key"
-                        underlayColor={AppColors.grey}
+                        underlayColor={StyleService.value('$tint')}
                         style={styles.line}
                         key="x-key"
                         onPress={() => {
@@ -187,7 +187,7 @@ class SecurePinInput extends Component<Props, State> {
                             this.clearInput();
                         }}
                     >
-                        <Icon name="IconChevronLeft" size={35} />
+                        <Icon name="IconChevronLeft" style={styles.iconStyle} size={35} />
                     </TouchableHighlight>
                 );
             }
@@ -196,7 +196,7 @@ class SecurePinInput extends Component<Props, State> {
                     return (
                         <TouchableHighlight
                             testID="y-key"
-                            underlayColor={AppColors.grey}
+                            underlayColor={StyleService.value('$tint')}
                             style={styles.line}
                             key="y-key"
                             onPress={() => {
@@ -205,7 +205,7 @@ class SecurePinInput extends Component<Props, State> {
                                 }
                             }}
                         >
-                            <Icon name="IconFingerprint" size={35} />
+                            <Icon name="IconFingerprint" style={styles.iconStyle} size={35} />
                         </TouchableHighlight>
                     );
                 }
@@ -233,7 +233,7 @@ class SecurePinInput extends Component<Props, State> {
             return (
                 <TouchableHighlight
                     testID={`${item}-key`}
-                    underlayColor={AppColors.grey}
+                    underlayColor={StyleService.value('$tint')}
                     style={styles.line}
                     activeOpacity={0.7}
                     key={`${item}-key`}

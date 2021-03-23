@@ -1,8 +1,8 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts, AppSizes } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         left: 0,
         right: 0,
@@ -14,8 +14,8 @@ const styles = StyleSheet.create({
         height: AppSizes.widthPercentageToDP(8),
         width: AppSizes.widthPercentageToDP(8),
         borderRadius: 10,
-        backgroundColor: AppColors.grey,
-        borderColor: AppColors.greyDark,
+        backgroundColor: '$grey',
+        borderColor: '$grey',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -24,21 +24,21 @@ const styles = StyleSheet.create({
         width: AppSizes.widthPercentageToDP(10),
         borderRadius: 8,
         borderWidth: 3,
-        borderColor: AppColors.blue,
-        backgroundColor: AppColors.lightBlue,
+        borderColor: '$blue',
+        backgroundColor: '$lightBlue',
     },
     label: {
         fontFamily: AppFonts.base.familyExtraBold,
         fontSize: AppFonts.base.size,
-        color: AppColors.greyDark,
+        color: '$textPrimary',
         textAlign: 'center',
     },
     labelActive: {
         fontSize: AppFonts.h5.size,
-        color: AppColors.blue,
+        color: '$blue',
     },
     line: {
-        borderBottomColor: AppColors.grey,
+        borderBottomColor: '$tint',
         borderBottomWidth: 4,
         width: AppSizes.widthPercentageToDP(6),
     },

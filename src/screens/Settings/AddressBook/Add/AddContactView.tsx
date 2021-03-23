@@ -10,7 +10,7 @@ import { StringType, XrplDestination } from 'xumm-string-decode';
 import * as AccountLib from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
 
-import { NormalizeDestination } from '@common/libs/utils';
+import { NormalizeDestination } from '@common/utils/codec';
 import { getAccountName, getPayIdInfo } from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';

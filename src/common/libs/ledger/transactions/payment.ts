@@ -6,7 +6,7 @@ import * as AccountLib from 'xrpl-accountlib';
 import LedgerService from '@services/LedgerService';
 
 import { AccountSchema } from '@store/schemas/latest';
-import { NormalizeCurrencyCode, NormalizeAmount } from '@common/libs/utils';
+import { NormalizeCurrencyCode, NormalizeAmount } from '@common/utils/amount';
 
 import Localize from '@locale';
 

@@ -198,7 +198,7 @@ class AuthenticateModal extends Component<Props, State> {
                             label={`${biometricMethod}`}
                             icon="IconFingerprint"
                             roundedSmall
-                            secondary
+                            light
                             isDisabled={false}
                             onPress={() => {
                                 this.requestBiometricAuthenticate();
@@ -231,13 +231,7 @@ class AuthenticateModal extends Component<Props, State> {
                             <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.authenticate')}</Text>
                         </View>
                         <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
-                            <Button
-                                label={Localize.t('global.cancel')}
-                                roundedSmall
-                                secondary
-                                isDisabled={false}
-                                onPress={this.dismiss}
-                            />
+                            <Button label={Localize.t('global.cancel')} roundedSmall light onPress={this.dismiss} />
                         </View>
                     </View>
                     <View style={[AppStyles.row, AppStyles.paddingTopSml]}>{this.renderPasscode()}</View>

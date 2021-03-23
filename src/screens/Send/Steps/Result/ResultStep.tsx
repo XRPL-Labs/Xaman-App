@@ -134,10 +134,7 @@ class ResultStep extends Component<Props, State> {
         const { showDetailsCard } = this.state;
 
         return (
-            <SafeAreaView
-                testID="send-result-view"
-                style={[styles.container, { backgroundColor: AppColors.lightGreen }]}
-            >
+            <SafeAreaView testID="send-result-view" style={[styles.container, styles.containerSuccess]}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <Text style={[AppStyles.h3, AppStyles.strong, AppStyles.colorGreen, AppStyles.textCenterAligned]}>
                         {Localize.t('send.sendingDone')}
@@ -176,7 +173,7 @@ class ResultStep extends Component<Props, State> {
         const { payment } = this.context;
 
         return (
-            <SafeAreaView testID="send-result-view" style={[styles.container, { backgroundColor: AppColors.lightRed }]}>
+            <SafeAreaView testID="send-result-view" style={[styles.container, styles.containerFailed]}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <Text style={[AppStyles.h3, AppStyles.strong, AppStyles.colorRed, AppStyles.textCenterAligned]}>
                         {Localize.t('send.sendingFailed')}

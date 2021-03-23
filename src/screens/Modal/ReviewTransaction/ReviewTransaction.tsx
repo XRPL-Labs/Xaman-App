@@ -11,7 +11,7 @@ import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 // services
-import { PushNotificationsService, LedgerService, SocketService } from '@services';
+import { PushNotificationsService, LedgerService, SocketService, StyleService } from '@services';
 
 import { CoreRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -28,7 +28,7 @@ import { PayloadOrigin } from '@common/libs/payload';
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 
 import { ReviewStep, SubmittingStep, ResultStep } from './Steps';
 // context
@@ -468,9 +468,13 @@ class ReviewTransactionModal extends Component<Props, State> {
         return (
             <View
                 testID="review-error-view"
-                style={[AppStyles.container, AppStyles.paddingSml, { backgroundColor: AppColors.lightBlue }]}
+                style={[
+                    AppStyles.container,
+                    AppStyles.paddingSml,
+                    { backgroundColor: StyleService.value('$lightBlue') },
+                ]}
             >
-                <Icon name="IconInfo" size={70} />
+                <Icon name="IconInfo" style={{ tintColor: StyleService.value('$contrast') }} size={70} />
                 <Spacer size={20} />
                 <Text style={AppStyles.h5}>{Localize.t('global.error')}</Text>
                 <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>

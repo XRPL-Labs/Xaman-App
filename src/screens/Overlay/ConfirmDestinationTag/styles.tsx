@@ -1,18 +1,17 @@
 /* eslint-disable react-native/no-color-literals */
 
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppStyles, AppColors, AppSizes, AppFonts } from '@theme';
-
+import { AppStyles, AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 
     visibleContent: {
         width: AppSizes.screen.width * 0.9,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         borderRadius: AppSizes.screen.width * 0.07,
-        shadowColor: AppColors.black,
+        shadowColor: '$grey',
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 1,
         shadowOpacity: 0.4,
@@ -20,32 +19,32 @@ const styles = StyleSheet.create({
     },
 
     iconError: {
-        tintColor: AppColors.red,
+        tintColor: '$red',
     },
     iconWarning: {
-        tintColor: AppColors.orange,
+        tintColor: '$orange',
     },
     iconInfo: {
-        tintColor: AppColors.lightBlue,
+        tintColor: '$lightBlue',
     },
     iconSuccess: {
-        tintColor: AppColors.green,
+        tintColor: '$green',
     },
     title: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.h5.size * 0.9,
-        color: AppColors.orange,
+        color: '$orange',
     },
     subTitle: {
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.base.size,
-        color: AppColors.black,
+        color: '$textPrimary',
         textAlign: 'center',
     },
     destinationTagText: {
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.h3.size,
-        color: AppColors.black,
+        color: '$textPrimary',
         textAlign: 'center',
     },
 });

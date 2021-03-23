@@ -7,9 +7,10 @@ import React, { Component } from 'react';
 import { View, Text, Image, SafeAreaView, Platform, Alert, Linking } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
-import { PushNotificationsService } from '@services';
+
+import { PushNotificationsService, StyleService } from '@services';
+
 import { Footer, Button, Spacer } from '@components/General';
 
 import Localize from '@locale';
@@ -71,12 +72,12 @@ class PushNotificationSetupView extends Component<Props, State> {
         return (
             <SafeAreaView testID="permission-setup-view" style={[AppStyles.container]}>
                 <View style={[AppStyles.flex2, AppStyles.centerContent]}>
-                    <Image style={styles.logo} source={Images.xummLogo} />
+                    <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
                 </View>
 
                 <View style={[AppStyles.flex8, AppStyles.paddingSml]}>
                     <View style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.centerContent]}>
-                        <Image style={[AppStyles.emptyIcon]} source={Images.ImageNotifications} />
+                        <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageNotifications')} />
                     </View>
 
                     <View style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.flexEnd]}>

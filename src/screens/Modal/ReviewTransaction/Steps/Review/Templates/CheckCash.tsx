@@ -6,7 +6,7 @@ import { LedgerService } from '@services';
 
 import { CheckCash, CheckCreate } from '@common/libs/ledger/transactions';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { AmountInput, AmountText, Button } from '@components/General';
@@ -119,7 +119,7 @@ class CheckCashTemplate extends Component<Props, State> {
         return (
             <>
                 <View style={styles.label}>
-                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                         {Localize.t('global.from')}
                     </Text>
                 </View>

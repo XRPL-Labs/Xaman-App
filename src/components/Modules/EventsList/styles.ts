@@ -1,12 +1,12 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppSizes, AppColors, AppFonts } from '@theme';
+import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
-export default StyleSheet.create({
+export default StyleService.create({
     sectionList: {
         flex: 1,
         alignSelf: 'stretch',
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
     },
     sectionListContainer: {
         paddingLeft: AppSizes.padding,
@@ -14,10 +14,11 @@ export default StyleSheet.create({
         paddingBottom: AppSizes.paddingSml,
     },
     sectionHeader: {
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         paddingBottom: 0,
         paddingTop: 10,
-        shadowColor: AppColors.white,
+        marginBottom: 5,
+        shadowColor: '$background',
         shadowOffset: { width: 0, height: 5 },
         shadowRadius: 5,
         shadowOpacity: 1,
@@ -25,12 +26,12 @@ export default StyleSheet.create({
     sectionHeaderText: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.p.size,
-        color: AppColors.black,
+        color: '$textPrimary',
     },
     sectionHeaderDateText: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.subtext.size,
-        color: AppColors.greyDark,
+        color: '$grey',
     },
     listEmptyContainer: {
         flex: 1,

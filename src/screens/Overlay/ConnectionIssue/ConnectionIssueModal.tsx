@@ -5,6 +5,8 @@
 import React, { Component } from 'react';
 import { Animated, Text } from 'react-native';
 
+import StyleService from '@services/StyleService';
+
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
@@ -75,7 +77,7 @@ class ConnectionIssueModal extends Component<Props, State> {
         return (
             <Animated.View style={[styles.container, { backgroundColor: interpolateColor }]}>
                 <Animated.View style={[styles.visibleContent, { opacity: this.animatedOpacity }]}>
-                    <Icon name="ImageCloudAlert" size={100} />
+                    <Icon name={StyleService.isDarkMode() ? 'ImageCloudAlertLight' : 'ImageCloudAlert'} size={100} />
                     <Spacer size={30} />
 
                     <Text style={[styles.title]}>{Localize.t('global.looksLikeYouAreOffline')}</Text>

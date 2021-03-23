@@ -10,82 +10,98 @@ import { AppScreens } from '@common/constants';
 import Localize from '@locale';
 
 import NavigationService from '@services/NavigationService';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts } from '@theme';
-
+import AppFonts from '@theme/fonts';
 /* Constants ==================================================================== */
-const defaultOptions = {
-    layout: {
-        backgroundColor: AppColors.white,
-        componentBackgroundColor: AppColors.white,
-        orientation: ['portrait'] as any,
-    },
-    topBar: {
-        visible: false,
-    },
-    statusBar: {
-        drawBehind: false,
-    },
-    bottomTabs: {
-        backgroundColor: AppColors.white,
-        translucent: false,
-        hideShadow: true,
-        animate: true,
-        drawBehind: true,
-        tabsAttachMode: 'onSwitchToTab' as any,
-        titleDisplayMode: 'alwaysShow' as any,
-    },
-    animations: {
-        pop: {
-            enabled: Platform.OS === 'ios',
+const getDefaultOptions = () => {
+    return StyleService.create({
+        layout: {
+            backgroundColor: '$background',
+            componentBackgroundColor: '$background',
+            orientation: ['portrait'] as any,
         },
-    },
-    popGesture: true,
-    blurOnUnmount: true,
+        topBar: {
+            visible: false,
+        },
+        statusBar: {
+            style: StyleService.isDarkMode() ? 'light' : 'dark',
+            drawBehind: false,
+        },
+        bottomTabs: {
+            backgroundColor: '$background',
+            translucent: false,
+            hideShadow: true,
+            animate: true,
+            drawBehind: true,
+            tabsAttachMode: 'onSwitchToTab' as any,
+            titleDisplayMode: 'alwaysShow' as any,
+        },
+        animations: {
+            pop: {
+                enabled: Platform.OS === 'ios',
+            },
+        },
+        popGesture: true,
+        blurOnUnmount: true,
+    });
 };
 
-const bottomTabStyles = {
-    // iconColor: AppColors.greyDark,
-    // selectedIconColor: AppColors.black,
-    textColor: AppColors.greyDark,
-    selectedTextColor: AppColors.black,
-    fontFamily: AppFonts.base.familyExtraBold,
-};
-
-const TabBarIcons = {
-    [AppScreens.TabBar.Home]: {
-        icon: Images.IconTabBarHome,
-        iconSelected: Images.IconTabBarHomeSelected,
-        scale: GetBottomTabScale(),
-    },
-    [AppScreens.TabBar.Events]: {
-        icon: Images.IconTabBarEvents,
-        iconSelected: Images.IconTabBarEventsSelected,
-        scale: GetBottomTabScale(),
-    },
-    [AppScreens.TabBar.Actions]: {
-        icon: Images.IconTabbarActions,
-        iconSelected: Images.IconTabbarActions,
-        offset: { top: IsIOS10() && 6, right: 0, bottom: IsIOS10() && -6, left: 0 },
-        scale: GetBottomTabScale(0.65),
-    },
-    [AppScreens.TabBar.Profile]: {
-        icon: Images.IconTabBarProfile,
-        iconSelected: Images.IconTabBarProfileSelected,
-        scale: GetBottomTabScale(),
-    },
-    [AppScreens.TabBar.Settings]: {
-        icon: Images.IconTabBarSettings,
-        iconSelected: Images.IconTabBarSettingsSelected,
-        scale: GetBottomTabScale(),
-    },
+const getTabBarIcons = () => {
+    return {
+        [AppScreens.TabBar.Home]: {
+            icon: Images.IconTabBarHome,
+            iconSelected: StyleService.isDarkMode()
+                ? Images.IconTabBarHomeSelectedLight
+                : Images.IconTabBarHomeSelected,
+            scale: GetBottomTabScale(),
+        },
+        [AppScreens.TabBar.Events]: {
+            icon: Images.IconTabBarEvents,
+            iconSelected: StyleService.isDarkMode()
+                ? Images.IconTabBarEventsSelectedLight
+                : Images.IconTabBarEventsSelected,
+            scale: GetBottomTabScale(),
+        },
+        [AppScreens.TabBar.Actions]: {
+            icon: StyleService.isDarkMode() ? Images.IconTabBarActionsLight : Images.IconTabBarActions,
+            iconSelected: StyleService.isDarkMode() ? Images.IconTabBarActionsLight : Images.IconTabBarActions,
+            offset: { top: IsIOS10() && 6, right: 0, bottom: IsIOS10() && -6, left: 0 },
+            scale: GetBottomTabScale(0.65),
+        },
+        [AppScreens.TabBar.Profile]: {
+            icon: Images.IconTabBarProfile,
+            iconSelected: StyleService.isDarkMode()
+                ? Images.IconTabBarProfileSelectedLight
+                : Images.IconTabBarProfileSelected,
+            scale: GetBottomTabScale(),
+        },
+        [AppScreens.TabBar.Settings]: {
+            icon: Images.IconTabBarSettings,
+            iconSelected: StyleService.isDarkMode()
+                ? Images.IconTabBarSettingsSelectedLight
+                : Images.IconTabBarSettingsSelected,
+            scale: GetBottomTabScale(),
+        },
+    };
 };
 
 /* Lib ==================================================================== */
 
 const Navigator = {
     startDefault() {
+        const defaultOptions = getDefaultOptions();
         Navigation.setDefaultOptions(defaultOptions);
+
+        const bottomTabStyles = StyleService.applyTheme({
+            // iconColor: '$greyDark',
+            // selectedIconColor: '$black',
+            textColor: '$grey',
+            selectedTextColor: '$textPrimary',
+            fontFamily: AppFonts.base.familyExtraBold,
+        });
+
+        const TabBarIcons = getTabBarIcons();
 
         const bottomTabsChildren: any = [];
 
@@ -138,6 +154,7 @@ const Navigator = {
     },
 
     startOnboarding() {
+        const defaultOptions = getDefaultOptions();
         Navigation.setDefaultOptions(defaultOptions);
 
         InteractionManager.runAfterInteractions(() => {

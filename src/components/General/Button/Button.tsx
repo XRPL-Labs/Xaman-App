@@ -17,12 +17,12 @@ interface Props {
     iconStyle?: ImageStyle | ImageStyle[];
     secondary?: boolean;
     light?: boolean;
+    contrast?: boolean;
     outline?: boolean;
     clear?: boolean;
     rounded?: boolean;
     roundedSmall?: boolean;
-    roundedMini?: boolean;
-    block?: boolean;
+    roundedSmallBlock?: boolean;
     accessibilityLabel?: string;
     testID?: string;
     activeOpacity?: number;
@@ -58,11 +58,10 @@ export default class Button extends Component<Props> {
             iconPosition,
             secondary,
             light,
-            outline,
-            clear,
+            contrast,
             rounded,
             roundedSmall,
-            roundedMini,
+            roundedSmallBlock,
             allowFontScaling,
             adjustsFontSizeToFit,
             numberOfLines,
@@ -78,7 +77,12 @@ export default class Button extends Component<Props> {
                     <Icon
                         name={icon}
                         size={iconSize}
-                        style={[styles.iconLeft, secondary && styles.iconButtonSecondary, iconStyle]}
+                        style={[
+                            styles.iconLeft,
+                            light && styles.iconButtonLight,
+                            contrast && styles.iconButtonContrast,
+                            iconStyle,
+                        ]}
                     />
                 )}
                 {label && (
@@ -87,11 +91,10 @@ export default class Button extends Component<Props> {
                             styles.textButton,
                             secondary && styles.textButtonSecondary,
                             light && styles.textButtonLight,
-                            outline && styles.textButtonOutline,
-                            clear && styles.textButtonClear,
+                            contrast && styles.textButtonContrast,
                             rounded && styles.textButtonRounded,
                             roundedSmall && styles.textButtonRoundedSmall,
-                            roundedMini && styles.textButtonRoundedMini,
+                            roundedSmallBlock && styles.textButtonRoundedSmallBlock,
                             isDisabled && styles.textButtonDisabled,
                             textStyle,
                         ]}
@@ -106,7 +109,12 @@ export default class Button extends Component<Props> {
                     <Icon
                         name={icon}
                         size={iconSize}
-                        style={[styles.iconRight, secondary && styles.iconButtonSecondary, iconStyle]}
+                        style={[
+                            styles.iconRight,
+                            light && styles.iconButtonLight,
+                            contrast && styles.iconButtonContrast,
+                            iconStyle,
+                        ]}
                     />
                 )}
             </View>
@@ -154,12 +162,10 @@ export default class Button extends Component<Props> {
             style,
             secondary,
             light,
-            outline,
-            clear,
+            contrast,
             rounded,
             roundedSmall,
-            roundedMini,
-            block,
+            roundedSmallBlock,
             disabledStyle,
             accessibilityLabel,
             activeOpacity,
@@ -169,7 +175,16 @@ export default class Button extends Component<Props> {
 
         if (isDisabled === true) {
             return (
-                <View testID={testID} style={[styles.button, disabledStyle || styles.buttonDisabled, style]}>
+                <View
+                    testID={testID}
+                    style={[
+                        styles.button,
+                        secondary && styles.buttonSecondary,
+                        light && styles.buttonLight,
+                        disabledStyle || styles.buttonDisabled,
+                        style,
+                    ]}
+                >
                     {this.renderInnerContent()}
                 </View>
             );
@@ -191,12 +206,10 @@ export default class Button extends Component<Props> {
                     styles.button,
                     secondary && styles.buttonSecondary,
                     light && styles.buttonLight,
-                    outline && styles.buttonOutline,
-                    clear && styles.buttonClear,
+                    contrast && styles.buttonContrast,
                     rounded && styles.buttonRounded,
                     roundedSmall && styles.buttonRoundedSmall,
-                    roundedMini && styles.buttonRoundedMini,
-                    block && styles.buttonBlock,
+                    roundedSmallBlock && styles.buttonRoundedSmallBlock,
                     isDisabled && (disabledStyle || styles.buttonDisabled),
                     style,
                 ]}

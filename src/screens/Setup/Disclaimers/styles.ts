@@ -1,9 +1,13 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
 import { AppSizes } from '@theme';
 
-const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: 'center' },
+const styles = StyleService.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: '$background',
+    },
     contentContainer: {
         flex: 1,
         padding: 35,
@@ -13,8 +17,23 @@ const styles = StyleSheet.create({
         height: AppSizes.screen.height * 0.1,
         resizeMode: 'contain',
     },
-    footerTextContainer: {
-        paddingVertical: 9,
+    footerStyle: {
+        height: 120,
+        width: '100%',
+        flexDirection: 'row',
+        padding: 0,
+        borderTopWidth: 5,
+        borderColor: '$tint',
+    },
+    footerContent: {
+        width: '90%',
+        height: '100%',
+        justifyContent: 'center',
+    },
+    progressBar: {
+        position: 'absolute',
+        left: 0,
+        top: -5,
     },
 });
 

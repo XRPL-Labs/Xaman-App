@@ -1,17 +1,17 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppSizes } from '@theme';
+import { AppSizes } from '@theme';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     visibleContent: {
         height: AppSizes.screen.height * 0.8,
         width: AppSizes.screen.width * 0.9,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$white',
         borderRadius: 20,
     },
     headerContainer: {
-        backgroundColor: AppColors.white,
+        backgroundColor: '$tint',
         borderTopRightRadius: 20,
         borderTopLeftRadius: 20,
         left: 0,
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: AppSizes.paddingSml,
-        shadowColor: AppColors.blue,
+        shadowColor: '$blue',
         shadowOffset: { width: 0, height: 3 },
         shadowRadius: 3,
         shadowOpacity: 0.1,

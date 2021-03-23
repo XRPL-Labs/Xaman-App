@@ -12,12 +12,10 @@ import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId }
 import NavigationService from '@services/NavigationService';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
-
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
-
-import { NormalizeDestination } from '@common/libs/utils';
+import { NormalizeDestination } from '@common/utils/codec';
 
 import Localize from '@locale';
 

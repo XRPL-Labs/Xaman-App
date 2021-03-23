@@ -87,7 +87,7 @@ class SecurityStep extends Component<Props, State> {
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
-                            secondary
+                            light
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
                             onPress={goBack}

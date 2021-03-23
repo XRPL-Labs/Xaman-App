@@ -1,34 +1,34 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppFonts, AppColors } from '@theme';
+import { AppFonts } from '@theme';
 /* Styles ==================================================================== */
-export default StyleSheet.create({
+export default StyleService.create({
     itemRow: {
         flexDirection: 'row',
         alignItems: 'center',
         padding: 5,
         marginBottom: 8,
-        backgroundColor: AppColors.light,
+        backgroundColor: '$tint',
         borderRadius: 12,
         borderWidth: 2,
-        borderColor: AppColors.light,
+        borderColor: '$tint',
     },
     itemSelected: {
-        borderColor: AppColors.blue,
+        borderColor: '$blue',
         borderWidth: 2,
-        backgroundColor: AppColors.lightBlue,
+        backgroundColor: '$lightBlue',
     },
     title: {
         fontFamily: AppFonts.base.familyBold,
-        color: AppColors.black,
+        color: '$textPrimary',
         fontSize: AppFonts.base.size,
     },
     selectedText: {
-        color: AppColors.blue,
+        color: '$blue',
     },
     subtitle: {
         fontFamily: AppFonts.base.familyMono,
-        color: AppColors.greyDark,
+        color: '$grey',
         fontSize: AppFonts.base.size * 0.8,
     },
     tag: {
@@ -39,27 +39,27 @@ export default StyleSheet.create({
         alignSelf: 'center',
     },
     tagLabel: {
-        color: AppColors.white,
+        color: '$white',
         fontSize: AppFonts.small.size * 0.7,
         fontFamily: AppFonts.base.familyBold,
     },
     bithompTag: {
-        backgroundColor: AppColors.bithomp,
+        backgroundColor: '$bithomp',
     },
     xrplnsTag: {
-        backgroundColor: AppColors.xrplns,
+        backgroundColor: '$xrplns',
     },
     xrpscanTag: {
-        backgroundColor: AppColors.xrpscan,
+        backgroundColor: '$xrpscan',
     },
     payidTag: {
-        backgroundColor: AppColors.payid,
+        backgroundColor: '$payid',
     },
     destinationTagContainer: {
         marginTop: 10,
         paddingTop: 10,
         width: '100%',
         borderTopWidth: 1,
-        borderTopColor: AppColors.grey,
+        borderTopColor: '$grey',
     },
 });

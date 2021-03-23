@@ -12,10 +12,9 @@ import { BiometryType } from '@store/types';
 
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 import { VibrateHapticFeedback, Toast } from '@common/helpers/interface';
 
-import { PushNotificationsService, LoggerService } from '@services';
+import { PushNotificationsService, LoggerService, StyleService } from '@services';
 
 // components
 import { Button, Spacer, Footer, PinInput, InfoMessage } from '@components/General';
@@ -194,7 +193,7 @@ class PasscodeSetupView extends Component<Props, State> {
     renderHeader = () => {
         return (
             <View style={[AppStyles.flex2, AppStyles.centerContent]}>
-                <Image style={styles.logo} source={Images.xummLogo} />
+                <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
             </View>
         );
     };
@@ -241,7 +240,7 @@ class PasscodeSetupView extends Component<Props, State> {
             return (
                 <View testID="pin-code-explanation-view" style={[AppStyles.flex8, AppStyles.paddingSml]}>
                     <View style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.centerContent]}>
-                        <Image style={[AppStyles.emptyIcon]} source={Images.ImagePincode} />
+                        <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImagePincode')} />
                     </View>
 
                     <View style={[AppStyles.flex2, AppStyles.centerAligned]}>

@@ -5,9 +5,10 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Image } from 'react-native';
 
+import StyleService from '@services/StyleService';
+
 // components
 import { Button, Spacer, Footer } from '@components/General';
-import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
 
@@ -37,7 +38,11 @@ class ExplainActivationStep extends Component<Props, State> {
         return (
             <SafeAreaView testID="account-generate-explain-activation-view" style={[AppStyles.container]}>
                 <View style={[AppStyles.centerAligned, AppStyles.marginVerticalSml]}>
-                    <Image style={[styles.headerImage]} source={Images.ImageCoinWallet} />
+                    <Image
+                        style={[styles.headerImage]}
+                        resizeMode="contain"
+                        source={StyleService.getImage('ImageCoinWallet')}
+                    />
                 </View>
 
                 <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.paddingSml]}>
@@ -64,7 +69,7 @@ class ExplainActivationStep extends Component<Props, State> {
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
-                            secondary
+                            light
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
                             onPress={goBack}

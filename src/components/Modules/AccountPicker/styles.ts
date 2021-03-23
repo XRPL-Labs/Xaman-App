@@ -1,17 +1,17 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppStyles, AppFonts } from '@theme';
+import { AppStyles, AppFonts } from '@theme';
 /* Styles ==================================================================== */
-export default StyleSheet.create({
+export default StyleService.create({
     pickerContainer: {
         borderRadius: 15,
-        backgroundColor: AppColors.light,
+        backgroundColor: '$tint',
         height: 80,
         paddingHorizontal: 17,
         justifyContent: 'center',
     },
     collapseButton: {
-        backgroundColor: AppColors.black,
+        backgroundColor: '$black',
         borderRadius: 8,
         height: 25,
         width: 40,
@@ -21,16 +21,17 @@ export default StyleSheet.create({
     },
     collapseIcon: {
         alignSelf: 'center',
-        tintColor: AppColors.white,
+        tintColor: '$white',
     },
     accountItemTitle: {
         fontSize: AppStyles.baseText.fontSize,
         fontWeight: 'bold',
         marginBottom: 3,
+        color: '$textPrimary',
     },
     accountItemSub: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: 16,
-        color: AppColors.greyDark,
+        color: '$grey',
     },
 });

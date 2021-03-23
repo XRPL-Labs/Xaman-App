@@ -5,9 +5,10 @@
 import React, { Component } from 'react';
 import { SafeAreaView, TouchableOpacity, View, Text, Image, Linking, Alert } from 'react-native';
 
+import StyleService from '@services/StyleService';
+
 // components
 import { Button, Icon, Footer, Spacer } from '@components/General';
-import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
 
@@ -49,7 +50,7 @@ class MnemonicAlertStep extends Component<Props, State> {
         return (
             <SafeAreaView testID="account-import-mnemonic-alert-view" style={[AppStyles.container]}>
                 <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.padding]}>
-                    <Image style={[AppStyles.emptyIcon]} source={Images.ImageWarningShield} />
+                    <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageWarningShield')} />
 
                     <Spacer />
                     {/* eslint-disable-next-line */}
@@ -61,17 +62,13 @@ class MnemonicAlertStep extends Component<Props, State> {
                         style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingSml]}
                         onPress={this.openFAQ}
                     >
-                        <Icon
-                            name="IconLink"
-                            size={20}
-                            style={[AppStyles.imgColorGreyDark, AppStyles.marginRightSml]}
-                        />
+                        <Icon name="IconLink" size={20} style={[AppStyles.imgColorGrey, AppStyles.marginRightSml]} />
                         <Text
                             style={[
                                 AppStyles.subtext,
                                 AppStyles.textCenterAligned,
                                 AppStyles.link,
-                                AppStyles.colorGreyDark,
+                                AppStyles.colorGrey,
                             ]}
                         >
                             {Localize.t('global.readMoreInTheFAQ')}
@@ -83,7 +80,7 @@ class MnemonicAlertStep extends Component<Props, State> {
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
-                            secondary
+                            light
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
                             onPress={goBack}

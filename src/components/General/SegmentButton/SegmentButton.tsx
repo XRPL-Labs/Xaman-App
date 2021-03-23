@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 
-import { AppColors } from '@theme';
-
 import styles from './styles';
 /* Types ==================================================================== */
 interface State {
@@ -60,7 +58,7 @@ class SegmentButton extends PureComponent<Props, State> {
                         <View style={[styles.textContainer]}>
                             <Text
                                 numberOfLines={1}
-                                style={[styles.buttonText, selectedIndex === i && { color: AppColors.blue }]}
+                                style={[styles.buttonText, selectedIndex === i && styles.selectedButtonText]}
                             >
                                 {button}
                             </Text>

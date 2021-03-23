@@ -1,22 +1,21 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppSizes, AppFonts } from '@theme';
-
+import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         // height: Sizes.screen.heightHalf + 100,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
-        shadowColor: AppColors.black,
+        shadowColor: '$grey',
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 5,
         shadowOpacity: 0.3,
         padding: 15,
     },
     nextButton: {
-        backgroundColor: AppColors.green,
+        backgroundColor: '$green',
     },
     textInput: {
         textAlign: 'center',
@@ -30,7 +29,7 @@ const styles = StyleSheet.create({
     avatarImage: {
         height: AppSizes.scale(30),
         width: AppSizes.scale(30),
-        tintColor: AppColors.greyDark,
+        tintColor: '$grey',
         resizeMode: 'contain',
     },
     itemRow: {
@@ -39,16 +38,16 @@ const styles = StyleSheet.create({
         padding: 5,
         borderRadius: 12,
         borderWidth: 2,
-        borderColor: AppColors.grey,
+        borderColor: '$lightGrey',
     },
     title: {
         fontFamily: AppFonts.base.familyBold,
-        color: AppColors.green,
+        color: '$green',
         fontSize: AppFonts.base.size,
     },
     subtitle: {
         fontFamily: AppFonts.base.familyMono,
-        color: AppColors.green,
+        color: '$green',
         fontSize: AppFonts.base.size * 0.8,
     },
 });

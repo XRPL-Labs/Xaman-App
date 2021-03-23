@@ -10,7 +10,7 @@ import Clipboard from '@react-native-community/clipboard';
 import { AccountRepository } from '@store/repositories';
 import { AccountTypes } from '@store/types';
 
-import { ConvertCodecAlphabet } from '@common/libs/utils';
+import { ConvertCodecAlphabet } from '@common/utils/codec';
 import { Toast, Prompt } from '@common/helpers/interface';
 
 // components
@@ -132,14 +132,12 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                                 <View key={index} style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow]}>
                                     <View style={[AppStyles.row, AppStyles.flex1, AppStyles.centerAligned]}>
                                         <View style={styles.iconContainer}>
-                                            <Icon size={25} style={AppStyles.imgColorGreyDark} name="IconAccount" />
+                                            <Icon size={25} style={AppStyles.imgColorGrey} name="IconAccount" />
                                         </View>
 
                                         <View>
                                             <Text style={[AppStyles.p, AppStyles.bold]}>{a.label}</Text>
-                                            <Text
-                                                style={[AppStyles.subtext, AppStyles.monoBold, AppStyles.colorGreyDark]}
-                                            >
+                                            <Text style={[AppStyles.subtext, AppStyles.monoBold, AppStyles.colorGrey]}>
                                                 {a.address}
                                             </Text>
                                         </View>
@@ -210,12 +208,9 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                     <Button
                         label={Localize.t('account.copyAddress')}
                         icon="IconClipboard"
-                        style={AppStyles.buttonBlueLight}
-                        iconStyle={AppStyles.imgColorGreyDark}
-                        textStyle={[AppStyles.colorGreyDark]}
                         onPress={this.copyPubKeyToClipboard}
                         roundedSmall
-                        outline
+                        light
                     />
                 </View>
 
@@ -225,7 +220,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
-                            secondary
+                            light
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
                             onPress={this.goBack}

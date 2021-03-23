@@ -7,18 +7,7 @@
 import { filter } from 'lodash';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
-import {
-    ScrollView,
-    Animated,
-    View,
-    Image,
-    Text,
-    Alert,
-    Platform,
-    KeyboardAvoidingView,
-    LayoutChangeEvent,
-    InteractionManager,
-} from 'react-native';
+import { ScrollView, View, Image, Text, Alert, Platform, KeyboardAvoidingView, InteractionManager } from 'react-native';
 
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
@@ -27,7 +16,7 @@ import { BackendService } from '@services';
 import { Images } from '@common/helpers/images';
 import { Prompt, Toast } from '@common/helpers/interface';
 
-import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/libs/utils';
+import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 
 // components
 import { Header, Button, AccordionPicker, AmountInput, AmountText, Footer } from '@components/General';
@@ -51,7 +40,6 @@ interface State {
 
 /* Component ==================================================================== */
 class DetailsStep extends Component<Props, State> {
-    gradientHeight: Animated.Value;
     amountInput: AmountInput;
 
     static contextType = StepsContext;
@@ -64,8 +52,6 @@ class DetailsStep extends Component<Props, State> {
             currencyRate: undefined,
             amountRate: '',
         };
-
-        this.gradientHeight = new Animated.Value(0);
     }
 
     componentDidMount() {
@@ -89,17 +75,6 @@ class DetailsStep extends Component<Props, State> {
             .catch(() => {
                 Toast(Localize.t('global.unableToFetchCurrencyRate'));
             });
-    };
-
-    setGradientHeight = (event: LayoutChangeEvent) => {
-        const { height } = event.nativeEvent.layout;
-
-        if (height === 0) return;
-
-        Animated.timing(this.gradientHeight, {
-            toValue: height,
-            useNativeDriver: false,
-        }).start();
     };
 
     goNext = () => {
@@ -211,9 +186,9 @@ class DetailsStep extends Component<Props, State> {
         }
 
         if (currencyRate) {
-            const inRate = Number(amount) * currencyRate.lastRate;
+            const inRate = new BigNumber(amount).multipliedBy(currencyRate.lastRate).decimalPlaces(8).toFixed();
             this.setState({
-                amountRate: String(inRate),
+                amountRate: inRate,
             });
         }
     };
@@ -232,7 +207,7 @@ class DetailsStep extends Component<Props, State> {
         }
 
         if (currencyRate) {
-            const inXRP = Number(amount) / currencyRate.lastRate;
+            const inXRP = new BigNumber(amount).dividedBy(currencyRate.lastRate).decimalPlaces(8).toFixed();
             setAmount(String(inXRP));
         }
     };
@@ -270,19 +245,11 @@ class DetailsStep extends Component<Props, State> {
                             <Image style={[styles.currencyImageIcon]} source={Images.IconXrpNew} />
                         </View>
                         <View style={[AppStyles.column, AppStyles.centerContent]}>
-                            <Text
-                                style={[
-                                    styles.currencyItemLabel,
-                                    selected ? AppStyles.colorBlue : AppStyles.colorBlack,
-                                ]}
-                            >
+                            <Text style={[styles.currencyItemLabel, selected && styles.currencyItemLabelSelected]}>
                                 XRP
                             </Text>
                             <Text
-                                style={[
-                                    styles.currencyBalance,
-                                    selected ? AppStyles.colorBlue : AppStyles.colorGreyDark,
-                                ]}
+                                style={[styles.currencyBalance, selected ? AppStyles.colorBlue : AppStyles.colorGrey]}
                             >
                                 {Localize.t('global.available')}: {Localize.formatNumber(source.availableBalance)}
                             </Text>
@@ -299,7 +266,7 @@ class DetailsStep extends Component<Props, State> {
                         <Image style={[styles.currencyImageIcon]} source={{ uri: item.counterParty.avatar }} />
                     </View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
-                        <Text style={[styles.currencyItemLabel, selected ? AppStyles.colorBlue : AppStyles.colorBlack]}>
+                        <Text style={[styles.currencyItemLabel, selected && styles.currencyItemLabelSelected]}>
                             {NormalizeCurrencyCode(item.currency.currency)}
 
                             {item.currency.name && <Text style={[AppStyles.subtext]}> - {item.currency.name}</Text>}
@@ -307,7 +274,7 @@ class DetailsStep extends Component<Props, State> {
 
                         <AmountText
                             prefix={`${Localize.t('global.balance')}: `}
-                            style={[styles.currencyBalance, selected ? AppStyles.colorBlue : AppStyles.colorGreyDark]}
+                            style={[styles.currencyBalance, selected ? AppStyles.colorBlue : AppStyles.colorGrey]}
                             value={item.balance}
                         />
                     </View>
@@ -330,23 +297,9 @@ class DetailsStep extends Component<Props, State> {
                 >
                     <ScrollView>
                         {/* Source Account */}
-                        <View
-                            onLayout={this.setGradientHeight}
-                            style={[styles.rowItem, { backgroundColor: AppColors.light }]}
-                        >
-                            <Animated.Image
-                                source={Images.SideGradient}
-                                style={{
-                                    width: 7,
-                                    height: this.gradientHeight,
-                                    position: 'absolute',
-                                    left: 0,
-                                    top: 0,
-                                }}
-                                resizeMode="stretch"
-                            />
+                        <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                                     {Localize.t('global.from')}
                                 </Text>
                             </View>
@@ -355,7 +308,7 @@ class DetailsStep extends Component<Props, State> {
                         {/* Currency */}
                         <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                                     {Localize.t('global.asset')}
                                 </Text>
                             </View>
@@ -372,14 +325,13 @@ class DetailsStep extends Component<Props, State> {
                                 renderItem={this.renderCurrencyItem}
                                 selectedItem={currency}
                                 keyExtractor={(i) => (typeof i === 'string' ? i : i.currency.id)}
-                                containerStyle={{ backgroundColor: AppColors.transparent }}
                             />
                         </View>
 
                         {/* Amount */}
                         <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                                     {Localize.t('global.amount')}
                                 </Text>
                             </View>
@@ -394,7 +346,7 @@ class DetailsStep extends Component<Props, State> {
                                         onChange={this.onAmountChange}
                                         returnKeyType="done"
                                         style={[styles.amountInput]}
-                                        placeholderTextColor={AppColors.greyDark}
+                                        placeholderTextColor={AppColors.grey}
                                         value={amount}
                                     />
                                 </View>
@@ -423,7 +375,7 @@ class DetailsStep extends Component<Props, State> {
                                             onChange={this.onRateAmountChange}
                                             returnKeyType="done"
                                             style={[styles.amountRateInput]}
-                                            placeholderTextColor={AppColors.greyDark}
+                                            placeholderTextColor={AppColors.grey}
                                             value={amountRate}
                                         />
                                     </View>
@@ -441,7 +393,7 @@ class DetailsStep extends Component<Props, State> {
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
-                            secondary
+                            light
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
                             onPress={goBack}

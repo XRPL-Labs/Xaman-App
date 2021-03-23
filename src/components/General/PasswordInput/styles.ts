@@ -1,16 +1,16 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppFonts, AppSizes, AppColors } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     inputWrapper: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
         height: AppSizes.heightPercentageToDP(7),
-        backgroundColor: AppColors.grey,
-        borderColor: AppColors.grey,
+        backgroundColor: '$tint',
+        borderColor: '$tint',
         borderWidth: 1,
         borderRadius: 12,
         paddingRight: 15,
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        color: AppColors.black,
+        color: '$blue',
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.p.size,
         padding: 0,
@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     },
     eyeIcon: {
         marginRight: 5,
+        tintColor: '$contrast',
     },
     // Bar Container
     barContainer: {

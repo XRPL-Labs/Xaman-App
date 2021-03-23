@@ -5,18 +5,7 @@
 import { isEmpty } from 'lodash';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
-import {
-    Animated,
-    View,
-    Image,
-    Text,
-    KeyboardAvoidingView,
-    Alert,
-    ScrollView,
-    Platform,
-    LayoutChangeEvent,
-    InteractionManager,
-} from 'react-native';
+import { View, Image, Text, KeyboardAvoidingView, Alert, ScrollView, Platform, InteractionManager } from 'react-native';
 
 import { AccountSchema } from '@store/schemas/latest';
 import { NodeChain } from '@store/types';
@@ -29,7 +18,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
 import Preferences from '@common/libs/preferences';
-import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/libs/utils';
+import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 
 // components
 import { AmountInput, AmountText, Button, Footer, Spacer, TextInput, SwipeButton, Header } from '@components/General';
@@ -54,7 +43,6 @@ export interface State {
 
 /* Component ==================================================================== */
 class SummaryStep extends Component<Props, State> {
-    gradientHeight: Animated.Value;
     amountInput: AmountInput;
     destinationTagInput: TextInput;
 
@@ -68,8 +56,6 @@ class SummaryStep extends Component<Props, State> {
             confirmedDestinationTag: undefined,
             currencyRate: undefined,
         };
-
-        this.gradientHeight = new Animated.Value(0);
     }
 
     componentDidMount() {
@@ -90,12 +76,6 @@ class SummaryStep extends Component<Props, State> {
             .catch(() => {
                 Toast(Localize.t('global.unableToFetchCurrencyRate'));
             });
-    };
-
-    setGradientHeight = (event: LayoutChangeEvent) => {
-        const { height } = event.nativeEvent.layout;
-        if (height === 0) return;
-        Animated.timing(this.gradientHeight, { toValue: height, useNativeDriver: false }).start();
     };
 
     onDescriptionChange = (text: string) => {
@@ -402,14 +382,9 @@ class SummaryStep extends Component<Props, State> {
                     keyboardVerticalOffset={Header.Height + AppSizes.extraKeyBoardPadding}
                 >
                     <ScrollView>
-                        <View onLayout={this.setGradientHeight} style={[styles.rowItem, styles.rowItemGrey]}>
-                            <Animated.Image
-                                source={Images.SideGradient}
-                                style={[styles.gradientImage, { height: this.gradientHeight }]}
-                                resizeMode="stretch"
-                            />
+                        <View style={[styles.rowItem, styles.rowItemGrey]}>
                             <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
+                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                     {Localize.t('global.from')}
                                 </Text>
                             </View>
@@ -419,7 +394,7 @@ class SummaryStep extends Component<Props, State> {
                             <Spacer size={20} />
 
                             <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
+                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                     {Localize.t('global.to')}
                                 </Text>
                             </View>
@@ -429,7 +404,7 @@ class SummaryStep extends Component<Props, State> {
                                 <View style={[styles.pickerItem]}>
                                     <Text style={[styles.pickerItemTitle]}>{destination.name}</Text>
                                     <Text
-                                        style={[styles.pickerItemSub, AppStyles.colorGreyDark]}
+                                        style={[styles.pickerItemSub, AppStyles.colorGrey]}
                                         adjustsFontSizeToFit
                                         numberOfLines={1}
                                     >
@@ -443,7 +418,7 @@ class SummaryStep extends Component<Props, State> {
                             <View style={AppStyles.row}>
                                 <View style={AppStyles.flex1}>
                                     <View style={[styles.rowTitle]}>
-                                        <Text style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
+                                        <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
                                             {destination.tag && `${Localize.t('global.destinationTag')}: `}
                                             <Text style={AppStyles.colorBlue}>
                                                 {destination.tag || Localize.t('send.noDestinationTag')}
@@ -465,7 +440,7 @@ class SummaryStep extends Component<Props, State> {
                         {/* Currency */}
                         <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
+                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                     {Localize.t('global.asset')}
                                 </Text>
                             </View>
@@ -477,7 +452,7 @@ class SummaryStep extends Component<Props, State> {
                         {/* Amount */}
                         <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
+                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                     {Localize.t('global.amount')}
                                 </Text>
                             </View>
@@ -512,7 +487,7 @@ class SummaryStep extends Component<Props, State> {
                         {/* Memo */}
                         <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
+                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                     {Localize.t('global.memo')}
                                 </Text>
                             </View>

@@ -91,6 +91,7 @@
     "available": "Available",
     "notice": "Notice",
     "error": "Error",
+    "info": "Info",
     "critical": "WARNING!",
     "success": "Success!",
     "standard": "Standard",
@@ -497,7 +498,8 @@
     "pushNotifications": "Push Notifications",
     "reRegisterForPushNotifications": "Re-register for push notifications",
     "successfullyReRegisteredForPushNotifications": "Successfully re-registered for push notifications.",
-    "unableToReRegisteredForPushNotifications": "Unable to re-registered for push notifications. An unexpected error occurred!"
+    "unableToReRegisteredForPushNotifications": "Unable to re-registered for push notifications. An unexpected error occurred!",
+    "changingThemeNeedsRestartToTakeEffect": "Changing theme requires the app to restart. Do you want to restart now?"
   },
   "account": {
     "addAccount": "Add an account",

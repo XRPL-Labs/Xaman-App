@@ -9,7 +9,6 @@ import React, { Component } from 'react';
 import { Animated, View, Text, TouchableWithoutFeedback, TouchableOpacity, Platform, ScrollView } from 'react-native';
 
 import Interactable from 'react-native-interactable';
-import LinearGradient from 'react-native-linear-gradient';
 
 import { AccessLevels } from '@store/types';
 import { AccountRepository } from '@store/repositories';
@@ -26,7 +25,7 @@ import { Button, Icon } from '@components/General';
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppSizes, AppColors } from '@theme';
+import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -40,7 +39,7 @@ export interface State {
 }
 
 const BOUNDARY_HEIGHT = 50;
-const ROW_ITEM_HEIGHT = AppSizes.scale(70);
+const ROW_ITEM_HEIGHT = AppSizes.scale(80);
 /* Component ==================================================================== */
 class SwitchAccountOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.SwitchAccount;
@@ -215,10 +214,12 @@ class SwitchAccountOverlay extends Component<Props, State> {
                 >
                     <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
                         <View style={[AppStyles.flex3]}>
-                            <Text style={[styles.accountLabel]}>{account.label}</Text>
-                            <Text style={[styles.accountAddress]}>{account.address}</Text>
+                            <Text style={[styles.accountLabel, styles.accountLabelSelected]}>{account.label}</Text>
+                            <Text style={[styles.accountAddress, styles.accountAddressSelected]}>
+                                {account.address}
+                            </Text>
                             <View style={[styles.accessLevelBadge, styles.accessLevelBadgeSelected]}>
-                                <Icon size={11} name={accessLevelIcon} style={AppStyles.imgColorWhite} />
+                                <Icon size={11} name={accessLevelIcon} style={[AppStyles.imgColorPrimary]} />
                                 <Text style={[styles.accessLevelLabel, styles.accessLevelLabelSelected]}>
                                     {accessLevelLabel}
                                 </Text>
@@ -240,30 +241,23 @@ class SwitchAccountOverlay extends Component<Props, State> {
                 }}
                 activeOpacity={0.9}
             >
-                <LinearGradient
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    colors={[AppColors.light, AppColors.white]}
-                    style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow, { height: ROW_ITEM_HEIGHT }]}
-                >
-                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[AppStyles.flex3]}>
-                            <Text style={[styles.accountLabel]}>{account.label}</Text>
-                            <Text style={[styles.accountAddress]}>{account.address}</Text>
-                            <View style={[styles.accessLevelBadge]}>
-                                <Icon
-                                    size={11}
-                                    name={accessLevelIcon}
-                                    style={[AppStyles.imgColorGreyDark, AppStyles.centerSelf]}
-                                />
-                                <Text style={[styles.accessLevelLabel]}>{accessLevelLabel}</Text>
-                            </View>
-                        </View>
-                        <View style={[AppStyles.flex1]}>
-                            <View style={[styles.radioCircle, AppStyles.rightSelf]} />
+                <View style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow, { height: ROW_ITEM_HEIGHT }]}>
+                    <View style={[AppStyles.flex3]}>
+                        <Text style={[styles.accountLabel]}>{account.label}</Text>
+                        <Text style={[styles.accountAddress]}>{account.address}</Text>
+                        <View style={[styles.accessLevelBadge]}>
+                            <Icon
+                                size={11}
+                                name={accessLevelIcon}
+                                style={[AppStyles.imgColorPrimary, styles.accessLevelIcon]}
+                            />
+                            <Text style={[styles.accessLevelLabel]}>{accessLevelLabel}</Text>
                         </View>
                     </View>
-                </LinearGradient>
+                    <View style={[AppStyles.flex1]}>
+                        <View style={[styles.radioCircle, AppStyles.rightSelf]} />
+                    </View>
+                </View>
             </TouchableOpacity>
         );
     };
@@ -338,11 +332,10 @@ class SwitchAccountOverlay extends Component<Props, State> {
                             </View>
                             <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                                 <Button
+                                    light
+                                    roundedSmall
                                     label={Localize.t('home.addAccount')}
                                     icon="IconPlus"
-                                    iconStyle={[AppStyles.imgColorBlue]}
-                                    roundedSmall
-                                    light
                                     isDisabled={false}
                                     onPress={this.onAddPressed}
                                 />

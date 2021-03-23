@@ -1,14 +1,13 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppSizes, AppFonts } from '@theme';
-
+import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     visibleContent: {
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
-        shadowColor: AppColors.black,
+        shadowColor: '$black',
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 5,
         shadowOpacity: 0.3,
@@ -24,75 +23,90 @@ const styles = StyleSheet.create({
     },
     accountRow: {
         paddingRight: 20,
-        paddingLeft: 15,
-        paddingTop: 6,
-        paddingBottom: 6,
-        marginTop: 10,
-        borderRadius: AppSizes.scale(50) / 3,
+        paddingLeft: 13,
+        paddingTop: 20,
+        paddingBottom: 20,
+        marginBottom: 10,
+        borderRadius: 18,
+        // borderRadius: AppSizes.scale(50) / 4,
+        backgroundColor: '$tint',
     },
     accountRowSelected: {
         borderBottomWidth: 0,
-        borderRadius: 20,
-        backgroundColor: AppColors.lightGreen,
+        // borderRadius: 20,
+        backgroundColor: '$lightBlue',
     },
     selectedText: {
         marginRight: 10,
-        color: AppColors.green,
+        color: '$green',
     },
 
     iconKey: {
-        tintColor: AppColors.blue,
+        tintColor: '$blue',
         marginRight: 5,
         alignSelf: 'center',
     },
     accountLabel: {
         fontFamily: AppFonts.h5.family,
         fontSize: AppFonts.p.size,
-        color: AppColors.black,
+        color: '$silver',
+    },
+    accountLabelSelected: {
+        color: '$blue',
     },
     accountAddress: {
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.small.size,
-        color: AppColors.black,
+        color: '$silver',
+        marginTop: 2,
+        marginLeft: 2,
+    },
+    accountAddressSelected: {
+        color: '$textSecondary',
     },
     accessLevelBadge: {
         flexDirection: 'row',
-        paddingHorizontal: 5,
-        paddingVertical: 2,
+        paddingHorizontal: 8,
+        paddingVertical: 3,
         borderRadius: 10,
         marginTop: 7,
         alignSelf: 'flex-start',
-        backgroundColor: AppColors.grey,
+        backgroundColor: '$lightGrey',
         justifyContent: 'center',
         alignContent: 'center',
     },
     accessLevelBadgeSelected: {
-        backgroundColor: AppColors.black,
+        backgroundColor: '$lightBlue',
+    },
+    accessLevelIcon: {
+        tintColor: '$grey',
     },
     accessLevelLabel: {
         marginLeft: 5,
         fontSize: AppFonts.base.size * 0.7,
         fontFamily: AppFonts.base.familyBold,
-        color: AppColors.greyDark,
+        color: '$grey',
         includeFontPadding: false,
     },
     accessLevelLabelSelected: {
-        color: AppColors.white,
+        color: '$textPrimary',
     },
     radioCircle: {
         width: AppSizes.scale(23),
         height: AppSizes.scale(23),
         borderWidth: 3,
-        borderColor: AppColors.grey,
-        borderRadius: AppSizes.scale(23) / 2,
+        borderColor: '$grey',
+        // borderRadius: AppSizes.scale(23) / 2,
+        borderRadius: 100,
     },
     radioCircleSelected: {
         width: AppSizes.scale(23),
         height: AppSizes.scale(23),
         borderWidth: AppSizes.scale(6),
-        borderColor: AppColors.green,
-        borderRadius: AppSizes.scale(23) / 2,
-        backgroundColor: AppColors.white,
+        borderColor: '$blue',
+        // borderRadius: AppSizes.scale(23) / 2,
+        borderRadius: 100,
+        backgroundColor: '$background',
     },
 });
 

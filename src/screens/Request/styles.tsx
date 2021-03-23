@@ -1,17 +1,19 @@
-import { StyleSheet, Platform } from 'react-native';
-import { AppColors, AppFonts, AppSizes } from '@theme';
+import { Platform } from 'react-native';
+
+import StyleService from '@services/StyleService';
+import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
     },
     qrCodeContainer: {
         width: '90%',
-        backgroundColor: AppColors.light,
+        backgroundColor: '$tint',
         alignSelf: 'center',
         borderRadius: 20,
         marginBottom: 25,
@@ -21,7 +23,7 @@ const styles = StyleSheet.create({
         borderWidth: 5,
         alignSelf: 'center',
         alignItems: 'center',
-        borderColor: AppColors.grey,
+        borderColor: '$grey',
         padding: 5,
         margin: 30,
     },
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 20 : 10,
         paddingLeft: 20,
         marginLeft: 10,
-        backgroundColor: AppColors.lightGrey,
+        backgroundColor: '$lightGrey',
         borderRadius: 15,
     },
     amountInput: {
@@ -56,7 +58,7 @@ const styles = StyleSheet.create({
         fontSize: AppFonts.h2.size,
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
-        color: AppColors.blue,
+        color: '$blue',
         paddingVertical: Platform.OS === 'ios' ? 15 : 10,
     },
     amountRateContainer: {
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 20 : 10,
         paddingLeft: 20,
         marginLeft: 10,
-        backgroundColor: AppColors.lightGrey,
+        backgroundColor: '$lightGrey',
         borderRadius: 15,
     },
     amountRateInput: {
@@ -75,7 +77,7 @@ const styles = StyleSheet.create({
         fontSize: AppFonts.h4.size,
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
-        color: AppColors.black,
+        color: '$textPrimary',
         paddingVertical: 15,
     },
     currencySymbolTextContainer: {
@@ -85,7 +87,7 @@ const styles = StyleSheet.create({
     },
     currencySymbolText: {
         fontFamily: AppFonts.base.familyMonoBold,
-        color: AppColors.greyDark,
+        color: '$grey',
         fontSize: AppFonts.h5.size * 0.9,
     },
 });

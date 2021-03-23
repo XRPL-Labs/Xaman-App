@@ -22,9 +22,11 @@ import { StringType } from 'xumm-string-decode';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
+import StyleService from '@services/StyleService';
+
 import { Icon } from '@components/General/Icon';
 
-import { AppColors, AppStyles, AppSizes } from '@theme';
+import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -146,7 +148,7 @@ class Input extends Component<Props, State> {
                     }}
                     onFocus={this.onFocus}
                     onBlur={this.onBlur}
-                    placeholderTextColor={AppColors.greyDark}
+                    placeholderTextColor={StyleService.value('$textSecondary')}
                     autoCapitalize={autoCapitalize || 'none'}
                     autoCorrect={false}
                     multiline={false}
@@ -193,7 +195,7 @@ class Input extends Component<Props, State> {
 
                 {isLoading && (
                     <View style={styles.loadingOverlay}>
-                        <ActivityIndicator color={AppColors.blue} style={styles.loadingIndicator} />
+                        <ActivityIndicator color={StyleService.value('$blue')} style={styles.loadingIndicator} />
                     </View>
                 )}
             </View>

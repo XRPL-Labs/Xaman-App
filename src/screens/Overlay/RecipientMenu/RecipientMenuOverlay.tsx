@@ -23,7 +23,7 @@ import { RecipientElement } from '@components/Modules';
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppSizes, AppColors } from '@theme';
+import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -237,43 +237,38 @@ class RecipientMenuOverlay extends Component<Props, State> {
                         <View style={[AppStyles.paddingHorizontalSml, AppStyles.centerContent]}>
                             <RecipientElement showTag={false} recipient={recipient} />
 
+                            <Spacer size={20} />
+
                             {!contactExist && (
                                 <>
-                                    <Spacer size={20} />
+                                    <Spacer size={10} />
                                     <Button
                                         numberOfLines={1}
                                         onPress={this.addContact}
                                         icon="IconPlus"
-                                        block
-                                        rounded
                                         label={Localize.t('send.addToContacts')}
-                                        style={[styles.button, { backgroundColor: AppColors.blue }]}
                                         iconStyle={AppStyles.imgColorWhite}
                                     />
                                 </>
                             )}
 
-                            <Spacer size={20} />
+                            <Spacer size={10} />
                             <Button
+                                secondary
                                 numberOfLines={1}
                                 onPress={this.shareAddress}
                                 icon="IconShare"
-                                block
-                                rounded
                                 label={Localize.t('events.shareAccount')}
-                                style={styles.button}
                                 iconStyle={AppStyles.imgColorWhite}
                             />
 
-                            <Spacer size={20} />
+                            <Spacer size={10} />
                             <Button
+                                secondary
                                 numberOfLines={1}
                                 onPress={this.openAccountLink}
                                 icon="IconLink"
                                 label={Localize.t('events.openWithExplorer', { explorer: explorer.title })}
-                                block
-                                rounded
-                                style={styles.button}
                                 iconStyle={AppStyles.imgColorWhite}
                             />
                         </View>

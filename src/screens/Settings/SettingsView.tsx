@@ -48,7 +48,7 @@ class SettingsView extends Component<Props, State> {
             >
                 <View style={[AppStyles.row, styles.rowContainer]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                        <Icon size={25} name={icon} />
+                        <Icon size={25} name={icon} style={styles.rowIcon} />
                     </View>
                     <View style={[AppStyles.flex4, AppStyles.centerContent]}>
                         <Text numberOfLines={1} style={[styles.rowLabel]}>
@@ -56,7 +56,7 @@ class SettingsView extends Component<Props, State> {
                         </Text>
                     </View>
                     <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
-                        <Icon size={25} name="IconChevronRight" />
+                        <Icon size={25} name="IconChevronRight" style={styles.rowIcon} />
                     </View>
                 </View>
             </TouchableOpacity>

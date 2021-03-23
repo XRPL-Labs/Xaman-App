@@ -3,7 +3,7 @@ import { has, get, set, isUndefined, isNumber, toInteger } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
 import { AccountSchema } from '@store/schemas/latest';
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import Localize from '@locale';
 

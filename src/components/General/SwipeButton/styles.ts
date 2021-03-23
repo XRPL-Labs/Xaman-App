@@ -1,27 +1,27 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppFonts, AppColors, AppSizes } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
-const Styles = StyleSheet.create({
+const Styles = StyleService.create({
     container: {
         height: AppSizes.scale(55),
         borderRadius: AppSizes.scale(55) * 0.3,
         alignSelf: 'stretch',
         borderWidth: 1,
         justifyContent: 'center',
-        backgroundColor: AppColors.blue,
-        borderColor: AppColors.blue,
+        backgroundColor: '$blue',
+        borderColor: '$blue',
     },
     containerSecondary: {
-        backgroundColor: AppColors.green,
-        borderColor: AppColors.green,
+        backgroundColor: '$green',
+        borderColor: '$green',
     },
     label: {
         alignSelf: 'center',
         position: 'absolute',
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.h5.size * 0.9,
-        color: AppColors.white,
+        color: '$white',
     },
     thumpContainer: {
         alignItems: 'flex-end',
@@ -32,13 +32,13 @@ const Styles = StyleSheet.create({
     iconContainer: {
         height: AppSizes.scale(45),
         borderRadius: AppSizes.scale(45) * 0.3,
-        backgroundColor: AppColors.transparentBlue,
+        backgroundColor: '$transparentBlue',
         width: AppSizes.scale(45),
         justifyContent: 'center',
         alignItems: 'center',
     },
     iconContainerSecondary: {
-        backgroundColor: AppColors.transparentGreen,
+        backgroundColor: '$lightGreen',
     },
     spinner: {
         flex: 1,

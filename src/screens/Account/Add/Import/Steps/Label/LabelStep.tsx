@@ -134,7 +134,7 @@ class LabelStep extends Component<Props, State> {
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
                             onPress={goBack}
-                            secondary
+                            light
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>
