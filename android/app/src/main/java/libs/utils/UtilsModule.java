@@ -4,13 +4,13 @@ import java.io.File;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import android.content.ComponentName;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Debug;
 import android.content.pm.ApplicationInfo;
 import android.app.Activity;
 import android.view.WindowManager;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
 import android.os.Handler;
@@ -117,12 +117,12 @@ public class UtilsModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void restartBundle() {
-        Intent mStartActivity = reactContext.getPackageManager().getLaunchIntentForPackage(reactContext.getPackageName());
-        int mPendingIntentId = 123456;
-        PendingIntent mPendingIntent = PendingIntent.getActivity(reactContext, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager mgr = (AlarmManager) reactContext.getSystemService(Context.ALARM_SERVICE);
-        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-        System.exit(0);
+        PackageManager packageManager = reactContext.getPackageManager();
+        Intent intent = packageManager.getLaunchIntentForPackage(reactContext.getPackageName());
+        ComponentName componentName = intent.getComponent();
+        Intent mainIntent = Intent.makeRestartActivityTask(componentName);
+        reactContext.startActivity(mainIntent);
+        Runtime.getRuntime().exit(0);
     }
 
     @ReactMethod
