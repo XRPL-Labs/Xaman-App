@@ -17,7 +17,7 @@ import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { AppScreens } from '@common/constants';
 
 import { AccountSchema, CoreSchema } from '@store/schemas/latest';
-import { CoreRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository } from '@store/repositories';
 
 import { SocketService, BackendService } from '@services';
 
@@ -43,6 +43,7 @@ export interface Props {
 export interface State {
     title: string;
     identifier: string;
+    account: AccountSchema;
     ott: string;
     isLoading: boolean;
     error: string;
@@ -68,6 +69,7 @@ class XAppBrowserModal extends Component<Props, State> {
         this.state = {
             title: props.title,
             identifier: props.identifier,
+            account: props.account || AccountRepository.getDefaultAccount(),
             ott: undefined,
             error: undefined,
             isLoading: true,
@@ -217,8 +219,8 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     fetchOTT = () => {
-        const { identifier, account, origin, originData, params } = this.props;
-        const { appVersionCode, title, coreSettings, isLoading } = this.state;
+        const { identifier, origin, originData, params } = this.props;
+        const { appVersionCode, account, title, coreSettings, isLoading } = this.state;
 
         if (!isLoading) {
             this.setState({
