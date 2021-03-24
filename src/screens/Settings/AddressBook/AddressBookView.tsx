@@ -68,7 +68,7 @@ class AddressBookView extends Component<Props, State> {
     }
 
     componentDidAppear() {
-        const contacts = ContactRepository.getContacts().snapshot();
+        const contacts = ContactRepository.getContacts();
 
         this.setState({
             contacts,
@@ -76,17 +76,10 @@ class AddressBookView extends Component<Props, State> {
         });
     }
 
-    updateUI = (contacts: Results<ContactSchema>) => {
-        this.setState({
-            contacts: contacts.snapshot(),
-            dataSource: this.convertContactsArrayToMap(contacts.snapshot()),
-        });
-    };
-
     convertContactsArrayToMap = (contacts: Results<ContactSchema>) => {
         const contactsCategoryMap = [] as any;
 
-        contacts.forEach((item) => {
+        sortBy(contacts, 'name').forEach((item) => {
             if (!item || !item.name) return;
 
             const firstLetter = item.name.charAt(0).toUpperCase();
