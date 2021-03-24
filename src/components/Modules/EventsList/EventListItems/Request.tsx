@@ -1,6 +1,6 @@
 import { has, get } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, TouchableHighlight } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { AccountSchema } from '@store/schemas/latest';
@@ -109,7 +109,7 @@ class RequestTemplate extends Component<Props, State> {
         const { item } = this.props;
 
         return (
-            <TouchableHighlight onPress={this.onPress} underlayColor="#FFF">
+            <TouchableOpacity onPress={this.onPress} activeOpacity={0.6}>
                 <View style={[AppStyles.row, styles.row]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         <Avatar size={40} border source={{ uri: item.application.icon_url }} />
@@ -119,7 +119,7 @@ class RequestTemplate extends Component<Props, State> {
                         <Text style={[styles.description]}>{this.getDescription()}</Text>
                     </View>
                 </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
         );
     }
 }

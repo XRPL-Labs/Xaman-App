@@ -42,12 +42,6 @@ import { Steps, Props, State } from './types';
 class SendView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Payment;
 
-    static options() {
-        return {
-            bottomTabs: { visible: false },
-        };
-    }
-
     constructor(props: Props) {
         super(props);
 

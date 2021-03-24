@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableHighlight, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
-
-import StyleService from '@services/StyleService';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import { AccountSchema } from '@store/schemas/latest';
@@ -455,11 +453,7 @@ class TransactionTemplate extends Component<Props, State> {
 
     render() {
         return (
-            <TouchableHighlight
-                onPress={this.onPress}
-                underlayColor={StyleService.value('$tint')}
-                style={styles.touchHighlight}
-            >
+            <TouchableOpacity onPress={this.onPress} activeOpacity={0.6} style={styles.touchHighlight}>
                 <View style={[AppStyles.row, styles.container]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
                     <View style={[AppStyles.flex3, AppStyles.centerContent]}>
@@ -478,7 +472,7 @@ class TransactionTemplate extends Component<Props, State> {
                         {this.renderRightPanel()}
                     </View>
                 </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
         );
     }
 }

@@ -35,7 +35,7 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
         fontSize: AppFonts.h5.size,
-        color: '$black',
+        color: '$textPrimary',
     },
     amountRed: {
         fontFamily: AppFonts.base.familyMonoBold,
@@ -53,7 +53,7 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
         fontSize: AppFonts.subtext.size,
-        color: '$black',
+        color: '$textPrimary',
     },
     address: {
         fontFamily: AppFonts.base.familyMonoBold,

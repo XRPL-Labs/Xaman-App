@@ -12,6 +12,7 @@ const styles = StyleService.create({
         backgroundColor: '$lightGrey',
     },
     transactionContent: {
+        height: '100%',
         backgroundColor: '$background',
         borderRadius: 30,
         paddingTop: 28,
