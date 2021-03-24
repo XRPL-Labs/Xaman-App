@@ -15,7 +15,6 @@ import {
     Linking,
     TouchableOpacity,
     InteractionManager,
-    ActivityIndicator,
 } from 'react-native';
 
 import { Result as LiquidityResult } from 'xrpl-orderbook-reader';
@@ -36,7 +35,7 @@ import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { AppScreens, AppConfig } from '@common/constants';
 
 // components
-import { AmountInput, Header, Spacer, Icon, Button, InfoMessage } from '@components/General';
+import { AmountInput, Header, Spacer, Icon, Button, InfoMessage, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
@@ -362,7 +361,7 @@ class ExchangeView extends Component<Props, State> {
         const { direction, liquidity, amount, isPreparing, isLoading } = this.state;
 
         if (isLoading || !liquidity) {
-            return <ActivityIndicator color={AppColors.blue} />;
+            return <LoadingIndicator />;
         }
 
         if (liquidity.errors && liquidity.errors.length > 0) {

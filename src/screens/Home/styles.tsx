@@ -233,7 +233,7 @@ const styles = StyleService.create({
         marginRight: -10,
     },
     rateLoader: {
-        paddingVertical: 5.5,
+        paddingVertical: 5,
     },
     xrpIcon: {
         paddingRight: 40,

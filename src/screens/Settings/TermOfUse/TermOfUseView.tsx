@@ -3,7 +3,7 @@
  */
 import { isNumber } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, ActivityIndicator, BackHandler } from 'react-native';
+import { View, Text, BackHandler } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { hasNotch } from '@common/helpers/device';
@@ -14,12 +14,12 @@ import { AppScreens, AppConfig } from '@common/constants';
 import { ProfileRepository, CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 
-import { Header, Footer, Spacer, Button } from '@components/General';
+import { Header, Footer, Spacer, Button, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors, AppSizes } from '@theme';
+import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -152,9 +152,7 @@ class TermOfUseView extends Component<Props, State> {
                             isTOSLoaded: true,
                         });
                     }}
-                    renderLoading={() => (
-                        <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
-                    )}
+                    renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                     source={{ uri: this.getURI(), headers: this.getHeaders() }}
                 />
 

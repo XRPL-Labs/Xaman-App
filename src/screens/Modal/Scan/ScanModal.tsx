@@ -3,15 +3,13 @@
  */
 
 import React, { Component } from 'react';
-import { View, ImageBackground, Text, ActivityIndicator, Alert, Linking, BackHandler } from 'react-native';
+import { View, ImageBackground, Text, Alert, Linking, BackHandler } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
-
 import Clipboard from '@react-native-community/clipboard';
 import { RNCamera } from 'react-native-camera';
-
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
-import { ApiService } from '@services';
+import { ApiService, StyleService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
@@ -28,7 +26,7 @@ import { Payload, PayloadOrigin } from '@common/libs/payload';
 import Localize from '@locale';
 
 // components
-import { Button, Spacer, Icon } from '@components/General';
+import { Button, Spacer, Icon, LoadingIndicator } from '@components/General';
 
 // style
 import { AppStyles, AppColors } from '@theme';
@@ -602,9 +600,13 @@ class ScanView extends Component<Props, State> {
 
         if (isLoading) {
             return (
-                <ImageBackground source={Images.BackgroundShapes} style={[AppStyles.container, AppStyles.paddingSml]}>
+                <ImageBackground
+                    source={StyleService.getImage('BackgroundShapes')}
+                    imageStyle={AppStyles.BackgroundShapes}
+                    style={[AppStyles.container, AppStyles.paddingSml]}
+                >
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                        <ActivityIndicator color={AppColors.blue} size="large" />
+                        <LoadingIndicator size="large" />
                         <Spacer />
                         <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
                             {Localize.t('global.pleaseWait')}

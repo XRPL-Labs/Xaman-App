@@ -21,6 +21,8 @@ import { AccessLevels } from '@store/types';
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
+import StyleService from '@services/StyleService';
+
 // components
 import { Button, Icon, Header, DragSortableView } from '@components/General';
 
@@ -249,25 +251,23 @@ class AccountListView extends Component<Props, State> {
                 />
 
                 {accounts.isEmpty() ? (
-                    <View style={[AppStyles.contentContainer, AppStyles.padding]}>
-                        <ImageBackground
-                            source={Images.BackgroundShapes}
-                            imageStyle={AppStyles.BackgroundShapes}
-                            style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent]}
-                        >
-                            <Image style={[AppStyles.emptyIcon]} source={Images.ImageFirstAccount} />
-                            <Text style={[AppStyles.emptyText]}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
-                            <Button
-                                label={Localize.t('home.addAccount')}
-                                icon="IconPlus"
-                                iconStyle={[AppStyles.imgColorWhite]}
-                                rounded
-                                onPress={() => {
-                                    Navigator.push(AppScreens.Account.Add);
-                                }}
-                            />
-                        </ImageBackground>
-                    </View>
+                    <ImageBackground
+                        source={StyleService.getImage('BackgroundShapes')}
+                        imageStyle={AppStyles.BackgroundShapes}
+                        style={[AppStyles.contentContainer, AppStyles.padding]}
+                    >
+                        <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageFirstAccount')} />
+                        <Text style={[AppStyles.emptyText]}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
+                        <Button
+                            label={Localize.t('home.addAccount')}
+                            icon="IconPlus"
+                            iconStyle={[AppStyles.imgColorWhite]}
+                            rounded
+                            onPress={() => {
+                                Navigator.push(AppScreens.Account.Add);
+                            }}
+                        />
+                    </ImageBackground>
                 ) : (
                     <ScrollView
                         testID="account-list-scroll"

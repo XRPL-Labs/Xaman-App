@@ -10,7 +10,6 @@ import {
     TouchableWithoutFeedback,
     TouchableOpacity,
     InteractionManager,
-    ActivityIndicator,
 } from 'react-native';
 
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
@@ -27,12 +26,12 @@ import { BackendService, StyleService } from '@services';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Spacer } from '@components/General';
+import { Button, Spacer, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppSizes, AppColors } from '@theme';
+import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -259,7 +258,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                         </View>
 
                         {isLoading ? (
-                            <ActivityIndicator color={AppColors.blue} style={styles.activityIndicator} />
+                            <LoadingIndicator style={styles.activityIndicator} />
                         ) : (
                             <View style={[AppStyles.row, AppStyles.paddingVertical]}>
                                 {apps.map((app: any, index: number) => {
@@ -282,15 +281,14 @@ class HomeActionsOverlay extends Component<Props, State> {
                         )}
 
                         <View style={[AppStyles.row, { marginBottom: AppSizes.navigationBarHeight }]}>
-                            <View style={[AppStyles.flex1]}>
-                                <Button
-                                    contrast
-                                    numberOfLines={1}
-                                    label={Localize.t('global.scanAQRCode')}
-                                    onPress={this.onScanButtonPress}
-                                    icon="IconScan"
-                                />
-                            </View>
+                            <Button
+                                contrast
+                                numberOfLines={1}
+                                label={Localize.t('global.scanAQRCode')}
+                                onPress={this.onScanButtonPress}
+                                icon="IconScan"
+                                style={[AppStyles.flex1]}
+                            />
                         </View>
                     </View>
                 </Interactable.View>

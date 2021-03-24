@@ -239,7 +239,7 @@ exports[`Button Component should render with loading 1`] = `
 >
   <ActivityIndicator
     animating={true}
-    color="#ffffff"
+    color="#000000"
     hidesWhenStopped={true}
     size="small"
     style={

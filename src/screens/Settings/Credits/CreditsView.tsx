@@ -2,7 +2,7 @@
  * Credits screen
  */
 import React, { Component } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -13,19 +13,19 @@ import { AppScreens, AppConfig } from '@common/constants';
 import { CoreSchema } from '@store/schemas/latest';
 import { CoreRepository } from '@store/repositories';
 
-import { Header } from '@components/General';
+import { Header, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {}
 
 export interface State {
-    paddingBottom: number
+    paddingBottom: number;
     coreSettings: CoreSchema;
 }
 
@@ -77,9 +77,7 @@ class CreditsView extends Component<Props, State> {
                 <WebView
                     containerStyle={[AppStyles.flex1, { paddingBottom }]}
                     startInLoadingState
-                    renderLoading={() => (
-                        <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
-                    )}
+                    renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                     source={{ uri: this.getURI(), headers: this.getHeaders() }}
                 />
             </View>

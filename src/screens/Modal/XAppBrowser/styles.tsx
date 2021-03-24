@@ -1,15 +1,16 @@
-import { StyleSheet } from 'react-native';
-import { hasNotch } from '@common/helpers/device';
+import StyleService from '@services/StyleService';
 
+import { hasNotch } from '@common/helpers/device';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: { flex: 1 },
     webViewContainer: {
         flex: 1,
         paddingBottom: hasNotch() ? 20 : 0,
+        backgroundColor: '$background',
     },
-
     loadingStyle: {
+        backgroundColor: '$background',
         position: 'absolute',
         left: 0,
         right: 0,

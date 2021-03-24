@@ -31,27 +31,8 @@ export interface Props {}
 export interface State {
     coreSettings: CoreSchema;
     locales: any;
+    themeItems: any;
 }
-
-/* Constants ==================================================================== */
-const THEMES = {
-    light: {
-        title: 'Default',
-        description: 'Fresh and bright',
-    },
-    dark: {
-        title: 'Dark',
-        description: 'Really dark',
-    },
-    moonlight: {
-        title: 'Moonlight',
-        description: 'A touch of moon',
-    },
-    royal: {
-        title: 'Royal',
-        description: 'Royal blue blue',
-    },
-};
 
 /* Component ==================================================================== */
 class GeneralSettingsView extends Component<Props, State> {
@@ -66,7 +47,28 @@ class GeneralSettingsView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        this.state = { coreSettings: CoreRepository.getSettings(), locales: Localize.getLocales() };
+        this.state = {
+            coreSettings: CoreRepository.getSettings(),
+            locales: Localize.getLocales(),
+            themeItems: {
+                light: {
+                    title: Localize.t('global.default'),
+                    description: Localize.t('settings.lightThemeDescription'),
+                },
+                dark: {
+                    title: Localize.t('global.dark'),
+                    description: Localize.t('settings.darkThemeDescription'),
+                },
+                moonlight: {
+                    title: Localize.t('global.moonlight'),
+                    description: Localize.t('settings.moonlightThemeDescription'),
+                },
+                royal: {
+                    title: Localize.t('global.royal'),
+                    description: Localize.t('settings.royalThemeDescription'),
+                },
+            },
+        };
     }
 
     componentDidMount() {
@@ -246,7 +248,7 @@ class GeneralSettingsView extends Component<Props, State> {
     };
 
     render() {
-        const { coreSettings } = this.state;
+        const { coreSettings, themeItems } = this.state;
 
         return (
             <View testID="general-settings-view" style={[styles.container]}>
@@ -268,7 +270,7 @@ class GeneralSettingsView extends Component<Props, State> {
                     <View style={[styles.rowNoBorder]}>
                         <View style={[AppStyles.flex1]}>
                             {/* @ts-ignore */}
-                            {Object.keys(THEMES).map((key: Themes) => this.renderThemeButton(key, THEMES[key]))}
+                            {Object.keys(themeItems).map((key: Themes) => this.renderThemeButton(key, themeItems[key]))}
                         </View>
                     </View>
 

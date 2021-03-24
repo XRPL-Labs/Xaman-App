@@ -4,16 +4,7 @@
 
 import { sortBy } from 'lodash';
 import React, { Component } from 'react';
-import {
-    Animated,
-    View,
-    Text,
-    TouchableWithoutFeedback,
-    Image,
-    ScrollView,
-    ActivityIndicator,
-    InteractionManager,
-} from 'react-native';
+import { Animated, View, Text, TouchableWithoutFeedback, Image, ScrollView, InteractionManager } from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
@@ -27,12 +18,12 @@ import LedgerService from '@services/LedgerService';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 // components
-import { Button, Icon, Spacer } from '@components/General';
+import { Button, Icon, Spacer, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppSizes, AppColors } from '@theme';
+import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -221,7 +212,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                 {isLoading ? (
                     <>
                         <Spacer size={20} />
-                        <ActivityIndicator color={AppColors.blue} />
+                        <LoadingIndicator />
                     </>
                 ) : (
                     accountObjects.map(this.renderAccountObject)

@@ -31,3 +31,4 @@ export * from './CheckBox';
 export * from './SwipeButton';
 export * from './DragSortableView';
 export * from './AmountText';
+export * from './LoadingIndicator';

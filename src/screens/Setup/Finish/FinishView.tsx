@@ -5,7 +5,7 @@
 import { isNumber } from 'lodash';
 import React, { Component } from 'react';
 
-import { View, SafeAreaView, ActivityIndicator, Image, Alert } from 'react-native';
+import { View, SafeAreaView, Image, Alert } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { CoreRepository, ProfileRepository } from '@store/repositories';
@@ -17,10 +17,10 @@ import { BackendService, AuthenticationService, StyleService } from '@services';
 import Localize from '@locale';
 
 // component
-import { Button, Footer } from '@components/General';
+import { Button, Footer, LoadingIndicator } from '@components/General';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -125,9 +125,7 @@ class FinishView extends Component<Props, State> {
                                 isTOSLoaded: true,
                             });
                         }}
-                        renderLoading={() => (
-                            <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
-                        )}
+                        renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                         source={{ uri: AppConfig.termOfUseURL }}
                         style={styles.webView}
                     />

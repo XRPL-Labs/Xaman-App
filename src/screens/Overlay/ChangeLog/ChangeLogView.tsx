@@ -2,7 +2,7 @@
  * App Change log modal
  */
 import React, { Component } from 'react';
-import { View, Text, Animated, ActivityIndicator } from 'react-native';
+import { View, Text, Animated } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { CoreSchema } from '@store/schemas/latest';
@@ -11,12 +11,12 @@ import { CoreRepository } from '@store/repositories';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens, AppConfig } from '@common/constants';
 
-import { Button } from '@components/General';
+import { Button, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -118,9 +118,7 @@ class ChangeLogModalView extends Component<Props, State> {
                         <WebView
                             containerStyle={[AppStyles.flex1]}
                             startInLoadingState
-                            renderLoading={() => (
-                                <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
-                            )}
+                            renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                             source={{ uri: this.getURI(), headers: this.getHeaders() }}
                         />
                     </View>

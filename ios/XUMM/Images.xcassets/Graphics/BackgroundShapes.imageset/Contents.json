@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "background-shapes.png",
+      "filename" : "background-shapes@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "background-shapes@2x.png",
+      "filename" : "background-shapes@3x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "background-shapes@3x.png",
+      "filename" : "background-shapes@2x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

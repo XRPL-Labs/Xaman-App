@@ -16,7 +16,6 @@ import {
     InteractionManager,
     Share,
     Alert,
-    ActivityIndicator,
 } from 'react-native';
 
 import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
@@ -37,7 +36,7 @@ import { VibrateHapticFeedback, Prompt, Toast } from '@common/helpers/interface'
 import Localize from '@locale';
 
 // components
-import { Button, RaisedButton, InfoMessage, Spacer, Icon, AmountText } from '@components/General';
+import { Button, RaisedButton, InfoMessage, Spacer, Icon, AmountText, LoadingIndicator } from '@components/General';
 
 // style
 import { AppStyles, AppColors, AppFonts } from '@theme';
@@ -771,7 +770,7 @@ class HomeView extends Component<Props, State> {
                     {!discreetMode && !showRate && <Icon name="IconXrp" size={16} style={styles.xrpIcon} />}
 
                     {isLoadingRate ? (
-                        <ActivityIndicator color={AppColors.grey} style={styles.rateLoader} />
+                        <LoadingIndicator style={styles.rateLoader} />
                     ) : (
                         <Text
                             testID="account-balance-label"

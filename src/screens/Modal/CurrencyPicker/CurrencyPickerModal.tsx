@@ -5,18 +5,18 @@ import { has, flatMap, isFunction, isEmpty } from 'lodash';
 import Fuse from 'fuse.js';
 
 import React, { Component } from 'react';
-import { View, Text, SectionList, TouchableOpacity, ActivityIndicator, InteractionManager } from 'react-native';
+import { View, Text, SectionList, TouchableOpacity, InteractionManager } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 import { BackendService } from '@services';
 
-import { Header, SearchBar, Icon, Button, Spacer } from '@components/General';
+import { Header, SearchBar, Icon, Button, Spacer, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -222,7 +222,7 @@ class CurrencyPickerModal extends Component<Props, State> {
                         />
                     </View>
                 ) : isLoading ? (
-                    <ActivityIndicator color={AppColors.blue} style={styles.container} />
+                    <LoadingIndicator style={styles.container} />
                 ) : (
                     <SectionList
                         style={[AppStyles.paddingHorizontalSml]}

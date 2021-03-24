@@ -4,7 +4,7 @@
 
 import { has, get, assign, toUpper } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, ActivityIndicator, BackHandler, Alert, InteractionManager } from 'react-native';
+import { View, Text, BackHandler, Alert, InteractionManager } from 'react-native';
 import VeriffSdk from '@veriff/react-native-sdk';
 import { WebView } from 'react-native-webview';
 import { StringType } from 'xumm-string-decode';
@@ -21,7 +21,7 @@ import { AccountRepository, CoreRepository } from '@store/repositories';
 
 import { SocketService, BackendService } from '@services';
 
-import { Header, Button, Spacer } from '@components/General';
+import { Header, Button, Spacer, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
@@ -306,7 +306,7 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     renderLoading = () => {
-        return <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />;
+        return <LoadingIndicator style={styles.loadingStyle} size="large" />;
     };
 
     renderError = () => {

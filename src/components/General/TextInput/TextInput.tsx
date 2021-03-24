@@ -6,16 +6,7 @@
  *
  */
 import React, { Component } from 'react';
-import {
-    View,
-    TouchableHighlight,
-    TextInput,
-    ActivityIndicator,
-    TextInputProps,
-    ViewStyle,
-    TextStyle,
-    Platform,
-} from 'react-native';
+import { View, TouchableHighlight, TextInput, TextInputProps, ViewStyle, TextStyle, Platform } from 'react-native';
 
 import { StringType } from 'xumm-string-decode';
 
@@ -24,7 +15,7 @@ import { AppScreens } from '@common/constants';
 
 import StyleService from '@services/StyleService';
 
-import { Icon } from '@components/General/Icon';
+import { Icon, LoadingIndicator } from '@components/General';
 
 import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
@@ -195,7 +186,7 @@ class Input extends Component<Props, State> {
 
                 {isLoading && (
                     <View style={styles.loadingOverlay}>
-                        <ActivityIndicator color={StyleService.value('$blue')} style={styles.loadingIndicator} />
+                        <LoadingIndicator style={styles.loadingIndicator} />
                     </View>
                 )}
             </View>

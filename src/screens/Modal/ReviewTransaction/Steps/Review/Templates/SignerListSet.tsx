@@ -1,17 +1,17 @@
 import { isEmpty } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View, Text } from 'react-native';
 
 import { SignerListSet } from '@common/libs/ledger/transactions';
 
 import { getAccountName } from '@common/helpers/resolver';
 
-import { Spacer } from '@components/General';
+import { Spacer, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -82,7 +82,7 @@ class SignerListSetTemplate extends Component<Props, State> {
                 </View>
 
                 {isLoading ? (
-                    <ActivityIndicator color={AppColors.blue} />
+                    <LoadingIndicator />
                 ) : (
                     signers.map((e) => {
                         return (

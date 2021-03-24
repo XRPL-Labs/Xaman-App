@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator, Platform, ViewStyle } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, ViewStyle } from 'react-native';
 
-import { Avatar, Badge, Icon } from '@components/General';
+import { Avatar, Badge, Icon, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -105,7 +105,7 @@ class RecipientElement extends PureComponent<Props> {
                                     Platform.OS === 'ios' ? (
                                         <>
                                             <Text>Loading </Text>
-                                            <ActivityIndicator color={AppColors.blue} />
+                                            <LoadingIndicator />
                                         </>
                                     ) : (
                                         'Loading...'

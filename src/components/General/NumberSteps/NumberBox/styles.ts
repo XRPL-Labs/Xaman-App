@@ -7,7 +7,7 @@ const styles = StyleService.create({
         height: AppSizes.widthPercentageToDP(8),
         width: AppSizes.widthPercentageToDP(8),
         borderRadius: 10,
-        backgroundColor: '$silver',
+        backgroundColor: '$tint',
         borderColor: '$silver',
         justifyContent: 'center',
         alignItems: 'center',

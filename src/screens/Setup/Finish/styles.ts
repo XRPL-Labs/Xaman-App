@@ -13,6 +13,7 @@ const styles = StyleService.create({
         resizeMode: 'contain',
     },
     loadingStyle: {
+        backgroundColor: '$background',
         position: 'absolute',
         left: 0,
         right: 0,

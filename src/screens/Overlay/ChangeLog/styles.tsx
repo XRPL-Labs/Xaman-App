@@ -7,8 +7,8 @@ const styles = StyleService.create({
     visibleContent: {
         height: AppSizes.screen.height * 0.8,
         width: AppSizes.screen.width * 0.9,
-        backgroundColor: '$white',
-        borderRadius: 20,
+        backgroundColor: '$background',
+        borderRadius: 22,
     },
     headerContainer: {
         backgroundColor: '$tint',
@@ -29,6 +29,7 @@ const styles = StyleService.create({
         paddingTop: 10,
     },
     loadingStyle: {
+        backgroundColor: '$background',
         position: 'absolute',
         left: 0,
         right: 0,

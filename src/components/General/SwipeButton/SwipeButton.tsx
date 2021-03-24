@@ -1,15 +1,9 @@
 import React, { Component } from 'react';
-import {
-    Text,
-    View,
-    PanResponder,
-    Animated,
-    PanResponderGestureState,
-    GestureResponderEvent,
-    ActivityIndicator,
-} from 'react-native';
+import { Text, View, PanResponder, Animated, PanResponderGestureState, GestureResponderEvent } from 'react-native';
 
-import { AppSizes, AppColors } from '@theme';
+import { LoadingIndicator } from '@components/General';
+
+import { AppSizes } from '@theme';
 
 // Components
 import { Icon } from '../Icon';
@@ -17,6 +11,7 @@ import { Icon } from '../Icon';
 // Styles
 import styles from './styles';
 
+/* Constants ==================================================================== */
 const DEFAULT_ANIMATION_DURATION = 400;
 const RESET_AFTER_SUCCESS_DEFAULT_DELAY = 1000;
 const SWIPE_SUCCESS_THRESHOLD = 80;
@@ -167,7 +162,7 @@ class SwipeButton extends Component<Props, State> {
         if (isLoading) {
             return (
                 <View style={[styles.container]}>
-                    <ActivityIndicator animating size="small" style={styles.spinner} color={AppColors.white} />
+                    <LoadingIndicator style={styles.spinner} />
                 </View>
             );
         }

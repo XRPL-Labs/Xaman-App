@@ -17,10 +17,9 @@ import {
     TouchableOpacity,
     Share,
     ImageBackground,
-    ActivityIndicator,
 } from 'react-native';
 
-import { BackendService, SocketService, LedgerService } from '@services';
+import { BackendService, SocketService, LedgerService, StyleService } from '@services';
 
 import { NodeChain } from '@store/types';
 import { CoreSchema, AccountSchema } from '@store/schemas/latest';
@@ -35,18 +34,17 @@ import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 import { AppScreens, AppConfig } from '@common/constants';
 
 import { ActionSheet, Toast } from '@common/helpers/interface';
-import { Images } from '@common/helpers/images';
 import { Navigator } from '@common/helpers/navigator';
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { Header, Button, Badge, Spacer, Icon, ReadMore, AmountText } from '@components/General';
+import { Header, Button, Badge, Spacer, Icon, ReadMore, AmountText, LoadingIndicator } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -335,6 +333,13 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     showMenu = () => {
+        const { tx } = this.state;
+
+        // transaction still loading
+        if (!tx) {
+            return;
+        }
+
         const IosButtons = [
             Localize.t('global.share'),
             Localize.t('global.openInBrowser'),
@@ -1468,25 +1473,9 @@ class TransactionDetailsView extends Component<Props, State> {
         );
     };
 
-    renderLoading = () => {
-        return (
-            <ImageBackground source={Images.BackgroundShapes} style={[AppStyles.container, AppStyles.paddingSml]}>
-                <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                    <ActivityIndicator color={AppColors.blue} size="large" />
-                    <Spacer />
-                    <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>{Localize.t('global.pleaseWait')}</Text>
-                </View>
-            </ImageBackground>
-        );
-    };
-
     render() {
         const { asModal } = this.props;
         const { isLoading, scamAlert } = this.state;
-
-        if (isLoading) {
-            return this.renderLoading();
-        }
 
         return (
             <View style={AppStyles.container}>
@@ -1504,35 +1493,53 @@ class TransactionDetailsView extends Component<Props, State> {
                     containerStyle={asModal && { paddingTop: 0 }}
                 />
 
-                {scamAlert && (
-                    <View style={styles.dangerHeader}>
-                        <Text style={[AppStyles.h4, AppStyles.colorWhite]}>{Localize.t('global.fraudAlert')}</Text>
-                        <Text style={[AppStyles.subtext, AppStyles.textCenterAligned, AppStyles.colorWhite]}>
-                            {Localize.t(
-                                'global.thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution',
-                            )}
+                {isLoading ? (
+                    <ImageBackground
+                        source={StyleService.getImage('BackgroundShapes')}
+                        imageStyle={AppStyles.BackgroundShapes}
+                        style={[AppStyles.container, AppStyles.paddingSml, AppStyles.BackgroundShapesWH]}
+                    >
+                        <LoadingIndicator size="large" />
+                        <Spacer />
+                        <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
+                            {Localize.t('global.pleaseWait')}
                         </Text>
-                    </View>
+                    </ImageBackground>
+                ) : (
+                    <>
+                        {scamAlert && (
+                            <View style={styles.dangerHeader}>
+                                <Text style={[AppStyles.h4, AppStyles.colorWhite]}>
+                                    {Localize.t('global.fraudAlert')}
+                                </Text>
+                                <Text style={[AppStyles.subtext, AppStyles.textCenterAligned, AppStyles.colorWhite]}>
+                                    {Localize.t(
+                                        'global.thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution',
+                                    )}
+                                </Text>
+                            </View>
+                        )}
+
+                        <ScrollView testID="transaction-details-view">
+                            {this.renderHeader()}
+                            {this.renderAmount()}
+                            {this.renderMemos()}
+                            {this.renderSourceDestination()}
+                            {this.renderActionButtons()}
+                            <View style={styles.detailsContainer}>
+                                {this.renderTransactionId()}
+                                <Spacer size={30} />
+                                {this.renderDescription()}
+                                <Spacer size={30} />
+                                {this.renderFee()}
+                                <Spacer size={30} />
+                                {this.renderStatus()}
+                            </View>
+
+                            {/* renderFlags(tx); */}
+                        </ScrollView>
+                    </>
                 )}
-
-                <ScrollView testID="transaction-details-view">
-                    {this.renderHeader()}
-                    {this.renderAmount()}
-                    {this.renderMemos()}
-                    {this.renderSourceDestination()}
-                    {this.renderActionButtons()}
-                    <View style={styles.detailsContainer}>
-                        {this.renderTransactionId()}
-                        <Spacer size={30} />
-                        {this.renderDescription()}
-                        <Spacer size={30} />
-                        {this.renderFee()}
-                        <Spacer size={30} />
-                        {this.renderStatus()}
-                    </View>
-
-                    {/* renderFlags(tx); */}
-                </ScrollView>
             </View>
         );
     }

@@ -1,24 +1,15 @@
 import React, { Component } from 'react';
 import isEqual from 'lodash/isEqual';
 
-import {
-    Animated,
-    View,
-    Text,
-    TouchableWithoutFeedback,
-    ActivityIndicator,
-    TextStyle,
-    ViewStyle,
-    ImageStyle,
-} from 'react-native';
+import { Animated, View, Text, TouchableWithoutFeedback, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 
 import { Images } from '@common/helpers/images';
 
-import { Icon } from '@components/General/Icon';
+import { Icon, LoadingIndicator } from '@components/General';
 
-import { AppColors } from '@theme';
 import { styles } from './styles';
 
+/* Types ==================================================================== */
 interface Props {
     style?: ViewStyle | ViewStyle[];
     textStyle?: TextStyle | TextStyle[];
@@ -29,7 +20,6 @@ interface Props {
     activeOpacity?: number;
     isDisabled?: boolean;
     isLoading?: boolean;
-    activityIndicatorColor?: string;
     onPress?: () => void;
     onLongPress?: () => void;
     label?: string;
@@ -43,6 +33,7 @@ interface State {
     animatedValue: Animated.Value;
 }
 
+/* Component ==================================================================== */
 export default class RaisedButton extends Component<Props, State> {
     static defaultProps = {
         iconPosition: 'left',
@@ -159,21 +150,12 @@ export default class RaisedButton extends Component<Props, State> {
     }
 
     renderChildren() {
-        const {
-            activityIndicatorColor,
-            label,
-            icon,
-            iconPosition,
-            textStyle,
-            iconStyle,
-            iconSize,
-            isDisabled,
-            isLoading,
-        } = this.props;
+        const { label, icon, iconPosition, textStyle, iconStyle, iconSize, isDisabled, isLoading } = this.props;
 
         if (isLoading) {
-            return <ActivityIndicator color={activityIndicatorColor || AppColors.blue} />;
+            return <LoadingIndicator />;
         }
+
         return (
             /* eslint-disable-next-line */
             <View style={[styles.buttonWrapper, { opacity: isDisabled ? 0.3 : 1 }]}>

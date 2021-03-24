@@ -3,20 +3,20 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, ActivityIndicator } from 'react-native';
+import { SafeAreaView, View, Text } from 'react-native';
 
 import Clipboard from '@react-native-community/clipboard';
 
 import { Toast, Prompt } from '@common/helpers/interface';
 
 // components
-import { Button, Footer, Spacer } from '@components/General';
+import { Button, Footer, Spacer, LoadingIndicator } from '@components/General';
 
 // locale
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../../Context';
@@ -82,7 +82,7 @@ class ViewPublicKeyStep extends Component<Props, State> {
                                 {generatedAccount.address}
                             </Text>
                         ) : (
-                            <ActivityIndicator color={AppColors.blue} />
+                            <LoadingIndicator />
                         )}
                     </View>
                     <Button

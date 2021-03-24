@@ -2,12 +2,11 @@
 import React, { Component } from 'react';
 import isEqual from 'lodash/isEqual';
 
-import { View, TouchableOpacity, Text, ActivityIndicator, TextStyle, ViewStyle, ImageStyle } from 'react-native';
+import { View, TouchableOpacity, Text, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 
 import { Images } from '@common/helpers/images';
-import { Icon } from '@components/General/Icon';
+import { Icon, LoadingIndicator } from '@components/General';
 
-import { AppColors } from '@theme';
 import styles from './styles';
 
 interface Props {
@@ -31,7 +30,6 @@ interface Props {
     numberOfLines?: number;
     isLoading?: boolean;
     isDisabled?: boolean;
-    activityIndicatorColor?: string;
     onPress?: () => void;
     onLongPress?: () => void;
     label?: string;
@@ -126,17 +124,12 @@ export default class Button extends Component<Props> {
     }
 
     renderInnerContent() {
-        const { isLoading, activityIndicatorColor } = this.props;
+        const { isLoading } = this.props;
+
         if (isLoading) {
-            return (
-                <ActivityIndicator
-                    animating
-                    size="small"
-                    style={styles.spinner}
-                    color={activityIndicatorColor || AppColors.white}
-                />
-            );
+            return <LoadingIndicator size="small" style={styles.spinner} />;
         }
+
         return this.renderChildren();
     }
 
