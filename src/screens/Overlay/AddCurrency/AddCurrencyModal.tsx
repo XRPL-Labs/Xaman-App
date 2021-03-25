@@ -9,6 +9,8 @@ import { Animated, View, Text, Image, TouchableWithoutFeedback, TouchableOpacity
 
 import Interactable from 'react-native-interactable';
 
+import LedgerService from '@services/LedgerService';
+
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
@@ -39,6 +41,7 @@ export interface State {
     currencies: CurrenciesList;
     selectedCurrency: CurrencySchema;
     selectedParty: CounterPartySchema;
+    isLoading: boolean;
 }
 
 /* Component ==================================================================== */
@@ -70,6 +73,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
             currencies: undefined,
             selectedParty: undefined,
             selectedCurrency: undefined,
+            isLoading: false,
         };
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
@@ -120,11 +124,38 @@ class AddCurrencyOverlay extends Component<Props, State> {
     addCurrency = async () => {
         const { selectedCurrency } = this.state;
 
+        this.setState({
+            isLoading: true,
+        });
+
+        // set the default line limit
+        let lineLimit = 1000000000;
+
+        try {
+            // set the trustline limit by gateway balance if it's more than our default value
+            const resp = await LedgerService.getGatewayBalances(selectedCurrency.issuer);
+            const gatewayBalances = get(resp, ['obligations', selectedCurrency.currency]);
+
+            if (gatewayBalances && Number(gatewayBalances) > lineLimit) {
+                lineLimit = gatewayBalances;
+            }
+        } catch {
+            // ignore
+        } finally {
+            this.setState({
+                isLoading: false,
+            });
+        }
+
         const payload = await Payload.build(
             {
                 TransactionType: 'TrustSet',
                 Flags: 131072, // tfSetNoRipple
-                LimitAmount: { currency: selectedCurrency.currency, issuer: selectedCurrency.issuer, value: 999999999 },
+                LimitAmount: {
+                    currency: selectedCurrency.currency,
+                    issuer: selectedCurrency.issuer,
+                    value: lineLimit,
+                },
             },
             Localize.t('asset.addingAssetReserveDescription'),
         );
@@ -264,7 +295,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
     };
 
     renderContent = () => {
-        const { selectedCurrency } = this.state;
+        const { selectedCurrency, isLoading } = this.state;
 
         return (
             <View style={[styles.visibleContent, AppStyles.centerAligned]}>
@@ -322,6 +353,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
                 <Footer safeArea style={styles.footer}>
                     <Button
+                        isLoading={isLoading}
                         numberOfLines={1}
                         testID="add-and-sign-button"
                         isDisabled={!selectedCurrency}
