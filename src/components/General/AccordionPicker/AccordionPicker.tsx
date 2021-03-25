@@ -1,20 +1,11 @@
 import { isEqual, findIndex, isEmpty } from 'lodash';
 
 import React, { Component } from 'react';
-import {
-    View,
-    Text,
-    ViewStyle,
-    Modal,
-    FlatList,
-    TouchableOpacity,
-    TouchableHighlight,
-    LayoutChangeEvent,
-} from 'react-native';
+import { View, Text, ViewStyle, Modal, FlatList, TouchableOpacity, LayoutChangeEvent } from 'react-native';
 
 import { Icon } from '@components/General/Icon';
 
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -175,8 +166,8 @@ class AccordionPicker extends Component<Props, State> {
         const { selectedIndex, expanded } = this.state;
 
         return (
-            <TouchableHighlight
-                underlayColor={AppColors.light}
+            <TouchableOpacity
+                activeOpacity={0.8}
                 style={[
                     index === selectedIndex ? styles.pickerDropDownItemActive : styles.pickerDropDownItem,
                     AppStyles.centerContent,
@@ -191,7 +182,7 @@ class AccordionPicker extends Component<Props, State> {
                         </View>
                     )}
                 </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
         );
     };
 
