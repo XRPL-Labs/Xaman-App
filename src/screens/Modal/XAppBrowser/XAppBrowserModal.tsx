@@ -177,7 +177,9 @@ class XAppBrowserModal extends Component<Props, State> {
                 identifier: xApp,
                 title,
             },
-            this.fetchOTT,
+            () => {
+                this.fetchOTT(data);
+            },
         );
     };
 
@@ -218,7 +220,7 @@ class XAppBrowserModal extends Component<Props, State> {
         }
     };
 
-    fetchOTT = () => {
+    fetchOTT = (xAppNavigateData?: any) => {
         const { identifier, origin, originData, params } = this.props;
         const { appVersionCode, account, title, coreSettings, isLoading } = this.state;
 
@@ -257,6 +259,11 @@ class XAppBrowserModal extends Component<Props, State> {
                 accounttype: account.type,
                 accountaccess: account.accessLevel,
             });
+        }
+
+        // assign any extra data
+        if (xAppNavigateData) {
+            assign(data, { xAppNavigateData });
         }
 
         BackendService.getXAppLaunchToken(identifier, data)
