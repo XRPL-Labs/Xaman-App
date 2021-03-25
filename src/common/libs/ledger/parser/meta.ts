@@ -86,6 +86,7 @@ class Meta {
 
     private flipTrustlinePerspective = (quantity: any) => {
         const negatedBalance = new BigNumber(quantity.balance.value).negated();
+
         return {
             address: quantity.balance.issuer,
             balance: {
@@ -118,6 +119,7 @@ class Meta {
                 issuer: fields.HighLimit.issuer,
                 currency: fields.Balance.currency,
                 value: value.toString(),
+                action: value.isNegative() ? 'DEC' : 'INC',
             },
         };
         return [result, this.flipTrustlinePerspective(result)];
