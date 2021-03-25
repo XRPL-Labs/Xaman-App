@@ -19,7 +19,7 @@ import { AppScreens } from '@common/constants';
 import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 
-import { SocketService, BackendService } from '@services';
+import { SocketService, BackendService, PushNotificationsService } from '@services';
 
 import { Header, Button, Spacer, LoadingIndicator } from '@components/General';
 
@@ -90,7 +90,13 @@ class XAppBrowserModal extends Component<Props, State> {
         InteractionManager.runAfterInteractions(this.fetchOTT);
     }
 
-    onClose = () => {
+    onClose = (data?: { refreshEvents?: boolean }) => {
+        if (get(data, 'refreshEvents', false)) {
+            setTimeout(() => {
+                PushNotificationsService.emit('signRequestUpdate');
+            }, 1000);
+        }
+
         Navigator.dismissModal();
         return true;
     };
@@ -213,7 +219,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 this.showScanner();
                 break;
             case 'close':
-                this.onClose();
+                this.onClose(parsedData);
                 break;
             default:
                 break;
