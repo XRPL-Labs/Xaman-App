@@ -300,16 +300,16 @@ class Payment extends BaseTransaction {
         return changes;
     }
 
-    validate = (source: AccountSchema) => {
+    validate = (source: AccountSchema, multiSign?: boolean) => {
         /* eslint-disable-next-line */
         return new Promise<void>(async (resolve, reject) => {
-            if (!this.Amount || !this.Amount?.value || this.Amount?.value === '0') {
-                return reject(new Error(Localize.t('send.pleaseEnterAmount')));
+            // ignore validation if multiSign
+            if (multiSign) {
+                return resolve();
             }
 
-            // this is a multisign tx
-            if (source.balance === 0) {
-                return resolve();
+            if (!this.Amount || !this.Amount?.value || this.Amount?.value === '0') {
+                return reject(new Error(Localize.t('send.pleaseEnterAmount')));
             }
 
             // Sending XRP

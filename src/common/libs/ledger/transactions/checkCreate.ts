@@ -118,16 +118,16 @@ class CheckCreate extends BaseTransaction {
         return get(this, 'tx.InvoiceID', undefined);
     }
 
-    validate = (source: AccountSchema) => {
+    validate = (source: AccountSchema, multiSign?: boolean) => {
         /* eslint-disable-next-line */
         return new Promise<void>((resolve, reject) => {
-            if (!this.SendMax || !this.SendMax?.value || this.SendMax?.value === '0') {
-                return reject(new Error(Localize.t('send.pleaseEnterAmount')));
+            // this is a multisign tx & ignore balance check
+            if (multiSign) {
+                return resolve();
             }
 
-            // this is a multisign tx & ignore balance check
-            if (source.balance === 0) {
-                return resolve();
+            if (!this.SendMax || !this.SendMax?.value || this.SendMax?.value === '0') {
+                return reject(new Error(Localize.t('send.pleaseEnterAmount')));
             }
 
             if (this.SendMax.currency === 'XRP') {
