@@ -20,6 +20,7 @@ interface Props {
     activeOpacity?: number;
     isDisabled?: boolean;
     isLoading?: boolean;
+    loadingIndicatorStyle?: 'light' | 'dark';
     onPress?: () => void;
     onLongPress?: () => void;
     label?: string;
@@ -150,10 +151,20 @@ export default class RaisedButton extends Component<Props, State> {
     }
 
     renderChildren() {
-        const { label, icon, iconPosition, textStyle, iconStyle, iconSize, isDisabled, isLoading } = this.props;
+        const {
+            label,
+            icon,
+            iconPosition,
+            textStyle,
+            iconStyle,
+            iconSize,
+            isDisabled,
+            isLoading,
+            loadingIndicatorStyle,
+        } = this.props;
 
         if (isLoading) {
-            return <LoadingIndicator />;
+            return <LoadingIndicator color={loadingIndicatorStyle} />;
         }
 
         return (

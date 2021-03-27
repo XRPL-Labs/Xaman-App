@@ -30,6 +30,7 @@ interface Props {
     numberOfLines?: number;
     isLoading?: boolean;
     isDisabled?: boolean;
+    loadingIndicatorStyle?: 'light' | 'dark';
     onPress?: () => void;
     onLongPress?: () => void;
     label?: string;
@@ -124,10 +125,16 @@ export default class Button extends Component<Props> {
     }
 
     renderInnerContent() {
-        const { isLoading } = this.props;
+        const { isLoading, light, loadingIndicatorStyle } = this.props;
 
         if (isLoading) {
-            return <LoadingIndicator size="small" style={styles.spinner} />;
+            return (
+                <LoadingIndicator
+                    size="small"
+                    style={styles.spinner}
+                    color={loadingIndicatorStyle || light ? 'dark' : 'light'}
+                />
+            );
         }
 
         return this.renderChildren();
