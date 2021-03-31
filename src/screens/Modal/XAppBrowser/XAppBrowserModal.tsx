@@ -227,8 +227,8 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     fetchOTT = (xAppNavigateData?: any) => {
-        const { identifier, origin, originData, params } = this.props;
-        const { appVersionCode, account, title, coreSettings, isLoading } = this.state;
+        const { origin, originData, params } = this.props;
+        const { identifier, appVersionCode, account, title, coreSettings, isLoading } = this.state;
 
         if (!isLoading) {
             this.setState({
@@ -284,7 +284,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 } else {
                     this.setState({
                         ott,
-                        title: title || xappTitle,
+                        title: xappTitle || title,
                         error: undefined,
                     });
                 }
