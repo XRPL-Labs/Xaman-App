@@ -19,7 +19,7 @@ import { Payment } from '@common/libs/ledger/transactions';
 import { Destination } from '@common/libs/ledger/parser/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
-import { XRPLValueToNFT, NFTValueToXRPL } from '@common/utils/amount';
+import { NFTValueToXRPL } from '@common/utils/amount';
 // components
 import { Header } from '@components/General';
 
@@ -51,17 +51,22 @@ class SendView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        // default values
         const accounts = AccountRepository.getSpendableAccounts();
+        const source = find(accounts, { default: true }) || accounts[0];
+        const currency = props.currency || 'XRP';
+        const sendingNFT = typeof currency !== 'string' && currency.isNFT;
+        const amount = props.amount || '';
 
         this.state = {
             currentStep: Steps.Details,
             accounts,
-            source: find(accounts, { default: true }) || accounts[0],
+            source,
+            currency,
+            sendingNFT,
+            amount,
             destination: undefined,
             destinationInfo: undefined,
-            currency: props.currency || 'XRP',
-            sendingNFT: false,
-            amount: props.amount || '',
             payment: new Payment(),
             scanResult: props.scanResult || undefined,
             coreSettings: CoreRepository.getSettings(),
@@ -86,13 +91,9 @@ class SendView extends Component<Props, State> {
     };
 
     setCurrency = (currency: TrustLineSchema | string) => {
-        let isNFT = false;
-        if (typeof currency !== 'string' && XRPLValueToNFT(currency.balance)) {
-            isNFT = true;
-        }
         this.setState({
             currency,
-            sendingNFT: isNFT,
+            sendingNFT: typeof currency !== 'string' && currency.isNFT,
         });
     };
 
