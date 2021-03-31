@@ -41,7 +41,7 @@
     "realm": "10.2.0",
     "ripple-binary-codec": "1.1.1",
     "rippled-ws-client": "1.6.4",
-    "tangem-sdk-react-native": "1.1.3",
+    "tangem-sdk-react-native": "1.2.0",
     "uuid": "8.3.2",
     "xrpl-accountlib": "1.1.4",
     "xrpl-orderbook-reader": "0.3.1",

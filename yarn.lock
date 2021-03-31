@@ -12090,11 +12090,6 @@ react-native-keychain@4.0.5:
   resolved "https://registry.yarnpkg.com/react-native-keychain/-/react-native-keychain-4.0.5.tgz#6d3aef8f2789fc0dfa8149b8400d82ff77be361a"
   integrity sha512-TbiO8AO055EPjaxIuKxrCEOB4r81uQCVDFbtcs+e4pEOHxf6z3JgDC0UU0poJElKfCh37b+TFRxQhg6DbsYJBA==
 
-react-native-linear-gradient@2.5.6:
-  version "2.5.6"
-  resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"
-  integrity sha512-HDwEaXcQIuXXCV70O+bK1rizFong3wj+5Q/jSyifKFLg0VWF95xh8XQgfzXwtq0NggL9vNjPKXa016KuFu+VFg==
-
 react-native-navigation@7.11.3:
   version "7.11.3"
   resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-7.11.3.tgz#ea0c8553bedfbded4288561d5f0b4b6dce26affe"
@@ -12845,9 +12840,9 @@ ripple-secret-codec@^1.0.2:
     base-x "^3.0.3"
     bignumber.js "^5.0.0"
 
-"ripple-sign-keypairs@git+https://github.com/WietseWind/node-ripple-sign-keypairs.git":
+"ripple-sign-keypairs@https://github.com/WietseWind/node-ripple-sign-keypairs.git":
   version "1.0.2"
-  resolved "git+https://github.com/WietseWind/node-ripple-sign-keypairs.git#9470af370c26fe0cebc6dbc11f59c758ea07cb38"
+  resolved "https://github.com/WietseWind/node-ripple-sign-keypairs.git#9470af370c26fe0cebc6dbc11f59c758ea07cb38"
   dependencies:
     big-integer latest
     ripple-binary-codec latest
@@ -13848,10 +13843,10 @@ tail@^2.0.0:
   resolved "https://registry.yarnpkg.com/tail/-/tail-2.2.0.tgz#ef9a7f170c5a33bc0b3ca92a5d5fcd4748a77f46"
   integrity sha512-QqUMtWlnzArTvGyjVnAE5fAiXEm2Psvk/BlE7vWx2/dIEWMsAhcNPz7iW6WTiSM8h1fjtCkRMsaWBS1j6rpGBg==
 
-tangem-sdk-react-native@1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/tangem-sdk-react-native/-/tangem-sdk-react-native-1.1.3.tgz#d3d3ce60929b7007a5064b56da84a1cf66a38a46"
-  integrity sha512-+tsDR8w3mk07AyUILIFKp3LaIUDjcJrx7tn4lVYm2I9OpWbWbb05DEA3yGBFFgBEgWaD0fKec8Nq6lsXff8UDQ==
+tangem-sdk-react-native@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/tangem-sdk-react-native/-/tangem-sdk-react-native-1.2.0.tgz#59bd4a391fac7d423c59ebc19f00656ed9773c47"
+  integrity sha512-kBI3bcr5bhp5wbnqr6Z5715vRN50oLJGAUEHqFSjOtVMgcUcw3zmYpliV+sQs4wDZFYG9SYlaQCZ1WLr9FyyMA==
 
 tapable@^1.0.0, tapable@^1.1.3:
   version "1.1.3"
