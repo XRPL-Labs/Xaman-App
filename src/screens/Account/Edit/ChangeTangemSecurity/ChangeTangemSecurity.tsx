@@ -11,6 +11,7 @@ import RNTangemSdk, { Card } from 'tangem-sdk-react-native';
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
+import { Prompt } from '@common/helpers/interface';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -76,6 +77,7 @@ class ChangeTangemSecurityView extends Component<Props, State> {
     };
 
     onSuccessChange = (isPin2Default: boolean) => {
+        const { currentSecurity } = this.state;
         const { account } = this.props;
 
         AccountRepository.update({
@@ -86,7 +88,18 @@ class ChangeTangemSecurityView extends Component<Props, State> {
             }),
         });
 
-        Navigator.pop();
+        Prompt(
+            Localize.t('global.success'),
+            Localize.t('account.cardSecuritySuccessfullyChangedTo', { security: currentSecurity }),
+            [
+                {
+                    onPress: () => {
+                        Navigator.pop();
+                    },
+                },
+            ],
+            { type: 'default' },
+        );
     };
 
     removePasscode = () => {
