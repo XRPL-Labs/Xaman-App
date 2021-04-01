@@ -168,7 +168,7 @@ class RequestView extends Component<Props, State> {
         let content = `https://xumm.app/detect/request:${source.address}`;
 
         if (amount && withAmount) {
-            content += `&amount=${amount}`;
+            content += `?amount=${amount}`;
         }
 
         return content;

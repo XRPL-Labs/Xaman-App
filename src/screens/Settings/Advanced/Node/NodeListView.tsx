@@ -5,7 +5,7 @@
 import { flatMap } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text, SectionList, TouchableHighlight } from 'react-native';
+import { View, Text, SectionList, TouchableOpacity } from 'react-native';
 
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
@@ -151,12 +151,12 @@ class NodeListView extends Component<Props, State> {
         const selected = item.url === coreSettings.defaultNode;
 
         return (
-            <TouchableHighlight
+            <TouchableOpacity
+                activeOpacity={0.8}
                 testID={`node-${item.url}`}
                 onPress={() => {
                     this.onItemPress(item);
                 }}
-                underlayColor="rgba(154, 154, 154, 0.25)"
             >
                 <View style={[styles.row]}>
                     <View style={[AppStyles.row, AppStyles.flex6, AppStyles.centerAligned]}>
@@ -178,7 +178,7 @@ class NodeListView extends Component<Props, State> {
                         </View>
                     )}
                 </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
         );
     };
 

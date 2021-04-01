@@ -162,7 +162,7 @@ class SwipeButton extends Component<Props, State> {
         if (isLoading) {
             return (
                 <View style={[styles.container]}>
-                    <LoadingIndicator style={styles.spinner} />
+                    <LoadingIndicator style={styles.spinner} color="light" />
                 </View>
             );
         }

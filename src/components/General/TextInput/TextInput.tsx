@@ -6,7 +6,7 @@
  *
  */
 import React, { Component } from 'react';
-import { View, TouchableHighlight, TextInput, TextInputProps, ViewStyle, TextStyle, Platform } from 'react-native';
+import { View, TouchableOpacity, TextInput, TextInputProps, ViewStyle, TextStyle, Platform } from 'react-native';
 
 import { StringType } from 'xumm-string-decode';
 
@@ -179,9 +179,9 @@ class Input extends Component<Props, State> {
             <View style={[AppStyles.row]}>
                 {input}
                 {showScanner && (
-                    <TouchableHighlight style={styles.scanButton} onPress={this.showScanner}>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.scanButton} onPress={this.showScanner}>
                         <Icon size={25} name="IconScan" style={styles.scanIcon} />
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                 )}
 
                 {isLoading && (

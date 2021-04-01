@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableHighlight } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
@@ -254,7 +254,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
 
     render() {
         return (
-            <TouchableHighlight onPress={this.onPress} underlayColor="#FFF">
+            <TouchableOpacity onPress={this.onPress} activeOpacity={0.8}>
                 <View style={[AppStyles.row, styles.container]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
                     <View style={[AppStyles.flex3, AppStyles.centerContent]}>
@@ -271,7 +271,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
                         {this.renderRightPanel()}
                     </View>
                 </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
         );
     }
 }

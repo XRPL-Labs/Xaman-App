@@ -247,7 +247,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             });
 
             try {
-                await transaction.validate(source);
+                await transaction.validate(source, payload.isMultiSign());
             } catch (e) {
                 Navigator.showAlertModal({
                     type: 'error',
@@ -269,7 +269,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         }
 
         // account is not activated and want to sign a tx
-        if (payload.payload.tx_type !== 'SignIn' && !payload.meta.multisign && source.balance === 0) {
+        if (payload.payload.tx_type !== 'SignIn' && !payload.isMultiSign() && source.balance === 0) {
             Alert.alert(
                 Localize.t('global.error'),
                 Localize.t('account.selectedAccountIsNotActivatedPleaseChooseAnotherOne'),
@@ -338,7 +338,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         // set the source account to payload
         // ignore if it's multisign
-        if (!payload.meta.multisign) {
+        if (!payload.isMultiSign()) {
             transaction.Account = { address: item.address };
         }
 
@@ -358,7 +358,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 signed_blob: transaction.TxnSignature,
                 tx_id: transaction.Hash,
                 signmethod: transaction.SignMethod,
-                multisigned: payload.meta.multisign ? transaction.Account.address : '',
+                multisigned: payload.isMultiSign() ? transaction.Account.address : '',
                 origintype: payload.origin || PayloadOrigin.EVENT_LIST,
                 permission: {
                     push: true,

@@ -448,6 +448,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                         <Spacer size={20} />
 
                         <RaisedButton
+                            loadingIndicatorStyle="dark"
                             isLoading={isLoading}
                             isDisabled={!canRemove}
                             icon="IconTrash"

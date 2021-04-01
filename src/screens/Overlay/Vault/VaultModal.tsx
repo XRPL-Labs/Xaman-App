@@ -397,7 +397,7 @@ class VaultModal extends Component<Props, State> {
         await RNTangemSdk.startSession();
 
         // run sign command
-        await RNTangemSdk.sign(cardId, [preparedTx.hashToSign])
+        await RNTangemSdk.sign([preparedTx.hashToSign], { cardId })
             .then((resp) => {
                 const { signature } = resp;
 

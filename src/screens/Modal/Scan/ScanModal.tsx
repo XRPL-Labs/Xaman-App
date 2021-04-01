@@ -417,10 +417,16 @@ class ScanView extends Component<Props, State> {
             detectedType = StringType.XrplDestination;
         }
 
+        // if any black list defined check in the list
         if (!type && onRead && blackList) {
             if (blackList.indexOf(detectedType) === -1) {
                 Navigator.dismissModal();
                 onRead(content);
+            } else {
+                // if detected in black list just return and enable reading after 1 sec
+                setTimeout(() => {
+                    this.setShouldRead(true);
+                }, 1000);
             }
             return;
         }

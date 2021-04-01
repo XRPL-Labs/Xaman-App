@@ -218,13 +218,13 @@ const styles = StyleService.create({
         paddingBottom: 6,
         height: AppSizes.scale(60),
         borderRadius: AppSizes.scale(60) / 4,
-
         borderWidth: 1,
         borderColor: '$lightBlue',
-        backgroundColor: '$light',
+        backgroundColor: '$tint',
     },
     iconAccount: {
         marginRight: 15,
+        tintColor: '$contrast',
     },
     switchAccountButton: {
         backgroundColor: '$tint',
