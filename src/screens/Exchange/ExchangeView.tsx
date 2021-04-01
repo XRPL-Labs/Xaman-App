@@ -554,6 +554,7 @@ class ExchangeView extends Component<Props, State> {
                                 ref={(r) => {
                                     this.amountInput = r;
                                 }}
+                                decimalPlaces={direction === 'sell' ? 6 : 8}
                                 onChange={this.onAmountChange}
                                 placeholderTextColor={AppColors.red}
                                 style={styles.fromAmount}

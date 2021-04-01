@@ -24,6 +24,7 @@ export interface Props {
 export interface State {
     isLoading: boolean;
     amount: string;
+    currencyName: string;
     editableAmount: boolean;
     destinationDetails: AccountNameType;
 }
@@ -39,6 +40,9 @@ class CheckCreateTemplate extends Component<Props, State> {
             isLoading: false,
             editableAmount: !props.transaction.SendMax?.value,
             amount: props.transaction.SendMax?.value,
+            currencyName: props.transaction.SendMax?.currency
+                ? NormalizeCurrencyCode(props.transaction.SendMax.currency)
+                : 'XRP',
             destinationDetails: { name: '', source: '' },
         };
     }
@@ -96,7 +100,7 @@ class CheckCreateTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoading, editableAmount, amount, destinationDetails } = this.state;
+        const { isLoading, editableAmount, currencyName, amount, destinationDetails } = this.state;
         return (
             <>
                 <View style={styles.label}>
@@ -134,17 +138,13 @@ class CheckCreateTemplate extends Component<Props, State> {
                                 ref={(r) => {
                                     this.amountInput = r;
                                 }}
+                                decimalPlaces={currencyName === 'XRP' ? 6 : 8}
                                 onChange={this.onSendMaxChange}
                                 style={[styles.amountInput]}
                                 value={amount}
                                 editable={editableAmount}
                             />
-                            <Text style={[styles.amountInput]}>
-                                {' '}
-                                {transaction.SendMax?.currency
-                                    ? NormalizeCurrencyCode(transaction.SendMax.currency)
-                                    : 'XRP'}
-                            </Text>
+                            <Text style={[styles.amountInput]}> {currencyName}</Text>
                         </View>
                         {editableAmount && (
                             <Button

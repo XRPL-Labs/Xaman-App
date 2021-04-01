@@ -342,6 +342,7 @@ class DetailsStep extends Component<Props, State> {
                                             this.amountInput = r;
                                         }}
                                         fractional={!sendingNFT}
+                                        decimalPlaces={typeof currency === 'string' ? 6 : 8}
                                         testID="amount-input"
                                         onChange={this.onAmountChange}
                                         returnKeyType="done"

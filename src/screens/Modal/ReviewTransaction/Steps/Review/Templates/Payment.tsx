@@ -33,6 +33,7 @@ export interface State {
     account: string;
     isLoading: boolean;
     amount: string;
+    currencyName: string;
     editableAmount: boolean;
     destinationDetails: AccountNameType;
     isPartialPayment: boolean;
@@ -54,6 +55,9 @@ class PaymentTemplate extends Component<Props, State> {
             isLoading: false,
             editableAmount: !props.transaction.Amount?.value,
             amount: props.transaction.Amount?.value,
+            currencyName: props.transaction.Amount?.currency
+                ? NormalizeCurrencyCode(props.transaction.Amount.currency)
+                : 'XRP',
             destinationDetails: { name: '', source: '' },
             isPartialPayment: false,
             exchangeRate: undefined,
@@ -289,8 +293,10 @@ class PaymentTemplate extends Component<Props, State> {
             xrpRoundedUp,
             editableAmount,
             amount,
+            currencyName,
             destinationDetails,
         } = this.state;
+
         return (
             <>
                 <View style={styles.label}>
@@ -330,17 +336,13 @@ class PaymentTemplate extends Component<Props, State> {
                                         ref={(r) => {
                                             this.amountInput = r;
                                         }}
+                                        decimalPlaces={currencyName === 'XRP' ? 6 : 8}
                                         onChange={this.onAmountChange}
                                         style={[styles.amountInput]}
                                         value={amount}
                                         editable={editableAmount}
                                     />
-                                    <Text style={[styles.amountInput]}>
-                                        {' '}
-                                        {transaction.Amount?.currency
-                                            ? NormalizeCurrencyCode(transaction.Amount.currency)
-                                            : 'XRP'}
-                                    </Text>
+                                    <Text style={[styles.amountInput]}> {currencyName}</Text>
                                 </View>
                                 <Button
                                     onPress={() => {

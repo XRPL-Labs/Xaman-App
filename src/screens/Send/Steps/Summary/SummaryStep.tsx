@@ -470,6 +470,7 @@ class SummaryStep extends Component<Props, State> {
                                             this.amountInput = r;
                                         }}
                                         fractional={!sendingNFT}
+                                        decimalPlaces={typeof currency === 'string' ? 6 : 8}
                                         onChange={this.onAmountChange}
                                         style={[styles.amountInput]}
                                         value={amount}

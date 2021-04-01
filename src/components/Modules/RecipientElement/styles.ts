@@ -60,6 +60,6 @@ export default StyleService.create({
         paddingTop: 10,
         width: '100%',
         borderTopWidth: 1,
-        borderTopColor: '$grey',
+        borderTopColor: '$lightGrey',
     },
 });

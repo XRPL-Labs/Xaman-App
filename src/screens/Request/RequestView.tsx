@@ -255,6 +255,7 @@ class RequestView extends Component<Props, State> {
                                         <View style={AppStyles.flex1}>
                                             <AmountInput
                                                 testID="amount-input"
+                                                decimalPlaces={6}
                                                 onChange={this.onAmountChange}
                                                 returnKeyType="done"
                                                 style={[styles.amountInput]}

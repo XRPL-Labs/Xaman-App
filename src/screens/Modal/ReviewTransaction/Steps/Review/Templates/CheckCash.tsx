@@ -27,6 +27,7 @@ export interface State {
     cashAmount: string;
     editableAmount: boolean;
     amountField: 'DeliverMin' | 'Amount';
+    currencyName: string;
     sourceDetails: AccountNameType;
 }
 
@@ -37,11 +38,17 @@ class CheckCashTemplate extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        const amountField = props.transaction.Amount ? 'Amount' : 'DeliverMin';
+        const currencyName = props.transaction[amountField]?.currency
+            ? NormalizeCurrencyCode(props.transaction[amountField].currency)
+            : 'XRP';
+
         this.state = {
             isLoading: false,
             editableAmount: !props.transaction.DeliverMin?.value && !props.transaction.Amount?.value,
             cashAmount: props.transaction.DeliverMin?.value || props.transaction.Amount?.value,
-            amountField: props.transaction.Amount ? 'Amount' : 'DeliverMin',
+            amountField,
+            currencyName,
             sourceDetails: { name: '', source: '' },
         };
     }
@@ -114,7 +121,7 @@ class CheckCashTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoading, editableAmount, amountField, cashAmount, sourceDetails } = this.state;
+        const { isLoading, editableAmount, amountField, currencyName, cashAmount, sourceDetails } = this.state;
 
         return (
             <>
@@ -164,17 +171,13 @@ class CheckCashTemplate extends Component<Props, State> {
                                         ref={(r) => {
                                             this.amountInput = r;
                                         }}
+                                        decimalPlaces={currencyName === 'XRP' ? 6 : 8}
                                         onChange={this.onAmountChange}
                                         style={[styles.amountInput]}
                                         value={cashAmount}
                                         editable={editableAmount}
                                     />
-                                    <Text style={[styles.amountInput]}>
-                                        {' '}
-                                        {transaction[amountField]?.currency
-                                            ? NormalizeCurrencyCode(transaction[amountField].currency)
-                                            : 'XRP'}
-                                    </Text>
+                                    <Text style={[styles.amountInput]}> {currencyName}</Text>
                                 </View>
                                 <Button
                                     onPress={() => {
