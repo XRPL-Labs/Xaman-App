@@ -24,7 +24,7 @@ const Footer: React.SFC<Props> = ({ children, style, safeArea }) => (
     <View
         style={[
             styles.container,
-            { paddingBottom: safeArea && (hasNotch() ? 34 : 0) + AppSizes.paddingExtraSml },
+            { paddingBottom: safeArea && (hasNotch() ? 34 : 10) + AppSizes.paddingExtraSml },
             style,
         ]}
     >

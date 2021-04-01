@@ -18,6 +18,7 @@ interface Props {
     value?: string;
     editable?: boolean;
     fractional?: boolean;
+    decimalPlaces?: number;
     returnKeyType?: ReturnKeyTypeOptions;
     placeholderTextColor?: string;
     onChange?: (value: string) => void;
@@ -34,13 +35,14 @@ class AmountInput extends PureComponent<Props, State> {
 
     static defaultProps = {
         fractional: true,
+        decimalPlaces: 8,
     };
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            formatted: props.value ? AmountInput.format(props.value, props.fractional) : '',
+            formatted: props.value ? AmountInput.format(props.value, props.fractional, props.decimalPlaces) : '',
             value: props.value ? AmountInput.normalize(props.value) : '',
         };
     }
@@ -61,6 +63,14 @@ class AmountInput extends PureComponent<Props, State> {
         }, 50);
     };
 
+    public isFocused = (): boolean => {
+        if (this.instance) {
+            return this.instance.isFocused();
+        }
+
+        return false;
+    };
+
     public getValue = (): string => {
         const { value } = this.state;
 
@@ -68,7 +78,9 @@ class AmountInput extends PureComponent<Props, State> {
     };
 
     static getDerivedStateFromProps(nextProps: Props) {
-        const formatted = nextProps.value ? AmountInput.format(nextProps.value, nextProps.fractional) : '';
+        const formatted = nextProps.value
+            ? AmountInput.format(nextProps.value, nextProps.fractional, nextProps.decimalPlaces)
+            : '';
         const value = nextProps.value ? AmountInput.normalize(nextProps.value) : '';
 
         return {
@@ -87,7 +99,7 @@ class AmountInput extends PureComponent<Props, State> {
         return value.replace(',', '.');
     };
 
-    static format = (value: string, fractional?: boolean): string => {
+    static format = (value: string, fractional?: boolean, decimalPlaces = 8): string => {
         if (!value) {
             return '';
         }
@@ -110,11 +122,11 @@ class AmountInput extends PureComponent<Props, State> {
             }
 
             // not more than 8 decimal places
-            if (formatted.split(separator)[1] && formatted.split(separator).reverse()[0].length >= 8) {
+            if (formatted.split(separator)[1] && formatted.split(separator).reverse()[0].length >= decimalPlaces) {
                 formatted = `${formatted.split(separator).reverse()[1]}${separator}${formatted
                     .split(separator)
                     .reverse()[0]
-                    .slice(0, 8)}`;
+                    .slice(0, decimalPlaces)}`;
             }
 
             // "." to "0."
@@ -137,9 +149,9 @@ class AmountInput extends PureComponent<Props, State> {
     };
 
     onValueChange = (value: string) => {
-        const { onChange, fractional } = this.props;
+        const { onChange, fractional, decimalPlaces } = this.props;
 
-        const formatted = AmountInput.format(value, fractional);
+        const formatted = AmountInput.format(value, fractional, decimalPlaces);
         const clean = AmountInput.normalize(formatted);
 
         this.setState(
