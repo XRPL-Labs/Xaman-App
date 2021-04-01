@@ -29,7 +29,7 @@ const styles = StyleService.create({
         elevation: 10,
     },
     cancelButton: {
-        backgroundColor: '$black',
+        // backgroundColor: '$black',
     },
     cancelButtonText: {
         fontFamily: AppFonts.base.familyBold,

@@ -75,8 +75,6 @@ class HelpView extends Component<Props, State> {
                             roundedSmall
                             light
                             label={Localize.t('global.close').toUpperCase()}
-                            icon="IconX"
-                            iconStyle={AppStyles.imgColorBlue}
                         />
                     </View>
                 </View>
