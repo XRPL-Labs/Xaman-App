@@ -95,7 +95,7 @@ class TransactionDetailsView extends Component<Props, State> {
             spendableAccounts: AccountRepository.getSpendableAccounts(),
             connectedChain: SocketService.chain,
             balanceChanges: undefined,
-            incomingTx: props.tx?.Destination?.address === props.account.address,
+            incomingTx: props.tx?.Account?.address !== props.account.address,
             scamAlert: false,
             showMemo: true,
             isLoading: !props.tx,
@@ -282,6 +282,11 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case 'CheckCancel':
                 address = tx.Account.address;
+                break;
+            case 'OfferCreate':
+                if (incomingTx) {
+                    address = tx.Account.address;
+                }
                 break;
             default:
                 break;
