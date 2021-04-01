@@ -8,12 +8,13 @@ import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import {
     View,
+    Text,
     TouchableOpacity,
     Keyboard,
     KeyboardAvoidingView,
     ScrollView,
     Platform,
-    Text,
+    Share,
     InteractionManager,
 } from 'react-native';
 
@@ -162,7 +163,7 @@ class RequestView extends Component<Props, State> {
         }
     };
 
-    getQRContent = () => {
+    getLink = () => {
         const { source, amount, withAmount } = this.state;
 
         let content = `https://xumm.app/detect/request:${source.address}`;
@@ -189,6 +190,13 @@ class RequestView extends Component<Props, State> {
         }, 10);
     };
 
+    onHeaderSharePress = () => {
+        Share.share({
+            message: this.getLink(),
+            url: undefined,
+        }).catch(() => {});
+    };
+
     render() {
         const { accounts, source, amount, amountRate, currencyRate, coreSettings, withAmount } = this.state;
 
@@ -200,6 +208,11 @@ class RequestView extends Component<Props, State> {
                         onPress: this.onHeaderBackPress,
                     }}
                     centerComponent={{ text: 'Request' }}
+                    rightComponent={{
+                        icon: 'IconShare',
+                        iconSize: 23,
+                        onPress: this.onHeaderSharePress,
+                    }}
                 />
 
                 <KeyboardAvoidingView
@@ -211,7 +224,7 @@ class RequestView extends Component<Props, State> {
                     <ScrollView>
                         <View style={styles.qrCodeContainer}>
                             <View style={styles.qrCode}>
-                                <QRCode size={AppSizes.moderateScale(150)} value={this.getQRContent()} />
+                                <QRCode size={AppSizes.moderateScale(150)} value={this.getLink()} />
                             </View>
                         </View>
 
