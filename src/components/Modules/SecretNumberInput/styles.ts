@@ -29,7 +29,7 @@ export default StyleService.create({
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.h4.size,
         textAlign: 'center',
-        color: '$blue'
+        color: '$blue',
     },
     inputTextActive: {
         paddingTop: 0,
