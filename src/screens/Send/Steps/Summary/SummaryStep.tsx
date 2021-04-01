@@ -223,6 +223,11 @@ class SummaryStep extends Component<Props, State> {
 
         const bAmount = new BigNumber(amount);
 
+        if (!amount || parseFloat(amount) === 0) {
+            Alert.alert(Localize.t('global.error'), Localize.t('send.pleaseEnterAmount'));
+            return;
+        }
+
         if (source.balance === 0) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.accountIsNotActivated'));
             return;
