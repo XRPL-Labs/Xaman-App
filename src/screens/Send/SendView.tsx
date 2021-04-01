@@ -113,8 +113,15 @@ class SendView extends Component<Props, State> {
         this.setState({ scanResult: result });
     };
 
-    changeView = (step: Steps) => {
-        // change current view
+    changeStep = (step: Steps) => {
+        // disable pop gesture in summary step for preventing closing the screen
+        // while swiping the submit button
+        if (step === Steps.Summary) {
+            Navigator.mergeOptions({
+                popGesture: false,
+            });
+        }
+        // change current step view
         this.setState({
             currentStep: step,
         });
@@ -123,7 +130,7 @@ class SendView extends Component<Props, State> {
     submit = () => {
         const { payment, coreSettings } = this.state;
 
-        this.changeView(Steps.Submitting);
+        this.changeStep(Steps.Submitting);
 
         // submit payment to the ledger
         payment.submit().then((submitResult) => {
@@ -142,7 +149,7 @@ class SendView extends Component<Props, State> {
                                 }
                             }
 
-                            this.changeView(Steps.Result);
+                            this.changeStep(Steps.Result);
                         });
                     },
                 );
@@ -150,7 +157,7 @@ class SendView extends Component<Props, State> {
                 if (coreSettings.hapticFeedback) {
                     VibrateHapticFeedback('notificationError');
                 }
-                this.changeView(Steps.Result);
+                this.changeStep(Steps.Result);
             }
         });
     };
@@ -241,10 +248,10 @@ class SendView extends Component<Props, State> {
                 Navigator.popToRoot();
                 break;
             case Steps.Details:
-                this.changeView(Steps.Recipient);
+                this.changeStep(Steps.Recipient);
                 break;
             case Steps.Recipient:
-                this.changeView(Steps.Summary);
+                this.changeStep(Steps.Summary);
                 break;
             case Steps.Summary:
                 this.send();
@@ -262,10 +269,10 @@ class SendView extends Component<Props, State> {
                 Navigator.pop();
                 break;
             case Steps.Recipient:
-                this.changeView(Steps.Details);
+                this.changeStep(Steps.Details);
                 break;
             case Steps.Summary:
-                this.changeView(Steps.Recipient);
+                this.changeStep(Steps.Recipient);
                 break;
             default:
                 break;
