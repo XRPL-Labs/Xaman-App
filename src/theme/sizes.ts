@@ -27,7 +27,7 @@ const statusBarHeight = Platform.select({
 });
 
 // soft menu bar
-const navigationBarHeight = Platform.OS === 'android' ? height - Dimensions.get('window').height + 10 : 0;
+const navigationBarHeight = Platform.OS === 'android' ? height - Dimensions.get('window').height : 0;
 
 const Sizes = {
     // Screen Dimensions

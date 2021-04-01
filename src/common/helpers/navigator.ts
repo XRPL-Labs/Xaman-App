@@ -24,7 +24,10 @@ const getDefaultOptions = () => {
             visible: false,
         },
         statusBar: {
-            style: StyleService.isDarkMode() ? 'light' : 'dark',
+            style: Platform.select({
+                android: 'default',
+                ios: StyleService.isDarkMode() ? 'light' : 'dark',
+            }),
             drawBehind: false,
         },
         bottomTabs: {

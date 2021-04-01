@@ -56,7 +56,6 @@ class AddCurrencyOverlay extends Component<Props, State> {
     static options() {
         return {
             statusBar: {
-                visible: true,
                 style: 'light',
             },
             topBar: {

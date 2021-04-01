@@ -201,7 +201,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                     verticalOnly
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
-                        { y: AppSizes.screen.height - AppSizes.moderateScale(400) - AppSizes.navigationBarHeight },
+                        { y: AppSizes.screen.height - AppSizes.moderateScale(380) - AppSizes.navigationBarHeight },
                     ]}
                     alertAreas={[
                         { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
@@ -209,19 +209,19 @@ class HomeActionsOverlay extends Component<Props, State> {
                             id: 'top',
                             influenceArea: {
                                 top:
-                                    AppSizes.screen.height - AppSizes.moderateScale(400) - AppSizes.navigationBarHeight,
+                                    AppSizes.screen.height - AppSizes.moderateScale(380) - AppSizes.navigationBarHeight,
                             },
                         },
                     ]}
                     boundaries={{
-                        top: AppSizes.screen.height - AppSizes.moderateScale(450) - AppSizes.navigationBarHeight,
+                        top: AppSizes.screen.height - AppSizes.moderateScale(420) - AppSizes.navigationBarHeight,
                     }}
                     initialPosition={{ y: AppSizes.screen.height + 3 }}
                     animatedValueY={this.deltaY}
                     animatedValueX={this.deltaX}
                 >
                     <View
-                        style={[styles.container, { height: AppSizes.moderateScale(450) }]}
+                        style={[styles.container, { height: AppSizes.moderateScale(420) }]}
                         onStartShouldSetResponder={() => true}
                     >
                         <View style={AppStyles.panelHeader}>
@@ -273,7 +273,9 @@ class HomeActionsOverlay extends Component<Props, State> {
                                         >
                                             <Image source={{ uri: app.icon }} style={styles.appIcon} />
                                             <Spacer size={5} />
-                                            <Text style={styles.appTitle}>{app.title}</Text>
+                                            <Text numberOfLines={2} style={styles.appTitle}>
+                                                {app.title}
+                                            </Text>
                                         </TouchableOpacity>
                                     );
                                 })}
