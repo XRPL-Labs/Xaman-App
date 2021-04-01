@@ -66,19 +66,18 @@ class RecipientElement extends PureComponent<Props> {
         return null;
     };
 
+    getAvatar = () => {
+        const { recipient, showAvatar } = this.props;
+
+        if (!showAvatar) return null;
+        return <Avatar source={{ uri: `https://xumm.app/avatar/${recipient.address}_180_50.png` }} />;
+    };
+
     render() {
-        const {
-            recipient,
-            selected,
-            showMoreButton,
-            showAvatar,
-            showTag,
-            isLoading,
-            containerStyle,
-            onPress,
-        } = this.props;
+        const { recipient, selected, showMoreButton, showTag, isLoading, containerStyle, onPress } = this.props;
 
         const badge = this.getBadge();
+        const avatar = this.getAvatar();
 
         return (
             <TouchableOpacity
@@ -89,9 +88,7 @@ class RecipientElement extends PureComponent<Props> {
                 key={recipient.id}
             >
                 <View style={[styles.itemRow, selected && styles.itemSelected, containerStyle]}>
-                    {showAvatar && (
-                        <Avatar source={{ uri: `https://xumm.app/avatar/${recipient.address}_180_50.png` }} />
-                    )}
+                    {avatar}
 
                     {/* eslint-disable-next-line react-native/no-inline-styles */}
                     <View style={{ paddingLeft: 10 }}>
@@ -117,7 +114,7 @@ class RecipientElement extends PureComponent<Props> {
                             {badge && badge}
                         </View>
                         <Text style={[styles.subtitle, selected ? styles.selectedText : null]}>
-                            {recipient.address}
+                            {recipient.address || 'rxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}
                         </Text>
 
                         {!!recipient.tag && showTag && (

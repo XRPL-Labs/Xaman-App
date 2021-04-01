@@ -22,7 +22,7 @@ const styles = StyleService.create({
         paddingVertical: 7,
         paddingHorizontal: 10,
         borderRadius: 5,
-        backgroundColor: '$lightGrey',
+        backgroundColor: '$tint',
     },
     sectionHeaderText: {
         fontSize: AppFonts.base.size,
