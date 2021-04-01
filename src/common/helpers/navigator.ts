@@ -231,8 +231,8 @@ const Navigator = {
         return false;
     },
 
-    dismissModal() {
-        const currentScreen = NavigationService.getCurrentScreen();
+    dismissModal(componentId?: string) {
+        const currentScreen = componentId || NavigationService.getCurrentScreen();
         return Navigation.dismissModal(currentScreen);
     },
 
@@ -277,6 +277,11 @@ const Navigator = {
     mergeOptions(options = {}, componentId?: string) {
         const currentScreen = componentId || NavigationService.getCurrentScreen();
         Navigation.mergeOptions(currentScreen, options);
+    },
+
+    updateProps(props = {}, componentId?: string) {
+        const currentScreen = componentId || NavigationService.getCurrentScreen();
+        Navigation.updateProps(currentScreen, props);
     },
 
     reRender() {

@@ -3,6 +3,8 @@
  * handle push notification permission and received notifications
  */
 import { get } from 'lodash';
+import EventEmitter from 'events';
+
 import { Alert, NativeModules } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
@@ -18,8 +20,6 @@ import LoggerService from '@services/LoggerService';
 import NavigationService from '@services/NavigationService';
 
 import Localize from '@locale';
-
-import EventEmitter from 'events';
 
 /* Constants  ==================================================================== */
 const { LocalNotificationModule } = NativeModules;
@@ -176,42 +176,54 @@ class PushNotificationsService extends EventEmitter {
     handleSingRequest = async (notification: any) => {
         const payloadUUID = get(notification, ['data', 'payload']);
 
-        if (payloadUUID) {
-            await Payload.from(payloadUUID, PayloadOrigin.PUSH_NOTIFICATION)
-                .then((payload) => {
-                    // show review transaction screen
-                    Navigator.showModal(
-                        AppScreens.Modal.ReviewTransaction,
-                        { modalPresentationStyle: 'fullScreen' },
-                        {
-                            payload,
-                        },
-                    );
-                })
-                .catch((e) => {
-                    Alert.alert(Localize.t('global.error'), e.message);
-                    this.logger.error('Cannot fetch payload from backend', payloadUUID);
-                });
-        }
+        if (!payloadUUID) return;
+
+        await Payload.from(payloadUUID, PayloadOrigin.PUSH_NOTIFICATION)
+            .then((payload) => {
+                // show review transaction screen
+                Navigator.showModal(
+                    AppScreens.Modal.ReviewTransaction,
+                    { modalPresentationStyle: 'fullScreen' },
+                    {
+                        payload,
+                    },
+                );
+            })
+            .catch((e) => {
+                Alert.alert(Localize.t('global.error'), e.message);
+                this.logger.error('Cannot fetch payload from backend', payloadUUID);
+            });
     };
 
-    handleOpenXApp = (notification: any) => {
+    handleOpenXApp = async (notification: any) => {
         const xappIdentifier = get(notification, ['data', 'xappIdentifier']);
         const xappTitle = get(notification, ['data', 'xappTitle']);
 
-        Navigator.showModal(
-            AppScreens.Modal.XAppBrowser,
-            {
-                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-            },
-            {
-                identifier: xappIdentifier,
-                title: xappTitle,
-                origin: PayloadOrigin.PUSH_NOTIFICATION,
-                originData: get(notification, 'data'),
-            },
-        );
+        if (!xappIdentifier) return;
+
+        let delay = 0;
+        // if already in xapp try to load the xApp from notification
+        if (NavigationService.getCurrentScreen() === AppScreens.Modal.XAppBrowser) {
+            await Navigator.dismissModal();
+            // looks like a bug in navigation library, need to add a delay before showing the modal
+            delay = 300;
+        }
+
+        setTimeout(() => {
+            Navigator.showModal(
+                AppScreens.Modal.XAppBrowser,
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+                },
+                {
+                    identifier: xappIdentifier,
+                    title: xappTitle,
+                    origin: PayloadOrigin.PUSH_NOTIFICATION,
+                    originData: get(notification, 'data'),
+                },
+            );
+        }, delay);
     };
 
     handleOpenTx = (notification: any) => {

@@ -32,7 +32,6 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     identifier: string;
-    path?: string;
     params?: any;
     title?: string;
     account?: AccountSchema;
@@ -87,6 +86,7 @@ class XAppBrowserModal extends Component<Props, State> {
     componentDidMount() {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
 
+        // fetch OTT on browser start
         InteractionManager.runAfterInteractions(this.fetchOTT);
     }
 

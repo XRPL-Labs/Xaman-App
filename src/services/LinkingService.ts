@@ -18,7 +18,6 @@ import { AppScreens } from '@common/constants';
 import { NormalizeDestination } from '@common/utils/codec';
 
 import Localize from '@locale';
-
 /* Service  ==================================================================== */
 class LinkingService extends EventEmitter {
     initialize = () => {
@@ -122,21 +121,35 @@ class LinkingService extends EventEmitter {
         );
     };
 
-    handleXAPPLink = (url: string, parsed: { xapp: string; path: string; params: any }) => {
-        Navigator.showModal(
-            AppScreens.Modal.XAppBrowser,
-            {
-                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-            },
-            {
-                identifier: parsed.xapp,
-                origin: PayloadOrigin.DEEP_LINK,
-                originData: { url },
-                path: parsed.path,
-                params: parsed.params,
-            },
-        );
+    handleXAPPLink = async (url: string, parsed: { xapp: string; path: string; params: any }) => {
+        const { xapp, path, params } = parsed;
+
+        if (!xapp) return;
+
+        let delay = 0;
+        // if already in xapp try to load the xApp from notification
+        if (NavigationService.getCurrentScreen() === AppScreens.Modal.XAppBrowser) {
+            await Navigator.dismissModal();
+            // looks like a bug in navigation library, need to add a delay before showing the modal
+            delay = 300;
+        }
+
+        setTimeout(() => {
+            Navigator.showModal(
+                AppScreens.Modal.XAppBrowser,
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+                },
+                {
+                    identifier: xapp,
+                    origin: PayloadOrigin.DEEP_LINK,
+                    originData: { url },
+                    path,
+                    params,
+                },
+            );
+        }, delay);
     };
 
     handleAlternativeSeedCodec = (parsed: {
