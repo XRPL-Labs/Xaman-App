@@ -179,6 +179,7 @@ class EventsFilterView extends Component<Props, State> {
                         <Button
                             numberOfLines={1}
                             roundedSmall
+                            light
                             onPress={this.dismiss}
                             style={styles.cancelButton}
                             label={Localize.t('global.cancel').toUpperCase()}
