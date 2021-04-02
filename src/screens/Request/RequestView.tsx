@@ -156,9 +156,9 @@ class RequestView extends Component<Props, State> {
         }
 
         if (currencyRate) {
-            const inXRP = new BigNumber(amount).dividedBy(currencyRate.lastRate).decimalPlaces(8).toFixed();
+            const inXRP = new BigNumber(amount).dividedBy(currencyRate.lastRate).decimalPlaces(6).toFixed();
             this.setState({
-                amount: String(inXRP),
+                amount: inXRP,
             });
         }
     };

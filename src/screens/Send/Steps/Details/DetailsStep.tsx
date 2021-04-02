@@ -164,9 +164,9 @@ class DetailsStep extends Component<Props, State> {
         const { amount } = this.context;
 
         if (amount && currencyRate) {
-            const inRate = Number(amount) * currencyRate.lastRate;
+            const inRate = new BigNumber(amount).multipliedBy(currencyRate.lastRate).decimalPlaces(8).toFixed();
             this.setState({
-                amountRate: String(inRate),
+                amountRate: inRate,
             });
         }
     };
@@ -207,7 +207,7 @@ class DetailsStep extends Component<Props, State> {
         }
 
         if (currencyRate) {
-            const inXRP = new BigNumber(amount).dividedBy(currencyRate.lastRate).decimalPlaces(8).toFixed();
+            const inXRP = new BigNumber(amount).dividedBy(currencyRate.lastRate).decimalPlaces(6).toFixed();
             setAmount(String(inXRP));
         }
     };
