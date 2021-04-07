@@ -7,7 +7,7 @@
 import { filter } from 'lodash';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
-import { ScrollView, View, Image, Text, Alert, Platform, KeyboardAvoidingView, InteractionManager } from 'react-native';
+import { View, Image, Text, Alert, InteractionManager } from 'react-native';
 
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
@@ -19,13 +19,13 @@ import { Prompt, Toast } from '@common/helpers/interface';
 import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 
 // components
-import { Header, Button, AccordionPicker, AmountInput, AmountText, Footer } from '@components/General';
+import { Button, AccordionPicker, KeyboardAwareScrollView, AmountInput, AmountText, Footer } from '@components/General';
 import { AccountPicker } from '@components/Modules';
 
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors, AppSizes } from '@theme';
+import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
@@ -40,7 +40,8 @@ interface State {
 
 /* Component ==================================================================== */
 class DetailsStep extends Component<Props, State> {
-    amountInput: AmountInput;
+    amountInput: React.RefObject<AmountInput | null>;
+    footer: React.RefObject<Footer | null>;
 
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
@@ -52,6 +53,9 @@ class DetailsStep extends Component<Props, State> {
             currencyRate: undefined,
             amountRate: '',
         };
+
+        this.amountInput = React.createRef();
+        this.footer = React.createRef();
     }
 
     componentDidMount() {
@@ -289,105 +293,114 @@ class DetailsStep extends Component<Props, State> {
 
         return (
             <View testID="send-details-view" style={[styles.container]}>
-                <KeyboardAvoidingView
-                    enabled={Platform.OS === 'ios'}
-                    behavior="padding"
-                    style={[AppStyles.flex1, AppStyles.stretchSelf]}
-                    keyboardVerticalOffset={Header.Height + AppSizes.extraKeyBoardPadding}
-                >
-                    <ScrollView>
-                        {/* Source Account */}
-                        <View style={[styles.rowItem]}>
-                            <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
-                                    {Localize.t('global.from')}
-                                </Text>
-                            </View>
-                            <AccountPicker onSelect={this.onAccountChange} accounts={accounts} selectedItem={source} />
+                <KeyboardAwareScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
+                    {/* Source Account */}
+                    <View style={[styles.rowItem]}>
+                        <View style={[styles.rowTitle]}>
+                            <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
+                                {Localize.t('global.from')}
+                            </Text>
                         </View>
-                        {/* Currency */}
-                        <View style={[styles.rowItem]}>
-                            <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
-                                    {Localize.t('global.asset')}
-                                </Text>
-                            </View>
-                            <AccordionPicker
-                                onSelect={this.onCurrencyChange}
-                                items={
-                                    source
-                                        ? [
-                                              'XRP',
-                                              ...filter(source.lines, (l) => l.balance > 0 || l.obligation === true),
-                                          ]
-                                        : []
-                                }
-                                renderItem={this.renderCurrencyItem}
-                                selectedItem={currency}
-                                keyExtractor={(i) => (typeof i === 'string' ? i : i.currency.id)}
-                            />
+                        <AccountPicker onSelect={this.onAccountChange} accounts={accounts} selectedItem={source} />
+                    </View>
+                    {/* Currency */}
+                    <View style={[styles.rowItem]}>
+                        <View style={[styles.rowTitle]}>
+                            <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
+                                {Localize.t('global.asset')}
+                            </Text>
                         </View>
+                        <AccordionPicker
+                            onSelect={this.onCurrencyChange}
+                            items={
+                                source
+                                    ? ['XRP', ...filter(source.lines, (l) => l.balance > 0 || l.obligation === true)]
+                                    : []
+                            }
+                            renderItem={this.renderCurrencyItem}
+                            selectedItem={currency}
+                            keyExtractor={(i) => (typeof i === 'string' ? i : i.currency.id)}
+                        />
+                    </View>
 
-                        {/* Amount */}
-                        <View style={[styles.rowItem]}>
-                            <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
-                                    {Localize.t('global.amount')}
-                                </Text>
-                            </View>
-                            <View style={[styles.amountContainer]}>
-                                <View style={AppStyles.flex1}>
-                                    <AmountInput
-                                        ref={(r) => {
-                                            this.amountInput = r;
-                                        }}
-                                        fractional={!sendingNFT}
-                                        decimalPlaces={typeof currency === 'string' ? 6 : 8}
-                                        testID="amount-input"
-                                        onChange={this.onAmountChange}
-                                        returnKeyType="done"
-                                        style={[styles.amountInput]}
-                                        placeholderTextColor={AppColors.grey}
-                                        value={amount}
-                                    />
-                                </View>
-                                <Button
-                                    onPress={() => {
-                                        this.amountInput.focus();
-                                    }}
-                                    style={styles.editButton}
-                                    roundedSmall
-                                    iconSize={15}
-                                    iconStyle={AppStyles.imgColorGreyDark}
-                                    light
-                                    icon="IconEdit"
+                    {/* Amount */}
+                    <View style={[styles.rowItem]}>
+                        <View style={[styles.rowTitle]}>
+                            <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
+                                {Localize.t('global.amount')}
+                            </Text>
+                        </View>
+                        <View style={[styles.amountContainer]}>
+                            <View style={AppStyles.flex1}>
+                                <AmountInput
+                                    ref={this.amountInput}
+                                    fractional={!sendingNFT}
+                                    decimalPlaces={typeof currency === 'string' ? 6 : 8}
+                                    testID="amount-input"
+                                    onChange={this.onAmountChange}
+                                    returnKeyType="done"
+                                    style={[styles.amountInput]}
+                                    placeholderTextColor={AppColors.grey}
+                                    value={amount}
                                 />
                             </View>
-                            {/* only show rate for XRP payments */}
-                            {typeof currency === 'string' && (
-                                <View style={[styles.amountRateContainer]}>
-                                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                        <Text style={[styles.amountRateInput]}>~ </Text>
-                                    </View>
-                                    <View style={AppStyles.flex1}>
-                                        <AmountInput
-                                            editable={!!currencyRate}
-                                            testID="amount-rate-input"
-                                            onChange={this.onRateAmountChange}
-                                            returnKeyType="done"
-                                            style={[styles.amountRateInput]}
-                                            placeholderTextColor={AppColors.grey}
-                                            value={amountRate}
-                                        />
-                                    </View>
-                                    <View style={styles.currencySymbolTextContainer}>
-                                        <Text style={[styles.currencySymbolText]}>{coreSettings.currency}</Text>
-                                    </View>
-                                </View>
-                            )}
+                            <Button
+                                onPress={this.amountInput.current?.focus}
+                                style={styles.editButton}
+                                roundedSmall
+                                iconSize={15}
+                                iconStyle={AppStyles.imgColorGreyDark}
+                                light
+                                icon="IconEdit"
+                            />
                         </View>
-                    </ScrollView>
-                </KeyboardAvoidingView>
+                        {/* only show rate for XRP payments */}
+                        {typeof currency === 'string' && (
+                            <View style={[styles.amountRateContainer]}>
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <Text style={[styles.amountRateInput]}>~ </Text>
+                                </View>
+                                <View style={AppStyles.flex1}>
+                                    <AmountInput
+                                        editable={!!currencyRate}
+                                        testID="amount-rate-input"
+                                        onChange={this.onRateAmountChange}
+                                        returnKeyType="done"
+                                        style={[styles.amountRateInput]}
+                                        placeholderTextColor={AppColors.grey}
+                                        value={amountRate}
+                                    />
+                                </View>
+                                <View style={styles.currencySymbolTextContainer}>
+                                    <Text style={[styles.currencySymbolText]}>{coreSettings.currency}</Text>
+                                </View>
+                            </View>
+                        )}
+
+                        {/* only show rate for XRP payments */}
+                        {typeof currency === 'string' && (
+                            <View style={[styles.amountRateContainer]}>
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <Text style={[styles.amountRateInput]}>~ </Text>
+                                </View>
+                                <View style={AppStyles.flex1}>
+                                    <AmountInput
+                                        editable={!!currencyRate}
+                                        testID="amount-rate-input"
+                                        onChange={this.onRateAmountChange}
+                                        returnKeyType="done"
+                                        style={[styles.amountRateInput]}
+                                        placeholderTextColor={AppColors.grey}
+                                        value={amountRate}
+                                    />
+                                </View>
+                                <View style={styles.currencySymbolTextContainer}>
+                                    <Text style={[styles.currencySymbolText]}>{coreSettings.currency}</Text>
+                                </View>
+                            </View>
+                        )}
+                    </View>
+                </KeyboardAwareScrollView>
 
                 {/* Bottom Bar */}
                 <Footer style={[AppStyles.row]} safeArea>

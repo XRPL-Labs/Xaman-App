@@ -10,6 +10,7 @@ import com.facebook.react.modules.network.OkHttpClientProvider;
 
 // Local Libs
 import libs.utils.UtilsPackage;
+import libs.ui.KeyboardPackage;
 import libs.crypto.modules.CryptoPackage;
 import libs.ui.ActionSheetPackage;
 import libs.ui.PromptPackage;
@@ -21,12 +22,12 @@ import libs.common.InAppPurchasePackage;
 import libs.common.HTTPClientFactory;
 
 // External Dependencies
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.reactnativenavigation.NavigationApplication;
 import com.reactnativenavigation.react.NavigationReactNativeHost;
 
 // PlayService
 import android.content.Intent;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.android.gms.security.ProviderInstaller.ProviderInstallListener;
 
@@ -52,6 +53,7 @@ public class MainApplication extends NavigationApplication {
                 List<ReactPackage> packages = new PackageList(this).getPackages();
                 // Local Libs
                 packages.add(new UtilsPackage());
+                packages.add(new KeyboardPackage());
                 packages.add(new CryptoPackage());
                 packages.add(new ActionSheetPackage());
                 packages.add(new PromptPackage());
@@ -94,7 +96,7 @@ public class MainApplication extends NavigationApplication {
 
             @Override
             public void onProviderInstallFailed(int errorCode, Intent recoveryIntent) {
-                GooglePlayServicesUtil.showErrorNotification(errorCode, MainApplication.this);
+                GoogleApiAvailability.getInstance().showErrorNotification(MainApplication.this, errorCode);
             }
         });
     }

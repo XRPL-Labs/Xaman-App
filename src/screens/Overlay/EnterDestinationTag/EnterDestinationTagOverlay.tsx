@@ -2,7 +2,7 @@
  * Request decline overlay
  */
 import React, { Component, createRef } from 'react';
-import { Animated, View, Text, Platform, Keyboard, Image, TouchableWithoutFeedback, KeyboardEvent } from 'react-native';
+import { Animated, View, Text, Platform, Image, TouchableWithoutFeedback, KeyboardEvent } from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
@@ -10,6 +10,7 @@ import { StringTypeDetector, StringDecoder, StringType } from 'xumm-string-decod
 
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
+import { Keyboard } from '@common/helpers/keyboard';
 
 import { AppScreens } from '@common/constants';
 
@@ -88,23 +89,13 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
     }
 
     removeKeyboardListeners = () => {
-        if (Platform.OS === 'ios') {
-            Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
-            Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
-        } else {
-            Keyboard.removeListener('keyboardDidShow', this.onKeyboardShow);
-            Keyboard.removeListener('keyboardDidHide', this.onKeyboardHide);
-        }
+        Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
+        Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
     };
 
     addKeyboardListeners = () => {
-        if (Platform.OS === 'ios') {
-            Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
-            Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
-        } else {
-            Keyboard.addListener('keyboardDidShow', this.onKeyboardShow);
-            Keyboard.addListener('keyboardDidHide', this.onKeyboardHide);
-        }
+        Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
+        Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
     };
 
     onKeyboardShow = (e: KeyboardEvent) => {

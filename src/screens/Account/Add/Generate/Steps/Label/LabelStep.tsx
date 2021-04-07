@@ -3,10 +3,10 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView, View, Text, Alert } from 'react-native';
 
 // components
-import { Button, Spacer, TextInput, Footer } from '@components/General';
+import { Button, Spacer, TextInput, KeyboardAwareScrollView, Footer } from '@components/General';
 
 // locale
 import Localize from '@locale';
@@ -57,16 +57,16 @@ class LabelStep extends Component<Props, State> {
         const { label } = this.state;
         return (
             <SafeAreaView testID="account-generate-label-view" style={[AppStyles.container]}>
-                <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
-                    {Localize.t('account.pleaseChooseAccountLabel')}
-                </Text>
-
-                <Spacer size={50} />
-                <KeyboardAvoidingView
-                    enabled={Platform.OS === 'ios'}
-                    behavior="padding"
-                    style={[AppStyles.contentContainer, AppStyles.flexStart, AppStyles.paddingSml]}
+                <KeyboardAwareScrollView
+                    style={[AppStyles.flex1]}
+                    contentContainerStyle={[AppStyles.paddingHorizontal]}
                 >
+                    <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned]}>
+                        {Localize.t('account.pleaseChooseAccountLabel')}
+                    </Text>
+
+                    <Spacer size={50} />
+
                     <TextInput
                         testID="label-input"
                         maxLength={16}
@@ -76,7 +76,7 @@ class LabelStep extends Component<Props, State> {
                         inputStyle={styles.inputText}
                         autoCapitalize="sentences"
                     />
-                </KeyboardAvoidingView>
+                </KeyboardAwareScrollView>
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button

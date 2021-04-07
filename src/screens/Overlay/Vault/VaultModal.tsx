@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Animated, Text, Alert, Platform, Keyboard, KeyboardEvent, LayoutAnimation, Linking } from 'react-native';
+import { View, Animated, Text, Alert, KeyboardEvent, LayoutAnimation, Linking } from 'react-native';
 
 import * as AccountLib from 'xrpl-accountlib';
 
@@ -23,6 +23,7 @@ import Vault from '@common/libs/vault';
 import { AuthenticationService } from '@services';
 
 import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
+import { Keyboard } from '@common/helpers/keyboard';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
@@ -87,18 +88,13 @@ class VaultModal extends Component<Props, State> {
             offsetBottom: 0,
         };
 
-        if (Platform.OS === 'ios') {
-            Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
-            Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
-        } else {
-            Keyboard.addListener('keyboardDidShow', this.onKeyboardShow);
-            Keyboard.addListener('keyboardDidHide', this.onKeyboardHide);
-        }
-
         this.animatedColor = new Animated.Value(0);
     }
 
     componentDidMount() {
+        Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
+        Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
+
         Animated.timing(this.animatedColor, {
             toValue: 150,
             duration: 350,
@@ -114,13 +110,8 @@ class VaultModal extends Component<Props, State> {
     }
 
     componentWillUnmount() {
-        if (Platform.OS === 'ios') {
-            Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
-            Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
-        } else {
-            Keyboard.removeListener('keyboardDidShow', this.onKeyboardShow);
-            Keyboard.removeListener('keyboardDidHide', this.onKeyboardHide);
-        }
+        Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
+        Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
     }
 
     startAuthentication = () => {

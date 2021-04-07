@@ -5,7 +5,7 @@
 import { isEmpty } from 'lodash';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
-import { View, Image, Text, KeyboardAvoidingView, Alert, ScrollView, Platform, InteractionManager } from 'react-native';
+import { View, Image, Text, Alert, InteractionManager } from 'react-native';
 
 import { AccountSchema } from '@store/schemas/latest';
 import { NodeChain } from '@store/types';
@@ -21,14 +21,23 @@ import Preferences from '@common/libs/preferences';
 import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 
 // components
-import { AmountInput, AmountText, Button, Footer, Spacer, TextInput, SwipeButton, Header } from '@components/General';
+import {
+    AmountInput,
+    AmountText,
+    Button,
+    Footer,
+    Spacer,
+    TextInput,
+    SwipeButton,
+    KeyboardAwareScrollView,
+} from '@components/General';
 import { AccountPicker } from '@components/Modules';
 
 // locale
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors, AppSizes } from '@theme';
+import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
@@ -380,137 +389,130 @@ class SummaryStep extends Component<Props, State> {
 
         return (
             <View testID="send-summary-view" style={[styles.container]}>
-                <KeyboardAvoidingView
-                    enabled={Platform.OS === 'ios'}
-                    behavior="padding"
-                    style={[AppStyles.flex1, AppStyles.stretchSelf]}
-                    keyboardVerticalOffset={Header.Height + AppSizes.extraKeyBoardPadding}
-                >
-                    <ScrollView>
-                        <View style={[styles.rowItem, styles.rowItemGrey]}>
-                            <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
-                                    {Localize.t('global.from')}
+                <KeyboardAwareScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
+                    <View style={[styles.rowItem, styles.rowItemGrey]}>
+                        <View style={[styles.rowTitle]}>
+                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                {Localize.t('global.from')}
+                            </Text>
+                        </View>
+
+                        <AccountPicker onSelect={this.onAccountChange} accounts={accounts} selectedItem={source} />
+
+                        <Spacer size={20} />
+
+                        <View style={[styles.rowTitle]}>
+                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                {Localize.t('global.to')}
+                            </Text>
+                        </View>
+                        <Spacer size={15} />
+
+                        <View style={[styles.rowTitle]}>
+                            <View style={[styles.pickerItem]}>
+                                <Text style={[styles.pickerItemTitle]}>{destination.name}</Text>
+                                <Text
+                                    style={[styles.pickerItemSub, AppStyles.colorGrey]}
+                                    adjustsFontSizeToFit
+                                    numberOfLines={1}
+                                >
+                                    {destination.address}
                                 </Text>
                             </View>
+                        </View>
 
-                            <AccountPicker onSelect={this.onAccountChange} accounts={accounts} selectedItem={source} />
+                        <Spacer size={20} />
 
-                            <Spacer size={20} />
-
-                            <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
-                                    {Localize.t('global.to')}
-                                </Text>
-                            </View>
-                            <Spacer size={15} />
-
-                            <View style={[styles.rowTitle]}>
-                                <View style={[styles.pickerItem]}>
-                                    <Text style={[styles.pickerItemTitle]}>{destination.name}</Text>
-                                    <Text
-                                        style={[styles.pickerItemSub, AppStyles.colorGrey]}
-                                        adjustsFontSizeToFit
-                                        numberOfLines={1}
-                                    >
-                                        {destination.address}
+                        <View style={AppStyles.row}>
+                            <View style={AppStyles.flex1}>
+                                <View style={[styles.rowTitle]}>
+                                    <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
+                                        {destination.tag && `${Localize.t('global.destinationTag')}: `}
+                                        <Text style={AppStyles.colorBlue}>
+                                            {destination.tag || Localize.t('send.noDestinationTag')}
+                                        </Text>
                                     </Text>
                                 </View>
                             </View>
-
-                            <Spacer size={20} />
-
-                            <View style={AppStyles.row}>
-                                <View style={AppStyles.flex1}>
-                                    <View style={[styles.rowTitle]}>
-                                        <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
-                                            {destination.tag && `${Localize.t('global.destinationTag')}: `}
-                                            <Text style={AppStyles.colorBlue}>
-                                                {destination.tag || Localize.t('send.noDestinationTag')}
-                                            </Text>
-                                        </Text>
-                                    </View>
-                                </View>
-                                <Button
-                                    onPress={this.showEnterDestinationTag}
-                                    style={styles.editButton}
-                                    roundedSmall
-                                    iconSize={13}
-                                    light
-                                    icon="IconEdit"
-                                />
-                            </View>
-                        </View>
-
-                        {/* Currency */}
-                        <View style={[styles.rowItem]}>
-                            <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
-                                    {Localize.t('global.asset')}
-                                </Text>
-                            </View>
-                            <Spacer size={15} />
-
-                            <View style={[styles.rowTitle]}>{this.renderCurrencyItem(currency)}</View>
-                        </View>
-
-                        {/* Amount */}
-                        <View style={[styles.rowItem]}>
-                            <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
-                                    {Localize.t('global.amount')}
-                                </Text>
-                            </View>
-                            <Spacer size={15} />
-
-                            <View style={AppStyles.row}>
-                                <View style={AppStyles.flex1}>
-                                    <AmountInput
-                                        ref={(r) => {
-                                            this.amountInput = r;
-                                        }}
-                                        fractional={!sendingNFT}
-                                        decimalPlaces={typeof currency === 'string' ? 6 : 8}
-                                        onChange={this.onAmountChange}
-                                        style={[styles.amountInput]}
-                                        value={amount}
-                                    />
-                                </View>
-                                <Button
-                                    onPress={() => {
-                                        this.amountInput.focus();
-                                    }}
-                                    style={styles.editButton}
-                                    roundedSmall
-                                    iconSize={13}
-                                    light
-                                    icon="IconEdit"
-                                />
-                            </View>
-                            {this.renderAmountRate()}
-                        </View>
-
-                        {/* Memo */}
-                        <View style={[styles.rowItem]}>
-                            <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
-                                    {Localize.t('global.memo')}
-                                </Text>
-                            </View>
-                            <Spacer size={15} />
-                            <TextInput
-                                onBlur={this.showMemoAlert}
-                                onChangeText={this.onDescriptionChange}
-                                placeholder={Localize.t('send.enterPublicMemo')}
-                                inputStyle={styles.inputStyle}
-                                maxLength={300}
-                                returnKeyType="done"
-                                autoCapitalize="sentences"
-                                numberOfLines={1}
+                            <Button
+                                onPress={this.showEnterDestinationTag}
+                                style={styles.editButton}
+                                roundedSmall
+                                iconSize={13}
+                                light
+                                icon="IconEdit"
                             />
                         </View>
-                    </ScrollView>
-                </KeyboardAvoidingView>
+                    </View>
+
+                    {/* Currency */}
+                    <View style={[styles.rowItem]}>
+                        <View style={[styles.rowTitle]}>
+                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                {Localize.t('global.asset')}
+                            </Text>
+                        </View>
+                        <Spacer size={15} />
+
+                        <View style={[styles.rowTitle]}>{this.renderCurrencyItem(currency)}</View>
+                    </View>
+
+                    {/* Amount */}
+                    <View style={[styles.rowItem]}>
+                        <View style={[styles.rowTitle]}>
+                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                {Localize.t('global.amount')}
+                            </Text>
+                        </View>
+                        <Spacer size={15} />
+
+                        <View style={AppStyles.row}>
+                            <View style={AppStyles.flex1}>
+                                <AmountInput
+                                    ref={(r) => {
+                                        this.amountInput = r;
+                                    }}
+                                    fractional={!sendingNFT}
+                                    decimalPlaces={typeof currency === 'string' ? 6 : 8}
+                                    onChange={this.onAmountChange}
+                                    style={[styles.amountInput]}
+                                    value={amount}
+                                />
+                            </View>
+                            <Button
+                                onPress={() => {
+                                    this.amountInput.focus();
+                                }}
+                                style={styles.editButton}
+                                roundedSmall
+                                iconSize={13}
+                                light
+                                icon="IconEdit"
+                            />
+                        </View>
+                        {this.renderAmountRate()}
+                    </View>
+
+                    {/* Memo */}
+                    <View style={[styles.rowItem]}>
+                        <View style={[styles.rowTitle]}>
+                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                {Localize.t('global.memo')}
+                            </Text>
+                        </View>
+                        <Spacer size={15} />
+                        <TextInput
+                            onBlur={this.showMemoAlert}
+                            onChangeText={this.onDescriptionChange}
+                            placeholder={Localize.t('send.enterPublicMemo')}
+                            inputStyle={styles.inputStyle}
+                            maxLength={300}
+                            returnKeyType="done"
+                            autoCapitalize="sentences"
+                            numberOfLines={1}
+                        />
+                    </View>
+                </KeyboardAwareScrollView>
                 {/* Bottom Bar */}
                 <Footer safeArea>
                     <SwipeButton

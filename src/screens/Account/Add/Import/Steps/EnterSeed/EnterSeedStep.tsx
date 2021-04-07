@@ -3,14 +3,14 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Alert, Platform, KeyboardAvoidingView } from 'react-native';
+import { SafeAreaView, View, Text, Alert } from 'react-native';
 
 import { derive } from 'xrpl-accountlib';
 import { StringType, XrplSecret } from 'xumm-string-decode';
 
 import Localize from '@locale';
 // components
-import { Button, TextInput, Spacer, Footer } from '@components/General';
+import { Button, TextInput, Spacer, KeyboardAwareScrollView, Footer } from '@components/General';
 
 import { ConvertCodecAlphabet } from '@common/utils/codec';
 
@@ -114,19 +114,18 @@ class EnterSeedStep extends Component<Props, State> {
 
         return (
             <SafeAreaView testID="account-import-enter-family-seed-view" style={[AppStyles.container]}>
-                <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
-                    {alternativeSeedAlphabet
-                        ? Localize.t('account.toTurnYourSecretIntoXrplLedgerAccountPleaseEnterYourSecret')
-                        : Localize.t('account.pleaseProvideFamilySeed')}
-                </Text>
-
-                <Spacer size={50} />
-
-                <KeyboardAvoidingView
-                    enabled={Platform.OS === 'ios'}
-                    behavior="padding"
-                    style={[AppStyles.flex1, AppStyles.paddingHorizontal]}
+                <KeyboardAwareScrollView
+                    style={[AppStyles.flex1]}
+                    contentContainerStyle={[AppStyles.paddingHorizontal]}
                 >
+                    <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned]}>
+                        {alternativeSeedAlphabet
+                            ? Localize.t('account.toTurnYourSecretIntoXrplLedgerAccountPleaseEnterYourSecret')
+                            : Localize.t('account.pleaseProvideFamilySeed')}
+                    </Text>
+
+                    <Spacer size={50} />
+
                     <TextInput
                         testID="seed-input"
                         placeholder={
@@ -145,7 +144,7 @@ class EnterSeedStep extends Component<Props, State> {
                         onScannerRead={this.onQRCodeRead}
                         numberOfLines={1}
                     />
-                </KeyboardAvoidingView>
+                </KeyboardAwareScrollView>
 
                 <Footer style={[AppStyles.centerAligned, AppStyles.row]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>

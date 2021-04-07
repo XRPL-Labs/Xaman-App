@@ -1,1 +1,1 @@
-export { KeyboardScrollView as KeyboardAwareScrollView } from './KeyboardAwareScrollView';
+export { default as KeyboardAwareScrollView } from './KeyboardAwareScrollView';

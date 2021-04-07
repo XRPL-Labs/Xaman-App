@@ -85,7 +85,6 @@ const styles = StyleService.create({
     keyboardAvoidViewStyle: {
         flex: 1,
         flexDirection: 'column',
-        justifyContent: 'center',
     },
 });
 

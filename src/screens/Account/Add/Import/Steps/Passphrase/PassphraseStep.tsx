@@ -3,11 +3,11 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView, View, Text, Alert } from 'react-native';
 
 import Localize from '@locale';
 // components
-import { PasswordInput, Button, Footer, Header } from '@components/General';
+import { PasswordInput, Button, Footer, KeyboardAwareScrollView } from '@components/General';
 
 // style
 import { AppStyles } from '@theme';
@@ -80,35 +80,35 @@ class PassphraseStep extends Component<Props, State> {
 
         return (
             <SafeAreaView testID="account-import-passphrase-view" style={[AppStyles.container]}>
-                <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
-                    {Localize.t('account.pleaseEnterSafePassword')}
-                </Text>
-
-                <KeyboardAvoidingView
-                    enabled={Platform.OS === 'ios'}
-                    behavior="padding"
-                    keyboardVerticalOffset={Header.Height}
-                    style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}
+                <KeyboardAwareScrollView
+                    style={[AppStyles.flex1, AppStyles.stretchSelf, AppStyles.paddingHorizontal]}
+                    contentContainerStyle={[AppStyles.flex1]}
                 >
-                    <PasswordInput
-                        testID="passphrase-input"
-                        editable
-                        placeholder={Localize.t('account.enterPassword')}
-                        minLength={8}
-                        onChange={this.onPassphraseChange}
-                        validate
-                        autoFocus
-                    />
+                    <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned]}>
+                        {Localize.t('account.pleaseEnterSafePassword')}
+                    </Text>
 
-                    <PasswordInput
-                        testID="passphrase-confirm-input"
-                        editable={passphrase.isValid}
-                        placeholder={Localize.t('account.repeatPassword')}
-                        selectTextOnFocus={passphrase.isValid}
-                        onChange={this.onPassphraseConfirmChange}
-                        validate={false}
-                    />
-                </KeyboardAvoidingView>
+                    <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                        <PasswordInput
+                            testID="passphrase-input"
+                            editable
+                            placeholder={Localize.t('account.enterPassword')}
+                            minLength={8}
+                            onChange={this.onPassphraseChange}
+                            validate
+                            autoFocus
+                        />
+
+                        <PasswordInput
+                            testID="passphrase-confirm-input"
+                            editable={passphrase.isValid}
+                            placeholder={Localize.t('account.repeatPassword')}
+                            selectTextOnFocus={passphrase.isValid}
+                            onChange={this.onPassphraseConfirmChange}
+                            validate={false}
+                        />
+                    </View>
+                </KeyboardAwareScrollView>
                 <Footer style={[AppStyles.centerAligned, AppStyles.row]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button

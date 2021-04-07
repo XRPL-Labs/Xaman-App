@@ -3,13 +3,13 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Alert, Keyboard, Platform, KeyboardAvoidingView } from 'react-native';
+import { SafeAreaView, View, Text, Alert, Keyboard } from 'react-native';
 
 import { XRPL_Account, utils } from 'xrpl-accountlib';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
 // components
-import { Button, TextInput, InfoMessage, Spacer, Footer } from '@components/General';
+import { Button, TextInput, InfoMessage, Spacer, KeyboardAwareScrollView, Footer } from '@components/General';
 
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountInfo } from '@common/helpers/resolver';
@@ -122,17 +122,16 @@ class EnterAddressStep extends Component<Props, State> {
                 testID="account-import-enter-address-view"
                 style={[AppStyles.container]}
             >
-                <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
-                    {Localize.t('account.pleaseProvideAccountAddress')}
-                </Text>
-
-                <Spacer size={50} />
-
-                <KeyboardAvoidingView
-                    enabled={Platform.OS === 'ios'}
-                    behavior="padding"
-                    style={[AppStyles.flex1, AppStyles.paddingHorizontal]}
+                <KeyboardAwareScrollView
+                    style={[AppStyles.flex1]}
+                    contentContainerStyle={[AppStyles.paddingHorizontal]}
                 >
+                    <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned]}>
+                        {Localize.t('account.pleaseProvideAccountAddress')}
+                    </Text>
+
+                    <Spacer size={50} />
+
                     <TextInput
                         testID="address-input"
                         autoCapitalize="none"
@@ -150,7 +149,7 @@ class EnterAddressStep extends Component<Props, State> {
                     <Spacer size={20} />
 
                     <InfoMessage type="info" label={Localize.t('account.importExchangeAddressReadonlyWarning')} />
-                </KeyboardAvoidingView>
+                </KeyboardAwareScrollView>
 
                 <Footer style={[AppStyles.centerAligned, AppStyles.row]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>

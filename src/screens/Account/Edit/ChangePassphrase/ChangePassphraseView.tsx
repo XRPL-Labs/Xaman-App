@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { Alert, View, Platform, KeyboardAvoidingView, Keyboard } from 'react-native';
+import { Alert, View, Keyboard } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -12,7 +12,7 @@ import Vault from '@common/libs/vault';
 
 import { AccountSchema } from '@store/schemas/latest';
 
-import { PasswordInput, Header, Footer, Button, Spacer } from '@components/General';
+import { PasswordInput, Header, Footer, Button, Spacer, KeyboardAwareScrollView } from '@components/General';
 
 import Localize from '@locale';
 
@@ -129,11 +129,7 @@ class ChangePassphraseView extends Component<Props, State> {
                     }}
                     centerComponent={{ text: Localize.t('account.changePassword') }}
                 />
-                <KeyboardAvoidingView
-                    enabled={Platform.OS === 'ios'}
-                    behavior="padding"
-                    style={[AppStyles.flex1, AppStyles.paddingSml]}
-                >
+                <KeyboardAwareScrollView style={[AppStyles.flex1]} contentContainerStyle={[AppStyles.paddingSml]}>
                     <PasswordInput
                         testID="current-passphrase-input"
                         placeholder={Localize.t('account.currentPassword')}
@@ -161,8 +157,7 @@ class ChangePassphraseView extends Component<Props, State> {
                         onChange={this.onPassphraseConfirmChange}
                         validate={false}
                     />
-                </KeyboardAvoidingView>
-
+                </KeyboardAwareScrollView>
                 <Footer safeArea>
                     <Button
                         numberOfLines={1}

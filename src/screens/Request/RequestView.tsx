@@ -6,17 +6,7 @@ import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    Keyboard,
-    KeyboardAvoidingView,
-    ScrollView,
-    Platform,
-    Share,
-    InteractionManager,
-} from 'react-native';
+import { View, Text, TouchableOpacity, Keyboard, Share, InteractionManager } from 'react-native';
 
 import { BackendService } from '@services';
 import { Toast } from '@common/helpers/interface';
@@ -28,7 +18,7 @@ import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 
 // components
-import { Header, AmountInput, QRCode, CheckBox, HorizontalLine } from '@components/General';
+import { Header, AmountInput, QRCode, CheckBox, HorizontalLine, KeyboardAwareScrollView } from '@components/General';
 import { AccountPicker } from '@components/Modules';
 
 // local
@@ -197,8 +187,52 @@ class RequestView extends Component<Props, State> {
         }).catch(() => {});
     };
 
+    renderAmountInput = () => {
+        const { coreSettings, withAmount, amount, amountRate, currencyRate } = this.state;
+
+        if (!withAmount) return null;
+
+        return (
+            <>
+                <View style={[styles.amountContainer]}>
+                    <View style={AppStyles.flex1}>
+                        <AmountInput
+                            testID="amount-input"
+                            decimalPlaces={6}
+                            onChange={this.onAmountChange}
+                            returnKeyType="done"
+                            style={[styles.amountInput]}
+                            placeholderTextColor={AppColors.grey}
+                            value={amount}
+                        />
+                    </View>
+                </View>
+
+                <View style={[styles.amountRateContainer]}>
+                    <View style={AppStyles.centerContent}>
+                        <Text style={[styles.amountRateInput]}>~ </Text>
+                    </View>
+                    <View style={AppStyles.flex1}>
+                        <AmountInput
+                            editable={!!currencyRate}
+                            testID="amount-rate-input"
+                            onChange={this.onRateAmountChange}
+                            returnKeyType="done"
+                            style={[styles.amountRateInput]}
+                            placeholderTextColor={AppColors.grey}
+                            value={amountRate}
+                        />
+                    </View>
+                    <View style={styles.currencySymbolTextContainer}>
+                        <Text style={[styles.currencySymbolText]}>{coreSettings.currency}</Text>
+                    </View>
+                </View>
+            </>
+        );
+    };
+
     render() {
-        const { accounts, source, amount, amountRate, currencyRate, coreSettings, withAmount } = this.state;
+        const { accounts, source, withAmount } = this.state;
 
         return (
             <View testID="request-screen" style={[styles.container]}>
@@ -215,93 +249,46 @@ class RequestView extends Component<Props, State> {
                     }}
                 />
 
-                <KeyboardAvoidingView
-                    enabled={Platform.OS === 'ios'}
-                    behavior="padding"
-                    style={[AppStyles.flex1, AppStyles.stretchSelf]}
-                    keyboardVerticalOffset={AppSizes.extraKeyBoardPadding}
-                >
-                    <ScrollView>
-                        <View style={styles.qrCodeContainer}>
-                            <View style={styles.qrCode}>
-                                <QRCode size={AppSizes.moderateScale(150)} value={this.getLink()} />
-                            </View>
+                <KeyboardAwareScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
+                    <View style={styles.qrCodeContainer}>
+                        <View style={styles.qrCode}>
+                            <QRCode size={AppSizes.moderateScale(150)} value={this.getLink()} />
                         </View>
+                    </View>
 
-                        <HorizontalLine />
+                    <HorizontalLine />
 
-                        <View style={[styles.rowItem]}>
-                            <View style={[styles.rowTitle]}>
+                    <View style={[styles.rowItem]}>
+                        <View style={[styles.rowTitle]}>
+                            <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
+                                {Localize.t('global.to')}
+                            </Text>
+                        </View>
+                        <View style={styles.accountPickerContainer}>
+                            <AccountPicker onSelect={this.onAccountChange} accounts={accounts} selectedItem={source} />
+                        </View>
+                    </View>
+
+                    {/* Amount */}
+                    <View style={[styles.rowItem]}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={[AppStyles.row, styles.rowTitle]}
+                            onPress={this.toggleUseAmount}
+                        >
+                            <View style={[AppStyles.flex5, AppStyles.centerContent]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
-                                    {Localize.t('global.to')}
+                                    {Localize.t('global.requestWithAmount')}
                                 </Text>
                             </View>
-                            <View style={styles.accountPickerContainer}>
-                                <AccountPicker
-                                    onSelect={this.onAccountChange}
-                                    accounts={accounts}
-                                    selectedItem={source}
-                                />
+                            <View style={AppStyles.flex1}>
+                                <CheckBox checked={withAmount} onPress={this.toggleUseAmount} />
                             </View>
-                        </View>
+                        </TouchableOpacity>
 
-                        {/* Amount */}
-                        <View style={[styles.rowItem]}>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={[AppStyles.row, styles.rowTitle]}
-                                onPress={this.toggleUseAmount}
-                            >
-                                <View style={[AppStyles.flex5, AppStyles.centerContent]}>
-                                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
-                                        {Localize.t('global.requestWithAmount')}
-                                    </Text>
-                                </View>
-                                <View style={AppStyles.flex1}>
-                                    <CheckBox checked={withAmount} onPress={this.toggleUseAmount} />
-                                </View>
-                            </TouchableOpacity>
-
-                            {withAmount && (
-                                <>
-                                    <View style={[styles.amountContainer]}>
-                                        <View style={AppStyles.flex1}>
-                                            <AmountInput
-                                                testID="amount-input"
-                                                decimalPlaces={6}
-                                                onChange={this.onAmountChange}
-                                                returnKeyType="done"
-                                                style={[styles.amountInput]}
-                                                placeholderTextColor={AppColors.grey}
-                                                value={amount}
-                                            />
-                                        </View>
-                                    </View>
-
-                                    <View style={[styles.amountRateContainer]}>
-                                        <View style={AppStyles.centerContent}>
-                                            <Text style={[styles.amountRateInput]}>~ </Text>
-                                        </View>
-                                        <View style={AppStyles.flex1}>
-                                            <AmountInput
-                                                editable={!!currencyRate}
-                                                testID="amount-rate-input"
-                                                onChange={this.onRateAmountChange}
-                                                returnKeyType="done"
-                                                style={[styles.amountRateInput]}
-                                                placeholderTextColor={AppColors.grey}
-                                                value={amountRate}
-                                            />
-                                        </View>
-                                        <View style={styles.currencySymbolTextContainer}>
-                                            <Text style={[styles.currencySymbolText]}>{coreSettings.currency}</Text>
-                                        </View>
-                                    </View>
-                                </>
-                            )}
-                        </View>
-                    </ScrollView>
-                </KeyboardAvoidingView>
+                        {this.renderAmountInput()}
+                    </View>
+                </KeyboardAwareScrollView>
             </View>
         );
     }

@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Animated, Text, Alert, Platform, Keyboard, KeyboardEvent, LayoutAnimation } from 'react-native';
+import { View, Animated, Text, Alert, KeyboardEvent, LayoutAnimation } from 'react-native';
 
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
@@ -14,6 +14,7 @@ import { BiometryType } from '@store/types';
 
 import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+import { Keyboard } from '@common/helpers/keyboard';
 import { AppScreens } from '@common/constants';
 
 import { AuthenticationService } from '@services';
@@ -61,28 +62,13 @@ class AuthenticateModal extends Component<Props, State> {
             offsetBottom: 0,
         };
 
-        if (Platform.OS === 'ios') {
-            Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
-            Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
-        } else {
-            Keyboard.addListener('keyboardDidShow', this.onKeyboardShow);
-            Keyboard.addListener('keyboardDidHide', this.onKeyboardHide);
-        }
-
         this.animatedColor = new Animated.Value(0);
     }
 
-    componentWillUnmount() {
-        if (Platform.OS === 'ios') {
-            Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
-            Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
-        } else {
-            Keyboard.removeListener('keyboardDidShow', this.onKeyboardShow);
-            Keyboard.removeListener('keyboardDidHide', this.onKeyboardHide);
-        }
-    }
-
     componentDidMount() {
+        Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
+        Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
+
         // animate the background color
         Animated.timing(this.animatedColor, {
             toValue: 150,
@@ -96,6 +82,11 @@ class AuthenticateModal extends Component<Props, State> {
                 this.securePinInput.focus();
             }
         }, 300);
+    }
+
+    componentWillUnmount() {
+        Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
+        Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
     }
 
     onKeyboardShow = (e: KeyboardEvent) => {

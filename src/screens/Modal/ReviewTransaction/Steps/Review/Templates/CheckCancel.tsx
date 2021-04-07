@@ -1,6 +1,6 @@
 import { get, isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { View, TextInput, Text, Alert } from 'react-native';
+import { View, Text, Alert } from 'react-native';
 
 import { LedgerService } from '@services';
 
@@ -28,8 +28,6 @@ export interface State {
 
 /* Component ==================================================================== */
 class CheckCancelTemplate extends Component<Props, State> {
-    amountInput: TextInput;
-
     constructor(props: Props) {
         super(props);
 

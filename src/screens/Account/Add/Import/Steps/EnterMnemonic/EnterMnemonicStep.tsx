@@ -12,7 +12,6 @@ import {
     TextInput,
     Alert,
     ScrollView,
-    Keyboard,
     Platform,
     TouchableOpacity,
     KeyboardEvent,
@@ -25,6 +24,8 @@ import { StringType, XrplSecret } from 'xumm-string-decode';
 import Localize from '@locale';
 
 import { Navigator } from '@common/helpers/navigator';
+import { Keyboard } from '@common/helpers/keyboard';
+
 import { AppScreens } from '@common/constants';
 
 // components
@@ -80,30 +81,20 @@ class EnterMnemonicStep extends Component<Props, State> {
     }
 
     componentDidMount() {
-        if (Platform.OS === 'ios') {
-            Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
-            Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
-        } else {
-            Keyboard.addListener('keyboardDidShow', this.onKeyboardShow);
-            Keyboard.addListener('keyboardDidHide', this.onKeyboardHide);
-        }
+        Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
+        Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
     }
 
     componentWillUnmount() {
-        if (Platform.OS === 'ios') {
-            Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
-            Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
-        } else {
-            Keyboard.removeListener('keyboardDidShow', this.onKeyboardShow);
-            Keyboard.removeListener('keyboardDidHide', this.onKeyboardHide);
-        }
+        Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
+        Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
     }
 
     onKeyboardShow = (e: KeyboardEvent) => {
-        const keyboardHeight = e.endCoordinates.height;
+        const { height } = e.endCoordinates;
 
         this.setState({
-            keyboardHeight,
+            keyboardHeight: height,
         });
     };
 

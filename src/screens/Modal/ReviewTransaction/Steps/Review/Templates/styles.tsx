@@ -73,7 +73,6 @@ const styles = StyleService.create({
         borderRadius: 10,
     },
     editButton: {
-        backgroundColor: '$grey',
         borderRadius: 8,
         height: 20,
         width: 40,
@@ -106,7 +105,7 @@ const styles = StyleService.create({
     rateText: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size,
-        color: '$greyBlack',
+        color: '$textSecondary',
     },
 });
 

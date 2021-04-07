@@ -2,7 +2,7 @@ import { get, isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 
-import { LedgerService } from '@services';
+import { LedgerService, StyleService } from '@services';
 
 import { CheckCash, CheckCreate } from '@common/libs/ledger/transactions';
 
@@ -176,6 +176,7 @@ class CheckCashTemplate extends Component<Props, State> {
                                         style={[styles.amountInput]}
                                         value={cashAmount}
                                         editable={editableAmount}
+                                        placeholderTextColor={StyleService.value('$textSecondary')}
                                     />
                                     <Text style={[styles.amountInput]}> {currencyName}</Text>
                                 </View>
@@ -187,9 +188,9 @@ class CheckCashTemplate extends Component<Props, State> {
                                     }}
                                     style={styles.editButton}
                                     roundedSmall
+                                    icon="IconEdit"
                                     iconSize={13}
                                     light
-                                    icon="IconEdit"
                                 />
                             </>
                         ) : (

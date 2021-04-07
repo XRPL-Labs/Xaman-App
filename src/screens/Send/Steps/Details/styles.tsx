@@ -9,6 +9,7 @@ const styles = StyleService.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        alignSelf: 'stretch',
         backgroundColor: '$background',
     },
     rowTitle: {

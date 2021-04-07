@@ -3,7 +3,7 @@ import { isEmpty, isEqual, has } from 'lodash';
 import React, { Component } from 'react';
 import { View, Alert, Text, Platform, TouchableOpacity, InteractionManager } from 'react-native';
 
-import { BackendService, LedgerService } from '@services';
+import { BackendService, LedgerService, StyleService } from '@services';
 
 import { CoreRepository } from '@store/repositories';
 
@@ -341,6 +341,7 @@ class PaymentTemplate extends Component<Props, State> {
                                         style={[styles.amountInput]}
                                         value={amount}
                                         editable={editableAmount}
+                                        placeholderTextColor={StyleService.value('$textSecondary')}
                                     />
                                     <Text style={[styles.amountInput]}> {currencyName}</Text>
                                 </View>
@@ -352,9 +353,9 @@ class PaymentTemplate extends Component<Props, State> {
                                     }}
                                     style={styles.editButton}
                                     roundedSmall
+                                    icon="IconEdit"
                                     iconSize={13}
                                     light
-                                    icon="IconEdit"
                                 />
                             </>
                         ) : (
