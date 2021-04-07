@@ -29,7 +29,6 @@ import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
-
 /* Types  ==================================================================== */
 interface Props {}
 
@@ -40,8 +39,8 @@ interface State {
 
 /* Component ==================================================================== */
 class DetailsStep extends Component<Props, State> {
-    amountInput: React.RefObject<AmountInput | null>;
-    footer: React.RefObject<Footer | null>;
+    amountInput: React.RefObject<typeof AmountInput | null>;
+    amountRateInput: React.RefObject<typeof AmountInput | null>;
 
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
@@ -55,7 +54,7 @@ class DetailsStep extends Component<Props, State> {
         };
 
         this.amountInput = React.createRef();
-        this.footer = React.createRef();
+        this.amountRateInput = React.createRef();
     }
 
     componentDidMount() {
@@ -237,6 +236,15 @@ class DetailsStep extends Component<Props, State> {
         }
     };
 
+    calcKeyboardAwareExtraOffset = (input: any, inputHeight: number) => {
+        const { currency } = this.context;
+
+        if (input === this.amountInput.current && typeof currency === 'string') {
+            return inputHeight;
+        }
+        return 0;
+    };
+
     renderCurrencyItem = (item: any, selected: boolean) => {
         const { source } = this.context;
         // XRP
@@ -293,7 +301,10 @@ class DetailsStep extends Component<Props, State> {
 
         return (
             <View testID="send-details-view" style={[styles.container]}>
-                <KeyboardAwareScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
+                <KeyboardAwareScrollView
+                    style={[AppStyles.flex1, AppStyles.stretchSelf]}
+                    calculateExtraOffset={this.calcKeyboardAwareExtraOffset}
+                >
                     {/* Source Account */}
                     <View style={[styles.rowItem]}>
                         <View style={[styles.rowTitle]}>
@@ -345,7 +356,9 @@ class DetailsStep extends Component<Props, State> {
                                 />
                             </View>
                             <Button
-                                onPress={this.amountInput.current?.focus}
+                                onPress={() => {
+                                    this.amountInput.current.focus();
+                                }}
                                 style={styles.editButton}
                                 roundedSmall
                                 iconSize={15}
@@ -362,29 +375,7 @@ class DetailsStep extends Component<Props, State> {
                                 </View>
                                 <View style={AppStyles.flex1}>
                                     <AmountInput
-                                        editable={!!currencyRate}
-                                        testID="amount-rate-input"
-                                        onChange={this.onRateAmountChange}
-                                        returnKeyType="done"
-                                        style={[styles.amountRateInput]}
-                                        placeholderTextColor={AppColors.grey}
-                                        value={amountRate}
-                                    />
-                                </View>
-                                <View style={styles.currencySymbolTextContainer}>
-                                    <Text style={[styles.currencySymbolText]}>{coreSettings.currency}</Text>
-                                </View>
-                            </View>
-                        )}
-
-                        {/* only show rate for XRP payments */}
-                        {typeof currency === 'string' && (
-                            <View style={[styles.amountRateContainer]}>
-                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={[styles.amountRateInput]}>~ </Text>
-                                </View>
-                                <View style={AppStyles.flex1}>
-                                    <AmountInput
+                                        ref={this.amountRateInput}
                                         editable={!!currencyRate}
                                         testID="amount-rate-input"
                                         onChange={this.onRateAmountChange}

@@ -45,7 +45,7 @@ export interface State {
 
 /* Component ==================================================================== */
 class PaymentTemplate extends Component<Props, State> {
-    amountInput: AmountInput;
+    amountInput: React.RefObject<typeof AmountInput | null>;
 
     constructor(props: Props) {
         super(props);
@@ -65,6 +65,8 @@ class PaymentTemplate extends Component<Props, State> {
             currencyRate: undefined,
             isLoadingRate: false,
         };
+
+        this.amountInput = React.createRef();
     }
 
     componentDidMount() {
@@ -325,7 +327,7 @@ class PaymentTemplate extends Component<Props, State> {
                         style={[AppStyles.row]}
                         onPress={() => {
                             if (editableAmount && this.amountInput) {
-                                this.amountInput.focus();
+                                this.amountInput.current?.focus();
                             }
                         }}
                     >
@@ -333,9 +335,7 @@ class PaymentTemplate extends Component<Props, State> {
                             <>
                                 <View style={[AppStyles.row, AppStyles.flex1]}>
                                     <AmountInput
-                                        ref={(r) => {
-                                            this.amountInput = r;
-                                        }}
+                                        ref={this.amountInput}
                                         decimalPlaces={currencyName === 'XRP' ? 6 : 8}
                                         onChange={this.onAmountChange}
                                         style={[styles.amountInput]}
@@ -348,7 +348,7 @@ class PaymentTemplate extends Component<Props, State> {
                                 <Button
                                     onPress={() => {
                                         if (this.amountInput) {
-                                            this.amountInput.focus();
+                                            this.amountInput.current?.focus();
                                         }
                                     }}
                                     style={styles.editButton}

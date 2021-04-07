@@ -52,7 +52,7 @@ export interface State {
 
 /* Component ==================================================================== */
 class SummaryStep extends Component<Props, State> {
-    amountInput: AmountInput;
+    amountInput: React.RefObject<typeof AmountInput | null>;
     destinationTagInput: TextInput;
 
     static contextType = StepsContext;
@@ -65,6 +65,8 @@ class SummaryStep extends Component<Props, State> {
             confirmedDestinationTag: undefined,
             currencyRate: undefined,
         };
+
+        this.amountInput = React.createRef();
     }
 
     componentDidMount() {
@@ -469,9 +471,7 @@ class SummaryStep extends Component<Props, State> {
                         <View style={AppStyles.row}>
                             <View style={AppStyles.flex1}>
                                 <AmountInput
-                                    ref={(r) => {
-                                        this.amountInput = r;
-                                    }}
+                                    ref={this.amountInput}
                                     fractional={!sendingNFT}
                                     decimalPlaces={typeof currency === 'string' ? 6 : 8}
                                     onChange={this.onAmountChange}
@@ -481,7 +481,7 @@ class SummaryStep extends Component<Props, State> {
                             </View>
                             <Button
                                 onPress={() => {
-                                    this.amountInput.focus();
+                                    this.amountInput.current?.focus();
                                 }}
                                 style={styles.editButton}
                                 roundedSmall

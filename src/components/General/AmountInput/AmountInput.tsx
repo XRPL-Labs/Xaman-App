@@ -13,6 +13,7 @@ import Localize from '@locale';
 
 /* Types ==================================================================== */
 interface Props {
+    forwardedRef?: any;
     testID?: string;
     style?: TextStyle | TextStyle[];
     value?: string;
@@ -28,7 +29,6 @@ interface State {
     formatted: string;
     value: string;
 }
-
 /* Component ==================================================================== */
 class AmountInput extends PureComponent<Props, State> {
     instance: TextInput;
@@ -46,30 +46,6 @@ class AmountInput extends PureComponent<Props, State> {
             value: props.value ? AmountInput.normalize(props.value) : '',
         };
     }
-
-    public focus = () => {
-        setTimeout(() => {
-            if (this.instance) {
-                this.instance.focus();
-            }
-        }, 50);
-    };
-
-    public blur = () => {
-        setTimeout(() => {
-            if (this.instance) {
-                this.instance.blur();
-            }
-        }, 50);
-    };
-
-    public isFocused = (): boolean => {
-        if (this.instance) {
-            return this.instance.isFocused();
-        }
-
-        return false;
-    };
 
     public getValue = (): string => {
         const { value } = this.state;
@@ -168,15 +144,13 @@ class AmountInput extends PureComponent<Props, State> {
     };
 
     render() {
-        const { editable, style, testID, returnKeyType, placeholderTextColor } = this.props;
+        const { editable, style, testID, returnKeyType, placeholderTextColor, forwardedRef } = this.props;
         const { formatted } = this.state;
 
         return (
             <TextInput
                 testID={testID}
-                ref={(r) => {
-                    this.instance = r;
-                }}
+                ref={forwardedRef}
                 keyboardType="decimal-pad"
                 autoCapitalize="words"
                 onChangeText={this.onValueChange}
@@ -192,4 +166,6 @@ class AmountInput extends PureComponent<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default AmountInput;
+export const RefForwardingAmountInput = React.forwardRef<TextInput, Props>((props, ref) => {
+    return <AmountInput {...props} forwardedRef={ref} />;
+}) as any;

@@ -44,7 +44,9 @@ interface State {
 /* Component ==================================================================== */
 class RequestView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Request;
-    private amountInput: any;
+
+    amountInput: React.RefObject<typeof AmountInput | null>;
+    amountRateInput: React.RefObject<typeof AmountInput | null>;
 
     static options() {
         return {
@@ -66,6 +68,9 @@ class RequestView extends Component<Props, State> {
             amountRate: '',
             withAmount: false,
         };
+
+        this.amountInput = React.createRef();
+        this.amountRateInput = React.createRef();
     }
 
     componentDidMount() {
@@ -187,6 +192,13 @@ class RequestView extends Component<Props, State> {
         }).catch(() => {});
     };
 
+    calcKeyboardAwareExtraOffset = (input: any, inputHeight: number) => {
+        if (input === this.amountInput.current) {
+            return inputHeight;
+        }
+        return 0;
+    };
+
     renderAmountInput = () => {
         const { coreSettings, withAmount, amount, amountRate, currencyRate } = this.state;
 
@@ -197,6 +209,7 @@ class RequestView extends Component<Props, State> {
                 <View style={[styles.amountContainer]}>
                     <View style={AppStyles.flex1}>
                         <AmountInput
+                            ref={this.amountInput}
                             testID="amount-input"
                             decimalPlaces={6}
                             onChange={this.onAmountChange}
@@ -214,6 +227,7 @@ class RequestView extends Component<Props, State> {
                     </View>
                     <View style={AppStyles.flex1}>
                         <AmountInput
+                            ref={this.amountRateInput}
                             editable={!!currencyRate}
                             testID="amount-rate-input"
                             onChange={this.onRateAmountChange}
@@ -249,7 +263,10 @@ class RequestView extends Component<Props, State> {
                     }}
                 />
 
-                <KeyboardAwareScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
+                <KeyboardAwareScrollView
+                    style={[AppStyles.flex1, AppStyles.stretchSelf]}
+                    calculateExtraOffset={this.calcKeyboardAwareExtraOffset}
+                >
                     <View style={styles.qrCodeContainer}>
                         <View style={styles.qrCode}>
                             <QRCode size={AppSizes.moderateScale(150)} value={this.getLink()} />

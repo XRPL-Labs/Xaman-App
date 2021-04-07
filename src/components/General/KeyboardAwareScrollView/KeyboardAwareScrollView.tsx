@@ -19,6 +19,7 @@ interface Props extends ScrollViewProps {
     children: ReactNode;
     hasHeader?: boolean;
     extraOffset?: number;
+    calculateExtraOffset?: (input: any, inputHeight: number) => number;
     onKeyboardShow?: () => void;
     onKeyboardHide?: () => void;
 }
@@ -77,7 +78,7 @@ class KeyboardAwareScrollView extends PureComponent<Props, State> {
     };
 
     scrollToFocusedTextInput = async () => {
-        const { extraOffset } = this.props;
+        const { extraOffset, calculateExtraOffset } = this.props;
         const { offset } = this.state;
 
         const currentlyFocusedField = TextInput.State.currentlyFocusedInput();
@@ -91,7 +92,11 @@ class KeyboardAwareScrollView extends PureComponent<Props, State> {
         const { y: inputY, height: inputHeight } = await this.measureElement(currentlyFocusedField);
 
         const keyboardPosition = Math.abs(this.keyboardHeight - this.windowHeight);
-        const textInputBottomPosition = inputY + inputHeight;
+        let textInputBottomPosition = inputY + inputHeight;
+
+        if (typeof calculateExtraOffset === 'function') {
+            textInputBottomPosition += calculateExtraOffset(currentlyFocusedField, inputHeight);
+        }
 
         // need to push content to up
         if (textInputBottomPosition > keyboardPosition) {

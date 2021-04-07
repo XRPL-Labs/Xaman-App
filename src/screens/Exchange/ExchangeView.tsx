@@ -76,7 +76,7 @@ class ExchangeView extends Component<Props, State> {
     timeout: any;
     sequence: number;
     ledgerExchange: LedgerExchange;
-    amountInput: AmountInput;
+    amountInput: React.RefObject<typeof AmountInput | null>;
 
     static options() {
         return {
@@ -104,6 +104,8 @@ class ExchangeView extends Component<Props, State> {
 
         this.timeout = null;
         this.sequence = 0;
+
+        this.amountInput = React.createRef();
     }
 
     componentDidMount() {
@@ -552,17 +554,13 @@ class ExchangeView extends Component<Props, State> {
                         <TouchableOpacity
                             activeOpacity={1}
                             onPress={() => {
-                                if (this.amountInput) {
-                                    this.amountInput.focus();
-                                }
+                                this.amountInput.current?.focus();
                             }}
                             style={[styles.inputContainer]}
                         >
                             <Text style={styles.fromAmount}>-</Text>
                             <AmountInput
-                                ref={(r) => {
-                                    this.amountInput = r;
-                                }}
+                                ref={this.amountInput}
                                 decimalPlaces={direction === 'sell' ? 6 : 8}
                                 onChange={this.onAmountChange}
                                 placeholderTextColor={AppColors.red}
