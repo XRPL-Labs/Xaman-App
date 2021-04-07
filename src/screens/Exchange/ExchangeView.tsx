@@ -35,7 +35,16 @@ import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { AppScreens, AppConfig } from '@common/constants';
 
 // components
-import { AmountInput, Header, Spacer, Icon, Button, InfoMessage, LoadingIndicator } from '@components/General';
+import {
+    AmountInput,
+    Header,
+    Spacer,
+    Icon,
+    Button,
+    InfoMessage,
+    LoadingIndicator,
+    HorizontalLine,
+} from '@components/General';
 
 import Localize from '@locale';
 
@@ -439,7 +448,7 @@ class ExchangeView extends Component<Props, State> {
 
         if (isExchanging) {
             return (
-                <SafeAreaView style={[AppStyles.container, AppStyles.paddingSml, { backgroundColor: AppColors.light }]}>
+                <SafeAreaView style={[AppStyles.container, AppStyles.paddingSml]}>
                     <View style={[AppStyles.flex5, AppStyles.centerContent]}>
                         <Image style={styles.backgroundImageStyle} source={Images.IconRepeat} />
                     </View>
@@ -564,15 +573,16 @@ class ExchangeView extends Component<Props, State> {
                     </View>
 
                     {/* switch button */}
-                    <View style={styles.separator}>
+                    <View>
+                        <HorizontalLine style={styles.separatorLine} />
                         <Button
+                            activeOpacity={0.9}
                             roundedSmall
                             onPress={this.switchDirection}
                             icon="IconCornerRightUp"
                             iconSize={15}
                             label={Localize.t('global.switch')}
                             style={styles.switchButton}
-                            hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
                         />
                     </View>
 

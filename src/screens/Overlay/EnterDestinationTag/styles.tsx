@@ -8,6 +8,8 @@ const styles = StyleService.create({
         backgroundColor: '$background',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
+        borderColor: '$tint',
+        borderWidth: 1,
         shadowColor: '$grey',
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 5,

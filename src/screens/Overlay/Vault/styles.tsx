@@ -10,11 +10,14 @@ const styles = StyleService.create({
     visibleContent: {
         width: AppSizes.screen.width * 0.9,
         backgroundColor: '$background',
+        borderColor: '$tint',
+        borderWidth: 1,
         borderRadius: 20,
         shadowColor: '$grey',
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 5,
         shadowOpacity: 0.4,
+        elevation: 2,
         ...AppStyles.paddingSml,
     },
 });

@@ -15,7 +15,6 @@ const styles = StyleService.create({
         backgroundColor: '$background',
         padding: AppSizes.padding,
         paddingBottom: 40,
-        zIndex: 0,
     },
     toContainer: {
         paddingTop: 50,
@@ -90,15 +89,13 @@ const styles = StyleService.create({
         margin: 0,
     },
     switchButton: {
-        position: 'absolute',
-        top: -20,
-        zIndex: 99999999,
+        zIndex: 2,
     },
     backgroundImageStyle: {
         height: AppSizes.scale(200),
         width: AppSizes.scale(200),
         resizeMode: 'contain',
-        tintColor: '$grey',
+        tintColor: '$tint',
         opacity: 1,
         transform: [{ rotate: '90deg' }],
     },
@@ -110,9 +107,8 @@ const styles = StyleService.create({
     allButton: {
         backgroundColor: '$lightBlue',
     },
-    separator: {
-        borderTopColor: '$lightGrey',
-        borderTopWidth: 2,
+    separatorLine: {
+        top: '50%',
     },
 });
 

@@ -153,7 +153,6 @@ class LedgerObjectTemplate extends Component<Props, State> {
         const { address } = this.state;
 
         let iconName = '' as any;
-        let iconColor;
 
         if (address) {
             return <Avatar size={40} border source={{ uri: `https://xumm.app/avatar/${address}_180_50.png` }} />;
@@ -170,7 +169,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
 
         return (
             <View style={styles.iconContainer}>
-                <Icon size={20} style={[styles.icon, iconColor]} name={iconName} />
+                <Icon size={20} style={[styles.icon]} name={iconName} />
             </View>
         );
     };

@@ -11,6 +11,8 @@ const styles = StyleService.create({
         width: AppSizes.screen.width * 0.9,
         backgroundColor: '$background',
         borderRadius: AppSizes.screen.width * 0.07,
+        borderColor: '$tint',
+        borderWidth: 1,
         shadowColor: '$grey',
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 1,

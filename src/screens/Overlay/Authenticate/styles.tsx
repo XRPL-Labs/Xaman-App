@@ -7,10 +7,11 @@ import { AppStyles, AppSizes } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-
     visibleContent: {
         width: AppSizes.screen.width * 0.9,
         backgroundColor: '$background',
+        borderColor: '$tint',
+        borderWidth: 1,
         borderRadius: 20,
         shadowColor: '$grey',
         shadowOffset: { width: 0, height: 0 },

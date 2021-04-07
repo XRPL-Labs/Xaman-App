@@ -9,6 +9,8 @@ const styles = StyleService.create({
         width: AppSizes.screen.width * 0.9,
         backgroundColor: '$background',
         borderRadius: 22,
+        borderColor: '$tint',
+        borderWidth: 1,
     },
     headerContainer: {
         backgroundColor: '$tint',

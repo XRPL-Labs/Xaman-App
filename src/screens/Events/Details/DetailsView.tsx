@@ -995,7 +995,7 @@ class TransactionDetailsView extends Component<Props, State> {
         return (
             <View style={styles.memoContainer}>
                 <View style={[AppStyles.row]}>
-                    <Icon name="IconFileText" size={18} />
+                    <Icon name="IconFileText" size={18} style={AppStyles.imgColorPrimary} />
                     <Text style={[styles.labelText]}> {Localize.t('global.memo')}</Text>
                 </View>
 

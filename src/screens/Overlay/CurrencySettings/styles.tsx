@@ -20,6 +20,8 @@ const styles = StyleService.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: AppSizes.paddingSml,
+        borderColor: '$tint',
+        borderWidth: 1,
         shadowColor: '$background',
         shadowOffset: { width: 0, height: 3 },
         shadowRadius: 3,
