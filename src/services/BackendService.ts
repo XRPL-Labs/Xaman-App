@@ -207,50 +207,60 @@ class BackendService {
     Ping with the backend and update the profile
     */
     ping = () => {
-        return ApiService.ping
-            .post(null, { appVersion: GetAppReadableVersion(), appLanguage: Localize.getCurrentLocale() })
-            .then((res: any) => {
-                const { auth, badge, env, tosAndPrivacyPolicyVersion } = res;
+        /* eslint-disable-next-line */
+        return new Promise(async (resolve, reject) => {
+            return ApiService.ping
+                .post(null, {
+                    appVersion: GetAppReadableVersion(),
+                    appLanguage: Localize.getCurrentLocale(),
+                    devicePushToken: await PushNotificationsService.getToken(),
+                })
+                .then((res: any) => {
+                    const { auth, badge, env, tosAndPrivacyPolicyVersion } = res;
 
-                if (auth) {
-                    const { user, device } = auth;
-                    const { hasPro } = env;
+                    if (auth) {
+                        const { user, device } = auth;
+                        const { hasPro } = env;
 
-                    // update the profile
-                    ProfileRepository.saveProfile({
-                        username: user.name,
-                        slug: user.slug,
-                        uuid: user.uuidv4,
-                        deviceUUID: device.uuidv4,
-                        lastSync: new Date(),
-                        hasPro,
-                    });
+                        // update the profile
+                        ProfileRepository.saveProfile({
+                            username: user.name,
+                            slug: user.slug,
+                            uuid: user.uuidv4,
+                            deviceUUID: device.uuidv4,
+                            lastSync: new Date(),
+                            hasPro,
+                        });
 
-                    // check for tos version
-                    const profile = ProfileRepository.getProfile();
+                        // check for tos version
+                        const profile = ProfileRepository.getProfile();
 
-                    if (profile.signedTOSVersion < Number(tosAndPrivacyPolicyVersion)) {
-                        // show the modal to check new policy and confirm new agreement
-                        Navigator.showModal(
-                            AppScreens.Settings.TermOfUse,
-                            {
-                                modalPresentationStyle: 'fullScreen',
-                                modal: {
-                                    swipeToDismiss: false,
+                        if (profile.signedTOSVersion < Number(tosAndPrivacyPolicyVersion)) {
+                            // show the modal to check new policy and confirm new agreement
+                            Navigator.showModal(
+                                AppScreens.Settings.TermOfUse,
+                                {
+                                    modalPresentationStyle: 'fullScreen',
+                                    modal: {
+                                        swipeToDismiss: false,
+                                    },
                                 },
-                            },
-                            { asModal: true },
-                        );
+                                { asModal: true },
+                            );
+                        }
                     }
-                }
 
-                if (badge) {
-                    PushNotificationsService.updateBadge(badge);
-                }
-            })
-            .catch((error: string) => {
-                this.logger.error('Ping Backend Error: ', error);
-            });
+                    if (badge) {
+                        PushNotificationsService.updateBadge(badge);
+                    }
+
+                    return resolve(null);
+                })
+                .catch((e: any) => {
+                    this.logger.error('Ping Backend Error: ', e);
+                    return reject(e);
+                });
+        });
     };
 
     /*
