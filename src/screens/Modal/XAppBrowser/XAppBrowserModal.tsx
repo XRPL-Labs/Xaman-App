@@ -101,6 +101,18 @@ class XAppBrowserModal extends Component<Props, State> {
         return true;
     };
 
+    onPayloadResolve = () => {
+        if (this.webView) {
+            this.webView.postMessage(JSON.stringify({ method: 'payloadResolved', reason: 'SIGNED' }));
+        }
+    };
+
+    onPayloadDecline = () => {
+        if (this.webView) {
+            this.webView.postMessage(JSON.stringify({ method: 'payloadResolved', reason: 'DECLINED' }));
+        }
+    };
+
     handleSignRequest = async (data: any) => {
         if (!has(data, 'uuid')) {
             return;
@@ -122,7 +134,11 @@ class XAppBrowserModal extends Component<Props, State> {
             Navigator.showModal(
                 AppScreens.Modal.ReviewTransaction,
                 { modalPresentationStyle: 'fullScreen' },
-                { payload },
+                {
+                    payload,
+                    onResolve: this.onPayloadResolve,
+                    onDecline: this.onPayloadDecline,
+                },
             );
         } catch (e) {
             Alert.alert(Localize.t('global.error'), e.message, [{ text: 'OK' }], { cancelable: false });
