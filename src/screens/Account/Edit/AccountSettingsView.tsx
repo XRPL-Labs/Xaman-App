@@ -137,7 +137,9 @@ class AccountSettingsView extends Component<Props, State> {
         if (accessLevel === AccessLevels.Readonly && account.accessLevel === AccessLevels.Full) {
             Prompt(
                 Localize.t('global.pleaseNote'),
-                Localize.t('account.downgradingAccessLevelWarning'),
+                account.type === AccountTypes.Regular
+                    ? Localize.t('account.downgradingAccessLevelWarning')
+                    : Localize.t('account.downgradingAccessLevelWarningPhysical'),
                 [
                     { text: Localize.t('global.cancel') },
                     {

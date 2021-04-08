@@ -612,6 +612,7 @@
     "removeFromXUMM": "Remove from XUMM",
     "upgradingAccessLevelWarning": "You are upgrading your access level. You need to import your private key for this account.",
     "downgradingAccessLevelWarning": "You are downgrading your access level. This will cause you to lose your private key for this account. Are you sure?",
+    "downgradingAccessLevelWarningPhysical": "You are downgrading your access level. Are you sure?",
     "removeTrustLineWarning": "You are removing this asset from your account. This action cannot be undone. Are you sure?",
     "unavailableChangeSecurityLevel": "Changing Security level is not available right now",
     "accountRemoveWarning": "Your account will be deleted permanently from XUMM. Are you sure?",
