@@ -86,7 +86,7 @@ class AmountText extends Component<Props, State> {
         let truncated = false;
 
         // value is low, we will show it as zero but better with ellipsis
-        if (value < Number(`0.${'0'.repeat(PRECISION)}9`)) {
+        if (value > 0 && value < Number(`0.${'0'.repeat(PRECISION)}9`)) {
             // truncate the display value
             newValue = '0…';
             // set the flag
