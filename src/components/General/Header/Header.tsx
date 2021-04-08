@@ -119,6 +119,21 @@ class Header extends PureComponent<Props> {
         placement: 'center',
     };
 
+    getChildStyle = (position: 'left' | 'right' | 'center') => {
+        const { placement, centerComponent } = this.props;
+
+        const positions = ['left', 'center', 'right'];
+
+        if (placement !== 'center' && !centerComponent && position === 'center') {
+            return null;
+        }
+
+        if (positions.filter((p) => p !== placement).indexOf(position) === -1) {
+            return styles.fixedContainer;
+        }
+        return styles.floatContainer;
+    };
+
     render() {
         const {
             leftComponent,
@@ -128,15 +143,16 @@ class Header extends PureComponent<Props> {
             placement,
             containerStyle,
         } = this.props;
+
         return (
             <View style={[styles.container, backgroundColor && { backgroundColor }, containerStyle]}>
-                <Children style={placement === 'center' && styles.rightLeftContainer} placement="left">
+                <Children style={this.getChildStyle('left')} placement="left">
                     {leftComponent}
                 </Children>
 
                 <Children
                     style={[
-                        styles.centerContainer,
+                        this.getChildStyle('center'),
                         placement !== 'center' && {
                             paddingHorizontal: Platform.select({
                                 android: 16,
@@ -144,12 +160,12 @@ class Header extends PureComponent<Props> {
                             }),
                         },
                     ]}
-                    placement={placement}
+                    placement="center"
                 >
                     {centerComponent}
                 </Children>
 
-                <Children style={placement === 'center' && styles.rightLeftContainer} placement="right">
+                <Children style={this.getChildStyle('right')} placement="right">
                     {rightComponent}
                 </Children>
             </View>

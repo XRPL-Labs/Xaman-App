@@ -386,10 +386,19 @@ class XAppBrowserModal extends Component<Props, State> {
         return (
             <View testID="xapp-browser-modal" style={[styles.container]}>
                 <Header
-                    centerComponent={{ text: title || 'XAPP' }}
-                    leftComponent={{
-                        icon: 'IconChevronLeft',
-                        onPress: this.onClose,
+                    placement="left"
+                    leftComponent={{ text: title || 'XAPP' }}
+                    rightComponent={{
+                        render: () => (
+                            <Button
+                                contrast
+                                testID="close-button"
+                                numberOfLines={1}
+                                roundedSmall
+                                label={Localize.t('global.close')}
+                                onPress={this.onClose}
+                            />
+                        ),
                     }}
                 />
 

@@ -16,10 +16,10 @@ const styles = StyleService.create({
         backgroundColor: '$background',
     },
 
-    centerContainer: {
+    fixedContainer: {
         flex: 3,
     },
-    rightLeftContainer: {
+    floatContainer: {
         flex: 1,
     },
     childContainer: {
