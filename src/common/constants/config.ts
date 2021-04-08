@@ -19,6 +19,7 @@ export default {
         path: 'xumm.realm',
     },
 
+    // NOTE: any changes here should be applied in patches/react-native+0.63.4.patch as well
     // xrpl nodes
     nodes: {
         default: 'wss://xrplcluster.com',
