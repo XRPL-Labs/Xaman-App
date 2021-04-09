@@ -1,7 +1,7 @@
 /**
  * Style service
  */
-import { has, get } from 'lodash';
+import { has, get, toLower } from 'lodash';
 import { Appearance } from 'react-native';
 
 import { Images } from '@common/helpers/images';
@@ -44,7 +44,10 @@ class StyleService {
                         });
                     }
                 } else {
-                    theme = coreSettings.theme || 'light';
+                    // lowerCase the theme name is required as we stored
+                    // theme name in title mode in version before 1.0.1
+                    // @ts-ignore
+                    theme = toLower(coreSettings.theme) || 'light';
                 }
 
                 this.setTheme(theme);
@@ -56,10 +59,8 @@ class StyleService {
         });
     };
 
-    setDefaultTheme = () => {};
-
     setTheme = (theme: Themes) => {
-        if (this.themeName !== theme) {
+        if (this.themeName !== theme && has(ColorsTheme, theme)) {
             this.themeName = theme;
             this.currentStyle = { ...ColorsTheme[theme], ...ColorsGeneral };
         }
