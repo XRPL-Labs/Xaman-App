@@ -58,7 +58,7 @@ const styles = StyleService.create({
         right: 0,
         width: AppSizes.screen.width,
         height: AppSizes.screen.height,
-        backgroundColor: 'rgba(255,255,255,0.95)',
+        backgroundColor: '$background',
     },
     absolute: {
         zIndex: 999999,

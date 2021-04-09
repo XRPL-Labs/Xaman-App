@@ -108,6 +108,16 @@ class FinishView extends Component<Props, State> {
         }
     };
 
+    getHeaders = () => {
+        return {
+            'X-XUMM-Style': StyleService.getCurrentTheme(),
+        };
+    };
+
+    getURI = () => {
+        return AppConfig.termOfUseURL;
+    };
+
     render() {
         const { isLoading, isTOSLoaded } = this.state;
         return (
@@ -126,7 +136,7 @@ class FinishView extends Component<Props, State> {
                             });
                         }}
                         renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
-                        source={{ uri: AppConfig.termOfUseURL }}
+                        source={{ uri: this.getURI(), headers: this.getHeaders() }}
                         style={styles.webView}
                     />
                 </View>

@@ -116,6 +116,10 @@ class StyleService {
 
         return get(Images, image);
     };
+
+    getCurrentTheme = (): string => {
+        return this.themeName;
+    };
 }
 
 export default new StyleService();
