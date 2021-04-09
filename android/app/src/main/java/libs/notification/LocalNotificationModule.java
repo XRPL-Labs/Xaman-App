@@ -51,8 +51,9 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule {
 
         if (remoteMessage != null) {
 
-            if (show) {
+            RemoteMessage.Notification notification = remoteMessage.getNotification();
 
+            if (show && notification != null) {
                 String channelId = "notifications";
                 int notificationId = (int) SystemClock.uptimeMillis();
 
@@ -73,10 +74,10 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule {
 
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this.context, channelId)
                         .setSmallIcon(R.drawable.ic_stat_icon_xumm_android_notification)
-                        .setContentTitle(remoteMessage.getNotification().getTitle())
+                        .setContentTitle(notification.getTitle())
                         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setContentText(remoteMessage.getNotification().getBody())
+                        .setContentText(notification.getBody())
                         .setContentIntent(pendingActionIntent);
 
 
