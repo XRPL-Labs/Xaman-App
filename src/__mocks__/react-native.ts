@@ -51,4 +51,15 @@ ReactNative.NativeModules.LocalNotificationModule = {
     complete: jest.fn((messageId: string, show: boolean) => true),
 };
 
+ReactNative.NativeModules.AppUpdateModule = {
+    checkUpdate: jest.fn(() => Promise.resolve(123)),
+    startUpdate: jest.fn(() => Promise.resolve()),
+};
+
+ReactNative.NativeModules.SharedPreferencesModule = {
+    get: jest.fn((key) => Promise.resolve('value')),
+    set: jest.fn((key, value) => Promise.resolve(true)),
+    del: jest.fn((key) => Promise.resolve(true)),
+};
+
 module.exports = ReactNative;
