@@ -2,7 +2,7 @@
  * General Settings Screen
  */
 
-import { uniqBy, sortBy } from 'lodash';
+import { uniqBy, sortBy, toLower } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
@@ -217,7 +217,7 @@ class GeneralSettingsView extends Component<Props, State> {
                 break;
         }
 
-        const selected = coreSettings.theme === theme;
+        const selected = toLower(coreSettings.theme) === theme;
 
         return (
             <TouchableOpacity

@@ -112,7 +112,7 @@ class PaymentTemplate extends Component<Props, State> {
         const { currency } = CoreRepository.getSettings();
 
         BackendService.getCurrencyRate(currency)
-            .then((r) => {
+            .then(r => {
                 this.setState({
                     currencyRate: r,
                     isLoadingRate: false,

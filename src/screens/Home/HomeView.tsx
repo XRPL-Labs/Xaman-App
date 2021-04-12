@@ -406,7 +406,7 @@ class HomeView extends Component<Props, State> {
             });
 
             BackendService.getCurrencyRate(currency)
-                .then((r) => {
+                .then(r => {
                     this.setState({
                         currencyRate: r,
                         isLoadingRate: false,

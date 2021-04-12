@@ -6,8 +6,7 @@ import { AppStyles, AppSizes } from '@theme';
 const styles = StyleService.create({
     container: {
         paddingHorizontal: 20,
-        // paddingTop: Platform.OS === 'ios' ? AppSizes.statusBarHeight : 0,
-        paddingTop: 30,
+        paddingTop: Platform.OS === 'ios' ? AppSizes.statusBarHeight : 0,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
