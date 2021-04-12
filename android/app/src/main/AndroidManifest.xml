@@ -114,7 +114,6 @@
                 android:resource="@xml/nfc_tech_filter" />
             
         </activity>
-        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
         <meta-data
             tools:replace="android:resource"
