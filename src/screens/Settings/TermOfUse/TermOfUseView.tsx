@@ -144,6 +144,7 @@ class TermOfUseView extends Component<Props, State> {
                 )}
 
                 <WebView
+                    limitsNavigationsToAppBoundDomains
                     containerStyle={[AppStyles.flex1, { paddingBottom }]}
                     startInLoadingState
                     onMessage={this.fetchTOSVersion}

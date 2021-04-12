@@ -369,9 +369,10 @@ class XAppBrowserModal extends Component<Props, State> {
     renderXApp = () => {
         return (
             <WebView
-                ref={(r) => {
+                ref={r => {
                     this.webView = r;
                 }}
+                limitsNavigationsToAppBoundDomains
                 containerStyle={styles.webViewContainer}
                 startInLoadingState
                 renderLoading={this.renderLoading}

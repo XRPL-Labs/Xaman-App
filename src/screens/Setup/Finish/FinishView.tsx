@@ -128,6 +128,7 @@ class FinishView extends Component<Props, State> {
 
                 <View style={[AppStyles.flex8, AppStyles.centerContent, styles.contentArea]}>
                     <WebView
+                        limitsNavigationsToAppBoundDomains
                         startInLoadingState
                         onMessage={this.fetchTOSVersion}
                         onLoadEnd={() => {
