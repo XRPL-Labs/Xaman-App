@@ -101,8 +101,8 @@ const NormalizeCurrencyCode = (currencyCode: string): string => {
         const decoded = HexEncoding.toString(currencyCode);
 
         if (decoded) {
-            const clean = decoded.replace(/\0.*$/g, '').replace(/(\r\n|\n|\r)/gm, ' ');
-            // check if it's fake XRP
+            const clean = decoded.replace(/\0/g, '').replace(/(\r\n|\n|\r)/gm, ' ');
+
             if (clean.toLowerCase().trim() === 'xrp') {
                 return 'FakeXRP';
             }
