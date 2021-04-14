@@ -144,7 +144,6 @@ class TermOfUseView extends Component<Props, State> {
                 )}
 
                 <WebView
-                    limitsNavigationsToAppBoundDomains
                     containerStyle={[AppStyles.flex1, { paddingBottom }]}
                     startInLoadingState
                     onMessage={this.fetchTOSVersion}
@@ -155,6 +154,8 @@ class TermOfUseView extends Component<Props, State> {
                     }}
                     renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                     source={{ uri: this.getURI(), headers: this.getHeaders() }}
+                    androidHardwareAccelerationDisabled={false}
+                    limitsNavigationsToAppBoundDomains
                 />
 
                 {shouldShowAgreement && (

@@ -372,13 +372,14 @@ class XAppBrowserModal extends Component<Props, State> {
                 ref={r => {
                     this.webView = r;
                 }}
-                limitsNavigationsToAppBoundDomains
                 containerStyle={styles.webViewContainer}
                 startInLoadingState
                 renderLoading={this.renderLoading}
                 source={{ uri: this.getUrl() }}
                 onMessage={this.onMessage}
                 userAgent={this.getUserAgent()}
+                limitsNavigationsToAppBoundDomains
+                androidHardwareAccelerationDisabled={false}
             />
         );
     };

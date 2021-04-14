@@ -116,11 +116,12 @@ class ChangeLogModalView extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex1, styles.contentContainer]}>
                         <WebView
-                            limitsNavigationsToAppBoundDomains
                             containerStyle={[AppStyles.flex1]}
                             startInLoadingState
                             renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                             source={{ uri: this.getURI(), headers: this.getHeaders() }}
+                            androidHardwareAccelerationDisabled={false}
+                            limitsNavigationsToAppBoundDomains
                         />
                     </View>
                 </Animated.View>

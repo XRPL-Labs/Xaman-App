@@ -166,7 +166,7 @@ class PaymentTemplate extends Component<Props, State> {
                     const liquidity = await ledgerExchange.getLiquidity('buy', Number(transaction.Amount.value));
 
                     // not enough liquidity
-                    if (!liquidity.safe || liquidity.errors.length > 0) {
+                    if (!liquidity || !liquidity.safe || liquidity.errors.length > 0) {
                         this.setState({
                             isPartialPayment: true,
                             exchangeRate: 0,

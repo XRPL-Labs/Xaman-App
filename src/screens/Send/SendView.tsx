@@ -19,7 +19,7 @@ import { Payment } from '@common/libs/ledger/transactions';
 import { Destination } from '@common/libs/ledger/parser/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
-import { NFTValueToXRPL } from '@common/utils/amount';
+import { NFTValueToXRPL, XRPLValueToNFT } from '@common/utils/amount';
 // components
 import { Header } from '@components/General';
 
@@ -56,7 +56,7 @@ class SendView extends Component<Props, State> {
         const source = find(accounts, { default: true }) || accounts[0];
         const currency = props.currency || 'XRP';
         const sendingNFT = typeof currency !== 'string' && currency.isNFT;
-        const amount = props.amount || '';
+        const amount = props.amount ? (sendingNFT ? String(XRPLValueToNFT(Number(props.amount))) : props.amount) : '';
 
         this.state = {
             currentStep: Steps.Details,
@@ -133,14 +133,14 @@ class SendView extends Component<Props, State> {
         this.changeStep(Steps.Submitting);
 
         // submit payment to the ledger
-        payment.submit().then((submitResult) => {
+        payment.submit().then(submitResult => {
             if (submitResult.success) {
                 this.setState(
                     {
                         currentStep: Steps.Verifying,
                     },
                     () => {
-                        payment.verify().then((result) => {
+                        payment.verify().then(result => {
                             if (coreSettings.hapticFeedback) {
                                 if (result.success) {
                                     VibrateHapticFeedback('notificationSuccess');

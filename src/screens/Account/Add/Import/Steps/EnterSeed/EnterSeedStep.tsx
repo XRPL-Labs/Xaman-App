@@ -85,7 +85,7 @@ class EnterSeedStep extends Component<Props, State> {
             // normal family seed
             if (secret.startsWith('s')) {
                 this.driveFamilySeed();
-            } else if (secret.length === 66 && secret.startsWith('00')) {
+            } else if (secret.length === 66 && (secret.startsWith('00') || secret.startsWith('ED'))) {
                 // hex private key
                 this.derivePrivateKey();
             } else {
@@ -97,7 +97,7 @@ class EnterSeedStep extends Component<Props, State> {
     };
 
     onQRCodeRead = (result: XrplSecret) => {
-        if (result.familySeed) {
+        if (result?.familySeed) {
             this.setState({
                 secret: result.familySeed,
             });

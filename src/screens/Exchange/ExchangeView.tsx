@@ -135,7 +135,7 @@ class ExchangeView extends Component<Props, State> {
                 .getLiquidity(direction, Number(amount))
                 .then((res) => {
                     // this will make sure the latest call will apply
-                    if (sequence === this.sequence) {
+                    if (sequence === this.sequence && res) {
                         this.setState({
                             liquidity: res,
                         });

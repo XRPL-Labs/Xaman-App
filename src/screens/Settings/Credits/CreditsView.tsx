@@ -79,6 +79,8 @@ class CreditsView extends Component<Props, State> {
                     startInLoadingState
                     renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                     source={{ uri: this.getURI(), headers: this.getHeaders() }}
+                    androidHardwareAccelerationDisabled={false}
+                    limitsNavigationsToAppBoundDomains
                 />
             </View>
         );

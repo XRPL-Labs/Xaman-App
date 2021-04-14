@@ -105,12 +105,18 @@ class SocketService extends EventEmitter {
 
         // proxy events
         this.onEvent = (event: string, fn: any) => {
-            return this.connection.addListener(event, fn);
+            if (this.connection) {
+                return this.connection.addListener(event, fn);
+            }
+            return undefined;
         };
 
         // proxy remove event
         this.offEvent = (event: string, fn: any) => {
-            return this.connection.removeListener(event, fn);
+            if (this.connection) {
+                return this.connection.removeListener(event, fn);
+            }
+            return undefined;
         };
     }
 

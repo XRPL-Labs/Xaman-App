@@ -128,7 +128,6 @@ class FinishView extends Component<Props, State> {
 
                 <View style={[AppStyles.flex8, AppStyles.centerContent, styles.contentArea]}>
                     <WebView
-                        limitsNavigationsToAppBoundDomains
                         startInLoadingState
                         onMessage={this.fetchTOSVersion}
                         onLoadEnd={() => {
@@ -139,6 +138,8 @@ class FinishView extends Component<Props, State> {
                         renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                         source={{ uri: this.getURI(), headers: this.getHeaders() }}
                         style={styles.webView}
+                        limitsNavigationsToAppBoundDomains
+                        androidHardwareAccelerationDisabled={false}
                     />
                 </View>
 
