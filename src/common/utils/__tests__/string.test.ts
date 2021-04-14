@@ -1,7 +1,7 @@
 /* eslint-disable spellcheck/spell-checker */
 import { Truncate, HexEncoding } from '../string';
 
-describe('Utils', () => {
+describe('Utils.String', () => {
     // truncate
     const longText = 'thisisatestfortruncate';
     const truncated = 'this...ate';
