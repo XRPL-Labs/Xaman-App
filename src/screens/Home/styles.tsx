@@ -171,8 +171,7 @@ const styles = StyleService.create({
         width: AppSizes.screen.width * 0.035,
         height: AppSizes.screen.width * 0.035,
         resizeMode: 'contain',
-        marginTop: 1,
-        marginRight: 10,
+        paddingRight: 30,
     },
     logo: {
         width: AppSizes.scale(120),

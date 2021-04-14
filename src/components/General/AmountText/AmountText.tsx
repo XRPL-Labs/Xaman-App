@@ -19,7 +19,7 @@ interface Props {
     testID?: string;
     value: number | string;
     currency?: string;
-    prefix?: string;
+    prefix?: string | (() => React.ReactNode);
     style?: TextStyle | TextStyle[];
     currencyStyle?: TextStyle | TextStyle[];
 }
@@ -182,10 +182,14 @@ class AmountText extends Component<Props, State> {
     getPrefix = () => {
         const { prefix } = this.props;
 
-        if (prefix) {
-            return `${prefix}`;
+        switch (typeof prefix) {
+            case 'string':
+                return `${prefix}`;
+            case 'function':
+                return prefix();
+            default:
+                return '';
         }
-        return '';
     };
 
     render() {

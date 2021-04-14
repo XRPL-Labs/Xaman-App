@@ -462,6 +462,7 @@ class HomeView extends Component<Props, State> {
     renderAssets = () => {
         const { account, discreetMode, isSpendable } = this.state;
 
+        // accounts is not activated
         if (account.balance === 0) {
             // check if account is a regular key to one of xumm accounts
             const isRegularKey = AccountRepository.isRegularKey(account.address);
@@ -587,7 +588,7 @@ class HomeView extends Component<Props, State> {
                                     style={[styles.currencyItem]}
                                     key={index}
                                 >
-                                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                                    <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
                                         <View style={[styles.brandAvatarContainer]}>
                                             <Image
                                                 style={[styles.brandAvatar]}
@@ -614,26 +615,33 @@ class HomeView extends Component<Props, State> {
                                     </View>
                                     <View
                                         style={[
-                                            AppStyles.flex4,
+                                            AppStyles.flex1,
                                             AppStyles.row,
                                             AppStyles.centerContent,
                                             AppStyles.centerAligned,
                                             AppStyles.flexEnd,
                                         ]}
                                     >
-                                        {line.currency.avatar && (
-                                            <Image
-                                                style={[styles.currencyAvatar, discreetMode && AppStyles.imgColorGrey]}
-                                                source={{ uri: line.currency.avatar }}
-                                            />
-                                        )}
-
                                         {discreetMode ? (
                                             <Text style={[AppStyles.pbold, AppStyles.monoBold, AppStyles.colorGrey]}>
                                                 ••••••••
                                             </Text>
                                         ) : (
                                             <AmountText
+                                                prefix={() => {
+                                                    if (line.currency.avatar) {
+                                                        return (
+                                                            <Image
+                                                                style={[
+                                                                    styles.currencyAvatar,
+                                                                    discreetMode && AppStyles.imgColorGrey,
+                                                                ]}
+                                                                source={{ uri: line.currency.avatar }}
+                                                            />
+                                                        );
+                                                    }
+                                                    return undefined;
+                                                }}
                                                 value={line.balance}
                                                 style={[AppStyles.pbold, AppStyles.monoBold]}
                                             />
