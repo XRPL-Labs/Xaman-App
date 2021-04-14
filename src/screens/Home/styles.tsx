@@ -167,11 +167,13 @@ const styles = StyleService.create({
         width: AppSizes.scale(35),
         resizeMode: 'cover',
     },
+    currencyAvatarContainer: {
+        paddingRight: 10,
+    },
     currencyAvatar: {
         width: AppSizes.screen.width * 0.035,
         height: AppSizes.screen.width * 0.035,
         resizeMode: 'contain',
-        paddingRight: 30,
     },
     logo: {
         width: AppSizes.scale(120),

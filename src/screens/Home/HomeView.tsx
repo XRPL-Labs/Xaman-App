@@ -631,13 +631,15 @@ class HomeView extends Component<Props, State> {
                                                 prefix={() => {
                                                     if (line.currency.avatar) {
                                                         return (
-                                                            <Image
-                                                                style={[
-                                                                    styles.currencyAvatar,
-                                                                    discreetMode && AppStyles.imgColorGrey,
-                                                                ]}
-                                                                source={{ uri: line.currency.avatar }}
-                                                            />
+                                                            <View style={styles.currencyAvatarContainer}>
+                                                                <Image
+                                                                    style={[
+                                                                        styles.currencyAvatar,
+                                                                        discreetMode && AppStyles.imgColorGrey,
+                                                                    ]}
+                                                                    source={{ uri: line.currency.avatar }}
+                                                                />
+                                                            </View>
                                                         );
                                                     }
                                                     return undefined;
