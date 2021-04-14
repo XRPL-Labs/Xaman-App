@@ -27,7 +27,8 @@ interface Props {
 interface State {
     originalValue: any;
     value: string;
-    truncated: false;
+    truncated: 'LOW' | 'HIGH';
+    showOriginalValue: boolean;
 }
 
 /* Component ==================================================================== */
@@ -38,14 +39,16 @@ class AmountText extends Component<Props, State> {
         this.state = {
             originalValue: undefined,
             value: '',
-            truncated: false,
+            truncated: undefined,
+            showOriginalValue: false,
         };
     }
 
-    shouldComponentUpdate(nextProps: Props) {
+    shouldComponentUpdate(nextProps: Props, nextState: State) {
         const { value } = this.props;
+        const { showOriginalValue } = this.state;
 
-        if (nextProps.value !== value) {
+        if (nextProps.value !== value || nextState.showOriginalValue !== showOriginalValue) {
             return true;
         }
 
@@ -82,15 +85,22 @@ class AmountText extends Component<Props, State> {
         }
 
         const PRECISION = 8;
+        const MAX_VALUE = 99999;
+
         let newValue = '';
-        let truncated = false;
+        let truncated;
 
         // value is low, we will show it as zero but better with ellipsis
         if (value > 0 && value < Number(`0.${'0'.repeat(PRECISION)}9`)) {
             // truncate the display value
             newValue = '0…';
             // set the flag
-            truncated = true;
+            truncated = 'LOW';
+        } else if (value > MAX_VALUE) {
+            const valueNormalized = Localize.formatNumber(Math.trunc(value));
+            newValue = `${valueNormalized}`;
+            // set the flag
+            truncated = 'HIGH';
         } else {
             const valueNormalized = Localize.formatNumber(value);
             newValue = `${valueNormalized}`;
@@ -107,17 +117,21 @@ class AmountText extends Component<Props, State> {
         return null;
     }
 
-    onPress = () => {
-        const { value } = this.props;
-        const { truncated } = this.state;
+    toggleShowOriginalValue = () => {
+        const { showOriginalValue } = this.state;
 
-        // if not truncated we don't have to show full amount
-        if (!truncated) return;
+        this.setState({
+            showOriginalValue: !showOriginalValue,
+        });
+    };
 
-        let amount = String(value);
+    alertOriginalValue = () => {
+        const { originalValue } = this.state;
+
+        let amount = String(originalValue);
         // if value is exponent they show fixed value to the user
         if (new RegExp(/[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)/g).test(amount)) {
-            amount = new BigNumber(value).toFixed();
+            amount = new BigNumber(originalValue).toFixed();
         }
 
         Alert.alert(
@@ -126,8 +140,31 @@ class AmountText extends Component<Props, State> {
         );
     };
 
+    onPress = () => {
+        const { truncated } = this.state;
+
+        // if not truncated we don't have to show full amount
+        if (!truncated) return;
+
+        switch (truncated) {
+            case 'HIGH':
+                this.toggleShowOriginalValue();
+                break;
+            case 'LOW':
+                this.alertOriginalValue();
+                break;
+            default:
+                break;
+        }
+    };
+
     getValue = () => {
-        const { value } = this.state;
+        const { value, originalValue, showOriginalValue } = this.state;
+
+        if (showOriginalValue) {
+            return Localize.formatNumber(originalValue);
+        }
+
         return value;
     };
 
