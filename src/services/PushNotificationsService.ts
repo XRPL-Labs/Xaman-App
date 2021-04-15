@@ -2,7 +2,7 @@
  * Push Notification service
  * handle push notification permission and received notifications
  */
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
 import EventEmitter from 'events';
 
 import { Alert, NativeModules } from 'react-native';
@@ -39,11 +39,13 @@ export enum NotificationType {
 /* Service  ==================================================================== */
 class PushNotificationsService extends EventEmitter {
     initialized: boolean;
+    initialNotification: FirebaseMessagingTypes.RemoteMessage;
     logger: any;
 
     constructor() {
         super();
         this.initialized = false;
+        this.initialNotification = undefined;
         this.logger = LoggerService.createLogger('Push');
     }
 
@@ -59,7 +61,7 @@ class PushNotificationsService extends EventEmitter {
                         }
                         return resolve();
                     })
-                    .catch((e) => {
+                    .catch(e => {
                         return reject(e);
                     });
             } catch (e) {
@@ -104,10 +106,10 @@ class PushNotificationsService extends EventEmitter {
     getToken = (): Promise<string> => {
         return messaging()
             .getToken()
-            .then((token) => {
+            .then(token => {
                 return token;
             })
-            .catch((e) => {
+            .catch(e => {
                 this.logger.error('Cannot get token from firebase', e);
                 return undefined;
             });
@@ -154,9 +156,11 @@ class PushNotificationsService extends EventEmitter {
 
     /* If the app was launched by a push notification  */
     checkInitialNotification = async () => {
-        const notificationOpen = await messaging().getInitialNotification();
-        if (notificationOpen) {
-            this.handleNotificationOpen(notificationOpen);
+        const initialNotification = await messaging().getInitialNotification();
+
+        if (initialNotification && !isEqual(this.initialNotification, initialNotification)) {
+            this.initialNotification = initialNotification;
+            this.handleNotificationOpen(initialNotification);
         }
     };
 
@@ -179,7 +183,7 @@ class PushNotificationsService extends EventEmitter {
         if (!payloadUUID) return;
 
         await Payload.from(payloadUUID, PayloadOrigin.PUSH_NOTIFICATION)
-            .then((payload) => {
+            .then(payload => {
                 // show review transaction screen
                 Navigator.showModal(
                     AppScreens.Modal.ReviewTransaction,
@@ -189,7 +193,7 @@ class PushNotificationsService extends EventEmitter {
                     },
                 );
             })
-            .catch((e) => {
+            .catch(e => {
                 Alert.alert(Localize.t('global.error'), e.message);
                 this.logger.error('Cannot fetch payload from backend', payloadUUID);
             });

@@ -20,6 +20,14 @@ import { NormalizeDestination } from '@common/utils/codec';
 import Localize from '@locale';
 /* Service  ==================================================================== */
 class LinkingService extends EventEmitter {
+    private initialURL: string;
+
+    constructor() {
+        super();
+
+        this.initialURL = null;
+    }
+
     initialize = () => {
         return new Promise<void>((resolve, reject) => {
             try {
@@ -38,10 +46,14 @@ class LinkingService extends EventEmitter {
 
     checkInitialDeepLink = () => {
         // handle if app opens with link
-        Linking.getInitialURL().then((url) => {
-            setTimeout(() => {
-                this.handleDeepLink({ url });
-            }, 100);
+        Linking.getInitialURL().then(url => {
+            if (url && this.initialURL !== url) {
+                this.initialURL = url;
+
+                setTimeout(() => {
+                    this.handleDeepLink({ url });
+                }, 100);
+            }
         });
     };
 
@@ -121,8 +133,8 @@ class LinkingService extends EventEmitter {
         );
     };
 
-    handleXAPPLink = async (url: string, parsed: { xapp: string; path: string; params: any }) => {
-        const { xapp, path, params } = parsed;
+    handleXAPPLink = async (url: string, parsed: { xapp: string; params: any }) => {
+        const { xapp, params } = parsed;
 
         if (!xapp) return;
 
@@ -145,7 +157,6 @@ class LinkingService extends EventEmitter {
                     identifier: xapp,
                     origin: PayloadOrigin.DEEP_LINK,
                     originData: { url },
-                    path,
                     params,
                 },
             );
