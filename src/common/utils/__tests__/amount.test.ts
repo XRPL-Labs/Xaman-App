@@ -134,6 +134,18 @@ describe('Utils.Amount', () => {
                     value: 'CSC',
                     output: 'CSC',
                 },
+                {
+                    value: '5852500000000000000000000000000000000000',
+                    output: 'FakeXRP',
+                },
+                {
+                    value: '021D001703B37004416E205852504C204E46543F',
+                    output: 'An XRPL NFT?',
+                },
+                {
+                    value: '4A65727279436F696E0000000000000000000000',
+                    output: 'JerryCoin',
+                },
             ];
             tests.forEach(v => {
                 expect(NormalizeCurrencyCode(v.value)).toBe(v.output);

@@ -95,25 +95,41 @@ const NormalizeCurrencyCode = (currencyCode: string): string => {
         return currencyCode;
     }
 
+    // IOU claims as XRP which consider as fake XRP
+    if (currencyCode === 'xrp') {
+        return 'FakeXRP';
+    }
+
     // IOU
     // currency code is hex try to decode it
     if (currencyCode.match(/^[A-F0-9]{40}$/)) {
-        const decoded = HexEncoding.toString(currencyCode);
+        let decoded = '';
+
+        // check for XLS15d
+        if (currencyCode.startsWith('02')) {
+            try {
+                const binary = HexEncoding.toBinary(currencyCode);
+                decoded = binary.slice(8).toString('utf-8');
+            } catch {
+                decoded = HexEncoding.toString(currencyCode);
+            }
+        } else {
+            decoded = HexEncoding.toString(currencyCode);
+        }
 
         if (decoded) {
+            // cleanup break lines and null bytes
             const clean = decoded.replace(/\0/g, '').replace(/(\r\n|\n|\r)/gm, ' ');
 
+            // check if decoded contains xrp
             if (clean.toLowerCase().trim() === 'xrp') {
                 return 'FakeXRP';
             }
             return clean;
         }
 
+        // if not decoded then return truncated hex value
         return `${currencyCode.slice(0, 4)}...`;
-    }
-
-    if (currencyCode.toLowerCase().trim() === 'xrp') {
-        return 'FakeXRP';
     }
 
     return currencyCode;
