@@ -155,7 +155,6 @@ class TermOfUseView extends Component<Props, State> {
                     renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                     source={{ uri: this.getURI(), headers: this.getHeaders() }}
                     androidHardwareAccelerationDisabled={false}
-                    limitsNavigationsToAppBoundDomains
                 />
 
                 {shouldShowAgreement && (

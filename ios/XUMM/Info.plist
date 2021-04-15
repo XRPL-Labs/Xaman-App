@@ -53,10 +53,6 @@
 			</array>
 		</dict>
 	</array>
-	<key>WKAppBoundDomains</key>
-	<array>
-		<string>xumm.app</string>
-	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSApplicationQueriesSchemes</key>

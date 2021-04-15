@@ -207,6 +207,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
     onMessage = (event: any) => {
         const { data } = event.nativeEvent;
+
         let parsedData;
 
         try {
@@ -378,7 +379,6 @@ class XAppBrowserModal extends Component<Props, State> {
                 source={{ uri: this.getUrl() }}
                 onMessage={this.onMessage}
                 userAgent={this.getUserAgent()}
-                limitsNavigationsToAppBoundDomains
                 androidHardwareAccelerationDisabled={false}
             />
         );
