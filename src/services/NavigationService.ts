@@ -200,7 +200,6 @@ class NavigationService extends EventEmitter {
 
     setCurrentScreen = (currentScreen: string) => {
         if (this.currentScreen !== currentScreen) {
-            // broadcast to firebase
             analytics().logScreenView({ screen_name: currentScreen });
 
             this.setPrevScreen(this.currentScreen);
@@ -210,6 +209,8 @@ class NavigationService extends EventEmitter {
 
     setCurrentOverlay = (currentOverlay: string) => {
         if (last(this.overlays) !== currentOverlay) {
+            analytics().logScreenView({ screen_name: currentOverlay });
+
             this.overlays.push(currentOverlay);
         }
     };

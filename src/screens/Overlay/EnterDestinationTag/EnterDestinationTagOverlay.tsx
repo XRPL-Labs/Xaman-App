@@ -67,7 +67,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
 
         this.state = {
             offsetBottom: 0,
-            destinationTag: props.destination.tag || '',
+            destinationTag: props.destination?.tag || '',
         };
 
         this.textInputView = createRef<View>();
@@ -222,7 +222,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={(r) => {
+                    ref={r => {
                         this.panel = r;
                     }}
                     animatedNativeDriver
@@ -323,7 +323,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                             ]}
                         >
                             <TextInput
-                                ref={(r) => {
+                                ref={r => {
                                     this.textInput = r;
                                 }}
                                 value={String(destinationTag)}
