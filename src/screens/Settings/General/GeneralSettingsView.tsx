@@ -31,7 +31,6 @@ export interface Props {}
 export interface State {
     coreSettings: CoreSchema;
     locales: any;
-    themeItems: any;
 }
 
 /* Component ==================================================================== */
@@ -50,24 +49,6 @@ class GeneralSettingsView extends Component<Props, State> {
         this.state = {
             coreSettings: CoreRepository.getSettings(),
             locales: Localize.getLocales(),
-            themeItems: {
-                light: {
-                    title: Localize.t('global.default'),
-                    description: Localize.t('settings.lightThemeDescription'),
-                },
-                dark: {
-                    title: Localize.t('global.dark'),
-                    description: Localize.t('settings.darkThemeDescription'),
-                },
-                moonlight: {
-                    title: Localize.t('global.moonlight'),
-                    description: Localize.t('settings.moonlightThemeDescription'),
-                },
-                royal: {
-                    title: Localize.t('global.royal'),
-                    description: Localize.t('settings.royalThemeDescription'),
-                },
-            },
         };
     }
 
@@ -248,7 +229,26 @@ class GeneralSettingsView extends Component<Props, State> {
     };
 
     render() {
-        const { coreSettings, themeItems } = this.state;
+        const { coreSettings } = this.state;
+
+        const themeItems = {
+            light: {
+                title: Localize.t('global.default'),
+                description: Localize.t('settings.lightThemeDescription'),
+            },
+            dark: {
+                title: Localize.t('global.dark'),
+                description: Localize.t('settings.darkThemeDescription'),
+            },
+            moonlight: {
+                title: Localize.t('global.moonlight'),
+                description: Localize.t('settings.moonlightThemeDescription'),
+            },
+            royal: {
+                title: Localize.t('global.royal'),
+                description: Localize.t('settings.royalThemeDescription'),
+            },
+        };
 
         return (
             <View testID="general-settings-view" style={[styles.container]}>

@@ -115,14 +115,23 @@
   "pt-BR": {
     "name": {
       "en": "Portuguese (Brazil)",
-      "pt-BR": "Português (Brasileiro)"
+      "pt-BR": "Português (Brasileiro)",
+      "br": "Português (Brasileiro)"
+    },
+    "source": "pt-BR.json"
+  },
+  "br": {
+    "name": {
+      "en": "Portuguese (Brazil)",
+      "pt-BR": "Português (Brasileiro)",
+      "br": "Português (Brasileiro)"
     },
     "source": "pt-BR.json"
   },
   "pt": {
     "name": {
       "en": "Portuguese (Portugal)",
-      "pt": "Português (Portuguesa)"
+      "pt": "Português (Portugal)"
     },
     "source": "pt.json"
   },
@@ -233,7 +242,16 @@
   "gl-ES": {
     "name": {
       "en": "Galician",
-      "gl-ES": "Galego"
+      "gl-ES": "Galego",
+      "gl": "Galego"
+    },
+    "source": "gl-ES.json"
+  },
+  "gl": {
+    "name": {
+      "en": "Galician",
+      "gl-ES": "Galego",
+      "gl": "Galego"
     },
     "source": "gl-ES.json"
   },
@@ -275,21 +293,48 @@
   "te-IN": {
     "name": {
       "en": "Telugu",
-      "te-IN": "తెలుగు"
+      "te-IN": "తెలుగు",
+      "te": "తెలుగు"
+    },
+    "source": "te-IN.json"
+  },
+  "te": {
+    "name": {
+      "en": "Telugu",
+      "te-IN": "తెలుగు",
+      "te": "తెలుగు"
     },
     "source": "te-IN.json"
   },
   "hi-IN": {
     "name": {
       "en": "Hindi",
-      "hi-IN": "हिन्दी Hindī"
+      "hi-IN": "हिन्दी Hindī",
+      "hi": "हिन्दी Hindī"
+    },
+    "source": "hi-IN.json"
+  },
+  "hi": {
+    "name": {
+      "en": "Hindi",
+      "hi-IN": "हिन्दी Hindī",
+      "hi": "हिन्दी Hindī"
     },
     "source": "hi-IN.json"
   },
   "ht": {
     "name": {
       "en": "Creole",
-      "ht": "Creole"
+      "ht": "Creole",
+      "fr-HT": "Creole"
+    },
+    "source": "ht.json"
+  },
+  "fr-HT": {
+    "name": {
+      "en": "Creole",
+      "ht": "Creole",
+      "fr-HT": "Creole"
     },
     "source": "ht.json"
   },
@@ -331,14 +376,32 @@
   "bn-BD": {
     "name": {
       "en": "Bengali",
-      "bn-BD": "বাংলা Bangla"
+      "bn-BD": "বাংলা Bangla",
+      "bn": "বাংলা Bangla"
+    },
+    "source": "bn-BD.json"
+  },
+  "bn": {
+    "name": {
+      "en": "Bengali",
+      "bn-BD": "বাংলা Bangla",
+      "bn": "বাংলা Bangla"
     },
     "source": "bn-BD.json"
   },
   "ta-IN": {
     "name": {
       "en": "Tamil",
-      "ta-IN": "தமிழ் Tamiḻ"
+      "ta-IN": "தமிழ் Tamiḻ",
+      "ta": "தமிழ் Tamiḻ"
+    },
+    "source": "ta-IN.json"
+  },
+  "ta": {
+    "name": {
+      "en": "Tamil",
+      "ta-IN": "தமிழ் Tamiḻ",
+      "ta": "தமிழ் Tamiḻ"
     },
     "source": "ta-IN.json"
   },
@@ -355,5 +418,89 @@
       "fil": "Wikang Filipino"
     },
     "source": "fil.json"
+  },
+  "sr": {
+    "name": {
+      "en": "Serbian",
+      "sr": "српски"
+    },
+    "source": "sr.json"
+  },
+  "gu": {
+    "name": {
+      "en": "Gujarati",
+      "gu": "ગુજરાતી"
+    },
+    "source": "gu.json"
+  },
+  "ml": {
+    "name": {
+      "en": "Malayalam",
+      "ml": "മലയാളം"
+    },
+    "source": "ml.json"
+  },
+  "hu": {
+    "name": {
+      "en": "Hungarian",
+      "hu": "magyar nyelv"
+    },
+    "source": "hu.json"
+  },
+  "lt": {
+    "name": {
+      "en": "Lithuanian",
+      "lt": "lietuvių kalba"
+    },
+    "source": "lt.json"
+  },
+  "zh-TW": {
+    "name": {
+      "en": "Chinese (Traditional)",
+      "zh-TW": "漢語"
+    },
+    "source": "zh-TW.json"
+  },
+  "mr": {
+    "name": {
+      "en": "Marathi",
+      "mr": "Marāṭhī, मराठी, 𑘦𑘨𑘰𑘙𑘲"
+    },
+    "source": "mr.json"
+  },
+  "pa": {
+    "name": {
+      "en": "Punjabi",
+      "pa": "ਪੰਜਾਬੀ"
+    },
+    "source": "pa.json"
+  },
+  "kk": {
+    "name": {
+      "en": "Kazakh",
+      "kk": "Kazakh"
+    },
+    "source": "kk.json"
+  },
+  "uz": {
+    "name": {
+      "en": "Uzbek",
+      "uz": "Uzbek"
+    },
+    "source": "uz.json"
+  },
+  "ur": {
+    "name": {
+      "en": "Urdu",
+      "ur": "اُردُو"
+    },
+    "source": "ur.json"
+  },
+  "sd": {
+    "name": {
+      "en": "Sindhi",
+      "sd": "سنڌي, सिन्धी, ਸਿੰਧੀ, 𑈩𑈭𑈴𑈝𑈮, 𑋝𑋡𑋟𑋐𑋢"
+    },
+    "source": "sd.json"
   }
 }

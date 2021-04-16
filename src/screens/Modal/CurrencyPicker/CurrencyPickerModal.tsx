@@ -89,11 +89,11 @@ class CurrencyPickerModal extends Component<Props, State> {
         const dataSource = [] as any;
 
         if (has(currencies, 'popular') && !isEmpty(currencies.popular)) {
-            dataSource.push({ title: 'Popular', data: flatMap(currencies.popular) });
+            dataSource.push({ title: Localize.t('global.popular'), data: flatMap(currencies.popular) });
         }
 
         if (has(currencies, 'all') && !isEmpty(currencies.all)) {
-            dataSource.push({ title: 'All', data: flatMap(currencies.all) });
+            dataSource.push({ title: Localize.t('global.all'), data: flatMap(currencies.all) });
         }
 
         return dataSource;
