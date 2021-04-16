@@ -32,7 +32,8 @@ interface Props {
     renderItem?: (item: any, index: number) => any;
     scaleStatus?: 'scale' | 'scaleX' | 'scaleY';
     fixedItems?: Array<any>;
-    keyExtractor: (item: any, index: number) => void;
+    keyExtractor: (item: any, index: number) => string;
+    testIDExtractor?: (item: any, index: number) => string;
     delayLongPress?: number;
     isDragFreely?: boolean;
     onDragging?: (gestureState: any, left: number, top: number, moveToIndex: number) => void;
@@ -495,6 +496,18 @@ export default class DragSortableView extends Component<Props, State> {
         return keyExtractor ? keyExtractor(item.data, index) : item.originIndex;
     };
 
+    getItemTestID = (index: number) => {
+        const { testIDExtractor } = this.props;
+        const { dataSource } = this.state;
+
+        if (typeof testIDExtractor === 'function') {
+            const item = dataSource[index];
+            return testIDExtractor(item.data, index);
+        }
+
+        return undefined;
+    };
+
     renderItemView = () => {
         const {
             maxScale,
@@ -516,6 +529,7 @@ export default class DragSortableView extends Component<Props, State> {
             const transformObj = {} as any;
             transformObj[scaleStatus] = item.scaleValue;
             const key = this.getItemKey(index);
+            const testID = this.getItemTestID(index);
 
             return (
                 <Animated.View
@@ -538,6 +552,7 @@ export default class DragSortableView extends Component<Props, State> {
                     ]}
                 >
                     <TouchableOpacity
+                        testID={testID}
                         activeOpacity={1}
                         delayLongPress={delayLongPress}
                         onPressOut={() => this.onPressOut()}

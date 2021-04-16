@@ -28,7 +28,6 @@ Feature: Upgrade Account
         Given I should have 'settings-tab-screen'
         Then I tap 'accounts-button'
         Given I should have 'accounts-list-screen'
-        Then I scroll 'account-list-scroll' to bottom
         Then I tap my account in the list
         Given I should have 'account-settings-screen'
         Then I tap 'account-access-level-button'

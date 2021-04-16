@@ -174,7 +174,7 @@ class AccountListView extends Component<Props, State> {
         }
 
         return (
-            <View style={[styles.rowContainer]} testID={`account-${item.address}`}>
+            <View style={[styles.rowContainer]}>
                 <View style={[AppStyles.row, styles.rowHeader, AppStyles.centerContent]}>
                     <View style={[AppStyles.flex6, AppStyles.row]}>
                         <View style={[AppStyles.flex1]}>
@@ -290,6 +290,7 @@ class AccountListView extends Component<Props, State> {
                                     </View>
                                 ) : (
                                     <Button
+                                        testID="add-account-button"
                                         label={Localize.t('home.addAccount')}
                                         icon="IconPlus"
                                         roundedSmall
@@ -308,6 +309,7 @@ class AccountListView extends Component<Props, State> {
                                 dataSource={dataSource}
                                 marginChildrenTop={10}
                                 keyExtractor={(item, index) => `${item.address}${index}` || String(index)}
+                                testIDExtractor={(item) => `account-${item.address}`}
                                 renderItem={this.renderItem}
                                 onDragStart={this.onItemDragStart}
                                 onDragEnd={this.onItemDragEnd}
