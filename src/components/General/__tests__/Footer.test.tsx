@@ -10,7 +10,7 @@ import { Footer } from '..';
 
 describe('[Footer]', () => {
     it('renders correctly', () => {
-        const tree = renderer.create(<Footer />).toJSON();
+        const tree = renderer.create(<Footer>{}</Footer>).toJSON();
         expect(tree).toMatchSnapshot();
     });
 });

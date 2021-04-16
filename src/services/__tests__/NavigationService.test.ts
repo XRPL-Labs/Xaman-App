@@ -1,5 +1,7 @@
 import NavigationService from '../NavigationService';
 
+jest.useFakeTimers();
+
 describe('NavigationService', () => {
     const navigationService = NavigationService;
     const onboardingScreen = 'app.onboarding';

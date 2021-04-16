@@ -5,13 +5,6 @@ import { Navigator } from '@common/helpers/navigator';
 
 import AppService, { NetStateStatus, AppStateStatus } from '../AppService';
 
-// mock event emitter
-jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter.js', () => {
-    const { EventEmitter } = require('events');
-    EventEmitter.prototype.remove = jest.fn();
-    return EventEmitter;
-});
-
 describe('AppService', () => {
     const appService = AppService;
 

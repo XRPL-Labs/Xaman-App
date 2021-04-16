@@ -46,6 +46,8 @@ describe('AuthenticationService', () => {
     });
 
     it('should run the required functions after success auth', async () => {
+        jest.useFakeTimers();
+
         const promiseFn = () => Promise.resolve();
         const spyList = [
             jest.spyOn(AppService, 'checkShowChangeLog').mockImplementationOnce(promiseFn),
@@ -56,12 +58,8 @@ describe('AuthenticationService', () => {
             jest.spyOn(PushNotificationsService, 'checkInitialNotification').mockImplementationOnce(promiseFn),
         ];
 
-        jest.useFakeTimers();
-
         // call the method
         AuthenticationService.runAfterSuccessAuth();
-
-        jest.runAllTimers();
 
         setTimeout(() => {
             for (let i = 0; i < spyList.length; i++) {
