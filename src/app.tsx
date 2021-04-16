@@ -19,6 +19,8 @@ import {
     GetAppReadableVersion,
     GetDeviceTimeZone,
     GetDeviceLocaleSettings,
+    GetDeviceId,
+    GetSystemVersion,
     FlagSecure,
     IsDeviceJailBroken,
     IsDeviceRooted,
@@ -52,6 +54,7 @@ class Application {
     run() {
         // start the app
         this.logger.debug(`XUMM version ${GetAppReadableVersion()}`);
+        this.logger.debug(`Device ${GetDeviceId()} - OS Version ${GetSystemVersion()}`);
 
         // on app start
         Navigation.events().registerAppLaunchedListener(() => {
@@ -163,7 +166,7 @@ class Application {
             try {
                 const coreSettings = CoreRepository.getSettings();
                 const servicesPromise = [] as Array<Promise<any>>;
-                Object.keys(services).map((key) => {
+                Object.keys(services).map(key => {
                     // @ts-ignore
                     const service = services[key];
                     if (typeof service.initialize === 'function') {
@@ -176,7 +179,7 @@ class Application {
                     .then(() => {
                         resolve();
                     })
-                    .catch((e) => {
+                    .catch(e => {
                         this.logger.error('initServices Error:', e);
                         reject(e);
                     });
@@ -222,7 +225,7 @@ class Application {
                 const screens = require('./screens');
 
                 // register
-                Object.keys(screens).map((key) => {
+                Object.keys(screens).map(key => {
                     // @ts-ignore
                     const Screen = screens[key];
                     Navigation.registerComponent(Screen.screenName, () => Screen);

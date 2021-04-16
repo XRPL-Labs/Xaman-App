@@ -114,7 +114,7 @@ const GetDeviceTimeZone = (): Promise<string> => {
  * @returns Promise<object>
  */
 const GetDeviceLocaleSettings = (): Promise<any> => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         UtilsModule.getLocalSetting()
             .then((settings: any) => {
                 resolve(settings);
@@ -130,7 +130,7 @@ const GetDeviceLocaleSettings = (): Promise<any> => {
  * @returns Promise<number>
  */
 const GetElapsedRealtime = (): Promise<number> => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         UtilsModule.getElapsedRealtime().then((ts: string) => {
             return resolve(Number(ts));
         });
@@ -143,6 +143,22 @@ const GetElapsedRealtime = (): Promise<number> => {
  */
 const GetAppReadableVersion = (): string => {
     return DeviceInfo.getReadableVersion();
+};
+
+/**
+ * Gets the device ID.
+ * @returns string
+ */
+const GetDeviceId = (): string => {
+    return DeviceInfo.getDeviceId();
+};
+
+/**
+ * Gets the device OS version.
+ * @returns string
+ */
+const GetSystemVersion = (): string => {
+    return DeviceInfo.getSystemVersion();
 };
 
 /**
@@ -188,6 +204,8 @@ export {
     GetDeviceLocaleSettings,
     GetElapsedRealtime,
     GetAppReadableVersion,
+    GetDeviceId,
+    GetSystemVersion,
     GetDeviceUniqueId,
     GetAppVersionCode,
     RestartBundle,
