@@ -10370,7 +10370,7 @@ nocache@^2.1.0:
   resolved "https://registry.yarnpkg.com/nocache/-/nocache-2.1.0.tgz#120c9ffec43b5729b1d5de88cd71aa75a0ba491f"
   integrity sha512-0L9FvHG3nfnnmaEQPjT9xhfN4ISk0A8/2j4M37Np4mcDesJjHgEUfgPhdCyZuFI954tjokaIj/A3NdpFNdEh4Q==
 
-node-abi@^2.7.0:
+node-abi@^2.21.0:
   version "2.21.0"
   resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-2.21.0.tgz#c2dc9ebad6f4f53d6ea9b531e7b8faad81041d48"
   integrity sha512-smhrivuPqEM3H5LmnY3KU6HfYv0u4QklgAxfFyRNujKUzbUcYZ+Jc2EhukB9SRcD2VpqhxM7n/MIcp1Ua1/JMg==
@@ -11307,10 +11307,10 @@ postcss@^7.0.0, postcss@^7.0.14, postcss@^7.0.26, postcss@^7.0.32, postcss@^7.0.
     source-map "^0.6.1"
     supports-color "^6.1.0"
 
-prebuild-install@^5.3.5:
-  version "5.3.6"
-  resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-5.3.6.tgz#7c225568d864c71d89d07f8796042733a3f54291"
-  integrity sha512-s8Aai8++QQGi4sSbs/M1Qku62PFK49Jm1CbgXklGz4nmHveDq0wzJkg7Na5QbnO1uNH8K7iqx2EQ/mV0MZEmOg==
+prebuild-install@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-6.1.1.tgz#6754fa6c0d55eced7f9e14408ff9e4cba6f097b4"
+  integrity sha512-M+cKwofFlHa5VpTWub7GLg5RLcunYIcLqtY5pKcls/u7xaAb8FrXZ520qY8rkpYy5xw90tYCyMO0MP5ggzR3Sw==
   dependencies:
     detect-libc "^1.0.3"
     expand-template "^2.0.3"
@@ -11318,7 +11318,7 @@ prebuild-install@^5.3.5:
     minimist "^1.2.3"
     mkdirp-classic "^0.5.3"
     napi-build-utils "^1.0.1"
-    node-abi "^2.7.0"
+    node-abi "^2.21.0"
     noop-logger "^0.1.1"
     npmlog "^4.0.1"
     pump "^3.0.0"
@@ -11326,7 +11326,6 @@ prebuild-install@^5.3.5:
     simple-get "^3.0.3"
     tar-fs "^2.0.0"
     tunnel-agent "^0.6.0"
-    which-pm-runs "^1.0.0"
 
 prelude-ls@^1.2.1:
   version "1.2.1"
@@ -11880,10 +11879,10 @@ react-native-codegen@^0.0.6:
     jscodeshift "^0.11.0"
     nullthrows "^1.1.1"
 
-react-native-device-info@8.0.8:
-  version "8.0.8"
-  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-8.0.8.tgz#53f14cb6a7d2fa80863df32e4de388a76fbb3f42"
-  integrity sha512-ljtm48riQeZgf2epIq8TvyxiXZW6vstIX7JDlr89HtrYLUvlX3dmOmxtwZshMuAdk0VpGz/72zvpTDZMSQcKig==
+react-native-device-info@8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-8.1.0.tgz#7d0ecf65cb26dbdbcdd555fc7bce2d9750b8b3d9"
+  integrity sha512-szEbRRFQ1NYPOjGWyIMsZGk5W2eU4JTiFLaNVXTbK4u/BS/Z5moVJKcoJgYR6Fxiu6qPAY/ofJySJoSdhSeOnw==
 
 react-native-fingerprint-scanner@6.0.0:
   version "6.0.0"
@@ -11927,10 +11926,10 @@ react-native-swipe-gestures@^1.0.4:
   resolved "https://registry.yarnpkg.com/react-native-swipe-gestures/-/react-native-swipe-gestures-1.0.5.tgz#a172cb0f3e7478ccd681fd36b8bfbcdd098bde7c"
   integrity sha512-Ns7Bn9H/Tyw278+5SQx9oAblDZ7JixyzeOczcBK8dipQk2pD7Djkcfnf1nB/8RErAmMLL9iXgW0QHqiII8AhKw==
 
-react-native-webview@11.3.2:
-  version "11.3.2"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.3.2.tgz#17155a69caf1910233ae3d606dce6caf57b0169c"
-  integrity sha512-j+0eUKYY3MCO7DRhZaIPY6+0q+Yo1Iyhz5f7cde+i5vR71CcJ/60DhZPw5SSqXZnZiVX0Myz1D46u8dtfRmQFg==
+react-native-webview@11.4.0:
+  version "11.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.4.0.tgz#cf8707e751231d81c17d54c5e2df0009d84e8949"
+  integrity sha512-il4OOJxBJgFXk8rtVgYQJIGRqYD5wJXc4By6nvnkHlH3hbyw1Mx5HKfP9Qmsy8xdCwHYgCBjUuCfHoGXJ9hMSA==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
@@ -12189,10 +12188,10 @@ realm-network-transport@^0.7.0:
     abort-controller "^3.0.0"
     node-fetch "^2.6.0"
 
-realm@10.3.0:
-  version "10.3.0"
-  resolved "https://registry.yarnpkg.com/realm/-/realm-10.3.0.tgz#bd42a7ffde10598fe297ea66bf00f25251072e05"
-  integrity sha512-c8IL724ZphGlGRPdb2T/eH7Reqz/8eaA0SqhHDz4ojw7U8mh3PoiO6CYRnds+HwspuT9aR++TbVZvF9KOwZQ7A==
+realm@10.4.0:
+  version "10.4.0"
+  resolved "https://registry.yarnpkg.com/realm/-/realm-10.4.0.tgz#a57aacdbb6708a089ab25f4420b321f074bc6566"
+  integrity sha512-B8DieNdFFRepEWZpMo6qhcZBwvzFejvU9vNQnRwLN8tshVEM/es04XIfIwMKP00IAV3TtuPfUoZk36QKEedlOA==
   dependencies:
     bindings "^1.5.0"
     bson "^4.2.0"
@@ -12205,7 +12204,7 @@ realm@10.3.0:
     node-addon-api "^3.1.0"
     node-fetch "^2.6.1"
     node-machine-id "^1.1.10"
-    prebuild-install "^5.3.5"
+    prebuild-install "^6.1.1"
     progress "^2.0.3"
     prop-types "^15.6.2"
     realm-network-transport "^0.7.0"
@@ -14806,11 +14805,6 @@ which-module@^2.0.0:
   resolved "https://registry.yarnpkg.com/which-module/-/which-module-2.0.0.tgz#d9ef07dce77b9902b8a3a8fa4b31c3e3f7e6e87a"
   integrity sha1-2e8H3Od7mQK4o6j6SzHD4/fm6Ho=
 
-which-pm-runs@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/which-pm-runs/-/which-pm-runs-1.0.0.tgz#670b3afbc552e0b55df6b7780ca74615f23ad1cb"
-  integrity sha1-Zws6+8VS4LVd9rd4DKdGFfI60cs=
-
 which-typed-array@^1.1.2:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/which-typed-array/-/which-typed-array-1.1.4.tgz#8fcb7d3ee5adf2d771066fba7cf37e32fe8711ff"
@@ -15009,10 +15003,10 @@ xrpl-accountlib@1.1.4:
     ripple-sign-keypairs "https://github.com/WietseWind/node-ripple-sign-keypairs.git"
     xrpl-secret-numbers "^0.3.3"
 
-xrpl-orderbook-reader@0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/xrpl-orderbook-reader/-/xrpl-orderbook-reader-0.3.1.tgz#452c5f703b14a32e4dd546afab6fc6b11859c0fd"
-  integrity sha512-ALqp0L1AUcUO8ahwx0YsMb8PlJfTwcGPalPu/CiMUPCKqLfXtHHwtaufu7bMcUO2gQjvQGrknshzyFJwg/3YaA==
+xrpl-orderbook-reader@0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/xrpl-orderbook-reader/-/xrpl-orderbook-reader-0.3.3.tgz#6a40b9c16e28e1967c8354b7fe6cea3d155a6c42"
+  integrity sha512-iizbMlRGHqKHAVUz+n1DHjDiH1iApkKS+3SPnB6lat9bT20Aug4UdsnWZGZVrc+OMzKM+JWYButJN8sqmue5pw==
   dependencies:
     "@types/debug" "^4.1.5"
     assert "^2.0.0"
