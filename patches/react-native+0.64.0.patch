@@ -1,8 +1,8 @@
 diff --git a/node_modules/react-native/Libraries/Network/RCTNetworking.mm b/node_modules/react-native/Libraries/Network/RCTNetworking.mm
-index 2989276..d0f41c9 100644
+index edbbe81..72907b1 100644
 --- a/node_modules/react-native/Libraries/Network/RCTNetworking.mm
 +++ b/node_modules/react-native/Libraries/Network/RCTNetworking.mm
-@@ -517,6 +517,15 @@ - (void)sendRequest:(NSURLRequest *)request
+@@ -518,6 +518,15 @@ - (void)sendRequest:(NSURLRequest *)request
   incrementalUpdates:(BOOL)incrementalUpdates
       responseSender:(RCTResponseSenderBlock)responseSender
  {
@@ -19,7 +19,7 @@ index 2989276..d0f41c9 100644
    __weak __typeof(self) weakSelf = self;
    __block RCTNetworkTask *task;
 diff --git a/node_modules/react-native/Libraries/WebSocket/RCTSRWebSocket.m b/node_modules/react-native/Libraries/WebSocket/RCTSRWebSocket.m
-index b967c14..9d52de8 100644
+index 8ce6edc..0d71716 100644
 --- a/node_modules/react-native/Libraries/WebSocket/RCTSRWebSocket.m
 +++ b/node_modules/react-native/Libraries/WebSocket/RCTSRWebSocket.m
 @@ -233,7 +233,22 @@ - (instancetype)initWithURLRequest:(NSURLRequest *)request protocols:(NSArray<NS
@@ -46,3 +46,14 @@ index b967c14..9d52de8 100644
      _urlRequest = request;
  
      _requestedProtocols = [protocols copy];
+--- a/node_modules/react-native/scripts/find-node.sh
++++ b/node_modules/react-native/scripts/find-node.sh
+@@ -4,6 +4,8 @@
+ # This source code is licensed under the MIT license found in the
+ # LICENSE file in the root directory of this source tree.
+ 
++unset npm_config_prefix
++unset PREFIX
+ set -e
+ 
+ # Define NVM_DIR and source the nvm.sh setup script
