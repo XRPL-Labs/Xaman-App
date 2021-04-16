@@ -1,12 +1,12 @@
 import React, { Component, Fragment } from 'react';
-import { View, TouchableOpacity, TextInput, Text, ViewStyle, Animated } from 'react-native';
+import { View, TouchableOpacity, TextInput, Text, ViewStyle, Animated, LayoutChangeEvent } from 'react-native';
 
 import StyleService from '@services/StyleService';
 import { Icon } from '@components/General/Icon';
 
 import Localize from '@locale';
 
-import { AppSizes, AppStyles } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -24,6 +24,7 @@ interface Props {
 }
 
 interface State {
+    inputWidth: number;
     hidePassword: boolean;
     score: number;
 }
@@ -88,6 +89,7 @@ export default class PasswordInput extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
+            inputWidth: 0,
             hidePassword: true,
             score: 0,
         };
@@ -239,11 +241,18 @@ export default class PasswordInput extends Component<Props, State> {
         return undefined;
     }
 
-    renderPasswordStrength() {
-        const { score } = this.state;
+    setInputWidth = (event: LayoutChangeEvent) => {
+        const { width } = event.nativeEvent.layout;
 
-        const width = AppSizes.screen.width - 40;
-        const absoluteWidth = Math.round((score * width) / 100);
+        this.setState({
+            inputWidth: width,
+        });
+    };
+
+    renderPasswordStrength() {
+        const { score, inputWidth } = this.state;
+
+        const absoluteWidth = Math.round((score * inputWidth) / 100);
 
         const normalizedScore = score / 100;
         const normalizedIndex = Math.floor((LEVELS.length - 1) * normalizedScore);
@@ -257,7 +266,7 @@ export default class PasswordInput extends Component<Props, State> {
 
         return (
             <View style={[styles.passwordStrengthWrapper]}>
-                <View style={[styles.barContainer, { backgroundColor: barColor, width }]}>
+                <View style={[styles.barContainer, { backgroundColor: barColor, width: inputWidth }]}>
                     <Animated.View
                         style={[styles.bar, { width: this.animatedBarWidth, backgroundColor: activeBarColor }]}
                     />
@@ -270,11 +279,12 @@ export default class PasswordInput extends Component<Props, State> {
     renderPasswordInput() {
         const { testID, inputWrapperStyle, inputStyle, editable, placeholder, selectTextOnFocus } = this.props;
         const { hidePassword } = this.state;
+
         return (
-            <View style={[styles.inputWrapper, inputWrapperStyle, AppStyles.stretchSelf]}>
+            <View style={[styles.inputWrapper, inputWrapperStyle, AppStyles.stretchSelf]} onLayout={this.setInputWidth}>
                 <TextInput
                     testID={testID}
-                    ref={(r) => {
+                    ref={r => {
                         this.instance = r;
                     }}
                     editable={editable}
@@ -285,7 +295,7 @@ export default class PasswordInput extends Component<Props, State> {
                     multiline={false}
                     underlineColorAndroid="transparent"
                     style={[styles.input, inputStyle]}
-                    onChangeText={(text) => this.onChangeText(text)}
+                    onChangeText={text => this.onChangeText(text)}
                     placeholder={placeholder}
                     selectTextOnFocus={selectTextOnFocus}
                 />
