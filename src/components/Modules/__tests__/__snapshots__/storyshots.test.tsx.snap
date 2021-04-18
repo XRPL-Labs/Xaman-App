@@ -774,7 +774,7 @@ exports[`Storyshots Badge Success 1`] = `
             ]
           }
         >
-          Success!
+          Success
         </Text>
       </View>
     </View>
@@ -821,7 +821,7 @@ exports[`Storyshots Badge Success 1`] = `
             ]
           }
         >
-          Success!
+          Success
         </Text>
       </View>
     </View>
@@ -868,7 +868,7 @@ exports[`Storyshots Badge Success 1`] = `
             ]
           }
         >
-          Success!
+          Success
         </Text>
       </View>
     </View>
