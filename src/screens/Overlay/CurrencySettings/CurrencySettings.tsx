@@ -1,8 +1,7 @@
 /**
  * Currency Settings Overlay
  */
-import find from 'lodash/find';
-import get from 'lodash/get';
+import { has, get, find } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
@@ -110,42 +109,56 @@ class CurrencySettingsModal extends Component<Props, State> {
         });
     };
 
-    getLatestLineBalance = () => {
+    getLatestLineBalance = (): Promise<void> => {
         const { account, trustLine } = this.props;
 
         // ignore obligation lines
-        if (trustLine.obligation) return;
+        if (trustLine.obligation) return Promise.resolve();
 
-        LedgerService.getAccountLines(account.address)
-            .then(async (accountLines: any) => {
-                const { lines } = accountLines;
+        return new Promise((resolve) => {
+            return LedgerService.getAccountLines(account.address)
+                .then((accountLines: any) => {
+                    const { lines } = accountLines;
 
-                const line = find(lines, { account: trustLine.currency.issuer, currency: trustLine.currency.currency });
-
-                if (line) {
-                    const lineBalance = new BigNumber(line.balance);
-
-                    this.setState({
-                        latestLineBalance: lineBalance.decimalPlaces(15).toNumber(),
-                        canRemove: lineBalance.isLessThan(0.000001),
+                    const line = find(lines, {
+                        account: trustLine.currency.issuer,
+                        currency: trustLine.currency.currency,
                     });
-                }
-            })
-            .catch(() => {
-                // ignore
-            });
+
+                    if (line) {
+                        const balance = new BigNumber(line.balance);
+
+                        this.setState(
+                            {
+                                latestLineBalance: balance.toNumber(),
+                                canRemove: balance.isLessThan(0.000001),
+                            },
+                            resolve,
+                        );
+                    } else {
+                        resolve();
+                    }
+                })
+                .catch(() => {
+                    return resolve();
+                });
+        });
     };
 
-    clearDustAmounts = () => {
+    clearDustAmounts = async () => {
         const { latestLineBalance } = this.state;
         const { trustLine, account } = this.props;
 
-        /* eslint-disable-next-line */
-        return new Promise<void>(async (resolve, reject) => {
+        try {
+            this.setState({
+                isLoading: true,
+            });
+
             const payment = new Payment();
 
             payment.Destination = {
-                address: account.address,
+                address: trustLine.currency.issuer,
+                tag: 0,
             };
 
             payment.Account = {
@@ -153,29 +166,56 @@ class CurrencySettingsModal extends Component<Props, State> {
             };
 
             // @ts-ignore
-            payment.Amount = '9999999999';
-            payment.SendMax = {
+            payment.Amount = {
                 currency: trustLine.currency.currency,
                 issuer: trustLine.currency.issuer,
                 // @ts-ignore
                 value: latestLineBalance,
             };
 
-            payment.Flags = [txFlags.Payment.PartialPayment];
+            // check for transfer fee
+            // add PartialPayment flag
+            const issuerAccountInfo = await LedgerService.getAccountInfo(payment.Amount.issuer);
+            // eslint-disable-next-line max-len
+            if (has(issuerAccountInfo, ['account_data', 'TransferRate']) || account.address === payment.Amount.issuer) {
+                payment.Flags = [txFlags.Payment.PartialPayment];
+            }
 
             // sign & submit the partial payment to clear dust balance
-            await payment
-                .sign(account)
-                .then(() => {
-                    return payment.verify();
-                })
-                .then(() => {
-                    return resolve();
-                })
-                .catch((e) => {
-                    return reject(e);
-                });
-        });
+            await payment.submit(account).then(async (submitResult) => {
+                if (submitResult.success) {
+                    await payment.verify().then((verifyResult) => {
+                        if (verifyResult.success) {
+                            Prompt(
+                                Localize.t('global.success'),
+                                Localize.t('asset.dustAmountRemovedYouCanRemoveTrustLineNow'),
+                                [
+                                    { text: Localize.t('global.cancel') },
+                                    {
+                                        text: Localize.t('global.continue'),
+                                        onPress: () => {
+                                            this.getLatestLineBalance().then(this.removeTrustLine);
+                                        },
+                                        style: 'destructive',
+                                    },
+                                ],
+                                { type: 'default' },
+                            );
+                        } else {
+                            throw new Error('Submit was not successful');
+                        }
+                    });
+                } else {
+                    throw new Error('Submit was not successful');
+                }
+            });
+        } catch (e) {
+            Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
+        } finally {
+            this.setState({
+                isLoading: false,
+            });
+        }
     };
 
     checkForIssuerState = () => {
@@ -210,23 +250,30 @@ class CurrencySettingsModal extends Component<Props, State> {
         const { latestLineBalance } = this.state;
 
         try {
+            // there is dust balance in the account
+            if (latestLineBalance !== 0) {
+                Prompt(
+                    Localize.t('global.warning'),
+                    Localize.t('asset.trustLineDustRemoveWarning', {
+                        balance: new BigNumber(latestLineBalance).toFixed(),
+                        currency: NormalizeCurrencyCode(trustLine.currency.currency),
+                    }),
+                    [
+                        { text: Localize.t('global.cancel') },
+                        {
+                            text: Localize.t('global.continue'),
+                            onPress: this.clearDustAmounts,
+                            style: 'destructive',
+                        },
+                    ],
+                    { type: 'default' },
+                );
+                return;
+            }
+
             this.setState({
                 isLoading: true,
             });
-
-            // there is dust balance in the account
-            if (latestLineBalance !== 0) {
-                try {
-                    await this.clearDustAmounts();
-                } catch {
-                    InteractionManager.runAfterInteractions(() => {
-                        Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
-                    });
-
-                    this.dismiss();
-                    return;
-                }
-            }
 
             // parse account flags
             const accountFlags = new Flag('Account', account.flags).parse();

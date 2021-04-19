@@ -734,6 +734,8 @@
     "successRemoved": "Token has been removed successfully from your account",
     "failedRemove": "Error: the token could not be removed!",
     "removeAsset": "Remove token",
+    "trustLineDustRemoveWarning": "This TrustLine still contains a really small balance of %{balance} %{currency}. If you continue, this amount will be sent back to the issuer before your TrustLine is deleted. ",
+    "dustAmountRemovedYouCanRemoveTrustLineNow": "Your dust balance has been sent back to the issuer. The TrustLine can now be removed.",
     "addingAssetReserveDescription": "Adding a token to your XRP Ledger account will increase your XRP Ledger enforced account reserve by 5 XRP",
     "unableToRemoveAssetNotInDefaultState": "This token cannot be removed from your account. The issuer either added specific settings for this token or their account is not properly configured."
   },
