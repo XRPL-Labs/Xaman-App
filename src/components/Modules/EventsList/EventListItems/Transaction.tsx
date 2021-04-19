@@ -91,15 +91,13 @@ class TransactionTemplate extends Component<Props, State> {
 
         switch (item.Type) {
             case 'Payment':
-                if ([item.Account.address, item.Destination?.address].indexOf(account.address) !== -1) {
-                    if (item.Destination.address === account.address) {
-                        address = item.Account.address;
-                        key = 'Account';
-                    } else {
-                        address = item.Destination.address;
-                        tag = item.Destination.tag;
-                        key = 'Destination';
-                    }
+                if (item.Account?.address !== account.address) {
+                    address = item.Account.address;
+                    key = 'Account';
+                } else {
+                    address = item.Destination.address;
+                    tag = item.Destination.tag;
+                    key = 'Destination';
                 }
                 break;
             case 'AccountDelete':
