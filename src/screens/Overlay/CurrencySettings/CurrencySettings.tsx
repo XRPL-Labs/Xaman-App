@@ -131,7 +131,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                         this.setState(
                             {
                                 latestLineBalance: balance.toNumber(),
-                                canRemove: balance.isLessThan(0.000001),
+                                canRemove: balance.isLessThan(0.000000001),
                             },
                             resolve,
                         );
@@ -400,6 +400,16 @@ class CurrencySettingsModal extends Component<Props, State> {
         });
     };
 
+    canSend = () => {
+        const { trustLine } = this.props;
+        return trustLine.balance > 0.0000009 || trustLine.obligation;
+    };
+
+    canExchange = () => {
+        const { trustLine } = this.props;
+        return trustLine.balance > 0.0000009 && !trustLine.obligation;
+    };
+
     render() {
         const { trustLine } = this.props;
         const { isLoading, canRemove, isNFT } = this.state;
@@ -454,7 +464,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                         <Spacer />
                         <View style={[styles.buttonRow]}>
                             <RaisedButton
-                                isDisabled={trustLine.balance <= 0 && trustLine.obligation !== true}
+                                isDisabled={!this.canSend()}
                                 style={styles.sendButton}
                                 icon="IconCornerLeftUp"
                                 iconSize={20}
@@ -479,7 +489,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 />
                             ) : (
                                 <RaisedButton
-                                    isDisabled={trustLine.obligation}
+                                    isDisabled={!this.canExchange()}
                                     style={styles.exchangeButton}
                                     icon="IconCornerRightUp"
                                     iconSize={20}
