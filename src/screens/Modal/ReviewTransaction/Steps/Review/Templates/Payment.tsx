@@ -37,6 +37,7 @@ export interface State {
     editableAmount: boolean;
     destinationDetails: AccountNameType;
     isPartialPayment: boolean;
+    shouldCheckForConversation: boolean;
     exchangeRate: number;
     xrpRoundedUp: string;
     currencyRate: any;
@@ -50,16 +51,17 @@ class PaymentTemplate extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        const { transaction } = props;
+
         this.state = {
             account: undefined,
             isLoading: false,
-            editableAmount: !props.transaction.Amount?.value,
-            amount: props.transaction.Amount?.value,
-            currencyName: props.transaction.Amount?.currency
-                ? NormalizeCurrencyCode(props.transaction.Amount.currency)
-                : 'XRP',
+            editableAmount: !transaction.Amount?.value,
+            amount: transaction.Amount?.value,
+            currencyName: transaction.Amount?.currency ? NormalizeCurrencyCode(transaction.Amount.currency) : 'XRP',
             destinationDetails: { name: '', source: '' },
             isPartialPayment: false,
+            shouldCheckForConversation: !transaction.SendMax,
             exchangeRate: undefined,
             xrpRoundedUp: undefined,
             currencyRate: undefined,
@@ -74,7 +76,7 @@ class PaymentTemplate extends Component<Props, State> {
         this.fetchDestinationInfo();
 
         // Payload payment request in IOU amount: handle conversion if required:
-        this.checkForConversationRequired();
+        this.checkForPartialPaymentRequired();
 
         // if XRP then show equal amount in selected currency
         this.fetchCurrencyRate();
@@ -91,9 +93,7 @@ class PaymentTemplate extends Component<Props, State> {
         const { account } = this.state;
 
         if (!isEqual(prevState.account, account)) {
-            InteractionManager.runAfterInteractions(() => {
-                this.checkForConversationRequired();
-            });
+            InteractionManager.runAfterInteractions(this.checkForPartialPaymentRequired);
         }
     }
 
@@ -112,7 +112,7 @@ class PaymentTemplate extends Component<Props, State> {
         const { currency } = CoreRepository.getSettings();
 
         BackendService.getCurrencyRate(currency)
-            .then(r => {
+            .then((r) => {
                 this.setState({
                     currencyRate: r,
                     isLoadingRate: false,
@@ -126,87 +126,88 @@ class PaymentTemplate extends Component<Props, State> {
             });
     };
 
-    checkForConversationRequired = async () => {
+    checkForPartialPaymentRequired = async () => {
         const { transaction } = this.props;
-        const { account } = this.state;
+        const { account, shouldCheckForConversation } = this.state;
 
-        if (!account) return;
+        // only check if IOU
+        if (!account || !transaction.Amount || transaction.Amount?.currency === 'XRP' || !shouldCheckForConversation) {
+            return;
+        }
 
         try {
-            if (transaction.Amount && transaction.Amount.currency !== 'XRP') {
-                // get source trust lines
-                const sourceLines = await LedgerService.getAccountLines(transaction.Account.address);
+            // get source trust lines
+            const sourceLines = await LedgerService.getAccountLines(transaction.Account.address);
 
-                const { lines } = sourceLines;
+            const { lines } = sourceLines;
 
-                const trustLine = lines.filter(
-                    (l: any) => l.currency === transaction.Amount.currency && l.account === transaction.Amount.issuer,
-                )[0];
+            const trustLine = lines.filter(
+                (l: any) => l.currency === transaction.Amount.currency && l.account === transaction.Amount.issuer,
+            )[0];
 
-                let shouldPayWithXRP =
-                    !trustLine ||
-                    (parseFloat(trustLine.balance) < parseFloat(transaction.Amount.value) &&
-                        account !== transaction.Amount.issuer);
+            let shouldPayWithXRP =
+                !trustLine ||
+                (parseFloat(trustLine.balance) < parseFloat(transaction.Amount.value) &&
+                    account !== transaction.Amount.issuer);
 
-                // just ignore if the sender is the issuer
-                if (account === transaction.Amount.issuer) {
-                    shouldPayWithXRP = false;
-                }
+            // just ignore if the sender is the issuer
+            if (account === transaction.Amount.issuer) {
+                shouldPayWithXRP = false;
+            }
 
-                // if not have the same trust line or the balance is not covering requested value
-                // Pay with XRP instead
-                if (shouldPayWithXRP) {
-                    const PAIR = { issuer: transaction.Amount.issuer, currency: transaction.Amount.currency };
+            // if not have the same trust line or the balance is not covering requested value
+            // Pay with XRP instead
+            if (shouldPayWithXRP) {
+                const PAIR = { issuer: transaction.Amount.issuer, currency: transaction.Amount.currency };
 
-                    const ledgerExchange = new LedgerExchange(PAIR);
-                    // sync with latest order book
-                    await ledgerExchange.initialize();
+                const ledgerExchange = new LedgerExchange(PAIR);
+                // sync with latest order book
+                await ledgerExchange.initialize();
 
-                    // get liquidity grade
-                    const liquidity = await ledgerExchange.getLiquidity('buy', Number(transaction.Amount.value));
+                // get liquidity grade
+                const liquidity = await ledgerExchange.getLiquidity('buy', Number(transaction.Amount.value));
 
-                    // not enough liquidity
-                    if (!liquidity || !liquidity.safe || liquidity.errors.length > 0) {
-                        this.setState({
-                            isPartialPayment: true,
-                            exchangeRate: 0,
-                        });
-                        return;
-                    }
-
-                    const sendMaxXRP = new BigNumber(transaction.Amount.value)
-                        .multipliedBy(liquidity.rate)
-                        .decimalPlaces(8)
-                        .toString(10);
-
-                    // @ts-ignore
-                    transaction.SendMax = sendMaxXRP;
-                    transaction.Flags = [txFlags.Payment.PartialPayment];
-
+                // not enough liquidity
+                if (!liquidity || !liquidity.safe || liquidity.errors.length > 0) {
                     this.setState({
                         isPartialPayment: true,
-                        exchangeRate: new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(8).toNumber(),
-                        xrpRoundedUp: sendMaxXRP,
+                        exchangeRate: 0,
                     });
-                } else {
-                    // check for transfer fee
-                    // add PartialPayment
-                    const issuerAccountInfo = await LedgerService.getAccountInfo(transaction.Amount.issuer);
-                    // eslint-disable-next-line max-len
-                    if (
-                        has(issuerAccountInfo, ['account_data', 'TransferRate']) ||
-                        account === transaction.Amount.issuer
-                    ) {
-                        transaction.Flags = [txFlags.Payment.PartialPayment];
-                    }
-
-                    if (transaction.SendMax) {
-                        transaction.SendMax = undefined;
-                    }
-                    this.setState({
-                        isPartialPayment: false,
-                    });
+                    return;
                 }
+
+                const sendMaxXRP = new BigNumber(transaction.Amount.value)
+                    .multipliedBy(liquidity.rate)
+                    .multipliedBy(1.04)
+                    .decimalPlaces(8)
+                    .toString(10);
+
+                // @ts-ignore
+                transaction.SendMax = sendMaxXRP;
+                transaction.Flags = [txFlags.Payment.PartialPayment];
+
+                this.setState({
+                    isPartialPayment: true,
+                    exchangeRate: new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(8).toNumber(),
+                    xrpRoundedUp: sendMaxXRP,
+                });
+            } else {
+                // if we already set the send max remove it
+
+                // check for transfer fee
+                // add PartialPayment
+                const issuerAccountInfo = await LedgerService.getAccountInfo(transaction.Amount.issuer);
+                // eslint-disable-next-line max-len
+                if (has(issuerAccountInfo, ['account_data', 'TransferRate']) || account === transaction.Amount.issuer) {
+                    transaction.Flags = [txFlags.Payment.PartialPayment];
+                }
+
+                if (transaction.SendMax) {
+                    transaction.SendMax = undefined;
+                }
+                this.setState({
+                    isPartialPayment: false,
+                });
             }
         } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('payload.unableToCheckAssetConversion'));
@@ -390,6 +391,32 @@ class PaymentTemplate extends Component<Props, State> {
 
                     {this.renderAmountRate()}
                 </View>
+
+                {transaction.SendMax && !isPartialPayment && (
+                    <>
+                        <Text style={[styles.label]}>{Localize.t('global.sendMax')}</Text>
+                        <View style={[styles.contentBox]}>
+                            <AmountText
+                                value={transaction.SendMax.value}
+                                currency={transaction.SendMax.currency}
+                                style={styles.amount}
+                            />
+                        </View>
+                    </>
+                )}
+
+                {transaction.DeliverMin && (
+                    <>
+                        <Text style={[styles.label]}>{Localize.t('global.deliverMin')}</Text>
+                        <View style={[styles.contentBox]}>
+                            <AmountText
+                                value={transaction.DeliverMin.value}
+                                currency={transaction.DeliverMin.currency}
+                                style={styles.amount}
+                            />
+                        </View>
+                    </>
+                )}
 
                 {transaction.InvoiceID && (
                     <>

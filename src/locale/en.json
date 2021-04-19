@@ -150,6 +150,8 @@
     "inExchangeForReceive": "In exchange for (receive)",
     "fee": "Transaction fee",
     "invoiceID": "Invoice ID",
+    "sendMax": "Send Max",
+    "deliverMin": "Deliver Min",
     "checkID": "Check ID",
     "checkAmount": "Check amount",
     "regularKey": "Regular Key",
