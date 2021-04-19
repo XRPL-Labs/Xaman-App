@@ -99,7 +99,7 @@ const Navigator = {
 
         const bottomTabsChildren: any = [];
 
-        Object.keys(AppScreens.TabBar).forEach(tab => {
+        Object.keys(AppScreens.TabBar).forEach((tab) => {
             bottomTabsChildren.push({
                 stack: {
                     id: `bottomTab-${tab}`,
@@ -289,13 +289,10 @@ const Navigator = {
 
     reRender() {
         // update the tabbar
-        Object.keys(AppScreens.TabBar).forEach(tab => {
+        Object.keys(AppScreens.TabBar).forEach((tab) => {
             Navigation.mergeOptions(`bottomTab-${tab}`, {
                 bottomTab: {
-                    text: Platform.select({
-                        android: Localize.t(`global.${tab.toLowerCase()}`),
-                        ios: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
-                    }),
+                    text: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
                 },
             });
 
