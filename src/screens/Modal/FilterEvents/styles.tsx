@@ -1,9 +1,9 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts } from '@theme';
+import { AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     // container: { position: 'relative', flex: 1, flexDirection: 'column', backgroundColor: AppColors.lightBlue },
     row: {
         left: 0,
@@ -13,30 +13,30 @@ const styles = StyleSheet.create({
     },
     headerContainer: {
         zIndex: 9999,
-        backgroundColor: AppColors.white,
-        shadowColor: AppColors.white,
+        backgroundColor: '$background',
+        shadowColor: '$background',
         shadowOffset: { width: 0, height: 12 },
         shadowRadius: 5,
         shadowOpacity: 1,
         elevation: 1,
     },
     footerContainer: {
-        backgroundColor: AppColors.white,
-        shadowColor: AppColors.white,
+        backgroundColor: '$background',
+        shadowColor: '$background',
         shadowOffset: { width: 0, height: -10 },
         shadowRadius: 5,
         shadowOpacity: 1,
         elevation: 10,
     },
     cancelButton: {
-        backgroundColor: AppColors.black,
+        // backgroundColor: '$black',
     },
     cancelButtonText: {
         fontFamily: AppFonts.base.familyBold,
-        color: AppColors.white,
+        color: '$white',
     },
     optionsButton: {
-        backgroundColor: AppColors.grey,
+        backgroundColor: '$tint',
         borderRadius: 20,
         paddingRight: 10,
         paddingLeft: 10,
@@ -48,16 +48,16 @@ const styles = StyleSheet.create({
     optionsButtonText: {
         paddingRight: 10,
         paddingLeft: 10,
-        color: AppColors.black,
+        color: '$textPrimary',
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.base.size,
     },
     optionsButtonSelected: {
-        backgroundColor: AppColors.blue,
+        backgroundColor: '$blue',
     },
     optionsButtonSelectedText: {
         fontFamily: AppFonts.base.familyBold,
-        color: AppColors.white,
+        color: '$white',
     },
 });
 

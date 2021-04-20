@@ -1,9 +1,9 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppSizes, AppFonts } from '@theme';
+import { AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     searchInput: {
         fontFamily: AppFonts.base.familyMono,
@@ -28,24 +28,24 @@ const styles = StyleSheet.create({
     name: {
         fontSize: 16,
         fontWeight: '500',
-        color: AppColors.black,
+        color: '$textPrimary',
     },
     address: {
         fontSize: 11,
-        color: AppColors.greyDark,
+        color: '$textSecondary',
     },
     sectionHeader: {
         paddingVertical: 5,
         paddingHorizontal: 12,
         marginHorizontal: 20,
         borderRadius: 5,
-        backgroundColor: AppColors.light,
+        backgroundColor: '$tint',
     },
     sectionHeaderText: {
         fontSize: AppFonts.p.size,
         fontFamily: AppFonts.base.familyMono,
         paddingLeft: 8,
-        color: AppColors.black,
+        color: '$textPrimary',
     },
 });
 

@@ -2,14 +2,14 @@ import { get, isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 
-import { LedgerService } from '@services';
+import { LedgerService, StyleService } from '@services';
 
 import { CheckCash, CheckCreate } from '@common/libs/ledger/transactions';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { AmountInput, Button } from '@components/General';
+import { AmountInput, AmountText, Button } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
@@ -27,23 +27,32 @@ export interface State {
     cashAmount: string;
     editableAmount: boolean;
     amountField: 'DeliverMin' | 'Amount';
+    currencyName: string;
     sourceDetails: AccountNameType;
 }
 
 /* Component ==================================================================== */
 class CheckCashTemplate extends Component<Props, State> {
-    amountInput: AmountInput;
+    amountInput: React.RefObject<typeof AmountInput | null>;
 
     constructor(props: Props) {
         super(props);
+
+        const amountField = props.transaction.Amount ? 'Amount' : 'DeliverMin';
+        const currencyName = props.transaction[amountField]?.currency
+            ? NormalizeCurrencyCode(props.transaction[amountField].currency)
+            : 'XRP';
 
         this.state = {
             isLoading: false,
             editableAmount: !props.transaction.DeliverMin?.value && !props.transaction.Amount?.value,
             cashAmount: props.transaction.DeliverMin?.value || props.transaction.Amount?.value,
-            amountField: props.transaction.Amount ? 'Amount' : 'DeliverMin',
+            amountField,
+            currencyName,
             sourceDetails: { name: '', source: '' },
         };
+
+        this.amountInput = React.createRef();
     }
 
     componentDidMount() {
@@ -114,12 +123,12 @@ class CheckCashTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoading, editableAmount, amountField, cashAmount, sourceDetails } = this.state;
+        const { isLoading, editableAmount, amountField, currencyName, cashAmount, sourceDetails } = this.state;
 
         return (
             <>
                 <View style={styles.label}>
-                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                         {Localize.t('global.from')}
                     </Text>
                 </View>
@@ -137,11 +146,11 @@ class CheckCashTemplate extends Component<Props, State> {
                 {/* Check Amount */}
                 <Text style={[styles.label]}>{Localize.t('global.checkAmount')}</Text>
                 <View style={[styles.contentBox]}>
-                    <Text style={[styles.amount]}>
-                        {`${transaction.Check?.SendMax.value} ${NormalizeCurrencyCode(
-                            transaction.Check?.SendMax.currency,
-                        )}`}
-                    </Text>
+                    <AmountText
+                        value={transaction.Check?.SendMax.value}
+                        currency={transaction.Check?.SendMax.currency}
+                        style={styles.amount}
+                    />
                 </View>
 
                 {/* Amount */}
@@ -153,39 +162,42 @@ class CheckCashTemplate extends Component<Props, State> {
                         style={[AppStyles.row]}
                         onPress={() => {
                             if (editableAmount && this.amountInput) {
-                                this.amountInput.focus();
+                                this.amountInput.current?.focus();
                             }
                         }}
                     >
-                        <View style={[AppStyles.row, AppStyles.flex1]}>
-                            <AmountInput
-                                ref={(r) => {
-                                    this.amountInput = r;
-                                }}
-                                onChange={this.onAmountChange}
-                                style={[styles.amountInput]}
+                        {editableAmount ? (
+                            <>
+                                <View style={[AppStyles.row, AppStyles.flex1]}>
+                                    <AmountInput
+                                        ref={this.amountInput}
+                                        decimalPlaces={currencyName === 'XRP' ? 6 : 8}
+                                        onChange={this.onAmountChange}
+                                        style={[styles.amountInput]}
+                                        value={cashAmount}
+                                        editable={editableAmount}
+                                        placeholderTextColor={StyleService.value('$textSecondary')}
+                                    />
+                                    <Text style={[styles.amountInput]}> {currencyName}</Text>
+                                </View>
+                                <Button
+                                    onPress={() => {
+                                        if (this.amountInput) {
+                                            this.amountInput.current?.focus();
+                                        }
+                                    }}
+                                    style={styles.editButton}
+                                    roundedSmall
+                                    icon="IconEdit"
+                                    iconSize={13}
+                                    light
+                                />
+                            </>
+                        ) : (
+                            <AmountText
+                                style={styles.amountInput}
                                 value={cashAmount}
-                                editable={editableAmount}
-                            />
-                            <Text style={[styles.amountInput]}>
-                                {' '}
-                                {transaction[amountField]?.currency
-                                    ? NormalizeCurrencyCode(transaction[amountField].currency)
-                                    : 'XRP'}
-                            </Text>
-                        </View>
-                        {editableAmount && (
-                            <Button
-                                onPress={() => {
-                                    if (this.amountInput) {
-                                        this.amountInput.focus();
-                                    }
-                                }}
-                                style={styles.editButton}
-                                roundedSmall
-                                iconSize={13}
-                                light
-                                icon="IconEdit"
+                                currency={transaction[amountField]?.currency || 'XRP'}
                             />
                         )}
                     </TouchableOpacity>

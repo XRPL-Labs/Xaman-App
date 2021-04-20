@@ -5,24 +5,31 @@
 
 import EventEmitter from 'events';
 import { Linking, Alert } from 'react-native';
+import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
 import NavigationService from '@services/NavigationService';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
-
 import { Navigator } from '@common/helpers/navigator';
+import { Prompt } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
-
-import { NormalizeDestination } from '@common/libs/utils';
+import { NormalizeDestination } from '@common/utils/codec';
 
 import Localize from '@locale';
-
 /* Service  ==================================================================== */
 class LinkingService extends EventEmitter {
+    private initialURL: string;
+
+    constructor() {
+        super();
+
+        this.initialURL = null;
+    }
+
     initialize = () => {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             try {
                 NavigationService.on('setRoot', async (root: string) => {
                     if (root === 'DefaultStack') {
@@ -39,10 +46,14 @@ class LinkingService extends EventEmitter {
 
     checkInitialDeepLink = () => {
         // handle if app opens with link
-        Linking.getInitialURL().then((url) => {
-            setTimeout(() => {
-                this.handleDeepLink({ url });
-            }, 100);
+        Linking.getInitialURL().then(url => {
+            if (url && this.initialURL !== url) {
+                this.initialURL = url;
+
+                setTimeout(() => {
+                    this.handleDeepLink({ url });
+                }, 100);
+            }
         });
     };
 
@@ -122,7 +133,87 @@ class LinkingService extends EventEmitter {
         );
     };
 
-    handle = (detected: StringTypeDetector) => {
+    handleXAPPLink = async (url: string, parsed: { xapp: string; params: any }) => {
+        const { xapp, params } = parsed;
+
+        if (!xapp) return;
+
+        let delay = 0;
+        // if already in xapp try to load the xApp from notification
+        if (NavigationService.getCurrentScreen() === AppScreens.Modal.XAppBrowser) {
+            await Navigator.dismissModal();
+            // looks like a bug in navigation library, need to add a delay before showing the modal
+            delay = 300;
+        }
+
+        setTimeout(() => {
+            Navigator.showModal(
+                AppScreens.Modal.XAppBrowser,
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+                },
+                {
+                    identifier: xapp,
+                    origin: PayloadOrigin.DEEP_LINK,
+                    originData: { url },
+                    params,
+                },
+            );
+        }, delay);
+    };
+
+    handleAlternativeSeedCodec = (parsed: {
+        name: string;
+        alphabet: string | boolean;
+        params?: Record<string, unknown>;
+    }) => {
+        const { alphabet } = parsed;
+        if (alphabet) {
+            Navigator.push(
+                AppScreens.Account.Import,
+                {},
+                {
+                    alternativeSeedAlphabet: parsed,
+                },
+            );
+        }
+    };
+
+    handleXummFeature = (parsed: { feature: string; type: string; params?: Record<string, unknown> }) => {
+        const { feature, type } = parsed;
+
+        // Feature: allow import of Secret Numbers without Checksum
+        if (feature === 'secret' && type === 'offline-secret-numbers') {
+            Prompt(
+                Localize.t('global.warning'),
+                Localize.t('account.importSecretWithoutChecksumWarning'),
+                [
+                    {
+                        text: Localize.t('global.cancel'),
+                    },
+                    {
+                        text: Localize.t('global.continue'),
+                        style: 'destructive',
+                        onPress: () => {
+                            Navigator.push(
+                                AppScreens.Account.Import,
+                                {},
+                                {
+                                    importOfflineSecretNumber: true,
+                                },
+                            );
+                        },
+                    },
+                ],
+                { type: 'default' },
+            );
+        }
+    };
+
+    handle = (url: string) => {
+        const detected = new StringTypeDetector(url);
+
         // normalize detected type
         let detectedType = detected.getType();
 
@@ -144,6 +235,15 @@ class LinkingService extends EventEmitter {
             case StringType.PayId:
                 this.handleXrplDestination(parsed);
                 break;
+            case StringType.XummXapp:
+                this.handleXAPPLink(url, parsed);
+                break;
+            case StringType.XrplAltFamilySeedAlphabet:
+                this.handleAlternativeSeedCodec(parsed);
+                break;
+            case StringType.XummFeature:
+                this.handleXummFeature(parsed);
+                break;
             default:
                 break;
         }
@@ -151,11 +251,9 @@ class LinkingService extends EventEmitter {
 
     handleDeepLink = async ({ url }: { url: string }) => {
         // ignore if the app is not initialized or not url
-        if (!url) return;
+        if (!url || typeof url !== 'string') return;
 
-        const detected = new StringTypeDetector(url);
-
-        this.handle(detected);
+        this.handle(url);
     };
 }
 

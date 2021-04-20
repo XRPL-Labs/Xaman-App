@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { IsIPhoneX } from '@common/helpers/device';
+import { hasNotch } from '@common/helpers/device';
 
 const styles = StyleSheet.create({
     rtl: {
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollView: {
-        marginBottom: IsIPhoneX() ? 75 : 45,
+        marginBottom: hasNotch() ? 75 : 45,
     },
     bottom: {
         position: 'absolute',

@@ -16,8 +16,8 @@ exports[`[InfoMessage] renders correctly Error 1`] = `
       null,
       null,
       Object {
-        "backgroundColor": "#FFF9F9",
-        "borderColor": "#FFF9F9",
+        "backgroundColor": "rgba(255,91,91,0.06)",
+        "borderColor": "rgba(255,91,91,0.06)",
         "tintColor": "#FF5B5B",
       },
       null,
@@ -76,7 +76,7 @@ exports[`[InfoMessage] renders correctly Info 1`] = `
       },
       undefined,
       Object {
-        "backgroundColor": "#F0F3FF",
+        "backgroundColor": "rgba(48,82,255,0.06)",
         "borderColor": "#3052FF",
         "tintColor": "#3052FF",
       },
@@ -139,7 +139,7 @@ exports[`[InfoMessage] renders correctly Warning 1`] = `
       undefined,
       null,
       Object {
-        "backgroundColor": "#FFF9ED",
+        "backgroundColor": "rgba(248,191,76,0.06)",
         "borderColor": "#F8BF4C",
         "tintColor": "#F8BF4C",
       },
@@ -202,8 +202,8 @@ exports[`[InfoMessage] should render with icon Error 1`] = `
       null,
       null,
       Object {
-        "backgroundColor": "#FFF9F9",
-        "borderColor": "#FFF9F9",
+        "backgroundColor": "rgba(255,91,91,0.06)",
+        "borderColor": "rgba(255,91,91,0.06)",
         "tintColor": "#FF5B5B",
       },
       null,
@@ -298,7 +298,7 @@ exports[`[InfoMessage] should render with icon Info 1`] = `
       },
       undefined,
       Object {
-        "backgroundColor": "#F0F3FF",
+        "backgroundColor": "rgba(48,82,255,0.06)",
         "borderColor": "#3052FF",
         "tintColor": "#3052FF",
       },
@@ -397,7 +397,7 @@ exports[`[InfoMessage] should render with icon Warning 1`] = `
       undefined,
       null,
       Object {
-        "backgroundColor": "#FFF9ED",
+        "backgroundColor": "rgba(248,191,76,0.06)",
         "borderColor": "#F8BF4C",
         "tintColor": "#F8BF4C",
       },

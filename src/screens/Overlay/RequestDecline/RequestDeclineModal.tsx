@@ -34,7 +34,7 @@ class RequestDeclineOverlay extends Component<Props, State> {
     panel: any;
     deltaY: Animated.Value;
     deltaX: Animated.Value;
-    onDismiss: () => void;
+    isOpening: boolean;
 
     static options() {
         return {
@@ -55,6 +55,8 @@ class RequestDeclineOverlay extends Component<Props, State> {
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
         this.deltaX = new Animated.Value(0);
+
+        this.isOpening = true;
     }
 
     componentDidMount() {
@@ -77,42 +79,45 @@ class RequestDeclineOverlay extends Component<Props, State> {
         }, 10);
     };
 
-    onSnap = async (event: any) => {
-        const { index } = event.nativeEvent;
+    onAlert = (event: any) => {
+        const { top, bottom } = event.nativeEvent;
 
-        if (index === 0) {
+        if (top && bottom) return;
+
+        if (top === 'enter' && this.isOpening) {
+            this.isOpening = false;
+        }
+
+        if (bottom === 'leave' && !this.isOpening) {
             Navigator.dismissOverlay();
         }
     };
 
     onClose = async () => {
         const { onClose } = this.props;
-        // close overlay
-        await Navigator.dismissOverlay();
 
         if (typeof onClose === 'function') {
             onClose();
         }
+
+        // close overlay
+        await Navigator.dismissOverlay();
     };
 
     onDecline = async () => {
         const { onDecline } = this.props;
-        // close overlay
-        await Navigator.dismissOverlay();
 
         if (typeof onDecline === 'function') {
             onDecline();
         }
+        // close overlay
+        await Navigator.dismissOverlay();
     };
 
     render() {
         return (
             <View style={AppStyles.flex1}>
-                <TouchableWithoutFeedback
-                    onPress={() => {
-                        this.slideDown();
-                    }}
-                >
+                <TouchableWithoutFeedback onPress={this.slideDown}>
                     <Animated.View
                         style={[
                             AppStyles.shadowContent,
@@ -132,30 +137,39 @@ class RequestDeclineOverlay extends Component<Props, State> {
                         this.panel = r;
                     }}
                     animatedNativeDriver
-                    onSnap={this.onSnap}
+                    onAlert={this.onAlert}
                     verticalOnly
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
-                        { y: AppSizes.screen.height - (AppSizes.moderateScale(350) + AppSizes.navigationBarHeight) },
+                        { y: AppSizes.screen.height - (AppSizes.moderateScale(360) + AppSizes.navigationBarHeight) },
                     ]}
                     boundaries={{
-                        top: AppSizes.screen.height - (AppSizes.moderateScale(400) + AppSizes.navigationBarHeight),
+                        top: AppSizes.screen.height - (AppSizes.moderateScale(410) + AppSizes.navigationBarHeight),
                     }}
+                    alertAreas={[
+                        { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
+                        {
+                            id: 'top',
+                            influenceArea: {
+                                top:
+                                    AppSizes.screen.height -
+                                    (AppSizes.moderateScale(360) + AppSizes.navigationBarHeight),
+                            },
+                        },
+                    ]}
                     initialPosition={{ y: AppSizes.screen.height + 3 }}
                     animatedValueY={this.deltaY}
                     animatedValueX={this.deltaX}
                 >
                     <View style={[styles.container]}>
                         <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingVerticalSml]}>
-                            <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
+                            <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>
                                 {Localize.t('payload.whatDoYouWantToDo')}
                             </Text>
                         </View>
                         <View style={[AppStyles.flex1, AppStyles.paddingHorizontalSml]}>
                             <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                                <Text style={[AppStyles.bold, AppStyles.colorGreyDark]}>
-                                    {Localize.t('global.close')}{' '}
-                                </Text>
+                                <Text style={[AppStyles.bold, AppStyles.colorGrey]}>{Localize.t('global.close')} </Text>
                                 {Localize.t('payload.willIgnoreTheRequestAndClose')}{' '}
                                 <Text style={[AppStyles.bold, AppStyles.colorRed]}>
                                     {Localize.t('global.decline')}{' '}
@@ -165,8 +179,9 @@ class RequestDeclineOverlay extends Component<Props, State> {
                         </View>
                         <View style={[AppStyles.flex2, AppStyles.paddingHorizontalSml]}>
                             <Button
+                                secondary
+                                numberOfLines={1}
                                 onPress={this.onClose}
-                                style={styles.closeButton}
                                 label={Localize.t('global.close')}
                             />
                             <Spacer size={20} />
@@ -175,7 +190,6 @@ class RequestDeclineOverlay extends Component<Props, State> {
                                 style={styles.declineButton}
                                 label={Localize.t('global.decline')}
                                 icon="IconTrash"
-                                iconStyle={AppStyles.imgColorWhite}
                             />
                         </View>
                     </View>

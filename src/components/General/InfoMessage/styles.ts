@@ -1,9 +1,9 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts } from '@theme';
+import { AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
-export default StyleSheet.create({
+export default StyleService.create({
     messageBox: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -30,33 +30,33 @@ export default StyleSheet.create({
         textAlign: 'center',
     },
     info: {
-        backgroundColor: AppColors.lightBlue,
-        borderColor: AppColors.blue,
-        tintColor: AppColors.blue,
+        backgroundColor: '$lightBlue',
+        borderColor: '$blue',
+        tintColor: '$blue',
     },
-    infoIcon: { tintColor: AppColors.blue },
+    infoIcon: { tintColor: '$blue' },
     warning: {
-        backgroundColor: AppColors.lightOrange,
-        borderColor: AppColors.orange,
-        tintColor: AppColors.orange,
+        backgroundColor: '$lightOrange',
+        borderColor: '$orange',
+        tintColor: '$orange',
     },
-    warningIcon: { tintColor: AppColors.orange },
+    warningIcon: { tintColor: '$orange' },
     error: {
-        backgroundColor: AppColors.lightRed,
-        borderColor: AppColors.lightRed,
-        tintColor: AppColors.red,
+        backgroundColor: '$lightRed',
+        borderColor: '$lightRed',
+        tintColor: '$red',
     },
-    errorIcon: { tintColor: AppColors.red },
+    errorIcon: { tintColor: '$red' },
     success: {
-        backgroundColor: AppColors.lightGreen,
-        borderColor: AppColors.lightGreen,
-        tintColor: AppColors.green,
+        backgroundColor: '$lightGreen',
+        borderColor: '$lightGreen',
+        tintColor: '$green',
     },
-    successIcon: { tintColor: AppColors.green },
+    successIcon: { tintColor: '$green' },
     neutral: {
-        backgroundColor: AppColors.lightGrey,
-        borderColor: AppColors.lightGrey,
-        tintColor: AppColors.grey,
+        backgroundColor: '$light',
+        borderColor: '$light',
+        tintColor: '$grey',
     },
-    neutralIcon: { tintColor: AppColors.grey },
+    neutralIcon: { tintColor: '$grey' },
 });

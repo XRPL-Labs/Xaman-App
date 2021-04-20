@@ -28,6 +28,8 @@ import Submit from './Modal/Submit';
 import FilterEvents from './Modal/FilterEvents';
 import Picker from './Modal/Picker';
 import Help from './Modal/Help';
+import XAppBrowser from './Modal/XAppBrowser';
+import CurrencyPicker from './Modal/CurrencyPicker';
 
 // Overlay
 import SwitchAccount from './Overlay/SwitchAccount';
@@ -46,9 +48,11 @@ import ConnectionIssue from './Overlay/ConnectionIssue';
 import RecipientMenu from './Overlay/RecipientMenu';
 import ConfirmDestinationTag from './Overlay/ConfirmDestinationTag';
 import SelectAccount from './Overlay/SelectAccount';
+import HomeActions from './Overlay/HomeActions';
 
 // Transaction
 import Send from './Send';
+import Request from './Request';
 import Exchange from './Exchange';
 import TransactionDetails from './Events/Details';
 
@@ -105,6 +109,8 @@ export {
     FilterEvents,
     Picker,
     Help,
+    XAppBrowser,
+    CurrencyPicker,
     // overlay
     SwitchAccount,
     ShareAccount,
@@ -122,8 +128,10 @@ export {
     RecipientMenu,
     ConfirmDestinationTag,
     SelectAccount,
+    HomeActions,
     // transaction
     Send,
+    Request,
     Exchange,
     TransactionDetails,
     // addressBook

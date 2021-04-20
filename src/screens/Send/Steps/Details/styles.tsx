@@ -1,13 +1,16 @@
-import { StyleSheet, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
-import { AppStyles, AppSizes, AppColors, AppFonts } from '@theme';
+import StyleService from '@services/StyleService';
 
+import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        alignSelf: 'stretch',
+        backgroundColor: '$background',
     },
     rowTitle: {
         paddingLeft: 15,
@@ -16,42 +19,46 @@ const styles = StyleSheet.create({
         paddingHorizontal: AppSizes.paddingSml,
         paddingTop: AppSizes.paddingSml,
         paddingBottom: 10,
-        borderTopColor: AppColors.grey,
+        borderTopColor: '$lightGrey',
         borderTopWidth: 1,
+    },
+    amountContainer: {
+        left: 0,
+        right: 0,
+        flexDirection: 'row',
+        marginTop: Platform.OS === 'ios' ? 20 : 10,
+        paddingLeft: 20,
+        marginLeft: 0,
+        backgroundColor: '$lightGrey',
+        borderRadius: 15,
     },
     amountInput: {
         padding: 0,
         margin: 0,
-        paddingTop: Platform.OS === 'ios' ? 20 : 10,
-        paddingLeft: 15,
-        fontSize: AppFonts.h1.size,
+        fontSize: AppFonts.h2.size,
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
-        color: AppColors.blue,
+        color: '$blue',
+        paddingVertical: Platform.OS === 'ios' ? 15 : 10,
     },
-    currencyItemLabelSmall: {
-        fontSize: AppFonts.p.size,
-        fontFamily: AppFonts.base.familyMono,
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        marginRight: 10,
-        marginBottom: 3,
+    amountRateContainer: {
+        left: 0,
+        right: 0,
+        flexDirection: 'row',
+        marginTop: Platform.OS === 'ios' ? 20 : 10,
+        paddingLeft: 20,
+        marginLeft: 0,
+        backgroundColor: '$lightGrey',
+        borderRadius: 15,
     },
-    accountPickerContainer: {
-        // borderRadius: 15,
-        // height: 70,
-        // paddingHorizontal: 14,
-        // paddingVertical: 20,
-    },
-    accountItemTitle: {
-        fontSize: AppStyles.baseText.fontSize,
-        fontWeight: 'bold',
-        marginBottom: 3,
-    },
-    accountItemSub: {
-        fontFamily: AppFonts.base.familyMono,
-        fontSize: 16,
-        color: AppColors.greyDark,
+    amountRateInput: {
+        padding: 0,
+        margin: 0,
+        fontSize: AppFonts.h4.size,
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontWeight: '600',
+        color: '$textPrimary',
+        paddingVertical: 15,
     },
     // Currency
     pickerItemCurrency: {
@@ -59,14 +66,14 @@ const styles = StyleSheet.create({
         // paddingTop: 10,
         // paddingBottom: 10,
         // borderWidth: 1,
-        // borderColor: AppColors.green,
+        // borderColor: '$green,
     },
     currencyImageContainer: {
-        backgroundColor: AppColors.white,
+        backgroundColor: '$white',
         // padding: 10,
         marginRight: 10,
         borderWidth: 1,
-        borderColor: AppColors.light,
+        borderColor: '$light',
         borderRadius: 10,
         justifyContent: 'center',
     },
@@ -80,52 +87,39 @@ const styles = StyleSheet.create({
         fontFamily: AppFonts.base.familyMonoBold,
         alignItems: 'flex-start',
         justifyContent: 'center',
+        color: '$textPrimary',
+    },
+    currencyItemLabelSelected: {
+        color: '$blue',
     },
     currencyBalance: {
         fontSize: AppFonts.subtext.size * 0.9,
         fontFamily: AppFonts.base.familyMono,
-        color: AppColors.greyDark,
+        color: '$grey',
     },
     editButton: {
-        backgroundColor: AppColors.grey,
-        borderRadius: 8,
-        height: 25,
-        width: 40,
+        justifyContent: 'center',
+        alignSelf: 'center',
+    },
+    currencySymbolTextContainer: {
         justifyContent: 'center',
         alignSelf: 'center',
         marginRight: 15,
-        marginTop: Platform.OS === 'ios' ? 20 : 10,
     },
-    /*
-    brandAvatarContainer: {
-        marginRight: 10,
-        borderWidth: 1,
-        borderColor: AppColors.red,
-        // borderRadius: 10,
-        justifyContent: 'center',
-        // overflow: 'hidden',
+    currencySymbolText: {
+        fontFamily: AppFonts.base.familyMonoBold,
+        color: '$grey',
+        fontSize: AppFonts.h5.size * 0.9,
     },
-    brandAvatar: {
-        width: AppSizes.screen.width * 0.1,
-        height: AppSizes.screen.width * 0.1,
-        resizeMode: 'contain',
+    rateContainer: {
+        paddingLeft: 15,
+        paddingTop: 15,
     },
-    xrpAvatarContainer: {
-        backgroundColor: AppColors.white,
-        padding: 10,
-        marginRight: 10,
-        borderWidth: 1,
-        borderColor: AppColors.red,
-        borderRadius: 10,
-        justifyContent: 'center',
-        // overflow: 'hidden',
+    rateText: {
+        fontFamily: AppFonts.base.familyMono,
+        fontSize: AppFonts.base.size,
+        color: '$greyBlack',
     },
-    xrpAvatar: {
-        width: AppSizes.screen.width * 0.05,
-        height: AppSizes.screen.width * 0.05,
-        resizeMode: 'contain',
-    },
-    */
 });
 
 export default styles;

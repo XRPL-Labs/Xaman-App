@@ -18,29 +18,28 @@ import {
     Alert,
 } from 'react-native';
 
-import { Navigation } from 'react-native-navigation';
+import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
-import { LedgerService, SocketService } from '@services';
+import { LedgerService, SocketService, BackendService, StyleService } from '@services';
 
-import { AccessLevels } from '@store/types';
+import { AccessLevels, NodeChain } from '@store/types';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 // constants
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
-import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
+import { VibrateHapticFeedback, Prompt, Toast } from '@common/helpers/interface';
 
 import Localize from '@locale';
 
 // components
-import { Button, RaisedButton, InfoMessage, Spacer, Icon } from '@components/General';
+import { Button, RaisedButton, InfoMessage, Spacer, Icon, AmountText, LoadingIndicator } from '@components/General';
 
 // style
-import { AppStyles } from '@theme';
+import { AppStyles, AppColors, AppFonts } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -48,8 +47,13 @@ export interface Props {}
 
 export interface State {
     account: AccountSchema;
+    coreSettings: CoreSchema;
     isSpendable: boolean;
     discreetMode: boolean;
+    isLoadingRate: boolean;
+    showRate: boolean;
+    currency: string;
+    currencyRate: any;
 }
 
 /* Component ==================================================================== */
@@ -57,14 +61,6 @@ class HomeView extends Component<Props, State> {
     static screenName = AppScreens.TabBar.Home;
 
     private navigationListener: any;
-
-    static options() {
-        return {
-            topBar: {
-                visible: false,
-            },
-        };
-    }
 
     constructor(props: Props) {
         super(props);
@@ -74,7 +70,12 @@ class HomeView extends Component<Props, State> {
         this.state = {
             account: undefined,
             isSpendable: false,
+            coreSettings,
+            currency: coreSettings.currency,
             discreetMode: coreSettings.discreetMode,
+            isLoadingRate: false,
+            showRate: false,
+            currencyRate: undefined,
         };
     }
 
@@ -86,19 +87,31 @@ class HomeView extends Component<Props, State> {
         AccountRepository.on('accountCreate', this.getDefaultAccount);
         AccountRepository.on('accountRemove', this.getDefaultAccount);
 
-        CoreRepository.on('updateSettings', this.updateDiscreetMode);
+        CoreRepository.on('updateSettings', this.onCoreSettingsUpdate);
 
         // listen for screen appear event
         this.navigationListener = Navigation.events().bindComponent(this);
 
-        // set default account
-        this.getDefaultAccount();
+        InteractionManager.runAfterInteractions(() => {
+            // set default account
+            this.getDefaultAccount();
+
+            // set dev mode header
+            this.setNodeChainHeader();
+        });
     }
 
     componentWillUnmount() {
+        // remove listeners
+
         if (this.navigationListener) {
             this.navigationListener.remove();
         }
+
+        AccountRepository.off('accountUpdate', this.updateDefaultAccount);
+        AccountRepository.off('accountCreate', this.getDefaultAccount);
+        AccountRepository.off('accountRemove', this.getDefaultAccount);
+        CoreRepository.off('updateSettings', this.onCoreSettingsUpdate);
     }
 
     componentDidAppear() {
@@ -112,13 +125,35 @@ class HomeView extends Component<Props, State> {
         });
     }
 
-    updateDiscreetMode = (coreSettings: CoreSchema, changes: Partial<CoreSchema>) => {
-        const { discreetMode } = this.state;
+    onCoreSettingsUpdate = (coreSettings: CoreSchema, changes: Partial<CoreSchema>) => {
+        const { discreetMode, currency, showRate } = this.state;
 
+        // discreetMode changed
         if (has(changes, 'discreetMode') && discreetMode !== changes.discreetMode) {
             this.setState({
                 discreetMode: coreSettings.discreetMode,
             });
+        }
+
+        // currency changed
+        if (has(changes, 'currency') && currency !== changes.currency) {
+            this.setState(
+                {
+                    currency: coreSettings.currency,
+                },
+                () => {
+                    // turn to XRP
+                    if (showRate) {
+                        this.toggleBalance();
+                    }
+                },
+            );
+        }
+
+        if (has(changes, 'developerMode') || has(changes, 'defaultNode')) {
+            setTimeout(() => {
+                this.setNodeChainHeader(coreSettings);
+            }, 500);
         }
     };
 
@@ -129,10 +164,8 @@ class HomeView extends Component<Props, State> {
                 {
                     account: updatedAccount,
                 },
-                () => {
-                    // when account balance changed update spendable accounts
-                    this.updateSpendableStatus();
-                },
+                // when account balance changed update spendable accounts
+                this.updateSpendableStatus,
             );
         }
     };
@@ -142,11 +175,46 @@ class HomeView extends Component<Props, State> {
             {
                 account: AccountRepository.getDefaultAccount(),
             },
-            () => {
-                // when account balance changed update spendable accounts
-                this.updateSpendableStatus();
-            },
+            // when account balance changed update spendable accounts
+            this.updateSpendableStatus,
         );
+    };
+
+    setNodeChainHeader = (settings?: CoreSchema) => {
+        // @ts-ignore
+        const { componentId } = this.props;
+        const { coreSettings } = this.state;
+
+        if (settings ? settings.developerMode : coreSettings.developerMode) {
+            Navigator.mergeOptions(
+                {
+                    topBar: {
+                        hideOnScroll: true,
+                        visible: true,
+                        animate: true,
+                        background: {
+                            color: SocketService.chain === NodeChain.Main ? AppColors.blue : AppColors.green,
+                        },
+                        title: {
+                            text: SocketService.chain === NodeChain.Main ? 'MAINNET' : 'TESTNET',
+                            color: 'white',
+                            fontFamily: AppFonts.base.familyExtraBold,
+                            fontSize: AppFonts.h5.size,
+                        },
+                    },
+                },
+                componentId,
+            );
+        } else {
+            Navigator.mergeOptions(
+                {
+                    topBar: {
+                        visible: false,
+                    },
+                },
+                componentId,
+            );
+        }
     };
 
     // eslint-disable-next-line react/destructuring-assignment
@@ -236,16 +304,40 @@ class HomeView extends Component<Props, State> {
         );
     };
 
+    showNFTDetails = (trustLine: TrustLineSchema) => {
+        const { account } = this.state;
+
+        Navigator.showModal(
+            AppScreens.Modal.XAppBrowser,
+            {
+                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+            },
+            {
+                identifier: 'xumm.nft-info',
+                account,
+                params: {
+                    issuer: trustLine.currency.issuer,
+                    token: trustLine.currency.currency,
+                },
+            },
+        );
+    };
+
     toggleDiscreetMode = () => {
         const { discreetMode } = this.state;
 
-        CoreRepository.saveSettings({
+        this.setState({
             discreetMode: !discreetMode,
         });
     };
 
     showExchangeAccountAlert = () => {
         Alert.alert(Localize.t('global.warning'), Localize.t('home.exchangeAccountReadonlyExplain'));
+    };
+
+    onRequestPress = () => {
+        Navigator.push(AppScreens.Transaction.Request);
     };
 
     onShowAccountQRPress = () => {
@@ -292,13 +384,56 @@ class HomeView extends Component<Props, State> {
         Navigator.push(AppScreens.Transaction.Payment);
     };
 
+    shareAddress = () => {
+        const { account } = this.state;
+
+        VibrateHapticFeedback('impactMedium');
+
+        Share.share({
+            title: Localize.t('home.shareAccount'),
+            message: account.address,
+            url: undefined,
+        }).catch(() => {});
+    };
+
+    toggleBalance = () => {
+        const { showRate, currency } = this.state;
+
+        if (!showRate) {
+            this.setState({
+                isLoadingRate: true,
+                showRate: true,
+            });
+
+            BackendService.getCurrencyRate(currency)
+                .then(r => {
+                    this.setState({
+                        currencyRate: r,
+                        isLoadingRate: false,
+                    });
+                })
+                .catch(() => {
+                    Toast(Localize.t('global.unableToFetchCurrencyRate'));
+
+                    this.setState({
+                        isLoadingRate: false,
+                        showRate: false,
+                    });
+                });
+        } else {
+            this.setState({
+                showRate: false,
+            });
+        }
+    };
+
     renderHeader = () => {
         const { account } = this.state;
 
         return (
             <Fragment key="header">
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                    <Image style={[styles.logo]} source={Images.xummLogo} />
+                    <Image style={[styles.logo]} source={StyleService.getImage('XummLogo')} />
                 </View>
                 {account?.isValid() && (
                     <View style={[AppStyles.flex1]}>
@@ -311,12 +446,10 @@ class HomeView extends Component<Props, State> {
                                     },
                                 });
                             }}
-                            style={styles.switchAccountButton}
-                            textStyle={styles.switchAccountButtonText}
                             light
                             roundedSmall
+                            style={styles.switchAccountButton}
                             iconSize={14}
-                            iconStyle={AppStyles.imgColorBlue}
                             icon="IconSwitchAccount"
                             label={Localize.t('account.switchAccount')}
                         />
@@ -329,6 +462,7 @@ class HomeView extends Component<Props, State> {
     renderAssets = () => {
         const { account, discreetMode, isSpendable } = this.state;
 
+        // accounts is not activated
         if (account.balance === 0) {
             // check if account is a regular key to one of xumm accounts
             const isRegularKey = AccountRepository.isRegularKey(account.address);
@@ -379,7 +513,7 @@ class HomeView extends Component<Props, State> {
                                 AppStyles.subtext,
                                 AppStyles.textCenterAligned,
                                 AppStyles.link,
-                                AppStyles.colorGreyDark,
+                                AppStyles.colorGrey,
                             ]}
                         >
                             {Localize.t('home.howActivateMyAccount')}
@@ -393,20 +527,22 @@ class HomeView extends Component<Props, State> {
             <View style={[AppStyles.flex6, styles.currencyList]} testID="activated-account-container">
                 <View style={[AppStyles.row, AppStyles.centerContent, styles.trustLinesHeader]}>
                     <View style={[AppStyles.flex5, AppStyles.centerContent]}>
-                        <Text style={[AppStyles.pbold]}>{Localize.t('home.otherAssets')}</Text>
+                        <Text numberOfLines={1} style={[AppStyles.pbold]}>
+                            {Localize.t('home.otherAssets')}
+                        </Text>
                     </View>
                     {isSpendable && (
                         <View style={[AppStyles.flex5]}>
                             <Button
+                                light
+                                roundedSmall
+                                numberOfLines={1}
                                 testID="add-asset-button"
                                 label={Localize.t('home.addAsset')}
                                 onPress={this.addCurrency}
-                                roundedSmall
                                 icon="IconPlus"
-                                iconStyle={[AppStyles.imgColorBlue]}
                                 iconSize={20}
                                 style={[AppStyles.rightSelf]}
-                                light
                             />
                         </View>
                     )}
@@ -415,6 +551,7 @@ class HomeView extends Component<Props, State> {
                 {account.lines.length === 0 && (
                     <View testID="assets-empty-view" style={[styles.noTrustlineMessage]}>
                         <InfoMessage type="warning" label={Localize.t('home.youDonNotHaveOtherAssets')} />
+
                         <TouchableOpacity
                             style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingSml]}
                             onPress={this.openTrustLineDescription}
@@ -425,7 +562,7 @@ class HomeView extends Component<Props, State> {
                                     AppStyles.subtext,
                                     AppStyles.textCenterAligned,
                                     AppStyles.link,
-                                    AppStyles.colorGreyDark,
+                                    AppStyles.colorGrey,
                                 ]}
                             >
                                 {Localize.t('home.whatAreOtherAssets')}
@@ -443,13 +580,15 @@ class HomeView extends Component<Props, State> {
                                     onPress={() => {
                                         if (isSpendable) {
                                             this.showCurrencyOptions(line);
+                                        } else if (line.isNFT) {
+                                            this.showNFTDetails(line);
                                         }
                                     }}
                                     activeOpacity={isSpendable ? 0.5 : 1}
                                     style={[styles.currencyItem]}
                                     key={index}
                                 >
-                                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                                    <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
                                         <View style={[styles.brandAvatarContainer]}>
                                             <Image
                                                 style={[styles.brandAvatar]}
@@ -476,28 +615,39 @@ class HomeView extends Component<Props, State> {
                                     </View>
                                     <View
                                         style={[
-                                            AppStyles.flex4,
+                                            AppStyles.flex1,
                                             AppStyles.row,
                                             AppStyles.centerContent,
                                             AppStyles.centerAligned,
                                             AppStyles.flexEnd,
                                         ]}
                                     >
-                                        {line.currency.avatar && (
-                                            <Image
-                                                style={[styles.currencyAvatar, discreetMode && AppStyles.imgColorGrey]}
-                                                source={{ uri: line.currency.avatar }}
+                                        {discreetMode ? (
+                                            <Text style={[AppStyles.pbold, AppStyles.monoBold, AppStyles.colorGrey]}>
+                                                ••••••••
+                                            </Text>
+                                        ) : (
+                                            <AmountText
+                                                prefix={() => {
+                                                    if (line.currency.avatar) {
+                                                        return (
+                                                            <View style={styles.currencyAvatarContainer}>
+                                                                <Image
+                                                                    style={[
+                                                                        styles.currencyAvatar,
+                                                                        discreetMode && AppStyles.imgColorGrey,
+                                                                    ]}
+                                                                    source={{ uri: line.currency.avatar }}
+                                                                />
+                                                            </View>
+                                                        );
+                                                    }
+                                                    return undefined;
+                                                }}
+                                                value={line.balance}
+                                                style={[AppStyles.pbold, AppStyles.monoBold]}
                                             />
                                         )}
-                                        <Text
-                                            style={[
-                                                AppStyles.pbold,
-                                                AppStyles.monoBold,
-                                                discreetMode && AppStyles.colorGreyDark,
-                                            ]}
-                                        >
-                                            {discreetMode ? '••••••••' : Localize.formatNumber(line.balance)}
-                                        </Text>
                                     </View>
                                 </TouchableOpacity>
                             );
@@ -534,7 +684,7 @@ class HomeView extends Component<Props, State> {
                         iconPosition="right"
                         label={Localize.t('global.request')}
                         textStyle={[styles.requestButtonText]}
-                        onPress={this.onShowAccountQRPress}
+                        onPress={this.onRequestPress}
                         activeOpacity={0}
                     />
                 </View>
@@ -561,32 +711,117 @@ class HomeView extends Component<Props, State> {
             <SafeAreaView testID="home-tab-empty-view" style={[AppStyles.tabContainer]}>
                 <View style={[AppStyles.headerContainer]}>{this.renderHeader()}</View>
 
-                <View style={[AppStyles.contentContainer, AppStyles.padding]}>
-                    <ImageBackground
-                        source={Images.BackgroundShapes}
-                        imageStyle={AppStyles.BackgroundShapes}
-                        style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent]}
-                    >
-                        <Image style={[AppStyles.emptyIcon]} source={Images.ImageFirstAccount} />
-                        <Text style={[AppStyles.emptyText]}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
-                        <Button
-                            testID="add-account-button"
-                            label={Localize.t('home.addAccount')}
-                            icon="IconPlus"
-                            iconStyle={[AppStyles.imgColorWhite]}
-                            rounded
-                            onPress={() => {
-                                Navigator.push(AppScreens.Account.Add);
-                            }}
-                        />
-                    </ImageBackground>
-                </View>
+                <ImageBackground
+                    source={StyleService.getImage('BackgroundShapes')}
+                    imageStyle={AppStyles.BackgroundShapes}
+                    style={[AppStyles.contentContainer, AppStyles.padding]}
+                >
+                    <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageFirstAccount')} />
+                    <Text style={[AppStyles.emptyText]}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
+                    <Button
+                        testID="add-account-button"
+                        label={Localize.t('home.addAccount')}
+                        icon="IconPlus"
+                        iconStyle={[AppStyles.imgColorWhite]}
+                        rounded
+                        onPress={() => {
+                            Navigator.push(AppScreens.Account.Add);
+                        }}
+                    />
+                </ImageBackground>
             </SafeAreaView>
         );
     };
 
-    render() {
+    renderBalance = () => {
+        const { showRate, isLoadingRate, account, discreetMode, currencyRate } = this.state;
+
+        if (account.balance === 0) return null;
+
+        let balance = '0';
+
+        if (!isLoadingRate) {
+            if (showRate) {
+                balance = `${currencyRate.symbol} ${Localize.formatNumber(
+                    Number(account.availableBalance) * Number(currencyRate.lastRate),
+                )}`;
+            } else {
+                balance = Localize.formatNumber(account.availableBalance);
+            }
+        }
+
+        return (
+            <>
+                <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                    <Text numberOfLines={1} style={[AppStyles.flex1, styles.balanceLabel]}>
+                        {Localize.t('home.balance')}
+                    </Text>
+
+                    <TouchableOpacity style={AppStyles.paddingRightSml} onPress={this.toggleDiscreetMode}>
+                        <Text style={[styles.cardSmallLabel]}>
+                            <Icon
+                                style={[AppStyles.imgColorGrey]}
+                                size={12}
+                                name={discreetMode ? 'IconEyeOff' : 'IconEye'}
+                            />
+                            {'  '}
+                            {discreetMode ? 'Show' : 'Hide'}
+                        </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={this.showBalanceExplain}>
+                        <Text style={[styles.cardSmallLabel]}>
+                            <Icon style={[AppStyles.imgColorGrey]} size={12} name="IconInfo" />
+                            {'  '}Explain
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+                <TouchableOpacity activeOpacity={0.7} style={[styles.balanceContainer]} onPress={this.toggleBalance}>
+                    {!discreetMode && !showRate && <Icon name="IconXrp" size={16} style={styles.xrpIcon} />}
+
+                    {isLoadingRate ? (
+                        <LoadingIndicator style={styles.rateLoader} />
+                    ) : (
+                        <Text
+                            testID="account-balance-label"
+                            style={[styles.balanceText, discreetMode && AppStyles.colorGrey]}
+                        >
+                            {discreetMode ? '••••••••' : balance}
+                        </Text>
+                    )}
+                </TouchableOpacity>
+            </>
+        );
+    };
+
+    renderAccountDetails = () => {
         const { account, discreetMode } = this.state;
+
+        return (
+            <View style={[AppStyles.row, AppStyles.paddingBottomSml]}>
+                <View style={[AppStyles.flex1]}>
+                    <Text style={[AppStyles.h5]} numberOfLines={1}>
+                        {account.label}
+                    </Text>
+                    <Text
+                        testID="account-address-text"
+                        adjustsFontSizeToFit
+                        numberOfLines={1}
+                        selectable={!discreetMode}
+                        style={[styles.cardAddressText, discreetMode && AppStyles.colorGrey]}
+                    >
+                        {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
+                    </Text>
+                </View>
+                <TouchableOpacity hitSlop={{ left: 25, right: 25 }} onPress={this.onShowAccountQRPress}>
+                    <Icon style={[styles.iconShare]} size={16} name="IconShare" />
+                </TouchableOpacity>
+            </View>
+        );
+    };
+
+    render() {
+        const { account } = this.state;
 
         if (!account?.isValid()) {
             return this.renderEmpty();
@@ -600,98 +835,8 @@ class HomeView extends Component<Props, State> {
                 {/* Content */}
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontalSml]}>
                     <View style={[styles.accountCard]}>
-                        <View style={[AppStyles.row]}>
-                            <Text style={[AppStyles.flex1, AppStyles.h5]} numberOfLines={1}>
-                                {account.label}
-                            </Text>
-                            <TouchableOpacity onPress={this.toggleDiscreetMode}>
-                                <Icon
-                                    style={[styles.iconEye]}
-                                    size={20}
-                                    name={discreetMode ? 'IconEyeOff' : 'IconEye'}
-                                />
-                            </TouchableOpacity>
-                        </View>
-
-                        <TouchableOpacity
-                            onPress={() => {
-                                VibrateHapticFeedback('impactMedium');
-
-                                Share.share({
-                                    title: Localize.t('home.shareAccount'),
-                                    message: account.address,
-                                    url: undefined,
-                                }).catch(() => {});
-                            }}
-                            activeOpacity={0.9}
-                            style={[AppStyles.row, styles.cardAddress]}
-                        >
-                            <Text
-                                testID="account-address-text"
-                                adjustsFontSizeToFit
-                                numberOfLines={1}
-                                selectable={!discreetMode}
-                                style={[
-                                    AppStyles.flex1,
-                                    styles.cardAddressText,
-                                    discreetMode && AppStyles.colorGreyDark,
-                                ]}
-                            >
-                                {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
-                            </Text>
-                            <View style={[styles.shareIconContainer, AppStyles.rightSelf]}>
-                                <Icon name="IconShare" size={18} style={[styles.shareIcon]} />
-                            </View>
-                        </TouchableOpacity>
-
-                        {account.balance !== 0 && (
-                            <>
-                                <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                    <Text style={[AppStyles.flex1, styles.cardLabel]}>
-                                        {Localize.t('global.balance')}:
-                                    </Text>
-
-                                    <TouchableOpacity onPress={this.showBalanceExplain}>
-                                        <Text style={[styles.cardSmallLabel]}>
-                                            {Localize.t('home.explainMyBalance')}{' '}
-                                            <Icon style={[AppStyles.imgColorGreyDark]} size={11} name="IconInfo" />
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={[styles.currencyItemCard]}>
-                                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                        <View style={[styles.xrpAvatarContainer]}>
-                                            <Icon name="IconXrp" size={20} style={[styles.xrpAvatar]} />
-                                        </View>
-                                        <Text style={[styles.currencyItemLabel]}>XRP</Text>
-                                    </View>
-
-                                    <TouchableOpacity
-                                        style={[
-                                            AppStyles.flex4,
-                                            AppStyles.row,
-                                            AppStyles.centerAligned,
-                                            AppStyles.flexEnd,
-                                        ]}
-                                        onPress={this.showBalanceExplain}
-                                    >
-                                        <Text
-                                            testID="account-balance-label"
-                                            style={[
-                                                AppStyles.h5,
-                                                AppStyles.monoBold,
-                                                discreetMode && AppStyles.colorGreyDark,
-                                            ]}
-                                        >
-                                            {discreetMode
-                                                ? '••••••••'
-                                                : Localize.formatNumber(account.availableBalance)}
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </>
-                        )}
-
+                        {this.renderAccountDetails()}
+                        {this.renderBalance()}
                         {this.renderButtons()}
                     </View>
                     {this.renderAssets()}

@@ -6,10 +6,11 @@ import isEmpty from 'lodash/isEmpty';
 import { TrustSet } from '@common/libs/ledger/transactions';
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import Localize from '@locale';
 
+import { AmountText } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import { AppStyles } from '@theme';
@@ -67,7 +68,7 @@ class TrustSetTemplate extends Component<Props, State> {
         return (
             <>
                 <View style={styles.label}>
-                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                         {Localize.t('global.issuer')}
                     </Text>
                 </View>
@@ -87,7 +88,7 @@ class TrustSetTemplate extends Component<Props, State> {
                 <Text style={[styles.label]}>{Localize.t('global.balanceLimit')}</Text>
                 <View style={[styles.contentBox]}>
                     {transaction.Limit ? (
-                        <Text style={[styles.value]}>{transaction.Limit}</Text>
+                        <AmountText style={[styles.value]} value={transaction.Limit} />
                     ) : (
                         <Text style={[styles.value, AppStyles.colorRed]}>{Localize.t('asset.removeAsset')}</Text>
                     )}

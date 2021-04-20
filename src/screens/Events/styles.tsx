@@ -1,20 +1,20 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppSizes } from '@theme';
+import { AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
-        backgroundColor: AppColors.lightGrey,
+        backgroundColor: '$background',
     },
     filterIcon: {
-        tintColor: AppColors.blue,
+        tintColor: '$blue',
     },
     sectionHeader: {
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         paddingBottom: 0,
         paddingTop: 10,
-        shadowColor: AppColors.white,
+        shadowColor: '$white',
         shadowOffset: { width: 0, height: 5 },
         shadowRadius: 5,
         shadowOpacity: 1,
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         paddingLeft: AppSizes.padding,
         paddingRight: AppSizes.padding,
         paddingBottom: AppSizes.paddingSml,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
     },
     listEmptyContainer: {
         flex: 1,

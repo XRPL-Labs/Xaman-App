@@ -4,14 +4,17 @@ module.exports = {
     ...tsJestConfig,
     preset: 'react-native',
     timers: 'fake',
-    transformIgnorePatterns: ['node_modules/(?!react-native|@react-native-community|realm|@react-native-firebase)'],
+    transformIgnorePatterns: [
+        'node_modules/(?!react-native|@react-native|@react-native-community|realm|@react-native-firebase)',
+    ],
     setupFiles: ['./jest.setup.js'],
     collectCoverage: true,
+    coverageReporters: ['lcov'],
     globals: {
         window: {},
         'ts-jest': {
             babelConfig: false,
-            tsConfig: 'tsconfig.jest.json',
+            tsconfig: 'tsconfig.jest.json',
         },
     },
     transform: {

@@ -1,8 +1,9 @@
-import { StyleSheet, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
+import StyleService from '@services/StyleService';
 import { AppStyles, AppSizes } from '@theme';
 
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         paddingHorizontal: 20,
         paddingTop: Platform.OS === 'ios' ? AppSizes.statusBarHeight : 0,
@@ -11,12 +12,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         zIndex: 99999,
         height: AppSizes.heightPercentageToDP(9) + (Platform.OS === 'ios' ? AppSizes.statusBarHeight : 0),
+        backgroundColor: '$background',
     },
 
-    centerContainer: {
+    fixedContainer: {
         flex: 3,
     },
-    rightLeftContainer: {
+    floatContainer: {
         flex: 1,
     },
     childContainer: {
@@ -32,7 +34,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     iconStyle: {
-        alignSelf: 'center',
+        tintColor: '$textPrimary',
     },
 });
 

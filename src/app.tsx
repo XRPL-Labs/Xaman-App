@@ -7,7 +7,6 @@ import moment from 'moment-timezone';
 import { UIManager, Platform, Alert, Text, TextInput } from 'react-native';
 
 import messaging from '@react-native-firebase/messaging';
-import DeviceInfo from 'react-native-device-info';
 import { Navigation } from 'react-native-navigation';
 
 // constants
@@ -17,8 +16,11 @@ import { ErrorMessages } from '@common/constants';
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import {
+    GetAppReadableVersion,
     GetDeviceTimeZone,
     GetDeviceLocaleSettings,
+    GetDeviceId,
+    GetSystemVersion,
     FlagSecure,
     IsDeviceJailBroken,
     IsDeviceRooted,
@@ -51,10 +53,18 @@ class Application {
 
     run() {
         // start the app
-        this.logger.debug(`XUMM version ${DeviceInfo.getReadableVersion()}`);
+        this.logger.debug(`XUMM version ${GetAppReadableVersion()}`);
+        this.logger.debug(`Device ${GetDeviceId()} - OS Version ${GetSystemVersion()}`);
 
         // on app start
         Navigation.events().registerAppLaunchedListener(() => {
+            // if already initialized then boot
+            // NOTE: this should never happen
+            if (this.initialized) {
+                this.boot();
+                return;
+            }
+
             // all stuff we need to init before boot the app
             const waterfall = [
                 this.configure,
@@ -152,11 +162,11 @@ class Application {
 
     // initialize all the services
     initServices = () => {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             try {
                 const coreSettings = CoreRepository.getSettings();
                 const servicesPromise = [] as Array<Promise<any>>;
-                Object.keys(services).map((key) => {
+                Object.keys(services).map(key => {
                     // @ts-ignore
                     const service = services[key];
                     if (typeof service.initialize === 'function') {
@@ -169,7 +179,7 @@ class Application {
                     .then(() => {
                         resolve();
                     })
-                    .catch((e) => {
+                    .catch(e => {
                         this.logger.error('initServices Error:', e);
                         reject(e);
                     });
@@ -182,7 +192,7 @@ class Application {
     // load app locals and settings
     loadAppLocale = () => {
         // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async (resolve, reject) => {
+        return new Promise<void>(async (resolve, reject) => {
             try {
                 const Localize = require('@locale').default;
 
@@ -190,22 +200,16 @@ class Application {
 
                 const localeSettings = await GetDeviceLocaleSettings();
 
-                let locale;
-
                 // app is not initialized yet, set to default device locale
                 if (!core) {
                     this.logger.debug('Locale is not initialized, setting base on device languageCode');
-                    locale = Localize.setLocale(localeSettings.languageCode, localeSettings);
+                    const locale = Localize.setLocale(localeSettings.languageCode, localeSettings);
                     CoreRepository.saveSettings({ language: locale });
                 } else {
                     // use locale set in settings
                     this.logger.debug(`Locale set to: ${core.language.toUpperCase()}`);
-                    locale = Localize.setLocale(core.language, core.useSystemSeparators ? localeSettings : undefined);
+                    Localize.setLocale(core.language, core.useSystemSeparators ? localeSettings : undefined);
                 }
-
-                // set locale to moment
-                // moment.locale(locale);
-
                 return resolve();
             } catch (e) {
                 return reject(e);
@@ -215,13 +219,13 @@ class Application {
 
     // register all screens
     registerScreens = () => {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             try {
                 // load the screens
                 const screens = require('./screens');
 
                 // register
-                Object.keys(screens).map((key) => {
+                Object.keys(screens).map(key => {
                     // @ts-ignore
                     const Screen = screens[key];
                     Navigation.registerComponent(Screen.screenName, () => Screen);
@@ -237,7 +241,7 @@ class Application {
     // configure app settings
     configure = () => {
         // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async (resolve, reject) => {
+        return new Promise<void>(async (resolve, reject) => {
             try {
                 if (Platform.OS === 'android') {
                     // check for device root

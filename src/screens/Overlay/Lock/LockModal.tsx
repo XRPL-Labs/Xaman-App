@@ -12,11 +12,10 @@ import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 import { BiometryType } from '@store/types';
 
-import { AuthenticationService } from '@services';
+import { AuthenticationService, StyleService } from '@services';
 
 import { Navigator } from '@common/helpers/navigator';
 import { VibrateHapticFeedback } from '@common/helpers/interface';
-import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
 // components
@@ -43,12 +42,11 @@ class LockModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Lock;
 
     private securePinInput: SecurePinInput;
-    private contentView: SafeAreaView;
 
     static options() {
         return {
-            topBar: {
-                visible: false,
+            statusBar: {
+                style: StyleService.isDarkMode() ? 'light' : 'dark',
             },
         };
     }
@@ -138,10 +136,14 @@ class LockModal extends Component<Props, State> {
     render() {
         const { error, coreSettings, isSensorAvailable } = this.state;
         return (
-            <BlurView style={styles.blurView} blurAmount={Platform.OS === 'ios' ? 15 : 20} blurType="light">
+            <BlurView
+                style={styles.blurView}
+                blurAmount={Platform.OS === 'ios' ? 15 : 20}
+                blurType={StyleService.isDarkMode() ? 'dark' : 'light'}
+            >
                 <SafeAreaView testID="lock-overlay" style={styles.container}>
                     <View style={[AppStyles.centerAligned, AppStyles.paddingSml]}>
-                        <Image style={styles.logo} source={Images.xummLogo} />
+                        <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
                     </View>
                     <View style={[AppStyles.centerAligned, AppStyles.paddingSml]}>
                         <Text style={[AppStyles.p, AppStyles.bold]}>

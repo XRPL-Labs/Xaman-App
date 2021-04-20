@@ -1,11 +1,9 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
+const styles = StyleService.create({
     loadingStyle: {
+        backgroundColor: '$background',
         position: 'absolute',
         left: 0,
         right: 0,

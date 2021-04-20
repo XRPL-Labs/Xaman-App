@@ -3,31 +3,30 @@
  */
 
 import React, { Component } from 'react';
-import { View, ImageBackground, Text, ActivityIndicator, Alert, Linking, BackHandler } from 'react-native';
-
+import { View, ImageBackground, Text, Alert, Linking, BackHandler } from 'react-native';
+import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 import Clipboard from '@react-native-community/clipboard';
 import { RNCamera } from 'react-native-camera';
-
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
-import { ApiService } from '@services';
+import { ApiService, StyleService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 
 import { AppScreens } from '@common/constants';
 
-import { VibrateHapticFeedback } from '@common/helpers/interface';
+import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
-import { NormalizeDestination } from '@common/libs/utils';
+import { NormalizeDestination } from '@common/utils/codec';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
 
 import Localize from '@locale';
 
 // components
-import { Button, Spacer, Icon } from '@components/General';
+import { Button, Spacer, Icon, LoadingIndicator } from '@components/General';
 
 // style
 import { AppStyles, AppColors } from '@theme';
@@ -36,6 +35,8 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     onRead: (decoded: any) => void;
+    onClose?: () => void;
+    blackList?: StringType[];
     type: StringType;
     fallback?: boolean;
 }
@@ -316,8 +317,96 @@ class ScanView extends Component<Props, State> {
         }
     };
 
+    handleXAPPLink = (content: string, parsed: { xapp: string; path: string; params: any }) => {
+        this.routeUser(
+            AppScreens.Modal.XAppBrowser,
+            {
+                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+            },
+            {
+                identifier: parsed.xapp,
+                origin: PayloadOrigin.QR,
+                originData: { content },
+                path: parsed.path,
+                params: parsed.params,
+            },
+        );
+    };
+
+    handleAlternativeSeedCodec = (parsed: {
+        name: string;
+        alphabet: string | boolean;
+        params?: Record<string, unknown>;
+    }) => {
+        const { alphabet } = parsed;
+        if (alphabet) {
+            this.routeUser(
+                AppScreens.Account.Import,
+                {},
+                {
+                    alternativeSeedAlphabet: parsed,
+                },
+            );
+        } else {
+            this.handleUndetectedType();
+        }
+    };
+
+    handleXummFeature = (parsed: { feature: string; type: string; params?: Record<string, unknown> }) => {
+        const { feature, type } = parsed;
+
+        // Feature: allow import of Secret Numbers without Checksum
+        if (feature === 'secret' && type === 'offline-secret-numbers') {
+            Prompt(
+                Localize.t('global.warning'),
+                Localize.t('account.importSecretWithoutChecksumWarning'),
+                [
+                    {
+                        text: Localize.t('global.cancel'),
+                        onPress: () => this.setShouldRead(true),
+                    },
+                    {
+                        text: Localize.t('global.continue'),
+                        style: 'destructive',
+                        onPress: () => {
+                            this.routeUser(
+                                AppScreens.Account.Import,
+                                {},
+                                {
+                                    importOfflineSecretNumber: true,
+                                },
+                            );
+                        },
+                    },
+                ],
+                { type: 'default' },
+            );
+        }
+    };
+
+    handleUndetectedType = (content?: string, clipboard?: boolean) => {
+        // some users scan QR on tangem card, navigate them to the account add screen
+        if (content === 'https://xumm.app/tangem') {
+            this.routeUser(AppScreens.Account.Add, {}, {});
+            return;
+        }
+
+        // show error message base on origin
+        Alert.alert(
+            Localize.t('global.warning'),
+            clipboard
+                ? Localize.t('scan.invalidClipboardDateTryNewOneOrTryAgain')
+                : Localize.t('scan.invalidQRTryNewOneOrTryAgain'),
+            [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+            {
+                cancelable: false,
+            },
+        );
+    };
+
     handle = (content: string, clipboard?: boolean) => {
-        const { onRead, type, fallback } = this.props;
+        const { onRead, type, fallback, blackList } = this.props;
 
         const detected = new StringTypeDetector(content);
 
@@ -326,6 +415,20 @@ class ScanView extends Component<Props, State> {
 
         if (detectedType === StringType.PayId) {
             detectedType = StringType.XrplDestination;
+        }
+
+        // if any black list defined check in the list
+        if (!type && onRead && blackList) {
+            if (blackList.indexOf(detectedType) === -1) {
+                Navigator.dismissModal();
+                onRead(content);
+            } else {
+                // if detected in black list just return and enable reading after 1 sec
+                setTimeout(() => {
+                    this.setShouldRead(true);
+                }, 1000);
+            }
+            return;
         }
 
         // just return scanned content
@@ -376,7 +479,6 @@ class ScanView extends Component<Props, State> {
             return;
         }
 
-        // the screen will handle the content
         switch (detected.getType()) {
             case StringType.XummPayloadReference:
                 this.handlePayloadReference(parsed.uuid);
@@ -391,17 +493,18 @@ class ScanView extends Component<Props, State> {
             case StringType.XummTranslation:
                 this.handleTranslationBundle(parsed.uuid);
                 break;
+            case StringType.XummXapp:
+                this.handleXAPPLink(content, parsed);
+                break;
+            case StringType.XrplAltFamilySeedAlphabet:
+                this.handleAlternativeSeedCodec(parsed);
+                break;
+            case StringType.XummFeature:
+                this.handleXummFeature(parsed);
+                break;
             default:
-                Alert.alert(
-                    Localize.t('global.warning'),
-                    clipboard
-                        ? Localize.t('scan.invalidClipboardDateTryNewOneOrTryAgain')
-                        : Localize.t('scan.invalidQRTryNewOneOrTryAgain'),
-                    [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
-                    {
-                        cancelable: false,
-                    },
-                );
+                this.handleUndetectedType(content, clipboard);
+                break;
         }
     };
 
@@ -442,7 +545,16 @@ class ScanView extends Component<Props, State> {
     };
 
     onClose = () => {
+        const { onClose } = this.props;
+
+        // close scan modal
         Navigator.dismissModal();
+
+        // call callback function
+        if (typeof onClose === 'function') {
+            onClose();
+        }
+
         return true;
     };
 
@@ -494,9 +606,13 @@ class ScanView extends Component<Props, State> {
 
         if (isLoading) {
             return (
-                <ImageBackground source={Images.BackgroundShapes} style={[AppStyles.container, AppStyles.paddingSml]}>
+                <ImageBackground
+                    source={StyleService.getImage('BackgroundShapes')}
+                    imageStyle={AppStyles.BackgroundShapes}
+                    style={[AppStyles.container, AppStyles.paddingSml]}
+                >
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                        <ActivityIndicator color={AppColors.blue} size="large" />
+                        <LoadingIndicator size="large" />
                         <Spacer />
                         <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
                             {Localize.t('global.pleaseWait')}
@@ -533,10 +649,13 @@ class ScanView extends Component<Props, State> {
                         <View style={styles.bottomRight} />
                     </View>
                     <View style={[AppStyles.centerSelf, styles.tip]}>
-                        <Text style={[AppStyles.p, AppStyles.colorWhite]}>{description}</Text>
+                        <Text numberOfLines={1} style={[AppStyles.p, AppStyles.colorWhite]}>
+                            {description}
+                        </Text>
                     </View>
                     <View style={[AppStyles.centerSelf]}>
                         <Button
+                            numberOfLines={1}
                             onPress={this.checkClipboardContent}
                             label={Localize.t('scan.importFromClipboard')}
                             icon="IconClipboard"
@@ -545,6 +664,7 @@ class ScanView extends Component<Props, State> {
                         />
                         <Spacer size={20} />
                         <Button
+                            numberOfLines={1}
                             activeOpacity={0.9}
                             label={Localize.t('global.close')}
                             rounded

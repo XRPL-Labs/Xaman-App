@@ -25,6 +25,7 @@ export interface AccountInfoType {
     requireDestinationTag: boolean;
     possibleExchange: boolean;
     disallowIncomingXRP: boolean;
+    blackHole: boolean;
 }
 
 const getAccountName = memoize(
@@ -118,6 +119,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
             requireDestinationTag: false,
             possibleExchange: false,
             disallowIncomingXRP: false,
+            blackHole: false,
         } as AccountInfoType;
 
         try {
@@ -145,6 +147,13 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
             if (has(account_data, ['Balance'])) {
                 if (new Amount(account_data.Balance, true).dropsToXrp(true) > 1000000) {
                     assign(info, { possibleExchange: true });
+                }
+            }
+
+            // check for black hole
+            if (has(account_data, ['RegularKey'])) {
+                if (account_data.RegularKey === 'rrrrrrrrrrrrrrrrrrrrrhoLvTp') {
+                    assign(info, { blackHole: true });
                 }
             }
 

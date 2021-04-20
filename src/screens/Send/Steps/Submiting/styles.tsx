@@ -1,21 +1,21 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppSizes, AppColors } from '@theme';
+import { AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'stretch',
-        backgroundColor: AppColors.light,
+        backgroundColor: '$background',
     },
     backgroundImageStyle: {
         height: AppSizes.scale(200),
         width: AppSizes.scale(200),
         resizeMode: 'contain',
-        tintColor: AppColors.grey,
+        tintColor: '$tint',
         opacity: 0.5,
     },
     loaderStyle: {

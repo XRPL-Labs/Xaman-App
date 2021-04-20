@@ -11,8 +11,9 @@ import { View, Text, SectionList, TouchableOpacity, Image, ImageBackground } fro
 
 import { Navigation } from 'react-native-navigation';
 
+import StyleService from '@services/StyleService';
+
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
 import { ContactRepository } from '@store/repositories';
@@ -67,7 +68,7 @@ class AddressBookView extends Component<Props, State> {
     }
 
     componentDidAppear() {
-        const contacts = ContactRepository.getContacts().snapshot();
+        const contacts = ContactRepository.getContacts();
 
         this.setState({
             contacts,
@@ -75,17 +76,10 @@ class AddressBookView extends Component<Props, State> {
         });
     }
 
-    updateUI = (contacts: Results<ContactSchema>) => {
-        this.setState({
-            contacts: contacts.snapshot(),
-            dataSource: this.convertContactsArrayToMap(contacts.snapshot()),
-        });
-    };
-
     convertContactsArrayToMap = (contacts: Results<ContactSchema>) => {
         const contactsCategoryMap = [] as any;
 
-        contacts.forEach((item) => {
+        sortBy(contacts, 'name').forEach((item) => {
             if (!item || !item.name) return;
 
             const firstLetter = item.name.charAt(0).toUpperCase();
@@ -183,11 +177,11 @@ class AddressBookView extends Component<Props, State> {
                     />
                     <View style={[AppStyles.contentContainer, AppStyles.padding]}>
                         <ImageBackground
-                            source={Images.BackgroundShapes}
+                            source={StyleService.getImage('BackgroundShapes')}
                             imageStyle={AppStyles.BackgroundShapes}
                             style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent]}
                         >
-                            <Image style={[AppStyles.emptyIcon]} source={Images.ImageNoContacts} />
+                            <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageNoContacts')} />
                             <Text style={[AppStyles.emptyText]}>{Localize.t('settings.getStartedCreateContact')}</Text>
                             <Button
                                 rounded

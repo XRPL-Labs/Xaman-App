@@ -4,8 +4,8 @@
 
 import React, { Component } from 'react';
 import { Results } from 'realm';
-import { isEmpty, flatMap, remove, get, uniqBy, toNumber } from 'lodash';
-import { View, Text, SectionList, Alert, ActivityIndicator } from 'react-native';
+import { isEmpty, flatMap, remove, get, uniqBy, toNumber, findIndex } from 'lodash';
+import { View, Text, SectionList, Alert } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
 import { AccountRepository, ContactRepository } from '@store/repositories';
@@ -15,20 +15,19 @@ import { AppScreens } from '@common/constants';
 import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+import { NormalizeDestination } from '@common/utils/codec';
 
-import { BackendService } from '@services';
+import { BackendService, LedgerService } from '@services';
 
 // components
-import { Button, TextInput, Footer, InfoMessage } from '@components/General';
+import { Button, TextInput, Footer, InfoMessage, LoadingIndicator } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 // locale
 import Localize from '@locale';
 
-import { NormalizeDestination } from '@common/libs/utils';
-
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 // context
@@ -448,6 +447,53 @@ class RecipientStep extends Component<Props, State> {
                 }
             }
 
+            // check if recipient have same trustline for sending IOU
+            if (typeof currency === 'object') {
+                const destinationLines = await LedgerService.getAccountLines(destination.address);
+                const { lines } = destinationLines;
+
+                const haveSameTrustLine =
+                    findIndex(lines, (l: any) => {
+                        return l.currency === currency.currency.currency && l.account === currency.currency.issuer;
+                    }) !== -1;
+
+                if (!haveSameTrustLine && currency.currency.issuer !== destination.address) {
+                    Navigator.showAlertModal({
+                        type: 'error',
+                        text: Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine'),
+                        buttons: [
+                            {
+                                text: Localize.t('global.ok'),
+                                onPress: this.clearDestination,
+                                light: false,
+                            },
+                        ],
+                    });
+
+                    // don't move to next step
+                    return;
+                }
+            }
+
+            // if account is set to black hole then reject sending
+            if (destinationInfo.blackHole) {
+                Navigator.showAlertModal({
+                    type: 'warning',
+                    text: Localize.t('send.theDestinationAccountIsSetAsBlackHole'),
+                    buttons: [
+                        {
+                            text: Localize.t('global.back'),
+                            onPress: this.clearDestination,
+                            type: 'dismiss',
+                            light: false,
+                        },
+                    ],
+                });
+
+                // don't move to next step
+                return;
+            }
+
             // check for account risk and scam
             if (destinationInfo.risk === 'PROBABLE' || destinationInfo.risk === 'HIGH_PROBABILITY') {
                 Navigator.showAlertModal({
@@ -544,6 +590,16 @@ class RecipientStep extends Component<Props, State> {
         }
     };
 
+    goBack = () => {
+        const { goBack, setDestination, setDestinationInfo } = this.context;
+
+        // clear destination on go back
+        setDestination(undefined);
+        setDestinationInfo(undefined);
+
+        goBack();
+    };
+
     renderSectionHeader = ({ section: { title } }: any) => {
         const { setDestination } = this.context;
         const { dataSource } = this.state;
@@ -570,7 +626,6 @@ class RecipientStep extends Component<Props, State> {
                             }}
                             style={styles.clearSearchButton}
                             light
-                            roundedMini
                             label={Localize.t('global.clearSearch')}
                         />
                     </View>
@@ -638,7 +693,7 @@ class RecipientStep extends Component<Props, State> {
                             }}
                             style={styles.clearSearchButton}
                             light
-                            roundedMini
+                            roundedSmall
                             label={Localize.t('global.clearSearch')}
                         />
                     </View>
@@ -651,7 +706,7 @@ class RecipientStep extends Component<Props, State> {
     };
 
     render() {
-        const { goBack, destination } = this.context;
+        const { destination } = this.context;
         const { searchText, isSearching, isLoading, dataSource } = this.state;
 
         if (!dataSource) return null;
@@ -676,7 +731,7 @@ class RecipientStep extends Component<Props, State> {
 
                     <View style={[AppStyles.flex8, AppStyles.paddingTopSml]}>
                         {isSearching ? (
-                            <ActivityIndicator color={AppColors.blue} />
+                            <LoadingIndicator />
                         ) : (
                             <SectionList
                                 ListEmptyComponent={this.renderListEmptyComponent}
@@ -693,13 +748,7 @@ class RecipientStep extends Component<Props, State> {
                 {/* Bottom Bar */}
                 <Footer style={[AppStyles.row]} safeArea>
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
-                        <Button
-                            secondary
-                            label={Localize.t('global.back')}
-                            onPress={() => {
-                                goBack();
-                            }}
-                        />
+                        <Button light label={Localize.t('global.back')} onPress={this.goBack} />
                     </View>
                     <View style={[AppStyles.flex2]}>
                         <Button
@@ -707,9 +756,7 @@ class RecipientStep extends Component<Props, State> {
                             textStyle={AppStyles.strong}
                             isDisabled={!destination}
                             label={Localize.t('global.next')}
-                            onPress={() => {
-                                this.checkAndNext();
-                            }}
+                            onPress={this.checkAndNext}
                         />
                     </View>
                 </Footer>

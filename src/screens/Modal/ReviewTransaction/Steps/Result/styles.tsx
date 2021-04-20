@@ -1,14 +1,22 @@
-import { StyleSheet } from 'react-native';
-
-import { AppSizes, AppColors } from '@theme';
+import StyleService from '@services/StyleService';
+import { AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
+    },
+    containerSuccess: {
+        backgroundColor: '$lightGreen',
+    },
+    containerFailed: {
+        backgroundColor: '$lightRed',
+    },
+    containerSigned: {
+        backgroundColor: '$lightBlue',
     },
     successImage: {
         alignSelf: 'center',
@@ -18,9 +26,9 @@ const styles = StyleSheet.create({
     },
     detailsCard: {
         width: AppSizes.screen.width * 0.85,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         borderRadius: AppSizes.screen.width * 0.06,
-        shadowColor: AppColors.greyDark,
+        shadowColor: '$grey',
         shadowOffset: { width: 0, height: 5 },
         shadowRadius: 15,
         shadowOpacity: 0.2,

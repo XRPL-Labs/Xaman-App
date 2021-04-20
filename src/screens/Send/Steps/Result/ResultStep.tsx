@@ -13,10 +13,9 @@ import { Navigator } from '@common/helpers/navigator';
 import { ContactRepository, AccountRepository } from '@store/repositories';
 
 import { AppScreens } from '@common/constants';
-import { NormalizeCurrencyCode } from '@common/libs/utils';
 
 // components
-import { Button, Footer, Spacer } from '@components/General';
+import { Button, Footer, AmountText, Spacer } from '@components/General';
 import Localize from '@locale';
 // style
 import { AppStyles, AppColors } from '@theme';
@@ -111,11 +110,12 @@ class ResultStep extends Component<Props, State> {
             <View style={styles.detailsCard}>
                 <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.amount')}:</Text>
                 <Spacer />
-                <Text style={[AppStyles.h4, AppStyles.monoBold]}>
-                    {`${Localize.formatNumber(Number(amount))} ${
-                        typeof currency === 'string' ? 'XRP' : NormalizeCurrencyCode(currency.currency.currency)
-                    }`}
-                </Text>
+
+                <AmountText
+                    style={[AppStyles.h4, AppStyles.monoBold]}
+                    value={amount}
+                    currency={typeof currency === 'string' ? 'XRP' : currency.currency.currency}
+                />
 
                 <Spacer />
                 <View style={AppStyles.hr} />
@@ -134,10 +134,7 @@ class ResultStep extends Component<Props, State> {
         const { showDetailsCard } = this.state;
 
         return (
-            <SafeAreaView
-                testID="send-result-view"
-                style={[styles.container, { backgroundColor: AppColors.lightGreen }]}
-            >
+            <SafeAreaView testID="send-result-view" style={[styles.container, styles.containerSuccess]}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <Text style={[AppStyles.h3, AppStyles.strong, AppStyles.colorGreen, AppStyles.textCenterAligned]}>
                         {Localize.t('send.sendingDone')}
@@ -176,7 +173,7 @@ class ResultStep extends Component<Props, State> {
         const { payment } = this.context;
 
         return (
-            <SafeAreaView testID="send-result-view" style={[styles.container, { backgroundColor: AppColors.lightRed }]}>
+            <SafeAreaView testID="send-result-view" style={[styles.container, styles.containerFailed]}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <Text style={[AppStyles.h3, AppStyles.strong, AppStyles.colorRed, AppStyles.textCenterAligned]}>
                         {Localize.t('send.sendingFailed')}

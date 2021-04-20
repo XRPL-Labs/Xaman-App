@@ -14,27 +14,25 @@ const modulePaths = require('./packager/modulePaths');
 //         getTransformOptions: async () => ({
 //             transform: {
 //                 experimentalImportSupport: false,
-//                 inlineRequires: false,
+//                 inlineRequires: true,
 //             },
 //         }),
 //     },
 // };
 
-const config = {
+module.exports = {
     transformer: {
-        getTransformOptions: () => {
+        getTransformOptions: async () => {
             const moduleMap = {};
-            modulePaths.forEach((path) => {
+            modulePaths.forEach(path => {
                 if (fs.existsSync(path)) {
                     moduleMap[resolve(path)] = true;
                 }
             });
             return {
                 preloadedModules: moduleMap,
-                transform: { inlineRequires: { blacklist: moduleMap } },
+                transform: { inlineRequires: { blockList: moduleMap } },
             };
         },
     },
 };
-
-module.exports = config;

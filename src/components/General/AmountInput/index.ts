@@ -1,1 +1,1 @@
-export { default as AmountInput } from './AmountInput';
+export { RefForwardingAmountInput as AmountInput } from './AmountInput';

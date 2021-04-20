@@ -46,7 +46,9 @@ class AccessLevelStep extends Component<Props, State> {
 
         // set access level for account
         if (account.accessLevel === 'Full') {
-            goNext('SecretType');
+            setEncryptionLevel(EncryptionLevels.Passcode, () => {
+                goNext('SecretType');
+            });
         } else {
             // if the account is readonly then set the encryption level to None
             setEncryptionLevel(EncryptionLevels.None, () => {
@@ -94,12 +96,10 @@ class AccessLevelStep extends Component<Props, State> {
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
-                            secondary
+                            light
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            onPress={() => {
-                                goBack();
-                            }}
+                            onPress={goBack}
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>
@@ -107,9 +107,7 @@ class AccessLevelStep extends Component<Props, State> {
                             testID="next-button"
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
-                            onPress={() => {
-                                this.goNext();
-                            }}
+                            onPress={this.goNext}
                         />
                     </View>
                 </Footer>

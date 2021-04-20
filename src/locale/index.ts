@@ -4,14 +4,16 @@
 
 class Localize {
     instance: any;
+    moment: any;
     settings: any;
     meta: any;
 
     constructor() {
-        // require('moment/min/locales');
         this.instance = require('i18n-js');
         this.meta = require('./meta.json');
+        this.moment = require('moment-timezone');
         this.instance.fallbacks = true;
+        this.instance.defaultLocale = 'en';
         this.settings = undefined;
     }
 
@@ -55,11 +57,13 @@ class Localize {
                 const generateLocals = require('./generated').default;
                 this.instance.translations[resolvedLocale] = generateLocals[resolvedLocale];
                 this.instance.locale = resolvedLocale;
+                this.moment.locale(resolvedLocale, generateLocals[resolvedLocale].moment);
                 return resolvedLocale;
             }
 
             // fallback to EN if we don't support the locale
             this.instance.locale = 'en';
+            this.moment.locale('en');
             return 'en';
         } catch (e) {
             return 'en';
@@ -90,7 +94,7 @@ class Localize {
      * @returns string 1,333.855222
      */
     formatNumber = (n: number): string => {
-        const options = { precision: 6, strip_insignificant_zeros: true };
+        const options = { precision: 8, strip_insignificant_zeros: true };
 
         if (this.settings) {
             const { separator, delimiter } = this.settings;

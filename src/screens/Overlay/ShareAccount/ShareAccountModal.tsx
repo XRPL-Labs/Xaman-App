@@ -5,16 +5,14 @@ import React, { Component } from 'react';
 import { Animated, View, Text, TouchableWithoutFeedback, Share } from 'react-native';
 
 import Clipboard from '@react-native-community/clipboard';
-
 import Interactable from 'react-native-interactable';
 
 import { Toast } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+import { AppScreens } from '@common/constants';
 
 import { AccountSchema } from '@store/schemas/latest';
 
-import { Navigator } from '@common/helpers/navigator';
-
-import { AppScreens } from '@common/constants';
 // components
 import { Button, QRCode, Spacer } from '@components/General';
 
@@ -38,7 +36,7 @@ class ShareAccountModal extends Component<Props, State> {
     panel: any;
     deltaY: Animated.Value;
     deltaX: Animated.Value;
-    onDismiss: () => void;
+    isOpening: boolean;
 
     static options() {
         return {
@@ -57,6 +55,8 @@ class ShareAccountModal extends Component<Props, State> {
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
         this.deltaX = new Animated.Value(0);
+
+        this.isOpening = true;
     }
 
     componentDidMount() {
@@ -79,10 +79,16 @@ class ShareAccountModal extends Component<Props, State> {
         }, 10);
     };
 
-    onSnap = async (event: any) => {
-        const { index } = event.nativeEvent;
+    onAlert = (event: any) => {
+        const { top, bottom } = event.nativeEvent;
 
-        if (index === 0) {
+        if (top && bottom) return;
+
+        if (top === 'enter' && this.isOpening) {
+            this.isOpening = false;
+        }
+
+        if (bottom === 'leave' && !this.isOpening) {
             Navigator.dismissOverlay();
         }
     };
@@ -115,11 +121,7 @@ class ShareAccountModal extends Component<Props, State> {
 
         return (
             <View style={AppStyles.flex1}>
-                <TouchableWithoutFeedback
-                    onPress={() => {
-                        this.slideDown();
-                    }}
-                >
+                <TouchableWithoutFeedback onPress={this.slideDown}>
                     <Animated.View
                         style={[
                             AppStyles.shadowContent,
@@ -139,7 +141,7 @@ class ShareAccountModal extends Component<Props, State> {
                         this.panel = r;
                     }}
                     animatedNativeDriver
-                    onSnap={this.onSnap}
+                    onAlert={this.onAlert}
                     verticalOnly
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
@@ -148,6 +150,17 @@ class ShareAccountModal extends Component<Props, State> {
                     boundaries={{
                         top: AppSizes.screen.height - (AppSizes.moderateScale(450) + AppSizes.navigationBarHeight),
                     }}
+                    alertAreas={[
+                        { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
+                        {
+                            id: 'top',
+                            influenceArea: {
+                                top:
+                                    AppSizes.screen.height -
+                                    (AppSizes.moderateScale(430) + AppSizes.navigationBarHeight),
+                            },
+                        },
+                    ]}
                     initialPosition={{ y: AppSizes.screen.height }}
                     animatedValueY={this.deltaY}
                     animatedValueX={this.deltaX}
@@ -162,13 +175,13 @@ class ShareAccountModal extends Component<Props, State> {
                                 value={`${account.address}`}
                                 style={styles.qrCode}
                             />
+                            <Text style={styles.addressText}>{account.address}</Text>
                         </View>
 
-                        <Text style={styles.addressText}>{account.address}</Text>
-
-                        <Spacer size={20} />
+                        {/* <Spacer size={10} /> */}
 
                         <Button
+                            numberOfLines={1}
                             light
                             rounded
                             icon="IconShare"
@@ -176,9 +189,10 @@ class ShareAccountModal extends Component<Props, State> {
                             label={Localize.t('global.share')}
                             onPress={this.onSharePress}
                         />
-                        <Spacer size={20} />
+                        <Spacer size={10} />
 
                         <Button
+                            numberOfLines={1}
                             light
                             rounded
                             label={Localize.t('account.copyAddress')}

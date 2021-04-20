@@ -72,12 +72,14 @@ Some distributions come with git preinstalled but you'll most likely have to ins
 Make sure you have the following ENV VARS configured:
     - `ANDROID_HOME` to where Android SDK is located (likely `/Users/<username>/Library/Android/sdk` or `/home/<username>/Android/Sdk`)
     - Make sure your `PATH` includes `ANDROID_HOME/tools` and `ANDROID_HOME/platform-tools`
+    - Install NDK `$ANDROID_HOME/tools/bin/sdkmanager --install "ndk;20.1.5948944"`
 ##### MacOS
 -   On Mac, this usually requires adding the following lines to your `~/.bash_profile` file:
 
     ```sh
     export ANDROID_HOME=$HOME/Library/Android/sdk
     export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH
+    export ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/20.1.5948944
     ```
 - Then reload your bash configuration:
 
@@ -141,3 +143,5 @@ In order to develop and build the XUMM mobile app you'll need to get a copy of t
     ```
 
 4.  Run `make pre-run` in order to install all the dependencies.
+
+5.  Run `make build-env` to generate some environment data 

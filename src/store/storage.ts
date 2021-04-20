@@ -35,7 +35,7 @@ export default class Storage {
      * Initialize the storage
      */
     initialize = () => {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             return this.configure()
                 .then((config) => {
                     return this.open(config)
@@ -138,8 +138,8 @@ export default class Storage {
     /**
      * Initialize repositories
      */
-    async initRepositories(db: Realm): Promise<boolean> {
-        return new Promise((resolve, reject) => {
+    async initRepositories(db: Realm): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             try {
                 return Object.keys(repositories).map((key) => {
                     // @ts-ignore

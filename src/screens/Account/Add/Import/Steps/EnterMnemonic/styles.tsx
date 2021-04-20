@@ -1,18 +1,17 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppSizes, AppColors, AppFonts } from '@theme';
-
+import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     label: {
         fontFamily: AppFonts.base.familyBold,
-        color: AppColors.greyDark,
+        color: '$grey',
         fontSize: AppFonts.subtext.size,
         textAlign: 'center',
         paddingHorizontal: 10,
     },
     labelActive: {
-        color: AppColors.blue,
+        color: '$blue',
     },
     input: {
         flex: 1,
@@ -23,13 +22,14 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.subtext.size,
+        color: '$textPrimary',
     },
     inputActive: {
-        color: AppColors.blue,
+        color: '$blue',
     },
     inputRowActive: {
-        borderColor: AppColors.blue,
-        backgroundColor: AppColors.white,
+        borderColor: '$lightBlue',
+        backgroundColor: '$tint',
     },
     inputRow: {
         flex: 1,
@@ -37,15 +37,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: AppSizes.heightPercentageToDP(6),
-        backgroundColor: AppColors.lightBlue,
+        backgroundColor: '$lightBlue',
         borderRadius: 10,
         borderWidth: 2,
-        borderColor: AppColors.transparent,
+        borderColor: '$transparent',
         marginVertical: 5,
     },
     optionsButton: {
         flex: 1,
-        backgroundColor: AppColors.grey,
         borderRadius: 20,
         paddingRight: 10,
         paddingLeft: 10,
@@ -54,19 +53,12 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginBottom: 5,
     },
-    optionsButtonText: {
-        paddingRight: 10,
-        paddingLeft: 10,
-        color: AppColors.black,
-        fontFamily: AppFonts.base.family,
-        fontSize: AppFonts.base.size,
-    },
     optionsButtonSelected: {
-        backgroundColor: AppColors.blue,
+        backgroundColor: '$blue',
     },
     optionsButtonSelectedText: {
         fontFamily: AppFonts.base.familyBold,
-        color: AppColors.white,
+        color: '$white',
     },
 });
 

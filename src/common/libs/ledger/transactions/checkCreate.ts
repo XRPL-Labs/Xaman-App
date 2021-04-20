@@ -3,7 +3,7 @@ import { has, get, set, isUndefined, isNumber, toInteger } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
 import { AccountSchema } from '@store/schemas/latest';
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import Localize from '@locale';
 
@@ -118,16 +118,16 @@ class CheckCreate extends BaseTransaction {
         return get(this, 'tx.InvoiceID', undefined);
     }
 
-    validate = (source: AccountSchema) => {
+    validate = (source: AccountSchema, multiSign?: boolean) => {
         /* eslint-disable-next-line */
-        return new Promise((resolve, reject) => {
-            if (!this.SendMax || !this.SendMax?.value || this.SendMax?.value === '0') {
-                return reject(new Error(Localize.t('send.pleaseEnterAmount')));
+        return new Promise<void>((resolve, reject) => {
+            // this is a multisign tx & ignore balance check
+            if (multiSign) {
+                return resolve();
             }
 
-            // this is a multisign tx & ignore balance check
-            if (source.balance === 0) {
-                return resolve();
+            if (!this.SendMax || !this.SendMax?.value || this.SendMax?.value === '0') {
+                return reject(new Error(Localize.t('send.pleaseEnterAmount')));
             }
 
             if (this.SendMax.currency === 'XRP') {

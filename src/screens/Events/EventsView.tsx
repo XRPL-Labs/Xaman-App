@@ -5,7 +5,7 @@ import Fuse from 'fuse.js';
 import moment from 'moment-timezone';
 import { isEmpty, flatMap, isUndefined, isEqual, filter, get, uniqBy, groupBy, map, without, sortBy } from 'lodash';
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, InteractionManager, ImageBackground, Image } from 'react-native';
+import { SafeAreaView, Text, InteractionManager, ImageBackground, Image } from 'react-native';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -14,7 +14,6 @@ import { AccountSchema } from '@store/schemas/latest';
 import { AppScreens } from '@common/constants';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 
 // Parses
 import transactionFactory from '@common/libs/ledger/parser/transaction';
@@ -28,7 +27,7 @@ import { Payload } from '@common/libs/payload';
 import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterView';
 
 // Services
-import { LedgerService, BackendService, PushNotificationsService } from '@services';
+import { LedgerService, BackendService, PushNotificationsService, StyleService } from '@services';
 
 // Components
 import { SearchBar, Button, SegmentButton, Header } from '@components/General';
@@ -580,27 +579,24 @@ class EventsView extends Component<Props, State> {
                         textStyle: AppStyles.h3,
                     }}
                 />
-
-                <View style={[AppStyles.contentContainer, AppStyles.padding]}>
-                    <ImageBackground
-                        source={Images.BackgroundShapes}
-                        imageStyle={AppStyles.BackgroundShapes}
-                        style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent]}
-                    >
-                        <Image style={[AppStyles.emptyIcon]} source={Images.ImageNoEvents} />
-                        <Text style={[AppStyles.emptyText]}>{Localize.t('events.emptyEventsNoAccount')}</Text>
-                        <Button
-                            testID="add-account-button"
-                            label={Localize.t('home.addAccount')}
-                            icon="IconPlus"
-                            iconStyle={[AppStyles.imgColorWhite]}
-                            rounded
-                            onPress={() => {
-                                Navigator.push(AppScreens.Account.Add);
-                            }}
-                        />
-                    </ImageBackground>
-                </View>
+                <ImageBackground
+                    source={StyleService.getImage('BackgroundShapes')}
+                    imageStyle={AppStyles.BackgroundShapes}
+                    style={[AppStyles.contentContainer, AppStyles.padding]}
+                >
+                    <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageNoEvents')} />
+                    <Text style={[AppStyles.emptyText]}>{Localize.t('events.emptyEventsNoAccount')}</Text>
+                    <Button
+                        testID="add-account-button"
+                        label={Localize.t('home.addAccount')}
+                        icon="IconPlus"
+                        iconStyle={[AppStyles.imgColorWhite]}
+                        rounded
+                        onPress={() => {
+                            Navigator.push(AppScreens.Account.Add);
+                        }}
+                    />
+                </ImageBackground>
             </SafeAreaView>
         );
     };

@@ -6,7 +6,9 @@ import { EscrowCreate } from '@common/libs/ledger/transactions';
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { FormatDate } from '@common/libs/utils';
+import { FormatDate } from '@common/utils/date';
+
+import { AmountText } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
@@ -68,7 +70,7 @@ class EscrowCreateTemplate extends Component<Props, State> {
         return (
             <>
                 <View style={styles.label}>
-                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                         {Localize.t('global.to')}
                     </Text>
                 </View>
@@ -85,7 +87,11 @@ class EscrowCreateTemplate extends Component<Props, State> {
 
                 <Text style={[styles.label]}>{Localize.t('global.amount')}</Text>
                 <View style={[styles.contentBox]}>
-                    <Text style={[styles.amount]}>{`${transaction.Amount.value} ${transaction.Amount.currency}`}</Text>
+                    <AmountText
+                        value={transaction.Amount.value}
+                        currency={transaction.Amount.currency}
+                        style={styles.amount}
+                    />
                 </View>
 
                 {transaction.FinishAfter && (

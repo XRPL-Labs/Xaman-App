@@ -6,25 +6,18 @@
  *
  */
 import React, { Component } from 'react';
-import {
-    View,
-    TouchableHighlight,
-    TextInput,
-    ActivityIndicator,
-    TextInputProps,
-    ViewStyle,
-    TextStyle,
-    Platform,
-} from 'react-native';
+import { View, TouchableOpacity, TextInput, TextInputProps, ViewStyle, TextStyle, Platform } from 'react-native';
 
 import { StringType } from 'xumm-string-decode';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-import { Icon } from '@components/General/Icon';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppStyles, AppSizes } from '@theme';
+import { Icon, LoadingIndicator } from '@components/General';
+
+import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -146,7 +139,7 @@ class Input extends Component<Props, State> {
                     }}
                     onFocus={this.onFocus}
                     onBlur={this.onBlur}
-                    placeholderTextColor={AppColors.greyDark}
+                    placeholderTextColor={StyleService.value('$textSecondary')}
                     autoCapitalize={autoCapitalize || 'none'}
                     autoCorrect={false}
                     multiline={false}
@@ -186,14 +179,14 @@ class Input extends Component<Props, State> {
             <View style={[AppStyles.row]}>
                 {input}
                 {showScanner && (
-                    <TouchableHighlight style={styles.scanButton} onPress={this.showScanner}>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.scanButton} onPress={this.showScanner}>
                         <Icon size={25} name="IconScan" style={styles.scanIcon} />
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                 )}
 
                 {isLoading && (
                     <View style={styles.loadingOverlay}>
-                        <ActivityIndicator color={AppColors.blue} style={styles.loadingIndicator} />
+                        <LoadingIndicator style={styles.loadingIndicator} />
                     </View>
                 )}
             </View>

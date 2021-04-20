@@ -1,91 +1,80 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppSizes, AppFonts } from '@theme';
+import { AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
-    container: {
-        marginBottom: AppSizes.tabbarHeight,
-    },
-    contentCard: {
-        // width: '92%',
-        marginHorizontal: 22,
-        marginBottom: 30,
-        backgroundColor: AppColors.white,
-        borderRadius: AppSizes.screen.width * 0.06,
-        shadowColor: AppColors.greyDark,
-        shadowOffset: { width: 0, height: 3 },
-        shadowRadius: 8,
-        shadowOpacity: 0.1,
-        elevation: 10,
+const styles = StyleService.create({
+    // contentCard: {
+    //     marginHorizontal: 22,
+    //     marginBottom: 30,
+    //     backgroundColor: '$white',
+    //     borderRadius: AppSizes.screen.width * 0.06,
+    //     shadowColor: '$grey',
+    //     shadowOffset: { width: 0, height: 3 },
+    //     shadowRadius: 8,
+    //     shadowOpacity: 0.1,
+    //     elevation: 10,
+    // },
+    BackgroundShapes: {
+        // tintColor: '$red',
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
     },
     accountCard: {
-        backgroundColor: AppColors.light,
+        backgroundColor: '$tint',
         marginBottom: 20,
         padding: 16,
-        // borderWidth: 1,
-        // borderColor: AppColors.grey,
         borderRadius: 16,
-        // shadowColor: AppColors.blue,
-        // shadowOffset: { width: 0, height: 2 },
-        // shadowRadius: 4,
-        // shadowOpacity: 0.07,
     },
-    cardLabel: {
+    balanceLabel: {
         fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.subtext.size,
-        color: AppColors.black,
+        fontSize: AppFonts.base.size,
+        color: '$textPrimary',
     },
     cardSmallLabel: {
         fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.subtext.size * 0.7,
-        color: AppColors.greyDark,
+        fontSize: AppFonts.subtext.size * 0.8,
+        color: '$grey',
         textAlign: 'center',
     },
     iconSettings: {
-        tintColor: AppColors.greyDark,
+        tintColor: '$grey',
         marginTop: 8,
         marginRight: 6,
     },
     iconEye: {
-        tintColor: AppColors.greyDark,
+        tintColor: '$grey',
+        marginTop: 12,
+        marginRight: 3,
+    },
+    iconShare: {
+        tintColor: '$grey',
         marginTop: 12,
         marginRight: 3,
     },
     cardAddress: {
-        backgroundColor: AppColors.white,
-        // backgroundColor: AppColors.lightGreen,
-        // backgroundColor: '#EDF3FC',
-        color: AppColors.blue,
-        // width: '115%',
-        // left: -20,
-        // paddingLeft: 15,
+        backgroundColor: '$white',
+        color: '$blue',
         marginVertical: 15,
-        // paddingBottom: 8,
         borderRadius: 5,
         overflow: 'hidden',
         textAlign: 'left',
-        // alignContent: 'center',
         justifyContent: 'center',
     },
     cardAddressText: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size * 0.9,
-        color: AppColors.black,
-        alignSelf: 'center',
-        paddingHorizontal: 10,
+        color: '$grey',
     },
     shareIconContainer: {
         padding: 8,
         borderLeftWidth: 1,
-        borderLeftColor: AppColors.grey,
+        borderLeftColor: '$grey',
     },
     shareIcon: {
-        tintColor: AppColors.blue,
+        tintColor: '$blue',
     },
     trustLinesHeader: {
         marginLeft: -15,
@@ -93,8 +82,8 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         paddingHorizontal: 15,
         paddingBottom: 5,
-        backgroundColor: AppColors.white,
-        shadowColor: AppColors.white,
+        backgroundColor: '$background',
+        shadowColor: '$background',
         shadowOffset: { width: 0, height: 12 },
         shadowRadius: 5,
         shadowOpacity: 1,
@@ -106,10 +95,20 @@ const styles = StyleSheet.create({
     currencyList: {
         paddingHorizontal: 10,
     },
-    currencyItemCard: {
-        justifyContent: 'space-between',
+    balanceContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
         flexDirection: 'row',
+        paddingVertical: 10,
         marginTop: 10,
+        backgroundColor: '$lightGrey',
+        borderRadius: 8,
+    },
+    balanceText: {
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontSize: AppFonts.h4.size,
+        color: '$textPrimary',
+        paddingRight: 8,
     },
     currencyItem: {
         paddingTop: 10,
@@ -121,36 +120,35 @@ const styles = StyleSheet.create({
     currencyItemLabel: {
         fontSize: AppFonts.h5.size,
         fontFamily: AppFonts.base.familyMonoBold,
-        // fontWeight: 'bold',
+        color: '$textPrimary',
         alignItems: 'flex-start',
         justifyContent: 'center',
     },
     currencyItemLabelSmall: {
         fontSize: AppFonts.p.size,
         fontFamily: AppFonts.base.familyMono,
+        color: '$textPrimary',
         alignItems: 'flex-start',
         justifyContent: 'center',
         marginRight: 10,
         marginBottom: 3,
-        // borderWidth: 1,
-        // borderColor: 'red',
     },
     issuerLabel: {
         fontSize: AppFonts.subtext.size,
         fontFamily: AppFonts.base.familyMono,
-        color: AppColors.greyDark,
+        color: '$grey',
     },
     xrpAvatarContainer: {
         padding: 10,
         marginRight: 10,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$white',
         borderWidth: 1,
-        borderColor: AppColors.grey,
+        borderColor: '$grey',
         borderRadius: 8,
         justifyContent: 'center',
     },
     trustLineInfoIcon: {
-        tintColor: AppColors.greyDark,
+        tintColor: '$grey',
         marginRight: 5,
     },
     xrpAvatar: {
@@ -159,39 +157,28 @@ const styles = StyleSheet.create({
     brandAvatarContainer: {
         marginRight: 10,
         borderWidth: 1,
-        borderColor: AppColors.light,
-        borderRadius: 8,
+        borderColor: '$light',
+        borderRadius: 10,
         justifyContent: 'center',
         overflow: 'hidden',
     },
     brandAvatar: {
-        // width: AppSizes.screen.width * 0.1,
-        // height: AppSizes.screen.width * 0.1,
         height: AppSizes.scale(35),
         width: AppSizes.scale(35),
         resizeMode: 'cover',
+    },
+    currencyAvatarContainer: {
+        paddingRight: 10,
     },
     currencyAvatar: {
         width: AppSizes.screen.width * 0.035,
         height: AppSizes.screen.width * 0.035,
         resizeMode: 'contain',
-        marginTop: 1,
-        marginRight: 10,
     },
     logo: {
         width: AppSizes.scale(120),
         height: AppSizes.scale(30),
         resizeMode: 'contain',
-    },
-    moreIcon: {
-        marginVertical: 10,
-        marginHorizontal: 20,
-        marginRight: 30,
-    },
-    IconSwitchAccount: {
-        marginVertical: 12,
-        marginHorizontal: 20,
-        marginRight: 38,
     },
     buttonRow: {
         justifyContent: 'space-between',
@@ -207,19 +194,21 @@ const styles = StyleSheet.create({
         marginRight: 1.5,
         borderTopRightRadius: 0,
         borderBottomRightRadius: 0,
+        backgroundColor: StyleService.isDarkMode() ? '$blue' : '$white',
     },
-    sendButtonIcon: { marginRight: 5, tintColor: AppColors.blue },
-    sendButtonText: { color: AppColors.blue },
+    sendButtonIcon: { marginRight: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$blue' },
+    sendButtonText: { color: StyleService.isDarkMode() ? '$white' : '$blue' },
 
     // REQUEST BUTTON
     requestButton: {
         marginLeft: 1.5,
         borderTopLeftRadius: 0,
         borderBottomLeftRadius: 0,
+        backgroundColor: StyleService.isDarkMode() ? '$grey' : '$white',
     },
 
-    requestButtonIcon: { marginLeft: 5, tintColor: AppColors.green },
-    requestButtonText: { color: AppColors.green },
+    requestButtonIcon: { marginLeft: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$green' },
+    requestButtonText: { color: StyleService.isDarkMode() ? '$white' : '$green' },
 
     QRButtonText: { fontSize: AppFonts.base.size },
 
@@ -230,45 +219,26 @@ const styles = StyleSheet.create({
         paddingBottom: 6,
         height: AppSizes.scale(60),
         borderRadius: AppSizes.scale(60) / 4,
-
         borderWidth: 1,
-        borderColor: AppColors.lightBlue,
-        backgroundColor: AppColors.light,
+        borderColor: '$lightBlue',
+        backgroundColor: '$tint',
     },
     iconAccount: {
         marginRight: 15,
+        tintColor: '$contrast',
     },
     switchAccountButton: {
-        backgroundColor: AppColors.white,
-        borderColor: AppColors.light,
+        backgroundColor: '$tint',
         paddingHorizontal: 10,
         alignSelf: 'flex-end',
+        marginRight: -10,
     },
-    switchAccountButtonText: {
-        fontSize: AppFonts.small.size,
-        fontFamily: AppFonts.base.familyBold,
-        color: AppColors.blue,
-        paddingLeft: 1,
-        paddingRight: 0,
+    rateLoader: {
+        paddingVertical: 5,
     },
-    /* eslint-disable-next-line */
-    clipboardGuideContainer: {
-        flexDirection: 'row',
-        position: 'absolute',
-        backgroundColor: 'rgba(48, 82, 255, 0.95)',
-        height: AppSizes.verticalScale(50),
-        minHeight: 70,
-        width: '90%',
-        bottom: '2%',
-        left: '5%',
-        justifyContent: 'center',
-        borderRadius: AppSizes.verticalScale(15),
-        paddingHorizontal: 15,
-        paddingVertical: 15,
-        shadowColor: AppColors.blue,
-        shadowOffset: { width: 0, height: 4 },
-        shadowRadius: 8,
-        shadowOpacity: 0.5,
+    xrpIcon: {
+        paddingRight: 40,
+        tintColor: '$textPrimary',
     },
 });
 

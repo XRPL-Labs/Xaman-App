@@ -15,7 +15,6 @@ import {
     Linking,
     TouchableOpacity,
     InteractionManager,
-    ActivityIndicator,
 } from 'react-native';
 
 import { Result as LiquidityResult } from 'xrpl-orderbook-reader';
@@ -31,12 +30,21 @@ import LedgerExchange from '@common/libs/ledger/exchange';
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 // constants
 import { AppScreens, AppConfig } from '@common/constants';
 
 // components
-import { AmountInput, Header, Spacer, Icon, Button, InfoMessage } from '@components/General';
+import {
+    AmountInput,
+    Header,
+    Spacer,
+    Icon,
+    Button,
+    InfoMessage,
+    LoadingIndicator,
+    HorizontalLine,
+} from '@components/General';
 
 import Localize from '@locale';
 
@@ -68,7 +76,7 @@ class ExchangeView extends Component<Props, State> {
     timeout: any;
     sequence: number;
     ledgerExchange: LedgerExchange;
-    amountInput: AmountInput;
+    amountInput: React.RefObject<typeof AmountInput | null>;
 
     static options() {
         return {
@@ -96,6 +104,8 @@ class ExchangeView extends Component<Props, State> {
 
         this.timeout = null;
         this.sequence = 0;
+
+        this.amountInput = React.createRef();
     }
 
     componentDidMount() {
@@ -125,7 +135,7 @@ class ExchangeView extends Component<Props, State> {
                 .getLiquidity(direction, Number(amount))
                 .then((res) => {
                     // this will make sure the latest call will apply
-                    if (sequence === this.sequence) {
+                    if (sequence === this.sequence && res) {
                         this.setState({
                             liquidity: res,
                         });
@@ -250,7 +260,7 @@ class ExchangeView extends Component<Props, State> {
             (100 + this.ledgerExchange.boundaryOptions.maxSlippagePercentage) / 100,
         );
 
-        const getsAmount = new BigNumber(amount).multipliedBy(paddedExchangeRate).decimalPlaces(6).toString(10);
+        const getsAmount = new BigNumber(amount).multipliedBy(paddedExchangeRate).decimalPlaces(8).toString(10);
 
         if (direction === 'sell') {
             offer.TakerGets = { currency: 'XRP', value: amount };
@@ -362,7 +372,7 @@ class ExchangeView extends Component<Props, State> {
         const { direction, liquidity, amount, isPreparing, isLoading } = this.state;
 
         if (isLoading || !liquidity) {
-            return <ActivityIndicator color={AppColors.blue} />;
+            return <LoadingIndicator />;
         }
 
         if (liquidity.errors && liquidity.errors.length > 0) {
@@ -387,7 +397,7 @@ class ExchangeView extends Component<Props, State> {
                         <Button
                             onPress={this.openXRPToolkit}
                             icon="IconLink"
-                            iconStyle={AppStyles.imgColorGreyDark}
+                            iconStyle={AppStyles.imgColorGrey}
                             light
                             rounded
                             label={Localize.t('global.openXRPToolkitByTowoLabs')}
@@ -404,7 +414,7 @@ class ExchangeView extends Component<Props, State> {
         const exchangeRate =
             direction === 'sell'
                 ? liquidity.rate
-                : new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(6).toString(10);
+                : new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(8).toString(10);
 
         return (
             <>
@@ -423,8 +433,19 @@ class ExchangeView extends Component<Props, State> {
     };
 
     applyAllBalance = () => {
+        const { trustLine } = this.props;
+        const { direction, sourceAccount } = this.state;
+
+        let availableBalance = '0';
+
+        if (direction === 'sell') {
+            availableBalance = new BigNumber(sourceAccount.availableBalance).decimalPlaces(6).toString();
+        } else {
+            availableBalance = new BigNumber(trustLine.balance).decimalPlaces(8).toString();
+        }
+
         this.setState({
-            amount: this.getAvailableBalance().toString(),
+            amount: availableBalance,
         });
     };
 
@@ -440,7 +461,7 @@ class ExchangeView extends Component<Props, State> {
 
         if (isExchanging) {
             return (
-                <SafeAreaView style={[AppStyles.container, AppStyles.paddingSml, { backgroundColor: AppColors.light }]}>
+                <SafeAreaView style={[AppStyles.container, AppStyles.paddingSml]}>
                     <View style={[AppStyles.flex5, AppStyles.centerContent]}>
                         <Image style={styles.backgroundImageStyle} source={Images.IconRepeat} />
                     </View>
@@ -530,13 +551,11 @@ class ExchangeView extends Component<Props, State> {
                             </View>
                             <View>
                                 <Button
+                                    secondary
+                                    roundedSmall
                                     onPress={this.applyAllBalance}
-                                    style={styles.allButton}
-                                    label="All"
-                                    roundedMini
-                                    textStyle={AppStyles.colorBlue}
+                                    label={Localize.t('global.all')}
                                     icon="IconArrowDown"
-                                    iconStyle={AppStyles.imgColorBlue}
                                     iconSize={10}
                                 />
                             </View>
@@ -546,35 +565,33 @@ class ExchangeView extends Component<Props, State> {
                         <TouchableOpacity
                             activeOpacity={1}
                             onPress={() => {
-                                if (this.amountInput) {
-                                    this.amountInput.focus();
-                                }
+                                this.amountInput.current?.focus();
                             }}
                             style={[styles.inputContainer]}
                         >
                             <Text style={styles.fromAmount}>-</Text>
                             <AmountInput
-                                ref={(r) => {
-                                    this.amountInput = r;
-                                }}
+                                ref={this.amountInput}
+                                decimalPlaces={direction === 'sell' ? 6 : 8}
                                 onChange={this.onAmountChange}
                                 placeholderTextColor={AppColors.red}
                                 style={styles.fromAmount}
                                 value={amount}
                             />
                         </TouchableOpacity>
+                    </View>
 
-                        {/* switch button */}
+                    {/* switch button */}
+                    <View>
+                        <HorizontalLine style={styles.separatorLine} />
                         <Button
-                            onPress={this.switchDirection}
+                            activeOpacity={0.9}
                             roundedSmall
+                            onPress={this.switchDirection}
                             icon="IconCornerRightUp"
-                            iconStyle={AppStyles.imgColorBlue}
                             iconSize={15}
-                            textStyle={AppStyles.colorBlue}
-                            label="Switch"
+                            label={Localize.t('global.switch')}
                             style={styles.switchButton}
-                            hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
                         />
                     </View>
 

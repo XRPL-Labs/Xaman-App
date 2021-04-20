@@ -4,11 +4,11 @@
 
 import { isEmpty, get } from 'lodash';
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Alert, Platform, KeyboardAvoidingView } from 'react-native';
+import { SafeAreaView, View, Text, Alert } from 'react-native';
 
 import { getAccountName } from '@common/helpers/resolver';
 // components
-import { Button, TextInput, Spacer, Footer } from '@components/General';
+import { Button, TextInput, Spacer, KeyboardAwareScrollView, Footer } from '@components/General';
 
 // locale
 import Localize from '@locale';
@@ -105,16 +105,16 @@ class LabelStep extends Component<Props, State> {
 
         return (
             <SafeAreaView testID="account-import-label-view" style={[AppStyles.container]}>
-                <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
-                    {Localize.t('account.pleaseChooseAccountLabel')}
-                </Text>
-
-                <Spacer size={50} />
-                <KeyboardAvoidingView
-                    enabled={Platform.OS === 'ios'}
-                    behavior="padding"
-                    style={[AppStyles.contentContainer, AppStyles.flexStart, AppStyles.paddingSml]}
+                <KeyboardAwareScrollView
+                    style={[AppStyles.flex1]}
+                    contentContainerStyle={[AppStyles.paddingHorizontal]}
                 >
+                    <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned]}>
+                        {Localize.t('account.pleaseChooseAccountLabel')}
+                    </Text>
+
+                    <Spacer size={50} />
+
                     <TextInput
                         testID="label-input"
                         maxLength={16}
@@ -126,17 +126,15 @@ class LabelStep extends Component<Props, State> {
                         isLoading={isLoading}
                         autoFocus
                     />
-                </KeyboardAvoidingView>
+                </KeyboardAwareScrollView>
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            onPress={() => {
-                                goBack();
-                            }}
-                            secondary
+                            onPress={goBack}
+                            light
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>
@@ -145,9 +143,7 @@ class LabelStep extends Component<Props, State> {
                             isDisabled={!label.trim()}
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
-                            onPress={() => {
-                                this.goNext();
-                            }}
+                            onPress={this.goNext}
                         />
                     </View>
                 </Footer>

@@ -91,10 +91,13 @@ class LedgerExchange {
     getLiquidity = (direction: 'sell' | 'buy', amount: number): Promise<LiquidityResult> => {
         const params = this.getLiquidityCheckParams(direction, amount);
 
-        // update params
-        this.liquidityCheck.refresh(params);
+        if (this.liquidityCheck) {
+            // update params
+            this.liquidityCheck.refresh(params);
 
-        return this.liquidityCheck.get();
+            return this.liquidityCheck.get();
+        }
+        return undefined;
     };
 }
 

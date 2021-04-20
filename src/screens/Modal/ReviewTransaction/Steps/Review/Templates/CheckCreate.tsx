@@ -2,9 +2,12 @@ import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
+import { StyleService } from '@services';
+
 import { CheckCreate } from '@common/libs/ledger/transactions';
 
-import { NormalizeCurrencyCode, FormatDate } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { FormatDate } from '@common/utils/date';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { AmountInput, Button } from '@components/General';
@@ -23,13 +26,14 @@ export interface Props {
 export interface State {
     isLoading: boolean;
     amount: string;
+    currencyName: string;
     editableAmount: boolean;
     destinationDetails: AccountNameType;
 }
 
 /* Component ==================================================================== */
 class CheckCreateTemplate extends Component<Props, State> {
-    amountInput: AmountInput;
+    amountInput: React.RefObject<typeof AmountInput | null>;
 
     constructor(props: Props) {
         super(props);
@@ -38,8 +42,13 @@ class CheckCreateTemplate extends Component<Props, State> {
             isLoading: false,
             editableAmount: !props.transaction.SendMax?.value,
             amount: props.transaction.SendMax?.value,
+            currencyName: props.transaction.SendMax?.currency
+                ? NormalizeCurrencyCode(props.transaction.SendMax.currency)
+                : 'XRP',
             destinationDetails: { name: '', source: '' },
         };
+
+        this.amountInput = React.createRef();
     }
 
     componentDidMount() {
@@ -95,11 +104,11 @@ class CheckCreateTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoading, editableAmount, amount, destinationDetails } = this.state;
+        const { isLoading, editableAmount, currencyName, amount, destinationDetails } = this.state;
         return (
             <>
                 <View style={styles.label}>
-                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                         {Localize.t('global.to')}
                     </Text>
                 </View>
@@ -124,39 +133,34 @@ class CheckCreateTemplate extends Component<Props, State> {
                         style={[AppStyles.row]}
                         onPress={() => {
                             if (editableAmount && this.amountInput) {
-                                this.amountInput.focus();
+                                this.amountInput.current?.focus();
                             }
                         }}
                     >
                         <View style={[AppStyles.row, AppStyles.flex1]}>
                             <AmountInput
-                                ref={(r) => {
-                                    this.amountInput = r;
-                                }}
+                                ref={this.amountInput}
+                                decimalPlaces={currencyName === 'XRP' ? 6 : 8}
                                 onChange={this.onSendMaxChange}
                                 style={[styles.amountInput]}
                                 value={amount}
                                 editable={editableAmount}
+                                placeholderTextColor={StyleService.value('$textSecondary')}
                             />
-                            <Text style={[styles.amountInput]}>
-                                {' '}
-                                {transaction.SendMax?.currency
-                                    ? NormalizeCurrencyCode(transaction.SendMax.currency)
-                                    : 'XRP'}
-                            </Text>
+                            <Text style={[styles.amountInput]}> {currencyName}</Text>
                         </View>
                         {editableAmount && (
                             <Button
                                 onPress={() => {
                                     if (this.amountInput) {
-                                        this.amountInput.focus();
+                                        this.amountInput.current?.focus();
                                     }
                                 }}
                                 style={styles.editButton}
-                                roundedSmall
-                                iconSize={13}
                                 light
+                                roundedSmall
                                 icon="IconEdit"
+                                iconSize={13}
                             />
                         )}
                     </TouchableOpacity>

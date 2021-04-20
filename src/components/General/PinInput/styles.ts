@@ -1,11 +1,11 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppFonts, AppSizes, AppColors } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         width: '92%',
-        backgroundColor: AppColors.transparent,
+        backgroundColor: '$transparent',
         justifyContent: 'center',
     },
     hiddenInput: {
@@ -21,21 +21,21 @@ const styles = StyleSheet.create({
         flex: 1,
         height: AppSizes.verticalScale(55),
         maxHeight: 70,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$tint',
         justifyContent: 'center',
         marginLeft: 5,
         marginRight: 5,
         borderRadius: AppSizes.verticalScale(10),
-        borderColor: AppColors.greyDark,
+        borderColor: '$grey',
         borderWidth: 1,
     },
     pinInputActive: {
-        borderColor: AppColors.blue,
-        backgroundColor: AppColors.lightBlue,
-        textAlign: 'center', // <-- the magic
+        borderColor: '$blue',
+        backgroundColor: '$lightBlue',
+        textAlign: 'center',
     },
     pinText: {
-        color: AppColors.blue,
+        color: '$blue',
         fontSize: AppFonts.h2.size,
         fontFamily: AppFonts.base.familyBold,
         textAlign: 'center',

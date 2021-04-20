@@ -13,10 +13,13 @@ import Localize from '@locale';
 
 /* Types ==================================================================== */
 interface Props {
+    forwardedRef?: any;
     testID?: string;
     style?: TextStyle | TextStyle[];
     value?: string;
     editable?: boolean;
+    fractional?: boolean;
+    decimalPlaces?: number;
     returnKeyType?: ReturnKeyTypeOptions;
     placeholderTextColor?: string;
     onChange?: (value: string) => void;
@@ -26,35 +29,23 @@ interface State {
     formatted: string;
     value: string;
 }
-
 /* Component ==================================================================== */
 class AmountInput extends PureComponent<Props, State> {
     instance: TextInput;
+
+    static defaultProps = {
+        fractional: true,
+        decimalPlaces: 8,
+    };
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            formatted: props.value ? AmountInput.format(props.value) : '',
+            formatted: props.value ? AmountInput.format(props.value, props.fractional, props.decimalPlaces) : '',
             value: props.value ? AmountInput.normalize(props.value) : '',
         };
     }
-
-    public focus = () => {
-        setTimeout(() => {
-            if (this.instance) {
-                this.instance.focus();
-            }
-        }, 50);
-    };
-
-    public blur = () => {
-        setTimeout(() => {
-            if (this.instance) {
-                this.instance.blur();
-            }
-        }, 50);
-    };
 
     public getValue = (): string => {
         const { value } = this.state;
@@ -62,9 +53,11 @@ class AmountInput extends PureComponent<Props, State> {
         return value;
     };
 
-    static getDerivedStateFromProps(props: Props) {
-        const formatted = props.value ? AmountInput.format(props.value) : '';
-        const value = props.value ? AmountInput.normalize(props.value) : '';
+    static getDerivedStateFromProps(nextProps: Props) {
+        const formatted = nextProps.value
+            ? AmountInput.format(nextProps.value, nextProps.fractional, nextProps.decimalPlaces)
+            : '';
+        const value = nextProps.value ? AmountInput.normalize(nextProps.value) : '';
 
         return {
             formatted,
@@ -82,12 +75,12 @@ class AmountInput extends PureComponent<Props, State> {
         return value.replace(',', '.');
     };
 
-    static format = (value: string): string => {
-        let formatted = value;
-
-        if (!formatted) {
+    static format = (value: string, fractional?: boolean, decimalPlaces = 8): string => {
+        if (!value) {
             return '';
         }
+
+        let formatted = value;
 
         const separator = Localize.settings?.separator || '.';
 
@@ -97,18 +90,29 @@ class AmountInput extends PureComponent<Props, State> {
             formatted = formatted.replace(',', '.');
         }
 
-        // filter amount
-        formatted = formatted.replace(new RegExp(`[^0-9${separator}]`, 'g'), '');
-        if (formatted.split(separator).length > 2) {
-            formatted = formatted.replace(new RegExp(`\\${separator}+$`), '');
-        }
+        if (fractional) {
+            // filter amount
+            formatted = formatted.replace(new RegExp(`[^0-9${separator}]`, 'g'), '');
+            if (formatted.split(separator).length > 2) {
+                formatted = formatted.replace(new RegExp(`\\${separator}+$`), '');
+            }
 
-        // not more than 6 decimal places
-        if (formatted.split(separator)[1] && formatted.split(separator).reverse()[0].length >= 6) {
-            formatted = `${formatted.split(separator).reverse()[1]}${separator}${formatted
-                .split(separator)
-                .reverse()[0]
-                .slice(0, 6)}`;
+            // not more than 8 decimal places
+            if (formatted.split(separator)[1] && formatted.split(separator).reverse()[0].length >= decimalPlaces) {
+                formatted = `${formatted.split(separator).reverse()[1]}${separator}${formatted
+                    .split(separator)
+                    .reverse()[0]
+                    .slice(0, decimalPlaces)}`;
+            }
+
+            // "." to "0."
+            if (formatted.length === 1 && formatted[0] === separator) {
+                // eslint-disable-next-line
+                formatted = `0${separator}`;
+            }
+        } else {
+            // filter amount
+            formatted = formatted.replace(new RegExp('[^0-9]', 'g'), '');
         }
 
         // "01" to "1"
@@ -117,19 +121,13 @@ class AmountInput extends PureComponent<Props, State> {
             formatted = formatted[1];
         }
 
-        // "." to "0."
-        if (formatted.length === 1 && formatted[0] === separator) {
-            // eslint-disable-next-line
-            formatted = `0${separator}`;
-        }
-
         return formatted;
     };
 
     onValueChange = (value: string) => {
-        const { onChange } = this.props;
+        const { onChange, fractional, decimalPlaces } = this.props;
 
-        const formatted = AmountInput.format(value);
+        const formatted = AmountInput.format(value, fractional, decimalPlaces);
         const clean = AmountInput.normalize(formatted);
 
         this.setState(
@@ -146,15 +144,13 @@ class AmountInput extends PureComponent<Props, State> {
     };
 
     render() {
-        const { editable, style, testID, returnKeyType, placeholderTextColor } = this.props;
+        const { editable, style, testID, returnKeyType, placeholderTextColor, forwardedRef } = this.props;
         const { formatted } = this.state;
 
         return (
             <TextInput
                 testID={testID}
-                ref={(r) => {
-                    this.instance = r;
-                }}
+                ref={forwardedRef}
                 keyboardType="decimal-pad"
                 autoCapitalize="words"
                 onChangeText={this.onValueChange}
@@ -170,4 +166,6 @@ class AmountInput extends PureComponent<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default AmountInput;
+export const RefForwardingAmountInput = React.forwardRef<TextInput, Props>((props, ref) => {
+    return <AmountInput {...props} forwardedRef={ref} />;
+}) as any;

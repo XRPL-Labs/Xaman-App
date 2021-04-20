@@ -1,17 +1,18 @@
 /**
- * Sync service
- * Sync Stuff with XUMM Backend
+ * Backend service
+ * Interact with xumm backend
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import { map, isEmpty, flatMap } from 'lodash';
+import { map, isEmpty, flatMap, get } from 'lodash';
+import moment from 'moment-timezone';
 
 import { Platform } from 'react-native';
 
-import DeviceInfo from 'react-native-device-info';
-
 import { AppScreens } from '@common/constants';
+
 import { Navigator } from '@common/helpers/navigator';
+import { GetAppReadableVersion, GetDeviceUniqueId } from '@common/helpers/device';
 
 import { CurrencySchema } from '@store/schemas/latest';
 
@@ -33,14 +34,17 @@ import Localize from '@locale';
 
 /* Service  ==================================================================== */
 class BackendService {
-    logger: any;
+    private logger: any;
+    private currencyRate: any;
 
     constructor() {
         this.logger = LoggerService.createLogger('Backend');
+
+        this.currencyRate = undefined;
     }
 
     initialize = () => {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             try {
                 // sync the details after moving to default stack
                 NavigationService.on('setRoot', (root: string) => {
@@ -62,15 +66,15 @@ class BackendService {
     sync = async () => {
         this.logger.debug('Start Syncing with backend');
         await this.syncCuratedIous();
-        await this.syncContacts();
+        // await this.syncContacts();
     };
 
     /*
     Sync the contacts
     */
-    syncContacts = () => {
-        this.logger.debug('Syncing contacts ...');
-    };
+    // syncContacts = () => {
+    // this.logger.debug('Syncing contacts ...');
+    // };
 
     /*
     Update IOUs from backend
@@ -135,7 +139,7 @@ class BackendService {
             .then(async (res: { payloads: PayloadType[] }) => {
                 const { payloads } = res;
 
-                PushNotificationsService.setBadge(payloads.length);
+                PushNotificationsService.updateBadge(payloads.length);
 
                 if (!isEmpty(payloads)) {
                     const result = await Promise.all(flatMap(payloads, Payload.from));
@@ -179,7 +183,7 @@ class BackendService {
                 .post(
                     null,
                     {
-                        uniqueDeviceIdentifier: DeviceInfo.getUniqueId(),
+                        uniqueDeviceIdentifier: GetDeviceUniqueId(),
                         devicePlatform: Platform.OS,
                         devicePushToken: await PushNotificationsService.getToken(),
                     },
@@ -203,50 +207,60 @@ class BackendService {
     Ping with the backend and update the profile
     */
     ping = () => {
-        return ApiService.ping
-            .post(null, { appVersion: DeviceInfo.getReadableVersion(), appLanguage: Localize.getCurrentLocale() })
-            .then((res: any) => {
-                const { auth, badge, env, tosAndPrivacyPolicyVersion } = res;
+        /* eslint-disable-next-line */
+        return new Promise(async (resolve, reject) => {
+            return ApiService.ping
+                .post(null, {
+                    appVersion: GetAppReadableVersion(),
+                    appLanguage: Localize.getCurrentLocale(),
+                    devicePushToken: await PushNotificationsService.getToken(),
+                })
+                .then((res: any) => {
+                    const { auth, badge, env, tosAndPrivacyPolicyVersion } = res;
 
-                if (auth) {
-                    const { user, device } = auth;
-                    const { hasPro } = env;
+                    if (auth) {
+                        const { user, device } = auth;
+                        const { hasPro } = env;
 
-                    // update the profile
-                    ProfileRepository.saveProfile({
-                        username: user.name,
-                        slug: user.slug,
-                        uuid: user.uuidv4,
-                        deviceUUID: device.uuidv4,
-                        lastSync: new Date(),
-                        hasPro,
-                    });
+                        // update the profile
+                        ProfileRepository.saveProfile({
+                            username: user.name,
+                            slug: user.slug,
+                            uuid: user.uuidv4,
+                            deviceUUID: device.uuidv4,
+                            lastSync: new Date(),
+                            hasPro,
+                        });
 
-                    // check for tos version
-                    const profile = ProfileRepository.getProfile();
+                        // check for tos version
+                        const profile = ProfileRepository.getProfile();
 
-                    if (profile.signedTOSVersion < Number(tosAndPrivacyPolicyVersion)) {
-                        // show the modal to check new policy and confirm new agreement
-                        Navigator.showModal(
-                            AppScreens.Settings.TermOfUse,
-                            {
-                                modalPresentationStyle: 'fullScreen',
-                                modal: {
-                                    swipeToDismiss: false,
+                        if (profile.signedTOSVersion < Number(tosAndPrivacyPolicyVersion)) {
+                            // show the modal to check new policy and confirm new agreement
+                            Navigator.showModal(
+                                AppScreens.Settings.TermOfUse,
+                                {
+                                    modalPresentationStyle: 'fullScreen',
+                                    modal: {
+                                        swipeToDismiss: false,
+                                    },
                                 },
-                            },
-                            { asModal: true },
-                        );
+                                { asModal: true },
+                            );
+                        }
                     }
-                }
 
-                if (badge) {
-                    PushNotificationsService.setBadge(badge);
-                }
-            })
-            .catch((error: string) => {
-                this.logger.error('Ping Backend Error: ', error);
-            });
+                    if (badge) {
+                        PushNotificationsService.updateBadge(badge);
+                    }
+
+                    return resolve(null);
+                })
+                .catch((e: any) => {
+                    this.logger.error('Ping Backend Error: ', e);
+                    return reject(e);
+                });
+        });
     };
 
     /*
@@ -268,6 +282,51 @@ class BackendService {
     */
     getAccountRisk = (address: string) => {
         return ApiService.accountAdvisory.get(address);
+    };
+
+    getXAppShortList = () => {
+        return ApiService.xAppsShortList.get();
+    };
+
+    getXAppLaunchToken = (xAppId: string, data: any) => {
+        return ApiService.xAppLaunch.post({ xAppId }, data);
+    };
+
+    getCurrenciesList = () => {
+        const locale = Localize.getCurrentLocale();
+        return ApiService.currencies.get({ locale });
+    };
+
+    getCurrencyRate = (currency: string) => {
+        return new Promise((resolve, reject) => {
+            // prevent unnecessary requests
+            if (this.currencyRate && this.currencyRate.code === currency) {
+                const passedSeconds = moment().diff(moment.unix(this.currencyRate.lastSync), 'second');
+
+                // cache currency rate for 60 seconds
+                if (passedSeconds <= 60) {
+                    resolve(this.currencyRate);
+                    return;
+                }
+            }
+
+            // update the rate from backend
+            ApiService.rates
+                .get({ currency })
+                .then((r: any) => {
+                    const rate = get(r, 'XRP');
+                    const symbol = get(r, '__meta.currency.symbol');
+
+                    this.currencyRate = {
+                        code: currency,
+                        symbol,
+                        lastRate: rate,
+                        lastSync: moment().unix(),
+                    };
+                    resolve(this.currencyRate);
+                })
+                .catch(reject);
+        });
     };
 }
 

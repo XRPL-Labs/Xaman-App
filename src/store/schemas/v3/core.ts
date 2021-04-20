@@ -22,7 +22,7 @@ class Core extends Realm.Object {
             defaultNode: { type: 'string', default: __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0] },
             defaultExplorer: { type: 'string', default: AppConfig.explorer[0].value }, // default explorer
             hapticFeedback: { type: 'bool', default: true }, // enable haptic feedback
-            theme: { type: 'string', default: AppConfig.theme.light }, // app theme
+            theme: { type: 'string', default: AppConfig.defaultTheme }, // app theme
         },
     };
 

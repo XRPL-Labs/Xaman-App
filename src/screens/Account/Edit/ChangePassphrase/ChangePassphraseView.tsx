@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { Alert, View, Platform, KeyboardAvoidingView, Keyboard } from 'react-native';
+import { Alert, View, Keyboard } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -12,7 +12,7 @@ import Vault from '@common/libs/vault';
 
 import { AccountSchema } from '@store/schemas/latest';
 
-import { PasswordInput, Header, Footer, Button, Spacer } from '@components/General';
+import { PasswordInput, Header, Footer, Button, Spacer, KeyboardAwareScrollView } from '@components/General';
 
 import Localize from '@locale';
 
@@ -92,6 +92,22 @@ class ChangePassphraseView extends Component<Props, State> {
         Alert.alert(Localize.t('global.success'), Localize.t('account.yourAccountPasswordChangedSuccessfully'));
     };
 
+    onHeaderBackPress = () => {
+        Navigator.pop();
+    };
+
+    onCurrentPassphraseChange = (currentPassphrase: string) => {
+        this.setState({ currentPassphrase });
+    };
+
+    onPassphraseChange = (value: string, isValid: boolean) => {
+        this.setState({ passphrase: { value, isValid } });
+    };
+
+    onPassphraseConfirmChange = (passphrase_confirmation: string) => {
+        this.setState({ passphrase_confirmation });
+    };
+
     // dismiss the keyboard when click outside
     shouldSetResponse = () => true;
     onRelease = () => Keyboard.dismiss();
@@ -109,22 +125,16 @@ class ChangePassphraseView extends Component<Props, State> {
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: () => {
-                            Navigator.pop();
-                        },
+                        onPress: this.onHeaderBackPress,
                     }}
                     centerComponent={{ text: Localize.t('account.changePassword') }}
                 />
-                <KeyboardAvoidingView
-                    enabled={Platform.OS === 'ios'}
-                    behavior="padding"
-                    style={[AppStyles.flex1, AppStyles.paddingSml]}
-                >
+                <KeyboardAwareScrollView style={[AppStyles.flex1]} contentContainerStyle={[AppStyles.paddingSml]}>
                     <PasswordInput
                         testID="current-passphrase-input"
                         placeholder={Localize.t('account.currentPassword')}
                         selectTextOnFocus={passphrase.isValid}
-                        onChange={(currentPassphrase) => this.setState({ currentPassphrase })}
+                        onChange={this.onCurrentPassphraseChange}
                         validate={false}
                     />
 
@@ -134,9 +144,7 @@ class ChangePassphraseView extends Component<Props, State> {
                         editable
                         placeholder={Localize.t('account.newPassword')}
                         minLength={8}
-                        onChange={(value: string, isValid: boolean) => {
-                            this.setState({ passphrase: { value, isValid } });
-                        }}
+                        onChange={this.onPassphraseChange}
                         validate
                         autoFocus={false}
                     />
@@ -146,18 +154,16 @@ class ChangePassphraseView extends Component<Props, State> {
                         editable={passphrase.isValid}
                         placeholder={Localize.t('account.repeatPassword')}
                         selectTextOnFocus={passphrase.isValid}
-                        onChange={(passphrase_confirmation) => this.setState({ passphrase_confirmation })}
+                        onChange={this.onPassphraseConfirmChange}
                         validate={false}
                     />
-                </KeyboardAvoidingView>
-
+                </KeyboardAwareScrollView>
                 <Footer safeArea>
                     <Button
+                        numberOfLines={1}
                         testID="save-button"
                         label={Localize.t('global.save')}
-                        onPress={() => {
-                            this.savePassphrase();
-                        }}
+                        onPress={this.savePassphrase}
                     />
                 </Footer>
             </View>

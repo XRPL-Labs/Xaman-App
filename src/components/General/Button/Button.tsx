@@ -2,12 +2,11 @@
 import React, { Component } from 'react';
 import isEqual from 'lodash/isEqual';
 
-import { View, TouchableOpacity, Text, ActivityIndicator, TextStyle, ViewStyle, ImageStyle } from 'react-native';
+import { View, TouchableOpacity, Text, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 
 import { Images } from '@common/helpers/images';
-import { Icon } from '@components/General/Icon';
+import { Icon, LoadingIndicator } from '@components/General';
 
-import { AppColors } from '@theme';
 import styles from './styles';
 
 interface Props {
@@ -17,12 +16,12 @@ interface Props {
     iconStyle?: ImageStyle | ImageStyle[];
     secondary?: boolean;
     light?: boolean;
+    contrast?: boolean;
     outline?: boolean;
     clear?: boolean;
     rounded?: boolean;
     roundedSmall?: boolean;
-    roundedMini?: boolean;
-    block?: boolean;
+    roundedSmallBlock?: boolean;
     accessibilityLabel?: string;
     testID?: string;
     activeOpacity?: number;
@@ -31,7 +30,7 @@ interface Props {
     numberOfLines?: number;
     isLoading?: boolean;
     isDisabled?: boolean;
-    activityIndicatorColor?: string;
+    loadingIndicatorStyle?: 'light' | 'dark';
     onPress?: () => void;
     onLongPress?: () => void;
     label?: string;
@@ -58,11 +57,10 @@ export default class Button extends Component<Props> {
             iconPosition,
             secondary,
             light,
-            outline,
-            clear,
+            contrast,
             rounded,
             roundedSmall,
-            roundedMini,
+            roundedSmallBlock,
             allowFontScaling,
             adjustsFontSizeToFit,
             numberOfLines,
@@ -78,7 +76,12 @@ export default class Button extends Component<Props> {
                     <Icon
                         name={icon}
                         size={iconSize}
-                        style={[styles.iconLeft, secondary && styles.iconButtonSecondary, iconStyle]}
+                        style={[
+                            styles.iconLeft,
+                            light && styles.iconButtonLight,
+                            contrast && styles.iconButtonContrast,
+                            iconStyle,
+                        ]}
                     />
                 )}
                 {label && (
@@ -87,11 +90,10 @@ export default class Button extends Component<Props> {
                             styles.textButton,
                             secondary && styles.textButtonSecondary,
                             light && styles.textButtonLight,
-                            outline && styles.textButtonOutline,
-                            clear && styles.textButtonClear,
+                            contrast && styles.textButtonContrast,
                             rounded && styles.textButtonRounded,
                             roundedSmall && styles.textButtonRoundedSmall,
-                            roundedMini && styles.textButtonRoundedMini,
+                            roundedSmallBlock && styles.textButtonRoundedSmallBlock,
                             isDisabled && styles.textButtonDisabled,
                             textStyle,
                         ]}
@@ -106,7 +108,12 @@ export default class Button extends Component<Props> {
                     <Icon
                         name={icon}
                         size={iconSize}
-                        style={[styles.iconRight, secondary && styles.iconButtonSecondary, iconStyle]}
+                        style={[
+                            styles.iconRight,
+                            light && styles.iconButtonLight,
+                            contrast && styles.iconButtonContrast,
+                            iconStyle,
+                        ]}
                     />
                 )}
             </View>
@@ -118,17 +125,18 @@ export default class Button extends Component<Props> {
     }
 
     renderInnerContent() {
-        const { isLoading, activityIndicatorColor } = this.props;
+        const { isLoading, light, loadingIndicatorStyle } = this.props;
+
         if (isLoading) {
             return (
-                <ActivityIndicator
-                    animating
+                <LoadingIndicator
                     size="small"
                     style={styles.spinner}
-                    color={activityIndicatorColor || AppColors.white}
+                    color={loadingIndicatorStyle || light ? 'dark' : 'light'}
                 />
             );
         }
+
         return this.renderChildren();
     }
 
@@ -154,12 +162,10 @@ export default class Button extends Component<Props> {
             style,
             secondary,
             light,
-            outline,
-            clear,
+            contrast,
             rounded,
             roundedSmall,
-            roundedMini,
-            block,
+            roundedSmallBlock,
             disabledStyle,
             accessibilityLabel,
             activeOpacity,
@@ -169,7 +175,16 @@ export default class Button extends Component<Props> {
 
         if (isDisabled === true) {
             return (
-                <View testID={testID} style={[styles.button, disabledStyle || styles.buttonDisabled, style]}>
+                <View
+                    testID={testID}
+                    style={[
+                        styles.button,
+                        secondary && styles.buttonSecondary,
+                        light && styles.buttonLight,
+                        disabledStyle || styles.buttonDisabled,
+                        style,
+                    ]}
+                >
                     {this.renderInnerContent()}
                 </View>
             );
@@ -191,12 +206,10 @@ export default class Button extends Component<Props> {
                     styles.button,
                     secondary && styles.buttonSecondary,
                     light && styles.buttonLight,
-                    outline && styles.buttonOutline,
-                    clear && styles.buttonClear,
+                    contrast && styles.buttonContrast,
                     rounded && styles.buttonRounded,
                     roundedSmall && styles.buttonRoundedSmall,
-                    roundedMini && styles.buttonRoundedMini,
-                    block && styles.buttonBlock,
+                    roundedSmallBlock && styles.buttonRoundedSmallBlock,
                     isDisabled && (disabledStyle || styles.buttonDisabled),
                     style,
                 ]}

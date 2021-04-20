@@ -104,5 +104,8 @@ Then('I enter my mnemonic', async () => {
 });
 
 Then('I tap my account in the list', async () => {
+    await waitFor(element(by.id(`account-${this.address}`)))
+        .toBeVisible()
+        .withTimeout(5000);
     await element(by.id(`account-${this.address}`)).tap();
 });

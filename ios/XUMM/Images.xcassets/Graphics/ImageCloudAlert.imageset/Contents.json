@@ -1,23 +1,23 @@
 {
   "images" : [
     {
-      "idiom" : "universal",
       "filename" : "cloud_alert.png",
+      "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "cloud_alert@2x.png",
       "idiom" : "universal",
-      "filename" : "cloud_alert-1.png",
       "scale" : "2x"
     },
     {
+      "filename" : "cloud_alert@3x.png",
       "idiom" : "universal",
-      "filename" : "cloud_alert-2.png",
       "scale" : "3x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }

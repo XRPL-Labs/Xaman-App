@@ -74,7 +74,7 @@ class AccountDelete extends BaseTransaction {
 
     validate = (account: AccountSchema) => {
         /* eslint-disable-next-line */
-        return new Promise(async (resolve, reject) => {
+        return new Promise<void>(async (resolve, reject) => {
             if (this.Account.address === this.Destination.address) {
                 return reject(new Error(Localize.t('account.destinationAccountAndSourceCannotBeSame')));
             }
@@ -94,6 +94,25 @@ class AccountDelete extends BaseTransaction {
             // check if there is no account object belong to this account
             if (account.ownerCount > 0) {
                 return reject(new Error(Localize.t('account.deleteAccountObjectsExistError')));
+            }
+
+            // check if account sequence is met the account delete condition
+            const { LastLedger } = LedgerService.getLedgerStatus();
+
+            if (LastLedger === 0) {
+                return reject(new Error(Localize.t('account.unableToFetchLedgerSequence')));
+            }
+
+            const remainingSequence = Number(account.sequence) + 256 - LastLedger;
+
+            if (remainingSequence > 0) {
+                return reject(
+                    new Error(
+                        Localize.t('account.deleteAccountSequenceIsNotEnoughError', {
+                            remainingSequence,
+                        }),
+                    ),
+                );
             }
 
             return resolve();

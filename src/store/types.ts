@@ -29,3 +29,5 @@ export enum NodeChain {
     Dev = 'Devnet',
     Unknown = 'Unknown',
 }
+
+export type Themes = 'light' | 'dark' | 'moonlight' | 'royal';

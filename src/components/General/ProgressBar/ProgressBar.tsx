@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, Animated } from 'react-native';
+import { View, Animated, ViewStyle } from 'react-native';
 
 import { AppSizes } from '@theme';
 import styles from './styles';
 /* Types ==================================================================== */
 interface Props {
+    style?: ViewStyle | ViewStyle[];
     initialProgress: number;
     width: number;
     visible?: boolean;
@@ -49,7 +50,7 @@ class ProgressBar extends Component<Props> {
     };
 
     render() {
-        const { visible, width } = this.props;
+        const { visible, width, style } = this.props;
 
         if (!visible) {
             return null;
@@ -61,7 +62,7 @@ class ProgressBar extends Component<Props> {
         });
 
         return (
-            <View style={[styles.background]}>
+            <View style={[style, styles.background]}>
                 <Animated.View style={[styles.fill, { width: fillWidth }]} />
             </View>
         );

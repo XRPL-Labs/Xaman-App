@@ -3,14 +3,14 @@
  */
 
 /* eslint-disable spellcheck/spell-checker */
-import { StyleSheet } from 'react-native';
-import { IsIOS10 } from '@common/helpers/device';
 
-import Colors from './colors';
+import { IsIOS10 } from '@common/helpers/device';
+import StyleService from '@services/StyleService';
+
 import Fonts from './fonts';
 import Sizes from './sizes';
 
-export default StyleSheet.create({
+export default StyleService.create({
     container: {
         position: 'relative',
         flex: 1,
@@ -18,6 +18,7 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         alignContent: 'stretch',
+        backgroundColor: '$background',
     },
     tabContainer: {
         position: 'relative',
@@ -27,9 +28,10 @@ export default StyleSheet.create({
         alignItems: 'center',
         alignContent: 'stretch',
         marginBottom: Sizes.tabbarHeight,
+        backgroundColor: '$background',
     },
     headerContainer: {
-        backgroundColor: Colors.transparent,
+        backgroundColor: '$transparent',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
@@ -41,7 +43,7 @@ export default StyleSheet.create({
     },
     headerBorder: {
         borderBottomWidth: 1,
-        borderBottomColor: Colors.grey,
+        borderBottomColor: '$grey',
     },
     contentContainer: {
         flex: 8,
@@ -55,95 +57,93 @@ export default StyleSheet.create({
 
     borderGrey: {
         borderWidth: 1,
-        borderColor: Colors.grey,
+        borderColor: '$grey',
     },
     borderGreen: {
         borderWidth: 1,
-        borderColor: Colors.green,
+        borderColor: '$green',
     },
     borderRed: {
         borderWidth: 1,
-        borderColor: Colors.red,
+        borderColor: '$red',
     },
     borderOrange: {
         borderWidth: 1,
-        borderColor: Colors.orange,
+        borderColor: '$orange',
     },
 
     buttonTransparent: {
-        color: Colors.greyDark,
-        borderColor: Colors.transparent,
-        tintColor: Colors.greyDark,
-        backgroundColor: Colors.transparent,
+        borderColor: '$transparent',
+        tintColor: '$grey',
+        backgroundColor: '$transparent',
     },
     buttonBlue: {
-        color: Colors.blue,
-        borderColor: Colors.blue,
-        tintColor: Colors.blue,
-        backgroundColor: Colors.blue,
+        borderColor: '$blue',
+        tintColor: '$blue',
+        backgroundColor: '$blue',
     },
     buttonBlueLight: {
-        color: Colors.lightBlue,
-        borderColor: Colors.lightBlue,
-        tintColor: Colors.lightBlue,
-        backgroundColor: Colors.lightBlue,
+        borderColor: '$lightBlue',
+        tintColor: '$lightBlue',
+        backgroundColor: '$lightBlue',
     },
     buttonGreen: {
-        color: Colors.white,
-        borderColor: Colors.green,
-        tintColor: Colors.green,
-        backgroundColor: Colors.green,
+        borderColor: '$green',
+        tintColor: '$green',
+        backgroundColor: '$green',
     },
     buttonRed: {
-        color: Colors.red,
-        borderColor: Colors.red,
-        tintColor: Colors.red,
-        backgroundColor: Colors.red,
+        borderColor: '$red',
+        tintColor: '$red',
+        backgroundColor: '$red',
     },
     buttonRedOutline: {
-        color: Colors.red,
-        borderColor: Colors.red,
-        tintColor: Colors.red,
-        backgroundColor: Colors.transparent,
+        borderColor: '$red',
+        tintColor: '$red',
+        backgroundColor: '$transparent',
     },
     buttonGrey: {
-        color: Colors.greyDark,
-        borderColor: Colors.greyDark,
-        tintColor: Colors.greyDark,
-        backgroundColor: Colors.greyDark,
+        borderColor: '$grey',
+        tintColor: '$grey',
+        backgroundColor: '$grey',
     },
-    buttonGreyOutline: {
-        color: Colors.greyDark,
-        borderColor: Colors.greyDark,
-        tintColor: Colors.greyDark,
-        backgroundColor: Colors.transparent,
+    buttonSilver: {
+        borderColor: '$silver',
+        tintColor: '$silver',
+        backgroundColor: '$silver',
+    },
+    buttonLight: {
+        borderColor: '$light',
+        tintColor: '$light',
+        backgroundColor: '$light',
     },
     buttonBlack: {
-        color: Colors.black,
-        borderColor: Colors.black,
-        tintColor: Colors.white,
-        backgroundColor: Colors.black,
+        borderColor: '$black',
+        tintColor: '$white',
+        backgroundColor: '$black',
     },
 
-    colorWhite: { color: Colors.white },
-    colorBlack: { color: Colors.black },
-    colorBlue: { color: Colors.blue },
-    colorGreen: { color: Colors.green },
-    colorOrange: { color: Colors.orange },
-    colorRed: { color: Colors.red },
-    colorGreyDark: { color: Colors.greyDark },
-    colorGreyBlack: { color: Colors.greyBlack },
-    // colorPurple: { color: Colors.purple },
-    // colorGreyBlue: { color: Colors.greyBlue },
-    imgColorBlue: { tintColor: Colors.blue },
-    imgColorGreen: { tintColor: Colors.green },
-    imgColorWhite: { tintColor: Colors.white },
-    imgColorBlack: { tintColor: Colors.black },
-    imgColorGrey: { tintColor: Colors.grey },
-    imgColorGreyDark: { tintColor: Colors.greyDark },
-    imgColorRed: { tintColor: Colors.red },
-    imgColorOrange: { tintColor: Colors.orange },
-    imgColorGreyBlack: { tintColor: Colors.greyBlack },
+    colorPrimary: { color: '$textPrimary' },
+    colorContrast: { color: '$textContrast' },
+    colorWhite: { color: '$white' },
+    colorBlack: { color: '$black' },
+    colorBlue: { color: '$blue' },
+    colorGreen: { color: '$green' },
+    colorOrange: { color: '$orange' },
+    colorRed: { color: '$red' },
+    colorGrey: { color: '$grey' },
+    colorSilver: { color: '$silver' },
+
+    imgColorPrimary: { tintColor: '$textPrimary' },
+    imgColorContrast: { tintColor: '$textContrast' },
+    imgColorBlue: { tintColor: '$blue' },
+    imgColorGreen: { tintColor: '$green' },
+    imgColorWhite: { tintColor: '$white' },
+    imgColorBlack: { tintColor: '$black' },
+    imgColorGrey: { tintColor: '$grey' },
+    imgColorSilver: { tintColor: '$silver' },
+    imgColorRed: { tintColor: '$red' },
+    imgColorOrange: { tintColor: '$orange' },
 
     borderRadius: {
         borderRadius: 12,
@@ -184,7 +184,7 @@ export default StyleSheet.create({
 
     // Text Styles
     baseText: {
-        color: Colors.black,
+        color: '$textPrimary',
         fontFamily: Fonts.base.family,
         fontSize: Fonts.base.size,
     },
@@ -192,17 +192,17 @@ export default StyleSheet.create({
     p: {
         fontFamily: Fonts.p.family,
         fontSize: Fonts.p.size,
-        color: Colors.black,
+        color: '$textPrimary',
     },
     pbold: {
         fontFamily: Fonts.pb.family,
         fontSize: Fonts.pb.size,
-        color: Colors.black,
+        color: '$textPrimary',
     },
     h1: {
         fontFamily: Fonts.h1.family,
         fontSize: Fonts.h1.size,
-        color: Colors.black,
+        color: '$textPrimary',
         margin: 0,
         marginBottom: 10,
         left: 0,
@@ -211,7 +211,7 @@ export default StyleSheet.create({
     h2: {
         fontFamily: Fonts.h2.family,
         fontSize: Fonts.h2.size,
-        color: Colors.black,
+        color: '$textPrimary',
         margin: 0,
         marginBottom: 8,
         left: 0,
@@ -220,7 +220,7 @@ export default StyleSheet.create({
     h3: {
         fontFamily: Fonts.h3.family,
         fontSize: Fonts.h3.size,
-        color: Colors.black,
+        color: '$textPrimary',
         margin: 0,
         marginBottom: 6,
         left: 0,
@@ -229,7 +229,7 @@ export default StyleSheet.create({
     h4: {
         fontFamily: Fonts.h4.family,
         fontSize: Fonts.h4.size,
-        color: Colors.black,
+        color: '$textPrimary',
         margin: 0,
         marginBottom: 4,
         left: 0,
@@ -238,7 +238,7 @@ export default StyleSheet.create({
     h5: {
         fontFamily: Fonts.h5.family,
         fontSize: Fonts.h5.size,
-        color: Colors.black,
+        color: '$textPrimary',
         margin: 0,
         marginTop: 4,
         marginBottom: 4,
@@ -253,17 +253,17 @@ export default StyleSheet.create({
     },
     link: {
         textDecorationLine: 'underline',
-        color: Colors.black,
+        color: '$textPrimary',
     },
     subtext: {
         fontFamily: Fonts.subtext.family,
         fontSize: Fonts.subtext.size,
-        color: Colors.black,
+        color: '$textPrimary',
     },
     monoSubText: {
         fontFamily: Fonts.base.familyMono,
         fontSize: Fonts.subtext.size - 1,
-        color: Colors.black,
+        color: '$textPrimary',
     },
     mono: {
         fontFamily: Fonts.base.familyMono,
@@ -291,9 +291,9 @@ export default StyleSheet.create({
         left: 0,
         right: 0,
         borderBottomWidth: 1,
-        borderBottomColor: Colors.grey,
+        borderBottomColor: '$lightGrey',
         height: 1,
-        backgroundColor: Colors.transparent,
+        backgroundColor: '$transparent',
     },
 
     // Give me padding
@@ -445,10 +445,10 @@ export default StyleSheet.create({
 
     buttonFooter: {
         borderTopWidth: 1,
-        borderTopColor: Colors.grey,
+        borderTopColor: '$grey',
         // paddingTop: 25,
         borderBottomWidth: 1,
-        borderBottomColor: Colors.grey,
+        borderBottomColor: '$grey',
         paddingBottom: 25,
         // paddingHorizontal: 10,
         paddingTop: 10,
@@ -460,7 +460,7 @@ export default StyleSheet.create({
         marginTop: 30,
         paddingTop: 20,
         // borderWidth: 1,
-        // borderColor: Colors.orange,
+        // borderColor: '$orange,
     },
 
     // Big icon
@@ -478,7 +478,7 @@ export default StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: Colors.black,
+        backgroundColor: '$darkGrey',
     },
     panelHeader: {
         alignItems: 'center',
@@ -488,17 +488,19 @@ export default StyleSheet.create({
         width: 40,
         height: 6,
         borderRadius: 4,
-        backgroundColor: Colors.greyDark,
+        backgroundColor: '$grey',
     },
 
     // Empty view
     emptyIcon: {
-        // width: Sizes.screen.width * 0.4,
-        // height: Sizes.screen.width * 0.4,
+        // width: Sizes.screen.width * 0.3,
+        // height: Sizes.screen.width * 0.3,
+        resizeMode: 'contain',
         width: Sizes.scale(140),
         height: Sizes.scale(140),
         alignSelf: 'center',
         marginBottom: 20,
+        overflow: 'visible',
     },
     emptyText: {
         width: '90%',
@@ -508,9 +510,11 @@ export default StyleSheet.create({
         paddingBottom: Sizes.padding,
         paddingHorizontal: Sizes.padding,
         alignSelf: 'center',
+        color: '$textPrimary',
     },
     BackgroundShapes: {
         resizeMode: 'contain',
+        opacity: 0.4,
     },
     BackgroundShapesWH: {
         width: '100%',

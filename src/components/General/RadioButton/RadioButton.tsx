@@ -45,12 +45,12 @@ class RadioButton extends Component<Props> {
                 </View>
                 <View style={AppStyles.flex6}>
                     <Text
-                        style={[AppStyles.p, AppStyles.strong, checked ? AppStyles.colorBlue : AppStyles.colorGreyDark]}
+                        style={[AppStyles.p, AppStyles.strong, checked ? styles.textColorSelected : styles.textColor]}
                     >
                         {label}
                     </Text>
                     {labelSmall && (
-                        <Text style={[styles.labelSmall, checked ? AppStyles.colorBlue : AppStyles.colorGreyDark]}>
+                        <Text style={[styles.labelSmall, checked ? styles.textColorSelected : styles.textColor]}>
                             {labelSmall}
                         </Text>
                     )}
@@ -59,7 +59,7 @@ class RadioButton extends Component<Props> {
                             style={[
                                 AppStyles.subtext,
                                 styles.descriptionText,
-                                checked ? AppStyles.colorBlue : AppStyles.colorGreyDark,
+                                checked ? styles.textColorSelected : styles.textColor,
                             ]}
                         >
                             {description}

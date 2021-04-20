@@ -14,11 +14,11 @@ exports[`[RadioButton] renders checked correctly 1`] = `
   style={
     Object {
       "alignItems": "center",
-      "backgroundColor": "#FFFFFF",
+      "backgroundColor": "#F3F6FA",
       "borderColor": "#3052FF",
       "borderRadius": 20,
       "borderWidth": 3,
-      "color": "#3052FF",
+      "color": "#ACB1C1",
       "flexDirection": "row",
       "justifyContent": "center",
       "left": 0,
@@ -42,7 +42,7 @@ exports[`[RadioButton] renders checked correctly 1`] = `
         Array [
           Object {
             "alignItems": "center",
-            "borderColor": "#848DB8",
+            "borderColor": "#606885",
             "borderRadius": 12,
             "borderWidth": 2,
             "height": 26,
@@ -88,7 +88,7 @@ exports[`[RadioButton] renders checked correctly 1`] = `
             "fontFamily": "ProximaNova-Extrabld",
           },
           Object {
-            "color": "#3052FF",
+            "color": "#000000",
           },
         ]
       }
@@ -101,10 +101,9 @@ exports[`[RadioButton] renders checked correctly 1`] = `
           Object {
             "fontFamily": "ProximaNova-Bold",
             "fontSize": 30,
-            "marginBottom": 10,
           },
           Object {
-            "color": "#3052FF",
+            "color": "#000000",
           },
         ]
       }
@@ -120,7 +119,10 @@ exports[`[RadioButton] renders checked correctly 1`] = `
             "fontSize": 30,
           },
           Object {
-            "color": "#3052FF",
+            "marginTop": 4,
+          },
+          Object {
+            "color": "#000000",
           },
         ]
       }
@@ -145,10 +147,11 @@ exports[`[RadioButton] renders correctly 1`] = `
   style={
     Object {
       "alignItems": "center",
-      "backgroundColor": "#EDEFF6",
-      "borderColor": "#EDEFF6",
+      "backgroundColor": "rgba(96,104,133,0.06)",
+      "borderColor": "rgba(96,104,133,0.06)",
       "borderRadius": 20,
       "borderWidth": 3,
+      "color": "#ACB1C1",
       "flexDirection": "row",
       "justifyContent": "center",
       "left": 0,
@@ -172,7 +175,7 @@ exports[`[RadioButton] renders correctly 1`] = `
         Array [
           Object {
             "alignItems": "center",
-            "borderColor": "#848DB8",
+            "borderColor": "#606885",
             "borderRadius": 12,
             "borderWidth": 2,
             "height": 26,
@@ -204,7 +207,7 @@ exports[`[RadioButton] renders correctly 1`] = `
             "fontFamily": "ProximaNova-Extrabld",
           },
           Object {
-            "color": "#848DB8",
+            "color": "#606885",
           },
         ]
       }
@@ -217,10 +220,9 @@ exports[`[RadioButton] renders correctly 1`] = `
           Object {
             "fontFamily": "ProximaNova-Bold",
             "fontSize": 30,
-            "marginBottom": 10,
           },
           Object {
-            "color": "#848DB8",
+            "color": "#606885",
           },
         ]
       }
@@ -236,7 +238,10 @@ exports[`[RadioButton] renders correctly 1`] = `
             "fontSize": 30,
           },
           Object {
-            "color": "#848DB8",
+            "marginTop": 4,
+          },
+          Object {
+            "color": "#606885",
           },
         ]
       }

@@ -7,7 +7,7 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, ImageBackground, Text } from 'react-native';
 
-import { Images } from '@common/helpers/images';
+import StyleService from '@services/StyleService';
 
 // components
 import { Button, Footer } from '@components/General';
@@ -36,7 +36,7 @@ class FinishStep extends Component<Props, State> {
             <SafeAreaView style={[AppStyles.container]}>
                 <ImageBackground
                     testID="account-import-finish-view"
-                    source={Images.backgroundPattern}
+                    source={StyleService.getImage('BackgroundPattern')}
                     style={[AppStyles.container]}
                     imageStyle={styles.backgroundImageStyle}
                 >
@@ -56,13 +56,7 @@ class FinishStep extends Component<Props, State> {
                     </View>
 
                     <Footer>
-                        <Button
-                            testID="finish-button"
-                            label={Localize.t('account.yeahLetsGo')}
-                            onPress={() => {
-                                goNext();
-                            }}
-                        />
+                        <Button testID="finish-button" label={Localize.t('account.yeahLetsGo')} onPress={goNext} />
                     </Footer>
                 </ImageBackground>
             </SafeAreaView>

@@ -1,9 +1,9 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts, AppSizes } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     headerContainer: {
         width: AppSizes.screen.width,
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     },
     extraHeaderContainer: {
         padding: 25,
-        borderTopColor: AppColors.grey,
+        borderTopColor: '$tint',
         borderTopWidth: 1,
     },
     actionButtonsContainer: {
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
         paddingBottom: 25,
     },
     detailsContainer: {
-        borderTopColor: AppColors.grey,
+        borderTopColor: '$tint',
         borderTopWidth: 1,
         width: AppSizes.screen.width,
         padding: 25,
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     amountContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: AppColors.light,
+        backgroundColor: '$tint',
         paddingVertical: 20,
         paddingHorizontal: 30,
         borderRadius: 50,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     amountContainerSmall: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: AppColors.light,
+        backgroundColor: '$tint',
         paddingVertical: 10,
         paddingHorizontal: 30,
         borderRadius: 50,
@@ -62,13 +62,13 @@ const styles = StyleSheet.create({
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.h4.size,
         textAlign: 'center',
-        color: AppColors.blue,
+        color: '$blue',
     },
     amountTextSmall: {
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.h5.size,
         textAlign: 'center',
-        color: AppColors.black,
+        color: '$textPrimary',
     },
     statusText: {
         fontFamily: AppFonts.base.familyBold,
@@ -77,62 +77,67 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     statusSuccess: {
-        color: AppColors.green,
+        color: '$green',
     },
     statusFailed: {
-        color: AppColors.red,
+        color: '$red',
     },
     dateText: {
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.small.size,
-        color: AppColors.greyDark,
+        color: '$grey',
         textAlign: 'left',
     },
     hashText: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size * 0.9,
-        color: AppColors.greyDark,
+        color: '$grey',
         textAlign: 'left',
     },
     labelText: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size,
         marginBottom: 8,
+        color: '$textPrimary',
     },
     contentText: {
         fontFamily: AppFonts.base.familyMono,
         lineHeight: 20,
         fontSize: AppFonts.base.size * 0.9,
-        color: AppColors.black,
+        color: '$textPrimary',
     },
     memoText: {
         fontFamily: AppFonts.base.family,
         lineHeight: 20,
         fontSize: AppFonts.base.size * 0.9,
-        color: AppColors.black,
+        color: '$textPrimary',
     },
     dangerHeader: {
         alignSelf: 'stretch',
         alignItems: 'center',
         justifyContent: 'center',
         padding: AppSizes.paddingSml,
-        backgroundColor: AppColors.red,
+        backgroundColor: '$red',
     },
     outgoingColor: {
-        color: AppColors.red,
-        tintColor: AppColors.red,
+        color: '$red',
+        tintColor: '$red',
     },
     incomingColor: {
-        color: AppColors.blue,
-        tintColor: AppColors.blue,
+        color: '$blue',
+        tintColor: '$blue',
     },
     orangeColor: {
-        color: AppColors.orange,
-        tintColor: AppColors.orange,
+        color: '$orange',
+        tintColor: '$orange',
     },
     naturalColor: {
-        color: AppColors.greyDark,
-        tintColor: AppColors.greyDark,
+        color: '$grey',
+        tintColor: '$grey',
+    },
+    iconArrow: {
+        marginTop: 12,
+        marginBottom: -12,
     },
 });
 

@@ -1,24 +1,23 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppStyles, AppSizes, AppColors, AppFonts } from '@theme';
-
+import { AppStyles, AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     inputText: {
         fontSize: AppStyles.p.fontSize,
         fontFamily: AppStyles.monoBold.fontFamily,
-        color: AppColors.blue,
+        color: '$blue',
         paddingLeft: 15,
     },
     inputContainer: {
         borderWidth: 1,
-        borderColor: AppColors.grey,
+        borderColor: '$lightGrey',
     },
     sectionHeader: {
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         paddingTop: 5,
         paddingBottom: 5,
-        shadowColor: AppColors.white,
+        shadowColor: '$white',
     },
     listEmptyContainer: {
         flex: 1,
@@ -35,7 +34,7 @@ const styles = StyleSheet.create({
     clearSearchButtonText: {
         fontSize: AppFonts.small.size,
         fontFamily: AppFonts.base.familyBold,
-        color: AppColors.blue,
+        color: '$blue',
         paddingLeft: 1,
         paddingRight: 0,
     },

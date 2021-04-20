@@ -1,30 +1,35 @@
-import { StyleSheet } from 'react-native';
-
-import { AppSizes, AppColors } from '@theme';
+import StyleService from '@services/StyleService';
+import { AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
     },
-    detailsCard: {
-        width: AppSizes.screen.width * 0.85,
-        backgroundColor: AppColors.white,
-        borderRadius: AppSizes.screen.width * 0.06,
-        shadowColor: AppColors.greyDark,
-        shadowOffset: { width: 0, height: 5 },
-        shadowRadius: 15,
-        shadowOpacity: 0.2,
-        padding: 20,
+    containerSuccess: {
+        backgroundColor: '$lightGreen',
+    },
+    containerFailed: {
+        backgroundColor: '$lightRed',
     },
     successImage: {
         alignSelf: 'center',
         width: AppSizes.scale(250),
         height: AppSizes.scale(250),
         resizeMode: 'contain',
+    },
+    detailsCard: {
+        width: AppSizes.screen.width * 0.85,
+        backgroundColor: '$tint',
+        borderRadius: AppSizes.screen.width * 0.06,
+        shadowColor: '$grey',
+        shadowOffset: { width: 0, height: 5 },
+        shadowRadius: 15,
+        shadowOpacity: 0.2,
+        padding: 20,
     },
 });
 

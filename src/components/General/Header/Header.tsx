@@ -4,7 +4,7 @@ import { Platform, Text, TextStyle, TouchableOpacity, View, ViewStyle, ImageStyl
 import { Images } from '@common/helpers/images';
 import { Icon } from '@components/General/Icon';
 
-import { AppColors, AppStyles, AppSizes } from '@theme';
+import { AppStyles, AppSizes } from '@theme';
 
 import styles from './styles';
 /* Types ==================================================================== */
@@ -82,11 +82,7 @@ const Children = ({
             {children.text && children.icon && (
                 <View style={[AppStyles.row]}>
                     {(placement === 'left' || placement === 'center') && (
-                        <Icon
-                            style={[styles.iconStyle, AppStyles.marginRightSml, children.iconStyle]}
-                            size={children.iconSize || 30}
-                            name={children.icon}
-                        />
+                        <Icon style={styles.iconStyle} size={children.iconSize || 30} name={children.icon} />
                     )}
                     <Text style={[styles.textStyleSmall, children.textStyle]}>{children.text}</Text>
                     {placement === 'right' && (
@@ -99,13 +95,17 @@ const Children = ({
                 </View>
             )}
             {children.text && !children.icon && (
-                <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.textStyle, children.textStyle]}>
+                <Text numberOfLines={1} style={[styles.textStyle, children.textStyle]}>
                     {children.text}
                 </Text>
             )}
 
             {children.icon && !children.text && (
-                <Icon size={children.iconSize || 30} name={children.icon} style={children.iconStyle} />
+                <Icon
+                    size={children.iconSize || 30}
+                    name={children.icon}
+                    style={[styles.iconStyle, children.iconStyle]}
+                />
             )}
         </TouchableOpacity>
     );
@@ -117,7 +117,21 @@ class Header extends PureComponent<Props> {
 
     static defaultProps = {
         placement: 'center',
-        backgroundColor: AppColors.white,
+    };
+
+    getChildStyle = (position: 'left' | 'right' | 'center') => {
+        const { placement, centerComponent } = this.props;
+
+        const positions = ['left', 'center', 'right'];
+
+        if (placement !== 'center' && !centerComponent && position === 'center') {
+            return null;
+        }
+
+        if (positions.filter((p) => p !== placement).indexOf(position) === -1) {
+            return styles.fixedContainer;
+        }
+        return styles.floatContainer;
     };
 
     render() {
@@ -132,13 +146,13 @@ class Header extends PureComponent<Props> {
 
         return (
             <View style={[styles.container, backgroundColor && { backgroundColor }, containerStyle]}>
-                <Children style={placement === 'center' && styles.rightLeftContainer} placement="left">
+                <Children style={this.getChildStyle('left')} placement="left">
                     {leftComponent}
                 </Children>
 
                 <Children
                     style={[
-                        styles.centerContainer,
+                        this.getChildStyle('center'),
                         placement !== 'center' && {
                             paddingHorizontal: Platform.select({
                                 android: 16,
@@ -146,12 +160,12 @@ class Header extends PureComponent<Props> {
                             }),
                         },
                     ]}
-                    placement={placement}
+                    placement="center"
                 >
                     {centerComponent}
                 </Children>
 
-                <Children style={placement === 'center' && styles.rightLeftContainer} placement="right">
+                <Children style={this.getChildStyle('right')} placement="right">
                     {rightComponent}
                 </Children>
             </View>

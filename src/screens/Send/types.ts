@@ -26,6 +26,7 @@ export interface State {
     destination: Destination;
     destinationInfo: AccountInfoType;
     currency: TrustLineSchema | string;
+    sendingNFT: boolean;
     amount: string;
     payment: Payment;
     scanResult: XrplDestination;

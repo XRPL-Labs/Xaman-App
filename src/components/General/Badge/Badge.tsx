@@ -8,6 +8,7 @@ import Localize from '@locale';
 import { AppColors, AppFonts } from '@theme';
 import styles from './styles';
 
+/* Types ==================================================================== */
 type BadgeType = 'bithomp' | 'xrplns' | 'xrpscan' | 'payid' | 'success' | 'planned';
 
 interface Props {
@@ -19,10 +20,10 @@ interface Props {
 }
 
 const COLORS = {
-    bithomp: AppColors.bithomp,
-    xrplns: AppColors.xrplns,
-    xrpscan: AppColors.xrpscan,
-    payid: AppColors.payid,
+    bithomp: AppColors.brandBithomp,
+    xrplns: AppColors.brandXrplns,
+    xrpscan: AppColors.brandXrpscan,
+    payid: AppColors.brandPayid,
     success: AppColors.green,
     planned: AppColors.blue,
 };
@@ -33,6 +34,7 @@ const SIZES = {
     large: AppFonts.base.size,
 };
 
+/* Component ==================================================================== */
 export default class Badge extends PureComponent<Props> {
     static defaultProps = {
         size: 'small',

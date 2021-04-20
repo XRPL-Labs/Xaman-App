@@ -1,16 +1,19 @@
-import { StyleSheet, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
-import { AppSizes, AppFonts, AppColors } from '@theme';
+import StyleService from '@services/StyleService';
 
-import { IsIPhoneX } from '@common/helpers/device';
+import { AppSizes, AppFonts } from '@theme';
+
+import { hasNotch } from '@common/helpers/device';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         flex: 1,
-        backgroundColor: AppColors.light,
+        backgroundColor: '$lightGrey',
     },
     transactionContent: {
-        backgroundColor: AppColors.white,
+        height: '100%',
+        backgroundColor: '$background',
         borderRadius: 30,
         paddingTop: 28,
     },
@@ -27,6 +30,7 @@ const styles = StyleSheet.create({
         fontFamily: AppFonts.pb.family,
         marginTop: 15,
         marginBottom: 15,
+        color: '$textPrimary',
     },
     descriptionLabel: {
         fontSize: AppFonts.small.size,
@@ -34,6 +38,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 3,
+        color: '$textPrimary',
     },
     instructionText: {
         fontSize: AppFonts.subtext.size,
@@ -41,6 +46,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 15,
         paddingHorizontal: 10,
+        color: '$textPrimary',
     },
     // eslint-disable-next-line
     blurView: {
@@ -52,7 +58,7 @@ const styles = StyleSheet.create({
         right: 0,
         width: AppSizes.screen.width,
         height: AppSizes.screen.height,
-        backgroundColor: 'rgba(255,255,255,0.95)',
+        backgroundColor: '$background',
     },
     absolute: {
         zIndex: 999999,
@@ -65,9 +71,9 @@ const styles = StyleSheet.create({
         height: AppSizes.screen.height,
     },
     headerContainer: {
-        backgroundColor: AppColors.white,
+        backgroundColor: '$background',
         alignItems: 'center',
-        paddingTop: IsIPhoneX() ? 50 : Platform.OS === 'android' ? 10 : 30,
+        paddingTop: hasNotch() ? 50 : Platform.OS === 'android' ? 10 : 30,
         paddingHorizontal: AppSizes.paddingSml,
         paddingBottom: 10,
     },
@@ -79,7 +85,6 @@ const styles = StyleSheet.create({
     keyboardAvoidViewStyle: {
         flex: 1,
         flexDirection: 'column',
-        justifyContent: 'center',
     },
 });
 

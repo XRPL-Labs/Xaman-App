@@ -2,19 +2,21 @@
  * App Change log modal
  */
 import React, { Component } from 'react';
-import { View, Text, Animated, ActivityIndicator } from 'react-native';
+import { View, Text, Animated } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import { Navigator } from '@common/helpers/navigator';
+import { CoreSchema } from '@store/schemas/latest';
+import { CoreRepository } from '@store/repositories';
 
+import { Navigator } from '@common/helpers/navigator';
 import { AppScreens, AppConfig } from '@common/constants';
 
-import { Button } from '@components/General';
+import { Button, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -22,7 +24,9 @@ export interface Props {
     version: string;
 }
 
-export interface State {}
+export interface State {
+    coreSettings: CoreSchema;
+}
 
 /* Component ==================================================================== */
 class ChangeLogModalView extends Component<Props, State> {
@@ -36,6 +40,10 @@ class ChangeLogModalView extends Component<Props, State> {
 
         this.animatedColor = new Animated.Value(0);
         this.animatedOpacity = new Animated.Value(0);
+
+        this.state = {
+            coreSettings: CoreRepository.getSettings(),
+        };
     }
 
     static options() {
@@ -60,25 +68,24 @@ class ChangeLogModalView extends Component<Props, State> {
     }
 
     dismiss = () => {
-        Animated.parallel([
-            Animated.timing(this.animatedColor, {
-                toValue: 0,
-                duration: 350,
-                useNativeDriver: false,
-            }),
-            Animated.timing(this.animatedOpacity, {
-                toValue: 0,
-                duration: 200,
-                useNativeDriver: true,
-            }),
-        ]).start(() => {
-            Navigator.dismissOverlay();
-        });
+        Navigator.dismissOverlay();
+    };
+
+    getHeaders = () => {
+        const { coreSettings } = this.state;
+
+        return {
+            'X-XUMM-Style': coreSettings.theme,
+        };
+    };
+
+    getURI = () => {
+        const { version } = this.props;
+
+        return `${AppConfig.changeLogURL}${version}`;
     };
 
     render() {
-        const { version } = this.props;
-
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],
             outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)'],
@@ -92,10 +99,13 @@ class ChangeLogModalView extends Component<Props, State> {
                 <Animated.View style={[styles.visibleContent, { opacity: this.animatedOpacity }]}>
                     <View style={styles.headerContainer}>
                         <View style={[AppStyles.flex1]}>
-                            <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.whatsNew')}</Text>
+                            <Text numberOfLines={1} style={[AppStyles.p, AppStyles.bold]}>
+                                {Localize.t('global.whatsNew')}
+                            </Text>
                         </View>
                         <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                             <Button
+                                numberOfLines={1}
                                 testID="close-change-log-button"
                                 label={Localize.t('global.close')}
                                 roundedSmall
@@ -108,10 +118,9 @@ class ChangeLogModalView extends Component<Props, State> {
                         <WebView
                             containerStyle={[AppStyles.flex1]}
                             startInLoadingState
-                            renderLoading={() => (
-                                <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
-                            )}
-                            source={{ uri: `${AppConfig.changeLogURL}${version}` }}
+                            renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
+                            source={{ uri: this.getURI(), headers: this.getHeaders() }}
+                            androidHardwareAccelerationDisabled={false}
                         />
                     </View>
                 </Animated.View>

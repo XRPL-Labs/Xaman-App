@@ -15,6 +15,7 @@ import DepositPreauth from './DepositPreauth';
 import CheckCreate from './CheckCreate';
 import CheckCash from './CheckCash';
 import CheckCancel from './CheckCancel';
+import TicketCreate from './TicketCreate';
 
 export {
     Global,
@@ -33,4 +34,5 @@ export {
     CheckCreate,
     CheckCash,
     CheckCancel,
+    TicketCreate,
 };

@@ -14,7 +14,7 @@ const screens = {
     TabBar: {
         Home: 'app.TabBar.Home',
         Events: 'app.TabBar.Events',
-        Scan: 'app.TabBar.Scan',
+        Actions: 'app.TabBar.Actions',
         Profile: 'app.TabBar.Profile',
         Settings: 'app.TabBar.Settings',
     },
@@ -35,7 +35,9 @@ const screens = {
         Scan: 'modal.Scan',
         Submit: 'modal.Submit',
         Picker: 'modal.Picker',
+        CurrencyPicker: 'modal.CurrencyPickerModal',
         Help: 'modal.Help',
+        XAppBrowser: 'modal.XAppBrowser',
     },
     Overlay: {
         SwitchAccount: 'overlay.SwitchAccount',
@@ -54,9 +56,11 @@ const screens = {
         RecipientMenu: 'overlay.RecipientMenu',
         ConfirmDestinationTag: 'overlay.ConfirmDestinationTag',
         SelectAccount: 'overlay.SelectAccount',
+        HomeActions: 'overlay.HomeActions',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',
+        Request: 'app.Transaction.Request',
         Details: 'app.Transaction.Details',
         Exchange: 'app.Transaction.Exchange',
     },

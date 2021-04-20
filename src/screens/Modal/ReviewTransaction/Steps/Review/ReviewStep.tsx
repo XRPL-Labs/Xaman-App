@@ -2,20 +2,22 @@
  * Review Step
  */
 
-import { isEmpty, get, find } from 'lodash';
+import { isEmpty, get, find, filter } from 'lodash';
 import React, { Component } from 'react';
-import { ImageBackground, ScrollView, View, Text, KeyboardAvoidingView, Platform } from 'react-native';
+import { ImageBackground, View, Text } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
+
+import { SocketService, StyleService } from '@services';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
+import { NodeChain } from '@store/types';
 
 // components
-import { Button, Spacer, Avatar } from '@components/General';
+import { Button, SwipeButton, Spacer, KeyboardAwareScrollView, Avatar } from '@components/General';
 import { AccountPicker } from '@components/Modules';
 
 import Localize from '@locale';
@@ -32,6 +34,7 @@ export interface Props {}
 
 export interface State {
     accounts: Array<AccountSchema>;
+    canScroll: boolean;
 }
 
 /* Component ==================================================================== */
@@ -44,6 +47,7 @@ class ReviewStep extends Component<Props, State> {
 
         this.state = {
             accounts: undefined,
+            canScroll: true,
         };
     }
 
@@ -58,7 +62,7 @@ class ReviewStep extends Component<Props, State> {
         let availableAccounts =
             payload.payload.tx_type === 'SignIn' || payload.meta.multisign
                 ? AccountRepository.getSignableAccounts()
-                : AccountRepository.getSpendableAccounts();
+                : AccountRepository.getSpendableAccounts(true);
 
         // if no account for signing is available then just return
         if (isEmpty(availableAccounts)) {
@@ -66,7 +70,7 @@ class ReviewStep extends Component<Props, State> {
         }
 
         // choose preferred account for sign
-        let preferredAccount;
+        let preferredAccount = undefined as AccountSchema;
 
         // if any account set from payload
         if (transaction.Account) {
@@ -98,11 +102,28 @@ class ReviewStep extends Component<Props, State> {
             }
         }
 
+        // remove hidden accounts but keep preffered account even if hiddemn
+        availableAccounts = filter(availableAccounts, (a) => !a.hidden || a.address === preferredAccount.address);
+
         this.setState({
             accounts: availableAccounts,
         });
 
         setSource(preferredAccount);
+    };
+
+    toggleCanScroll = () => {
+        const { canScroll } = this.state;
+
+        this.setState({
+            canScroll: !canScroll,
+        });
+    };
+
+    shouldShowTestnet = () => {
+        const { coreSettings } = this.context;
+
+        return coreSettings.developerMode && SocketService.chain === NodeChain.Test;
     };
 
     renderDetails = () => {
@@ -143,25 +164,26 @@ class ReviewStep extends Component<Props, State> {
     };
 
     renderEmptyOverlay = () => {
+        const { onClose } = this.context;
+
         return (
             <View style={styles.blurView}>
                 <View style={styles.absolute}>
                     <View style={[styles.headerContainer]}>
                         <View style={[AppStyles.row]}>
                             <View style={[AppStyles.flex1, AppStyles.leftAligned]}>
-                                <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
+                                <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>
                                     {Localize.t('global.reviewTransaction')}
                                 </Text>
                             </View>
                             <View style={[AppStyles.rightAligned]}>
                                 <Button
-                                    testID="back-button"
+                                    contrast
+                                    testID="close-button"
+                                    numberOfLines={1}
                                     roundedSmall
-                                    style={AppStyles.buttonBlack}
                                     label={Localize.t('global.close')}
-                                    onPress={() => {
-                                        Navigator.dismissModal();
-                                    }}
+                                    onPress={onClose}
                                 />
                             </View>
                         </View>
@@ -198,14 +220,14 @@ class ReviewStep extends Component<Props, State> {
     };
 
     render() {
-        const { accounts } = this.state;
+        const { accounts, canScroll } = this.state;
 
         const { payload, source, isPreparing, setSource, onAccept, onClose, getTransactionLabel } = this.context;
 
         return (
             <ImageBackground
                 testID="review-transaction-modal"
-                source={Images.backgroundPattern}
+                source={StyleService.getImage('BackgroundPattern')}
                 imageStyle={styles.xummAppBackground}
                 style={[styles.container]}
             >
@@ -214,81 +236,81 @@ class ReviewStep extends Component<Props, State> {
                 {/* header */}
                 <View style={[styles.headerContainer]}>
                     <View style={[AppStyles.row]}>
-                        <View style={[AppStyles.flex1, AppStyles.leftAligned]}>
-                            <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
+                        <View style={[AppStyles.flex1, AppStyles.leftAligned, AppStyles.paddingRightSml]}>
+                            <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>
                                 {Localize.t('global.reviewTransaction')}
                             </Text>
                         </View>
                         <View style={[AppStyles.rightAligned]}>
                             <Button
+                                contrast
+                                testID="close-button"
+                                numberOfLines={1}
                                 roundedSmall
-                                style={AppStyles.buttonBlack}
                                 label={Localize.t('global.close')}
                                 onPress={onClose}
                             />
                         </View>
                     </View>
                 </View>
-                <KeyboardAvoidingView
-                    enabled={Platform.OS === 'ios'}
-                    behavior="padding"
+                <KeyboardAwareScrollView
+                    testID="review-content-container"
                     style={styles.keyboardAvoidViewStyle}
+                    scrollEnabled={canScroll}
                 >
-                    <ScrollView bounces={false} testID="review-content-container">
-                        <View style={[styles.topContent, AppStyles.centerContent]}>
-                            <View style={[AppStyles.row, AppStyles.paddingSml]}>
-                                <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
-                                    <Avatar size={60} border source={{ uri: payload.application.icon_url }} />
+                    <View style={[styles.topContent, AppStyles.centerContent]}>
+                        <View style={[AppStyles.row, AppStyles.paddingSml]}>
+                            <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
+                                <Avatar size={60} border source={{ uri: payload.application.icon_url }} />
 
-                                    <Text style={[styles.appTitle]}>{payload.application.name}</Text>
+                                <Text style={[styles.appTitle]}>{payload.application.name}</Text>
 
-                                    {!!payload.meta.custom_instruction && (
-                                        <>
-                                            <Text style={[styles.descriptionLabel]}>
-                                                {Localize.t('global.details')}
-                                            </Text>
-                                            <Text style={[styles.instructionText]}>
-                                                {payload.meta.custom_instruction}
-                                            </Text>
-                                        </>
-                                    )}
+                                {!!payload.meta.custom_instruction && (
+                                    <>
+                                        <Text style={[styles.descriptionLabel]}>{Localize.t('global.details')}</Text>
+                                        <Text style={[styles.instructionText]}>{payload.meta.custom_instruction}</Text>
+                                    </>
+                                )}
 
-                                    <Text style={[styles.descriptionLabel]}>{Localize.t('global.type')}</Text>
-                                    <Text style={[styles.instructionText, AppStyles.colorBlue, AppStyles.bold]}>
-                                        {getTransactionLabel()}
-                                    </Text>
-                                </View>
+                                <Text style={[styles.descriptionLabel]}>{Localize.t('global.type')}</Text>
+                                <Text style={[styles.instructionText, AppStyles.colorBlue, AppStyles.bold]}>
+                                    {getTransactionLabel()}
+                                </Text>
                             </View>
                         </View>
+                    </View>
 
-                        <View style={[styles.transactionContent]}>
-                            <View style={[AppStyles.paddingHorizontalSml]}>
-                                <View style={styles.rowLabel}>
-                                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreyDark]}>
-                                        {payload.payload.tx_type === 'SignIn' || payload.meta.multisign
-                                            ? Localize.t('global.signAs')
-                                            : Localize.t('global.signWith')}
-                                    </Text>
-                                </View>
-                                <AccountPicker onSelect={setSource} accounts={accounts} selectedItem={source} />
+                    <View style={[styles.transactionContent]}>
+                        <View style={[AppStyles.paddingHorizontalSml]}>
+                            <View style={styles.rowLabel}>
+                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
+                                    {payload.payload.tx_type === 'SignIn' || payload.meta.multisign
+                                        ? Localize.t('global.signAs')
+                                        : Localize.t('global.signWith')}
+                                </Text>
                             </View>
-
-                            <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingVerticalSml]}>
-                                {this.renderDetails()}
-                            </View>
-                            <View style={[AppStyles.flex1, AppStyles.paddingHorizontalSml]}>
-                                <Button
-                                    testID="accept-button"
-                                    isLoading={isPreparing}
-                                    onPress={onAccept}
-                                    label={Localize.t('global.accept')}
-                                />
-                            </View>
-
-                            <Spacer size={50} />
+                            <AccountPicker onSelect={setSource} accounts={accounts} selectedItem={source} />
                         </View>
-                    </ScrollView>
-                </KeyboardAvoidingView>
+
+                        <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingVerticalSml]}>
+                            {this.renderDetails()}
+                        </View>
+                        <View style={[AppStyles.flex1, AppStyles.paddingHorizontalSml]}>
+                            <SwipeButton
+                                testID="accept-button"
+                                secondary={this.shouldShowTestnet()}
+                                isLoading={isPreparing}
+                                onSwipeSuccess={onAccept}
+                                label={Localize.t('global.slideToAccept')}
+                                shouldResetAfterSuccess
+                                onPanResponderGrant={this.toggleCanScroll}
+                                onPanResponderRelease={this.toggleCanScroll}
+                            />
+                        </View>
+
+                        <Spacer size={50} />
+                    </View>
+                </KeyboardAwareScrollView>
             </ImageBackground>
         );
     }

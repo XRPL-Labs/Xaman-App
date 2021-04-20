@@ -10,6 +10,7 @@ import Clipboard from '@react-native-community/clipboard';
 import { AccountRepository } from '@store/repositories';
 import { AccountTypes } from '@store/types';
 
+import { ConvertCodecAlphabet } from '@common/utils/codec';
 import { Toast, Prompt } from '@common/helpers/interface';
 
 // components
@@ -68,6 +69,26 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
         }
     };
 
+    copyPubKeyToClipboard = () => {
+        const { importedAccount } = this.context;
+
+        Clipboard.setString(importedAccount.address);
+        Toast(Localize.t('account.publicKeyCopiedToClipboard'));
+    };
+
+    getOtherChainAddress = (): string => {
+        const { importedAccount, alternativeSeedAlphabet } = this.context;
+
+        const { alphabet } = alternativeSeedAlphabet;
+
+        if (typeof alphabet === 'string') {
+            return ConvertCodecAlphabet(importedAccount.address, alphabet, false);
+        }
+
+        // this should not happen
+        return 'Unknown';
+    };
+
     renderRegularKeys = () => {
         const { importedAccount } = this.context;
 
@@ -111,14 +132,12 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                                 <View key={index} style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow]}>
                                     <View style={[AppStyles.row, AppStyles.flex1, AppStyles.centerAligned]}>
                                         <View style={styles.iconContainer}>
-                                            <Icon size={25} style={AppStyles.imgColorGreyDark} name="IconAccount" />
+                                            <Icon size={25} style={AppStyles.imgColorGrey} name="IconAccount" />
                                         </View>
 
                                         <View>
                                             <Text style={[AppStyles.p, AppStyles.bold]}>{a.label}</Text>
-                                            <Text
-                                                style={[AppStyles.subtext, AppStyles.monoBold, AppStyles.colorGreyDark]}
-                                            >
+                                            <Text style={[AppStyles.subtext, AppStyles.monoBold, AppStyles.colorGrey]}>
                                                 {a.address}
                                             </Text>
                                         </View>
@@ -135,7 +154,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
     };
 
     render() {
-        const { importedAccount, isLoading } = this.context;
+        const { importedAccount, isLoading, alternativeSeedAlphabet } = this.context;
 
         if (!importedAccount) {
             return null;
@@ -147,15 +166,41 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                     {Localize.t('account.pleaseConfirmYourAccountAddress')}
                 </Text>
 
+                {alternativeSeedAlphabet && (
+                    <View
+                        style={[
+                            AppStyles.flex1,
+                            AppStyles.centerContent,
+                            AppStyles.stretchSelf,
+                            AppStyles.paddingHorizontalSml,
+                        ]}
+                    >
+                        <Text style={styles.addressHeader}>
+                            {Localize.t('account.yourChainAddressWas', { chain: alternativeSeedAlphabet.name })}
+                        </Text>
+                        <View style={[styles.addressContainer, AppStyles.stretchSelf]}>
+                            <Text testID="account-alternative-address" selectable style={[styles.addressField]}>
+                                {this.getOtherChainAddress()}
+                            </Text>
+                        </View>
+                    </View>
+                )}
+
                 <View
                     style={[
                         AppStyles.flex1,
-                        AppStyles.centerContent,
+                        !alternativeSeedAlphabet && AppStyles.centerContent,
                         AppStyles.stretchSelf,
                         AppStyles.paddingHorizontalSml,
                     ]}
                 >
-                    <View style={[styles.labelWrapper, AppStyles.stretchSelf]}>
+                    {alternativeSeedAlphabet && (
+                        <Text style={styles.addressHeader}>
+                            {Localize.t('account.yourXRPLedgerAccountIsGoingToBe')}
+                        </Text>
+                    )}
+
+                    <View style={[styles.addressContainer, AppStyles.stretchSelf]}>
                         <Text testID="account-address-text" selectable style={[styles.addressField]}>
                             {importedAccount.address}
                         </Text>
@@ -163,15 +208,9 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                     <Button
                         label={Localize.t('account.copyAddress')}
                         icon="IconClipboard"
-                        style={AppStyles.buttonBlueLight}
-                        iconStyle={AppStyles.imgColorGreyDark}
-                        textStyle={[AppStyles.colorGreyDark]}
-                        onPress={() => {
-                            Clipboard.setString(importedAccount.address);
-                            Toast(Localize.t('account.publicKeyCopiedToClipboard'));
-                        }}
+                        onPress={this.copyPubKeyToClipboard}
                         roundedSmall
-                        outline
+                        light
                     />
                 </View>
 
@@ -181,7 +220,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
-                            secondary
+                            light
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
                             onPress={this.goBack}

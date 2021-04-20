@@ -18,9 +18,9 @@ exports[`[TextInput] renders correctly 1`] = `
         Object {
           "alignItems": "stretch",
           "alignSelf": "stretch",
-          "backgroundColor": "#EDEFF6",
-          "borderColor": "#EDEFF6",
-          "borderRadius": 10,
+          "backgroundColor": "#F3F6FA",
+          "borderColor": "#F3F6FA",
+          "borderRadius": 14,
           "borderWidth": 2,
           "flexDirection": "row",
           "height": 93.5,
@@ -41,7 +41,7 @@ exports[`[TextInput] renders correctly 1`] = `
       multiline={false}
       onBlur={[Function]}
       onFocus={[Function]}
-      placeholderTextColor="#848DB8"
+      placeholderTextColor="#606885"
       rejectResponderTermination={true}
       style={
         Array [

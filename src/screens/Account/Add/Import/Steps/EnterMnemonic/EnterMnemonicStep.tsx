@@ -12,7 +12,6 @@ import {
     TextInput,
     Alert,
     ScrollView,
-    Keyboard,
     Platform,
     TouchableOpacity,
     KeyboardEvent,
@@ -25,6 +24,8 @@ import { StringType, XrplSecret } from 'xumm-string-decode';
 import Localize from '@locale';
 
 import { Navigator } from '@common/helpers/navigator';
+import { Keyboard } from '@common/helpers/keyboard';
+
 import { AppScreens } from '@common/constants';
 
 // components
@@ -80,30 +81,20 @@ class EnterMnemonicStep extends Component<Props, State> {
     }
 
     componentDidMount() {
-        if (Platform.OS === 'ios') {
-            Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
-            Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
-        } else {
-            Keyboard.addListener('keyboardDidShow', this.onKeyboardShow);
-            Keyboard.addListener('keyboardDidHide', this.onKeyboardHide);
-        }
+        Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
+        Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
     }
 
     componentWillUnmount() {
-        if (Platform.OS === 'ios') {
-            Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
-            Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
-        } else {
-            Keyboard.removeListener('keyboardDidShow', this.onKeyboardShow);
-            Keyboard.removeListener('keyboardDidHide', this.onKeyboardHide);
-        }
+        Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
+        Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
     }
 
     onKeyboardShow = (e: KeyboardEvent) => {
-        const keyboardHeight = e.endCoordinates.height;
+        const { height } = e.endCoordinates;
 
         this.setState({
-            keyboardHeight,
+            keyboardHeight: height,
         });
     };
 
@@ -383,13 +374,17 @@ class EnterMnemonicStep extends Component<Props, State> {
 
         return (
             <SafeAreaView testID="account-import-enter-mnemonic-view" style={[AppStyles.container]}>
-                <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
+                <Text
+                    numberOfLines={1}
+                    style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}
+                >
                     {Localize.t('account.pleaseEnterYourMnemonic')}
                 </Text>
 
                 <Spacer size={10} />
 
                 <Text
+                    numberOfLines={1}
                     style={[
                         AppStyles.subtext,
                         AppStyles.bold,
@@ -406,6 +401,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                 <View style={[AppStyles.row, AppStyles.paddingHorizontal, AppStyles.paddingBottomSml]}>
                     <Button
                         testID="12-words-button"
+                        light
                         onPress={() => {
                             this.onLengthChange(12);
                         }}
@@ -419,6 +415,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                         onPress={() => {
                             this.onLengthChange(16);
                         }}
+                        light
                         roundedSmall
                         style={[styles.optionsButton, length === 16 && styles.optionsButtonSelected]}
                         textStyle={[styles.optionsButtonText, length === 16 && styles.optionsButtonSelectedText]}
@@ -429,6 +426,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                         onPress={() => {
                             this.onLengthChange(24);
                         }}
+                        light
                         roundedSmall
                         style={[styles.optionsButton, length === 24 && styles.optionsButtonSelected]}
                         textStyle={[styles.optionsButtonText, length === 24 && styles.optionsButtonSelectedText]}
@@ -438,10 +436,10 @@ class EnterMnemonicStep extends Component<Props, State> {
 
                 <View style={[AppStyles.stretchSelf, AppStyles.paddingHorizontal, AppStyles.paddingBottomSml]}>
                     <Button
+                        numberOfLines={1}
                         secondary
                         onPress={this.showScanner}
                         roundedSmall
-                        block
                         label={Localize.t('account.scanFromQR')}
                     />
                 </View>
@@ -466,12 +464,10 @@ class EnterMnemonicStep extends Component<Props, State> {
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
-                            secondary
+                            light
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            onPress={() => {
-                                goBack();
-                            }}
+                            onPress={goBack}
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>

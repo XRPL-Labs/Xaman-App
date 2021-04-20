@@ -133,5 +133,13 @@ static void InitializeFlipper(UIApplication *application) {
   blureViewActive = NO;
 }
 
+- (BOOL)application:(UIApplication *)application shouldAllowExtensionPointIdentifier:(NSString *)extensionPointIdentifier
+{
+  // disable custom keyboard
+  if ([extensionPointIdentifier isEqualToString:@"com.apple.keyboard-service"]) {
+    return NO;
+  }
+  return YES;
+}
 
 @end

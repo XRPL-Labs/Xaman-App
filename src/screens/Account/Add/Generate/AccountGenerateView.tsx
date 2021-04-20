@@ -153,6 +153,10 @@ class AccountGenerateView extends Component<Props, State> {
         }
     };
 
+    onHeaderBackPress = () => {
+        Navigator.pop();
+    };
+
     renderStep = () => {
         const { currentStep } = this.state;
 
@@ -213,12 +217,12 @@ class AccountGenerateView extends Component<Props, State> {
 
         return (
             <Header
-                leftComponent={{
-                    icon: 'IconChevronLeft',
-                    onPress: () => {
-                        Navigator.pop();
-                    },
-                }}
+                leftComponent={
+                    currentStep === 'SeedExplanation' && {
+                        icon: 'IconChevronLeft',
+                        onPress: this.onHeaderBackPress,
+                    }
+                }
                 centerComponent={{ text: title }}
             />
         );

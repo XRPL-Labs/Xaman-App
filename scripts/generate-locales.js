@@ -5,6 +5,7 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
+const moment = require('moment/min/moment-with-locales');
 
 const translationMeta = {};
 
@@ -43,8 +44,55 @@ const mergeObjects = (t1, t2) => {
         const languageValidate =
             Object.keys(meta.languages).sort().join(',') === Object.keys(meta['language-local-name']).sort().join(',');
         assert(languageValidate, 'Present languages (keys) do not match present language locale names.');
-
         console.log(`    > Got ${Object.keys(meta['language-code-alias']).length} aliased languages`);
+
+        console.log('  - Generating moment locales');
+        const momentLocalesCall = await fetch('https://api.github.com/repositories/1424470/contents/src/locale');
+        const momentLocalesJson = await momentLocalesCall.json();
+        const momentLocalesData = momentLocalesJson.map((l) => l.name.split('.')[0]);
+
+        const momentLocales = Object.keys(meta.languages).reduce((a, b) => {
+            let resolvedLocale = 'en';
+
+            if (momentLocalesData.indexOf(b.toLowerCase()) > -1) {
+                resolvedLocale = b.toLowerCase();
+            } else if (momentLocalesData.indexOf(b.split('-')[0].toLowerCase()) > -1) {
+                resolvedLocale = b.split('-')[0].toLowerCase();
+            } else {
+                // Check alias
+                const aliasses = Object.keys(meta['language-code-alias']).filter((k) => {
+                    return meta['language-code-alias'][k].toLowerCase() === b.toLowerCase();
+                });
+                if (aliasses.length > 0) {
+                    aliasses.forEach((al) => {
+                        const alias = al.toLowerCase().replace('_', '-');
+                        // console.log(alias + ' for ' + b)
+                        if (momentLocalesData.indexOf(alias) > -1) {
+                            resolvedLocale = alias;
+                        }
+                    });
+                }
+            }
+
+            moment.locale(resolvedLocale);
+            const localeData = moment.localeData();
+
+            Object.assign(a, {
+                [b]: Object.keys(localeData).reduce((c, d) => {
+                    if (
+                        ['RegExp', 'Function'].indexOf(localeData[d].constructor.name) < 0 &&
+                        !d.match(/(Parse|Regex)$/) &&
+                        d !== '_config'
+                    ) {
+                        Object.assign(c, {
+                            [d.replace(/^_/, '')]: localeData[d],
+                        });
+                    }
+                    return c;
+                }, {}),
+            });
+            return a;
+        }, {});
 
         console.log('  - Getting translations & generating output files');
         for await (k of Object.keys(meta.languages)) {
@@ -66,13 +114,18 @@ const mergeObjects = (t1, t2) => {
 
             console.log(`    - Write ${k}.json`);
 
-            let fileContents = JSON.stringify(appTranslation, null, 2);
+            let fileContents = {};
 
             if (k === 'en') {
+                // merge EN translations
                 // eslint-disable-next-line import/no-dynamic-require
                 const currentEN = require(EN_LOCALE_PATH);
                 const merged = mergeObjects(currentEN, appTranslation);
                 fileContents = JSON.stringify(merged, null, 2);
+            } else {
+                // merge moment translations
+                Object.assign(appTranslation, { moment: momentLocales[k] });
+                fileContents = JSON.stringify(appTranslation, null, 2);
             }
 
             fs.writeFile(`${LOCALES_DIR}/${k === 'en' ? '' : 'generated/'}${k}.json`, fileContents, (err) => {

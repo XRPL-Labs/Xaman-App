@@ -1,18 +1,13 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     inputText: {
         fontSize: AppStyles.p.fontSize,
         fontFamily: AppStyles.pbold.fontFamily,
         textAlign: 'center',
-        color: AppColors.blue,
-    },
-    inputContainer: {
-        borderWidth: 1,
-        borderColor: AppColors.grey,
     },
 });
 

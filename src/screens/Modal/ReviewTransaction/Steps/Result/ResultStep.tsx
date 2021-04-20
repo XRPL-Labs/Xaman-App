@@ -32,10 +32,7 @@ class ResultStep extends Component<Props, State> {
         const { payload, onFinish, getTransactionLabel } = this.context;
 
         return (
-            <SafeAreaView
-                testID="success-result-view"
-                style={[styles.container, { backgroundColor: AppColors.lightGreen }]}
-            >
+            <SafeAreaView testID="success-result-view" style={[styles.container, styles.containerSuccess]}>
                 <View style={[AppStyles.flex1, AppStyles.paddingSml]}>
                     <Image style={styles.successImage} source={require('@common/assets/success.gif')} />
                     <Text
@@ -64,10 +61,7 @@ class ResultStep extends Component<Props, State> {
         const { transaction, payload, onFinish } = this.context;
 
         return (
-            <SafeAreaView
-                testID="failed-result-view"
-                style={[styles.container, { backgroundColor: AppColors.lightRed }]}
-            >
+            <SafeAreaView testID="failed-result-view" style={[styles.container, styles.containerFailed]}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <Text style={[AppStyles.h3, AppStyles.strong, AppStyles.colorRed, AppStyles.textCenterAligned]}>
                         {Localize.t('send.submitFailed')}
@@ -95,7 +89,7 @@ class ResultStep extends Component<Props, State> {
                         <Spacer size={50} />
 
                         <Button
-                            secondary
+                            light
                             roundedSmall
                             label={Localize.t('global.copy')}
                             style={AppStyles.stretchSelf}
@@ -125,10 +119,7 @@ class ResultStep extends Component<Props, State> {
         const { transaction, payload, onFinish } = this.context;
 
         return (
-            <SafeAreaView
-                testID="signed-result-view"
-                style={[AppStyles.container, { backgroundColor: AppColors.lightBlue }]}
-            >
+            <SafeAreaView testID="signed-result-view" style={[AppStyles.container, styles.containerSigned]}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                     <Fragment key="success">
                         <Text
@@ -154,7 +145,7 @@ class ResultStep extends Component<Props, State> {
 
                                 <Spacer size={50} />
                                 <Button
-                                    secondary
+                                    light
                                     roundedSmall
                                     label={Localize.t('global.copy')}
                                     style={AppStyles.stretchSelf}

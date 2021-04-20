@@ -1,10 +1,8 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts, AppSizes } from '@theme';
-
+import { AppFonts, AppSizes } from '@theme';
 /* Styles ==================================================================== */
-export default StyleSheet.create({
-    // container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+export default StyleService.create({
     inputBoxRowActive: {
         minHeight: 35,
         height: AppSizes.heightPercentageToDP(6),
@@ -12,8 +10,8 @@ export default StyleSheet.create({
     inputBox: {
         flex: 1,
         height: AppSizes.heightPercentageToDP(3.5),
-        backgroundColor: AppColors.transparent,
-        borderColor: AppColors.greyDark,
+        backgroundColor: '$transparent',
+        borderColor: '$grey',
         justifyContent: 'center',
         // alignItems: 'center',
         margin: 4,
@@ -21,37 +19,38 @@ export default StyleSheet.create({
     inputBoxActive: {
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: AppColors.blue,
-        backgroundColor: AppColors.white,
+        borderColor: '$blue',
+        backgroundColor: '$tint',
     },
     inputBoxActiveError: {
-        borderColor: AppColors.red,
+        borderColor: '$red',
     },
     inputText: {
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.h4.size,
         textAlign: 'center',
+        color: '$blue',
     },
     inputTextActive: {
         paddingTop: 0,
-        color: AppColors.blue,
+        color: '$textPrimary',
     },
     inputTextError: {
         paddingTop: 0,
-        color: AppColors.red,
+        color: '$red',
     },
     separator: {
         width: 1,
-        backgroundColor: AppColors.greyDark,
+        backgroundColor: '$grey',
         height: '70%',
         alignSelf: 'center',
         borderTopWidth: 5,
         borderBottomWidth: 5,
-        borderColor: AppColors.grey,
+        borderColor: '$grey',
         opacity: 0.7,
     },
     buttonMiddleRight: {
-        backgroundColor: AppColors.blue,
+        backgroundColor: '$blue',
         justifyContent: 'center',
         alignItems: 'center',
         width: AppSizes.scale(60),
@@ -60,7 +59,7 @@ export default StyleSheet.create({
         borderBottomRightRadius: AppSizes.scale(7),
     },
     buttonMiddleLeft: {
-        backgroundColor: AppColors.greyDark,
+        backgroundColor: '$grey',
         justifyContent: 'center',
         alignItems: 'center',
         width: AppSizes.scale(60),
@@ -69,7 +68,7 @@ export default StyleSheet.create({
         borderBottomLeftRadius: AppSizes.scale(7),
     },
     buttonRoundBlack: {
-        backgroundColor: AppColors.black,
+        backgroundColor: StyleService.isDarkMode() ? '$tint' : '$black',
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 10,
@@ -79,17 +78,7 @@ export default StyleSheet.create({
         borderRadius: AppSizes.widthPercentageToDP(12) / 2,
     },
     buttonRoundIcon: {
-        tintColor: AppColors.white,
-    },
-    buttonRoundText: {
-        fontFamily: AppFonts.base.familyExtraBold,
-        fontSize: AppFonts.h3.size,
-        color: AppColors.white,
-        textAlign: 'center',
-    },
-    row: {
-        backgroundColor: AppColors.green,
-        flexDirection: 'row',
+        tintColor: '$white',
     },
     rowStyle: {
         width: '80%',
@@ -98,7 +87,7 @@ export default StyleSheet.create({
         flexDirection: 'row',
         borderRadius: 5,
         overflow: 'hidden',
-        backgroundColor: AppColors.grey,
+        backgroundColor: '$lightGrey',
         marginBottom: 5,
         position: 'relative',
         alignSelf: 'center',
@@ -113,36 +102,41 @@ export default StyleSheet.create({
         width: 50,
         height: 24,
         paddingVertical: 3,
-        // backgroundColor: AppColors.orange,
         alignSelf: 'center',
         alignContent: 'center',
         textAlign: 'center',
         fontWeight: 'bold',
-        color: AppColors.white,
+        color: '$white',
         borderRadius: 12,
         overflow: 'hidden',
         marginBottom: -22,
         zIndex: 5,
     },
+    rowStyleInnerGreen: {
+        backgroundColor: '$green',
+    },
+    rowStyleInnerGreenText: {
+        color: '$white',
+    },
     rowStyleInnerError: {
-        backgroundColor: AppColors.lightRed,
+        backgroundColor: '$lightRed',
     },
     rowStyleInnerActive: {
         paddingVertical: 5,
         width: '95%',
-        backgroundColor: AppColors.lightBlue,
+        backgroundColor: '$lightBlue',
     },
     rowStyleInnerReadonly: {
-        backgroundColor: AppColors.orange,
+        backgroundColor: '$lightOrange',
     },
     RowId: {
         fontSize: AppFonts.base.size * 0.8,
         fontFamily: AppFonts.base.familyBold,
-        color: AppColors.black,
+        color: '$textPrimary',
         paddingVertical: 3,
     },
     RowIdActive: {
-        color: AppColors.white,
+        color: '$white',
     },
     RowIdActiveContainer: {
         position: 'absolute',
@@ -152,11 +146,11 @@ export default StyleSheet.create({
         paddingHorizontal: 15,
         borderRadius: 10,
         zIndex: 99999,
-        backgroundColor: AppColors.blue,
+        backgroundColor: '$blue',
     },
     privateKeyNum: {
-        backgroundColor: AppColors.grey,
-        borderColor: AppColors.greyDark,
+        backgroundColor: '$grey',
+        borderColor: '$grey',
         padding: 8,
         fontSize: AppFonts.h4.size,
         fontFamily: AppFonts.base.familyMonoBold,
@@ -169,13 +163,13 @@ export default StyleSheet.create({
 
     // Active states
     privateKeyRowActive: {
-        backgroundColor: AppColors.lightOrange,
+        backgroundColor: '$lightOrange',
     },
     privateKeyNumActive: {
-        backgroundColor: AppColors.lightOrange,
-        borderColor: AppColors.orange,
+        backgroundColor: '$lightOrange',
+        borderColor: '$orange',
     },
     privateKeyNumTextActive: {
-        color: AppColors.orange,
+        color: '$orange',
     },
 });

@@ -3,13 +3,13 @@
  */
 import { filter, isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { View, KeyboardAvoidingView, Text, Alert, Keyboard, Platform, ScrollView } from 'react-native';
+import { View, Text, Alert, Keyboard } from 'react-native';
 
 import { StringType } from 'xumm-string-decode';
 import * as AccountLib from 'xrpl-accountlib';
 import { Decode } from 'xrpl-tagged-address-codec';
 
-import { NormalizeDestination } from '@common/libs/utils';
+import { NormalizeDestination } from '@common/utils/codec';
 import { getAccountName, getPayIdInfo } from '@common/helpers/resolver';
 import { Toast, Prompt } from '@common/helpers/interface';
 
@@ -20,7 +20,7 @@ import { AppScreens } from '@common/constants';
 import { ContactRepository } from '@store/repositories';
 import { ContactSchema } from '@store/schemas/latest';
 
-import { Header, Spacer, Button, TextInput, InfoMessage, Footer } from '@components/General';
+import { Header, Spacer, Button, TextInput, InfoMessage, KeyboardAwareScrollView, Footer } from '@components/General';
 
 import Localize from '@locale';
 
@@ -239,64 +239,55 @@ class EditContactView extends Component<Props, State> {
                     rightComponent={{ iconSize: 25, icon: 'IconTrash', onPress: this.deleteContact }}
                 />
 
-                <View style={[AppStyles.container]}>
-                    <KeyboardAvoidingView
-                        enabled={Platform.OS === 'ios'}
-                        keyboardVerticalOffset={Header.Height}
-                        behavior="padding"
-                        style={[AppStyles.flex1, AppStyles.paddingSml]}
-                    >
-                        <ScrollView style={[AppStyles.flex1]}>
-                            <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.name')}: </Text>
-                            <Spacer size={10} />
-                            <TextInput
-                                inputStyle={styles.textInput}
-                                placeholder={Localize.t('settings.contactName')}
-                                onChangeText={(value) => this.setState({ name: value })}
-                                value={name}
-                                maxLength={30}
-                                autoCapitalize="sentences"
-                            />
+                <KeyboardAwareScrollView style={[AppStyles.flex1, AppStyles.paddingSml]}>
+                    <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.name')}: </Text>
+                    <Spacer size={10} />
+                    <TextInput
+                        inputStyle={styles.textInput}
+                        placeholder={Localize.t('settings.contactName')}
+                        onChangeText={(value) => this.setState({ name: value })}
+                        value={name}
+                        maxLength={30}
+                        autoCapitalize="sentences"
+                    />
 
-                            <Spacer size={20} />
-                            <View style={AppStyles.hr} />
-                            <Spacer size={20} />
+                    <Spacer size={20} />
+                    <View style={AppStyles.hr} />
+                    <Spacer size={20} />
 
-                            <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.address')}: </Text>
-                            <Spacer size={10} />
-                            <TextInput
-                                placeholder={Localize.t('global.address')}
-                                onChangeText={this.onAddressChange}
-                                value={address}
-                                showScanner
-                                scannerType={StringType.XrplDestination}
-                                onScannerRead={this.onScannerRead}
-                                isLoading={isLoading}
-                            />
-                            <Spacer size={10} />
-                            <TextInput
-                                placeholder={Localize.t('global.destinationTag')}
-                                inputStyle={styles.textInput}
-                                onChangeText={this.onDestinationTagChange}
-                                value={tag}
-                                isLoading={isLoading}
-                            />
+                    <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.address')}: </Text>
+                    <Spacer size={10} />
+                    <TextInput
+                        placeholder={Localize.t('global.address')}
+                        onChangeText={this.onAddressChange}
+                        value={address}
+                        showScanner
+                        scannerType={StringType.XrplDestination}
+                        onScannerRead={this.onScannerRead}
+                        isLoading={isLoading}
+                    />
+                    <Spacer size={10} />
+                    <TextInput
+                        placeholder={Localize.t('global.destinationTag')}
+                        inputStyle={styles.textInput}
+                        onChangeText={this.onDestinationTagChange}
+                        value={tag}
+                        isLoading={isLoading}
+                    />
 
-                            {xAddress && (
-                                <>
-                                    <Spacer size={10} />
-                                    <InfoMessage type="info">
-                                        <Text style={AppStyles.subtext}>
-                                            {Localize.t('global.decodedFrom')}:
-                                            <Text style={AppStyles.monoBold}> {xAddress}</Text>
-                                        </Text>
-                                    </InfoMessage>
-                                </>
-                            )}
-                            <Spacer size={50} />
-                        </ScrollView>
-                    </KeyboardAvoidingView>
-                </View>
+                    {xAddress && (
+                        <>
+                            <Spacer size={10} />
+                            <InfoMessage type="info">
+                                <Text style={AppStyles.subtext}>
+                                    {Localize.t('global.decodedFrom')}:
+                                    <Text style={AppStyles.monoBold}> {xAddress}</Text>
+                                </Text>
+                            </InfoMessage>
+                        </>
+                    )}
+                    <Spacer size={50} />
+                </KeyboardAwareScrollView>
 
                 <Footer safeArea>
                     <Button label={Localize.t('global.save')} onPress={this.saveContact} />

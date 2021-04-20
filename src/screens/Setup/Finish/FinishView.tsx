@@ -5,23 +5,22 @@
 import { isNumber } from 'lodash';
 import React, { Component } from 'react';
 
-import { View, SafeAreaView, ActivityIndicator, Image, Alert } from 'react-native';
+import { View, SafeAreaView, Image, Alert } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { CoreRepository, ProfileRepository } from '@store/repositories';
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 import { AppScreens, AppConfig } from '@common/constants';
 
-import { BackendService, AuthenticationService } from '@services';
+import { BackendService, AuthenticationService, StyleService } from '@services';
 
 import Localize from '@locale';
 
 // component
-import { Button, Footer } from '@components/General';
+import { Button, Footer, LoadingIndicator } from '@components/General';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -109,15 +108,25 @@ class FinishView extends Component<Props, State> {
         }
     };
 
+    getHeaders = () => {
+        return {
+            'X-XUMM-Style': StyleService.getCurrentTheme(),
+        };
+    };
+
+    getURI = () => {
+        return AppConfig.termOfUseURL;
+    };
+
     render() {
         const { isLoading, isTOSLoaded } = this.state;
         return (
-            <SafeAreaView testID="agreement-setup-screen" style={[AppStyles.flex1]}>
+            <SafeAreaView testID="agreement-setup-screen" style={[styles.container]}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerAligned]}>
-                    <Image style={styles.logo} source={Images.xummLogo} />
+                    <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
                 </View>
 
-                <View style={[AppStyles.flex8, AppStyles.centerContent]}>
+                <View style={[AppStyles.flex8, AppStyles.centerContent, styles.contentArea]}>
                     <WebView
                         startInLoadingState
                         onMessage={this.fetchTOSVersion}
@@ -126,15 +135,16 @@ class FinishView extends Component<Props, State> {
                                 isTOSLoaded: true,
                             });
                         }}
-                        renderLoading={() => (
-                            <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
-                        )}
-                        source={{ uri: AppConfig.termOfUseURL }}
+                        renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
+                        source={{ uri: this.getURI(), headers: this.getHeaders() }}
+                        style={styles.webView}
+                        androidHardwareAccelerationDisabled={false}
                     />
                 </View>
 
                 <Footer>
                     <Button
+                        numberOfLines={1}
                         isDisabled={!isTOSLoaded}
                         testID="confirm-button"
                         isLoading={isLoading}

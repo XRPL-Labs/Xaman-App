@@ -3,12 +3,15 @@
 import { storiesOf } from '@storybook/react-native';
 
 import withPropsCombinations from '../../../../storybook/matrix';
+import { withBackground, withLocale } from '../../../../storybook/decoration';
 
 import { Badge } from '../Badge';
 
 const SIZES = ['small', 'medium', 'large'] as const;
 
 storiesOf('Badge', module)
+    .addDecorator(withLocale)
+    .addDecorator(withBackground)
     .add(
         'Bithomp',
         withPropsCombinations(Badge, {

@@ -1,14 +1,14 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppSizes, AppColors, AppFonts } from '@theme';
+import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
-export default StyleSheet.create({
+export default StyleService.create({
     searchContainer: {
         flexDirection: 'row',
         height: AppSizes.heightPercentageToDP(5.5),
         marginHorizontal: 10,
         borderRadius: 15,
-        backgroundColor: AppColors.grey,
+        backgroundColor: '$tint',
     },
     searchIcon: {
         flexDirection: 'column',
@@ -17,6 +17,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         position: 'absolute',
         left: 0,
+        tintColor: '$textPrimary',
     },
     searchInput: {
         flex: 1,
@@ -26,7 +27,7 @@ export default StyleSheet.create({
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.p.size,
         fontWeight: '600',
-        color: AppColors.blue,
+        color: '$textPrimary',
     },
     searchClear: {
         height: '100%',
@@ -35,5 +36,6 @@ export default StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute',
         right: 0,
+        tintColor: '$textPrimary',
     },
 });

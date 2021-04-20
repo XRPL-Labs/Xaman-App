@@ -1,9 +1,9 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts, AppSizes } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
-export default StyleSheet.create({
+export default StyleService.create({
     container: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -34,11 +34,11 @@ export default StyleSheet.create({
         marginLeft: 12,
         borderRadius: 9,
         opacity: 0.3,
-        backgroundColor: AppColors.greyDark,
+        backgroundColor: '$silver',
     },
     pinActiveStyle: {
         opacity: 1.0,
-        backgroundColor: AppColors.blue,
+        backgroundColor: '$blue',
     },
     keyboardWrap: {
         width: AppSizes.screen.width,
@@ -46,22 +46,34 @@ export default StyleSheet.create({
     },
     numWrap: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-evenly',
     },
     line: {
-        flex: 1,
-        padding: 15,
+        margin: 5,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 50,
+        borderRadius: 45,
+        // backgroundColor: 'red',
+        width: AppSizes.moderateScale(90),
+        height: AppSizes.verticalScale(65),
     },
-    numText: {
-        color: AppColors.black,
+    numTextInt: {
+        color: '$textPrimary',
+        textAlign: 'center',
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.h3.size,
+    },
+    numTextAlpha: {
+        fontSize: AppFonts.base.size * 0.65,
+        textAlign: 'center',
+        color: '$textPrimary',
+        letterSpacing: 2,
     },
     bottomWrap: {
         flexDirection: 'row',
         justifyContent: 'space-around',
+    },
+    iconStyle: {
+        tintColor: '$contrast',
     },
 });

@@ -40,12 +40,12 @@ class EnterSecretNumbers extends Component<Props, State> {
     }
 
     goNext = () => {
-        const { goNext, setImportedAccount } = this.context;
+        const { goNext, setImportedAccount, importOfflineSecretNumber } = this.context;
 
         const secretNumber = this.secretNumberInput.getNumbers();
 
         try {
-            const account = derive.secretNumbers(secretNumber);
+            const account = derive.secretNumbers(secretNumber, importOfflineSecretNumber);
 
             // set imported account
             setImportedAccount(account, () => {
@@ -57,9 +57,15 @@ class EnterSecretNumbers extends Component<Props, State> {
         }
     };
 
+    onAllFilled = (filled: boolean) => {
+        this.setState({
+            allFilled: filled,
+        });
+    };
+
     render() {
         const { allFilled } = this.state;
-        const { goBack } = this.context;
+        const { goBack, importOfflineSecretNumber } = this.context;
 
         return (
             <SafeAreaView testID="account-import-enter-secretNumbers" style={[AppStyles.container]}>
@@ -74,11 +80,8 @@ class EnterSecretNumbers extends Component<Props, State> {
                         ref={(r) => {
                             this.secretNumberInput = r;
                         }}
-                        onAllFilled={(filled) => {
-                            this.setState({
-                                allFilled: filled,
-                            });
-                        }}
+                        onAllFilled={this.onAllFilled}
+                        checksum={!importOfflineSecretNumber}
                     />
                 </View>
 
@@ -86,12 +89,10 @@ class EnterSecretNumbers extends Component<Props, State> {
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
-                            secondary
+                            light
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            onPress={() => {
-                                goBack();
-                            }}
+                            onPress={goBack}
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>
@@ -100,9 +101,7 @@ class EnterSecretNumbers extends Component<Props, State> {
                             isDisabled={!allFilled}
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
-                            onPress={() => {
-                                this.goNext();
-                            }}
+                            onPress={this.goNext}
                         />
                     </View>
                 </Footer>

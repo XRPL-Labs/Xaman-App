@@ -9,11 +9,12 @@ import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import { CoreRepository } from '@store/repositories';
 import { BiometryType } from '@store/types';
+
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
+import { VibrateHapticFeedback, Toast } from '@common/helpers/interface';
 
-import { PushNotificationsService, LoggerService } from '@services';
+import { PushNotificationsService, LoggerService, StyleService } from '@services';
 
 // components
 import { Button, Spacer, Footer, PinInput, InfoMessage } from '@components/General';
@@ -151,14 +152,38 @@ class PasscodeSetupView extends Component<Props, State> {
         });
     };
 
-    onPinEdit = (code: string) => {
-        const { step } = this.state;
+    onPinFinish = (code: string) => {
+        const { step, passcode } = this.state;
 
         if (step === 'entry') {
+            VibrateHapticFeedback('impactLight');
             this.setState({
                 passcode: code,
             });
-        } else {
+            return;
+        }
+
+        if (step === 'confirm') {
+            // pincode doesn't match the confirm pin
+            if (passcode !== code) {
+                Toast(Localize.t('setupPasscode.passcodeDoNotMatch'));
+                VibrateHapticFeedback('notificationError');
+
+                // clean pin code
+                if (this.pinInput) {
+                    this.pinInput.clean();
+                    this.pinInput.focus();
+                }
+
+                // go back to entry step
+                this.setState({
+                    passcode: '',
+                    step: 'entry',
+                });
+                return;
+            }
+
+            VibrateHapticFeedback('impactLight');
             this.setState({
                 passcodeConfirm: code,
             });
@@ -168,7 +193,7 @@ class PasscodeSetupView extends Component<Props, State> {
     renderHeader = () => {
         return (
             <View style={[AppStyles.flex2, AppStyles.centerContent]}>
-                <Image style={styles.logo} source={Images.xummLogo} />
+                <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
             </View>
         );
     };
@@ -215,7 +240,7 @@ class PasscodeSetupView extends Component<Props, State> {
             return (
                 <View testID="pin-code-explanation-view" style={[AppStyles.flex8, AppStyles.paddingSml]}>
                     <View style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.centerContent]}>
-                        <Image style={[AppStyles.emptyIcon]} source={Images.ImagePincode} />
+                        <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImagePincode')} />
                     </View>
 
                     <View style={[AppStyles.flex2, AppStyles.centerAligned]}>
@@ -246,7 +271,7 @@ class PasscodeSetupView extends Component<Props, State> {
                         }}
                         autoFocus
                         codeLength={6}
-                        onEdit={this.onPinEdit}
+                        onFinish={this.onPinFinish}
                     />
                 </View>
 

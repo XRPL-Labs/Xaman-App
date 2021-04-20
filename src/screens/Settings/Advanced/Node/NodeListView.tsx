@@ -5,7 +5,7 @@
 import { flatMap } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text, SectionList, TouchableHighlight } from 'react-native';
+import { View, Text, SectionList, TouchableOpacity } from 'react-native';
 
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
@@ -113,6 +113,7 @@ class NodeListView extends Component<Props, State> {
                     { text: Localize.t('global.cancel') },
                     {
                         text: Localize.t('global.doIt'),
+                        style: 'destructive',
                         onPress: () => {
                             CoreRepository.saveSettings({
                                 defaultNode: item.url,
@@ -136,7 +137,9 @@ class NodeListView extends Component<Props, State> {
     renderSectionHeader = ({ section: { title } }: any) => {
         return (
             <View style={styles.sectionHeader}>
-                <Text style={styles.sectionHeaderText}>{title}</Text>
+                <Text numberOfLines={1} style={styles.sectionHeaderText}>
+                    {title}
+                </Text>
             </View>
         );
     };
@@ -148,12 +151,12 @@ class NodeListView extends Component<Props, State> {
         const selected = item.url === coreSettings.defaultNode;
 
         return (
-            <TouchableHighlight
+            <TouchableOpacity
+                activeOpacity={0.8}
                 testID={`node-${item.url}`}
                 onPress={() => {
                     this.onItemPress(item);
                 }}
-                underlayColor="rgba(154, 154, 154, 0.25)"
             >
                 <View style={[styles.row]}>
                     <View style={[AppStyles.row, AppStyles.flex6, AppStyles.centerAligned]}>
@@ -175,7 +178,7 @@ class NodeListView extends Component<Props, State> {
                         </View>
                     )}
                 </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
         );
     };
 

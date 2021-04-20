@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Storyshots Badge Bithomp 1`] = `
+exports[`Storyshots AmountText WithCurrency 1`] = `
 <View
   style={
     Object {
-      "alignItems": "center",
+      "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
     }
@@ -13,142 +13,536 @@ exports[`Storyshots Badge Bithomp 1`] = `
   <View
     style={
       Object {
-        "marginTop": 10,
+        "alignItems": "center",
+        "flex": 1,
+        "justifyContent": "center",
       }
     }
   >
     <View
-      accessible={true}
-      focusable={true}
-      onClick={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "alignSelf": "center",
-          "backgroundColor": "#3fa3b5",
-          "borderRadius": 5,
-          "marginLeft": 5,
-          "opacity": 1,
-          "paddingHorizontal": 5,
-          "paddingVertical": 1,
+          "marginTop": 10,
         }
       }
     >
-      <Text
-        style={
-          Array [
-            Object {
-              "color": "#FFFFFF",
-              "fontFamily": "ProximaNova-Bold",
-              "fontSize": 18,
-            },
-            Object {
-              "fontSize": 18,
-            },
-          ]
-        }
+      <View
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
       >
-        Bithomp
-      </Text>
+        <Text
+          numberOfLines={1}
+        >
+          
+          0…
+           
+          <Text
+            numberOfLines={1}
+          >
+            XRP
+          </Text>
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        Object {
+          "marginTop": 10,
+        }
+      }
+    >
+      <View
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+      >
+        <Text
+          numberOfLines={1}
+        >
+          
+          2.2222
+           
+          <Text
+            numberOfLines={1}
+          >
+            XRP
+          </Text>
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        Object {
+          "marginTop": 10,
+        }
+      }
+    >
+      <View
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+      >
+        <Text
+          numberOfLines={1}
+        >
+          
+          99,999
+           
+          <Text
+            numberOfLines={1}
+          >
+            XRP
+          </Text>
+        </Text>
+      </View>
     </View>
   </View>
+</View>
+`;
+
+exports[`Storyshots AmountText WithCurrencyPrefix 1`] = `
+<View
+  style={
+    Object {
+      "backgroundColor": "#F0F3FF",
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
   <View
     style={
       Object {
-        "marginTop": 10,
+        "alignItems": "center",
+        "flex": 1,
+        "justifyContent": "center",
       }
     }
   >
     <View
-      accessible={true}
-      focusable={true}
-      onClick={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "alignSelf": "center",
-          "backgroundColor": "#3fa3b5",
-          "borderRadius": 5,
-          "marginLeft": 5,
-          "opacity": 1,
-          "paddingHorizontal": 5,
-          "paddingVertical": 1,
+          "marginTop": 10,
         }
       }
     >
-      <Text
-        style={
-          Array [
-            Object {
-              "color": "#FFFFFF",
-              "fontFamily": "ProximaNova-Bold",
-              "fontSize": 18,
-            },
-            Object {
-              "fontSize": 25.714285714285715,
-            },
-          ]
-        }
+      <View
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
       >
-        Bithomp
-      </Text>
+        <Text
+          numberOfLines={1}
+        >
+          ~
+          0…
+           
+          <Text
+            numberOfLines={1}
+          >
+            XRP
+          </Text>
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        Object {
+          "marginTop": 10,
+        }
+      }
+    >
+      <View
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+      >
+        <Text
+          numberOfLines={1}
+        >
+          ~
+          2.2222
+           
+          <Text
+            numberOfLines={1}
+          >
+            XRP
+          </Text>
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        Object {
+          "marginTop": 10,
+        }
+      }
+    >
+      <View
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+      >
+        <Text
+          numberOfLines={1}
+        >
+          ~
+          99,999
+           
+          <Text
+            numberOfLines={1}
+          >
+            XRP
+          </Text>
+        </Text>
+      </View>
     </View>
   </View>
+</View>
+`;
+
+exports[`Storyshots AmountText WithValue 1`] = `
+<View
+  style={
+    Object {
+      "backgroundColor": "#F0F3FF",
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
   <View
     style={
       Object {
-        "marginTop": 10,
+        "alignItems": "center",
+        "flex": 1,
+        "justifyContent": "center",
       }
     }
   >
     <View
-      accessible={true}
-      focusable={true}
-      onClick={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "alignSelf": "center",
-          "backgroundColor": "#3fa3b5",
-          "borderRadius": 5,
-          "marginLeft": 5,
-          "opacity": 1,
-          "paddingHorizontal": 5,
-          "paddingVertical": 1,
+          "marginTop": 10,
         }
       }
     >
-      <Text
+      <View
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+      >
+        <Text
+          numberOfLines={1}
+        >
+          
+          0…
+           
+          <Text
+            numberOfLines={1}
+          >
+            
+          </Text>
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        Object {
+          "marginTop": 10,
+        }
+      }
+    >
+      <View
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+      >
+        <Text
+          numberOfLines={1}
+        >
+          
+          2.2222
+           
+          <Text
+            numberOfLines={1}
+          >
+            
+          </Text>
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        Object {
+          "marginTop": 10,
+        }
+      }
+    >
+      <View
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+      >
+        <Text
+          numberOfLines={1}
+        >
+          
+          99,999
+           
+          <Text
+            numberOfLines={1}
+          >
+            
+          </Text>
+        </Text>
+      </View>
+    </View>
+  </View>
+</View>
+`;
+
+exports[`Storyshots Badge Bithomp 1`] = `
+<View
+  style={
+    Object {
+      "backgroundColor": "#F0F3FF",
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "flex": 1,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "marginTop": 10,
+        }
+      }
+    >
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
-          Array [
-            Object {
-              "color": "#FFFFFF",
-              "fontFamily": "ProximaNova-Bold",
-              "fontSize": 18,
-            },
-            Object {
-              "fontSize": 32.14285714285714,
-            },
-          ]
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#3fa3b5",
+            "borderRadius": 5,
+            "marginLeft": 5,
+            "opacity": 1,
+            "paddingHorizontal": 5,
+            "paddingVertical": 1,
+          }
         }
       >
-        Bithomp
-      </Text>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#ffffff",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 18,
+              },
+              Object {
+                "fontSize": 18,
+              },
+            ]
+          }
+        >
+          Bithomp
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        Object {
+          "marginTop": 10,
+        }
+      }
+    >
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#3fa3b5",
+            "borderRadius": 5,
+            "marginLeft": 5,
+            "opacity": 1,
+            "paddingHorizontal": 5,
+            "paddingVertical": 1,
+          }
+        }
+      >
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#ffffff",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 18,
+              },
+              Object {
+                "fontSize": 25.714285714285715,
+              },
+            ]
+          }
+        >
+          Bithomp
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        Object {
+          "marginTop": 10,
+        }
+      }
+    >
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#3fa3b5",
+            "borderRadius": 5,
+            "marginLeft": 5,
+            "opacity": 1,
+            "paddingHorizontal": 5,
+            "paddingVertical": 1,
+          }
+        }
+      >
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#ffffff",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 18,
+              },
+              Object {
+                "fontSize": 32.14285714285714,
+              },
+            ]
+          }
+        >
+          Bithomp
+        </Text>
+      </View>
     </View>
   </View>
 </View>
@@ -158,7 +552,7 @@ exports[`Storyshots Badge PayId 1`] = `
 <View
   style={
     Object {
-      "alignItems": "center",
+      "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
     }
@@ -167,142 +561,152 @@ exports[`Storyshots Badge PayId 1`] = `
   <View
     style={
       Object {
-        "marginTop": 10,
+        "alignItems": "center",
+        "flex": 1,
+        "justifyContent": "center",
       }
     }
   >
     <View
-      accessible={true}
-      focusable={true}
-      onClick={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "alignSelf": "center",
-          "backgroundColor": "#38D39F",
-          "borderRadius": 5,
-          "marginLeft": 5,
-          "opacity": 1,
-          "paddingHorizontal": 5,
-          "paddingVertical": 1,
+          "marginTop": 10,
         }
       }
     >
-      <Text
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
-          Array [
-            Object {
-              "color": "#FFFFFF",
-              "fontFamily": "ProximaNova-Bold",
-              "fontSize": 18,
-            },
-            Object {
-              "fontSize": 18,
-            },
-          ]
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#38D39F",
+            "borderRadius": 5,
+            "marginLeft": 5,
+            "opacity": 1,
+            "paddingHorizontal": 5,
+            "paddingVertical": 1,
+          }
         }
       >
-        PayID
-      </Text>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#ffffff",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 18,
+              },
+              Object {
+                "fontSize": 18,
+              },
+            ]
+          }
+        >
+          PayID
+        </Text>
+      </View>
     </View>
-  </View>
-  <View
-    style={
-      Object {
-        "marginTop": 10,
-      }
-    }
-  >
     <View
-      accessible={true}
-      focusable={true}
-      onClick={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "alignSelf": "center",
-          "backgroundColor": "#38D39F",
-          "borderRadius": 5,
-          "marginLeft": 5,
-          "opacity": 1,
-          "paddingHorizontal": 5,
-          "paddingVertical": 1,
+          "marginTop": 10,
         }
       }
     >
-      <Text
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
-          Array [
-            Object {
-              "color": "#FFFFFF",
-              "fontFamily": "ProximaNova-Bold",
-              "fontSize": 18,
-            },
-            Object {
-              "fontSize": 25.714285714285715,
-            },
-          ]
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#38D39F",
+            "borderRadius": 5,
+            "marginLeft": 5,
+            "opacity": 1,
+            "paddingHorizontal": 5,
+            "paddingVertical": 1,
+          }
         }
       >
-        PayID
-      </Text>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#ffffff",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 18,
+              },
+              Object {
+                "fontSize": 25.714285714285715,
+              },
+            ]
+          }
+        >
+          PayID
+        </Text>
+      </View>
     </View>
-  </View>
-  <View
-    style={
-      Object {
-        "marginTop": 10,
-      }
-    }
-  >
     <View
-      accessible={true}
-      focusable={true}
-      onClick={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "alignSelf": "center",
-          "backgroundColor": "#38D39F",
-          "borderRadius": 5,
-          "marginLeft": 5,
-          "opacity": 1,
-          "paddingHorizontal": 5,
-          "paddingVertical": 1,
+          "marginTop": 10,
         }
       }
     >
-      <Text
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
-          Array [
-            Object {
-              "color": "#FFFFFF",
-              "fontFamily": "ProximaNova-Bold",
-              "fontSize": 18,
-            },
-            Object {
-              "fontSize": 32.14285714285714,
-            },
-          ]
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#38D39F",
+            "borderRadius": 5,
+            "marginLeft": 5,
+            "opacity": 1,
+            "paddingHorizontal": 5,
+            "paddingVertical": 1,
+          }
         }
       >
-        PayID
-      </Text>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#ffffff",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 18,
+              },
+              Object {
+                "fontSize": 32.14285714285714,
+              },
+            ]
+          }
+        >
+          PayID
+        </Text>
+      </View>
     </View>
   </View>
 </View>
@@ -312,7 +716,7 @@ exports[`Storyshots Badge Success 1`] = `
 <View
   style={
     Object {
-      "alignItems": "center",
+      "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
     }
@@ -321,142 +725,152 @@ exports[`Storyshots Badge Success 1`] = `
   <View
     style={
       Object {
-        "marginTop": 10,
+        "alignItems": "center",
+        "flex": 1,
+        "justifyContent": "center",
       }
     }
   >
     <View
-      accessible={true}
-      focusable={true}
-      onClick={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "alignSelf": "center",
-          "backgroundColor": "#3BDC96",
-          "borderRadius": 5,
-          "marginLeft": 5,
-          "opacity": 1,
-          "paddingHorizontal": 5,
-          "paddingVertical": 1,
+          "marginTop": 10,
         }
       }
     >
-      <Text
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
-          Array [
-            Object {
-              "color": "#FFFFFF",
-              "fontFamily": "ProximaNova-Bold",
-              "fontSize": 18,
-            },
-            Object {
-              "fontSize": 18,
-            },
-          ]
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#3BDC96",
+            "borderRadius": 5,
+            "marginLeft": 5,
+            "opacity": 1,
+            "paddingHorizontal": 5,
+            "paddingVertical": 1,
+          }
         }
       >
-        Success
-      </Text>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#ffffff",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 18,
+              },
+              Object {
+                "fontSize": 18,
+              },
+            ]
+          }
+        >
+          Success
+        </Text>
+      </View>
     </View>
-  </View>
-  <View
-    style={
-      Object {
-        "marginTop": 10,
-      }
-    }
-  >
     <View
-      accessible={true}
-      focusable={true}
-      onClick={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "alignSelf": "center",
-          "backgroundColor": "#3BDC96",
-          "borderRadius": 5,
-          "marginLeft": 5,
-          "opacity": 1,
-          "paddingHorizontal": 5,
-          "paddingVertical": 1,
+          "marginTop": 10,
         }
       }
     >
-      <Text
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
-          Array [
-            Object {
-              "color": "#FFFFFF",
-              "fontFamily": "ProximaNova-Bold",
-              "fontSize": 18,
-            },
-            Object {
-              "fontSize": 25.714285714285715,
-            },
-          ]
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#3BDC96",
+            "borderRadius": 5,
+            "marginLeft": 5,
+            "opacity": 1,
+            "paddingHorizontal": 5,
+            "paddingVertical": 1,
+          }
         }
       >
-        Success
-      </Text>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#ffffff",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 18,
+              },
+              Object {
+                "fontSize": 25.714285714285715,
+              },
+            ]
+          }
+        >
+          Success
+        </Text>
+      </View>
     </View>
-  </View>
-  <View
-    style={
-      Object {
-        "marginTop": 10,
-      }
-    }
-  >
     <View
-      accessible={true}
-      focusable={true}
-      onClick={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "alignSelf": "center",
-          "backgroundColor": "#3BDC96",
-          "borderRadius": 5,
-          "marginLeft": 5,
-          "opacity": 1,
-          "paddingHorizontal": 5,
-          "paddingVertical": 1,
+          "marginTop": 10,
         }
       }
     >
-      <Text
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
-          Array [
-            Object {
-              "color": "#FFFFFF",
-              "fontFamily": "ProximaNova-Bold",
-              "fontSize": 18,
-            },
-            Object {
-              "fontSize": 32.14285714285714,
-            },
-          ]
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#3BDC96",
+            "borderRadius": 5,
+            "marginLeft": 5,
+            "opacity": 1,
+            "paddingHorizontal": 5,
+            "paddingVertical": 1,
+          }
         }
       >
-        Success
-      </Text>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#ffffff",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 18,
+              },
+              Object {
+                "fontSize": 32.14285714285714,
+              },
+            ]
+          }
+        >
+          Success
+        </Text>
+      </View>
     </View>
   </View>
 </View>
@@ -466,7 +880,7 @@ exports[`Storyshots Badge XRPLNS 1`] = `
 <View
   style={
     Object {
-      "alignItems": "center",
+      "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
     }
@@ -475,142 +889,152 @@ exports[`Storyshots Badge XRPLNS 1`] = `
   <View
     style={
       Object {
-        "marginTop": 10,
+        "alignItems": "center",
+        "flex": 1,
+        "justifyContent": "center",
       }
     }
   >
     <View
-      accessible={true}
-      focusable={true}
-      onClick={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "alignSelf": "center",
-          "backgroundColor": "#3767CE",
-          "borderRadius": 5,
-          "marginLeft": 5,
-          "opacity": 1,
-          "paddingHorizontal": 5,
-          "paddingVertical": 1,
+          "marginTop": 10,
         }
       }
     >
-      <Text
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
-          Array [
-            Object {
-              "color": "#FFFFFF",
-              "fontFamily": "ProximaNova-Bold",
-              "fontSize": 18,
-            },
-            Object {
-              "fontSize": 18,
-            },
-          ]
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#3767CE",
+            "borderRadius": 5,
+            "marginLeft": 5,
+            "opacity": 1,
+            "paddingHorizontal": 5,
+            "paddingVertical": 1,
+          }
         }
       >
-        XRPLNS
-      </Text>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#ffffff",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 18,
+              },
+              Object {
+                "fontSize": 18,
+              },
+            ]
+          }
+        >
+          XRPLNS
+        </Text>
+      </View>
     </View>
-  </View>
-  <View
-    style={
-      Object {
-        "marginTop": 10,
-      }
-    }
-  >
     <View
-      accessible={true}
-      focusable={true}
-      onClick={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "alignSelf": "center",
-          "backgroundColor": "#3767CE",
-          "borderRadius": 5,
-          "marginLeft": 5,
-          "opacity": 1,
-          "paddingHorizontal": 5,
-          "paddingVertical": 1,
+          "marginTop": 10,
         }
       }
     >
-      <Text
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
-          Array [
-            Object {
-              "color": "#FFFFFF",
-              "fontFamily": "ProximaNova-Bold",
-              "fontSize": 18,
-            },
-            Object {
-              "fontSize": 25.714285714285715,
-            },
-          ]
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#3767CE",
+            "borderRadius": 5,
+            "marginLeft": 5,
+            "opacity": 1,
+            "paddingHorizontal": 5,
+            "paddingVertical": 1,
+          }
         }
       >
-        XRPLNS
-      </Text>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#ffffff",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 18,
+              },
+              Object {
+                "fontSize": 25.714285714285715,
+              },
+            ]
+          }
+        >
+          XRPLNS
+        </Text>
+      </View>
     </View>
-  </View>
-  <View
-    style={
-      Object {
-        "marginTop": 10,
-      }
-    }
-  >
     <View
-      accessible={true}
-      focusable={true}
-      onClick={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "alignSelf": "center",
-          "backgroundColor": "#3767CE",
-          "borderRadius": 5,
-          "marginLeft": 5,
-          "opacity": 1,
-          "paddingHorizontal": 5,
-          "paddingVertical": 1,
+          "marginTop": 10,
         }
       }
     >
-      <Text
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
-          Array [
-            Object {
-              "color": "#FFFFFF",
-              "fontFamily": "ProximaNova-Bold",
-              "fontSize": 18,
-            },
-            Object {
-              "fontSize": 32.14285714285714,
-            },
-          ]
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#3767CE",
+            "borderRadius": 5,
+            "marginLeft": 5,
+            "opacity": 1,
+            "paddingHorizontal": 5,
+            "paddingVertical": 1,
+          }
         }
       >
-        XRPLNS
-      </Text>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#ffffff",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 18,
+              },
+              Object {
+                "fontSize": 32.14285714285714,
+              },
+            ]
+          }
+        >
+          XRPLNS
+        </Text>
+      </View>
     </View>
   </View>
 </View>
@@ -620,7 +1044,7 @@ exports[`Storyshots Badge XRPScan 1`] = `
 <View
   style={
     Object {
-      "alignItems": "center",
+      "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
     }
@@ -629,142 +1053,152 @@ exports[`Storyshots Badge XRPScan 1`] = `
   <View
     style={
       Object {
-        "marginTop": 10,
+        "alignItems": "center",
+        "flex": 1,
+        "justifyContent": "center",
       }
     }
   >
     <View
-      accessible={true}
-      focusable={true}
-      onClick={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "alignSelf": "center",
-          "backgroundColor": "#004a7c",
-          "borderRadius": 5,
-          "marginLeft": 5,
-          "opacity": 1,
-          "paddingHorizontal": 5,
-          "paddingVertical": 1,
+          "marginTop": 10,
         }
       }
     >
-      <Text
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
-          Array [
-            Object {
-              "color": "#FFFFFF",
-              "fontFamily": "ProximaNova-Bold",
-              "fontSize": 18,
-            },
-            Object {
-              "fontSize": 18,
-            },
-          ]
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#004a7c",
+            "borderRadius": 5,
+            "marginLeft": 5,
+            "opacity": 1,
+            "paddingHorizontal": 5,
+            "paddingVertical": 1,
+          }
         }
       >
-        XRPScan
-      </Text>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#ffffff",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 18,
+              },
+              Object {
+                "fontSize": 18,
+              },
+            ]
+          }
+        >
+          XRPScan
+        </Text>
+      </View>
     </View>
-  </View>
-  <View
-    style={
-      Object {
-        "marginTop": 10,
-      }
-    }
-  >
     <View
-      accessible={true}
-      focusable={true}
-      onClick={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "alignSelf": "center",
-          "backgroundColor": "#004a7c",
-          "borderRadius": 5,
-          "marginLeft": 5,
-          "opacity": 1,
-          "paddingHorizontal": 5,
-          "paddingVertical": 1,
+          "marginTop": 10,
         }
       }
     >
-      <Text
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
-          Array [
-            Object {
-              "color": "#FFFFFF",
-              "fontFamily": "ProximaNova-Bold",
-              "fontSize": 18,
-            },
-            Object {
-              "fontSize": 25.714285714285715,
-            },
-          ]
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#004a7c",
+            "borderRadius": 5,
+            "marginLeft": 5,
+            "opacity": 1,
+            "paddingHorizontal": 5,
+            "paddingVertical": 1,
+          }
         }
       >
-        XRPScan
-      </Text>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#ffffff",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 18,
+              },
+              Object {
+                "fontSize": 25.714285714285715,
+              },
+            ]
+          }
+        >
+          XRPScan
+        </Text>
+      </View>
     </View>
-  </View>
-  <View
-    style={
-      Object {
-        "marginTop": 10,
-      }
-    }
-  >
     <View
-      accessible={true}
-      focusable={true}
-      onClick={[Function]}
-      onResponderGrant={[Function]}
-      onResponderMove={[Function]}
-      onResponderRelease={[Function]}
-      onResponderTerminate={[Function]}
-      onResponderTerminationRequest={[Function]}
-      onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "alignSelf": "center",
-          "backgroundColor": "#004a7c",
-          "borderRadius": 5,
-          "marginLeft": 5,
-          "opacity": 1,
-          "paddingHorizontal": 5,
-          "paddingVertical": 1,
+          "marginTop": 10,
         }
       }
     >
-      <Text
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
         style={
-          Array [
-            Object {
-              "color": "#FFFFFF",
-              "fontFamily": "ProximaNova-Bold",
-              "fontSize": 18,
-            },
-            Object {
-              "fontSize": 32.14285714285714,
-            },
-          ]
+          Object {
+            "alignSelf": "center",
+            "backgroundColor": "#004a7c",
+            "borderRadius": 5,
+            "marginLeft": 5,
+            "opacity": 1,
+            "paddingHorizontal": 5,
+            "paddingVertical": 1,
+          }
         }
       >
-        XRPScan
-      </Text>
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#ffffff",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 18,
+              },
+              Object {
+                "fontSize": 32.14285714285714,
+              },
+            ]
+          }
+        >
+          XRPScan
+        </Text>
+      </View>
     </View>
   </View>
 </View>
@@ -774,6 +1208,7 @@ exports[`Storyshots EventsFilterChip default 1`] = `
 <View
   style={
     Object {
+      "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
     }
@@ -818,7 +1253,7 @@ exports[`Storyshots EventsFilterChip default 1`] = `
           "marginRight": 0,
           "marginTop": 5,
           "opacity": 1,
-          "paddingHorizontal": 18,
+          "paddingHorizontal": 15,
           "paddingLeft": 10,
           "paddingRight": 10,
         }
@@ -841,13 +1276,12 @@ exports[`Storyshots EventsFilterChip default 1`] = `
           style={
             Array [
               Object {
-                "color": "#FFFFFF",
+                "color": "#ffffff",
                 "fontFamily": "ProximaNova-Bold",
                 "fontSize": 35.357142857142854,
                 "paddingHorizontal": 5,
                 "textAlign": "center",
               },
-              undefined,
               undefined,
               undefined,
               undefined,
@@ -859,7 +1293,7 @@ exports[`Storyshots EventsFilterChip default 1`] = `
               undefined,
               Array [
                 Object {
-                  "color": "#FFFFFF",
+                  "color": "#ffffff",
                   "fontFamily": "ProximaNova-Bold",
                   "fontSize": 27,
                   "paddingRight": 2,
@@ -886,10 +1320,12 @@ exports[`Storyshots EventsFilterChip default 1`] = `
               Array [
                 Object {
                   "marginLeft": 3,
+                  "tintColor": "#ffffff",
                 },
                 undefined,
+                undefined,
                 Object {
-                  "tintColor": "#FFFFFF",
+                  "tintColor": "#ffffff",
                 },
               ],
             ]
@@ -923,7 +1359,7 @@ exports[`Storyshots EventsFilterChip default 1`] = `
           "marginRight": 0,
           "marginTop": 5,
           "opacity": 1,
-          "paddingHorizontal": 18,
+          "paddingHorizontal": 15,
           "paddingLeft": 10,
           "paddingRight": 10,
         }
@@ -946,13 +1382,12 @@ exports[`Storyshots EventsFilterChip default 1`] = `
           style={
             Array [
               Object {
-                "color": "#FFFFFF",
+                "color": "#ffffff",
                 "fontFamily": "ProximaNova-Bold",
                 "fontSize": 35.357142857142854,
                 "paddingHorizontal": 5,
                 "textAlign": "center",
               },
-              undefined,
               undefined,
               undefined,
               undefined,
@@ -964,7 +1399,7 @@ exports[`Storyshots EventsFilterChip default 1`] = `
               undefined,
               Array [
                 Object {
-                  "color": "#FFFFFF",
+                  "color": "#ffffff",
                   "fontFamily": "ProximaNova-Bold",
                   "fontSize": 27,
                   "paddingRight": 2,
@@ -973,7 +1408,7 @@ exports[`Storyshots EventsFilterChip default 1`] = `
             ]
           }
         >
-          [missing "en.global.income" translation]
+          Incoming
         </Text>
         <Image
           resizeMode="contain"
@@ -991,10 +1426,12 @@ exports[`Storyshots EventsFilterChip default 1`] = `
               Array [
                 Object {
                   "marginLeft": 3,
+                  "tintColor": "#ffffff",
                 },
                 undefined,
+                undefined,
                 Object {
-                  "tintColor": "#FFFFFF",
+                  "tintColor": "#ffffff",
                 },
               ],
             ]
@@ -1028,7 +1465,7 @@ exports[`Storyshots EventsFilterChip default 1`] = `
           "marginRight": 0,
           "marginTop": 5,
           "opacity": 1,
-          "paddingHorizontal": 18,
+          "paddingHorizontal": 15,
           "paddingLeft": 10,
           "paddingRight": 10,
         }
@@ -1051,13 +1488,12 @@ exports[`Storyshots EventsFilterChip default 1`] = `
           style={
             Array [
               Object {
-                "color": "#FFFFFF",
+                "color": "#ffffff",
                 "fontFamily": "ProximaNova-Bold",
                 "fontSize": 35.357142857142854,
                 "paddingHorizontal": 5,
                 "textAlign": "center",
               },
-              undefined,
               undefined,
               undefined,
               undefined,
@@ -1069,7 +1505,7 @@ exports[`Storyshots EventsFilterChip default 1`] = `
               undefined,
               Array [
                 Object {
-                  "color": "#FFFFFF",
+                  "color": "#ffffff",
                   "fontFamily": "ProximaNova-Bold",
                   "fontSize": 27,
                   "paddingRight": 2,
@@ -1078,7 +1514,7 @@ exports[`Storyshots EventsFilterChip default 1`] = `
             ]
           }
         >
-          [missing "en.global.payment" translation]
+          Payment
         </Text>
         <Image
           resizeMode="contain"
@@ -1096,10 +1532,12 @@ exports[`Storyshots EventsFilterChip default 1`] = `
               Array [
                 Object {
                   "marginLeft": 3,
+                  "tintColor": "#ffffff",
                 },
                 undefined,
+                undefined,
                 Object {
-                  "tintColor": "#FFFFFF",
+                  "tintColor": "#ffffff",
                 },
               ],
             ]
@@ -1115,6 +1553,7 @@ exports[`Storyshots RecipientElement Selected 1`] = `
 <View
   style={
     Object {
+      "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
     }
@@ -1130,6 +1569,11 @@ exports[`Storyshots RecipientElement Selected 1`] = `
     onResponderTerminate={[Function]}
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "opacity": 1,
+      }
+    }
     testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
     <View
@@ -1137,8 +1581,8 @@ exports[`Storyshots RecipientElement Selected 1`] = `
         Array [
           Object {
             "alignItems": "center",
-            "backgroundColor": "#F8FAFD",
-            "borderColor": "#F8FAFD",
+            "backgroundColor": "#F3F6FA",
+            "borderColor": "#F3F6FA",
             "borderRadius": 12,
             "borderWidth": 2,
             "flexDirection": "row",
@@ -1146,7 +1590,7 @@ exports[`Storyshots RecipientElement Selected 1`] = `
             "padding": 5,
           },
           Object {
-            "backgroundColor": "#F0F3FF",
+            "backgroundColor": "rgba(48,82,255,0.06)",
             "borderColor": "#3052FF",
             "borderWidth": 2,
           },
@@ -1154,42 +1598,25 @@ exports[`Storyshots RecipientElement Selected 1`] = `
         ]
       }
     >
-      <View
+      <Image
+        borderRadius={10}
+        resizeMode="cover"
+        source={
+          Object {
+            "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
+          }
+        }
         style={
           Array [
-            Object {
-              "alignItems": "center",
-              "backgroundColor": "#FFFFFF",
-              "borderRadius": 10,
-              "justifyContent": "center",
-            },
-            false,
+            Object {},
             Object {
               "height": 85.71428571428571,
               "width": 85.71428571428571,
             },
+            false,
           ]
         }
-      >
-        <Image
-          borderRadius={10}
-          resizeMode="cover"
-          source={
-            Object {
-              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
-            }
-          }
-          style={
-            Array [
-              Object {},
-              Object {
-                "height": 85.71428571428571,
-                "width": 85.71428571428571,
-              },
-            ]
-          }
-        />
-      </View>
+      />
       <View
         style={
           Object {
@@ -1250,7 +1677,7 @@ exports[`Storyshots RecipientElement Selected 1`] = `
               style={
                 Array [
                   Object {
-                    "color": "#FFFFFF",
+                    "color": "#ffffff",
                     "fontFamily": "ProximaNova-Bold",
                     "fontSize": 18,
                   },
@@ -1268,7 +1695,7 @@ exports[`Storyshots RecipientElement Selected 1`] = `
           style={
             Array [
               Object {
-                "color": "#848DB8",
+                "color": "#606885",
                 "fontFamily": "UbuntuMono-Regular",
                 "fontSize": 25.71428571428571,
               },
@@ -1290,6 +1717,7 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
 <View
   style={
     Object {
+      "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
     }
@@ -1305,6 +1733,11 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
     onResponderTerminate={[Function]}
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "opacity": 1,
+      }
+    }
     testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
     <View
@@ -1312,8 +1745,8 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
         Array [
           Object {
             "alignItems": "center",
-            "backgroundColor": "#F8FAFD",
-            "borderColor": "#F8FAFD",
+            "backgroundColor": "#F3F6FA",
+            "borderColor": "#F3F6FA",
             "borderRadius": 12,
             "borderWidth": 2,
             "flexDirection": "row",
@@ -1325,42 +1758,25 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
         ]
       }
     >
-      <View
+      <Image
+        borderRadius={10}
+        resizeMode="cover"
+        source={
+          Object {
+            "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
+          }
+        }
         style={
           Array [
-            Object {
-              "alignItems": "center",
-              "backgroundColor": "#FFFFFF",
-              "borderRadius": 10,
-              "justifyContent": "center",
-            },
-            false,
+            Object {},
             Object {
               "height": 85.71428571428571,
               "width": 85.71428571428571,
             },
+            false,
           ]
         }
-      >
-        <Image
-          borderRadius={10}
-          resizeMode="cover"
-          source={
-            Object {
-              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
-            }
-          }
-          style={
-            Array [
-              Object {},
-              Object {
-                "height": 85.71428571428571,
-                "width": 85.71428571428571,
-              },
-            ]
-          }
-        />
-      </View>
+      />
       <View
         style={
           Object {
@@ -1419,7 +1835,7 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
               style={
                 Array [
                   Object {
-                    "color": "#FFFFFF",
+                    "color": "#ffffff",
                     "fontFamily": "ProximaNova-Bold",
                     "fontSize": 18,
                   },
@@ -1437,7 +1853,7 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
           style={
             Array [
               Object {
-                "color": "#848DB8",
+                "color": "#606885",
                 "fontFamily": "UbuntuMono-Regular",
                 "fontSize": 25.71428571428571,
               },
@@ -1457,6 +1873,7 @@ exports[`Storyshots RecipientElement default 1`] = `
 <View
   style={
     Object {
+      "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
     }
@@ -1472,6 +1889,11 @@ exports[`Storyshots RecipientElement default 1`] = `
     onResponderTerminate={[Function]}
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "opacity": 1,
+      }
+    }
     testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
     <View
@@ -1479,8 +1901,8 @@ exports[`Storyshots RecipientElement default 1`] = `
         Array [
           Object {
             "alignItems": "center",
-            "backgroundColor": "#F8FAFD",
-            "borderColor": "#F8FAFD",
+            "backgroundColor": "#F3F6FA",
+            "borderColor": "#F3F6FA",
             "borderRadius": 12,
             "borderWidth": 2,
             "flexDirection": "row",
@@ -1492,42 +1914,25 @@ exports[`Storyshots RecipientElement default 1`] = `
         ]
       }
     >
-      <View
+      <Image
+        borderRadius={10}
+        resizeMode="cover"
+        source={
+          Object {
+            "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
+          }
+        }
         style={
           Array [
-            Object {
-              "alignItems": "center",
-              "backgroundColor": "#FFFFFF",
-              "borderRadius": 10,
-              "justifyContent": "center",
-            },
-            false,
+            Object {},
             Object {
               "height": 85.71428571428571,
               "width": 85.71428571428571,
             },
+            false,
           ]
         }
-      >
-        <Image
-          borderRadius={10}
-          resizeMode="cover"
-          source={
-            Object {
-              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
-            }
-          }
-          style={
-            Array [
-              Object {},
-              Object {
-                "height": 85.71428571428571,
-                "width": 85.71428571428571,
-              },
-            ]
-          }
-        />
-      </View>
+      />
       <View
         style={
           Object {
@@ -1587,7 +1992,7 @@ exports[`Storyshots RecipientElement default 1`] = `
           style={
             Array [
               Object {
-                "color": "#848DB8",
+                "color": "#606885",
                 "fontFamily": "UbuntuMono-Regular",
                 "fontSize": 25.71428571428571,
               },
@@ -1638,12 +2043,12 @@ exports[`Storyshots SegmentButton Three Button 1`] = `
       onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "backgroundColor": "#FFFFFF",
+          "backgroundColor": "#F3F6FA",
           "borderRadius": 12,
           "flex": 1,
           "marginVertical": 15,
           "opacity": 1,
-          "shadowColor": "#3052FF",
+          "shadowColor": "#ffffff",
           "shadowOffset": Object {
             "height": 4,
             "width": 0,
@@ -1660,20 +2065,22 @@ exports[`Storyshots SegmentButton Three Button 1`] = `
               "alignItems": "center",
               "flex": 1,
               "justifyContent": "center",
+              "paddingHorizontal": 10,
             },
           ]
         }
       >
         <Text
+          numberOfLines={1}
           style={
             Array [
               Object {
-                "color": "#626984",
+                "color": "#606885",
                 "fontFamily": "ProximaNova-Bold",
                 "fontSize": 32.14285714285714,
               },
               Object {
-                "color": "#3052FF",
+                "color": "#000000",
               },
             ]
           }
@@ -1707,15 +2114,17 @@ exports[`Storyshots SegmentButton Three Button 1`] = `
               "alignItems": "center",
               "flex": 1,
               "justifyContent": "center",
+              "paddingHorizontal": 10,
             },
           ]
         }
       >
         <Text
+          numberOfLines={1}
           style={
             Array [
               Object {
-                "color": "#626984",
+                "color": "#606885",
                 "fontFamily": "ProximaNova-Bold",
                 "fontSize": 32.14285714285714,
               },
@@ -1752,15 +2161,17 @@ exports[`Storyshots SegmentButton Three Button 1`] = `
               "alignItems": "center",
               "flex": 1,
               "justifyContent": "center",
+              "paddingHorizontal": 10,
             },
           ]
         }
       >
         <Text
+          numberOfLines={1}
           style={
             Array [
               Object {
-                "color": "#626984",
+                "color": "#606885",
                 "fontFamily": "ProximaNova-Bold",
                 "fontSize": 32.14285714285714,
               },

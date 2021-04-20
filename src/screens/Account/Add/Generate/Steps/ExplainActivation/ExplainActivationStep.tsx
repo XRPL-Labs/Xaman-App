@@ -5,9 +5,10 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Image } from 'react-native';
 
+import StyleService from '@services/StyleService';
+
 // components
 import { Button, Spacer, Footer } from '@components/General';
-import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
 
@@ -26,13 +27,22 @@ class ExplainActivationStep extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
+    goNext = () => {
+        const { goNext } = this.context;
+        goNext('SecurityStep');
+    };
+
     render() {
-        const { goNext, goBack } = this.context;
+        const { goBack } = this.context;
 
         return (
             <SafeAreaView testID="account-generate-explain-activation-view" style={[AppStyles.container]}>
                 <View style={[AppStyles.centerAligned, AppStyles.marginVerticalSml]}>
-                    <Image style={[styles.headerImage]} source={Images.ImageCoinWallet} />
+                    <Image
+                        style={[styles.headerImage]}
+                        resizeMode="contain"
+                        source={StyleService.getImage('ImageCoinWallet')}
+                    />
                 </View>
 
                 <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.paddingSml]}>
@@ -59,21 +69,17 @@ class ExplainActivationStep extends Component<Props, State> {
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
-                            secondary
+                            light
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            onPress={() => {
-                                goBack();
-                            }}
+                            onPress={goBack}
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>
                         <Button
                             testID="next-button"
                             label={Localize.t('global.nextIUnderstand')}
-                            onPress={() => {
-                                goNext('SecurityStep');
-                            }}
+                            onPress={this.goNext}
                             textStyle={AppStyles.strong}
                         />
                     </View>

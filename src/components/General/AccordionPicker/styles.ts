@@ -1,16 +1,18 @@
 import { StyleSheet } from 'react-native';
 
-import { AppColors, AppSizes } from '@theme';
+import StyleService from '@services/StyleService';
+import { AppSizes } from '@theme';
+
 /* Styles ==================================================================== */
-export default StyleSheet.create({
+export default StyleService.create({
     pickerContainer: {
         borderRadius: 15,
         padding: 5,
-        backgroundColor: AppColors.light,
+        backgroundColor: '$tint',
     },
     pickerContainerExpanded: {
-        backgroundColor: AppColors.white,
-        shadowColor: AppColors.greyDark,
+        backgroundColor: '$tint',
+        shadowColor: '$grey',
         shadowOffset: { width: 0, height: 3 },
         shadowRadius: 8,
         shadowOpacity: 0.1,
@@ -21,10 +23,10 @@ export default StyleSheet.create({
         position: 'absolute',
         width: '100%',
         padding: 5,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$tint',
         borderBottomLeftRadius: 15,
         borderBottomRightRadius: 15,
-        shadowColor: AppColors.greyDark,
+        shadowColor: '$grey',
         shadowOffset: { width: 0, height: 8 },
         shadowRadius: 8,
         shadowOpacity: 0.1,
@@ -34,26 +36,26 @@ export default StyleSheet.create({
         height: 70,
         marginTop: 2,
         borderRadius: 12,
-        backgroundColor: AppColors.transparent,
+        backgroundColor: '$transparent',
         // padding: 10,
         // paddingTop: 12,
         // paddingVertical: 13,
         paddingHorizontal: 12,
         // borderTopWidth: 1,
-        // borderTopColor: AppColors.grey,
+        // borderTopColor: '$grey,
     },
     pickerDropDownItemActive: {
         height: 70,
         marginTop: 2,
         borderRadius: 12,
-        backgroundColor: AppColors.lightBlue,
+        backgroundColor: '$lightBlue',
         // padding: 10,
         // paddingHorizontal: 12,
         // paddingVertical: 13,
         paddingHorizontal: 12,
     },
     collapseButton: {
-        backgroundColor: AppColors.black,
+        backgroundColor: '$black',
         borderRadius: 8,
         height: 25,
         width: 40,
@@ -63,7 +65,7 @@ export default StyleSheet.create({
     },
     collapseIcon: {
         alignSelf: 'center',
-        tintColor: AppColors.white,
+        tintColor: '$white',
     },
     checkMarkContainer: {
         width: 40,
@@ -71,10 +73,10 @@ export default StyleSheet.create({
     },
     checkMarkIcon: {
         alignSelf: 'center',
-        tintColor: AppColors.blue,
+        tintColor: '$blue',
     },
     overlay: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: AppColors.transparent,
+        backgroundColor: '$transparent',
     },
 });

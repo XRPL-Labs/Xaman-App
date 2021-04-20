@@ -36,10 +36,20 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>ilp</string>
+			<string>xrp</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>ilp</string>
+				<string>xrp</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>xumm</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>xumm</string>
 			</array>
 		</dict>
 	</array>
@@ -58,8 +68,6 @@
 	<string>Use NFC to read Tangem Cards</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>localhost</key>
@@ -73,8 +81,8 @@
 	<string>Enabling camera access allows you to use your camera to scan Sign Request QR-codes.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Enabling Face ID allows you quick and secure access to your account.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Enabling location services (when the app is in use) allows us to select the XRPL node closest to you for a faster connection.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Access to microphone is needed for KYC propose and video identification</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Enabling access to your Photo Library allows you to store your account QR code for offline use.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -108,8 +116,6 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>UIUserInterfaceStyle</key>
-	<string>Light</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 	<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>

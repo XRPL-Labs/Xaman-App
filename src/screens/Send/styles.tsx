@@ -1,7 +1,6 @@
 /* eslint-disable react-native/no-color-literals */
 // FIXME: organize colors
 import { StyleSheet } from 'react-native';
-import { AppColors } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleSheet.create({
@@ -9,7 +8,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: AppColors.white,
     },
 });
 

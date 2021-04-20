@@ -1,14 +1,14 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts } from '@theme';
+import { AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     separatorContainer: {
         width: '80%',
         marginTop: 22,
         marginBottom: 15,
-        borderTopColor: AppColors.grey,
+        borderTopColor: '$grey',
         borderTopWidth: 1.5,
     },
     separatorText: {
@@ -16,8 +16,8 @@ const styles = StyleSheet.create({
         marginTop: -10,
         paddingHorizontal: 10,
         alignSelf: 'center',
-        backgroundColor: AppColors.white,
-        color: AppColors.greyDark,
+        backgroundColor: '$background',
+        color: '$grey',
         fontFamily: AppFonts.base.familyBold,
     },
 });

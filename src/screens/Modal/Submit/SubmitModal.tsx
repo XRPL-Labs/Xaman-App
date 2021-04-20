@@ -11,10 +11,9 @@ import Clipboard from '@react-native-community/clipboard';
 
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
-import LedgerService from '@services/LedgerService';
+import { LedgerService, StyleService } from '@services';
 import { SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
 
 // components
@@ -106,9 +105,9 @@ class SubmitModal extends Component<Props, State> {
     renderSubmitting = () => {
         const { step } = this.state;
         return (
-            <SafeAreaView style={[AppStyles.container, AppStyles.paddingSml, { backgroundColor: AppColors.light }]}>
+            <SafeAreaView style={[AppStyles.container, AppStyles.paddingSml]}>
                 <View style={[AppStyles.flex5, AppStyles.centerContent]}>
-                    <Image style={styles.backgroundImageStyle} source={Images.IconSend} />
+                    <Image style={styles.backgroundImageStyle} source={StyleService.getImage('IconSend')} />
                 </View>
 
                 <View style={[AppStyles.flex4]}>
@@ -152,10 +151,7 @@ class SubmitModal extends Component<Props, State> {
         return (
             <SafeAreaView
                 testID="result-view"
-                style={[
-                    AppStyles.container,
-                    { backgroundColor: verifyResult.success ? AppColors.lightGreen : AppColors.lightRed },
-                ]}
+                style={[AppStyles.container, verifyResult.success ? styles.containerSuccess : styles.containerFailed]}
             >
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerContent]}>
                     {verifyResult.success ? (

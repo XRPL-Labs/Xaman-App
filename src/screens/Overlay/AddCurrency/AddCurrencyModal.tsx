@@ -5,18 +5,11 @@
 import { head, first, forEach, isEmpty, get } from 'lodash';
 
 import React, { Component } from 'react';
-import {
-    Animated,
-    View,
-    Text,
-    Image,
-    TouchableWithoutFeedback,
-    TouchableOpacity,
-    ScrollView,
-    SafeAreaView,
-} from 'react-native';
+import { Animated, View, Text, Image, TouchableWithoutFeedback, TouchableOpacity, ScrollView } from 'react-native';
 
 import Interactable from 'react-native-interactable';
+
+import LedgerService from '@services/LedgerService';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
@@ -48,6 +41,7 @@ export interface State {
     currencies: CurrenciesList;
     selectedCurrency: CurrencySchema;
     selectedParty: CounterPartySchema;
+    isLoading: boolean;
 }
 
 /* Component ==================================================================== */
@@ -57,6 +51,18 @@ class AddCurrencyOverlay extends Component<Props, State> {
     panel: any;
     deltaY: Animated.Value;
     deltaX: Animated.Value;
+    isOpening: boolean;
+
+    static options() {
+        return {
+            statusBar: {
+                style: 'light',
+            },
+            topBar: {
+                visible: false,
+            },
+        };
+    }
 
     constructor(props: Props) {
         super(props);
@@ -66,10 +72,13 @@ class AddCurrencyOverlay extends Component<Props, State> {
             currencies: undefined,
             selectedParty: undefined,
             selectedCurrency: undefined,
+            isLoading: false,
         };
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
         this.deltaX = new Animated.Value(0);
+
+        this.isOpening = true;
     }
 
     componentDidMount() {
@@ -87,10 +96,10 @@ class AddCurrencyOverlay extends Component<Props, State> {
         const availableParties = [] as CounterPartySchema[];
         const availableCurrencies = [] as any;
 
-        forEach(counterParties, (counterParty) => {
+        forEach(counterParties, counterParty => {
             const currencies = [] as any;
 
-            forEach(counterParty.currencies, (currency) => {
+            forEach(counterParty.currencies, currency => {
                 if (!account.hasCurrency(currency) && currency.shortlist === true) {
                     currencies.push(currency);
                 }
@@ -114,11 +123,38 @@ class AddCurrencyOverlay extends Component<Props, State> {
     addCurrency = async () => {
         const { selectedCurrency } = this.state;
 
+        this.setState({
+            isLoading: true,
+        });
+
+        // set the default line limit
+        let lineLimit = 1000000000;
+
+        try {
+            // set the trustline limit by gateway balance if it's more than our default value
+            const resp = await LedgerService.getGatewayBalances(selectedCurrency.issuer);
+            const gatewayBalances = get(resp, ['obligations', selectedCurrency.currency]);
+
+            if (gatewayBalances && Number(gatewayBalances) > lineLimit) {
+                lineLimit = gatewayBalances;
+            }
+        } catch {
+            // ignore
+        } finally {
+            this.setState({
+                isLoading: false,
+            });
+        }
+
         const payload = await Payload.build(
             {
                 TransactionType: 'TrustSet',
                 Flags: 131072, // tfSetNoRipple
-                LimitAmount: { currency: selectedCurrency.currency, issuer: selectedCurrency.issuer, value: 999999999 },
+                LimitAmount: {
+                    currency: selectedCurrency.currency,
+                    issuer: selectedCurrency.issuer,
+                    value: lineLimit,
+                },
             },
             Localize.t('asset.addingAssetReserveDescription'),
         );
@@ -150,10 +186,16 @@ class AddCurrencyOverlay extends Component<Props, State> {
         });
     };
 
-    onSnap = (event: any) => {
-        const { index } = event.nativeEvent;
+    onAlert = (event: any) => {
+        const { top, bottom } = event.nativeEvent;
 
-        if (index === 0) {
+        if (top && bottom) return;
+
+        if (top === 'enter' && this.isOpening) {
+            this.isOpening = false;
+        }
+
+        if (bottom === 'leave' && !this.isOpening) {
             Navigator.dismissOverlay();
         }
     };
@@ -161,7 +203,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
     renderCurrencies = () => {
         const { counterParties, selectedParty, selectedCurrency, currencies } = this.state;
 
-        if (!counterParties) {
+        if (isEmpty(counterParties)) {
             return (
                 <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]} adjustsFontSizeToFit numberOfLines={1}>
                     No Item to show
@@ -202,7 +244,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
     renderParties = () => {
         const { counterParties, selectedParty, currencies } = this.state;
 
-        if (!counterParties) {
+        if (isEmpty(counterParties)) {
             return (
                 <Text
                     key="empty-parties"
@@ -252,7 +294,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
     };
 
     renderContent = () => {
-        const { selectedCurrency } = this.state;
+        const { selectedCurrency, isLoading } = this.state;
 
         return (
             <View style={[styles.visibleContent, AppStyles.centerAligned]}>
@@ -262,36 +304,42 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                        <Text style={[AppStyles.h5, AppStyles.strong]}>{Localize.t('asset.addAsset')}</Text>
+                        <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
+                            {Localize.t('asset.addAsset')}
+                        </Text>
                     </View>
                     <View style={[AppStyles.row, AppStyles.flex1, AppStyles.paddingRightSml, AppStyles.flexEnd]}>
                         <Button
                             light
                             roundedSmall
                             isDisabled={false}
-                            onPress={() => {
-                                this.slideDown();
-                            }}
+                            onPress={this.slideDown}
                             textStyle={[AppStyles.subtext, AppStyles.bold]}
                             label={Localize.t('global.cancel')}
                         />
                     </View>
                 </View>
                 <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.marginBottomSml]}>
-                    <Text style={[AppStyles.p, AppStyles.subtext]}>
+                    <Text numberOfLines={3} style={[AppStyles.p, AppStyles.subtext]}>
                         {Localize.t('asset.selectAnExchangeAndSelectAsset')}
                     </Text>
                 </View>
 
                 <View style={[AppStyles.row, AppStyles.paddingExtraSml]}>
                     <View style={[AppStyles.flex1]}>
-                        <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}>
+                        <Text
+                            numberOfLines={1}
+                            style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}
+                        >
                             {Localize.t('global.exchanges')}:
                         </Text>
                     </View>
                     <View style={styles.separator} />
                     <View style={[AppStyles.flex1]}>
-                        <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}>
+                        <Text
+                            numberOfLines={1}
+                            style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}
+                        >
                             {Localize.t('global.assets')}:
                         </Text>
                     </View>
@@ -302,18 +350,17 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     <ScrollView style={[AppStyles.flex1]}>{this.renderCurrencies()}</ScrollView>
                 </View>
 
-                <SafeAreaView style={styles.footer}>
-                    <Footer>
-                        <Button
-                            testID="add-and-sign-button"
-                            block
-                            isDisabled={!selectedCurrency}
-                            onPress={this.addCurrency}
-                            style={[AppStyles.buttonGreen]}
-                            label={Localize.t('asset.addAndSign')}
-                        />
-                    </Footer>
-                </SafeAreaView>
+                <Footer safeArea style={styles.footer}>
+                    <Button
+                        isLoading={isLoading}
+                        numberOfLines={1}
+                        testID="add-and-sign-button"
+                        isDisabled={!selectedCurrency}
+                        onPress={this.addCurrency}
+                        style={[AppStyles.buttonGreen]}
+                        label={Localize.t('asset.addAndSign')}
+                    />
+                </Footer>
             </View>
         );
     };
@@ -337,14 +384,18 @@ class AddCurrencyOverlay extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={(r) => {
+                    ref={r => {
                         this.panel = r;
                     }}
                     animatedNativeDriver
-                    onSnap={this.onSnap}
+                    onAlert={this.onAlert}
                     verticalOnly
                     snapPoints={[{ y: AppSizes.screen.height + 3 }, { y: AppSizes.heightPercentageToDP(10) }]}
                     boundaries={{ top: AppSizes.heightPercentageToDP(8) }}
+                    alertAreas={[
+                        { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
+                        { id: 'top', influenceArea: { top: AppSizes.heightPercentageToDP(10) } },
+                    ]}
                     initialPosition={{ y: AppSizes.screen.height }}
                     animatedValueY={this.deltaY}
                     animatedValueX={this.deltaX}

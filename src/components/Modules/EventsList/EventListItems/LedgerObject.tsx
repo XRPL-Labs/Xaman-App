@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableHighlight } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
@@ -7,7 +7,7 @@ import { AccountSchema } from '@store/schemas/latest';
 
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode, NormalizeAmount } from '@common/utils/amount';
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
@@ -153,7 +153,6 @@ class LedgerObjectTemplate extends Component<Props, State> {
         const { address } = this.state;
 
         let iconName = '' as any;
-        let iconColor;
 
         if (address) {
             return <Avatar size={40} border source={{ uri: `https://xumm.app/avatar/${address}_180_50.png` }} />;
@@ -170,7 +169,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
 
         return (
             <View style={styles.iconContainer}>
-                <Icon size={20} style={[styles.icon, iconColor]} name={iconName} />
+                <Icon size={20} style={[styles.icon]} name={iconName} />
             </View>
         );
     };
@@ -180,7 +179,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
         const { item } = this.props;
 
         if (item.Type === 'Offer') {
-            return `${Localize.formatNumber(item.TakerGets.value)} ${NormalizeCurrencyCode(
+            return `${Localize.formatNumber(NormalizeAmount(item.TakerGets.value))} ${NormalizeCurrencyCode(
                 item.TakerGets.currency,
             )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
         }
@@ -254,7 +253,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
 
     render() {
         return (
-            <TouchableHighlight onPress={this.onPress} underlayColor="#FFF">
+            <TouchableOpacity onPress={this.onPress} activeOpacity={0.8}>
                 <View style={[AppStyles.row, styles.container]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
                     <View style={[AppStyles.flex3, AppStyles.centerContent]}>
@@ -271,7 +270,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
                         {this.renderRightPanel()}
                     </View>
                 </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
         );
     }
 }

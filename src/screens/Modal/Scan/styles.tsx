@@ -1,12 +1,12 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppSizes } from '@theme';
+import { AppSizes } from '@theme';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: AppColors.transparent,
+        backgroundColor: '$transparent',
     },
     close: {
         marginBottom: 40,
@@ -15,14 +15,14 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding: 10,
         paddingHorizontal: 20,
-        backgroundColor: AppColors.transparentBlack,
+        backgroundColor: '$transparentBlack',
         marginBottom: 20,
     },
     topLeft: {
         width: AppSizes.scale(40),
         height: AppSizes.scale(40),
         borderWidth: 2,
-        borderColor: AppColors.white,
+        borderColor: '$white',
         position: 'absolute',
         opacity: 0.5,
         borderRadius: 3,
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         width: AppSizes.scale(40),
         height: AppSizes.scale(40),
         borderWidth: 2,
-        borderColor: AppColors.white,
+        borderColor: '$white',
         position: 'absolute',
         opacity: 0.5,
         borderRadius: 3,
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
         width: AppSizes.scale(40),
         height: AppSizes.scale(40),
         borderWidth: 2,
-        borderColor: AppColors.white,
+        borderColor: '$white',
         position: 'absolute',
         opacity: 0.5,
         borderRadius: 3,
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
         width: AppSizes.scale(40),
         height: AppSizes.scale(40),
         borderWidth: 2,
-        borderColor: AppColors.white,
+        borderColor: '$white',
         position: 'absolute',
         opacity: 0.5,
         borderRadius: 3,
@@ -74,17 +74,17 @@ const styles = StyleSheet.create({
         height: AppSizes.scale(250),
         width: AppSizes.scale(300),
         borderWidth: 2,
-        borderColor: AppColors.white,
-        backgroundColor: AppColors.transparent,
+        borderColor: '$white',
+        backgroundColor: '$transparent',
     },
     rectangleContainer: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: AppColors.transparent,
+        backgroundColor: '$transparent',
     },
     scanIconTransparent: {
-        tintColor: AppColors.greyDark,
+        tintColor: '$grey',
         opacity: 0.1,
     },
 });

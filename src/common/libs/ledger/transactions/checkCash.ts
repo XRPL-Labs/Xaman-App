@@ -2,7 +2,7 @@ import moment from 'moment-timezone';
 
 import { set, get, isUndefined } from 'lodash';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import Localize from '@locale';
 
@@ -133,7 +133,7 @@ class CheckCash extends BaseTransaction {
 
     validate = () => {
         /* eslint-disable-next-line */
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             if (!this.Check) {
                 return reject(new Error(Localize.t('payload.unableToGetCheckObject')));
             }

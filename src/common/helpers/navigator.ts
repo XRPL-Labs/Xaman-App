@@ -3,89 +3,99 @@ import { Platform, InteractionManager } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 
 import { GetBottomTabScale, IsIOS10 } from '@common/helpers/device';
-import { Images } from '@common/helpers/images';
 
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
 
 import NavigationService from '@services/NavigationService';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts } from '@theme';
-
+import AppFonts from '@theme/fonts';
 /* Constants ==================================================================== */
-const defaultOptions = {
-    layout: {
-        backgroundColor: AppColors.white,
-        componentBackgroundColor: AppColors.white,
-        orientation: ['portrait'] as any,
-    },
-    topBar: {
-        visible: false,
-    },
-    statusBar: {
-        drawBehind: false,
-    },
-    bottomTabs: {
-        backgroundColor: AppColors.white,
-        translucent: false,
-        hideShadow: true,
-        animate: true,
-        drawBehind: true,
-        tabsAttachMode: 'onSwitchToTab' as any,
-        titleDisplayMode: 'alwaysShow' as any,
-    },
-    animations: {
-        pop: {
-            enabled: Platform.OS === 'ios',
+const getDefaultOptions = () => {
+    return StyleService.create({
+        layout: {
+            backgroundColor: '$background',
+            componentBackgroundColor: '$background',
+            orientation: ['portrait'] as any,
         },
-    },
-    popGesture: true,
-    blurOnUnmount: true,
+        topBar: {
+            visible: false,
+        },
+        statusBar: {
+            style: Platform.select({
+                android: 'default',
+                ios: StyleService.isDarkMode() ? 'light' : 'dark',
+            }),
+            drawBehind: false,
+        },
+        bottomTabs: {
+            backgroundColor: '$background',
+            translucent: false,
+            hideShadow: true,
+            animate: true,
+            drawBehind: true,
+            tabsAttachMode: 'onSwitchToTab' as any,
+            titleDisplayMode: 'alwaysShow' as any,
+        },
+        animations: {
+            pop: {
+                enabled: Platform.OS === 'ios',
+            },
+        },
+        popGesture: true,
+        blurOnUnmount: true,
+    });
 };
 
-const bottomTabStyles = {
-    // iconColor: AppColors.greyDark,
-    // selectedIconColor: AppColors.black,
-    textColor: AppColors.greyDark,
-    selectedTextColor: AppColors.black,
-    fontFamily: AppFonts.base.familyExtraBold,
-};
-
-const TabBarIcons = {
-    [AppScreens.TabBar.Home]: {
-        icon: Images.IconTabBarHome,
-        iconSelected: Images.IconTabBarHomeSelected,
-        scale: GetBottomTabScale(),
-    },
-    [AppScreens.TabBar.Events]: {
-        icon: Images.IconTabBarEvents,
-        iconSelected: Images.IconTabBarEventsSelected,
-        scale: GetBottomTabScale(),
-    },
-    [AppScreens.TabBar.Scan]: {
-        icon: Images.IconTabBarScan,
-        iconSelected: Images.IconTabBarScan,
-        offset: { top: IsIOS10() && 6, right: 0, bottom: IsIOS10() && -6, left: 0 },
-        scale: GetBottomTabScale(0.7),
-    },
-    [AppScreens.TabBar.Profile]: {
-        icon: Images.IconTabBarProfile,
-        iconSelected: Images.IconTabBarProfileSelected,
-        scale: GetBottomTabScale(),
-    },
-    [AppScreens.TabBar.Settings]: {
-        icon: Images.IconTabBarSettings,
-        iconSelected: Images.IconTabBarSettingsSelected,
-        scale: GetBottomTabScale(),
-    },
+const getTabBarIcons = () => {
+    return {
+        [AppScreens.TabBar.Home]: {
+            icon: StyleService.getImage('IconTabBarHome'),
+            iconSelected: StyleService.getImage('IconTabBarHomeSelected'),
+            scale: GetBottomTabScale(),
+        },
+        [AppScreens.TabBar.Events]: {
+            icon: StyleService.getImage('IconTabBarEvents'),
+            iconSelected: StyleService.getImage('IconTabBarEventsSelected'),
+            scale: GetBottomTabScale(),
+        },
+        [AppScreens.TabBar.Actions]: {
+            icon: StyleService.getImage('IconTabBarActions'),
+            iconSelected: StyleService.getImage('IconTabBarActions'),
+            offset: { top: IsIOS10() && 6, right: 0, bottom: IsIOS10() && -6, left: 0 },
+            scale: GetBottomTabScale(0.65),
+        },
+        [AppScreens.TabBar.Profile]: {
+            icon: StyleService.getImage('IconTabBarProfile'),
+            iconSelected: StyleService.getImage('IconTabBarProfileSelected'),
+            scale: GetBottomTabScale(),
+        },
+        [AppScreens.TabBar.Settings]: {
+            icon: StyleService.getImage('IconTabBarSettings'),
+            iconSelected: StyleService.getImage('IconTabBarSettingsSelected'),
+            scale: GetBottomTabScale(),
+        },
+    };
 };
 
 /* Lib ==================================================================== */
 
 const Navigator = {
     startDefault() {
+        const defaultOptions = getDefaultOptions();
         Navigation.setDefaultOptions(defaultOptions);
+
+        const bottomTabStyles = StyleService.applyTheme({
+            // iconColor: '$greyDark',
+            // selectedIconColor: '$black',
+            textColor: '$grey',
+            selectedTextColor: '$textPrimary',
+            fontFamily: AppFonts.base.familyExtraBold,
+        });
+
+        const TabBarIcons = getTabBarIcons();
 
         const bottomTabsChildren: any = [];
 
@@ -96,19 +106,16 @@ const Navigator = {
                     children: [
                         {
                             component: {
-                                name: tab === 'Scan' ? AppScreens.Placeholder : get(AppScreens.TabBar, tab),
+                                name: tab === 'Actions' ? AppScreens.Placeholder : get(AppScreens.TabBar, tab),
                                 id: get(AppScreens.TabBar, tab),
                             },
                         },
                     ],
                     options: {
                         bottomTab: {
-                            selectTabOnPress: tab !== 'Scan',
+                            selectTabOnPress: tab !== 'Actions',
                             iconInsets: { ...TabBarIcons[get(AppScreens.TabBar, tab)].offset },
-                            text: Platform.select({
-                                android: Localize.t(`global.${tab.toLowerCase()}`),
-                                ios: tab !== 'Scan' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
-                            }),
+                            text: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
                             icon: {
                                 scale: TabBarIcons[get(AppScreens.TabBar, tab)].scale,
                                 ...TabBarIcons[get(AppScreens.TabBar, tab)].icon,
@@ -138,6 +145,7 @@ const Navigator = {
     },
 
     startOnboarding() {
+        const defaultOptions = getDefaultOptions();
         Navigation.setDefaultOptions(defaultOptions);
 
         InteractionManager.runAfterInteractions(() => {
@@ -226,8 +234,8 @@ const Navigator = {
         return false;
     },
 
-    dismissModal() {
-        const currentScreen = NavigationService.getCurrentScreen();
+    dismissModal(componentId?: string) {
+        const currentScreen = componentId || NavigationService.getCurrentScreen();
         return Navigation.dismissModal(currentScreen);
     },
 
@@ -269,9 +277,14 @@ const Navigator = {
         );
     },
 
-    mergeOptions(options = {}) {
-        const currentScreen = NavigationService.getCurrentScreen();
+    mergeOptions(options = {}, componentId?: string) {
+        const currentScreen = componentId || NavigationService.getCurrentScreen();
         Navigation.mergeOptions(currentScreen, options);
+    },
+
+    updateProps(props = {}, componentId?: string) {
+        const currentScreen = componentId || NavigationService.getCurrentScreen();
+        Navigation.updateProps(currentScreen, props);
     },
 
     reRender() {
@@ -279,10 +292,7 @@ const Navigator = {
         Object.keys(AppScreens.TabBar).forEach((tab) => {
             Navigation.mergeOptions(`bottomTab-${tab}`, {
                 bottomTab: {
-                    text: Platform.select({
-                        android: Localize.t(`global.${tab.toLowerCase()}`),
-                        ios: tab !== 'Scan' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
-                    }),
+                    text: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
                 },
             });
 

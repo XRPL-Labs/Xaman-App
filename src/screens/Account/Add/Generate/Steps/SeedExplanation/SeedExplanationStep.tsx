@@ -24,9 +24,13 @@ class SeedExplanationStep extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
-    render() {
+    goNext = () => {
         const { goNext } = this.context;
 
+        goNext('ViewPrivateKey');
+    };
+
+    render() {
         return (
             <SafeAreaView testID="account-generate-explanation-private-view" style={[AppStyles.container]}>
                 <View style={[AppStyles.centerAligned, AppStyles.marginBottomSml]}>
@@ -56,9 +60,7 @@ class SeedExplanationStep extends Component<Props, State> {
                             testID="next-button"
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.nextIUnderstand')}
-                            onPress={() => {
-                                goNext('ViewPrivateKey');
-                            }}
+                            onPress={this.goNext}
                         />
                     </View>
                 </Footer>

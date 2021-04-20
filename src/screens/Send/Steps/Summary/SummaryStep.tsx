@@ -2,33 +2,35 @@
  * Send Summary Step
  */
 
-import { isNil } from 'lodash';
+import { isEmpty } from 'lodash';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
-import {
-    Animated,
-    View,
-    Image,
-    Text,
-    KeyboardAvoidingView,
-    Alert,
-    ScrollView,
-    Platform,
-    LayoutChangeEvent,
-} from 'react-native';
+import { View, Image, Text, Alert, InteractionManager } from 'react-native';
 
 import { AccountSchema } from '@store/schemas/latest';
+import { NodeChain } from '@store/types';
+
+import { BackendService, SocketService } from '@services';
 
 import { AppScreens } from '@common/constants';
-import { Prompt } from '@common/helpers/interface';
+import { Prompt, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
 import Preferences from '@common/libs/preferences';
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 
 // components
-import { AmountInput, Button, Footer, Spacer, TextInput } from '@components/General';
+import {
+    AmountInput,
+    AmountText,
+    Button,
+    Footer,
+    Spacer,
+    TextInput,
+    SwipeButton,
+    KeyboardAwareScrollView,
+} from '@components/General';
 import { AccountPicker } from '@components/Modules';
 
 // locale
@@ -45,12 +47,12 @@ export interface Props {}
 
 export interface State {
     confirmedDestinationTag: number;
+    currencyRate: any;
 }
 
 /* Component ==================================================================== */
 class SummaryStep extends Component<Props, State> {
-    gradientHeight: Animated.Value;
-    amountInput: AmountInput;
+    amountInput: React.RefObject<typeof AmountInput | null>;
     destinationTagInput: TextInput;
 
     static contextType = StepsContext;
@@ -61,15 +63,30 @@ class SummaryStep extends Component<Props, State> {
 
         this.state = {
             confirmedDestinationTag: undefined,
+            currencyRate: undefined,
         };
 
-        this.gradientHeight = new Animated.Value(0);
+        this.amountInput = React.createRef();
     }
 
-    setGradientHeight = (event: LayoutChangeEvent) => {
-        const { height } = event.nativeEvent.layout;
-        if (height === 0) return;
-        Animated.timing(this.gradientHeight, { toValue: height, useNativeDriver: false }).start();
+    componentDidMount() {
+        InteractionManager.runAfterInteractions(this.fetchCurrencyRate);
+    }
+
+    fetchCurrencyRate = () => {
+        const { coreSettings } = this.context;
+
+        const { currency } = coreSettings;
+
+        BackendService.getCurrencyRate(currency)
+            .then((r) => {
+                this.setState({
+                    currencyRate: r,
+                });
+            })
+            .catch(() => {
+                Toast(Localize.t('global.unableToFetchCurrencyRate'));
+            });
     };
 
     onDescriptionChange = (text: string) => {
@@ -100,17 +117,18 @@ class SummaryStep extends Component<Props, State> {
     };
 
     getAvailableBalance = () => {
-        const { currency, source } = this.context;
+        const { currency, source, sendingNFT } = this.context;
 
         let availableBalance;
 
         // XRP
         if (typeof currency === 'string') {
             availableBalance = source.availableBalance;
+        } else if (sendingNFT) {
+            availableBalance = XRPLValueToNFT(currency.balance);
         } else {
             availableBalance = currency.balance;
         }
-
         return availableBalance;
     };
 
@@ -199,6 +217,108 @@ class SummaryStep extends Component<Props, State> {
         );
     };
 
+    getCurrencyName = (): string => {
+        const { currency } = this.context;
+
+        // XRP
+        if (typeof currency === 'string') {
+            return 'XRP';
+        }
+
+        return NormalizeCurrencyCode(currency.currency.currency);
+    };
+
+    goNext = () => {
+        const { confirmedDestinationTag } = this.state;
+        const { goNext, currency, source, amount, destination, destinationInfo, setAmount } = this.context;
+
+        const bAmount = new BigNumber(amount);
+
+        if (!amount || parseFloat(amount) === 0) {
+            Alert.alert(Localize.t('global.error'), Localize.t('send.pleaseEnterAmount'));
+            return;
+        }
+
+        if (source.balance === 0) {
+            Alert.alert(Localize.t('global.error'), Localize.t('account.accountIsNotActivated'));
+            return;
+        }
+
+        // if IOU and obligation can send unlimited
+        if (typeof currency !== 'string' && currency.obligation) {
+            // go to next screen
+            goNext();
+            return;
+        }
+
+        // @ts-ignore
+        const availableBalance = new BigNumber(this.getAvailableBalance()).toNumber();
+
+        // check if amount is bigger than what user can spend
+        if (bAmount.toNumber() > availableBalance) {
+            Prompt(
+                Localize.t('global.error'),
+                Localize.t('send.theMaxAmountYouCanSendIs', {
+                    spendable: Localize.formatNumber(availableBalance),
+                    currency: this.getCurrencyName(),
+                }),
+                [
+                    { text: Localize.t('global.cancel') },
+                    {
+                        text: Localize.t('global.update'),
+                        onPress: () => {
+                            setAmount(availableBalance.toString());
+                        },
+                    },
+                ],
+                { type: 'default' },
+            );
+            return;
+        }
+
+        // check if destination requires the destination tag
+        if (destinationInfo.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
+            Alert.alert(Localize.t('global.warning'), Localize.t('send.destinationTagIsRequired'));
+            return;
+        }
+
+        if (!isEmpty(destination.tag) && destination.tag !== confirmedDestinationTag) {
+            Navigator.showOverlay(
+                AppScreens.Overlay.ConfirmDestinationTag,
+                {
+                    layout: {
+                        backgroundColor: 'transparent',
+                        componentBackgroundColor: 'transparent',
+                    },
+                },
+                {
+                    destinationTag: destination.tag,
+                    onConfirm: this.onDestinationTagConfirm,
+                    onChange: this.showEnterDestinationTag,
+                },
+            );
+            return;
+        }
+
+        // go to next screen
+        goNext();
+    };
+
+    goBack = () => {
+        const { goBack, setDestination } = this.context;
+
+        // clear destination
+        setDestination(undefined);
+
+        goBack();
+    };
+
+    shouldShowTestnet = () => {
+        const { coreSettings } = this.context;
+
+        return coreSettings.developerMode && SocketService.chain === NodeChain.Test;
+    };
+
     renderCurrencyItem = (item: any) => {
         const { source } = this.context;
 
@@ -233,251 +353,175 @@ class SummaryStep extends Component<Props, State> {
 
                             {item.currency.name && <Text style={[AppStyles.subtext]}> - {item.currency.name}</Text>}
                         </Text>
-                        <Text style={[styles.currencyBalance]}>
-                            {Localize.t('global.balance')}: {Localize.formatNumber(item.balance)}
-                        </Text>
+                        <AmountText
+                            prefix={`${Localize.t('global.balance')}: `}
+                            style={[styles.currencyBalance]}
+                            value={item.balance}
+                        />
                     </View>
                 </View>
             </View>
         );
     };
 
-    getCurrencyName = (): string => {
-        const { currency } = this.context;
+    renderAmountRate = () => {
+        const { currencyRate } = this.state;
 
-        // XRP
-        if (typeof currency === 'string') {
-            return 'XRP';
+        const { currency, amount } = this.context;
+
+        // only show rate for XRP
+        if (typeof currency === 'string' && currencyRate && amount) {
+            const rate = Number(amount) * currencyRate.lastRate;
+            if (rate > 0) {
+                return (
+                    <View style={[styles.rateContainer]}>
+                        <Text style={styles.rateText}>
+                            ~{currencyRate.code} {Localize.formatNumber(rate)}
+                        </Text>
+                    </View>
+                );
+            }
         }
 
-        return NormalizeCurrencyCode(currency.currency.currency);
-    };
-
-    goNext = () => {
-        const { confirmedDestinationTag } = this.state;
-        const { goNext, currency, source, amount, destination, destinationInfo, setAmount } = this.context;
-
-        const bAmount = new BigNumber(amount);
-
-        if (source.balance === 0) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.accountIsNotActivated'));
-            return;
-        }
-
-        // if IOU and obligation can send unlimited
-        if (typeof currency !== 'string' && currency.obligation) {
-            // go to next screen
-            goNext();
-            return;
-        }
-
-        const availableBalance = new BigNumber(this.getAvailableBalance()).toNumber();
-
-        // check if amount is bigger than what user can spend
-        if (bAmount.toNumber() > availableBalance) {
-            Prompt(
-                Localize.t('global.error'),
-                Localize.t('send.theMaxAmountYouCanSendIs', {
-                    spendable: Localize.formatNumber(availableBalance),
-                    currency: this.getCurrencyName(),
-                }),
-                [
-                    { text: Localize.t('global.cancel') },
-                    {
-                        text: Localize.t('global.update'),
-                        onPress: () => {
-                            setAmount(availableBalance.toString());
-                        },
-                    },
-                ],
-                { type: 'default' },
-            );
-            return;
-        }
-
-        // check if destination requires the destination tag
-        if (destinationInfo.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
-            Alert.alert(Localize.t('global.warning'), Localize.t('send.destinationTagIsRequired'));
-            return;
-        }
-
-        if (!isNil(destination.tag) && destination.tag !== confirmedDestinationTag) {
-            Navigator.showOverlay(
-                AppScreens.Overlay.ConfirmDestinationTag,
-                {
-                    layout: {
-                        backgroundColor: 'transparent',
-                        componentBackgroundColor: 'transparent',
-                    },
-                },
-                {
-                    destinationTag: destination.tag,
-                    onConfirm: this.onDestinationTagConfirm,
-                    onChange: this.showEnterDestinationTag,
-                },
-            );
-            return;
-        }
-
-        // go to next screen
-        goNext();
-    };
-
-    goBack = () => {
-        const { goBack, setDestination } = this.context;
-
-        // clear destination
-        setDestination(undefined);
-
-        goBack();
+        return null;
     };
 
     render() {
-        const { source, accounts, amount, destination, currency, isLoading } = this.context;
+        const { source, accounts, amount, destination, currency, sendingNFT, isLoading } = this.context;
 
         return (
             <View testID="send-summary-view" style={[styles.container]}>
-                <ScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
-                    <KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior="position">
-                        <View onLayout={this.setGradientHeight} style={[styles.rowItem, styles.rowItemGrey]}>
-                            <Animated.Image
-                                source={Images.SideGradient}
-                                style={[styles.gradientImage, { height: this.gradientHeight }]}
-                                resizeMode="stretch"
-                            />
-                            <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.from')}
+                <KeyboardAwareScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
+                    <View style={[styles.rowItem, styles.rowItemGrey]}>
+                        <View style={[styles.rowTitle]}>
+                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                {Localize.t('global.from')}
+                            </Text>
+                        </View>
+
+                        <AccountPicker onSelect={this.onAccountChange} accounts={accounts} selectedItem={source} />
+
+                        <Spacer size={20} />
+
+                        <View style={[styles.rowTitle]}>
+                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                {Localize.t('global.to')}
+                            </Text>
+                        </View>
+                        <Spacer size={15} />
+
+                        <View style={[styles.rowTitle]}>
+                            <View style={[styles.pickerItem]}>
+                                <Text style={[styles.pickerItemTitle]}>{destination.name}</Text>
+                                <Text
+                                    style={[styles.pickerItemSub, AppStyles.colorGrey]}
+                                    adjustsFontSizeToFit
+                                    numberOfLines={1}
+                                >
+                                    {destination.address}
                                 </Text>
                             </View>
+                        </View>
 
-                            <AccountPicker onSelect={this.onAccountChange} accounts={accounts} selectedItem={source} />
+                        <Spacer size={20} />
 
-                            <Spacer size={20} />
-
-                            <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.to')}
-                                </Text>
-                            </View>
-                            <Spacer size={15} />
-
-                            <View style={[styles.rowTitle]}>
-                                <View style={[styles.pickerItem]}>
-                                    <Text style={[styles.pickerItemTitle]}>{destination.name}</Text>
-                                    <Text
-                                        style={[styles.pickerItemSub, AppStyles.colorGreyDark]}
-                                        adjustsFontSizeToFit
-                                        numberOfLines={1}
-                                    >
-                                        {destination.address}
+                        <View style={AppStyles.row}>
+                            <View style={AppStyles.flex1}>
+                                <View style={[styles.rowTitle]}>
+                                    <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
+                                        {destination.tag && `${Localize.t('global.destinationTag')}: `}
+                                        <Text style={AppStyles.colorBlue}>
+                                            {destination.tag || Localize.t('send.noDestinationTag')}
+                                        </Text>
                                     </Text>
                                 </View>
                             </View>
-
-                            <Spacer size={20} />
-
-                            <View style={AppStyles.row}>
-                                <View style={AppStyles.flex1}>
-                                    <View style={[styles.rowTitle]}>
-                                        <Text style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
-                                            {destination.tag && `${Localize.t('global.destinationTag')}: `}
-                                            <Text style={AppStyles.colorBlue}>
-                                                {destination.tag || Localize.t('send.noDestinationTag')}
-                                            </Text>
-                                        </Text>
-                                    </View>
-                                </View>
-                                <Button
-                                    onPress={this.showEnterDestinationTag}
-                                    style={styles.editButton}
-                                    roundedSmall
-                                    iconSize={13}
-                                    light
-                                    icon="IconEdit"
-                                />
-                            </View>
-                        </View>
-
-                        {/* Currency */}
-                        <View style={[styles.rowItem]}>
-                            <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.asset')}
-                                </Text>
-                            </View>
-                            <Spacer size={15} />
-
-                            <View style={[styles.rowTitle]}>{this.renderCurrencyItem(currency)}</View>
-                        </View>
-
-                        {/* Amount */}
-                        <View style={[styles.rowItem]}>
-                            <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.amount')}
-                                </Text>
-                            </View>
-                            <Spacer size={15} />
-
-                            <View style={AppStyles.row}>
-                                <View style={AppStyles.flex1}>
-                                    <AmountInput
-                                        ref={(r) => {
-                                            this.amountInput = r;
-                                        }}
-                                        onChange={this.onAmountChange}
-                                        style={[styles.amountInput]}
-                                        value={amount}
-                                    />
-                                </View>
-                                <Button
-                                    onPress={() => {
-                                        this.amountInput.focus();
-                                    }}
-                                    style={styles.editButton}
-                                    roundedSmall
-                                    iconSize={13}
-                                    light
-                                    icon="IconEdit"
-                                />
-                            </View>
-                        </View>
-
-                        {/* Memo */}
-                        <View style={[styles.rowItem]}>
-                            <View style={[styles.rowTitle]}>
-                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.greyDark }]}>
-                                    {Localize.t('global.memo')}
-                                </Text>
-                            </View>
-                            <Spacer size={15} />
-                            <TextInput
-                                onBlur={this.showMemoAlert}
-                                onChangeText={this.onDescriptionChange}
-                                placeholder={Localize.t('send.enterPublicMemo')}
-                                inputStyle={styles.inputStyle}
-                                maxLength={300}
-                                returnKeyType="done"
-                                autoCapitalize="sentences"
-                                numberOfLines={1}
+                            <Button
+                                onPress={this.showEnterDestinationTag}
+                                style={styles.editButton}
+                                roundedSmall
+                                iconSize={13}
+                                light
+                                icon="IconEdit"
                             />
                         </View>
-                    </KeyboardAvoidingView>
-                </ScrollView>
-                {/* Bottom Bar */}
-                <Footer style={[AppStyles.row]} safeArea>
-                    <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
-                        <Button secondary label={Localize.t('global.back')} onPress={this.goBack} />
                     </View>
-                    <View style={[AppStyles.flex2]}>
-                        <Button
-                            textStyle={AppStyles.strong}
-                            label={Localize.t('global.send')}
-                            onPress={this.goNext}
-                            isLoading={isLoading}
+
+                    {/* Currency */}
+                    <View style={[styles.rowItem]}>
+                        <View style={[styles.rowTitle]}>
+                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                {Localize.t('global.asset')}
+                            </Text>
+                        </View>
+                        <Spacer size={15} />
+
+                        <View style={[styles.rowTitle]}>{this.renderCurrencyItem(currency)}</View>
+                    </View>
+
+                    {/* Amount */}
+                    <View style={[styles.rowItem]}>
+                        <View style={[styles.rowTitle]}>
+                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                {Localize.t('global.amount')}
+                            </Text>
+                        </View>
+                        <Spacer size={15} />
+
+                        <View style={AppStyles.row}>
+                            <View style={AppStyles.flex1}>
+                                <AmountInput
+                                    ref={this.amountInput}
+                                    fractional={!sendingNFT}
+                                    decimalPlaces={typeof currency === 'string' ? 6 : 8}
+                                    onChange={this.onAmountChange}
+                                    style={[styles.amountInput]}
+                                    value={amount}
+                                />
+                            </View>
+                            <Button
+                                onPress={() => {
+                                    this.amountInput.current?.focus();
+                                }}
+                                style={styles.editButton}
+                                roundedSmall
+                                iconSize={13}
+                                light
+                                icon="IconEdit"
+                            />
+                        </View>
+                        {this.renderAmountRate()}
+                    </View>
+
+                    {/* Memo */}
+                    <View style={[styles.rowItem]}>
+                        <View style={[styles.rowTitle]}>
+                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                {Localize.t('global.memo')}
+                            </Text>
+                        </View>
+                        <Spacer size={15} />
+                        <TextInput
+                            onBlur={this.showMemoAlert}
+                            onChangeText={this.onDescriptionChange}
+                            placeholder={Localize.t('send.enterPublicMemo')}
+                            inputStyle={styles.inputStyle}
+                            maxLength={300}
+                            returnKeyType="done"
+                            autoCapitalize="sentences"
+                            numberOfLines={1}
                         />
                     </View>
+                </KeyboardAwareScrollView>
+                {/* Bottom Bar */}
+                <Footer safeArea>
+                    <SwipeButton
+                        secondary={this.shouldShowTestnet()}
+                        label={Localize.t('global.slideToSend')}
+                        onSwipeSuccess={this.goNext}
+                        isLoading={isLoading}
+                        shouldResetAfterSuccess
+                    />
                 </Footer>
             </View>
         );

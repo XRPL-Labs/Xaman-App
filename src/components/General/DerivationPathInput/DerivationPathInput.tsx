@@ -9,7 +9,6 @@ import React, { Component } from 'react';
 import { View, TextInput, Text, NativeSyntheticEvent, TextInputKeyPressEventData } from 'react-native';
 
 import styles from './styles';
-
 /* Types ==================================================================== */
 interface PathObjectType {
     accountPath?: string;
@@ -23,7 +22,6 @@ interface Props {
 }
 
 interface State extends PathObjectType {}
-
 /* Component ==================================================================== */
 class DerivationPathInput extends Component<Props, State> {
     private accountPathInput: TextInput;

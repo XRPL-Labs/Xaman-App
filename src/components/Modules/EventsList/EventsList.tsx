@@ -1,13 +1,15 @@
 import moment from 'moment-timezone';
 
 import React, { PureComponent } from 'react';
-import { View, Text, SectionList, ActivityIndicator } from 'react-native';
+import { View, Text, SectionList } from 'react-native';
 
 import { AccountSchema } from '@store/schemas/latest';
 
+import { LoadingIndicator } from '@components/General';
+
 import Localize from '@locale';
 
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 // EventListItems
@@ -54,7 +56,7 @@ class EventsList extends PureComponent<Props> {
         if (isLoading && typeof dataSource === 'undefined') {
             return (
                 <View style={styles.listEmptyContainer}>
-                    <ActivityIndicator color={AppColors.blue} />
+                    <LoadingIndicator />
                 </View>
             );
         }
@@ -87,7 +89,7 @@ class EventsList extends PureComponent<Props> {
         const { isLoadingMore } = this.props;
 
         if (isLoadingMore) {
-            return <ActivityIndicator color={AppColors.blue} />;
+            return <LoadingIndicator />;
         }
         return null;
     };

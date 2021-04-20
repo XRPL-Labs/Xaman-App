@@ -4,7 +4,7 @@
 
 import { Dimensions, Platform, PixelRatio, StatusBar } from 'react-native';
 
-import { IsIPhoneX } from '@common/helpers/device';
+import { hasNotch } from '@common/helpers/device';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -14,20 +14,20 @@ const guidelineBaseHeight = 680;
 
 // bottomTabs height
 const tabbarHeight = Platform.select({
-    ios: IsIPhoneX() ? 95 : 50,
+    ios: hasNotch() ? 95 : 50,
     android: 60,
     default: 0,
 });
 
 // status bar size
 const statusBarHeight = Platform.select({
-    ios: IsIPhoneX() ? 44 : 20,
+    ios: hasNotch() ? 44 : 20,
     android: StatusBar.currentHeight,
     default: 0,
 });
 
 // soft menu bar
-const navigationBarHeight = Platform.OS === 'android' ? height - Dimensions.get('window').height + 10 : 0;
+const navigationBarHeight = Platform.OS === 'android' ? height - Dimensions.get('window').height : 0;
 
 const Sizes = {
     // Screen Dimensions
@@ -57,7 +57,7 @@ const Sizes = {
 
     borderRadius: 8,
 
-    extraKeyBoardPadding: 40,
+    extraKeyBoardPadding: 20,
 
     scale: (size: number) => (width / guidelineBaseWidth) * size,
     verticalScale: (size: number) => (height / guidelineBaseHeight) * size,

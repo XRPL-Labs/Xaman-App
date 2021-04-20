@@ -4,9 +4,9 @@
 
 import { find } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 
-import DeviceInfo from 'react-native-device-info';
+import { PushNotificationsService, ApiService } from '@services';
 
 import { CoreRepository, ProfileRepository } from '@store/repositories';
 import { CoreSchema, ProfileSchema } from '@store/schemas/latest';
@@ -14,7 +14,9 @@ import { CoreSchema, ProfileSchema } from '@store/schemas/latest';
 import { AppScreens, AppConfig } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
-import { Header, Icon } from '@components/General';
+import { GetAppVersionCode, GetAppReadableVersion } from '@common/helpers/device';
+
+import { Header, Icon, Switch } from '@components/General';
 
 import Localize from '@locale';
 
@@ -96,7 +98,7 @@ class AdvancedSettingsView extends Component<Props, State> {
     };
 
     showChangeLog = () => {
-        const currentVersionCode = DeviceInfo.getVersion();
+        const currentVersionCode = GetAppVersionCode();
 
         Navigator.showOverlay(
             AppScreens.Overlay.ChangeLog,
@@ -111,6 +113,42 @@ class AdvancedSettingsView extends Component<Props, State> {
             },
             { version: currentVersionCode },
         );
+    };
+
+    reRegisterPushToken = async () => {
+        try {
+            const hasPermission = await PushNotificationsService.checkPermission();
+
+            if (hasPermission) {
+                const devicePushToken = await PushNotificationsService.getToken();
+
+                ApiService.updateDevice
+                    .post(null, {
+                        devicePushToken,
+                    })
+                    .then(() => {
+                        Alert.alert(
+                            Localize.t('global.success'),
+                            Localize.t('settings.successfullyReRegisteredForPushNotifications'),
+                        );
+                    })
+                    .catch(() => {
+                        Alert.alert(
+                            Localize.t('global.error'),
+                            Localize.t('settings.unableToReRegisteredForPushNotifications'),
+                        );
+                    });
+            } else {
+                Alert.alert(Localize.t('global.error'), Localize.t('global.pushErrorPermissionMessage'));
+            }
+        } catch {
+            Alert.alert(Localize.t('global.error'), Localize.t('settings.unableToReRegisteredForPushNotifications'));
+        }
+    };
+
+    developerModeChange = (value: boolean) => {
+        // save in store
+        CoreRepository.saveSettings({ developerMode: value });
     };
 
     render() {
@@ -130,7 +168,10 @@ class AdvancedSettingsView extends Component<Props, State> {
                 />
 
                 <ScrollView>
-                    <Text style={styles.descriptionText}>{Localize.t('settings.nodeAndExplorer')}</Text>
+                    {/* node & explorer section */}
+                    <Text numberOfLines={1} style={styles.descriptionText}>
+                        {Localize.t('settings.nodeAndExplorer')}
+                    </Text>
                     <TouchableOpacity
                         testID="change-node-button"
                         style={[styles.row]}
@@ -139,39 +180,67 @@ class AdvancedSettingsView extends Component<Props, State> {
                         }}
                     >
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('global.node')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('global.node')}
+                            </Text>
                         </View>
 
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                            <Text style={[styles.value]}>{coreSettings.defaultNode}</Text>
+                            <Text numberOfLines={1} style={[styles.value]}>
+                                {coreSettings.defaultNode}
+                            </Text>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.row]} onPress={this.showExplorerPicker}>
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('global.explorer')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('global.explorer')}
+                            </Text>
                         </View>
 
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                            <Text style={[styles.value]}>{this.getCurrentExplorerTitle()}</Text>
+                            <Text numberOfLines={1} style={[styles.value]}>
+                                {this.getCurrentExplorerTitle()}
+                            </Text>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
                     </TouchableOpacity>
-                    <Text style={styles.descriptionText}>{Localize.t('settings.releaseInformation')}</Text>
+
+                    {/* push notification section */}
+                    <Text numberOfLines={1} style={styles.descriptionText}>
+                        {Localize.t('settings.pushNotifications')}
+                    </Text>
+                    <TouchableOpacity style={[styles.row]} onPress={this.reRegisterPushToken}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.reRegisterForPushNotifications')}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    {/* release information section */}
+                    <Text numberOfLines={1} style={styles.descriptionText}>
+                        {Localize.t('settings.releaseInformation')}
+                    </Text>
                     <View style={[styles.row]}>
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('global.version')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('global.version')}
+                            </Text>
                         </View>
 
                         <TouchableOpacity style={[AppStyles.centerAligned, AppStyles.row]} onPress={this.showChangeLog}>
                             <Text selectable style={[styles.value]}>
-                                {DeviceInfo.getReadableVersion()}
+                                {GetAppReadableVersion()}
                             </Text>
                         </TouchableOpacity>
                     </View>
                     <TouchableOpacity style={[styles.row]} onPress={this.showChangeLog}>
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('settings.viewChangeLog')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.viewChangeLog')}
+                            </Text>
                         </View>
 
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
@@ -179,16 +248,32 @@ class AdvancedSettingsView extends Component<Props, State> {
                         </View>
                     </TouchableOpacity>
 
-                    <Text style={styles.descriptionText}>{Localize.t('global.debug')}</Text>
+                    {/* debug section */}
+                    <Text numberOfLines={1} style={styles.descriptionText}>
+                        {Localize.t('global.debug')}
+                    </Text>
+
                     <View style={[styles.row]}>
                         <View style={[AppStyles.flex1]}>
-                            <Text style={styles.label}>{Localize.t('global.deviceUUID')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('global.deviceUUID')}
+                            </Text>
                         </View>
 
                         <View style={[AppStyles.flex2]}>
                             <Text selectable numberOfLines={1} adjustsFontSizeToFit style={[styles.value]}>
                                 {profile.deviceUUID.toUpperCase()}
                             </Text>
+                        </View>
+                    </View>
+                    <View style={styles.row}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.developerMode')}
+                            </Text>
+                        </View>
+                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Switch checked={coreSettings.developerMode} onChange={this.developerModeChange} />
                         </View>
                     </View>
                     <TouchableOpacity
@@ -198,7 +283,9 @@ class AdvancedSettingsView extends Component<Props, State> {
                         }}
                     >
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('settings.sessionLog')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.sessionLog')}
+                            </Text>
                         </View>
 
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>

@@ -23,12 +23,15 @@ interface Props {
     currentColumn?: number;
     secretNumbers?: Array<string>;
     readonly?: boolean;
+    checksum?: boolean;
     onRowChanged?: (row: number) => void;
     onAllFilled?: (filled: boolean) => void;
     validateRow?: (row: number, numbers: string) => boolean;
 }
 
 interface State {
+    columnsNumber: number;
+    rowsNumber: number;
     currentRow: number;
     currentColumn: number;
     secretNumbers: number[][];
@@ -38,34 +41,44 @@ interface State {
 /* Constants ==================================================================== */
 const ROWS = 8;
 const COLUMNS = 6;
+const COLUMN_WIHTOUT_CHECKSUM = 5;
 
 /* Component ==================================================================== */
 class SecretNumberInput extends Component<Props, State> {
     allFilled: boolean;
 
+    static defaultProps = {
+        checksum: true,
+    };
+
     constructor(props: Props) {
         super(props);
 
-        let rows = [...Array(ROWS)].map(() => Array(COLUMNS));
+        let rows = [...Array(ROWS)].map(() => Array(props.checksum ? COLUMNS : COLUMN_WIHTOUT_CHECKSUM));
         if (props.secretNumbers) {
             rows = [];
             props.secretNumbers.forEach((row) => rows.push(row.split('')));
         }
 
         this.state = {
+            columnsNumber: props.checksum ? COLUMNS : COLUMN_WIHTOUT_CHECKSUM,
+            rowsNumber: ROWS,
             currentRow: props.currentRow || 0,
             currentColumn: props.currentColumn || 0,
             secretNumbers: rows,
             rowChecksumError: false,
         };
 
+        this.allFilled = false;
+    }
+
+    componentDidMount() {
+        const { readonly } = this.props;
         // set first row/col value if not readonly
-        if (!props.readonly) {
+        if (!readonly) {
             const defaultValue = Math.floor(Math.random() * 9);
             this.setValue(0, 0, defaultValue);
         }
-
-        this.allFilled = false;
     }
 
     static getDerivedStateFromProps(props: Props, state: State) {
@@ -86,16 +99,26 @@ class SecretNumberInput extends Component<Props, State> {
     };
 
     checkChecksum = (row: number, numbers: string): Boolean => {
-        const { validateRow } = this.props;
+        const { validateRow, checksum } = this.props;
+        const { columnsNumber } = this.state;
 
-        if (numbers.length !== 6) {
+        // ignore checking for checksum if checksum in the props
+        if (!checksum) {
+            // if any custom row validation
+            if (typeof validateRow === 'function') {
+                return validateRow(row, numbers);
+            }
+            return true;
+        }
+
+        if (numbers.length !== columnsNumber) {
             return false;
         }
 
-        const checksum = parseInt(numbers.slice(5), 10);
+        const calculatedChecksum = parseInt(numbers.slice(5), 10);
         const value = parseInt(numbers.slice(0, 5), 10);
 
-        const validChecksum = (value * (row * 2 + 1)) % 9 === checksum;
+        const validChecksum = (value * (row * 2 + 1)) % 9 === calculatedChecksum;
 
         // if any custom row validation
         if (typeof validateRow === 'function') {
@@ -106,11 +129,11 @@ class SecretNumberInput extends Component<Props, State> {
 
     goLeft = () => {
         const { onAllFilled, onRowChanged } = this.props;
-        const { currentRow, currentColumn } = this.state;
+        const { currentRow, currentColumn, columnsNumber, rowsNumber } = this.state;
         // we are at first row and column
         if (currentRow === 0 && currentColumn === 0) return;
 
-        if (currentRow !== ROWS) {
+        if (currentRow !== rowsNumber) {
             this.setValue(currentRow, currentColumn, undefined, true);
         }
         // go to previous row
@@ -118,14 +141,14 @@ class SecretNumberInput extends Component<Props, State> {
             this.setState(
                 {
                     currentRow: currentRow - 1,
-                    currentColumn: COLUMNS - 1,
+                    currentColumn: columnsNumber - 1,
                     rowChecksumError: false,
                 },
                 () => {
                     if (onRowChanged) {
                         onRowChanged(currentRow - 1);
                     }
-                    if (currentRow === ROWS) {
+                    if (currentRow === rowsNumber) {
                         onAllFilled(false);
                     }
                 },
@@ -141,15 +164,15 @@ class SecretNumberInput extends Component<Props, State> {
 
     goRight = () => {
         const { onAllFilled, onRowChanged } = this.props;
-        const { currentRow, currentColumn, secretNumbers } = this.state;
+        const { currentRow, currentColumn, secretNumbers, rowsNumber, columnsNumber } = this.state;
 
         // we are after last row
-        if (currentRow === ROWS && currentColumn === 0) {
+        if (currentRow === rowsNumber && currentColumn === 0) {
             return;
         }
 
         // check the checksum and go to next row
-        if (currentColumn === COLUMNS - 1) {
+        if (currentColumn === columnsNumber - 1) {
             if (this.checkChecksum(currentRow, secretNumbers[currentRow].join(''))) {
                 this.setState(
                     {
@@ -161,13 +184,13 @@ class SecretNumberInput extends Component<Props, State> {
                         if (onRowChanged) {
                             onRowChanged(currentRow + 1);
                         }
-                        if (currentRow + 1 === ROWS) {
+                        if (currentRow + 1 === rowsNumber) {
                             onAllFilled(true);
                         }
                     },
                 );
 
-                if (currentRow + 1 !== ROWS) {
+                if (currentRow + 1 !== rowsNumber) {
                     const defaultValue = Math.floor(Math.random() * 9);
                     this.setValue(currentRow + 1, 0, defaultValue, true);
                 }
@@ -189,9 +212,9 @@ class SecretNumberInput extends Component<Props, State> {
     };
 
     plusValue = () => {
-        const { currentRow, currentColumn, secretNumbers } = this.state;
+        const { currentRow, currentColumn, secretNumbers, rowsNumber } = this.state;
 
-        if (currentRow === ROWS) return;
+        if (currentRow === rowsNumber) return;
 
         const currentValue = get(secretNumbers, `[${currentRow}][${currentColumn}]`);
         if (currentValue + 1 > 9) {
@@ -203,9 +226,9 @@ class SecretNumberInput extends Component<Props, State> {
     };
 
     minusValue = () => {
-        const { currentRow, currentColumn, secretNumbers } = this.state;
+        const { currentRow, currentColumn, secretNumbers, rowsNumber } = this.state;
 
-        if (currentRow === ROWS) return;
+        if (currentRow === rowsNumber) return;
 
         const currentValue = get(secretNumbers, `[${currentRow}][${currentColumn}]`);
         if (currentValue - 1 < 0) {
@@ -240,13 +263,14 @@ class SecretNumberInput extends Component<Props, State> {
 
     renderRows = () => {
         const { readonly } = this.props;
-        const { currentRow, currentColumn, secretNumbers, rowChecksumError } = this.state;
+        const { currentRow, currentColumn, secretNumbers, rowChecksumError, rowsNumber, columnsNumber } = this.state;
         const rows = [];
 
-        for (let i = 0; i < ROWS; i++) {
+        for (let i = 0; i < rowsNumber; i++) {
             rows.push(
                 <SecretNumberRow
                     key={`secret-number-row-${i}`}
+                    columnsNumber={columnsNumber}
                     numbers={[...secretNumbers[i]]}
                     readonly={readonly}
                     rowNumber={i}

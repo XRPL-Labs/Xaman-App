@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
-import { View, Text, TouchableHighlight, TouchableOpacity, ActivityIndicator, Platform, ViewStyle } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, ViewStyle } from 'react-native';
 
-import { Avatar, Badge, Icon } from '@components/General';
+import { Avatar, Badge, Icon, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -66,32 +66,29 @@ class RecipientElement extends PureComponent<Props> {
         return null;
     };
 
+    getAvatar = () => {
+        const { recipient, showAvatar } = this.props;
+
+        if (!showAvatar) return null;
+        return <Avatar source={{ uri: `https://xumm.app/avatar/${recipient.address}_180_50.png` }} />;
+    };
+
     render() {
-        const {
-            recipient,
-            selected,
-            showMoreButton,
-            showAvatar,
-            showTag,
-            isLoading,
-            containerStyle,
-            onPress,
-        } = this.props;
+        const { recipient, selected, showMoreButton, showTag, isLoading, containerStyle, onPress } = this.props;
 
         const badge = this.getBadge();
+        const avatar = this.getAvatar();
 
         return (
-            <TouchableHighlight
+            <TouchableOpacity
                 testID={`recipient-${recipient.address}`}
                 activeOpacity={onPress ? 0.7 : 1}
                 onPress={this.onPress}
-                underlayColor="#FFF"
+                style={styles.touchRow}
                 key={recipient.id}
             >
                 <View style={[styles.itemRow, selected && styles.itemSelected, containerStyle]}>
-                    {showAvatar && (
-                        <Avatar source={{ uri: `https://xumm.app/avatar/${recipient.address}_180_50.png` }} />
-                    )}
+                    {avatar}
 
                     {/* eslint-disable-next-line react-native/no-inline-styles */}
                     <View style={{ paddingLeft: 10 }}>
@@ -105,7 +102,7 @@ class RecipientElement extends PureComponent<Props> {
                                     Platform.OS === 'ios' ? (
                                         <>
                                             <Text>Loading </Text>
-                                            <ActivityIndicator color={AppColors.blue} />
+                                            <LoadingIndicator />
                                         </>
                                     ) : (
                                         'Loading...'
@@ -117,12 +114,12 @@ class RecipientElement extends PureComponent<Props> {
                             {badge && badge}
                         </View>
                         <Text style={[styles.subtitle, selected ? styles.selectedText : null]}>
-                            {recipient.address}
+                            {recipient.address || 'rxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}
                         </Text>
 
                         {!!recipient.tag && showTag && (
                             <View style={styles.destinationTagContainer}>
-                                <Text style={[AppStyles.monoSubText, AppStyles.colorGreyDark]}>
+                                <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
                                     {Localize.t('global.destinationTag')}:{' '}
                                     <Text style={AppStyles.colorBlue}>{recipient.tag}</Text>
                                 </Text>
@@ -136,11 +133,11 @@ class RecipientElement extends PureComponent<Props> {
                             activeOpacity={0.7}
                             style={[AppStyles.flex1, AppStyles.rightAligned, AppStyles.centerContent]}
                         >
-                            <Icon name="IconMoreVertical" size={30} style={AppStyles.imgColorGreyDark} />
+                            <Icon name="IconMoreVertical" size={30} style={AppStyles.imgColorGrey} />
                         </TouchableOpacity>
                     )}
                 </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
         );
     }
 }

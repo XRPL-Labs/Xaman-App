@@ -3,10 +3,10 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView, View, Text, Alert } from 'react-native';
 
 // components
-import { PasswordInput, Button, Footer, Header } from '@components/General';
+import { PasswordInput, Button, Footer, KeyboardAwareScrollView } from '@components/General';
 
 // locale
 import Localize from '@locale';
@@ -64,44 +64,47 @@ class PassphraseStep extends Component<Props, State> {
         }
     };
 
+    onPassphraseChange = (value: string, isValid: boolean) => {
+        this.setState({ passphrase: { value, isValid } });
+    };
+
+    onPassphraseConfirmChange = (passphrase_confirmation: string) => {
+        this.setState({ passphrase_confirmation });
+    };
+
     render() {
         const { goBack } = this.context;
         const { passphrase } = this.state;
         return (
             <SafeAreaView testID="account-generate-passphrase-view" style={[AppStyles.container]}>
-                <Text
-                    style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontalSml]}
+                <KeyboardAwareScrollView
+                    style={[AppStyles.flex1, AppStyles.stretchSelf, AppStyles.paddingHorizontal]}
+                    contentContainerStyle={[AppStyles.flex1]}
                 >
-                    {Localize.t('account.pleaseEnterSafePassword')}
-                </Text>
+                    <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned]}>
+                        {Localize.t('account.pleaseEnterSafePassword')}
+                    </Text>
 
-                <KeyboardAvoidingView
-                    enabled={Platform.OS === 'ios'}
-                    behavior="padding"
-                    keyboardVerticalOffset={Header.Height}
-                    style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}
-                >
-                    <PasswordInput
-                        testID="passphrase-input"
-                        editable
-                        placeholder={Localize.t('account.enterPassword')}
-                        minLength={8}
-                        onChange={(value: string, isValid: boolean) => {
-                            this.setState({ passphrase: { value, isValid } });
-                        }}
-                        validate
-                        autoFocus
-                    />
-
-                    <PasswordInput
-                        testID="passphrase-confirm-input"
-                        editable={passphrase.isValid}
-                        selectTextOnFocus={passphrase.isValid}
-                        placeholder={Localize.t('account.repeatPassword')}
-                        onChange={(passphrase_confirmation) => this.setState({ passphrase_confirmation })}
-                        validate={false}
-                    />
-                </KeyboardAvoidingView>
+                    <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                        <PasswordInput
+                            testID="passphrase-input"
+                            editable
+                            placeholder={Localize.t('account.enterPassword')}
+                            minLength={8}
+                            onChange={this.onPassphraseChange}
+                            validate
+                            autoFocus
+                        />
+                        <PasswordInput
+                            testID="passphrase-confirm-input"
+                            editable={passphrase.isValid}
+                            selectTextOnFocus={passphrase.isValid}
+                            placeholder={Localize.t('account.repeatPassword')}
+                            onChange={this.onPassphraseConfirmChange}
+                            validate={false}
+                        />
+                    </View>
+                </KeyboardAwareScrollView>
 
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
@@ -109,10 +112,8 @@ class PassphraseStep extends Component<Props, State> {
                             testID="back-button"
                             label={Localize.t('global.back')}
                             icon="IconChevronLeft"
-                            onPress={() => {
-                                goBack();
-                            }}
-                            secondary
+                            light
+                            onPress={goBack}
                         />
                     </View>
                     <View style={[AppStyles.flex5]}>
@@ -121,9 +122,7 @@ class PassphraseStep extends Component<Props, State> {
                             isDisabled={!passphrase.isValid}
                             textStyle={AppStyles.strong}
                             label={Localize.t('global.next')}
-                            onPress={() => {
-                                this.goNext();
-                            }}
+                            onPress={this.goNext}
                         />
                     </View>
                 </Footer>

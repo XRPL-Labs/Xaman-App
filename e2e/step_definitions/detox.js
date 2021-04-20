@@ -46,6 +46,10 @@ Then('I scroll {string} to bottom', async (elementId) => {
     await element(by.id(elementId)).scrollTo('bottom');
 });
 
+Then('I slide right {string}', async (elementId) => {
+    await element(by.id(elementId)).swipe('right', 'slow', 0.8);
+});
+
 Then('I tap alert button with label {string}', async (label) => {
     await element(by.label(label).and(by.type('_UIAlertControllerActionView'))).tap();
 });

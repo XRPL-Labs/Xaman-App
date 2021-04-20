@@ -11,7 +11,7 @@ import { AccountSchema } from '@store/schemas/latest';
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
-import { HexEncoding } from '@common/libs/utils';
+import { HexEncoding } from '@common/utils/string';
 import {
     SignedObjectType,
     TransactionJSONType,
@@ -273,6 +273,23 @@ class BaseTransaction {
 
         return baseFee.toFixed(0, BigNumber.ROUND_UP);
     };
+
+    /**
+     * check if transaction contain any xApp identifier and return it
+     * @returns {string} xApp identifier if found any
+     */
+    getXappIdentifier(): string {
+        const memos = this.Memos;
+        if (!memos) return undefined;
+
+        for (const memo of memos) {
+            if (memo.type === 'xumm/xapp' && memo.data) {
+                return memo.data;
+            }
+        }
+
+        return undefined;
+    }
 
     get Type(): string {
         return get(this, ['tx', 'TransactionType'], undefined);

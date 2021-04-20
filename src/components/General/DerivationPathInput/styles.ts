@@ -1,16 +1,16 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts, AppSizes } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 /* Styles ==================================================================== */
-export default StyleSheet.create({
+export default StyleService.create({
     container: {
-        backgroundColor: AppColors.grey,
+        backgroundColor: '$tint',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'center',
         paddingHorizontal: 10,
-        borderColor: AppColors.grey,
+        borderColor: '$lightGrey',
         height: AppSizes.heightPercentageToDP(7),
         minHeight: 55,
         width: '100%',
@@ -19,14 +19,14 @@ export default StyleSheet.create({
     },
     label: {
         fontFamily: AppFonts.base.familyBold,
-        color: AppColors.greyDark,
+        color: '$grey',
         fontSize: AppFonts.subtext.size,
         textAlign: 'center',
         paddingHorizontal: 10,
     },
     input: {
         flex: 1,
-        backgroundColor: AppColors.light,
+        backgroundColor: '$tint',
         textAlignVertical: 'center',
         textAlign: 'left',
         padding: 0,
@@ -34,5 +34,6 @@ export default StyleSheet.create({
         paddingRight: 20,
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.subtext.size,
+        color: '$blue',
     },
 });

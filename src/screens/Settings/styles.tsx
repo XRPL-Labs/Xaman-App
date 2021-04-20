@@ -1,9 +1,9 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppSizes, AppFonts } from '@theme';
+import { AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     rowContainer: {
         paddingTop: AppSizes.heightPercentageToDP(2.5),
         paddingBottom: AppSizes.heightPercentageToDP(2.5),
@@ -11,9 +11,13 @@ const styles = StyleSheet.create({
     rowLabel: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size,
+        color: '$textPrimary',
+    },
+    rowIcon: {
+        tintColor: '$textPrimary',
     },
     hr: {
-        borderBottomColor: AppColors.grey,
+        borderBottomColor: '$tint',
         borderBottomWidth: 2,
         marginTop: 7,
         marginBottom: 7,

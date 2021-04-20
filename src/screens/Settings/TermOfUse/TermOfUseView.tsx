@@ -3,21 +3,23 @@
  */
 import { isNumber } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, ActivityIndicator, BackHandler } from 'react-native';
+import { View, Text, BackHandler } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import { IsIPhoneX } from '@common/helpers/device';
+import { hasNotch } from '@common/helpers/device';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens, AppConfig } from '@common/constants';
 
-import { ProfileRepository } from '@store/repositories';
-import { Header, Footer, Spacer, Button } from '@components/General';
+import { ProfileRepository, CoreRepository } from '@store/repositories';
+import { CoreSchema } from '@store/schemas/latest';
+
+import { Header, Footer, Spacer, Button, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors, AppSizes } from '@theme';
+import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -29,7 +31,7 @@ export interface State {
     TOSVersion: number;
     isTOSLoaded: boolean;
     shouldShowAgreement: boolean;
-    uri: string;
+    coreSettings: CoreSchema;
 }
 
 /* Component ==================================================================== */
@@ -46,17 +48,11 @@ class TermOfUseView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        let uri = `${AppConfig.termOfUseURL}${Localize.getCurrentLocale()}`;
-
-        if (__DEV__) {
-            uri = uri.replace('https://xumm.app', 'http://10.100.189.74:3001');
-        }
-
         this.state = {
             TOSVersion: undefined,
             isTOSLoaded: false,
             shouldShowAgreement: false,
-            uri,
+            coreSettings: CoreRepository.getSettings(),
         };
     }
 
@@ -108,11 +104,26 @@ class TermOfUseView extends Component<Props, State> {
         }
     };
 
+    getHeaders = () => {
+        const { coreSettings } = this.state;
+
+        if (coreSettings) {
+            return {
+                'X-XUMM-Style': coreSettings.theme,
+            };
+        }
+        return {};
+    };
+
+    getURI = () => {
+        return `${AppConfig.termOfUseURL}${Localize.getCurrentLocale()}`;
+    };
+
     render() {
         const { asModal } = this.props;
-        const { uri, isTOSLoaded, shouldShowAgreement } = this.state;
+        const { isTOSLoaded, shouldShowAgreement } = this.state;
 
-        const paddingBottom = IsIPhoneX() && !shouldShowAgreement ? 20 : 0;
+        const paddingBottom = hasNotch() && !shouldShowAgreement ? 20 : 0;
 
         return (
             <View testID="term-of-use-view" style={[styles.container]}>
@@ -141,10 +152,9 @@ class TermOfUseView extends Component<Props, State> {
                             isTOSLoaded: true,
                         });
                     }}
-                    renderLoading={() => (
-                        <ActivityIndicator color={AppColors.blue} style={styles.loadingStyle} size="large" />
-                    )}
-                    source={{ uri }}
+                    renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
+                    source={{ uri: this.getURI(), headers: this.getHeaders() }}
+                    androidHardwareAccelerationDisabled={false}
                 />
 
                 {shouldShowAgreement && (

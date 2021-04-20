@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableHighlight } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
@@ -7,12 +7,13 @@ import { AccountSchema } from '@store/schemas/latest';
 
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { Images } from '@common/helpers/images';
+import { NormalizeCurrencyCode, NormalizeAmount } from '@common/utils/amount';
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
 
-import { Icon, Avatar } from '@components/General';
+import { Icon, Avatar, AmountText } from '@components/General';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -90,7 +91,7 @@ class TransactionTemplate extends Component<Props, State> {
 
         switch (item.Type) {
             case 'Payment':
-                if (item.Destination.address === account.address) {
+                if (item.Account?.address !== account.address) {
                     address = item.Account.address;
                     key = 'Account';
                 } else {
@@ -134,6 +135,9 @@ class TransactionTemplate extends Component<Props, State> {
                 break;
             case 'DepositPreauth':
                 address = item.Authorize || item.Unauthorize;
+                break;
+            case 'TicketCreate':
+                address = item.Account.address;
                 break;
             default:
                 break;
@@ -202,6 +206,7 @@ class TransactionTemplate extends Component<Props, State> {
 
         switch (item.Type) {
             case 'OfferCreate':
+            case 'Payment':
                 iconName = 'IconSwitchAccount';
                 break;
             default:
@@ -225,11 +230,11 @@ class TransactionTemplate extends Component<Props, State> {
                 const takerGot = item.TakerGot(account.address);
                 const takerPaid = item.TakerPaid(account.address);
 
-                return `${Localize.formatNumber(takerGot.value)} ${NormalizeCurrencyCode(
+                return `${Localize.formatNumber(NormalizeAmount(takerGot.value))} ${NormalizeCurrencyCode(
                     takerGot.currency,
                 )}/${NormalizeCurrencyCode(takerPaid.currency)}`;
             }
-            return `${Localize.formatNumber(item.TakerGets.value)} ${NormalizeCurrencyCode(
+            return `${Localize.formatNumber(NormalizeAmount(item.TakerGets.value))} ${NormalizeCurrencyCode(
                 item.TakerGets.currency,
             )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
         }
@@ -308,6 +313,8 @@ class TransactionTemplate extends Component<Props, State> {
                 return Localize.t('events.cashCheck');
             case 'CheckCancel':
                 return Localize.t('events.cancelCheck');
+            case 'TicketCreate':
+                return Localize.t('events.createTicket');
             default:
                 return item.Type;
         }
@@ -316,10 +323,13 @@ class TransactionTemplate extends Component<Props, State> {
     renderMemoIcon = () => {
         const { item } = this.props;
 
+        // if memo contain xApp identifier then show xApp Icon
+        if (item.getXappIdentifier()) {
+            return <Image source={Images.IconXApp} style={[styles.xAppsIcon]} />;
+        }
+
         if (item.Memos) {
-            return (
-                <Icon name="IconFileText" style={[AppStyles.imgColorGreyDark, AppStyles.paddingLeftSml]} size={12} />
-            );
+            return <Icon name="IconFileText" style={[AppStyles.imgColorGrey, AppStyles.paddingLeftSml]} size={12} />;
         }
 
         return null;
@@ -336,60 +346,70 @@ class TransactionTemplate extends Component<Props, State> {
 
                 if (balanceChanges?.received) {
                     return (
-                        <Text style={[styles.amount]} numberOfLines={1}>
-                            {Localize.formatNumber(balanceChanges.received?.value)}{' '}
-                            <Text style={[styles.currency]}>
-                                {NormalizeCurrencyCode(balanceChanges.received?.currency)}
-                            </Text>
-                        </Text>
+                        <AmountText
+                            value={balanceChanges.received?.value}
+                            currency={balanceChanges.received?.currency}
+                            style={styles.amount}
+                            currencyStyle={styles.currency}
+                        />
                     );
                 }
             }
             return (
-                <Text style={[styles.amount, !incoming && styles.outgoingColor]} numberOfLines={1}>
-                    {incoming ? '' : '-'}
-                    {Localize.formatNumber(item.Amount.value)}{' '}
-                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
-                </Text>
+                <AmountText
+                    value={item.Amount.value}
+                    currency={item.Amount.currency}
+                    prefix={!incoming && '-'}
+                    style={[styles.amount, !incoming && styles.outgoingColor]}
+                    currencyStyle={styles.currency}
+                />
             );
         }
 
         if (item.Type === 'AccountDelete') {
             return (
-                <Text style={[styles.amount, !incoming && styles.outgoingColor]} numberOfLines={1}>
-                    {incoming ? '' : '-'}
-                    {Localize.formatNumber(item.Amount.value)}{' '}
-                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
-                </Text>
+                <AmountText
+                    value={item.Amount.value}
+                    currency={item.Amount.currency}
+                    prefix={!incoming && '-'}
+                    style={[styles.amount, !incoming && styles.outgoingColor]}
+                    currencyStyle={styles.currency}
+                />
             );
         }
 
         if (item.Type === 'EscrowCreate') {
             return (
-                <Text style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]} numberOfLines={1}>
-                    {!incoming && '-'}
-                    {Localize.formatNumber(item.Amount.value)}{' '}
-                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
-                </Text>
+                <AmountText
+                    value={item.Amount.value}
+                    currency={item.Amount.currency}
+                    prefix={!incoming && '-'}
+                    style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]}
+                    currencyStyle={styles.currency}
+                />
             );
         }
 
         if (item.Type === 'EscrowFinish') {
             return (
-                <Text style={[styles.amount, !incoming && styles.naturalColor]} numberOfLines={1}>
-                    {!incoming && '-'}
-                    {Localize.formatNumber(item.Amount.value)}{' '}
-                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
-                </Text>
+                <AmountText
+                    value={item.Amount.value}
+                    currency={item.Amount.currency}
+                    prefix={!incoming && '-'}
+                    style={[styles.amount, !incoming && styles.naturalColor]}
+                    currencyStyle={styles.currency}
+                />
             );
         }
 
         if (item.Type === 'CheckCreate') {
             return (
-                <Text style={[styles.amount, styles.naturalColor]} numberOfLines={1}>
-                    {Localize.formatNumber(item.SendMax.value)}{' '}
-                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.SendMax.currency)}</Text>
-                </Text>
+                <AmountText
+                    value={item.SendMax.value}
+                    currency={item.SendMax.currency}
+                    style={[styles.amount, styles.naturalColor]}
+                    currencyStyle={styles.currency}
+                />
             );
         }
 
@@ -397,11 +417,12 @@ class TransactionTemplate extends Component<Props, State> {
             const amount = item.Amount || item.DeliverMin;
             incoming = item.Account.address === account.address;
             return (
-                <Text style={[styles.amount, !incoming && styles.outgoingColor]} numberOfLines={1}>
-                    {incoming ? '' : '-'}
-                    {Localize.formatNumber(amount.value)}{' '}
-                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(amount.currency)}</Text>
-                </Text>
+                <AmountText
+                    value={amount.value}
+                    currency={amount.currency}
+                    style={[styles.amount, !incoming && styles.outgoingColor]}
+                    currencyStyle={styles.currency}
+                />
             );
         }
 
@@ -410,17 +431,21 @@ class TransactionTemplate extends Component<Props, State> {
                 const takerPaid = item.TakerPaid(account.address);
 
                 return (
-                    <Text style={[styles.amount]} numberOfLines={1}>
-                        {Localize.formatNumber(takerPaid.value)}{' '}
-                        <Text style={[styles.currency]}>{NormalizeCurrencyCode(takerPaid.currency)}</Text>
-                    </Text>
+                    <AmountText
+                        value={takerPaid.value}
+                        currency={takerPaid.currency}
+                        style={[styles.amount]}
+                        currencyStyle={styles.currency}
+                    />
                 );
             }
             return (
-                <Text style={[styles.amount, styles.naturalColor]} numberOfLines={1}>
-                    {Localize.formatNumber(item.TakerPays.value)}{' '}
-                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.TakerPays.currency)}</Text>
-                </Text>
+                <AmountText
+                    value={item.TakerPays.value}
+                    currency={item.TakerPays.currency}
+                    style={[styles.amount, styles.naturalColor]}
+                    currencyStyle={styles.currency}
+                />
             );
         }
 
@@ -429,7 +454,7 @@ class TransactionTemplate extends Component<Props, State> {
 
     render() {
         return (
-            <TouchableHighlight onPress={this.onPress} underlayColor="#FFF">
+            <TouchableOpacity onPress={this.onPress} activeOpacity={0.6} style={styles.touchHighlight}>
                 <View style={[AppStyles.row, styles.container]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
                     <View style={[AppStyles.flex3, AppStyles.centerContent]}>
@@ -448,7 +473,7 @@ class TransactionTemplate extends Component<Props, State> {
                         {this.renderRightPanel()}
                     </View>
                 </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
         );
     }
 }

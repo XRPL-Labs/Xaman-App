@@ -1,16 +1,17 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppSizes, AppFonts } from '@theme';
-
+import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
+const styles = StyleService.create({
     visibleContent: {
         // height: Sizes.screen.heightHalf + 100,
-        height: AppSizes.screen.height * 0.9,
-        backgroundColor: AppColors.white,
+        height: AppSizes.heightPercentageToDP(92),
+        backgroundColor: '$background',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
-        shadowColor: AppColors.black,
+        borderColor: '$tint',
+        borderWidth: 1,
+        shadowColor: '$black',
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 5,
         shadowOpacity: 0.3,
@@ -19,12 +20,12 @@ const styles = StyleSheet.create({
     },
     cancelButton: {
         height: AppSizes.screen.heightHalf * 0.1,
-        backgroundColor: AppColors.grey,
+        backgroundColor: '$grey',
     },
     reserveAmount: {
         fontSize: AppFonts.base.size,
         fontFamily: AppFonts.base.familyMonoBold,
-        color: AppColors.greyDark,
+        color: '$grey',
         // fontWeight: 'bold',
         alignItems: 'flex-start',
         justifyContent: 'center',
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
     currencyItemLabel: {
         fontSize: AppFonts.h5.size,
         fontFamily: AppFonts.base.familyMonoBold,
-        // fontWeight: 'bold',
+        color: '$textPrimary',
         alignItems: 'flex-start',
         justifyContent: 'center',
     },
@@ -64,34 +65,34 @@ const styles = StyleSheet.create({
     xrpAvatarContainer: {
         padding: 10,
         marginRight: 10,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$white',
         borderWidth: 1,
-        borderColor: AppColors.grey,
+        borderColor: '$lightGrey',
         borderRadius: 8,
         justifyContent: 'center',
     },
     trustLineInfoIcon: {
-        tintColor: AppColors.greyDark,
+        tintColor: '$grey',
         marginRight: 5,
     },
     rowTitle: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.p.size,
-        color: AppColors.black,
+        color: '$textPrimary',
     },
     rowLabel: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.subtext.size,
-        color: AppColors.black,
+        color: '$textPrimary',
     },
     rowLabelSmall: {
         fontSize: AppFonts.subtext.size * 0.8,
         fontFamily: AppFonts.base.familyMono,
-        color: AppColors.greyDark,
+        color: '$grey',
     },
     listHeader: {
         paddingVertical: 5,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$white',
     },
     currencyAvatar: {
         width: AppSizes.moderateScale(16),

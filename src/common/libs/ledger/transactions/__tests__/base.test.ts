@@ -92,7 +92,6 @@ describe('BaseTransaction tx', () => {
 
     it('Should be able to prepare the transaction for signing', async () => {
         const address = 'rEAa7TDpBdL1hoRRAp3WDmzBcuQzaXssmb';
-        const privateKey = '00368093D69FF1CFCA380EEE8D3B100CD201C079E2BDBE66016497C1CD2501A0FB';
 
         // mock the ledger service response
         const spy = jest.spyOn(LedgerService, 'getAccountInfo').mockImplementation(() => {
@@ -120,7 +119,7 @@ describe('BaseTransaction tx', () => {
         const instance = new BaseTransaction(paymentTxTemplates.SimplePayment);
 
         // prepare the transaction by applying the private key
-        await instance.prepare(privateKey);
+        await instance.prepare();
 
         // run test to check if it probebely prepared transaction
         expect(instance.Account).toStrictEqual({
@@ -142,12 +141,6 @@ describe('BaseTransaction tx', () => {
 
         // should set the LastLedgerSequence if lower than 32570
         expect(instance.LastLedgerSequence).toBe(6032000);
-
-        // should sign the transaciton successfully
-        await instance.sign();
-
-        expect(instance.Hash).toBe('F5E86A597423C05ECF9176C81BA2EA8B6C0FF5A8B2C4E42FF82245DA24947D31');
-        expect(instance.SignedTX).toBeDefined();
 
         spy.mockRestore();
     });

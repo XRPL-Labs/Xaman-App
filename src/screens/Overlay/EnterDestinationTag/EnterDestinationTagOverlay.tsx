@@ -2,7 +2,7 @@
  * Request decline overlay
  */
 import React, { Component, createRef } from 'react';
-import { Animated, View, Text, Platform, Keyboard, Image, TouchableWithoutFeedback, KeyboardEvent } from 'react-native';
+import { Animated, View, Text, Platform, Image, TouchableWithoutFeedback, KeyboardEvent } from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
@@ -10,6 +10,7 @@ import { StringTypeDetector, StringDecoder, StringType } from 'xumm-string-decod
 
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
+import { Keyboard } from '@common/helpers/keyboard';
 
 import { AppScreens } from '@common/constants';
 
@@ -47,6 +48,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
     deltaY: Animated.Value;
     deltaX: Animated.Value;
     keyboardShow: boolean;
+    isOpening: boolean;
 
     static options() {
         return {
@@ -65,7 +67,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
 
         this.state = {
             offsetBottom: 0,
-            destinationTag: props.destination.tag || '',
+            destinationTag: props.destination?.tag || '',
         };
 
         this.textInputView = createRef<View>();
@@ -74,6 +76,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
         this.deltaX = new Animated.Value(0);
 
         this.keyboardShow = false;
+        this.isOpening = true;
     }
 
     componentDidMount() {
@@ -86,23 +89,13 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
     }
 
     removeKeyboardListeners = () => {
-        if (Platform.OS === 'ios') {
-            Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
-            Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
-        } else {
-            Keyboard.removeListener('keyboardDidShow', this.onKeyboardShow);
-            Keyboard.removeListener('keyboardDidHide', this.onKeyboardHide);
-        }
+        Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
+        Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
     };
 
     addKeyboardListeners = () => {
-        if (Platform.OS === 'ios') {
-            Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
-            Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
-        } else {
-            Keyboard.addListener('keyboardDidShow', this.onKeyboardShow);
-            Keyboard.addListener('keyboardDidHide', this.onKeyboardHide);
-        }
+        Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
+        Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
     };
 
     onKeyboardShow = (e: KeyboardEvent) => {
@@ -156,17 +149,23 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
         }, 20);
     };
 
-    onSnap = async (event: any) => {
-        const { onClose } = this.props;
+    onAlert = (event: any) => {
+        const { top, bottom } = event.nativeEvent;
 
-        const { index } = event.nativeEvent;
+        if (top && bottom) return;
 
-        if (index === 0) {
-            Navigator.dismissOverlay();
+        if (top === 'enter' && this.isOpening) {
+            this.isOpening = false;
+        }
+
+        if (bottom === 'leave' && !this.isOpening) {
+            const { onClose } = this.props;
 
             if (typeof onClose === 'function') {
                 onClose();
             }
+
+            Navigator.dismissOverlay();
         }
     };
 
@@ -207,11 +206,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
 
         return (
             <View style={AppStyles.flex1}>
-                <TouchableWithoutFeedback
-                    onPress={() => {
-                        this.slideDown();
-                    }}
-                >
+                <TouchableWithoutFeedback onPress={this.slideDown}>
                     <Animated.View
                         style={[
                             AppStyles.shadowContent,
@@ -227,11 +222,11 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={(r) => {
+                    ref={r => {
                         this.panel = r;
                     }}
                     animatedNativeDriver
-                    onSnap={this.onSnap}
+                    onAlert={this.onAlert}
                     verticalOnly
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
@@ -242,6 +237,16 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                                 AppSizes.moderateScale(450) -
                                 AppSizes.navigationBarHeight -
                                 offsetBottom,
+                        },
+                    ]}
+                    alertAreas={[
+                        { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
+                        {
+                            id: 'top',
+                            influenceArea: {
+                                top:
+                                    AppSizes.screen.height - AppSizes.moderateScale(450) - AppSizes.navigationBarHeight,
+                            },
                         },
                     ]}
                     boundaries={{
@@ -266,7 +271,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
 
                         <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                             <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                                <Text style={[AppStyles.h5, AppStyles.strong]}>
+                                <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
                                     {Localize.t('global.destinationTag')}
                                 </Text>
                             </View>
@@ -284,7 +289,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                             </View>
                         </View>
                         <View style={[AppStyles.paddingHorizontalSml]}>
-                            <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
+                            <Text numberOfLines={1} style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
                                 {buttonType === 'next'
                                     ? Localize.t('send.thisAddressRequiredDestinationTag')
                                     : Localize.t('send.pleaseEnterTheDestinationTag')}
@@ -318,10 +323,10 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                             ]}
                         >
                             <TextInput
-                                ref={(r) => {
+                                ref={r => {
                                     this.textInput = r;
                                 }}
-                                value={destinationTag}
+                                value={String(destinationTag)}
                                 onChangeText={this.onDestinationTagChange}
                                 keyboardType="number-pad"
                                 returnKeyType="done"
@@ -345,6 +350,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                             ]}
                         >
                             <Button
+                                numberOfLines={1}
                                 isDisabled={Number(destinationTag) > 2 ** 32 || Number(destinationTag) <= 0}
                                 onPress={this.onFinish}
                                 style={styles.nextButton}

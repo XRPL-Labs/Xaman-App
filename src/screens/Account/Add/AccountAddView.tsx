@@ -8,9 +8,9 @@ import { View, Text, Image, ImageBackground, Alert, InteractionManager } from 'r
 import RNTangemSdk, { Card, CardStatus, EventCallback } from 'tangem-sdk-react-native';
 
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 import { Prompt } from '@common/helpers/interface';
 
+import StyleService from '@services/StyleService';
 import { AppScreens } from '@common/constants';
 
 // components
@@ -90,7 +90,7 @@ class AccountAddView extends Component<Props, State> {
     createTangemWallet = (card: Card) => {
         const { cardId } = card;
 
-        RNTangemSdk.createWallet(cardId)
+        RNTangemSdk.createWallet({ cardId })
             .then((resp) => {
                 this.goToImport({ tangemCard: { ...card, ...resp } });
             })
@@ -156,14 +156,14 @@ class AccountAddView extends Component<Props, State> {
                 />
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal, AppStyles.paddingBottom]}>
                     <ImageBackground
-                        source={Images.BackgroundShapes}
+                        source={StyleService.getImage('BackgroundShapes')}
                         imageStyle={AppStyles.BackgroundShapes}
                         style={[AppStyles.BackgroundShapesWH, AppStyles.column]}
                     >
                         <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                             <Image
                                 style={[AppStyles.emptyIcon, AppStyles.centerSelf]}
-                                source={Images.ImageAddAccount}
+                                source={StyleService.getImage('ImageAddAccount')}
                             />
                         </View>
                         <View style={[AppStyles.flexEnd]}>
@@ -172,6 +172,7 @@ class AccountAddView extends Component<Props, State> {
                             </Text>
                             <View style={[AppStyles.centerAligned, AppStyles.centerContent]}>
                                 <Button
+                                    numberOfLines={1}
                                     testID="account-generate-button"
                                     label={Localize.t('account.generateNewAccount')}
                                     onPress={this.goToGenerate}
@@ -180,11 +181,11 @@ class AccountAddView extends Component<Props, State> {
                                 <Spacer />
 
                                 <Button
+                                    secondary
+                                    numberOfLines={1}
                                     testID="account-import-button"
                                     label={Localize.t('account.importExisting')}
                                     onPress={this.goToImport}
-                                    style={[AppStyles.buttonBlueLight]}
-                                    textStyle={[AppStyles.colorBlue]}
                                 />
 
                                 <View style={[styles.separatorContainer]}>
@@ -192,10 +193,11 @@ class AccountAddView extends Component<Props, State> {
                                 </View>
 
                                 <Button
-                                    style={AppStyles.buttonBlack}
+                                    contrast
                                     testID="tangem-import-button"
                                     label={Localize.t('account.addTangemCard')}
                                     onPress={this.onAddTangemCardPress}
+                                    style={{ backgroundColor: StyleService.value('$contrast') }}
                                 />
                             </View>
                         </View>

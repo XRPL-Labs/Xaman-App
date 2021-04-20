@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, ImageBackground, Image } from 'react-native';
 
-import { Images } from '@common/helpers/images';
+import StyleService from '@services/StyleService';
 // components
 import { Button, Footer } from '@components/General';
 
@@ -33,7 +33,7 @@ class FinishStep extends Component<Props, State> {
             <SafeAreaView style={[AppStyles.flex1]}>
                 <ImageBackground
                     testID="account-generate-finish-view"
-                    source={Images.backgroundPattern}
+                    source={StyleService.getImage('BackgroundPattern')}
                     style={[AppStyles.container]}
                     imageStyle={styles.backgroundImageStyle}
                 >
@@ -45,7 +45,7 @@ class FinishStep extends Component<Props, State> {
                             AppStyles.centerContent,
                         ]}
                     >
-                        <Image style={[AppStyles.emptyIcon]} source={Images.ImageComplete} />
+                        <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageComplete')} />
                         <Text style={AppStyles.h5}>{Localize.t('global.congratulations')}</Text>
                         <Text style={[AppStyles.p, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
                             {Localize.t('account.accountSetupCompleted')}
@@ -55,13 +55,7 @@ class FinishStep extends Component<Props, State> {
                     </View>
 
                     <Footer>
-                        <Button
-                            testID="finish-button"
-                            label={Localize.t('account.yeahLetsGo')}
-                            onPress={() => {
-                                goNext();
-                            }}
-                        />
+                        <Button testID="finish-button" label={Localize.t('account.yeahLetsGo')} onPress={goNext} />
                     </Footer>
                 </ImageBackground>
             </SafeAreaView>

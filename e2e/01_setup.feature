@@ -28,19 +28,19 @@ Feature: Setup App
         Then I tap 'close-change-log-button'
         Given I should see 'home-tab-empty-view'
 
-# Scenario: Change node to testnet
-#     Then I tap 'tab-Settings'
-#     Given I should have 'settings-tab-screen'
-#     Then I tap 'advanced-button'
-#     Given I should have 'advanced-settings-screen'
-#     Then I tap 'change-node-button'
-#     Given I should have 'nodes-list-screen'
-#     Then I tap 'node-wss://s.altnet.rippletest.net:51233'
-#     Then I tap alert button with label "Yes, I'm sure"
-#     Then I tap 'back-button'
-#     Given I should have 'advanced-settings-screen'
-#     Then I tap 'back-button'
-#     Given I should have 'settings-tab-screen'
+    Scenario: Change node to testnet
+        Then I tap 'tab-Settings'
+        Given I should have 'settings-tab-screen'
+        Then I tap 'advanced-button'
+        Given I should have 'advanced-settings-screen'
+        Then I tap 'change-node-button'
+        Given I should have 'nodes-list-screen'
+        Then I tap 'node-wss://s.altnet.rippletest.net:51233'
+        Then I tap alert button with label "Yes, I'm sure"
+        Then I tap 'back-button'
+        Given I should have 'advanced-settings-screen'
+        Then I tap 'back-button'
+        Given I should have 'settings-tab-screen'
 
 
 

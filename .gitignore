@@ -67,6 +67,6 @@ coverage
 src/.vscode/settings.json
 
 #others
-e2e/screenshots/*
+e2e/artifacts/*
 src/locale/*.json
 src/locale/generated/*

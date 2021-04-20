@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 
 /* Class ==================================================================== */
 class Amount {
-    amount: string | number;
+    amount: BigNumber;
 
     constructor(amount: string | number, drops = true) {
         // validate
@@ -10,15 +10,15 @@ class Amount {
         if (typeof amount === 'string' && !drops) {
             if (!amount.match(/^[+-]?\d+(?:[.]*\d*(?:[eE][+-]?\d+)?)?$/)) {
                 throw new Error(`invalid value '${amount}', should be a number`);
-            } else if (this.amount === '.') {
+            } else if (amount === '.') {
                 throw new Error(`invalid value '${amount}',  should be a BigNumber or string-encoded number.`);
             }
         }
 
         // Converting to BigNumber and then back to string should remove any
         // decimal point followed by zeros, e.g. '1.00'.
-        // Important: specify base 10 to avoid exponential notation, e.g. '1e-7'.
-        const newAmount = new BigNumber(amount).toString(10);
+        // Important: specify to fixed to avoid exponential notation, e.g. '1e-7'.
+        const newAmount = new BigNumber(amount).toFixed();
 
         if (drops) {
             // drops are only whole units
@@ -27,11 +27,11 @@ class Amount {
             }
         }
 
-        this.amount = newAmount;
+        this.amount = new BigNumber(newAmount);
     }
 
     dropsToXrp(toNumber = false): any {
-        const xrp = new BigNumber(this.amount).dividedBy(1000000.0);
+        const xrp = this.amount.dividedBy(1000000.0);
 
         if (toNumber) {
             return xrp.toNumber();
@@ -41,7 +41,7 @@ class Amount {
     }
 
     xrpToDrops(toNumber = false): any {
-        const drops = new BigNumber(this.amount).times(1000000.0).decimalPlaces(0);
+        const drops = this.amount.times(1000000.0).decimalPlaces(0);
 
         if (toNumber) {
             return drops.toNumber();
@@ -50,12 +50,12 @@ class Amount {
         return drops.toString(10);
     }
 
-    toString(decimalPlaces = 6): string {
-        return new BigNumber(this.amount).decimalPlaces(decimalPlaces).toString(10);
+    toString(): string {
+        return this.amount.toFixed();
     }
 
-    toNumber(decimalPlaces = 6): number {
-        return new BigNumber(this.amount).decimalPlaces(decimalPlaces).toNumber();
+    toNumber(): number {
+        return this.amount.toNumber();
     }
 }
 

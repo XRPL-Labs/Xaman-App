@@ -1,9 +1,9 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts } from '@theme';
+import { AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
-export default StyleSheet.create({
+export default StyleService.create({
     fullTextWrapper: {
         opacity: 0,
         position: 'absolute',
@@ -14,7 +14,7 @@ export default StyleSheet.create({
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size,
         marginRight: 5,
-        color: AppColors.greyBlack,
+        color: '$grey',
     },
     transparent: {
         opacity: 0,

@@ -1,6 +1,6 @@
 import Realm from 'realm';
 
-import { Truncate } from '@common/libs/utils';
+import { Truncate } from '@common/utils/string';
 
 /**
  * Account Trust Lines Model

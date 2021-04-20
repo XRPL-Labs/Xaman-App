@@ -3,33 +3,28 @@
  */
 
 import { dropRight, last, isEmpty, has, get } from 'lodash';
-
 import React, { Component } from 'react';
 import { View, Keyboard, Alert } from 'react-native';
-
+import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 import { utils, XRPL_Account } from 'xrpl-accountlib';
 
+import { PayloadOrigin } from '@common/libs/payload';
+import { Toast } from '@common/helpers/interface';
 import { getAccountName } from '@common/helpers/resolver';
-
-import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
-
+import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
 import { LedgerService } from '@services';
 
-// constants
-import { AppScreens } from '@common/constants';
+import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountSchema } from '@store/schemas/latest';
+import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
 
-// components
 import { Header } from '@components/General';
 
-// localize
 import Localize from '@locale';
 
-// style
 import { AppStyles } from '@theme';
-// import styles from './styles';
 
 // steps
 import Steps from './Steps';
@@ -56,7 +51,25 @@ class AccountImportView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const initStep = props.upgrade ? 'SecretType' : props.tangemCard ? 'ConfirmPublicKey' : 'AccessLevel';
+        let initStep = undefined as ImportSteps;
+
+        switch (true) {
+            case props.upgradeAccount !== undefined:
+                initStep = 'SecretType';
+                break;
+            case props.tangemCard !== undefined:
+                initStep = 'ConfirmPublicKey';
+                break;
+            case props.alternativeSeedAlphabet !== undefined:
+                initStep = 'EnterSeed';
+                break;
+            case props.importOfflineSecretNumber !== undefined:
+                initStep = 'EnterSecretNumbers';
+                break;
+            default:
+                initStep = 'AccessLevel';
+                break;
+        }
 
         this.state = {
             currentStep: initStep,
@@ -67,16 +80,20 @@ class AccountImportView extends Component<Props, State> {
             importedAccount: undefined,
             passphrase: undefined,
             secretType: SecretTypes.SecretNumbers,
-            upgrade: props.upgrade,
+            upgradeAccount: props.upgradeAccount,
+            alternativeSeedAlphabet: props.alternativeSeedAlphabet,
+            importOfflineSecretNumber: props.importOfflineSecretNumber,
             isLoading: false,
         };
     }
 
     componentDidMount() {
-        const { upgrade, tangemCard } = this.props;
+        const { tangemCard } = this.props;
+        const { upgradeAccount, alternativeSeedAlphabet, importOfflineSecretNumber } = this.state;
 
-        // set the access level if it's upgrade
-        if (upgrade) {
+        // set the access level if it's upgrade or using alternative seed alphabet
+        // as we just move to importing seed section setting this is mandatory
+        if (upgradeAccount || alternativeSeedAlphabet || importOfflineSecretNumber) {
             this.setAccessLevel(AccessLevels.Full);
         }
 
@@ -193,93 +210,102 @@ class AccountImportView extends Component<Props, State> {
     };
 
     goNext = async (nextStep: ImportSteps) => {
-        const { upgrade, importedAccount, currentStep, prevSteps } = this.state;
+        const {
+            account,
+            upgradeAccount,
+            importedAccount,
+            alternativeSeedAlphabet,
+            currentStep,
+            prevSteps,
+        } = this.state;
 
+        // we are in the last screen, just import the account and close the screen
         if (currentStep === 'FinishStep') {
             this.importAccount();
-            Navigator.popToRoot();
-        } else {
-            // if it's upgrade check if entered secret is match the account
-            if (nextStep === 'ConfirmPublicKey' && upgrade) {
-                if (importedAccount.address !== upgrade.address) {
-                    Alert.alert(Localize.t('global.error'), Localize.t('account.upgradeAccountSecretIsNotMatch'));
+            return;
+        }
+
+        // if it's upgrade check if entered secret is match the account
+        if (nextStep === 'ConfirmPublicKey' && upgradeAccount) {
+            if (importedAccount.address !== upgradeAccount.address) {
+                Alert.alert(Localize.t('global.error'), Localize.t('account.upgradeAccountSecretIsNotMatch'));
+                return;
+            }
+        }
+
+        // check if the account is already exist before move to next step
+        // if it's exist and readonly move as upgrade
+        if ((nextStep === 'ConfirmPublicKey' || nextStep === 'LabelStep') && !upgradeAccount) {
+            const exist = AccountRepository.findOne({ address: importedAccount.address });
+
+            if (exist) {
+                // if exist as full access or importing as readonly and exist is then show error
+                if (exist.accessLevel === AccessLevels.Full || account.accessLevel === AccessLevels.Readonly) {
+                    Alert.alert(Localize.t('global.error'), Localize.t('account.accountAlreadyExist'));
                     return;
                 }
+
+                // set as upgrade
+                this.setState({ upgradeAccount: exist });
             }
+        }
 
-            // check if the account is already exist before move to next step
-            // if it's exist and readonly move as upgrade
-            if ((nextStep === 'ConfirmPublicKey' || nextStep === 'LabelStep') && !upgrade) {
-                const exist = AccountRepository.findOne({ address: importedAccount.address });
+        // check if account is activated
+        // if not  -> show the activation explain step
+        // skip this step when account imported with alternative alphabet
+        if (currentStep === 'ConfirmPublicKey' && !alternativeSeedAlphabet) {
+            this.setState({
+                isLoading: true,
+            });
 
-                if (exist) {
-                    if (exist.accessLevel === AccessLevels.Full) {
-                        Alert.alert(Localize.t('global.error'), Localize.t('account.accountAlreadyExist'));
-                        return;
-                    }
-
-                    // set as upgrade
-                    this.setState({ upgrade: exist });
-                }
-            }
-
-            // check if account is activated
-            // if not  -> show the activation explain step
-            if (currentStep === 'ConfirmPublicKey') {
-                this.setState({
-                    isLoading: true,
-                });
-
-                await LedgerService.getAccountInfo(importedAccount.address)
-                    .then((accountInfo: any) => {
-                        if (!accountInfo || has(accountInfo, 'error')) {
-                            if (get(accountInfo, 'error') === 'actNotFound') {
-                                // account not activated
-                                // override next step
-                                nextStep = 'ExplainActivation';
-                            }
+            await LedgerService.getAccountInfo(importedAccount.address)
+                .then((accountInfo: any) => {
+                    if (!accountInfo || has(accountInfo, 'error')) {
+                        if (get(accountInfo, 'error') === 'actNotFound') {
+                            // account not activated
+                            // override next step
+                            nextStep = 'ExplainActivation';
                         }
-                    })
-                    .catch(() => {
-                        // ignore
-                    })
-                    .finally(() => {
-                        this.setState({
-                            isLoading: false,
-                        });
+                    }
+                })
+                .catch(() => {
+                    // ignore
+                })
+                .finally(() => {
+                    this.setState({
+                        isLoading: false,
                     });
-            }
+                });
+        }
 
-            prevSteps.push(currentStep);
+        prevSteps.push(currentStep);
 
-            // ignore label if its in upgrade process
-            if (nextStep === 'LabelStep' && upgrade) {
-                this.setState({
-                    currentStep: 'FinishStep',
-                    prevSteps,
-                });
-            } else if (nextStep === 'ConfirmPublicKey' && upgrade) {
-                this.setState({
-                    currentStep: 'SecurityStep',
-                    prevSteps,
-                });
-            } else {
-                this.setState({
-                    currentStep: nextStep,
-                    prevSteps,
-                });
-            }
+        // ignore label if its in upgrade process
+        if (nextStep === 'LabelStep' && upgradeAccount) {
+            this.setState({
+                currentStep: 'FinishStep',
+                prevSteps,
+            });
+        } else if (nextStep === 'ConfirmPublicKey' && upgradeAccount) {
+            this.setState({
+                currentStep: 'SecurityStep',
+                prevSteps,
+            });
+        } else {
+            this.setState({
+                currentStep: nextStep,
+                prevSteps,
+            });
         }
     };
 
     goBack = () => {
-        const { upgrade } = this.props;
-        const { prevSteps, currentStep } = this.state;
+        const { upgradeAccount, prevSteps, currentStep } = this.state;
 
         // clear upgrade if we manually added it on back
-        if (currentStep === 'ConfirmPublicKey' && !upgrade) {
+        if (currentStep === 'ConfirmPublicKey' && !upgradeAccount) {
             this.setState({
-                upgrade: undefined,
+                upgradeAccount: undefined,
             });
         }
 
@@ -293,33 +319,70 @@ class AccountImportView extends Component<Props, State> {
         }
     };
 
-    importAccount = () => {
-        const { account, importedAccount, passphrase } = this.state;
+    importAccount = async () => {
+        const { account, importedAccount, passphrase, alternativeSeedAlphabet } = this.state;
 
-        let encryptionKey;
+        try {
+            let encryptionKey;
+            let createdAccount = undefined as AccountSchema;
 
-        if (account.accessLevel === AccessLevels.Full) {
-            // if passphrase present use it, instead use Passcode to encrypt the private key
-            // WARNING: passcode should use just for low balance accounts
-            if (account.encryptionLevel === EncryptionLevels.Passphrase) {
-                encryptionKey = passphrase;
+            if (account.accessLevel === AccessLevels.Full) {
+                // if passphrase present use it, instead use Passcode to encrypt the private key
+                // WARNING: passcode should use just for low balance accounts
+                if (account.encryptionLevel === EncryptionLevels.Passphrase) {
+                    encryptionKey = passphrase;
+                } else {
+                    encryptionKey = CoreRepository.getSettings().passcode;
+                }
+                // import account as full access
+                createdAccount = await AccountRepository.add(
+                    account,
+                    importedAccount.keypair.privateKey,
+                    encryptionKey,
+                );
             } else {
-                encryptionKey = CoreRepository.getSettings().passcode;
+                // import account as readonly
+                createdAccount = await AccountRepository.add(account);
             }
-            // import account as full access
-            AccountRepository.add(account, importedAccount.keypair.privateKey, encryptionKey);
-        } else {
-            // import account as readonly
-            AccountRepository.add(account);
-        }
 
-        // update catch for this account
-        getAccountName.cache.set(
-            account.address,
-            new Promise((resolve) => {
-                resolve({ name: account.label, source: 'internal:accounts' });
-            }),
-        );
+            // update catch for this account
+            getAccountName.cache.set(
+                account.address,
+                new Promise((resolve) => {
+                    resolve({ name: account.label, source: 'internal:accounts' });
+                }),
+            );
+
+            // close the screen
+            Navigator.popToRoot().then(() => {
+                // if account imported with alternative seed alphabet and xApp present
+                // route user to the xApp
+                if (has(alternativeSeedAlphabet, 'params.xapp')) {
+                    const xappIdentifier = get(alternativeSeedAlphabet, 'params.xapp');
+
+                    Navigator.showModal(
+                        AppScreens.Modal.XAppBrowser,
+                        {
+                            modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                            modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+                        },
+                        {
+                            account: createdAccount,
+                            identifier: xappIdentifier,
+                            origin: PayloadOrigin.IMPORT_ACCOUNT,
+                            originData: alternativeSeedAlphabet,
+                        },
+                    );
+                }
+            });
+        } catch {
+            // this should never happen but in case just show error that something went wrong
+            Toast(Localize.t('global.unexpectedErrorOccurred'));
+        }
+    };
+
+    onHeaderBackPress = () => {
+        Navigator.pop();
     };
 
     renderStep = () => {
@@ -350,7 +413,7 @@ class AccountImportView extends Component<Props, State> {
     };
 
     renderHeader = () => {
-        const { currentStep } = this.state;
+        const { currentStep, alternativeSeedAlphabet } = this.state;
 
         if (currentStep === 'FinishStep') return null;
 
@@ -374,7 +437,11 @@ class AccountImportView extends Component<Props, State> {
                 title = Localize.t('account.secretNumbers');
                 break;
             case 'EnterSeed':
-                title = Localize.t('account.familySeed');
+                if (alternativeSeedAlphabet) {
+                    title = Localize.t('account.importSecret');
+                } else {
+                    title = Localize.t('account.familySeed');
+                }
                 break;
             case 'ConfirmPublicKey':
                 title = Localize.t('account.publicAddress');
@@ -397,12 +464,12 @@ class AccountImportView extends Component<Props, State> {
 
         return (
             <Header
-                leftComponent={{
-                    icon: 'IconChevronLeft',
-                    onPress: () => {
-                        Navigator.pop();
-                    },
-                }}
+                leftComponent={
+                    currentStep === 'AccessLevel' && {
+                        icon: 'IconChevronLeft',
+                        onPress: this.onHeaderBackPress,
+                    }
+                }
                 centerComponent={{ text: title }}
             />
         );

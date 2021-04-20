@@ -6,9 +6,9 @@ const crypto = require('crypto');
 ReactNative.NativeModules.CryptoModule = {
     randomKeySync: jest.fn((len: number) => crypto.randomBytes(len).toString('hex').toUpperCase()),
     randomKey: jest.fn((len: number) => Promise.resolve(crypto.randomBytes(len).toString('hex').toUpperCase())),
-    sha512: jest.fn((value) => Promise.resolve(crypto.createHash('sha512').update(value).digest('hex'))),
-    sha256: jest.fn((value) => Promise.resolve(crypto.createHash('sha256').update(value).digest('hex'))),
-    sha1: jest.fn((value) => Promise.resolve(crypto.createHash('sha1').update(value).digest('hex'))),
+    sha512: jest.fn(value => Promise.resolve(crypto.createHash('sha512').update(value).digest('hex'))),
+    sha256: jest.fn(value => Promise.resolve(crypto.createHash('sha256').update(value).digest('hex'))),
+    sha1: jest.fn(value => Promise.resolve(crypto.createHash('sha1').update(value).digest('hex'))),
     hmac256: jest.fn((value, key) =>
         Promise.resolve(crypto.createHmac('sha256', Buffer.from(key, 'hex')).update(value).digest('hex')),
     ),
@@ -49,6 +49,17 @@ ReactNative.NativeModules.LocalNotificationModule = {
     setBadge: jest.fn((badge: number) => Promise.resolve()),
     getBadge: jest.fn(() => Promise.resolve(1)),
     complete: jest.fn((messageId: string, show: boolean) => true),
+};
+
+ReactNative.NativeModules.AppUpdateModule = {
+    checkUpdate: jest.fn(() => Promise.resolve(123)),
+    startUpdate: jest.fn(() => Promise.resolve()),
+};
+
+ReactNative.NativeModules.SharedPreferencesModule = {
+    get: jest.fn(key => Promise.resolve('value')),
+    set: jest.fn((key, value) => Promise.resolve(true)),
+    del: jest.fn(key => Promise.resolve(true)),
 };
 
 module.exports = ReactNative;

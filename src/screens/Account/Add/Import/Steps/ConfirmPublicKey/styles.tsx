@@ -1,11 +1,11 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
 import { AppColors, AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
-const styles = StyleSheet.create({
-    labelWrapper: {
-        backgroundColor: AppColors.lightBlue,
+const styles = StyleService.create({
+    addressContainer: {
+        backgroundColor: '$lightBlue',
         justifyContent: 'center',
         paddingHorizontal: 5,
         height: AppSizes.heightPercentageToDP(9),
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
         fontSize: AppFonts.base.size,
         color: AppColors.blue,
         textAlign: 'center',
-        paddingBottom: 10,
+        paddingBottom: AppSizes.paddingSml,
     },
     addressField: {
         color: AppColors.blue,
@@ -34,12 +34,12 @@ const styles = StyleSheet.create({
         borderRadius: AppSizes.scale(60) / 4,
 
         borderWidth: 1,
-        borderColor: AppColors.lightBlue,
-        backgroundColor: AppColors.light,
+        backgroundColor: '$tint',
+        borderColor: '$lightBlue',
     },
 
     iconContainer: {
-        backgroundColor: AppColors.white,
+        backgroundColor: '$lightGrey',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 10,

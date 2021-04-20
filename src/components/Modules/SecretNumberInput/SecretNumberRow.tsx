@@ -11,6 +11,7 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
+    columnsNumber: number;
     rowNumber: number;
     rowActive: boolean;
     currentColumn: number;
@@ -22,12 +23,13 @@ interface Props {
 
 interface State {}
 
-/* Constants ==================================================================== */
-const COLUMNS = 6;
-
 /* Component ==================================================================== */
 class SecretNumberRow extends Component<Props, State> {
     rowAnimatedValue: Animated.Value;
+
+    static defaultProps = {
+        columnsNumber: 6,
+    };
 
     constructor(props: Props) {
         super(props);
@@ -48,11 +50,11 @@ class SecretNumberRow extends Component<Props, State> {
     }
 
     renderColumns = () => {
-        const { rowNumber, numbers, currentColumn, rowChecksumError, readonly } = this.props;
+        const { rowNumber, numbers, currentColumn, rowChecksumError, readonly, columnsNumber } = this.props;
 
         const columns = [];
 
-        for (let i = 0; i < COLUMNS; i++) {
+        for (let i = 0; i < columnsNumber; i++) {
             const colActive = i === currentColumn;
 
             const value = get(numbers, `[${i}]`, false);
@@ -63,8 +65,8 @@ class SecretNumberRow extends Component<Props, State> {
                         key={`${i}_separator`}
                         style={[
                             styles.separator,
-                            rowChecksumError && { backgroundColor: AppColors.red },
-                            readonly && { backgroundColor: AppColors.orange },
+                            rowChecksumError && { backgroundColor: AppColors.red, borderColor: AppColors.red },
+                            readonly && { backgroundColor: AppColors.orange, borderColor: AppColors.orange },
                         ]}
                     />
                 ),
@@ -123,15 +125,10 @@ class SecretNumberRow extends Component<Props, State> {
                         styles.rowStyle,
                         AppStyles.centerContent,
                         AppStyles.centerAligned,
-                        { backgroundColor: rowChecksumCorrect && !readonly ? AppColors.green : AppColors.grey },
+                        rowChecksumCorrect && !readonly && styles.rowStyleInnerGreen,
                     ]}
                 >
-                    <Text
-                        style={[
-                            styles.RowId,
-                            rowChecksumCorrect && !readonly ? AppStyles.colorWhite : AppStyles.colorBlack,
-                        ]}
-                    >
+                    <Text style={[styles.RowId, rowChecksumCorrect && !readonly && styles.rowStyleInnerGreenText]}>
                         {abcdefgh[rowNumber]}
                     </Text>
                 </View>
@@ -155,15 +152,12 @@ class SecretNumberRow extends Component<Props, State> {
                             AppStyles.flex1,
                             animatedStyle,
                             styles.rowStyleInnerActive,
-                            readonly && { backgroundColor: AppColors.lightOrange },
+                            readonly && styles.rowStyleInnerReadonly,
                             rowChecksumError && styles.rowStyleInnerError,
                         ]}
                     >
                         {this.renderColumns()}
                     </Animated.View>
-                    {/* <View style={styles.RowIdActiveContainer}>
-                    <Text style={[styles.RowId, rowActive && styles.RowIdActive]}>{abcdefgh[rowNumber]}</Text>
-                </View> */}
                 </View>
             </>
         );

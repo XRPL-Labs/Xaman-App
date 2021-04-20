@@ -1,12 +1,12 @@
 /**
  * Currency Settings Overlay
  */
-import find from 'lodash/find';
-import get from 'lodash/get';
+import { has, get, find } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
 import { View, Animated, Text, Image, Alert, InteractionManager } from 'react-native';
+import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 
@@ -14,7 +14,7 @@ import { TrustSet, Payment } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import Flag from '@common/libs/ledger/parser/common/flag';
 
-import { NormalizeCurrencyCode } from '@common/libs/utils';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
@@ -24,7 +24,7 @@ import { AppScreens } from '@common/constants';
 import LedgerService from '@services/LedgerService';
 
 // components
-import { Button, Spacer, RaisedButton } from '@components/General';
+import { Button, Spacer, RaisedButton, AmountText } from '@components/General';
 
 import Localize from '@locale';
 
@@ -42,6 +42,7 @@ export interface State {
     isLoading: boolean;
     latestLineBalance: number;
     canRemove: boolean;
+    isNFT: boolean;
 }
 /* Component ==================================================================== */
 class CurrencySettingsModal extends Component<Props, State> {
@@ -64,6 +65,7 @@ class CurrencySettingsModal extends Component<Props, State> {
             isLoading: false,
             latestLineBalance: 0,
             canRemove: false,
+            isNFT: props.trustLine.isNFT,
         };
 
         this.animatedColor = new Animated.Value(0);
@@ -88,7 +90,7 @@ class CurrencySettingsModal extends Component<Props, State> {
     }
 
     dismiss = () => {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             Animated.parallel([
                 Animated.timing(this.animatedColor, {
                     toValue: 0,
@@ -107,42 +109,56 @@ class CurrencySettingsModal extends Component<Props, State> {
         });
     };
 
-    getLatestLineBalance = () => {
+    getLatestLineBalance = (): Promise<void> => {
         const { account, trustLine } = this.props;
 
         // ignore obligation lines
-        if (trustLine.obligation) return;
+        if (trustLine.obligation) return Promise.resolve();
 
-        LedgerService.getAccountLines(account.address)
-            .then(async (accountLines: any) => {
-                const { lines } = accountLines;
+        return new Promise((resolve) => {
+            return LedgerService.getAccountLines(account.address)
+                .then((accountLines: any) => {
+                    const { lines } = accountLines;
 
-                const line = find(lines, { account: trustLine.currency.issuer, currency: trustLine.currency.currency });
-
-                if (line) {
-                    const lineBalance = new BigNumber(line.balance);
-
-                    this.setState({
-                        latestLineBalance: lineBalance.decimalPlaces(15).toNumber(),
-                        canRemove: lineBalance.isLessThan(0.000001),
+                    const line = find(lines, {
+                        account: trustLine.currency.issuer,
+                        currency: trustLine.currency.currency,
                     });
-                }
-            })
-            .catch(() => {
-                // ignore
-            });
+
+                    if (line) {
+                        const balance = new BigNumber(line.balance);
+
+                        this.setState(
+                            {
+                                latestLineBalance: balance.toNumber(),
+                                canRemove: balance.isLessThan(0.000000001),
+                            },
+                            resolve,
+                        );
+                    } else {
+                        resolve();
+                    }
+                })
+                .catch(() => {
+                    return resolve();
+                });
+        });
     };
 
-    clearDustAmounts = () => {
+    clearDustAmounts = async () => {
         const { latestLineBalance } = this.state;
         const { trustLine, account } = this.props;
 
-        /* eslint-disable-next-line */
-        return new Promise(async (resolve, reject) => {
+        try {
+            this.setState({
+                isLoading: true,
+            });
+
             const payment = new Payment();
 
             payment.Destination = {
-                address: account.address,
+                address: trustLine.currency.issuer,
+                tag: 0,
             };
 
             payment.Account = {
@@ -150,35 +166,62 @@ class CurrencySettingsModal extends Component<Props, State> {
             };
 
             // @ts-ignore
-            payment.Amount = '9999999999';
-            payment.SendMax = {
+            payment.Amount = {
                 currency: trustLine.currency.currency,
                 issuer: trustLine.currency.issuer,
                 // @ts-ignore
                 value: latestLineBalance,
             };
 
-            payment.Flags = [txFlags.Payment.PartialPayment];
+            // check for transfer fee
+            // add PartialPayment flag
+            const issuerAccountInfo = await LedgerService.getAccountInfo(payment.Amount.issuer);
+            // eslint-disable-next-line max-len
+            if (has(issuerAccountInfo, ['account_data', 'TransferRate']) || account.address === payment.Amount.issuer) {
+                payment.Flags = [txFlags.Payment.PartialPayment];
+            }
 
             // sign & submit the partial payment to clear dust balance
-            await payment
-                .sign(account)
-                .then(() => {
-                    return payment.verify();
-                })
-                .then(() => {
-                    return resolve();
-                })
-                .catch((e) => {
-                    return reject(e);
-                });
-        });
+            await payment.submit(account).then(async (submitResult) => {
+                if (submitResult.success) {
+                    await payment.verify().then((verifyResult) => {
+                        if (verifyResult.success) {
+                            Prompt(
+                                Localize.t('global.success'),
+                                Localize.t('asset.dustAmountRemovedYouCanRemoveTrustLineNow'),
+                                [
+                                    { text: Localize.t('global.cancel') },
+                                    {
+                                        text: Localize.t('global.continue'),
+                                        onPress: () => {
+                                            this.getLatestLineBalance().then(this.removeTrustLine);
+                                        },
+                                        style: 'destructive',
+                                    },
+                                ],
+                                { type: 'default' },
+                            );
+                        } else {
+                            throw new Error('Submit was not successful');
+                        }
+                    });
+                } else {
+                    throw new Error('Submit was not successful');
+                }
+            });
+        } catch (e) {
+            Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
+        } finally {
+            this.setState({
+                isLoading: false,
+            });
+        }
     };
 
     checkForIssuerState = () => {
         const { trustLine } = this.props;
 
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             LedgerService.getAccountInfo(trustLine.currency.issuer)
                 .then((issuerAccountInfo: any) => {
                     const issuerFlags = new Flag(
@@ -207,23 +250,30 @@ class CurrencySettingsModal extends Component<Props, State> {
         const { latestLineBalance } = this.state;
 
         try {
+            // there is dust balance in the account
+            if (latestLineBalance !== 0) {
+                Prompt(
+                    Localize.t('global.warning'),
+                    Localize.t('asset.trustLineDustRemoveWarning', {
+                        balance: new BigNumber(latestLineBalance).toFixed(),
+                        currency: NormalizeCurrencyCode(trustLine.currency.currency),
+                    }),
+                    [
+                        { text: Localize.t('global.cancel') },
+                        {
+                            text: Localize.t('global.continue'),
+                            onPress: this.clearDustAmounts,
+                            style: 'destructive',
+                        },
+                    ],
+                    { type: 'default' },
+                );
+                return;
+            }
+
             this.setState({
                 isLoading: true,
             });
-
-            // there is dust balance in the account
-            if (latestLineBalance !== 0) {
-                try {
-                    await this.clearDustAmounts();
-                } catch {
-                    InteractionManager.runAfterInteractions(() => {
-                        Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
-                    });
-
-                    this.dismiss();
-                    return;
-                }
-            }
 
             // parse account flags
             const accountFlags = new Flag('Account', account.flags).parse();
@@ -328,9 +378,41 @@ class CurrencySettingsModal extends Component<Props, State> {
         });
     };
 
+    showNFTInfo = () => {
+        const { trustLine, account } = this.props;
+
+        this.dismiss().then(() => {
+            Navigator.showModal(
+                AppScreens.Modal.XAppBrowser,
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+                },
+                {
+                    identifier: 'xumm.nft-info',
+                    account,
+                    params: {
+                        issuer: trustLine.currency.issuer,
+                        token: trustLine.currency.currency,
+                    },
+                },
+            );
+        });
+    };
+
+    canSend = () => {
+        const { trustLine } = this.props;
+        return trustLine.isNFT || trustLine.balance > 0.0000009 || trustLine.obligation;
+    };
+
+    canExchange = () => {
+        const { trustLine } = this.props;
+        return !trustLine.obligation;
+    };
+
     render() {
         const { trustLine } = this.props;
-        const { isLoading, canRemove } = this.state;
+        const { isLoading, canRemove, isNFT } = this.state;
 
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],
@@ -375,16 +457,14 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 {trustLine.currency.avatar && (
                                     <Image style={styles.currencyAvatar} source={{ uri: trustLine.currency.avatar }} />
                                 )}
-                                <Text style={[AppStyles.pbold, AppStyles.monoBold]}>
-                                    {Localize.formatNumber(trustLine.balance)}
-                                </Text>
+                                <AmountText value={trustLine.balance} style={[AppStyles.pbold, AppStyles.monoBold]} />
                             </View>
                         </View>
 
                         <Spacer />
                         <View style={[styles.buttonRow]}>
                             <RaisedButton
-                                isDisabled={trustLine.balance <= 0 && trustLine.obligation !== true}
+                                isDisabled={!this.canSend()}
                                 style={styles.sendButton}
                                 icon="IconCornerLeftUp"
                                 iconSize={20}
@@ -396,22 +476,36 @@ class CurrencySettingsModal extends Component<Props, State> {
                                     Navigator.push(AppScreens.Transaction.Payment, {}, { currency: trustLine });
                                 }}
                             />
-                            <RaisedButton
-                                isDisabled={trustLine.obligation}
-                                style={styles.exchangeButton}
-                                icon="IconCornerRightUp"
-                                iconSize={20}
-                                iconStyle={[styles.exchangeButtonIcon]}
-                                iconPosition="right"
-                                label={Localize.t('global.exchange')}
-                                textStyle={[styles.exchangeButtonText]}
-                                onPress={this.showExchangeScreen}
-                            />
+                            {isNFT ? (
+                                <RaisedButton
+                                    style={styles.infoButton}
+                                    icon="IconInfo"
+                                    iconSize={20}
+                                    iconStyle={[styles.infoButtonIcon]}
+                                    iconPosition="right"
+                                    label={Localize.t('global.about')}
+                                    textStyle={[styles.infoButtonText]}
+                                    onPress={this.showNFTInfo}
+                                />
+                            ) : (
+                                <RaisedButton
+                                    isDisabled={!this.canExchange()}
+                                    style={styles.exchangeButton}
+                                    icon="IconCornerRightUp"
+                                    iconSize={20}
+                                    iconStyle={[styles.exchangeButtonIcon]}
+                                    iconPosition="right"
+                                    label={Localize.t('global.exchange')}
+                                    textStyle={[styles.exchangeButtonText]}
+                                    onPress={this.showExchangeScreen}
+                                />
+                            )}
                         </View>
 
                         <Spacer size={20} />
 
                         <RaisedButton
+                            loadingIndicatorStyle="dark"
                             isLoading={isLoading}
                             isDisabled={!canRemove}
                             icon="IconTrash"

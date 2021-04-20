@@ -71,12 +71,20 @@
       "no-param-reassign": 0,
       "no-nested-ternary": 0,
       "no-restricted-syntax": 0,
+      
       "no-unused-vars": "off",
       "no-unused-expressions": ["error" , {"allowShortCircuit": true} ],
       "@typescript-eslint/no-unused-vars": "error",
       "new-cap": [2, {
         "capIsNew": false
       }],
+      "no-use-before-define": "off",
+      "@typescript-eslint/no-use-before-define": ["error"],
+      "no-redeclare": "off",
+      "@typescript-eslint/no-redeclare": ["error"],
+      "no-shadow": "off",
+      "@typescript-eslint/no-shadow": ["error"],
+      "no-undef": "off",
       "no-console": ["error", { "allow": ["warn", "error"] }],
       "operator-linebreak": [
         "error",
@@ -130,7 +138,7 @@
           "ecc", "uniq", "Truthy", "Responder", "ter", "ko", "zh", "mailto", "tabbar", "https", "gcm", "tf", "xlight", "aps", "tec", "barcodes", "Barcode",
           "txblob", "tos", "gif", "ic", "asf", "ok", "Sig", "haptic", "Signable", "Unauthorize", "Preauth", "payid", "Biometrics", "Towo", "tz", "xrpscan",
           "xrplorer", "bithomp", "xpring", "xrplns", "Pincode", "Txn", "iap", "Realtime", "datastore", "decrypted", "Tangem", "Sdk", "Secp256k1", "blockchain",
-          "Escrowed"
+          "Escrowed", "xapp", "Veriff", "Codec", "xapps", "Pressable", "nft", "ott", "Luminance", "HexToRgbA"
         ],
         "skipIfMatch": [
           "http://[^s]*",

@@ -1,14 +1,19 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppSizes } from '@theme';
+import { AppSizes, AppStyles } from '@theme';
 
-const styles = StyleSheet.create({
+const styles = StyleService.create({
+    container: {
+        flex: 1,
+        backgroundColor: '$background',
+    },
     logo: {
         width: AppSizes.screen.width * 0.4,
         height: AppSizes.screen.height * 0.1,
         resizeMode: 'contain',
     },
     loadingStyle: {
+        backgroundColor: '$background',
         position: 'absolute',
         left: 0,
         right: 0,
@@ -16,6 +21,15 @@ const styles = StyleSheet.create({
         bottom: 0,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    webView: {
+        borderRadius: AppStyles.borderRadius.borderRadius,
+    },
+    contentArea: {
+        paddingHorizontal: AppStyles.paddingHorizontalSml.paddingHorizontal,
+        borderTopWidth: 2,
+        borderBottomWidth: 2,
+        borderColor: '$lightBlue',
     },
 });
 

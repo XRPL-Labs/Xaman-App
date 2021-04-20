@@ -9,7 +9,6 @@ import React, { Component } from 'react';
 import { Animated, View, Text, TouchableWithoutFeedback, TouchableOpacity, Platform, ScrollView } from 'react-native';
 
 import Interactable from 'react-native-interactable';
-import LinearGradient from 'react-native-linear-gradient';
 
 import { AccessLevels } from '@store/types';
 import { AccountRepository } from '@store/repositories';
@@ -26,7 +25,7 @@ import { Button, Icon } from '@components/General';
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppSizes, AppColors } from '@theme';
+import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -40,7 +39,7 @@ export interface State {
 }
 
 const BOUNDARY_HEIGHT = 50;
-const ROW_ITEM_HEIGHT = AppSizes.scale(70);
+const ROW_ITEM_HEIGHT = AppSizes.scale(80);
 /* Component ==================================================================== */
 class SwitchAccountOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.SwitchAccount;
@@ -48,7 +47,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
     panel: any;
     deltaY: Animated.Value;
     deltaX: Animated.Value;
-    onDismiss: () => void;
+    isOpening: boolean;
 
     static options() {
         return {
@@ -74,11 +73,12 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
         this.deltaX = new Animated.Value(0);
-        this.onDismiss = () => {};
+
+        this.isOpening = true;
     }
 
     componentDidMount() {
-        const accounts = AccountRepository.getAccounts().sorted([['default', true]]);
+        const accounts = AccountRepository.getAccounts({ hidden: false }).sorted([['order', false]]);
         const signableAccount = AccountRepository.getSignableAccounts();
 
         // accounts count or as 3 item height
@@ -130,10 +130,16 @@ class SwitchAccountOverlay extends Component<Props, State> {
         }, 10);
     };
 
-    onSnap = async (event: any) => {
-        const { index } = event.nativeEvent;
+    onAlert = (event: any) => {
+        const { top, bottom } = event.nativeEvent;
 
-        if (index === 0) {
+        if (top && bottom) return;
+
+        if (top === 'enter' && this.isOpening) {
+            this.isOpening = false;
+        }
+
+        if (bottom === 'leave' && !this.isOpening) {
             Navigator.dismissOverlay();
         }
     };
@@ -208,10 +214,12 @@ class SwitchAccountOverlay extends Component<Props, State> {
                 >
                     <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
                         <View style={[AppStyles.flex3]}>
-                            <Text style={[styles.accountLabel]}>{account.label}</Text>
-                            <Text style={[styles.accountAddress]}>{account.address}</Text>
+                            <Text style={[styles.accountLabel, styles.accountLabelSelected]}>{account.label}</Text>
+                            <Text style={[styles.accountAddress, styles.accountAddressSelected]}>
+                                {account.address}
+                            </Text>
                             <View style={[styles.accessLevelBadge, styles.accessLevelBadgeSelected]}>
-                                <Icon size={11} name={accessLevelIcon} style={AppStyles.imgColorWhite} />
+                                <Icon size={11} name={accessLevelIcon} style={[AppStyles.imgColorPrimary]} />
                                 <Text style={[styles.accessLevelLabel, styles.accessLevelLabelSelected]}>
                                     {accessLevelLabel}
                                 </Text>
@@ -227,36 +235,29 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
         return (
             <TouchableOpacity
+                key={account.address}
                 onPress={() => {
                     this.changeDefaultAccount(account.address);
                 }}
                 activeOpacity={0.9}
             >
-                <LinearGradient
-                    key={account.address}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    colors={[AppColors.light, AppColors.white]}
-                    style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow, { height: ROW_ITEM_HEIGHT }]}
-                >
-                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[AppStyles.flex3]}>
-                            <Text style={[styles.accountLabel]}>{account.label}</Text>
-                            <Text style={[styles.accountAddress]}>{account.address}</Text>
-                            <View style={[styles.accessLevelBadge]}>
-                                <Icon
-                                    size={11}
-                                    name={accessLevelIcon}
-                                    style={[AppStyles.imgColorGreyDark, AppStyles.centerSelf]}
-                                />
-                                <Text style={[styles.accessLevelLabel]}>{accessLevelLabel}</Text>
-                            </View>
-                        </View>
-                        <View style={[AppStyles.flex1]}>
-                            <View style={[styles.radioCircle, AppStyles.rightSelf]} />
+                <View style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow, { height: ROW_ITEM_HEIGHT }]}>
+                    <View style={[AppStyles.flex3]}>
+                        <Text style={[styles.accountLabel]}>{account.label}</Text>
+                        <Text style={[styles.accountAddress]}>{account.address}</Text>
+                        <View style={[styles.accessLevelBadge]}>
+                            <Icon
+                                size={11}
+                                name={accessLevelIcon}
+                                style={[AppStyles.imgColorPrimary, styles.accessLevelIcon]}
+                            />
+                            <Text style={[styles.accessLevelLabel]}>{accessLevelLabel}</Text>
                         </View>
                     </View>
-                </LinearGradient>
+                    <View style={[AppStyles.flex1]}>
+                        <View style={[styles.radioCircle, AppStyles.rightSelf]} />
+                    </View>
+                </View>
             </TouchableOpacity>
         );
     };
@@ -284,11 +285,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
         return (
             <View style={AppStyles.flex1}>
-                <TouchableWithoutFeedback
-                    onPress={() => {
-                        this.slideDown();
-                    }}
-                >
+                <TouchableWithoutFeedback onPress={this.slideDown}>
                     <Animated.View
                         style={[
                             AppStyles.shadowContent,
@@ -308,12 +305,16 @@ class SwitchAccountOverlay extends Component<Props, State> {
                         this.panel = r;
                     }}
                     animatedNativeDriver
-                    onSnap={this.onSnap}
+                    onAlert={this.onAlert}
                     verticalOnly
                     snapPoints={[{ y: AppSizes.screen.height + 3 }, { y: AppSizes.screen.height - contentHeight }]}
                     boundaries={{
                         top: AppSizes.screen.height - (contentHeight + BOUNDARY_HEIGHT),
                     }}
+                    alertAreas={[
+                        { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
+                        { id: 'top', influenceArea: { top: AppSizes.screen.height - contentHeight } },
+                    ]}
                     initialPosition={{ y: AppSizes.screen.height }}
                     animatedValueY={this.deltaY}
                     animatedValueX={this.deltaX}
@@ -325,15 +326,16 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
                         <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                             <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                                <Text style={[AppStyles.h5]}>{Localize.t('account.myAccounts')}</Text>
+                                <Text numberOfLines={1} style={[AppStyles.h5]}>
+                                    {Localize.t('account.myAccounts')}
+                                </Text>
                             </View>
                             <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                                 <Button
+                                    light
+                                    roundedSmall
                                     label={Localize.t('home.addAccount')}
                                     icon="IconPlus"
-                                    iconStyle={[AppStyles.imgColorBlue]}
-                                    roundedSmall
-                                    light
                                     isDisabled={false}
                                     onPress={this.onAddPressed}
                                 />

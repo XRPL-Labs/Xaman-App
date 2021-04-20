@@ -2,18 +2,20 @@
  * General Settings Screen
  */
 
-import { uniqBy } from 'lodash';
+import { uniqBy, sortBy, toLower } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
-import { GetDeviceLocaleSettings } from '@common/helpers/device';
+import { GetDeviceLocaleSettings, RestartBundle } from '@common/helpers/device';
+import { Prompt } from '@common/helpers/interface';
 
 import { AppScreens } from '@common/constants';
 
 import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
+import { Themes } from '@store/types';
 
 import { Header, Icon, Switch } from '@components/General';
 
@@ -44,7 +46,10 @@ class GeneralSettingsView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        this.state = { coreSettings: CoreRepository.getSettings(), locales: Localize.getLocales() };
+        this.state = {
+            coreSettings: CoreRepository.getSettings(),
+            locales: Localize.getLocales(),
+        };
     }
 
     componentDidMount() {
@@ -71,7 +76,7 @@ class GeneralSettingsView extends Component<Props, State> {
             });
         }
 
-        normalizedLocales = uniqBy(normalizedLocales, 'title');
+        normalizedLocales = sortBy(uniqBy(normalizedLocales, 'title'), 'title');
 
         Navigator.push(
             AppScreens.Modal.Picker,
@@ -86,15 +91,30 @@ class GeneralSettingsView extends Component<Props, State> {
         );
     };
 
+    showCurrencyPicker = () => {
+        const { coreSettings } = this.state;
+
+        Navigator.push(
+            AppScreens.Modal.CurrencyPicker,
+            {},
+            {
+                selected: coreSettings.currency,
+                onSelect: this.onCurrencySelected,
+            },
+        );
+    };
+
+    onCurrencySelected = (currencyCode: string) => {
+        // save in store
+        CoreRepository.saveSettings({ currency: currencyCode });
+    };
+
     onLanguageSelected = ({ value }: { value: string }) => {
         // save in store
         CoreRepository.saveSettings({ language: value });
 
         // change it from local instance
         Localize.setLocale(value);
-
-        // set locale to moment
-        // moment.locale(newLocale);
 
         // re-render the app
         Navigator.reRender();
@@ -130,8 +150,105 @@ class GeneralSettingsView extends Component<Props, State> {
         return locale.nameLocal;
     };
 
+    changeTheme = (theme: Themes) => {
+        // save in store
+        CoreRepository.saveSettings({ theme });
+
+        // restart app
+        RestartBundle();
+    };
+
+    onThemeSelect = (selected: Themes) => {
+        Prompt(
+            Localize.t('global.warning'),
+            Localize.t('settings.changingThemeNeedsRestartToTakeEffect'),
+            [
+                { text: Localize.t('global.cancel') },
+                {
+                    text: Localize.t('global.doIt'),
+                    onPress: () => {
+                        this.changeTheme(selected);
+                    },
+                    style: 'destructive',
+                },
+            ],
+            { type: 'default' },
+        );
+    };
+
+    renderThemeButton = (theme: Themes, { title, description }: any) => {
+        const { coreSettings } = this.state;
+
+        let previewStyle;
+
+        switch (theme) {
+            case 'light':
+                previewStyle = styles.themePreviewLight;
+                break;
+            case 'dark':
+                previewStyle = styles.themePreviewDark;
+                break;
+            case 'moonlight':
+                previewStyle = styles.themePreviewMoonlight;
+                break;
+            case 'royal':
+                previewStyle = styles.themePreviewRoyal;
+                break;
+            default:
+                break;
+        }
+
+        const selected = toLower(coreSettings.theme) === theme;
+
+        return (
+            <TouchableOpacity
+                key={theme}
+                testID={`theme-${theme}`}
+                activeOpacity={0.8}
+                onPress={() => {
+                    this.onThemeSelect(theme);
+                }}
+                style={[styles.themeItem, selected && styles.themeItemSelected]}
+            >
+                <View style={AppStyles.flex1}>
+                    <View style={[styles.themeItemDot, selected && styles.themeItemDotSelected]}>
+                        {selected && <View style={styles.themeItemFilled} />}
+                    </View>
+                </View>
+                <View style={AppStyles.flex5}>
+                    <Text style={[styles.themeItemLabelText, selected && styles.themeItemSelectedText]}>{title}</Text>
+                    <Text style={[styles.themeItemLabelSmall, selected && styles.themeItemSelectedText]}>
+                        {description}
+                    </Text>
+                </View>
+                <View style={[AppStyles.flex1, styles.themePreview, previewStyle]}>
+                    <Text style={[AppStyles.p, AppStyles.strong, previewStyle]}>Aa</Text>
+                </View>
+            </TouchableOpacity>
+        );
+    };
+
     render() {
         const { coreSettings } = this.state;
+
+        const themeItems = {
+            light: {
+                title: Localize.t('global.default'),
+                description: Localize.t('settings.lightThemeDescription'),
+            },
+            dark: {
+                title: Localize.t('global.dark'),
+                description: Localize.t('settings.darkThemeDescription'),
+            },
+            moonlight: {
+                title: Localize.t('global.moonlight'),
+                description: Localize.t('settings.moonlightThemeDescription'),
+            },
+            royal: {
+                title: Localize.t('global.royal'),
+                description: Localize.t('settings.royalThemeDescription'),
+            },
+        };
 
         return (
             <View testID="general-settings-view" style={[styles.container]}>
@@ -145,9 +262,23 @@ class GeneralSettingsView extends Component<Props, State> {
                     centerComponent={{ text: Localize.t('settings.generalSettings') }}
                 />
                 <ScrollView>
+                    <View style={styles.row}>
+                        <View style={[AppStyles.flex1]}>
+                            <Text style={AppStyles.pbold}>Theme</Text>
+                        </View>
+                    </View>
+                    <View style={[styles.rowNoBorder]}>
+                        <View style={[AppStyles.flex1]}>
+                            {/* @ts-ignore */}
+                            {Object.keys(themeItems).map((key: Themes) => this.renderThemeButton(key, themeItems[key]))}
+                        </View>
+                    </View>
+
                     <TouchableOpacity style={[styles.row]} onPress={this.showLanguagePicker}>
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('global.language')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('global.language')}
+                            </Text>
                         </View>
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
                             <Text style={[styles.value]}>{this.getLanguageTitle()}</Text>
@@ -155,9 +286,23 @@ class GeneralSettingsView extends Component<Props, State> {
                         </View>
                     </TouchableOpacity>
 
+                    <TouchableOpacity style={[styles.row]} onPress={this.showCurrencyPicker}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('global.currency')}
+                            </Text>
+                        </View>
+                        <View style={[AppStyles.centerAligned, AppStyles.row]}>
+                            <Text style={[styles.value]}>{coreSettings.currency}</Text>
+                            <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
+                        </View>
+                    </TouchableOpacity>
+
                     <View style={styles.row}>
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('settings.hapticFeedback')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.hapticFeedback')}
+                            </Text>
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
                             <Switch checked={coreSettings.hapticFeedback} onChange={this.hapticFeedbackChange} />
@@ -166,7 +311,9 @@ class GeneralSettingsView extends Component<Props, State> {
 
                     <View style={styles.row}>
                         <View style={[AppStyles.flex3]}>
-                            <Text style={styles.label}>{Localize.t('settings.useSystemSeparators')}</Text>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.useSystemSeparators')}
+                            </Text>
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
                             <Switch

@@ -46,20 +46,20 @@ describe('AuthenticationService', () => {
     });
 
     it('should run the required functions after success auth', async () => {
-        const spyList = [] as any;
-        spyList.push(jest.spyOn(AppService, 'checkShowChangeLog').mockImplementation(jest.fn()));
-        spyList.push(jest.spyOn(AppService, 'checkAppUpdate').mockImplementation(jest.fn()));
-        spyList.push(jest.spyOn(BackendService, 'ping').mockImplementation(jest.fn()));
-        spyList.push(jest.spyOn(SocketService, 'connect').mockImplementation(jest.fn()));
-        spyList.push(jest.spyOn(LinkingService, 'checkInitialDeepLink').mockImplementation(jest.fn()));
-        spyList.push(jest.spyOn(PushNotificationsService, 'checkInitialNotification').mockImplementation(jest.fn()));
-
         jest.useFakeTimers();
 
-        // call the method
-        authenticationService.runAfterSuccessAuth();
+        const promiseFn = () => Promise.resolve();
+        const spyList = [
+            jest.spyOn(AppService, 'checkShowChangeLog').mockImplementationOnce(promiseFn),
+            jest.spyOn(AppService, 'checkAppUpdate').mockImplementationOnce(promiseFn),
+            jest.spyOn(BackendService, 'ping').mockImplementationOnce(promiseFn),
+            jest.spyOn(SocketService, 'connect').mockImplementationOnce(promiseFn),
+            jest.spyOn(LinkingService, 'checkInitialDeepLink').mockImplementationOnce(promiseFn),
+            jest.spyOn(PushNotificationsService, 'checkInitialNotification').mockImplementationOnce(promiseFn),
+        ];
 
-        jest.runAllTimers();
+        // call the method
+        AuthenticationService.runAfterSuccessAuth();
 
         setTimeout(() => {
             for (let i = 0; i < spyList.length; i++) {

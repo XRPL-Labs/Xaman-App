@@ -7,15 +7,15 @@ import EventEmitter from 'events';
 import { AppState, Alert, Linking, Platform, NativeModules, NativeEventEmitter } from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
-import DeviceInfo from 'react-native-device-info';
 
 import Localize from '@locale';
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
+import { GetAppVersionCode } from '@common/helpers/device';
 
 import Preferences from '@common/libs/preferences';
-import { VersionDiff } from '@common/libs/utils';
+import { VersionDiff } from '@common/utils/version';
 
 import LoggerService from '@services/LoggerService';
 
@@ -62,7 +62,7 @@ class AppService extends EventEmitter {
 
     initialize = () => {
         /* eslint-disable-next-line */
-        return new Promise(async (resolve, reject) => {
+        return new Promise<void>(async (resolve, reject) => {
             try {
                 // setup listeners
                 await this.setNetInfoListener();
@@ -78,7 +78,7 @@ class AppService extends EventEmitter {
     // check if we need to show the App change log
     // this log will be show after user update the app
     checkShowChangeLog = async () => {
-        const currentVersionCode = DeviceInfo.getVersion();
+        const currentVersionCode = GetAppVersionCode();
         const savedVersionCode = await Preferences.get(Preferences.keys.LATEST_VERSION_CODE);
 
         if (!savedVersionCode || VersionDiff(currentVersionCode, savedVersionCode) > 0) {
@@ -167,7 +167,7 @@ class AppService extends EventEmitter {
      * record net info changes
      */
     setNetInfoListener = () => {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             NetInfo.fetch()
                 .then((state) => {
                     this.setNetState(state.isConnected);
@@ -256,7 +256,7 @@ class AppService extends EventEmitter {
      * init app state change  listener
      */
     setAppStateListener() {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             AppState.addEventListener('change', this.handleAppStateChange);
             return resolve();
         });
