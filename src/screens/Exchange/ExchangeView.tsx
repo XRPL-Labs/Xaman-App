@@ -133,7 +133,7 @@ class ExchangeView extends Component<Props, State> {
 
             this.ledgerExchange
                 .getLiquidity(direction, Number(amount))
-                .then(res => {
+                .then((res) => {
                     // this will make sure the latest call will apply
                     if (sequence === this.sequence && res) {
                         this.setState({
@@ -150,7 +150,7 @@ class ExchangeView extends Component<Props, State> {
     };
 
     openXRPToolkit = () => {
-        Linking.canOpenURL(AppConfig.thirdParty.XRPToolkit).then(supported => {
+        Linking.canOpenURL(AppConfig.thirdParty.XRPToolkit).then((supported) => {
             if (supported) {
                 Linking.openURL(AppConfig.thirdParty.XRPToolkit);
             } else {
@@ -279,7 +279,7 @@ class ExchangeView extends Component<Props, State> {
         offer
             .sign(sourceAccount)
             .then(this.submit)
-            .catch(e => {
+            .catch((e) => {
                 if (e) {
                     Alert.alert(Localize.t('global.error'), e.message);
                 }
@@ -433,9 +433,19 @@ class ExchangeView extends Component<Props, State> {
     };
 
     applyAllBalance = () => {
-        const normalized = new BigNumber(this.getAvailableBalance()).toFixed();
+        const { trustLine } = this.props;
+        const { direction, sourceAccount } = this.state;
+
+        let availableBalance = '0';
+
+        if (direction === 'sell') {
+            availableBalance = new BigNumber(sourceAccount.availableBalance).decimalPlaces(6).toString();
+        } else {
+            availableBalance = new BigNumber(trustLine.balance).decimalPlaces(8).toString();
+        }
+
         this.setState({
-            amount: normalized.toString(),
+            amount: availableBalance,
         });
     };
 
