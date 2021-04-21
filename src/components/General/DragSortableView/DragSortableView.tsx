@@ -245,7 +245,7 @@ export default class DragSortableView extends Component<Props, State> {
             const left = this.touchCurItem.originLeft + dx;
             const top = this.touchCurItem.originTop + dy;
 
-            this.touchCurItem.ref.setNativeProps({
+            this.touchCurItem.ref?.setNativeProps({
                 style: {
                     zIndex: touchZIndex,
                 },
@@ -334,7 +334,7 @@ export default class DragSortableView extends Component<Props, State> {
                 duration: scaleDuration,
                 useNativeDriver: false,
             }).start(() => {
-                this.touchCurItem.ref.setNativeProps({
+                this.touchCurItem.ref?.setNativeProps({
                     style: {
                         zIndex: defaultZIndex,
                     },
