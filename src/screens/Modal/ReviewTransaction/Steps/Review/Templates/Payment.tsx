@@ -27,6 +27,7 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     transaction: Payment;
+    canOverride: boolean;
 }
 
 export interface State {
@@ -61,7 +62,7 @@ class PaymentTemplate extends Component<Props, State> {
             currencyName: transaction.Amount?.currency ? NormalizeCurrencyCode(transaction.Amount.currency) : 'XRP',
             destinationDetails: { name: '', source: '' },
             isPartialPayment: false,
-            shouldCheckForConversation: !transaction.SendMax,
+            shouldCheckForConversation: !transaction.SendMax && props.canOverride,
             exchangeRate: undefined,
             xrpRoundedUp: undefined,
             currencyRate: undefined,

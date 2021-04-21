@@ -16,6 +16,7 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     transaction: TransactionsType;
+    canOverride: boolean;
 }
 
 export interface State {
@@ -33,7 +34,7 @@ class GlobalTemplate extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { transaction } = this.props;
+        const { transaction, canOverride } = this.props;
 
         try {
             const { Fee } = LedgerService.getLedgerStatus();
@@ -50,7 +51,8 @@ class GlobalTemplate extends Component<Props, State> {
                 Number(minTransactionFee) > Number(transaction.Fee) ||
                 Number(transaction.Fee) > 0.1;
 
-            if (shouldOverrideFee) {
+            // ignore overriding fee if multi sign
+            if (shouldOverrideFee && canOverride) {
                 // set the min transaction fee
                 transaction.Fee = minTransactionFee;
 
