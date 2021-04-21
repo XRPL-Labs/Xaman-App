@@ -90,7 +90,7 @@ class AccountAddView extends Component<Props, State> {
     createTangemWallet = (card: Card) => {
         const { cardId } = card;
 
-        RNTangemSdk.createWallet({ cardId })
+        RNTangemSdk.createWallet(cardId)
             .then((resp) => {
                 this.goToImport({ tangemCard: { ...card, ...resp } });
             })
