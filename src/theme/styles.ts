@@ -4,7 +4,6 @@
 
 /* eslint-disable spellcheck/spell-checker */
 
-import { IsIOS10 } from '@common/helpers/device';
 import StyleService from '@services/StyleService';
 
 import Fonts from './fonts';
@@ -37,7 +36,7 @@ export default StyleService.create({
         alignItems: 'center',
         zIndex: 99999,
         height: Sizes.moderateScale(60),
-        marginTop: IsIOS10() ? 20 : 0,
+        marginTop: 0,
         paddingTop: 0,
         paddingHorizontal: Sizes.padding,
     },

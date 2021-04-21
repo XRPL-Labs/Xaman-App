@@ -2,7 +2,7 @@ import { get } from 'lodash';
 import { Platform, InteractionManager } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 
-import { GetBottomTabScale, IsIOS10 } from '@common/helpers/device';
+import { GetBottomTabScale, IsIOS12 } from '@common/helpers/device';
 
 import { AppScreens } from '@common/constants';
 
@@ -64,7 +64,7 @@ const getTabBarIcons = () => {
         [AppScreens.TabBar.Actions]: {
             icon: StyleService.getImage('IconTabBarActions'),
             iconSelected: StyleService.getImage('IconTabBarActions'),
-            offset: { top: IsIOS10() && 6, right: 0, bottom: IsIOS10() && -6, left: 0 },
+            offset: { top: IsIOS12() && 6, right: 0, bottom: IsIOS12() && -6, left: 0 },
             scale: GetBottomTabScale(0.65),
         },
         [AppScreens.TabBar.Profile]: {
