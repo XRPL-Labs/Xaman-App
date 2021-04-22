@@ -109,7 +109,7 @@ class ChangeTangemSecurityView extends Component<Props, State> {
         // setting pin2 to 000 will revert settings to default
         const defaultPin2 = '000';
 
-        RNTangemSdk.changePin2(cardId, defaultPin2)
+        RNTangemSdk.changePin2({ cardId, pin: defaultPin2 })
             .then(this.onSuccessChange.bind(null, true))
             .catch(() => {
                 // ignore
@@ -120,7 +120,7 @@ class ChangeTangemSecurityView extends Component<Props, State> {
         const { account } = this.props;
         const { cardId } = account.additionalInfo as Card;
 
-        RNTangemSdk.changePin2(cardId, '')
+        RNTangemSdk.changePin2({ cardId })
             .then(this.onSuccessChange.bind(null, false))
             .catch(() => {
                 // ignore
