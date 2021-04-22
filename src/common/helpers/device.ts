@@ -5,23 +5,6 @@ import { Platform, PixelRatio, NativeModules } from 'react-native';
 const { UtilsModule } = NativeModules;
 
 /**
- * IOS: Check if device ios version is lower than 12
- * @returns boolean
- */
-const IsIOS12 = (): boolean => {
-    if (Platform.OS !== 'ios') return false;
-
-    // @ts-ignore
-    const majorVersionIOS = parseInt(Platform.Version, 10);
-
-    if (majorVersionIOS <= 12) {
-        return true;
-    }
-
-    return false;
-};
-
-/**
  * Check if device have notch
  * @returns boolean
  */
@@ -194,7 +177,6 @@ const ExitApp = (): void => {
 /* Export ==================================================================== */
 export {
     hasNotch,
-    IsIOS12,
     GetBottomTabScale,
     IsFlagSecure,
     FlagSecure,
