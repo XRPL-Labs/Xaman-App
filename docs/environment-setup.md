@@ -11,7 +11,7 @@ A macOS computer is required to build the XUMM App iOS mobile app.
 Install the following prerequisite software to develop and build the iOS or Android apps. For macOS, we recommend using [Homebrew](https://brew.sh/) as a package manager.
 
 #### Install [NodeJS](https://nodejs.org/en/).
-This includes YARN which is also needed. Currently version 10.21.0 is recommended with yarn 1.21.1.
+This includes YARN which is also needed. Currently minimum version `12.18.4` is required with yarn `1.22.4`.
 
 ##### MacOS
 - To install using Homebrew open a terminal and execute ..
@@ -61,8 +61,8 @@ Some distributions come with git preinstalled but you'll most likely have to ins
 
 ### Additional setup for iOS
 
-1.  Install [Xcode](https://itunes.apple.com/us/app/xcode/id497799835?ls=1&mt=12) to build and run the app on iOS. (minimum required version is 10.0)
-2.  Install [Cocoapods](https://cocoapods.org/) using the `gem` method. You'll need it to install the project's iOS dependencies. (required version is 1.7.5)
+1.  Install [Xcode](https://itunes.apple.com/us/app/xcode/id497799835?ls=1&mt=12) to build and run the app on iOS. (minimum required version is 12.4)
+2.  Install [Cocoapods](https://cocoapods.org/) using the `gem` method. You'll need it to install the project's iOS dependencies. (required version is 1.10.1)
 
 ### Additional setup for Android
 
@@ -144,4 +144,4 @@ In order to develop and build the XUMM mobile app you'll need to get a copy of t
 
 4.  Run `make pre-run` in order to install all the dependencies.
 
-5.  Run `make build-env` to generate some environment data 
+5.  Run `make generate-locales` to generate locale files
