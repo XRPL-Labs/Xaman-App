@@ -140,8 +140,8 @@ class ReviewStep extends Component<Props, State> {
         // render transaction details and global variables
         return (
             <>
-                <Template transaction={transaction} />
-                <Global transaction={transaction} />
+                <Template transaction={transaction} canOverride={!payload.isMultiSign()} />
+                <Global transaction={transaction} canOverride={!payload.isMultiSign()} />
             </>
         );
     };

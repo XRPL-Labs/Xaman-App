@@ -5,23 +5,6 @@ import { Platform, PixelRatio, NativeModules } from 'react-native';
 const { UtilsModule } = NativeModules;
 
 /**
- * IOS: Check if device is a IPhone 10
- * @returns boolean
- */
-const IsIOS10 = (): boolean => {
-    if (Platform.OS !== 'ios') return false;
-
-    // @ts-ignore
-    const majorVersionIOS = parseInt(Platform.Version, 10);
-
-    if (majorVersionIOS <= 10) {
-        return true;
-    }
-
-    return false;
-};
-
-/**
  * Check if device have notch
  * @returns boolean
  */
@@ -114,7 +97,7 @@ const GetDeviceTimeZone = (): Promise<string> => {
  * @returns Promise<object>
  */
 const GetDeviceLocaleSettings = (): Promise<any> => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         UtilsModule.getLocalSetting()
             .then((settings: any) => {
                 resolve(settings);
@@ -130,7 +113,7 @@ const GetDeviceLocaleSettings = (): Promise<any> => {
  * @returns Promise<number>
  */
 const GetElapsedRealtime = (): Promise<number> => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         UtilsModule.getElapsedRealtime().then((ts: string) => {
             return resolve(Number(ts));
         });
@@ -194,7 +177,6 @@ const ExitApp = (): void => {
 /* Export ==================================================================== */
 export {
     hasNotch,
-    IsIOS10,
     GetBottomTabScale,
     IsFlagSecure,
     FlagSecure,

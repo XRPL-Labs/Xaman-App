@@ -77,7 +77,7 @@ class ChangeTangemSecurityView extends Component<Props, State> {
     };
 
     onSuccessChange = (isPin2Default: boolean) => {
-        const { currentSecurity } = this.state;
+        const { chosenSecurity } = this.state;
         const { account } = this.props;
 
         AccountRepository.update({
@@ -90,7 +90,7 @@ class ChangeTangemSecurityView extends Component<Props, State> {
 
         Prompt(
             Localize.t('global.success'),
-            Localize.t('account.cardSecuritySuccessfullyChangedTo', { security: currentSecurity }),
+            Localize.t('account.cardSecuritySuccessfullyChangedTo', { security: chosenSecurity }),
             [
                 {
                     onPress: () => {
