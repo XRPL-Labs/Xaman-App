@@ -121,6 +121,8 @@ class ExchangeView extends Component<Props, State> {
 
         clearTimeout(this.timeout);
 
+        if (!this.ledgerExchange) return;
+
         this.timeout = setTimeout(() => {
             // increase sequence
             this.sequence += 1;

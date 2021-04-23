@@ -125,11 +125,6 @@ RCT_EXPORT_METHOD(setBadge:(NSInteger)number) {
   return notification;
 }
 
-- (BOOL)isIOS89 {
-  return floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_9_x_Max;
-}
-
-
 # pragma mark - instance
 
 + (instancetype) sharedInstance {
@@ -142,6 +137,12 @@ RCT_EXPORT_METHOD(setBadge:(NSInteger)number) {
   });
   
   return instance;
+}
+
+
+- (dispatch_queue_t)methodQueue
+{
+  return dispatch_get_main_queue();
 }
 
 @end

@@ -18,6 +18,7 @@ const styles = StyleService.create({
         resizeMode: 'contain',
     },
     footerStyle: {
+        backgroundColor: '$background',
         height: 120,
         width: '100%',
         flexDirection: 'row',

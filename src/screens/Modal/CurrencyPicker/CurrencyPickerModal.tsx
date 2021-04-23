@@ -102,7 +102,7 @@ class CurrencyPickerModal extends Component<Props, State> {
     onSearchChange = (text: string) => {
         const { currencies } = this.state;
 
-        if (!text) {
+        if (!text || !has(currencies, 'all')) {
             this.setState({
                 dataSource: this.toDataSource(currencies),
             });
