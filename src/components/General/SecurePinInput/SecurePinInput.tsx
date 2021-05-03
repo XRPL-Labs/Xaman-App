@@ -303,7 +303,6 @@ class SecurePinInput extends Component<Props, State> {
                             autoCorrect={false}
                             disableFullscreenUI
                             returnKeyType="done"
-                            underlineColorAndroid="transparent"
                             keyboardType="number-pad"
                             onKeyPress={this.onKeyPress}
                             onChangeText={this.handleEdit}

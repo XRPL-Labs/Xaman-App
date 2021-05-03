@@ -143,7 +143,6 @@ class Input extends Component<Props, State> {
                     autoCapitalize={autoCapitalize || 'none'}
                     autoCorrect={false}
                     multiline={false}
-                    underlineColorAndroid="transparent"
                     style={[styles.input, { paddingRight: scannerPadding }, inputStyle, focused && activeInputStyle]}
                     {...filteredProps}
                 />

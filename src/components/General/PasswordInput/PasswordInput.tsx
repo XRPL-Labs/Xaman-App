@@ -284,7 +284,7 @@ export default class PasswordInput extends Component<Props, State> {
             <View style={[styles.inputWrapper, inputWrapperStyle, AppStyles.stretchSelf]} onLayout={this.setInputWidth}>
                 <TextInput
                     testID={testID}
-                    ref={r => {
+                    ref={(r) => {
                         this.instance = r;
                     }}
                     editable={editable}
@@ -293,9 +293,8 @@ export default class PasswordInput extends Component<Props, State> {
                     autoCapitalize="none"
                     autoCorrect={false}
                     multiline={false}
-                    underlineColorAndroid="transparent"
                     style={[styles.input, inputStyle]}
-                    onChangeText={text => this.onChangeText(text)}
+                    onChangeText={(text) => this.onChangeText(text)}
                     placeholder={placeholder}
                     selectTextOnFocus={selectTextOnFocus}
                 />

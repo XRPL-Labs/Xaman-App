@@ -78,7 +78,7 @@ exports[`[SearchBar] renders correctly 1`] = `
           undefined,
         ]
       }
-      underlineColorAndroid="rgba(0,0,0,0)"
+      underlineColorAndroid="transparent"
       value=""
     />
   </View>
@@ -215,7 +215,7 @@ exports[`[SearchBar] should clear text 1`] = `
           undefined,
         ]
       }
-      underlineColorAndroid="rgba(0,0,0,0)"
+      underlineColorAndroid="transparent"
       value=""
     />
   </View>
@@ -352,7 +352,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
           undefined,
         ]
       }
-      underlineColorAndroid="rgba(0,0,0,0)"
+      underlineColorAndroid="transparent"
       value="searched text"
     />
   </View>
