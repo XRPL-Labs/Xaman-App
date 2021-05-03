@@ -654,6 +654,7 @@
     "unableToFetchLedgerSequence": "Unable to fetch the current ledger sequence. Please make sure you are connected to the XRP Ledger node.",
     "unableGetDestinationAccountInfo": "Unable to get destination account info, please make sure you are connected to the XRP ledger node",
     "destinationAccountIsNotActivated": "Destination account is not activated, Must be a funded account in the XRP ledger.",
+    "destinationAddressRequiredDestinationTag": "Destination address requires a Destination Tag",
     "destinationAccountAndSourceCannotBeSame": "Destination account and source cannot be the same.",
     "accountGenerateActivationExplain": "Account activation is a requirement on the XRP ledger. To activate, you will have to make a first deposit of at least 20 XRP.",
     "accountImportActivationExplain": "You imported a new account on the XRP ledger. The account is not activated. Account activation is a requirement on the XRP ledger. To activate, you will have to make a first deposit of at least 20 XRP.",
