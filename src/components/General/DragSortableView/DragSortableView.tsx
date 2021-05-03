@@ -215,9 +215,7 @@ export default class DragSortableView extends Component<Props, State> {
 
         this.isHasMove = true;
 
-        // if (this.isScaleRecovery) clearTimeout(this.isScaleRecovery)
-
-        if (this.touchCurItem) {
+        if (this.touchCurItem && this.touchCurItem?.ref) {
             let { dx } = gestureState;
             let { dy } = gestureState;
             const { itemWidth } = this.state;
@@ -334,13 +332,15 @@ export default class DragSortableView extends Component<Props, State> {
                 duration: scaleDuration,
                 useNativeDriver: false,
             }).start(() => {
-                this.touchCurItem.ref?.setNativeProps({
-                    style: {
-                        zIndex: defaultZIndex,
-                    },
-                });
-                this.changePosition(this.touchCurItem.index, this.touchCurItem.moveToIndex);
-                this.touchCurItem = null;
+                if (this.touchCurItem) {
+                    this.touchCurItem.ref?.setNativeProps({
+                        style: {
+                            zIndex: defaultZIndex,
+                        },
+                    });
+                    this.changePosition(this.touchCurItem.index, this.touchCurItem.moveToIndex);
+                    this.touchCurItem = null;
+                }
             });
         }
     }

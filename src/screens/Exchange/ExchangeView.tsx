@@ -110,10 +110,18 @@ class ExchangeView extends Component<Props, State> {
 
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
-            this.ledgerExchange.initialize().then(() => {
-                this.checkLiquidity();
-            });
+            if (this.ledgerExchange) {
+                this.ledgerExchange.initialize().then(() => {
+                    this.checkLiquidity();
+                });
+            }
         });
+    }
+
+    componentWillUnmount() {
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+        }
     }
 
     checkLiquidity = async () => {
@@ -121,9 +129,9 @@ class ExchangeView extends Component<Props, State> {
 
         clearTimeout(this.timeout);
 
-        if (!this.ledgerExchange) return;
-
         this.timeout = setTimeout(() => {
+            if (!this.ledgerExchange) return;
+
             // increase sequence
             this.sequence += 1;
             // get a copy of sequence
