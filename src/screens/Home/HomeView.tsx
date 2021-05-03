@@ -22,7 +22,7 @@ import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle 
 
 import { LedgerService, SocketService, BackendService, StyleService } from '@services';
 
-import { AccessLevels, NodeChain } from '@store/types';
+import { NodeChain } from '@store/types';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
 
@@ -341,9 +341,11 @@ class HomeView extends Component<Props, State> {
     };
 
     onShowAccountQRPress = () => {
-        const { account } = this.state;
+        const { isSpendable } = this.state;
 
-        if (account.accessLevel === AccessLevels.Readonly) {
+        if (isSpendable) {
+            this.showShareOverlay();
+        } else {
             Prompt(
                 Localize.t('global.warning'),
                 Localize.t('home.shareReadonlyAccountWarning'),
@@ -360,8 +362,6 @@ class HomeView extends Component<Props, State> {
                 ],
                 { type: 'default' },
             );
-        } else {
-            this.showShareOverlay();
         }
     };
 
@@ -406,7 +406,7 @@ class HomeView extends Component<Props, State> {
             });
 
             BackendService.getCurrencyRate(currency)
-                .then(r => {
+                .then((r) => {
                     this.setState({
                         currencyRate: r,
                         isLoadingRate: false,
