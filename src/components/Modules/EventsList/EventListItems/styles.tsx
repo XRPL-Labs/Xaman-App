@@ -36,7 +36,7 @@ const styles = StyleService.create({
         tintColor: '$contrast',
     },
     xAppsIcon: {
-        tintColor: '$lightGrey',
+        tintColor: '$grey',
         marginLeft: 8,
         resizeMode: 'contain',
         height: 15,
