@@ -348,9 +348,9 @@ class TransactionTemplate extends Component<Props, State> {
                     return (
                         <AmountText
                             value={balanceChanges.received?.value}
-                            currency={balanceChanges.received?.currency}
+                            postfix={balanceChanges.received?.currency}
                             style={styles.amount}
-                            currencyStyle={styles.currency}
+                            postfixStyle={styles.currency}
                         />
                     );
                 }
@@ -358,10 +358,10 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.Amount.value}
-                    currency={item.Amount.currency}
+                    postfix={item.Amount.currency}
                     prefix={!incoming && '-'}
                     style={[styles.amount, !incoming && styles.outgoingColor]}
-                    currencyStyle={styles.currency}
+                    postfixStyle={styles.currency}
                 />
             );
         }
@@ -370,10 +370,10 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.Amount.value}
-                    currency={item.Amount.currency}
+                    postfix={item.Amount.currency}
                     prefix={!incoming && '-'}
                     style={[styles.amount, !incoming && styles.outgoingColor]}
-                    currencyStyle={styles.currency}
+                    postfixStyle={styles.currency}
                 />
             );
         }
@@ -382,10 +382,10 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.Amount.value}
-                    currency={item.Amount.currency}
+                    postfix={item.Amount.currency}
                     prefix={!incoming && '-'}
                     style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]}
-                    currencyStyle={styles.currency}
+                    postfixStyle={styles.currency}
                 />
             );
         }
@@ -394,10 +394,10 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.Amount.value}
-                    currency={item.Amount.currency}
+                    postfix={item.Amount.currency}
                     prefix={!incoming && '-'}
                     style={[styles.amount, !incoming && styles.naturalColor]}
-                    currencyStyle={styles.currency}
+                    postfixStyle={styles.currency}
                 />
             );
         }
@@ -406,9 +406,9 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.SendMax.value}
-                    currency={item.SendMax.currency}
+                    postfix={item.SendMax.currency}
                     style={[styles.amount, styles.naturalColor]}
-                    currencyStyle={styles.currency}
+                    postfixStyle={styles.currency}
                 />
             );
         }
@@ -419,9 +419,9 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={amount.value}
-                    currency={amount.currency}
+                    postfix={amount.currency}
                     style={[styles.amount, !incoming && styles.outgoingColor]}
-                    currencyStyle={styles.currency}
+                    postfixStyle={styles.currency}
                 />
             );
         }
@@ -433,18 +433,18 @@ class TransactionTemplate extends Component<Props, State> {
                 return (
                     <AmountText
                         value={takerPaid.value}
-                        currency={takerPaid.currency}
+                        postfix={takerPaid.currency}
                         style={[styles.amount]}
-                        currencyStyle={styles.currency}
+                        postfixStyle={styles.currency}
                     />
                 );
             }
             return (
                 <AmountText
                     value={item.TakerPays.value}
-                    currency={item.TakerPays.currency}
+                    postfix={item.TakerPays.currency}
                     style={[styles.amount, styles.naturalColor]}
-                    currencyStyle={styles.currency}
+                    postfixStyle={styles.currency}
                 />
             );
         }

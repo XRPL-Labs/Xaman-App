@@ -39,18 +39,22 @@ exports[`Storyshots AmountText WithCurrency 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+            ]
+          }
         >
-          
           0…
-           
-          <Text
-            numberOfLines={1}
-          >
-            XRP
-          </Text>
         </Text>
       </View>
     </View>
@@ -74,18 +78,22 @@ exports[`Storyshots AmountText WithCurrency 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+            ]
+          }
         >
-          
           2.2222
-           
-          <Text
-            numberOfLines={1}
-          >
-            XRP
-          </Text>
         </Text>
       </View>
     </View>
@@ -109,18 +117,22 @@ exports[`Storyshots AmountText WithCurrency 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+            ]
+          }
         >
-          
           99,999
-           
-          <Text
-            numberOfLines={1}
-          >
-            XRP
-          </Text>
         </Text>
       </View>
     </View>
@@ -167,18 +179,32 @@ exports[`Storyshots AmountText WithCurrencyPrefix 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+            ]
+          }
         >
           ~
+        </Text>
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              undefined,
+            ]
+          }
+        >
           0…
-           
-          <Text
-            numberOfLines={1}
-          >
-            XRP
-          </Text>
         </Text>
       </View>
     </View>
@@ -202,18 +228,32 @@ exports[`Storyshots AmountText WithCurrencyPrefix 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+            ]
+          }
         >
           ~
+        </Text>
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              undefined,
+            ]
+          }
+        >
           2.2222
-           
-          <Text
-            numberOfLines={1}
-          >
-            XRP
-          </Text>
         </Text>
       </View>
     </View>
@@ -237,18 +277,32 @@ exports[`Storyshots AmountText WithCurrencyPrefix 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+            ]
+          }
         >
           ~
+        </Text>
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              undefined,
+            ]
+          }
+        >
           99,999
-           
-          <Text
-            numberOfLines={1}
-          >
-            XRP
-          </Text>
         </Text>
       </View>
     </View>
@@ -295,18 +349,22 @@ exports[`Storyshots AmountText WithValue 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+            ]
+          }
         >
-          
           0…
-           
-          <Text
-            numberOfLines={1}
-          >
-            
-          </Text>
         </Text>
       </View>
     </View>
@@ -330,18 +388,22 @@ exports[`Storyshots AmountText WithValue 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+            ]
+          }
         >
-          
           2.2222
-           
-          <Text
-            numberOfLines={1}
-          >
-            
-          </Text>
         </Text>
       </View>
     </View>
@@ -365,18 +427,22 @@ exports[`Storyshots AmountText WithValue 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+            ]
+          }
         >
-          
           99,999
-           
-          <Text
-            numberOfLines={1}
-          >
-            
-          </Text>
         </Text>
       </View>
     </View>

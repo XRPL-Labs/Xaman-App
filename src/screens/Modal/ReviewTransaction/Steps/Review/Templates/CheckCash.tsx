@@ -148,7 +148,7 @@ class CheckCashTemplate extends Component<Props, State> {
                 <View style={[styles.contentBox]}>
                     <AmountText
                         value={transaction.Check?.SendMax.value}
-                        currency={transaction.Check?.SendMax.currency}
+                        postfix={transaction.Check?.SendMax.currency}
                         style={styles.amount}
                     />
                 </View>
@@ -197,7 +197,7 @@ class CheckCashTemplate extends Component<Props, State> {
                             <AmountText
                                 style={styles.amountInput}
                                 value={cashAmount}
-                                currency={transaction[amountField]?.currency || 'XRP'}
+                                postfix={transaction[amountField]?.currency || 'XRP'}
                             />
                         )}
                     </TouchableOpacity>

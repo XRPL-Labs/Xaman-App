@@ -364,7 +364,7 @@ class PaymentTemplate extends Component<Props, State> {
                             <AmountText
                                 style={styles.amountInput}
                                 value={amount}
-                                currency={transaction.Amount.currency}
+                                postfix={transaction.Amount.currency}
                             />
                         )}
                     </TouchableOpacity>
@@ -399,7 +399,7 @@ class PaymentTemplate extends Component<Props, State> {
                         <View style={[styles.contentBox]}>
                             <AmountText
                                 value={transaction.SendMax.value}
-                                currency={transaction.SendMax.currency}
+                                postfix={transaction.SendMax.currency}
                                 style={styles.amount}
                             />
                         </View>
@@ -412,7 +412,7 @@ class PaymentTemplate extends Component<Props, State> {
                         <View style={[styles.contentBox]}>
                             <AmountText
                                 value={transaction.DeliverMin.value}
-                                currency={transaction.DeliverMin.currency}
+                                postfix={transaction.DeliverMin.currency}
                                 style={styles.amount}
                             />
                         </View>

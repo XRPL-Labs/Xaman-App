@@ -1213,7 +1213,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     <View style={[AppStyles.row, styles.amountContainerSmall]}>
                         <AmountText
                             value={takerGets.value}
-                            currency={takerGets.currency}
+                            postfix={takerGets.currency}
                             style={[styles.amountTextSmall]}
                         />
                     </View>
@@ -1228,7 +1228,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
                         <AmountText
                             value={props.value}
-                            currency={props.currency}
+                            postfix={props.currency}
                             prefix={props.prefix}
                             style={[styles.amountText, props.color]}
                         />
@@ -1245,7 +1245,7 @@ class TransactionDetailsView extends Component<Props, State> {
                             <View style={[AppStyles.row, styles.amountContainerSmall]}>
                                 <AmountText
                                     value={balanceChanges.sent.value}
-                                    currency={balanceChanges.sent.currency}
+                                    postfix={balanceChanges.sent.currency}
                                     style={[styles.amountTextSmall]}
                                 />
                             </View>
@@ -1260,7 +1260,7 @@ class TransactionDetailsView extends Component<Props, State> {
                                 <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
                                 <AmountText
                                     value={props.value}
-                                    currency={props.currency}
+                                    postfix={props.currency}
                                     prefix={props.prefix}
                                     style={[styles.amountText, props.color]}
                                 />
@@ -1279,7 +1279,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
                     <AmountText
                         value={props.value}
-                        currency={props.currency}
+                        postfix={props.currency}
                         prefix={props.prefix}
                         style={[styles.amountText, props.color]}
                     />

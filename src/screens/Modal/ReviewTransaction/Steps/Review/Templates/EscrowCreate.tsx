@@ -89,7 +89,7 @@ class EscrowCreateTemplate extends Component<Props, State> {
                 <View style={[styles.contentBox]}>
                     <AmountText
                         value={transaction.Amount.value}
-                        currency={transaction.Amount.currency}
+                        postfix={transaction.Amount.currency}
                         style={styles.amount}
                     />
                 </View>
