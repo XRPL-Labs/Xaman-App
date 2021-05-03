@@ -97,9 +97,9 @@ class EnterSeedStep extends Component<Props, State> {
     };
 
     onQRCodeRead = (result: XrplSecret) => {
-        if (result?.familySeed) {
+        if (result?.familySeed || result?.hexPrivateKey) {
             this.setState({
-                secret: result.familySeed,
+                secret: result.familySeed || result.hexPrivateKey,
             });
         }
     };
