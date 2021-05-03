@@ -59,8 +59,8 @@ class RecipientStep extends Component<Props, State> {
             isSearching: false,
             isLoading: false,
             searchText: '',
-            accounts: AccountRepository.getAccounts().snapshot(),
-            contacts: ContactRepository.getContacts().snapshot(),
+            accounts: AccountRepository.getAccounts({ hidden: false }).sorted([['order', false]]),
+            contacts: ContactRepository.getContacts(),
             dataSource: [],
         };
 
