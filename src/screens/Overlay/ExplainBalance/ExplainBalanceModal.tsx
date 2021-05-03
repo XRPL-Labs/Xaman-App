@@ -194,7 +194,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         const { accountObjects, isLoading } = this.state;
 
         return (
-            <View style={[AppStyles.paddingHorizontalSml]}>
+            <View style={[AppStyles.paddingHorizontalSml, { marginBottom: AppSizes.navigationBarHeight }]}>
                 <View style={[styles.currencyItemCard]}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
                         <View style={[styles.xrpAvatarContainer]}>
