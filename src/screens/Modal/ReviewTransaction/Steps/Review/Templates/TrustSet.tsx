@@ -1,7 +1,11 @@
 /* eslint-disable react/jsx-one-expression-per-line */
+import BigNumber from 'bignumber.js';
+import { has, isEmpty } from 'lodash';
+
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
-import isEmpty from 'lodash/isEmpty';
+
+import LedgerService from '@services/LedgerService';
 
 import { TrustSet } from '@common/libs/ledger/transactions';
 
@@ -22,8 +26,10 @@ export interface Props {
 }
 
 export interface State {
-    isLoading: boolean;
+    isLoadingIssuerDetails: boolean;
+    isLoadingIssuerFee: boolean;
     issuerDetails: AccountNameType;
+    issuerFee: number;
 }
 
 /* Component ==================================================================== */
@@ -32,16 +38,40 @@ class TrustSetTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            isLoading: true,
+            isLoadingIssuerDetails: true,
+            isLoadingIssuerFee: true,
             issuerDetails: {
                 name: '',
                 source: '',
             },
+            issuerFee: 0,
         };
     }
 
     componentDidMount() {
         const { transaction } = this.props;
+
+        // get transfer rate from issuer account
+        LedgerService.getAccountInfo(transaction.Issuer)
+            .then((issuerAccountInfo: any) => {
+                if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
+                    const { TransferRate } = issuerAccountInfo.account_data;
+
+                    const fee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
+
+                    this.setState({
+                        issuerFee: fee,
+                    });
+                }
+            })
+            .catch(() => {
+                // ignore
+            })
+            .finally(() => {
+                this.setState({
+                    isLoadingIssuerFee: false,
+                });
+            });
 
         getAccountName(transaction.Issuer)
             .then((res: any) => {
@@ -56,14 +86,14 @@ class TrustSetTemplate extends Component<Props, State> {
             })
             .finally(() => {
                 this.setState({
-                    isLoading: false,
+                    isLoadingIssuerDetails: false,
                 });
             });
     }
 
     render() {
         const { transaction } = this.props;
-        const { isLoading, issuerDetails } = this.state;
+        const { isLoadingIssuerDetails, issuerDetails, isLoadingIssuerFee, issuerFee } = this.state;
 
         return (
             <>
@@ -74,7 +104,7 @@ class TrustSetTemplate extends Component<Props, State> {
                 </View>
                 <RecipientElement
                     containerStyle={[styles.contentBox, styles.addressContainer]}
-                    isLoading={isLoading}
+                    isLoading={isLoadingIssuerDetails}
                     showAvatar={false}
                     recipient={{
                         address: transaction.Issuer,
@@ -85,6 +115,12 @@ class TrustSetTemplate extends Component<Props, State> {
                 <View style={[styles.contentBox]}>
                     <Text style={[styles.value]}>{NormalizeCurrencyCode(transaction.Currency)}</Text>
                 </View>
+
+                <Text style={[styles.label]}>{Localize.t('global.issuerFee')}</Text>
+                <View style={[styles.contentBox]}>
+                    <Text style={[styles.value]}>{isLoadingIssuerFee ? 'Loading...' : `${issuerFee}%`}</Text>
+                </View>
+
                 <Text style={[styles.label]}>{Localize.t('global.balanceLimit')}</Text>
                 <View style={[styles.contentBox]}>
                     {transaction.Limit ? (

@@ -150,6 +150,7 @@
     "selling": "Selling",
     "inExchangeForReceive": "In exchange for (receive)",
     "fee": "Transaction fee",
+    "issuerFee": "Issuer Fee",
     "invoiceID": "Invoice ID",
     "sendMax": "Send Max",
     "deliverMin": "Deliver Min",

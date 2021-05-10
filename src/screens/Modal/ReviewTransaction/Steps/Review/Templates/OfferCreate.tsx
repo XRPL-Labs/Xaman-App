@@ -1,6 +1,10 @@
+import BigNumber from 'bignumber.js';
+import { has, isEmpty } from 'lodash';
+
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
-import isEmpty from 'lodash/isEmpty';
+
+import LedgerService from '@services/LedgerService';
 
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
@@ -20,9 +24,10 @@ export interface Props {
 }
 
 export interface State {
-    takerGetsIssuerDetails: AccountNameType;
-    takerPaysIssuerDetails: AccountNameType;
-    isLoading: boolean;
+    isLoadingIssuerDetails: boolean;
+    isLoadingIssuerFee: boolean;
+    issuerDetails: AccountNameType;
+    issuerFee: number;
 }
 
 /* Component ==================================================================== */
@@ -31,64 +36,78 @@ class OfferCreateTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            takerGetsIssuerDetails: undefined,
-            takerPaysIssuerDetails: undefined,
-            isLoading: false,
+            isLoadingIssuerDetails: true,
+            isLoadingIssuerFee: true,
+            issuerDetails: {
+                name: '',
+                source: '',
+            },
+            issuerFee: 0,
         };
     }
 
     componentDidMount() {
         const { transaction } = this.props;
 
-        this.setState({
-            isLoading: true,
-        });
+        const issuerAddress = transaction.TakerGets.issuer || transaction.TakerPays.issuer;
 
-        if (transaction.TakerGets.issuer) {
-            getAccountName(transaction.TakerGets.issuer)
-                .then((res: any) => {
-                    if (!isEmpty(res)) {
-                        this.setState({
-                            takerGetsIssuerDetails: res,
-                        });
-                    }
-                })
-                .catch(() => {
-                    // ignore
-                })
-                .finally(() => {
-                    this.setState({
-                        isLoading: false,
-                    });
-                });
-        }
+        // get transfer rate from issuer account
+        LedgerService.getAccountInfo(issuerAddress)
+            .then((issuerAccountInfo: any) => {
+                if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
+                    const { TransferRate } = issuerAccountInfo.account_data;
 
-        if (transaction.TakerPays.issuer) {
-            getAccountName(transaction.TakerPays.issuer)
-                .then((res: any) => {
-                    if (!isEmpty(res)) {
-                        this.setState({
-                            takerPaysIssuerDetails: res,
-                        });
-                    }
-                })
-                .catch(() => {
-                    // ignore
-                })
-                .finally(() => {
+                    const fee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
+
                     this.setState({
-                        isLoading: false,
+                        issuerFee: fee,
                     });
+                }
+            })
+            .catch(() => {
+                // ignore
+            })
+            .finally(() => {
+                this.setState({
+                    isLoadingIssuerFee: false,
                 });
-        }
+            });
+
+        getAccountName(issuerAddress)
+            .then((res: any) => {
+                if (!isEmpty(res)) {
+                    this.setState({
+                        issuerDetails: res,
+                    });
+                }
+            })
+            .catch(() => {
+                // ignore
+            })
+            .finally(() => {
+                this.setState({
+                    isLoadingIssuerDetails: false,
+                });
+            });
     }
 
     render() {
         const { transaction } = this.props;
-        const { takerGetsIssuerDetails, takerPaysIssuerDetails, isLoading } = this.state;
+        const { isLoadingIssuerDetails, issuerDetails, isLoadingIssuerFee, issuerFee } = this.state;
 
         return (
             <>
+                <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
+                <RecipientElement
+                    containerStyle={[styles.contentBox, styles.addressContainer]}
+                    isLoading={isLoadingIssuerDetails}
+                    showAvatar={false}
+                    recipient={{
+                        address: transaction.TakerGets.issuer || transaction.TakerPays.issuer,
+                        ...issuerDetails,
+                    }}
+                />
+
                 <Text style={[styles.label]}>{Localize.t('global.selling')}</Text>
                 <View style={[styles.contentBox]}>
                     <AmountText
@@ -107,16 +126,10 @@ class OfferCreateTemplate extends Component<Props, State> {
                     />
                 </View>
 
-                <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
-                <RecipientElement
-                    containerStyle={[styles.contentBox, styles.addressContainer]}
-                    isLoading={isLoading}
-                    showAvatar={false}
-                    recipient={{
-                        address: transaction.TakerGets.issuer || transaction.TakerPays.issuer,
-                        ...(takerGetsIssuerDetails || takerPaysIssuerDetails),
-                    }}
-                />
+                <Text style={[styles.label]}>{Localize.t('global.issuerFee')}</Text>
+                <View style={[styles.contentBox]}>
+                    <Text style={[styles.value]}>{isLoadingIssuerFee ? 'Loading...' : `${issuerFee}%`}</Text>
+                </View>
 
                 {transaction.Expiration && (
                     <>

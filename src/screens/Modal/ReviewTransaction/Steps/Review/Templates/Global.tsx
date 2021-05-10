@@ -88,8 +88,12 @@ class GlobalTemplate extends Component<Props, State> {
 
         const flags = [];
         for (const [key, value] of Object.entries(transaction.Flags)) {
-            if (!(key in Object.keys(txFlags.Universal)) && value) {
-                flags.push(<Text style={styles.value}>{key}</Text>);
+            if (!(key in txFlags.Universal) && value) {
+                flags.push(
+                    <Text key={key} style={styles.value}>
+                        {key}
+                    </Text>,
+                );
             }
         }
 
