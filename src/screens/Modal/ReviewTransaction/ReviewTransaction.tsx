@@ -382,9 +382,13 @@ class ReviewTransactionModal extends Component<Props, State> {
                     // verify transaction
                     const verifyResult = await transaction.verify();
 
-                    // change the transaction final status if the transaction settled in the ledger
-                    if (verifyResult.success && submitResult.engineResult !== 'tesSUCCESS') {
-                        submitResult.engineResult = 'tesSUCCESS';
+                    // update submit result base on verify result
+                    if (verifyResult.success) {
+                        if (submitResult.engineResult !== 'tesSUCCESS') {
+                            submitResult.engineResult = 'tesSUCCESS';
+                        }
+                    } else {
+                        submitResult.success = false;
                     }
 
                     if (coreSettings.hapticFeedback) {
