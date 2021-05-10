@@ -46,7 +46,7 @@ class LinkingService extends EventEmitter {
 
     checkInitialDeepLink = () => {
         // handle if app opens with link
-        Linking.getInitialURL().then(url => {
+        Linking.getInitialURL().then((url) => {
             if (url && this.initialURL !== url) {
                 this.initialURL = url;
 

@@ -1,8 +1,10 @@
+import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, Alert } from 'react-native';
 
 import { LedgerService } from '@services';
 
+import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import { Amount } from '@common/libs/ledger/parser/common';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 
@@ -79,6 +81,30 @@ class GlobalTemplate extends Component<Props, State> {
         return null;
     };
 
+    renderFlags = () => {
+        const { transaction } = this.props;
+
+        if (!transaction.Flags) return null;
+
+        const flags = [];
+        for (const [key, value] of Object.entries(transaction.Flags)) {
+            if (!(key in Object.keys(txFlags.Universal)) && value) {
+                flags.push(<Text style={styles.value}>{key}</Text>);
+            }
+        }
+
+        if (isEmpty(flags)) {
+            return null;
+        }
+
+        return (
+            <>
+                <Text style={[styles.label]}>{Localize.t('global.flags')}</Text>
+                <View style={[styles.contentBox]}>{flags}</View>
+            </>
+        );
+    };
+
     render() {
         const { transaction } = this.props;
         const { networkFee } = this.state;
@@ -103,6 +129,8 @@ class GlobalTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
+
+                {this.renderFlags()}
 
                 <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
                 <View style={[styles.contentBox]}>

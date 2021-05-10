@@ -125,6 +125,7 @@
     "type": "Type",
     "jsonView": "Json View",
     "normalView": "Normal View",
+    "flags": "Flags",
     "setFlag": "Set Flag",
     "clearFlag": "Clear Flag",
     "messageKey": "MessageKey",
