@@ -452,12 +452,16 @@ class RecipientStep extends Component<Props, State> {
                 const destinationLines = await LedgerService.getAccountLines(destination.address);
                 const { lines } = destinationLines;
 
-                const haveSameTrustLine =
+                const haveProperTrustLine =
                     findIndex(lines, (l: any) => {
-                        return l.currency === currency.currency.currency && l.account === currency.currency.issuer;
+                        return (
+                            l.currency === currency.currency.currency &&
+                            l.account === currency.currency.issuer &&
+                            l.limit > 0
+                        );
                     }) !== -1;
 
-                if (!haveSameTrustLine && currency.currency.issuer !== destination.address) {
+                if (!haveProperTrustLine && currency.currency.issuer !== destination.address) {
                     Navigator.showAlertModal({
                         type: 'error',
                         text: Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine'),

@@ -725,7 +725,7 @@
     "thisAddressRequiredDestinationTag": "This address requires a Destination Tag",
     "pleaseEnterAmount": "Please enter the transaction amount",
     "trustLineLimitExceeded": "TrustLine limit is exceeded.\r\n\r\nNow: %{balance}\r\nMax: %{peer_limit}\r\nAvailable for issuing: %{available}\r\n\r\nThe recipient can update the Trustline limit.",
-    "unableToSendPaymentRecipientDoesNotHaveTrustLine": "Unable to send the token to the recipient.\r\nThe recipient does not have a TrustLine for this token setup to the issuer of this token.",
+    "unableToSendPaymentRecipientDoesNotHaveTrustLine": "Unable to send the token to the recipient.\r\nThe recipient does not have a TrustLine for this token setup to the issuer of this token or limit not high enough to receive.",
     "destinationTagWarningConfirm": "You are sending to an account with destination tag. Please double check the destination tag: if you send to the wrong tag, you will need support of the Destination to retrieve your funds.",
     "doubleCheckDestinationTag": "Double check destination tag",
     "sendToAccountWithDisallowXrpFlagWarning": "The destination account indicates that it doesn't want to receive XRP payments. Only non-XRP payments can be sent to this destination.",
