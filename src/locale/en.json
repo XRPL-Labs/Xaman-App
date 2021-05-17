@@ -749,6 +749,7 @@
   "exchange": {
     "exchanging": "Exchanging",
     "exchangeRate": "Exchange rate (%{exchangeRate} XRP)",
+    "exchangeRateInToken": "Exchange rate: 1 XRP = %{exchangeRate} %{currency}",
     "doYouWantToExchange": "Are you sure you want to exchange %{payAmount} %{payCurrency} for %{getAmount} %{getCurrency}?",
     "successfullyExchanged": "Hooray, successfully exchanged %{payAmount} %{payCurrency} for %{getAmount} %{getCurrency}.",
     "failedExchange": "Cannot exchange right now due to lack of liquidity, or updated exchange rates.",

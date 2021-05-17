@@ -379,6 +379,7 @@ class ExchangeView extends Component<Props, State> {
     };
 
     renderBottomContainer = () => {
+        const { trustLine } = this.props;
         const { direction, liquidity, amount, isPreparing, isLoading } = this.state;
 
         if (isLoading || !liquidity) {
@@ -429,7 +430,10 @@ class ExchangeView extends Component<Props, State> {
         return (
             <>
                 <Text style={[styles.subLabel, AppStyles.textCenterAligned]}>
-                    {Localize.t('exchange.exchangeRate', { exchangeRate: Localize.formatNumber(Number(exchangeRate)) })}
+                    {Localize.t('exchange.exchangeRateInToken', {
+                        exchangeRate: Localize.formatNumber(Number(exchangeRate)),
+                        currency: NormalizeCurrencyCode(trustLine.currency.currency),
+                    })}
                 </Text>
                 <Spacer size={40} />
                 <Button
