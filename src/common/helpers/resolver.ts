@@ -152,7 +152,9 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
 
             // check for black hole
             if (has(account_data, ['RegularKey'])) {
-                if (account_data.RegularKey === 'rrrrrrrrrrrrrrrrrrrrrhoLvTp') {
+                if (
+                    ['rrrrrrrrrrrrrrrrrrrrrhoLvTp', 'rrrrrrrrrrrrrrrrrrrrBZbvji'].indexOf(account_data.RegularKey) > -1
+                ) {
                     assign(info, { blackHole: true });
                 }
             }
