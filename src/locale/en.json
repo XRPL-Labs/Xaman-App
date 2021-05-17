@@ -674,7 +674,8 @@
     "enterSecret": "Enter secret",
     "yourChainAddressWas": "Your %{chain} address was:",
     "yourXRPLedgerAccountIsGoingToBe": "Your XRP Ledger account is going to be:",
-    "importSecretWithoutChecksumWarning": "If you continue, you will import an XRP Ledger account from Secret Numbers. The Secret Numbers should be generated **by you** using an offline method (eg. with dice). You **must** have stored your generated secret numbers (eg. stamped in metal, written down).\r\nONLY CONTINUE IF YOU KNOW WHAT YOU ARE DOING."
+    "importSecretWithoutChecksumWarning": "If you continue, you will import an XRP Ledger account from Secret Numbers. The Secret Numbers should be generated **by you** using an offline method (eg. with dice). You **must** have stored your generated secret numbers (eg. stamped in metal, written down).\r\nONLY CONTINUE IF YOU KNOW WHAT YOU ARE DOING.",
+    "tangemCardPasscodeSetWarning": "While adding a passcode to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your passcode.\n\nAre you really sure you want to add a passcode to your card?"
   },
   "send": {
     "amountIsBiggerThanYourSpend": "This amount is bigger than what you can spend (%{spendable})",

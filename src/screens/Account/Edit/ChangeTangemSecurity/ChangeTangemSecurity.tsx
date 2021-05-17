@@ -136,7 +136,23 @@ class ChangeTangemSecurityView extends Component<Props, State> {
         }
 
         if (currentSecurity === TangemSecurity.LongTap) {
-            this.changePasscode();
+            Navigator.showAlertModal({
+                type: 'warning',
+                text: Localize.t('account.tangemCardPasscodeSetWarning'),
+                buttons: [
+                    {
+                        text: Localize.t('global.cancel'),
+                        type: 'dismiss',
+                        light: true,
+                    },
+                    {
+                        text: Localize.t('global.doIt'),
+                        onPress: this.changePasscode,
+                        type: 'continue',
+                        light: false,
+                    },
+                ],
+            });
         } else {
             this.removePasscode();
         }

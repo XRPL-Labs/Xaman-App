@@ -257,7 +257,7 @@ const Navigator = {
         type: 'success' | 'info' | 'warning' | 'error';
         text: string;
         title?: string;
-        buttons: { text: string; onPress: () => void; type?: 'continue' | 'dismiss'; light?: boolean }[];
+        buttons: { text: string; onPress?: () => void; type?: 'continue' | 'dismiss'; light?: boolean }[];
         onDismissed?: () => void;
     }) {
         Navigator.showOverlay(
