@@ -1,3 +1,4 @@
+import React from 'react';
 import { storiesOf } from '@storybook/react-native';
 
 import withPropsCombinations from '../../../../storybook/matrix';
@@ -11,23 +12,23 @@ storiesOf('AmountText', module)
     .addDecorator(withLocale)
     .addDecorator(withBackground)
     .add(
-        'WithValue',
+        'original',
         withPropsCombinations(AmountText, {
             value: VALUES,
         }),
     )
     .add(
-        'WithCurrency',
+        'withPrefix',
         withPropsCombinations(AmountText, {
             value: VALUES,
-            currency: ['XRP'],
+            prefix: ['-'],
         }),
     )
     .add(
-        'WithCurrencyPrefix',
+        'withPostfix',
         withPropsCombinations(AmountText, {
             value: VALUES,
-            currency: ['XRP'],
-            prefix: ['~'],
+            postfix: ['USD'],
         }),
-    );
+    )
+    .add('discreet', () => <AmountText postfix="USD" value="123" discreet />);

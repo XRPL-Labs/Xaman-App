@@ -24,6 +24,8 @@ interface Props {
     prefix?: string | (() => React.ReactNode);
     style?: TextStyle | TextStyle[];
     postfixStyle?: TextStyle | TextStyle[];
+    discreet?: boolean;
+    discreetStyle?: TextStyle | TextStyle[];
 }
 
 interface State {
@@ -47,10 +49,14 @@ class AmountText extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        const { value } = this.props;
+        const { value, discreet } = this.props;
         const { showOriginalValue } = this.state;
 
-        if (nextProps.value !== value || nextState.showOriginalValue !== showOriginalValue) {
+        if (
+            nextProps.value !== value ||
+            nextState.showOriginalValue !== showOriginalValue ||
+            nextProps.discreet !== discreet
+        ) {
             return true;
         }
 
@@ -161,12 +167,20 @@ class AmountText extends Component<Props, State> {
     };
 
     getValue = () => {
-        const { style } = this.props;
+        const { style, discreet, discreetStyle } = this.props;
         const { value, originalValue, showOriginalValue } = this.state;
 
+        let showValue = '';
+
+        if (discreet) {
+            showValue = '••••••••';
+        } else {
+            showValue = showOriginalValue ? Localize.formatNumber(originalValue) : value;
+        }
+
         return (
-            <Text numberOfLines={1} style={[style]}>
-                {showOriginalValue ? Localize.formatNumber(originalValue) : value}
+            <Text numberOfLines={1} style={[style, discreet && discreetStyle]}>
+                {showValue}
             </Text>
         );
     };
