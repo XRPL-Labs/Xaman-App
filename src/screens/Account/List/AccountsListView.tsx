@@ -182,12 +182,13 @@ class AccountListView extends Component<Props, State> {
                             <View style={[styles.accessLevelContainer]}>
                                 <Icon size={13} name={accessLevelIcon} style={AppStyles.imgColorGrey} />
                                 <Text style={[styles.accessLevelLabel]}>{accessLevelLabel}</Text>
-                                {item.hidden &&
-                                <>
-                                    <Text style={[styles.accessLevelLabel]}> </Text>
-                                    <Icon size={13} name="IconEyeOff" style={AppStyles.imgColorGrey} />
-                                    <Text style={[styles.accessLevelLabel]}>{Localize.t('global.hidden')}</Text>
-                                </>}
+                                {item.hidden && (
+                                    <>
+                                        <Text style={[styles.accessLevelLabel]}> </Text>
+                                        <Icon size={13} name="IconEyeOff" style={AppStyles.imgColorGrey} />
+                                        <Text style={[styles.accessLevelLabel]}>{Localize.t('global.hidden')}</Text>
+                                    </>
+                                )}
                             </View>
                         </View>
                     </View>
@@ -279,51 +280,50 @@ class AccountListView extends Component<Props, State> {
                         testID="account-list-scroll"
                         scrollEnabled={scrollEnabled}
                         style={[AppStyles.flex1]}
+                        contentContainerStyle={[AppStyles.paddingBottom]}
                         horizontal={false}
                         directionalLockEnabled
                     >
-                        <View style={AppStyles.flex1}>
-                            <View style={[styles.rowAddContainer]}>
-                                {reorderEnabled ? (
-                                    <View style={[AppStyles.paddingHorizontalSml]}>
-                                        <Text
-                                            adjustsFontSizeToFit
-                                            numberOfLines={2}
-                                            style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}
-                                        >
-                                            {Localize.t('account.tapAndHoldToReorder')}
-                                        </Text>
-                                    </View>
-                                ) : (
-                                    <Button
-                                        testID="add-account-button"
-                                        label={Localize.t('home.addAccount')}
-                                        icon="IconPlus"
-                                        roundedSmall
-                                        secondary
-                                        onPress={() => {
-                                            Navigator.push(AppScreens.Account.Add);
-                                        }}
-                                    />
-                                )}
-                            </View>
-
-                            <DragSortableView
-                                parentWidth={AppSizes.screen.width}
-                                childrenWidth={AppSizes.screen.width}
-                                childrenHeight={styles.rowContainer.height}
-                                dataSource={dataSource}
-                                marginChildrenTop={10}
-                                keyExtractor={(item, index) => `${item.address}${index}` || String(index)}
-                                testIDExtractor={(item) => `account-${item.address}`}
-                                renderItem={this.renderItem}
-                                onDragStart={this.onItemDragStart}
-                                onDragEnd={this.onItemDragEnd}
-                                onDataChange={this.onAccountReorder}
-                                onClickItem={this.onItemPress}
-                                sortable={reorderEnabled}
-                            />
+                        <View style={[styles.rowAddContainer]}>
+                            {reorderEnabled ? (
+                                <View style={[AppStyles.paddingHorizontalSml]}>
+                                    <Text
+                                        adjustsFontSizeToFit
+                                        numberOfLines={2}
+                                        style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}
+                                    >
+                                        {Localize.t('account.tapAndHoldToReorder')}
+                                    </Text>
+                                </View>
+                            ) : (
+                                <Button
+                                    testID="add-account-button"
+                                    label={Localize.t('home.addAccount')}
+                                    icon="IconPlus"
+                                    roundedSmall
+                                    secondary
+                                    onPress={() => {
+                                        Navigator.push(AppScreens.Account.Add);
+                                    }}
+                                />
+                            )}
                         </View>
+
+                        <DragSortableView
+                            parentWidth={AppSizes.screen.width}
+                            childrenWidth={AppSizes.screen.width}
+                            childrenHeight={styles.rowContainer.height}
+                            dataSource={dataSource}
+                            marginChildrenTop={10}
+                            keyExtractor={(item, index) => `${item.address}${index}` || String(index)}
+                            testIDExtractor={(item) => `account-${item.address}`}
+                            renderItem={this.renderItem}
+                            onDragStart={this.onItemDragStart}
+                            onDragEnd={this.onItemDragEnd}
+                            onDataChange={this.onAccountReorder}
+                            onClickItem={this.onItemPress}
+                            sortable={reorderEnabled}
+                        />
                     </ScrollView>
                 )}
             </View>
