@@ -32,9 +32,9 @@ Feature: Generate Account
         Given I should see same account address
 
     Scenario: Activate Account
-        Given I should see 'not-activated-account-container'
+        Given I should see 'not-trustLine-list-container'
         Then I activate the account
-        Given I should wait 20 sec to see 'activated-account-container'
+        Given I should wait 20 sec to see 'trustLine-list-container'
         Given I should see '80' in 'account-balance-label'
         Given I should have 'assets-empty-view'
 
@@ -90,11 +90,11 @@ Feature: Generate Account
         Then I tap 'tab-Home'
         Given I should have 'home-tab-view'
         Given I should see same account address
-        Given I should see 'not-activated-account-container'
+        Given I should see 'not-trustLine-list-container'
 
     Scenario: Activate Account
         Then I activate the account
-        Given I should wait 20 sec to see 'activated-account-container'
+        Given I should wait 20 sec to see 'trustLine-list-container'
         Given I should see '80' in 'account-balance-label'
         Given I should have 'assets-empty-view'
 

@@ -273,7 +273,8 @@
     "dark": "Dark",
     "moonlight": "Moonlight",
     "royal": "Royal",
-    "theAmountIsTooSmallToDisplay": "The amount is too small to be displayed:\r\n%{amount}"
+    "theAmountIsTooSmallToDisplay": "The amount is too small to be displayed:\r\n%{amount}",
+    "moreInfo": "More Info"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",
@@ -740,7 +741,10 @@
     "trustLineDustRemoveWarning": "This TrustLine still contains a really small balance of %{balance} %{currency}. If you continue, this amount will be sent back to the issuer before your TrustLine is deleted. ",
     "dustAmountRemovedYouCanRemoveTrustLineNow": "Your dust balance has been sent back to the issuer. The TrustLine can now be removed.",
     "addingAssetReserveDescription": "Adding a token to your XRP Ledger account will increase your XRP Ledger enforced account reserve by 5 XRP",
-    "unableToRemoveAssetNotInDefaultState": "This token cannot be removed from your account. The issuer either added specific settings for this token or their account is not properly configured."
+    "unableToRemoveAssetNotInDefaultState": "This token cannot be removed from your account. The issuer either added specific settings for this token or their account is not properly configured.",
+    "ripplingMisconfigurationWarning": "Rippling not turned off for this Trust Line, if you don't know what this is and/or this is not on purpose, please update this setting to prevent potential loss of %{token} tokens",
+    "dangerousConfigurationDetected": "Dangerous configuration detected",
+    "moreInfoAndFix": "More info & fix"
   },
   "exchange": {
     "exchanging": "Exchanging",

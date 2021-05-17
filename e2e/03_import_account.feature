@@ -32,9 +32,9 @@ Feature: Import Account
         Given I should see same account address
 
     Scenario: Activate Account
-        Given I should see 'not-activated-account-container'
+        Given I should see 'not-trustLine-list-container'
         Then I activate the account
-        Given I should wait 20 sec to see 'activated-account-container'
+        Given I should wait 20 sec to see 'trustLine-list-container'
         Given I should see '80' in 'account-balance-label'
         Given I should have 'assets-empty-view'
 
@@ -87,9 +87,9 @@ Feature: Import Account
         Given I should see same account address
 
     Scenario: Activate Account
-        Given I should see 'not-activated-account-container'
+        Given I should see 'not-trustLine-list-container'
         Then I activate the account
-        Given I should wait 20 sec to see 'activated-account-container'
+        Given I should wait 20 sec to see 'trustLine-list-container'
         Given I should see '80' in 'account-balance-label'
         Given I should have 'assets-empty-view'
 
@@ -146,9 +146,9 @@ Feature: Import Account
         Given I should see same account address
 
     Scenario: Activate Account
-        Given I should see 'not-activated-account-container'
+        Given I should see 'not-trustLine-list-container'
         Then I activate the account
-        Given I should wait 20 sec to see 'activated-account-container'
+        Given I should wait 20 sec to see 'trustLine-list-container'
         Given I should see '80' in 'account-balance-label'
         Given I should have 'assets-empty-view'
 
@@ -207,9 +207,9 @@ Feature: Import Account
         Given I should see same account address
 
     Scenario: Activate Account
-        Given I should see 'not-activated-account-container'
+        Given I should see 'not-trustLine-list-container'
         Then I activate the account
-        Given I should wait 20 sec to see 'activated-account-container'
+        Given I should wait 20 sec to see 'trustLine-list-container'
         Given I should see '80' in 'account-balance-label'
         Given I should have 'assets-empty-view'
 

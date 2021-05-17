@@ -14,4 +14,16 @@ export default StyleService.create({
         borderWidth: 1,
         borderRadius: 10,
     },
+    badgeContainer: {
+        position: 'absolute',
+    },
+    badgeContainerText: {
+        position: 'absolute',
+        backgroundColor: '$blue',
+        borderWidth: 2.5,
+        borderColor: '$background',
+    },
+    badge: {
+        tintColor: '$white',
+    },
 });

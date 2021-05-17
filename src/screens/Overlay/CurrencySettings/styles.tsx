@@ -108,6 +108,12 @@ const styles = StyleService.create({
 
     removeButtonIcon: { marginLeft: 5, tintColor: '$red' },
     removeButtonText: { color: '$red' },
+    infoContainer: {
+        backgroundColor: '$blue',
+    },
+    infoText: {
+        color: '$white',
+    },
 });
 
 export default styles;

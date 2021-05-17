@@ -8,56 +8,59 @@ exports[`[InfoMessage] renders correctly Error 1`] = `
         "alignItems": "center",
         "alignSelf": "stretch",
         "borderRadius": 15,
-        "flexDirection": "row",
         "paddingHorizontal": 20,
         "paddingVertical": 10,
       },
       undefined,
-      null,
-      null,
       Object {
         "backgroundColor": "rgba(255,91,91,0.06)",
         "borderColor": "rgba(255,91,91,0.06)",
         "tintColor": "#FF5B5B",
       },
-      null,
-      null,
     ]
   }
 >
   <View
     style={
-      Array [
-        Object {
-          "flex": 1,
-          "paddingVertical": 10,
-        },
-      ]
+      Object {
+        "alignItems": "center",
+        "alignSelf": "stretch",
+        "flexDirection": "row",
+      }
     }
   >
-    <Text
+    <View
       style={
         Array [
           Object {
-            "fontFamily": "ProximaNova-Bold",
-            "fontSize": 30,
-            "textAlign": "center",
-          },
-          null,
-          null,
-          Object {
-            "color": "#FF5B5B",
-          },
-          null,
-          null,
-          Object {
-            "textAlign": "center",
+            "flex": 1,
+            "paddingVertical": 10,
           },
         ]
       }
     >
-      label
-    </Text>
+      <Text
+        style={
+          Array [
+            Array [
+              Object {
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 30,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#FF5B5B",
+              },
+              Object {
+                "textAlign": "center",
+              },
+            ],
+          ]
+        }
+      >
+        label
+      </Text>
+    </View>
   </View>
 </View>
 `;
@@ -70,7 +73,6 @@ exports[`[InfoMessage] renders correctly Info 1`] = `
         "alignItems": "center",
         "alignSelf": "stretch",
         "borderRadius": 15,
-        "flexDirection": "row",
         "paddingHorizontal": 20,
         "paddingVertical": 10,
       },
@@ -80,46 +82,50 @@ exports[`[InfoMessage] renders correctly Info 1`] = `
         "borderColor": "#3052FF",
         "tintColor": "#3052FF",
       },
-      null,
-      null,
-      null,
-      null,
     ]
   }
 >
   <View
     style={
-      Array [
-        Object {
-          "flex": 1,
-          "paddingVertical": 10,
-        },
-      ]
+      Object {
+        "alignItems": "center",
+        "alignSelf": "stretch",
+        "flexDirection": "row",
+      }
     }
   >
-    <Text
+    <View
       style={
         Array [
           Object {
-            "fontFamily": "ProximaNova-Bold",
-            "fontSize": 30,
-            "textAlign": "center",
-          },
-          Object {
-            "color": "#3052FF",
-          },
-          null,
-          null,
-          null,
-          null,
-          Object {
-            "textAlign": "center",
+            "flex": 1,
+            "paddingVertical": 10,
           },
         ]
       }
     >
-      label
-    </Text>
+      <Text
+        style={
+          Array [
+            Array [
+              Object {
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 30,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#3052FF",
+              },
+              Object {
+                "textAlign": "center",
+              },
+            ],
+          ]
+        }
+      >
+        label
+      </Text>
+    </View>
   </View>
 </View>
 `;
@@ -132,56 +138,59 @@ exports[`[InfoMessage] renders correctly Warning 1`] = `
         "alignItems": "center",
         "alignSelf": "stretch",
         "borderRadius": 15,
-        "flexDirection": "row",
         "paddingHorizontal": 20,
         "paddingVertical": 10,
       },
       undefined,
-      null,
       Object {
         "backgroundColor": "rgba(248,191,76,0.06)",
         "borderColor": "#F8BF4C",
         "tintColor": "#F8BF4C",
       },
-      null,
-      null,
-      null,
     ]
   }
 >
   <View
     style={
-      Array [
-        Object {
-          "flex": 1,
-          "paddingVertical": 10,
-        },
-      ]
+      Object {
+        "alignItems": "center",
+        "alignSelf": "stretch",
+        "flexDirection": "row",
+      }
     }
   >
-    <Text
+    <View
       style={
         Array [
           Object {
-            "fontFamily": "ProximaNova-Bold",
-            "fontSize": 30,
-            "textAlign": "center",
-          },
-          null,
-          Object {
-            "color": "#F8BF4C",
-          },
-          null,
-          null,
-          null,
-          Object {
-            "textAlign": "center",
+            "flex": 1,
+            "paddingVertical": 10,
           },
         ]
       }
     >
-      label
-    </Text>
+      <Text
+        style={
+          Array [
+            Array [
+              Object {
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 30,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#F8BF4C",
+              },
+              Object {
+                "textAlign": "center",
+              },
+            ],
+          ]
+        }
+      >
+        label
+      </Text>
+    </View>
   </View>
 </View>
 `;
@@ -194,92 +203,91 @@ exports[`[InfoMessage] should render with icon Error 1`] = `
         "alignItems": "center",
         "alignSelf": "stretch",
         "borderRadius": 15,
-        "flexDirection": "row",
         "paddingHorizontal": 20,
         "paddingVertical": 10,
       },
       undefined,
-      null,
-      null,
       Object {
         "backgroundColor": "rgba(255,91,91,0.06)",
         "borderColor": "rgba(255,91,91,0.06)",
         "tintColor": "#FF5B5B",
       },
-      null,
-      null,
     ]
   }
 >
   <View
     style={
-      Array [
-        Object {
-          "alignItems": "center",
-          "paddingRight": 10,
-        },
-      ]
+      Object {
+        "alignItems": "center",
+        "alignSelf": "stretch",
+        "flexDirection": "row",
+      }
     }
   >
-    <Image
-      resizeMode="contain"
-      source={
-        Object {
-          "uri": "IconInfo",
-        }
-      }
+    <View
       style={
         Array [
           Object {
-            "height": 31.428571428571427,
-            "width": 31.428571428571427,
-          },
-          Array [
-            null,
-            null,
-            Object {
-              "tintColor": "#FF5B5B",
-            },
-            null,
-            null,
-          ],
-        ]
-      }
-    />
-  </View>
-  <View
-    style={
-      Array [
-        Object {
-          "flex": 1,
-          "paddingVertical": 10,
-        },
-      ]
-    }
-  >
-    <Text
-      style={
-        Array [
-          Object {
-            "fontFamily": "ProximaNova-Bold",
-            "fontSize": 30,
-            "textAlign": "center",
-          },
-          null,
-          null,
-          Object {
-            "color": "#FF5B5B",
-          },
-          null,
-          null,
-          Object {
-            "textAlign": "left",
+            "alignItems": "center",
+            "paddingRight": 10,
           },
         ]
       }
     >
-      label
-    </Text>
+      <Image
+        resizeMode="contain"
+        source={
+          Object {
+            "uri": "IconInfo",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "height": 31.428571428571427,
+              "width": 31.428571428571427,
+            },
+            Array [
+              Object {
+                "tintColor": "#FF5B5B",
+              },
+            ],
+          ]
+        }
+      />
+    </View>
+    <View
+      style={
+        Array [
+          Object {
+            "flex": 1,
+            "paddingVertical": 10,
+          },
+        ]
+      }
+    >
+      <Text
+        style={
+          Array [
+            Array [
+              Object {
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 30,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#FF5B5B",
+              },
+              Object {
+                "textAlign": "left",
+              },
+            ],
+          ]
+        }
+      >
+        label
+      </Text>
+    </View>
   </View>
 </View>
 `;
@@ -292,7 +300,6 @@ exports[`[InfoMessage] should render with icon Info 1`] = `
         "alignItems": "center",
         "alignSelf": "stretch",
         "borderRadius": 15,
-        "flexDirection": "row",
         "paddingHorizontal": 20,
         "paddingVertical": 10,
       },
@@ -302,82 +309,82 @@ exports[`[InfoMessage] should render with icon Info 1`] = `
         "borderColor": "#3052FF",
         "tintColor": "#3052FF",
       },
-      null,
-      null,
-      null,
-      null,
     ]
   }
 >
   <View
     style={
-      Array [
-        Object {
-          "alignItems": "center",
-          "paddingRight": 10,
-        },
-      ]
+      Object {
+        "alignItems": "center",
+        "alignSelf": "stretch",
+        "flexDirection": "row",
+      }
     }
   >
-    <Image
-      resizeMode="contain"
-      source={
-        Object {
-          "uri": "IconInfo",
-        }
-      }
+    <View
       style={
         Array [
           Object {
-            "height": 31.428571428571427,
-            "width": 31.428571428571427,
-          },
-          Array [
-            Object {
-              "tintColor": "#3052FF",
-            },
-            null,
-            null,
-            null,
-            null,
-          ],
-        ]
-      }
-    />
-  </View>
-  <View
-    style={
-      Array [
-        Object {
-          "flex": 1,
-          "paddingVertical": 10,
-        },
-      ]
-    }
-  >
-    <Text
-      style={
-        Array [
-          Object {
-            "fontFamily": "ProximaNova-Bold",
-            "fontSize": 30,
-            "textAlign": "center",
-          },
-          Object {
-            "color": "#3052FF",
-          },
-          null,
-          null,
-          null,
-          null,
-          Object {
-            "textAlign": "left",
+            "alignItems": "center",
+            "paddingRight": 10,
           },
         ]
       }
     >
-      label
-    </Text>
+      <Image
+        resizeMode="contain"
+        source={
+          Object {
+            "uri": "IconInfo",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "height": 31.428571428571427,
+              "width": 31.428571428571427,
+            },
+            Array [
+              Object {
+                "tintColor": "#3052FF",
+              },
+            ],
+          ]
+        }
+      />
+    </View>
+    <View
+      style={
+        Array [
+          Object {
+            "flex": 1,
+            "paddingVertical": 10,
+          },
+        ]
+      }
+    >
+      <Text
+        style={
+          Array [
+            Array [
+              Object {
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 30,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#3052FF",
+              },
+              Object {
+                "textAlign": "left",
+              },
+            ],
+          ]
+        }
+      >
+        label
+      </Text>
+    </View>
   </View>
 </View>
 `;
@@ -390,92 +397,91 @@ exports[`[InfoMessage] should render with icon Warning 1`] = `
         "alignItems": "center",
         "alignSelf": "stretch",
         "borderRadius": 15,
-        "flexDirection": "row",
         "paddingHorizontal": 20,
         "paddingVertical": 10,
       },
       undefined,
-      null,
       Object {
         "backgroundColor": "rgba(248,191,76,0.06)",
         "borderColor": "#F8BF4C",
         "tintColor": "#F8BF4C",
       },
-      null,
-      null,
-      null,
     ]
   }
 >
   <View
     style={
-      Array [
-        Object {
-          "alignItems": "center",
-          "paddingRight": 10,
-        },
-      ]
+      Object {
+        "alignItems": "center",
+        "alignSelf": "stretch",
+        "flexDirection": "row",
+      }
     }
   >
-    <Image
-      resizeMode="contain"
-      source={
-        Object {
-          "uri": "IconInfo",
-        }
-      }
+    <View
       style={
         Array [
           Object {
-            "height": 31.428571428571427,
-            "width": 31.428571428571427,
-          },
-          Array [
-            null,
-            Object {
-              "tintColor": "#F8BF4C",
-            },
-            null,
-            null,
-            null,
-          ],
-        ]
-      }
-    />
-  </View>
-  <View
-    style={
-      Array [
-        Object {
-          "flex": 1,
-          "paddingVertical": 10,
-        },
-      ]
-    }
-  >
-    <Text
-      style={
-        Array [
-          Object {
-            "fontFamily": "ProximaNova-Bold",
-            "fontSize": 30,
-            "textAlign": "center",
-          },
-          null,
-          Object {
-            "color": "#F8BF4C",
-          },
-          null,
-          null,
-          null,
-          Object {
-            "textAlign": "left",
+            "alignItems": "center",
+            "paddingRight": 10,
           },
         ]
       }
     >
-      label
-    </Text>
+      <Image
+        resizeMode="contain"
+        source={
+          Object {
+            "uri": "IconInfo",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "height": 31.428571428571427,
+              "width": 31.428571428571427,
+            },
+            Array [
+              Object {
+                "tintColor": "#F8BF4C",
+              },
+            ],
+          ]
+        }
+      />
+    </View>
+    <View
+      style={
+        Array [
+          Object {
+            "flex": 1,
+            "paddingVertical": 10,
+          },
+        ]
+      }
+    >
+      <Text
+        style={
+          Array [
+            Array [
+              Object {
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 30,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#F8BF4C",
+              },
+              Object {
+                "textAlign": "left",
+              },
+            ],
+          ]
+        }
+      >
+        label
+      </Text>
+    </View>
   </View>
 </View>
 `;
