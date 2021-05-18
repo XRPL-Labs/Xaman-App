@@ -13,6 +13,8 @@ import { Navigator } from '@common/helpers/navigator';
 import { GetAppVersionCode } from '@common/helpers/device';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
+import { Destination } from '@common/libs/ledger/parser/types';
+import { AccountInfoType } from '@common/helpers/resolver';
 
 import { AppScreens } from '@common/constants';
 
@@ -157,6 +159,22 @@ class XAppBrowserModal extends Component<Props, State> {
         }
     };
 
+    onDestinationSelect = (destination: Destination, info: AccountInfoType) => {
+        if (this.webView) {
+            this.webView.postMessage(
+                JSON.stringify({ method: 'selectDestination', destination, info, reason: 'SELECTED' }),
+            );
+        }
+    };
+
+    onDestinationClose = () => {
+        if (this.webView) {
+            this.webView.postMessage(
+                JSON.stringify({ method: 'selectDestination', destination: null, info: null, reason: 'USER_CLOSE' }),
+            );
+        }
+    };
+
     showScanner = () => {
         Navigator.showModal(
             AppScreens.Modal.Scan,
@@ -167,6 +185,13 @@ class XAppBrowserModal extends Component<Props, State> {
                 blackList: [StringType.XrplSecret, StringType.XummPairingToken],
             },
         );
+    };
+
+    showDestinationPicker = () => {
+        Navigator.showOverlay(AppScreens.Modal.DestinationPicker, {
+            onSelect: this.onDestinationSelect,
+            onClose: this.onDestinationClose,
+        });
     };
 
     launchVeriffKYC = async (data: any) => {
@@ -234,6 +259,9 @@ class XAppBrowserModal extends Component<Props, State> {
                 break;
             case 'scanQr':
                 this.showScanner();
+                break;
+            case 'selectDestination':
+                this.showDestinationPicker();
                 break;
             case 'close':
                 this.onClose(parsedData);
@@ -370,7 +398,7 @@ class XAppBrowserModal extends Component<Props, State> {
     renderXApp = () => {
         return (
             <WebView
-                ref={r => {
+                ref={(r) => {
                     this.webView = r;
                 }}
                 containerStyle={styles.webViewContainer}
@@ -419,7 +447,6 @@ class XAppBrowserModal extends Component<Props, State> {
                         ),
                     }}
                 />
-
                 {this.renderContent()}
             </View>
         );

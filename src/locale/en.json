@@ -37,6 +37,7 @@
     "request": "Request",
     "details": "Details",
     "recipient": "Recipient",
+    "destination": "Destination",
     "summary": "Summary",
     "submit": "Submit",
     "submitting": "Submitting",

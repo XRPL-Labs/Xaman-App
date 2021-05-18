@@ -38,6 +38,7 @@ const screens = {
         CurrencyPicker: 'modal.CurrencyPickerModal',
         Help: 'modal.Help',
         XAppBrowser: 'modal.XAppBrowser',
+        DestinationPicker: 'modal.DestinationPicker',
     },
     Overlay: {
         SwitchAccount: 'overlay.SwitchAccount',
