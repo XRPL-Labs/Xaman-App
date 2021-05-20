@@ -62,23 +62,21 @@ class SecurityStep extends Component<Props, State> {
                 <View style={[AppStyles.contentContainer, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <RadioButton
                         testID="passcode-radio-button"
-                        onPress={() => {
-                            this.onRadioButtonPress(EncryptionLevels.Passcode);
-                        }}
+                        onPress={this.onRadioButtonPress}
                         description={Localize.t('account.passcodeOptionDesc')}
                         labelSmall={Localize.t('account.signWithPasscode')}
                         label={Localize.t('global.standard')}
+                        value={EncryptionLevels.Passcode}
                         checked={account.encryptionLevel === EncryptionLevels.Passcode}
                     />
 
                     <RadioButton
                         testID="passphrase-radio-button"
-                        onPress={() => {
-                            this.onRadioButtonPress(EncryptionLevels.Passphrase);
-                        }}
+                        onPress={this.onRadioButtonPress}
                         description={Localize.t('account.passwordOptionDesc')}
                         labelSmall={Localize.t('account.signWithPassword')}
                         label={Localize.t('global.extraSecurity')}
+                        value={EncryptionLevels.Passphrase}
                         checked={account.encryptionLevel === EncryptionLevels.Passphrase}
                     />
                 </View>

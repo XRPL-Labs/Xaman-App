@@ -61,29 +61,26 @@ class SecretTypeStep extends Component<Props, State> {
                 <View style={[AppStyles.contentContainer, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <RadioButton
                         testID="secret-numbers-radio-button"
-                        onPress={() => {
-                            this.onRadioButtonPress(SecretTypes.SecretNumbers);
-                        }}
+                        onPress={this.onRadioButtonPress}
                         label={Localize.t('account.secretNumbers')}
+                        value={SecretTypes.SecretNumbers}
                         description={Localize.t('account.secretNumbersDesc')}
                         checked={secretType === SecretTypes.SecretNumbers}
                     />
 
                     <RadioButton
                         testID="family-seed-radio-button"
-                        onPress={() => {
-                            this.onRadioButtonPress(SecretTypes.FamilySeed);
-                        }}
+                        onPress={this.onRadioButtonPress}
                         label={Localize.t('account.familySeed')}
+                        value={SecretTypes.FamilySeed}
                         description={Localize.t('account.familySeedDesc')}
                         checked={secretType === SecretTypes.FamilySeed}
                     />
 
                     <RadioButton
                         testID="mnemonic-radio-button"
-                        onPress={() => {
-                            this.onRadioButtonPress(SecretTypes.Mnemonic);
-                        }}
+                        onPress={this.onRadioButtonPress}
+                        value={SecretTypes.Mnemonic}
                         label={Localize.t('account.mnemonic')}
                         description={Localize.t('account.mnemonicDesc')}
                         checked={secretType === SecretTypes.Mnemonic}

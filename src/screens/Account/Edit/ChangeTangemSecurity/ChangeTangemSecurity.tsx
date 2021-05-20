@@ -176,20 +176,18 @@ class ChangeTangemSecurityView extends Component<Props, State> {
                 <View style={[AppStyles.contentContainer, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <RadioButton
                         testID="long-tap-radio-button"
-                        onPress={() => {
-                            this.onSecurityChange(TangemSecurity.LongTap);
-                        }}
+                        onPress={this.onSecurityChange}
                         description={Localize.t('account.tangemLongTapExplain')}
                         label={Localize.t('global.longTap')}
+                        value={TangemSecurity.LongTap}
                         checked={chosenSecurity === TangemSecurity.LongTap}
                     />
                     <RadioButton
                         testID="passcode-radio-button"
-                        onPress={() => {
-                            this.onSecurityChange(TangemSecurity.Passcode);
-                        }}
+                        onPress={this.onSecurityChange}
                         description={Localize.t('account.tangemPasscodeExplain')}
                         label={Localize.t('global.passcode')}
+                        value={TangemSecurity.Passcode}
                         checked={chosenSecurity === TangemSecurity.Passcode}
                     />
                 </View>

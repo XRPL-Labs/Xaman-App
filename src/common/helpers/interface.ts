@@ -19,7 +19,7 @@ const ActionSheet = (options: any, callback: any) => {
     actionSheet.showActionSheetWithOptions({ ...defaultOptions, ...options }, callback);
 };
 
-const Prompt = (title: string, message: string, callbackOrButtons: any, options: any) => {
+const Prompt = (title: string, message: string, callbackOrButtons?: any, options?: any) => {
     if (options.type === 'default') {
         // no input needed
         Alert.alert(title, message, callbackOrButtons);

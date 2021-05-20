@@ -470,7 +470,7 @@ class HomeView extends Component<Props, State> {
                                     <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
                                         <Icon size={25} style={[styles.iconAccount]} name="IconAccount" />
                                         <View>
-                                            <Text style={[AppStyles.p]}>{a.label}</Text>
+                                            <Text style={[AppStyles.pbold]}>{a.label}</Text>
                                             <Text style={[AppStyles.subtext, AppStyles.mono, AppStyles.colorBlue]}>
                                                 {a.address}
                                             </Text>
