@@ -2,17 +2,12 @@ import StyleService from '@services/StyleService';
 
 /* Styles ==================================================================== */
 export default StyleService.create({
-    container: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '$white',
+    image: {
         borderRadius: 10,
     },
-    image: {},
     border: {
         borderColor: '$lightGrey',
         borderWidth: 1,
-        borderRadius: 10,
     },
     badgeContainer: {
         position: 'absolute',

@@ -1238,6 +1238,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         if (tx.Type === 'Payment') {
+            // rippling
             if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
                 if (balanceChanges?.sent) {
                     return (
@@ -1257,6 +1258,39 @@ class TransactionDetailsView extends Component<Props, State> {
                             <View style={[AppStyles.row, styles.amountContainer]}>
                                 {/*
                          // @ts-ignore */}
+                                <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                                <AmountText
+                                    value={props.value}
+                                    postfix={props.currency}
+                                    prefix={props.prefix}
+                                    style={[styles.amountText, props.color]}
+                                />
+                            </View>
+                        </View>
+                    );
+                }
+            }
+
+            // path paid with different currency
+            if (tx.Paths && tx.SendMax && tx.SendMax.currency !== tx.Amount.currency) {
+                if (balanceChanges?.sent) {
+                    return (
+                        <View style={styles.amountHeaderContainer}>
+                            <View style={[AppStyles.row, styles.amountContainerSmall]}>
+                                <AmountText
+                                    value={balanceChanges.sent.value}
+                                    postfix={balanceChanges.sent.currency}
+                                    style={[styles.amountTextSmall]}
+                                />
+                            </View>
+
+                            <Spacer />
+                            <Icon size={20} style={AppStyles.imgColorGrey} name="IconArrowDown" />
+                            <Spacer />
+
+                            <View style={[AppStyles.row, styles.amountContainer]}>
+                                {/*
+                        // @ts-ignore */}
                                 <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
                                 <AmountText
                                     value={props.value}

@@ -285,6 +285,10 @@ class Payment extends BaseTransaction {
         set(this, 'tx.InvoiceID', invoiceId);
     }
 
+    get Paths(): Array<any> {
+        return get(this, 'tx.Paths', undefined);
+    }
+
     BalanceChange(owner?: string) {
         if (!owner) {
             owner = this.Account.address;
