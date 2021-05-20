@@ -61,7 +61,7 @@ class PushNotificationsService extends EventEmitter {
                         }
                         return resolve();
                     })
-                    .catch(e => {
+                    .catch((e) => {
                         return reject(e);
                     });
             } catch (e) {
@@ -106,10 +106,10 @@ class PushNotificationsService extends EventEmitter {
     getToken = (): Promise<string> => {
         return messaging()
             .getToken()
-            .then(token => {
+            .then((token) => {
                 return token;
             })
-            .catch(e => {
+            .catch((e) => {
                 this.logger.error('Cannot get token from firebase', e);
                 return undefined;
             });
@@ -183,7 +183,7 @@ class PushNotificationsService extends EventEmitter {
         if (!payloadUUID) return;
 
         await Payload.from(payloadUUID, PayloadOrigin.PUSH_NOTIFICATION)
-            .then(payload => {
+            .then((payload) => {
                 // show review transaction screen
                 Navigator.showModal(
                     AppScreens.Modal.ReviewTransaction,
@@ -193,7 +193,7 @@ class PushNotificationsService extends EventEmitter {
                     },
                 );
             })
-            .catch(e => {
+            .catch((e) => {
                 Alert.alert(Localize.t('global.error'), e.message);
                 this.logger.error('Cannot fetch payload from backend', payloadUUID);
             });

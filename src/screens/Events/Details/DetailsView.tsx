@@ -160,15 +160,22 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
 
                 const { meta } = resp;
-                delete resp.meta;
 
-                const transaction = transactionFactory({ tx: resp, meta });
+                // cleanup
+                delete resp.meta;
+                // eslint-disable-next-line no-underscore-dangle
+                delete resp.__replyMs;
+                // eslint-disable-next-line no-underscore-dangle
+                delete resp.__command;
+                delete resp.inLedger;
+
+                const tx = transactionFactory({ tx: resp, meta });
 
                 this.setState(
                     {
-                        tx: transaction,
+                        tx,
                         isLoading: false,
-                        incomingTx: transaction.Destination?.address === account.address,
+                        incomingTx: tx?.Account?.address !== account.address,
                     },
                     this.loadDetails,
                 );
@@ -466,7 +473,12 @@ class TransactionDetailsView extends Component<Props, State> {
 
     onActionButtonPress = async (type: string) => {
         const { tx, incomingTx } = this.state;
-        const { account } = this.props;
+        const { account, asModal } = this.props;
+
+        // if details page is opened as modal the close it before doing any other action
+        if (asModal) {
+            await Navigator.dismissModal();
+        }
 
         // open the XApp
         if (type === 'OpenXapp') {
