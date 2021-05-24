@@ -111,9 +111,7 @@ class ExchangeView extends Component<Props, State> {
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
             if (this.ledgerExchange) {
-                this.ledgerExchange.initialize().then(() => {
-                    this.checkLiquidity();
-                });
+                this.ledgerExchange.initialize().then(this.checkLiquidity);
             }
         });
     }
@@ -175,11 +173,10 @@ class ExchangeView extends Component<Props, State> {
         this.setState(
             {
                 direction: direction === 'buy' ? 'sell' : 'buy',
-                isLoading: true,
+                amount: '',
+                liquidity: undefined,
             },
-            () => {
-                this.checkLiquidity();
-            },
+            this.checkLiquidity,
         );
     };
 
@@ -357,9 +354,7 @@ class ExchangeView extends Component<Props, State> {
             {
                 amount,
             },
-            () => {
-                this.checkLiquidity();
-            },
+            this.checkLiquidity,
         );
     };
 
@@ -376,6 +371,26 @@ class ExchangeView extends Component<Props, State> {
         }
 
         return availableBalance;
+    };
+
+    applyAllBalance = () => {
+        const { trustLine } = this.props;
+        const { direction, sourceAccount } = this.state;
+
+        let availableBalance = '0';
+
+        if (direction === 'sell') {
+            availableBalance = new BigNumber(sourceAccount.availableBalance).decimalPlaces(6).toString();
+        } else {
+            availableBalance = new BigNumber(trustLine.balance).decimalPlaces(8).toString();
+        }
+
+        this.setState(
+            {
+                amount: availableBalance,
+            },
+            this.checkLiquidity,
+        );
     };
 
     renderBottomContainer = () => {
@@ -444,23 +459,6 @@ class ExchangeView extends Component<Props, State> {
                 />
             </>
         );
-    };
-
-    applyAllBalance = () => {
-        const { trustLine } = this.props;
-        const { direction, sourceAccount } = this.state;
-
-        let availableBalance = '0';
-
-        if (direction === 'sell') {
-            availableBalance = new BigNumber(sourceAccount.availableBalance).decimalPlaces(6).toString();
-        } else {
-            availableBalance = new BigNumber(trustLine.balance).decimalPlaces(8).toString();
-        }
-
-        this.setState({
-            amount: availableBalance,
-        });
     };
 
     render() {
@@ -534,7 +532,6 @@ class ExchangeView extends Component<Props, State> {
                 />
                 <View style={[styles.contentContainer]}>
                     {/* From part */}
-
                     <View style={styles.fromContainer}>
                         <View style={AppStyles.row}>
                             <View style={[AppStyles.row, AppStyles.flex1]}>
