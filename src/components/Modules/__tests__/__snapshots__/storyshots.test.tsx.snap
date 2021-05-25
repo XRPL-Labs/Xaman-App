@@ -593,7 +593,9 @@ exports[`Storyshots Avatar Big 1`] = `
       }
       style={
         Array [
-          Object {},
+          Object {
+            "borderRadius": 10,
+          },
           Object {
             "height": 214.28571428571428,
             "width": 214.28571428571428,
@@ -628,7 +630,9 @@ exports[`Storyshots Avatar Original 1`] = `
       }
       style={
         Array [
-          Object {},
+          Object {
+            "borderRadius": 10,
+          },
           Object {
             "height": 85.71428571428571,
             "width": 85.71428571428571,
@@ -663,14 +667,15 @@ exports[`Storyshots Avatar With Border 1`] = `
       }
       style={
         Array [
-          Object {},
+          Object {
+            "borderRadius": 10,
+          },
           Object {
             "height": 85.71428571428571,
             "width": 85.71428571428571,
           },
           Object {
             "borderColor": "rgba(96,104,133,0.06)",
-            "borderRadius": 10,
             "borderWidth": 1,
           },
         ]
@@ -702,7 +707,9 @@ exports[`Storyshots Avatar badge 1`] = `
       }
       style={
         Array [
-          Object {},
+          Object {
+            "borderRadius": 10,
+          },
           Object {
             "height": 214.28571428571428,
             "width": 214.28571428571428,
@@ -776,7 +783,9 @@ exports[`Storyshots Avatar badge Color 1`] = `
       }
       style={
         Array [
-          Object {},
+          Object {
+            "borderRadius": 10,
+          },
           Object {
             "height": 214.28571428571428,
             "width": 214.28571428571428,
@@ -4167,7 +4176,9 @@ exports[`Storyshots RecipientElement Selected 1`] = `
           }
           style={
             Array [
-              Object {},
+              Object {
+                "borderRadius": 10,
+              },
               Object {
                 "height": 85.71428571428571,
                 "width": 85.71428571428571,
@@ -4330,7 +4341,9 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
           }
           style={
             Array [
-              Object {},
+              Object {
+                "borderRadius": 10,
+              },
               Object {
                 "height": 85.71428571428571,
                 "width": 85.71428571428571,
@@ -4489,7 +4502,9 @@ exports[`Storyshots RecipientElement default 1`] = `
           }
           style={
             Array [
-              Object {},
+              Object {
+                "borderRadius": 10,
+              },
               Object {
                 "height": 85.71428571428571,
                 "width": 85.71428571428571,
