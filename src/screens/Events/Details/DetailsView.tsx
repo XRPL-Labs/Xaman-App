@@ -517,7 +517,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         (l: any) => l.currency.currency === tx.Amount.currency && l.currency.issuer === tx.Amount.issuer,
                     );
                 }
-                Object.assign(params, { amount: tx.Amount.value, currency });
+                Object.assign(params, { amount: tx.DeliveredAmount?.value, currency });
             }
             Navigator.push(AppScreens.Transaction.Payment, {}, params);
             return;
@@ -1125,11 +1125,16 @@ class TransactionDetailsView extends Component<Props, State> {
                         });
                     }
                 } else {
+                    const amount = balanceChanges?.sent || balanceChanges?.received || tx.Amount;
+                    if (!incomingTx && balanceChanges?.sent?.currency === 'XRP' && amount !== tx.Amount) {
+                        amount.value -= Number(tx.Fee);
+                    }
+
                     Object.assign(props, {
                         color: incomingTx ? styles.incomingColor : styles.outgoingColor,
                         prefix: incomingTx ? '' : '-',
-                        value: tx.Amount.value,
-                        currency: tx.Amount.currency,
+                        value: amount.value,
+                        currency: amount.currency,
                     });
                 }
 

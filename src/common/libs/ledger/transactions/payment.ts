@@ -115,25 +115,42 @@ class Payment extends BaseTransaction {
         }
     }
 
-    // @ts-ignore
-    get Amount(): AmountType {
-        let amount = undefined as AmountType;
+    get DeliveredAmount(): AmountType {
+        let deliveredAmount = undefined as AmountType;
 
         if (has(this, ['meta', 'DeliveredAmount'])) {
-            amount = get(this, ['meta', 'DeliveredAmount']);
+            deliveredAmount = get(this, ['meta', 'DeliveredAmount']);
         } else {
-            amount = get(this, ['meta', 'delivered_amount']);
+            deliveredAmount = get(this, ['meta', 'delivered_amount']);
         }
 
         // the delivered_amount will be unavailable in old transactions
         // @ts-ignore
-        if (amount === 'unavailable') {
-            amount = undefined;
+        if (deliveredAmount === 'unavailable') {
+            deliveredAmount = undefined;
         }
 
-        if (!amount) {
-            amount = get(this, ['tx', 'Amount']);
+        if (isUndefined(deliveredAmount)) return undefined;
+
+        if (typeof deliveredAmount === 'string') {
+            return {
+                currency: 'XRP',
+                value: new Amount(deliveredAmount).dropsToXrp(),
+            };
         }
+
+        return {
+            currency: deliveredAmount.currency,
+            value: deliveredAmount.value && new Amount(deliveredAmount.value, false).toString(),
+            issuer: deliveredAmount.issuer,
+        };
+    }
+
+    // @ts-ignore
+    get Amount(): AmountType {
+        let amount = undefined as AmountType;
+
+        amount = get(this, ['tx', 'Amount']);
 
         if (isUndefined(amount)) return undefined;
 
