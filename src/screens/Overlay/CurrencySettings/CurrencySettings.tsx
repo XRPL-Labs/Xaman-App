@@ -524,7 +524,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                             </View>
                         </View>
 
-                        {trustLine.no_ripple === false && (
+                        {trustLine.no_ripple === false && !trustLine.obligation && (
                             <>
                                 <Spacer />
                                 <InfoMessage

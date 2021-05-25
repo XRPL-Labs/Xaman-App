@@ -52,7 +52,7 @@ class TrustLineItem extends PureComponent<Props> {
         const { line } = this.props;
 
         // show alert on top of avatar if rippling set
-        if (line.no_ripple === false) {
+        if (line.no_ripple === false && !line.obligation) {
             return (
                 <Avatar
                     border
