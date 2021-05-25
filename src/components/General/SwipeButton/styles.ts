@@ -22,6 +22,7 @@ const Styles = StyleService.create({
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.h5.size * 0.9,
         color: '$white',
+        paddingLeft: 20,
     },
     thumpContainer: {
         alignItems: 'flex-end',
@@ -32,7 +33,7 @@ const Styles = StyleService.create({
     iconContainer: {
         height: AppSizes.scale(45),
         borderRadius: AppSizes.scale(45) * 0.3,
-        backgroundColor: '$transparentBlue',
+        backgroundColor: '$transparentWhite',
         width: AppSizes.scale(45),
         justifyContent: 'center',
         alignItems: 'center',
