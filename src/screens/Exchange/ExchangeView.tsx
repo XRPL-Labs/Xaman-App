@@ -73,10 +73,11 @@ export interface State {
 class ExchangeView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Exchange;
 
-    timeout: any;
-    sequence: number;
-    ledgerExchange: LedgerExchange;
-    amountInput: React.RefObject<typeof AmountInput | null>;
+    private timeout: any;
+    private sequence: number;
+    private ledgerExchange: LedgerExchange;
+    private amountInput: React.RefObject<typeof AmountInput | null>;
+    private mounted: boolean;
 
     static options() {
         return {
@@ -106,9 +107,13 @@ class ExchangeView extends Component<Props, State> {
         this.sequence = 0;
 
         this.amountInput = React.createRef();
+
+        this.mounted = true;
     }
 
     componentDidMount() {
+        this.mounted = true;
+
         InteractionManager.runAfterInteractions(() => {
             if (this.ledgerExchange) {
                 this.ledgerExchange.initialize().then(this.checkLiquidity);
@@ -117,6 +122,8 @@ class ExchangeView extends Component<Props, State> {
     }
 
     componentWillUnmount() {
+        this.mounted = false;
+
         if (this.timeout) {
             clearTimeout(this.timeout);
         }
@@ -128,7 +135,7 @@ class ExchangeView extends Component<Props, State> {
         clearTimeout(this.timeout);
 
         this.timeout = setTimeout(() => {
-            if (!this.ledgerExchange) return;
+            if (!this.ledgerExchange || !this.mounted) return;
 
             // increase sequence
             this.sequence += 1;
@@ -143,16 +150,21 @@ class ExchangeView extends Component<Props, State> {
                 .getLiquidity(direction, Number(amount))
                 .then((res) => {
                     // this will make sure the latest call will apply
-                    if (sequence === this.sequence && res) {
+                    if (sequence === this.sequence && res && this.mounted) {
                         this.setState({
                             liquidity: res,
                         });
                     }
                 })
+                .catch(() => {
+                    // ignore
+                })
                 .finally(() => {
-                    this.setState({
-                        isLoading: false,
-                    });
+                    if (this.mounted) {
+                        this.setState({
+                            isLoading: false,
+                        });
+                    }
                 });
         }, 500);
     };

@@ -51,6 +51,7 @@ class CurrencySettingsModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.CurrencySettings;
     private animatedColor: Animated.Value;
     private animatedOpacity: Animated.Value;
+    private mounted: boolean;
 
     static options() {
         return {
@@ -72,9 +73,13 @@ class CurrencySettingsModal extends Component<Props, State> {
 
         this.animatedColor = new Animated.Value(0);
         this.animatedOpacity = new Animated.Value(0);
+
+        this.mounted = false;
     }
 
     componentDidMount() {
+        this.mounted = true;
+
         Animated.parallel([
             Animated.timing(this.animatedColor, {
                 toValue: 150,
@@ -89,6 +94,10 @@ class CurrencySettingsModal extends Component<Props, State> {
         ]).start();
 
         this.getLatestLineBalance();
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
     }
 
     dismiss = () => {
@@ -130,13 +139,15 @@ class CurrencySettingsModal extends Component<Props, State> {
                     if (line) {
                         const balance = new BigNumber(line.balance);
 
-                        this.setState(
-                            {
-                                latestLineBalance: balance.toNumber(),
-                                canRemove: balance.isLessThan(0.000000001),
-                            },
-                            resolve,
-                        );
+                        if (this.mounted) {
+                            this.setState(
+                                {
+                                    latestLineBalance: balance.toNumber(),
+                                    canRemove: balance.isLessThan(0.000000001),
+                                },
+                                resolve,
+                            );
+                        }
                     } else {
                         resolve();
                     }
