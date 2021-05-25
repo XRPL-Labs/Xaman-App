@@ -48,6 +48,7 @@ export const Images = {
     ImageUnknownTrustLine: buildImageSource('ImageUnknownTrustLine', 'image_unknown_trustline'),
     ImageUnknownNFT: buildImageSource('ImageUnknownNFT', 'image_unknown_nft'),
     ImageTriangle: buildImageSource('ImageTriangle', 'image_triangle'),
+    ImageSuccessCheckMark: buildImageSource('ImageSuccessCheckMark', 'image_success_check_mark'),
     // Xumm
     XummLogo: buildImageSource('XummLogo', 'xumm_logo'),
     XummLogoLight: buildImageSource('XummLogoLight', 'xumm_logo_light'),

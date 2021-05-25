@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Image } from 'react-native';
 
-import { Spacer, Icon } from '@components/General';
+import { Spacer, Icon, LoadingIndicator } from '@components/General';
 
 import { Images } from '@common/helpers/images';
 
@@ -62,7 +62,7 @@ class SubmittingStep extends Component<Props, State> {
                         )}
                     </View>
                     <View style={[AppStyles.flex2]}>
-                        <Image style={styles.loaderStyle} source={require('@common/assets/loader.gif')} />
+                        <LoadingIndicator size="large" />
                         <Spacer size={20} />
                         <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
                             {Localize.t('send.submittingToLedger')}

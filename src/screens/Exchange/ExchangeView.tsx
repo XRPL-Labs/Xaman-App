@@ -511,7 +511,7 @@ class ExchangeView extends Component<Props, State> {
                             )}
                         </View>
                         <View style={[AppStyles.flex2]}>
-                            <Image style={styles.loaderStyle} source={require('@common/assets/loader.gif')} />
+                            <LoadingIndicator size="large" />
                             <Spacer size={20} />
                             <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
                                 {Localize.t('send.submittingToLedger')}

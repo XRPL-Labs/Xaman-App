@@ -7,6 +7,7 @@ import { SafeAreaView, View, Text, Image } from 'react-native';
 
 import Clipboard from '@react-native-community/clipboard';
 
+import { Images } from '@common/helpers/images';
 import { Toast } from '@common/helpers/interface';
 
 // components
@@ -33,16 +34,19 @@ class ResultStep extends Component<Props, State> {
 
         return (
             <SafeAreaView testID="success-result-view" style={[styles.container, styles.containerSuccess]}>
-                <View style={[AppStyles.flex1, AppStyles.paddingSml]}>
-                    <Image style={styles.successImage} source={require('@common/assets/success.gif')} />
+                <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                    <Text style={[AppStyles.h3, AppStyles.strong, AppStyles.colorGreen, AppStyles.textCenterAligned]}>
+                        {Localize.t('send.transactionSubmittedSuccessfully')}
+                    </Text>
                     <Text
                         style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreen, AppStyles.textCenterAligned]}
                     >
                         {getTransactionLabel()}
                     </Text>
-                    <Text style={[AppStyles.h4, AppStyles.strong, AppStyles.colorGreen, AppStyles.textCenterAligned]}>
-                        {Localize.t('send.transactionSubmittedSuccessfully')}
-                    </Text>
+                </View>
+
+                <View style={[AppStyles.flex2]}>
+                    <Image style={styles.successImage} source={Images.ImageSuccessCheckMark} />
                 </View>
 
                 <Footer style={[]}>
@@ -75,7 +79,7 @@ class ResultStep extends Component<Props, State> {
                     <View style={styles.detailsCard}>
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}:</Text>
                         <Spacer />
-                        <Text style={[AppStyles.p, AppStyles.monoBold]}>{transaction.TransactionResult.code}</Text>
+                        <Text style={[AppStyles.p, AppStyles.monoBold]}>{transaction.TransactionResult?.code}</Text>
 
                         <Spacer />
                         <View style={AppStyles.hr} />
@@ -83,7 +87,7 @@ class ResultStep extends Component<Props, State> {
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
                         <Spacer />
                         <Text style={[AppStyles.subtext]}>
-                            {transaction.TransactionResult.message || 'No Description'}
+                            {transaction.TransactionResult?.message || 'No Description'}
                         </Text>
 
                         <Spacer size={50} />
@@ -95,7 +99,7 @@ class ResultStep extends Component<Props, State> {
                             style={AppStyles.stretchSelf}
                             onPress={() => {
                                 Clipboard.setString(
-                                    transaction.TransactionResult.message || transaction.TransactionResult.code,
+                                    transaction.TransactionResult?.message || transaction.TransactionResult?.code,
                                 );
                                 Toast(Localize.t('send.resultCopiedToClipboard'));
                             }}

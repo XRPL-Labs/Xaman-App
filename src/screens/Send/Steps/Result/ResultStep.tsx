@@ -7,6 +7,7 @@ import { SafeAreaView, View, Text, Image, TouchableWithoutFeedback, LayoutAnimat
 
 import Clipboard from '@react-native-community/clipboard';
 
+import { Images } from '@common/helpers/images';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -151,7 +152,7 @@ class ResultStep extends Component<Props, State> {
                         this.renderDetailsCard()
                     ) : (
                         <TouchableWithoutFeedback onPress={this.showDetailsCard}>
-                            <Image style={styles.successImage} source={require('@common/assets/success.gif')} />
+                            <Image style={styles.successImage} source={Images.ImageSuccessCheckMark} />
                         </TouchableWithoutFeedback>
                     )}
                 </View>

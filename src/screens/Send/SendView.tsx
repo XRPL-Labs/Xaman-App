@@ -133,14 +133,14 @@ class SendView extends Component<Props, State> {
         this.changeStep(Steps.Submitting);
 
         // submit payment to the ledger
-        payment.submit().then(submitResult => {
+        payment.submit().then((submitResult) => {
             if (submitResult.success) {
                 this.setState(
                     {
                         currentStep: Steps.Verifying,
                     },
                     () => {
-                        payment.verify().then(result => {
+                        payment.verify().then((result) => {
                             if (coreSettings.hapticFeedback) {
                                 if (result.success) {
                                     VibrateHapticFeedback('notificationSuccess');
