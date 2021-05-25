@@ -8,6 +8,7 @@ import EventEmitter from 'events';
 import { Alert, NativeModules } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
+import { utils } from 'xrpl-accountlib';
 
 import { AccountRepository } from '@store/repositories';
 
@@ -230,15 +231,35 @@ class PushNotificationsService extends EventEmitter {
         }, delay);
     };
 
-    handleOpenTx = (notification: any) => {
+    handleOpenTx = async (notification: any) => {
         const hash = get(notification, ['data', 'tx']);
         const address = get(notification, ['data', 'account']);
+
+        // validate inputs
+        if (!utils.isValidAddress(address) || !new RegExp('^[A-F0-9]{64}$', 'i').test(hash)) return;
 
         // check if account exist in xumm
         const account = AccountRepository.findOne({ address });
         if (!account) return;
 
-        Navigator.showModal(AppScreens.Transaction.Details, {}, { hash, account, asModal: true });
+        let delay = 0;
+
+        // if already in transaction details and modal then close it
+        // in  rare case if user is already in transaction details screen then
+        // the screen is not modal so xumm will ignore showing the tx details screen
+        if (NavigationService.getCurrentScreen() === AppScreens.Transaction.Details) {
+            try {
+                await Navigator.dismissModal();
+            } catch {
+                // ignore
+            }
+            // looks like a bug in navigation library, need to add a delay before showing the modal
+            delay = 300;
+        }
+
+        setTimeout(() => {
+            Navigator.showModal(AppScreens.Transaction.Details, {}, { hash, account, asModal: true });
+        }, delay);
     };
 
     /* Handle notifications when app is open from the notification */
