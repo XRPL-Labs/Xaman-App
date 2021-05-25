@@ -28,7 +28,7 @@ const Prompt = (title: string, message: string, callbackOrButtons?: any, options
 
         // platform === ios
         if (Platform.OS === 'ios') {
-            Alert.prompt('title', message, callbackOrButtons, options.type, options.defaultValue, options.keyboardType);
+            Alert.prompt(title, message, callbackOrButtons, options.type, options.defaultValue, options.keyboardType);
             return;
         }
 
