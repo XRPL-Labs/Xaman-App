@@ -123,8 +123,8 @@ class CurrencySettingsModal extends Component<Props, State> {
     getLatestLineBalance = (): Promise<void> => {
         const { account, trustLine } = this.props;
 
-        // ignore obligation lines
-        if (trustLine.obligation) return Promise.resolve();
+        // ignore obligation lines or NFT
+        if (trustLine.obligation || trustLine.isNFT) return Promise.resolve();
 
         return new Promise((resolve) => {
             return LedgerService.getAccountLines(account.address)
