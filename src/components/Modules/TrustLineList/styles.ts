@@ -5,6 +5,10 @@ export default StyleService.create({
     noTrustlineMessage: {
         marginTop: 10,
     },
+    trustLineInfoIcon: {
+        tintColor: '$grey',
+        marginRight: 5,
+    },
     headerContainer: {
         marginLeft: -15,
         marginRight: -15,
