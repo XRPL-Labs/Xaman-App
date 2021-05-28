@@ -1,7 +1,9 @@
 import moment from 'moment-timezone';
 
 import React, { PureComponent } from 'react';
-import { View, Text, SectionList } from 'react-native';
+import { View, Text, SectionList, RefreshControl } from 'react-native';
+
+import StyleService from '@services/StyleService';
 
 import { AccountSchema } from '@store/schemas/latest';
 
@@ -105,17 +107,15 @@ class EventsList extends PureComponent<Props> {
     };
 
     render() {
-        const { dataSource, isLoading, onRefresh, onEndReached, headerComponent } = this.props;
+        const { isLoading, onRefresh, dataSource, onEndReached, headerComponent } = this.props;
 
         return (
             <SectionList
                 style={styles.sectionList}
                 contentContainerStyle={[styles.sectionListContainer]}
                 sections={dataSource}
-                onRefresh={onRefresh}
                 renderItem={this.renderItem}
                 renderSectionHeader={this.renderSectionHeader}
-                refreshing={isLoading}
                 keyExtractor={(item) => item.Hash || item.meta?.uuid || item.Index}
                 ListEmptyComponent={this.listEmpty}
                 onEndReached={onEndReached}
@@ -125,6 +125,14 @@ class EventsList extends PureComponent<Props> {
                 maxToRenderPerBatch={10}
                 initialNumToRender={20}
                 ListHeaderComponent={headerComponent}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isLoading}
+                        onRefresh={onRefresh}
+                        tintColor={StyleService.value('$contrast')}
+                    />
+                }
+                indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
             />
         );
     }

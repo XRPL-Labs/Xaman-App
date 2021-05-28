@@ -5,18 +5,12 @@ import { AppFonts, AppSizes } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     container: {
-        left: 0,
-        right: 0,
         flexDirection: 'row',
         alignItems: 'center',
         height: AppSizes.heightPercentageToDP(7.5),
-    },
-    row: {
-        paddingTop: 10,
-    },
-    touchHighlight: {
         borderRadius: 10,
         paddingLeft: 5,
+        paddingRight: 5,
         marginLeft: -5,
         marginRight: -5,
     },
