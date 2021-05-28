@@ -188,10 +188,18 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     showDestinationPicker = () => {
-        Navigator.showOverlay(AppScreens.Modal.DestinationPicker, {
-            onSelect: this.onDestinationSelect,
-            onClose: this.onDestinationClose,
-        });
+        Navigator.showModal(
+            AppScreens.Modal.DestinationPicker,
+            {
+                modal: {
+                    swipeToDismiss: false,
+                },
+            },
+            {
+                onSelect: this.onDestinationSelect,
+                onClose: this.onDestinationClose,
+            },
+        );
     };
 
     launchVeriffKYC = async (data: any) => {

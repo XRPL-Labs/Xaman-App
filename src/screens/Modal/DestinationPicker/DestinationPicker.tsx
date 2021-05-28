@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { Results } from 'realm';
 import { isEmpty, flatMap, get, uniqBy, toNumber } from 'lodash';
-import { View, Text, SectionList } from 'react-native';
+import { View, Text, SectionList, BackHandler } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
 import { AccountRepository, ContactRepository } from '@store/repositories';
@@ -21,14 +21,14 @@ import { NormalizeDestination } from '@common/utils/codec';
 import { BackendService } from '@services';
 
 // components
-import { Header, Button, TextInput, Footer, InfoMessage, LoadingIndicator } from '@components/General';
+import { Button, TextInput, Footer, InfoMessage, LoadingIndicator } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 // locale
 import Localize from '@locale';
 
 // style
-import { AppStyles } from '@theme';
+import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -51,8 +51,9 @@ export interface State {
 class DestinationPicker extends Component<Props, State> {
     static screenName = AppScreens.Modal.DestinationPicker;
 
-    lookupTimeout: any;
-    sequence: number;
+    private lookupTimeout: any;
+    private sequence: number;
+    private backHandler: any;
 
     constructor(props: Props) {
         super(props);
@@ -74,6 +75,15 @@ class DestinationPicker extends Component<Props, State> {
 
     componentDidMount() {
         this.setDefaultDataSource();
+
+        // prevent from hardware back in android devices
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
+    }
+
+    componentWillUnmount() {
+        if (this.backHandler) {
+            this.backHandler.remove();
+        }
     }
 
     doAccountLookUp = async (result: XrplDestination) => {
@@ -573,7 +583,10 @@ class DestinationPicker extends Component<Props, State> {
 
         return (
             <View testID="destination-picker-modal" style={[AppStyles.container]}>
-                <Header centerComponent={{ text: Localize.t('global.destination') }} />
+                <View style={[AppStyles.centerAligned, { paddingVertical: AppSizes.padding }]}>
+                    <Text style={AppStyles.h5}>{Localize.t('global.destination')}</Text>
+                </View>
+
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal]}>
                     <View style={[AppStyles.row]}>
                         <TextInput
