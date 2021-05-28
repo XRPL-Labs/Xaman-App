@@ -4,7 +4,7 @@
 
 import moment from 'moment-timezone';
 
-import { UIManager, Platform, Alert, Text, TextInput } from 'react-native';
+import { UIManager, I18nManager, Platform, Alert, Text, TextInput } from 'react-native';
 
 import messaging from '@react-native-firebase/messaging';
 import { Navigation } from 'react-native-navigation';
@@ -166,7 +166,7 @@ class Application {
             try {
                 const coreSettings = CoreRepository.getSettings();
                 const servicesPromise = [] as Array<Promise<any>>;
-                Object.keys(services).map(key => {
+                Object.keys(services).map((key) => {
                     // @ts-ignore
                     const service = services[key];
                     if (typeof service.initialize === 'function') {
@@ -179,7 +179,7 @@ class Application {
                     .then(() => {
                         resolve();
                     })
-                    .catch(e => {
+                    .catch((e) => {
                         this.logger.error('initServices Error:', e);
                         reject(e);
                     });
@@ -225,7 +225,7 @@ class Application {
                 const screens = require('./screens');
 
                 // register
-                Object.keys(screens).map(key => {
+                Object.keys(screens).map((key) => {
                     // @ts-ignore
                     const Screen = screens[key];
                     Navigation.registerComponent(Screen.screenName, () => Screen);
@@ -272,6 +272,9 @@ class Application {
                         return true;
                     });
                 }
+
+                // disable RTL as we don't support it right now
+                I18nManager.allowRTL(false);
 
                 // set timezone
                 await GetDeviceTimeZone()
