@@ -1125,11 +1125,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         });
                     }
                 } else {
-                    const amount = balanceChanges?.sent || balanceChanges?.received || tx.Amount;
-                    if (!incomingTx && balanceChanges?.sent?.currency === 'XRP' && amount !== tx.Amount) {
-                        amount.value -= Number(tx.Fee);
-                    }
-
+                    const amount = tx.DeliveredAmount || tx.Amount;
                     Object.assign(props, {
                         color: incomingTx ? styles.incomingColor : styles.outgoingColor,
                         prefix: incomingTx ? '' : '-',

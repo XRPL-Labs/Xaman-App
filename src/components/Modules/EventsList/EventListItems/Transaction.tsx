@@ -355,11 +355,7 @@ class TransactionTemplate extends Component<Props, State> {
                 }
             }
 
-            const amount = balanceChanges?.sent || balanceChanges?.received || item.Amount;
-            if (!incoming && balanceChanges?.sent?.currency === 'XRP' && amount !== item.Amount) {
-                amount.value -= Number(item.Fee);
-            }
-
+            const amount = item.DeliveredAmount || item.Amount;
             return (
                 <AmountText
                     value={amount.value}
