@@ -203,7 +203,7 @@ class VaultModal extends Component<Props, State> {
         let signerInstance = AccountLib.derive.privatekey(privateKey);
         // check if multi sign
         if (multiSign) {
-            signerInstance = signer.signAs(signer.address);
+            signerInstance = signerInstance.signAs(signer.address);
         }
 
         let signedObject = AccountLib.sign(txJson, signerInstance) as SignedObjectType;
