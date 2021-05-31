@@ -197,6 +197,34 @@ class AccountRepository extends BaseRepository {
         return true;
     };
 
+    getNewDefaultAccount = (ignoreAccount?: string) => {
+        let newDefaultAccount;
+
+        let accounts = this.getAccounts().toJSON();
+
+        if (accounts.length === 0) return undefined;
+
+        if (ignoreAccount) {
+            accounts = filter(accounts, (a) => a.address !== ignoreAccount);
+        }
+
+        // first try to find the first not hidden account
+        newDefaultAccount = first(filter(accounts, (a) => a.hidden === false));
+
+        // if no not hidden account is available then choose one can account and make it visible
+        if (!newDefaultAccount) {
+            newDefaultAccount = first(accounts);
+            if (newDefaultAccount && newDefaultAccount.hidden) {
+                this.update({
+                    address: newDefaultAccount.address,
+                    hidden: false,
+                });
+            }
+        }
+
+        return newDefaultAccount;
+    };
+
     /**
      * Change account visibility
      */
@@ -214,7 +242,7 @@ class AccountRepository extends BaseRepository {
 
                 // if account is default change default to another account
                 if (account.default) {
-                    const newDefaultAccount = first(filter(allAccounts, (a) => a.address !== account.address));
+                    const newDefaultAccount = this.getNewDefaultAccount(account.address);
                     if (newDefaultAccount) {
                         this.setDefaultAccount(newDefaultAccount.address);
                     }
@@ -245,20 +273,10 @@ class AccountRepository extends BaseRepository {
         // remove the account
         await this.deleteBy('address', account.address);
 
-        // if account is default then change default account to closest account
+        // if account is default then set new default account
         if (isDefault) {
-            const accounts = this.getAccounts();
-
-            if (accounts.length > 0) {
-                const newDefaultAccount = first(accounts);
-                if (newDefaultAccount.hidden) {
-                    this.update({
-                        address: newDefaultAccount.address,
-                        hidden: false,
-                    });
-                }
-                this.setDefaultAccount(newDefaultAccount.address);
-            }
+            const newDefaultAccount = this.getNewDefaultAccount();
+            this.setDefaultAccount(newDefaultAccount.address);
         }
 
         // emit the account remove event
