@@ -275,7 +275,8 @@
     "moonlight": "Moonlight",
     "royal": "Royal",
     "theAmountIsTooSmallToDisplay": "The amount is too small to be displayed:\r\n%{amount}",
-    "moreInfo": "More Info"
+    "moreInfo": "More Info",
+    "xAppWantsToOpenURLNotice": "'%{xapp}' xApp wants to open this URL.\n\n%{url}"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",

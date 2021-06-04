@@ -4,13 +4,14 @@
 
 import { has, get, assign, toUpper } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, BackHandler, Alert, InteractionManager } from 'react-native';
+import { View, Text, BackHandler, Alert, InteractionManager, Linking } from 'react-native';
 import VeriffSdk from '@veriff/react-native-sdk';
 import { WebView } from 'react-native-webview';
 import { StringType } from 'xumm-string-decode';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetAppVersionCode } from '@common/helpers/device';
+import { Prompt } from '@common/helpers/interface';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { Destination } from '@common/libs/ledger/parser/types';
@@ -60,6 +61,7 @@ export enum XAppMethods {
     PayloadResolved = 'payloadResolved',
     KycVeriff = 'kycVeriff',
     XAppNavigate = 'xAppNavigate',
+    OpenBrowser = 'openBrowser',
 }
 
 /* Component ==================================================================== */
@@ -238,6 +240,42 @@ class XAppBrowserModal extends Component<Props, State> {
         );
     };
 
+    openBrowserLink = (data: any) => {
+        const { title } = this.state;
+
+        const { url } = data;
+
+        if (!url) return;
+
+        // eslint-disable-next-line no-control-regex
+        const urlRegex = new RegExp('^https://[a-zA-Z0-9][a-zA-Z0-9-.]+[a-zA-Z0-9].[a-zA-Z]{1,}[?/]{0,3}[^\r\n\t]+');
+
+        // url should be only https and contains only a domain url
+        if (!urlRegex.test(url)) return;
+
+        Prompt(
+            Localize.t('global.notice'),
+            Localize.t('global.xAppWantsToOpenURLNotice', { xapp: title, url }),
+            [
+                { text: Localize.t('global.cancel') },
+                {
+                    text: 'Open',
+                    onPress: () => {
+                        Linking.canOpenURL(url).then((supported) => {
+                            if (supported) {
+                                Linking.openURL(url);
+                            } else {
+                                Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
+                            }
+                        });
+                    },
+                    style: 'destructive',
+                },
+            ],
+            { type: 'default' },
+        );
+    };
+
     onMessage = (event: any) => {
         const { data } = event.nativeEvent;
 
@@ -273,6 +311,9 @@ class XAppBrowserModal extends Component<Props, State> {
                 break;
             case XAppMethods.Close:
                 this.onClose(parsedData);
+                break;
+            case XAppMethods.OpenBrowser:
+                this.openBrowserLink(parsedData);
                 break;
             default:
                 break;
