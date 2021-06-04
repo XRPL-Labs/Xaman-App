@@ -52,6 +52,16 @@ export interface State {
     appVersionCode: string;
 }
 
+export enum XAppMethods {
+    SelectDestination = 'selectDestination',
+    ScanQr = 'scanQr',
+    Close = 'close',
+    OpenSignRequest = 'openSignRequest',
+    PayloadResolved = 'payloadResolved',
+    KycVeriff = 'kycVeriff',
+    XAppNavigate = 'xAppNavigate',
+}
+
 /* Component ==================================================================== */
 class XAppBrowserModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.XAppBrowser;
@@ -103,16 +113,12 @@ class XAppBrowserModal extends Component<Props, State> {
         return true;
     };
 
-    onPayloadResolve = () => {
-        if (this.webView) {
-            this.webView.postMessage(JSON.stringify({ method: 'payloadResolved', reason: 'SIGNED' }));
-        }
-    };
-
-    onPayloadDecline = () => {
-        if (this.webView) {
-            this.webView.postMessage(JSON.stringify({ method: 'payloadResolved', reason: 'DECLINED' }));
-        }
+    sendEvent = (event: any) => {
+        setTimeout(() => {
+            if (this.webView) {
+                this.webView.postMessage(JSON.stringify(event));
+            }
+        }, 250);
     };
 
     handleSignRequest = async (data: any) => {
@@ -147,32 +153,28 @@ class XAppBrowserModal extends Component<Props, State> {
         }
     };
 
+    onPayloadResolve = () => {
+        this.sendEvent({ method: XAppMethods.PayloadResolved, reason: 'SIGNED' });
+    };
+
+    onPayloadDecline = () => {
+        this.sendEvent({ method: XAppMethods.PayloadResolved, reason: 'DECLINED' });
+    };
+
     onScannerRead = (data: string) => {
-        if (this.webView) {
-            this.webView.postMessage(JSON.stringify({ method: 'scanQr', qrContents: data, reason: 'SCANNED' }));
-        }
+        this.sendEvent({ method: XAppMethods.ScanQr, qrContents: data, reason: 'SCANNED' });
     };
 
     onScannerClose = () => {
-        if (this.webView) {
-            this.webView.postMessage(JSON.stringify({ method: 'scanQr', qrContents: null, reason: 'USER_CLOSE' }));
-        }
+        this.sendEvent({ method: XAppMethods.ScanQr, qrContents: null, reason: 'USER_CLOSE' });
     };
 
     onDestinationSelect = (destination: Destination, info: AccountInfoType) => {
-        if (this.webView) {
-            this.webView.postMessage(
-                JSON.stringify({ method: 'selectDestination', destination, info, reason: 'SELECTED' }),
-            );
-        }
+        this.sendEvent({ method: XAppMethods.SelectDestination, destination, info, reason: 'SELECTED' });
     };
 
     onDestinationClose = () => {
-        if (this.webView) {
-            this.webView.postMessage(
-                JSON.stringify({ method: 'selectDestination', destination: null, info: null, reason: 'USER_CLOSE' }),
-            );
-        }
+        this.sendEvent({ method: XAppMethods.SelectDestination, destination: null, info: null, reason: 'USER_CLOSE' });
     };
 
     showScanner = () => {
@@ -216,9 +218,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 sessionUrl,
             });
             // pass the result to the xApp
-            if (this.webView) {
-                this.webView.postMessage(JSON.stringify({ method: 'kycVeriff', result }));
-            }
+            this.sendEvent({ method: XAppMethods.KycVeriff, result });
         } catch {
             // ignore
         }
@@ -256,22 +256,22 @@ class XAppBrowserModal extends Component<Props, State> {
         }
 
         switch (get(parsedData, 'command')) {
-            case 'xAppNavigate':
+            case XAppMethods.XAppNavigate:
                 this.navigateTo(parsedData);
                 break;
-            case 'kycVeriff':
+            case XAppMethods.KycVeriff:
                 this.launchVeriffKYC(parsedData);
                 break;
-            case 'openSignRequest':
+            case XAppMethods.OpenSignRequest:
                 this.handleSignRequest(parsedData);
                 break;
-            case 'scanQr':
+            case XAppMethods.ScanQr:
                 this.showScanner();
                 break;
-            case 'selectDestination':
+            case XAppMethods.SelectDestination:
                 this.showDestinationPicker();
                 break;
-            case 'close':
+            case XAppMethods.Close:
                 this.onClose(parsedData);
                 break;
             default:
