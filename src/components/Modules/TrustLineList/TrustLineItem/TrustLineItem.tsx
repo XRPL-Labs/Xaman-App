@@ -35,7 +35,11 @@ class TrustLineItem extends PureComponent<Props> {
 
         if (selfIssued) return Localize.t('home.selfIssued');
 
-        return `${line.counterParty.name} ${NormalizeCurrencyCode(line.currency.currency)}`;
+        if (line.currency.name) {
+            return `${line.counterParty.name} ${NormalizeCurrencyCode(line.currency.currency)}`;
+        }
+
+        return `${line.counterParty.name}`;
     };
 
     getCurrencyName = () => {
@@ -106,8 +110,12 @@ class TrustLineItem extends PureComponent<Props> {
                 <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[styles.brandAvatarContainer]}>{this.getAvatar()}</View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
-                        <Text style={[styles.currencyItemLabelSmall]}>{this.getCurrencyName()}</Text>
-                        <Text style={[styles.issuerLabel]}>{this.getIssuerLabel()}</Text>
+                        <Text numberOfLines={1} style={[styles.currencyItemLabelSmall]}>
+                            {this.getCurrencyName()}
+                        </Text>
+                        <Text numberOfLines={1} style={[styles.issuerLabel]}>
+                            {this.getIssuerLabel()}
+                        </Text>
                     </View>
                 </View>
                 <View
