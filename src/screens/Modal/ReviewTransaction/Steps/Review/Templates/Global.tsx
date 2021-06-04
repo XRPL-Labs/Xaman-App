@@ -39,22 +39,20 @@ class GlobalTemplate extends Component<Props, State> {
         const { transaction, canOverride } = this.props;
 
         try {
-            const { Fee } = LedgerService.getLedgerStatus();
-
-            const minTransactionFee = new Amount(transaction.calculateFee(Fee)).dropsToXrp();
-
             // override the fee if
             // fee not set
-            // the min transaction fee is more than set fee
             // the fee is more than enough
 
-            const shouldOverrideFee =
-                typeof transaction.Fee === 'undefined' ||
-                Number(minTransactionFee) > Number(transaction.Fee) ||
-                Number(transaction.Fee) > 0.1;
+            const shouldOverrideFee = typeof transaction.Fee === 'undefined' || Number(transaction.Fee) > 0.1;
 
             // ignore overriding fee if multi sign
             if (shouldOverrideFee && canOverride) {
+                // fetch current network fee
+                const { Fee } = LedgerService.getLedgerStatus();
+
+                // calculate min transaction fee base on transaction type
+                const minTransactionFee = new Amount(transaction.calculateFee(Fee)).dropsToXrp();
+
                 // set the min transaction fee
                 transaction.Fee = minTransactionFee;
 
@@ -119,14 +117,16 @@ class GlobalTemplate extends Component<Props, State> {
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.memo')}</Text>
                         <View style={[styles.contentBox]}>
-                            {transaction.Memos.map((m: any) => {
+                            {transaction.Memos.map((m: any, index: number) => {
                                 let memo = '';
                                 memo += m.type ? `${m.type}\n` : '';
                                 memo += m.format ? `${m.format}\n` : '';
                                 memo += m.data ? `${m.data}` : '';
                                 return (
                                     <>
-                                        <Text style={styles.value}>{memo}</Text>
+                                        <Text key={`memo-${index}`} style={styles.value}>
+                                            {memo}
+                                        </Text>
                                     </>
                                 );
                             })}
