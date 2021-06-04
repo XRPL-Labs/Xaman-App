@@ -517,7 +517,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 </View>
                             </View>
                             <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                                {trustLine.currency.avatar && (
+                                {!!trustLine.currency.avatar && (
                                     <Image style={styles.currencyAvatar} source={{ uri: trustLine.currency.avatar }} />
                                 )}
                                 <AmountText value={trustLine.balance} style={[AppStyles.pbold, AppStyles.monoBold]} />
