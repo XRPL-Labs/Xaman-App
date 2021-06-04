@@ -334,6 +334,7 @@ class XAppBrowserModal extends Component<Props, State> {
         const data = {
             version: appVersionCode,
             locale: Localize.getCurrentLocale(),
+            currency: coreSettings.currency,
             style: coreSettings.theme,
             nodetype: SocketService.chain,
         };
