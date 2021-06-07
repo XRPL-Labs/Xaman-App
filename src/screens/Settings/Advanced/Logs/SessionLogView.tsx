@@ -37,12 +37,6 @@ class SessionLogView extends Component<Props, State> {
         };
     }
 
-    navigationButtonPressed({ buttonId }: { buttonId: string }) {
-        if (buttonId === 'logMenu') {
-            this.showMenu();
-        }
-    }
-
     clear = () => {
         LoggerService.clearLogs();
         this.forceUpdate();
@@ -136,15 +130,11 @@ class SessionLogView extends Component<Props, State> {
                     centerComponent={{ text: Localize.t('settings.sessionLog') }}
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: () => {
-                            Navigator.pop();
-                        },
+                        onPress: () => Navigator.pop(),
                     }}
                     rightComponent={{
                         icon: 'IconMoreHorizontal',
-                        onPress: () => {
-                            this.showMenu();
-                        },
+                        onPress: this.showMenu,
                     }}
                 />
                 <FlatList
