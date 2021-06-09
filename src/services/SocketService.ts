@@ -3,7 +3,7 @@
  */
 import EventEmitter from 'events';
 import { Platform } from 'react-native';
-import RippledWsClient from 'rippled-ws-client';
+import { XrplClient, ConnectionState } from 'xrpl-client';
 
 import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
@@ -84,10 +84,10 @@ class SocketService extends EventEmitter {
     node: string;
     chain: NodeChain;
     connection: any;
-    connectionTimeout: number;
     origin: string;
     logger: any;
     status: SocketStateStatus;
+    shownErrorDialog: boolean;
     onEvent: (event: string, fn: any) => void;
     onceEvent: (event: string, fn: any) => void;
     offEvent: (event: string, fn: any) => void;
@@ -98,7 +98,7 @@ class SocketService extends EventEmitter {
         this.node = null;
         this.chain = null;
         this.connection = null;
-        this.connectionTimeout = 5;
+        this.shownErrorDialog = false;
         this.origin = `https://xumm.app/#${Platform.OS}/${GetAppReadableVersion()}`;
         this.status = SocketStateStatus.Disconnected;
         this.logger = LoggerService.createLogger('Socket');
@@ -250,10 +250,6 @@ class SocketService extends EventEmitter {
         }
     };
 
-    sendPayload = (payload: any) => {
-        return this.connection.send(payload);
-    };
-
     send = (
         payload:
             | ServerInfoPayload
@@ -266,45 +262,26 @@ class SocketService extends EventEmitter {
             | GatewayBalancesPayload
             | LedgerEntryPayload,
     ): any => {
-        return new Promise((resolve, reject) => {
-            // sent tracker
-            let sent = false;
-
-            if (this.status === SocketStateStatus.Connected) {
-                resolve(this.sendPayload(payload));
-                return;
-            }
-
-            const senderAfterConnect = () => {
-                sent = true;
-                resolve(this.sendPayload(payload));
-            };
-            // wait for the connection to be established
-            this.once('connect', senderAfterConnect);
-
-            // timeout sending
-            setTimeout(() => {
-                if (!sent) {
-                    this.removeListener('connect', senderAfterConnect);
-                    this.logger.error('Socket Sending Timeout', payload);
-                    reject(new Error('Socket Sending Timeout'));
-                }
-            }, 5000);
-        });
+        return this.connection.send(payload, { timeoutSeconds: 3 });
     };
 
     onError = (err: any) => {
         this.logger.error('Socket Error: ', err);
     };
 
-    onConnect = (Connection: any) => {
-        this.logger.debug(`Connected to XRPL  Node ${this.node}`);
-        this.connection = Connection;
+    onConnect = () => {
+        // fetch connected node from connection
+        const connectedNode = this.connection.getState().server.uri;
+
+        this.logger.debug(`Connected to XRPL  Node ${connectedNode}`);
+
+        // set node and connection
+        this.node = connectedNode;
 
         // change socket status
         this.status = SocketStateStatus.Connected;
         // emit on connect event
-        this.emit('connect', Connection);
+        this.emit('connect', this.connection);
     };
 
     onClose = () => {
@@ -312,51 +289,30 @@ class SocketService extends EventEmitter {
         this.logger.warn('Socket Closed');
     };
 
-    establish = (node: string) => {
-        return new Promise<void>((resolve, reject) => {
-            try {
-                new RippledWsClient(node, {
-                    Origin: this.origin,
-                    ConnectTimeout: this.connectionTimeout,
-                    MaxConnectTryCount: 1,
-                })
-                    .then((Connection: any) => {
-                        // apply connected node
-                        this.node = node;
+    onFail = () => {
+        if (!this.shownErrorDialog) {
+            this.logger.error('Tried all node, unable to connect');
+            this.showConnectionProblem();
+            this.shownErrorDialog = true;
+        }
+    };
 
-                        // emit on connect
-                        this.onConnect(Connection);
+    onStateChange = (state: ConnectionState) => {
+        const { online } = state;
 
-                        Connection.on('error', this.onError);
-                        // handle socket errors
-                        Connection.on('close', this.onClose);
-
-                        Connection.on('state', (connected: boolean) => {
-                            const reconnected = this.status === SocketStateStatus.Disconnected && connected;
-                            // update current state
-                            this.status = connected ? SocketStateStatus.Connected : SocketStateStatus.Disconnected;
-                            // if we are connecting again
-                            if (reconnected) {
-                                this.emit('connect', Connection);
-                            }
-                        });
-
-                        resolve();
-                    })
-                    .catch(() => {
-                        this.logger.error(`Unable to connect to node: ${node}`);
-                        reject();
-                    });
-            } catch (e) {
-                this.logger.error(`Unable to connect to node: ${node}`, e);
-                reject();
-            }
-        });
+        const reconnected = this.status === SocketStateStatus.Disconnected && online;
+        // update current state
+        this.status = online ? SocketStateStatus.Connected : SocketStateStatus.Disconnected;
+        // if we are connecting again
+        if (reconnected) {
+            this.emit('connect', this.connection);
+        }
     };
 
     connect = async () => {
         let nodes = [];
 
+        // load node's list base on selected node chain
         if (this.chain === NodeChain.Main) {
             nodes = AppConfig.nodes.main;
         } else {
@@ -368,20 +324,17 @@ class SocketService extends EventEmitter {
             return x === this.node ? -1 : y === this.node ? 1 : 0;
         });
 
-        // try to connect to the nodes in the list
-        for (let i = 0; i < nodes.length; i++) {
-            try {
-                await this.establish(nodes[i]);
-                // connected close the loop
-                break;
-            } catch {
-                // if this was the last one emit the max exceed event
-                if (i === nodes.length - 1) {
-                    this.logger.error('Tried all node, unable to connect');
-                    this.showConnectionProblem();
-                }
-            }
-        }
+        this.connection = new XrplClient(nodes, {
+            maxConnectionAttempts: 3,
+            assumeOfflineAfterSeconds: 9,
+            connectAttemptTimeoutSeconds: 3,
+        });
+
+        this.connection.on('online', this.onConnect);
+        this.connection.on('offline', this.onClose);
+        this.connection.on('round', this.onFail);
+
+        await this.connection.ready();
     };
 }
 
