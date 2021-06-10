@@ -12681,13 +12681,6 @@ ripple-secret-codec@^1.0.2:
     ripple-hashes latest
     ripple-keypairs latest
 
-rippled-ws-client@1.6.4:
-  version "1.6.4"
-  resolved "https://registry.yarnpkg.com/rippled-ws-client/-/rippled-ws-client-1.6.4.tgz#c2a5ef15581c668b76f2eb14a1cd93bb4edec95f"
-  integrity sha512-J3HuizP51xVtIHE287ibKzJZjOz5xAyZBZlQBlrsR5EK8AKymHJq7VjL4aIC+9SIBRkl0lXW8qC+GCkR6nR9EQ==
-  dependencies:
-    websocket "^1.0.31"
-
 rsvp@^4.8.4:
   version "4.8.5"
   resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-4.8.5.tgz#c8f155311d167f68f21e168df71ec5b083113734"
@@ -14742,10 +14735,10 @@ websocket-extensions@>=0.1.1:
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
-websocket@^1.0.31:
-  version "1.0.33"
-  resolved "https://registry.yarnpkg.com/websocket/-/websocket-1.0.33.tgz#407f763fc58e74a3fa41ca3ae5d78d3f5e3b82a5"
-  integrity sha512-XwNqM2rN5eh3G2CUQE3OHZj+0xfdH42+OFK6LdC2yqiC0YU8e5UK0nYre220T0IyyN031V/XOvtHvXozvJYFWA==
+websocket@^1.0.34:
+  version "1.0.34"
+  resolved "https://registry.yarnpkg.com/websocket/-/websocket-1.0.34.tgz#2bdc2602c08bf2c82253b730655c0ef7dcab3111"
+  integrity sha512-PRDso2sGwF6kM75QykIesBijKSVceR6jL2G8NGYyq2XrItNC2P5/qL5XeR056GhA+Ly7JMFvJb9I312mJfmqnQ==
   dependencies:
     bufferutil "^4.0.1"
     debug "^2.2.0"
@@ -15003,6 +14996,14 @@ xrpl-accountlib@1.1.4:
     ripple-sign-keypairs "https://github.com/WietseWind/node-ripple-sign-keypairs.git"
     xrpl-secret-numbers "^0.3.3"
 
+xrpl-client@1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/xrpl-client/-/xrpl-client-1.8.0.tgz#92cd7efdecc35b56c1c736929ee9fe02d97e9054"
+  integrity sha512-Wb7mPF0OhpRek0+jmKhlXIQzl2BU0UaR9PrLu14k6xuoBLUW46THjomTQVmNvk20e5vMaO+CAMNb3DVwcMolOg==
+  dependencies:
+    debug "^4.1.1"
+    websocket "^1.0.34"
+
 xrpl-orderbook-reader@0.3.3:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/xrpl-orderbook-reader/-/xrpl-orderbook-reader-0.3.3.tgz#6a40b9c16e28e1967c8354b7fe6cea3d155a6c42"
@@ -15034,10 +15035,10 @@ xtend@^4.0.0, xtend@~4.0.1:
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
 
-xumm-string-decode@0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/xumm-string-decode/-/xumm-string-decode-0.5.0.tgz#d6061f7ab35cd309dad1a47547a947f89a48a499"
-  integrity sha512-85ADHr1XCk1rw7Vfqhbrc//SpTBLcXshSyJxfxWSVhN0cD7i5hw7vkvLh91TFhN7/BUclQez5d2C9d27Q/9W1w==
+xumm-string-decode@0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/xumm-string-decode/-/xumm-string-decode-0.6.0.tgz#d17d6049f1ac88b438c1e00e78dba77ae57d1503"
+  integrity sha512-k42tuHEoRKwpJoyJbxOWz1DtLetQaw9g3HtG4SB9wPpZ5t6lk9qy7Sw91ymoydS5nFRsPvRbhNUAuE2vd2ozVA==
   dependencies:
     "@ungap/url-search-params" "^0.1.4"
     debug "^4.3.1"
