@@ -42,38 +42,6 @@ class Payment extends BaseTransaction {
         ]);
     }
 
-    get LastBalance(): any {
-        const affectedNodes = get(this, ['meta', 'AffectedNodes']);
-
-        if (!affectedNodes) return null;
-
-        let source;
-        let destination;
-
-        // two effected node
-        affectedNodes.forEach((node: any) => {
-            const address = node.ModifiedNode.FinalFields.Account;
-            const balance = node.ModifiedNode.FinalFields.Balance;
-
-            if (this.Source.address === address) {
-                source = {
-                    address,
-                    balance,
-                };
-            } else {
-                destination = {
-                    address,
-                    balance,
-                };
-            }
-        });
-
-        return {
-            Account: source,
-            Destination: destination,
-        };
-    }
-
     get Destination(): Destination {
         const destination = get(this, ['tx', 'Destination'], undefined);
         const destinationTag = get(this, ['tx', 'DestinationTag'], undefined);
@@ -178,13 +146,6 @@ class Payment extends BaseTransaction {
         if (typeof input === 'object') {
             const value = new BigNumber(input.value);
 
-            // if transferRate set then add the fee to the value
-            // if (this.TransferRate) {
-            //     const fee = value.multipliedBy(this.TransferRate).dividedBy(100);
-            //     value = value.plus(fee);
-            // }
-            // value = new BigNumber(value.toString().slice(0, 16));
-
             set(this, 'tx.Amount', {
                 currency: input.currency,
                 value: value.toNumber().toString(10),
@@ -253,12 +214,6 @@ class Payment extends BaseTransaction {
             set(this, 'tx.DeliverMin', new Amount(input, false).xrpToDrops());
             return;
         }
-
-        // if transferRate set then add the fee to the value
-        // if (this.TransferRate) {
-        //     const fee = value.multipliedBy(this.TransferRate).dividedBy(100);
-        //     value = value.plus(fee);
-        // }
 
         set(this, 'tx.DeliverMin', {
             currency: input.currency,

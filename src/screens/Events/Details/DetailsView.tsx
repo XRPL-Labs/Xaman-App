@@ -272,6 +272,11 @@ class TransactionDetailsView extends Component<Props, State> {
             case 'DepositPreauth':
                 address = tx.Authorize || tx.Unauthorize;
                 break;
+            case 'AccountSet':
+                if (tx.Account.address !== account.address) {
+                    address = tx.Account.address;
+                }
+                break;
             case 'SetRegularKey':
                 address = tx.RegularKey;
                 break;
@@ -358,6 +363,7 @@ class TransactionDetailsView extends Component<Props, State> {
             Localize.t('global.cancel'),
         ];
         const AndroidButtons = [Localize.t('global.share'), Localize.t('global.openInBrowser')];
+
         ActionSheet(
             {
                 options: Platform.OS === 'ios' ? IosButtons : AndroidButtons,
