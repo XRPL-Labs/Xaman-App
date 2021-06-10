@@ -70,7 +70,10 @@ class RecipientElement extends PureComponent<Props> {
         const { recipient, showAvatar } = this.props;
 
         if (!showAvatar) return null;
-        return <Avatar source={{ uri: `https://xumm.app/avatar/${recipient.address}_180_50.png` }} />;
+
+        const address = recipient.address || 'rxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+
+        return <Avatar source={{ uri: `https://xumm.app/avatar/${address}_180_50.png` }} />;
     };
 
     render() {
