@@ -276,7 +276,10 @@
     "royal": "Royal",
     "theAmountIsTooSmallToDisplay": "The amount is too small to be displayed:\r\n%{amount}",
     "moreInfo": "More Info",
-    "xAppWantsToOpenURLNotice": "'%{xapp}' xApp wants to open this URL.\n\n%{url}"
+    "xAppWantsToOpenURLNotice": "'%{xapp}' xApp wants to open this URL.\n\n%{url}",
+    "customNodeSuccessfullyAddedToXUMM": "Custom node successfully added to XUMM. do you want to switch to the added node?",
+    "unableToLoadCustomEndpointDetails": "Unable to load the endpoint details, Please try again!",
+    "nodeDetermined": "Node determined"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",

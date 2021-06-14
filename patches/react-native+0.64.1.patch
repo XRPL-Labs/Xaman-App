@@ -33,7 +33,7 @@ index 8ce6edc..0d71716 100644
 +    #else
 +      // this will force the app to just connect to trusted nodes
 +      NSArray *allowedEndpoints;
-+      allowedEndpoints = [NSArray arrayWithObjects: @"localhost", @"xrplcluster.com", @"xrpl.link", @"s2.ripple.com", @"testnet.xrpl-labs.com", @"s.altnet.rippletest.net", nil];
++      allowedEndpoints = [NSArray arrayWithObjects: @"localhost", @"xrplcluster.com", @"xrpl.link", @"s2.ripple.com", @"testnet.xrpl-labs.com", @"s.altnet.rippletest.net", @"custom-node.xrpl-labs.com" nil];
 +      NSString* domain = [request.URL host];
 +
 +      if([allowedEndpoints containsObject: domain]){

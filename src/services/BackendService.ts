@@ -297,6 +297,14 @@ class BackendService {
         return ApiService.currencies.get({ locale });
     };
 
+    getEndpointDetails = (hash: string) => {
+        return ApiService.validEndpoints.get({ hash });
+    };
+
+    getTranslation = (uuid: string) => {
+        return ApiService.translation.get({ uuid });
+    };
+
     getCurrencyRate = (currency: string) => {
         return new Promise((resolve, reject) => {
             // prevent unnecessary requests

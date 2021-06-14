@@ -6,7 +6,7 @@ import { find } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 
-import { PushNotificationsService, ApiService } from '@services';
+import { PushNotificationsService, ApiService, SocketService } from '@services';
 
 import { CoreRepository, ProfileRepository } from '@store/repositories';
 import { CoreSchema, ProfileSchema } from '@store/schemas/latest';
@@ -22,6 +22,7 @@ import Localize from '@locale';
 
 // style
 import { AppStyles } from '@theme';
+import { NodeChain } from '@store/types';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -30,6 +31,7 @@ export interface Props {}
 export interface State {
     coreSettings: CoreSchema;
     profile: ProfileSchema;
+    canSelectExplorer: boolean;
 }
 
 /* Component ==================================================================== */
@@ -48,6 +50,7 @@ class AdvancedSettingsView extends Component<Props, State> {
         this.state = {
             coreSettings: CoreRepository.getSettings(),
             profile: ProfileRepository.getProfile(),
+            canSelectExplorer: SocketService.chain !== NodeChain.Custom,
         };
     }
 
@@ -66,7 +69,11 @@ class AdvancedSettingsView extends Component<Props, State> {
     };
 
     getCurrentExplorerTitle = () => {
-        const { coreSettings } = this.state;
+        const { coreSettings, canSelectExplorer } = this.state;
+
+        if (!canSelectExplorer) {
+            return Localize.t('global.nodeDetermined');
+        }
 
         const { defaultExplorer } = coreSettings;
 
@@ -82,7 +89,10 @@ class AdvancedSettingsView extends Component<Props, State> {
     };
 
     showExplorerPicker = () => {
-        const { coreSettings } = this.state;
+        const { coreSettings, canSelectExplorer } = this.state;
+
+        // if connected to custom chain return
+        if (!canSelectExplorer) return;
 
         Navigator.push(
             AppScreens.Modal.Picker,
@@ -152,7 +162,7 @@ class AdvancedSettingsView extends Component<Props, State> {
     };
 
     render() {
-        const { coreSettings, profile } = this.state;
+        const { coreSettings, profile, canSelectExplorer } = this.state;
 
         return (
             <View testID="advanced-settings-screen" style={[styles.container]}>
@@ -192,7 +202,11 @@ class AdvancedSettingsView extends Component<Props, State> {
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.row]} onPress={this.showExplorerPicker}>
+                    <TouchableOpacity
+                        activeOpacity={canSelectExplorer ? 0.8 : 1}
+                        style={[styles.row]}
+                        onPress={this.showExplorerPicker}
+                    >
                         <View style={[AppStyles.flex3]}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('global.explorer')}
@@ -203,7 +217,7 @@ class AdvancedSettingsView extends Component<Props, State> {
                             <Text numberOfLines={1} style={[styles.value]}>
                                 {this.getCurrentExplorerTitle()}
                             </Text>
-                            <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
+                            {canSelectExplorer && <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />}
                         </View>
                     </TouchableOpacity>
 

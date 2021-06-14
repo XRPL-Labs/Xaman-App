@@ -1,24 +1,24 @@
 /**
  * Recipient Menu overlay
  */
-import { find, toString } from 'lodash';
+import { toString } from 'lodash';
+
 import React, { Component } from 'react';
 import { Animated, View, Keyboard, TouchableWithoutFeedback, Share, Linking, Alert } from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
-import { SocketService } from '@services';
-
 import { Navigator } from '@common/helpers/navigator';
 
-import { AppScreens, AppConfig } from '@common/constants';
+import { AppScreens } from '@common/constants';
 
-import { NodeChain } from '@store/types';
-import { CoreRepository, ContactRepository } from '@store/repositories';
+import { ContactRepository } from '@store/repositories';
 
 // components
 import { Button, Spacer } from '@components/General';
 import { RecipientElement } from '@components/Modules';
+
+import { GetAccountLink, GetExplorer, ExplorerDetails } from '@common/utils/explorer';
 
 import Localize from '@locale';
 
@@ -41,7 +41,7 @@ export interface Props {
 }
 
 export interface State {
-    explorer: any;
+    explorer: ExplorerDetails;
     contactExist: boolean;
 }
 
@@ -69,11 +69,9 @@ class RecipientMenuOverlay extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const coreSettings = CoreRepository.getSettings();
-
         this.state = {
             contactExist: ContactRepository.exist(props.recipient.address, toString(props.recipient.tag)),
-            explorer: find(AppConfig.explorer, { value: coreSettings.defaultExplorer }),
+            explorer: GetExplorer(),
         };
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
@@ -123,12 +121,10 @@ class RecipientMenuOverlay extends Component<Props, State> {
     };
 
     getAccountLink = () => {
-        const { recipient } = this.props;
         const { explorer } = this.state;
+        const { recipient } = this.props;
 
-        const net = SocketService.chain === NodeChain.Main ? 'main' : 'test';
-
-        return `${explorer.account[net]}${recipient.address}`;
+        return GetAccountLink(recipient.address, explorer);
     };
 
     addContact = () => {

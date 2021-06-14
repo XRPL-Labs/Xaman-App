@@ -21,7 +21,6 @@ import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle 
 
 import { LedgerService, SocketService, BackendService, StyleService } from '@services';
 
-import { NodeChain } from '@store/types';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
 
@@ -38,7 +37,8 @@ import { Button, RaisedButton, InfoMessage, Spacer, Icon, LoadingIndicator } fro
 import { TrustLineList } from '@components/Modules';
 
 // style
-import { AppStyles, AppColors, AppFonts } from '@theme';
+import { AppStyles, AppFonts } from '@theme';
+import { ChainColors } from '@theme/colors';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -192,10 +192,10 @@ class HomeView extends Component<Props, State> {
                         visible: true,
                         animate: true,
                         background: {
-                            color: SocketService.chain === NodeChain.Main ? AppColors.blue : AppColors.green,
+                            color: ChainColors[SocketService.chain],
                         },
                         title: {
-                            text: SocketService.chain === NodeChain.Main ? 'MAINNET' : 'TESTNET',
+                            text: SocketService.chain.toUpperCase(),
                             color: 'white',
                             fontFamily: AppFonts.base.familyExtraBold,
                             fontSize: AppFonts.h5.size,

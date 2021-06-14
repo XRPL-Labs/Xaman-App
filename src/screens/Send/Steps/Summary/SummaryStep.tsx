@@ -8,7 +8,6 @@ import React, { Component } from 'react';
 import { View, Image, Text, Alert, InteractionManager } from 'react-native';
 
 import { AccountSchema } from '@store/schemas/latest';
-import { NodeChain } from '@store/types';
 
 import { BackendService, SocketService } from '@services';
 
@@ -38,6 +37,8 @@ import Localize from '@locale';
 
 // style
 import { AppStyles, AppColors } from '@theme';
+import { ChainColors } from '@theme/colors';
+
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
@@ -313,10 +314,14 @@ class SummaryStep extends Component<Props, State> {
         goBack();
     };
 
-    shouldShowTestnet = () => {
+    getSwipeButtonColor = (): string => {
         const { coreSettings } = this.context;
 
-        return coreSettings.developerMode && SocketService.chain === NodeChain.Test;
+        if (coreSettings.developerMode) {
+            return ChainColors[SocketService.chain];
+        }
+
+        return undefined;
     };
 
     renderCurrencyItem = (item: any) => {
@@ -516,7 +521,7 @@ class SummaryStep extends Component<Props, State> {
                 {/* Bottom Bar */}
                 <Footer safeArea>
                     <SwipeButton
-                        secondary={this.shouldShowTestnet()}
+                        color={this.getSwipeButtonColor()}
                         label={Localize.t('global.slideToSend')}
                         onSwipeSuccess={this.goNext}
                         isLoading={isLoading}

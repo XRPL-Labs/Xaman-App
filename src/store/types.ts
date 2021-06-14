@@ -26,8 +26,7 @@ export enum BiometryType {
 export enum NodeChain {
     Main = 'Mainnet',
     Test = 'Testnet',
-    Dev = 'Devnet',
-    Unknown = 'Unknown',
+    Custom = 'Custom',
 }
 
 export type Themes = 'light' | 'dark' | 'moonlight' | 'royal';

@@ -29,5 +29,6 @@ export default {
         ['xAppLaunch', '/v1/app/xapp/launch/{xAppId}'],
         ['currencies', '/v1/app/currencies/{locale}'],
         ['rates', '/v1/app/rates/{currency}'],
+        ['validEndpoints', '/v1/app/valid-endpoints/{hash}'],
     ]),
 };

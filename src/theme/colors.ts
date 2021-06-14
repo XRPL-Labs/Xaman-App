@@ -4,6 +4,7 @@
 
 /* eslint-disable spellcheck/spell-checker */
 import { ColorLuminance, HexToRgbA } from '@common/utils/color';
+import { NodeChain } from '@store/types';
 
 const colors = {
     blue: '#3052FF',
@@ -104,6 +105,12 @@ const ColorsTheme = {
     },
 };
 
+const ChainColors = {
+    [NodeChain.Main]: ColorsGeneral.blue,
+    [NodeChain.Test]: ColorsGeneral.green,
+    [NodeChain.Custom]: ColorsGeneral.orange,
+};
+
 export default ColorsGeneral;
 
-export { ColorsGeneral, ColorsTheme };
+export { ColorsGeneral, ColorsTheme, ChainColors };

@@ -19,11 +19,9 @@ import {
     ImageBackground,
 } from 'react-native';
 
-import { BackendService, SocketService, LedgerService, StyleService } from '@services';
+import { BackendService, LedgerService, StyleService } from '@services';
 
-import { NodeChain } from '@store/types';
-import { CoreSchema, AccountSchema } from '@store/schemas/latest';
-import CoreRepository from '@store/repositories/core';
+import { AccountSchema } from '@store/schemas/latest';
 import AccountRepository from '@store/repositories/account';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
@@ -31,7 +29,7 @@ import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import transactionFactory from '@common/libs/ledger/parser/transaction';
 
 import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
-import { AppScreens, AppConfig } from '@common/constants';
+import { AppScreens } from '@common/constants';
 
 import { ActionSheet, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
@@ -40,6 +38,8 @@ import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { Header, Button, Badge, Spacer, Icon, ReadMore, AmountText, LoadingIndicator } from '@components/General';
 import { RecipientElement } from '@components/Modules';
+
+import { GetTransactionLink } from '@common/utils/explorer';
 
 import Localize from '@locale';
 
@@ -58,9 +58,7 @@ export interface Props {
 export interface State {
     tx: TransactionsType;
     partiesDetails: AccountNameType;
-    coreSettings: CoreSchema;
     spendableAccounts: AccountSchema[];
-    connectedChain: NodeChain;
     balanceChanges: any;
     incomingTx: boolean;
     scamAlert: boolean;
@@ -91,9 +89,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 name: '',
                 source: '',
             },
-            coreSettings: CoreRepository.getSettings(),
             spendableAccounts: AccountRepository.getSpendableAccounts(),
-            connectedChain: SocketService.chain,
             balanceChanges: undefined,
             incomingTx: props.tx?.Account?.address !== props.account.address,
             scamAlert: false,
@@ -319,13 +315,8 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     getTransactionLink = () => {
-        const { tx, connectedChain, coreSettings } = this.state;
-
-        const net = connectedChain === NodeChain.Main ? 'main' : 'test';
-
-        const explorer = find(AppConfig.explorer, { value: coreSettings.defaultExplorer });
-
-        return `${explorer.tx[net]}${tx.Hash || tx.PreviousTxnID}`;
+        const { tx } = this.state;
+        return GetTransactionLink(tx.Hash || tx.PreviousTxnID);
     };
 
     shareTxLink = () => {
@@ -377,6 +368,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     this.openTxLink();
                 }
             },
+            StyleService.isDarkMode() ? 'dark' : 'light',
         );
     };
 

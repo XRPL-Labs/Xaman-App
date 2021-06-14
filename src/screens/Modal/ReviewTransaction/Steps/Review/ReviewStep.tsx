@@ -14,7 +14,6 @@ import { SocketService, StyleService } from '@services';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
-import { NodeChain } from '@store/types';
 
 // components
 import { Button, SwipeButton, Spacer, KeyboardAwareScrollView, Avatar } from '@components/General';
@@ -23,6 +22,8 @@ import { AccountPicker } from '@components/Modules';
 import Localize from '@locale';
 // style
 import { AppStyles } from '@theme';
+import { ChainColors } from '@theme/colors';
+
 import styles from './styles';
 
 // transaction templates
@@ -120,10 +121,14 @@ class ReviewStep extends Component<Props, State> {
         });
     };
 
-    shouldShowTestnet = () => {
+    getSwipeButtonColor = (): string => {
         const { coreSettings } = this.context;
 
-        return coreSettings.developerMode && SocketService.chain === NodeChain.Test;
+        if (coreSettings.developerMode) {
+            return ChainColors[SocketService.chain];
+        }
+
+        return undefined;
     };
 
     renderDetails = () => {
@@ -298,7 +303,7 @@ class ReviewStep extends Component<Props, State> {
                         <View style={[AppStyles.flex1, AppStyles.paddingHorizontalSml]}>
                             <SwipeButton
                                 testID="accept-button"
-                                secondary={this.shouldShowTestnet()}
+                                color={this.getSwipeButtonColor()}
                                 isLoading={isPreparing}
                                 onSwipeSuccess={onAccept}
                                 label={Localize.t('global.slideToAccept')}

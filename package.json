@@ -46,7 +46,7 @@
     "xrpl-client": "1.8.0",
     "xrpl-orderbook-reader": "0.3.3",
     "xrpl-tagged-address-codec": "0.2.1",
-    "xumm-string-decode": "0.6.0"
+    "xumm-string-decode": "0.6.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

@@ -2,17 +2,21 @@
  * Scan Modal
  */
 
+import upperFirst from 'lodash/upperFirst';
+
 import React, { Component } from 'react';
-import { View, ImageBackground, Text, Alert, Linking, BackHandler } from 'react-native';
+import { View, ImageBackground, Text, Linking, BackHandler } from 'react-native';
+
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 import Clipboard from '@react-native-community/clipboard';
 import { RNCamera } from 'react-native-camera';
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
-import { ApiService, StyleService } from '@services';
+import { StyleService, BackendService, SocketService } from '@services';
 
-import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository, CustomNodeRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
+import { NodeChain } from '@store/types';
 
 import { AppScreens } from '@common/constants';
 
@@ -50,7 +54,6 @@ export interface State {
 class ScanView extends Component<Props, State> {
     static screenName = AppScreens.Modal.Scan;
 
-    private camera: RNCamera;
     private shouldRead: boolean;
     private backHandler: any;
 
@@ -111,13 +114,12 @@ class ScanView extends Component<Props, State> {
         }
     };
 
-    loadTranslation = async (uuid: string) => {
+    loadTranslation = (uuid: string) => {
         this.setState({
             isLoading: true,
         });
 
-        await ApiService.translation
-            .get({ uuid })
+        BackendService.getTranslation(uuid)
             .then((res: any) => {
                 const { meta, translation } = res;
 
@@ -129,24 +131,77 @@ class ScanView extends Component<Props, State> {
                     // close scan modal
                     Navigator.dismissModal();
                 } else {
-                    Alert.alert(
+                    Prompt(
                         'Error',
                         'Unable to load the translations, the request is not valid!',
                         [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
-                        { cancelable: false },
+                        { cancelable: false, type: 'default' },
                     );
                 }
             })
             .catch(() => {
                 // ignore
-                Alert.alert(
+                Prompt(
                     'Error',
                     'Unable to load the translations, Please try again!',
                     [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
-                    { cancelable: false },
+                    { cancelable: false, type: 'default' },
                 );
             })
             .finally(() => {
+                this.setState({
+                    isLoading: false,
+                });
+            });
+    };
+
+    addCustomNode = (hash: string) => {
+        this.setState({
+            isLoading: true,
+        });
+
+        BackendService.getEndpointDetails(hash)
+            .then((res: any) => {
+                const { endpoint } = res;
+                const { explorer, name, node } = endpoint;
+
+                // create endpoint base on backend response
+                const customNode = {
+                    name,
+                    endpoint: node,
+                    explorerTx: explorer.tx,
+                    explorerAccount: explorer.account,
+                };
+
+                // add to the store
+                CustomNodeRepository.add(customNode);
+
+                // close scan modal
+                Navigator.dismissModal();
+
+                Prompt(
+                    Localize.t('global.success'),
+                    Localize.t('global.customNodeSuccessfullyAddedToXUMM'),
+                    [
+                        {
+                            text: Localize.t('global.cancel'),
+                        },
+                        {
+                            text: upperFirst(Localize.t('global.switch')),
+                            style: 'destructive',
+                            onPress: () => SocketService.switchNode(node, NodeChain.Custom),
+                        },
+                    ],
+                    { cancelable: false, type: 'default' },
+                );
+            })
+            .catch(() => {
+                Prompt(
+                    Localize.t('global.error'),
+                    Localize.t('global.unableToLoadCustomEndpointDetails'),
+                    [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+                    { cancelable: true, type: 'default' },
+                );
                 this.setState({
                     isLoading: false,
                 });
@@ -160,7 +215,7 @@ class ScanView extends Component<Props, State> {
             return;
         }
 
-        Alert.alert(
+        Prompt(
             'Translation detected',
             'XUMM Translation Portal language file detected. Do you want to load it into the app?' +
                 '(To revert to the default translation, force quit XUMM and start XUMM again)',
@@ -179,7 +234,7 @@ class ScanView extends Component<Props, State> {
                     style: 'default',
                 },
             ],
-            { cancelable: false },
+            { cancelable: false, type: 'default' },
         );
     };
 
@@ -201,12 +256,10 @@ class ScanView extends Component<Props, State> {
                 },
             );
         } catch (e) {
-            Alert.alert(
-                Localize.t('global.error'),
-                e.message,
-                [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
-                { cancelable: false },
-            );
+            Prompt(Localize.t('global.error'), e.message, [{ text: 'OK', onPress: () => this.setShouldRead(true) }], {
+                cancelable: false,
+                type: 'default',
+            });
             this.setState({
                 isLoading: false,
             });
@@ -225,7 +278,7 @@ class ScanView extends Component<Props, State> {
             // ignore
         }
 
-        Alert.alert(
+        Prompt(
             Localize.t('global.signedTransaction'),
             Localize.t('global.signedTransactionDetectedSubmit'),
             [
@@ -249,7 +302,7 @@ class ScanView extends Component<Props, State> {
                     style: 'default',
                 },
             ],
-            { cancelable: false },
+            { cancelable: false, type: 'default' },
         );
     };
 
@@ -280,12 +333,13 @@ class ScanView extends Component<Props, State> {
 
             // unable to parse the address, probably not xrp address
             if (!to) {
-                Alert.alert(
+                Prompt(
                     Localize.t('global.warning'),
                     Localize.t('scan.invalidQRTryNewOneOrTryAgain'),
                     [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
                     {
                         cancelable: false,
+                        type: 'default',
                     },
                 );
                 return;
@@ -308,11 +362,11 @@ class ScanView extends Component<Props, State> {
                 },
             );
         } else {
-            Alert.alert(
+            Prompt(
                 Localize.t('global.error'),
                 Localize.t('global.noSpendableAccountIsAvailableForSendingPayment'),
                 [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
-                { cancelable: false },
+                { cancelable: false, type: 'default' },
             );
         }
     };
@@ -353,8 +407,8 @@ class ScanView extends Component<Props, State> {
         }
     };
 
-    handleXummFeature = (parsed: { feature: string; type: string; params?: Record<string, unknown> }) => {
-        const { feature, type } = parsed;
+    handleXummFeature = (parsed: { feature: string; type: string; params?: Record<string, string> }) => {
+        const { feature, type, params } = parsed;
 
         // Feature: allow import of Secret Numbers without Checksum
         if (feature === 'secret' && type === 'offline-secret-numbers') {
@@ -383,6 +437,28 @@ class ScanView extends Component<Props, State> {
                 { type: 'default' },
             );
         }
+
+        // Allow add custom node to XUMM
+        if (feature === 'network-endpoint' && type === 'custom-endpoint' && params?.hash) {
+            Prompt(
+                Localize.t('global.warning'),
+                'You are adding a custom node to the XUMM, do you want to continue ?',
+                [
+                    {
+                        text: Localize.t('global.cancel'),
+                        onPress: () => this.setShouldRead(true),
+                    },
+                    {
+                        text: Localize.t('global.continue'),
+                        style: 'destructive',
+                        onPress: () => {
+                            this.addCustomNode(params.hash);
+                        },
+                    },
+                ],
+                { type: 'default' },
+            );
+        }
     };
 
     handleUndetectedType = (content?: string, clipboard?: boolean) => {
@@ -393,7 +469,7 @@ class ScanView extends Component<Props, State> {
         }
 
         // show error message base on origin
-        Alert.alert(
+        Prompt(
             Localize.t('global.warning'),
             clipboard
                 ? Localize.t('scan.invalidClipboardDateTryNewOneOrTryAgain')
@@ -401,6 +477,7 @@ class ScanView extends Component<Props, State> {
             [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
             {
                 cancelable: false,
+                type: 'default',
             },
         );
     };
@@ -470,12 +547,10 @@ class ScanView extends Component<Props, State> {
                         : Localize.t('scan.theQRIsNotWhatWeExpect');
             }
 
-            Alert.alert(
-                Localize.t('global.error'),
-                message,
-                [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
-                { cancelable: false },
-            );
+            Prompt(Localize.t('global.error'), message, [{ text: 'OK', onPress: () => this.setShouldRead(true) }], {
+                cancelable: false,
+                type: 'default',
+            });
             return;
         }
 
@@ -625,9 +700,6 @@ class ScanView extends Component<Props, State> {
         return (
             <View style={styles.container}>
                 <RNCamera
-                    ref={(ref) => {
-                        this.camera = ref;
-                    }}
                     style={AppStyles.flex1}
                     type={RNCamera.Constants.Type.back}
                     flashMode={RNCamera.Constants.FlashMode.on}

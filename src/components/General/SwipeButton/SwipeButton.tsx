@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { Text, View, PanResponder, Animated, PanResponderGestureState, GestureResponderEvent } from 'react-native';
+import {
+    Text,
+    View,
+    PanResponder,
+    Animated,
+    PanResponderGestureState,
+    GestureResponderEvent,
+    ViewStyle,
+} from 'react-native';
 
 import { LoadingIndicator } from '@components/General';
 
@@ -26,6 +34,8 @@ interface Props {
     onPanResponderGrant?: () => void;
     onPanResponderRelease?: () => void;
     shouldResetAfterSuccess?: boolean;
+    style?: ViewStyle | ViewStyle[];
+    color?: string;
 }
 
 interface State {}
@@ -157,7 +167,7 @@ class SwipeButton extends Component<Props, State> {
     };
 
     render() {
-        const { label, isLoading, secondary, testID } = this.props;
+        const { label, isLoading, secondary, testID, style, color } = this.props;
 
         if (isLoading) {
             return (
@@ -168,7 +178,15 @@ class SwipeButton extends Component<Props, State> {
         }
 
         return (
-            <View style={[styles.container, secondary && styles.containerSecondary]} onLayout={this.onLayoutChange}>
+            <View
+                style={[
+                    styles.container,
+                    secondary && styles.containerSecondary,
+                    style,
+                    color && { backgroundColor: color, borderColor: color },
+                ]}
+                onLayout={this.onLayoutChange}
+            >
                 <Text importantForAccessibility="no-hide-descendants" style={[styles.label]}>
                     {label}
                 </Text>

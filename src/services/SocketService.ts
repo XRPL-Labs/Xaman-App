@@ -6,7 +6,6 @@ import { Platform } from 'react-native';
 import { XrplClient, ConnectionState } from 'xrpl-client';
 
 import { CoreRepository } from '@store/repositories';
-import { CoreSchema } from '@store/schemas/latest';
 import { NodeChain } from '@store/types';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -120,18 +119,13 @@ class SocketService extends EventEmitter {
         };
     }
 
-    initialize = (coreSettings: CoreSchema) => {
+    initialize = () => {
         return new Promise<void>((resolve, reject) => {
             try {
-                // get/set default node
-                let defaultNode = __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0];
-
-                if (coreSettings && coreSettings.defaultNode) {
-                    defaultNode = coreSettings.defaultNode;
-                }
+                const { node, chain } = CoreRepository.getDefaultNode();
 
                 // set default node
-                this.setDefaultNode(defaultNode);
+                this.setDefaultNode(node, chain);
 
                 // listen on navigation change event
                 NavigationService.on('setRoot', (root: string) => {
@@ -173,11 +167,11 @@ class SocketService extends EventEmitter {
         });
     };
 
-    onNodeChange = (url: string, chain: NodeChain) => {
+    onNodeChange = (node: string, chain: NodeChain) => {
         // if the default node changed
-        if (url !== this.node) {
+        if (node !== this.node) {
             // change default node
-            this.node = url;
+            this.node = node;
             this.chain = chain;
             // reconnect
             this.reconnect();
@@ -188,30 +182,27 @@ class SocketService extends EventEmitter {
         return this.status === SocketStateStatus.Connected;
     };
 
-    setDefaultNode = (node: string) => {
-        let chain = NodeChain.Main;
+    setDefaultNode = (node: string, chain: NodeChain) => {
+        // set the chain
+        this.chain = chain;
 
-        // it is a verified type
-        if (AppConfig.nodes.main.indexOf(node) > -1) {
-            chain = NodeChain.Main;
-        } else if (AppConfig.nodes.test.indexOf(node) > -1) {
-            chain = NodeChain.Test;
-        }
-
-        // THIS IS DURRING BETA
-        // if it's main net and the default node is not default node revert
+        // if we are on MainNet and the selected node is not default node revert
         if (chain === NodeChain.Main && node !== AppConfig.nodes.default) {
             this.node = AppConfig.nodes.default;
 
-            // update the database
+            // update the store
             CoreRepository.saveSettings({
                 defaultNode: this.node,
             });
         } else {
             this.node = node;
         }
-        // set the chain
-        this.chain = chain;
+    };
+
+    switchNode = (node: string, chain?: NodeChain) => {
+        const { chain: newChain } = CoreRepository.setDefaultNode(node, chain);
+
+        this.onNodeChange(node, newChain);
     };
 
     showConnectionProblem = () => {
@@ -271,9 +262,14 @@ class SocketService extends EventEmitter {
 
     onConnect = () => {
         // fetch connected node from connection
-        const connectedNode = this.connection.getState().server.uri;
+        let connectedNode = this.connection.getState().server.uri;
 
-        this.logger.debug(`Connected to XRPL  Node ${connectedNode}`);
+        // remove proxy from url if present
+        if (connectedNode.startsWith(AppConfig.nodes.proxy)) {
+            connectedNode = connectedNode.replace(`${AppConfig.nodes.proxy}/`, '');
+        }
+
+        this.logger.debug(`Connected to XRPL Node ${connectedNode}`);
 
         // set node and connection
         this.node = connectedNode;
@@ -315,8 +311,12 @@ class SocketService extends EventEmitter {
         // load node's list base on selected node chain
         if (this.chain === NodeChain.Main) {
             nodes = AppConfig.nodes.main;
-        } else {
+        } else if (this.chain === NodeChain.Test) {
             nodes = AppConfig.nodes.test;
+        } else {
+            // if not belong to any chain then it's custom node
+            // wrap it in proxy
+            nodes = [`${AppConfig.nodes.proxy}/${this.node}`];
         }
 
         // move preferred node to the first
@@ -333,8 +333,6 @@ class SocketService extends EventEmitter {
         this.connection.on('online', this.onConnect);
         this.connection.on('offline', this.onClose);
         this.connection.on('round', this.onFail);
-
-        await this.connection.ready();
     };
 }
 

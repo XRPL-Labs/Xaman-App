@@ -45,9 +45,23 @@ class CoreRepository extends BaseRepository {
         }
     };
 
+    getChainFromNode = (node: string) => {
+        let chain = NodeChain.Main;
+
+        // it is a verified type
+        if (AppConfig.nodes.main.indexOf(node) > -1) {
+            chain = NodeChain.Main;
+        } else if (AppConfig.nodes.test.indexOf(node) > -1) {
+            chain = NodeChain.Test;
+        } else {
+            chain = NodeChain.Custom;
+        }
+
+        return chain;
+    };
+
     getDefaultNode = () => {
         let defaultNode = __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0];
-        let chain = NodeChain.Main;
 
         const settings = this.getSettings();
 
@@ -55,15 +69,25 @@ class CoreRepository extends BaseRepository {
             defaultNode = settings.defaultNode;
         }
 
-        // it is a verified type
-        if (AppConfig.nodes.main.indexOf(defaultNode) > -1) {
-            chain = NodeChain.Main;
-        } else if (AppConfig.nodes.test.indexOf(defaultNode) > -1) {
-            chain = NodeChain.Test;
-        }
+        const chain = this.getChainFromNode(defaultNode);
 
         return {
             node: defaultNode,
+            chain,
+        };
+    };
+
+    setDefaultNode = (node: string, chain?: NodeChain) => {
+        if (!chain) {
+            chain = this.getChainFromNode(node);
+        }
+
+        this.saveSettings({
+            defaultNode: node,
+        });
+
+        return {
+            node,
             chain,
         };
     };

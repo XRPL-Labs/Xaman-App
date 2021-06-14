@@ -12,7 +12,7 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens, AppConfig } from '@common/constants';
 
-import { LoggerService } from '@services';
+import { LoggerService, StyleService } from '@services';
 
 import { Header } from '@components/General';
 
@@ -106,6 +106,7 @@ class SessionLogView extends Component<Props, State> {
                     this.clear();
                 }
             },
+            StyleService.isDarkMode() ? 'dark' : 'light',
         );
     };
 
