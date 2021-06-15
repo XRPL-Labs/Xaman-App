@@ -1,12 +1,10 @@
 import StyleService from '@services/StyleService';
 
-import { hasNotch } from '@common/helpers/device';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     container: { flex: 1 },
     webViewContainer: {
         flex: 1,
-        paddingBottom: hasNotch() ? 20 : 0,
         backgroundColor: '$background',
     },
     loadingStyle: {
