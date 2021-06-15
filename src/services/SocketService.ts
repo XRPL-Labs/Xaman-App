@@ -330,6 +330,7 @@ class SocketService extends EventEmitter {
             connectAttemptTimeoutSeconds: 3,
         });
 
+        this.connection.on('error', this.onError);
         this.connection.on('online', this.onConnect);
         this.connection.on('offline', this.onClose);
         this.connection.on('round', this.onFail);
