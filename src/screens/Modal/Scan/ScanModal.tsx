@@ -442,7 +442,7 @@ class ScanView extends Component<Props, State> {
         if (feature === 'network-endpoint' && type === 'custom-endpoint' && params?.hash) {
             Prompt(
                 Localize.t('global.warning'),
-                'You are adding a custom node to the XUMM, do you want to continue ?',
+                Localize.t('global.addingCustomNodeWarning'),
                 [
                     {
                         text: Localize.t('global.cancel'),
