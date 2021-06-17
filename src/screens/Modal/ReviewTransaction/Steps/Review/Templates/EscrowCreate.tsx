@@ -46,7 +46,7 @@ class EscrowCreateTemplate extends Component<Props, State> {
             isLoading: true,
         });
 
-        getAccountName(transaction.Destination.address)
+        getAccountName(transaction.Destination.address, transaction.Destination.tag)
             .then((res: any) => {
                 if (!isEmpty(res) && !res.error) {
                     this.setState({
@@ -77,7 +77,6 @@ class EscrowCreateTemplate extends Component<Props, State> {
                 <RecipientElement
                     containerStyle={[styles.contentBox, styles.addressContainer]}
                     isLoading={isLoading}
-                    showAvatar={false}
                     recipient={{
                         address: transaction.Destination.address,
                         tag: transaction.Destination.tag,

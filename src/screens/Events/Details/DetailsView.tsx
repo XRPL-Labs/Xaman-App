@@ -1441,7 +1441,7 @@ class TransactionDetailsView extends Component<Props, State> {
             if (to.address === account.address) {
                 to = Object.assign(to, {
                     name: account.label,
-                    source: 'internal:accounts',
+                    source: 'accounts',
                 });
             }
         } else {
@@ -1449,7 +1449,7 @@ class TransactionDetailsView extends Component<Props, State> {
             if (from.address === account.address) {
                 from = Object.assign(from, {
                     name: account.label,
-                    source: 'internal:accounts',
+                    source: 'accounts',
                 });
             }
         }
@@ -1460,7 +1460,7 @@ class TransactionDetailsView extends Component<Props, State> {
             to = {
                 address: account.address,
                 name: account.label,
-                source: 'internal:accounts',
+                source: 'accounts',
             };
         }
 
@@ -1470,7 +1470,7 @@ class TransactionDetailsView extends Component<Props, State> {
             from = {
                 address: account.address,
                 name: account.label,
-                source: 'internal:accounts',
+                source: 'accounts',
             };
         }
 
@@ -1480,7 +1480,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 if (balanceChanges?.sent || balanceChanges?.received) {
                     from = { address: tx.Account.address };
                     to = { address: tx.Destination?.address };
-                    through = { address: account.address, name: account.label, source: 'internal:accounts' };
+                    through = { address: account.address, name: account.label, source: 'accounts' };
                 }
             }
         }
@@ -1499,8 +1499,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 <Text style={[styles.labelText]}>{Localize.t('global.from')}</Text>
                 <RecipientElement
                     recipient={from}
-                    showMoreButton={from.source !== 'internal:accounts'}
-                    onMorePress={from.source !== 'internal:accounts' && this.showRecipientMenu}
+                    showMoreButton={from.source !== 'accounts'}
+                    onMorePress={from.source !== 'accounts' && this.showRecipientMenu}
                 />
                 {!!through && (
                     <>
@@ -1508,7 +1508,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         <Text style={[styles.labelText]}>{Localize.t('events.throughOfferBy')}</Text>
                         <RecipientElement
                             recipient={through}
-                            onMorePress={to.source !== 'internal:accounts' && this.showRecipientMenu}
+                            onMorePress={to.source !== 'accounts' && this.showRecipientMenu}
                         />
                     </>
                 )}
@@ -1516,8 +1516,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 <Text style={[styles.labelText]}>{Localize.t('global.to')}</Text>
                 <RecipientElement
                     recipient={to}
-                    showMoreButton={to.source !== 'internal:accounts'}
-                    onMorePress={to.source !== 'internal:accounts' && this.showRecipientMenu}
+                    showMoreButton={to.source !== 'accounts'}
+                    onMorePress={to.source !== 'accounts' && this.showRecipientMenu}
                 />
             </View>
         );

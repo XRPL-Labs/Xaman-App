@@ -11,7 +11,7 @@ export const recipientData = {
     id: 'id',
     address: 'rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1',
     name: 'Wietse',
-    source: 'internal:contacts',
+    source: 'contacts',
 };
 
 storiesOf('RecipientElement', module)

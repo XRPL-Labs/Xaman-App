@@ -28,6 +28,7 @@ export interface Props {
 export interface State {
     name: string;
     address: string;
+    kycApproved: boolean;
     tag: number;
     key: string;
 }
@@ -44,6 +45,7 @@ class TransactionTemplate extends Component<Props, State> {
         this.state = {
             name: recipientDetails.name,
             address: recipientDetails.address,
+            kycApproved: false,
             tag: recipientDetails.tag,
             key: recipientDetails.key,
         };
@@ -182,6 +184,7 @@ class TransactionTemplate extends Component<Props, State> {
                         }
                         this.setState({
                             name: res.name,
+                            kycApproved: res.kycApproved,
                         });
                     }
                 }
@@ -195,11 +198,19 @@ class TransactionTemplate extends Component<Props, State> {
     };
 
     getIcon = () => {
-        const { address } = this.state;
+        const { address, kycApproved } = this.state;
         const { item } = this.props;
 
         if (address) {
-            return <Avatar size={40} border source={{ uri: `https://xumm.app/avatar/${address}_180_50.png` }} />;
+            return (
+                <View style={styles.iconContainer}>
+                    <Avatar
+                        badge={kycApproved ? 'IconCheckXumm' : undefined}
+                        border
+                        source={{ uri: `https://xumm.app/avatar/${address}_180_50.png` }}
+                    />
+                </View>
+            );
         }
         let iconName = '' as any;
         let iconColor;

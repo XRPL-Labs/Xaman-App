@@ -77,7 +77,6 @@ class DepositPreauthTemplate extends Component<Props, State> {
                         <RecipientElement
                             containerStyle={[styles.contentBox, styles.addressContainer]}
                             isLoading={isLoading}
-                            showAvatar={false}
                             recipient={{
                                 address: transaction.Authorize,
                                 ...addressDetails,
@@ -97,7 +96,6 @@ class DepositPreauthTemplate extends Component<Props, State> {
                         <RecipientElement
                             containerStyle={[styles.contentBox, styles.addressContainer]}
                             isLoading={isLoading}
-                            showAvatar={false}
                             recipient={{
                                 address: transaction.Unauthorize,
                                 ...addressDetails,

@@ -1,13 +1,15 @@
+import { StyleSheet } from 'react-native';
 import StyleService from '@services/StyleService';
 
 /* Styles ==================================================================== */
 export default StyleService.create({
     image: {
         borderRadius: 10,
+        backgroundColor: '$textContrast',
     },
     border: {
         borderColor: '$lightGrey',
-        borderWidth: 1,
+        borderWidth: StyleSheet.hairlineWidth,
     },
     badgeContainer: {
         position: 'absolute',

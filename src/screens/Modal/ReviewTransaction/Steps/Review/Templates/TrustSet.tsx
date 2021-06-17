@@ -105,7 +105,6 @@ class TrustSetTemplate extends Component<Props, State> {
                 <RecipientElement
                     containerStyle={[styles.contentBox, styles.addressContainer]}
                     isLoading={isLoadingIssuerDetails}
-                    showAvatar={false}
                     recipient={{
                         address: transaction.Issuer,
                         ...issuerDetails,

@@ -111,7 +111,7 @@ class RequestTemplate extends Component<Props, State> {
         return (
             <TouchableOpacity onPress={this.onPress} activeOpacity={0.6} style={styles.container}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                    <Avatar size={40} border source={{ uri: item.application.icon_url }} />
+                    <Avatar border source={{ uri: item.application.icon_url }} />
                 </View>
                 <View style={[AppStyles.flex5, AppStyles.centerContent]}>
                     <Text style={[styles.label]}>{item.application.name}</Text>

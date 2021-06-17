@@ -51,7 +51,7 @@ class AccountDeleteTemplate extends Component<Props, State> {
         });
 
         // fetch destination details
-        getAccountName(transaction.Destination.address)
+        getAccountName(transaction.Destination.address, transaction.Destination.tag)
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     this.setState({
@@ -83,7 +83,6 @@ class AccountDeleteTemplate extends Component<Props, State> {
                 <RecipientElement
                     containerStyle={[styles.contentBox, styles.addressContainer]}
                     isLoading={isLoading}
-                    showAvatar={false}
                     recipient={{
                         address: transaction.Destination.address,
                         tag: transaction.Destination.tag,

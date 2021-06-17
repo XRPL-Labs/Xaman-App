@@ -58,7 +58,7 @@ class CheckCancelTemplate extends Component<Props, State> {
                     transaction.Check = new CheckCreate(checkObject);
 
                     // fetch destination details
-                    getAccountName(transaction.Check?.Destination.address)
+                    getAccountName(transaction.Check?.Destination.address, transaction.Check?.Destination.tag)
                         .then((r: any) => {
                             if (!isEmpty(res)) {
                                 this.setState({
@@ -98,7 +98,6 @@ class CheckCancelTemplate extends Component<Props, State> {
                 <RecipientElement
                     containerStyle={[styles.contentBox, styles.addressContainer]}
                     isLoading={isLoading}
-                    showAvatar={false}
                     recipient={{
                         address: transaction.Check?.Destination.address,
                         tag: transaction.Check?.Destination.tag,

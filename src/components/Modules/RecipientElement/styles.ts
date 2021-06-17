@@ -3,7 +3,7 @@ import StyleService from '@services/StyleService';
 import { AppFonts } from '@theme';
 /* Styles ==================================================================== */
 export default StyleService.create({
-    itemRow: {
+    container: {
         flexDirection: 'row',
         alignItems: 'center',
         padding: 5,
@@ -13,12 +13,15 @@ export default StyleService.create({
         borderWidth: 2,
         borderColor: '$tint',
     },
-    itemSelected: {
+    containerSelected: {
         borderColor: '$blue',
         borderWidth: 2,
         backgroundColor: '$lightBlue',
     },
-    title: {
+    centerContent: {
+        paddingLeft: 10,
+    },
+    nameText: {
         fontFamily: AppFonts.base.familyBold,
         color: '$textPrimary',
         fontSize: AppFonts.base.size,
@@ -26,34 +29,10 @@ export default StyleService.create({
     selectedText: {
         color: '$blue',
     },
-    subtitle: {
+    addressText: {
         fontFamily: AppFonts.base.familyMono,
         color: '$grey',
         fontSize: AppFonts.base.size * 0.8,
-    },
-    tag: {
-        paddingHorizontal: 5,
-        paddingVertical: 1,
-        borderRadius: 5,
-        marginLeft: 5,
-        alignSelf: 'center',
-    },
-    tagLabel: {
-        color: '$white',
-        fontSize: AppFonts.small.size * 0.7,
-        fontFamily: AppFonts.base.familyBold,
-    },
-    bithompTag: {
-        backgroundColor: '$bithomp',
-    },
-    xrplnsTag: {
-        backgroundColor: '$xrplns',
-    },
-    xrpscanTag: {
-        backgroundColor: '$xrpscan',
-    },
-    payidTag: {
-        backgroundColor: '$payid',
     },
     destinationTagContainer: {
         marginTop: 10,

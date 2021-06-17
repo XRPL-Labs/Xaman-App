@@ -101,7 +101,6 @@ class OfferCreateTemplate extends Component<Props, State> {
                 <RecipientElement
                     containerStyle={[styles.contentBox, styles.addressContainer]}
                     isLoading={isLoadingIssuerDetails}
-                    showAvatar={false}
                     recipient={{
                         address: transaction.TakerGets.issuer || transaction.TakerPays.issuer,
                         ...issuerDetails,

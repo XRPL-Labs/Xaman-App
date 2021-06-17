@@ -101,7 +101,7 @@ class AccountSettingsView extends Component<Props, State> {
         getAccountName.cache.set(
             account.address,
             new Promise((resolve) => {
-                resolve({ name: newLabel, source: 'internal:accounts' });
+                resolve({ name: newLabel, source: 'accounts' });
             }),
         );
     };

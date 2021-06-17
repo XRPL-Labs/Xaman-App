@@ -99,6 +99,7 @@ class RecipientStep extends Component<Props, State> {
                         address: to,
                         tag,
                         source: accountInfo.source,
+                        kycApproved: accountInfo.kycApproved,
                     },
                 ]),
                 isSearching: false,
@@ -164,7 +165,7 @@ class RecipientStep extends Component<Props, State> {
                         name: item.name,
                         address: item.address,
                         tag: item.destinationTag,
-                        source: 'internal:contacts',
+                        source: 'contacts',
                     });
                 }
             });
@@ -178,7 +179,7 @@ class RecipientStep extends Component<Props, State> {
                     searchResult.push({
                         name: item.label,
                         address: item.address,
-                        source: 'internal:accounts',
+                        source: 'accounts',
                     });
                 }
             });
@@ -212,6 +213,7 @@ class RecipientStep extends Component<Props, State> {
                                         address: element.account,
                                         source: element.source,
                                         tag: element.tag,
+                                        kycApproved: element.kycApproved,
                                     });
                                 });
                             }
@@ -286,7 +288,7 @@ class RecipientStep extends Component<Props, State> {
             dataSource.push({
                 title: Localize.t('account.myAccounts'),
                 data: flatMap(myAccountList, (a) => {
-                    return { name: a.label, address: a.address, source: 'internal:accounts' };
+                    return { name: a.label, address: a.address };
                 }),
             });
         }
@@ -304,7 +306,6 @@ class RecipientStep extends Component<Props, State> {
                         name: a.name,
                         address: a.address,
                         tag: a.destinationTag,
-                        source: 'internal:contacts',
                     };
                 }),
             });
@@ -659,6 +660,7 @@ class RecipientStep extends Component<Props, State> {
                 recipient={item}
                 selected={selected}
                 showTag={false}
+                showSource
                 onPress={() => {
                     if (!selected) {
                         setDestination({

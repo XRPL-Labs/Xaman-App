@@ -594,6 +594,7 @@ exports[`Storyshots Avatar Big 1`] = `
       style={
         Array [
           Object {
+            "backgroundColor": "#ffffff",
             "borderRadius": 10,
           },
           Object {
@@ -631,6 +632,7 @@ exports[`Storyshots Avatar Original 1`] = `
       style={
         Array [
           Object {
+            "backgroundColor": "#ffffff",
             "borderRadius": 10,
           },
           Object {
@@ -668,6 +670,7 @@ exports[`Storyshots Avatar With Border 1`] = `
       style={
         Array [
           Object {
+            "backgroundColor": "#ffffff",
             "borderRadius": 10,
           },
           Object {
@@ -676,7 +679,7 @@ exports[`Storyshots Avatar With Border 1`] = `
           },
           Object {
             "borderColor": "rgba(96,104,133,0.06)",
-            "borderWidth": 1,
+            "borderWidth": 0.5,
           },
         ]
       }
@@ -708,6 +711,7 @@ exports[`Storyshots Avatar badge 1`] = `
       style={
         Array [
           Object {
+            "backgroundColor": "#ffffff",
             "borderRadius": 10,
           },
           Object {
@@ -784,6 +788,7 @@ exports[`Storyshots Avatar badge Color 1`] = `
       style={
         Array [
           Object {
+            "backgroundColor": "#ffffff",
             "borderRadius": 10,
           },
           Object {
@@ -4138,137 +4143,71 @@ exports[`Storyshots RecipientElement Selected 1`] = `
     onStartShouldSetResponder={[Function]}
     style={
       Object {
+        "alignItems": "center",
+        "backgroundColor": "rgba(48,82,255,0.06)",
+        "borderColor": "#3052FF",
+        "borderRadius": 12,
+        "borderWidth": 2,
+        "flexDirection": "row",
+        "marginBottom": 8,
         "opacity": 1,
+        "padding": 5,
       }
     }
     testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
+    <View>
+      <Image
+        borderRadius={25}
+        resizeMode="cover"
+        source={
+          Object {
+            "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "backgroundColor": "#ffffff",
+              "borderRadius": 10,
+            },
+            Object {
+              "height": 85.71428571428571,
+              "width": 85.71428571428571,
+            },
+            Object {
+              "borderColor": "rgba(96,104,133,0.06)",
+              "borderWidth": 0.5,
+            },
+          ]
+        }
+      />
+    </View>
     <View
       style={
-        Array [
-          Object {
-            "alignItems": "center",
-            "backgroundColor": "#F3F6FA",
-            "borderColor": "#F3F6FA",
-            "borderRadius": 12,
-            "borderWidth": 2,
-            "flexDirection": "row",
-            "marginBottom": 8,
-            "padding": 5,
-          },
-          Object {
-            "backgroundColor": "rgba(48,82,255,0.06)",
-            "borderColor": "#3052FF",
-            "borderWidth": 2,
-          },
-          undefined,
-        ]
+        Object {
+          "paddingLeft": 10,
+        }
       }
     >
-      <View>
-        <Image
-          borderRadius={25}
-          resizeMode="cover"
-          source={
-            Object {
-              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
-            }
-          }
-          style={
-            Array [
-              Object {
-                "borderRadius": 10,
-              },
-              Object {
-                "height": 85.71428571428571,
-                "width": 85.71428571428571,
-              },
-              false,
-            ]
-          }
-        />
-      </View>
       <View
         style={
           Object {
-            "paddingLeft": 10,
+            "flexDirection": "row",
+            "left": 0,
+            "right": 0,
           }
         }
       >
-        <View
-          style={
-            Object {
-              "flexDirection": "row",
-              "left": 0,
-              "right": 0,
-            }
-          }
-        >
-          <Text
-            adjustsFontSizeToFit={true}
-            numberOfLines={1}
-            style={
-              Array [
-                Object {
-                  "color": "#000000",
-                  "fontFamily": "ProximaNova-Bold",
-                  "fontSize": 32.14285714285714,
-                },
-                Object {
-                  "color": "#3052FF",
-                },
-              ]
-            }
-          >
-            Wietse
-          </Text>
-          <View
-            accessible={true}
-            focusable={true}
-            onClick={[Function]}
-            onResponderGrant={[Function]}
-            onResponderMove={[Function]}
-            onResponderRelease={[Function]}
-            onResponderTerminate={[Function]}
-            onResponderTerminationRequest={[Function]}
-            onStartShouldSetResponder={[Function]}
-            style={
-              Object {
-                "alignSelf": "center",
-                "backgroundColor": "#3fa3b5",
-                "borderRadius": 5,
-                "marginLeft": 5,
-                "opacity": 1,
-                "paddingHorizontal": 5,
-                "paddingVertical": 1,
-              }
-            }
-          >
-            <Text
-              style={
-                Array [
-                  Object {
-                    "color": "#ffffff",
-                    "fontFamily": "ProximaNova-Bold",
-                    "fontSize": 18,
-                  },
-                  Object {
-                    "fontSize": 18,
-                  },
-                ]
-              }
-            >
-              Bithomp
-            </Text>
-          </View>
-        </View>
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
-                "color": "#606885",
-                "fontFamily": "UbuntuMono-Regular",
-                "fontSize": 25.71428571428571,
+                "color": "#000000",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 32.14285714285714,
               },
               Object {
                 "color": "#3052FF",
@@ -4276,9 +4215,25 @@ exports[`Storyshots RecipientElement Selected 1`] = `
             ]
           }
         >
-          rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1
+          Wietse
         </Text>
       </View>
+      <Text
+        style={
+          Array [
+            Object {
+              "color": "#606885",
+              "fontFamily": "UbuntuMono-Regular",
+              "fontSize": 25.71428571428571,
+            },
+            Object {
+              "color": "#3052FF",
+            },
+          ]
+        }
+      >
+        rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1
+      </Text>
     </View>
   </View>
 </View>
@@ -4307,139 +4262,93 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
     onStartShouldSetResponder={[Function]}
     style={
       Object {
+        "alignItems": "center",
+        "backgroundColor": "#F3F6FA",
+        "borderColor": "#F3F6FA",
+        "borderRadius": 12,
+        "borderWidth": 2,
+        "flexDirection": "row",
+        "marginBottom": 8,
         "opacity": 1,
+        "padding": 5,
       }
     }
     testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
+    <View>
+      <Image
+        borderRadius={25}
+        resizeMode="cover"
+        source={
+          Object {
+            "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "backgroundColor": "#ffffff",
+              "borderRadius": 10,
+            },
+            Object {
+              "height": 85.71428571428571,
+              "width": 85.71428571428571,
+            },
+            Object {
+              "borderColor": "rgba(96,104,133,0.06)",
+              "borderWidth": 0.5,
+            },
+          ]
+        }
+      />
+    </View>
     <View
       style={
-        Array [
-          Object {
-            "alignItems": "center",
-            "backgroundColor": "#F3F6FA",
-            "borderColor": "#F3F6FA",
-            "borderRadius": 12,
-            "borderWidth": 2,
-            "flexDirection": "row",
-            "marginBottom": 8,
-            "padding": 5,
-          },
-          undefined,
-          undefined,
-        ]
+        Object {
+          "paddingLeft": 10,
+        }
       }
     >
-      <View>
-        <Image
-          borderRadius={25}
-          resizeMode="cover"
-          source={
-            Object {
-              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
-            }
-          }
-          style={
-            Array [
-              Object {
-                "borderRadius": 10,
-              },
-              Object {
-                "height": 85.71428571428571,
-                "width": 85.71428571428571,
-              },
-              false,
-            ]
-          }
-        />
-      </View>
       <View
         style={
           Object {
-            "paddingLeft": 10,
+            "flexDirection": "row",
+            "left": 0,
+            "right": 0,
           }
         }
       >
-        <View
-          style={
-            Object {
-              "flexDirection": "row",
-              "left": 0,
-              "right": 0,
-            }
-          }
-        >
-          <Text
-            adjustsFontSizeToFit={true}
-            numberOfLines={1}
-            style={
-              Array [
-                Object {
-                  "color": "#000000",
-                  "fontFamily": "ProximaNova-Bold",
-                  "fontSize": 32.14285714285714,
-                },
-                null,
-              ]
-            }
-          >
-            Wietse
-          </Text>
-          <View
-            accessible={true}
-            focusable={true}
-            onClick={[Function]}
-            onResponderGrant={[Function]}
-            onResponderMove={[Function]}
-            onResponderRelease={[Function]}
-            onResponderTerminate={[Function]}
-            onResponderTerminationRequest={[Function]}
-            onStartShouldSetResponder={[Function]}
-            style={
-              Object {
-                "alignSelf": "center",
-                "backgroundColor": "#3fa3b5",
-                "borderRadius": 5,
-                "marginLeft": 5,
-                "opacity": 1,
-                "paddingHorizontal": 5,
-                "paddingVertical": 1,
-              }
-            }
-          >
-            <Text
-              style={
-                Array [
-                  Object {
-                    "color": "#ffffff",
-                    "fontFamily": "ProximaNova-Bold",
-                    "fontSize": 18,
-                  },
-                  Object {
-                    "fontSize": 18,
-                  },
-                ]
-              }
-            >
-              Bithomp
-            </Text>
-          </View>
-        </View>
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
-                "color": "#606885",
-                "fontFamily": "UbuntuMono-Regular",
-                "fontSize": 25.71428571428571,
+                "color": "#000000",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 32.14285714285714,
               },
               null,
             ]
           }
         >
-          rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1
+          Wietse
         </Text>
       </View>
+      <Text
+        style={
+          Array [
+            Object {
+              "color": "#606885",
+              "fontFamily": "UbuntuMono-Regular",
+              "fontSize": 25.71428571428571,
+            },
+            null,
+          ]
+        }
+      >
+        rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1
+      </Text>
     </View>
   </View>
 </View>
@@ -4468,122 +4377,93 @@ exports[`Storyshots RecipientElement default 1`] = `
     onStartShouldSetResponder={[Function]}
     style={
       Object {
+        "alignItems": "center",
+        "backgroundColor": "#F3F6FA",
+        "borderColor": "#F3F6FA",
+        "borderRadius": 12,
+        "borderWidth": 2,
+        "flexDirection": "row",
+        "marginBottom": 8,
         "opacity": 1,
+        "padding": 5,
       }
     }
     testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
+    <View>
+      <Image
+        borderRadius={25}
+        resizeMode="cover"
+        source={
+          Object {
+            "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "backgroundColor": "#ffffff",
+              "borderRadius": 10,
+            },
+            Object {
+              "height": 85.71428571428571,
+              "width": 85.71428571428571,
+            },
+            Object {
+              "borderColor": "rgba(96,104,133,0.06)",
+              "borderWidth": 0.5,
+            },
+          ]
+        }
+      />
+    </View>
     <View
       style={
-        Array [
-          Object {
-            "alignItems": "center",
-            "backgroundColor": "#F3F6FA",
-            "borderColor": "#F3F6FA",
-            "borderRadius": 12,
-            "borderWidth": 2,
-            "flexDirection": "row",
-            "marginBottom": 8,
-            "padding": 5,
-          },
-          undefined,
-          undefined,
-        ]
+        Object {
+          "paddingLeft": 10,
+        }
       }
     >
-      <View>
-        <Image
-          borderRadius={25}
-          resizeMode="cover"
-          source={
-            Object {
-              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
-            }
-          }
-          style={
-            Array [
-              Object {
-                "borderRadius": 10,
-              },
-              Object {
-                "height": 85.71428571428571,
-                "width": 85.71428571428571,
-              },
-              false,
-            ]
-          }
-        />
-      </View>
       <View
         style={
           Object {
-            "paddingLeft": 10,
+            "flexDirection": "row",
+            "left": 0,
+            "right": 0,
           }
         }
       >
-        <View
-          style={
-            Object {
-              "flexDirection": "row",
-              "left": 0,
-              "right": 0,
-            }
-          }
-        >
-          <Text
-            adjustsFontSizeToFit={true}
-            numberOfLines={1}
-            style={
-              Array [
-                Object {
-                  "color": "#000000",
-                  "fontFamily": "ProximaNova-Bold",
-                  "fontSize": 32.14285714285714,
-                },
-                null,
-              ]
-            }
-          >
-            Wietse
-          </Text>
-          <View
-            accessible={true}
-            focusable={true}
-            onClick={[Function]}
-            onResponderGrant={[Function]}
-            onResponderMove={[Function]}
-            onResponderRelease={[Function]}
-            onResponderTerminate={[Function]}
-            onResponderTerminationRequest={[Function]}
-            onStartShouldSetResponder={[Function]}
-            style={
-              Object {
-                "alignSelf": "center",
-                "backgroundColor": undefined,
-                "borderRadius": 5,
-                "marginLeft": 5,
-                "opacity": 1,
-                "paddingHorizontal": 5,
-                "paddingVertical": 1,
-              }
-            }
-          />
-        </View>
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
-                "color": "#606885",
-                "fontFamily": "UbuntuMono-Regular",
-                "fontSize": 25.71428571428571,
+                "color": "#000000",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 32.14285714285714,
               },
               null,
             ]
           }
         >
-          rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1
+          Wietse
         </Text>
       </View>
+      <Text
+        style={
+          Array [
+            Object {
+              "color": "#606885",
+              "fontFamily": "UbuntuMono-Regular",
+              "fontSize": 25.71428571428571,
+            },
+            null,
+          ]
+        }
+      >
+        rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1
+      </Text>
     </View>
   </View>
 </View>
