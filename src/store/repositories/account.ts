@@ -1,4 +1,4 @@
-import { first, has, filter } from 'lodash';
+import { first, has, filter, find } from 'lodash';
 import Realm, { Results, ObjectSchema } from 'realm';
 
 import Flag from '@common/libs/ledger/parser/common/flag';
@@ -146,6 +146,16 @@ class AccountRepository extends BaseRepository {
      */
     isRegularKey = (address: string) => {
         return !this.findBy('regularKey', address).isEmpty();
+    };
+
+    /**
+     * check if account is signable
+     */
+    isSignable = (account: AccountSchema): boolean => {
+        if (account.accessLevel === AccessLevels.Full) {
+            return true;
+        }
+        return !!find(this.getSignableAccounts(), (o) => o.address === account.address);
     };
 
     /**

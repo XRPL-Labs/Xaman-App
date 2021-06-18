@@ -21,6 +21,7 @@ import { AppScreens } from '@common/constants';
 
 import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccessLevels } from '@store/types';
 
 import { SocketService, BackendService, PushNotificationsService } from '@services';
 
@@ -358,7 +359,7 @@ class XAppBrowserModal extends Component<Props, State> {
             assign(data, {
                 account: account.address,
                 accounttype: account.type,
-                accountaccess: account.accessLevel,
+                accountaccess: AccountRepository.isSignable(account) ? AccessLevels.Full : AccessLevels.Readonly,
             });
         }
 
