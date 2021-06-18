@@ -5,21 +5,8 @@ jest.useFakeTimers();
 describe('NavigationService', () => {
     const navigationService = NavigationService;
     const onboardingScreen = 'app.onboarding';
-    const homeScreen = 'app.home';
     const modalOverlay = 'overlay.something';
     const root = 'DefaultRoot';
-
-    it('should set current/prev screen and analytics', () => {
-        navigationService.currentScreen = onboardingScreen;
-
-        const spy = jest.spyOn(navigationService, 'setPrevScreen');
-
-        navigationService.setCurrentScreen(homeScreen);
-
-        expect(spy).toBeCalledWith(onboardingScreen);
-        expect(navigationService.currentScreen).toBe(homeScreen);
-        expect(navigationService.getPrevScreen()).toBe(onboardingScreen);
-    });
 
     it('should return current screen', () => {
         navigationService.currentScreen = onboardingScreen;
