@@ -15,7 +15,6 @@ import {
     ComponentDidAppearEvent,
     BottomTabLongPressedEvent,
     BottomTabPressedEvent,
-    ModalDismissedEvent,
 } from 'react-native-navigation';
 
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
@@ -25,9 +24,18 @@ import { AppScreens } from '@common/constants';
 
 import Locale from '@locale';
 
+/* Types  ==================================================================== */
+export enum ComponentTypes {
+    Screen = 'SCREEN',
+    Modal = 'MODAL',
+    TabBar = 'TABBAR',
+    Overlay = 'OVERLAY',
+    Unknown = 'UNKNOWN',
+}
+
 /* Service  ==================================================================== */
 class NavigationService extends EventEmitter {
-    prevScreen: string;
+    screens: Array<string>;
     currentRoot: string;
     currentScreen: string;
     overlays: Array<string>;
@@ -36,9 +44,9 @@ class NavigationService extends EventEmitter {
     constructor() {
         super();
 
-        this.prevScreen = '';
         this.currentRoot = '';
         this.currentScreen = '';
+        this.screens = [];
         this.overlays = [];
         this.backHandlerClickCount = 0;
     }
@@ -51,7 +59,6 @@ class NavigationService extends EventEmitter {
                 // navigation event listeners
                 Navigation.events().registerComponentDidAppearListener(this.componentDidAppear);
                 Navigation.events().registerCommandListener(this.navigatorCommandListener);
-                Navigation.events().registerModalDismissedListener(this.modalDismissedListener);
                 Navigation.events().registerBottomTabLongPressedListener(
                     ({ selectedTabIndex }: BottomTabLongPressedEvent) => {
                         if (selectedTabIndex === 0) {
@@ -109,9 +116,10 @@ class NavigationService extends EventEmitter {
         });
     };
 
+    // track tabbar screen change
     componentDidAppear = ({ componentName }: ComponentDidAppearEvent) => {
-        // ignore overlay
-        if (componentName.indexOf('overlay.') === -1) {
+        // // only apply for tabbar
+        if (this.getComponentType(componentName) === ComponentTypes.TabBar) {
             this.setCurrentScreen(componentName);
         }
     };
@@ -119,7 +127,7 @@ class NavigationService extends EventEmitter {
     navigatorCommandListener = (name: string, params: any) => {
         switch (name) {
             case 'push':
-                this.setCurrentScreen(params.componentId);
+                this.setCurrentScreen(params.layout.data.name);
                 break;
             case 'showModal':
                 this.setCurrentScreen(params.layout.children[0].id);
@@ -127,18 +135,17 @@ class NavigationService extends EventEmitter {
             case 'showOverlay':
                 this.setCurrentOverlay(params.layout.id);
                 break;
+            case 'dismissModal':
+            case 'pop':
+                this.setPrevScreen();
+                break;
             case 'setRoot':
                 this.setCurrentRoot(params.layout.root.id);
+                this.setCurrentScreen(params.layout.root.children[0].children[0].id);
                 this.emit('setRoot', params.layout.root.id);
                 break;
             default:
                 break;
-        }
-    };
-
-    modalDismissedListener = ({ componentId }: ModalDismissedEvent) => {
-        if (componentId !== this.getPrevScreen()) {
-            this.setCurrentScreen(this.getPrevScreen());
         }
     };
 
@@ -202,7 +209,8 @@ class NavigationService extends EventEmitter {
         if (this.currentScreen !== currentScreen) {
             analytics().logScreenView({ screen_name: currentScreen });
 
-            this.setPrevScreen(this.currentScreen);
+            this.recordHistory(currentScreen);
+
             this.currentScreen = currentScreen;
         }
     };
@@ -235,12 +243,42 @@ class NavigationService extends EventEmitter {
         return this.currentRoot;
     };
 
-    setPrevScreen = (screen: string) => {
-        this.prevScreen = screen;
+    setPrevScreen = () => {
+        // remove the screen
+        this.screens.pop();
+        // set the last screen as current screen
+        this.currentScreen = last(this.screens);
     };
 
-    getPrevScreen = (): string => {
-        return this.prevScreen;
+    recordHistory = (screen: string) => {
+        const prevScreenType = this.getComponentType(last(this.screens));
+        const currentScreenType = this.getComponentType(screen);
+
+        if (prevScreenType !== ComponentTypes.TabBar || currentScreenType !== ComponentTypes.TabBar) {
+            this.screens.push(screen);
+        }
+
+        if (prevScreenType === ComponentTypes.TabBar && currentScreenType === ComponentTypes.TabBar) {
+            this.screens[this.screens.length - 1] = screen;
+        }
+    };
+
+    getComponentType = (component: string) => {
+        if (!component) return ComponentTypes.Unknown;
+
+        if (component.startsWith('modal.')) {
+            return ComponentTypes.Modal;
+        }
+
+        if (component.startsWith('overlay.')) {
+            return ComponentTypes.Overlay;
+        }
+
+        if (component.startsWith('app.TabBar')) {
+            return ComponentTypes.TabBar;
+        }
+
+        return ComponentTypes.Screen;
     };
 }
 
