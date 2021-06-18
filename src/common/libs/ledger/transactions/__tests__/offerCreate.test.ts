@@ -139,4 +139,31 @@ describe('OfferCreate tx', () => {
             value: '100',
         });
     });
+
+    it('Should return zero for taker got and taker paid if order cancelled or killed', () => {
+        const instance = new OfferCreate(txTemplates.XRPIOUCANCELED);
+
+        expect(instance.Executed).toBe(true);
+        expect(instance.OfferSequence).toBe(61160755);
+
+        expect(instance.TakerGets).toStrictEqual({
+            currency: 'XRP',
+            value: '50',
+        });
+        expect(instance.TakerGot('rQamE9ddZiRZLKRAAzwGKboQ8rQHgesjEs')).toStrictEqual({
+            action: 'DEC',
+            currency: 'XRP',
+            value: '0',
+        });
+        expect(instance.TakerPays).toStrictEqual({
+            currency: 'CSC',
+            issuer: 'rCSCManTZ8ME9EoLrSHHYKW8PPwWMgkwr',
+            value: '11616.66671104',
+        });
+        expect(instance.TakerPaid('rQamE9ddZiRZLKRAAzwGKboQ8rQHgesjEs')).toStrictEqual({
+            currency: 'CSC',
+            issuer: 'rCSCManTZ8ME9EoLrSHHYKW8PPwWMgkwr',
+            value: '0',
+        });
+    });
 });
