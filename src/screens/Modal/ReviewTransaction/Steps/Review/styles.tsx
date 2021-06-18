@@ -12,10 +12,11 @@ const styles = StyleService.create({
         backgroundColor: '$lightGrey',
     },
     transactionContent: {
-        height: '100%',
+        flex: 1,
         backgroundColor: '$background',
-        borderRadius: 30,
-        paddingTop: 28,
+        borderTopRightRadius: 30,
+        borderTopLeftRadius: 30,
+        paddingVertical: AppSizes.padding,
     },
     rowLabel: {
         marginLeft: 5,
@@ -77,14 +78,13 @@ const styles = StyleService.create({
         paddingHorizontal: AppSizes.paddingSml,
         paddingBottom: 10,
     },
-    topContent: {
-        width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    keyboardAvoidViewStyle: {
+    acceptButtonContainer: {
         flex: 1,
-        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        paddingBottom: hasNotch() ? 20 : 0,
+    },
+    keyboardAvoidContainerStyle: {
+        flexGrow: 1,
     },
 });
 

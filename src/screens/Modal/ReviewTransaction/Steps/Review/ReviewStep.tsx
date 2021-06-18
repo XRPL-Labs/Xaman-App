@@ -260,10 +260,11 @@ class ReviewStep extends Component<Props, State> {
                 </View>
                 <KeyboardAwareScrollView
                     testID="review-content-container"
-                    style={styles.keyboardAvoidViewStyle}
+                    contentContainerStyle={styles.keyboardAvoidContainerStyle}
+                    style={AppStyles.flex1}
                     scrollEnabled={canScroll}
                 >
-                    <View style={[styles.topContent, AppStyles.centerContent]}>
+                    <View style={[AppStyles.centerContent]}>
                         <View style={[AppStyles.row, AppStyles.paddingSml]}>
                             <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
                                 <Avatar size={60} border source={{ uri: payload.application.icon_url }} />
@@ -300,7 +301,7 @@ class ReviewStep extends Component<Props, State> {
                         <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingVerticalSml]}>
                             {this.renderDetails()}
                         </View>
-                        <View style={[AppStyles.flex1, AppStyles.paddingHorizontalSml]}>
+                        <View style={[styles.acceptButtonContainer, AppStyles.paddingHorizontalSml]}>
                             <SwipeButton
                                 testID="accept-button"
                                 color={this.getSwipeButtonColor()}
@@ -312,8 +313,6 @@ class ReviewStep extends Component<Props, State> {
                                 onPanResponderRelease={this.toggleCanScroll}
                             />
                         </View>
-
-                        <Spacer size={50} />
                     </View>
                 </KeyboardAwareScrollView>
             </ImageBackground>
