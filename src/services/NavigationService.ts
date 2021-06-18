@@ -140,9 +140,7 @@ class NavigationService extends EventEmitter {
                 this.setPrevScreen();
                 break;
             case 'setRoot':
-                this.setCurrentRoot(params.layout.root.id);
-                this.setCurrentScreen(params.layout.root.children[0].children[0].id);
-                this.emit('setRoot', params.layout.root.id);
+                this.onRootChange(params);
                 break;
             default:
                 break;
@@ -233,10 +231,24 @@ class NavigationService extends EventEmitter {
         return l;
     };
 
-    setCurrentRoot = (currentRoot: string) => {
-        if (this.currentRoot !== currentRoot) {
-            this.currentRoot = currentRoot;
+    onRootChange = (params: any) => {
+        try {
+            const initializeScreen = params.layout.root.children[0].children[0]
+                ? params.layout.root.children[0].children[0].id
+                : params.layout.root.children[0].data.name;
+
+            this.setCurrentScreen(initializeScreen);
+        } catch {
+            // ignore
         }
+
+        const root = params.layout.root.id;
+
+        if (this.currentRoot !== root) {
+            this.currentRoot = root;
+        }
+
+        this.emit('setRoot', root);
     };
 
     getCurrentRoot = (): string => {
