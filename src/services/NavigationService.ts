@@ -15,6 +15,7 @@ import {
     ComponentDidAppearEvent,
     BottomTabLongPressedEvent,
     BottomTabPressedEvent,
+    ModalDismissedEvent,
 } from 'react-native-navigation';
 
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
@@ -59,6 +60,7 @@ class NavigationService extends EventEmitter {
                 // navigation event listeners
                 Navigation.events().registerComponentDidAppearListener(this.componentDidAppear);
                 Navigation.events().registerCommandListener(this.navigatorCommandListener);
+                Navigation.events().registerModalDismissedListener(this.modalDismissedListener);
                 Navigation.events().registerBottomTabLongPressedListener(
                     ({ selectedTabIndex }: BottomTabLongPressedEvent) => {
                         if (selectedTabIndex === 0) {
@@ -116,6 +118,12 @@ class NavigationService extends EventEmitter {
         });
     };
 
+    modalDismissedListener = ({ componentId }: ModalDismissedEvent) => {
+        if (componentId === last(this.screens)) {
+            this.setPrevScreen();
+        }
+    };
+
     // track tabbar screen change
     componentDidAppear = ({ componentName }: ComponentDidAppearEvent) => {
         // // only apply for tabbar
@@ -135,7 +143,6 @@ class NavigationService extends EventEmitter {
             case 'showOverlay':
                 this.setCurrentOverlay(params.layout.id);
                 break;
-            case 'dismissModal':
             case 'pop':
                 this.setPrevScreen();
                 break;
