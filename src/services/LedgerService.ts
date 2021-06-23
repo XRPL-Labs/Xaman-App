@@ -7,14 +7,22 @@
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment-timezone';
 import EventEmitter from 'events';
-import { map, isEmpty, flatMap, forEach, has, get, assign, omitBy, startsWith } from 'lodash';
+import { map, isEmpty, flatMap, forEach, has, get, assign, omitBy, startsWith, keys } from 'lodash';
 
 import { TrustLineSchema } from '@store/schemas/latest';
 import AccountRepository from '@store/repositories/account';
 import CurrencyRepository from '@store/repositories/currency';
 
 import { Amount } from '@common/libs/ledger/parser/common';
-import { AccountTxResponse, LedgerMarker, SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
+import Meta from '@common/libs/ledger/parser/meta';
+
+import {
+    AccountTxResponse,
+    LedgerMarker,
+    SubmitResultType,
+    VerifyResultType,
+    LedgerTransactionType,
+} from '@common/libs/ledger/types';
 
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
@@ -295,19 +303,24 @@ class LedgerService extends EventEmitter {
     };
 
     /**
-     * Handle stream transactions
+     * Handle stream transactions on subscribed accounts
      */
     transactionHandler() {
-        SocketService.onEvent('transaction', (tx: any) => {
-            const { transaction } = tx;
+        SocketService.onEvent('transaction', (tx: LedgerTransactionType) => {
+            const { transaction, meta } = tx;
 
-            this.logger.debug('Transaction Received: ', transaction);
+            if (typeof transaction === 'object' && typeof meta === 'object') {
+                this.logger.debug(`Transaction received: ${get(transaction, 'hash', 'NO_HASH')}`);
 
-            // update account details
-            this.updateAccountsDetails([transaction.Account, transaction.Destination]);
+                // get effected accounts
+                const effectedAccounts = keys(new Meta(meta).parseBalanceChanges());
 
-            // emit onTransaction event
-            this.emit('transaction', transaction);
+                // update account details
+                this.updateAccountsDetails(effectedAccounts);
+
+                // emit onTransaction event
+                this.emit('transaction', transaction);
+            }
         });
     }
 
@@ -509,7 +522,7 @@ class LedgerService extends EventEmitter {
             this.updateAccountInfo(account.address)
                 .then(() => this.updateAccountLines(account.address))
                 .catch((e) => {
-                    this.logger.warn(`UpdateAccountInfo [${account.address}] `, e);
+                    this.logger.warn(`Update account info [${account.address}] `, e);
                 });
 
             // update last sync
