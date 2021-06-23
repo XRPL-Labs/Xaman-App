@@ -57,19 +57,12 @@ const styles = StyleService.create({
     },
     outgoingColor: {
         color: '$red',
-        tintColor: '$red',
-    },
-    incomingColor: {
-        color: '$textPrimary',
-        tintColor: '$green',
     },
     orangeColor: {
         color: '$orange',
-        tintColor: '$orange',
     },
     naturalColor: {
         color: '$grey',
-        tintColor: '$grey',
     },
 });
 
