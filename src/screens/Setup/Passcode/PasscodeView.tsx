@@ -14,7 +14,7 @@ import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 import { VibrateHapticFeedback, Toast } from '@common/helpers/interface';
 
-import { PushNotificationsService, LoggerService, StyleService } from '@services';
+import { PushNotificationsService, StyleService } from '@services';
 
 // components
 import { Button, Spacer, Footer, PinInput, InfoMessage } from '@components/General';
@@ -92,7 +92,7 @@ class PasscodeSetupView extends Component<Props, State> {
             // go to the next step
             Navigator.push(AppScreens.Setup.PushNotification);
         } catch (e) {
-            LoggerService.recordError('Finish Setup Passcode Failed', e);
+            Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
         }
     };
 

@@ -6,8 +6,6 @@ import { AppConfig } from '@common/constants';
 import { GetDeviceUniqueId } from '@common/helpers/device';
 import { SHA512, HMAC256 } from '@common/libs/crypto';
 
-import LoggerService from '@services/LoggerService';
-
 import { CoreSchema } from '@store/schemas/latest';
 import { NodeChain } from '@store/types';
 
@@ -129,7 +127,6 @@ class CoreRepository extends BaseRepository {
 
             return encPasscode;
         } catch (e) {
-            LoggerService.recordError('Encrypt Passcode Failed', e);
             return '';
         }
     };
@@ -148,7 +145,6 @@ class CoreRepository extends BaseRepository {
 
             return encryptedPasscode;
         } catch (e) {
-            LoggerService.recordError('Save Passcode Failed', e);
             return '';
         }
     };
