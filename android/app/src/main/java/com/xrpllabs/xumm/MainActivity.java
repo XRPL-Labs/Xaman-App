@@ -12,6 +12,13 @@ public class MainActivity extends NavigationActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // check only one root activity is running at the time
+        if (!isTaskRoot()) {
+            finish();
+            return;
+        }
+
         setSplashLayout();
     }
 
