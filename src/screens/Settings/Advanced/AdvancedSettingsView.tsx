@@ -127,30 +127,39 @@ class AdvancedSettingsView extends Component<Props, State> {
 
     reRegisterPushToken = async () => {
         try {
-            const hasPermission = await PushNotificationsService.checkPermission();
+            // get current permission status
+            let hasPermission = await PushNotificationsService.checkPermission();
 
-            if (hasPermission) {
-                const devicePushToken = await PushNotificationsService.getToken();
-
-                ApiService.updateDevice
-                    .post(null, {
-                        devicePushToken,
-                    })
-                    .then(() => {
-                        Alert.alert(
-                            Localize.t('global.success'),
-                            Localize.t('settings.successfullyReRegisteredForPushNotifications'),
-                        );
-                    })
-                    .catch(() => {
-                        Alert.alert(
-                            Localize.t('global.error'),
-                            Localize.t('settings.unableToReRegisteredForPushNotifications'),
-                        );
-                    });
-            } else {
-                Alert.alert(Localize.t('global.error'), Localize.t('global.pushErrorPermissionMessage'));
+            if (!hasPermission) {
+                // try to request the permission again
+                hasPermission = await PushNotificationsService.requestPermission();
             }
+
+            // if still no permission granted, user need to give the permission manually
+            if (!hasPermission) {
+                Alert.alert(Localize.t('global.error'), Localize.t('global.pushErrorPermissionMessage'));
+                return;
+            }
+
+            // fetch the push token and send to backend
+            const devicePushToken = await PushNotificationsService.getToken();
+
+            ApiService.updateDevice
+                .post(null, {
+                    devicePushToken,
+                })
+                .then(() => {
+                    Alert.alert(
+                        Localize.t('global.success'),
+                        Localize.t('settings.successfullyReRegisteredForPushNotifications'),
+                    );
+                })
+                .catch(() => {
+                    Alert.alert(
+                        Localize.t('global.error'),
+                        Localize.t('settings.unableToReRegisteredForPushNotifications'),
+                    );
+                });
         } catch {
             Alert.alert(Localize.t('global.error'), Localize.t('settings.unableToReRegisteredForPushNotifications'));
         }

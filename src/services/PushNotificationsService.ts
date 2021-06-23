@@ -118,12 +118,22 @@ class PushNotificationsService extends EventEmitter {
 
     requestPermission = async (): Promise<boolean> => {
         try {
-            await messaging().requestPermission();
-            const token = await this.getToken();
-            this.onPermissionGranted();
-            return !!token;
+            const authStatus = await messaging().requestPermission();
+
+            const enabled =
+                authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+                authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+            if (enabled) {
+                const token = await this.getToken();
+                if (token) {
+                    this.onPermissionGranted();
+                    return true;
+                }
+            }
+
+            return false;
         } catch (error) {
-            /* User has rejected permissions */
             return false;
         }
     };
