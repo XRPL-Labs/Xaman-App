@@ -134,11 +134,7 @@ class NodeListView extends Component<Props, State> {
                 { type: 'default' },
             );
         } else {
-            CoreRepository.saveSettings({
-                defaultNode: item.url,
-            });
-
-            SocketService.onNodeChange(item.url, item.chain);
+            SocketService.switchNode(item.url, item.chain);
         }
     };
 

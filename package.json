@@ -43,7 +43,7 @@
     "tangem-sdk-react-native": "1.2.0",
     "uuid": "8.3.2",
     "xrpl-accountlib": "1.1.4",
-    "xrpl-client": "1.8.0",
+    "xrpl-client": "1.9.1",
     "xrpl-orderbook-reader": "0.3.3",
     "xrpl-tagged-address-codec": "0.2.1",
     "xumm-string-decode": "0.6.1"
