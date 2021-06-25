@@ -18,7 +18,7 @@ import { AppScreens } from '@common/constants';
 import { Payload, PayloadOrigin } from '@common/libs/payload';
 
 import LoggerService from '@services/LoggerService';
-import NavigationService from '@services/NavigationService';
+import NavigationService, { ComponentTypes } from '@services/NavigationService';
 
 import Localize from '@locale';
 
@@ -188,6 +188,30 @@ class PushNotificationsService extends EventEmitter {
         this.updateBadge();
     };
 
+    routeUser = async (screen: string, options: any, passProps: any, screenType?: ComponentTypes) => {
+        // close any overlay
+        const currentOverlay = NavigationService.getCurrentOverlay();
+
+        if (currentOverlay && currentOverlay !== AppScreens.Overlay.Lock) {
+            // dismiss overlay
+            await Navigator.dismissOverlay();
+        }
+
+        if (!screenType) {
+            screenType = NavigationService.getComponentType(screen);
+        }
+
+        if (screenType === ComponentTypes.Modal) {
+            setTimeout(() => {
+                Navigator.showModal(screen, options, passProps);
+            }, 10);
+        } else if (screenType === ComponentTypes.Screen) {
+            setTimeout(() => {
+                Navigator.push(screen, options, passProps);
+            });
+        }
+    };
+
     handleSingRequest = async (notification: any) => {
         const payloadUUID = get(notification, ['data', 'payload']);
 
@@ -196,12 +220,13 @@ class PushNotificationsService extends EventEmitter {
         await Payload.from(payloadUUID, PayloadOrigin.PUSH_NOTIFICATION)
             .then((payload) => {
                 // show review transaction screen
-                Navigator.showModal(
+                this.routeUser(
                     AppScreens.Modal.ReviewTransaction,
                     { modalPresentationStyle: 'fullScreen' },
                     {
                         payload,
                     },
+                    ComponentTypes.Modal,
                 );
             })
             .catch((e) => {
@@ -217,7 +242,8 @@ class PushNotificationsService extends EventEmitter {
         if (!xappIdentifier) return;
 
         let delay = 0;
-        // if already in xapp try to load the xApp from notification
+
+        // if already in xapp try to load the xApp from notification and close the current one
         if (NavigationService.getCurrentScreen() === AppScreens.Modal.XAppBrowser) {
             await Navigator.dismissModal();
             // looks like a bug in navigation library, need to add a delay before showing the modal
@@ -225,7 +251,8 @@ class PushNotificationsService extends EventEmitter {
         }
 
         setTimeout(() => {
-            Navigator.showModal(
+            // show review transaction screen
+            this.routeUser(
                 AppScreens.Modal.XAppBrowser,
                 {
                     modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
@@ -237,6 +264,7 @@ class PushNotificationsService extends EventEmitter {
                     origin: PayloadOrigin.PUSH_NOTIFICATION,
                     originData: get(notification, 'data'),
                 },
+                ComponentTypes.Modal,
             );
         }, delay);
     };
@@ -268,7 +296,7 @@ class PushNotificationsService extends EventEmitter {
         }
 
         setTimeout(() => {
-            Navigator.showModal(AppScreens.Transaction.Details, {}, { hash, account, asModal: true });
+            this.routeUser(AppScreens.Transaction.Details, {}, { hash, account, asModal: true }, ComponentTypes.Modal);
         }, delay);
     };
 
