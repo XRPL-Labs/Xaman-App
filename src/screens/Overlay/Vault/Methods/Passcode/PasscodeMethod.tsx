@@ -72,6 +72,11 @@ class PasscodeMethod extends Component<Props, State> {
         });
     }
 
+    componentWillUnmount() {
+        Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
+        Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
+    }
+
     onKeyboardShow = (e: KeyboardEvent) => {
         if (this.contentView) {
             this.contentView.measure((x, y, width, height) => {

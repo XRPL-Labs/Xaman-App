@@ -61,6 +61,11 @@ class PassphraseMethod extends Component<Props, State> {
         InteractionManager.runAfterInteractions(this.startAuthentication);
     }
 
+    componentWillUnmount() {
+        Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
+        Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
+    }
+
     startAuthentication = () => {
         // focus the input
         if (this.passwordInput) {
