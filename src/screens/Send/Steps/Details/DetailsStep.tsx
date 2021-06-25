@@ -91,8 +91,9 @@ class DetailsStep extends Component<Props, State> {
             return;
         }
 
-        // check for exceed amount
+        const isXRP = typeof currency === 'string';
 
+        // check for exceed amount
         // if IOU and obligation can send unlimited
         if (typeof currency !== 'string' && currency.obligation) {
             // last set amount parsed by bignumber
@@ -103,22 +104,28 @@ class DetailsStep extends Component<Props, State> {
         }
 
         // @ts-ignore
-        const availableBalance = new BigNumber(this.getAvailableBalance()).toNumber();
+        const availableBalance = new BigNumber(this.getAvailableBalance());
 
         // check if amount is bigger than what user can spend
-        if (bAmount.toNumber() > availableBalance) {
+        if (bAmount.isGreaterThan(availableBalance)) {
             Prompt(
                 Localize.t('global.error'),
                 Localize.t('send.theMaxAmountYouCanSendIs', {
-                    spendable: Localize.formatNumber(availableBalance),
+                    spendable: Localize.formatNumber(availableBalance.toNumber()),
                     currency: this.getCurrencyName(),
                 }),
                 [
                     { text: Localize.t('global.cancel') },
                     {
-                        text: Localize.t('global.update'),
+                        text: isXRP ? Localize.t('global.update') : Localize.t('global.next'),
                         onPress: () => {
-                            this.onAmountChange(availableBalance.toString());
+                            if (isXRP) {
+                                this.onAmountChange(availableBalance.toString());
+                            } else {
+                                setAmount(availableBalance.toString());
+                                // go to next screen
+                                goNext();
+                            }
                         },
                     },
                 ],
@@ -128,7 +135,7 @@ class DetailsStep extends Component<Props, State> {
         }
 
         // last set amount parsed by bignumber
-        setAmount(bAmount.toString(10));
+        setAmount(bAmount.toString());
 
         // go to next screen
         goNext();
