@@ -21,7 +21,7 @@ import { AppScreens } from '@common/constants';
 
 import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccessLevels } from '@store/types';
+import { AccessLevels, NodeChain } from '@store/types';
 
 import { SocketService, BackendService, PushNotificationsService } from '@services';
 
@@ -339,6 +339,13 @@ class XAppBrowserModal extends Component<Props, State> {
             style: coreSettings.theme,
             nodetype: SocketService.chain,
         };
+
+        // include node endpoint if using custom node
+        if (SocketService.chain === NodeChain.Custom) {
+            assign(data, {
+               nodewss: SocketService.node,
+            });
+        }
 
         // assign origin to the headers
         if (origin) {
