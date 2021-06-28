@@ -48,6 +48,7 @@ const screens = {
         Lock: 'overlay.lock',
         CurrencySettings: 'overlay.CurrencySettings',
         Alert: 'overlay.Alert',
+        FlaggedDestination: 'overlay.FlaggedDestination',
         ShareAccount: 'overlay.ShareAccount',
         RequestDecline: 'overlay.RequestDecline',
         EnterDestinationTag: 'overlay.EnterDestinationTag',

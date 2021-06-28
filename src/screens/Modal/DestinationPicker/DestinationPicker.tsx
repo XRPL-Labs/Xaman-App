@@ -429,20 +429,23 @@ class DestinationPicker extends Component<Props, State> {
             }
 
             if (destinationInfo.risk === 'CONFIRMED') {
-                Navigator.showAlertModal({
-                    type: 'error',
-                    title: Localize.t('global.critical'),
-                    text: Localize.t('send.destinationIsConfirmedAsScam'),
-
-                    buttons: [
-                        {
-                            text: Localize.t('global.back'),
-                            onPress: this.clearRecipient,
-                            type: 'dismiss',
-                            light: false,
+                Navigator.showOverlay(
+                    AppScreens.Overlay.FlaggedDestination,
+                    {
+                        overlay: {
+                            handleKeyboardEvents: true,
                         },
-                    ],
-                });
+                        layout: {
+                            backgroundColor: 'transparent',
+                            componentBackgroundColor: 'transparent',
+                        },
+                    },
+                    {
+                        destination: destination.address,
+                        onContinue: this.onSelect,
+                        onDismissed: this.resetResult,
+                    },
+                );
 
                 // don't move to next step
                 return;
@@ -474,6 +477,16 @@ class DestinationPicker extends Component<Props, State> {
         }
     };
 
+    resetResult = () => {
+        this.setState(
+            {
+                searchText: '',
+                destination: undefined,
+            },
+            this.setDefaultDataSource,
+        );
+    };
+
     renderSectionHeader = ({ section: { title } }: any) => {
         const { dataSource } = this.state;
 
@@ -487,16 +500,7 @@ class DestinationPicker extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex1]}>
                         <Button
-                            onPress={() => {
-                                // clear search text
-                                this.setState(
-                                    {
-                                        searchText: '',
-                                        destination: undefined,
-                                    },
-                                    this.setDefaultDataSource,
-                                );
-                            }}
+                            onPress={this.resetResult}
                             style={styles.clearSearchButton}
                             light
                             label={Localize.t('global.clearSearch')}
@@ -554,16 +558,7 @@ class DestinationPicker extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex1]}>
                         <Button
-                            onPress={() => {
-                                // clear search text
-                                this.setState(
-                                    {
-                                        searchText: '',
-                                        destination: undefined,
-                                    },
-                                    this.setDefaultDataSource,
-                                );
-                            }}
+                            onPress={this.resetResult}
                             style={styles.clearSearchButton}
                             light
                             roundedSmall

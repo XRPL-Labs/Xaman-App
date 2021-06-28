@@ -41,6 +41,7 @@ import Auth from './Overlay/Authenticate';
 import Lock from './Overlay/Lock';
 import CurrencySettings from './Overlay/CurrencySettings';
 import Alert from './Overlay/Alert';
+import FlaggedDestination from './Overlay/FlaggedDestination';
 import RequestDecline from './Overlay/RequestDecline';
 import EnterDestinationTag from './Overlay/EnterDestinationTag';
 import ExplainBalance from './Overlay/ExplainBalance';
@@ -122,6 +123,7 @@ export {
     Lock,
     CurrencySettings,
     Alert,
+    FlaggedDestination,
     RequestDecline,
     EnterDestinationTag,
     ExplainBalance,

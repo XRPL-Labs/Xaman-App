@@ -740,7 +740,12 @@
     "destinationTagWarningConfirm": "You are sending to an account with destination tag. Please double check the destination tag: if you send to the wrong tag, you will need support of the Destination to retrieve your funds.",
     "doubleCheckDestinationTag": "Double check destination tag",
     "sendToAccountWithDisallowXrpFlagWarning": "The destination account indicates that it doesn't want to receive XRP payments. Only non-XRP payments can be sent to this destination.",
-    "unableToSendPaymentNotEnoughLiquidity": "Unable to send the payment right now due to lack of liquidity."
+    "unableToSendPaymentNotEnoughLiquidity": "Unable to send the payment right now due to lack of liquidity.",
+    "probableLossOfFunds": "PROBABLE LOSS OF FUNDS",
+    "addressIsUnderInvestigationPleaseCancel": "is under investigation. Please cancel this transaction.",
+    "toContinueProvideReasonInYourOwnWords": "To continue (not recommended) provide a reason in your own words:",
+    "pleaseEnterYourReasonToContinue": "Please enter your reason to continue"
+
   },
   "asset": {
     "addAsset": "Add a token",

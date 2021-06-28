@@ -350,14 +350,23 @@ class RecipientStep extends Component<Props, State> {
         const { setDestination } = this.context;
 
         setDestination(undefined);
+    };
 
-        this.setState({
-            searchText: '',
-        });
+    resetResult = () => {
+        const { setDestination } = this.context;
+
+        setDestination(undefined);
+
+        this.setState(
+            {
+                searchText: '',
+            },
+            this.setDefaultDataSource,
+        );
     };
 
     checkAndNext = async () => {
-        const { setDestination, setDestinationInfo, amount, currency, destination, source, goNext } = this.context;
+        const { setDestinationInfo, amount, currency, destination, source, goNext } = this.context;
 
         this.setState({
             isLoading: true,
@@ -387,12 +396,7 @@ class RecipientStep extends Component<Props, State> {
                         buttons: [
                             {
                                 text: Localize.t('global.back'),
-                                onPress: () => {
-                                    setDestination(undefined);
-                                    this.setState({
-                                        searchText: '',
-                                    });
-                                },
+                                onPress: this.clearDestination,
                                 type: 'dismiss',
                                 light: false,
                             },
@@ -507,7 +511,7 @@ class RecipientStep extends Component<Props, State> {
                     buttons: [
                         {
                             text: Localize.t('global.back'),
-                            onPress: this.clearDestination,
+                            onPress: this.resetResult,
                             type: 'dismiss',
                             light: false,
                         },
@@ -525,20 +529,23 @@ class RecipientStep extends Component<Props, State> {
             }
 
             if (destinationInfo.risk === 'CONFIRMED') {
-                Navigator.showAlertModal({
-                    type: 'error',
-                    title: Localize.t('global.critical'),
-                    text: Localize.t('send.destinationIsConfirmedAsScam'),
-
-                    buttons: [
-                        {
-                            text: Localize.t('global.back'),
-                            onPress: this.clearDestination,
-                            type: 'dismiss',
-                            light: false,
+                Navigator.showOverlay(
+                    AppScreens.Overlay.FlaggedDestination,
+                    {
+                        overlay: {
+                            handleKeyboardEvents: true,
                         },
-                    ],
-                });
+                        layout: {
+                            backgroundColor: 'transparent',
+                            componentBackgroundColor: 'transparent',
+                        },
+                    },
+                    {
+                        destination: destination.address,
+                        onContinue: goNext,
+                        onDismissed: this.resetResult,
+                    },
+                );
 
                 // don't move to next step
                 return;
@@ -606,7 +613,6 @@ class RecipientStep extends Component<Props, State> {
     };
 
     renderSectionHeader = ({ section: { title } }: any) => {
-        const { setDestination } = this.context;
         const { dataSource } = this.state;
 
         if (title === Localize.t('send.searchResults')) {
@@ -619,16 +625,7 @@ class RecipientStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex1]}>
                         <Button
-                            onPress={() => {
-                                // clear search text
-                                this.setState({
-                                    searchText: '',
-                                });
-                                // clear the destination if any set
-                                setDestination(undefined);
-                                // set the default source
-                                this.setDefaultDataSource();
-                            }}
+                            onPress={this.resetResult}
                             style={styles.clearSearchButton}
                             light
                             label={Localize.t('global.clearSearch')}

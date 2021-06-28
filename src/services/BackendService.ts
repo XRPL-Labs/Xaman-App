@@ -301,6 +301,10 @@ class BackendService {
         return ApiService.validEndpoints.get({ hash });
     };
 
+    auditTrail = (destination: string, reason: { reason: string }) => {
+        return ApiService.auditTrail.post({ destination }, reason);
+    };
+
     getTranslation = (uuid: string) => {
         return ApiService.translation.get({ uuid });
     };
