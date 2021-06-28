@@ -125,10 +125,16 @@ export default class Button extends Component<Props> {
     }
 
     renderInnerContent() {
-        const { isLoading, loadingIndicatorStyle } = this.props;
+        const { isLoading, light, loadingIndicatorStyle } = this.props;
 
         if (isLoading) {
-            return <LoadingIndicator size="small" style={styles.spinner} color={loadingIndicatorStyle} />;
+            return (
+                <LoadingIndicator
+                    size="small"
+                    style={styles.spinner}
+                    color={loadingIndicatorStyle || light ? 'default' : 'light'}
+                />
+            );
         }
 
         return this.renderChildren();
