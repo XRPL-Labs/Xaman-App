@@ -139,6 +139,8 @@ class EventsView extends Component<Props, State> {
                 account,
                 dataSource: undefined,
                 transactions: [],
+                plannedTransactions: [],
+                lastMarker: undefined,
             },
             () => {
                 this.updateDataSource(true);

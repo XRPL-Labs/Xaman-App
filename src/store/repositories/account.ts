@@ -286,7 +286,12 @@ class AccountRepository extends BaseRepository {
         // if account is default then set new default account
         if (isDefault) {
             const newDefaultAccount = this.getNewDefaultAccount();
-            this.setDefaultAccount(newDefaultAccount.address);
+            if (newDefaultAccount) {
+                this.setDefaultAccount(newDefaultAccount.address);
+            } else {
+                // emit new default account
+                this.emit('changeDefaultAccount', undefined);
+            }
         }
 
         // emit the account remove event
