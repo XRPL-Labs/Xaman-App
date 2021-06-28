@@ -52,7 +52,7 @@ const styles = StyleService.create({
     cardAddressText: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size * 0.9,
-        color: '$grey',
+        color: '$textSecondary',
     },
     shareIconContainer: {
         padding: 8,
