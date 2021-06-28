@@ -203,12 +203,14 @@ class PushNotificationsService extends EventEmitter {
 
         if (screenType === ComponentTypes.Modal) {
             setTimeout(() => {
+                console.warn('here');
+
                 Navigator.showModal(screen, options, passProps);
             }, 10);
         } else if (screenType === ComponentTypes.Screen) {
             setTimeout(() => {
                 Navigator.push(screen, options, passProps);
-            });
+            }, 10);
         }
     };
 
@@ -301,7 +303,7 @@ class PushNotificationsService extends EventEmitter {
     };
 
     /* Handle notifications when app is open from the notification */
-    handleNotificationOpen = async (notification: any) => {
+    handleNotificationOpen = (notification: any) => {
         if (!notification) return;
 
         switch (this.getType(notification)) {
