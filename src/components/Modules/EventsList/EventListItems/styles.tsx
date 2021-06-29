@@ -42,6 +42,8 @@ const styles = StyleService.create({
         color: '$textPrimary',
     },
     description: {
+        flexWrap: 'wrap',
+        flexShrink: 1,
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.subtext.size * 0.9,
         color: '$grey',
