@@ -8,6 +8,7 @@ import { View, Text, BackHandler, Alert, InteractionManager, Linking } from 'rea
 import VeriffSdk from '@veriff/react-native-sdk';
 import { WebView } from 'react-native-webview';
 import { StringType } from 'xumm-string-decode';
+import { utils as AccountLibUtils } from 'xrpl-accountlib';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetAppVersionCode } from '@common/helpers/device';
@@ -23,7 +24,7 @@ import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccessLevels, NodeChain } from '@store/types';
 
-import { SocketService, BackendService, PushNotificationsService } from '@services';
+import { SocketService, BackendService, PushNotificationsService, NavigationService } from '@services';
 
 import { Header, Button, Spacer, LoadingIndicator } from '@components/General';
 
@@ -63,6 +64,7 @@ export enum XAppMethods {
     KycVeriff = 'kycVeriff',
     XAppNavigate = 'xAppNavigate',
     OpenBrowser = 'openBrowser',
+    TxDetails = 'txDetails',
 }
 
 /* Component ==================================================================== */
@@ -277,6 +279,36 @@ class XAppBrowserModal extends Component<Props, State> {
         );
     };
 
+    openTxDetails = async (data: any) => {
+        const hash = get(data, 'tx');
+        const address = get(data, 'account');
+
+        // validate inputs
+        if (!AccountLibUtils.isValidAddress(address) || !new RegExp('^[A-F0-9]{64}$', 'i').test(hash)) return;
+
+        // check if account exist in xumm
+        const account = AccountRepository.findOne({ address });
+        if (!account) return;
+
+        let delay = 0;
+        // if already in transaction details and modal then close it
+        // in  rare case if user is already in transaction details screen then
+        // the screen is not modal so xumm will ignore showing the tx details screen
+        if (NavigationService.getCurrentScreen() === AppScreens.Transaction.Details) {
+            try {
+                await Navigator.dismissModal();
+            } catch {
+                // ignore
+            }
+            // looks like a bug in navigation library, need to add a delay before showing the modal
+            delay = 300;
+        }
+
+        setTimeout(() => {
+            Navigator.showModal(AppScreens.Transaction.Details, {}, { hash, account, asModal: true });
+        }, delay);
+    };
+
     onMessage = (event: any) => {
         const { data } = event.nativeEvent;
 
@@ -316,6 +348,9 @@ class XAppBrowserModal extends Component<Props, State> {
             case XAppMethods.OpenBrowser:
                 this.openBrowserLink(parsedData);
                 break;
+            case XAppMethods.TxDetails:
+                this.openTxDetails(parsedData);
+                break;
             default:
                 break;
         }
@@ -343,7 +378,7 @@ class XAppBrowserModal extends Component<Props, State> {
         // include node endpoint if using custom node
         if (SocketService.chain === NodeChain.Custom) {
             assign(data, {
-               nodewss: SocketService.node,
+                nodewss: SocketService.node,
             });
         }
 
