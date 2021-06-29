@@ -58,6 +58,16 @@ class CoreRepository extends BaseRepository {
         return chain;
     };
 
+    getAppCurrency = (): string => {
+        const settings = this.getSettings();
+
+        if (settings && settings.currency) {
+            return settings.currency;
+        }
+
+        return AppConfig.defaultCurrency;
+    };
+
     getDefaultNode = () => {
         let defaultNode = __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0];
 

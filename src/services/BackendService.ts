@@ -16,6 +16,7 @@ import { GetAppReadableVersion, GetDeviceUniqueId } from '@common/helpers/device
 
 import { CurrencySchema } from '@store/schemas/latest';
 
+import { CoreRepository } from '@store/repositories';
 import ProfileRepository from '@store/repositories/profile';
 import CounterPartyRepository from '@store/repositories/counterParty';
 import CurrencyRepository from '@store/repositories/currency';
@@ -213,6 +214,7 @@ class BackendService {
                 .post(null, {
                     appVersion: GetAppReadableVersion(),
                     appLanguage: Localize.getCurrentLocale(),
+                    appCurrency: CoreRepository.getAppCurrency(),
                     devicePushToken: await PushNotificationsService.getToken(),
                 })
                 .then((res: any) => {
