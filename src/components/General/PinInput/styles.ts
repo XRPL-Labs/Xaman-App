@@ -8,10 +8,6 @@ const styles = StyleService.create({
         backgroundColor: '$transparent',
         justifyContent: 'center',
     },
-    hiddenInput: {
-        height: 0,
-        width: 0,
-    },
     containerPin: {
         flexDirection: 'row',
         justifyContent: 'space-around',
