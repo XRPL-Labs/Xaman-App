@@ -6,23 +6,21 @@ platform :ios, '13.0'
 target 'XUMM' do
   config = use_native_modules!
 
+  # no-ad-tracking Analytics subspec as we do not use it at all
+  $RNFirebaseAnalyticsWithoutAdIdSupport = true
+
   use_react_native!(
     :path => config[:reactNativePath],
     # to enable hermes on iOS, change `false` to `true` and then install pods
     :hermes_enabled => false
   )
 
-  # Additional Pods
-  pod 'Fabric', '~> 1.10.2'
-
-
   target 'XUMMTests' do
     inherit! :complete
     # Pods for testing
   end
 
-    # Enables Flipper.
-  #
+  # Enables Flipper.
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable the next line.
   use_flipper!()
