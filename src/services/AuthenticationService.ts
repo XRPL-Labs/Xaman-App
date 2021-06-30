@@ -14,7 +14,6 @@ import AccountRepository from '@store/repositories/account';
 import AppService, { AppStateStatus } from '@services/AppService';
 import NavigationService, { RootType } from '@services/NavigationService';
 import BackendService from '@services/BackendService';
-import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
 import LinkingService from '@services/LinkingService';
 import PushNotificationsService from '@services/PushNotificationsService';
@@ -39,7 +38,6 @@ class AuthenticationService extends EventEmitter {
             AppService.checkShowChangeLog,
             AppService.checkAppUpdate,
             BackendService.ping,
-            SocketService.connect,
             LinkingService.checkInitialDeepLink,
             PushNotificationsService.checkInitialNotification,
         ];

@@ -1,6 +1,5 @@
 import AppService, { AppStateStatus } from '../AppService';
 import BackendService from '../BackendService';
-import SocketService from '../SocketService';
 import LinkingService from '../LinkingService';
 import NavigationService, { RootType } from '../NavigationService';
 import PushNotificationsService from '../PushNotificationsService';
@@ -53,7 +52,6 @@ describe('AuthenticationService', () => {
             jest.spyOn(AppService, 'checkShowChangeLog').mockImplementationOnce(promiseFn),
             jest.spyOn(AppService, 'checkAppUpdate').mockImplementationOnce(promiseFn),
             jest.spyOn(BackendService, 'ping').mockImplementationOnce(promiseFn),
-            jest.spyOn(SocketService, 'connect').mockImplementationOnce(promiseFn),
             jest.spyOn(LinkingService, 'checkInitialDeepLink').mockImplementationOnce(promiseFn),
             jest.spyOn(PushNotificationsService, 'checkInitialNotification').mockImplementationOnce(promiseFn),
         ];

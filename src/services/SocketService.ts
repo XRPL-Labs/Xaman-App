@@ -145,6 +145,8 @@ class SocketService extends EventEmitter {
                 NavigationService.on('setRoot', (root: string) => {
                     // we just need to connect to socket when we are in DefaultStack not Onboarding
                     if (root === RootType.DefaultRoot) {
+                        // connect to the node
+                        this.connect();
                         // listen for net/app state change
                         this.setAppStateListeners();
                     }
