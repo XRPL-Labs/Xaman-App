@@ -26,7 +26,6 @@ import ReviewTransaction from './Modal/ReviewTransaction';
 import Scan from './Modal/Scan';
 import Submit from './Modal/Submit';
 import FilterEvents from './Modal/FilterEvents';
-import Picker from './Modal/Picker';
 import Help from './Modal/Help';
 import XAppBrowser from './Modal/XAppBrowser';
 import CurrencyPicker from './Modal/CurrencyPicker';
@@ -79,8 +78,9 @@ import ChangePasscode from './Settings/Security/ChangePasscode';
 // session log
 import SessionLog from './Settings/Advanced/Logs';
 
-// placeholder
-import Placeholder from './Placeholder';
+// global screens
+import Placeholder from './Global/Placeholder';
+import Picker from './Global/Picker';
 
 export {
     // onboarding
@@ -109,7 +109,6 @@ export {
     Scan,
     Submit,
     FilterEvents,
-    Picker,
     Help,
     XAppBrowser,
     CurrencyPicker,
@@ -154,5 +153,7 @@ export {
     NodeList,
     // session logs
     SessionLog,
+    // global
+    Picker,
     Placeholder,
 };

@@ -28,7 +28,7 @@ export interface State {}
 
 /* Component ==================================================================== */
 class PickerModal extends Component<Props, State> {
-    static screenName = AppScreens.Modal.Picker;
+    static screenName = AppScreens.Global.Picker;
 
     static options() {
         return {

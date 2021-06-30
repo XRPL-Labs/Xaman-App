@@ -39,11 +39,9 @@ describe('PushNotificationsService', () => {
     const pushNotificationsService = PushNotificationsService;
 
     it('should properly initialize', async () => {
-        const spy1 = jest.spyOn(pushNotificationsService, 'prepareNotifications');
-        const spy2 = jest.spyOn(pushNotificationsService, 'createNotificationListeners');
+        const spy = jest.spyOn(pushNotificationsService, 'createNotificationListeners');
         await pushNotificationsService.initialize();
-        expect(spy1).toBeCalled();
-        expect(spy2).toBeCalled();
+        expect(spy).toBeCalled();
         expect(pushNotificationsService.initialized).toBe(true);
     });
 
@@ -77,7 +75,7 @@ describe('PushNotificationsService', () => {
     it('should not show sign request when in review transaction screen', async () => {
         const spy1 = jest.spyOn(LocalNotificationModule, 'complete');
 
-        NavigationService.currentScreen = AppScreens.Modal.ReviewTransaction;
+        NavigationService.modals = [AppScreens.Modal.ReviewTransaction];
 
         pushNotificationsService.handleNotification(signRequestMessage);
 

@@ -14,7 +14,7 @@ export interface Props {}
 export interface State {}
 /* Component ==================================================================== */
 class PlaceholderView extends Component<Props, State> {
-    static screenName = AppScreens.Placeholder;
+    static screenName = AppScreens.Global.Placeholder;
 
     render() {
         return <View />;

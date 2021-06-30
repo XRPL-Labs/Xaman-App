@@ -12,8 +12,8 @@ import CoreRepository from '@store/repositories/core';
 import AccountRepository from '@store/repositories/account';
 
 import AppService, { AppStateStatus } from '@services/AppService';
+import NavigationService, { RootType } from '@services/NavigationService';
 import BackendService from '@services/BackendService';
-import NavigationService from '@services/NavigationService';
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
 import LinkingService from '@services/LinkingService';
@@ -51,7 +51,7 @@ class AuthenticationService extends EventEmitter {
             try {
                 // we just need to require the lock if user initialized the app the
                 NavigationService.on('setRoot', (root: string) => {
-                    if (root === 'DefaultStack') {
+                    if (root === RootType.DefaultRoot) {
                         // this will listen for app state changes and will check if we need to lock the app
                         AppService.addListener('appStateChange', this.onAppStateChange);
                     } else {

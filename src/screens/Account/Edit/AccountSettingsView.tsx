@@ -110,7 +110,7 @@ class AccountSettingsView extends Component<Props, State> {
         const { account } = this.state;
 
         Navigator.push(
-            AppScreens.Modal.Picker,
+            AppScreens.Global.Picker,
             {},
             {
                 title: Localize.t('account.accessLevel'),

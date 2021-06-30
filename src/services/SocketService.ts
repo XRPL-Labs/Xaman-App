@@ -15,7 +15,7 @@ import { AppConfig, AppScreens } from '@common/constants';
 
 import AppService, { AppStateStatus, NetStateStatus } from '@services/AppService';
 import LoggerService from '@services/LoggerService';
-import NavigationService from '@services/NavigationService';
+import NavigationService, { RootType } from '@services/NavigationService';
 
 /* Types  ==================================================================== */
 type BaseCommand = {
@@ -144,7 +144,7 @@ class SocketService extends EventEmitter {
                 // listen on navigation change event
                 NavigationService.on('setRoot', (root: string) => {
                     // we just need to connect to socket when we are in DefaultStack not Onboarding
-                    if (root === 'DefaultStack') {
+                    if (root === RootType.DefaultRoot) {
                         // listen for net/app state change
                         this.setAppStateListeners();
                     }

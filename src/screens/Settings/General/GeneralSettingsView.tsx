@@ -79,7 +79,7 @@ class GeneralSettingsView extends Component<Props, State> {
         normalizedLocales = sortBy(uniqBy(normalizedLocales, 'title'), 'title');
 
         Navigator.push(
-            AppScreens.Modal.Picker,
+            AppScreens.Global.Picker,
             {},
             {
                 title: Localize.t('global.language'),

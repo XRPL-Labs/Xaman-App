@@ -34,7 +34,6 @@ const screens = {
         FilterEvents: 'modal.FilterEvents',
         Scan: 'modal.Scan',
         Submit: 'modal.Submit',
-        Picker: 'modal.Picker',
         CurrencyPicker: 'modal.CurrencyPickerModal',
         Help: 'modal.Help',
         XAppBrowser: 'modal.XAppBrowser',
@@ -83,7 +82,10 @@ const screens = {
         TermOfUse: 'app.Settings.TermOfUse',
         Credits: 'app.Settings.Credits',
     },
-    Placeholder: 'app.Placeholder',
+    Global: {
+        Picker: 'app.global.Picker',
+        Placeholder: 'app.global.Placeholder',
+    },
 };
 
 export default screens;

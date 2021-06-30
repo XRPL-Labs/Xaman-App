@@ -183,7 +183,7 @@ class SecuritySettingsView extends Component<Props, State> {
         const { coreSettings, timeItems } = this.state;
 
         Navigator.push(
-            AppScreens.Modal.Picker,
+            AppScreens.Global.Picker,
             {},
             {
                 title: Localize.t('global.autoLock'),

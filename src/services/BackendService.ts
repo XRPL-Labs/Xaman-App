@@ -25,7 +25,7 @@ import { Payload, PayloadType } from '@common/libs/payload';
 
 // services
 import PushNotificationsService from '@services/PushNotificationsService';
-import NavigationService from '@services/NavigationService';
+import NavigationService, { RootType } from '@services/NavigationService';
 import ApiService from '@services/ApiService';
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
@@ -49,7 +49,7 @@ class BackendService {
             try {
                 // sync the details after moving to default stack
                 NavigationService.on('setRoot', (root: string) => {
-                    if (root === 'DefaultStack') {
+                    if (root === RootType.DefaultRoot) {
                         this.sync();
                     }
                 });

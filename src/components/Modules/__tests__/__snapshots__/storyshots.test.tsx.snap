@@ -594,7 +594,7 @@ exports[`Storyshots Avatar Big 1`] = `
       style={
         Array [
           Object {
-            "backgroundColor": "#ffffff",
+            "backgroundColor": "#F3F6FA",
             "borderRadius": 10,
           },
           Object {
@@ -632,7 +632,7 @@ exports[`Storyshots Avatar Original 1`] = `
       style={
         Array [
           Object {
-            "backgroundColor": "#ffffff",
+            "backgroundColor": "#F3F6FA",
             "borderRadius": 10,
           },
           Object {
@@ -670,7 +670,7 @@ exports[`Storyshots Avatar With Border 1`] = `
       style={
         Array [
           Object {
-            "backgroundColor": "#ffffff",
+            "backgroundColor": "#F3F6FA",
             "borderRadius": 10,
           },
           Object {
@@ -679,7 +679,7 @@ exports[`Storyshots Avatar With Border 1`] = `
           },
           Object {
             "borderColor": "rgba(96,104,133,0.06)",
-            "borderWidth": 0.5,
+            "borderWidth": 1,
           },
         ]
       }
@@ -711,7 +711,7 @@ exports[`Storyshots Avatar badge 1`] = `
       style={
         Array [
           Object {
-            "backgroundColor": "#ffffff",
+            "backgroundColor": "#F3F6FA",
             "borderRadius": 10,
           },
           Object {
@@ -788,7 +788,7 @@ exports[`Storyshots Avatar badge Color 1`] = `
       style={
         Array [
           Object {
-            "backgroundColor": "#ffffff",
+            "backgroundColor": "#F3F6FA",
             "borderRadius": 10,
           },
           Object {
@@ -4168,7 +4168,7 @@ exports[`Storyshots RecipientElement Selected 1`] = `
         style={
           Array [
             Object {
-              "backgroundColor": "#ffffff",
+              "backgroundColor": "#F3F6FA",
               "borderRadius": 10,
             },
             Object {
@@ -4177,7 +4177,7 @@ exports[`Storyshots RecipientElement Selected 1`] = `
             },
             Object {
               "borderColor": "rgba(96,104,133,0.06)",
-              "borderWidth": 0.5,
+              "borderWidth": 1,
             },
           ]
         }
@@ -4287,7 +4287,7 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
         style={
           Array [
             Object {
-              "backgroundColor": "#ffffff",
+              "backgroundColor": "#F3F6FA",
               "borderRadius": 10,
             },
             Object {
@@ -4296,7 +4296,7 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
             },
             Object {
               "borderColor": "rgba(96,104,133,0.06)",
-              "borderWidth": 0.5,
+              "borderWidth": 1,
             },
           ]
         }
@@ -4402,7 +4402,7 @@ exports[`Storyshots RecipientElement default 1`] = `
         style={
           Array [
             Object {
-              "backgroundColor": "#ffffff",
+              "backgroundColor": "#F3F6FA",
               "borderRadius": 10,
             },
             Object {
@@ -4411,7 +4411,7 @@ exports[`Storyshots RecipientElement default 1`] = `
             },
             Object {
               "borderColor": "rgba(96,104,133,0.06)",
-              "borderWidth": 0.5,
+              "borderWidth": 1,
             },
           ]
         }

@@ -9,7 +9,7 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
-import NavigationService, { ComponentTypes } from '@services/NavigationService';
+import NavigationService, { ComponentTypes, RootType } from '@services/NavigationService';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { Navigator } from '@common/helpers/navigator';
@@ -32,7 +32,7 @@ class LinkingService extends EventEmitter {
         return new Promise<void>((resolve, reject) => {
             try {
                 NavigationService.on('setRoot', async (root: string) => {
-                    if (root === 'DefaultStack') {
+                    if (root === RootType.DefaultRoot) {
                         // Listen for deep link as the app is open
                         Linking.addEventListener('url', this.handleDeepLink);
                     }
@@ -168,7 +168,7 @@ class LinkingService extends EventEmitter {
 
         let delay = 0;
         // if already in xapp try to load the xApp from notification
-        if (NavigationService.getCurrentScreen() === AppScreens.Modal.XAppBrowser) {
+        if (NavigationService.getCurrentModal() === AppScreens.Modal.XAppBrowser) {
             await Navigator.dismissModal();
             // looks like a bug in navigation library, need to add a delay before showing the modal
             delay = 300;

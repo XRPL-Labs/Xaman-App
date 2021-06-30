@@ -95,7 +95,7 @@ class AdvancedSettingsView extends Component<Props, State> {
         if (!canSelectExplorer) return;
 
         Navigator.push(
-            AppScreens.Modal.Picker,
+            AppScreens.Global.Picker,
             {},
             {
                 title: Localize.t('global.explorer'),

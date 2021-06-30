@@ -85,7 +85,6 @@ class PushNotificationsService extends EventEmitter {
 
     onPermissionGranted = async () => {
         if (!this.initialized) {
-            this.prepareNotifications();
             this.createNotificationListeners();
             this.initialized = true;
         }
@@ -138,8 +137,6 @@ class PushNotificationsService extends EventEmitter {
         }
     };
 
-    prepareNotifications = () => {};
-
     createNotificationListeners = async () => {
         await messaging().getToken();
 
@@ -177,7 +174,7 @@ class PushNotificationsService extends EventEmitter {
 
     /* Handle notifications within the app when app is running in foreground */
     handleNotification = (message: FirebaseMessagingTypes.RemoteMessage) => {
-        const shouldShowNotification = NavigationService.getCurrentScreen() !== AppScreens.Modal.ReviewTransaction;
+        const shouldShowNotification = NavigationService.getCurrentModal() !== AppScreens.Modal.ReviewTransaction;
 
         LocalNotificationModule.complete(message.messageId, shouldShowNotification);
 
@@ -203,8 +200,6 @@ class PushNotificationsService extends EventEmitter {
 
         if (screenType === ComponentTypes.Modal) {
             setTimeout(() => {
-                console.warn('here');
-
                 Navigator.showModal(screen, options, passProps);
             }, 10);
         } else if (screenType === ComponentTypes.Screen) {
@@ -246,7 +241,7 @@ class PushNotificationsService extends EventEmitter {
         let delay = 0;
 
         // if already in xapp try to load the xApp from notification and close the current one
-        if (NavigationService.getCurrentScreen() === AppScreens.Modal.XAppBrowser) {
+        if (NavigationService.getCurrentModal() === AppScreens.Modal.XAppBrowser) {
             await Navigator.dismissModal();
             // looks like a bug in navigation library, need to add a delay before showing the modal
             delay = 300;
@@ -287,12 +282,9 @@ class PushNotificationsService extends EventEmitter {
         // if already in transaction details and modal then close it
         // in  rare case if user is already in transaction details screen then
         // the screen is not modal so xumm will ignore showing the tx details screen
-        if (NavigationService.getCurrentScreen() === AppScreens.Transaction.Details) {
-            try {
-                await Navigator.dismissModal();
-            } catch {
-                // ignore
-            }
+        if (NavigationService.getCurrentModal() === AppScreens.Transaction.Details) {
+            await Navigator.dismissModal();
+
             // looks like a bug in navigation library, need to add a delay before showing the modal
             delay = 300;
         }
