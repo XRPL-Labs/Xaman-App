@@ -204,9 +204,11 @@ class GeneralSettingsView extends Component<Props, State> {
             <TouchableOpacity
                 key={theme}
                 testID={`theme-${theme}`}
-                activeOpacity={0.8}
+                activeOpacity={selected ? 1 : 0.8}
                 onPress={() => {
-                    this.onThemeSelect(theme);
+                    if (!selected) {
+                        this.onThemeSelect(theme);
+                    }
                 }}
                 style={[styles.themeItem, selected && styles.themeItemSelected]}
             >
