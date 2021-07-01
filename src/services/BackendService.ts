@@ -209,7 +209,7 @@ class BackendService {
     */
     ping = () => {
         /* eslint-disable-next-line */
-        return new Promise(async (resolve, reject) => {
+        return new Promise<void>(async (resolve, reject) => {
             return ApiService.ping
                 .post(null, {
                     appVersion: GetAppReadableVersion(),
@@ -256,11 +256,11 @@ class BackendService {
                         PushNotificationsService.updateBadge(badge);
                     }
 
-                    return resolve(null);
+                    return resolve();
                 })
                 .catch((e: any) => {
                     this.logger.error('Ping Backend Error: ', e);
-                    return reject(e);
+                    return resolve();
                 });
         });
     };
