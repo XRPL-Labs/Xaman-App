@@ -206,7 +206,7 @@ const Navigator = {
     },
 
     dismissOverlay() {
-        const currentOverlay = NavigationService.pullCurrentOverlay();
+        const currentOverlay = NavigationService.getCurrentOverlay();
         return Navigation.dismissOverlay(currentOverlay);
     },
 
@@ -233,7 +233,7 @@ const Navigator = {
     },
 
     dismissModal() {
-        const currentModal = NavigationService.pullCurrentModal();
+        const currentModal = NavigationService.getCurrentModal();
         return Navigation.dismissModal(currentModal);
     },
 

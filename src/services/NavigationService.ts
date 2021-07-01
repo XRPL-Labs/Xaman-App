@@ -94,6 +94,7 @@ class NavigationService extends EventEmitter {
                 component: {
                     name: AppScreens.Overlay.SwitchAccount,
                     id: AppScreens.Overlay.SwitchAccount,
+                    passProps: { componentType: ComponentTypes.Overlay },
                     options: {
                         layout: {
                             backgroundColor: 'transparent',
@@ -114,7 +115,7 @@ class NavigationService extends EventEmitter {
                 component: {
                     name: AppScreens.Overlay.HomeActions,
                     id: AppScreens.Overlay.HomeActions,
-                    passProps: {},
+                    passProps: { componentType: ComponentTypes.Overlay },
                     options: {
                         layout: {
                             backgroundColor: 'transparent',
@@ -130,6 +131,12 @@ class NavigationService extends EventEmitter {
         // on android componentId is stack id and in Ios componentName is undefined
         if (componentName || componentId === last(this.modals)) {
             this.pullCurrentModal();
+        }
+    };
+
+    onOverlayDismissed = (componentName: string) => {
+        if (componentName === last(this.overlays)) {
+            this.pullCurrentOverlay();
         }
     };
 
@@ -159,11 +166,11 @@ class NavigationService extends EventEmitter {
 
     navigatorCommandListener = (name: string, params: any) => {
         switch (name) {
-            case 'showOverlay':
-                this.setCurrentOverlay(params.layout.id);
+            case 'dismissOverlay':
+                this.onOverlayDismissed(params.componentId);
                 break;
             case 'setRoot':
-                this.onRootChange(params);
+                this.onRootChange(params.layout.root.id);
                 break;
             default:
                 break;
@@ -192,10 +199,7 @@ class NavigationService extends EventEmitter {
 
         // dismiss any overlay
         if (currentOverlay) {
-            // remove overlay from history
-            const overlay = this.pullCurrentOverlay();
-            // dismiss overlay
-            Navigation.dismissOverlay(overlay);
+            Navigation.dismissOverlay(currentOverlay);
             return true;
         }
 
@@ -281,9 +285,7 @@ class NavigationService extends EventEmitter {
         return l;
     };
 
-    onRootChange = (params: any) => {
-        const root = params.layout.root.id;
-
+    onRootChange = (root: string) => {
         if (this.currentRoot !== root) {
             this.currentRoot = root;
         }
