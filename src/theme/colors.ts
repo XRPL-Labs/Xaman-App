@@ -22,7 +22,7 @@ const colors = {
 
     themeLight: '#ffffff',
     themeDark: '#000000',
-    themeMoonlight: '#20232c',
+    themeMoonlight: '#181A21',
     themeRoyal: '#030B36',
 
     transparent: 'transparent',
