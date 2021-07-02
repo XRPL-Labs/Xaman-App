@@ -465,7 +465,7 @@ class CurrencySettingsModal extends Component<Props, State> {
 
     canSend = () => {
         const { trustLine } = this.props;
-        return trustLine.isNFT || trustLine.balance > 0.0000009 || trustLine.obligation;
+        return trustLine.isNFT || trustLine.balance >= 0.00000001 || trustLine.obligation;
     };
 
     canExchange = () => {
