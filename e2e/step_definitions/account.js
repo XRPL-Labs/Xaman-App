@@ -71,7 +71,7 @@ Given('I should see same account address', async () => {
 });
 
 Then('I activate the account', async () => {
-    activateAccount(this.address);
+    await activateAccount(this.address);
 });
 
 Then('I generate testnet account', async () => {

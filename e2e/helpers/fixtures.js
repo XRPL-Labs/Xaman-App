@@ -72,7 +72,7 @@ const activateAccount = async (address) => {
 
     const signedObject = AccountLib.sign(Transaction, AccountLib.derive.familySeed(fundedAccount.secret));
 
-    Connection.send({
+    await Connection.send({
         command: 'submit',
         tx_blob: signedObject.signedTransaction,
     })

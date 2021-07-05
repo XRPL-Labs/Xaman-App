@@ -8,16 +8,16 @@ Then('I tap {string}', async (buttonId) => {
     await element(by.id(buttonId)).tap();
 });
 
-Then('I enter {string} ', async (buttonId) => {
-    await element(by.id(buttonId)).tap();
-});
-
 Then('I enter {string} in {string}', async (value, textInputId) => {
     await element(by.id(textInputId)).typeText(value);
 });
 
 Given('I should have {string}', async (screenId) => {
     await expect(element(by.id(screenId))).toExist();
+});
+
+Given('I should not have {string}', async (screenId) => {
+    await expect(element(by.id(screenId))).toNotExist();
 });
 
 Given('I should see {string}', async (elementId) => {

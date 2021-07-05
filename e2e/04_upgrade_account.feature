@@ -28,6 +28,7 @@ Feature: Upgrade Account
         Given I should have 'settings-tab-screen'
         Then I tap 'accounts-button'
         Given I should have 'accounts-list-screen'
+        Then I scroll 'account-list-scroll' to bottom
         Then I tap my account in the list
         Given I should have 'account-settings-screen'
         Then I tap 'account-access-level-button'
@@ -63,4 +64,4 @@ Feature: Upgrade Account
         Given I should see 'submitting-view'
         Given I should wait 20 sec to see 'success-result-view'
         Then I tap 'close-button'
-        Given I should have 'assets-scroll-view'
+        Given I should not have 'assets-empty-view'

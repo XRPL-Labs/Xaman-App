@@ -22,12 +22,12 @@ BeforeAll(async () => {
     await detox.device.setURLBlacklist(['.*xumm.app.*']);
 });
 
-Before(async context => {
+Before(async (context) => {
     // await detox.device.reloadReactNative();
     await adapter.beforeEach(context);
 });
 
-After(async context => {
+After(async (context) => {
     await adapter.afterEach(context);
 });
 
