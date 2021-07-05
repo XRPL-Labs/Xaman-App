@@ -251,7 +251,7 @@ class NavigationService extends EventEmitter {
     };
 
     setCurrentModal = (modal: string) => {
-        if (last(this.modals) !== modal) {
+        if (!this.modals.includes(modal)) {
             analytics().logScreenView({ screen_name: modal });
             this.modals.push(modal);
         }
