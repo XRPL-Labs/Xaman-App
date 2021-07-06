@@ -3,8 +3,18 @@
  */
 
 import { has, get, assign, toUpper } from 'lodash';
+import moment from 'moment-timezone';
 import React, { Component } from 'react';
-import { View, Text, BackHandler, Alert, InteractionManager, Linking } from 'react-native';
+import {
+    View,
+    Text,
+    BackHandler,
+    Alert,
+    InteractionManager,
+    Linking,
+    Platform,
+    NativeEventSubscription,
+} from 'react-native';
 import VeriffSdk from '@veriff/react-native-sdk';
 import { WebView } from 'react-native-webview';
 import { StringType } from 'xumm-string-decode';
@@ -57,21 +67,23 @@ export interface State {
 
 export enum XAppMethods {
     SelectDestination = 'selectDestination',
-    ScanQr = 'scanQr',
-    Close = 'close',
     OpenSignRequest = 'openSignRequest',
     PayloadResolved = 'payloadResolved',
-    KycVeriff = 'kycVeriff',
     XAppNavigate = 'xAppNavigate',
     OpenBrowser = 'openBrowser',
     TxDetails = 'txDetails',
+    KycVeriff = 'kycVeriff',
+    ScanQr = 'scanQr',
+    Close = 'close',
 }
 
 /* Component ==================================================================== */
 class XAppBrowserModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.XAppBrowser;
-    private backHandler: any;
+
     private webView: WebView;
+    private backHandler: NativeEventSubscription;
+    private lastMessageReceived: number;
 
     static options() {
         return {
@@ -92,6 +104,10 @@ class XAppBrowserModal extends Component<Props, State> {
             coreSettings: CoreRepository.getSettings(),
             appVersionCode: GetAppVersionCode(),
         };
+
+        this.backHandler = undefined;
+
+        this.lastMessageReceived = 0;
     }
 
     componentWillUnmount() {
@@ -101,20 +117,27 @@ class XAppBrowserModal extends Component<Props, State> {
     }
 
     componentDidMount() {
-        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
+        // handle back button in android
+        if (Platform.OS === 'android') {
+            this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
+        }
 
         // fetch OTT on browser start
         InteractionManager.runAfterInteractions(this.fetchOTT);
     }
 
     onClose = (data?: { refreshEvents?: boolean }) => {
+        // if refresh events flag set, publish a sign request update event
+        // this will refresh the event list
         if (get(data, 'refreshEvents', false)) {
             setTimeout(() => {
                 PushNotificationsService.emit('signRequestUpdate');
             }, 1000);
         }
 
+        // close the xApp modal
         Navigator.dismissModal();
+
         return true;
     };
 
@@ -185,7 +208,11 @@ class XAppBrowserModal extends Component<Props, State> {
     showScanner = () => {
         Navigator.showModal(
             AppScreens.Modal.Scan,
-            {},
+            {
+                modal: {
+                    swipeToDismiss: false,
+                },
+            },
             {
                 onRead: this.onScannerRead,
                 onClose: this.onScannerClose,
@@ -301,23 +328,8 @@ class XAppBrowserModal extends Component<Props, State> {
         }, delay);
     };
 
-    onMessage = (event: any) => {
-        const { data } = event.nativeEvent;
-
-        let parsedData;
-
-        try {
-            parsedData = JSON.parse(data);
-        } catch {
-            // it's not a json object
-            return;
-        }
-
-        // ignore if no command present
-        if (!has(parsedData, 'command')) {
-            return;
-        }
-
+    handleCommand = (parsedData: any) => {
+        // record the command in active methods
         switch (get(parsedData, 'command')) {
             case XAppMethods.XAppNavigate:
                 this.navigateTo(parsedData);
@@ -345,6 +357,42 @@ class XAppBrowserModal extends Component<Props, State> {
                 break;
             default:
                 break;
+        }
+    };
+
+    onMessage = (event: any) => {
+        // should be at least 1500 ms delay between each message
+        if (this.lastMessageReceived) {
+            if (moment().diff(moment.unix(this.lastMessageReceived), 'millisecond') < 1500) {
+                return;
+            }
+        }
+
+        // record last message received
+        this.lastMessageReceived = moment().unix();
+
+        if (!event || typeof event !== 'object' || !event?.nativeEvent) {
+            return;
+        }
+        // get passed data
+        const data = get(event, 'nativeEvent.data');
+
+        if (!data || typeof data !== 'string') {
+            return;
+        }
+
+        let parsedData;
+        try {
+            parsedData = JSON.parse(data);
+        } catch {
+            // it's not a json object
+            return;
+        }
+
+        // ignore if no command present or the command is not in expected commands or already is the active method
+        if (has(parsedData, 'command') && Object.values(XAppMethods).includes(get(parsedData, 'command'))) {
+            // everything seems fine pass the data to the handlers
+            this.handleCommand(parsedData);
         }
     };
 

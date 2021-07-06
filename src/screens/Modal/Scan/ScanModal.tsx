@@ -5,7 +5,7 @@
 import upperFirst from 'lodash/upperFirst';
 
 import React, { Component } from 'react';
-import { View, ImageBackground, Text, Linking, BackHandler } from 'react-native';
+import { View, ImageBackground, Text, Linking, BackHandler, Platform, NativeEventSubscription } from 'react-native';
 
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 import Clipboard from '@react-native-community/clipboard';
@@ -55,7 +55,7 @@ class ScanView extends Component<Props, State> {
     static screenName = AppScreens.Modal.Scan;
 
     private shouldRead: boolean;
-    private backHandler: any;
+    private backHandler: NativeEventSubscription;
 
     static options() {
         return {
@@ -75,6 +75,9 @@ class ScanView extends Component<Props, State> {
             coreSettings: CoreRepository.getSettings(),
         };
 
+        this.backHandler = undefined;
+
+        // flag to check if we need to read the QR
         this.shouldRead = true;
     }
 
@@ -85,7 +88,9 @@ class ScanView extends Component<Props, State> {
     }
 
     componentDidMount() {
-        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
+        if (Platform.OS === 'android') {
+            this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
+        }
     }
 
     setShouldRead = (value: boolean) => {
