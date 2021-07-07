@@ -59,6 +59,8 @@ const styles = StyleService.create({
         borderRadius: 50,
     },
     amountText: {
+        flexWrap: 'wrap',
+        flexShrink: 1,
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.h4.size,
         textAlign: 'center',
