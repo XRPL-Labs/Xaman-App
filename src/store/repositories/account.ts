@@ -152,9 +152,6 @@ class AccountRepository extends BaseRepository {
      * check if account is signable
      */
     isSignable = (account: AccountSchema): boolean => {
-        if (account.accessLevel === AccessLevels.Full) {
-            return true;
-        }
         return !!find(this.getSignableAccounts(), (o) => o.address === account.address);
     };
 
