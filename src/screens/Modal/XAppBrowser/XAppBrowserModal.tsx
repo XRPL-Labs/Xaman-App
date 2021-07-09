@@ -36,7 +36,7 @@ import { AccessLevels, NodeChain } from '@store/types';
 
 import { SocketService, BackendService, PushNotificationsService, NavigationService } from '@services';
 
-import { Header, Button, Spacer, LoadingIndicator } from '@components/General';
+import { Button, Spacer, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
@@ -559,27 +559,41 @@ class XAppBrowserModal extends Component<Props, State> {
         return this.renderXApp();
     };
 
-    render() {
+    renderHeader = () => {
         const { title } = this.state;
 
         return (
+            <View style={[styles.headerContainer]}>
+                <View
+                    style={[
+                        AppStyles.flex1,
+                        AppStyles.paddingLeftSml,
+                        AppStyles.paddingRightSml,
+                        AppStyles.centerContent,
+                    ]}
+                >
+                    <Text numberOfLines={1} style={AppStyles.h5}>
+                        {title || 'XAPP'}
+                    </Text>
+                </View>
+                <View style={[AppStyles.paddingRightSml, AppStyles.rightAligned, AppStyles.centerContent]}>
+                    <Button
+                        contrast
+                        testID="close-button"
+                        numberOfLines={1}
+                        roundedSmall
+                        label={Localize.t('global.close')}
+                        onPress={this.onClose}
+                    />
+                </View>
+            </View>
+        );
+    };
+
+    render() {
+        return (
             <View testID="xapp-browser-modal" style={[styles.container]}>
-                <Header
-                    placement="left"
-                    leftComponent={{ text: title || 'XAPP' }}
-                    rightComponent={{
-                        render: () => (
-                            <Button
-                                contrast
-                                testID="close-button"
-                                numberOfLines={1}
-                                roundedSmall
-                                label={Localize.t('global.close')}
-                                onPress={this.onClose}
-                            />
-                        ),
-                    }}
-                />
+                {this.renderHeader()}
                 {this.renderContent()}
             </View>
         );

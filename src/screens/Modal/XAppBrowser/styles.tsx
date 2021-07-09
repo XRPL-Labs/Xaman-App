@@ -1,3 +1,6 @@
+import { Platform } from 'react-native';
+
+import { AppSizes } from '@theme';
 import StyleService from '@services/StyleService';
 
 /* Styles ==================================================================== */
@@ -16,6 +19,12 @@ const styles = StyleService.create({
         bottom: 0,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    headerContainer: {
+        flexDirection: 'row',
+        backgroundColor: '$background',
+        paddingTop: Platform.OS === 'ios' ? AppSizes.statusBarHeight + 5 : 10,
+        paddingBottom: 10,
     },
 });
 
