@@ -3,7 +3,6 @@
  * Interact with xumm backend
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import { map, isEmpty, flatMap, get } from 'lodash';
 import moment from 'moment-timezone';
 
@@ -94,20 +93,13 @@ class BackendService {
 
                     await Promise.all(
                         map(value.currencies, async (c) => {
-                            const currency = await CurrencyRepository.upsert(
-                                {
-                                    id: uuidv4(),
-                                    issuer: c.issuer,
-                                    currency: c.currency,
-                                    name: c.name,
-                                    avatar: c.avatar || '',
-                                    shortlist: c.shortlist === 1,
-                                },
-                                {
-                                    issuer: c.issuer,
-                                    currency: c.currency,
-                                },
-                            );
+                            const currency = await CurrencyRepository.include({
+                                issuer: c.issuer,
+                                currency: c.currency,
+                                name: c.name,
+                                avatar: c.avatar || '',
+                                shortlist: c.shortlist === 1,
+                            });
 
                             normalizedList.push(currency);
                         }),

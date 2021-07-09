@@ -1,5 +1,5 @@
 import Realm, { Results, ObjectSchema } from 'realm';
-import { forEach, isObject, isString, assign } from 'lodash';
+import { forEach, isObject, isString, has } from 'lodash';
 import EventEmitter from 'events';
 
 export default class BaseRepository extends EventEmitter {
@@ -94,11 +94,23 @@ export default class BaseRepository extends EventEmitter {
         return this.realm.objects(this.schema.name).filtered(this.normalizeQuery(query));
     };
 
-    upsert = (data: any, query: any): Promise<any> => {
+    upsert = (data: any): Promise<any> => {
         return new Promise((resolve, reject) => {
-            const result = this.realm.objects(this.schema.name).filtered(this.normalizeQuery(query)) as any;
+            if (!has(data, 'id')) {
+                throw new Error('ID require primary key to be set');
+            }
 
-            if (result.length === 0) {
+            const object = this.realm.objectForPrimaryKey(this.schema.name, data.id) as any;
+
+            if (object) {
+                try {
+                    this.safeWrite(() => {
+                        resolve(this.realm.create(this.schema.name, data, Realm.UpdateMode.All));
+                    });
+                } catch (error) {
+                    reject(error);
+                }
+            } else {
                 try {
                     this.safeWrite(() => {
                         resolve(this.realm.create(this.schema.name, data));
@@ -107,22 +119,6 @@ export default class BaseRepository extends EventEmitter {
                     reject(error);
                 }
             }
-
-            if (result.length === 1) {
-                const object = result[0];
-
-                try {
-                    this.safeWrite(() => {
-                        resolve(
-                            this.realm.create(this.schema.name, assign(data, { id: object.id }), Realm.UpdateMode.All),
-                        );
-                    });
-                } catch (error) {
-                    reject(error);
-                }
-            }
-
-            reject(new Error('Got more than one result'));
         });
     };
 

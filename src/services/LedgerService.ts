@@ -4,7 +4,6 @@
  * This is the service we use for update accounts real time details and listen for ledger transactions
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment-timezone';
 import EventEmitter from 'events';
 import { map, isEmpty, flatMap, forEach, has, get, assign, omitBy, startsWith, keys } from 'lodash';
@@ -211,14 +210,8 @@ class LedgerService extends EventEmitter {
                 tx_blob,
             });
 
-            const {
-                error,
-                error_message,
-                error_exception,
-                engine_result,
-                tx_json,
-                engine_result_message,
-            } = submitResult;
+            const { error, error_message, error_exception, engine_result, tx_json, engine_result_message } =
+                submitResult;
 
             this.logger.debug('Submit Result TX:', submitResult);
 
@@ -452,10 +445,10 @@ class LedgerService extends EventEmitter {
                     await Promise.all(
                         map(filteredLines, async (l) => {
                             // update currency
-                            const currency = await CurrencyRepository.upsert(
-                                { id: uuidv4(), issuer: l.account, currency: l.currency },
-                                { issuer: l.account, currency: l.currency },
-                            );
+                            const currency = await CurrencyRepository.include({
+                                issuer: l.account,
+                                currency: l.currency,
+                            });
 
                             // get transfer rate from issuer account
                             let transfer_rate = 0;
@@ -467,6 +460,7 @@ class LedgerService extends EventEmitter {
 
                             // add to trustLines list
                             normalizedList.push({
+                                id: `${account}.${currency.id}`,
                                 currency,
                                 balance: new Amount(l.balance, false).toNumber(),
                                 transfer_rate,
