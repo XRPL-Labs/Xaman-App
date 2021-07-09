@@ -6,8 +6,6 @@ import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Image, Text, Alert, InteractionManager } from 'react-native';
 
-import { AccountSchema } from '@store/schemas/latest';
-
 import { BackendService, SocketService } from '@services';
 
 import { AppScreens } from '@common/constants';
@@ -110,18 +108,6 @@ class SummaryStep extends Component<Props, State> {
         }
 
         setDestination(destination);
-    };
-
-    onAccountChange = (item: AccountSchema) => {
-        const { currency, setSource } = this.context;
-
-        if (typeof currency === 'string') {
-            setSource(item);
-        } else if (item.hasCurrency(currency.currency)) {
-            setSource(item);
-        } else {
-            Alert.alert(Localize.t('global.error'), Localize.t('send.selectedAccountDoNotSupportAsset'));
-        }
     };
 
     showMemoAlert = async () => {
@@ -338,19 +324,26 @@ class SummaryStep extends Component<Props, State> {
     };
 
     render() {
-        const { source, accounts, amount, destination, currency, isLoading } = this.context;
+        const { source, amount, destination, currency, isLoading } = this.context;
 
         return (
             <View testID="send-summary-view" style={[styles.container]}>
                 <KeyboardAwareScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
                     <View style={[styles.rowItem, styles.rowItemGrey]}>
                         <View style={[styles.rowTitle]}>
-                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                            <Text
+                                style={[
+                                    AppStyles.subtext,
+                                    AppStyles.strong,
+                                    styles.rowTitlePadding,
+                                    { color: AppColors.grey },
+                                ]}
+                            >
                                 {Localize.t('global.from')}
                             </Text>
                         </View>
 
-                        <AccountPicker onSelect={this.onAccountChange} accounts={accounts} selectedItem={source} />
+                        <AccountPicker accounts={source} selectedItem={source} />
 
                         <Spacer size={20} />
 

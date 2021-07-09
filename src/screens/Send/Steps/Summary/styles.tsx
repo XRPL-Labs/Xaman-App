@@ -22,6 +22,9 @@ const styles = StyleService.create({
     rowTitle: {
         paddingLeft: 15,
     },
+    rowTitlePadding: {
+        paddingBottom: 15,
+    },
     pickerItem: {
         // paddingLeft: 10,
         // paddingTop: 10,

@@ -13,7 +13,11 @@ const styles = StyleService.create({
         backgroundColor: '$background',
     },
     rowTitle: {
-        paddingLeft: 15,
+        flexDirection: 'row',
+        paddingLeft: 10,
+        paddingBottom: 15,
+        left: 0,
+        right: 0,
     },
     rowItem: {
         paddingHorizontal: AppSizes.paddingSml,
