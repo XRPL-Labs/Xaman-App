@@ -277,8 +277,13 @@ class AccountRepository extends BaseRepository {
             await Vault.purge(account.publicKey);
         }
 
+        // remove account lines
+        for (const line of account.lines) {
+            await this.delete(line);
+        }
+
         // remove the account
-        await this.deleteBy('address', account.address);
+        await this.delete(account);
 
         // if account is default then set new default account
         if (isDefault) {

@@ -169,6 +169,22 @@ export default class BaseRepository extends EventEmitter {
         });
     };
 
+    delete = (object: Realm.Object | Realm.Object[] | Realm.List<any> | Realm.Results<any> | any): Promise<void> => {
+        return new Promise<void>((resolve, reject) => {
+            try {
+                if (object) {
+                    this.safeWrite(() => {
+                        resolve(this.realm.delete(object));
+                    });
+                } else {
+                    resolve();
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
+    };
+
     deleteAll = () => {
         try {
             const items = this.realm.objects(this.schema.name);
