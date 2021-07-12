@@ -71,7 +71,7 @@ const styles = StyleService.create({
         backgroundColor: '$white',
         borderWidth: 1,
         borderColor: '$lightGrey',
-        borderRadius: 8,
+        borderRadius: 10,
         justifyContent: 'center',
     },
     trustLineInfoIcon: {
