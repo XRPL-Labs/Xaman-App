@@ -4,7 +4,7 @@
 
 import { sortBy } from 'lodash';
 import React, { Component } from 'react';
-import { Animated, View, Text, TouchableWithoutFeedback, Image, ScrollView, InteractionManager } from 'react-native';
+import { Animated, View, Text, TouchableWithoutFeedback, ScrollView, InteractionManager } from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
@@ -18,7 +18,7 @@ import LedgerService from '@services/LedgerService';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 // components
-import { Button, Icon, Spacer, LoadingIndicator } from '@components/General';
+import { Avatar, Button, Icon, Spacer, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
@@ -142,7 +142,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         return (
             <View key={`object-${index}`} style={[styles.currencyItemCard]}>
                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                    <View style={[styles.xrpAvatarContainer]}>
+                    <View style={[styles.iconContainer]}>
                         <Icon name="IconInfo" size={16} style={[AppStyles.imgColorGrey]} />
                     </View>
                     <Text style={[styles.rowLabel]}>{LedgerEntryType}</Text>
@@ -168,8 +168,8 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                     return (
                         <View key={`line-${index}`} style={[styles.currencyItemCard]}>
                             <View style={[AppStyles.flex5, AppStyles.row, AppStyles.centerAligned]}>
-                                <View style={[styles.xrpAvatarContainer]}>
-                                    <Image style={[styles.currencyAvatar]} source={{ uri: line.counterParty.avatar }} />
+                                <View style={[styles.brandAvatarContainer]}>
+                                    <Avatar border size={32} source={{ uri: line.counterParty.avatar }} />
                                 </View>
                                 <Text style={[styles.rowLabel]}>
                                     {Localize.t('global.asset')}
@@ -197,7 +197,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             <View style={[AppStyles.paddingHorizontalSml, { marginBottom: AppSizes.navigationBarHeight }]}>
                 <View style={[styles.currencyItemCard]}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[styles.xrpAvatarContainer]}>
+                        <View style={[styles.iconContainer]}>
                             <Icon name="IconAccount" size={15} style={[AppStyles.imgColorGrey]} />
                         </View>
                         <Text style={[styles.rowLabel]}>{Localize.t('account.walletReserve')}</Text>
@@ -304,7 +304,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                             <Text style={[styles.rowTitle]}>{Localize.t('account.accountBalance')}</Text>
                             <View style={[styles.currencyItemCard]}>
                                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                    <View style={[styles.xrpAvatarContainer]}>
+                                    <View style={[styles.iconContainer]}>
                                         <Icon name="IconXrp" size={20} style={[AppStyles.imgColorGrey]} />
                                     </View>
                                     <Text style={[styles.currencyItemLabel, AppStyles.colorGrey]}>XRP</Text>
@@ -323,7 +323,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                             <Text style={[styles.rowTitle]}>{Localize.t('account.availableForSpending')}</Text>
                             <View style={[styles.currencyItemCard]}>
                                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                    <View style={[styles.xrpAvatarContainer]}>
+                                    <View style={[styles.iconContainer]}>
                                         <Icon name="IconXrp" size={20} />
                                     </View>
                                     <Text style={[styles.currencyItemLabel]}>XRP</Text>
