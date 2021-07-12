@@ -319,6 +319,10 @@ class RecipientStep extends Component<Props, State> {
     showEnterDestinationTag = () => {
         const { setDestination, destination, goNext } = this.context;
 
+        if (!destination) {
+            return;
+        }
+
         Navigator.showOverlay(
             AppScreens.Overlay.EnterDestinationTag,
             {

@@ -137,6 +137,10 @@ class SummaryStep extends Component<Props, State> {
     showEnterDestinationTag = () => {
         const { setDestination, destination } = this.context;
 
+        if (!destination) {
+            return;
+        }
+
         Navigator.showOverlay(
             AppScreens.Overlay.EnterDestinationTag,
             {
