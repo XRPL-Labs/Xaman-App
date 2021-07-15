@@ -192,7 +192,7 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx } = this.state;
         const { account } = this.props;
 
-        if (tx.Type === 'Payment') {
+        if (['Payment', 'PaymentChannelClaim', 'PaymentChannelCreate', 'PaymentChannelFund'].includes(tx.Type)) {
             this.setState({
                 balanceChanges: tx.BalanceChange(account.address),
             });
@@ -292,6 +292,20 @@ class TransactionDetailsView extends Component<Props, State> {
                 address = tx.Account.address;
                 break;
             case 'OfferCreate':
+                if (incomingTx) {
+                    address = tx.Account.address;
+                }
+                break;
+            case 'PaymentChannelCreate':
+                if (incomingTx) {
+                    address = tx.Account.address;
+                } else {
+                    address = tx.Destination.address;
+                    tag = tx.Destination.tag;
+                }
+                break;
+            case 'PaymentChannelFund':
+            case 'PaymentChannelClaim':
                 if (incomingTx) {
                     address = tx.Account.address;
                 }
@@ -464,6 +478,12 @@ class TransactionDetailsView extends Component<Props, State> {
                 return Localize.t('global.check');
             case 'TicketCreate':
                 return Localize.t('events.createTicket');
+            case 'PaymentChannelCreate':
+                return Localize.t('events.createPaymentChannel');
+            case 'PaymentChannelClaim':
+                return Localize.t('events.claimPaymentChannel');
+            case 'PaymentChannelFund':
+                return Localize.t('events.fundPaymentChannel');
             default:
                 return tx.Type;
         }
@@ -512,8 +532,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 } else {
                     currency = account.lines.find(
                         // eslint-disable-next-line max-len
-                        (l: any) =>
-                            l.currency.currency === tx.Amount.currency && l.currency.issuer === tx.Amount.issuer,
+                        (l: any) => l.currency.currency === tx.Amount.currency && l.currency.issuer === tx.Amount.issuer,
                     );
                 }
                 Object.assign(params, { amount: tx.DeliveredAmount?.value, currency });
@@ -917,6 +936,76 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
+    renderPaymentChannelCreate = () => {
+        const { tx } = this.state;
+
+        let content = '';
+
+        content += Localize.t('events.accountWillCreateAPaymentChannelTo', {
+            account: tx.Account.address,
+            destination: tx.Destination.address,
+        });
+
+        content += '\n';
+        content += Localize.t('events.theChannelIdIs', { channel: tx.ChannelID });
+
+        content += '\n';
+        content += Localize.t('events.theChannelAmountIs', { amount: tx.Amount.value });
+        content += '\n';
+
+        if (tx.Account.tag) {
+            content += Localize.t('events.theASourceTagIs', { tag: tx.Account.tag });
+            content += ' \n';
+        }
+        if (tx.Destination.tag) {
+            content += Localize.t('events.theDestinationTagIs', { tag: tx.Destination.tag });
+            content += ' \n';
+        }
+
+        if (tx.SettleDelay) {
+            content += Localize.t('events.theChannelHasASettlementDelay', { delay: tx.SettleDelay });
+            content += ' \n';
+        }
+
+        if (tx.CancelAfter) {
+            content += Localize.t('events.itCanBeCancelledAfter', { cancelAfter: tx.CancelAfter });
+        }
+
+        return content;
+    };
+
+    renderPaymentChannelFund = () => {
+        const { tx } = this.state;
+
+        let content = '';
+
+        content += Localize.t('events.itWillUpdateThePaymentChannel', { channel: tx.Channel });
+        content += '\n';
+        content += Localize.t('events.itWillIncreaseTheChannelAmount', { amount: tx.Amount.value });
+
+        return content;
+    };
+
+    renderPaymentChannelClaim = () => {
+        const { tx } = this.state;
+
+        let content = '';
+
+        content += Localize.t('events.itWillUpdateThePaymentChannel', { channel: tx.Channel });
+        content += '\n';
+
+        if (tx.Balance) {
+            content += Localize.t('events.theChannelBalanceClaimedIs', { balance: tx.Balance.value });
+            content += '\n';
+        }
+
+        if (tx.IsClosed) {
+            content += Localize.t('events.thePaymentChannelWillBeClosed');
+        }
+
+        return content;
+    };
+
     renderDescription = () => {
         const { tx } = this.state;
 
@@ -964,6 +1053,15 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case 'TicketCreate':
                 content += this.renderTicketCreate();
+                break;
+            case 'PaymentChannelCreate':
+                content += this.renderPaymentChannelCreate();
+                break;
+            case 'PaymentChannelFund':
+                content += this.renderPaymentChannelFund();
+                break;
+            case 'PaymentChannelClaim':
+                content += this.renderPaymentChannelClaim();
                 break;
             default:
                 content += `This is a ${tx.Type} transaction`;
@@ -1200,6 +1298,25 @@ class TransactionDetailsView extends Component<Props, State> {
                     });
                 }
 
+                break;
+            }
+            case 'PaymentChannelClaim':
+            case 'PaymentChannelFund':
+            case 'PaymentChannelCreate': {
+                if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                    const incoming = !!balanceChanges.received;
+                    const amount = balanceChanges?.received || balanceChanges?.sent;
+
+                    Object.assign(props, {
+                        icon: incoming ? 'IconCornerRightDown' : 'IconCornerRightUp',
+                        color: incoming ? styles.incomingColor : styles.outgoingColor,
+                        prefix: incoming ? '' : '-',
+                        value: amount.value,
+                        currency: amount.currency,
+                    });
+                } else {
+                    shouldShowAmount = false;
+                }
                 break;
             }
             default:

@@ -138,6 +138,15 @@ class ReviewTransactionModal extends Component<Props, State> {
             case 'TicketCreate':
                 type = Localize.t('events.createTicket');
                 break;
+            case 'PaymentChannelCreate':
+                type = Localize.t('events.createPaymentChannel');
+                break;
+            case 'PaymentChannelFund':
+                type = Localize.t('events.fundPaymentChannel');
+                break;
+            case 'PaymentChannelClaim':
+                type = Localize.t('events.claimPaymentChannel');
+                break;
             case 'SignIn':
                 type = Localize.t('global.signIn');
                 break;

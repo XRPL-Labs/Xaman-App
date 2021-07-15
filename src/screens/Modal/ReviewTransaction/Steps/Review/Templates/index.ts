@@ -16,6 +16,9 @@ import CheckCreate from './CheckCreate';
 import CheckCash from './CheckCash';
 import CheckCancel from './CheckCancel';
 import TicketCreate from './TicketCreate';
+import PaymentChannelCreate from './PaymentChannelCreate';
+import PaymentChannelClaim from './PaymentChannelClaim';
+import PaymentChannelFund from './PaymentChannelFund';
 
 export {
     Global,
@@ -35,4 +38,7 @@ export {
     CheckCash,
     CheckCancel,
     TicketCreate,
+    PaymentChannelCreate,
+    PaymentChannelClaim,
+    PaymentChannelFund,
 };

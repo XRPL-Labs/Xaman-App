@@ -107,9 +107,14 @@ class TransactionTemplate extends Component<Props, State> {
                 key = 'Account';
                 break;
             case 'CheckCreate':
-                address = item.Destination.address;
-                tag = item.Destination.tag;
-                key = 'Destination';
+                if (item.Account?.address !== account.address) {
+                    address = item.Account.address;
+                    key = 'Account';
+                } else {
+                    address = item.Destination.address;
+                    tag = item.Destination.tag;
+                    key = 'Destination';
+                }
                 break;
             case 'CheckCash':
                 address = item.Account.address;
@@ -140,6 +145,25 @@ class TransactionTemplate extends Component<Props, State> {
                 break;
             case 'TicketCreate':
                 address = item.Account.address;
+                key = 'Account';
+                break;
+            case 'PaymentChannelCreate':
+                if (item.Account?.address !== account.address) {
+                    address = item.Account.address;
+                    key = 'Account';
+                } else {
+                    address = item.Destination.address;
+                    tag = item.Destination.tag;
+                    key = 'Destination';
+                }
+                break;
+            case 'PaymentChannelFund':
+                address = item.Account.address;
+                key = 'Account';
+                break;
+            case 'PaymentChannelClaim':
+                address = item.Account.address;
+                key = 'Account';
                 break;
             default:
                 break;
@@ -255,7 +279,7 @@ class TransactionTemplate extends Component<Props, State> {
                 const balanceChanges = item.BalanceChange(account.address);
 
                 if (balanceChanges?.sent && balanceChanges?.received) {
-                    return `${Localize.formatNumber(balanceChanges.sent.value)} ${NormalizeCurrencyCode(
+                    return `${Localize.formatNumber(Number(balanceChanges.sent.value))} ${NormalizeCurrencyCode(
                         balanceChanges.sent.currency,
                     )}/${NormalizeCurrencyCode(balanceChanges.received.currency)}`;
                 }
@@ -326,6 +350,12 @@ class TransactionTemplate extends Component<Props, State> {
                 return Localize.t('events.cancelCheck');
             case 'TicketCreate':
                 return Localize.t('events.createTicket');
+            case 'PaymentChannelCreate':
+                return Localize.t('events.createPaymentChannel');
+            case 'PaymentChannelClaim':
+                return Localize.t('events.claimPaymentChannel');
+            case 'PaymentChannelFund':
+                return Localize.t('events.fundPaymentChannel');
             default:
                 return item.Type;
         }
@@ -349,7 +379,7 @@ class TransactionTemplate extends Component<Props, State> {
     renderRightPanel = () => {
         const { item, account } = this.props;
 
-        let incoming = item.Destination?.address === account.address;
+        let incoming = item.Account?.address !== account.address;
 
         if (item.Type === 'Payment') {
             const balanceChanges = item.BalanceChange(account.address);
@@ -459,6 +489,23 @@ class TransactionTemplate extends Component<Props, State> {
                     postfixStyle={styles.currency}
                 />
             );
+        }
+
+        if (['PaymentChannelClaim', 'PaymentChannelFund', 'PaymentChannelCreate'].includes(item.Type)) {
+            const balanceChanges = item.BalanceChange(account.address);
+
+            if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                const amount = balanceChanges?.received || balanceChanges?.sent;
+
+                return (
+                    <AmountText
+                        value={amount.value}
+                        postfix={amount.currency}
+                        style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
+                        postfixStyle={styles.currency}
+                    />
+                );
+            }
         }
 
         return null;

@@ -15,6 +15,9 @@ import CheckCreate from './checkCreate';
 import CheckCash from './checkCash';
 import CheckCancel from './checkCancel';
 import TicketCreate from './ticketCreate';
+import PaymentChannelCreate from './paymentChannelCreate';
+import PaymentChannelClaim from './paymentChannelClaim';
+import PaymentChannelFund from './paymentChannelFund';
 
 export {
     BaseTransaction,
@@ -34,4 +37,7 @@ export {
     CheckCash,
     CheckCancel,
     TicketCreate,
+    PaymentChannelCreate,
+    PaymentChannelClaim,
+    PaymentChannelFund,
 };

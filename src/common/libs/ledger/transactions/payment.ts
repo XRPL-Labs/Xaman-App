@@ -1,6 +1,6 @@
 /* eslint-disable no-lonely-if */
 import BigNumber from 'bignumber.js';
-import { get, set, has, isUndefined, isNumber, toInteger, find, findIndex } from 'lodash';
+import { get, set, has, isUndefined, isNumber, toInteger, findIndex } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
 import LedgerService from '@services/LedgerService';
@@ -13,7 +13,6 @@ import Localize from '@locale';
 import BaseTransaction from './base';
 
 import Amount from '../parser/common/amount';
-import Meta from '../parser/meta';
 
 /* Types ==================================================================== */
 import { LedgerAmount, Destination, AmountType } from '../parser/types';
@@ -259,21 +258,6 @@ class Payment extends BaseTransaction {
 
     get Paths(): Array<any> {
         return get(this, 'tx.Paths', undefined);
-    }
-
-    BalanceChange(owner?: string) {
-        if (!owner) {
-            owner = this.Account.address;
-        }
-
-        const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
-
-        const changes = {
-            sent: find(balanceChanges, (o) => o.action === 'DEC'),
-            received: find(balanceChanges, (o) => o.action === 'INC'),
-        } as { sent: AmountType; received: AmountType };
-
-        return changes;
     }
 
     validate = (source: AccountSchema, multiSign?: boolean) => {
