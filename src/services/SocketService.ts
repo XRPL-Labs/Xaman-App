@@ -290,7 +290,7 @@ class SocketService extends EventEmitter {
             | GatewayBalancesPayload
             | LedgerEntryPayload,
     ): any => {
-        return this.connection.send(payload, { timeoutSeconds: 3 });
+        return this.connection.send(payload, { timeoutSeconds: 40 });
     };
 
     /**

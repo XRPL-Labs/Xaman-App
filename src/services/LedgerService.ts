@@ -261,14 +261,19 @@ class LedgerService extends EventEmitter {
 
     verifyTx = (transactionId: string): Promise<VerifyResultType> => {
         return new Promise((resolve) => {
-            // wait for ledger close event
-            let verified = false;
-            const ledgerListener = async () => {
+            let timeout = undefined as ReturnType<typeof setTimeout>;
+
+            const ledgerListener = () => {
                 this.getTransaction(transactionId)
                     .then((tx: any) => {
                         if (tx.validated) {
+                            // of event for ledger
                             SocketService.offEvent('ledger', ledgerListener);
-                            verified = true;
+
+                            // clear timeout
+                            if (timeout) {
+                                clearTimeout(timeout);
+                            }
 
                             const { TransactionResult } = tx.meta;
 
@@ -281,16 +286,15 @@ class LedgerService extends EventEmitter {
                     .catch(() => {});
             };
 
+            // listen for ledger close events
             SocketService.onEvent('ledger', ledgerListener);
 
-            // timeout after 20 sec
-            setTimeout(() => {
-                if (!verified) {
-                    SocketService.offEvent('ledger', ledgerListener);
-                    resolve({
-                        success: false,
-                    });
-                }
+            // timeout after 30 sec
+            timeout = setTimeout(() => {
+                SocketService.offEvent('ledger', ledgerListener);
+                resolve({
+                    success: false,
+                });
             }, 30000);
         });
     };
