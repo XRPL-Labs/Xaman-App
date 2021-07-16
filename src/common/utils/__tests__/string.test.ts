@@ -7,6 +7,7 @@ describe('Utils.String', () => {
     const truncated = 'this...ate';
     const testString = 'teststring';
     const testHex = '74657374737472696e67';
+    const testinvalidHex = '6CCF8826E4C803D46808B4BE68DD2BF1730E5E3C001318CC400EB851EED18B764';
 
     describe('Truncate', () => {
         it('should truncate the string', () => {
@@ -29,6 +30,16 @@ describe('Utils.String', () => {
         it('should convert string to hex', () => {
             const bytes = HexEncoding.toHex(testString);
             expect(bytes).toBe(testHex);
+        });
+
+        it('should convert hex to UTF-8', () => {
+            const string = HexEncoding.toUTF8(testHex);
+            expect(string).toStrictEqual(testString);
+        });
+
+        it('should return the hex if not valid UTF-8', () => {
+            const string = HexEncoding.toUTF8(testinvalidHex);
+            expect(string).toStrictEqual(testinvalidHex);
         });
     });
 });

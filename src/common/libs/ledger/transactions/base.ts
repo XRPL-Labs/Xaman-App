@@ -361,9 +361,9 @@ class BaseTransaction {
         }
         return memos.map((m: any) => {
             return {
-                type: m.Memo.parsed_memo_type || HexEncoding.toString(m.Memo.MemoType),
-                format: m.Memo.parsed_memo_format || HexEncoding.toString(m.Memo.MemoFormat),
-                data: m.Memo.parsed_memo_data || HexEncoding.toString(m.Memo.MemoData),
+                type: HexEncoding.toUTF8(m.Memo.MemoType),
+                format: HexEncoding.toUTF8(m.Memo.MemoFormat),
+                data: HexEncoding.toUTF8(m.Memo.MemoData),
             };
         });
     }
