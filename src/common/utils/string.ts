@@ -13,7 +13,7 @@ const HexEncoding = {
     },
 
     toUTF8: (hex: string): string | undefined => {
-        if (!hex) return '';
+        if (!hex) return undefined;
 
         const buffer = Buffer.from(hex, 'hex');
         const isValid = Buffer.compare(Buffer.from(buffer.toString(), 'utf8'), buffer) === 0;
