@@ -67,7 +67,11 @@ class TangemMethod extends Component<Props, State> {
 
         return new Promise((resolve) => {
             // if no alternative signer return
-            if (!alternativeSigner) {
+            if (
+                !alternativeSigner ||
+                (alternativeSigner.encryptionLevel !== EncryptionLevels.Physical &&
+                    alternativeSigner.type !== AccountTypes.Tangem)
+            ) {
                 this.setState({
                     preferredAccount: signer,
                 });
@@ -75,15 +79,11 @@ class TangemMethod extends Component<Props, State> {
                 return resolve(true);
             }
 
-            if (
-                alternativeSigner.encryptionLevel === EncryptionLevels.Physical &&
-                alternativeSigner.type === AccountTypes.Tangem
-            ) {
-                this.setState({
-                    preferredAccount: signer,
-                    alternativeAccount: alternativeSigner,
-                });
-            }
+            this.setState({
+                preferredAccount: signer,
+                alternativeAccount: alternativeSigner,
+            });
+
             return resolve(false);
         });
     };
