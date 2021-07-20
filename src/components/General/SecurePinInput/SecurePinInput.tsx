@@ -287,25 +287,37 @@ class SecurePinInput extends Component<Props, State> {
         const { virtualKeyboard } = this.props;
         const { digits } = this.state;
 
+        let props = {};
+
+        // ios
+        if (Platform.OS === 'ios') {
+            props = { display: 'none' };
+        } else {
+            // android
+            props = { style: styles.hiddenInput };
+        }
+
         return (
             <TouchableWithoutFeedback testID="pin-input-container" onPress={this.focus}>
                 <View style={[styles.container]}>
                     {!virtualKeyboard && (
                         <TextInput
+                            ref={(component) => {
+                                this.input = component;
+                            }}
                             testID="pin-input"
-                            autoCorrect={false}
-                            disableFullscreenUI
                             returnKeyType="done"
                             keyboardType="number-pad"
                             onKeyPress={this.onKeyPress}
                             onChangeText={this.handleEdit}
+                            autoCorrect={false}
+                            spellCheck={false}
+                            disableFullscreenUI
                             secureTextEntry
-                            ref={(component) => {
-                                this.input = component;
-                            }}
+                            caretHidden
                             value={digits}
-                            // @ts-ignore
-                            display="none"
+                            // eslint-disable-next-line
+                            {...props}
                         />
                     )}
                     <View style={styles.digits}>{this.renderDots()}</View>

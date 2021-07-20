@@ -15,6 +15,11 @@ export default StyleService.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    hiddenInput: {
+        width: 1,
+        height: 1,
+        opacity: 0,
+    },
     textInput: {
         fontSize: 0,
         paddingBottom: 0,

@@ -35,12 +35,6 @@ class PinInput extends Component<Props, State> {
         this.state = {
             code: '',
         };
-
-        this.clean = this.clean.bind(this);
-        this.focus = this.focus.bind(this);
-        this.blur = this.blur.bind(this);
-        this.handleEdit = this.handleEdit.bind(this);
-        this.onKeyPress = this.onKeyPress.bind(this);
     }
 
     public static defaultProps = {
@@ -48,15 +42,15 @@ class PinInput extends Component<Props, State> {
         autoFocus: true,
     };
 
-    public blur() {
+    public blur = () => {
         setTimeout(() => {
             if (this.textInput) {
                 this.textInput.blur();
             }
         }, 100);
-    }
+    };
 
-    public focus() {
+    public focus = () => {
         // this is a quick fix for android bug
         // Android: Calling TextInput instance's focus() after keyboard
         // is closed via back button/submit doesn't bring up keyboard
@@ -66,15 +60,15 @@ class PinInput extends Component<Props, State> {
                 this.textInput.focus();
             }
         }, 100);
-    }
+    };
 
-    public clean() {
+    public clean = () => {
         this.setState({
             code: '',
         });
-    }
+    };
 
-    setPinCode(newCode: string) {
+    setPinCode = (newCode: string) => {
         const { onEdit } = this.props;
 
         if (onEdit) {
@@ -84,9 +78,9 @@ class PinInput extends Component<Props, State> {
         this.setState({
             code: newCode,
         });
-    }
+    };
 
-    onKeyPress(e: NativeSyntheticEvent<TextInputKeyPressEventData>) {
+    onKeyPress = (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
         const { code } = this.state;
 
         if (e.nativeEvent.key === 'Backspace' && Platform.OS === 'android') {
@@ -94,9 +88,9 @@ class PinInput extends Component<Props, State> {
             arrayCode.pop();
             this.setPinCode(arrayCode.join(''));
         }
-    }
+    };
 
-    handleEdit(code: string) {
+    handleEdit = (code: string) => {
         const { codeLength, onFinish } = this.props;
 
         // remove any non digits
@@ -118,7 +112,7 @@ class PinInput extends Component<Props, State> {
         } else {
             this.setPinCode('');
         }
-    }
+    };
 
     render() {
         const { codeLength, autoFocus } = this.props;
@@ -143,6 +137,16 @@ class PinInput extends Component<Props, State> {
             );
         }
 
+        let props = {};
+
+        // ios
+        if (Platform.OS === 'ios') {
+            props = { display: 'none' };
+        } else {
+            // android
+            props = { style: styles.hiddenInput };
+        }
+
         return (
             <View style={[styles.container]}>
                 <TextInput
@@ -151,16 +155,19 @@ class PinInput extends Component<Props, State> {
                     }}
                     testID="pin-input"
                     keyboardType="number-pad"
+                    returnKeyType="done"
                     onKeyPress={this.onKeyPress}
                     onChangeText={this.handleEdit}
                     maxLength={codeLength}
-                    returnKeyType="done"
                     autoFocus={autoFocus}
-                    autoCorrect={false}
-                    secureTextEntry
                     value={code}
-                    // @ts-ignore
-                    display="none"
+                    autoCorrect={false}
+                    spellCheck={false}
+                    disableFullscreenUI
+                    secureTextEntry
+                    caretHidden
+                    // eslint-disable-next-line
+                    {...props}
                 />
                 <View style={[styles.containerPin]}>{pins}</View>
             </View>

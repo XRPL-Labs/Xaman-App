@@ -118,7 +118,7 @@ class Meta {
             balance: {
                 issuer: fields.HighLimit.issuer,
                 currency: fields.Balance.currency,
-                value: value.absoluteValue().decimalPlaces(8).toString(10),
+                value: value.decimalPlaces(8).toString(10),
                 action: value.isNegative() ? 'DEC' : 'INC',
             },
         };
