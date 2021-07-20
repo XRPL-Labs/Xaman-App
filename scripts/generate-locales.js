@@ -86,7 +86,7 @@ const mergeObjects = (t1, t2) => {
                     ) {
                         if (typeof localeData[d] === 'object' && localeData[d] !== null) {
                             // Fix RU, LT, CA, ... 'isFormat' RegExp
-                            Object.keys(localeData[d]).forEach(k => {
+                            Object.keys(localeData[d]).forEach((k) => {
                                 if (localeData[d][k].constructor.name === 'RegExp') {
                                     localeData[d][k] = `RegExp(${localeData[d][k]})`;
                                     console.log('     | RegExp replace: ', k, localeData[d][k]);
@@ -137,7 +137,7 @@ const mergeObjects = (t1, t2) => {
                 fileContents = JSON.stringify(appTranslation, null, 2);
             }
 
-            fileContents = fileContents.replace(/"RegExp\(.+\)"/g, m => {
+            fileContents = fileContents.replace(/"RegExp\(.+\)"/g, (m) => {
                 return JSON.parse(`"${m.slice(8, -2)}"`);
             });
 
@@ -155,7 +155,7 @@ const mergeObjects = (t1, t2) => {
 
         console.log();
         console.log('  - Writing meta (meta.json)');
-        const metaContents = JSON.stringify(translationMeta, null, 2)
+        const metaContents = JSON.stringify(translationMeta, null, 2);
 
         fs.writeFile(`${LOCALES_DIR}/meta.json`, metaContents, (err) => {
             if (err) throw new Error('Error writing meta.json');
