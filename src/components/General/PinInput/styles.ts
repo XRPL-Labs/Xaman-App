@@ -13,6 +13,11 @@ const styles = StyleService.create({
         justifyContent: 'space-around',
         alignItems: 'center',
     },
+    hiddenInput: {
+        width: 1,
+        height: 1,
+        opacity: 0,
+    },
     pinInput: {
         flex: 1,
         height: AppSizes.verticalScale(55),
