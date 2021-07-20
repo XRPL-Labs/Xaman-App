@@ -11,7 +11,6 @@ import {
     Text,
     Image,
     TouchableOpacity,
-    ScrollView,
     ImageBackground,
     InteractionManager,
     Share,
@@ -22,11 +21,9 @@ import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle 
 
 import { LedgerService, SocketService, BackendService, StyleService } from '@services';
 
-import { AccessLevels, NodeChain } from '@store/types';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
 // constants
 import { AppScreens } from '@common/constants';
 
@@ -36,10 +33,12 @@ import { VibrateHapticFeedback, Prompt, Toast } from '@common/helpers/interface'
 import Localize from '@locale';
 
 // components
-import { Button, RaisedButton, InfoMessage, Spacer, Icon, AmountText, LoadingIndicator } from '@components/General';
+import { Button, RaisedButton, InfoMessage, Spacer, Icon, LoadingIndicator } from '@components/General';
+import { TrustLineList } from '@components/Modules';
 
 // style
-import { AppStyles, AppColors, AppFonts } from '@theme';
+import { AppStyles, AppFonts } from '@theme';
+import { ChainColors } from '@theme/colors';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -193,10 +192,10 @@ class HomeView extends Component<Props, State> {
                         visible: true,
                         animate: true,
                         background: {
-                            color: SocketService.chain === NodeChain.Main ? AppColors.blue : AppColors.green,
+                            color: ChainColors[SocketService.chain],
                         },
                         title: {
-                            text: SocketService.chain === NodeChain.Main ? 'MAINNET' : 'TESTNET',
+                            text: SocketService.chain.toUpperCase(),
                             color: 'white',
                             fontFamily: AppFonts.base.familyExtraBold,
                             fontSize: AppFonts.h5.size,
@@ -229,21 +228,6 @@ class HomeView extends Component<Props, State> {
         }
     };
 
-    addCurrency = () => {
-        const { account } = this.state;
-
-        Navigator.showOverlay(
-            AppScreens.Overlay.AddCurrency,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            { account },
-        );
-    };
-
     showBalanceExplain = () => {
         const { account } = this.state;
 
@@ -261,17 +245,6 @@ class HomeView extends Component<Props, State> {
                 },
             },
             { account },
-        );
-    };
-
-    openTrustLineDescription = () => {
-        Navigator.showModal(
-            AppScreens.Modal.Help,
-            {},
-            {
-                title: Localize.t('home.whatAreOtherAssets'),
-                content: Localize.t('home.otherAssetsDesc'),
-            },
         );
     };
 
@@ -341,9 +314,11 @@ class HomeView extends Component<Props, State> {
     };
 
     onShowAccountQRPress = () => {
-        const { account } = this.state;
+        const { isSpendable } = this.state;
 
-        if (account.accessLevel === AccessLevels.Readonly) {
+        if (isSpendable) {
+            this.showShareOverlay();
+        } else {
             Prompt(
                 Localize.t('global.warning'),
                 Localize.t('home.shareReadonlyAccountWarning'),
@@ -360,8 +335,6 @@ class HomeView extends Component<Props, State> {
                 ],
                 { type: 'default' },
             );
-        } else {
-            this.showShareOverlay();
         }
     };
 
@@ -406,7 +379,7 @@ class HomeView extends Component<Props, State> {
             });
 
             BackendService.getCurrencyRate(currency)
-                .then(r => {
+                .then((r) => {
                     this.setState({
                         currencyRate: r,
                         isLoadingRate: false,
@@ -459,6 +432,16 @@ class HomeView extends Component<Props, State> {
         );
     };
 
+    onTrustLinePress = (line: TrustLineSchema) => {
+        const { isSpendable } = this.state;
+
+        if (isSpendable) {
+            this.showCurrencyOptions(line);
+        } else if (line.isNFT) {
+            this.showNFTDetails(line);
+        }
+    };
+
     renderAssets = () => {
         const { account, discreetMode, isSpendable } = this.state;
 
@@ -487,7 +470,7 @@ class HomeView extends Component<Props, State> {
                                     <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
                                         <Icon size={25} style={[styles.iconAccount]} name="IconAccount" />
                                         <View>
-                                            <Text style={[AppStyles.p]}>{a.label}</Text>
+                                            <Text style={[AppStyles.pbold]}>{a.label}</Text>
                                             <Text style={[AppStyles.subtext, AppStyles.mono, AppStyles.colorBlue]}>
                                                 {a.address}
                                             </Text>
@@ -524,137 +507,14 @@ class HomeView extends Component<Props, State> {
         }
 
         return (
-            <View style={[AppStyles.flex6, styles.currencyList]} testID="activated-account-container">
-                <View style={[AppStyles.row, AppStyles.centerContent, styles.trustLinesHeader]}>
-                    <View style={[AppStyles.flex5, AppStyles.centerContent]}>
-                        <Text numberOfLines={1} style={[AppStyles.pbold]}>
-                            {Localize.t('home.otherAssets')}
-                        </Text>
-                    </View>
-                    {isSpendable && (
-                        <View style={[AppStyles.flex5]}>
-                            <Button
-                                light
-                                roundedSmall
-                                numberOfLines={1}
-                                testID="add-asset-button"
-                                label={Localize.t('home.addAsset')}
-                                onPress={this.addCurrency}
-                                icon="IconPlus"
-                                iconSize={20}
-                                style={[AppStyles.rightSelf]}
-                            />
-                        </View>
-                    )}
-                </View>
-
-                {account.lines.length === 0 && (
-                    <View testID="assets-empty-view" style={[styles.noTrustlineMessage]}>
-                        <InfoMessage type="warning" label={Localize.t('home.youDonNotHaveOtherAssets')} />
-
-                        <TouchableOpacity
-                            style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingSml]}
-                            onPress={this.openTrustLineDescription}
-                        >
-                            <Icon name="IconInfo" size={20} style={[styles.trustLineInfoIcon]} />
-                            <Text
-                                style={[
-                                    AppStyles.subtext,
-                                    AppStyles.textCenterAligned,
-                                    AppStyles.link,
-                                    AppStyles.colorGrey,
-                                ]}
-                            >
-                                {Localize.t('home.whatAreOtherAssets')}
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
-
-                {account.lines.length > 0 && (
-                    <ScrollView testID="assets-scroll-view" style={AppStyles.flex1}>
-                        {account.lines.map((line: TrustLineSchema, index: number) => {
-                            return (
-                                <TouchableOpacity
-                                    testID={`line-${line.currency.issuer}`}
-                                    onPress={() => {
-                                        if (isSpendable) {
-                                            this.showCurrencyOptions(line);
-                                        } else if (line.isNFT) {
-                                            this.showNFTDetails(line);
-                                        }
-                                    }}
-                                    activeOpacity={isSpendable ? 0.5 : 1}
-                                    style={[styles.currencyItem]}
-                                    key={index}
-                                >
-                                    <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
-                                        <View style={[styles.brandAvatarContainer]}>
-                                            <Image
-                                                style={[styles.brandAvatar]}
-                                                source={{ uri: line.counterParty.avatar }}
-                                            />
-                                        </View>
-                                        <View style={[AppStyles.column, AppStyles.centerContent]}>
-                                            <Text style={[styles.currencyItemLabelSmall]}>
-                                                {line.currency.name
-                                                    ? line.currency.name
-                                                    : NormalizeCurrencyCode(line.currency.currency)}
-                                            </Text>
-                                            <Text style={[styles.issuerLabel]}>
-                                                {line.currency.issuer === account.address
-                                                    ? Localize.t('home.selfIssued')
-                                                    : `${line.counterParty.name} ${
-                                                          // eslint-disable-next-line max-len
-                                                          line.currency.name
-                                                              ? NormalizeCurrencyCode(line.currency.currency)
-                                                              : ''
-                                                      }`}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    <View
-                                        style={[
-                                            AppStyles.flex1,
-                                            AppStyles.row,
-                                            AppStyles.centerContent,
-                                            AppStyles.centerAligned,
-                                            AppStyles.flexEnd,
-                                        ]}
-                                    >
-                                        {discreetMode ? (
-                                            <Text style={[AppStyles.pbold, AppStyles.monoBold, AppStyles.colorGrey]}>
-                                                ••••••••
-                                            </Text>
-                                        ) : (
-                                            <AmountText
-                                                prefix={() => {
-                                                    if (line.currency.avatar) {
-                                                        return (
-                                                            <View style={styles.currencyAvatarContainer}>
-                                                                <Image
-                                                                    style={[
-                                                                        styles.currencyAvatar,
-                                                                        discreetMode && AppStyles.imgColorGrey,
-                                                                    ]}
-                                                                    source={{ uri: line.currency.avatar }}
-                                                                />
-                                                            </View>
-                                                        );
-                                                    }
-                                                    return undefined;
-                                                }}
-                                                value={line.balance}
-                                                style={[AppStyles.pbold, AppStyles.monoBold]}
-                                            />
-                                        )}
-                                    </View>
-                                </TouchableOpacity>
-                            );
-                        })}
-                    </ScrollView>
-                )}
-            </View>
+            <TrustLineList
+                testID="trustLine-list-container"
+                style={[styles.trustLineListContainer]}
+                account={account}
+                onLinePress={this.onTrustLinePress}
+                discreetMode={discreetMode}
+                showAddButton={isSpendable}
+            />
         );
     };
 

@@ -341,7 +341,9 @@ class SwitchAccountOverlay extends Component<Props, State> {
                                 />
                             </View>
                         </View>
-                        <ScrollView contentContainerStyle={{ paddingBottom }}>{this.renderContent()}</ScrollView>
+                        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom }}>
+                            {this.renderContent()}
+                        </ScrollView>
                     </View>
                 </Interactable.View>
             </View>

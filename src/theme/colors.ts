@@ -4,6 +4,7 @@
 
 /* eslint-disable spellcheck/spell-checker */
 import { ColorLuminance, HexToRgbA } from '@common/utils/color';
+import { NodeChain } from '@store/types';
 
 const colors = {
     blue: '#3052FF',
@@ -38,6 +39,7 @@ const ColorsGeneral = {
     // lightBlue: ColorLuminance(colors.blue, -0.5),
     transparentBlack: HexToRgbA(colors.black, 0.7),
     transparentBlue: HexToRgbA(colors.blue, 0.7),
+    transparentWhite: HexToRgbA(colors.white, 0.4),
     darkGrey: ColorLuminance(colors.grey, -0.75),
 };
 
@@ -103,6 +105,12 @@ const ColorsTheme = {
     },
 };
 
+const ChainColors = {
+    [NodeChain.Main]: ColorsGeneral.blue,
+    [NodeChain.Test]: ColorsGeneral.green,
+    [NodeChain.Custom]: ColorsGeneral.orange,
+};
+
 export default ColorsGeneral;
 
-export { ColorsGeneral, ColorsTheme };
+export { ColorsGeneral, ColorsTheme, ChainColors };

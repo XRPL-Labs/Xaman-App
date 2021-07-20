@@ -13,7 +13,8 @@ const styles = StyleService.create({
     addressContainer: {
         borderRadius: 15,
         zIndex: 2,
-        padding: 20,
+        paddingHorizontal: 5,
+        paddingVertical: 10,
         marginBottom: AppSizes.paddingSml,
     },
     label: {

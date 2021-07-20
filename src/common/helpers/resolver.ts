@@ -17,6 +17,7 @@ export interface AccountNameType {
     address?: string;
     name: string;
     source: string;
+    kycApproved?: boolean;
 }
 
 export interface AccountInfoType {
@@ -31,12 +32,14 @@ export interface AccountInfoType {
 const getAccountName = memoize(
     (address: string, tag = '', internal = false): Promise<AccountNameType> => {
         return new Promise((resolve) => {
+            const notFound = {
+                address,
+                name: '',
+                source: '',
+            };
+
             if (!address) {
-                return resolve({
-                    address,
-                    name: '',
-                    source: '',
-                });
+                return resolve(notFound);
             }
 
             // check address  book
@@ -48,7 +51,7 @@ const getAccountName = memoize(
                     return resolve({
                         address,
                         name: contact.name,
-                        source: 'internal:contacts',
+                        source: 'contacts',
                     });
                 }
             } catch {
@@ -62,7 +65,7 @@ const getAccountName = memoize(
                     return resolve({
                         address,
                         name: account.label,
-                        source: 'internal:accounts',
+                        source: 'accounts',
                     });
                 }
             } catch {
@@ -71,11 +74,7 @@ const getAccountName = memoize(
 
             // only lookup for local result
             if (internal) {
-                return resolve({
-                    address,
-                    name: '',
-                    source: '',
-                });
+                return resolve(notFound);
             }
 
             // check the backend
@@ -85,21 +84,14 @@ const getAccountName = memoize(
                         return resolve({
                             address,
                             name: res.name,
-                            source: res.source,
+                            source: res.source?.replace('internal:', '').replace('.com', ''),
+                            kycApproved: res.kycApproved,
                         });
                     }
-                    return resolve({
-                        address,
-                        name: '',
-                        source: '',
-                    });
+                    return resolve(notFound);
                 })
                 .catch(() => {
-                    return resolve({
-                        address,
-                        name: '',
-                        source: '',
-                    });
+                    return resolve(notFound);
                 });
         });
     },
@@ -152,7 +144,9 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
 
             // check for black hole
             if (has(account_data, ['RegularKey'])) {
-                if (account_data.RegularKey === 'rrrrrrrrrrrrrrrrrrrrrhoLvTp') {
+                if (
+                    ['rrrrrrrrrrrrrrrrrrrrrhoLvTp', 'rrrrrrrrrrrrrrrrrrrrBZbvji'].indexOf(account_data.RegularKey) > -1
+                ) {
                     assign(info, { blackHole: true });
                 }
             }

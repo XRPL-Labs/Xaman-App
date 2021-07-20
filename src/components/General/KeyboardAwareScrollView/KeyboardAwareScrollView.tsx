@@ -228,6 +228,7 @@ class KeyboardAwareScrollView extends PureComponent<Props, State> {
                 bounces={false}
                 scrollEventThrottle={16}
                 automaticallyAdjustContentInsets={false}
+                contentInsetAdjustmentBehavior="never"
                 onLayout={this.handleLayout}
                 onContentSizeChange={this.handleContentSizeChange}
                 style={style}

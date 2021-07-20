@@ -34,9 +34,8 @@ Feature: Import Account
     Scenario: Activate Account
         Given I should see 'not-activated-account-container'
         Then I activate the account
-        Given I should wait 20 sec to see 'activated-account-container'
+        Then I should wait 20 sec to see 'assets-empty-view'
         Given I should see '80' in 'account-balance-label'
-        Given I should have 'assets-empty-view'
 
     Scenario: Test signing by adding a asset
         Then I tap 'add-asset-button'
@@ -51,7 +50,7 @@ Feature: Import Account
         Given I should see 'submitting-view'
         Given I should wait 20 sec to see 'success-result-view'
         Then I tap 'close-button'
-        Given I should have 'assets-scroll-view'
+        Given I should not have 'assets-empty-view'
 
     # Family Seed
     Scenario: Import account with family seed with passcode as security
@@ -89,9 +88,8 @@ Feature: Import Account
     Scenario: Activate Account
         Given I should see 'not-activated-account-container'
         Then I activate the account
-        Given I should wait 20 sec to see 'activated-account-container'
+        Then I should wait 20 sec to see 'assets-empty-view'
         Given I should see '80' in 'account-balance-label'
-        Given I should have 'assets-empty-view'
 
     Scenario: Test signing by adding a asset
         Then I tap 'add-asset-button'
@@ -106,7 +104,7 @@ Feature: Import Account
         Given I should see 'submitting-view'
         Given I should wait 20 sec to see 'success-result-view'
         Then I tap 'close-button'
-        Given I should have 'assets-scroll-view'
+        Given I should not have 'assets-empty-view'
 
     # Mnemonic
     Scenario: Import account with mnemonic with passcode as security
@@ -148,9 +146,8 @@ Feature: Import Account
     Scenario: Activate Account
         Given I should see 'not-activated-account-container'
         Then I activate the account
-        Given I should wait 20 sec to see 'activated-account-container'
+        Then I should wait 20 sec to see 'assets-empty-view'
         Given I should see '80' in 'account-balance-label'
-        Given I should have 'assets-empty-view'
 
     Scenario: Test signing by adding a asset
         Then I tap 'add-asset-button'
@@ -165,7 +162,7 @@ Feature: Import Account
         Given I should see 'submitting-view'
         Given I should wait 20 sec to see 'success-result-view'
         Then I tap 'close-button'
-        Given I should have 'assets-scroll-view'
+        Given I should not have 'assets-empty-view'
 
 
     # Family Seed + passphrase
@@ -209,9 +206,8 @@ Feature: Import Account
     Scenario: Activate Account
         Given I should see 'not-activated-account-container'
         Then I activate the account
-        Given I should wait 20 sec to see 'activated-account-container'
+        Then I should wait 20 sec to see 'assets-empty-view'
         Given I should see '80' in 'account-balance-label'
-        Given I should have 'assets-empty-view'
 
     Scenario: Test signing by adding a asset
         Then I tap 'add-asset-button'
@@ -227,4 +223,4 @@ Feature: Import Account
         Given I should see 'submitting-view'
         Given I should wait 20 sec to see 'success-result-view'
         Then I tap 'close-button'
-        Given I should have 'assets-scroll-view'
+        Given I should not have 'assets-empty-view'

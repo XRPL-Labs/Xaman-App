@@ -62,13 +62,16 @@ const styles = StyleService.create({
     xrpAvatar: {
         resizeMode: 'contain',
     },
-    xrpAvatarContainer: {
+    brandAvatarContainer: {
+        marginRight: 10,
+    },
+    iconContainer: {
         padding: 10,
         marginRight: 10,
         backgroundColor: '$white',
         borderWidth: 1,
         borderColor: '$lightGrey',
-        borderRadius: 8,
+        borderRadius: 10,
         justifyContent: 'center',
     },
     trustLineInfoIcon: {
@@ -93,10 +96,6 @@ const styles = StyleService.create({
     listHeader: {
         paddingVertical: 5,
         backgroundColor: '$white',
-    },
-    currencyAvatar: {
-        width: AppSizes.moderateScale(16),
-        height: AppSizes.moderateScale(16),
     },
 });
 

@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-color-literals */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable spellcheck/spell-checker */
 /* eslint-disable no-underscore-dangle */
@@ -31,7 +32,7 @@ const combinations = (variationsByField) => {
 
 const createElement = (Component, props) => {
     return (
-        <View style={{ marginTop: 10 }} key={Math.random()}>
+        <View style={{ marginTop: 10, alignSelf: 'stretch' }} key={Math.random()}>
             {React.createElement(Component, props)}
         </View>
     );
@@ -42,7 +43,15 @@ export default function withPropsCombinations(component, possibleValuesByPropNam
         const propsCombinations = combinations(possibleValuesByPropName);
 
         return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <View
+                style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingHorizontal: 10,
+                    backgroundColor: '#F0F3FF',
+                }}
+            >
                 {propsCombinations.map((props, i) => createElement(component, { ...props, key: i }))}
             </View>
         );

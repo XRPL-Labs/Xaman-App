@@ -4,22 +4,30 @@ import { AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
 export default StyleService.create({
-    messageBox: {
-        flexDirection: 'row',
+    container: {
         alignItems: 'center',
         alignSelf: 'stretch',
         borderRadius: 15,
         paddingHorizontal: 20,
         paddingVertical: 10,
     },
-    messageBoxFlat: {
+    containerFlat: {
         borderRadius: 0,
+    },
+    contentContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'stretch',
     },
     iconContainer: {
         paddingRight: 10,
         alignItems: 'center',
     },
-
+    footerContainer: {
+        flex: 1,
+        paddingRight: 10,
+        alignItems: 'center',
+    },
     labelContainer: {
         flex: 1,
         paddingVertical: 10,
@@ -59,4 +67,7 @@ export default StyleService.create({
         tintColor: '$grey',
     },
     neutralIcon: { tintColor: '$grey' },
+    moreInfoButton: {
+        marginVertical: 8,
+    },
 });

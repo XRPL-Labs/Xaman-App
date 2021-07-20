@@ -2,7 +2,7 @@
  * Base Ledger transaction parser
  */
 import BigNumber from 'bignumber.js';
-import { set, get, has, isUndefined } from 'lodash';
+import { set, get, has, isUndefined, find } from 'lodash';
 
 import LedgerService from '@services/LedgerService';
 
@@ -20,13 +20,14 @@ import {
     VerifyResultType,
 } from '@common/libs/ledger/types';
 
+import Meta from '../parser/meta';
 import LedgerDate from '../parser/common/date';
 import Amount from '../parser/common/amount';
 import Flag from '../parser/common/flag';
 import { txFlags } from '../parser/common/flags/txFlags';
 
 /* Types ==================================================================== */
-import { TransactionResult, Account, Memo } from '../parser/types';
+import { TransactionResult, Account, Memo, AmountType } from '../parser/types';
 
 /* Class ==================================================================== */
 class BaseTransaction {
@@ -291,6 +292,31 @@ class BaseTransaction {
         return undefined;
     }
 
+    BalanceChange(owner?: string) {
+        if (!owner) {
+            owner = this.Account.address;
+        }
+
+        const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
+
+        const changes = {
+            sent: find(balanceChanges, (o) => o.action === 'DEC'),
+            received: find(balanceChanges, (o) => o.action === 'INC'),
+        } as { sent: AmountType; received: AmountType };
+
+        // remove fee from sender
+        if (owner === this.Account.address && changes.sent && changes.sent.currency === 'XRP') {
+            const afterFee = new BigNumber(changes.sent.value).minus(new BigNumber(this.Fee));
+            if (afterFee.isZero()) {
+                set(changes, 'sent', undefined);
+            } else {
+                set(changes, 'sent.value', afterFee.decimalPlaces(8).toString(10));
+            }
+        }
+
+        return changes;
+    }
+
     get Type(): string {
         return get(this, ['tx', 'TransactionType'], undefined);
     }
@@ -335,9 +361,9 @@ class BaseTransaction {
         }
         return memos.map((m: any) => {
             return {
-                type: m.Memo.parsed_memo_type || HexEncoding.toString(m.Memo.MemoType),
-                format: m.Memo.parsed_memo_format || HexEncoding.toString(m.Memo.MemoFormat),
-                data: m.Memo.parsed_memo_data || HexEncoding.toString(m.Memo.MemoData),
+                type: HexEncoding.toUTF8(m.Memo.MemoType),
+                format: HexEncoding.toUTF8(m.Memo.MemoFormat),
+                data: HexEncoding.toUTF8(m.Memo.MemoData),
             };
         });
     }

@@ -3,12 +3,8 @@
  */
 
 import { isEmpty } from 'lodash';
-import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import { View, Image, Text, Alert, InteractionManager } from 'react-native';
-
-import { AccountSchema } from '@store/schemas/latest';
-import { NodeChain } from '@store/types';
 
 import { BackendService, SocketService } from '@services';
 
@@ -18,11 +14,10 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
 import Preferences from '@common/libs/preferences';
-import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 // components
 import {
-    AmountInput,
     AmountText,
     Button,
     Footer,
@@ -38,6 +33,8 @@ import Localize from '@locale';
 
 // style
 import { AppStyles, AppColors } from '@theme';
+import { ChainColors } from '@theme/colors';
+
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
@@ -52,7 +49,6 @@ export interface State {
 
 /* Component ==================================================================== */
 class SummaryStep extends Component<Props, State> {
-    amountInput: React.RefObject<typeof AmountInput | null>;
     destinationTagInput: TextInput;
 
     static contextType = StepsContext;
@@ -65,8 +61,6 @@ class SummaryStep extends Component<Props, State> {
             confirmedDestinationTag: undefined,
             currencyRate: undefined,
         };
-
-        this.amountInput = React.createRef();
     }
 
     componentDidMount() {
@@ -116,40 +110,6 @@ class SummaryStep extends Component<Props, State> {
         setDestination(destination);
     };
 
-    getAvailableBalance = () => {
-        const { currency, source, sendingNFT } = this.context;
-
-        let availableBalance;
-
-        // XRP
-        if (typeof currency === 'string') {
-            availableBalance = source.availableBalance;
-        } else if (sendingNFT) {
-            availableBalance = XRPLValueToNFT(currency.balance);
-        } else {
-            availableBalance = currency.balance;
-        }
-        return availableBalance;
-    };
-
-    onAccountChange = (item: AccountSchema) => {
-        const { currency, setSource } = this.context;
-
-        if (typeof currency === 'string') {
-            setSource(item);
-        } else if (item.hasCurrency(currency.currency)) {
-            setSource(item);
-        } else {
-            Alert.alert(Localize.t('global.error'), Localize.t('send.selectedAccountDoNotSupportAsset'));
-        }
-    };
-
-    onAmountChange = (amount: string) => {
-        const { setAmount } = this.context;
-        // set amount
-        setAmount(amount);
-    };
-
     showMemoAlert = async () => {
         const { payment } = this.context;
 
@@ -176,6 +136,10 @@ class SummaryStep extends Component<Props, State> {
 
     showEnterDestinationTag = () => {
         const { setDestination, destination } = this.context;
+
+        if (!destination) {
+            return;
+        }
 
         Navigator.showOverlay(
             AppScreens.Overlay.EnterDestinationTag,
@@ -230,9 +194,7 @@ class SummaryStep extends Component<Props, State> {
 
     goNext = () => {
         const { confirmedDestinationTag } = this.state;
-        const { goNext, currency, source, amount, destination, destinationInfo, setAmount } = this.context;
-
-        const bAmount = new BigNumber(amount);
+        const { goNext, currency, source, amount, destination, destinationInfo } = this.context;
 
         if (!amount || parseFloat(amount) === 0) {
             Alert.alert(Localize.t('global.error'), Localize.t('send.pleaseEnterAmount'));
@@ -248,31 +210,6 @@ class SummaryStep extends Component<Props, State> {
         if (typeof currency !== 'string' && currency.obligation) {
             // go to next screen
             goNext();
-            return;
-        }
-
-        // @ts-ignore
-        const availableBalance = new BigNumber(this.getAvailableBalance()).toNumber();
-
-        // check if amount is bigger than what user can spend
-        if (bAmount.toNumber() > availableBalance) {
-            Prompt(
-                Localize.t('global.error'),
-                Localize.t('send.theMaxAmountYouCanSendIs', {
-                    spendable: Localize.formatNumber(availableBalance),
-                    currency: this.getCurrencyName(),
-                }),
-                [
-                    { text: Localize.t('global.cancel') },
-                    {
-                        text: Localize.t('global.update'),
-                        onPress: () => {
-                            setAmount(availableBalance.toString());
-                        },
-                    },
-                ],
-                { type: 'default' },
-            );
             return;
         }
 
@@ -313,10 +250,14 @@ class SummaryStep extends Component<Props, State> {
         goBack();
     };
 
-    shouldShowTestnet = () => {
+    getSwipeButtonColor = (): string => {
         const { coreSettings } = this.context;
 
-        return coreSettings.developerMode && SocketService.chain === NodeChain.Test;
+        if (coreSettings.developerMode) {
+            return ChainColors[SocketService.chain];
+        }
+
+        return undefined;
     };
 
     renderCurrencyItem = (item: any) => {
@@ -387,19 +328,26 @@ class SummaryStep extends Component<Props, State> {
     };
 
     render() {
-        const { source, accounts, amount, destination, currency, sendingNFT, isLoading } = this.context;
+        const { source, amount, destination, currency, isLoading } = this.context;
 
         return (
             <View testID="send-summary-view" style={[styles.container]}>
                 <KeyboardAwareScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
                     <View style={[styles.rowItem, styles.rowItemGrey]}>
                         <View style={[styles.rowTitle]}>
-                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                            <Text
+                                style={[
+                                    AppStyles.subtext,
+                                    AppStyles.strong,
+                                    styles.rowTitlePadding,
+                                    { color: AppColors.grey },
+                                ]}
+                            >
                                 {Localize.t('global.from')}
                             </Text>
                         </View>
 
-                        <AccountPicker onSelect={this.onAccountChange} accounts={accounts} selectedItem={source} />
+                        <AccountPicker accounts={source} selectedItem={source} />
 
                         <Spacer size={20} />
 
@@ -468,28 +416,8 @@ class SummaryStep extends Component<Props, State> {
                         </View>
                         <Spacer size={15} />
 
-                        <View style={AppStyles.row}>
-                            <View style={AppStyles.flex1}>
-                                <AmountInput
-                                    ref={this.amountInput}
-                                    fractional={!sendingNFT}
-                                    decimalPlaces={typeof currency === 'string' ? 6 : 8}
-                                    onChange={this.onAmountChange}
-                                    style={[styles.amountInput]}
-                                    value={amount}
-                                />
-                            </View>
-                            <Button
-                                onPress={() => {
-                                    this.amountInput.current?.focus();
-                                }}
-                                style={styles.editButton}
-                                roundedSmall
-                                iconSize={13}
-                                light
-                                icon="IconEdit"
-                            />
-                        </View>
+                        <AmountText value={amount} style={[styles.amountInput]} />
+
                         {this.renderAmountRate()}
                     </View>
 
@@ -516,7 +444,7 @@ class SummaryStep extends Component<Props, State> {
                 {/* Bottom Bar */}
                 <Footer safeArea>
                     <SwipeButton
-                        secondary={this.shouldShowTestnet()}
+                        color={this.getSwipeButtonColor()}
                         label={Localize.t('global.slideToSend')}
                         onSwipeSuccess={this.goNext}
                         isLoading={isLoading}

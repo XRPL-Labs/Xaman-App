@@ -5,18 +5,12 @@ import { AppFonts, AppSizes } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     container: {
-        left: 0,
-        right: 0,
         flexDirection: 'row',
         alignItems: 'center',
         height: AppSizes.heightPercentageToDP(7.5),
-    },
-    row: {
-        paddingTop: 10,
-    },
-    touchHighlight: {
         borderRadius: 10,
         paddingLeft: 5,
+        paddingRight: 5,
         marginLeft: -5,
         marginRight: -5,
     },
@@ -36,7 +30,7 @@ const styles = StyleService.create({
         tintColor: '$contrast',
     },
     xAppsIcon: {
-        tintColor: '$lightGrey',
+        tintColor: '$grey',
         marginLeft: 8,
         resizeMode: 'contain',
         height: 15,
@@ -48,6 +42,8 @@ const styles = StyleService.create({
         color: '$textPrimary',
     },
     description: {
+        flexWrap: 'wrap',
+        flexShrink: 1,
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.subtext.size * 0.9,
         color: '$grey',
@@ -63,19 +59,12 @@ const styles = StyleService.create({
     },
     outgoingColor: {
         color: '$red',
-        tintColor: '$red',
-    },
-    incomingColor: {
-        color: '$textPrimary',
-        tintColor: '$green',
     },
     orangeColor: {
         color: '$orange',
-        tintColor: '$orange',
     },
     naturalColor: {
         color: '$grey',
-        tintColor: '$grey',
     },
 });
 

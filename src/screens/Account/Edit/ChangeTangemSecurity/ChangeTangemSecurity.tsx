@@ -136,7 +136,23 @@ class ChangeTangemSecurityView extends Component<Props, State> {
         }
 
         if (currentSecurity === TangemSecurity.LongTap) {
-            this.changePasscode();
+            Navigator.showAlertModal({
+                type: 'warning',
+                text: Localize.t('account.tangemCardPasscodeSetWarning'),
+                buttons: [
+                    {
+                        text: Localize.t('global.cancel'),
+                        type: 'dismiss',
+                        light: true,
+                    },
+                    {
+                        text: Localize.t('global.doIt'),
+                        onPress: this.changePasscode,
+                        type: 'continue',
+                        light: false,
+                    },
+                ],
+            });
         } else {
             this.removePasscode();
         }
@@ -160,20 +176,18 @@ class ChangeTangemSecurityView extends Component<Props, State> {
                 <View style={[AppStyles.contentContainer, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <RadioButton
                         testID="long-tap-radio-button"
-                        onPress={() => {
-                            this.onSecurityChange(TangemSecurity.LongTap);
-                        }}
+                        onPress={this.onSecurityChange}
                         description={Localize.t('account.tangemLongTapExplain')}
                         label={Localize.t('global.longTap')}
+                        value={TangemSecurity.LongTap}
                         checked={chosenSecurity === TangemSecurity.LongTap}
                     />
                     <RadioButton
                         testID="passcode-radio-button"
-                        onPress={() => {
-                            this.onSecurityChange(TangemSecurity.Passcode);
-                        }}
+                        onPress={this.onSecurityChange}
                         description={Localize.t('account.tangemPasscodeExplain')}
                         label={Localize.t('global.passcode')}
+                        value={TangemSecurity.Passcode}
                         checked={chosenSecurity === TangemSecurity.Passcode}
                     />
                 </View>

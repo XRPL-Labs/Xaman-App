@@ -4,6 +4,7 @@ import { AppFonts } from '@theme';
 const styles = StyleService.create({
     listContainer: { padding: 5 },
     logRow: {
+        alignSelf: 'stretch',
         paddingBottom: 2,
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.base.size * 0.7,

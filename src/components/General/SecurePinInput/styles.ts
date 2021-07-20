@@ -8,10 +8,6 @@ export default StyleService.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    hiddenInput: {
-        height: 0,
-        width: 0,
-    },
     digits: {
         height: AppSizes.verticalScale(80),
         display: 'flex',

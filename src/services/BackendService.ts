@@ -3,7 +3,6 @@
  * Interact with xumm backend
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import { map, isEmpty, flatMap, get } from 'lodash';
 import moment from 'moment-timezone';
 
@@ -16,6 +15,7 @@ import { GetAppReadableVersion, GetDeviceUniqueId } from '@common/helpers/device
 
 import { CurrencySchema } from '@store/schemas/latest';
 
+import { CoreRepository } from '@store/repositories';
 import ProfileRepository from '@store/repositories/profile';
 import CounterPartyRepository from '@store/repositories/counterParty';
 import CurrencyRepository from '@store/repositories/currency';
@@ -24,7 +24,7 @@ import { Payload, PayloadType } from '@common/libs/payload';
 
 // services
 import PushNotificationsService from '@services/PushNotificationsService';
-import NavigationService from '@services/NavigationService';
+import NavigationService, { RootType } from '@services/NavigationService';
 import ApiService from '@services/ApiService';
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
@@ -48,7 +48,7 @@ class BackendService {
             try {
                 // sync the details after moving to default stack
                 NavigationService.on('setRoot', (root: string) => {
-                    if (root === 'DefaultStack') {
+                    if (root === RootType.DefaultRoot) {
                         this.sync();
                     }
                 });
@@ -93,20 +93,13 @@ class BackendService {
 
                     await Promise.all(
                         map(value.currencies, async (c) => {
-                            const currency = await CurrencyRepository.upsert(
-                                {
-                                    id: uuidv4(),
-                                    issuer: c.issuer,
-                                    currency: c.currency,
-                                    name: c.name,
-                                    avatar: c.avatar || '',
-                                    shortlist: c.shortlist === 1,
-                                },
-                                {
-                                    issuer: c.issuer,
-                                    currency: c.currency,
-                                },
-                            );
+                            const currency = await CurrencyRepository.include({
+                                issuer: c.issuer,
+                                currency: c.currency,
+                                name: c.name,
+                                avatar: c.avatar || '',
+                                shortlist: c.shortlist === 1,
+                            });
 
                             normalizedList.push(currency);
                         }),
@@ -208,11 +201,12 @@ class BackendService {
     */
     ping = () => {
         /* eslint-disable-next-line */
-        return new Promise(async (resolve, reject) => {
+        return new Promise<void>(async (resolve, reject) => {
             return ApiService.ping
                 .post(null, {
                     appVersion: GetAppReadableVersion(),
                     appLanguage: Localize.getCurrentLocale(),
+                    appCurrency: CoreRepository.getAppCurrency(),
                     devicePushToken: await PushNotificationsService.getToken(),
                 })
                 .then((res: any) => {
@@ -254,11 +248,11 @@ class BackendService {
                         PushNotificationsService.updateBadge(badge);
                     }
 
-                    return resolve(null);
+                    return resolve();
                 })
                 .catch((e: any) => {
                     this.logger.error('Ping Backend Error: ', e);
-                    return reject(e);
+                    return resolve();
                 });
         });
     };
@@ -295,6 +289,18 @@ class BackendService {
     getCurrenciesList = () => {
         const locale = Localize.getCurrentLocale();
         return ApiService.currencies.get({ locale });
+    };
+
+    getEndpointDetails = (hash: string) => {
+        return ApiService.validEndpoints.get({ hash });
+    };
+
+    auditTrail = (destination: string, reason: { reason: string }) => {
+        return ApiService.auditTrail.post({ destination }, reason);
+    };
+
+    getTranslation = (uuid: string) => {
+        return ApiService.translation.get({ uuid });
     };
 
     getCurrencyRate = (currency: string) => {

@@ -65,7 +65,10 @@ class SecurePinInput extends Component<Props, State> {
     public focus = () => {
         const { virtualKeyboard } = this.props;
         if (!virtualKeyboard) {
-            this.input.blur();
+            // blur first
+            if (this.input) {
+                this.input.blur();
+            }
 
             setTimeout(() => {
                 if (this.input) {
@@ -284,16 +287,6 @@ class SecurePinInput extends Component<Props, State> {
         const { virtualKeyboard } = this.props;
         const { digits } = this.state;
 
-        let props = {};
-
-        // ios
-        if (Platform.OS === 'ios') {
-            props = { display: 'none' };
-        } else {
-            // android
-            props = { style: styles.hiddenInput };
-        }
-
         return (
             <TouchableWithoutFeedback testID="pin-input-container" onPress={this.focus}>
                 <View style={[styles.container]}>
@@ -303,7 +296,6 @@ class SecurePinInput extends Component<Props, State> {
                             autoCorrect={false}
                             disableFullscreenUI
                             returnKeyType="done"
-                            underlineColorAndroid="transparent"
                             keyboardType="number-pad"
                             onKeyPress={this.onKeyPress}
                             onChangeText={this.handleEdit}
@@ -312,8 +304,8 @@ class SecurePinInput extends Component<Props, State> {
                                 this.input = component;
                             }}
                             value={digits}
-                            // eslint-disable-next-line
-                            {...props}
+                            // @ts-ignore
+                            display="none"
                         />
                     )}
                     <View style={styles.digits}>{this.renderDots()}</View>

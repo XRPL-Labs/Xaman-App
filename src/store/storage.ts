@@ -21,12 +21,14 @@ import schemas from './schemas';
 export default class Storage {
     keyName: string;
     path: string;
+    compactionThreshold: number;
     db: Realm;
     logger: any;
 
     constructor(path?: string) {
         this.keyName = AppConfig.storage.keyName;
         this.path = path || AppConfig.storage.path;
+        this.compactionThreshold = 30;
         this.db = undefined;
         this.logger = LoggerService.createLogger('Storage');
     }
@@ -71,7 +73,7 @@ export default class Storage {
         // get current version
         const currentVersion = Realm.schemaVersion(config.path, config.encryptionKey);
 
-        this.logger.debug(`Storage current schema version: ${currentVersion}`);
+        this.logger.debug(`Current schema version: v${currentVersion}`);
 
         // sort migrations and get latest schema version
         const sorted = sortBy(schemas, [(v) => v.schemaVersion]);
@@ -79,7 +81,7 @@ export default class Storage {
 
         // no need to migrate anything just return database instance
         if (currentVersion === -1 || currentVersion >= latest.schemaVersion) {
-            this.logger.debug('Storage is on latest schema version');
+            this.logger.debug('Schema version is latest, No migration needed.');
 
             // @ts-ignore
             return new Realm({
@@ -89,8 +91,7 @@ export default class Storage {
             });
         }
 
-        this.logger.warn('Storage needs migration, running ...');
-        this.logger.warn(`Latest schema version ${latest.schemaVersion}`);
+        this.logger.warn(`Needs migration (latest v${latest.schemaVersion}), preforming migrations ... `);
 
         for (const current of sorted) {
             // if schema is lower than our current schema ignore & continue
@@ -138,7 +139,7 @@ export default class Storage {
     /**
      * Initialize repositories
      */
-    async initRepositories(db: Realm): Promise<void> {
+    initRepositories = async (db: Realm): Promise<void> => {
         return new Promise<void>((resolve, reject) => {
             try {
                 return Object.keys(repositories).map((key) => {
@@ -154,12 +155,27 @@ export default class Storage {
                 return reject();
             }
         });
-    }
+    };
+
+    shouldCompactOnLaunch = (totalSize: number, usedSize: number) => {
+        const usedSizeMB = usedSize / 1024 ** 2;
+        const totalSizeMB = totalSize / 1024 ** 2;
+
+        const shouldCompact = totalSizeMB - usedSizeMB > this.compactionThreshold;
+
+        this.logger.debug(
+            `Storage compact: ${totalSizeMB.toFixed(2)} MB / ${usedSizeMB.toFixed(
+                2,
+            )} MB - Should compact ${shouldCompact}`,
+        );
+
+        return shouldCompact;
+    };
 
     /**
      * Get Default Database config
      */
-    async configure(): Promise<Realm.Configuration> {
+    configure = async (): Promise<Realm.Configuration> => {
         // check if we need to start a clean realm
         const encryptionKeyExist = await Vault.exist(this.keyName);
         const dbFileExist = Realm.exists({ path: this.path });
@@ -173,7 +189,8 @@ export default class Storage {
             return {
                 encryptionKey: key,
                 path: this.path,
+                shouldCompactOnLaunch: this.shouldCompactOnLaunch,
             };
         });
-    }
+    };
 }

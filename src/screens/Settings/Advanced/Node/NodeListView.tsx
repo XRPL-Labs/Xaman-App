@@ -3,34 +3,36 @@
  */
 
 import { flatMap } from 'lodash';
+import { Results } from 'realm';
 
 import React, { Component } from 'react';
-import { View, Text, SectionList, TouchableOpacity } from 'react-native';
+import { View, InteractionManager } from 'react-native';
 
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens, AppConfig } from '@common/constants';
 
-import { SocketService } from '@services';
+import SocketService from '@services/SocketService';
 
-import { CoreRepository } from '@store/repositories';
-import { CoreSchema } from '@store/schemas/latest';
+import { CoreRepository, CustomNodeRepository } from '@store/repositories';
+import { CoreSchema, CustomNodeSchema } from '@store/schemas/latest';
 import { NodeChain } from '@store/types';
 
-import { Header, Icon } from '@components/General';
+import { Header } from '@components/General';
+import { NodeList } from '@components/Modules';
 
 import Localize from '@locale';
 
 // style
 import { AppStyles } from '@theme';
-import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {}
 
 export interface State {
     coreSettings: CoreSchema;
+    customNodes: Results<CustomNodeSchema>;
     dataSource: any;
 }
 
@@ -48,18 +50,14 @@ class NodeListView extends Component<Props, State> {
         super(props);
 
         this.state = {
-            coreSettings: undefined,
+            coreSettings: CoreRepository.getSettings(),
+            customNodes: CustomNodeRepository.getNodes(),
             dataSource: [],
         };
     }
 
     componentDidMount() {
-        const coreSettings = CoreRepository.getSettings();
-
-        this.setState({
-            dataSource: this.convertNodesArrayToMap(),
-            coreSettings,
-        });
+        InteractionManager.runAfterInteractions(this.updateDataSource);
 
         CoreRepository.on('updateSettings', this.updateUI);
     }
@@ -72,7 +70,9 @@ class NodeListView extends Component<Props, State> {
         this.setState({ coreSettings });
     };
 
-    convertNodesArrayToMap = () => {
+    updateDataSource = () => {
+        const { customNodes } = this.state;
+
         // set default nodes
         const nodesCategoryMap = [
             {
@@ -89,7 +89,18 @@ class NodeListView extends Component<Props, State> {
             },
         ];
 
-        return nodesCategoryMap;
+        if (!customNodes.isEmpty()) {
+            nodesCategoryMap.push({
+                title: Localize.t('global.custom'),
+                data: flatMap(customNodes, (n) => {
+                    return { chain: NodeChain.Custom, url: n.endpoint };
+                }),
+            });
+        }
+
+        this.setState({
+            dataSource: nodesCategoryMap,
+        });
     };
 
     onItemPress = (item: any) => {
@@ -97,6 +108,7 @@ class NodeListView extends Component<Props, State> {
 
         let currentChain = NodeChain.Main;
 
+        // check if current chain is changed
         dataSource.forEach((elm: any) => {
             const found = elm.data.filter((r: any) => {
                 return r.url === coreSettings.defaultNode;
@@ -115,75 +127,32 @@ class NodeListView extends Component<Props, State> {
                         text: Localize.t('global.doIt'),
                         style: 'destructive',
                         onPress: () => {
-                            CoreRepository.saveSettings({
-                                defaultNode: item.url,
-                            });
-
-                            SocketService.onNodeChange(item.url, item.chain);
+                            SocketService.switchNode(item.url, item.chain);
                         },
                     },
                 ],
                 { type: 'default' },
             );
         } else {
-            CoreRepository.saveSettings({
-                defaultNode: item.url,
-            });
-
-            SocketService.onNodeChange(item.url, item.chain);
+            SocketService.switchNode(item.url, item.chain);
         }
     };
 
-    renderSectionHeader = ({ section: { title } }: any) => {
-        return (
-            <View style={styles.sectionHeader}>
-                <Text numberOfLines={1} style={styles.sectionHeaderText}>
-                    {title}
-                </Text>
-            </View>
-        );
-    };
+    onItemRemovePress = (item: any) => {
+        // remove the custom node
+        CustomNodeRepository.deleteBy('endpoint', item.url);
 
-    renderItem = (node: { item: any; section: any }) => {
-        const { coreSettings } = this.state;
-        const { item, section } = node;
-
-        const selected = item.url === coreSettings.defaultNode;
-
-        return (
-            <TouchableOpacity
-                activeOpacity={0.8}
-                testID={`node-${item.url}`}
-                onPress={() => {
-                    this.onItemPress(item);
-                }}
-            >
-                <View style={[styles.row]}>
-                    <View style={[AppStyles.row, AppStyles.flex6, AppStyles.centerAligned]}>
-                        <Text style={styles.url}>{item.url}</Text>
-                        {section.category === 'custom' && (
-                            <View
-                                style={[
-                                    styles.chainLabel,
-                                    item.chain === NodeChain.Main ? styles.chainLabelMain : styles.chainLabelTest,
-                                ]}
-                            >
-                                <Text style={[AppStyles.monoSubText]}> {item.chain} </Text>
-                            </View>
-                        )}
-                    </View>
-                    {selected && (
-                        <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
-                            <Icon size={20} style={styles.checkIcon} name="IconCheck" />
-                        </View>
-                    )}
-                </View>
-            </TouchableOpacity>
+        // update nodes
+        this.setState(
+            {
+                customNodes: CustomNodeRepository.getNodes(),
+            },
+            this.updateDataSource,
         );
     };
 
     render() {
-        const { dataSource } = this.state;
+        const { dataSource, coreSettings } = this.state;
 
         return (
             <View testID="nodes-list-screen" style={[AppStyles.container]}>
@@ -197,11 +166,11 @@ class NodeListView extends Component<Props, State> {
                     }}
                     centerComponent={{ text: Localize.t('settings.nodeList') }}
                 />
-                <SectionList
-                    sections={dataSource}
-                    renderItem={this.renderItem}
-                    renderSectionHeader={this.renderSectionHeader}
-                    keyExtractor={(item, index) => item.url + index}
+                <NodeList
+                    dataSource={dataSource}
+                    selectedNode={coreSettings.defaultNode}
+                    onItemPress={this.onItemPress}
+                    onItemRemovePress={this.onItemRemovePress}
                 />
             </View>
         );

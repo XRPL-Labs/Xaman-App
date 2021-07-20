@@ -47,6 +47,8 @@ export const Images = {
     ImageCoinWalletLight: buildImageSource('ImageCoinWalletLight', 'image_coin_wallet_light'),
     ImageUnknownTrustLine: buildImageSource('ImageUnknownTrustLine', 'image_unknown_trustline'),
     ImageUnknownNFT: buildImageSource('ImageUnknownNFT', 'image_unknown_nft'),
+    ImageTriangle: buildImageSource('ImageTriangle', 'image_triangle'),
+    ImageSuccessCheckMark: buildImageSource('ImageSuccessCheckMark', 'image_success_check_mark'),
     // Xumm
     XummLogo: buildImageSource('XummLogo', 'xumm_logo'),
     XummLogoLight: buildImageSource('XummLogoLight', 'xumm_logo_light'),
@@ -139,4 +141,5 @@ export const Images = {
     IconXApps: buildImageSource('IconXApps', 'icon_xapps'),
     IconXAppsLight: buildImageSource('IconXAppsLight', 'icon_xapps_light'),
     IconXApp: buildImageSource('IconXApp', 'icon_xapp'),
+    IconAlertTriangle: buildImageSource('IconAlertTriangle', 'icon_alert_triangle'),
 };

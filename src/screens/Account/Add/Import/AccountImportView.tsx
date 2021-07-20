@@ -239,8 +239,11 @@ class AccountImportView extends Component<Props, State> {
             const exist = AccountRepository.findOne({ address: importedAccount.address });
 
             if (exist) {
-                // if exist as full access or importing as readonly and exist is then show error
-                if (exist.accessLevel === AccessLevels.Full || account.accessLevel === AccessLevels.Readonly) {
+                if (
+                    exist.accessLevel === AccessLevels.Full ||
+                    account.accessLevel === AccessLevels.Readonly ||
+                    account.type === AccountTypes.Tangem
+                ) {
                     Alert.alert(Localize.t('global.error'), Localize.t('account.accountAlreadyExist'));
                     return;
                 }
@@ -349,7 +352,7 @@ class AccountImportView extends Component<Props, State> {
             getAccountName.cache.set(
                 account.address,
                 new Promise((resolve) => {
-                    resolve({ name: account.label, source: 'internal:accounts' });
+                    resolve({ name: account.label, source: 'accounts' });
                 }),
             );
 

@@ -14,7 +14,6 @@ import { SocketService, StyleService } from '@services';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
-import { NodeChain } from '@store/types';
 
 // components
 import { Button, SwipeButton, Spacer, KeyboardAwareScrollView, Avatar } from '@components/General';
@@ -23,6 +22,8 @@ import { AccountPicker } from '@components/Modules';
 import Localize from '@locale';
 // style
 import { AppStyles } from '@theme';
+import { ChainColors } from '@theme/colors';
+
 import styles from './styles';
 
 // transaction templates
@@ -120,10 +121,14 @@ class ReviewStep extends Component<Props, State> {
         });
     };
 
-    shouldShowTestnet = () => {
+    getSwipeButtonColor = (): string => {
         const { coreSettings } = this.context;
 
-        return coreSettings.developerMode && SocketService.chain === NodeChain.Test;
+        if (coreSettings.developerMode) {
+            return ChainColors[SocketService.chain];
+        }
+
+        return undefined;
     };
 
     renderDetails = () => {
@@ -255,10 +260,11 @@ class ReviewStep extends Component<Props, State> {
                 </View>
                 <KeyboardAwareScrollView
                     testID="review-content-container"
-                    style={styles.keyboardAvoidViewStyle}
+                    contentContainerStyle={styles.keyboardAvoidContainerStyle}
+                    style={AppStyles.flex1}
                     scrollEnabled={canScroll}
                 >
-                    <View style={[styles.topContent, AppStyles.centerContent]}>
+                    <View style={[AppStyles.centerContent]}>
                         <View style={[AppStyles.row, AppStyles.paddingSml]}>
                             <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
                                 <Avatar size={60} border source={{ uri: payload.application.icon_url }} />
@@ -295,10 +301,10 @@ class ReviewStep extends Component<Props, State> {
                         <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingVerticalSml]}>
                             {this.renderDetails()}
                         </View>
-                        <View style={[AppStyles.flex1, AppStyles.paddingHorizontalSml]}>
+                        <View style={[styles.acceptButtonContainer, AppStyles.paddingHorizontalSml]}>
                             <SwipeButton
                                 testID="accept-button"
-                                secondary={this.shouldShowTestnet()}
+                                color={this.getSwipeButtonColor()}
                                 isLoading={isPreparing}
                                 onSwipeSuccess={onAccept}
                                 label={Localize.t('global.slideToAccept')}
@@ -307,8 +313,6 @@ class ReviewStep extends Component<Props, State> {
                                 onPanResponderRelease={this.toggleCanScroll}
                             />
                         </View>
-
-                        <Spacer size={50} />
                     </View>
                 </KeyboardAwareScrollView>
             </ImageBackground>

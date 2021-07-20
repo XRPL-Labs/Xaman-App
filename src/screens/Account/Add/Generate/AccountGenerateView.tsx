@@ -119,7 +119,7 @@ class AccountGenerateView extends Component<Props, State> {
         getAccountName.cache.set(
             account.address,
             new Promise((resolve) => {
-                resolve({ name: account.label, source: 'internal:accounts' });
+                resolve({ name: account.label, source: 'accounts' });
             }),
         );
     };

@@ -1,12 +1,13 @@
+import { Platform } from 'react-native';
+
+import { AppSizes } from '@theme';
 import StyleService from '@services/StyleService';
 
-import { hasNotch } from '@common/helpers/device';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     container: { flex: 1 },
     webViewContainer: {
         flex: 1,
-        paddingBottom: hasNotch() ? 20 : 0,
         backgroundColor: '$background',
     },
     loadingStyle: {
@@ -18,6 +19,12 @@ const styles = StyleService.create({
         bottom: 0,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    headerContainer: {
+        flexDirection: 'row',
+        backgroundColor: '$background',
+        paddingTop: Platform.OS === 'ios' ? AppSizes.statusBarHeight + 5 : 10,
+        paddingBottom: 10,
     },
 });
 

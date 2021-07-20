@@ -253,22 +253,20 @@ class LedgerObjectTemplate extends Component<Props, State> {
 
     render() {
         return (
-            <TouchableOpacity onPress={this.onPress} activeOpacity={0.8}>
-                <View style={[AppStyles.row, styles.container]}>
-                    <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
-                    <View style={[AppStyles.flex3, AppStyles.centerContent]}>
-                        <Text style={[styles.label]} numberOfLines={1}>
-                            {this.getLabel()}
+            <TouchableOpacity onPress={this.onPress} activeOpacity={0.8} style={styles.container}>
+                <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
+                <View style={[AppStyles.flex3, AppStyles.centerContent]}>
+                    <Text style={[styles.label]} numberOfLines={1}>
+                        {this.getLabel()}
+                    </Text>
+                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                        <Text style={[styles.description]} numberOfLines={1}>
+                            {this.getDescription()}
                         </Text>
-                        <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                            <Text style={[styles.description]} numberOfLines={1}>
-                                {this.getDescription()}
-                            </Text>
-                        </View>
                     </View>
-                    <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>
-                        {this.renderRightPanel()}
-                    </View>
+                </View>
+                <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>
+                    {this.renderRightPanel()}
                 </View>
             </TouchableOpacity>
         );

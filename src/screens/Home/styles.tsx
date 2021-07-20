@@ -4,20 +4,6 @@ import { AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    // contentCard: {
-    //     marginHorizontal: 22,
-    //     marginBottom: 30,
-    //     backgroundColor: '$white',
-    //     borderRadius: AppSizes.screen.width * 0.06,
-    //     shadowColor: '$grey',
-    //     shadowOffset: { width: 0, height: 3 },
-    //     shadowRadius: 8,
-    //     shadowOpacity: 0.1,
-    //     elevation: 10,
-    // },
-    BackgroundShapes: {
-        // tintColor: '$red',
-    },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -66,7 +52,7 @@ const styles = StyleService.create({
     cardAddressText: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size * 0.9,
-        color: '$grey',
+        color: '$textSecondary',
     },
     shareIconContainer: {
         padding: 8,
@@ -76,23 +62,8 @@ const styles = StyleService.create({
     shareIcon: {
         tintColor: '$blue',
     },
-    trustLinesHeader: {
-        marginLeft: -15,
-        marginRight: -15,
-        marginBottom: 5,
-        paddingHorizontal: 15,
-        paddingBottom: 5,
-        backgroundColor: '$background',
-        shadowColor: '$background',
-        shadowOffset: { width: 0, height: 12 },
-        shadowRadius: 5,
-        shadowOpacity: 1,
-        zIndex: 1,
-    },
-    noTrustlineMessage: {
-        marginTop: 10,
-    },
-    currencyList: {
+    trustLineListContainer: {
+        flex: 6,
         paddingHorizontal: 10,
     },
     balanceContainer: {
@@ -110,34 +81,6 @@ const styles = StyleService.create({
         color: '$textPrimary',
         paddingRight: 8,
     },
-    currencyItem: {
-        paddingTop: 10,
-        paddingBottom: 10,
-        paddingRight: 5,
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-    },
-    currencyItemLabel: {
-        fontSize: AppFonts.h5.size,
-        fontFamily: AppFonts.base.familyMonoBold,
-        color: '$textPrimary',
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-    },
-    currencyItemLabelSmall: {
-        fontSize: AppFonts.p.size,
-        fontFamily: AppFonts.base.familyMono,
-        color: '$textPrimary',
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        marginRight: 10,
-        marginBottom: 3,
-    },
-    issuerLabel: {
-        fontSize: AppFonts.subtext.size,
-        fontFamily: AppFonts.base.familyMono,
-        color: '$grey',
-    },
     xrpAvatarContainer: {
         padding: 10,
         marginRight: 10,
@@ -152,27 +95,6 @@ const styles = StyleService.create({
         marginRight: 5,
     },
     xrpAvatar: {
-        resizeMode: 'contain',
-    },
-    brandAvatarContainer: {
-        marginRight: 10,
-        borderWidth: 1,
-        borderColor: '$light',
-        borderRadius: 10,
-        justifyContent: 'center',
-        overflow: 'hidden',
-    },
-    brandAvatar: {
-        height: AppSizes.scale(35),
-        width: AppSizes.scale(35),
-        resizeMode: 'cover',
-    },
-    currencyAvatarContainer: {
-        paddingRight: 10,
-    },
-    currencyAvatar: {
-        width: AppSizes.screen.width * 0.035,
-        height: AppSizes.screen.width * 0.035,
         resizeMode: 'contain',
     },
     logo: {

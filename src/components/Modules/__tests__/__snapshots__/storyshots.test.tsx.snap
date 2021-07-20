@@ -1,9 +1,68 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Storyshots AmountText WithCurrency 1`] = `
+exports[`Storyshots AmountText discreet 1`] = `
 <View
   style={
     Object {
+      "alignItems": "center",
+      "backgroundColor": "#F0F3FF",
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
+  <View
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    onBlur={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "flexDirection": "row",
+      }
+    }
+  >
+    <Text
+      numberOfLines={1}
+      style={
+        Array [
+          undefined,
+          undefined,
+        ]
+      }
+    >
+      ••••••••
+    </Text>
+    <Text
+      numberOfLines={1}
+      style={
+        Array [
+          undefined,
+          undefined,
+        ]
+      }
+    >
+       
+      USD
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`Storyshots AmountText original 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
       "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
@@ -14,14 +73,17 @@ exports[`Storyshots AmountText WithCurrency 1`] = `
     style={
       Object {
         "alignItems": "center",
+        "backgroundColor": "#F0F3FF",
         "flex": 1,
         "justifyContent": "center",
+        "paddingHorizontal": 10,
       }
     }
   >
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -39,24 +101,30 @@ exports[`Storyshots AmountText WithCurrency 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
         >
-          
           0…
-           
-          <Text
-            numberOfLines={1}
-          >
-            XRP
-          </Text>
         </Text>
       </View>
     </View>
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -74,24 +142,30 @@ exports[`Storyshots AmountText WithCurrency 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
         >
-          
           2.2222
-           
-          <Text
-            numberOfLines={1}
-          >
-            XRP
-          </Text>
         </Text>
       </View>
     </View>
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -109,18 +183,23 @@ exports[`Storyshots AmountText WithCurrency 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
         >
-          
           99,999
-           
-          <Text
-            numberOfLines={1}
-          >
-            XRP
-          </Text>
         </Text>
       </View>
     </View>
@@ -128,10 +207,11 @@ exports[`Storyshots AmountText WithCurrency 1`] = `
 </View>
 `;
 
-exports[`Storyshots AmountText WithCurrencyPrefix 1`] = `
+exports[`Storyshots AmountText withPostfix 1`] = `
 <View
   style={
     Object {
+      "alignItems": "center",
       "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
@@ -142,14 +222,17 @@ exports[`Storyshots AmountText WithCurrencyPrefix 1`] = `
     style={
       Object {
         "alignItems": "center",
+        "backgroundColor": "#F0F3FF",
         "flex": 1,
         "justifyContent": "center",
+        "paddingHorizontal": 10,
       }
     }
   >
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -167,24 +250,42 @@ exports[`Storyshots AmountText WithCurrencyPrefix 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
         >
-          ~
           0…
+        </Text>
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
+        >
            
-          <Text
-            numberOfLines={1}
-          >
-            XRP
-          </Text>
+          USD
         </Text>
       </View>
     </View>
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -202,24 +303,42 @@ exports[`Storyshots AmountText WithCurrencyPrefix 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
         >
-          ~
           2.2222
+        </Text>
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
+        >
            
-          <Text
-            numberOfLines={1}
-          >
-            XRP
-          </Text>
+          USD
         </Text>
       </View>
     </View>
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -237,18 +356,35 @@ exports[`Storyshots AmountText WithCurrencyPrefix 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
         >
-          ~
           99,999
+        </Text>
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
+        >
            
-          <Text
-            numberOfLines={1}
-          >
-            XRP
-          </Text>
+          USD
         </Text>
       </View>
     </View>
@@ -256,10 +392,11 @@ exports[`Storyshots AmountText WithCurrencyPrefix 1`] = `
 </View>
 `;
 
-exports[`Storyshots AmountText WithValue 1`] = `
+exports[`Storyshots AmountText withPrefix 1`] = `
 <View
   style={
     Object {
+      "alignItems": "center",
       "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
@@ -270,14 +407,17 @@ exports[`Storyshots AmountText WithValue 1`] = `
     style={
       Object {
         "alignItems": "center",
+        "backgroundColor": "#F0F3FF",
         "flex": 1,
         "justifyContent": "center",
+        "paddingHorizontal": 10,
       }
     }
   >
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -295,24 +435,40 @@ exports[`Storyshots AmountText WithValue 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+            ]
+          }
         >
-          
+          -
+        </Text>
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
+        >
           0…
-           
-          <Text
-            numberOfLines={1}
-          >
-            
-          </Text>
         </Text>
       </View>
     </View>
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -330,24 +486,40 @@ exports[`Storyshots AmountText WithValue 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+            ]
+          }
         >
-          
+          -
+        </Text>
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
+        >
           2.2222
-           
-          <Text
-            numberOfLines={1}
-          >
-            
-          </Text>
         </Text>
       </View>
     </View>
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -365,20 +537,308 @@ exports[`Storyshots AmountText WithValue 1`] = `
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
       >
         <Text
           numberOfLines={1}
+          style={
+            Array [
+              undefined,
+            ]
+          }
         >
-          
+          -
+        </Text>
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
+        >
           99,999
-           
-          <Text
-            numberOfLines={1}
-          >
-            
-          </Text>
         </Text>
       </View>
+    </View>
+  </View>
+</View>
+`;
+
+exports[`Storyshots Avatar Big 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F0F3FF",
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
+  <View>
+    <Image
+      borderRadius={25}
+      resizeMode="cover"
+      source={
+        Object {
+          "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
+        }
+      }
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#F3F6FA",
+            "borderRadius": 10,
+          },
+          Object {
+            "height": 214.28571428571428,
+            "width": 214.28571428571428,
+          },
+          false,
+        ]
+      }
+    />
+  </View>
+</View>
+`;
+
+exports[`Storyshots Avatar Original 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F0F3FF",
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
+  <View>
+    <Image
+      borderRadius={25}
+      resizeMode="cover"
+      source={
+        Object {
+          "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
+        }
+      }
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#F3F6FA",
+            "borderRadius": 10,
+          },
+          Object {
+            "height": 85.71428571428571,
+            "width": 85.71428571428571,
+          },
+          false,
+        ]
+      }
+    />
+  </View>
+</View>
+`;
+
+exports[`Storyshots Avatar With Border 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F0F3FF",
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
+  <View>
+    <Image
+      borderRadius={25}
+      resizeMode="cover"
+      source={
+        Object {
+          "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
+        }
+      }
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#F3F6FA",
+            "borderRadius": 10,
+          },
+          Object {
+            "height": 85.71428571428571,
+            "width": 85.71428571428571,
+          },
+          Object {
+            "borderColor": "rgba(96,104,133,0.06)",
+            "borderWidth": 1,
+          },
+        ]
+      }
+    />
+  </View>
+</View>
+`;
+
+exports[`Storyshots Avatar badge 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F0F3FF",
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
+  <View>
+    <Image
+      borderRadius={25}
+      resizeMode="cover"
+      source={
+        Object {
+          "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
+        }
+      }
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#F3F6FA",
+            "borderRadius": 10,
+          },
+          Object {
+            "height": 214.28571428571428,
+            "width": 214.28571428571428,
+          },
+          false,
+        ]
+      }
+    />
+    <View
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#3052FF",
+            "borderColor": "#ffffff",
+            "borderWidth": 2.5,
+            "position": "absolute",
+          },
+          Object {
+            "borderRadius": 50,
+            "bottom": -12,
+            "padding": 7.000000000000001,
+            "right": -15,
+          },
+          undefined,
+        ]
+      }
+    >
+      <Image
+        resizeMode="contain"
+        source={
+          Object {
+            "uri": "IconCheckXumm",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "height": 28.285714285714285,
+              "width": 28.285714285714285,
+            },
+            Object {
+              "tintColor": "#ffffff",
+            },
+          ]
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`Storyshots Avatar badge Color 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F0F3FF",
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
+  <View>
+    <Image
+      borderRadius={25}
+      resizeMode="cover"
+      source={
+        Object {
+          "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
+        }
+      }
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#F3F6FA",
+            "borderRadius": 10,
+          },
+          Object {
+            "height": 214.28571428571428,
+            "width": 214.28571428571428,
+          },
+          false,
+        ]
+      }
+    />
+    <View
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#3052FF",
+            "borderColor": "#ffffff",
+            "borderWidth": 2.5,
+            "position": "absolute",
+          },
+          Object {
+            "borderRadius": 50,
+            "bottom": -12,
+            "padding": 7.000000000000001,
+            "right": -15,
+          },
+          Object {
+            "backgroundColor": "red",
+          },
+        ]
+      }
+    >
+      <Image
+        resizeMode="contain"
+        source={
+          Object {
+            "uri": "IconAlertTriangle",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "height": 28.285714285714285,
+              "width": 28.285714285714285,
+            },
+            Object {
+              "tintColor": "#ffffff",
+            },
+          ]
+        }
+      />
     </View>
   </View>
 </View>
@@ -388,6 +848,7 @@ exports[`Storyshots Badge Bithomp 1`] = `
 <View
   style={
     Object {
+      "alignItems": "center",
       "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
@@ -398,14 +859,17 @@ exports[`Storyshots Badge Bithomp 1`] = `
     style={
       Object {
         "alignItems": "center",
+        "backgroundColor": "#F0F3FF",
         "flex": 1,
         "justifyContent": "center",
+        "paddingHorizontal": 10,
       }
     }
   >
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -453,6 +917,7 @@ exports[`Storyshots Badge Bithomp 1`] = `
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -500,6 +965,7 @@ exports[`Storyshots Badge Bithomp 1`] = `
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -552,6 +1018,7 @@ exports[`Storyshots Badge PayId 1`] = `
 <View
   style={
     Object {
+      "alignItems": "center",
       "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
@@ -562,14 +1029,17 @@ exports[`Storyshots Badge PayId 1`] = `
     style={
       Object {
         "alignItems": "center",
+        "backgroundColor": "#F0F3FF",
         "flex": 1,
         "justifyContent": "center",
+        "paddingHorizontal": 10,
       }
     }
   >
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -617,6 +1087,7 @@ exports[`Storyshots Badge PayId 1`] = `
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -664,6 +1135,7 @@ exports[`Storyshots Badge PayId 1`] = `
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -716,6 +1188,7 @@ exports[`Storyshots Badge Success 1`] = `
 <View
   style={
     Object {
+      "alignItems": "center",
       "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
@@ -726,14 +1199,17 @@ exports[`Storyshots Badge Success 1`] = `
     style={
       Object {
         "alignItems": "center",
+        "backgroundColor": "#F0F3FF",
         "flex": 1,
         "justifyContent": "center",
+        "paddingHorizontal": 10,
       }
     }
   >
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -781,6 +1257,7 @@ exports[`Storyshots Badge Success 1`] = `
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -828,6 +1305,7 @@ exports[`Storyshots Badge Success 1`] = `
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -880,6 +1358,7 @@ exports[`Storyshots Badge XRPLNS 1`] = `
 <View
   style={
     Object {
+      "alignItems": "center",
       "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
@@ -890,14 +1369,17 @@ exports[`Storyshots Badge XRPLNS 1`] = `
     style={
       Object {
         "alignItems": "center",
+        "backgroundColor": "#F0F3FF",
         "flex": 1,
         "justifyContent": "center",
+        "paddingHorizontal": 10,
       }
     }
   >
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -945,6 +1427,7 @@ exports[`Storyshots Badge XRPLNS 1`] = `
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -992,6 +1475,7 @@ exports[`Storyshots Badge XRPLNS 1`] = `
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -1044,6 +1528,7 @@ exports[`Storyshots Badge XRPScan 1`] = `
 <View
   style={
     Object {
+      "alignItems": "center",
       "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
@@ -1054,14 +1539,17 @@ exports[`Storyshots Badge XRPScan 1`] = `
     style={
       Object {
         "alignItems": "center",
+        "backgroundColor": "#F0F3FF",
         "flex": 1,
         "justifyContent": "center",
+        "paddingHorizontal": 10,
       }
     }
   >
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -1109,6 +1597,7 @@ exports[`Storyshots Badge XRPScan 1`] = `
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -1156,6 +1645,7 @@ exports[`Storyshots Badge XRPScan 1`] = `
     <View
       style={
         Object {
+          "alignSelf": "stretch",
           "marginTop": 10,
         }
       }
@@ -1208,6 +1698,7 @@ exports[`Storyshots EventsFilterChip default 1`] = `
 <View
   style={
     Object {
+      "alignItems": "center",
       "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
@@ -1549,10 +2040,2091 @@ exports[`Storyshots EventsFilterChip default 1`] = `
 </View>
 `;
 
+exports[`Storyshots InfoMessage All 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F0F3FF",
+      "flex": 1,
+      "justifyContent": "center",
+      "paddingHorizontal": 10,
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "marginTop": 10,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "borderRadius": 15,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          undefined,
+          Object {
+            "backgroundColor": "rgba(48,82,255,0.06)",
+            "borderColor": "#3052FF",
+            "tintColor": "#3052FF",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "paddingRight": 10,
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "tintColor": "#3052FF",
+                  },
+                ],
+              ]
+            }
+          />
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "paddingVertical": 10,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Array [
+                  Object {
+                    "fontFamily": "ProximaNova-Bold",
+                    "fontSize": 30,
+                    "textAlign": "center",
+                  },
+                  Object {
+                    "color": "#3052FF",
+                  },
+                  Object {
+                    "textAlign": "left",
+                  },
+                ],
+              ]
+            }
+          >
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+  <View
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "marginTop": 10,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "borderRadius": 15,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          undefined,
+          Object {
+            "backgroundColor": "rgba(248,191,76,0.06)",
+            "borderColor": "#F8BF4C",
+            "tintColor": "#F8BF4C",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "paddingRight": 10,
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "tintColor": "#F8BF4C",
+                  },
+                ],
+              ]
+            }
+          />
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "paddingVertical": 10,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Array [
+                  Object {
+                    "fontFamily": "ProximaNova-Bold",
+                    "fontSize": 30,
+                    "textAlign": "center",
+                  },
+                  Object {
+                    "color": "#F8BF4C",
+                  },
+                  Object {
+                    "textAlign": "left",
+                  },
+                ],
+              ]
+            }
+          >
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+  <View
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "marginTop": 10,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "borderRadius": 15,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          undefined,
+          Object {
+            "backgroundColor": "rgba(255,91,91,0.06)",
+            "borderColor": "rgba(255,91,91,0.06)",
+            "tintColor": "#FF5B5B",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "paddingRight": 10,
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "tintColor": "#FF5B5B",
+                  },
+                ],
+              ]
+            }
+          />
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "paddingVertical": 10,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Array [
+                  Object {
+                    "fontFamily": "ProximaNova-Bold",
+                    "fontSize": 30,
+                    "textAlign": "center",
+                  },
+                  Object {
+                    "color": "#FF5B5B",
+                  },
+                  Object {
+                    "textAlign": "left",
+                  },
+                ],
+              ]
+            }
+          >
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+  <View
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "marginTop": 10,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "borderRadius": 15,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          undefined,
+          Object {
+            "backgroundColor": "rgba(59,220,150,0.06)",
+            "borderColor": "rgba(59,220,150,0.06)",
+            "tintColor": "#3BDC96",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "paddingRight": 10,
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "tintColor": "#3BDC96",
+                  },
+                ],
+              ]
+            }
+          />
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "paddingVertical": 10,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Array [
+                  Object {
+                    "fontFamily": "ProximaNova-Bold",
+                    "fontSize": 30,
+                    "textAlign": "center",
+                  },
+                  Object {
+                    "color": "#3BDC96",
+                  },
+                  Object {
+                    "textAlign": "left",
+                  },
+                ],
+              ]
+            }
+          >
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+  <View
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "marginTop": 10,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "borderRadius": 15,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          undefined,
+          Object {
+            "backgroundColor": "#F3F6FA",
+            "borderColor": "#F3F6FA",
+            "tintColor": "#606885",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "paddingRight": 10,
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "tintColor": "#606885",
+                  },
+                ],
+              ]
+            }
+          />
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "paddingVertical": 10,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Array [
+                  Object {
+                    "fontFamily": "ProximaNova-Bold",
+                    "fontSize": 30,
+                    "textAlign": "center",
+                  },
+                  Object {
+                    "color": "#606885",
+                  },
+                  Object {
+                    "textAlign": "left",
+                  },
+                ],
+              ]
+            }
+          >
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</View>
+`;
+
+exports[`Storyshots InfoMessage Flat 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F0F3FF",
+      "flex": 1,
+      "justifyContent": "center",
+      "paddingHorizontal": 10,
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "marginTop": 10,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "borderRadius": 15,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          Object {
+            "borderRadius": 0,
+          },
+          Object {
+            "backgroundColor": "rgba(48,82,255,0.06)",
+            "borderColor": "#3052FF",
+            "tintColor": "#3052FF",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "paddingRight": 10,
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "tintColor": "#3052FF",
+                  },
+                ],
+              ]
+            }
+          />
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "paddingVertical": 10,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Array [
+                  Object {
+                    "fontFamily": "ProximaNova-Bold",
+                    "fontSize": 30,
+                    "textAlign": "center",
+                  },
+                  Object {
+                    "color": "#3052FF",
+                  },
+                  Object {
+                    "textAlign": "left",
+                  },
+                ],
+              ]
+            }
+          >
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+  <View
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "marginTop": 10,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "borderRadius": 15,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          Object {
+            "borderRadius": 0,
+          },
+          Object {
+            "backgroundColor": "rgba(248,191,76,0.06)",
+            "borderColor": "#F8BF4C",
+            "tintColor": "#F8BF4C",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "paddingRight": 10,
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "tintColor": "#F8BF4C",
+                  },
+                ],
+              ]
+            }
+          />
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "paddingVertical": 10,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Array [
+                  Object {
+                    "fontFamily": "ProximaNova-Bold",
+                    "fontSize": 30,
+                    "textAlign": "center",
+                  },
+                  Object {
+                    "color": "#F8BF4C",
+                  },
+                  Object {
+                    "textAlign": "left",
+                  },
+                ],
+              ]
+            }
+          >
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+  <View
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "marginTop": 10,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "borderRadius": 15,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          Object {
+            "borderRadius": 0,
+          },
+          Object {
+            "backgroundColor": "rgba(255,91,91,0.06)",
+            "borderColor": "rgba(255,91,91,0.06)",
+            "tintColor": "#FF5B5B",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "paddingRight": 10,
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "tintColor": "#FF5B5B",
+                  },
+                ],
+              ]
+            }
+          />
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "paddingVertical": 10,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Array [
+                  Object {
+                    "fontFamily": "ProximaNova-Bold",
+                    "fontSize": 30,
+                    "textAlign": "center",
+                  },
+                  Object {
+                    "color": "#FF5B5B",
+                  },
+                  Object {
+                    "textAlign": "left",
+                  },
+                ],
+              ]
+            }
+          >
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+  <View
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "marginTop": 10,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "borderRadius": 15,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          Object {
+            "borderRadius": 0,
+          },
+          Object {
+            "backgroundColor": "rgba(59,220,150,0.06)",
+            "borderColor": "rgba(59,220,150,0.06)",
+            "tintColor": "#3BDC96",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "paddingRight": 10,
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "tintColor": "#3BDC96",
+                  },
+                ],
+              ]
+            }
+          />
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "paddingVertical": 10,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Array [
+                  Object {
+                    "fontFamily": "ProximaNova-Bold",
+                    "fontSize": 30,
+                    "textAlign": "center",
+                  },
+                  Object {
+                    "color": "#3BDC96",
+                  },
+                  Object {
+                    "textAlign": "left",
+                  },
+                ],
+              ]
+            }
+          >
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+  <View
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "marginTop": 10,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "borderRadius": 15,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          Object {
+            "borderRadius": 0,
+          },
+          Object {
+            "backgroundColor": "#F3F6FA",
+            "borderColor": "#F3F6FA",
+            "tintColor": "#606885",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "paddingRight": 10,
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "tintColor": "#606885",
+                  },
+                ],
+              ]
+            }
+          />
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "paddingVertical": 10,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Array [
+                  Object {
+                    "fontFamily": "ProximaNova-Bold",
+                    "fontSize": 30,
+                    "textAlign": "center",
+                  },
+                  Object {
+                    "color": "#606885",
+                  },
+                  Object {
+                    "textAlign": "left",
+                  },
+                ],
+              ]
+            }
+          >
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</View>
+`;
+
+exports[`Storyshots InfoMessage With More info 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F0F3FF",
+      "flex": 1,
+      "justifyContent": "center",
+      "paddingHorizontal": 10,
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "marginTop": 10,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "borderRadius": 15,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          undefined,
+          Object {
+            "backgroundColor": "rgba(48,82,255,0.06)",
+            "borderColor": "#3052FF",
+            "tintColor": "#3052FF",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "paddingRight": 10,
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "tintColor": "#3052FF",
+                  },
+                ],
+              ]
+            }
+          />
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "paddingVertical": 10,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Array [
+                  Object {
+                    "fontFamily": "ProximaNova-Bold",
+                    "fontSize": 30,
+                    "textAlign": "center",
+                  },
+                  Object {
+                    "color": "#3052FF",
+                  },
+                  Object {
+                    "textAlign": "left",
+                  },
+                ],
+              ]
+            }
+          >
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry
+          </Text>
+        </View>
+      </View>
+      <View
+        accessibilityRole="button"
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignSelf": "stretch",
+            "backgroundColor": "#F3F6FA",
+            "borderColor": "transparent",
+            "borderRadius": 35.357142857142854,
+            "borderWidth": 1,
+            "flexDirection": "row",
+            "height": 70.71428571428571,
+            "justifyContent": "center",
+            "marginVertical": 8,
+            "opacity": 1,
+            "paddingHorizontal": 18,
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "flexDirection": "row",
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "marginRight": 3,
+                    "tintColor": "#ffffff",
+                  },
+                  Object {
+                    "tintColor": "#000000",
+                  },
+                  undefined,
+                  undefined,
+                ],
+              ]
+            }
+          />
+          <Text
+            adjustsFontSizeToFit={false}
+            allowFontScaling={false}
+            numberOfLines={2}
+            style={
+              Array [
+                Object {
+                  "color": "#ffffff",
+                  "fontFamily": "ProximaNova-Bold",
+                  "fontSize": 35.357142857142854,
+                  "paddingHorizontal": 5,
+                  "textAlign": "center",
+                },
+                undefined,
+                Object {
+                  "color": "#000000",
+                },
+                undefined,
+                undefined,
+                undefined,
+                Object {
+                  "fontSize": 28.928571428571427,
+                },
+                undefined,
+                undefined,
+              ]
+            }
+          >
+            More Info
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+  <View
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "marginTop": 10,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "borderRadius": 15,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          undefined,
+          Object {
+            "backgroundColor": "rgba(248,191,76,0.06)",
+            "borderColor": "#F8BF4C",
+            "tintColor": "#F8BF4C",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "paddingRight": 10,
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "tintColor": "#F8BF4C",
+                  },
+                ],
+              ]
+            }
+          />
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "paddingVertical": 10,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Array [
+                  Object {
+                    "fontFamily": "ProximaNova-Bold",
+                    "fontSize": 30,
+                    "textAlign": "center",
+                  },
+                  Object {
+                    "color": "#F8BF4C",
+                  },
+                  Object {
+                    "textAlign": "left",
+                  },
+                ],
+              ]
+            }
+          >
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry
+          </Text>
+        </View>
+      </View>
+      <View
+        accessibilityRole="button"
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignSelf": "stretch",
+            "backgroundColor": "#F3F6FA",
+            "borderColor": "transparent",
+            "borderRadius": 35.357142857142854,
+            "borderWidth": 1,
+            "flexDirection": "row",
+            "height": 70.71428571428571,
+            "justifyContent": "center",
+            "marginVertical": 8,
+            "opacity": 1,
+            "paddingHorizontal": 18,
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "flexDirection": "row",
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "marginRight": 3,
+                    "tintColor": "#ffffff",
+                  },
+                  Object {
+                    "tintColor": "#000000",
+                  },
+                  undefined,
+                  undefined,
+                ],
+              ]
+            }
+          />
+          <Text
+            adjustsFontSizeToFit={false}
+            allowFontScaling={false}
+            numberOfLines={2}
+            style={
+              Array [
+                Object {
+                  "color": "#ffffff",
+                  "fontFamily": "ProximaNova-Bold",
+                  "fontSize": 35.357142857142854,
+                  "paddingHorizontal": 5,
+                  "textAlign": "center",
+                },
+                undefined,
+                Object {
+                  "color": "#000000",
+                },
+                undefined,
+                undefined,
+                undefined,
+                Object {
+                  "fontSize": 28.928571428571427,
+                },
+                undefined,
+                undefined,
+              ]
+            }
+          >
+            More Info
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+  <View
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "marginTop": 10,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "borderRadius": 15,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          undefined,
+          Object {
+            "backgroundColor": "rgba(255,91,91,0.06)",
+            "borderColor": "rgba(255,91,91,0.06)",
+            "tintColor": "#FF5B5B",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "paddingRight": 10,
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "tintColor": "#FF5B5B",
+                  },
+                ],
+              ]
+            }
+          />
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "paddingVertical": 10,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Array [
+                  Object {
+                    "fontFamily": "ProximaNova-Bold",
+                    "fontSize": 30,
+                    "textAlign": "center",
+                  },
+                  Object {
+                    "color": "#FF5B5B",
+                  },
+                  Object {
+                    "textAlign": "left",
+                  },
+                ],
+              ]
+            }
+          >
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry
+          </Text>
+        </View>
+      </View>
+      <View
+        accessibilityRole="button"
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignSelf": "stretch",
+            "backgroundColor": "#F3F6FA",
+            "borderColor": "transparent",
+            "borderRadius": 35.357142857142854,
+            "borderWidth": 1,
+            "flexDirection": "row",
+            "height": 70.71428571428571,
+            "justifyContent": "center",
+            "marginVertical": 8,
+            "opacity": 1,
+            "paddingHorizontal": 18,
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "flexDirection": "row",
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "marginRight": 3,
+                    "tintColor": "#ffffff",
+                  },
+                  Object {
+                    "tintColor": "#000000",
+                  },
+                  undefined,
+                  undefined,
+                ],
+              ]
+            }
+          />
+          <Text
+            adjustsFontSizeToFit={false}
+            allowFontScaling={false}
+            numberOfLines={2}
+            style={
+              Array [
+                Object {
+                  "color": "#ffffff",
+                  "fontFamily": "ProximaNova-Bold",
+                  "fontSize": 35.357142857142854,
+                  "paddingHorizontal": 5,
+                  "textAlign": "center",
+                },
+                undefined,
+                Object {
+                  "color": "#000000",
+                },
+                undefined,
+                undefined,
+                undefined,
+                Object {
+                  "fontSize": 28.928571428571427,
+                },
+                undefined,
+                undefined,
+              ]
+            }
+          >
+            More Info
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+  <View
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "marginTop": 10,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "borderRadius": 15,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          undefined,
+          Object {
+            "backgroundColor": "rgba(59,220,150,0.06)",
+            "borderColor": "rgba(59,220,150,0.06)",
+            "tintColor": "#3BDC96",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "paddingRight": 10,
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "tintColor": "#3BDC96",
+                  },
+                ],
+              ]
+            }
+          />
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "paddingVertical": 10,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Array [
+                  Object {
+                    "fontFamily": "ProximaNova-Bold",
+                    "fontSize": 30,
+                    "textAlign": "center",
+                  },
+                  Object {
+                    "color": "#3BDC96",
+                  },
+                  Object {
+                    "textAlign": "left",
+                  },
+                ],
+              ]
+            }
+          >
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry
+          </Text>
+        </View>
+      </View>
+      <View
+        accessibilityRole="button"
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignSelf": "stretch",
+            "backgroundColor": "#F3F6FA",
+            "borderColor": "transparent",
+            "borderRadius": 35.357142857142854,
+            "borderWidth": 1,
+            "flexDirection": "row",
+            "height": 70.71428571428571,
+            "justifyContent": "center",
+            "marginVertical": 8,
+            "opacity": 1,
+            "paddingHorizontal": 18,
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "flexDirection": "row",
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "marginRight": 3,
+                    "tintColor": "#ffffff",
+                  },
+                  Object {
+                    "tintColor": "#000000",
+                  },
+                  undefined,
+                  undefined,
+                ],
+              ]
+            }
+          />
+          <Text
+            adjustsFontSizeToFit={false}
+            allowFontScaling={false}
+            numberOfLines={2}
+            style={
+              Array [
+                Object {
+                  "color": "#ffffff",
+                  "fontFamily": "ProximaNova-Bold",
+                  "fontSize": 35.357142857142854,
+                  "paddingHorizontal": 5,
+                  "textAlign": "center",
+                },
+                undefined,
+                Object {
+                  "color": "#000000",
+                },
+                undefined,
+                undefined,
+                undefined,
+                Object {
+                  "fontSize": 28.928571428571427,
+                },
+                undefined,
+                undefined,
+              ]
+            }
+          >
+            More Info
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+  <View
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "marginTop": 10,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "borderRadius": 15,
+            "paddingHorizontal": 20,
+            "paddingVertical": 10,
+          },
+          undefined,
+          Object {
+            "backgroundColor": "#F3F6FA",
+            "borderColor": "#F3F6FA",
+            "tintColor": "#606885",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "stretch",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "paddingRight": 10,
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "tintColor": "#606885",
+                  },
+                ],
+              ]
+            }
+          />
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "paddingVertical": 10,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Array [
+                  Object {
+                    "fontFamily": "ProximaNova-Bold",
+                    "fontSize": 30,
+                    "textAlign": "center",
+                  },
+                  Object {
+                    "color": "#606885",
+                  },
+                  Object {
+                    "textAlign": "left",
+                  },
+                ],
+              ]
+            }
+          >
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry
+          </Text>
+        </View>
+      </View>
+      <View
+        accessibilityRole="button"
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignSelf": "stretch",
+            "backgroundColor": "#F3F6FA",
+            "borderColor": "transparent",
+            "borderRadius": 35.357142857142854,
+            "borderWidth": 1,
+            "flexDirection": "row",
+            "height": 70.71428571428571,
+            "justifyContent": "center",
+            "marginVertical": 8,
+            "opacity": 1,
+            "paddingHorizontal": 18,
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "flexDirection": "row",
+              },
+            ]
+          }
+        >
+          <Image
+            resizeMode="contain"
+            source={
+              Object {
+                "uri": "IconInfo",
+              }
+            }
+            style={
+              Array [
+                Object {
+                  "height": 31.428571428571427,
+                  "width": 31.428571428571427,
+                },
+                Array [
+                  Object {
+                    "marginRight": 3,
+                    "tintColor": "#ffffff",
+                  },
+                  Object {
+                    "tintColor": "#000000",
+                  },
+                  undefined,
+                  undefined,
+                ],
+              ]
+            }
+          />
+          <Text
+            adjustsFontSizeToFit={false}
+            allowFontScaling={false}
+            numberOfLines={2}
+            style={
+              Array [
+                Object {
+                  "color": "#ffffff",
+                  "fontFamily": "ProximaNova-Bold",
+                  "fontSize": 35.357142857142854,
+                  "paddingHorizontal": 5,
+                  "textAlign": "center",
+                },
+                undefined,
+                Object {
+                  "color": "#000000",
+                },
+                undefined,
+                undefined,
+                undefined,
+                Object {
+                  "fontSize": 28.928571428571427,
+                },
+                undefined,
+                undefined,
+              ]
+            }
+          >
+            More Info
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</View>
+`;
+
 exports[`Storyshots RecipientElement Selected 1`] = `
 <View
   style={
     Object {
+      "alignItems": "center",
       "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
@@ -1571,35 +4143,22 @@ exports[`Storyshots RecipientElement Selected 1`] = `
     onStartShouldSetResponder={[Function]}
     style={
       Object {
+        "alignItems": "center",
+        "backgroundColor": "rgba(48,82,255,0.06)",
+        "borderColor": "#3052FF",
+        "borderRadius": 12,
+        "borderWidth": 2,
+        "flexDirection": "row",
+        "marginBottom": 8,
         "opacity": 1,
+        "padding": 5,
       }
     }
     testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
-    <View
-      style={
-        Array [
-          Object {
-            "alignItems": "center",
-            "backgroundColor": "#F3F6FA",
-            "borderColor": "#F3F6FA",
-            "borderRadius": 12,
-            "borderWidth": 2,
-            "flexDirection": "row",
-            "marginBottom": 8,
-            "padding": 5,
-          },
-          Object {
-            "backgroundColor": "rgba(48,82,255,0.06)",
-            "borderColor": "#3052FF",
-            "borderWidth": 2,
-          },
-          undefined,
-        ]
-      }
-    >
+    <View>
       <Image
-        borderRadius={10}
+        borderRadius={25}
         resizeMode="cover"
         source={
           Object {
@@ -1608,96 +4167,47 @@ exports[`Storyshots RecipientElement Selected 1`] = `
         }
         style={
           Array [
-            Object {},
+            Object {
+              "backgroundColor": "#F3F6FA",
+              "borderRadius": 10,
+            },
             Object {
               "height": 85.71428571428571,
               "width": 85.71428571428571,
             },
-            false,
+            Object {
+              "borderColor": "rgba(96,104,133,0.06)",
+              "borderWidth": 1,
+            },
           ]
         }
       />
+    </View>
+    <View
+      style={
+        Object {
+          "paddingLeft": 10,
+        }
+      }
+    >
       <View
         style={
           Object {
-            "paddingLeft": 10,
+            "flexDirection": "row",
+            "left": 0,
+            "right": 0,
           }
         }
       >
-        <View
-          style={
-            Object {
-              "flexDirection": "row",
-              "left": 0,
-              "right": 0,
-            }
-          }
-        >
-          <Text
-            adjustsFontSizeToFit={true}
-            numberOfLines={1}
-            style={
-              Array [
-                Object {
-                  "color": "#000000",
-                  "fontFamily": "ProximaNova-Bold",
-                  "fontSize": 32.14285714285714,
-                },
-                Object {
-                  "color": "#3052FF",
-                },
-              ]
-            }
-          >
-            Wietse
-          </Text>
-          <View
-            accessible={true}
-            focusable={true}
-            onClick={[Function]}
-            onResponderGrant={[Function]}
-            onResponderMove={[Function]}
-            onResponderRelease={[Function]}
-            onResponderTerminate={[Function]}
-            onResponderTerminationRequest={[Function]}
-            onStartShouldSetResponder={[Function]}
-            style={
-              Object {
-                "alignSelf": "center",
-                "backgroundColor": "#3fa3b5",
-                "borderRadius": 5,
-                "marginLeft": 5,
-                "opacity": 1,
-                "paddingHorizontal": 5,
-                "paddingVertical": 1,
-              }
-            }
-          >
-            <Text
-              style={
-                Array [
-                  Object {
-                    "color": "#ffffff",
-                    "fontFamily": "ProximaNova-Bold",
-                    "fontSize": 18,
-                  },
-                  Object {
-                    "fontSize": 18,
-                  },
-                ]
-              }
-            >
-              Bithomp
-            </Text>
-          </View>
-        </View>
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
-                "color": "#606885",
-                "fontFamily": "UbuntuMono-Regular",
-                "fontSize": 25.71428571428571,
+                "color": "#000000",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 32.14285714285714,
               },
               Object {
                 "color": "#3052FF",
@@ -1705,9 +4215,25 @@ exports[`Storyshots RecipientElement Selected 1`] = `
             ]
           }
         >
-          rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1
+          Wietse
         </Text>
       </View>
+      <Text
+        style={
+          Array [
+            Object {
+              "color": "#606885",
+              "fontFamily": "UbuntuMono-Regular",
+              "fontSize": 25.71428571428571,
+            },
+            Object {
+              "color": "#3052FF",
+            },
+          ]
+        }
+      >
+        rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1
+      </Text>
     </View>
   </View>
 </View>
@@ -1717,6 +4243,7 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
 <View
   style={
     Object {
+      "alignItems": "center",
       "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
@@ -1735,31 +4262,22 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
     onStartShouldSetResponder={[Function]}
     style={
       Object {
+        "alignItems": "center",
+        "backgroundColor": "#F3F6FA",
+        "borderColor": "#F3F6FA",
+        "borderRadius": 12,
+        "borderWidth": 2,
+        "flexDirection": "row",
+        "marginBottom": 8,
         "opacity": 1,
+        "padding": 5,
       }
     }
     testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
-    <View
-      style={
-        Array [
-          Object {
-            "alignItems": "center",
-            "backgroundColor": "#F3F6FA",
-            "borderColor": "#F3F6FA",
-            "borderRadius": 12,
-            "borderWidth": 2,
-            "flexDirection": "row",
-            "marginBottom": 8,
-            "padding": 5,
-          },
-          undefined,
-          undefined,
-        ]
-      }
-    >
+    <View>
       <Image
-        borderRadius={10}
+        borderRadius={25}
         resizeMode="cover"
         source={
           Object {
@@ -1768,102 +4286,69 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
         }
         style={
           Array [
-            Object {},
+            Object {
+              "backgroundColor": "#F3F6FA",
+              "borderRadius": 10,
+            },
             Object {
               "height": 85.71428571428571,
               "width": 85.71428571428571,
             },
-            false,
+            Object {
+              "borderColor": "rgba(96,104,133,0.06)",
+              "borderWidth": 1,
+            },
           ]
         }
       />
+    </View>
+    <View
+      style={
+        Object {
+          "paddingLeft": 10,
+        }
+      }
+    >
       <View
         style={
           Object {
-            "paddingLeft": 10,
+            "flexDirection": "row",
+            "left": 0,
+            "right": 0,
           }
         }
       >
-        <View
-          style={
-            Object {
-              "flexDirection": "row",
-              "left": 0,
-              "right": 0,
-            }
-          }
-        >
-          <Text
-            adjustsFontSizeToFit={true}
-            numberOfLines={1}
-            style={
-              Array [
-                Object {
-                  "color": "#000000",
-                  "fontFamily": "ProximaNova-Bold",
-                  "fontSize": 32.14285714285714,
-                },
-                null,
-              ]
-            }
-          >
-            Wietse
-          </Text>
-          <View
-            accessible={true}
-            focusable={true}
-            onClick={[Function]}
-            onResponderGrant={[Function]}
-            onResponderMove={[Function]}
-            onResponderRelease={[Function]}
-            onResponderTerminate={[Function]}
-            onResponderTerminationRequest={[Function]}
-            onStartShouldSetResponder={[Function]}
-            style={
-              Object {
-                "alignSelf": "center",
-                "backgroundColor": "#3fa3b5",
-                "borderRadius": 5,
-                "marginLeft": 5,
-                "opacity": 1,
-                "paddingHorizontal": 5,
-                "paddingVertical": 1,
-              }
-            }
-          >
-            <Text
-              style={
-                Array [
-                  Object {
-                    "color": "#ffffff",
-                    "fontFamily": "ProximaNova-Bold",
-                    "fontSize": 18,
-                  },
-                  Object {
-                    "fontSize": 18,
-                  },
-                ]
-              }
-            >
-              Bithomp
-            </Text>
-          </View>
-        </View>
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
-                "color": "#606885",
-                "fontFamily": "UbuntuMono-Regular",
-                "fontSize": 25.71428571428571,
+                "color": "#000000",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 32.14285714285714,
               },
               null,
             ]
           }
         >
-          rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1
+          Wietse
         </Text>
       </View>
+      <Text
+        style={
+          Array [
+            Object {
+              "color": "#606885",
+              "fontFamily": "UbuntuMono-Regular",
+              "fontSize": 25.71428571428571,
+            },
+            null,
+          ]
+        }
+      >
+        rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1
+      </Text>
     </View>
   </View>
 </View>
@@ -1873,6 +4358,7 @@ exports[`Storyshots RecipientElement default 1`] = `
 <View
   style={
     Object {
+      "alignItems": "center",
       "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",
@@ -1891,31 +4377,22 @@ exports[`Storyshots RecipientElement default 1`] = `
     onStartShouldSetResponder={[Function]}
     style={
       Object {
+        "alignItems": "center",
+        "backgroundColor": "#F3F6FA",
+        "borderColor": "#F3F6FA",
+        "borderRadius": 12,
+        "borderWidth": 2,
+        "flexDirection": "row",
+        "marginBottom": 8,
         "opacity": 1,
+        "padding": 5,
       }
     }
     testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
-    <View
-      style={
-        Array [
-          Object {
-            "alignItems": "center",
-            "backgroundColor": "#F3F6FA",
-            "borderColor": "#F3F6FA",
-            "borderRadius": 12,
-            "borderWidth": 2,
-            "flexDirection": "row",
-            "marginBottom": 8,
-            "padding": 5,
-          },
-          undefined,
-          undefined,
-        ]
-      }
-    >
+    <View>
       <Image
-        borderRadius={10}
+        borderRadius={25}
         resizeMode="cover"
         source={
           Object {
@@ -1924,85 +4401,69 @@ exports[`Storyshots RecipientElement default 1`] = `
         }
         style={
           Array [
-            Object {},
+            Object {
+              "backgroundColor": "#F3F6FA",
+              "borderRadius": 10,
+            },
             Object {
               "height": 85.71428571428571,
               "width": 85.71428571428571,
             },
-            false,
+            Object {
+              "borderColor": "rgba(96,104,133,0.06)",
+              "borderWidth": 1,
+            },
           ]
         }
       />
+    </View>
+    <View
+      style={
+        Object {
+          "paddingLeft": 10,
+        }
+      }
+    >
       <View
         style={
           Object {
-            "paddingLeft": 10,
+            "flexDirection": "row",
+            "left": 0,
+            "right": 0,
           }
         }
       >
-        <View
-          style={
-            Object {
-              "flexDirection": "row",
-              "left": 0,
-              "right": 0,
-            }
-          }
-        >
-          <Text
-            adjustsFontSizeToFit={true}
-            numberOfLines={1}
-            style={
-              Array [
-                Object {
-                  "color": "#000000",
-                  "fontFamily": "ProximaNova-Bold",
-                  "fontSize": 32.14285714285714,
-                },
-                null,
-              ]
-            }
-          >
-            Wietse
-          </Text>
-          <View
-            accessible={true}
-            focusable={true}
-            onClick={[Function]}
-            onResponderGrant={[Function]}
-            onResponderMove={[Function]}
-            onResponderRelease={[Function]}
-            onResponderTerminate={[Function]}
-            onResponderTerminationRequest={[Function]}
-            onStartShouldSetResponder={[Function]}
-            style={
-              Object {
-                "alignSelf": "center",
-                "backgroundColor": undefined,
-                "borderRadius": 5,
-                "marginLeft": 5,
-                "opacity": 1,
-                "paddingHorizontal": 5,
-                "paddingVertical": 1,
-              }
-            }
-          />
-        </View>
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
-                "color": "#606885",
-                "fontFamily": "UbuntuMono-Regular",
-                "fontSize": 25.71428571428571,
+                "color": "#000000",
+                "fontFamily": "ProximaNova-Bold",
+                "fontSize": 32.14285714285714,
               },
               null,
             ]
           }
         >
-          rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1
+          Wietse
         </Text>
       </View>
+      <Text
+        style={
+          Array [
+            Object {
+              "color": "#606885",
+              "fontFamily": "UbuntuMono-Regular",
+              "fontSize": 25.71428571428571,
+            },
+            null,
+          ]
+        }
+      >
+        rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1
+      </Text>
     </View>
   </View>
 </View>
@@ -2012,6 +4473,7 @@ exports[`Storyshots SegmentButton Three Button 1`] = `
 <View
   style={
     Object {
+      "alignItems": "center",
       "backgroundColor": "#F0F3FF",
       "flex": 1,
       "justifyContent": "center",

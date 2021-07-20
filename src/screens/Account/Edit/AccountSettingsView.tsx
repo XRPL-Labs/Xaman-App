@@ -101,7 +101,7 @@ class AccountSettingsView extends Component<Props, State> {
         getAccountName.cache.set(
             account.address,
             new Promise((resolve) => {
-                resolve({ name: newLabel, source: 'internal:accounts' });
+                resolve({ name: newLabel, source: 'accounts' });
             }),
         );
     };
@@ -110,7 +110,7 @@ class AccountSettingsView extends Component<Props, State> {
         const { account } = this.state;
 
         Navigator.push(
-            AppScreens.Modal.Picker,
+            AppScreens.Global.Picker,
             {},
             {
                 title: Localize.t('account.accessLevel'),
@@ -270,26 +270,28 @@ class AccountSettingsView extends Component<Props, State> {
                         </TouchableOpacity>
 
                         {/* Account Access Level */}
-                        <TouchableOpacity
-                            testID="account-access-level-button"
-                            style={[styles.row]}
-                            onPress={this.showAccessLevelPicker}
-                        >
-                            <View style={[AppStyles.flex3]}>
-                                <Text numberOfLines={1} style={styles.label}>
-                                    {Localize.t('account.accessLevel')}
-                                </Text>
-                            </View>
+                        {account.type === AccountTypes.Regular && (
+                            <TouchableOpacity
+                                testID="account-access-level-button"
+                                style={[styles.row]}
+                                onPress={this.showAccessLevelPicker}
+                            >
+                                <View style={[AppStyles.flex3]}>
+                                    <Text numberOfLines={1} style={styles.label}>
+                                        {Localize.t('account.accessLevel')}
+                                    </Text>
+                                </View>
 
-                            <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                                <Text style={[styles.value]}>
-                                    {account.accessLevel === AccessLevels.Full
-                                        ? Localize.t('account.fullAccess')
-                                        : Localize.t('account.readOnly')}
-                                </Text>
-                                <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
-                            </View>
-                        </TouchableOpacity>
+                                <View style={[AppStyles.centerAligned, AppStyles.row]}>
+                                    <Text style={[styles.value]}>
+                                        {account.accessLevel === AccessLevels.Full
+                                            ? Localize.t('account.fullAccess')
+                                            : Localize.t('account.readOnly')}
+                                    </Text>
+                                    <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
+                                </View>
+                            </TouchableOpacity>
+                        )}
                         {/* <Text style={styles.descriptionText}>{Localize.t('account.passwordOptionDesc')}</Text> */}
                         {account.accessLevel === AccessLevels.Full && (
                             <Fragment key="security">

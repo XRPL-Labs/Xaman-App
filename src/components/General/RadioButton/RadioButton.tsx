@@ -12,9 +12,10 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
-    onPress: () => void;
+    onPress: (value: any) => void;
     checked: boolean;
     label: string;
+    value: any;
     labelSmall?: string;
     description?: string;
     testID?: string;
@@ -23,9 +24,9 @@ interface Props {
 /* Component ==================================================================== */
 class RadioButton extends Component<Props> {
     onPress = () => {
-        const { onPress } = this.props;
+        const { onPress, value } = this.props;
         if (onPress) {
-            onPress();
+            onPress(value);
         }
     };
 

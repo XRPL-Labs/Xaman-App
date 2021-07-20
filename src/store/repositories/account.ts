@@ -1,4 +1,4 @@
-import { first, has, filter } from 'lodash';
+import { first, has, filter, find } from 'lodash';
 import Realm, { Results, ObjectSchema } from 'realm';
 
 import Flag from '@common/libs/ledger/parser/common/flag';
@@ -149,6 +149,13 @@ class AccountRepository extends BaseRepository {
     };
 
     /**
+     * check if account is signable
+     */
+    isSignable = (account: AccountSchema): boolean => {
+        return !!find(this.getSignableAccounts(), (o) => o.address === account.address);
+    };
+
+    /**
      * set/change default account
      */
     setDefaultAccount = (address: string) => {
@@ -197,6 +204,34 @@ class AccountRepository extends BaseRepository {
         return true;
     };
 
+    getNewDefaultAccount = (ignoreAccount?: string) => {
+        let newDefaultAccount;
+
+        let accounts = this.getAccounts().toJSON();
+
+        if (accounts.length === 0) return undefined;
+
+        if (ignoreAccount) {
+            accounts = filter(accounts, (a) => a.address !== ignoreAccount);
+        }
+
+        // first try to find the first not hidden account
+        newDefaultAccount = first(filter(accounts, (a) => a.hidden === false));
+
+        // if no not hidden account is available then choose one can account and make it visible
+        if (!newDefaultAccount) {
+            newDefaultAccount = first(accounts);
+            if (newDefaultAccount && newDefaultAccount.hidden) {
+                this.update({
+                    address: newDefaultAccount.address,
+                    hidden: false,
+                });
+            }
+        }
+
+        return newDefaultAccount;
+    };
+
     /**
      * Change account visibility
      */
@@ -214,7 +249,7 @@ class AccountRepository extends BaseRepository {
 
                 // if account is default change default to another account
                 if (account.default) {
-                    const newDefaultAccount = first(filter(allAccounts, (a) => a.address !== account.address));
+                    const newDefaultAccount = this.getNewDefaultAccount(account.address);
                     if (newDefaultAccount) {
                         this.setDefaultAccount(newDefaultAccount.address);
                     }
@@ -242,22 +277,22 @@ class AccountRepository extends BaseRepository {
             await Vault.purge(account.publicKey);
         }
 
+        // remove account lines
+        for (const line of account.lines) {
+            await this.delete(line);
+        }
+
         // remove the account
-        await this.deleteBy('address', account.address);
+        await this.delete(account);
 
-        // if account is default then change default account to closest account
+        // if account is default then set new default account
         if (isDefault) {
-            const accounts = this.getAccounts();
-
-            if (accounts.length > 0) {
-                const newDefaultAccount = first(accounts);
-                if (newDefaultAccount.hidden) {
-                    this.update({
-                        address: newDefaultAccount.address,
-                        hidden: false,
-                    });
-                }
+            const newDefaultAccount = this.getNewDefaultAccount();
+            if (newDefaultAccount) {
                 this.setDefaultAccount(newDefaultAccount.address);
+            } else {
+                // emit new default account
+                this.emit('changeDefaultAccount', undefined);
             }
         }
 

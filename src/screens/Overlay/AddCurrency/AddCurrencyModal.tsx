@@ -96,10 +96,10 @@ class AddCurrencyOverlay extends Component<Props, State> {
         const availableParties = [] as CounterPartySchema[];
         const availableCurrencies = [] as any;
 
-        forEach(counterParties, counterParty => {
+        forEach(counterParties, (counterParty) => {
             const currencies = [] as any;
 
-            forEach(counterParty.currencies, currency => {
+            forEach(counterParty.currencies, (currency) => {
                 if (!account.hasCurrency(currency) && currency.shortlist === true) {
                     currencies.push(currency);
                 }
@@ -384,7 +384,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={r => {
+                    ref={(r) => {
                         this.panel = r;
                     }}
                     animatedNativeDriver

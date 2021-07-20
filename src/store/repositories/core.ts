@@ -6,8 +6,6 @@ import { AppConfig } from '@common/constants';
 import { GetDeviceUniqueId } from '@common/helpers/device';
 import { SHA512, HMAC256 } from '@common/libs/crypto';
 
-import LoggerService from '@services/LoggerService';
-
 import { CoreSchema } from '@store/schemas/latest';
 import { NodeChain } from '@store/types';
 
@@ -45,9 +43,33 @@ class CoreRepository extends BaseRepository {
         }
     };
 
+    getChainFromNode = (node: string) => {
+        let chain = NodeChain.Main;
+
+        // it is a verified type
+        if (AppConfig.nodes.main.indexOf(node) > -1) {
+            chain = NodeChain.Main;
+        } else if (AppConfig.nodes.test.indexOf(node) > -1) {
+            chain = NodeChain.Test;
+        } else {
+            chain = NodeChain.Custom;
+        }
+
+        return chain;
+    };
+
+    getAppCurrency = (): string => {
+        const settings = this.getSettings();
+
+        if (settings && settings.currency) {
+            return settings.currency;
+        }
+
+        return AppConfig.defaultCurrency;
+    };
+
     getDefaultNode = () => {
         let defaultNode = __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0];
-        let chain = NodeChain.Main;
 
         const settings = this.getSettings();
 
@@ -55,15 +77,25 @@ class CoreRepository extends BaseRepository {
             defaultNode = settings.defaultNode;
         }
 
-        // it is a verified type
-        if (AppConfig.nodes.main.indexOf(defaultNode) > -1) {
-            chain = NodeChain.Main;
-        } else if (AppConfig.nodes.test.indexOf(defaultNode) > -1) {
-            chain = NodeChain.Test;
-        }
+        const chain = this.getChainFromNode(defaultNode);
 
         return {
             node: defaultNode,
+            chain,
+        };
+    };
+
+    setDefaultNode = (node: string, chain?: NodeChain) => {
+        if (!chain) {
+            chain = this.getChainFromNode(node);
+        }
+
+        this.saveSettings({
+            defaultNode: node,
+        });
+
+        return {
+            node,
             chain,
         };
     };
@@ -105,7 +137,6 @@ class CoreRepository extends BaseRepository {
 
             return encPasscode;
         } catch (e) {
-            LoggerService.recordError('Encrypt Passcode Failed', e);
             return '';
         }
     };
@@ -124,7 +155,6 @@ class CoreRepository extends BaseRepository {
 
             return encryptedPasscode;
         } catch (e) {
-            LoggerService.recordError('Save Passcode Failed', e);
             return '';
         }
     };

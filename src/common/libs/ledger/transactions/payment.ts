@@ -1,6 +1,6 @@
 /* eslint-disable no-lonely-if */
 import BigNumber from 'bignumber.js';
-import { get, set, has, isUndefined, isNumber, toInteger, find, findIndex } from 'lodash';
+import { get, set, has, isUndefined, isNumber, toInteger, findIndex } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
 import LedgerService from '@services/LedgerService';
@@ -13,7 +13,6 @@ import Localize from '@locale';
 import BaseTransaction from './base';
 
 import Amount from '../parser/common/amount';
-import Meta from '../parser/meta';
 
 /* Types ==================================================================== */
 import { LedgerAmount, Destination, AmountType } from '../parser/types';
@@ -40,38 +39,6 @@ class Payment extends BaseTransaction {
             'SendMax',
             'DeliverMin',
         ]);
-    }
-
-    get LastBalance(): any {
-        const affectedNodes = get(this, ['meta', 'AffectedNodes']);
-
-        if (!affectedNodes) return null;
-
-        let source;
-        let destination;
-
-        // two effected node
-        affectedNodes.forEach((node: any) => {
-            const address = node.ModifiedNode.FinalFields.Account;
-            const balance = node.ModifiedNode.FinalFields.Balance;
-
-            if (this.Source.address === address) {
-                source = {
-                    address,
-                    balance,
-                };
-            } else {
-                destination = {
-                    address,
-                    balance,
-                };
-            }
-        });
-
-        return {
-            Account: source,
-            Destination: destination,
-        };
     }
 
     get Destination(): Destination {
@@ -115,25 +82,42 @@ class Payment extends BaseTransaction {
         }
     }
 
-    // @ts-ignore
-    get Amount(): AmountType {
-        let amount = undefined as AmountType;
+    get DeliveredAmount(): AmountType {
+        let deliveredAmount = undefined as AmountType;
 
         if (has(this, ['meta', 'DeliveredAmount'])) {
-            amount = get(this, ['meta', 'DeliveredAmount']);
+            deliveredAmount = get(this, ['meta', 'DeliveredAmount']);
         } else {
-            amount = get(this, ['meta', 'delivered_amount']);
+            deliveredAmount = get(this, ['meta', 'delivered_amount']);
         }
 
         // the delivered_amount will be unavailable in old transactions
         // @ts-ignore
-        if (amount === 'unavailable') {
-            amount = undefined;
+        if (deliveredAmount === 'unavailable') {
+            deliveredAmount = undefined;
         }
 
-        if (!amount) {
-            amount = get(this, ['tx', 'Amount']);
+        if (isUndefined(deliveredAmount)) return undefined;
+
+        if (typeof deliveredAmount === 'string') {
+            return {
+                currency: 'XRP',
+                value: new Amount(deliveredAmount).dropsToXrp(),
+            };
         }
+
+        return {
+            currency: deliveredAmount.currency,
+            value: deliveredAmount.value && new Amount(deliveredAmount.value, false).toString(),
+            issuer: deliveredAmount.issuer,
+        };
+    }
+
+    // @ts-ignore
+    get Amount(): AmountType {
+        let amount = undefined as AmountType;
+
+        amount = get(this, ['tx', 'Amount']);
 
         if (isUndefined(amount)) return undefined;
 
@@ -160,13 +144,6 @@ class Payment extends BaseTransaction {
 
         if (typeof input === 'object') {
             const value = new BigNumber(input.value);
-
-            // if transferRate set then add the fee to the value
-            // if (this.TransferRate) {
-            //     const fee = value.multipliedBy(this.TransferRate).dividedBy(100);
-            //     value = value.plus(fee);
-            // }
-            // value = new BigNumber(value.toString().slice(0, 16));
 
             set(this, 'tx.Amount', {
                 currency: input.currency,
@@ -237,12 +214,6 @@ class Payment extends BaseTransaction {
             return;
         }
 
-        // if transferRate set then add the fee to the value
-        // if (this.TransferRate) {
-        //     const fee = value.multipliedBy(this.TransferRate).dividedBy(100);
-        //     value = value.plus(fee);
-        // }
-
         set(this, 'tx.DeliverMin', {
             currency: input.currency,
             value: new BigNumber(input.value).toNumber().toString(10),
@@ -285,19 +256,8 @@ class Payment extends BaseTransaction {
         set(this, 'tx.InvoiceID', invoiceId);
     }
 
-    BalanceChange(owner?: string) {
-        if (!owner) {
-            owner = this.Account.address;
-        }
-
-        const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
-
-        const changes = {
-            sent: find(balanceChanges, (o) => o.action === 'DEC'),
-            received: find(balanceChanges, (o) => o.action === 'INC'),
-        } as { sent: AmountType; received: AmountType };
-
-        return changes;
+    get Paths(): Array<any> {
+        return get(this, 'tx.Paths', undefined);
     }
 
     validate = (source: AccountSchema, multiSign?: boolean) => {

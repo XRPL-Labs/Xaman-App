@@ -2,15 +2,12 @@
 import { LogBox } from 'react-native';
 
 if (__DEV__) {
-    // disable some yellow boxes
-    const IGNORED_WARNINGS = [
-        'Remote debugger is in a background tab which may cause apps to perform slowly',
-        'Require cycle:',
-        'Setting a timer',
-        'Module AppRegistry is not',
-        'Warning: Failed prop type',
-    ];
+    // disable some uneccery logs
+    const IGNORED_WARNINGS = ['Setting a timer', 'Warning: Failed prop type:'];
+    const IGNORED_LOGS = ['Running "'];
+
     const oldConsoleWarn = console.warn;
+    const oldConsoleLog = console.log;
 
     console.warn = (...args) => {
         if (
@@ -21,6 +18,14 @@ if (__DEV__) {
         }
 
         return oldConsoleWarn.apply(console, args);
+    };
+
+    console.log = (...args) => {
+        if (typeof args[0] === 'string' && IGNORED_LOGS.some((ignoredLog) => args[0].startsWith(ignoredLog))) {
+            return;
+        }
+
+        return oldConsoleLog.apply(console, args);
     };
 
     LogBox.ignoreLogs(IGNORED_WARNINGS);

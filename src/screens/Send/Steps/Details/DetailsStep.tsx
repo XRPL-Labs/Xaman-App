@@ -80,6 +80,23 @@ class DetailsStep extends Component<Props, State> {
             });
     };
 
+    getAvailableBalance = () => {
+        const { currency, source, sendingNFT } = this.context;
+
+        let availableBalance;
+
+        // XRP
+        if (typeof currency === 'string') {
+            availableBalance = source.availableBalance;
+        } else if (sendingNFT) {
+            availableBalance = XRPLValueToNFT(currency.balance);
+        } else {
+            availableBalance = currency.balance;
+        }
+
+        return availableBalance;
+    };
+
     goNext = () => {
         const { goNext, currency, source, amount, setAmount } = this.context;
 
@@ -91,8 +108,9 @@ class DetailsStep extends Component<Props, State> {
             return;
         }
 
-        // check for exceed amount
+        const isXRP = typeof currency === 'string';
 
+        // check for exceed amount
         // if IOU and obligation can send unlimited
         if (typeof currency !== 'string' && currency.obligation) {
             // last set amount parsed by bignumber
@@ -103,22 +121,28 @@ class DetailsStep extends Component<Props, State> {
         }
 
         // @ts-ignore
-        const availableBalance = new BigNumber(this.getAvailableBalance()).toNumber();
+        const availableBalance = new BigNumber(this.getAvailableBalance());
 
         // check if amount is bigger than what user can spend
-        if (bAmount.toNumber() > availableBalance) {
+        if (bAmount.isGreaterThan(availableBalance)) {
             Prompt(
                 Localize.t('global.error'),
                 Localize.t('send.theMaxAmountYouCanSendIs', {
-                    spendable: Localize.formatNumber(availableBalance),
+                    spendable: Localize.formatNumber(availableBalance.toNumber()),
                     currency: this.getCurrencyName(),
                 }),
                 [
                     { text: Localize.t('global.cancel') },
                     {
-                        text: Localize.t('global.update'),
+                        text: isXRP ? Localize.t('global.update') : Localize.t('global.next'),
                         onPress: () => {
-                            this.onAmountChange(availableBalance.toString());
+                            if (isXRP) {
+                                this.onAmountChange(availableBalance.toString());
+                            } else {
+                                setAmount(availableBalance.toString());
+                                // go to next screen
+                                goNext();
+                            }
                         },
                     },
                 ],
@@ -128,7 +152,7 @@ class DetailsStep extends Component<Props, State> {
         }
 
         // last set amount parsed by bignumber
-        setAmount(bAmount.toString(10));
+        setAmount(bAmount.toString());
 
         // go to next screen
         goNext();
@@ -145,21 +169,15 @@ class DetailsStep extends Component<Props, State> {
         return NormalizeCurrencyCode(currency.currency.currency);
     };
 
-    getAvailableBalance = () => {
-        const { currency, source, sendingNFT } = this.context;
+    applyAllBalance = () => {
+        // @ts-ignore
+        const availableBalance = new BigNumber(this.getAvailableBalance());
 
-        let availableBalance;
-
-        // XRP
-        if (typeof currency === 'string') {
-            availableBalance = source.availableBalance;
-        } else if (sendingNFT) {
-            availableBalance = XRPLValueToNFT(currency.balance);
-        } else {
-            availableBalance = currency.balance;
+        if (availableBalance.isLessThan(0.00000001)) {
+            return;
         }
 
-        return availableBalance;
+        this.onAmountChange(availableBalance.toString());
     };
 
     onUpdateRate = () => {
@@ -226,7 +244,7 @@ class DetailsStep extends Component<Props, State> {
     };
 
     onCurrencyChange = (item: TrustLineSchema) => {
-        const { setCurrency } = this.context;
+        const { setCurrency, setAmount } = this.context;
 
         // xrp
         if (typeof item === 'string') {
@@ -234,6 +252,13 @@ class DetailsStep extends Component<Props, State> {
         } else {
             setCurrency(item);
         }
+
+        // clear amount and rate
+        setAmount('');
+
+        this.setState({
+            amountRate: '',
+        });
     };
 
     calcKeyboardAwareExtraOffset = (input: any, inputHeight: number) => {
@@ -336,10 +361,23 @@ class DetailsStep extends Component<Props, State> {
 
                     {/* Amount */}
                     <View style={[styles.rowItem]}>
-                        <View style={[styles.rowTitle]}>
-                            <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
-                                {Localize.t('global.amount')}
-                            </Text>
+                        <View style={[styles.rowTitle, { paddingBottom: 0 }]}>
+                            <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
+                                    {Localize.t('global.amount')}
+                                </Text>
+                            </View>
+
+                            <View>
+                                <Button
+                                    light
+                                    roundedSmall
+                                    onPress={this.applyAllBalance}
+                                    label={Localize.t('global.all')}
+                                    icon="IconArrowDown"
+                                    iconSize={10}
+                                />
+                            </View>
                         </View>
                         <View style={[styles.amountContainer]}>
                             <View style={AppStyles.flex1}>

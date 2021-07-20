@@ -28,6 +28,7 @@ export interface Props {
 export interface State {
     name: string;
     address: string;
+    kycApproved: boolean;
     tag: number;
     key: string;
 }
@@ -44,6 +45,7 @@ class TransactionTemplate extends Component<Props, State> {
         this.state = {
             name: recipientDetails.name,
             address: recipientDetails.address,
+            kycApproved: false,
             tag: recipientDetails.tag,
             key: recipientDetails.key,
         };
@@ -105,9 +107,14 @@ class TransactionTemplate extends Component<Props, State> {
                 key = 'Account';
                 break;
             case 'CheckCreate':
-                address = item.Destination.address;
-                tag = item.Destination.tag;
-                key = 'Destination';
+                if (item.Account?.address !== account.address) {
+                    address = item.Account.address;
+                    key = 'Account';
+                } else {
+                    address = item.Destination.address;
+                    tag = item.Destination.tag;
+                    key = 'Destination';
+                }
                 break;
             case 'CheckCash':
                 address = item.Account.address;
@@ -138,6 +145,25 @@ class TransactionTemplate extends Component<Props, State> {
                 break;
             case 'TicketCreate':
                 address = item.Account.address;
+                key = 'Account';
+                break;
+            case 'PaymentChannelCreate':
+                if (item.Account?.address !== account.address) {
+                    address = item.Account.address;
+                    key = 'Account';
+                } else {
+                    address = item.Destination.address;
+                    tag = item.Destination.tag;
+                    key = 'Destination';
+                }
+                break;
+            case 'PaymentChannelFund':
+                address = item.Account.address;
+                key = 'Account';
+                break;
+            case 'PaymentChannelClaim':
+                address = item.Account.address;
+                key = 'Account';
                 break;
             default:
                 break;
@@ -182,6 +208,7 @@ class TransactionTemplate extends Component<Props, State> {
                         }
                         this.setState({
                             name: res.name,
+                            kycApproved: res.kycApproved,
                         });
                     }
                 }
@@ -195,11 +222,19 @@ class TransactionTemplate extends Component<Props, State> {
     };
 
     getIcon = () => {
-        const { address } = this.state;
+        const { address, kycApproved } = this.state;
         const { item } = this.props;
 
         if (address) {
-            return <Avatar size={40} border source={{ uri: `https://xumm.app/avatar/${address}_180_50.png` }} />;
+            return (
+                <View style={styles.iconContainer}>
+                    <Avatar
+                        badge={kycApproved ? 'IconCheckXumm' : undefined}
+                        border
+                        source={{ uri: `https://xumm.app/avatar/${address}_180_50.png` }}
+                    />
+                </View>
+            );
         }
         let iconName = '' as any;
         let iconColor;
@@ -244,7 +279,7 @@ class TransactionTemplate extends Component<Props, State> {
                 const balanceChanges = item.BalanceChange(account.address);
 
                 if (balanceChanges?.sent && balanceChanges?.received) {
-                    return `${Localize.formatNumber(balanceChanges.sent.value)} ${NormalizeCurrencyCode(
+                    return `${Localize.formatNumber(Number(balanceChanges.sent.value))} ${NormalizeCurrencyCode(
                         balanceChanges.sent.currency,
                     )}/${NormalizeCurrencyCode(balanceChanges.received.currency)}`;
                 }
@@ -315,6 +350,12 @@ class TransactionTemplate extends Component<Props, State> {
                 return Localize.t('events.cancelCheck');
             case 'TicketCreate':
                 return Localize.t('events.createTicket');
+            case 'PaymentChannelCreate':
+                return Localize.t('events.createPaymentChannel');
+            case 'PaymentChannelClaim':
+                return Localize.t('events.claimPaymentChannel');
+            case 'PaymentChannelFund':
+                return Localize.t('events.fundPaymentChannel');
             default:
                 return item.Type;
         }
@@ -338,30 +379,31 @@ class TransactionTemplate extends Component<Props, State> {
     renderRightPanel = () => {
         const { item, account } = this.props;
 
-        let incoming = item.Destination?.address === account.address;
+        let incoming = item.Account?.address !== account.address;
 
         if (item.Type === 'Payment') {
+            const balanceChanges = item.BalanceChange(account.address);
             if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
-                const balanceChanges = item.BalanceChange(account.address);
-
                 if (balanceChanges?.received) {
                     return (
                         <AmountText
                             value={balanceChanges.received?.value}
-                            currency={balanceChanges.received?.currency}
+                            postfix={balanceChanges.received?.currency}
                             style={styles.amount}
-                            currencyStyle={styles.currency}
+                            postfixStyle={styles.currency}
                         />
                     );
                 }
             }
+
+            const amount = item.DeliveredAmount || item.Amount;
             return (
                 <AmountText
-                    value={item.Amount.value}
-                    currency={item.Amount.currency}
+                    value={amount.value}
+                    postfix={amount.currency}
                     prefix={!incoming && '-'}
                     style={[styles.amount, !incoming && styles.outgoingColor]}
-                    currencyStyle={styles.currency}
+                    postfixStyle={styles.currency}
                 />
             );
         }
@@ -370,10 +412,10 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.Amount.value}
-                    currency={item.Amount.currency}
+                    postfix={item.Amount.currency}
                     prefix={!incoming && '-'}
                     style={[styles.amount, !incoming && styles.outgoingColor]}
-                    currencyStyle={styles.currency}
+                    postfixStyle={styles.currency}
                 />
             );
         }
@@ -382,10 +424,10 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.Amount.value}
-                    currency={item.Amount.currency}
+                    postfix={item.Amount.currency}
                     prefix={!incoming && '-'}
                     style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]}
-                    currencyStyle={styles.currency}
+                    postfixStyle={styles.currency}
                 />
             );
         }
@@ -394,10 +436,10 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.Amount.value}
-                    currency={item.Amount.currency}
+                    postfix={item.Amount.currency}
                     prefix={!incoming && '-'}
                     style={[styles.amount, !incoming && styles.naturalColor]}
-                    currencyStyle={styles.currency}
+                    postfixStyle={styles.currency}
                 />
             );
         }
@@ -406,9 +448,9 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.SendMax.value}
-                    currency={item.SendMax.currency}
+                    postfix={item.SendMax.currency}
                     style={[styles.amount, styles.naturalColor]}
-                    currencyStyle={styles.currency}
+                    postfixStyle={styles.currency}
                 />
             );
         }
@@ -419,9 +461,9 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={amount.value}
-                    currency={amount.currency}
+                    postfix={amount.currency}
                     style={[styles.amount, !incoming && styles.outgoingColor]}
-                    currencyStyle={styles.currency}
+                    postfixStyle={styles.currency}
                 />
             );
         }
@@ -433,20 +475,37 @@ class TransactionTemplate extends Component<Props, State> {
                 return (
                     <AmountText
                         value={takerPaid.value}
-                        currency={takerPaid.currency}
+                        postfix={takerPaid.currency}
                         style={[styles.amount]}
-                        currencyStyle={styles.currency}
+                        postfixStyle={styles.currency}
                     />
                 );
             }
             return (
                 <AmountText
                     value={item.TakerPays.value}
-                    currency={item.TakerPays.currency}
+                    postfix={item.TakerPays.currency}
                     style={[styles.amount, styles.naturalColor]}
-                    currencyStyle={styles.currency}
+                    postfixStyle={styles.currency}
                 />
             );
+        }
+
+        if (['PaymentChannelClaim', 'PaymentChannelFund', 'PaymentChannelCreate'].includes(item.Type)) {
+            const balanceChanges = item.BalanceChange(account.address);
+
+            if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                const amount = balanceChanges?.received || balanceChanges?.sent;
+
+                return (
+                    <AmountText
+                        value={amount.value}
+                        postfix={amount.currency}
+                        style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
+                        postfixStyle={styles.currency}
+                    />
+                );
+            }
         }
 
         return null;
@@ -454,24 +513,22 @@ class TransactionTemplate extends Component<Props, State> {
 
     render() {
         return (
-            <TouchableOpacity onPress={this.onPress} activeOpacity={0.6} style={styles.touchHighlight}>
-                <View style={[AppStyles.row, styles.container]}>
-                    <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
-                    <View style={[AppStyles.flex3, AppStyles.centerContent]}>
-                        <Text style={[styles.label]} numberOfLines={1}>
-                            {this.getLabel()}
+            <TouchableOpacity onPress={this.onPress} activeOpacity={0.6} style={[styles.container]}>
+                <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
+                <View style={[AppStyles.flex3, AppStyles.centerContent]}>
+                    <Text style={[styles.label]} numberOfLines={1}>
+                        {this.getLabel()}
+                    </Text>
+                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                        <Text style={[styles.description]} numberOfLines={1}>
+                            {this.getDescription()}
                         </Text>
-                        <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                            <Text style={[styles.description]} numberOfLines={1}>
-                                {this.getDescription()}
-                            </Text>
 
-                            {this.renderMemoIcon()}
-                        </View>
+                        {this.renderMemoIcon()}
                     </View>
-                    <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>
-                        {this.renderRightPanel()}
-                    </View>
+                </View>
+                <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>
+                    {this.renderRightPanel()}
                 </View>
             </TouchableOpacity>
         );

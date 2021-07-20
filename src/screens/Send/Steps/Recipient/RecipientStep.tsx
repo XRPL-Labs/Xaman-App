@@ -59,8 +59,8 @@ class RecipientStep extends Component<Props, State> {
             isSearching: false,
             isLoading: false,
             searchText: '',
-            accounts: AccountRepository.getAccounts().snapshot(),
-            contacts: ContactRepository.getContacts().snapshot(),
+            accounts: AccountRepository.getAccounts({ hidden: false }).sorted([['order', false]]),
+            contacts: ContactRepository.getContacts(),
             dataSource: [],
         };
 
@@ -99,6 +99,7 @@ class RecipientStep extends Component<Props, State> {
                         address: to,
                         tag,
                         source: accountInfo.source,
+                        kycApproved: accountInfo.kycApproved,
                     },
                 ]),
                 isSearching: false,
@@ -164,7 +165,7 @@ class RecipientStep extends Component<Props, State> {
                         name: item.name,
                         address: item.address,
                         tag: item.destinationTag,
-                        source: 'internal:contacts',
+                        source: 'contacts',
                     });
                 }
             });
@@ -178,7 +179,7 @@ class RecipientStep extends Component<Props, State> {
                     searchResult.push({
                         name: item.label,
                         address: item.address,
-                        source: 'internal:accounts',
+                        source: 'accounts',
                     });
                 }
             });
@@ -212,6 +213,7 @@ class RecipientStep extends Component<Props, State> {
                                         address: element.account,
                                         source: element.source,
                                         tag: element.tag,
+                                        kycApproved: element.kycApproved,
                                     });
                                 });
                             }
@@ -286,7 +288,7 @@ class RecipientStep extends Component<Props, State> {
             dataSource.push({
                 title: Localize.t('account.myAccounts'),
                 data: flatMap(myAccountList, (a) => {
-                    return { name: a.label, address: a.address, source: 'internal:accounts' };
+                    return { name: a.label, address: a.address };
                 }),
             });
         }
@@ -304,7 +306,6 @@ class RecipientStep extends Component<Props, State> {
                         name: a.name,
                         address: a.address,
                         tag: a.destinationTag,
-                        source: 'internal:contacts',
                     };
                 }),
             });
@@ -317,6 +318,10 @@ class RecipientStep extends Component<Props, State> {
 
     showEnterDestinationTag = () => {
         const { setDestination, destination, goNext } = this.context;
+
+        if (!destination) {
+            return;
+        }
 
         Navigator.showOverlay(
             AppScreens.Overlay.EnterDestinationTag,
@@ -349,14 +354,23 @@ class RecipientStep extends Component<Props, State> {
         const { setDestination } = this.context;
 
         setDestination(undefined);
+    };
 
-        this.setState({
-            searchText: '',
-        });
+    resetResult = () => {
+        const { setDestination } = this.context;
+
+        setDestination(undefined);
+
+        this.setState(
+            {
+                searchText: '',
+            },
+            this.setDefaultDataSource,
+        );
     };
 
     checkAndNext = async () => {
-        const { setDestination, setDestinationInfo, amount, currency, destination, source, goNext } = this.context;
+        const { setDestinationInfo, amount, currency, destination, source, goNext } = this.context;
 
         this.setState({
             isLoading: true,
@@ -386,12 +400,7 @@ class RecipientStep extends Component<Props, State> {
                         buttons: [
                             {
                                 text: Localize.t('global.back'),
-                                onPress: () => {
-                                    setDestination(undefined);
-                                    this.setState({
-                                        searchText: '',
-                                    });
-                                },
+                                onPress: this.clearDestination,
                                 type: 'dismiss',
                                 light: false,
                             },
@@ -452,12 +461,16 @@ class RecipientStep extends Component<Props, State> {
                 const destinationLines = await LedgerService.getAccountLines(destination.address);
                 const { lines } = destinationLines;
 
-                const haveSameTrustLine =
+                const haveProperTrustLine =
                     findIndex(lines, (l: any) => {
-                        return l.currency === currency.currency.currency && l.account === currency.currency.issuer;
+                        return (
+                            l.currency === currency.currency.currency &&
+                            l.account === currency.currency.issuer &&
+                            l.limit > 0
+                        );
                     }) !== -1;
 
-                if (!haveSameTrustLine && currency.currency.issuer !== destination.address) {
+                if (!haveProperTrustLine && currency.currency.issuer !== destination.address) {
                     Navigator.showAlertModal({
                         type: 'error',
                         text: Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine'),
@@ -502,7 +515,7 @@ class RecipientStep extends Component<Props, State> {
                     buttons: [
                         {
                             text: Localize.t('global.back'),
-                            onPress: this.clearDestination,
+                            onPress: this.resetResult,
                             type: 'dismiss',
                             light: false,
                         },
@@ -520,20 +533,23 @@ class RecipientStep extends Component<Props, State> {
             }
 
             if (destinationInfo.risk === 'CONFIRMED') {
-                Navigator.showAlertModal({
-                    type: 'error',
-                    title: Localize.t('global.critical'),
-                    text: Localize.t('send.destinationIsConfirmedAsScam'),
-
-                    buttons: [
-                        {
-                            text: Localize.t('global.back'),
-                            onPress: this.clearDestination,
-                            type: 'dismiss',
-                            light: false,
+                Navigator.showOverlay(
+                    AppScreens.Overlay.FlaggedDestination,
+                    {
+                        overlay: {
+                            handleKeyboardEvents: true,
                         },
-                    ],
-                });
+                        layout: {
+                            backgroundColor: 'transparent',
+                            componentBackgroundColor: 'transparent',
+                        },
+                    },
+                    {
+                        destination: destination.address,
+                        onContinue: goNext,
+                        onDismissed: this.resetResult,
+                    },
+                );
 
                 // don't move to next step
                 return;
@@ -601,7 +617,6 @@ class RecipientStep extends Component<Props, State> {
     };
 
     renderSectionHeader = ({ section: { title } }: any) => {
-        const { setDestination } = this.context;
         const { dataSource } = this.state;
 
         if (title === Localize.t('send.searchResults')) {
@@ -614,16 +629,7 @@ class RecipientStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex1]}>
                         <Button
-                            onPress={() => {
-                                // clear search text
-                                this.setState({
-                                    searchText: '',
-                                });
-                                // clear the destination if any set
-                                setDestination(undefined);
-                                // set the default source
-                                this.setDefaultDataSource();
-                            }}
+                            onPress={this.resetResult}
                             style={styles.clearSearchButton}
                             light
                             label={Localize.t('global.clearSearch')}
@@ -655,6 +661,7 @@ class RecipientStep extends Component<Props, State> {
                 recipient={item}
                 selected={selected}
                 showTag={false}
+                showSource
                 onPress={() => {
                     if (!selected) {
                         setDestination({

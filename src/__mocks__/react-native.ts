@@ -6,9 +6,9 @@ const crypto = require('crypto');
 ReactNative.NativeModules.CryptoModule = {
     randomKeySync: jest.fn((len: number) => crypto.randomBytes(len).toString('hex').toUpperCase()),
     randomKey: jest.fn((len: number) => Promise.resolve(crypto.randomBytes(len).toString('hex').toUpperCase())),
-    sha512: jest.fn(value => Promise.resolve(crypto.createHash('sha512').update(value).digest('hex'))),
-    sha256: jest.fn(value => Promise.resolve(crypto.createHash('sha256').update(value).digest('hex'))),
-    sha1: jest.fn(value => Promise.resolve(crypto.createHash('sha1').update(value).digest('hex'))),
+    sha512: jest.fn((value) => Promise.resolve(crypto.createHash('sha512').update(value).digest('hex'))),
+    sha256: jest.fn((value) => Promise.resolve(crypto.createHash('sha256').update(value).digest('hex'))),
+    sha1: jest.fn((value) => Promise.resolve(crypto.createHash('sha1').update(value).digest('hex'))),
     hmac256: jest.fn((value, key) =>
         Promise.resolve(crypto.createHmac('sha256', Buffer.from(key, 'hex')).update(value).digest('hex')),
     ),
@@ -57,9 +57,13 @@ ReactNative.NativeModules.AppUpdateModule = {
 };
 
 ReactNative.NativeModules.SharedPreferencesModule = {
-    get: jest.fn(key => Promise.resolve('value')),
+    get: jest.fn((key) => Promise.resolve('value')),
     set: jest.fn((key, value) => Promise.resolve(true)),
-    del: jest.fn(key => Promise.resolve(true)),
+    del: jest.fn((key) => Promise.resolve(true)),
+};
+
+ReactNative.NativeModules.Toast = {
+    showWithGravity: jest.fn((message: string, duration: any, gravity: number) => true),
 };
 
 module.exports = ReactNative;

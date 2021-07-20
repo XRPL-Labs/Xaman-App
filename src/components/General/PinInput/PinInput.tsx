@@ -143,16 +143,6 @@ class PinInput extends Component<Props, State> {
             );
         }
 
-        let props = {};
-
-        // ios
-        if (Platform.OS === 'ios') {
-            props = { display: 'none' };
-        } else {
-            // android
-            props = { style: styles.hiddenInput };
-        }
-
         return (
             <View style={[styles.container]}>
                 <TextInput
@@ -169,8 +159,8 @@ class PinInput extends Component<Props, State> {
                     autoCorrect={false}
                     secureTextEntry
                     value={code}
-                    // eslint-disable-next-line
-                    {...props}
+                    // @ts-ignore
+                    display="none"
                 />
                 <View style={[styles.containerPin]}>{pins}</View>
             </View>

@@ -151,7 +151,10 @@ class OfferCreate extends BaseTransaction {
         const takerGot = find(balanceChanges, (o) => o.action === 'DEC');
 
         if (!takerGot) {
-            return this.TakerGets;
+            return {
+                ...this.TakerGets,
+                value: '0',
+            };
         }
 
         //  remove fee from end result if xrp
@@ -172,7 +175,10 @@ class OfferCreate extends BaseTransaction {
         const takerPaid = find(balanceChanges, (o) => o.action === 'INC');
 
         if (!takerPaid) {
-            return this.TakerPays;
+            return {
+                ...this.TakerPays,
+                value: '0',
+            };
         }
 
         //  remove fee from end result if xrp and own offer tx

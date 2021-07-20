@@ -1,5 +1,6 @@
-import React, { PureComponent } from 'react';
-import { View, Text, TouchableOpacity, Platform, ViewStyle } from 'react-native';
+import isEqual from 'lodash/isEqual';
+import React, { Component } from 'react';
+import { View, Text, TouchableOpacity, ViewStyle } from 'react-native';
 
 import { Avatar, Badge, Icon, LoadingIndicator } from '@components/General';
 
@@ -15,6 +16,7 @@ export type RecipientType = {
     tag?: number;
     name: string;
     source?: string;
+    kycApproved?: boolean;
 };
 
 interface Props {
@@ -25,22 +27,34 @@ interface Props {
     showMoreButton?: boolean;
     showAvatar?: boolean;
     showTag?: boolean;
+    showSource?: boolean;
     onPress?: () => void;
     onMorePress?: () => void;
 }
 
 /* Component ==================================================================== */
-class RecipientElement extends PureComponent<Props> {
+class RecipientElement extends Component<Props> {
     static defaultProps = {
         showMoreButton: false,
         showAvatar: true,
         showTag: true,
+        showSource: false,
     };
+
+    shouldComponentUpdate(nextProps: Props) {
+        const { recipient, isLoading, selected } = this.props;
+
+        return (
+            !isEqual(nextProps.recipient, recipient) ||
+            !isEqual(nextProps.isLoading, isLoading) ||
+            !isEqual(nextProps.selected, selected)
+        );
+    }
 
     onPress = () => {
         const { onPress } = this.props;
 
-        if (onPress && typeof onPress === 'function') {
+        if (typeof onPress === 'function') {
             onPress();
         }
     };
@@ -48,95 +62,121 @@ class RecipientElement extends PureComponent<Props> {
     onMorePress = () => {
         const { onMorePress } = this.props;
 
-        if (onMorePress && typeof onMorePress === 'function') {
+        if (typeof onMorePress === 'function') {
             onMorePress();
         }
     };
 
-    getBadge = () => {
-        const { recipient } = this.props;
+    renderSource = () => {
+        const { recipient, showSource } = this.props;
 
-        if (recipient.source) {
-            const source = recipient.source?.replace('internal:', '').replace('.com', '');
-
+        if (recipient.source && showSource) {
             // @ts-ignore
-            return <Badge type={source} />;
+            return <Badge type={recipient.source} />;
         }
 
         return null;
     };
 
-    getAvatar = () => {
+    renderAvatar = () => {
         const { recipient, showAvatar } = this.props;
 
         if (!showAvatar) return null;
-        return <Avatar source={{ uri: `https://xumm.app/avatar/${recipient.address}_180_50.png` }} />;
+
+        const address = recipient.address || 'rxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+
+        let badge = undefined as any;
+        if (recipient.kycApproved) {
+            badge = 'IconCheckXumm';
+        }
+
+        return <Avatar source={{ uri: `https://xumm.app/avatar/${address}_180_50.png` }} badge={badge} border />;
+    };
+
+    renderName = () => {
+        const { recipient, selected, isLoading } = this.props;
+
+        if (isLoading) {
+            return (
+                <>
+                    <Text style={styles.nameText}>{Localize.t('global.loading')}... </Text>
+                    <LoadingIndicator />
+                </>
+            );
+        }
+
+        return (
+            <Text
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                style={[styles.nameText, selected ? styles.selectedText : null]}
+            >
+                {recipient.name || Localize.t('global.noNameFound')}
+            </Text>
+        );
+    };
+
+    renderAddress = () => {
+        const { recipient, selected } = this.props;
+
+        return (
+            <Text style={[styles.addressText, selected ? styles.selectedText : null]}>
+                {recipient.address || 'rxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}
+            </Text>
+        );
+    };
+
+    renderDestinationTag = () => {
+        const { recipient, showTag } = this.props;
+
+        if (!recipient.tag || !showTag) return null;
+
+        return (
+            <View style={styles.destinationTagContainer}>
+                <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
+                    {Localize.t('global.destinationTag')}: <Text style={AppStyles.colorBlue}>{recipient.tag}</Text>
+                </Text>
+            </View>
+        );
+    };
+
+    renderActions = () => {
+        const { showMoreButton } = this.props;
+
+        if (!showMoreButton) return null;
+
+        return (
+            <TouchableOpacity
+                onPress={this.onMorePress}
+                activeOpacity={0.7}
+                style={[AppStyles.flex1, AppStyles.rightAligned, AppStyles.centerContent]}
+            >
+                <Icon name="IconMoreVertical" size={30} style={AppStyles.imgColorGrey} />
+            </TouchableOpacity>
+        );
     };
 
     render() {
-        const { recipient, selected, showMoreButton, showTag, isLoading, containerStyle, onPress } = this.props;
-
-        const badge = this.getBadge();
-        const avatar = this.getAvatar();
+        const { recipient, selected, containerStyle, onPress } = this.props;
 
         return (
             <TouchableOpacity
                 testID={`recipient-${recipient.address}`}
                 activeOpacity={onPress ? 0.7 : 1}
                 onPress={this.onPress}
-                style={styles.touchRow}
+                style={[styles.container, selected && styles.containerSelected, containerStyle]}
                 key={recipient.id}
             >
-                <View style={[styles.itemRow, selected && styles.itemSelected, containerStyle]}>
-                    {avatar}
-
-                    {/* eslint-disable-next-line react-native/no-inline-styles */}
-                    <View style={{ paddingLeft: 10 }}>
-                        <View style={AppStyles.row}>
-                            <Text
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                style={[styles.title, selected ? styles.selectedText : null]}
-                            >
-                                {isLoading ? (
-                                    Platform.OS === 'ios' ? (
-                                        <>
-                                            <Text>Loading </Text>
-                                            <LoadingIndicator />
-                                        </>
-                                    ) : (
-                                        'Loading...'
-                                    )
-                                ) : (
-                                    recipient.name || Localize.t('global.noNameFound')
-                                )}
-                            </Text>
-                            {badge && badge}
-                        </View>
-                        <Text style={[styles.subtitle, selected ? styles.selectedText : null]}>
-                            {recipient.address || 'rxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}
-                        </Text>
-
-                        {!!recipient.tag && showTag && (
-                            <View style={styles.destinationTagContainer}>
-                                <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
-                                    {Localize.t('global.destinationTag')}:{' '}
-                                    <Text style={AppStyles.colorBlue}>{recipient.tag}</Text>
-                                </Text>
-                            </View>
-                        )}
+                {this.renderAvatar()}
+                <View style={styles.centerContent}>
+                    <View style={AppStyles.row}>
+                        {this.renderName()}
+                        {this.renderSource()}
                     </View>
-
-                    {showMoreButton && (
-                        <TouchableOpacity
-                            onPress={this.onMorePress}
-                            activeOpacity={0.7}
-                            style={[AppStyles.flex1, AppStyles.rightAligned, AppStyles.centerContent]}
-                        >
-                            <Icon name="IconMoreVertical" size={30} style={AppStyles.imgColorGrey} />
-                        </TouchableOpacity>
-                    )}
+                    {this.renderAddress()}
+                    {this.renderDestinationTag()}
                 </View>
+                {this.renderActions()}
             </TouchableOpacity>
         );
     }

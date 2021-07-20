@@ -12,6 +12,7 @@ import { AppScreens } from '@common/constants';
 import { Button, Spacer, Icon } from '@components/General';
 import Localize from '@locale';
 
+import { Keyboard } from '@common/helpers/keyboard';
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -124,11 +125,12 @@ class ConfirmDestinationTagModal extends Component<Props, State> {
         });
 
         return (
-            <Animated.View
-                onStartShouldSetResponder={() => true}
-                style={[styles.container, { backgroundColor: interpolateColor }]}
-            >
-                <Animated.View style={[styles.visibleContent, { transform, opacity: this.animatedOpacity }]}>
+            <Animated.View style={[styles.container, { backgroundColor: interpolateColor }]}>
+                <Animated.View
+                    onResponderRelease={() => Keyboard.dismiss()}
+                    onStartShouldSetResponder={() => true}
+                    style={[styles.visibleContent, { transform, opacity: this.animatedOpacity }]}
+                >
                     <View style={[AppStyles.centerAligned]}>
                         <Icon style={styles.iconWarning} name="IconInfo" size={60} />
                     </View>

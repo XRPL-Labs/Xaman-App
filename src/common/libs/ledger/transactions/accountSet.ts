@@ -50,7 +50,7 @@ class AccountSet extends BaseTransaction {
     get Domain(): string {
         const domain = get(this, ['tx', 'Domain'], undefined);
         if (domain) {
-            return HexEncoding.toString(domain);
+            return HexEncoding.toUTF8(domain);
         }
         return domain;
     }

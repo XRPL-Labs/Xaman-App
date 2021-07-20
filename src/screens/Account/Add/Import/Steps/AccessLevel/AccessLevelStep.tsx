@@ -68,19 +68,17 @@ class AccessLevelStep extends Component<Props, State> {
                 <View style={[AppStyles.contentContainer, AppStyles.centerContent, AppStyles.paddingSml]}>
                     <RadioButton
                         testID="full-access-radio-button"
-                        onPress={() => {
-                            this.onRadioButtonPress(AccessLevels.Full);
-                        }}
+                        onPress={this.onRadioButtonPress}
                         label={Localize.t('account.fullAccess')}
+                        value={AccessLevels.Full}
                         description={Localize.t('account.fullAccessDesc')}
                         checked={account.accessLevel === AccessLevels.Full}
                     />
                     <RadioButton
                         testID="readonly-radio-button"
-                        onPress={() => {
-                            this.onRadioButtonPress(AccessLevels.Readonly);
-                        }}
+                        onPress={this.onRadioButtonPress}
                         label={Localize.t('account.readOnly')}
+                        value={AccessLevels.Readonly}
                         description={Localize.t('account.readOnlyDesc')}
                         checked={account.accessLevel === AccessLevels.Readonly}
                     />

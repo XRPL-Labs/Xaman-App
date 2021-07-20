@@ -14,14 +14,18 @@ import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 
 import Localize from '@locale';
 
+import styles from './styles';
+
 /* Types ==================================================================== */
 interface Props {
     testID?: string;
     value: number | string;
-    currency?: string;
+    postfix?: string;
     prefix?: string | (() => React.ReactNode);
     style?: TextStyle | TextStyle[];
-    currencyStyle?: TextStyle | TextStyle[];
+    postfixStyle?: TextStyle | TextStyle[];
+    discreet?: boolean;
+    discreetStyle?: TextStyle | TextStyle[];
 }
 
 interface State {
@@ -45,10 +49,14 @@ class AmountText extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        const { value } = this.props;
+        const { value, discreet } = this.props;
         const { showOriginalValue } = this.state;
 
-        if (nextProps.value !== value || nextState.showOriginalValue !== showOriginalValue) {
+        if (
+            nextProps.value !== value ||
+            nextState.showOriginalValue !== showOriginalValue ||
+            nextProps.discreet !== discreet
+        ) {
             return true;
         }
 
@@ -159,51 +167,64 @@ class AmountText extends Component<Props, State> {
     };
 
     getValue = () => {
+        const { style, discreet, discreetStyle } = this.props;
         const { value, originalValue, showOriginalValue } = this.state;
 
-        if (showOriginalValue) {
-            return Localize.formatNumber(originalValue);
+        let showValue = '';
+
+        if (discreet) {
+            showValue = '••••••••';
+        } else {
+            showValue = showOriginalValue ? Localize.formatNumber(originalValue) : value;
         }
 
-        return value;
+        return (
+            <Text numberOfLines={1} style={[style, discreet && discreetStyle]}>
+                {showValue}
+            </Text>
+        );
     };
 
-    getCurrency = () => {
-        const { currency } = this.props;
+    getPostfix = () => {
+        const { postfix, style, postfixStyle } = this.props;
 
         // if currency passed then include it in the content
-        if (currency) {
-            return NormalizeCurrencyCode(currency);
+        if (typeof postfix === 'string') {
+            return (
+                <Text numberOfLines={1} style={[style, postfixStyle]}>
+                    {' '}
+                    {NormalizeCurrencyCode(postfix)}
+                </Text>
+            );
         }
 
-        return '';
+        return null;
     };
 
     getPrefix = () => {
-        const { prefix } = this.props;
+        const { prefix, style } = this.props;
 
         switch (typeof prefix) {
             case 'string':
-                return `${prefix}`;
+                return (
+                    <Text numberOfLines={1} style={[style]}>
+                        {prefix}
+                    </Text>
+                );
+
             case 'function':
                 return prefix();
             default:
-                return '';
+                return null;
         }
     };
 
     render() {
-        const { style, currencyStyle } = this.props;
-
         return (
-            <Pressable onPress={this.onPress}>
-                <Text numberOfLines={1} style={style}>
-                    {this.getPrefix()}
-                    {this.getValue()}{' '}
-                    <Text numberOfLines={1} style={currencyStyle || style}>
-                        {this.getCurrency()}
-                    </Text>
-                </Text>
+            <Pressable onPress={this.onPress} style={styles.container}>
+                {this.getPrefix()}
+                {this.getValue()}
+                {this.getPostfix()}
             </Pressable>
         );
     }

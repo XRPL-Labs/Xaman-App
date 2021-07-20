@@ -17,7 +17,7 @@ import { LedgerService, StyleService } from '@services';
 import { SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
 
 // components
-import { Footer, Button, Icon, Spacer } from '@components/General';
+import { Footer, Button, Icon, Spacer, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
@@ -131,7 +131,7 @@ class SubmitModal extends Component<Props, State> {
                         )}
                     </View>
                     <View style={[AppStyles.flex2]}>
-                        <Image style={styles.loaderStyle} source={require('@common/assets/loader.gif')} />
+                        <LoadingIndicator size="large" />
                         <Spacer size={20} />
                         <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
                             {Localize.t('send.submittingToLedger')}

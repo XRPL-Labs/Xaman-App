@@ -73,10 +73,11 @@ export interface State {
 class ExchangeView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Exchange;
 
-    timeout: any;
-    sequence: number;
-    ledgerExchange: LedgerExchange;
-    amountInput: React.RefObject<typeof AmountInput | null>;
+    private timeout: any;
+    private sequence: number;
+    private ledgerExchange: LedgerExchange;
+    private amountInput: React.RefObject<typeof AmountInput | null>;
+    private mounted: boolean;
 
     static options() {
         return {
@@ -106,14 +107,26 @@ class ExchangeView extends Component<Props, State> {
         this.sequence = 0;
 
         this.amountInput = React.createRef();
+
+        this.mounted = true;
     }
 
     componentDidMount() {
+        this.mounted = true;
+
         InteractionManager.runAfterInteractions(() => {
-            this.ledgerExchange.initialize().then(() => {
-                this.checkLiquidity();
-            });
+            if (this.ledgerExchange) {
+                this.ledgerExchange.initialize().then(this.checkLiquidity);
+            }
         });
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
+
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+        }
     }
 
     checkLiquidity = async () => {
@@ -121,9 +134,9 @@ class ExchangeView extends Component<Props, State> {
 
         clearTimeout(this.timeout);
 
-        if (!this.ledgerExchange) return;
-
         this.timeout = setTimeout(() => {
+            if (!this.ledgerExchange || !this.mounted) return;
+
             // increase sequence
             this.sequence += 1;
             // get a copy of sequence
@@ -137,16 +150,21 @@ class ExchangeView extends Component<Props, State> {
                 .getLiquidity(direction, Number(amount))
                 .then((res) => {
                     // this will make sure the latest call will apply
-                    if (sequence === this.sequence && res) {
+                    if (sequence === this.sequence && res && this.mounted) {
                         this.setState({
                             liquidity: res,
                         });
                     }
                 })
+                .catch(() => {
+                    // ignore
+                })
                 .finally(() => {
-                    this.setState({
-                        isLoading: false,
-                    });
+                    if (this.mounted) {
+                        this.setState({
+                            isLoading: false,
+                        });
+                    }
                 });
         }, 500);
     };
@@ -167,11 +185,10 @@ class ExchangeView extends Component<Props, State> {
         this.setState(
             {
                 direction: direction === 'buy' ? 'sell' : 'buy',
-                isLoading: true,
+                amount: '',
+                liquidity: undefined,
             },
-            () => {
-                this.checkLiquidity();
-            },
+            this.checkLiquidity,
         );
     };
 
@@ -349,9 +366,7 @@ class ExchangeView extends Component<Props, State> {
             {
                 amount,
             },
-            () => {
-                this.checkLiquidity();
-            },
+            this.checkLiquidity,
         );
     };
 
@@ -370,7 +385,28 @@ class ExchangeView extends Component<Props, State> {
         return availableBalance;
     };
 
+    applyAllBalance = () => {
+        const { trustLine } = this.props;
+        const { direction, sourceAccount } = this.state;
+
+        let availableBalance = '0';
+
+        if (direction === 'sell') {
+            availableBalance = new BigNumber(sourceAccount.availableBalance).decimalPlaces(6).toString();
+        } else {
+            availableBalance = new BigNumber(trustLine.balance).decimalPlaces(8).toString();
+        }
+
+        this.setState(
+            {
+                amount: availableBalance,
+            },
+            this.checkLiquidity,
+        );
+    };
+
     renderBottomContainer = () => {
+        const { trustLine } = this.props;
         const { direction, liquidity, amount, isPreparing, isLoading } = this.state;
 
         if (isLoading || !liquidity) {
@@ -421,7 +457,10 @@ class ExchangeView extends Component<Props, State> {
         return (
             <>
                 <Text style={[styles.subLabel, AppStyles.textCenterAligned]}>
-                    {Localize.t('exchange.exchangeRate', { exchangeRate: Localize.formatNumber(Number(exchangeRate)) })}
+                    {Localize.t('exchange.exchangeRateInToken', {
+                        exchangeRate: Localize.formatNumber(Number(exchangeRate)),
+                        currency: NormalizeCurrencyCode(trustLine.currency.currency),
+                    })}
                 </Text>
                 <Spacer size={40} />
                 <Button
@@ -432,23 +471,6 @@ class ExchangeView extends Component<Props, State> {
                 />
             </>
         );
-    };
-
-    applyAllBalance = () => {
-        const { trustLine } = this.props;
-        const { direction, sourceAccount } = this.state;
-
-        let availableBalance = '0';
-
-        if (direction === 'sell') {
-            availableBalance = new BigNumber(sourceAccount.availableBalance).decimalPlaces(6).toString();
-        } else {
-            availableBalance = new BigNumber(trustLine.balance).decimalPlaces(8).toString();
-        }
-
-        this.setState({
-            amount: availableBalance,
-        });
     };
 
     render() {
@@ -489,7 +511,7 @@ class ExchangeView extends Component<Props, State> {
                             )}
                         </View>
                         <View style={[AppStyles.flex2]}>
-                            <Image style={styles.loaderStyle} source={require('@common/assets/loader.gif')} />
+                            <LoadingIndicator size="large" />
                             <Spacer size={20} />
                             <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
                                 {Localize.t('send.submittingToLedger')}
@@ -522,7 +544,6 @@ class ExchangeView extends Component<Props, State> {
                 />
                 <View style={[styles.contentContainer]}>
                     {/* From part */}
-
                     <View style={styles.fromContainer}>
                         <View style={AppStyles.row}>
                             <View style={[AppStyles.row, AppStyles.flex1]}>

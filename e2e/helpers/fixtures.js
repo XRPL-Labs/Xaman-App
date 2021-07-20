@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const RippledWsClient = require('rippled-ws-client');
+const { XrplClient } = require('xrpl-client');
 const AccountLib = require('xrpl-accountlib');
 
 // generate family seed
@@ -57,33 +57,31 @@ const activateAccount = async (address) => {
         Fee: '1000',
     };
 
-    return new RippledWsClient('wss://s.altnet.rippletest.net:51233')
-        .then(async (Connection) => {
-            const accountInfo = await Connection.send({
-                command: 'account_info',
-                account: fundedAccount.address,
-                ledger_index: 'validated',
-                signer_lists: true,
-            });
+    const Connection = new XrplClient('wss://s.altnet.rippletest.net:51233');
 
-            Object.assign(Transaction, { Sequence: accountInfo.account_data.Sequence });
+    await Connection.ready();
 
-            const signedObject = AccountLib.sign(Transaction, AccountLib.derive.familySeed(fundedAccount.secret));
+    const accountInfo = await Connection.send({
+        command: 'account_info',
+        account: fundedAccount.address,
+        ledger_index: 'validated',
+        signer_lists: true,
+    });
 
-            Connection.send({
-                command: 'submit',
-                tx_blob: signedObject.signedTransaction,
-            })
-                .then(() => {
-                    Connection.close();
-                })
-                .catch((SendError) => {
-                    Connection.close();
-                    console.error(SendError);
-                });
+    Object.assign(Transaction, { Sequence: accountInfo.account_data.Sequence });
+
+    const signedObject = AccountLib.sign(Transaction, AccountLib.derive.familySeed(fundedAccount.secret));
+
+    await Connection.send({
+        command: 'submit',
+        tx_blob: signedObject.signedTransaction,
+    })
+        .then(() => {
+            Connection.close();
         })
-        .catch((ConnectionError) => {
-            console.error(ConnectionError);
+        .catch((SendError) => {
+            Connection.close();
+            console.error(SendError);
         });
 };
 

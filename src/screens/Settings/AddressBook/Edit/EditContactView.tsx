@@ -150,7 +150,7 @@ class EditContactView extends Component<Props, State> {
         getAccountName.cache.set(
             `${address}${tag || ''}`,
             new Promise((resolve) => {
-                resolve({ name, source: 'internal:contacts' });
+                resolve({ name, source: 'contacts' });
             }),
         );
 

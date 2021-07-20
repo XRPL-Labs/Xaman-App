@@ -84,7 +84,6 @@ class SearchBar extends PureComponent<Props, State> {
                         value={value}
                         placeholder={placeholder}
                         placeholderTextColor={StyleService.value('$textSecondary')}
-                        underlineColorAndroid="rgba(0,0,0,0)"
                         autoCapitalize="none"
                         autoCorrect={false}
                     />

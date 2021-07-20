@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, assign } from 'lodash';
 import { Platform, InteractionManager } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 
@@ -8,7 +8,7 @@ import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
 
-import NavigationService from '@services/NavigationService';
+import NavigationService, { ComponentTypes, RootType } from '@services/NavigationService';
 import StyleService from '@services/StyleService';
 
 import AppFonts from '@theme/fonts';
@@ -105,7 +105,7 @@ const Navigator = {
                     children: [
                         {
                             component: {
-                                name: tab === 'Actions' ? AppScreens.Placeholder : get(AppScreens.TabBar, tab),
+                                name: tab === 'Actions' ? AppScreens.Global.Placeholder : get(AppScreens.TabBar, tab),
                                 id: get(AppScreens.TabBar, tab),
                             },
                         },
@@ -134,7 +134,7 @@ const Navigator = {
             Navigation.setRoot({
                 root: {
                     bottomTabs: {
-                        id: 'DefaultStack',
+                        id: RootType.DefaultRoot,
                         children: bottomTabsChildren,
                     },
                 },
@@ -171,7 +171,7 @@ const Navigator = {
                 component: {
                     name: nextScreen,
                     id: nextScreen,
-                    passProps,
+                    passProps: assign(passProps, { componentType: ComponentTypes.Screen }),
                     options,
                 },
             });
@@ -197,7 +197,7 @@ const Navigator = {
                 component: {
                     name: overlay,
                     id: overlay,
-                    passProps,
+                    passProps: assign(passProps, { componentType: ComponentTypes.Overlay }),
                     options,
                 },
             });
@@ -206,12 +206,12 @@ const Navigator = {
     },
 
     dismissOverlay() {
-        const currentOverlay = NavigationService.pullCurrentOverlay();
+        const currentOverlay = NavigationService.getCurrentOverlay();
         return Navigation.dismissOverlay(currentOverlay);
     },
 
     showModal(modal: any, options = {}, passProps = {}) {
-        const currentScreen = NavigationService.getCurrentScreen();
+        const currentScreen = NavigationService.getCurrentModal();
         if (currentScreen !== modal) {
             return Navigation.showModal({
                 stack: {
@@ -221,7 +221,7 @@ const Navigator = {
                                 name: modal,
                                 id: modal,
                                 options,
-                                passProps,
+                                passProps: assign(passProps, { componentType: ComponentTypes.Modal }),
                             },
                         },
                     ],
@@ -232,9 +232,9 @@ const Navigator = {
         return false;
     },
 
-    dismissModal(componentId?: string) {
-        const currentScreen = componentId || NavigationService.getCurrentScreen();
-        return Navigation.dismissModal(currentScreen);
+    dismissModal() {
+        const currentModal = NavigationService.getCurrentModal();
+        return Navigation.dismissModal(currentModal);
     },
 
     setBadge(tab: string, badge: string) {
@@ -246,7 +246,7 @@ const Navigator = {
     },
 
     changeSelectedTabIndex(index: number) {
-        Navigation.mergeOptions('DefaultStack', {
+        Navigation.mergeOptions(RootType.DefaultRoot, {
             bottomTabs: {
                 currentTabIndex: index,
             },
@@ -257,7 +257,7 @@ const Navigator = {
         type: 'success' | 'info' | 'warning' | 'error';
         text: string;
         title?: string;
-        buttons: { text: string; onPress: () => void; type?: 'continue' | 'dismiss'; light?: boolean }[];
+        buttons: { text: string; onPress?: () => void; type?: 'continue' | 'dismiss'; light?: boolean }[];
         onDismissed?: () => void;
     }) {
         Navigator.showOverlay(

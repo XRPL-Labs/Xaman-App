@@ -10,7 +10,7 @@ const styles = StyleService.create({
         width: '100%',
     },
     containerSuccess: {
-        backgroundColor: '$lightGreen',
+        backgroundColor: '$background',
     },
     containerFailed: {
         backgroundColor: '$lightRed',
@@ -20,8 +20,8 @@ const styles = StyleService.create({
     },
     successImage: {
         alignSelf: 'center',
-        width: AppSizes.scale(250),
-        height: AppSizes.scale(250),
+        width: AppSizes.scale(300),
+        height: AppSizes.scale(300),
         resizeMode: 'contain',
     },
     detailsCard: {

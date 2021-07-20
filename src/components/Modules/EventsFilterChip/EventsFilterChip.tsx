@@ -1,8 +1,11 @@
 import isEqual from 'lodash/isEqual';
 import React, { Component } from 'react';
+
 import { View } from 'react-native';
 
 import { Button } from '@components/General';
+
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import Localize from '@locale';
 
@@ -62,6 +65,11 @@ class EventsFilterChip extends Component<Props> {
                     // get translation text for transaction types and expense Type
                     if (key === 'TransactionType' || key === 'ExpenseType') {
                         value = Localize.t(`global.${filters[key].toLowerCase()}`);
+                    }
+
+                    // normalize currency code
+                    if (key === 'Currency') {
+                        value = NormalizeCurrencyCode(value);
                     }
 
                     return (

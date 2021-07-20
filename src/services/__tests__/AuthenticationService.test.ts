@@ -1,8 +1,7 @@
 import AppService, { AppStateStatus } from '../AppService';
 import BackendService from '../BackendService';
-import SocketService from '../SocketService';
 import LinkingService from '../LinkingService';
-import NavigationService from '../NavigationService';
+import NavigationService, { RootType } from '../NavigationService';
 import PushNotificationsService from '../PushNotificationsService';
 import AuthenticationService from '../AuthenticationService';
 
@@ -18,11 +17,11 @@ describe('AuthenticationService', () => {
         await authenticationService.initialize();
 
         // fake the setRoot command
-        NavigationService.emit('setRoot', 'OnboardingRoot');
+        NavigationService.emit('setRoot', RootType.OnboardingRoot);
         expect(spy2).toBeCalledWith('appStateChange', AuthenticationService.onAppStateChange);
 
         // fake the setRoot command
-        NavigationService.emit('setRoot', 'DefaultStack');
+        NavigationService.emit('setRoot', RootType.DefaultRoot);
         expect(spy1).toBeCalledWith('appStateChange', AuthenticationService.onAppStateChange);
     });
 
@@ -53,7 +52,6 @@ describe('AuthenticationService', () => {
             jest.spyOn(AppService, 'checkShowChangeLog').mockImplementationOnce(promiseFn),
             jest.spyOn(AppService, 'checkAppUpdate').mockImplementationOnce(promiseFn),
             jest.spyOn(BackendService, 'ping').mockImplementationOnce(promiseFn),
-            jest.spyOn(SocketService, 'connect').mockImplementationOnce(promiseFn),
             jest.spyOn(LinkingService, 'checkInitialDeepLink').mockImplementationOnce(promiseFn),
             jest.spyOn(PushNotificationsService, 'checkInitialNotification').mockImplementationOnce(promiseFn),
         ];

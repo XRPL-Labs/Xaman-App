@@ -9,7 +9,7 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
-import NavigationService from '@services/NavigationService';
+import NavigationService, { ComponentTypes, RootType } from '@services/NavigationService';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { Navigator } from '@common/helpers/navigator';
@@ -32,7 +32,7 @@ class LinkingService extends EventEmitter {
         return new Promise<void>((resolve, reject) => {
             try {
                 NavigationService.on('setRoot', async (root: string) => {
-                    if (root === 'DefaultStack') {
+                    if (root === RootType.DefaultRoot) {
                         // Listen for deep link as the app is open
                         Linking.addEventListener('url', this.handleDeepLink);
                     }
@@ -46,7 +46,7 @@ class LinkingService extends EventEmitter {
 
     checkInitialDeepLink = () => {
         // handle if app opens with link
-        Linking.getInitialURL().then(url => {
+        Linking.getInitialURL().then((url) => {
             if (url && this.initialURL !== url) {
                 this.initialURL = url;
 
@@ -57,16 +57,41 @@ class LinkingService extends EventEmitter {
         });
     };
 
+    routeUser = async (screen: string, options: any, passProps: any, screenType?: ComponentTypes) => {
+        // close any overlay
+        const currentOverlay = NavigationService.getCurrentOverlay();
+
+        if (currentOverlay && currentOverlay !== AppScreens.Overlay.Lock) {
+            // dismiss overlay
+            await Navigator.dismissOverlay();
+        }
+
+        if (!screenType) {
+            screenType = NavigationService.getComponentType(screen);
+        }
+
+        if (screenType === ComponentTypes.Modal) {
+            setTimeout(() => {
+                Navigator.showModal(screen, options, passProps);
+            }, 10);
+        } else if (screenType === ComponentTypes.Screen) {
+            setTimeout(() => {
+                Navigator.push(screen, options, passProps);
+            });
+        }
+    };
+
     handlePayloadReference = async (uuid: string) => {
         try {
             // fetch the payload
             const payload = await Payload.from(uuid, PayloadOrigin.DEEP_LINK);
 
             // review the transaction
-            Navigator.showModal(
+            this.routeUser(
                 AppScreens.Modal.ReviewTransaction,
                 { modalPresentationStyle: 'fullScreen' },
                 { payload },
+                ComponentTypes.Modal,
             );
         } catch (e) {
             Alert.alert(Localize.t('global.error'), e.message, [{ text: 'OK' }], { cancelable: false });
@@ -84,10 +109,11 @@ class LinkingService extends EventEmitter {
                 {
                     text: Localize.t('global.submit'),
                     onPress: () => {
-                        Navigator.showModal(
+                        this.routeUser(
                             AppScreens.Modal.Submit,
                             { modalPresentationStyle: 'fullScreen' },
                             { txblob },
+                            ComponentTypes.Modal,
                         );
                     },
                     style: 'default',
@@ -99,7 +125,7 @@ class LinkingService extends EventEmitter {
 
     handleXrplDestination = async (destination: XrplDestination & PayId) => {
         if (destination.payId) {
-            Navigator.push(
+            this.routeUser(
                 AppScreens.Transaction.Payment,
                 {},
                 {
@@ -107,6 +133,7 @@ class LinkingService extends EventEmitter {
                         to: destination.payId,
                     },
                 },
+                ComponentTypes.Screen,
             );
             return;
         }
@@ -120,7 +147,7 @@ class LinkingService extends EventEmitter {
             amount = destination.amount;
         }
 
-        Navigator.push(
+        this.routeUser(
             AppScreens.Transaction.Payment,
             {},
             {
@@ -130,6 +157,7 @@ class LinkingService extends EventEmitter {
                 },
                 amount,
             },
+            ComponentTypes.Screen,
         );
     };
 
@@ -140,14 +168,14 @@ class LinkingService extends EventEmitter {
 
         let delay = 0;
         // if already in xapp try to load the xApp from notification
-        if (NavigationService.getCurrentScreen() === AppScreens.Modal.XAppBrowser) {
+        if (NavigationService.getCurrentModal() === AppScreens.Modal.XAppBrowser) {
             await Navigator.dismissModal();
             // looks like a bug in navigation library, need to add a delay before showing the modal
             delay = 300;
         }
 
         setTimeout(() => {
-            Navigator.showModal(
+            this.routeUser(
                 AppScreens.Modal.XAppBrowser,
                 {
                     modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
@@ -159,6 +187,7 @@ class LinkingService extends EventEmitter {
                     originData: { url },
                     params,
                 },
+                ComponentTypes.Modal,
             );
         }, delay);
     };
@@ -170,12 +199,13 @@ class LinkingService extends EventEmitter {
     }) => {
         const { alphabet } = parsed;
         if (alphabet) {
-            Navigator.push(
+            this.routeUser(
                 AppScreens.Account.Import,
                 {},
                 {
                     alternativeSeedAlphabet: parsed,
                 },
+                ComponentTypes.Screen,
             );
         }
     };
@@ -196,12 +226,13 @@ class LinkingService extends EventEmitter {
                         text: Localize.t('global.continue'),
                         style: 'destructive',
                         onPress: () => {
-                            Navigator.push(
+                            this.routeUser(
                                 AppScreens.Account.Import,
                                 {},
                                 {
                                     importOfflineSecretNumber: true,
                                 },
+                                ComponentTypes.Screen,
                             );
                         },
                     },

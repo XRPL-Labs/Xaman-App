@@ -11,7 +11,7 @@
 
 
 #import "Libs/Notification/LocalNotification.h"
-#import "Libs/Common/InAppPurchase.h"
+//#import "Libs/Common/InAppPurchase.h"
 
 
 #ifdef FB_SONARKIT_ENABLED
@@ -88,9 +88,9 @@ static void InitializeFlipper(UIApplication *application) {
 - (void)applicationWillResignActive:(UIApplication *)application {
   
     // prevent from showing blur view if user is purchasing
-    if([InAppPurchaseModule isUserPurchasing]){
-      return;
-    }
+    // if([InAppPurchaseModule isUserPurchasing]){
+    //      return;
+    // }
     
     self.window.backgroundColor = [UIColor clearColor];
 
@@ -114,11 +114,7 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
   
-    // ignore if blureview is not present
-    if(!blureViewActive){
-      return;
-    }
-  
+  NSLog(@"applicationDidBecomeActive");
     // grab a reference to our custom blur view
     UIView *blurEffectView = [self.window viewWithTag:1234];
 
@@ -129,8 +125,6 @@ static void InitializeFlipper(UIApplication *application) {
         // remove when finished fading
         [blurEffectView removeFromSuperview];
     }];
-  
-  blureViewActive = NO;
 }
 
 - (BOOL)application:(UIApplication *)application shouldAllowExtensionPointIdentifier:(NSString *)extensionPointIdentifier

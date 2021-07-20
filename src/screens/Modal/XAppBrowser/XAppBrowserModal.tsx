@@ -3,25 +3,40 @@
  */
 
 import { has, get, assign, toUpper } from 'lodash';
+import moment from 'moment-timezone';
 import React, { Component } from 'react';
-import { View, Text, BackHandler, Alert, InteractionManager } from 'react-native';
+import {
+    View,
+    Text,
+    BackHandler,
+    Alert,
+    InteractionManager,
+    Linking,
+    Platform,
+    NativeEventSubscription,
+} from 'react-native';
 import VeriffSdk from '@veriff/react-native-sdk';
 import { WebView } from 'react-native-webview';
 import { StringType } from 'xumm-string-decode';
+import { utils as AccountLibUtils } from 'xrpl-accountlib';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetAppVersionCode } from '@common/helpers/device';
+import { Prompt } from '@common/helpers/interface';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
+import { Destination } from '@common/libs/ledger/parser/types';
+import { AccountInfoType } from '@common/helpers/resolver';
 
 import { AppScreens } from '@common/constants';
 
 import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccessLevels, NodeChain } from '@store/types';
 
-import { SocketService, BackendService, PushNotificationsService } from '@services';
+import { SocketService, BackendService, PushNotificationsService, NavigationService } from '@services';
 
-import { Header, Button, Spacer, LoadingIndicator } from '@components/General';
+import { Button, Spacer, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
@@ -50,11 +65,25 @@ export interface State {
     appVersionCode: string;
 }
 
+export enum XAppMethods {
+    SelectDestination = 'selectDestination',
+    OpenSignRequest = 'openSignRequest',
+    PayloadResolved = 'payloadResolved',
+    XAppNavigate = 'xAppNavigate',
+    OpenBrowser = 'openBrowser',
+    TxDetails = 'txDetails',
+    KycVeriff = 'kycVeriff',
+    ScanQr = 'scanQr',
+    Close = 'close',
+}
+
 /* Component ==================================================================== */
 class XAppBrowserModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.XAppBrowser;
-    private backHandler: any;
+
     private webView: WebView;
+    private backHandler: NativeEventSubscription;
+    private lastMessageReceived: number;
 
     static options() {
         return {
@@ -75,6 +104,10 @@ class XAppBrowserModal extends Component<Props, State> {
             coreSettings: CoreRepository.getSettings(),
             appVersionCode: GetAppVersionCode(),
         };
+
+        this.backHandler = undefined;
+
+        this.lastMessageReceived = 0;
     }
 
     componentWillUnmount() {
@@ -84,33 +117,36 @@ class XAppBrowserModal extends Component<Props, State> {
     }
 
     componentDidMount() {
-        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
+        // handle back button in android
+        if (Platform.OS === 'android') {
+            this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
+        }
 
         // fetch OTT on browser start
         InteractionManager.runAfterInteractions(this.fetchOTT);
     }
 
     onClose = (data?: { refreshEvents?: boolean }) => {
+        // if refresh events flag set, publish a sign request update event
+        // this will refresh the event list
         if (get(data, 'refreshEvents', false)) {
             setTimeout(() => {
                 PushNotificationsService.emit('signRequestUpdate');
             }, 1000);
         }
 
+        // close the xApp modal
         Navigator.dismissModal();
+
         return true;
     };
 
-    onPayloadResolve = () => {
-        if (this.webView) {
-            this.webView.postMessage(JSON.stringify({ method: 'payloadResolved', reason: 'SIGNED' }));
-        }
-    };
-
-    onPayloadDecline = () => {
-        if (this.webView) {
-            this.webView.postMessage(JSON.stringify({ method: 'payloadResolved', reason: 'DECLINED' }));
-        }
+    sendEvent = (event: any) => {
+        setTimeout(() => {
+            if (this.webView) {
+                this.webView.postMessage(JSON.stringify(event));
+            }
+        }, 250);
     };
 
     handleSignRequest = async (data: any) => {
@@ -145,26 +181,57 @@ class XAppBrowserModal extends Component<Props, State> {
         }
     };
 
+    onPayloadResolve = () => {
+        this.sendEvent({ method: XAppMethods.PayloadResolved, reason: 'SIGNED' });
+    };
+
+    onPayloadDecline = () => {
+        this.sendEvent({ method: XAppMethods.PayloadResolved, reason: 'DECLINED' });
+    };
+
     onScannerRead = (data: string) => {
-        if (this.webView) {
-            this.webView.postMessage(JSON.stringify({ method: 'scanQr', qrContents: data, reason: 'SCANNED' }));
-        }
+        this.sendEvent({ method: XAppMethods.ScanQr, qrContents: data, reason: 'SCANNED' });
     };
 
     onScannerClose = () => {
-        if (this.webView) {
-            this.webView.postMessage(JSON.stringify({ method: 'scanQr', qrContents: null, reason: 'USER_CLOSE' }));
-        }
+        this.sendEvent({ method: XAppMethods.ScanQr, qrContents: null, reason: 'USER_CLOSE' });
+    };
+
+    onDestinationSelect = (destination: Destination, info: AccountInfoType) => {
+        this.sendEvent({ method: XAppMethods.SelectDestination, destination, info, reason: 'SELECTED' });
+    };
+
+    onDestinationClose = () => {
+        this.sendEvent({ method: XAppMethods.SelectDestination, destination: null, info: null, reason: 'USER_CLOSE' });
     };
 
     showScanner = () => {
         Navigator.showModal(
             AppScreens.Modal.Scan,
-            {},
+            {
+                modal: {
+                    swipeToDismiss: false,
+                },
+            },
             {
                 onRead: this.onScannerRead,
                 onClose: this.onScannerClose,
                 blackList: [StringType.XrplSecret, StringType.XummPairingToken],
+            },
+        );
+    };
+
+    showDestinationPicker = () => {
+        Navigator.showModal(
+            AppScreens.Modal.DestinationPicker,
+            {
+                modal: {
+                    swipeToDismiss: false,
+                },
+            },
+            {
+                onSelect: this.onDestinationSelect,
+                onClose: this.onDestinationClose,
             },
         );
     };
@@ -183,9 +250,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 sessionUrl,
             });
             // pass the result to the xApp
-            if (this.webView) {
-                this.webView.postMessage(JSON.stringify({ method: 'kycVeriff', result }));
-            }
+            this.sendEvent({ method: XAppMethods.KycVeriff, result });
         } catch {
             // ignore
         }
@@ -205,11 +270,118 @@ class XAppBrowserModal extends Component<Props, State> {
         );
     };
 
+    openBrowserLink = (data: any) => {
+        const { title } = this.state;
+
+        const { url } = data;
+
+        if (!url) return;
+
+        // eslint-disable-next-line no-control-regex
+        const urlRegex = new RegExp('^https://[a-zA-Z0-9][a-zA-Z0-9-.]+[a-zA-Z0-9].[a-zA-Z]{1,}[?/]{0,3}[^\r\n\t]+');
+
+        // url should be only https and contains only a domain url
+        if (!urlRegex.test(url)) return;
+
+        Prompt(
+            Localize.t('global.notice'),
+            Localize.t('global.xAppWantsToOpenURLNotice', { xapp: title, url }),
+            [
+                { text: Localize.t('global.cancel') },
+                {
+                    text: 'Open',
+                    onPress: () => {
+                        Linking.canOpenURL(url).then((supported) => {
+                            if (supported) {
+                                Linking.openURL(url);
+                            } else {
+                                Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
+                            }
+                        });
+                    },
+                    style: 'destructive',
+                },
+            ],
+            { type: 'default' },
+        );
+    };
+
+    openTxDetails = async (data: any) => {
+        const hash = get(data, 'tx');
+        const address = get(data, 'account');
+
+        // validate inputs
+        if (!AccountLibUtils.isValidAddress(address) || !new RegExp('^[A-F0-9]{64}$', 'i').test(hash)) return;
+
+        // check if account exist in xumm
+        const account = AccountRepository.findOne({ address });
+        if (!account) return;
+
+        let delay = 0;
+        if (NavigationService.getCurrentModal() === AppScreens.Transaction.Details) {
+            await Navigator.dismissModal();
+            delay = 300;
+        }
+
+        setTimeout(() => {
+            Navigator.showModal(AppScreens.Transaction.Details, {}, { hash, account, asModal: true });
+        }, delay);
+    };
+
+    handleCommand = (parsedData: any) => {
+        // record the command in active methods
+        switch (get(parsedData, 'command')) {
+            case XAppMethods.XAppNavigate:
+                this.navigateTo(parsedData);
+                break;
+            case XAppMethods.KycVeriff:
+                this.launchVeriffKYC(parsedData);
+                break;
+            case XAppMethods.OpenSignRequest:
+                this.handleSignRequest(parsedData);
+                break;
+            case XAppMethods.ScanQr:
+                this.showScanner();
+                break;
+            case XAppMethods.SelectDestination:
+                this.showDestinationPicker();
+                break;
+            case XAppMethods.Close:
+                this.onClose(parsedData);
+                break;
+            case XAppMethods.OpenBrowser:
+                this.openBrowserLink(parsedData);
+                break;
+            case XAppMethods.TxDetails:
+                this.openTxDetails(parsedData);
+                break;
+            default:
+                break;
+        }
+    };
+
     onMessage = (event: any) => {
-        const { data } = event.nativeEvent;
+        // should be at least 1500 ms delay between each message
+        if (this.lastMessageReceived) {
+            if (moment().diff(moment.unix(this.lastMessageReceived), 'millisecond') < 1500) {
+                return;
+            }
+        }
+
+        // record last message received
+        this.lastMessageReceived = moment().unix();
+
+        if (!event || typeof event !== 'object' || !event?.nativeEvent) {
+            return;
+        }
+        // get passed data
+        const data = get(event, 'nativeEvent.data');
+
+        if (!data || typeof data !== 'string') {
+            return;
+        }
 
         let parsedData;
-
         try {
             parsedData = JSON.parse(data);
         } catch {
@@ -217,29 +389,10 @@ class XAppBrowserModal extends Component<Props, State> {
             return;
         }
 
-        // ignore if no command present
-        if (!has(parsedData, 'command')) {
-            return;
-        }
-
-        switch (get(parsedData, 'command')) {
-            case 'xAppNavigate':
-                this.navigateTo(parsedData);
-                break;
-            case 'kycVeriff':
-                this.launchVeriffKYC(parsedData);
-                break;
-            case 'openSignRequest':
-                this.handleSignRequest(parsedData);
-                break;
-            case 'scanQr':
-                this.showScanner();
-                break;
-            case 'close':
-                this.onClose(parsedData);
-                break;
-            default:
-                break;
+        // ignore if no command present or the command is not in expected commands or already is the active method
+        if (has(parsedData, 'command') && Object.values(XAppMethods).includes(get(parsedData, 'command'))) {
+            // everything seems fine pass the data to the handlers
+            this.handleCommand(parsedData);
         }
     };
 
@@ -257,9 +410,17 @@ class XAppBrowserModal extends Component<Props, State> {
         const data = {
             version: appVersionCode,
             locale: Localize.getCurrentLocale(),
+            currency: coreSettings.currency,
             style: coreSettings.theme,
             nodetype: SocketService.chain,
         };
+
+        // include node endpoint if using custom node
+        if (SocketService.chain === NodeChain.Custom) {
+            assign(data, {
+                nodewss: SocketService.node,
+            });
+        }
 
         // assign origin to the headers
         if (origin) {
@@ -280,7 +441,7 @@ class XAppBrowserModal extends Component<Props, State> {
             assign(data, {
                 account: account.address,
                 accounttype: account.type,
-                accountaccess: account.accessLevel,
+                accountaccess: AccountRepository.isSignable(account) ? AccessLevels.Full : AccessLevels.Readonly,
             });
         }
 
@@ -370,7 +531,7 @@ class XAppBrowserModal extends Component<Props, State> {
     renderXApp = () => {
         return (
             <WebView
-                ref={r => {
+                ref={(r) => {
                     this.webView = r;
                 }}
                 containerStyle={styles.webViewContainer}
@@ -398,28 +559,41 @@ class XAppBrowserModal extends Component<Props, State> {
         return this.renderXApp();
     };
 
-    render() {
+    renderHeader = () => {
         const { title } = this.state;
 
         return (
-            <View testID="xapp-browser-modal" style={[styles.container]}>
-                <Header
-                    placement="left"
-                    leftComponent={{ text: title || 'XAPP' }}
-                    rightComponent={{
-                        render: () => (
-                            <Button
-                                contrast
-                                testID="close-button"
-                                numberOfLines={1}
-                                roundedSmall
-                                label={Localize.t('global.close')}
-                                onPress={this.onClose}
-                            />
-                        ),
-                    }}
-                />
+            <View style={[styles.headerContainer]}>
+                <View
+                    style={[
+                        AppStyles.flex1,
+                        AppStyles.paddingLeftSml,
+                        AppStyles.paddingRightSml,
+                        AppStyles.centerContent,
+                    ]}
+                >
+                    <Text numberOfLines={1} style={AppStyles.h5}>
+                        {title || 'XAPP'}
+                    </Text>
+                </View>
+                <View style={[AppStyles.paddingRightSml, AppStyles.rightAligned, AppStyles.centerContent]}>
+                    <Button
+                        contrast
+                        testID="close-button"
+                        numberOfLines={1}
+                        roundedSmall
+                        label={Localize.t('global.close')}
+                        onPress={this.onClose}
+                    />
+                </View>
+            </View>
+        );
+    };
 
+    render() {
+        return (
+            <View testID="xapp-browser-modal" style={[styles.container]}>
+                {this.renderHeader()}
                 {this.renderContent()}
             </View>
         );

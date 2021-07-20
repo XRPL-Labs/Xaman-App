@@ -11,6 +11,7 @@ import LedgerService from '@services/LedgerService';
 import Localize from '@locale';
 
 import Amount from '../parser/common/amount';
+import Flag from '../parser/common/flag';
 import { Destination, AmountType } from '../parser/types';
 
 import BaseTransaction from './base';
@@ -78,13 +79,22 @@ class AccountDelete extends BaseTransaction {
             if (this.Account.address === this.Destination.address) {
                 return reject(new Error(Localize.t('account.destinationAccountAndSourceCannotBeSame')));
             }
-            // check if destination is exist
+            // check if destination is exist or required destination tag flag is set
             await LedgerService.getAccountInfo(this.Destination.address)
                 /* eslint-disable-next-line */
                 .then((accountInfo: any) => {
-                    // TODO: handle errors
                     if (!accountInfo || has(accountInfo, 'error')) {
                         return reject(new Error(Localize.t('account.destinationAccountIsNotActivated')));
+                    }
+
+                    const { account_data } = accountInfo;
+
+                    if (has(account_data, ['Flags'])) {
+                        const accountFlags = new Flag('Account', account_data.Flags).parse();
+
+                        if (accountFlags.requireDestinationTag && this.Destination.tag === undefined) {
+                            return reject(new Error(Localize.t('account.destinationAddressRequiredDestinationTag')));
+                        }
                     }
                 })
                 .catch(() => {

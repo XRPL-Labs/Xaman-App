@@ -1,8 +1,14 @@
 /* eslint-disable operator-linebreak */
 
-import { Platform, ActionSheetIOS, ToastAndroid, Alert, NativeModules } from 'react-native';
+import { Platform, ActionSheetIOS, ToastAndroid, Alert, NativeModules, AlertOptions } from 'react-native';
 
-import StyleService from '@services/StyleService';
+interface PromptOptions extends AlertOptions {
+    type?: 'default' | 'plain-text';
+    defaultValue?: string;
+    keyboardType?: any;
+    style?: string;
+    placeholder?: string;
+}
 
 const Toast = (message: string, duration?: number) => {
     const toast = Platform.OS === 'android' ? ToastAndroid : NativeModules.Toast;
@@ -13,22 +19,22 @@ const Toast = (message: string, duration?: number) => {
     );
 };
 
-const ActionSheet = (options: any, callback: any) => {
-    const defaultOptions = { userInterfaceStyle: StyleService.isDarkMode() ? 'dark' : 'light' };
+const ActionSheet = (options: any, callback: any, style?: 'dark' | 'light') => {
+    const defaultOptions = { userInterfaceStyle: style || 'light' };
     const actionSheet = Platform.OS === 'android' ? NativeModules.ActionSheetAndroid : ActionSheetIOS;
     actionSheet.showActionSheetWithOptions({ ...defaultOptions, ...options }, callback);
 };
 
-const Prompt = (title: string, message: string, callbackOrButtons: any, options: any) => {
+const Prompt = (title: string, message: string, callbackOrButtons?: any, options?: PromptOptions) => {
     if (options.type === 'default') {
         // no input needed
-        Alert.alert(title, message, callbackOrButtons);
+        Alert.alert(title, message, callbackOrButtons, options);
     } else {
         // if use need to input beside alert
 
         // platform === ios
         if (Platform.OS === 'ios') {
-            Alert.prompt('title', message, callbackOrButtons, options.type, options.defaultValue, options.keyboardType);
+            Alert.prompt(title, message, callbackOrButtons, options.type, options.defaultValue, options.keyboardType);
             return;
         }
 

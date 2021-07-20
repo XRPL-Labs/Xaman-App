@@ -18,6 +18,7 @@ describe('[RadioButton]', () => {
             .create(
                 <RadioButton
                     onPress={onPress}
+                    value="VALUE"
                     label="label"
                     labelSmall="label small"
                     description="description"
@@ -35,6 +36,7 @@ describe('[RadioButton]', () => {
             .create(
                 <RadioButton
                     onPress={onPress}
+                    value="VALUE"
                     label="label"
                     labelSmall="label small"
                     description="description"
@@ -47,7 +49,7 @@ describe('[RadioButton]', () => {
 
     it('calls the given function when the radio button is pressed', () => {
         const onPress = jest.fn();
-        const tree = renderer.create(<RadioButton label="label" checked onPress={onPress} />);
+        const tree = renderer.create(<RadioButton label="label" checked onPress={onPress} value="VALUE" />);
 
         const touchInst = tree.root.findByType(TouchableOpacity);
 

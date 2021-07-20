@@ -4,70 +4,39 @@
  */
 
 import React, { Component } from 'react';
-import { View, Animated, Text, Alert, KeyboardEvent, LayoutAnimation, Linking } from 'react-native';
+import { Alert, Linking, InteractionManager } from 'react-native';
 
 import * as AccountLib from 'xrpl-accountlib';
-
-import FingerprintScanner from 'react-native-fingerprint-scanner';
-import RNTangemSdk, { Card } from 'tangem-sdk-react-native';
+import RNTangemSdk from 'tangem-sdk-react-native';
 
 import Flag from '@common/libs/ledger/parser/common/flag';
 import { CoreRepository, AccountRepository } from '@store/repositories';
-import { AccountSchema, CoreSchema } from '@store/schemas/latest';
-import { AccessLevels, EncryptionLevels, BiometryType, AccountTypes } from '@store/types';
+import { AccountSchema } from '@store/schemas/latest';
+import { AccessLevels, EncryptionLevels } from '@store/types';
 
-import { TransactionJSONType, SignedObjectType } from '@common/libs/ledger/types';
+import { SignedObjectType } from '@common/libs/ledger/types';
 
 import Vault from '@common/libs/vault';
-
-import { AuthenticationService } from '@services';
 
 import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
 import { Keyboard } from '@common/helpers/keyboard';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-// components
-import { Button, Spacer, SecurePinInput, PasswordInput } from '@components/General';
-
 import Localize from '@locale';
 
-// style
-import { AppStyles, AppSizes } from '@theme';
-import styles from './styles';
+// context
+import { MethodsContext } from './Context';
+
+// methods
+import { PasscodeMethod, PassphraseMethod, TangemMethod } from './Methods';
 
 /* types ==================================================================== */
+import { Props, State, AuthMethods, SignOptions } from './types';
 
-enum AuthMethods {
-    PIN = 'PIN',
-    BIOMETRIC = 'BIOMETRIC',
-    PASSPHRASE = 'PASSPHRASE',
-    TANGEM = 'TANGEM',
-    OTHER = 'OTHER',
-}
-
-export interface Props {
-    account: AccountSchema;
-    txJson: TransactionJSONType;
-    multiSign?: boolean;
-    onDismissed: () => void;
-    onSign: (signedObject: SignedObjectType) => void;
-}
-
-export interface State {
-    signWith: AccountSchema;
-    passphrase: string;
-    coreSettings: CoreSchema;
-    offsetBottom: number;
-    isSensorAvailable: boolean;
-}
 /* Component ==================================================================== */
 class VaultModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Vault;
-    private contentView: View = undefined;
-    private animatedColor: Animated.Value;
-    private securePinInput: SecurePinInput;
-    private passwordInput: PasswordInput;
 
     static options() {
         return {
@@ -81,176 +50,61 @@ class VaultModal extends Component<Props, State> {
         super(props);
 
         this.state = {
-            signWith: undefined,
-            passphrase: undefined,
-            isSensorAvailable: false,
+            signer: undefined,
+            alternativeSigner: undefined,
             coreSettings: CoreRepository.getSettings(),
-            offsetBottom: 0,
         };
-
-        this.animatedColor = new Animated.Value(0);
     }
 
     componentDidMount() {
-        Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
-        Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
-
-        Animated.timing(this.animatedColor, {
-            toValue: 150,
-            duration: 350,
-            useNativeDriver: false,
-        }).start();
-
-        this.setSignerAccount()
-            .then(this.startAuthentication)
-            .catch((e: any) => {
-                this.dismiss();
-                Alert.alert(Localize.t('global.error'), e.toString());
-            });
+        InteractionManager.runAfterInteractions(this.setSignerAccount);
     }
 
-    componentWillUnmount() {
-        Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
-        Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
-    }
-
-    startAuthentication = () => {
-        const { signWith } = this.state;
-
-        switch (signWith.encryptionLevel) {
-            case EncryptionLevels.Passcode:
-                this.startBiometricAuthentication();
-                break;
-            case EncryptionLevels.Passphrase:
-                this.startPassphraseAuthentication();
-                break;
-            case EncryptionLevels.Physical:
-                this.startPhysicalAuthentication();
-                break;
-            default:
-                break;
-        }
-    };
-
-    startPhysicalAuthentication = () => {
-        const { signWith } = this.state;
-
-        switch (signWith.type) {
-            case AccountTypes.Tangem: {
-                this.signWithTangemCard();
-                break;
-            }
-            default:
-                break;
-        }
-    };
-
-    startPassphraseAuthentication = () => {
-        // focus the input
-        setTimeout(() => {
-            if (this.passwordInput) {
-                this.passwordInput.focus();
-            }
-        }, 300);
-    };
-
-    startBiometricAuthentication = () => {
-        const { coreSettings } = this.state;
-
-        FingerprintScanner.isSensorAvailable()
-            .then(() => {
-                this.setState(
-                    {
-                        isSensorAvailable: true,
-                    },
-                    () => {
-                        // if biometry sets by default switch to biometry for faster result
-                        if (coreSettings.biometricMethod !== BiometryType.None) {
-                            setTimeout(() => {
-                                this.requestBiometricAuthenticate(true);
-                            }, 500);
-                        } else {
-                            // focus the input
-                            setTimeout(() => {
-                                if (this.securePinInput) {
-                                    this.securePinInput.focus();
-                                }
-                            }, 300);
-                        }
-                    },
-                );
-            })
-            .catch(() => {
-                // focus the input
-                setTimeout(() => {
-                    if (this.securePinInput) {
-                        this.securePinInput.focus();
-                    }
-                }, 300);
-            });
-    };
-
-    setSignerAccount = (): Promise<AccountSchema> => {
+    setSignerAccount = () => {
         const { account } = this.props;
 
-        return new Promise((resolve, reject) => {
-            let signWith = account;
+        // set signer by default
+        let signer = account;
+        let alternativeSigner;
 
-            if (this.shouldSignWithRegularKey()) {
-                // check if regular key is imported in XUMM
-                const regularAccount = AccountRepository.findOne({ address: account.regularKey }) as AccountSchema;
+        // check if regular key account is imported to XUMM
+        if (account.regularKey) {
+            // check if regular key is imported in XUMM
+            const regularAccount = AccountRepository.findOne({ address: account.regularKey }) as AccountSchema;
 
+            // check for account regular key set
+            const flags = new Flag('Account', account.flags);
+            const accountFlags = flags.parse();
+
+            // check if we are able to sign this tx with signer or alternative signer
+            if (accountFlags.disableMasterKey || account.accessLevel === AccessLevels.Readonly) {
                 if (!regularAccount) {
-                    return reject(new Error(Localize.t('account.masterKeyForThisAccountDisableRegularKeyNotFound')));
+                    Alert.alert(
+                        Localize.t('global.error'),
+                        Localize.t('account.masterKeyForThisAccountDisableRegularKeyNotFound'),
+                    );
+                    return;
                 }
 
                 if (regularAccount.accessLevel !== AccessLevels.Full) {
-                    return reject(
-                        new Error(Localize.t('account.regularKeyAccountForThisAccountDoesNotImportedWithSignAccess')),
+                    Alert.alert(
+                        Localize.t('global.error'),
+                        Localize.t('account.regularKeyAccountForThisAccountDoesNotImportedWithSignAccess'),
                     );
+                    return;
                 }
 
-                signWith = regularAccount;
+                // we should sign this tx with regular key as signer will not be able to sign it
+                signer = regularAccount;
+            } else if (regularAccount && regularAccount.accessLevel === AccessLevels.Full) {
+                alternativeSigner = regularAccount;
             }
-
-            return this.setState(
-                {
-                    signWith,
-                },
-                () => {
-                    return resolve(signWith);
-                },
-            );
-        });
-    };
-
-    shouldSignWithRegularKey = (): boolean => {
-        const { account } = this.props;
-
-        // check for account regular key set
-        const flags = new Flag('Account', account.flags);
-        const accountFlags = flags.parse();
-
-        return account.regularKey && (accountFlags.disableMasterKey || account.accessLevel === AccessLevels.Readonly);
-    };
-
-    onKeyboardShow = (e: KeyboardEvent) => {
-        if (this.contentView) {
-            this.contentView.measure((x, y, width, height) => {
-                const bottomView = (AppSizes.screen.height - height) / 2;
-                const KeyboardHeight = e.endCoordinates.height + 100;
-
-                if (bottomView < KeyboardHeight) {
-                    LayoutAnimation.easeInEaseOut();
-                    this.setState({ offsetBottom: KeyboardHeight - bottomView });
-                }
-            });
         }
-    };
 
-    onKeyboardHide = () => {
-        LayoutAnimation.easeInEaseOut();
-        this.setState({ offsetBottom: 0 });
+        this.setState({
+            signer,
+            alternativeSigner,
+        });
     };
 
     dismiss = () => {
@@ -259,34 +113,9 @@ class VaultModal extends Component<Props, State> {
         if (onDismissed) {
             onDismissed();
         }
+
         Keyboard.dismiss();
         Navigator.dismissOverlay();
-    };
-
-    requestBiometricAuthenticate = (system: boolean = false) => {
-        FingerprintScanner.authenticate({
-            description: Localize.t('global.signingTheTransaction'),
-            fallbackEnabled: true,
-            // @ts-ignore
-            fallbackTitle: Localize.t('global.enterPasscode'),
-        })
-            .then(this.onSuccessBiometricAuthenticate)
-            .catch((error: any) => {
-                if (system) return;
-                if (error.name !== 'UserCancel') {
-                    Alert.alert(Localize.t('global.error'), Localize.t('global.invalidBiometryAuth'));
-                }
-            })
-            .finally(() => {
-                FingerprintScanner.release();
-            });
-    };
-
-    onSuccessBiometricAuthenticate = () => {
-        const { coreSettings } = this.state;
-
-        const { passcode } = coreSettings;
-        this.openVault(passcode, AuthMethods.BIOMETRIC);
     };
 
     onInvalidAuth = (method: AuthMethods) => {
@@ -328,27 +157,6 @@ class VaultModal extends Component<Props, State> {
         );
     };
 
-    onPasscodeEntered = (passcode: string) => {
-        AuthenticationService.checkPasscode(passcode)
-            .then((encryptedPasscode) => {
-                this.openVault(encryptedPasscode, AuthMethods.PIN);
-            })
-            .catch((e) => {
-                this.securePinInput.clearInput();
-
-                if (e?.message === Localize.t('global.invalidPasscode')) {
-                    this.onInvalidAuth(AuthMethods.PIN);
-                } else {
-                    Alert.alert(Localize.t('global.error'), e.message);
-                }
-            });
-    };
-
-    onPassphraseEntered = () => {
-        const { passphrase } = this.state;
-        this.openVault(passphrase, AuthMethods.PASSPHRASE);
-    };
-
     openTroubleshootLink = () => {
         const url = `http://xumm.app/redir/faq/account-signing-password/${Localize.getCurrentLocale()}`;
         Linking.canOpenURL(url).then((supported) => {
@@ -360,27 +168,58 @@ class VaultModal extends Component<Props, State> {
         });
     };
 
-    openVault = async (encryptionKey: string, method: AuthMethods) => {
-        const { signWith } = this.state;
+    sign = async (method: AuthMethods, options: any) => {
+        switch (method) {
+            case AuthMethods.BIOMETRIC:
+            case AuthMethods.PIN:
+            case AuthMethods.PASSPHRASE:
+                this.signWithPrivateKey(method, options);
+                break;
+            case AuthMethods.TANGEM:
+                this.signWithTangemCard(options);
+                break;
+            default:
+                break;
+        }
+    };
+
+    signWithPrivateKey = async (method: AuthMethods, options: SignOptions) => {
+        const { signer } = this.state;
+        const { txJson, multiSign } = this.props;
+
+        const { encryptionKey } = options;
 
         if (!encryptionKey) {
             return;
         }
 
-        const privateKey = await Vault.open(signWith.publicKey, encryptionKey);
-
-        if (privateKey) {
-            this.signWithPrivateKey(privateKey, method);
-        } else {
+        // fetch private key from vault
+        const privateKey = await Vault.open(signer.publicKey, encryptionKey);
+        if (!privateKey) {
             this.onInvalidAuth(method);
+            return;
         }
+
+        let signerInstance = AccountLib.derive.privatekey(privateKey);
+        // check if multi sign
+        if (multiSign) {
+            signerInstance = signerInstance.signAs(signer.address);
+        }
+
+        let signedObject = AccountLib.sign(txJson, signerInstance) as SignedObjectType;
+        signedObject = { ...signedObject, signMethod: method };
+
+        this.onSign(signedObject);
     };
 
-    signWithTangemCard = async () => {
+    signWithTangemCard = async (options: SignOptions) => {
         const { txJson, multiSign } = this.props;
-        const { signWith } = this.state;
 
-        const { cardId, walletPublicKey } = signWith.additionalInfo as Card;
+        const { tangemCard } = options;
+
+        if (!tangemCard) return;
+
+        const { cardId, walletPublicKey } = tangemCard;
 
         const preparedTx = AccountLib.rawSigning.prepare(txJson, walletPublicKey, multiSign);
 
@@ -422,23 +261,6 @@ class VaultModal extends Component<Props, State> {
             });
     };
 
-    signWithPrivateKey = async (privateKey: string, method: AuthMethods) => {
-        const { txJson, multiSign } = this.props;
-
-        let signer = AccountLib.derive.privatekey(privateKey);
-
-        // check if multi sign
-        if (multiSign) {
-            signer = signer.signAs(signer.address);
-        }
-
-        let signedObject = AccountLib.sign(txJson, signer) as SignedObjectType;
-
-        signedObject = { ...signedObject, signMethod: method };
-
-        this.onSign(signedObject);
-    };
-
     onSign = (signedObject: SignedObjectType) => {
         const { onSign } = this.props;
 
@@ -449,153 +271,38 @@ class VaultModal extends Component<Props, State> {
         Navigator.dismissOverlay();
     };
 
-    renderPasscodeChallenge = () => {
-        const { coreSettings, isSensorAvailable } = this.state;
-
-        const { biometricMethod } = coreSettings;
-
-        return (
-            <View style={[AppStyles.container, AppStyles.centerContent]}>
-                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingTopSml]}>
-                    {Localize.t('global.pleaseEnterYourPasscode')}
-                </Text>
-
-                <SecurePinInput
-                    ref={(r) => {
-                        this.securePinInput = r;
-                    }}
-                    onInputFinish={this.onPasscodeEntered}
-                    length={6}
-                    enableHapticFeedback={coreSettings.hapticFeedback}
-                />
-
-                {biometricMethod !== BiometryType.None && isSensorAvailable && (
-                    <View style={AppStyles.paddingTopSml}>
-                        <Button
-                            label={`${biometricMethod}`}
-                            icon="IconFingerprint"
-                            roundedSmall
-                            secondary
-                            isDisabled={false}
-                            onPress={() => {
-                                this.requestBiometricAuthenticate();
-                            }}
-                        />
-                    </View>
-                )}
-            </View>
-        );
-    };
-
-    renderPassphraseChallenge = () => {
-        const { signWith } = this.state;
-
-        return (
-            <View style={[AppStyles.container, AppStyles.centerContent]}>
-                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingTopSml]}>
-                    {Localize.t('account.PleaseEnterYourPasswordForAccount')}
-                    <Text style={AppStyles.colorBlue}> &#34;{signWith.label}&#34;</Text>
-                </Text>
-
-                <Spacer size={40} />
-
-                <PasswordInput
-                    testID="passphrase-input"
-                    ref={(r) => {
-                        this.passwordInput = r;
-                    }}
-                    placeholder={Localize.t('account.enterPassword')}
-                    onChange={(passphrase) => {
-                        this.setState({ passphrase });
-                    }}
-                    autoFocus
-                />
-
-                <Spacer size={20} />
-
-                <View style={[AppStyles.paddingTopSml, AppStyles.row]}>
-                    <Button
-                        testID="sign-button"
-                        rounded
-                        label={Localize.t('global.sign')}
-                        onPress={this.onPassphraseEntered}
-                    />
-                </View>
-            </View>
-        );
-    };
-
-    renderPhysicalChallenge = () => {
-        return (
-            <View style={[AppStyles.container, AppStyles.centerContent]}>
-                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingTopSml]}>
-                    Not Supported
-                </Text>
-            </View>
-        );
-    };
-
-    renderChallenge = () => {
-        const { account } = this.props;
-        const { signWith } = this.state;
-
-        const encryptionLevel = signWith ? signWith.encryptionLevel : account.encryptionLevel;
-
-        switch (encryptionLevel) {
-            case EncryptionLevels.Passcode:
-                return this.renderPasscodeChallenge();
-            case EncryptionLevels.Passphrase:
-                return this.renderPassphraseChallenge();
-            case EncryptionLevels.Physical:
-                return this.renderPhysicalChallenge();
-            default:
-                return null;
-        }
-    };
-
     render() {
-        const { signWith, offsetBottom } = this.state;
+        const { signer } = this.state;
 
-        // don't render anything for Tangem auth
-        if (!signWith || signWith?.type === AccountTypes.Tangem) {
-            return null;
+        if (!signer) return null;
+
+        let Method = null;
+
+        switch (signer.encryptionLevel) {
+            case EncryptionLevels.Passcode:
+                Method = PasscodeMethod;
+                break;
+            case EncryptionLevels.Passphrase:
+                Method = PassphraseMethod;
+                break;
+            case EncryptionLevels.Physical:
+                Method = TangemMethod;
+                break;
+            default:
+                break;
         }
 
-        const interpolateColor = this.animatedColor.interpolate({
-            inputRange: [0, 150],
-            outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)'],
-        });
-
         return (
-            <Animated.View
-                onStartShouldSetResponder={() => true}
-                style={[styles.container, { backgroundColor: interpolateColor }]}
+            <MethodsContext.Provider
+                value={{
+                    ...this.state,
+                    sign: this.sign,
+                    onInvalidAuth: this.onInvalidAuth,
+                    dismiss: this.dismiss,
+                }}
             >
-                <View
-                    ref={(r) => {
-                        this.contentView = r;
-                    }}
-                    style={[styles.visibleContent, { marginBottom: offsetBottom }]}
-                >
-                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[AppStyles.flex1, AppStyles.paddingLeftSml, AppStyles.paddingRightSml]}>
-                            <Text numberOfLines={1} style={[AppStyles.p, AppStyles.bold]}>
-                                {Localize.t('global.signing')}
-                            </Text>
-                        </View>
-                        <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
-                            <Button
-                                light
-                                numberOfLines={1}
-                                label={Localize.t('global.cancel')}
-                                roundedSmall
-                                onPress={this.dismiss}
-                            />
-                        </View>
-                    </View>
-                    <View style={[AppStyles.row, AppStyles.paddingTopSml]}>{this.renderChallenge()}</View>
-                </View>
-            </Animated.View>
+                <Method />
+            </MethodsContext.Provider>
         );
     }
 }

@@ -5,11 +5,23 @@ const HexEncoding = {
     },
 
     toString: (hex: string): string | undefined => {
-        return hex ? Buffer.from(hex, 'hex').toString('utf-8') : undefined;
+        return hex ? Buffer.from(hex, 'hex').toString('utf8') : undefined;
     },
 
     toHex: (text: string): string | undefined => {
         return text ? Buffer.from(text).toString('hex') : undefined;
+    },
+
+    toUTF8: (hex: string): string | undefined => {
+        if (!hex) return '';
+
+        const buffer = Buffer.from(hex, 'hex');
+        const isValid = Buffer.compare(Buffer.from(buffer.toString(), 'utf8'), buffer) === 0;
+
+        if (isValid) {
+            return buffer.toString('utf8');
+        }
+        return hex;
     },
 };
 

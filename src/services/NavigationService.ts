@@ -4,7 +4,7 @@
  */
 
 import EventEmitter from 'events';
-import { last, take, values } from 'lodash';
+import { get, last, take, values } from 'lodash';
 
 import { BackHandler, Platform } from 'react-native';
 
@@ -24,23 +24,38 @@ import { ExitApp } from '@common/helpers/device';
 import { AppScreens } from '@common/constants';
 
 import Locale from '@locale';
+/* Types  ==================================================================== */
+export enum ComponentTypes {
+    Screen = 'SCREEN',
+    Modal = 'MODAL',
+    TabBar = 'TABBAR',
+    Overlay = 'OVERLAY',
+    Unknown = 'UNKNOWN',
+}
+
+export enum RootType {
+    OnboardingRoot = 'OnboardingRoot',
+    DefaultRoot = 'DefaultRoot',
+}
 
 /* Service  ==================================================================== */
 class NavigationService extends EventEmitter {
-    prevScreen: string;
     currentRoot: string;
     currentScreen: string;
+    modals: Array<string>;
     overlays: Array<string>;
     backHandlerClickCount: number;
+    backHandlerClickCountTimeout: any;
 
     constructor() {
         super();
 
-        this.prevScreen = '';
         this.currentRoot = '';
         this.currentScreen = '';
+        this.modals = [];
         this.overlays = [];
         this.backHandlerClickCount = 0;
+        this.backHandlerClickCountTimeout = undefined;
     }
 
     initialize = () => {
@@ -52,50 +67,8 @@ class NavigationService extends EventEmitter {
                 Navigation.events().registerComponentDidAppearListener(this.componentDidAppear);
                 Navigation.events().registerCommandListener(this.navigatorCommandListener);
                 Navigation.events().registerModalDismissedListener(this.modalDismissedListener);
-                Navigation.events().registerBottomTabLongPressedListener(
-                    ({ selectedTabIndex }: BottomTabLongPressedEvent) => {
-                        if (selectedTabIndex === 0) {
-                            const currentOverlay = this.getCurrentOverlay();
-                            if (currentOverlay !== AppScreens.Overlay.SwitchAccount) {
-                                // haptic vibrate
-                                VibrateHapticFeedback('impactLight');
-                                // show switch account overlay
-                                Navigation.showOverlay({
-                                    component: {
-                                        name: AppScreens.Overlay.SwitchAccount,
-                                        id: AppScreens.Overlay.SwitchAccount,
-                                        options: {
-                                            layout: {
-                                                backgroundColor: 'transparent',
-                                                componentBackgroundColor: 'transparent',
-                                            },
-                                        },
-                                    },
-                                });
-                            }
-                        }
-                    },
-                );
-                Navigation.events().registerBottomTabPressedListener(({ tabIndex }: BottomTabPressedEvent) => {
-                    if (tabIndex === 2) {
-                        const currentOverlay = this.getCurrentOverlay();
-                        if (currentOverlay !== AppScreens.Overlay.HomeActions) {
-                            Navigation.showOverlay({
-                                component: {
-                                    name: AppScreens.Overlay.HomeActions,
-                                    id: AppScreens.Overlay.HomeActions,
-                                    passProps: {},
-                                    options: {
-                                        layout: {
-                                            backgroundColor: 'transparent',
-                                            componentBackgroundColor: 'transparent',
-                                        },
-                                    },
-                                },
-                            });
-                        }
-                    }
-                });
+                Navigation.events().registerBottomTabLongPressedListener(this.bottomTabLongPressedListener);
+                Navigation.events().registerBottomTabPressedListener(this.bottomTabPressedListener);
 
                 // set android back handler
                 if (Platform.OS === 'android') {
@@ -109,75 +82,147 @@ class NavigationService extends EventEmitter {
         });
     };
 
-    componentDidAppear = ({ componentName }: ComponentDidAppearEvent) => {
-        // ignore overlay
-        if (componentName.indexOf('overlay.') === -1) {
-            this.setCurrentScreen(componentName);
+    bottomTabLongPressedListener = ({ selectedTabIndex }: BottomTabLongPressedEvent) => {
+        if (selectedTabIndex !== 0) return;
+
+        const currentOverlay = this.getCurrentOverlay();
+        if (currentOverlay !== AppScreens.Overlay.SwitchAccount) {
+            // haptic vibrate
+            VibrateHapticFeedback('impactLight');
+            // show switch account overlay
+            Navigation.showOverlay({
+                component: {
+                    name: AppScreens.Overlay.SwitchAccount,
+                    id: AppScreens.Overlay.SwitchAccount,
+                    passProps: { componentType: ComponentTypes.Overlay },
+                    options: {
+                        layout: {
+                            backgroundColor: 'transparent',
+                            componentBackgroundColor: 'transparent',
+                        },
+                    },
+                },
+            });
         }
     };
 
-    navigatorCommandListener = (name: string, params: any) => {
-        switch (name) {
-            case 'push':
-                this.setCurrentScreen(params.componentId);
+    bottomTabPressedListener = ({ tabIndex }: BottomTabPressedEvent) => {
+        if (tabIndex !== 2) return;
+
+        const currentOverlay = this.getCurrentOverlay();
+        if (currentOverlay !== AppScreens.Overlay.HomeActions) {
+            Navigation.showOverlay({
+                component: {
+                    name: AppScreens.Overlay.HomeActions,
+                    id: AppScreens.Overlay.HomeActions,
+                    passProps: { componentType: ComponentTypes.Overlay },
+                    options: {
+                        layout: {
+                            backgroundColor: 'transparent',
+                            componentBackgroundColor: 'transparent',
+                        },
+                    },
+                },
+            });
+        }
+    };
+
+    modalDismissedListener = ({ componentId, componentName }: ModalDismissedEvent) => {
+        // on android componentId is stack id and in Ios componentName is undefined
+        if (componentName || componentId === last(this.modals)) {
+            this.pullCurrentModal();
+        }
+    };
+
+    onOverlayDismissed = (componentName: string) => {
+        if (componentName === last(this.overlays)) {
+            this.pullCurrentOverlay();
+        }
+    };
+
+    componentDidAppear = ({ componentName, passProps }: ComponentDidAppearEvent) => {
+        switch (this.getComponentType(componentName)) {
+            case ComponentTypes.Modal:
+                this.setCurrentModal(componentName);
                 break;
-            case 'showModal':
-                this.setCurrentScreen(params.layout.children[0].id);
+            case ComponentTypes.Overlay:
+                this.setCurrentOverlay(componentName);
                 break;
-            case 'showOverlay':
-                this.setCurrentOverlay(params.layout.id);
+            case ComponentTypes.Screen:
+                // check if screen is presenting as modal
+                if (get(passProps, 'componentType') === ComponentTypes.Modal) {
+                    this.setCurrentModal(componentName);
+                } else {
+                    this.setCurrentScreen(componentName);
+                }
                 break;
-            case 'setRoot':
-                this.setCurrentRoot(params.layout.root.id);
-                this.emit('setRoot', params.layout.root.id);
+            case ComponentTypes.TabBar:
+                this.setCurrentScreen(componentName);
                 break;
             default:
                 break;
         }
     };
 
-    modalDismissedListener = ({ componentId }: ModalDismissedEvent) => {
-        if (componentId !== this.getPrevScreen()) {
-            this.setCurrentScreen(this.getPrevScreen());
+    navigatorCommandListener = (name: string, params: any) => {
+        switch (name) {
+            case 'dismissOverlay':
+                this.onOverlayDismissed(params.componentId);
+                break;
+            case 'setRoot':
+                this.onRootChange(params.layout.root.id);
+                break;
+            default:
+                break;
         }
     };
 
     setBackHandlerListener = () => {
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+        BackHandler.addEventListener('hardwareBackPress', this.handleAndroidBackButton);
     };
 
-    handleBackButton = () => {
-        // check if we are in main screens and can exit the app
-        const currentScreen = this.getCurrentScreen();
+    /**
+     * Handle hardware back button on android
+     * @returns boolean
+     */
+    handleAndroidBackButton = () => {
+        // check current visible component, priority is with overlays
         const currentOverlay = this.getCurrentOverlay();
+        const currentModal = this.getCurrentModal();
+        const currentScreen = this.getCurrentScreen();
 
-        // first check for overlays
-        if (currentOverlay && currentOverlay !== AppScreens.Overlay.Lock) {
-            // pull current overlay
-            this.pullCurrentOverlay();
-            // dismiss overlay
+        // ignore any back button if in the lock screen
+
+        if (currentOverlay === AppScreens.Overlay.Lock) {
+            return true;
+        }
+
+        // dismiss any overlay
+        if (currentOverlay) {
             Navigation.dismissOverlay(currentOverlay);
             return true;
         }
 
-        // check if we are in main screens and can exit the app
-        const mainScreens = [AppScreens.Onboarding, ...values(AppScreens.TabBar)];
-        if (mainScreens.indexOf(currentScreen) > -1) {
+        // check if we are in root components and can exit the app
+        if (!currentModal && this.isRootComponent(currentScreen)) {
             // increase back handler click count
             this.backHandlerClickCount += 1;
 
             // check if we need to exist the app
             if (this.backHandlerClickCount < 2) {
+                // show toast notify
                 Toast(Locale.t('global.pressBackAgainToExit'), 2000);
                 // timeout for fade and exit
-                setTimeout(() => {
+                if (this.backHandlerClickCountTimeout) {
+                    clearTimeout(this.backHandlerClickCountTimeout);
+                }
+                this.backHandlerClickCountTimeout = setTimeout(() => {
                     this.backHandlerClickCount = 0;
                 }, 2000);
 
                 return true;
             }
-
-            // kill the app
+            // kill the app if user pressed back 3 times
             this.exitApp();
 
             return false;
@@ -201,17 +246,32 @@ class NavigationService extends EventEmitter {
     setCurrentScreen = (currentScreen: string) => {
         if (this.currentScreen !== currentScreen) {
             analytics().logScreenView({ screen_name: currentScreen });
-
-            this.setPrevScreen(this.currentScreen);
             this.currentScreen = currentScreen;
         }
     };
 
-    setCurrentOverlay = (currentOverlay: string) => {
-        if (last(this.overlays) !== currentOverlay) {
-            analytics().logScreenView({ screen_name: currentOverlay });
+    setCurrentModal = (modal: string) => {
+        if (!this.modals.includes(modal)) {
+            analytics().logScreenView({ screen_name: modal });
+            this.modals.push(modal);
+        }
+    };
 
-            this.overlays.push(currentOverlay);
+    getCurrentModal = (): string => {
+        return last(this.modals);
+    };
+
+    pullCurrentModal = (): string => {
+        const l = last(this.modals);
+        this.modals = take(this.modals, this.modals.length - 1);
+
+        return l;
+    };
+
+    setCurrentOverlay = (overlay: string) => {
+        if (last(this.overlays) !== overlay) {
+            analytics().logScreenView({ screen_name: overlay });
+            this.overlays.push(overlay);
         }
     };
 
@@ -225,22 +285,39 @@ class NavigationService extends EventEmitter {
         return l;
     };
 
-    setCurrentRoot = (currentRoot: string) => {
-        if (this.currentRoot !== currentRoot) {
-            this.currentRoot = currentRoot;
+    onRootChange = (root: string) => {
+        if (this.currentRoot !== root) {
+            this.currentRoot = root;
         }
+
+        this.emit('setRoot', root);
     };
 
     getCurrentRoot = (): string => {
         return this.currentRoot;
     };
 
-    setPrevScreen = (screen: string) => {
-        this.prevScreen = screen;
+    getComponentType = (component: string) => {
+        if (!component) return ComponentTypes.Unknown;
+
+        if (component.startsWith('modal.')) {
+            return ComponentTypes.Modal;
+        }
+
+        if (component.startsWith('overlay.')) {
+            return ComponentTypes.Overlay;
+        }
+
+        if (component.startsWith('app.TabBar')) {
+            return ComponentTypes.TabBar;
+        }
+
+        return ComponentTypes.Screen;
     };
 
-    getPrevScreen = (): string => {
-        return this.prevScreen;
+    isRootComponent = (component: string) => {
+        const rootComponents = [AppScreens.Onboarding, ...values(AppScreens.TabBar)];
+        return rootComponents.indexOf(component) > -1;
     };
 }
 

@@ -238,10 +238,10 @@ dependencies {
     }
 
     // Firebase
-    implementation "com.google.firebase:firebase-messaging"
+    implementation "com.google.firebase:firebase-messaging:+"
     implementation 'me.leolin:ShortcutBadger:1.1.22@aar'
     // e2e dependencies
-    androidTestImplementation('com.wix:detox:+') { transitive = true } 
+    androidTestImplementation('com.wix:detox:+')
     androidTestImplementation 'junit:junit:4.12'
     // qrcode generate dependencies
     implementation 'com.github.kenglxn.QRGen:android:2.6.0'

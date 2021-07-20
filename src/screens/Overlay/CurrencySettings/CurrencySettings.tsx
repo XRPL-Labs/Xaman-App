@@ -10,6 +10,8 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 
 import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 
+import { Payload } from '@common/libs/payload';
+
 import { TrustSet, Payment } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import Flag from '@common/libs/ledger/parser/common/flag';
@@ -24,7 +26,7 @@ import { AppScreens } from '@common/constants';
 import LedgerService from '@services/LedgerService';
 
 // components
-import { Button, Spacer, RaisedButton, AmountText } from '@components/General';
+import { Button, Spacer, RaisedButton, AmountText, InfoMessage } from '@components/General';
 
 import Localize from '@locale';
 
@@ -49,6 +51,7 @@ class CurrencySettingsModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.CurrencySettings;
     private animatedColor: Animated.Value;
     private animatedOpacity: Animated.Value;
+    private mounted: boolean;
 
     static options() {
         return {
@@ -70,9 +73,13 @@ class CurrencySettingsModal extends Component<Props, State> {
 
         this.animatedColor = new Animated.Value(0);
         this.animatedOpacity = new Animated.Value(0);
+
+        this.mounted = false;
     }
 
     componentDidMount() {
+        this.mounted = true;
+
         Animated.parallel([
             Animated.timing(this.animatedColor, {
                 toValue: 150,
@@ -87,6 +94,10 @@ class CurrencySettingsModal extends Component<Props, State> {
         ]).start();
 
         this.getLatestLineBalance();
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
     }
 
     dismiss = () => {
@@ -112,8 +123,8 @@ class CurrencySettingsModal extends Component<Props, State> {
     getLatestLineBalance = (): Promise<void> => {
         const { account, trustLine } = this.props;
 
-        // ignore obligation lines
-        if (trustLine.obligation) return Promise.resolve();
+        // ignore obligation lines or NFT
+        if (trustLine.obligation || trustLine.isNFT) return Promise.resolve();
 
         return new Promise((resolve) => {
             return LedgerService.getAccountLines(account.address)
@@ -128,13 +139,15 @@ class CurrencySettingsModal extends Component<Props, State> {
                     if (line) {
                         const balance = new BigNumber(line.balance);
 
-                        this.setState(
-                            {
-                                latestLineBalance: balance.toNumber(),
-                                canRemove: balance.isLessThan(0.000000001),
-                            },
-                            resolve,
-                        );
+                        if (this.mounted) {
+                            this.setState(
+                                {
+                                    latestLineBalance: balance.toNumber(),
+                                    canRemove: balance.isLessThan(0.00000001),
+                                },
+                                resolve,
+                            );
+                        }
                     } else {
                         resolve();
                     }
@@ -370,6 +383,31 @@ class CurrencySettingsModal extends Component<Props, State> {
         );
     };
 
+    disableRippling = async () => {
+        const { account, trustLine } = this.props;
+
+        const payload = await Payload.build({
+            TransactionType: 'TrustSet',
+            Account: account.address,
+            LimitAmount: {
+                currency: trustLine.currency.currency,
+                issuer: trustLine.currency.issuer,
+                value: trustLine.limit,
+            },
+            Flags: 131072, // tfSetNoRipple
+        });
+
+        await this.dismiss();
+
+        Navigator.showModal(
+            AppScreens.Modal.ReviewTransaction,
+            { modalPresentationStyle: 'fullScreen' },
+            {
+                payload,
+            },
+        );
+    };
+
     showExchangeScreen = () => {
         const { trustLine } = this.props;
 
@@ -400,9 +438,34 @@ class CurrencySettingsModal extends Component<Props, State> {
         });
     };
 
+    showRipplingAlert = () => {
+        const { trustLine } = this.props;
+
+        Navigator.showAlertModal({
+            type: 'warning',
+            title: Localize.t('global.warning'),
+            text: Localize.t('asset.ripplingMisconfigurationWarning', {
+                token: NormalizeCurrencyCode(trustLine.currency.currency),
+            }),
+            buttons: [
+                {
+                    text: Localize.t('global.back'),
+                    onPress: () => {},
+                    type: 'dismiss',
+                    light: true,
+                },
+                {
+                    text: 'Fix',
+                    onPress: this.disableRippling,
+                    light: false,
+                },
+            ],
+        });
+    };
+
     canSend = () => {
         const { trustLine } = this.props;
-        return trustLine.isNFT || trustLine.balance > 0.0000009 || trustLine.obligation;
+        return trustLine.isNFT || trustLine.balance >= 0.00000001 || trustLine.obligation;
     };
 
     canExchange = () => {
@@ -454,12 +517,26 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 </View>
                             </View>
                             <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                                {trustLine.currency.avatar && (
+                                {!!trustLine.currency.avatar && (
                                     <Image style={styles.currencyAvatar} source={{ uri: trustLine.currency.avatar }} />
                                 )}
                                 <AmountText value={trustLine.balance} style={[AppStyles.pbold, AppStyles.monoBold]} />
                             </View>
                         </View>
+
+                        {trustLine.no_ripple === false && !trustLine.obligation && (
+                            <>
+                                <Spacer />
+                                <InfoMessage
+                                    type="warning"
+                                    containerStyle={styles.infoContainer}
+                                    labelStyle={styles.infoText}
+                                    label={Localize.t('asset.dangerousConfigurationDetected')}
+                                    onMorePress={this.showRipplingAlert}
+                                    moreInfoLabel={Localize.t('asset.moreInfoAndFix')}
+                                />
+                            </>
+                        )}
 
                         <Spacer />
                         <View style={[styles.buttonRow]}>

@@ -34,10 +34,10 @@ const screens = {
         FilterEvents: 'modal.FilterEvents',
         Scan: 'modal.Scan',
         Submit: 'modal.Submit',
-        Picker: 'modal.Picker',
         CurrencyPicker: 'modal.CurrencyPickerModal',
         Help: 'modal.Help',
         XAppBrowser: 'modal.XAppBrowser',
+        DestinationPicker: 'modal.DestinationPicker',
     },
     Overlay: {
         SwitchAccount: 'overlay.SwitchAccount',
@@ -47,6 +47,7 @@ const screens = {
         Lock: 'overlay.lock',
         CurrencySettings: 'overlay.CurrencySettings',
         Alert: 'overlay.Alert',
+        FlaggedDestination: 'overlay.FlaggedDestination',
         ShareAccount: 'overlay.ShareAccount',
         RequestDecline: 'overlay.RequestDecline',
         EnterDestinationTag: 'overlay.EnterDestinationTag',
@@ -81,7 +82,10 @@ const screens = {
         TermOfUse: 'app.Settings.TermOfUse',
         Credits: 'app.Settings.Credits',
     },
-    Placeholder: 'app.Placeholder',
+    Global: {
+        Picker: 'app.global.Picker',
+        Placeholder: 'app.global.Placeholder',
+    },
 };
 
 export default screens;

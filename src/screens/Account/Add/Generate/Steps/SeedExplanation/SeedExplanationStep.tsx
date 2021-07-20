@@ -7,7 +7,8 @@ import { SafeAreaView, View, Text, Image } from 'react-native';
 
 // components
 import { Button, InfoMessage, Spacer, Footer } from '@components/General';
-import { Images } from '@common/helpers/images';
+
+import StyleService from '@services/StyleService';
 
 import Localize from '@locale';
 
@@ -34,7 +35,7 @@ class SeedExplanationStep extends Component<Props, State> {
         return (
             <SafeAreaView testID="account-generate-explanation-private-view" style={[AppStyles.container]}>
                 <View style={[AppStyles.centerAligned, AppStyles.marginBottomSml]}>
-                    <Image style={[AppStyles.emptyIcon]} source={Images.ImageSecretWarning} />
+                    <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageSecretWarning')} />
                 </View>
 
                 <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.paddingSml]}>

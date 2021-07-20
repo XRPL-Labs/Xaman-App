@@ -19,11 +19,9 @@ import {
     ImageBackground,
 } from 'react-native';
 
-import { BackendService, SocketService, LedgerService, StyleService } from '@services';
+import { BackendService, LedgerService, StyleService } from '@services';
 
-import { NodeChain } from '@store/types';
-import { CoreSchema, AccountSchema } from '@store/schemas/latest';
-import CoreRepository from '@store/repositories/core';
+import { AccountSchema } from '@store/schemas/latest';
 import AccountRepository from '@store/repositories/account';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
@@ -31,7 +29,7 @@ import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import transactionFactory from '@common/libs/ledger/parser/transaction';
 
 import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
-import { AppScreens, AppConfig } from '@common/constants';
+import { AppScreens } from '@common/constants';
 
 import { ActionSheet, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
@@ -40,6 +38,8 @@ import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { Header, Button, Badge, Spacer, Icon, ReadMore, AmountText, LoadingIndicator } from '@components/General';
 import { RecipientElement } from '@components/Modules';
+
+import { GetTransactionLink } from '@common/utils/explorer';
 
 import Localize from '@locale';
 
@@ -58,9 +58,7 @@ export interface Props {
 export interface State {
     tx: TransactionsType;
     partiesDetails: AccountNameType;
-    coreSettings: CoreSchema;
     spendableAccounts: AccountSchema[];
-    connectedChain: NodeChain;
     balanceChanges: any;
     incomingTx: boolean;
     scamAlert: boolean;
@@ -91,9 +89,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 name: '',
                 source: '',
             },
-            coreSettings: CoreRepository.getSettings(),
             spendableAccounts: AccountRepository.getSpendableAccounts(),
-            connectedChain: SocketService.chain,
             balanceChanges: undefined,
             incomingTx: props.tx?.Account?.address !== props.account.address,
             scamAlert: false,
@@ -160,15 +156,22 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
 
                 const { meta } = resp;
-                delete resp.meta;
 
-                const transaction = transactionFactory({ tx: resp, meta });
+                // cleanup
+                delete resp.meta;
+                // eslint-disable-next-line no-underscore-dangle
+                delete resp.__replyMs;
+                // eslint-disable-next-line no-underscore-dangle
+                delete resp.__command;
+                delete resp.inLedger;
+
+                const tx = transactionFactory({ tx: resp, meta });
 
                 this.setState(
                     {
-                        tx: transaction,
+                        tx,
                         isLoading: false,
-                        incomingTx: transaction.Destination?.address === account.address,
+                        incomingTx: tx?.Account?.address !== account.address,
                     },
                     this.loadDetails,
                 );
@@ -189,7 +192,7 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx } = this.state;
         const { account } = this.props;
 
-        if (tx.Type === 'Payment') {
+        if (['Payment', 'PaymentChannelClaim', 'PaymentChannelCreate', 'PaymentChannelFund'].includes(tx.Type)) {
             this.setState({
                 balanceChanges: tx.BalanceChange(account.address),
             });
@@ -265,6 +268,11 @@ class TransactionDetailsView extends Component<Props, State> {
             case 'DepositPreauth':
                 address = tx.Authorize || tx.Unauthorize;
                 break;
+            case 'AccountSet':
+                if (tx.Account.address !== account.address) {
+                    address = tx.Account.address;
+                }
+                break;
             case 'SetRegularKey':
                 address = tx.RegularKey;
                 break;
@@ -288,6 +296,20 @@ class TransactionDetailsView extends Component<Props, State> {
                     address = tx.Account.address;
                 }
                 break;
+            case 'PaymentChannelCreate':
+                if (incomingTx) {
+                    address = tx.Account.address;
+                } else {
+                    address = tx.Destination.address;
+                    tag = tx.Destination.tag;
+                }
+                break;
+            case 'PaymentChannelFund':
+            case 'PaymentChannelClaim':
+                if (incomingTx) {
+                    address = tx.Account.address;
+                }
+                break;
             default:
                 break;
         }
@@ -307,13 +329,8 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     getTransactionLink = () => {
-        const { tx, connectedChain, coreSettings } = this.state;
-
-        const net = connectedChain === NodeChain.Main ? 'main' : 'test';
-
-        const explorer = find(AppConfig.explorer, { value: coreSettings.defaultExplorer });
-
-        return `${explorer.tx[net]}${tx.Hash || tx.PreviousTxnID}`;
+        const { tx } = this.state;
+        return GetTransactionLink(tx.Hash || tx.PreviousTxnID);
     };
 
     shareTxLink = () => {
@@ -351,6 +368,7 @@ class TransactionDetailsView extends Component<Props, State> {
             Localize.t('global.cancel'),
         ];
         const AndroidButtons = [Localize.t('global.share'), Localize.t('global.openInBrowser')];
+
         ActionSheet(
             {
                 options: Platform.OS === 'ios' ? IosButtons : AndroidButtons,
@@ -364,6 +382,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     this.openTxLink();
                 }
             },
+            StyleService.isDarkMode() ? 'dark' : 'light',
         );
     };
 
@@ -459,6 +478,12 @@ class TransactionDetailsView extends Component<Props, State> {
                 return Localize.t('global.check');
             case 'TicketCreate':
                 return Localize.t('events.createTicket');
+            case 'PaymentChannelCreate':
+                return Localize.t('events.createPaymentChannel');
+            case 'PaymentChannelClaim':
+                return Localize.t('events.claimPaymentChannel');
+            case 'PaymentChannelFund':
+                return Localize.t('events.fundPaymentChannel');
             default:
                 return tx.Type;
         }
@@ -466,7 +491,12 @@ class TransactionDetailsView extends Component<Props, State> {
 
     onActionButtonPress = async (type: string) => {
         const { tx, incomingTx } = this.state;
-        const { account } = this.props;
+        const { account, asModal } = this.props;
+
+        // if details page is opened as modal the close it before doing any other action
+        if (asModal) {
+            await Navigator.dismissModal();
+        }
 
         // open the XApp
         if (type === 'OpenXapp') {
@@ -505,7 +535,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         (l: any) => l.currency.currency === tx.Amount.currency && l.currency.issuer === tx.Amount.issuer,
                     );
                 }
-                Object.assign(params, { amount: tx.Amount.value, currency });
+                Object.assign(params, { amount: tx.DeliveredAmount?.value, currency });
             }
             Navigator.push(AppScreens.Transaction.Payment, {}, params);
             return;
@@ -906,6 +936,76 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
+    renderPaymentChannelCreate = () => {
+        const { tx } = this.state;
+
+        let content = '';
+
+        content += Localize.t('events.accountWillCreateAPaymentChannelTo', {
+            account: tx.Account.address,
+            destination: tx.Destination.address,
+        });
+
+        content += '\n';
+        content += Localize.t('events.theChannelIdIs', { channel: tx.ChannelID });
+
+        content += '\n';
+        content += Localize.t('events.theChannelAmountIs', { amount: tx.Amount.value });
+        content += '\n';
+
+        if (tx.Account.tag) {
+            content += Localize.t('events.theASourceTagIs', { tag: tx.Account.tag });
+            content += ' \n';
+        }
+        if (tx.Destination.tag) {
+            content += Localize.t('events.theDestinationTagIs', { tag: tx.Destination.tag });
+            content += ' \n';
+        }
+
+        if (tx.SettleDelay) {
+            content += Localize.t('events.theChannelHasASettlementDelay', { delay: tx.SettleDelay });
+            content += ' \n';
+        }
+
+        if (tx.CancelAfter) {
+            content += Localize.t('events.itCanBeCancelledAfter', { cancelAfter: tx.CancelAfter });
+        }
+
+        return content;
+    };
+
+    renderPaymentChannelFund = () => {
+        const { tx } = this.state;
+
+        let content = '';
+
+        content += Localize.t('events.itWillUpdateThePaymentChannel', { channel: tx.Channel });
+        content += '\n';
+        content += Localize.t('events.itWillIncreaseTheChannelAmount', { amount: tx.Amount.value });
+
+        return content;
+    };
+
+    renderPaymentChannelClaim = () => {
+        const { tx } = this.state;
+
+        let content = '';
+
+        content += Localize.t('events.itWillUpdateThePaymentChannel', { channel: tx.Channel });
+        content += '\n';
+
+        if (tx.Balance) {
+            content += Localize.t('events.theChannelBalanceClaimedIs', { balance: tx.Balance.value });
+            content += '\n';
+        }
+
+        if (tx.IsClosed) {
+            content += Localize.t('events.thePaymentChannelWillBeClosed');
+        }
+
+        return content;
+    };
+
     renderDescription = () => {
         const { tx } = this.state;
 
@@ -953,6 +1053,15 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case 'TicketCreate':
                 content += this.renderTicketCreate();
+                break;
+            case 'PaymentChannelCreate':
+                content += this.renderPaymentChannelCreate();
+                break;
+            case 'PaymentChannelFund':
+                content += this.renderPaymentChannelFund();
+                break;
+            case 'PaymentChannelClaim':
+                content += this.renderPaymentChannelClaim();
                 break;
             default:
                 content += `This is a ${tx.Type} transaction`;
@@ -1113,11 +1222,12 @@ class TransactionDetailsView extends Component<Props, State> {
                         });
                     }
                 } else {
+                    const amount = tx.DeliveredAmount || tx.Amount;
                     Object.assign(props, {
                         color: incomingTx ? styles.incomingColor : styles.outgoingColor,
                         prefix: incomingTx ? '' : '-',
-                        value: tx.Amount.value,
-                        currency: tx.Amount.currency,
+                        value: amount.value,
+                        currency: amount.currency,
                     });
                 }
 
@@ -1142,7 +1252,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case 'EscrowFinish':
                 Object.assign(props, {
-                    color: incomingTx ? styles.orangeColor : styles.naturalColor,
+                    color: tx.Destination.address === account.address ? styles.incomingColor : styles.naturalColor,
                     icon: 'IconCornerRightDown',
                     value: tx.Amount.value,
                     currency: tx.Amount.currency,
@@ -1190,6 +1300,25 @@ class TransactionDetailsView extends Component<Props, State> {
 
                 break;
             }
+            case 'PaymentChannelClaim':
+            case 'PaymentChannelFund':
+            case 'PaymentChannelCreate': {
+                if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                    const incoming = !!balanceChanges.received;
+                    const amount = balanceChanges?.received || balanceChanges?.sent;
+
+                    Object.assign(props, {
+                        icon: incoming ? 'IconCornerRightDown' : 'IconCornerRightUp',
+                        color: incoming ? styles.incomingColor : styles.outgoingColor,
+                        prefix: incoming ? '' : '-',
+                        value: amount.value,
+                        currency: amount.currency,
+                    });
+                } else {
+                    shouldShowAmount = false;
+                }
+                break;
+            }
             default:
                 shouldShowAmount = false;
                 break;
@@ -1213,7 +1342,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     <View style={[AppStyles.row, styles.amountContainerSmall]}>
                         <AmountText
                             value={takerGets.value}
-                            currency={takerGets.currency}
+                            postfix={takerGets.currency}
                             style={[styles.amountTextSmall]}
                         />
                     </View>
@@ -1228,7 +1357,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
                         <AmountText
                             value={props.value}
-                            currency={props.currency}
+                            postfix={props.currency}
                             prefix={props.prefix}
                             style={[styles.amountText, props.color]}
                         />
@@ -1238,6 +1367,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         if (tx.Type === 'Payment') {
+            // rippling
             if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
                 if (balanceChanges?.sent) {
                     return (
@@ -1245,7 +1375,7 @@ class TransactionDetailsView extends Component<Props, State> {
                             <View style={[AppStyles.row, styles.amountContainerSmall]}>
                                 <AmountText
                                     value={balanceChanges.sent.value}
-                                    currency={balanceChanges.sent.currency}
+                                    postfix={balanceChanges.sent.currency}
                                     style={[styles.amountTextSmall]}
                                 />
                             </View>
@@ -1260,7 +1390,40 @@ class TransactionDetailsView extends Component<Props, State> {
                                 <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
                                 <AmountText
                                     value={props.value}
-                                    currency={props.currency}
+                                    postfix={props.currency}
+                                    prefix={props.prefix}
+                                    style={[styles.amountText, props.color]}
+                                />
+                            </View>
+                        </View>
+                    );
+                }
+            }
+
+            // path paid with different currency
+            if (tx.Paths && tx.SendMax && tx.SendMax.currency !== tx.Amount.currency) {
+                if (balanceChanges?.sent) {
+                    return (
+                        <View style={styles.amountHeaderContainer}>
+                            <View style={[AppStyles.row, styles.amountContainerSmall]}>
+                                <AmountText
+                                    value={balanceChanges.sent.value}
+                                    postfix={balanceChanges.sent.currency}
+                                    style={[styles.amountTextSmall]}
+                                />
+                            </View>
+
+                            <Spacer />
+                            <Icon size={20} style={AppStyles.imgColorGrey} name="IconArrowDown" />
+                            <Spacer />
+
+                            <View style={[AppStyles.row, styles.amountContainer]}>
+                                {/*
+                        // @ts-ignore */}
+                                <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                                <AmountText
+                                    value={props.value}
+                                    postfix={props.currency}
                                     prefix={props.prefix}
                                     style={[styles.amountText, props.color]}
                                 />
@@ -1279,7 +1442,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
                     <AmountText
                         value={props.value}
-                        currency={props.currency}
+                        postfix={props.currency}
                         prefix={props.prefix}
                         style={[styles.amountText, props.color]}
                     />
@@ -1396,7 +1559,7 @@ class TransactionDetailsView extends Component<Props, State> {
             if (to.address === account.address) {
                 to = Object.assign(to, {
                     name: account.label,
-                    source: 'internal:accounts',
+                    source: 'accounts',
                 });
             }
         } else {
@@ -1404,7 +1567,7 @@ class TransactionDetailsView extends Component<Props, State> {
             if (from.address === account.address) {
                 from = Object.assign(from, {
                     name: account.label,
-                    source: 'internal:accounts',
+                    source: 'accounts',
                 });
             }
         }
@@ -1415,7 +1578,7 @@ class TransactionDetailsView extends Component<Props, State> {
             to = {
                 address: account.address,
                 name: account.label,
-                source: 'internal:accounts',
+                source: 'accounts',
             };
         }
 
@@ -1425,7 +1588,7 @@ class TransactionDetailsView extends Component<Props, State> {
             from = {
                 address: account.address,
                 name: account.label,
-                source: 'internal:accounts',
+                source: 'accounts',
             };
         }
 
@@ -1435,7 +1598,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 if (balanceChanges?.sent || balanceChanges?.received) {
                     from = { address: tx.Account.address };
                     to = { address: tx.Destination?.address };
-                    through = { address: account.address, name: account.label, source: 'internal:accounts' };
+                    through = { address: account.address, name: account.label, source: 'accounts' };
                 }
             }
         }
@@ -1454,8 +1617,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 <Text style={[styles.labelText]}>{Localize.t('global.from')}</Text>
                 <RecipientElement
                     recipient={from}
-                    showMoreButton={from.source !== 'internal:accounts'}
-                    onMorePress={from.source !== 'internal:accounts' && this.showRecipientMenu}
+                    showMoreButton={from.source !== 'accounts'}
+                    onMorePress={from.source !== 'accounts' && this.showRecipientMenu}
                 />
                 {!!through && (
                     <>
@@ -1463,7 +1626,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         <Text style={[styles.labelText]}>{Localize.t('events.throughOfferBy')}</Text>
                         <RecipientElement
                             recipient={through}
-                            onMorePress={to.source !== 'internal:accounts' && this.showRecipientMenu}
+                            onMorePress={to.source !== 'accounts' && this.showRecipientMenu}
                         />
                     </>
                 )}
@@ -1471,8 +1634,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 <Text style={[styles.labelText]}>{Localize.t('global.to')}</Text>
                 <RecipientElement
                     recipient={to}
-                    showMoreButton={to.source !== 'internal:accounts'}
-                    onMorePress={to.source !== 'internal:accounts' && this.showRecipientMenu}
+                    showMoreButton={to.source !== 'accounts'}
+                    onMorePress={to.source !== 'accounts' && this.showRecipientMenu}
                 />
             </View>
         );

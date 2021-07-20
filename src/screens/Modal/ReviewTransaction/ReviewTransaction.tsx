@@ -138,6 +138,15 @@ class ReviewTransactionModal extends Component<Props, State> {
             case 'TicketCreate':
                 type = Localize.t('events.createTicket');
                 break;
+            case 'PaymentChannelCreate':
+                type = Localize.t('events.createPaymentChannel');
+                break;
+            case 'PaymentChannelFund':
+                type = Localize.t('events.fundPaymentChannel');
+                break;
+            case 'PaymentChannelClaim':
+                type = Localize.t('events.claimPaymentChannel');
+                break;
             case 'SignIn':
                 type = Localize.t('global.signIn');
                 break;
@@ -382,9 +391,13 @@ class ReviewTransactionModal extends Component<Props, State> {
                     // verify transaction
                     const verifyResult = await transaction.verify();
 
-                    // change the transaction final status if the transaction settled in the ledger
-                    if (verifyResult.success && submitResult.engineResult !== 'tesSUCCESS') {
-                        submitResult.engineResult = 'tesSUCCESS';
+                    // update submit result base on verify result
+                    if (verifyResult.success) {
+                        if (submitResult.engineResult !== 'tesSUCCESS') {
+                            submitResult.engineResult = 'tesSUCCESS';
+                        }
+                    } else {
+                        submitResult.success = false;
                     }
 
                     if (coreSettings.hapticFeedback) {

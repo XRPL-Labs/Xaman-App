@@ -132,7 +132,7 @@ export default class Button extends Component<Props> {
                 <LoadingIndicator
                     size="small"
                     style={styles.spinner}
-                    color={loadingIndicatorStyle || light ? 'dark' : 'light'}
+                    color={loadingIndicatorStyle || light ? 'default' : 'light'}
                 />
             );
         }

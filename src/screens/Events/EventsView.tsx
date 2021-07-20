@@ -139,6 +139,8 @@ class EventsView extends Component<Props, State> {
                 account,
                 dataSource: undefined,
                 transactions: [],
+                plannedTransactions: [],
+                lastMarker: undefined,
             },
             () => {
                 this.updateDataSource(true);
@@ -604,6 +606,7 @@ class EventsView extends Component<Props, State> {
     renderListHeader = () => {
         const { filters, sectionIndex } = this.state;
 
+        // ignore to show the header for request tab
         if (sectionIndex === 2) {
             return null;
         }

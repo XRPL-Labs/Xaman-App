@@ -4,17 +4,24 @@
  * This is the service we use for update accounts real time details and listen for ledger transactions
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment-timezone';
 import EventEmitter from 'events';
-import { map, isEmpty, flatMap, forEach, has, get, assign, omitBy } from 'lodash';
+import { map, isEmpty, flatMap, forEach, has, get, assign, omitBy, startsWith, keys } from 'lodash';
 
 import { TrustLineSchema } from '@store/schemas/latest';
 import AccountRepository from '@store/repositories/account';
 import CurrencyRepository from '@store/repositories/currency';
 
 import { Amount } from '@common/libs/ledger/parser/common';
-import { AccountTxResponse, LedgerMarker, SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
+import Meta from '@common/libs/ledger/parser/meta';
+
+import {
+    AccountTxResponse,
+    LedgerMarker,
+    SubmitResultType,
+    VerifyResultType,
+    LedgerTransactionType,
+} from '@common/libs/ledger/types';
 
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
@@ -203,14 +210,8 @@ class LedgerService extends EventEmitter {
                 tx_blob,
             });
 
-            const {
-                error,
-                error_message,
-                error_exception,
-                engine_result,
-                tx_json,
-                engine_result_message,
-            } = submitResult;
+            const { error, error_message, error_exception, engine_result, tx_json, engine_result_message } =
+                submitResult;
 
             this.logger.debug('Submit Result TX:', submitResult);
 
@@ -231,21 +232,18 @@ class LedgerService extends EventEmitter {
                 });
             }
 
-            // result code prefix
-            const prefix = engine_result.substr(0, 3);
-
-            // probably success submit
-            if (['tes', 'tel', 'ter'].indexOf(prefix) > -1) {
-                return assign(result, {
-                    success: true,
+            // Immediate rejection
+            if (startsWith(engine_result, 'tem')) {
+                return Object.assign(result, {
+                    success: false,
                     engineResult: engine_result,
                     message: engine_result_message,
                 });
             }
 
-            // didn't got any possible success result
-            return Object.assign(result, {
-                success: false,
+            // probably successful
+            return assign(result, {
+                success: true,
                 engineResult: engine_result,
                 message: engine_result_message,
             });
@@ -262,15 +260,20 @@ class LedgerService extends EventEmitter {
     };
 
     verifyTx = (transactionId: string): Promise<VerifyResultType> => {
-        return new Promise(resolve => {
-            // wait for ledger close event
-            let verified = false;
-            const ledgerListener = async () => {
+        return new Promise((resolve) => {
+            let timeout = undefined as ReturnType<typeof setTimeout>;
+
+            const ledgerListener = () => {
                 this.getTransaction(transactionId)
                     .then((tx: any) => {
                         if (tx.validated) {
+                            // of event for ledger
                             SocketService.offEvent('ledger', ledgerListener);
-                            verified = true;
+
+                            // clear timeout
+                            if (timeout) {
+                                clearTimeout(timeout);
+                            }
 
                             const { TransactionResult } = tx.meta;
 
@@ -283,34 +286,38 @@ class LedgerService extends EventEmitter {
                     .catch(() => {});
             };
 
+            // listen for ledger close events
             SocketService.onEvent('ledger', ledgerListener);
 
-            // timeout after 20 sec
-            setTimeout(() => {
-                if (!verified) {
-                    SocketService.offEvent('ledger', ledgerListener);
-                    resolve({
-                        success: false,
-                    });
-                }
+            // timeout after 30 sec
+            timeout = setTimeout(() => {
+                SocketService.offEvent('ledger', ledgerListener);
+                resolve({
+                    success: false,
+                });
             }, 30000);
         });
     };
 
     /**
-     * Handle stream transactions
+     * Handle stream transactions on subscribed accounts
      */
     transactionHandler() {
-        SocketService.onEvent('transaction', (tx: any) => {
-            const { transaction } = tx;
+        SocketService.onEvent('transaction', (tx: LedgerTransactionType) => {
+            const { transaction, meta } = tx;
 
-            this.logger.debug('Transaction Received: ', transaction);
+            if (typeof transaction === 'object' && typeof meta === 'object') {
+                this.logger.debug(`Transaction received: ${get(transaction, 'hash', 'NO_HASH')}`);
 
-            // update account details
-            this.updateAccountsDetails([transaction.Account, transaction.Destination]);
+                // get effected accounts
+                const effectedAccounts = keys(new Meta(meta).parseBalanceChanges());
 
-            // emit onTransaction event
-            this.emit('transaction', transaction);
+                // update account details
+                this.updateAccountsDetails(effectedAccounts);
+
+                // emit onTransaction event
+                this.emit('transaction', transaction);
+            }
         });
     }
 
@@ -320,7 +327,7 @@ class LedgerService extends EventEmitter {
     loadAccounts = () => {
         const accounts = AccountRepository.getAccounts();
 
-        this.accounts = flatMap(accounts, a => {
+        this.accounts = flatMap(accounts, (a) => {
             return { address: a.address, lastSync: 0 };
         });
 
@@ -381,7 +388,7 @@ class LedgerService extends EventEmitter {
     };
 
     getAccountObligations = (account: string) => {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             this.getGatewayBalances(account)
                 .then((accountObligations: any) => {
                     const obligationsLines = [] as any[];
@@ -440,12 +447,12 @@ class LedgerService extends EventEmitter {
                     filteredLines = filteredLines.concat(obligationsLines);
 
                     await Promise.all(
-                        map(filteredLines, async l => {
+                        map(filteredLines, async (l) => {
                             // update currency
-                            const currency = await CurrencyRepository.upsert(
-                                { id: uuidv4(), issuer: l.account, currency: l.currency },
-                                { issuer: l.account, currency: l.currency },
-                            );
+                            const currency = await CurrencyRepository.include({
+                                issuer: l.account,
+                                currency: l.currency,
+                            });
 
                             // get transfer rate from issuer account
                             let transfer_rate = 0;
@@ -457,6 +464,7 @@ class LedgerService extends EventEmitter {
 
                             // add to trustLines list
                             normalizedList.push({
+                                id: `${account}.${currency.id}`,
                                 currency,
                                 balance: new Amount(l.balance, false).toNumber(),
                                 transfer_rate,
@@ -494,7 +502,7 @@ class LedgerService extends EventEmitter {
      * this will contain account trustLines etc ...
      */
     updateAccountsDetails = (include?: string[]) => {
-        forEach(this.accounts, account => {
+        forEach(this.accounts, (account) => {
             // check if include present
             if (!isEmpty(include)) {
                 if (include.indexOf(account.address) === -1) return;
@@ -511,12 +519,12 @@ class LedgerService extends EventEmitter {
 
             this.updateAccountInfo(account.address)
                 .then(() => this.updateAccountLines(account.address))
-                .catch(e => {
-                    this.logger.warn(`UpdateAccountInfo [${account.address}] `, e);
+                .catch((e) => {
+                    this.logger.warn(`Update account info [${account.address}] `, e);
                 });
 
             // update last sync
-            this.accounts = map(this.accounts, a => {
+            this.accounts = map(this.accounts, (a) => {
                 return a.address === account.address ? { address: account.address, lastSync: moment().unix() } : a;
             });
         });
@@ -531,7 +539,7 @@ class LedgerService extends EventEmitter {
 
         // reload accounts
         const accounts = AccountRepository.getAccounts();
-        this.accounts = flatMap(accounts, a => {
+        this.accounts = flatMap(accounts, (a) => {
             return { address: a.address, lastSync: 0 };
         });
 
@@ -546,7 +554,7 @@ class LedgerService extends EventEmitter {
      * Unsubscribe for streaming
      */
     unsubscribe() {
-        const arrayAccounts = flatMap(this.accounts, a => [a.address]);
+        const arrayAccounts = flatMap(this.accounts, (a) => [a.address]);
 
         this.logger.debug(`Unsubscribe to ${arrayAccounts} accounts`, arrayAccounts);
 
@@ -566,7 +574,7 @@ class LedgerService extends EventEmitter {
             this.unsubscribe();
         }
 
-        const arrayAccounts = flatMap(this.accounts, a => [a.address]);
+        const arrayAccounts = flatMap(this.accounts, (a) => [a.address]);
 
         this.logger.debug(`Subscribed to ${arrayAccounts.length} accounts`, arrayAccounts);
 

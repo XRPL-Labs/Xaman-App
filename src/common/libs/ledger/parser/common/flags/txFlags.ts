@@ -18,7 +18,6 @@ const txFlags = {
 
     TrustSet: {
         SetAuth: 0x00010000,
-        NoRipple: 0x00020000,
         SetNoRipple: 0x00020000,
         ClearNoRipple: 0x00040000,
         SetFreeze: 0x00100000,

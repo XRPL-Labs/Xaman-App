@@ -107,14 +107,20 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
             this.textInputView.current.measure((x, y, width, height, pageX, pageY) => {
                 if (!pageY) return;
 
-                const extraOffset = Platform.OS === 'android' ? 35 : 0;
+                const extraOffset = Platform.OS === 'android' ? 40 : 0;
 
-                const bottomView = (AppSizes.screen.height - pageY) / 2;
+                const bottomView = AppSizes.screen.height - pageY + height;
                 const KeyboardHeight = e.endCoordinates.height + extraOffset;
 
-                this.setState({ offsetBottom: KeyboardHeight - bottomView }, () => {
-                    this.panel.snapTo({ index: 2 });
-                });
+                const offset = Math.abs(bottomView - KeyboardHeight);
+
+                if (offset >= 0) {
+                    this.setState({ offsetBottom: offset }, () => {
+                        setTimeout(() => {
+                            this.panel.snapTo({ index: 2 });
+                        }, 0);
+                    });
+                }
             });
         }
     };
@@ -222,7 +228,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={r => {
+                    ref={(r) => {
                         this.panel = r;
                     }}
                     animatedNativeDriver
@@ -323,7 +329,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                             ]}
                         >
                             <TextInput
-                                ref={r => {
+                                ref={(r) => {
                                     this.textInput = r;
                                 }}
                                 value={String(destinationTag)}
