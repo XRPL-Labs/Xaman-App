@@ -138,7 +138,7 @@ const mergeObjects = (t1, t2) => {
             }
 
             fileContents = fileContents.replace(/"RegExp\(.+\)"/g, m => {
-                return m.slice(8, -2);
+                return JSON.parse(`"${m.slice(8, -2)}"`);
             });
 
             fs.writeFile(`${LOCALES_DIR}/${k === 'en' ? '' : 'generated/'}${k}.json`, fileContents, (err) => {
