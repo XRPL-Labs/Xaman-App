@@ -71,7 +71,7 @@ subprojects { subproject ->
         versionMajor = npmVersion[0]
         versionMinor = npmVersion[1]
         versionPatch = npmVersion[2]
-        buildNumber = 8
+        buildNumber = 1
     }
     afterEvaluate {
         if (project.hasProperty("android")) {
