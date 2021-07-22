@@ -9,7 +9,7 @@ import { View, Animated, Text, KeyboardEvent } from 'react-native';
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
-import { Keyboard } from '@common/helpers/keyboard';
+import Keyboard from '@common/helpers/keyboard';
 
 import BackendService from '@services/BackendService';
 

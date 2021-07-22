@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { View, Text, Animated, LayoutAnimation, InteractionManager, KeyboardEvent } from 'react-native';
 
-import { Keyboard } from '@common/helpers/keyboard';
+import Keyboard from '@common/helpers/keyboard';
 
 import { PasswordInput, Button, Spacer } from '@components/General';
 

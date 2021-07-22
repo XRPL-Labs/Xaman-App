@@ -12,7 +12,7 @@ import { AppScreens } from '@common/constants';
 import { Button, Spacer, Icon } from '@components/General';
 import Localize from '@locale';
 
-import { Keyboard } from '@common/helpers/keyboard';
+import Keyboard from '@common/helpers/keyboard';
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';

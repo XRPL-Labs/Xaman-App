@@ -10,7 +10,7 @@ import { StringTypeDetector, StringDecoder, StringType } from 'xumm-string-decod
 
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
-import { Keyboard } from '@common/helpers/keyboard';
+import Keyboard from '@common/helpers/keyboard';
 
 import { AppScreens } from '@common/constants';
 

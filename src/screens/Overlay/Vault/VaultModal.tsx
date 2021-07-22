@@ -19,8 +19,9 @@ import { SignedObjectType } from '@common/libs/ledger/types';
 import Vault from '@common/libs/vault';
 
 import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
-import { Keyboard } from '@common/helpers/keyboard';
 import { Navigator } from '@common/helpers/navigator';
+import Keyboard from '@common/helpers/keyboard';
+
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
