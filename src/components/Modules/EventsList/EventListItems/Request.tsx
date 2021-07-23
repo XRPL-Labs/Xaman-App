@@ -1,4 +1,4 @@
-import { has, get } from 'lodash';
+import { has, get, debounce } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
@@ -69,7 +69,7 @@ class RequestTemplate extends Component<Props, State> {
         );
     };
 
-    onPress = () => {
+    debouncedOnPress = () => {
         switch (this.getType()) {
             case RequestType.OpenXApp:
                 this.openXApp();
@@ -81,6 +81,8 @@ class RequestTemplate extends Component<Props, State> {
                 break;
         }
     };
+
+    onPress = debounce(this.debouncedOnPress, 300, { leading: true, trailing: false });
 
     getType = (): RequestType => {
         const { item } = this.props;

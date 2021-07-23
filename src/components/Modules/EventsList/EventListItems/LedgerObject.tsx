@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty, isEqual, debounce } from 'lodash';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import { AccountSchema } from '@store/schemas/latest';
@@ -143,10 +143,12 @@ class LedgerObjectTemplate extends Component<Props, State> {
             .catch(() => {});
     };
 
-    onPress = () => {
+    debouncedOnPress = () => {
         const { item, account } = this.props;
         Navigator.push(AppScreens.Transaction.Details, {}, { tx: item, account });
     };
+
+    onPress = debounce(this.debouncedOnPress, 300, { leading: true, trailing: false });
 
     getIcon = () => {
         const { item } = this.props;

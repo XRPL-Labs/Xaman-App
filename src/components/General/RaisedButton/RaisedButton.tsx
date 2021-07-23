@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import isEqual from 'lodash/isEqual';
+import { debounce, isEqual } from 'lodash';
 
 import { Animated, View, Text, TouchableWithoutFeedback, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 
@@ -103,7 +103,7 @@ export default class RaisedButton extends Component<Props, State> {
         }).start(callback);
     };
 
-    onPress = () => {
+    debouncedOnPress = () => {
         const { animatedActive, animatedValue } = this.state;
         const { isDisabled, isLoading } = this.props;
 
@@ -128,6 +128,8 @@ export default class RaisedButton extends Component<Props, State> {
             },
         });
     };
+
+    onPress = debounce(this.debouncedOnPress, 300, { leading: true, trailing: false });
 
     press = () => {
         const { onPress } = this.props;
