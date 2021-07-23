@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
         width: AppSizes.screen.width,
         height: AppSizes.screen.height,
         padding: AppSizes.paddingSml,
-        paddingBottom: AppSizes.paddingSml + AppSizes.navigationBarHeight,
+        paddingBottom: AppSizes.padding + AppSizes.navigationBarHeight,
     },
     logo: {
         width: AppSizes.scale(120),

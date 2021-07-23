@@ -66,4 +66,9 @@ ReactNative.NativeModules.Toast = {
     showWithGravity: jest.fn((message: string, duration: any, gravity: number) => true),
 };
 
+ReactNative.NativeModules.DimensionModule = {
+    layoutInsets: { top: 0, bottom: 0 },
+    getLayoutInsets: jest.fn(() => Promise.resolve({ top: 0, bottom: 0 })),
+};
+
 module.exports = ReactNative;

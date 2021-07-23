@@ -89,7 +89,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
         const bottomGap = Platform.select({
             ios: 0,
-            android: AppSizes.navigationBarHeight * 1.1,
+            android: AppSizes.navigationBarHeight,
         });
 
         let contentHeight = count * (ROW_ITEM_HEIGHT + 10) + bottomGap + headerContentHeight;

@@ -9,17 +9,19 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.modules.network.OkHttpClientProvider;
 
 // Local Libs
-import libs.utils.UtilsPackage;
-import libs.ui.KeyboardPackage;
 import libs.crypto.modules.CryptoPackage;
+
+import libs.ui.KeyboardPackage;
 import libs.ui.ActionSheetPackage;
 import libs.ui.PromptPackage;
 import libs.ui.QRCodePackage;
+import libs.ui.DimensionPackage;
 import libs.notification.LocalNotificationPackage;
 import libs.common.SharedPreferencesPackage;
 import libs.common.AppUpdatePackage;
 import libs.common.InAppPurchasePackage;
 import libs.common.HTTPClientFactory;
+import libs.utils.UtilsPackage;
 
 // External Dependencies
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -62,6 +64,7 @@ public class MainApplication extends NavigationApplication {
                 packages.add(new LocalNotificationPackage());
                 packages.add(new AppUpdatePackage());
                 packages.add(new InAppPurchasePackage());
+                packages.add(new DimensionPackage());
                 return packages;
             }
 

@@ -16,6 +16,7 @@
 		A20B9293256FCE670066FECA /* Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20B9292256FCE670066FECA /* Empty.swift */; };
 		A20C14202524C8A000686A2A /* AppUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = A20C141F2524C8A000686A2A /* AppUpdate.m */; };
 		A2805CE224D1982400B5552E /* LocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = A2805CE124D1982400B5552E /* LocalNotification.m */; };
+		A2AD77DA26AAB23B00733D6E /* Dimension.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AD77D926A9B8AF00733D6E /* Dimension.m */; };
 		A2AFF12E243E79C30007005E /* Proxima Nova Alt Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */; };
 		A2AFF12F243E79C30007005E /* UbuntuMono-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10B243E79C30007005E /* UbuntuMono-BoldItalic.ttf */; };
 		A2AFF130243E79C30007005E /* UbuntuMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10C243E79C30007005E /* UbuntuMono-Bold.ttf */; };
@@ -87,6 +88,8 @@
 		A20C141F2524C8A000686A2A /* AppUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppUpdate.m; sourceTree = "<group>"; };
 		A2805CE124D1982400B5552E /* LocalNotification.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocalNotification.m; sourceTree = "<group>"; };
 		A2805CE324D1984700B5552E /* LocalNotification.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocalNotification.h; sourceTree = "<group>"; };
+		A2AD77D826A9B85400733D6E /* Dimension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Dimension.h; sourceTree = "<group>"; };
+		A2AD77D926A9B8AF00733D6E /* Dimension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Dimension.m; sourceTree = "<group>"; };
 		A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Alt Thin.otf"; sourceTree = "<group>"; };
 		A2AFF10B243E79C30007005E /* UbuntuMono-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-BoldItalic.ttf"; sourceTree = "<group>"; };
 		A2AFF10C243E79C30007005E /* UbuntuMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-Bold.ttf"; sourceTree = "<group>"; };
@@ -303,6 +306,8 @@
 				A2AFF11F243E79C30007005E /* Toast.h */,
 				A2AFF120243E79C30007005E /* QRCodeGenerator */,
 				A2AFF127243E79C30007005E /* UIView+Toast.m */,
+				A2AD77D826A9B85400733D6E /* Dimension.h */,
+				A2AD77D926A9B8AF00733D6E /* Dimension.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -775,6 +780,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A2AD77DA26AAB23B00733D6E /* Dimension.m in Sources */,
 				A2B9D13E2449BAA400259841 /* SharedPreferences.m in Sources */,
 				A20C14202524C8A000686A2A /* AppUpdate.m in Sources */,
 				A2AFF142243E79C30007005E /* Crypto.m in Sources */,
