@@ -2,7 +2,7 @@
  * Request decline overlay
  */
 import React, { Component, createRef } from 'react';
-import { Animated, View, Text, Image, TouchableWithoutFeedback, KeyboardEvent } from 'react-native';
+import { Animated, View, Text, Image, TouchableWithoutFeedback, KeyboardEvent, Platform } from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
@@ -107,10 +107,14 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
             this.textInputView.current.measure((x, y, width, height, pageX, pageY) => {
                 if (!pageY) return;
 
-                const bottomView = AppSizes.screen.height + AppSizes.topInset + AppSizes.bottomInset + height - pageY;
+                const bottomView = AppSizes.screen.height - height - pageY;
                 const KeyboardHeight = e.endCoordinates.height;
 
-                const offset = Math.abs(bottomView - KeyboardHeight);
+                let offset = KeyboardHeight - bottomView;
+
+                if (Platform.OS === 'android') {
+                    offset += AppSizes.topInset + AppSizes.bottomInset;
+                }
 
                 if (offset >= 0) {
                     this.setState({ offsetBottom: offset }, () => {
