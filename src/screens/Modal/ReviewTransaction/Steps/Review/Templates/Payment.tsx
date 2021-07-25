@@ -43,6 +43,9 @@ export interface State {
     xrpRoundedUp: string;
     currencyRate: any;
     isLoadingRate: boolean;
+    shouldShowIssuerFee: boolean;
+    isLoadingIssuerFee: boolean;
+    issuerFee: number;
 }
 
 /* Component ==================================================================== */
@@ -67,6 +70,9 @@ class PaymentTemplate extends Component<Props, State> {
             xrpRoundedUp: undefined,
             currencyRate: undefined,
             isLoadingRate: false,
+            shouldShowIssuerFee: false,
+            isLoadingIssuerFee: false,
+            issuerFee: 0,
         };
 
         this.amountInput = React.createRef();
@@ -81,6 +87,9 @@ class PaymentTemplate extends Component<Props, State> {
 
         // if XRP then show equal amount in selected currency
         this.fetchCurrencyRate();
+
+        // check issuer fee if IOU payment
+        this.fetchIssuerFee();
     }
 
     static getDerivedStateFromProps(nextProps: Props, prevState: State) {
@@ -97,6 +106,40 @@ class PaymentTemplate extends Component<Props, State> {
             InteractionManager.runAfterInteractions(this.checkForPartialPaymentRequired);
         }
     }
+
+    fetchIssuerFee = () => {
+        const { transaction } = this.props;
+
+        if (!transaction.Amount?.issuer && !transaction.SendMax?.issuer) {
+            return;
+        }
+
+        this.setState({ isLoadingIssuerFee: true, shouldShowIssuerFee: true });
+
+        // get transfer rate from issuer account
+        LedgerService.getAccountInfo(transaction.Amount?.issuer || transaction.SendMax?.issuer)
+            .then((issuerAccountInfo: any) => {
+                if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
+                    const { TransferRate } = issuerAccountInfo.account_data;
+
+                    const fee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
+
+                    this.setState({
+                        issuerFee: fee,
+                    });
+                }
+            })
+            .catch(() => {
+                this.setState({
+                    shouldShowIssuerFee: false,
+                });
+            })
+            .finally(() => {
+                this.setState({
+                    isLoadingIssuerFee: false,
+                });
+            });
+    };
 
     fetchCurrencyRate = () => {
         const { transaction } = this.props;
@@ -299,6 +342,9 @@ class PaymentTemplate extends Component<Props, State> {
             amount,
             currencyName,
             destinationDetails,
+            shouldShowIssuerFee,
+            isLoadingIssuerFee,
+            issuerFee,
         } = this.state;
 
         return (
@@ -414,6 +460,15 @@ class PaymentTemplate extends Component<Props, State> {
                                 postfix={transaction.DeliverMin.currency}
                                 style={styles.amount}
                             />
+                        </View>
+                    </>
+                )}
+
+                {shouldShowIssuerFee && (
+                    <>
+                        <Text style={[styles.label]}>{Localize.t('global.issuerFee')}</Text>
+                        <View style={[styles.contentBox]}>
+                            <Text style={[styles.value]}>{isLoadingIssuerFee ? 'Loading...' : `${issuerFee}%`}</Text>
                         </View>
                     </>
                 )}
