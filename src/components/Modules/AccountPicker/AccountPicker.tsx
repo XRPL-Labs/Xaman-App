@@ -72,7 +72,7 @@ class AccountPicker extends Component<Props, State> {
         const { selectedItem, accounts } = this.props;
         const { expanded } = this.state;
 
-        if (expanded || accounts.length <= 1) {
+        if (expanded || !Array.isArray(accounts) || accounts.length <= 1) {
             return;
         }
 

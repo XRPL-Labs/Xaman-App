@@ -368,7 +368,7 @@ class SummaryStep extends Component<Props, State> {
                             </Text>
                         </View>
 
-                        <AccountPicker accounts={source} selectedItem={source} />
+                        <AccountPicker accounts={[source]} selectedItem={source} />
 
                         <Spacer size={20} />
 
