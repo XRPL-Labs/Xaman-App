@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { isEmpty, isEqual, has } from 'lodash';
+import { isEmpty, isEqual, has, get } from 'lodash';
 import React, { Component } from 'react';
 import { View, Alert, Text, Platform, TouchableOpacity, InteractionManager } from 'react-native';
 
@@ -28,6 +28,7 @@ import styles from './styles';
 export interface Props {
     transaction: Payment;
     canOverride: boolean;
+    forceRender: () => void;
 }
 
 export interface State {
@@ -171,7 +172,7 @@ class PaymentTemplate extends Component<Props, State> {
     };
 
     checkForPartialPaymentRequired = async () => {
-        const { transaction } = this.props;
+        const { transaction, forceRender } = this.props;
         const { account, shouldCheckForConversation } = this.state;
 
         // only check if IOU
@@ -228,7 +229,12 @@ class PaymentTemplate extends Component<Props, State> {
 
                 // @ts-ignore
                 transaction.SendMax = sendMaxXRP;
-                transaction.Flags = [txFlags.Payment.PartialPayment];
+
+                if (get(transaction.Flags, 'PartialPayment', false) === false) {
+                    transaction.Flags = [txFlags.Payment.PartialPayment];
+                    // force re-render the parent
+                    forceRender();
+                }
 
                 this.setState({
                     isPartialPayment: true,
@@ -236,19 +242,25 @@ class PaymentTemplate extends Component<Props, State> {
                     xrpRoundedUp: sendMaxXRP,
                 });
             } else {
-                // if we already set the send max remove it
-
                 // check for transfer fee
-                // add PartialPayment
-                const issuerAccountInfo = await LedgerService.getAccountInfo(transaction.Amount.issuer);
-                // eslint-disable-next-line max-len
-                if (has(issuerAccountInfo, ['account_data', 'TransferRate']) || account === transaction.Amount.issuer) {
+                // if issuer have transfer fee add PartialPayment if not present
+                // TODO: this is developer responsibility to add this flag in the first place
+                const issuerInfo = await LedgerService.getAccountInfo(transaction.Amount.issuer);
+
+                if (
+                    (has(issuerInfo, ['account_data', 'TransferRate']) || account === transaction.Amount.issuer) &&
+                    get(transaction.Flags, 'PartialPayment', false) === false
+                ) {
                     transaction.Flags = [txFlags.Payment.PartialPayment];
+                    // force re-render the parent
+                    forceRender();
                 }
 
+                // if we already set the send max remove it
                 if (transaction.SendMax) {
                     transaction.SendMax = undefined;
                 }
+
                 this.setState({
                     isPartialPayment: false,
                 });
