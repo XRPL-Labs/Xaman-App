@@ -1204,9 +1204,19 @@ class TransactionDetailsView extends Component<Props, State> {
         };
 
         switch (tx.Type) {
-            case 'Payment':
+            case 'Payment': {
+                const amount = tx.DeliveredAmount || tx.Amount;
+
                 if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
-                    if (balanceChanges?.received) {
+                    // regular key
+                    if (!balanceChanges?.received && !balanceChanges?.sent) {
+                        Object.assign(props, {
+                            color: styles.naturalColor,
+                            value: amount.value,
+                            currency: amount.currency,
+                            icon: undefined,
+                        });
+                    } else if (balanceChanges?.received) {
                         Object.assign(props, {
                             color: styles.incomingColor,
                             value: balanceChanges.received.value,
@@ -1222,7 +1232,6 @@ class TransactionDetailsView extends Component<Props, State> {
                         });
                     }
                 } else {
-                    const amount = tx.DeliveredAmount || tx.Amount;
                     Object.assign(props, {
                         color: incomingTx ? styles.incomingColor : styles.outgoingColor,
                         prefix: incomingTx ? '' : '-',
@@ -1232,6 +1241,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
 
                 break;
+            }
             case 'AccountDelete': {
                 Object.assign(props, {
                     color: incomingTx ? styles.incomingColor : styles.outgoingColor,
@@ -1352,9 +1362,10 @@ class TransactionDetailsView extends Component<Props, State> {
                     <Spacer />
 
                     <View style={[AppStyles.row, styles.amountContainer]}>
-                        {/*
-                     // @ts-ignore */}
-                        <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                        {props.icon && (
+                            // @ts-ignore
+                            <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                        )}
                         <AmountText
                             value={props.value}
                             postfix={props.currency}
@@ -1385,9 +1396,10 @@ class TransactionDetailsView extends Component<Props, State> {
                             <Spacer />
 
                             <View style={[AppStyles.row, styles.amountContainer]}>
-                                {/*
-                         // @ts-ignore */}
-                                <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                                {props.icon && (
+                                    // @ts-ignore
+                                    <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                                )}
                                 <AmountText
                                     value={props.value}
                                     postfix={props.currency}
@@ -1418,9 +1430,10 @@ class TransactionDetailsView extends Component<Props, State> {
                             <Spacer />
 
                             <View style={[AppStyles.row, styles.amountContainer]}>
-                                {/*
-                        // @ts-ignore */}
-                                <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                                {props.icon && (
+                                    //  @ts-ignore
+                                    <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                                )}
                                 <AmountText
                                     value={props.value}
                                     postfix={props.currency}
@@ -1437,9 +1450,10 @@ class TransactionDetailsView extends Component<Props, State> {
         return (
             <View style={styles.amountHeaderContainer}>
                 <View style={[AppStyles.row, styles.amountContainer]}>
-                    {/*
-                         // @ts-ignore */}
-                    <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                    {props.icon && (
+                        //  @ts-ignore
+                        <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                    )}
                     <AmountText
                         value={props.value}
                         postfix={props.currency}

@@ -385,7 +385,20 @@ class TransactionTemplate extends Component<Props, State> {
 
         if (item.Type === 'Payment') {
             const balanceChanges = item.BalanceChange(account.address);
+            const amount = item.DeliveredAmount || item.Amount;
+
             if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
+                // regular key
+                if (!balanceChanges?.received && !balanceChanges?.sent) {
+                    return (
+                        <AmountText
+                            value={amount.value}
+                            postfix={amount.currency}
+                            style={[styles.amount, styles.naturalColor]}
+                            postfixStyle={styles.currency}
+                        />
+                    );
+                }
                 if (balanceChanges?.received) {
                     return (
                         <AmountText
@@ -398,7 +411,6 @@ class TransactionTemplate extends Component<Props, State> {
                 }
             }
 
-            const amount = item.DeliveredAmount || item.Amount;
             return (
                 <AmountText
                     value={amount.value}
