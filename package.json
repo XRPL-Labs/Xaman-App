@@ -26,6 +26,7 @@
     "bignumber.js": "9.0.1",
     "fuse.js": "6.4.6",
     "i18n-js": "3.8.0",
+    "jsc-android": "^250230.2.1",
     "lodash": "4.17.21",
     "moment-timezone": "0.5.33",
     "node-libs-browser": "2.2.1",
