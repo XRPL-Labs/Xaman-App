@@ -34,9 +34,20 @@ class LoggerService {
         };
     }
 
+    /**
+     * record a error in firebase crashlytics
+     */
     recordError = (msg: string, e: any) => {
         crashlytics().log(msg);
         crashlytics().recordError(e);
+    };
+
+    /**
+     * log error in session logs
+     */
+    logError = (msg: string, e: any) => {
+        const data = this.normalizeError(e);
+        this.addLogMessage('error', msg, data);
     };
 
     /**
@@ -107,8 +118,6 @@ class LoggerService {
     };
 
     addLogMessage(level: string, message: string, data: any) {
-        // push the log to current session
-        // TODO: shoulde save in the realm backend with level and data present in the log
         this.entries.push({
             timestamp: this.getTimeStamp(),
             level,

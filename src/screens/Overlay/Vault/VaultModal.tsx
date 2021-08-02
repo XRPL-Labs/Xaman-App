@@ -9,6 +9,8 @@ import { Alert, Linking, InteractionManager } from 'react-native';
 import * as AccountLib from 'xrpl-accountlib';
 import RNTangemSdk from 'tangem-sdk-react-native';
 
+import LoggerService from '@services/LoggerService';
+
 import Flag from '@common/libs/ledger/parser/common/flag';
 import { CoreRepository, AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -158,6 +160,18 @@ class VaultModal extends Component<Props, State> {
         );
     };
 
+    onSignError = (method: AuthMethods, e: Error) => {
+        // log
+        LoggerService.logError(`Unexpected error in sign process [${method}]`, e);
+        // show alert
+        Prompt(
+            Localize.t('global.unexpectedErrorOccurred'),
+            Localize.t('global.pleaseCheckSessionLogForMoreInfo'),
+            [{ text: Localize.t('global.tryAgain') }],
+            { type: 'default' },
+        );
+    };
+
     openTroubleshootLink = () => {
         const url = `http://xumm.app/redir/faq/account-signing-password/${Localize.getCurrentLocale()}`;
         Linking.canOpenURL(url).then((supported) => {
@@ -187,79 +201,87 @@ class VaultModal extends Component<Props, State> {
     signWithPrivateKey = async (method: AuthMethods, options: SignOptions) => {
         const { signer } = this.state;
         const { txJson, multiSign } = this.props;
-
         const { encryptionKey } = options;
 
-        if (!encryptionKey) {
-            return;
+        try {
+            if (!encryptionKey) {
+                throw new Error('No encryption key provided!');
+            }
+
+            // fetch private key from vault
+            const privateKey = await Vault.open(signer.publicKey, encryptionKey);
+            if (!privateKey) {
+                this.onInvalidAuth(method);
+                return;
+            }
+
+            let signerInstance = AccountLib.derive.privatekey(privateKey);
+            // check if multi sign
+            if (multiSign) {
+                signerInstance = signerInstance.signAs(signer.address);
+            }
+
+            let signedObject = AccountLib.sign(txJson, signerInstance) as SignedObjectType;
+            signedObject = { ...signedObject, signMethod: method };
+
+            this.onSign(signedObject);
+        } catch (e) {
+            this.onSignError(method, e);
         }
-
-        // fetch private key from vault
-        const privateKey = await Vault.open(signer.publicKey, encryptionKey);
-        if (!privateKey) {
-            this.onInvalidAuth(method);
-            return;
-        }
-
-        let signerInstance = AccountLib.derive.privatekey(privateKey);
-        // check if multi sign
-        if (multiSign) {
-            signerInstance = signerInstance.signAs(signer.address);
-        }
-
-        let signedObject = AccountLib.sign(txJson, signerInstance) as SignedObjectType;
-        signedObject = { ...signedObject, signMethod: method };
-
-        this.onSign(signedObject);
     };
 
     signWithTangemCard = async (options: SignOptions) => {
         const { txJson, multiSign } = this.props;
-
         const { tangemCard } = options;
 
-        if (!tangemCard) return;
+        try {
+            if (!tangemCard) {
+                throw new Error('No card details provided for signing!');
+            }
 
-        const { cardId, walletPublicKey } = tangemCard;
+            const { cardId, walletPublicKey } = tangemCard;
 
-        const preparedTx = AccountLib.rawSigning.prepare(txJson, walletPublicKey, multiSign);
+            const preparedTx = AccountLib.rawSigning.prepare(txJson, walletPublicKey, multiSign);
 
-        // start tangem session
-        await RNTangemSdk.startSession();
+            // start tangem session
+            await RNTangemSdk.startSession();
 
-        // run sign command
-        await RNTangemSdk.sign([preparedTx.hashToSign], { cardId })
-            .then((resp) => {
-                const { signature } = resp;
+            // run sign command
+            await RNTangemSdk.sign([preparedTx.hashToSign], { cardId })
+                .then((resp) => {
+                    const { signature } = resp;
 
-                const sig = signature instanceof Array ? signature[0] : signature;
+                    const sig = signature instanceof Array ? signature[0] : signature;
 
-                let signedObject = undefined as SignedObjectType;
+                    let signedObject = undefined as SignedObjectType;
 
-                if (multiSign) {
-                    signedObject = AccountLib.rawSigning.completeMultiSigned(txJson, [
-                        {
-                            pubKey: walletPublicKey,
-                            signature: sig,
-                        },
-                    ]);
-                } else {
-                    signedObject = AccountLib.rawSigning.complete(preparedTx, sig);
-                }
+                    if (multiSign) {
+                        signedObject = AccountLib.rawSigning.completeMultiSigned(txJson, [
+                            {
+                                pubKey: walletPublicKey,
+                                signature: sig,
+                            },
+                        ]);
+                    } else {
+                        signedObject = AccountLib.rawSigning.complete(preparedTx, sig);
+                    }
 
-                // include sign method
-                signedObject = { ...signedObject, signMethod: AuthMethods.TANGEM };
+                    // include sign method
+                    signedObject = { ...signedObject, signMethod: AuthMethods.TANGEM };
 
-                setTimeout(() => {
-                    this.onSign(signedObject);
-                }, 2000);
-            })
-            .catch(this.dismiss)
-            .finally(() => {
-                setTimeout(() => {
-                    RNTangemSdk.stopSession();
-                }, 10000);
-            });
+                    setTimeout(() => {
+                        this.onSign(signedObject);
+                    }, 2000);
+                })
+                .catch(this.dismiss)
+                .finally(() => {
+                    setTimeout(() => {
+                        RNTangemSdk.stopSession();
+                    }, 10000);
+                });
+        } catch (e) {
+            this.onSignError(AuthMethods.TANGEM, e);
+        }
     };
 
     onSign = (signedObject: SignedObjectType) => {
