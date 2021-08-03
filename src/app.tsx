@@ -279,9 +279,11 @@ class Application {
                 // set timezone
                 await GetDeviceTimeZone()
                     .then((tz: string) => {
+                        this.logger.debug(`Timezone set to ${tz}`);
                         moment.tz.setDefault(tz);
                     })
                     .catch(() => {
+                        this.logger.war('Unable to get device timezone, fallback to default timezone');
                         // ignore in case of error
                     });
 

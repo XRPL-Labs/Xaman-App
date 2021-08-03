@@ -265,7 +265,7 @@ class EventsView extends Component<Props, State> {
             if (!isEmpty(planned)) {
                 dataSource.push({ title: Localize.t('events.plannedOn'), type: 'string', data: [] });
                 const grouped = groupBy(planned, (item) => {
-                    return moment(item.Date, 'YYYY-MM-DD').format('YYYY-MM-DD');
+                    return moment(item.Date).format('YYYY-MM-DD');
                 });
 
                 map(grouped, (v, k) => {
@@ -282,7 +282,7 @@ class EventsView extends Component<Props, State> {
         }
 
         // group items by month name and then get the name for each month
-        const grouped = groupBy(items, (item) => moment(item.Date, 'YYYY-MM-DD').format('YYYY-MM-DD'));
+        const grouped = groupBy(items, (item) => moment(item.Date).format('YYYY-MM-DD'));
 
         const dateSource = [] as any;
 
