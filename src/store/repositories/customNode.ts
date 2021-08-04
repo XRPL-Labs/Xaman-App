@@ -1,7 +1,9 @@
 import Realm, { ObjectSchema, Results } from 'realm';
-import has from 'lodash/has';
+import { has, get } from 'lodash';
 
 import Localize from '@locale';
+
+import { AppConfig } from '@common/constants';
 
 import { CustomNodeSchema } from '@store/schemas/latest';
 import BaseRepository from './base';
@@ -28,15 +30,14 @@ class CustomNodeRepository extends BaseRepository {
     getNodeExplorer = (node: string) => {
         const customNode = this.findOne({ endpoint: node }) as CustomNodeSchema;
 
-        if (customNode) {
-            return {
-                title: Localize.t('global.explorer'),
-                tx: customNode.explorerTx,
-                account: customNode.explorerAccount,
-            };
-        }
+        // fallback explorer
+        const fallbackExplorer = AppConfig.explorer[0];
 
-        return undefined;
+        return {
+            title: Localize.t('global.explorer'),
+            tx: get(customNode, 'explorerTx', fallbackExplorer.tx.main),
+            account: get(customNode, 'explorerAccount', fallbackExplorer.account.main),
+        };
     };
 
     getNodes = (): Results<CustomNodeSchema> => {
