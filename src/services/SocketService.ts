@@ -128,10 +128,15 @@ class SocketService extends EventEmitter {
                 this.chain = chain;
 
                 // if we are on MainNet and the selected node is not default node revert
-                if (chain === NodeChain.Main && node !== AppConfig.nodes.default) {
+                // OR revert to default node if connected to a deprecated node
+                if (
+                    (chain === NodeChain.Main && node !== AppConfig.nodes.default) ||
+                    AppConfig.nodes.deprecated.indexOf(node) > -1
+                ) {
                     this.logger.debug('Revert selected node to default node');
 
                     this.node = AppConfig.nodes.default;
+                    this.chain = NodeChain.Main;
 
                     // update the store
                     CoreRepository.saveSettings({
