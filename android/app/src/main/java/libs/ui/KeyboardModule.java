@@ -94,9 +94,11 @@ public class KeyboardModule extends ReactContextBaseJavaModule {
 
 
     private void sendEvent(String event, Object payload) {
-        getReactApplicationContext()
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(event, payload);
+        if (getReactApplicationContext().hasActiveCatalystInstance()) {
+            getReactApplicationContext()
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(event, payload);
+        }
     }
 
 
