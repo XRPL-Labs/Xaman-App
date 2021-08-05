@@ -286,10 +286,16 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             case 'CheckCash':
-                address = tx.Account.address;
+                if (!incomingTx && tx.Check) {
+                    address = tx.Check.Account.address;
+                } else {
+                    address = tx.Account.address;
+                }
                 break;
             case 'CheckCancel':
-                address = tx.Account.address;
+                if (incomingTx) {
+                    address = tx.Account.address;
+                }
                 break;
             case 'OfferCreate':
                 if (incomingTx) {
@@ -810,7 +816,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
         content += '\n\n';
         content += Localize.t('events.maximumAmountCheckIsAllowToDebit', {
-            amount: tx.SendMax.value,
+            value: tx.SendMax.value,
             currency: NormalizeCurrencyCode(tx.SendMax.currency),
         });
 
@@ -823,6 +829,7 @@ class TransactionDetailsView extends Component<Props, State> {
         const amount = tx.Amount || tx.DeliverMin;
 
         const content = Localize.t('events.itWasInstructedToDeliverByCashingCheck', {
+            address: tx.Check?.Destination.address || 'address',
             amount: amount.value,
             currency: NormalizeCurrencyCode(amount.currency),
             checkId: tx.CheckID,
@@ -1272,7 +1279,6 @@ class TransactionDetailsView extends Component<Props, State> {
             case 'Check':
                 Object.assign(props, {
                     color: styles.naturalColor,
-                    icon: 'IconCornerRightDown',
                     value: tx.SendMax.value,
                     currency: tx.SendMax.currency,
                 });
@@ -1283,6 +1289,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
                 Object.assign(props, {
                     color: incoming ? styles.incomingColor : styles.outgoingColor,
+                    icon: incoming ? 'IconCornerRightDown' : 'IconCornerLeftUp',
                     prefix: incoming ? '' : '-',
                     value: amount.value,
                     currency: amount.currency,
@@ -1596,14 +1603,23 @@ class TransactionDetailsView extends Component<Props, State> {
             };
         }
 
-        // incoming trustline
-        if (tx.Type === 'CheckCash' && tx.Account.address !== account.address) {
-            to = { address: tx.Account.address, ...partiesDetails };
-            from = {
-                address: account.address,
-                name: account.label,
-                source: 'accounts',
-            };
+        // incoming CheckCash
+        if (tx.Type === 'CheckCash') {
+            if (incomingTx) {
+                to = { address: tx.Account.address, ...partiesDetails };
+                from = {
+                    address: account.address,
+                    name: account.label,
+                    source: 'accounts',
+                };
+            } else {
+                from = { address: tx.Account.address, ...partiesDetails };
+                to = {
+                    address: account.address,
+                    name: account.label,
+                    source: 'accounts',
+                };
+            }
         }
 
         // 3rd party consuming own offer
