@@ -105,7 +105,9 @@ class PassphraseMethod extends Component<Props, State> {
             this.passwordInput.blur();
         }
 
-        sign(AuthMethods.PASSPHRASE, { encryptionKey: passphrase });
+        setTimeout(() => {
+            sign(AuthMethods.PASSPHRASE, { encryptionKey: passphrase });
+        }, 100);
     };
 
     render() {
