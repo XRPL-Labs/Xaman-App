@@ -118,7 +118,22 @@ class CheckCash extends BaseTransaction {
     }
 
     get Check(): CheckCreate {
-        return get(this, 'check', undefined);
+        let check = get(this, 'check', undefined);
+
+        // if we already set the check return
+        if (check) {
+            return check;
+        }
+        // if not look at the meta data for check object
+        const affectedNodes = get(this.meta, 'AffectedNodes', []);
+        affectedNodes.map((node: any) => {
+            if (node.DeletedNode?.LedgerEntryType === 'Check') {
+                check = new CheckCreate(node.DeletedNode.FinalFields);
+            }
+            return true;
+        });
+
+        return check;
     }
 
     get isExpired(): boolean {

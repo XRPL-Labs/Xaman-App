@@ -32,22 +32,22 @@ public class KeyboardModule extends ReactContextBaseJavaModule {
         DisplayMetricsHolder.initDisplayMetricsIfNotInitialized(context);
     }
 
-    void emit(int height){
-        if(height == lastKeyboardHeight){
+    void emit(int height) {
+        if (height == lastKeyboardHeight) {
             return;
         }
         lastKeyboardHeight = height;
         // keyboard hide
-        if(height == 0){
-            this.sendEvent(KEYBOARD_DID_HIDE_EVENT, null );
-        }else{
+        if (height == 0) {
+            this.sendEvent(KEYBOARD_DID_HIDE_EVENT, null);
+        } else {
             // keyboard show
             WritableMap endCoordinates = Arguments.createMap();
             endCoordinates.putInt("height", height);
 
             WritableMap params = Arguments.createMap();
             params.putMap("endCoordinates", endCoordinates);
-            this.sendEvent(KEYBOARD_DID_SHOW_EVENT,   params);
+            this.sendEvent(KEYBOARD_DID_SHOW_EVENT, params);
         }
     }
 
@@ -57,14 +57,15 @@ public class KeyboardModule extends ReactContextBaseJavaModule {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "startListen");
-
+                if (keyboardProvider != null) {
+                    return;
+                }
                 final Activity wActivity = getCurrentActivity();
-                if(wActivity == null){
+                if (wActivity == null) {
                     Log.e(TAG, "wActivity is null");
                     return;
                 }
-                keyboardProvider = new KeyboardProvider(wActivity).init() ;
+                keyboardProvider = new KeyboardProvider(wActivity).init();
                 keyboardProvider.setHeightListener(new KeyboardProvider.HeightListener() {
                     @Override
                     public void onHeightChanged(int height) {
@@ -83,20 +84,22 @@ public class KeyboardModule extends ReactContextBaseJavaModule {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if( keyboardProvider != null){
+                if (keyboardProvider != null) {
                     keyboardProvider.dismiss();
+                    keyboardProvider = null;
                 }
             }
         });
     }
 
 
-    private void sendEvent(String event, Object payload){
-        getReactApplicationContext()
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(event, payload);
+    private void sendEvent(String event, Object payload) {
+        if (getReactApplicationContext().hasActiveCatalystInstance()) {
+            getReactApplicationContext()
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(event, payload);
+        }
     }
-
 
 
     @Override

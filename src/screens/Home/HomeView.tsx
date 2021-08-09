@@ -314,9 +314,11 @@ class HomeView extends Component<Props, State> {
     };
 
     onShowAccountQRPress = () => {
-        const { isSpendable } = this.state;
+        const { account } = this.state;
 
-        if (isSpendable) {
+        const isSignable = AccountRepository.isSignable(account);
+
+        if (isSignable) {
             this.showShareOverlay();
         } else {
             Prompt(

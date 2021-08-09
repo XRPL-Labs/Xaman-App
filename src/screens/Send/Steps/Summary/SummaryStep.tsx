@@ -44,6 +44,7 @@ export interface Props {}
 
 export interface State {
     confirmedDestinationTag: number;
+    destinationTagInputVisible: boolean;
     currencyRate: any;
 }
 
@@ -59,6 +60,7 @@ class SummaryStep extends Component<Props, State> {
 
         this.state = {
             confirmedDestinationTag: undefined,
+            destinationTagInputVisible: false,
             currencyRate: undefined,
         };
     }
@@ -136,9 +138,16 @@ class SummaryStep extends Component<Props, State> {
 
     showEnterDestinationTag = () => {
         const { setDestination, destination } = this.context;
+        const { destinationTagInputVisible } = this.state;
 
         if (!destination) {
             return;
+        }
+
+        if (!destinationTagInputVisible) {
+            this.setState({
+                destinationTagInputVisible: true,
+            });
         }
 
         Navigator.showOverlay(
@@ -155,6 +164,15 @@ class SummaryStep extends Component<Props, State> {
                 onFinish: (destinationTag: string) => {
                     Object.assign(destination, { tag: destinationTag });
                     setDestination(destination);
+
+                    this.setState({
+                        destinationTagInputVisible: false,
+                    });
+                },
+                onClose: () => {
+                    this.setState({
+                        destinationTagInputVisible: false,
+                    });
                 },
                 onScannerRead: ({ tag }: { tag: number }) => {
                     Object.assign(destination, { tag: String(tag) });
@@ -162,7 +180,6 @@ class SummaryStep extends Component<Props, State> {
 
                     this.showEnterDestinationTag();
                 },
-
                 onScannerClose: this.showEnterDestinationTag,
             },
         );
@@ -329,10 +346,14 @@ class SummaryStep extends Component<Props, State> {
 
     render() {
         const { source, amount, destination, currency, isLoading } = this.context;
+        const { destinationTagInputVisible } = this.state;
 
         return (
             <View testID="send-summary-view" style={[styles.container]}>
-                <KeyboardAwareScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
+                <KeyboardAwareScrollView
+                    style={[AppStyles.flex1, AppStyles.stretchSelf]}
+                    enabled={!destinationTagInputVisible}
+                >
                     <View style={[styles.rowItem, styles.rowItemGrey]}>
                         <View style={[styles.rowTitle]}>
                             <Text
@@ -347,7 +368,7 @@ class SummaryStep extends Component<Props, State> {
                             </Text>
                         </View>
 
-                        <AccountPicker accounts={source} selectedItem={source} />
+                        <AccountPicker accounts={[source]} selectedItem={source} />
 
                         <Spacer size={20} />
 

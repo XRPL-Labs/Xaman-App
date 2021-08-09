@@ -123,6 +123,10 @@ class AddCurrencyOverlay extends Component<Props, State> {
     addCurrency = async () => {
         const { selectedCurrency } = this.state;
 
+        if (!selectedCurrency.isValid()) {
+            return;
+        }
+
         this.setState({
             isLoading: true,
         });
@@ -212,14 +216,20 @@ class AddCurrencyOverlay extends Component<Props, State> {
         }
 
         return currencies[selectedParty.id].map((c, index) => {
+            if (!c.isValid()) {
+                return null;
+            }
+
             return (
                 <TouchableOpacity
                     key={index}
                     style={[styles.listItem, selectedCurrency.id === c.id && styles.selectedRow]}
                     onPress={() => {
-                        this.setState({
-                            selectedCurrency: c,
-                        });
+                        if (c.isValid()) {
+                            this.setState({
+                                selectedCurrency: c,
+                            });
+                        }
                     }}
                 >
                     <View style={[AppStyles.flex3, AppStyles.row, AppStyles.centerAligned]}>
@@ -267,10 +277,12 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     key={index}
                     style={[styles.listItem, selected && styles.selectedRow]}
                     onPress={() => {
-                        this.setState({
-                            selectedParty: c,
-                            selectedCurrency: first(get(currencies, c.id)),
-                        });
+                        if (c.isValid()) {
+                            this.setState({
+                                selectedParty: c,
+                                selectedCurrency: first(get(currencies, c.id)),
+                            });
+                        }
                     }}
                 >
                     <View style={[AppStyles.flex3, AppStyles.row, AppStyles.centerAligned]}>

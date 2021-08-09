@@ -36,6 +36,7 @@ export interface Props {}
 export interface State {
     accounts: Array<AccountSchema>;
     canScroll: boolean;
+    timestamp?: number;
 }
 
 /* Component ==================================================================== */
@@ -131,6 +132,13 @@ class ReviewStep extends Component<Props, State> {
         return undefined;
     };
 
+    forceRender = () => {
+        this.setState({
+            // eslint-disable-next-line react/no-unused-state
+            timestamp: +new Date(),
+        });
+    };
+
     renderDetails = () => {
         const { payload, transaction } = this.context;
 
@@ -145,8 +153,12 @@ class ReviewStep extends Component<Props, State> {
         // render transaction details and global variables
         return (
             <>
-                <Template transaction={transaction} canOverride={!payload.isMultiSign()} />
-                <Global transaction={transaction} canOverride={!payload.isMultiSign()} />
+                <Template
+                    transaction={transaction}
+                    canOverride={!payload.isMultiSign()}
+                    forceRender={this.forceRender}
+                />
+                <Global transaction={transaction} canOverride={!payload.isMultiSign()} forceRender={this.forceRender} />
             </>
         );
     };

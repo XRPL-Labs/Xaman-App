@@ -2,11 +2,12 @@
  * App Theme - Sizes
  */
 
-import { Dimensions, Platform, PixelRatio, StatusBar } from 'react-native';
+import { Dimensions, Platform, PixelRatio } from 'react-native';
 
-import { hasNotch } from '@common/helpers/device';
+import { hasNotch, GetLayoutInsets } from '@common/helpers/device';
 
 const { width, height } = Dimensions.get('screen');
+const { bottom: bottomInset, top: topInset } = GetLayoutInsets();
 
 // Guideline sizes are based on standard ~5" screen mobile device
 const guidelineBaseWidth = 350;
@@ -20,14 +21,10 @@ const tabbarHeight = Platform.select({
 });
 
 // status bar size
-const statusBarHeight = Platform.select({
-    ios: hasNotch() ? 44 : 20,
-    android: StatusBar.currentHeight,
-    default: 0,
-});
+const statusBarHeight = topInset;
 
 // soft menu bar
-const navigationBarHeight = Platform.OS === 'android' ? height - Dimensions.get('window').height : 0;
+const navigationBarHeight = Platform.OS === 'android' ? bottomInset : 0;
 
 const Sizes = {
     // Screen Dimensions
@@ -50,6 +47,9 @@ const Sizes = {
     navigationBarHeight,
     statusBarHeight,
     tabbarHeight,
+
+    bottomInset,
+    topInset,
 
     padding: 30,
     paddingSml: 20,

@@ -4,12 +4,12 @@
 
 import toUpper from 'lodash/toUpper';
 import React, { Component, createRef } from 'react';
-import { View, Animated, Text, KeyboardEvent } from 'react-native';
+import { View, Animated, Text, KeyboardEvent, Platform } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
-import { Keyboard } from '@common/helpers/keyboard';
+import Keyboard from '@common/helpers/keyboard';
 
 import BackendService from '@services/BackendService';
 
@@ -107,12 +107,16 @@ class FlaggedDestinationModal extends Component<Props, State> {
             this.textInputView.current.measure((x, y, width, height, pageX, pageY) => {
                 if (!pageY) return;
 
-                const bottomView = AppSizes.screen.height - pageY - height;
-                const KeyboardHeight = e.endCoordinates.height + AppSizes.navigationBarHeight;
+                const bottomView = AppSizes.screen.height - height - pageY;
+                const KeyboardHeight = e.endCoordinates.height;
 
-                if (KeyboardHeight > bottomView) {
-                    const offset = Math.abs(KeyboardHeight - bottomView);
+                let offset = KeyboardHeight - bottomView;
 
+                if (Platform.OS === 'android') {
+                    offset += AppSizes.topInset + AppSizes.bottomInset;
+                }
+
+                if (offset >= 0) {
                     Animated.spring(this.bottomOffset, {
                         toValue: offset,
                         useNativeDriver: false,

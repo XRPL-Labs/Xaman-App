@@ -286,10 +286,16 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             case 'CheckCash':
-                address = tx.Account.address;
+                if (!incomingTx && tx.Check) {
+                    address = tx.Check.Account.address;
+                } else {
+                    address = tx.Account.address;
+                }
                 break;
             case 'CheckCancel':
-                address = tx.Account.address;
+                if (incomingTx) {
+                    address = tx.Account.address;
+                }
                 break;
             case 'OfferCreate':
                 if (incomingTx) {
@@ -810,7 +816,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
         content += '\n\n';
         content += Localize.t('events.maximumAmountCheckIsAllowToDebit', {
-            amount: tx.SendMax.value,
+            value: tx.SendMax.value,
             currency: NormalizeCurrencyCode(tx.SendMax.currency),
         });
 
@@ -823,6 +829,7 @@ class TransactionDetailsView extends Component<Props, State> {
         const amount = tx.Amount || tx.DeliverMin;
 
         const content = Localize.t('events.itWasInstructedToDeliverByCashingCheck', {
+            address: tx.Check?.Destination.address || 'address',
             amount: amount.value,
             currency: NormalizeCurrencyCode(amount.currency),
             checkId: tx.CheckID,
@@ -1204,9 +1211,19 @@ class TransactionDetailsView extends Component<Props, State> {
         };
 
         switch (tx.Type) {
-            case 'Payment':
+            case 'Payment': {
+                const amount = tx.DeliveredAmount || tx.Amount;
+
                 if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
-                    if (balanceChanges?.received) {
+                    // regular key
+                    if (!balanceChanges?.received && !balanceChanges?.sent) {
+                        Object.assign(props, {
+                            color: styles.naturalColor,
+                            value: amount.value,
+                            currency: amount.currency,
+                            icon: undefined,
+                        });
+                    } else if (balanceChanges?.received) {
                         Object.assign(props, {
                             color: styles.incomingColor,
                             value: balanceChanges.received.value,
@@ -1222,7 +1239,6 @@ class TransactionDetailsView extends Component<Props, State> {
                         });
                     }
                 } else {
-                    const amount = tx.DeliveredAmount || tx.Amount;
                     Object.assign(props, {
                         color: incomingTx ? styles.incomingColor : styles.outgoingColor,
                         prefix: incomingTx ? '' : '-',
@@ -1232,6 +1248,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
 
                 break;
+            }
             case 'AccountDelete': {
                 Object.assign(props, {
                     color: incomingTx ? styles.incomingColor : styles.outgoingColor,
@@ -1262,7 +1279,6 @@ class TransactionDetailsView extends Component<Props, State> {
             case 'Check':
                 Object.assign(props, {
                     color: styles.naturalColor,
-                    icon: 'IconCornerRightDown',
                     value: tx.SendMax.value,
                     currency: tx.SendMax.currency,
                 });
@@ -1273,6 +1289,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
                 Object.assign(props, {
                     color: incoming ? styles.incomingColor : styles.outgoingColor,
+                    icon: incoming ? 'IconCornerRightDown' : 'IconCornerLeftUp',
                     prefix: incoming ? '' : '-',
                     value: amount.value,
                     currency: amount.currency,
@@ -1352,9 +1369,10 @@ class TransactionDetailsView extends Component<Props, State> {
                     <Spacer />
 
                     <View style={[AppStyles.row, styles.amountContainer]}>
-                        {/*
-                     // @ts-ignore */}
-                        <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                        {props.icon && (
+                            // @ts-ignore
+                            <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                        )}
                         <AmountText
                             value={props.value}
                             postfix={props.currency}
@@ -1385,9 +1403,10 @@ class TransactionDetailsView extends Component<Props, State> {
                             <Spacer />
 
                             <View style={[AppStyles.row, styles.amountContainer]}>
-                                {/*
-                         // @ts-ignore */}
-                                <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                                {props.icon && (
+                                    // @ts-ignore
+                                    <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                                )}
                                 <AmountText
                                     value={props.value}
                                     postfix={props.currency}
@@ -1418,9 +1437,10 @@ class TransactionDetailsView extends Component<Props, State> {
                             <Spacer />
 
                             <View style={[AppStyles.row, styles.amountContainer]}>
-                                {/*
-                        // @ts-ignore */}
-                                <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                                {props.icon && (
+                                    //  @ts-ignore
+                                    <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                                )}
                                 <AmountText
                                     value={props.value}
                                     postfix={props.currency}
@@ -1437,9 +1457,10 @@ class TransactionDetailsView extends Component<Props, State> {
         return (
             <View style={styles.amountHeaderContainer}>
                 <View style={[AppStyles.row, styles.amountContainer]}>
-                    {/*
-                         // @ts-ignore */}
-                    <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                    {props.icon && (
+                        //  @ts-ignore
+                        <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                    )}
                     <AmountText
                         value={props.value}
                         postfix={props.currency}
@@ -1582,14 +1603,23 @@ class TransactionDetailsView extends Component<Props, State> {
             };
         }
 
-        // incoming trustline
-        if (tx.Type === 'CheckCash' && tx.Account.address !== account.address) {
-            to = { address: tx.Account.address, ...partiesDetails };
-            from = {
-                address: account.address,
-                name: account.label,
-                source: 'accounts',
-            };
+        // incoming CheckCash
+        if (tx.Type === 'CheckCash') {
+            if (incomingTx) {
+                to = { address: tx.Account.address, ...partiesDetails };
+                from = {
+                    address: account.address,
+                    name: account.label,
+                    source: 'accounts',
+                };
+            } else {
+                from = { address: tx.Account.address, ...partiesDetails };
+                to = {
+                    address: account.address,
+                    name: account.label,
+                    source: 'accounts',
+                };
+            }
         }
 
         // 3rd party consuming own offer

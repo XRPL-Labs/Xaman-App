@@ -3,9 +3,9 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, Animated, LayoutAnimation, InteractionManager, KeyboardEvent } from 'react-native';
+import { View, Text, Animated, LayoutAnimation, InteractionManager, KeyboardEvent, Platform } from 'react-native';
 
-import { Keyboard } from '@common/helpers/keyboard';
+import Keyboard from '@common/helpers/keyboard';
 
 import { PasswordInput, Button, Spacer } from '@components/General';
 
@@ -100,7 +100,14 @@ class PassphraseMethod extends Component<Props, State> {
         const { sign } = this.context;
         const { passphrase } = this.state;
 
-        sign(AuthMethods.PASSPHRASE, { encryptionKey: passphrase });
+        // blur the input if android
+        if (Platform.OS === 'android' && this.passwordInput) {
+            this.passwordInput.blur();
+        }
+
+        setTimeout(() => {
+            sign(AuthMethods.PASSPHRASE, { encryptionKey: passphrase });
+        }, 100);
     };
 
     render() {

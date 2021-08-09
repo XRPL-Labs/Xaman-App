@@ -1,59 +1,116 @@
-import { Platform, Keyboard as RNKeyboard, NativeModules, DeviceEventEmitter } from 'react-native';
+import { Platform, Keyboard as RNKeyboard, NativeModules, DeviceEventEmitter, EmitterSubscription } from 'react-native';
 
 const { KeyboardModule } = NativeModules;
 
-// indicator for number of listeners on android
-let numberAndroidListeners = 0;
+type EventTypes = 'keyboardWillShow' | 'keyboardWillHide' | 'KeyboardShow' | 'KeyboardHide';
 
-const getEventName = (eventName: string): any => {
-    switch (eventName) {
-        case 'keyboardWillShow':
-            return Platform.select({
-                android: 'KeyboardShow',
-                ios: 'keyboardWillShow',
-            });
-        case 'keyboardWillHide':
-            return Platform.select({
-                android: 'KeyboardHide',
-                ios: 'keyboardWillHide',
-            });
-        default:
-            return eventName;
+class Keyboard {
+    private subscriptions: any;
+    private keyboardListenerStarted: boolean;
+
+    constructor() {
+        this.subscriptions = {};
+
+        this.keyboardListenerStarted = false;
     }
-};
 
-const Keyboard = {
-    addListener: (event: string, handler: any) => {
-        const eventName = getEventName(event);
-        if (Platform.OS === 'android') {
-            if (numberAndroidListeners === 0) {
+    getEventName = (eventName: EventTypes): EventTypes => {
+        switch (eventName) {
+            case 'keyboardWillShow':
+                return Platform.select({
+                    android: 'KeyboardShow',
+                    ios: 'keyboardWillShow',
+                });
+            case 'keyboardWillHide':
+                return Platform.select({
+                    android: 'KeyboardHide',
+                    ios: 'keyboardWillHide',
+                });
+            default:
+                return eventName;
+        }
+    };
+
+    shouldStartKeyboardListener = (): boolean => {
+        if (Platform.OS !== 'android') {
+            return false;
+        }
+        return !this.keyboardListenerStarted && Object.keys(this.subscriptions).length > 0;
+    };
+
+    shouldSopKeyboardListener = (): boolean => {
+        if (Platform.OS !== 'android') {
+            return false;
+        }
+        return this.keyboardListenerStarted && Object.keys(this.subscriptions).length === 0;
+    };
+
+    addSubscription = (eventType: EventTypes, subscription: EmitterSubscription) => {
+        if (!this.subscriptions[eventType]) {
+            this.subscriptions[eventType] = [];
+        }
+        this.subscriptions[eventType].push(subscription);
+    };
+
+    removeSubscription = (eventType: EventTypes, handler: any) => {
+        if (!this.subscriptions[eventType] || this.subscriptions[eventType].length === 0) {
+            return;
+        }
+
+        for (let i = 0, l = this.subscriptions[eventType].length; i < l; i++) {
+            const subscription = this.subscriptions[eventType][i];
+
+            if (subscription && subscription.listener === handler) {
+                subscription.remove();
+
+                this.subscriptions[eventType].splice(i, 1);
+
+                if (this.subscriptions[eventType].length === 0) {
+                    delete this.subscriptions[eventType];
+                }
+            }
+        }
+    };
+
+    addListener = (eventType: EventTypes, handler: any) => {
+        const eventName = this.getEventName(eventType);
+
+        let subscription = undefined as EmitterSubscription;
+
+        switch (Platform.OS) {
+            case 'android':
+                subscription = DeviceEventEmitter.addListener(eventName, handler);
+                break;
+            case 'ios':
+                // @ts-ignore
+                subscription = RNKeyboard.addListener(eventName, handler);
+                break;
+            default:
+                break;
+        }
+
+        if (subscription) {
+            this.addSubscription(eventName, subscription);
+
+            if (this.shouldStartKeyboardListener()) {
+                this.keyboardListenerStarted = true;
                 KeyboardModule.startKeyboardListener();
             }
-
-            numberAndroidListeners += 1;
-
-            DeviceEventEmitter.addListener(eventName, handler);
-        } else {
-            RNKeyboard.addListener(eventName, handler);
         }
-    },
-    removeListener: (event: string, handler: any) => {
-        const eventName = getEventName(event);
+    };
 
-        if (Platform.OS === 'android') {
-            numberAndroidListeners -= 1;
+    removeListener = (eventType: EventTypes, handler: any) => {
+        const eventName = this.getEventName(eventType);
 
-            if (numberAndroidListeners === 0) {
-                KeyboardModule.stopKeyboardListen();
-            }
+        this.removeSubscription(eventName, handler);
 
-            DeviceEventEmitter.removeListener(eventName, handler);
-        } else {
-            RNKeyboard.removeListener(eventName, handler);
+        if (this.shouldSopKeyboardListener()) {
+            this.keyboardListenerStarted = false;
+            KeyboardModule.stopKeyboardListen();
         }
-    },
+    };
 
-    dismiss: RNKeyboard.dismiss,
-};
+    dismiss = () => RNKeyboard.dismiss;
+}
 
-export { Keyboard };
+export default new Keyboard();

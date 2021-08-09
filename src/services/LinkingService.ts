@@ -143,7 +143,7 @@ class LinkingService extends EventEmitter {
         const { to, tag } = NormalizeDestination(destination);
 
         // if amount present as XRP pass the amount
-        if (!destination.currency && destination.amount) {
+        if (!destination.currency && new RegExp(/^(?![0.]+$)\d+(\.\d{1,15})?$/gm).test(destination.amount)) {
             amount = destination.amount;
         }
 

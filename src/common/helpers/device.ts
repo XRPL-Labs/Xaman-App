@@ -2,7 +2,7 @@ import DeviceInfo from 'react-native-device-info';
 
 import { Platform, PixelRatio, NativeModules } from 'react-native';
 
-const { UtilsModule } = NativeModules;
+const { UtilsModule, DimensionModule } = NativeModules;
 
 /**
  * Check if device have notch
@@ -38,6 +38,14 @@ const GetBottomTabScale = (factor?: number): number => {
     }
 
     return scale;
+};
+
+/**
+ * Get window layout insets
+ * @returns {top: 0, bottom: 0}
+ */
+const GetLayoutInsets = (): { top: number; bottom: number } => {
+    return DimensionModule.layoutInsets;
 };
 
 /**
@@ -178,6 +186,7 @@ const ExitApp = (): void => {
 export {
     hasNotch,
     GetBottomTabScale,
+    GetLayoutInsets,
     IsFlagSecure,
     FlagSecure,
     IsDeviceJailBroken,

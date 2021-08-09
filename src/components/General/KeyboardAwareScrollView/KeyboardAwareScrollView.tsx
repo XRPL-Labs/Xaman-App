@@ -10,12 +10,13 @@ import {
     TextInput,
 } from 'react-native';
 
-import { Keyboard } from '@common/helpers/keyboard';
+import Keyboard from '@common/helpers/keyboard';
 
 import styles from './styles';
 /* Types ==================================================================== */
 interface Props extends ScrollViewProps {
     testID?: string;
+    enabled?: boolean;
     children: ReactNode;
     hasHeader?: boolean;
     extraOffset?: number;
@@ -40,6 +41,7 @@ class KeyboardAwareScrollView extends PureComponent<Props, State> {
 
     static defaultProps = {
         extraOffset: 0,
+        enabled: true,
     };
 
     constructor(props: Props) {
@@ -108,30 +110,12 @@ class KeyboardAwareScrollView extends PureComponent<Props, State> {
 
             bottomOffset += extraOffset;
 
-            // this.setState(
-            //     {
-            //         offset: bottomOffset + inputHeight,
-            //     },
-            //     () => {
-            //         setTimeout(() => {
-            //             // responder.scrollResponderScrollNativeHandleToKeyboard(currentlyFocusedField, 200, false);
-
-            //             responder.scrollResponderScrollTo({
-            //                 x: 0,
-            //                 y: textInputBottomPosition - keyboardPosition + DEFAULT_EXTRA_OFFSET,
-            //                 animated: true,
-            //             });
-            //         }, 10);
-            //     },
-            // );
-
             Animated.timing(offset, {
                 toValue: bottomOffset + inputHeight,
                 useNativeDriver: false,
                 duration: 200,
             }).start(() => {
                 setTimeout(() => {
-                    // responder.scrollResponderScrollNativeHandleToKeyboard(currentlyFocusedField, 200, false);
                     responder.scrollResponderScrollTo({
                         x: 0,
                         y: this.scrollPosition.y + textInputBottomPosition - keyboardPosition + DEFAULT_EXTRA_OFFSET,
@@ -143,7 +127,7 @@ class KeyboardAwareScrollView extends PureComponent<Props, State> {
     };
 
     onKeyboardShow = (event: any) => {
-        const { onKeyboardShow } = this.props;
+        const { onKeyboardShow, enabled } = this.props;
 
         const { height } = event.endCoordinates;
 
@@ -153,32 +137,26 @@ class KeyboardAwareScrollView extends PureComponent<Props, State> {
             onKeyboardShow();
         }
 
-        this.scrollToFocusedTextInput();
+        if (enabled) {
+            this.scrollToFocusedTextInput();
+        }
     };
 
     onKeyboardHide = () => {
-        const { onKeyboardHide } = this.props;
-
+        const { onKeyboardHide, enabled } = this.props;
         const { offset } = this.state;
 
         if (typeof onKeyboardHide === 'function') {
             onKeyboardHide();
         }
 
-        // this.setState({
-        //     offset: 0,
-        // });
-
-        Animated.timing(offset, {
-            toValue: 0,
-            duration: 300,
-            useNativeDriver: false,
-        }).start(() => {
-            // const currentPosition = this.scrollPosition.y + this.viewHeight;
-            // if (this.scrollViewRef.current && Platform.OS === 'ios' && currentPosition > this.contentHeight) {
-            //     this.scrollViewRef.current.scrollToEnd();
-            // }
-        });
+        if (enabled) {
+            Animated.timing(offset, {
+                toValue: 0,
+                duration: 300,
+                useNativeDriver: false,
+            }).start();
+        }
     };
 
     handleLayout = (event: LayoutChangeEvent) => {

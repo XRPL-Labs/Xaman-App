@@ -84,8 +84,8 @@ class Meta {
         };
     };
 
-    private flipTrustlinePerspective = (quantity: any) => {
-        const negatedBalance = new BigNumber(quantity.balance.value).negated();
+    private flipTrustlinePerspective = (quantity: any, value: BigNumber) => {
+        const negatedBalance = value.negated();
 
         return {
             address: quantity.balance.issuer,
@@ -118,11 +118,12 @@ class Meta {
             balance: {
                 issuer: fields.HighLimit.issuer,
                 currency: fields.Balance.currency,
-                value: value.decimalPlaces(8).toString(10),
+                value: value.absoluteValue().decimalPlaces(8).toString(10),
                 action: value.isNegative() ? 'DEC' : 'INC',
             },
         };
-        return [result, this.flipTrustlinePerspective(result)];
+
+        return [result, this.flipTrustlinePerspective(result, value)];
     };
 
     parseBalanceChanges = (): { [key: string]: BalanceChangeType[] } => {

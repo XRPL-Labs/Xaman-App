@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
-import isEqual from 'lodash/isEqual';
+import { isEqual, debounce } from 'lodash';
 
 import { View, TouchableOpacity, Text, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 
@@ -140,13 +140,15 @@ export default class Button extends Component<Props> {
         return this.renderChildren();
     }
 
-    onPress = () => {
+    debouncedOnPress = () => {
         const { onPress, isLoading } = this.props;
 
         if (!isLoading && typeof onPress === 'function') {
             onPress();
         }
     };
+
+    onPress = debounce(this.debouncedOnPress, 300, { leading: true, trailing: false });
 
     onLongPress = () => {
         const { onLongPress, isLoading } = this.props;

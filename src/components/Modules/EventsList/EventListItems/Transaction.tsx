@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty, isEqual, debounce } from 'lodash';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import { AccountSchema } from '@store/schemas/latest';
@@ -216,10 +216,12 @@ class TransactionTemplate extends Component<Props, State> {
             .catch(() => {});
     };
 
-    onPress = () => {
+    debouncedOnPress = () => {
         const { item, account } = this.props;
         Navigator.push(AppScreens.Transaction.Details, {}, { tx: item, account });
     };
+
+    onPress = debounce(this.debouncedOnPress, 300, { leading: true, trailing: false });
 
     getIcon = () => {
         const { address, kycApproved } = this.state;
@@ -383,7 +385,20 @@ class TransactionTemplate extends Component<Props, State> {
 
         if (item.Type === 'Payment') {
             const balanceChanges = item.BalanceChange(account.address);
+            const amount = item.DeliveredAmount || item.Amount;
+
             if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
+                // regular key
+                if (!balanceChanges?.received && !balanceChanges?.sent) {
+                    return (
+                        <AmountText
+                            value={amount.value}
+                            postfix={amount.currency}
+                            style={[styles.amount, styles.naturalColor]}
+                            postfixStyle={styles.currency}
+                        />
+                    );
+                }
                 if (balanceChanges?.received) {
                     return (
                         <AmountText
@@ -396,7 +411,6 @@ class TransactionTemplate extends Component<Props, State> {
                 }
             }
 
-            const amount = item.DeliveredAmount || item.Amount;
             return (
                 <AmountText
                     value={amount.value}

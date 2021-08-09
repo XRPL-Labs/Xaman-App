@@ -19,13 +19,14 @@ export default {
         path: 'xumm.realm',
     },
 
-    // NOTE: any changes here should be applied in patches/react-native+0.63.4.patch as well
+    // NOTE: any changes here should be applied in patches/react-native+VERSION.patch as well
     // xrpl nodes
     nodes: {
         default: 'wss://xrplcluster.com',
         proxy: 'wss://custom-node.xrpl-labs.com',
         main: ['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'],
         test: ['wss://testnet.xrpl-labs.com', 'wss://s.altnet.rippletest.net:51233'],
+        deprecated: ['wss://xrpl.ws'],
     },
 
     // xrpl explorers

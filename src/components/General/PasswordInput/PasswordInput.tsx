@@ -117,6 +117,14 @@ export default class PasswordInput extends Component<Props, State> {
         }, 50);
     };
 
+    public blur = () => {
+        setTimeout(() => {
+            if (this.instance) {
+                this.instance.blur();
+            }
+        }, 50);
+    };
+
     toggleSwitch() {
         const { hidePassword } = this.state;
         this.setState({ hidePassword: !hidePassword });

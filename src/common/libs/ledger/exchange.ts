@@ -27,6 +27,7 @@ class LedgerExchange {
 
     constructor(pair: ExchangePair) {
         this.pair = pair;
+        this.liquidityCheck = undefined;
 
         this.boundaryOptions = {
             rates: RatesInCurrency.to,
@@ -63,7 +64,6 @@ class LedgerExchange {
             .finally(() => {
                 // build default params
                 const params = this.getLiquidityCheckParams('sell', 0);
-
                 this.liquidityCheck = new LiquidityCheck(params);
             });
     };
@@ -89,15 +89,19 @@ class LedgerExchange {
     };
 
     getLiquidity = (direction: 'sell' | 'buy', amount: number): Promise<LiquidityResult> => {
-        const params = this.getLiquidityCheckParams(direction, amount);
+        try {
+            const params = this.getLiquidityCheckParams(direction, amount);
 
-        if (this.liquidityCheck) {
-            // update params
-            this.liquidityCheck.refresh(params);
+            if (this.liquidityCheck) {
+                // update params
+                this.liquidityCheck.refresh(params);
 
-            return this.liquidityCheck.get();
+                return this.liquidityCheck.get();
+            }
+            return Promise.reject(new Error('Liquidity check is not initialized yet!'));
+        } catch (e) {
+            return Promise.reject(e);
         }
-        return undefined;
     };
 }
 

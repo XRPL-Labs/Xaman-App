@@ -11616,6 +11616,11 @@ jsc-android@^245459.0.0:
   resolved "https://registry.yarnpkg.com/jsc-android/-/jsc-android-245459.0.0.tgz#e584258dd0b04c9159a27fb104cd5d491fd202c9"
   integrity sha512-wkjURqwaB1daNkDi2OYYbsLnIdC/lUM2nPXQKRs5pqEU9chDg435bjvo+LSaHotDENygHQDHe+ntUkkw2gwMtg==
 
+jsc-android@^250230.2.1:
+  version "250230.2.1"
+  resolved "https://registry.yarnpkg.com/jsc-android/-/jsc-android-250230.2.1.tgz#3790313a970586a03ab0ad47defbc84df54f1b83"
+  integrity sha512-KmxeBlRjwoqCnBBKGsihFtvsBHyUFlBxJPK4FzeYcIuBfdjv6jFys44JITAgSTbQD+vIdwMEfyZklsuQX0yI1Q==
+
 jscodeshift@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/jscodeshift/-/jscodeshift-0.11.0.tgz#4f95039408f3f06b0e39bb4d53bc3139f5330e2f"
@@ -17345,10 +17350,10 @@ tail@^2.0.0:
   resolved "https://registry.yarnpkg.com/tail/-/tail-2.2.0.tgz#ef9a7f170c5a33bc0b3ca92a5d5fcd4748a77f46"
   integrity sha512-QqUMtWlnzArTvGyjVnAE5fAiXEm2Psvk/BlE7vWx2/dIEWMsAhcNPz7iW6WTiSM8h1fjtCkRMsaWBS1j6rpGBg==
 
-tangem-sdk-react-native@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/tangem-sdk-react-native/-/tangem-sdk-react-native-1.2.0.tgz#59bd4a391fac7d423c59ebc19f00656ed9773c47"
-  integrity sha512-kBI3bcr5bhp5wbnqr6Z5715vRN50oLJGAUEHqFSjOtVMgcUcw3zmYpliV+sQs4wDZFYG9SYlaQCZ1WLr9FyyMA==
+tangem-sdk-react-native@1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/tangem-sdk-react-native/-/tangem-sdk-react-native-1.2.1.tgz#9414771c0769e610b6b8f208c464ce954be3d1c2"
+  integrity sha512-A9mBuFlILhnB2Y7ETA8+aq7n0WOl1Oo0yMoL1RpyQMvqsj34KNR/m2JCkVwcRmQNEYhd3HqbGIUQ28I+ho4XIg==
 
 tapable@^1.0.0, tapable@^1.1.3:
   version "1.1.3"

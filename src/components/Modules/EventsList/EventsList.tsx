@@ -34,13 +34,11 @@ class EventsList extends PureComponent<Props> {
     formatDate = (date: string) => {
         const momentDate = moment(date);
         const reference = moment();
-        const today = reference.clone().startOf('day');
-        const yesterday = reference.clone().subtract(1, 'days').startOf('day');
 
-        if (momentDate.isSame(today, 'day')) {
+        if (momentDate.isSame(reference, 'day')) {
             return Localize.t('global.today');
         }
-        if (momentDate.isSame(yesterday, 'day')) {
+        if (momentDate.isSame(reference.subtract(1, 'days'), 'day')) {
             return Localize.t('global.yesterday');
         }
 

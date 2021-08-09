@@ -1,3 +1,4 @@
+import debounce from 'lodash/debounce';
 import React, { PureComponent } from 'react';
 import { Platform, Text, TextStyle, TouchableOpacity, View, ViewStyle, ImageStyle } from 'react-native';
 
@@ -66,6 +67,12 @@ const Children = ({
         return React.createElement(children.render);
     }
 
+    const debouncedOnPress = () => {
+        children.onPress && children.onPress();
+    };
+
+    const onPress = debounce(debouncedOnPress, 300, { leading: true, trailing: false });
+
     return (
         <TouchableOpacity
             testID={children.testID}
@@ -77,7 +84,7 @@ const Children = ({
                 style,
             ]}
             activeOpacity={children.onPress ? 0.8 : 1}
-            onPress={children.onPress || null}
+            onPress={onPress}
         >
             {children.text && children.icon && (
                 <View style={[AppStyles.row]}>
@@ -135,14 +142,8 @@ class Header extends PureComponent<Props> {
     };
 
     render() {
-        const {
-            leftComponent,
-            centerComponent,
-            rightComponent,
-            backgroundColor,
-            placement,
-            containerStyle,
-        } = this.props;
+        const { leftComponent, centerComponent, rightComponent, backgroundColor, placement, containerStyle } =
+            this.props;
 
         return (
             <View style={[styles.container, backgroundColor && { backgroundColor }, containerStyle]}>

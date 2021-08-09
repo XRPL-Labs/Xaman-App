@@ -2,7 +2,7 @@
  * Request decline overlay
  */
 import React, { Component, createRef } from 'react';
-import { Animated, View, Text, Platform, Image, TouchableWithoutFeedback, KeyboardEvent } from 'react-native';
+import { Animated, View, Text, Image, TouchableWithoutFeedback, KeyboardEvent, Platform } from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
@@ -10,7 +10,7 @@ import { StringTypeDetector, StringDecoder, StringType } from 'xumm-string-decod
 
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
-import { Keyboard } from '@common/helpers/keyboard';
+import Keyboard from '@common/helpers/keyboard';
 
 import { AppScreens } from '@common/constants';
 
@@ -107,12 +107,14 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
             this.textInputView.current.measure((x, y, width, height, pageX, pageY) => {
                 if (!pageY) return;
 
-                const extraOffset = Platform.OS === 'android' ? 40 : 0;
+                const bottomView = AppSizes.screen.height - height - pageY;
+                const KeyboardHeight = e.endCoordinates.height;
 
-                const bottomView = AppSizes.screen.height - pageY + height;
-                const KeyboardHeight = e.endCoordinates.height + extraOffset;
+                let offset = KeyboardHeight - bottomView;
 
-                const offset = Math.abs(bottomView - KeyboardHeight);
+                if (Platform.OS === 'android') {
+                    offset += AppSizes.topInset + AppSizes.bottomInset;
+                }
 
                 if (offset >= 0) {
                     this.setState({ offsetBottom: offset }, () => {
@@ -236,12 +238,12 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                     verticalOnly
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
-                        { y: AppSizes.screen.height - AppSizes.moderateScale(450) - AppSizes.navigationBarHeight },
+                        { y: AppSizes.screen.height - AppSizes.moderateScale(450) - AppSizes.bottomInset },
                         {
                             y:
                                 AppSizes.screen.height -
                                 AppSizes.moderateScale(450) -
-                                AppSizes.navigationBarHeight -
+                                AppSizes.bottomInset -
                                 offsetBottom,
                         },
                     ]}
@@ -250,24 +252,19 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                         {
                             id: 'top',
                             influenceArea: {
-                                top:
-                                    AppSizes.screen.height - AppSizes.moderateScale(450) - AppSizes.navigationBarHeight,
+                                top: AppSizes.screen.height - AppSizes.moderateScale(450) - AppSizes.bottomInset,
                             },
                         },
                     ]}
                     boundaries={{
-                        top:
-                            AppSizes.screen.height -
-                            AppSizes.moderateScale(500) -
-                            AppSizes.navigationBarHeight -
-                            offsetBottom,
+                        top: AppSizes.screen.height - AppSizes.moderateScale(500) - AppSizes.bottomInset - offsetBottom,
                     }}
                     initialPosition={{ y: AppSizes.screen.height + 3 }}
                     animatedValueY={this.deltaY}
                     animatedValueX={this.deltaX}
                 >
                     <View
-                        style={[styles.container, { height: AppSizes.moderateScale(500) }]}
+                        style={[styles.container, { height: AppSizes.moderateScale(500) + AppSizes.bottomInset }]}
                         onResponderRelease={() => Keyboard.dismiss()}
                         onStartShouldSetResponder={() => true}
                     >

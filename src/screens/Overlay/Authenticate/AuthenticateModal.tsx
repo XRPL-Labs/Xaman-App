@@ -14,7 +14,8 @@ import { BiometryType } from '@store/types';
 
 import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-import { Keyboard } from '@common/helpers/keyboard';
+import Keyboard from '@common/helpers/keyboard';
+
 import { AppScreens } from '@common/constants';
 
 import { AuthenticationService } from '@services';

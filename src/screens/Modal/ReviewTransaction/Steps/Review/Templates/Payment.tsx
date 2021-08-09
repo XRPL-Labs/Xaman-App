@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { isEmpty, isEqual, has } from 'lodash';
+import { isEmpty, isEqual, has, get } from 'lodash';
 import React, { Component } from 'react';
 import { View, Alert, Text, Platform, TouchableOpacity, InteractionManager } from 'react-native';
 
@@ -28,6 +28,7 @@ import styles from './styles';
 export interface Props {
     transaction: Payment;
     canOverride: boolean;
+    forceRender: () => void;
 }
 
 export interface State {
@@ -43,6 +44,9 @@ export interface State {
     xrpRoundedUp: string;
     currencyRate: any;
     isLoadingRate: boolean;
+    shouldShowIssuerFee: boolean;
+    isLoadingIssuerFee: boolean;
+    issuerFee: number;
 }
 
 /* Component ==================================================================== */
@@ -67,6 +71,9 @@ class PaymentTemplate extends Component<Props, State> {
             xrpRoundedUp: undefined,
             currencyRate: undefined,
             isLoadingRate: false,
+            shouldShowIssuerFee: false,
+            isLoadingIssuerFee: false,
+            issuerFee: 0,
         };
 
         this.amountInput = React.createRef();
@@ -81,6 +88,9 @@ class PaymentTemplate extends Component<Props, State> {
 
         // if XRP then show equal amount in selected currency
         this.fetchCurrencyRate();
+
+        // check issuer fee if IOU payment
+        this.fetchIssuerFee();
     }
 
     static getDerivedStateFromProps(nextProps: Props, prevState: State) {
@@ -97,6 +107,40 @@ class PaymentTemplate extends Component<Props, State> {
             InteractionManager.runAfterInteractions(this.checkForPartialPaymentRequired);
         }
     }
+
+    fetchIssuerFee = () => {
+        const { transaction } = this.props;
+
+        if (!transaction.Amount?.issuer && !transaction.SendMax?.issuer) {
+            return;
+        }
+
+        this.setState({ isLoadingIssuerFee: true, shouldShowIssuerFee: true });
+
+        // get transfer rate from issuer account
+        LedgerService.getAccountInfo(transaction.Amount?.issuer || transaction.SendMax?.issuer)
+            .then((issuerAccountInfo: any) => {
+                if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
+                    const { TransferRate } = issuerAccountInfo.account_data;
+
+                    const fee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
+
+                    this.setState({
+                        issuerFee: fee,
+                    });
+                }
+            })
+            .catch(() => {
+                this.setState({
+                    shouldShowIssuerFee: false,
+                });
+            })
+            .finally(() => {
+                this.setState({
+                    isLoadingIssuerFee: false,
+                });
+            });
+    };
 
     fetchCurrencyRate = () => {
         const { transaction } = this.props;
@@ -128,7 +172,7 @@ class PaymentTemplate extends Component<Props, State> {
     };
 
     checkForPartialPaymentRequired = async () => {
-        const { transaction } = this.props;
+        const { transaction, forceRender } = this.props;
         const { account, shouldCheckForConversation } = this.state;
 
         // only check if IOU
@@ -185,7 +229,12 @@ class PaymentTemplate extends Component<Props, State> {
 
                 // @ts-ignore
                 transaction.SendMax = sendMaxXRP;
-                transaction.Flags = [txFlags.Payment.PartialPayment];
+
+                if (get(transaction.Flags, 'PartialPayment', false) === false) {
+                    transaction.Flags = [txFlags.Payment.PartialPayment];
+                    // force re-render the parent
+                    forceRender();
+                }
 
                 this.setState({
                     isPartialPayment: true,
@@ -193,19 +242,25 @@ class PaymentTemplate extends Component<Props, State> {
                     xrpRoundedUp: sendMaxXRP,
                 });
             } else {
-                // if we already set the send max remove it
-
                 // check for transfer fee
-                // add PartialPayment
-                const issuerAccountInfo = await LedgerService.getAccountInfo(transaction.Amount.issuer);
-                // eslint-disable-next-line max-len
-                if (has(issuerAccountInfo, ['account_data', 'TransferRate']) || account === transaction.Amount.issuer) {
+                // if issuer have transfer fee add PartialPayment if not present
+                // TODO: this is developer responsibility to add this flag in the first place
+                const issuerInfo = await LedgerService.getAccountInfo(transaction.Amount.issuer);
+
+                if (
+                    (has(issuerInfo, ['account_data', 'TransferRate']) || account === transaction.Amount.issuer) &&
+                    get(transaction.Flags, 'PartialPayment', false) === false
+                ) {
                     transaction.Flags = [txFlags.Payment.PartialPayment];
+                    // force re-render the parent
+                    forceRender();
                 }
 
+                // if we already set the send max remove it
                 if (transaction.SendMax) {
                     transaction.SendMax = undefined;
                 }
+
                 this.setState({
                     isPartialPayment: false,
                 });
@@ -299,6 +354,9 @@ class PaymentTemplate extends Component<Props, State> {
             amount,
             currencyName,
             destinationDetails,
+            shouldShowIssuerFee,
+            isLoadingIssuerFee,
+            issuerFee,
         } = this.state;
 
         return (
@@ -414,6 +472,15 @@ class PaymentTemplate extends Component<Props, State> {
                                 postfix={transaction.DeliverMin.currency}
                                 style={styles.amount}
                             />
+                        </View>
+                    </>
+                )}
+
+                {shouldShowIssuerFee && (
+                    <>
+                        <Text style={[styles.label]}>{Localize.t('global.issuerFee')}</Text>
+                        <View style={[styles.contentBox]}>
+                            <Text style={[styles.value]}>{isLoadingIssuerFee ? 'Loading...' : `${issuerFee}%`}</Text>
                         </View>
                     </>
                 )}

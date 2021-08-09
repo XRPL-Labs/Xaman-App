@@ -19,6 +19,7 @@ import styles from './styles';
 export interface Props {
     transaction: TransactionsType;
     canOverride: boolean;
+    forceRender: () => void;
 }
 
 export interface State {

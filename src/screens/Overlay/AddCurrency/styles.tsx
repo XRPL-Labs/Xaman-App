@@ -53,7 +53,7 @@ const styles = StyleService.create({
         color: '$black',
     },
     footer: {
-        marginBottom: AppSizes.navigationBarHeight * 1.2,
+        marginBottom: AppSizes.navigationBarHeight * 1.7,
     },
 });
 

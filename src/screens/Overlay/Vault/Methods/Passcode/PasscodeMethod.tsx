@@ -12,7 +12,7 @@ import { SecurePinInput, Button } from '@components/General';
 import { AuthenticationService } from '@services';
 
 import { Prompt } from '@common/helpers/interface';
-import { Keyboard } from '@common/helpers/keyboard';
+import Keyboard from '@common/helpers/keyboard';
 
 import { BiometryType } from '@store/types';
 

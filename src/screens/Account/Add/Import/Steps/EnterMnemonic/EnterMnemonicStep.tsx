@@ -24,7 +24,7 @@ import { StringType, XrplSecret } from 'xumm-string-decode';
 import Localize from '@locale';
 
 import { Navigator } from '@common/helpers/navigator';
-import { Keyboard } from '@common/helpers/keyboard';
+import Keyboard from '@common/helpers/keyboard';
 
 import { AppScreens } from '@common/constants';
 

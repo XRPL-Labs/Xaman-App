@@ -222,6 +222,7 @@
     "doNotRemindMe": "Don't remind me again",
     "invalidPayload": "Invalid payload",
     "unexpectedErrorOccurred": "Unexpected error occurred.",
+    "pleaseCheckSessionLogForMoreInfo": "Please check the session logs for more info!",
     "fieldIsRequired": "%{field} is required!",
     "decodedFrom": "Decoded from",
     "congratulations": "Congratulations",
