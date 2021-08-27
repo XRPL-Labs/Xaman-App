@@ -36,6 +36,7 @@ declare interface LedgerService {
 class LedgerService extends EventEmitter {
     accounts: Array<any>;
     logger: any;
+    transactionListener: any
 
     constructor() {
         super();
@@ -56,7 +57,7 @@ class LedgerService extends EventEmitter {
                     // subscribe accounts for transactions stream
                     this.subscribe();
                     // register on transaction event handler
-                    this.transactionHandler();
+                    this.setTransactionListener();
                 });
 
                 return resolve();
@@ -299,27 +300,31 @@ class LedgerService extends EventEmitter {
         });
     };
 
+    setTransactionListener = () => {
+        if (!this.transactionListener) {
+            this.transactionListener = SocketService.onEvent('transaction', this.transactionHandler);
+        }
+    };
+
     /**
      * Handle stream transactions on subscribed accounts
      */
-    transactionHandler() {
-        SocketService.onEvent('transaction', (tx: LedgerTransactionType) => {
-            const { transaction, meta } = tx;
+    transactionHandler = (tx: LedgerTransactionType) => {
+        const { transaction, meta } = tx;
 
-            if (typeof transaction === 'object' && typeof meta === 'object') {
-                this.logger.debug(`Transaction received: ${get(transaction, 'hash', 'NO_HASH')}`);
+        if (typeof transaction === 'object' && typeof meta === 'object') {
+            this.logger.debug(`Transaction received: ${get(transaction, 'hash', 'NO_HASH')}`);
 
-                // get effected accounts
-                const effectedAccounts = keys(new Meta(meta).parseBalanceChanges());
+            // get effected accounts
+            const effectedAccounts = keys(new Meta(meta).parseBalanceChanges());
 
-                // update account details
-                this.updateAccountsDetails(effectedAccounts);
+            // update account details
+            this.updateAccountsDetails(effectedAccounts);
 
-                // emit onTransaction event
-                this.emit('transaction', transaction);
-            }
-        });
-    }
+            // emit onTransaction event
+            this.emit('transaction', transaction);
+        }
+    };
 
     /**
      * load accounts from store

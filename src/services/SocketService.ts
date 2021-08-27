@@ -88,7 +88,6 @@ class SocketService extends EventEmitter {
     status: SocketStateStatus;
     shownErrorDialog: boolean;
     onEvent: (event: string, fn: any) => void;
-    onceEvent: (event: string, fn: any) => void;
     offEvent: (event: string, fn: any) => void;
 
     constructor() {
