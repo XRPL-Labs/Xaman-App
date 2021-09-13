@@ -11,7 +11,7 @@ import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 // services
-import { PushNotificationsService, LedgerService, SocketService, StyleService } from '@services';
+import { PushNotificationsService, LedgerService, StyleService } from '@services';
 
 import { CoreRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -363,16 +363,11 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         try {
             // create patch object
-            const patch = {
+            const payloadPatch = {
                 signed_blob: transaction.TxnSignature,
                 tx_id: transaction.Hash,
                 signmethod: transaction.SignMethod,
                 multisigned: payload.isMultiSign() ? transaction.Account.address : '',
-                origintype: payload.origin || PayloadOrigin.EVENT_LIST,
-                permission: {
-                    push: true,
-                    days: 365,
-                },
             };
 
             // check if we need to submit the payload to the XRP Ledger
@@ -411,8 +406,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                     VibrateHapticFeedback('notificationError');
                 }
 
-                // update patch
-                Object.assign(patch, {
+                // include submit result in the payload patch
+                Object.assign(payloadPatch, {
                     dispatched: {
                         to: submitResult.node,
                         nodetype: submitResult.nodeType,
@@ -423,17 +418,10 @@ class ReviewTransactionModal extends Component<Props, State> {
                 this.setState({
                     submitResult,
                 });
-            } else {
-                Object.assign(patch, {
-                    dispatched: {
-                        to: SocketService.node,
-                        nodetype: SocketService.chain,
-                    },
-                });
             }
 
             // patch the payload
-            payload.patch(patch);
+            payload.patch(payloadPatch);
 
             // emit sign requests update
             setTimeout(() => {

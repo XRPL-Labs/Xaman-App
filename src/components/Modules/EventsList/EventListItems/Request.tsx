@@ -47,9 +47,8 @@ class RequestTemplate extends Component<Props, State> {
                     modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                 },
                 {
-                    identifier: xappIdentifier,
-
                     title,
+                    identifier: xappIdentifier,
                     origin: PayloadOrigin.EVENT_LIST,
                     originData,
                 },
@@ -59,6 +58,11 @@ class RequestTemplate extends Component<Props, State> {
 
     openSignRequest = () => {
         const { item } = this.props;
+
+        // set payload origin
+        if (item.getOrigin() !== PayloadOrigin.EVENT_LIST) {
+            item.setOrigin(PayloadOrigin.EVENT_LIST);
+        }
 
         Navigator.showModal(
             AppScreens.Modal.ReviewTransaction,
@@ -82,7 +86,7 @@ class RequestTemplate extends Component<Props, State> {
         }
     };
 
-    onPress = debounce(this.debouncedOnPress, 300, { leading: true, trailing: false });
+    onPress = debounce(this.debouncedOnPress, 1500, { leading: true, trailing: false });
 
     getType = (): RequestType => {
         const { item } = this.props;
