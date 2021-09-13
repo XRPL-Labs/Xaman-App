@@ -36,7 +36,7 @@ declare interface LedgerService {
 class LedgerService extends EventEmitter {
     accounts: Array<any>;
     logger: any;
-    transactionListener: any
+    transactionListener: any;
 
     constructor() {
         super();
@@ -74,7 +74,7 @@ class LedgerService extends EventEmitter {
         if (SocketService.connection) {
             const { fee, ledger } = SocketService.connection.getState();
             return {
-                Fee: fee.last,
+                Fee: fee.avg,
                 LastLedger: ledger.last,
             };
         }

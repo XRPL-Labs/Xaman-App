@@ -18976,10 +18976,10 @@ xrpl-accountlib@1.1.4:
     ripple-sign-keypairs "https://github.com/WietseWind/node-ripple-sign-keypairs.git"
     xrpl-secret-numbers "^0.3.3"
 
-xrpl-client@1.9.1:
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/xrpl-client/-/xrpl-client-1.9.1.tgz#d435a2986750bcdd49354acba747ce3e2fd23482"
-  integrity sha512-AUynqybIMOPC0MQeiixI5t2tjLmk0VxbtmxNWrimaEDv9AgGNEY2aRkDOWsaluyrnOPQaBJT0ntejIDhkyfRMg==
+xrpl-client@1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/xrpl-client/-/xrpl-client-1.9.2.tgz#c018510b050e678e09b8640533a57c50d4e586e9"
+  integrity sha512-foFrFqfYxpkj8La9k1G9ZJEbVOHJpvIIt0koNaw/3nlTUUnbyTENtr112CnHEh+z2JMqJxBB9JpmZavGDhMlKg==
   dependencies:
     debug "^4.1.1"
     websocket "^1.0.34"
