@@ -533,12 +533,13 @@ class TransactionDetailsView extends Component<Props, State> {
             if (incomingTx) {
                 let currency;
 
-                if (tx.Amount?.currency === 'XRP') {
+                if (tx.DeliveredAmount?.currency === 'XRP') {
                     currency = 'XRP';
                 } else {
                     currency = account.lines.find(
                         // eslint-disable-next-line max-len
-                        (l: any) => l.currency.currency === tx.Amount.currency && l.currency.issuer === tx.Amount.issuer,
+                        (l: any) => l.currency.currency === tx.DeliveredAmount.currency &&
+                            l.currency.issuer === tx.DeliveredAmount.issuer,
                     );
                 }
                 Object.assign(params, { amount: tx.DeliveredAmount?.value, currency });
