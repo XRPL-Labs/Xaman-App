@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, Alert, Linking, BackHandler, Keyboard } from 'react-native';
+import { View, Text, Alert, Linking, BackHandler, Keyboard, Platform } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -72,8 +72,10 @@ class ReviewTransactionModal extends Component<Props, State> {
     }
 
     componentDidMount() {
-        // back handler listener
-        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
+        // back handler listener on android
+        if (Platform.OS === 'android') {
+            this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress);
+        }
 
         // update the accounts details before process the review
         LedgerService.updateAccountsDetails();
@@ -82,6 +84,16 @@ class ReviewTransactionModal extends Component<Props, State> {
     componentDidCatch() {
         this.setState({ hasError: true });
     }
+
+    onHardwareBackPress = () => {
+        const { currentStep } = this.state;
+
+        if (currentStep === Steps.Review) {
+            this.onClose();
+        }
+
+        return true;
+    };
 
     getTransactionLabel = () => {
         const { payload, transaction } = this.state;
@@ -241,8 +253,6 @@ class ReviewTransactionModal extends Component<Props, State> {
                 },
             );
         }
-
-        return true;
     };
 
     onAccept = async () => {
