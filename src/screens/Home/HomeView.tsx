@@ -627,14 +627,15 @@ class HomeView extends Component<Props, State> {
                                 name={discreetMode ? 'IconEyeOff' : 'IconEye'}
                             />
                             {'  '}
-                            {discreetMode ? 'Show' : 'Hide'}
+                            {discreetMode ? Localize.t('home.showBalance') : Localize.t('home.hideBalance')}
                         </Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={this.showBalanceExplain}>
                         <Text style={[styles.cardSmallLabel]}>
                             <Icon style={[AppStyles.imgColorGrey]} size={12} name="IconInfo" />
-                            {'  '}Explain
+                            {'  '}
+                            {Localize.t('home.explainBalance')}
                         </Text>
                     </TouchableOpacity>
                 </View>

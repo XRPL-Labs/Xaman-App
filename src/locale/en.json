@@ -338,6 +338,9 @@
     "pleaseReadTheTextAboveCarefully": "Please read the above text carefully"
   },
   "home": {
+    "explainBalance": "Explain",
+    "hideBalance": "Hide",
+    "showBalance": "Show",
     "balance": "Balance",
     "addAsset": "Add",
     "shareAccount": "Share Account Address",
