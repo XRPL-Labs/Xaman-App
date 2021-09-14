@@ -41,6 +41,7 @@ export interface Props {
 }
 
 export interface State {
+    isRemoving: boolean;
     isLoading: boolean;
     latestLineBalance: number;
     canRemove: boolean;
@@ -65,6 +66,7 @@ class CurrencySettingsModal extends Component<Props, State> {
         super(props);
 
         this.state = {
+            isRemoving: false,
             isLoading: false,
             latestLineBalance: 0,
             canRemove: false,
@@ -164,7 +166,7 @@ class CurrencySettingsModal extends Component<Props, State> {
 
         try {
             this.setState({
-                isLoading: true,
+                isRemoving: true,
             });
 
             const payment = new Payment();
@@ -226,7 +228,7 @@ class CurrencySettingsModal extends Component<Props, State> {
             Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
         } finally {
             this.setState({
-                isLoading: false,
+                isRemoving: false,
             });
         }
     };
@@ -285,7 +287,7 @@ class CurrencySettingsModal extends Component<Props, State> {
             }
 
             this.setState({
-                isLoading: true,
+                isRemoving: true,
             });
 
             // parse account flags
@@ -346,20 +348,20 @@ class CurrencySettingsModal extends Component<Props, State> {
             }
         } finally {
             this.setState({
-                isLoading: false,
+                isRemoving: false,
             });
         }
     };
 
     onRemovePress = async () => {
         this.setState({
-            isLoading: true,
+            isRemoving: true,
         });
 
         try {
             await this.checkForIssuerState().finally(() => {
                 this.setState({
-                    isLoading: false,
+                    isRemoving: false,
                 });
             });
         } catch {
@@ -408,6 +410,53 @@ class CurrencySettingsModal extends Component<Props, State> {
         );
     };
 
+    updateLineLimit = async () => {
+        const { account, trustLine } = this.props;
+
+        this.setState({
+            isLoading: true,
+        });
+        // set the default line limit
+        let lineLimit = 1000000000;
+
+        try {
+            // set the trustline limit by gateway balance if it's more than our default value
+            const resp = await LedgerService.getGatewayBalances(trustLine.currency.issuer);
+            const gatewayBalances = get(resp, ['obligations', trustLine.currency.currency]);
+
+            if (gatewayBalances && Number(gatewayBalances) > lineLimit) {
+                lineLimit = gatewayBalances;
+            }
+        } catch {
+            // ignore
+        } finally {
+            this.setState({
+                isLoading: false,
+            });
+        }
+
+        const payload = await Payload.build({
+            TransactionType: 'TrustSet',
+            Account: account.address,
+            LimitAmount: {
+                currency: trustLine.currency.currency,
+                issuer: trustLine.currency.issuer,
+                value: lineLimit,
+            },
+            Flags: 131072, // tfSetNoRipple
+        });
+
+        await this.dismiss();
+
+        Navigator.showModal(
+            AppScreens.Modal.ReviewTransaction,
+            { modalPresentationStyle: 'fullScreen' },
+            {
+                payload,
+            },
+        );
+    };
+
     showExchangeScreen = () => {
         const { trustLine } = this.props;
 
@@ -438,25 +487,35 @@ class CurrencySettingsModal extends Component<Props, State> {
         });
     };
 
-    showRipplingAlert = () => {
+    showConfigurationAlert = () => {
         const { trustLine } = this.props;
+
+        let explanation;
+        let fixMethod;
+
+        if (trustLine.no_ripple === false) {
+            explanation = Localize.t('asset.ripplingMisconfigurationWarning', {
+                token: NormalizeCurrencyCode(trustLine.currency.currency),
+            });
+            fixMethod = this.disableRippling;
+        } else if (trustLine.limit === 0) {
+            explanation = Localize.t('asset.lineLimitMisconfigurationWarning');
+            fixMethod = this.updateLineLimit;
+        }
 
         Navigator.showAlertModal({
             type: 'warning',
             title: Localize.t('global.warning'),
-            text: Localize.t('asset.ripplingMisconfigurationWarning', {
-                token: NormalizeCurrencyCode(trustLine.currency.currency),
-            }),
+            text: explanation,
             buttons: [
                 {
                     text: Localize.t('global.back'),
-                    onPress: () => {},
                     type: 'dismiss',
                     light: true,
                 },
                 {
                     text: 'Fix',
-                    onPress: this.disableRippling,
+                    onPress: fixMethod,
                     light: false,
                 },
             ],
@@ -475,7 +534,7 @@ class CurrencySettingsModal extends Component<Props, State> {
 
     render() {
         const { trustLine } = this.props;
-        const { isLoading, canRemove, isNFT } = this.state;
+        const { isRemoving, isLoading, canRemove, isNFT } = this.state;
 
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],
@@ -524,7 +583,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                             </View>
                         </View>
 
-                        {trustLine.no_ripple === false && !trustLine.obligation && (
+                        {(trustLine.no_ripple === false || trustLine.limit === 0) && !trustLine.obligation && (
                             <>
                                 <Spacer />
                                 <InfoMessage
@@ -532,8 +591,9 @@ class CurrencySettingsModal extends Component<Props, State> {
                                     containerStyle={styles.infoContainer}
                                     labelStyle={styles.infoText}
                                     label={Localize.t('asset.dangerousConfigurationDetected')}
-                                    onMorePress={this.showRipplingAlert}
-                                    moreInfoLabel={Localize.t('asset.moreInfoAndFix')}
+                                    moreButtonLabel={Localize.t('asset.moreInfoAndFix')}
+                                    onMoreButtonPress={this.showConfigurationAlert}
+                                    isMoreButtonLoading={isLoading}
                                 />
                             </>
                         )}
@@ -583,7 +643,7 @@ class CurrencySettingsModal extends Component<Props, State> {
 
                         <RaisedButton
                             loadingIndicatorStyle="dark"
-                            isLoading={isLoading}
+                            isLoading={isRemoving}
                             isDisabled={!canRemove}
                             icon="IconTrash"
                             iconSize={20}
