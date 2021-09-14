@@ -51,7 +51,8 @@ export class Payload {
 
         // if Payload UUID passed then fetch the payload from backend
         if (isString(args)) {
-            await payload.fetch(args);
+            const res = await payload.fetch(args);
+            payload.assign(res);
         } else if (isObject(args)) {
             // if not,  assign it to the class
             payload.assign(args);
@@ -154,10 +155,10 @@ export class Payload {
      * fetch payload by UUID from backend
      * @param uuid
      */
-    fetch = (uuid: string) => {
+    fetch = (uuid: string): Promise<PayloadType> => {
         return new Promise((resolve, reject) => {
-            ApiService.payload
-                .get({ uuid, from: this.origin })
+            return ApiService.payload
+                .get({ uuid, from: this.getOrigin() })
                 .then(async (res: PayloadType) => {
                     // get verification status
                     const verified = await this.verify(res.payload);
@@ -174,13 +175,9 @@ export class Payload {
                         return reject(new Error(Localize.t('payload.payloadExpired')));
                     }
 
-                    this.assign(res);
-
-                    return resolve(true);
+                    return resolve(res);
                 })
                 .catch((err: any) => {
-                    logger.debug('Fetch error', err);
-
                     if (has(err, 'code')) {
                         const errorMessage = get(errors, err.code);
                         return reject(new Error(errorMessage));
@@ -241,6 +238,13 @@ export class Payload {
                     logger.debug('Reject error', e);
                 });
         }
+    };
+
+    /**
+     * validate payload by fetching it again
+     */
+    validate = () => {
+        return this.fetch(this.meta.uuid);
     };
 
     /**
