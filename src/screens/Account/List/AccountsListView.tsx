@@ -177,19 +177,17 @@ class AccountListView extends Component<Props, State> {
             <View style={[styles.rowContainer]}>
                 <View style={[AppStyles.row, styles.rowHeader, AppStyles.centerContent]}>
                     <View style={[AppStyles.flex6]}>
-                        <View style={[AppStyles.flex1]}>
-                            <Text style={[styles.accountLabel]}>{item.label}</Text>
-                            <View style={[styles.accessLevelContainer]}>
-                                <Icon size={13} name={accessLevelIcon} style={AppStyles.imgColorGrey} />
-                                <Text style={[styles.accessLevelLabel]}>{accessLevelLabel}</Text>
-                                {item.hidden && (
-                                    <>
-                                        <Text style={[styles.accessLevelLabel]}> </Text>
-                                        <Icon size={13} name="IconEyeOff" style={AppStyles.imgColorGrey} />
-                                        <Text style={[styles.accessLevelLabel]}>{Localize.t('global.hidden')}</Text>
-                                    </>
-                                )}
-                            </View>
+                        <Text style={[styles.accountLabel]}>{item.label}</Text>
+                        <View style={[styles.accessLevelContainer]}>
+                            <Icon size={13} name={accessLevelIcon} style={AppStyles.imgColorGrey} />
+                            <Text style={[styles.accessLevelLabel]}>{accessLevelLabel}</Text>
+                            {item.hidden && (
+                                <>
+                                    <Text style={[styles.accessLevelLabel]}> </Text>
+                                    <Icon size={13} name="IconEyeOff" style={AppStyles.imgColorGrey} />
+                                    <Text style={[styles.accessLevelLabel]}>{Localize.t('global.hidden')}</Text>
+                                </>
+                            )}
                         </View>
                     </View>
                     <View style={[AppStyles.flex2]}>
