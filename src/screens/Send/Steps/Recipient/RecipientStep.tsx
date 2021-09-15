@@ -15,6 +15,8 @@ import { AppScreens } from '@common/constants';
 import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { NormalizeDestination } from '@common/utils/codec';
 
 import { BackendService, LedgerService } from '@services';
@@ -489,10 +491,13 @@ class RecipientStep extends Component<Props, State> {
             }
 
             // if account is set to black hole then reject sending
-            if (destinationInfo.blackHole) {
+            if (!destinationInfo.blackHole) {
                 Navigator.showAlertModal({
                     type: 'warning',
-                    text: Localize.t('send.theDestinationAccountIsSetAsBlackHole'),
+                    text: Localize.t('send.theDestinationAccountIsSetAsBlackHole', {
+                        currency:
+                            typeof currency === 'object' ? NormalizeCurrencyCode(currency.currency.currency) : 'XRP',
+                    }),
                     buttons: [
                         {
                             text: Localize.t('global.back'),

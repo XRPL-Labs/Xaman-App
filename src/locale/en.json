@@ -753,7 +753,7 @@
     "destinationCannotActivateWithIOU": "The destination account is not activated as it doesn't hold the XRP Ledger enforced minimum balance of 20 XRP. To activate an account on the XRP Ledger, an initial deposit of at least 20 XRP has to be sent to the account. Non-XRP tokens cannot be used for the initial deposit.",
     "destinationTagIsRequired": "The destination tag is required for sending this payment.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "Unable to get recipient account info please try again.",
-    "theDestinationAccountIsSetAsBlackHole": "The destination account is set as black hole, sending to this account will cause losing sent XRP.",
+    "theDestinationAccountIsSetAsBlackHole": "The destination account is set as black hole, sending to this account will cause losing sent %{currency}.",
     "noDestinationTag": "No destination tag",
     "thisAddressRequiredDestinationTag": "This address requires a Destination Tag",
     "pleaseEnterAmount": "Please enter the transaction amount",
