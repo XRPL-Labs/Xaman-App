@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Image } from 'react-native';
 
 import StyleService from '@services/StyleService';
+import LedgerService from '@services/LedgerService';
 
 // components
 import { Button, Spacer, Footer } from '@components/General';
@@ -47,13 +48,17 @@ class ExplainActivationStep extends Component<Props, State> {
 
                 <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.paddingSml]}>
                     <Text style={[AppStyles.baseText, AppStyles.bold, AppStyles.textCenterAligned]}>
-                        {Localize.t('account.accountGenerateActivationExplain')}
+                        {Localize.t('account.accountGenerateActivationExplain', {
+                            baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+                        })}
                     </Text>
 
                     <Spacer size={30} />
 
                     <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
-                        {Localize.t('account.accountActivateReserveExplain')}
+                        {Localize.t('account.accountActivateReserveExplain', {
+                            baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+                        })}
                     </Text>
 
                     <Spacer size={20} />

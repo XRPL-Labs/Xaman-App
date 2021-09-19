@@ -19,7 +19,7 @@ import {
 
 import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
-import { LedgerService, SocketService, BackendService, StyleService } from '@services';
+import { AccountService, SocketService, BackendService, StyleService, LedgerService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
@@ -119,7 +119,7 @@ class HomeView extends Component<Props, State> {
         InteractionManager.runAfterInteractions(() => {
             if (account?.isValid() && SocketService.isConnected()) {
                 // update account details
-                LedgerService.updateAccountsDetails([account.address]);
+                AccountService.updateAccountsDetails([account.address]);
             }
         });
     }
@@ -254,7 +254,9 @@ class HomeView extends Component<Props, State> {
             {},
             {
                 title: Localize.t('home.howActivateMyAccount'),
-                content: Localize.t('home.howActivateMyAccountDesc'),
+                content: Localize.t('home.howActivateMyAccountDesc', {
+                    baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+                }),
             },
         );
     };
@@ -605,10 +607,10 @@ class HomeView extends Component<Props, State> {
         if (!isLoadingRate) {
             if (showRate) {
                 balance = `${currencyRate.symbol} ${Localize.formatNumber(
-                    Number(account.availableBalance) * Number(currencyRate.lastRate),
+                    Number(AccountRepository.calculateAvailableBalance(account)) * Number(currencyRate.lastRate),
                 )}`;
             } else {
-                balance = Localize.formatNumber(account.availableBalance);
+                balance = Localize.formatNumber(AccountRepository.calculateAvailableBalance(account));
             }
         }
 

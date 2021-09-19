@@ -377,7 +377,7 @@ class ExchangeView extends Component<Props, State> {
         let availableBalance;
 
         if (direction === 'sell') {
-            availableBalance = sourceAccount.availableBalance;
+            availableBalance = AccountRepository.calculateAvailableBalance(sourceAccount);
         } else {
             availableBalance = trustLine.balance;
         }
@@ -392,7 +392,9 @@ class ExchangeView extends Component<Props, State> {
         let availableBalance = '0';
 
         if (direction === 'sell') {
-            availableBalance = new BigNumber(sourceAccount.availableBalance).decimalPlaces(6).toString();
+            availableBalance = new BigNumber(AccountRepository.calculateAvailableBalance(sourceAccount))
+                .decimalPlaces(6)
+                .toString();
         } else {
             availableBalance = new BigNumber(trustLine.balance).decimalPlaces(8).toString();
         }

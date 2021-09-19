@@ -7,6 +7,7 @@ import AuthenticationService from './AuthenticationService';
 import LinkingService from './LinkingService';
 import SocketService from './SocketService';
 import LedgerService from './LedgerService';
+import AccountService from './AccountService';
 import BackendService from './BackendService';
 import StyleService from './StyleService';
 
@@ -20,6 +21,7 @@ export {
     LinkingService,
     SocketService,
     LedgerService,
+    AccountService,
     BackendService,
     StyleService,
 };

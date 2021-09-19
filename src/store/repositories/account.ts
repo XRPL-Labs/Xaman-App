@@ -1,13 +1,16 @@
+import BigNumber from 'bignumber.js';
 import { first, has, filter, find } from 'lodash';
 import Realm, { Results, ObjectSchema } from 'realm';
 
-import Flag from '@common/libs/ledger/parser/common/flag';
-import Vault from '@common/libs/vault';
+import LedgerService from '@services/LedgerService';
 
 import { AccountSchema } from '@store/schemas/latest';
 import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
 
 import Localize from '@locale';
+
+import Flag from '@common/libs/ledger/parser/common/flag';
+import Vault from '@common/libs/vault';
 
 import BaseRepository from './base';
 
@@ -153,6 +156,28 @@ class AccountRepository extends BaseRepository {
      */
     isSignable = (account: AccountSchema): boolean => {
         return !!find(this.getSignableAccounts(), (o) => o.address === account.address);
+    };
+
+    /**
+     * get account available balance
+     */
+    calculateAvailableBalance = (account: AccountSchema): number => {
+        if (account.balance === 0) {
+            return 0;
+        }
+
+        const { BaseReserve, OwnerReserve } = LedgerService.getNetworkReserve();
+
+        // calculate the spendable amount
+        const spendable = account.balance - BaseReserve - account.ownerCount * OwnerReserve;
+
+        const availableBalance = new BigNumber(spendable).decimalPlaces(8).toNumber();
+
+        if (availableBalance < 0) {
+            return 0;
+        }
+
+        return availableBalance;
     };
 
     /**

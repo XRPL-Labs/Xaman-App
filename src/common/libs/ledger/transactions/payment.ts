@@ -5,6 +5,7 @@ import * as AccountLib from 'xrpl-accountlib';
 
 import LedgerService from '@services/LedgerService';
 
+import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 import { NormalizeCurrencyCode, NormalizeAmount } from '@common/utils/amount';
 
@@ -277,11 +278,11 @@ class Payment extends BaseTransaction {
                 const XRPAmount = (this.SendMax && this.SendMax.value) || this.Amount.value;
 
                 // ===== check balance =====
-                if (Number(XRPAmount) > Number(source.availableBalance)) {
+                if (Number(XRPAmount) > Number(AccountRepository.calculateAvailableBalance(source))) {
                     return reject(
                         new Error(
                             Localize.t('send.insufficientBalanceSpendableBalance', {
-                                spendable: Localize.formatNumber(source.availableBalance),
+                                spendable: Localize.formatNumber(AccountRepository.calculateAvailableBalance(source)),
                                 currency: 'XRP',
                             }),
                         ),

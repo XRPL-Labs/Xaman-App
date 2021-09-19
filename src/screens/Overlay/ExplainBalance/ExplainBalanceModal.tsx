@@ -12,6 +12,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { Toast } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
+import { AccountRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import LedgerService from '@services/LedgerService';
@@ -148,7 +149,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                     <Text style={[styles.rowLabel]}>{LedgerEntryType}</Text>
                 </View>
                 <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                    <Text style={[styles.reserveAmount]}>5 XRP</Text>
+                    <Text style={[styles.reserveAmount]}>{LedgerService.getNetworkReserve().OwnerReserve} XRP</Text>
                 </View>
             </View>
         );
@@ -181,7 +182,9 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                                 </Text>
                             </View>
                             <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                                <Text style={[styles.reserveAmount]}>5 XRP</Text>
+                                <Text style={[styles.reserveAmount]}>
+                                    {LedgerService.getNetworkReserve().OwnerReserve} XRP
+                                </Text>
                             </View>
                         </View>
                     );
@@ -203,7 +206,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         <Text style={[styles.rowLabel]}>{Localize.t('account.walletReserve')}</Text>
                     </View>
                     <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                        <Text style={[styles.reserveAmount]}>20 XRP</Text>
+                        <Text style={[styles.reserveAmount]}>{LedgerService.getNetworkReserve().BaseReserve} XRP</Text>
                     </View>
                 </View>
 
@@ -332,7 +335,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                                     style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}
                                 >
                                     <Text style={[AppStyles.h5, AppStyles.monoBold]}>
-                                        {Localize.formatNumber(account.availableBalance)}
+                                        {Localize.formatNumber(AccountRepository.calculateAvailableBalance(account))}
                                     </Text>
                                 </View>
                             </View>

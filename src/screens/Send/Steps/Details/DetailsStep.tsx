@@ -9,6 +9,7 @@ import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import { View, Image, Text, Alert, InteractionManager } from 'react-native';
 
+import { AccountRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import { BackendService } from '@services';
@@ -87,7 +88,7 @@ class DetailsStep extends Component<Props, State> {
 
         // XRP
         if (typeof currency === 'string') {
-            availableBalance = source.availableBalance;
+            availableBalance = AccountRepository.calculateAvailableBalance(source);
         } else if (sendingNFT) {
             availableBalance = XRPLValueToNFT(currency.balance);
         } else {
@@ -288,7 +289,8 @@ class DetailsStep extends Component<Props, State> {
                             <Text
                                 style={[styles.currencyBalance, selected ? AppStyles.colorBlue : AppStyles.colorGrey]}
                             >
-                                {Localize.t('global.available')}: {Localize.formatNumber(source.availableBalance)}
+                                {Localize.t('global.available')}:{' '}
+                                {Localize.formatNumber(AccountRepository.calculateAvailableBalance(source))}
                             </Text>
                         </View>
                     </View>

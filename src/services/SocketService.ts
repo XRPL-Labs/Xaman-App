@@ -5,7 +5,7 @@ import EventEmitter from 'events';
 import { Platform } from 'react-native';
 import { XrplClient } from 'xrpl-client';
 
-import { CoreRepository } from '@store/repositories';
+import CoreRepository from '@store/repositories/core';
 import { NodeChain } from '@store/types';
 
 import { Navigator } from '@common/helpers/navigator';

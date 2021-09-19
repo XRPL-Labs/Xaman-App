@@ -6,7 +6,7 @@ import { Appearance } from 'react-native';
 
 import { Images } from '@common/helpers/images';
 
-import { CoreRepository } from '@store/repositories';
+import CoreRepository from '@store/repositories/core';
 import { CoreSchema } from '@store/schemas/latest';
 import { Themes } from '@store/types';
 

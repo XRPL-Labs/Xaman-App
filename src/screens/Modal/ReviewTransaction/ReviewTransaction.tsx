@@ -11,7 +11,7 @@ import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 // services
-import { PushNotificationsService, LedgerService, StyleService } from '@services';
+import { PushNotificationsService, AccountService, StyleService } from '@services';
 
 import { CoreRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -80,7 +80,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         }
 
         // update the accounts details before process the review
-        LedgerService.updateAccountsDetails();
+        AccountService.updateAccountsDetails();
     }
 
     componentDidCatch() {
