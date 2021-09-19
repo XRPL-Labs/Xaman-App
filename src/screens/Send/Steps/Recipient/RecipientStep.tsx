@@ -491,7 +491,7 @@ class RecipientStep extends Component<Props, State> {
             }
 
             // if account is set to black hole then reject sending
-            if (!destinationInfo.blackHole) {
+            if (destinationInfo.blackHole) {
                 Navigator.showAlertModal({
                     type: 'warning',
                     text: Localize.t('send.theDestinationAccountIsSetAsBlackHole', {
