@@ -62,9 +62,10 @@ class AccountService extends EventEmitter {
      * Set transaction listener if not set
      */
     setTransactionListener = () => {
-        if (!this.transactionListener) {
-            this.transactionListener = SocketService.onEvent('transaction', this.transactionHandler);
+        if (this.transactionListener) {
+            SocketService.offEvent('transaction', this.transactionHandler);
         }
+        this.transactionListener = SocketService.onEvent('transaction', this.transactionHandler);
     };
 
     /**

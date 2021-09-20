@@ -342,9 +342,10 @@ class LedgerService extends EventEmitter {
      * Set transaction listener if not set
      */
     setLedgerListener = () => {
-        if (!this.ledgerListener) {
-            this.ledgerListener = SocketService.onEvent('ledger', this.updateNetworkReserve);
+        if (this.ledgerListener) {
+            SocketService.offEvent('ledger', this.updateNetworkReserve);
         }
+        this.ledgerListener = SocketService.onEvent('ledger', this.updateNetworkReserve);
     };
 
     /**
@@ -360,7 +361,7 @@ class LedgerService extends EventEmitter {
             const { base, owner } = this.networkReserve;
 
             if (reserveBase !== base || reserveOwner !== owner) {
-                this.logger.debug(`Network Owner/Base reserve changed to Base: ${reserveBase} Owner: ${reserveBase}`);
+                this.logger.debug(`Network Owner/Base reserve changed to Base: ${reserveBase} Owner: ${reserveOwner}`);
                 this.networkReserve = {
                     base: reserveBase,
                     owner: reserveOwner,
