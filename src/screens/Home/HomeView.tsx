@@ -607,7 +607,7 @@ class HomeView extends Component<Props, State> {
         let balance = '0';
 
         if (!isLoadingRate) {
-            const availableBalance = CalculateAvailableBalance(account);
+            const availableBalance = CalculateAvailableBalance(account, true);
             if (showRate) {
                 balance = `${currencyRate.symbol} ${Localize.formatNumber(
                     Number(availableBalance) * Number(currencyRate.lastRate),
