@@ -11,7 +11,7 @@ import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 // services
-import { PushNotificationsService, AccountService, StyleService } from '@services';
+import { PushNotificationsService, AccountService, LedgerService, StyleService } from '@services';
 
 import { CoreRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -329,7 +329,9 @@ class ReviewTransactionModal extends Component<Props, State> {
                 Navigator.showAlertModal({
                     type: 'error',
                     title: Localize.t('global.danger'),
-                    text: Localize.t('account.deleteAccountWarning'),
+                    text: Localize.t('account.deleteAccountWarning', {
+                        ownerReserve: LedgerService.getNetworkReserve().OwnerReserve,
+                    }),
                     buttons: [
                         {
                             text: Localize.t('global.back'),

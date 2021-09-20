@@ -160,7 +160,9 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     value: lineLimit,
                 },
             },
-            Localize.t('asset.addingAssetReserveDescription'),
+            Localize.t('asset.addingAssetReserveDescription', {
+                ownerReserve: LedgerService.getNetworkReserve().OwnerReserve,
+            }),
         );
 
         Navigator.showModal(
