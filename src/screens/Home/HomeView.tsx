@@ -11,6 +11,7 @@ import {
     Text,
     Image,
     TouchableOpacity,
+    TouchableWithoutFeedback,
     ImageBackground,
     InteractionManager,
     Share,
@@ -313,10 +314,6 @@ class HomeView extends Component<Props, State> {
         Alert.alert(Localize.t('global.warning'), Localize.t('home.exchangeAccountReadonlyExplain'));
     };
 
-    onRequestPress = () => {
-        Navigator.push(AppScreens.Transaction.Request);
-    };
-
     onShowAccountQRPress = () => {
         const { account } = this.state;
 
@@ -550,7 +547,7 @@ class HomeView extends Component<Props, State> {
                         iconPosition="right"
                         label={Localize.t('global.request')}
                         textStyle={[styles.requestButtonText]}
-                        onPress={this.onRequestPress}
+                        onPress={this.onShowAccountQRPress}
                         activeOpacity={0}
                     />
                 </View>
@@ -671,15 +668,17 @@ class HomeView extends Component<Props, State> {
                     <Text style={[AppStyles.h5]} numberOfLines={1}>
                         {account.label}
                     </Text>
-                    <Text
-                        testID="account-address-text"
-                        adjustsFontSizeToFit
-                        numberOfLines={1}
-                        selectable={!discreetMode}
-                        style={[styles.cardAddressText, discreetMode && AppStyles.colorGrey]}
-                    >
-                        {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
-                    </Text>
+                    <TouchableWithoutFeedback onPress={this.onShowAccountQRPress}>
+                        <Text
+                            testID="account-address-text"
+                            adjustsFontSizeToFit
+                            numberOfLines={1}
+                            selectable={!discreetMode}
+                            style={[styles.cardAddressText, discreetMode && AppStyles.colorGrey]}
+                        >
+                            {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
+                        </Text>
+                    </TouchableWithoutFeedback>
                 </View>
                 <TouchableOpacity hitSlop={{ left: 25, right: 25 }} onPress={this.onShowAccountQRPress}>
                     <Icon style={[styles.iconShare]} size={16} name="IconShare" />

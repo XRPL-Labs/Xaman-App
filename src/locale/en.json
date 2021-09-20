@@ -286,7 +286,8 @@
     "customNodeSuccessfullyAddedToXUMM": "Custom node successfully added to XUMM. Do you want to switch to the added node?",
     "addingCustomNodeWarning": "You are adding a custom node to XUMM, do you want to continue?",
     "unableToLoadCustomEndpointDetails": "Unable to load the endpoint details. Please try again!",
-    "nodeDetermined": "Node determined"
+    "nodeDetermined": "Node determined",
+    "createPaymentRequestLink": "Create Payment Request link"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",
