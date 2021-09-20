@@ -41,6 +41,21 @@ const txFlags = {
         Renew: 0x00010000,
         Close: 0x00020000,
     },
+
+    NFTokenMint: {
+        Burnable: 0x00000001,
+        OnlyXRP: 0x00000002,
+        TrustLine: 0x00000004,
+        Transferable: 0x00000008,
+        ApproveTransfers: 0x00000010,
+        IssuerCanCancelOffers: 0x00000010,
+        IssuerApprovalRequired: 0x00000020,
+    },
+
+    NFTokenCreateOffer: {
+        SellToken: 0x00000001,
+        Approved: 0x00000002,
+    },
 };
 
 // The following are integer (as opposed to bit) flags

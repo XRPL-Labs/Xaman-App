@@ -316,6 +316,16 @@ class TransactionDetailsView extends Component<Props, State> {
                     address = tx.Account.address;
                 }
                 break;
+            case 'NFTokenMint':
+                if (tx.Issuer) {
+                    address = tx.Issuer;
+                }
+                break;
+            case 'NFTokenCreateOffer':
+                if (tx.Destination) {
+                    address = tx.Destination;
+                }
+                break;
             default:
                 break;
         }
@@ -490,6 +500,16 @@ class TransactionDetailsView extends Component<Props, State> {
                 return Localize.t('events.claimPaymentChannel');
             case 'PaymentChannelFund':
                 return Localize.t('events.fundPaymentChannel');
+            case 'NFTokenMint':
+                return Localize.t('events.mintNFToken');
+            case 'NFTokenBurn':
+                return Localize.t('events.burnNFToken');
+            case 'NFTokenCreateOffer':
+                return Localize.t('events.createNFTokenOffer');
+            case 'NFTokenCancelOffer':
+                return Localize.t('events.cancelNFTokenOffer');
+            case 'NFTokenOfferAccept':
+                return Localize.t('events.acceptNFTokenOffer');
             default:
                 return tx.Type;
         }
@@ -1013,6 +1033,26 @@ class TransactionDetailsView extends Component<Props, State> {
 
         return content;
     };
+
+    renderNFTokenMint = () => {
+        const { tx } = this.state;
+
+        let content = '';
+
+        content += Localize.t('events.itWillUpdateThePaymentChannel', { channel: tx.Channel });
+        content += '\n';
+
+        if (tx.Balance) {
+            content += Localize.t('events.theChannelBalanceClaimedIs', { balance: tx.Balance.value });
+            content += '\n';
+        }
+
+        if (tx.IsClosed) {
+            content += Localize.t('events.thePaymentChannelWillBeClosed');
+        }
+
+        return content;
+    }
 
     renderDescription = () => {
         const { tx } = this.state;

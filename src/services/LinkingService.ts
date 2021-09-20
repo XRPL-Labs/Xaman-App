@@ -37,6 +37,27 @@ class LinkingService extends EventEmitter {
                         Linking.addEventListener('url', this.handleDeepLink);
                     }
                 });
+
+                setTimeout(async () => {
+                    // fetch the payload
+                    const payload = await Payload.build({
+                        TransactionType: 'NFTokenMint',
+                        TokenTaxon: 2,
+                        URI: Buffer.from(
+                            'ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi',
+                            'utf-8',
+                        ).toString('hex'),
+                        Flags: 2147483659,
+                    });
+
+                    // review the transaction
+                    this.routeUser(
+                        AppScreens.Modal.ReviewTransaction,
+                        { modalPresentationStyle: 'fullScreen' },
+                        { payload },
+                        ComponentTypes.Modal,
+                    );
+                }, 3000);
                 return resolve();
             } catch (e) {
                 return reject(e);

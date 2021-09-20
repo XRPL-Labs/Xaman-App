@@ -18,6 +18,11 @@ import TicketCreate from './ticketCreate';
 import PaymentChannelCreate from './paymentChannelCreate';
 import PaymentChannelClaim from './paymentChannelClaim';
 import PaymentChannelFund from './paymentChannelFund';
+import NFTokenMint from './nfTokenMint';
+import NFTokenBurn from './nfTokenBurn';
+import NFTokenCreateOffer from './nfTokenCreateOffer';
+import NFTokenOfferAccept from './nfTokenOfferAccept';
+import NFTokenCancelOffer from './nfTokenCancelOffer';
 
 export {
     BaseTransaction,
@@ -40,4 +45,9 @@ export {
     PaymentChannelCreate,
     PaymentChannelClaim,
     PaymentChannelFund,
+    NFTokenMint,
+    NFTokenBurn,
+    NFTokenCreateOffer,
+    NFTokenOfferAccept,
+    NFTokenCancelOffer,
 };

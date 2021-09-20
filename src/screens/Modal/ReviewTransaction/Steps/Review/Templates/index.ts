@@ -20,6 +20,12 @@ import PaymentChannelCreate from './PaymentChannelCreate';
 import PaymentChannelClaim from './PaymentChannelClaim';
 import PaymentChannelFund from './PaymentChannelFund';
 
+import NFTokenMint from './NFTokenMint';
+import NFTokenBurn from './NFTokenBurn';
+import NFTokenCreateOffer from './NFTokenCreateOffer';
+import NFTokenCancelOffer from './NFTokenCancelOffer';
+import NFTokenOfferAccept from './NFTokenOfferAccept';
+
 export {
     Global,
     TrustSet,
@@ -41,4 +47,9 @@ export {
     PaymentChannelCreate,
     PaymentChannelClaim,
     PaymentChannelFund,
+    NFTokenMint,
+    NFTokenBurn,
+    NFTokenCreateOffer,
+    NFTokenCancelOffer,
+    NFTokenOfferAccept,
 };

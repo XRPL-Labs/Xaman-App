@@ -1,6 +1,6 @@
 import { AmountType } from '../parser/types';
 
-export type LedgerEntriesTypes = OfferLedgerEntry | EscrowLedgerEntry | CheckLedgerEntry;
+export type LedgerEntriesTypes = OfferLedgerEntry | EscrowLedgerEntry | CheckLedgerEntry | NFTokenOfferLedgerEntry;
 
 /**
  * Ledger objects Entries
@@ -52,4 +52,18 @@ export interface CheckLedgerEntry {
     Expiration: number;
     InvoiceID: string;
     SourceTag: number;
+}
+
+export interface NFTokenOfferLedgerEntry {
+    LedgerEntryType: 'NFTokenOffer';
+    Owner: string;
+    Destination: string;
+    Amount: AmountType;
+    TokenID: string;
+    Expiration?: number;
+    Flags: number;
+    OwnerNode: string;
+    OfferNode: string;
+    PreviousTxnID: string;
+    PreviousTxnLgrSeq: number;
 }

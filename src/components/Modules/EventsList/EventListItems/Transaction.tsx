@@ -165,6 +165,31 @@ class TransactionTemplate extends Component<Props, State> {
                 address = item.Account.address;
                 key = 'Account';
                 break;
+            case 'NFTokenMint':
+                if (item.Issuer) {
+                    address = item.Issuer;
+                    key = 'Issuer';
+                } else {
+                    address = item.Account.address;
+                    key = 'Account';
+                }
+                break;
+            case 'NFTokenBurn':
+                address = item.Account.address;
+                key = 'Account';
+                break;
+            case 'NFTokenCreateOffer':
+                address = item.Owner;
+                key = 'Owner';
+                break;
+            case 'NFTokenCancelOffer':
+                address = item.Account.address;
+                key = 'Account';
+                break;
+            case 'NFTokenOfferAccept':
+                address = item.Account.address;
+                key = 'Account';
+                break;
             default:
                 break;
         }
@@ -358,6 +383,16 @@ class TransactionTemplate extends Component<Props, State> {
                 return Localize.t('events.claimPaymentChannel');
             case 'PaymentChannelFund':
                 return Localize.t('events.fundPaymentChannel');
+            case 'NFTokenMint':
+                return Localize.t('events.mintNFToken');
+            case 'NFTokenBurn':
+                return Localize.t('events.burnNFToken');
+            case 'NFTokenCreateOffer':
+                return Localize.t('events.createNFTokenOffer');
+            case 'NFTokenCancelOffer':
+                return Localize.t('events.cancelNFTokenOffer');
+            case 'NFTokenOfferAccept':
+                return Localize.t('events.acceptNFTokenOffer');
             default:
                 return item.Type;
         }
