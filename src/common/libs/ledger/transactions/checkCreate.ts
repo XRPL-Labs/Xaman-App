@@ -2,9 +2,9 @@ import { has, get, set, isUndefined, isNumber, toInteger } from 'lodash';
 
 import * as AccountLib from 'xrpl-accountlib';
 
-import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { CalculateAvailableBalance } from '@common/utils/balance';
 
 import Localize from '@locale';
 
@@ -132,11 +132,12 @@ class CheckCreate extends BaseTransaction {
             }
 
             if (this.SendMax.currency === 'XRP') {
-                if (Number(this.SendMax.value) > Number(AccountRepository.calculateAvailableBalance(source))) {
+                const availableBalance = CalculateAvailableBalance(source);
+                if (Number(this.SendMax.value) > Number(availableBalance)) {
                     return reject(
                         new Error(
                             Localize.t('send.insufficientBalanceSpendableBalance', {
-                                spendable: Localize.formatNumber(AccountRepository.calculateAvailableBalance(source)),
+                                spendable: Localize.formatNumber(availableBalance),
                                 currency: 'XRP',
                             }),
                         ),

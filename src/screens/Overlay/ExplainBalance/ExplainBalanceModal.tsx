@@ -12,12 +12,12 @@ import { Navigator } from '@common/helpers/navigator';
 import { Toast } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
-import { AccountRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import LedgerService from '@services/LedgerService';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { CalculateAvailableBalance } from '@common/utils/balance';
 // components
 import { Avatar, Button, Icon, Spacer, LoadingIndicator } from '@components/General';
 
@@ -335,7 +335,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                                     style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}
                                 >
                                     <Text style={[AppStyles.h5, AppStyles.monoBold]}>
-                                        {Localize.formatNumber(AccountRepository.calculateAvailableBalance(account))}
+                                        {Localize.formatNumber(CalculateAvailableBalance(account))}
                                     </Text>
                                 </View>
                             </View>

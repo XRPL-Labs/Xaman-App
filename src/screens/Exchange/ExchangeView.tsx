@@ -31,6 +31,7 @@ import { OfferCreate } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { CalculateAvailableBalance } from '@common/utils/balance';
 // constants
 import { AppScreens, AppConfig } from '@common/constants';
 
@@ -377,7 +378,7 @@ class ExchangeView extends Component<Props, State> {
         let availableBalance;
 
         if (direction === 'sell') {
-            availableBalance = AccountRepository.calculateAvailableBalance(sourceAccount);
+            availableBalance = CalculateAvailableBalance(sourceAccount);
         } else {
             availableBalance = trustLine.balance;
         }
@@ -392,9 +393,7 @@ class ExchangeView extends Component<Props, State> {
         let availableBalance = '0';
 
         if (direction === 'sell') {
-            availableBalance = new BigNumber(AccountRepository.calculateAvailableBalance(sourceAccount))
-                .decimalPlaces(6)
-                .toString();
+            availableBalance = new BigNumber(CalculateAvailableBalance(sourceAccount)).decimalPlaces(6).toString();
         } else {
             availableBalance = new BigNumber(trustLine.balance).decimalPlaces(8).toString();
         }

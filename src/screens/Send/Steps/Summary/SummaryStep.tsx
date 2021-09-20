@@ -6,8 +6,6 @@ import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Image, Text, Alert, InteractionManager } from 'react-native';
 
-import { AccountRepository } from '@store/repositories';
-
 import { BackendService, SocketService } from '@services';
 
 import { AppScreens } from '@common/constants';
@@ -17,7 +15,7 @@ import { Images } from '@common/helpers/images';
 
 import Preferences from '@common/libs/preferences';
 import { NormalizeCurrencyCode } from '@common/utils/amount';
-
+import { CalculateAvailableBalance } from '@common/utils/balance';
 // components
 import {
     AmountText,
@@ -294,7 +292,7 @@ class SummaryStep extends Component<Props, State> {
                             <Text style={[styles.currencyItemLabel]}>XRP</Text>
                             <Text style={[styles.currencyBalance]}>
                                 {Localize.t('global.available')}:{' '}
-                                {Localize.formatNumber(AccountRepository.calculateAvailableBalance(source))}
+                                {Localize.formatNumber(CalculateAvailableBalance(source))}
                             </Text>
                         </View>
                     </View>

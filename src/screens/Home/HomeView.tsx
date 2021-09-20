@@ -30,6 +30,8 @@ import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 import { VibrateHapticFeedback, Prompt, Toast } from '@common/helpers/interface';
 
+import { CalculateAvailableBalance } from '@common/utils/balance';
+
 import Localize from '@locale';
 
 // components
@@ -605,12 +607,13 @@ class HomeView extends Component<Props, State> {
         let balance = '0';
 
         if (!isLoadingRate) {
+            const availableBalance = CalculateAvailableBalance(account);
             if (showRate) {
                 balance = `${currencyRate.symbol} ${Localize.formatNumber(
-                    Number(AccountRepository.calculateAvailableBalance(account)) * Number(currencyRate.lastRate),
+                    Number(availableBalance) * Number(currencyRate.lastRate),
                 )}`;
             } else {
-                balance = Localize.formatNumber(AccountRepository.calculateAvailableBalance(account));
+                balance = Localize.formatNumber(availableBalance);
             }
         }
 
