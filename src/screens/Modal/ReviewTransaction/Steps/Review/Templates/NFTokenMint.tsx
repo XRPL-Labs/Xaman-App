@@ -96,7 +96,9 @@ class NFTokenMintTemplate extends Component<Props, State> {
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.uri')}</Text>
                         <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{transaction.URI}</Text>
+                            <Text selectable style={[styles.value]}>
+                                {transaction.URI}
+                            </Text>
                         </View>
                     </>
                 )}

@@ -293,7 +293,8 @@
     "customNodeSuccessfullyAddedToXUMM": "Custom node successfully added to XUMM. Do you want to switch to the added node?",
     "addingCustomNodeWarning": "You are adding a custom node to XUMM, do you want to continue?",
     "unableToLoadCustomEndpointDetails": "Unable to load the endpoint details. Please try again!",
-    "nodeDetermined": "Node determined"
+    "nodeDetermined": "Node determined",
+    "nFTokens": "NFT Tokens"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",
@@ -484,7 +485,8 @@
     "itWillUpdateThePaymentChannel": "It will update the payment channel %{channel}",
     "itWillIncreaseTheChannelAmount": "It will increase the channel amount by %{amount} XRP",
     "theChannelBalanceClaimedIs": "The channel balance claimed is %{balance} XRP",
-    "thePaymentChannelWillBeClosed": "The payment channel will be closed, any remaining balance will be returned to the source account"
+    "thePaymentChannelWillBeClosed": "The payment channel will be closed, any remaining balance will be returned to the source account",
+    "theTokenIdIs": "The Token ID is %{tokenID}"
   },
   "profile": {
     "availableInFuture": "This feature will be available in the future.",
@@ -695,6 +697,7 @@
     "deleteAccountObjectsExistError": "You cannot delete this account, because it contains specific XRP ledger objects, like tokens (non-XRP), Decentralized Exchange (DEX) offers, Escrows (as a creator or beneficiary)",
     "deleteAccountSequenceIsNotEnoughError": "This account cannot be deleted yet. It takes %{remainingSequence} more ledgers to close before this account can be deleted.",
     "unableToCheckAccountObjects": "Unable to check for account objects, please make sure you are connected to the XRP ledger node",
+    "unableToCheckAccountNFTs": "Unable to check for account NFTs, please make sure you are connected to the XRP ledger node",
     "unableToFetchLedgerSequence": "Unable to fetch the current ledger sequence. Please make sure you are connected to the XRP Ledger node.",
     "unableGetDestinationAccountInfo": "Unable to get destination account info, please make sure you are connected to the XRP ledger node",
     "destinationAccountIsNotActivated": "Destination account is not activated, Must be a funded account in the XRP ledger.",

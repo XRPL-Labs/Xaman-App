@@ -4,7 +4,7 @@
 
 import { sortBy } from 'lodash';
 import React, { Component } from 'react';
-import { Animated, View, Text, TouchableWithoutFeedback, ScrollView, InteractionManager } from 'react-native';
+import { Animated, View, Text, TouchableWithoutFeedback, ScrollView } from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
@@ -33,8 +33,10 @@ export interface Props {
 }
 
 export interface State {
-    isLoading: boolean;
-    accountObjects: any;
+    isLoadingAccountObject: boolean;
+    isLoadingAccountNFTs: boolean;
+    accountObjects: Array<any>;
+    accountNFTPages: number;
 }
 
 /* Component ==================================================================== */
@@ -62,8 +64,10 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         super(props);
 
         this.state = {
-            isLoading: true,
+            isLoadingAccountObject: true,
+            isLoadingAccountNFTs: true,
             accountObjects: [],
+            accountNFTPages: 0,
         };
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
@@ -75,7 +79,10 @@ class ExplainBalanceOverlay extends Component<Props, State> {
     componentDidMount() {
         this.slideUp();
 
-        InteractionManager.runAfterInteractions(this.loadAccountObjects);
+        // load account objects ledger
+        this.loadAccountObjects();
+        // load account NFTs from ledger
+        this.loadAccountNFTs();
     }
 
     loadAccountObjects = () => {
@@ -97,8 +104,49 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             })
             .finally(() => {
                 this.setState({
-                    isLoading: false,
+                    isLoadingAccountObject: false,
                 });
+            });
+    };
+
+    loadAccountNFTs = (marker?: string, lastCount = 0) => {
+        const { account } = this.props;
+
+        // do not disable loader if we are loading more
+        let isLoadingMore = false;
+
+        LedgerService.getAccountNFTs(account.address, marker)
+            .then((res: any) => {
+                const { account_nfts, marker: resMarker } = res;
+
+                if (account_nfts && account_nfts.length > 0) {
+                    // more token to fetch
+                    if (resMarker) {
+                        // set loading more true
+                        isLoadingMore = true;
+
+                        // load more tokens by passing marker
+                        this.loadAccountNFTs(resMarker, account_nfts.length + lastCount);
+                    } else {
+                        // no more token to fetch, calculate/set TokenPage
+
+                        // console.log(account_nfts[0]);
+                        // console.log(account_nfts.length + lastCount);
+                        this.setState({
+                            accountNFTPages: Math.ceil((account_nfts.length + lastCount) / 32),
+                        });
+                    }
+                }
+            })
+            .catch(() => {
+                Toast(Localize.t('account.unableToCheckAccountNFTs'));
+            })
+            .finally(() => {
+                if (!isLoadingMore) {
+                    this.setState({
+                        isLoadingAccountNFTs: false,
+                    });
+                }
             });
     };
 
@@ -155,6 +203,30 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         );
     };
 
+    renderAccountNFTokens = () => {
+        const { accountNFTPages } = this.state;
+
+        if (accountNFTPages === 0) {
+            return null;
+        }
+
+        return (
+            <View style={[styles.currencyItemCard]}>
+                <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                    <View style={[styles.iconContainer]}>
+                        <Icon name="IconInfo" size={16} style={[AppStyles.imgColorGrey]} />
+                    </View>
+                    <Text style={[styles.rowLabel]}>{Localize.t('global.nFTokens')}</Text>
+                </View>
+                <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
+                    <Text style={[styles.reserveAmount]}>
+                        {LedgerService.getNetworkReserve().OwnerReserve * accountNFTPages} XRP
+                    </Text>
+                </View>
+            </View>
+        );
+    };
+
     renderAccountLines = () => {
         const { account } = this.props;
 
@@ -194,7 +266,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
     };
 
     renderReserves = () => {
-        const { accountObjects, isLoading } = this.state;
+        const { accountObjects, isLoadingAccountObject, isLoadingAccountNFTs } = this.state;
 
         return (
             <View style={[AppStyles.paddingHorizontalSml, { marginBottom: AppSizes.navigationBarHeight }]}>
@@ -212,13 +284,13 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
                 {this.renderAccountLines()}
 
-                {isLoading ? (
+                {isLoadingAccountObject || isLoadingAccountNFTs ? (
                     <>
                         <Spacer size={20} />
                         <LoadingIndicator />
                     </>
                 ) : (
-                    accountObjects.map(this.renderAccountObject)
+                    (accountObjects.map(this.renderAccountObject), this.renderAccountNFTokens())
                 )}
 
                 <Spacer size={50} />

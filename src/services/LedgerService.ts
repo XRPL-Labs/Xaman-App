@@ -156,6 +156,9 @@ class LedgerService extends EventEmitter {
         });
     };
 
+    /**
+     * Get single transaction from ledger
+     */
     getTransaction = (txId: string) => {
         return SocketService.send({
             command: 'tx',
@@ -173,6 +176,21 @@ class LedgerService extends EventEmitter {
             account,
             limit: limit || 20,
             binary: false,
+        };
+        if (marker) {
+            Object.assign(request, { marker });
+        }
+        return SocketService.send(request);
+    };
+
+    /**
+     * Get account NFTs
+     */
+    getAccountNFTs = (account: string, marker?: string, limit?: number) => {
+        const request = {
+            command: 'account_nfts',
+            account,
+            limit: limit || 200,
         };
         if (marker) {
             Object.assign(request, { marker });

@@ -45,6 +45,10 @@ class NFTokenMint extends BaseTransaction {
 
         return new BigNumber(transferFee).dividedBy(10000000).minus(100).toNumber();
     }
+
+    // get TokenID(): string {
+    //     return 'TOKENID';
+    // }
 }
 
 /* Export ==================================================================== */

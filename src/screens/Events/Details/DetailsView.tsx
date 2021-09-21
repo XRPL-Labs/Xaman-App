@@ -1035,6 +1035,26 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderNFTokenMint = () => {
+        // const { tx } = this.state;
+
+        let content = '';
+
+        content += Localize.t('events.theTokenIdIs', { tokenID: 'TOKENID' });
+        content += '\n';
+
+        // if (tx.Balance) {
+        //     content += Localize.t('events.theChannelBalanceClaimedIs', { balance: tx.Balance.value });
+        //     content += '\n';
+        // }
+
+        // if (tx.IsClosed) {
+        //     content += Localize.t('events.thePaymentChannelWillBeClosed');
+        // }
+
+        return content;
+    };
+
+    renderNFTokenBurn = () => {
         const { tx } = this.state;
 
         let content = '';
@@ -1052,7 +1072,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         return content;
-    }
+    };
 
     renderDescription = () => {
         const { tx } = this.state;
@@ -1110,6 +1130,9 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case 'PaymentChannelClaim':
                 content += this.renderPaymentChannelClaim();
+                break;
+            case 'NFTokenMint':
+                content += this.renderNFTokenMint();
                 break;
             default:
                 content += `This is a ${tx.Type} transaction`;
