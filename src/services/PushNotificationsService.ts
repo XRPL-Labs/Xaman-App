@@ -280,11 +280,15 @@ class PushNotificationsService extends EventEmitter {
         let delay = 0;
 
         // if already in transaction details and modal then close it
-        // in  rare case if user is already in transaction details screen then
-        // the screen is not modal so xumm will ignore showing the tx details screen
         if (NavigationService.getCurrentModal() === AppScreens.Transaction.Details) {
             await Navigator.dismissModal();
+            // looks like a bug in navigation library, need to add a delay before showing the modal
+            delay = 300;
+        }
 
+        // if already in transaction details and screen then pop back
+        if (NavigationService.getCurrentScreen() === AppScreens.Transaction.Details) {
+            await Navigator.pop();
             // looks like a bug in navigation library, need to add a delay before showing the modal
             delay = 300;
         }
