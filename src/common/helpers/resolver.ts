@@ -177,7 +177,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                             return (
                                 typeof tx.tx.TransactionType === 'string' &&
                                 typeof tx.tx.DestinationTag !== 'undefined' &&
-                                tx.tx.DestinationTag !== 0
+                                tx.tx.DestinationTag > 9999
                             );
                         }).length;
 
