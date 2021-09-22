@@ -136,6 +136,7 @@
     "domain": "Domain",
     "owner": "Owner",
     "reserved": "Reserved",
+    "reserve": "Reserve",
     "password": "Password",
     "passcode": "Passcode",
     "longTap": "Long Tap",
@@ -474,7 +475,9 @@
     "itWillUpdateThePaymentChannel": "It will update the payment channel %{channel}",
     "itWillIncreaseTheChannelAmount": "It will increase the channel amount by %{amount} XRP",
     "theChannelBalanceClaimedIs": "The channel balance claimed is %{balance} XRP",
-    "thePaymentChannelWillBeClosed": "The payment channel will be closed, any remaining balance will be returned to the source account"
+    "thePaymentChannelWillBeClosed": "The payment channel will be closed, any remaining balance will be returned to the source account",
+    "thisTransactionIncreaseAccountReserve": "This transaction increased the account reserve by %{ownerReserve} XRP",
+    "thisTransactionDecreaseAccountReserve": "This transaction decreased the account reserve by %{ownerReserve} XRP"
   },
   "profile": {
     "availableInFuture": "This feature will be available in the future.",

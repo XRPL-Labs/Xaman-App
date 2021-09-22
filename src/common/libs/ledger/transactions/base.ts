@@ -317,6 +317,16 @@ class BaseTransaction {
         return changes;
     }
 
+    OwnerCountChange(owner?: string) {
+        if (!owner) {
+            owner = this.Account.address;
+        }
+
+        const change = find(new Meta(this.meta).parseOwnerCountChanges(), { address: owner });
+
+        return change;
+    }
+
     get Type(): string {
         return get(this, ['tx', 'TransactionType'], undefined);
     }
