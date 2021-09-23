@@ -1173,7 +1173,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         return (
-            <View style={styles.memoContainer}>
+            <View style={styles.reserveContainer}>
                 <View style={[AppStyles.row]}>
                     <Icon
                         name={changes.action === 'INC' ? 'IconLock' : 'IconUnlock'}
@@ -1183,7 +1183,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     <Text style={[styles.labelText]}> {Localize.t('global.reserve')}</Text>
                 </View>
 
-                <View style={[AppStyles.paddingVerticalSml]}>
+                <View style={[AppStyles.paddingBottomSml]}>
                     <Text style={[AppStyles.baseText, AppStyles.textCenterAligned]}>
                         {changes.action === 'INC'
                             ? Localize.t('events.thisTransactionIncreaseAccountReserve', {

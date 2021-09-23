@@ -2,7 +2,7 @@
  * Add Currency Screen
  */
 
-import { sortBy } from 'lodash';
+import { sortBy, filter } from 'lodash';
 import React, { Component } from 'react';
 import { Animated, View, Text, TouchableWithoutFeedback, ScrollView, InteractionManager } from 'react-native';
 
@@ -35,6 +35,7 @@ export interface Props {
 export interface State {
     isLoading: boolean;
     accountObjects: any;
+    networkReserve: any;
 }
 
 /* Component ==================================================================== */
@@ -64,6 +65,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         this.state = {
             isLoading: true,
             accountObjects: [],
+            networkReserve: LedgerService.getNetworkReserve(),
         };
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
@@ -85,8 +87,13 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             .then((res: any) => {
                 const { account_objects } = res;
                 if (account_objects) {
+                    // ignore trustline as we handle them in better way
+                    // ignore incoming objects
+                    const filtered = filter(account_objects, (o) => {
+                        return o.LedgerEntryType !== 'RippleState' && o.Account === account.address;
+                    });
                     this.setState({
-                        accountObjects: sortBy(account_objects, 'LedgerEntryType'),
+                        accountObjects: sortBy(filtered),
                     });
                 } else {
                     Toast(Localize.t('account.unableToCheckAccountObjects'));
@@ -132,31 +139,35 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         }
     };
 
-    renderAccountObject = (item: any, index: number) => {
-        const { account } = this.props;
-        const { LedgerEntryType, Account } = item;
+    renderAccountObjects = () => {
+        const { accountObjects, networkReserve } = this.state;
 
-        // ignore trustline as we handle them in better way
-        // ignore incoming escrow or objects
-        if (LedgerEntryType === 'RippleState' || (Account && Account !== account.address)) return null;
+        if (accountObjects.length === 0) {
+            return null;
+        }
 
-        return (
-            <View key={`object-${index}`} style={[styles.currencyItemCard]}>
-                <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                    <View style={[styles.iconContainer]}>
-                        <Icon name="IconInfo" size={16} style={[AppStyles.imgColorGrey]} />
+        return accountObjects.map((item: any, index: number) => {
+            const { LedgerEntryType } = item;
+
+            return (
+                <View key={`object-${index}`} style={[styles.objectItemCard]}>
+                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                        <View style={[styles.iconContainer]}>
+                            <Icon name="IconInfo" size={16} style={[AppStyles.imgColorGrey]} />
+                        </View>
+                        <Text style={[styles.rowLabel]}>{LedgerEntryType}</Text>
                     </View>
-                    <Text style={[styles.rowLabel]}>{LedgerEntryType}</Text>
+                    <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
+                        <Text style={[styles.reserveAmount]}>{networkReserve.OwnerReserve} XRP</Text>
+                    </View>
                 </View>
-                <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                    <Text style={[styles.reserveAmount]}>{LedgerService.getNetworkReserve().OwnerReserve} XRP</Text>
-                </View>
-            </View>
-        );
+            );
+        });
     };
 
     renderAccountLines = () => {
         const { account } = this.props;
+        const { networkReserve } = this.state;
 
         if (account.lines.length === 0) return null;
 
@@ -167,7 +178,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                     if (line.obligation) return null;
 
                     return (
-                        <View key={`line-${index}`} style={[styles.currencyItemCard]}>
+                        <View key={`line-${index}`} style={[styles.objectItemCard]}>
                             <View style={[AppStyles.flex5, AppStyles.row, AppStyles.centerAligned]}>
                                 <View style={[styles.brandAvatarContainer]}>
                                     <Avatar border size={32} source={{ uri: line.counterParty.avatar }} />
@@ -182,9 +193,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                                 </Text>
                             </View>
                             <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                                <Text style={[styles.reserveAmount]}>
-                                    {LedgerService.getNetworkReserve().OwnerReserve} XRP
-                                </Text>
+                                <Text style={[styles.reserveAmount]}>{networkReserve.OwnerReserve} XRP</Text>
                             </View>
                         </View>
                     );
@@ -193,12 +202,61 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         );
     };
 
+    renderUnknownObjects = () => {
+        const { account } = this.props;
+        const { accountObjects, networkReserve } = this.state;
+
+        if (account.ownerCount > accountObjects.length + account.lines.length) {
+            const remainingOwner = account.ownerCount - (accountObjects.length + account.lines.length);
+
+            return (
+                <View style={[styles.objectItemCard]}>
+                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                        <View style={[styles.iconContainer]}>
+                            <Icon name="IconInfo" size={15} style={[AppStyles.imgColorGrey]} />
+                        </View>
+                        <Text style={[styles.rowLabel]}>{Localize.t('global.otherReserveSeeExplorer')}</Text>
+                    </View>
+                    <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
+                        <Text style={[styles.reserveAmount]}>{remainingOwner * networkReserve.BaseReserve} XRP</Text>
+                    </View>
+                </View>
+            );
+        }
+        return null;
+    };
+
+    renderTotalReserve = () => {
+        const { account } = this.props;
+        const { networkReserve } = this.state;
+        return (
+            <View>
+                <View style={[styles.scrollStickyHeader]}>
+                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                        <View style={[styles.iconContainer]}>
+                            <Icon name="IconLock" size={20} />
+                        </View>
+                        <Text style={[styles.rowLabelBig]}>{Localize.t('global.totalReserved')}</Text>
+                    </View>
+                    <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
+                        <Text style={[AppStyles.h5, AppStyles.monoBold]}>
+                            {Localize.formatNumber(
+                                account.ownerCount * networkReserve.OwnerReserve + networkReserve.BaseReserve,
+                            )}{' '}
+                            XRP
+                        </Text>
+                    </View>
+                </View>
+            </View>
+        );
+    };
+
     renderReserves = () => {
-        const { accountObjects, isLoading } = this.state;
+        const { networkReserve } = this.state;
 
         return (
             <View style={[AppStyles.paddingHorizontalSml, { marginBottom: AppSizes.navigationBarHeight }]}>
-                <View style={[styles.currencyItemCard]}>
+                <View style={[styles.objectItemCard]}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
                         <View style={[styles.iconContainer]}>
                             <Icon name="IconAccount" size={15} style={[AppStyles.imgColorGrey]} />
@@ -206,20 +264,13 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         <Text style={[styles.rowLabel]}>{Localize.t('account.walletReserve')}</Text>
                     </View>
                     <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                        <Text style={[styles.reserveAmount]}>{LedgerService.getNetworkReserve().BaseReserve} XRP</Text>
+                        <Text style={[styles.reserveAmount]}>{networkReserve.BaseReserve} XRP</Text>
                     </View>
                 </View>
 
                 {this.renderAccountLines()}
-
-                {isLoading ? (
-                    <>
-                        <Spacer size={20} />
-                        <LoadingIndicator />
-                    </>
-                ) : (
-                    accountObjects.map(this.renderAccountObject)
-                )}
+                {this.renderAccountObjects()}
+                {this.renderUnknownObjects()}
 
                 <Spacer size={50} />
             </View>
@@ -228,6 +279,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
     render() {
         const { account } = this.props;
+        const { isLoading } = this.state;
 
         return (
             <View style={AppStyles.flex1}>
@@ -305,12 +357,12 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
                         <View style={[AppStyles.paddingHorizontalSml]}>
                             <Text style={[styles.rowTitle]}>{Localize.t('account.accountBalance')}</Text>
-                            <View style={[styles.currencyItemCard]}>
+                            <View style={[styles.objectItemCard]}>
                                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
                                     <View style={[styles.iconContainer]}>
                                         <Icon name="IconXrp" size={20} style={[AppStyles.imgColorGrey]} />
                                     </View>
-                                    <Text style={[styles.currencyItemLabel, AppStyles.colorGrey]}>XRP</Text>
+                                    <Text style={[styles.currencyLabel, AppStyles.colorGrey]}>XRP</Text>
                                 </View>
                                 <View
                                     style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}
@@ -324,12 +376,12 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                             <Spacer size={30} />
 
                             <Text style={[styles.rowTitle]}>{Localize.t('account.availableForSpending')}</Text>
-                            <View style={[styles.currencyItemCard]}>
+                            <View style={[styles.objectItemCard]}>
                                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
                                     <View style={[styles.iconContainer]}>
                                         <Icon name="IconXrp" size={20} />
                                     </View>
-                                    <Text style={[styles.currencyItemLabel]}>XRP</Text>
+                                    <Text style={[styles.currencyLabel]}>XRP</Text>
                                 </View>
                                 <View
                                     style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}
@@ -340,7 +392,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                                 </View>
                             </View>
                             <Spacer size={30} />
-                            <Text style={[styles.rowTitle]}>{Localize.t('global.reserved')}</Text>
+                            <Text style={[styles.rowTitle]}>{Localize.t('global.reservedOnLedger')}</Text>
                             <Spacer size={10} />
                         </View>
 
@@ -349,8 +401,17 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                             scrollEventThrottle={16}
                             bounces={false}
                             contentContainerStyle={[AppStyles.stretchSelf]}
+                            stickyHeaderIndices={[0]}
                         >
-                            {this.renderReserves()}
+                            {this.renderTotalReserve()}
+                            {isLoading ? (
+                                <>
+                                    <Spacer size={20} />
+                                    <LoadingIndicator />
+                                </>
+                            ) : (
+                                this.renderReserves()
+                            )}
                         </ScrollView>
                     </View>
                 </Interactable.View>
