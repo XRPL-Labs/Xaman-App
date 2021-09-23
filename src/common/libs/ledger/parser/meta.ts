@@ -1,6 +1,6 @@
 // https://github.com/ripple/ripple-lib-extensions/tree/d266933698a38c51878b4b8806b39ca264526fdc/transactionparser
 
-import { groupBy, mapValues, map, isEmpty, compact, flatten } from 'lodash';
+import { has, groupBy, mapValues, map, isEmpty, compact, flatten } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import { BalanceChangeType } from './types';
@@ -46,7 +46,7 @@ class Meta {
 
     private computeOwnerCountChange = (node: any) => {
         let value = null;
-        if (node.finalFields.OwnerCount && node.previousFields.OwnerCount) {
+        if (has(node, 'finalFields.OwnerCount') && has(node, 'previousFields.OwnerCount')) {
             value = node.finalFields.OwnerCount - node.previousFields.OwnerCount;
         }
         return value;
