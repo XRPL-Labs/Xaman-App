@@ -348,6 +348,36 @@ class ReviewTransactionModal extends Component<Props, State> {
                 return;
             }
 
+            // show alert if user adding a new trustline
+            if (transaction.Type === 'TrustSet') {
+                // check if user is adding the trustline
+                if (
+                    !source.hasCurrency({
+                        issuer: transaction.Issuer,
+                        currency: transaction.Currency,
+                    })
+                ) {
+                    Navigator.showAlertModal({
+                        type: 'warning',
+                        title: Localize.t('global.warning'),
+                        text: Localize.t('asset.addingTrustLineWarning'),
+                        buttons: [
+                            {
+                                text: Localize.t('global.back'),
+                                light: false,
+                            },
+                            {
+                                text: Localize.t('global.continue'),
+                                onPress: this.prepareAndSignTransaction,
+                                type: 'dismiss',
+                                light: true,
+                            },
+                        ],
+                    });
+                    return;
+                }
+            }
+
             // check for asfDisableMaster
             if (transaction.Type === 'AccountSet' && transaction.SetFlag === 'asfDisableMaster') {
                 Navigator.showAlertModal({
