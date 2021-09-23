@@ -162,19 +162,19 @@ class ReviewTransactionModal extends Component<Props, State> {
                 type = Localize.t('events.claimPaymentChannel');
                 break;
             case 'NFTokenMint':
-                type = Localize.t('events.mintNFToken');
+                type = Localize.t('events.mintNFT');
                 break;
             case 'NFTokenBurn':
-                type = Localize.t('events.burnNFToken');
+                type = Localize.t('events.burnNFT');
                 break;
             case 'NFTokenCreateOffer':
-                type = Localize.t('events.createNFTokenOffer');
+                type = Localize.t('events.createNFTOffer');
                 break;
             case 'NFTokenCancelOffer':
-                type = Localize.t('events.cancelNFTokenOffer');
+                type = Localize.t('events.cancelNFTOffer');
                 break;
             case 'NFTokenOfferAccept':
-                type = Localize.t('events.acceptNFTokenOffer');
+                type = Localize.t('events.acceptNFTOffer');
                 break;
             case 'SignIn':
                 type = Localize.t('global.signIn');

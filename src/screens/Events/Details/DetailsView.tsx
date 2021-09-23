@@ -501,15 +501,15 @@ class TransactionDetailsView extends Component<Props, State> {
             case 'PaymentChannelFund':
                 return Localize.t('events.fundPaymentChannel');
             case 'NFTokenMint':
-                return Localize.t('events.mintNFToken');
+                return Localize.t('events.mintNFT');
             case 'NFTokenBurn':
-                return Localize.t('events.burnNFToken');
+                return Localize.t('events.burnNFT');
             case 'NFTokenCreateOffer':
-                return Localize.t('events.createNFTokenOffer');
+                return Localize.t('events.createNFTOffer');
             case 'NFTokenCancelOffer':
-                return Localize.t('events.cancelNFTokenOffer');
+                return Localize.t('events.cancelNFTOffer');
             case 'NFTokenOfferAccept':
-                return Localize.t('events.acceptNFTokenOffer');
+                return Localize.t('events.acceptNFTOffer');
             default:
                 return tx.Type;
         }
@@ -1055,21 +1055,11 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderNFTokenMint = () => {
-        // const { tx } = this.state;
+        const { tx } = this.state;
 
         let content = '';
 
-        content += Localize.t('events.theTokenIdIs', { tokenID: 'TOKENID' });
-        content += '\n';
-
-        // if (tx.Balance) {
-        //     content += Localize.t('events.theChannelBalanceClaimedIs', { balance: tx.Balance.value });
-        //     content += '\n';
-        // }
-
-        // if (tx.IsClosed) {
-        //     content += Localize.t('events.thePaymentChannelWillBeClosed');
-        // }
+        content += Localize.t('events.theTokenIdIs', { tokenID: tx.TokenID });
 
         return content;
     };
@@ -1079,17 +1069,78 @@ class TransactionDetailsView extends Component<Props, State> {
 
         let content = '';
 
-        content += Localize.t('events.itWillUpdateThePaymentChannel', { channel: tx.Channel });
+        content += Localize.t('events.theTokenIdIs', { tokenID: tx.TokenID });
+
+        return content;
+    };
+
+    renderNFTokenCreateOffer = () => {
+        const { tx } = this.state;
+
+        let content = '';
+
+        if (tx.Flags.SellToken) {
+            content += Localize.t('events.nftOfferSellExplain', {
+                address: tx.Account.address,
+                tokenID: tx.TokenID,
+                amount: tx.Amount.value,
+                currency: NormalizeCurrencyCode(tx.Amount.currency),
+            });
+        } else {
+            content += Localize.t('events.nftOfferBuyExplain', {
+                address: tx.Account.address,
+                tokenID: tx.TokenID,
+                amount: tx.Amount.value,
+                currency: NormalizeCurrencyCode(tx.Amount.currency),
+            });
+        }
+
+        if (tx.Owner) {
+            content += '\n';
+            content += Localize.t('events.theNftOwnerIs', { address: tx.Owner });
+        }
+
+        if (tx.Destination) {
+            content += '\n';
+            content += Localize.t('events.thisNftOfferMayOnlyBeAcceptedBy', { address: tx.Destination.address });
+        }
+
+        if (tx.Expiration) {
+            content += '\n';
+            content += Localize.t('events.theOfferExpiresAtUnlessCanceledOrAccepted', {
+                expiration: moment(tx.CancelAfter).format('LLLL'),
+            });
+        }
+
+        return content;
+    };
+
+    renderNFTokenCancelOffer = () => {
+        const { tx } = this.state;
+
+        let content = '';
+
+        content += Localize.t('events.theTransactionWillCancelNftOffer', { address: tx.Account.address });
         content += '\n';
 
-        if (tx.Balance) {
-            content += Localize.t('events.theChannelBalanceClaimedIs', { balance: tx.Balance.value });
-            content += '\n';
-        }
+        tx.TokenIDs.forEach((id: string) => {
+            content += `${id}\n`;
+        });
 
-        if (tx.IsClosed) {
-            content += Localize.t('events.thePaymentChannelWillBeClosed');
-        }
+        return content;
+    };
+
+    renderNFTokenOfferAccept = () => {
+        // const { tx } = this.state;
+
+        const content = '';
+
+        // content += Localize.t('events.theTransactionWillCancelNftOffer', { address: tx.Account.address });
+        // content += '\n';
+
+        // tx.TokenIDs.forEach((id: string) => {
+        //     content += `${id}\n`;
+        // });
 
         return content;
     };
@@ -1153,6 +1204,18 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case 'NFTokenMint':
                 content += this.renderNFTokenMint();
+                break;
+            case 'NFTokenBurn':
+                content += this.renderNFTokenBurn();
+                break;
+            case 'NFTokenCreateOffer':
+                content += this.renderNFTokenCreateOffer();
+                break;
+            case 'NFTokenCancelOffer':
+                content += this.renderNFTokenCancelOffer();
+                break;
+            case 'NFTokenOfferAccept':
+                content += this.renderNFTokenOfferAccept();
                 break;
             default:
                 content += `This is a ${tx.Type} transaction`;
@@ -1417,27 +1480,6 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
                 break;
             }
-            case 'OfferCreate':
-            case 'Offer': {
-                if (tx.Executed) {
-                    const takerPaid = tx.TakerPaid(account.address);
-                    Object.assign(props, {
-                        color: styles.incomingColor,
-                        icon: 'IconCornerRightDown',
-                        value: takerPaid.value,
-                        currency: takerPaid.currency,
-                    });
-                } else {
-                    Object.assign(props, {
-                        color: styles.naturalColor,
-                        icon: 'IconCornerRightDown',
-                        value: tx.TakerPays.value,
-                        currency: tx.TakerPays.currency,
-                    });
-                }
-
-                break;
-            }
             case 'PaymentChannelClaim':
             case 'PaymentChannelFund':
             case 'PaymentChannelCreate': {
@@ -1455,6 +1497,16 @@ class TransactionDetailsView extends Component<Props, State> {
                 } else {
                     shouldShowAmount = false;
                 }
+                break;
+            }
+
+            case 'NFTokenCreateOffer': {
+                Object.assign(props, {
+                    color: styles.naturalColor,
+                    icon: tx.Flags.SellToken ? 'IconCornerRightDown' : 'IconCornerRightUp',
+                    value: tx.Amount.value,
+                    currency: tx.Amount.currency,
+                });
                 break;
             }
             default:

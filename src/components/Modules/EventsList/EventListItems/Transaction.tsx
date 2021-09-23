@@ -166,21 +166,16 @@ class TransactionTemplate extends Component<Props, State> {
                 key = 'Account';
                 break;
             case 'NFTokenMint':
-                if (item.Issuer) {
-                    address = item.Issuer;
-                    key = 'Issuer';
-                } else {
-                    address = item.Account.address;
-                    key = 'Account';
-                }
+                address = item.Account.address;
+                key = 'Account';
                 break;
             case 'NFTokenBurn':
                 address = item.Account.address;
                 key = 'Account';
                 break;
             case 'NFTokenCreateOffer':
-                address = item.Owner;
-                key = 'Owner';
+                address = item.Account.address;
+                key = 'Account';
                 break;
             case 'NFTokenCancelOffer':
                 address = item.Account.address;
@@ -384,15 +379,15 @@ class TransactionTemplate extends Component<Props, State> {
             case 'PaymentChannelFund':
                 return Localize.t('events.fundPaymentChannel');
             case 'NFTokenMint':
-                return Localize.t('events.mintNFToken');
+                return Localize.t('events.mintNFT');
             case 'NFTokenBurn':
-                return Localize.t('events.burnNFToken');
+                return Localize.t('events.burnNFT');
             case 'NFTokenCreateOffer':
-                return Localize.t('events.createNFTokenOffer');
+                return Localize.t('events.createNFTOffer');
             case 'NFTokenCancelOffer':
-                return Localize.t('events.cancelNFTokenOffer');
+                return Localize.t('events.cancelNFTOffer');
             case 'NFTokenOfferAccept':
-                return Localize.t('events.acceptNFTokenOffer');
+                return Localize.t('events.acceptNFTOffer');
             default:
                 return item.Type;
         }

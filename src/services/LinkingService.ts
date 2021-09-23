@@ -41,8 +41,8 @@ class LinkingService extends EventEmitter {
                 // setTimeout(async () => {
                 //     // fetch the payload
                 //     const payload = await Payload.build({
-                //         TransactionType: 'NFTokenBurn',
-                //         TokenID: '000B00001BFB1ECDCD89560CBB2BB21F94559F32820FAD04727D159000000005',
+                //         TransactionType: 'NFTokenOfferAccept',
+                //         BuyOffer: '609F8C0EE3516A1912EA48E5C8DBF89DD4879412ABA2FF8AA9879511213887BF',
                 //     });
 
                 //     // review the transaction

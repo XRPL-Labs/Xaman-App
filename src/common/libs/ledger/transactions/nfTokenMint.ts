@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { get, isUndefined } from 'lodash';
+import { get, last, set, isUndefined } from 'lodash';
 
 import { HexEncoding } from '@common/utils/string';
 
@@ -38,6 +38,35 @@ class NFTokenMint extends BaseTransaction {
         return get(this, ['tx', 'TokenTaxon']);
     }
 
+    set TokenID(id: string) {
+        set(this, 'tokenID', id);
+    }
+
+    get TokenID(): string {
+        let tokenID = get(this, 'tokenID', undefined);
+
+        // if we already set the token id return
+        if (tokenID) {
+            return tokenID;
+        }
+
+        // if not look at the meta data for token id
+        const affectedNodes = get(this.meta, 'AffectedNodes', []);
+        affectedNodes.map((node: any) => {
+            if (get(node, 'CreatedNode.LedgerEntryType') === 'NFTokenPage') {
+                tokenID = get(node, 'CreatedNode.NewFields.NonFungibleTokens[0].NonFungibleToken.TokenID');
+            } else if (get(node, 'ModifiedNode.LedgerEntryType') === 'NFTokenPage') {
+                const tokenPage = get(node, 'ModifiedNode.FinalFields.NonFungibleTokens');
+                tokenID = get(last(tokenPage), 'NonFungibleToken.TokenID');
+            }
+
+            this.TokenID = tokenID;
+            return true;
+        });
+
+        return tokenID;
+    }
+
     get TransferFee(): number {
         const transferFee = get(this, ['tx', 'TransferFee'], undefined);
 
@@ -45,10 +74,6 @@ class NFTokenMint extends BaseTransaction {
 
         return new BigNumber(transferFee).dividedBy(10000000).minus(100).toNumber();
     }
-
-    // get TokenID(): string {
-    //     return 'TOKENID';
-    // }
 }
 
 /* Export ==================================================================== */
