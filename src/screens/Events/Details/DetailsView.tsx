@@ -1105,14 +1105,13 @@ class TransactionDetailsView extends Component<Props, State> {
 
     renderMemos = () => {
         const { tx } = this.state;
-        const { showMemo, scamAlert, incomingTx } = this.state;
+        const { showMemo, scamAlert } = this.state;
 
         // if no memo or the transaction contain xApp memo return null
         if (!tx.Memos) return null;
 
         // check for xapp memo
-        // only for payments and incoming transactions
-        if (incomingTx && !scamAlert) {
+        if (!scamAlert) {
             const xAppIdentifier = tx.getXappIdentifier();
             if (xAppIdentifier) {
                 return (
