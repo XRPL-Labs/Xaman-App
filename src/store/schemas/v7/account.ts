@@ -63,7 +63,7 @@ class Account extends Realm.Object {
     /**
      * check if account have specific trustline
      */
-    hasCurrency = (currency: CurrencySchema): boolean => {
+    hasCurrency = (currency: Partial<CurrencySchema>): boolean => {
         let found = false;
 
         this.lines.forEach((t: TrustLineSchema) => {

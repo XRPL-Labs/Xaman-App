@@ -228,7 +228,7 @@ class ExchangeView extends Component<Props, State> {
             Prompt(
                 Localize.t('global.error'),
                 Localize.t('exchange.theMaxAmountYouCanExchangeIs', {
-                    spendable: Localize.formatNumber(availableBalance),
+                    spendable: Localize.formatNumber(availableBalance, 16),
                     currency: direction === 'sell' ? 'XRP' : NormalizeCurrencyCode(trustLine.currency.currency),
                 }),
                 [
@@ -393,9 +393,9 @@ class ExchangeView extends Component<Props, State> {
         let availableBalance = '0';
 
         if (direction === 'sell') {
-            availableBalance = new BigNumber(CalculateAvailableBalance(sourceAccount)).decimalPlaces(6).toString();
+            availableBalance = new BigNumber(CalculateAvailableBalance(sourceAccount)).toString();
         } else {
-            availableBalance = new BigNumber(trustLine.balance).decimalPlaces(8).toString();
+            availableBalance = new BigNumber(trustLine.balance).toString();
         }
 
         this.setState(

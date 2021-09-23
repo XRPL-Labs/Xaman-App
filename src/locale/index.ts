@@ -93,8 +93,8 @@ class Localize {
      * @param n number
      * @returns string 1,333.855222
      */
-    formatNumber = (n: number): string => {
-        const options = { precision: 8, strip_insignificant_zeros: true };
+    formatNumber = (n: number, precision = 8): string => {
+        const options = { precision, strip_insignificant_zeros: true };
 
         if (this.settings) {
             const { separator, delimiter } = this.settings;

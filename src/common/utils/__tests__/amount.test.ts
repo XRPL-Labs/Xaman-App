@@ -22,6 +22,10 @@ describe('Utils.Amount', () => {
                     output: false,
                 },
                 {
+                    value: 7.5128000168e-78,
+                    output: false,
+                },
+                {
                     value: 0.000000000000000000000000000000000000000000000000000000000000000000000000000000001,
                     output: 1,
                 },
@@ -51,7 +55,7 @@ describe('Utils.Amount', () => {
                 },
             ];
 
-            tests.forEach(v => {
+            tests.forEach((v) => {
                 expect(XRPLValueToNFT(v.value)).toBe(v.output);
             });
         });
@@ -79,7 +83,7 @@ describe('Utils.Amount', () => {
                 },
             ];
 
-            tests.forEach(v => {
+            tests.forEach((v) => {
                 expect(NFTValueToXRPL(v.value, v.balance)).toBe(v.output);
             });
         });
@@ -101,7 +105,7 @@ describe('Utils.Amount', () => {
                     output: 200,
                 },
             ];
-            tests.forEach(v => {
+            tests.forEach((v) => {
                 expect(NormalizeAmount(v.value)).toBe(v.output);
             });
         });
@@ -147,7 +151,7 @@ describe('Utils.Amount', () => {
                     output: 'JerryCoin',
                 },
             ];
-            tests.forEach(v => {
+            tests.forEach((v) => {
                 expect(NormalizeCurrencyCode(v.value)).toBe(v.output);
             });
         });

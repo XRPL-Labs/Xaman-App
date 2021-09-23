@@ -44,6 +44,14 @@ class Meta {
         return new BigNumber(value.value || value);
     };
 
+    private computeOwnerCountChange = (node: any) => {
+        let value = null;
+        if (node.finalFields.OwnerCount && node.previousFields.OwnerCount) {
+            value = node.finalFields.OwnerCount - node.previousFields.OwnerCount;
+        }
+        return value;
+    };
+
     private computeBalanceChange = (node: any) => {
         let value = null;
         if (node.newFields.Balance) {
@@ -62,6 +70,22 @@ class Meta {
             return this.parseValue(node.finalFields.Balance);
         }
         return null;
+    };
+
+    private parseOwnerCountQuantity = (node: any, valueParser: any) => {
+        const value = valueParser(node);
+
+        if (value === null) {
+            return null;
+        }
+
+        const valueNumber = new BigNumber(value);
+
+        return {
+            address: node.finalFields.Account || node.newFields.Account,
+            value: valueNumber.absoluteValue().toNumber(),
+            action: valueNumber.isNegative() ? 'DEC' : 'INC',
+        };
     };
 
     private parseXRPQuantity = (node: any, valueParser: any) => {
@@ -139,6 +163,17 @@ class Meta {
 
         // @ts-ignore
         return this.groupByAddress(compact(flatten(values)));
+    };
+
+    parseOwnerCountChanges = () => {
+        const values = this.nodes.map((node) => {
+            if (node.entryType === 'AccountRoot') {
+                return this.parseOwnerCountQuantity(node, this.computeOwnerCountChange);
+            }
+            return undefined;
+        });
+
+        return compact(values);
     };
 }
 

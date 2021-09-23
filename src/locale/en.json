@@ -136,6 +136,10 @@
     "domain": "Domain",
     "owner": "Owner",
     "reserved": "Reserved",
+    "reservedOnLedger": "Reserved on ledger",
+    "totalReserved": "Total Reserved",
+    "otherReserveSeeExplorer": "Other (see ledger explorer)",
+    "reserve": "Reserve",
     "password": "Password",
     "passcode": "Passcode",
     "longTap": "Long Tap",
@@ -280,6 +284,7 @@
     "unableToLoadXApp": "Unable to load the xApp!",
     "requestWithAmount": "Request with amount",
     "openXApp": "Open xApp",
+    "quitXApp": "Quit xApp",
     "reallySmallAmount": "Really small amount",
     "about": "About",
     "default": "Default",
@@ -294,7 +299,7 @@
     "addingCustomNodeWarning": "You are adding a custom node to XUMM, do you want to continue?",
     "unableToLoadCustomEndpointDetails": "Unable to load the endpoint details. Please try again!",
     "nodeDetermined": "Node determined",
-    "nFTokens": "NFT Tokens"
+    "createPaymentRequestLink": "Create Payment Request link"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",
@@ -486,7 +491,9 @@
     "itWillIncreaseTheChannelAmount": "It will increase the channel amount by %{amount} XRP",
     "theChannelBalanceClaimedIs": "The channel balance claimed is %{balance} XRP",
     "thePaymentChannelWillBeClosed": "The payment channel will be closed, any remaining balance will be returned to the source account",
-    "theTokenIdIs": "The Token ID is %{tokenID}"
+    "theTokenIdIs": "The Token ID is %{tokenID}",
+    "thisTransactionIncreaseAccountReserve": "This transaction increased the account reserve by %{ownerReserve} XRP",
+    "thisTransactionDecreaseAccountReserve": "This transaction decreased the account reserve by %{ownerReserve} XRP"
   },
   "profile": {
     "availableInFuture": "This feature will be available in the future.",
@@ -797,7 +804,8 @@
     "ripplingMisconfigurationWarning": "Rippling not turned off for this Trust Line, if you don't know what this is and/or this is not on purpose, please update this setting to prevent potential loss of %{token} tokens",
     "lineLimitMisconfigurationWarning": "This TrustLine has a limit of zero (0) configured, meaning others cannot send this token to you: you can only hold the token. To be able to receive this token as well, XUMM can update your TrustLine to remove the zero (0) TrustLine limit.",
     "dangerousConfigurationDetected": "Dangerous configuration detected",
-    "moreInfoAndFix": "More info & fix"
+    "moreInfoAndFix": "More info & fix",
+    "addingTrustLineWarning": "XRPL Labs / XUMM does not endorse any token or token issuer. You should only proceed if you trust the token issuer.\nIn case of questions or problems regarding the token (Trust Line) you will need to contact the token issuer.\n\nContinue at your own risk."
   },
   "exchange": {
     "exchanging": "Exchanging",

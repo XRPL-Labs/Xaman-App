@@ -639,6 +639,26 @@ class TransactionDetailsView extends Component<Props, State> {
         }
     };
 
+    showBalanceExplain = () => {
+        const { account } = this.props;
+
+        // don't show the explain screen when account is not activated
+        if (account.balance === 0) {
+            return;
+        }
+
+        Navigator.showOverlay(
+            AppScreens.Overlay.ExplainBalance,
+            {
+                layout: {
+                    backgroundColor: 'transparent',
+                    componentBackgroundColor: 'transparent',
+                },
+            },
+            { account },
+        );
+    };
+
     renderStatus = () => {
         const { tx } = this.state;
 
@@ -1148,14 +1168,13 @@ class TransactionDetailsView extends Component<Props, State> {
 
     renderMemos = () => {
         const { tx } = this.state;
-        const { showMemo, scamAlert, incomingTx } = this.state;
+        const { showMemo, scamAlert } = this.state;
 
         // if no memo or the transaction contain xApp memo return null
         if (!tx.Memos) return null;
 
         // check for xapp memo
-        // only for payments and incoming transactions
-        if (incomingTx && !scamAlert) {
+        if (!scamAlert) {
             const xAppIdentifier = tx.getXappIdentifier();
             if (xAppIdentifier) {
                 return (
@@ -1201,6 +1220,44 @@ class TransactionDetailsView extends Component<Props, State> {
                         <Text style={[styles.contentText, AppStyles.colorRed]}>{Localize.t('events.showMemo')}</Text>
                     </TouchableOpacity>
                 )}
+            </View>
+        );
+    };
+
+    renderReserveChange = () => {
+        const { account } = this.props;
+        const { tx } = this.state;
+
+        const changes = tx.OwnerCountChange(account.address);
+
+        if (!changes) {
+            return null;
+        }
+
+        return (
+            <View style={styles.reserveContainer}>
+                <View style={[AppStyles.row]}>
+                    <Icon
+                        name={changes.action === 'INC' ? 'IconLock' : 'IconUnlock'}
+                        size={18}
+                        style={AppStyles.imgColorPrimary}
+                    />
+                    <Text style={[styles.labelText]}> {Localize.t('global.reserve')}</Text>
+                </View>
+
+                <View style={[AppStyles.paddingBottomSml]}>
+                    <Text style={[AppStyles.baseText, AppStyles.textCenterAligned]}>
+                        {changes.action === 'INC'
+                            ? Localize.t('events.thisTransactionIncreaseAccountReserve', {
+                                  ownerReserve: LedgerService.getNetworkReserve().OwnerReserve,
+                              })
+                            : Localize.t('events.thisTransactionDecreaseAccountReserve', {
+                                  ownerReserve: LedgerService.getNetworkReserve().OwnerReserve,
+                              })}
+                    </Text>
+                </View>
+
+                <Button roundedSmall secondary label="My balance & reserve" onPress={this.showBalanceExplain} />
             </View>
         );
     };
@@ -1786,6 +1843,7 @@ class TransactionDetailsView extends Component<Props, State> {
                             {this.renderHeader()}
                             {this.renderAmount()}
                             {this.renderMemos()}
+                            {this.renderReserveChange()}
                             {this.renderSourceDestination()}
                             {this.renderActionButtons()}
                             <View style={styles.detailsContainer}>

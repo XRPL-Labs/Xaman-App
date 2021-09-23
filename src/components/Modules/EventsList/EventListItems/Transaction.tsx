@@ -413,6 +413,24 @@ class TransactionTemplate extends Component<Props, State> {
         return null;
     };
 
+    renderReserveIcon = () => {
+        const { item, account } = this.props;
+
+        const changes = item.OwnerCountChange(account.address);
+
+        if (changes) {
+            return (
+                <Icon
+                    name={changes.action === 'INC' ? 'IconLock' : 'IconUnlock'}
+                    style={[AppStyles.imgColorGrey, AppStyles.paddingLeftSml]}
+                    size={12}
+                />
+            );
+        }
+
+        return null;
+    };
+
     renderRightPanel = () => {
         const { item, account } = this.props;
 
@@ -574,6 +592,7 @@ class TransactionTemplate extends Component<Props, State> {
                         </Text>
 
                         {this.renderMemoIcon()}
+                        {this.renderReserveIcon()}
                     </View>
                 </View>
                 <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>

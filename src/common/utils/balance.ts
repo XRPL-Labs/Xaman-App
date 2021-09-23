@@ -7,7 +7,7 @@ import { AccountSchema } from '@store/schemas/latest';
 /**
  * calculate account available balance base on base/owner reserve
  */
-const CalculateAvailableBalance = (account: AccountSchema): number => {
+const CalculateAvailableBalance = (account: AccountSchema, allowNegative = false): number => {
     if (account.balance === 0) {
         return 0;
     }
@@ -19,7 +19,7 @@ const CalculateAvailableBalance = (account: AccountSchema): number => {
 
     const availableBalance = new BigNumber(spendable).decimalPlaces(8).toNumber();
 
-    if (availableBalance < 0) {
+    if (availableBalance < 0 && !allowNegative) {
         return 0;
     }
 
