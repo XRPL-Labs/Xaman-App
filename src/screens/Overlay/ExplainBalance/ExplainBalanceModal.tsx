@@ -218,7 +218,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         <Text style={[styles.rowLabel]}>{Localize.t('global.otherReserveSeeExplorer')}</Text>
                     </View>
                     <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                        <Text style={[styles.reserveAmount]}>{remainingOwner * networkReserve.BaseReserve} XRP</Text>
+                        <Text style={[styles.reserveAmount]}>{remainingOwner * networkReserve.OwnerReserve} XRP</Text>
                     </View>
                 </View>
             );
