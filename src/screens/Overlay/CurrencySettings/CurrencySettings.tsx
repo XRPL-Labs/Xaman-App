@@ -145,7 +145,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                             this.setState(
                                 {
                                     latestLineBalance: balance.toNumber(),
-                                    canRemove: balance.isLessThan(0.00000001),
+                                    canRemove: balance.isLessThan(0.0001),
                                 },
                                 resolve,
                             );
