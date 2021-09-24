@@ -218,7 +218,7 @@ class SendView extends Component<Props, State> {
 
             // sign the transaction
             await payment.sign(source).then(this.submit);
-        } catch (e) {
+        } catch (e: any) {
             if (e) {
                 Navigator.showAlertModal({
                     type: 'error',

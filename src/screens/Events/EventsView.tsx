@@ -88,7 +88,7 @@ class EventsView extends Component<Props, State> {
             transactions: [],
             pendingRequests: [],
             plannedTransactions: [],
-            dataSource: undefined,
+            dataSource: [],
         };
     }
 

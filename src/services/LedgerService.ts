@@ -291,6 +291,7 @@ class LedgerService extends EventEmitter {
             return {
                 success: false,
                 engineResult: 'telFAILED',
+                // @ts-ignore
                 message: e.message,
                 node: SocketService.node,
                 nodeType: SocketService.chain,

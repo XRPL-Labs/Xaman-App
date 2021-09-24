@@ -340,7 +340,7 @@ class CurrencySettingsModal extends Component<Props, State> {
             }
 
             this.dismiss();
-        } catch (e) {
+        } catch (e: any) {
             if (e) {
                 InteractionManager.runAfterInteractions(() => {
                     Alert.alert(Localize.t('global.error'), e.message);
