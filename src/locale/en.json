@@ -804,7 +804,7 @@
     "liquidityIsNotEnough": "There is not enough liquidity, cannot exchange right now!",
     "liquidityIsNotSoMuch": "There's relatively low liquidity. You can still continue, but you may not get the best rate for your entire exchange!",
     "theMaxAmountYouCanExchangeIs": "The maximum amount you can exchange is %{spendable} %{currency}",
-    "exchangeByThirdPartyMessage": "If you want to create an offer for execution at a requested price level, you can use the 3rd party XUMM enabled XRP Toolkit application to create a limit order.",
+    "exchangeByThirdPartyMessage": "If you want to create an offer for execution at a requested price level, you can use the 3rd party XUMM enabled applications to create a limit order.",
     "requestedLiquidityNotAvailable": "The amount can't be exchanged: there are not enough offers available on the Decentralized Exchange.",
     "reverseLiquidityNotAvailable": "The amount can't be exchanged: based on the lack of offers on the Decentralized Exchange, you would not be able to exchange it back.",
     "maxSpreadExceeded": "The price difference between selling and buying offers is too high.",

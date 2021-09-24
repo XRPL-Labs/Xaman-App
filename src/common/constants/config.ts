@@ -100,10 +100,6 @@ export default {
         netFee: 12, // in drops
     },
 
-    thirdParty: {
-        XRPToolkit: 'https://www.xrptoolkit.com/',
-    },
-
     // localization config
     defaultLanguage: 'en',
 
