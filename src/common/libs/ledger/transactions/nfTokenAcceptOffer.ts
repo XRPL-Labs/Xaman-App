@@ -9,14 +9,14 @@ import { AmountType } from '../parser/types';
 import { LedgerTransactionType } from '../types';
 
 /* Class ==================================================================== */
-class NFTokenOfferAccept extends BaseTransaction {
+class NFTokenAcceptOffer extends BaseTransaction {
     [key: string]: any;
 
     constructor(tx?: LedgerTransactionType) {
         super(tx);
         // set transaction type if not set
         if (isUndefined(this.Type)) {
-            this.Type = 'NFTokenOfferAccept';
+            this.Type = 'NFTokenAcceptOffer';
         }
 
         this.fields = this.fields.concat(['Amount', 'SellOffer', 'BuyOffer']);
@@ -54,4 +54,4 @@ class NFTokenOfferAccept extends BaseTransaction {
 }
 
 /* Export ==================================================================== */
-export default NFTokenOfferAccept;
+export default NFTokenAcceptOffer;

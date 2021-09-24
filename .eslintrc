@@ -139,7 +139,7 @@
           "txblob", "tos", "gif", "ic", "asf", "ok", "Sig", "haptic", "Signable", "Unauthorize", "Preauth", "payid", "Biometrics", "Towo", "tz", "xrpscan",
           "xrplorer", "bithomp", "xpring", "xrplns", "Pincode", "Txn", "iap", "Realtime", "datastore", "decrypted", "Tangem", "Sdk", "Secp256k1", "blockchain",
           "Escrowed", "xapp", "Veriff", "Codec", "xapps", "Pressable", "nft", "ott", "Luminance", "HexToRgbA", "Misconfiguration", "kyc", "debounce", "debounced",
-          "nfts"
+          "nfts", "Taxon"
         ],
         "skipIfMatch": [
           "http://[^s]*",

@@ -72,7 +72,7 @@ class NFTokenMint extends BaseTransaction {
 
         if (isUndefined(transferFee)) return undefined;
 
-        return new BigNumber(transferFee).dividedBy(10000000).minus(100).toNumber();
+        return new BigNumber(transferFee).dividedBy(100).toNumber();
     }
 }
 

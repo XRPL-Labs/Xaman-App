@@ -173,7 +173,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             case 'NFTokenCancelOffer':
                 type = Localize.t('events.cancelNFTOffer');
                 break;
-            case 'NFTokenOfferAccept':
+            case 'NFTokenAcceptOffer':
                 type = Localize.t('events.acceptNFTOffer');
                 break;
             case 'SignIn':

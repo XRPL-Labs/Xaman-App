@@ -494,6 +494,8 @@
     "thisTransactionIncreaseAccountReserve": "This transaction increased the account reserve by %{ownerReserve} XRP",
     "thisTransactionDecreaseAccountReserve": "This transaction decreased the account reserve by %{ownerReserve} XRP",
     "theTokenIdIs": "The Token ID is %{tokenID}",
+    "theTokenHasATransferFee": "The token has a transfer fee: %{transferFee}%",
+    "theTokenTaxonForThisTokenIs": "The Taxon for this token is %{taxon}",
     "nftOfferSellExplain": "%{address} offered to sell NFT with ID %{tokenID} in order to receive %{amount} %{currency}",
     "nftOfferBuyExplain": "%{address} offered to pay %{amount} %{currency} in order to receive NFT with ID %{tokenID}",
     "theNftOwnerIs": "The NFT owner is %{address}",

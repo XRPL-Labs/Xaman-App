@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
-import { NFTokenOfferAccept } from '@common/libs/ledger/transactions';
+import { NFTokenAcceptOffer } from '@common/libs/ledger/transactions';
 
 import Localize from '@locale';
 
@@ -12,13 +12,13 @@ import { AmountText } from '@components/General';
 import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
-    transaction: NFTokenOfferAccept;
+    transaction: NFTokenAcceptOffer;
 }
 
 export interface State {}
 
 /* Component ==================================================================== */
-class NFTokenOfferAcceptTemplate extends Component<Props, State> {
+class NFTokenAcceptOfferTemplate extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
@@ -65,4 +65,4 @@ class NFTokenOfferAcceptTemplate extends Component<Props, State> {
     }
 }
 
-export default NFTokenOfferAcceptTemplate;
+export default NFTokenAcceptOfferTemplate;

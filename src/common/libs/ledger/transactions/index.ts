@@ -21,7 +21,7 @@ import PaymentChannelFund from './paymentChannelFund';
 import NFTokenMint from './nfTokenMint';
 import NFTokenBurn from './nfTokenBurn';
 import NFTokenCreateOffer from './nfTokenCreateOffer';
-import NFTokenOfferAccept from './nfTokenOfferAccept';
+import NFTokenAcceptOffer from './nfTokenAcceptOffer';
 import NFTokenCancelOffer from './nfTokenCancelOffer';
 
 export {
@@ -48,6 +48,6 @@ export {
     NFTokenMint,
     NFTokenBurn,
     NFTokenCreateOffer,
-    NFTokenOfferAccept,
+    NFTokenAcceptOffer,
     NFTokenCancelOffer,
 };

@@ -508,7 +508,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 return Localize.t('events.createNFTOffer');
             case 'NFTokenCancelOffer':
                 return Localize.t('events.cancelNFTOffer');
-            case 'NFTokenOfferAccept':
+            case 'NFTokenAcceptOffer':
                 return Localize.t('events.acceptNFTOffer');
             default:
                 return tx.Type;
@@ -1061,6 +1061,16 @@ class TransactionDetailsView extends Component<Props, State> {
 
         content += Localize.t('events.theTokenIdIs', { tokenID: tx.TokenID });
 
+        if (tx.TransferFee) {
+            content += '\n';
+            content += Localize.t('events.theTokenHasATransferFee', { transferFee: tx.TransferFee });
+        }
+
+        if (tx.TokenTaxon) {
+            content += '\n';
+            content += Localize.t('events.theTokenTaxonForThisTokenIs', { taxon: tx.TokenTaxon });
+        }
+
         return content;
     };
 
@@ -1130,7 +1140,7 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
-    renderNFTokenOfferAccept = () => {
+    renderNFTokenAcceptOffer = () => {
         // const { tx } = this.state;
 
         const content = '';
@@ -1214,8 +1224,8 @@ class TransactionDetailsView extends Component<Props, State> {
             case 'NFTokenCancelOffer':
                 content += this.renderNFTokenCancelOffer();
                 break;
-            case 'NFTokenOfferAccept':
-                content += this.renderNFTokenOfferAccept();
+            case 'NFTokenAcceptOffer':
+                content += this.renderNFTokenAcceptOffer();
                 break;
             default:
                 content += `This is a ${tx.Type} transaction`;
@@ -1224,7 +1234,9 @@ class TransactionDetailsView extends Component<Props, State> {
         return (
             <>
                 <Text style={[styles.labelText]}>{Localize.t('global.description')}</Text>
-                <Text style={[styles.contentText]}>{content}</Text>
+                <Text selectable style={[styles.contentText]}>
+                    {content}
+                </Text>
             </>
         );
     };

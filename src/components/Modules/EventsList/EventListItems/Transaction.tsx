@@ -181,7 +181,7 @@ class TransactionTemplate extends Component<Props, State> {
                 address = item.Account.address;
                 key = 'Account';
                 break;
-            case 'NFTokenOfferAccept':
+            case 'NFTokenAcceptOffer':
                 address = item.Account.address;
                 key = 'Account';
                 break;
@@ -386,7 +386,7 @@ class TransactionTemplate extends Component<Props, State> {
                 return Localize.t('events.createNFTOffer');
             case 'NFTokenCancelOffer':
                 return Localize.t('events.cancelNFTOffer');
-            case 'NFTokenOfferAccept':
+            case 'NFTokenAcceptOffer':
                 return Localize.t('events.acceptNFTOffer');
             default:
                 return item.Type;

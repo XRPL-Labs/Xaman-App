@@ -24,7 +24,7 @@ import NFTokenMint from './NFTokenMint';
 import NFTokenBurn from './NFTokenBurn';
 import NFTokenCreateOffer from './NFTokenCreateOffer';
 import NFTokenCancelOffer from './NFTokenCancelOffer';
-import NFTokenOfferAccept from './NFTokenOfferAccept';
+import NFTokenAcceptOffer from './NFTokenAcceptOffer';
 
 export {
     Global,
@@ -51,5 +51,5 @@ export {
     NFTokenBurn,
     NFTokenCreateOffer,
     NFTokenCancelOffer,
-    NFTokenOfferAccept,
+    NFTokenAcceptOffer,
 };

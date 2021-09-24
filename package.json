@@ -40,7 +40,7 @@
     "react-native-navigation": "7.18.0",
     "react-native-webview": "11.6.5",
     "realm": "10.6.0",
-    "ripple-binary-codec": "https://github.com/ledhed2222/ripple-binary-codec.git",
+    "ripple-binary-codec": "ledhed2222/ripple-binary-codec",
     "tangem-sdk-react-native": "1.2.1",
     "uuid": "8.3.2",
     "xrpl-accountlib": "1.1.4",

@@ -34,7 +34,7 @@ class NFTokenCancelOfferTemplate extends Component<Props, State> {
                     </Text>
                 </View>
                 {transaction.TokenIDs.map((token: string) => (
-                    <View style={[styles.contentBox]}>
+                    <View key={`${token}`} style={[styles.contentBox]}>
                         <Text style={styles.value}>{token}</Text>
                     </View>
                 ))}
