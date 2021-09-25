@@ -95,8 +95,8 @@ export default {
 
     // default network base and owner reserve
     network: {
-        baseReserve: 20, // in XRP
-        ownerReserve: 5, // in XRP
+        baseReserve: 10, // in XRP
+        ownerReserve: 2, // in XRP
         netFee: 12, // in drops
     },
 
