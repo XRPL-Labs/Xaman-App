@@ -31,6 +31,7 @@ Further reading:
 * [Makefile](docs/makefile.md)
 * [Testing](docs/testing.md)
 * [Troubleshooting](docs/troubleshooting.md)
+* [Responsible disclosure](RESPONSIBLE-DISCLOSURE.md)
 
 ### Suggestions, bugs, etc.:
 
