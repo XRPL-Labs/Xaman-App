@@ -12,7 +12,6 @@ import {
     Alert,
     TextInput,
     Keyboard,
-    Linking,
     TouchableOpacity,
     InteractionManager,
 } from 'react-native';
@@ -33,7 +32,7 @@ import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 // constants
-import { AppScreens, AppConfig } from '@common/constants';
+import { AppScreens } from '@common/constants';
 
 // components
 import {
@@ -168,16 +167,6 @@ class ExchangeView extends Component<Props, State> {
                     }
                 });
         }, 500);
-    };
-
-    openXRPToolkit = () => {
-        Linking.canOpenURL(AppConfig.thirdParty.XRPToolkit).then((supported) => {
-            if (supported) {
-                Linking.openURL(AppConfig.thirdParty.XRPToolkit);
-            } else {
-                Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
-            }
-        });
     };
 
     switchDirection = () => {
@@ -432,18 +421,6 @@ class ExchangeView extends Component<Props, State> {
                         <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
                             {Localize.t('exchange.exchangeByThirdPartyMessage')}
                         </Text>
-                        <Spacer size={30} />
-                        <Button
-                            onPress={this.openXRPToolkit}
-                            icon="IconLink"
-                            iconStyle={AppStyles.imgColorGrey}
-                            light
-                            rounded
-                            label={Localize.t('global.openXRPToolkitByTowoLabs')}
-                            textStyle={[AppStyles.subtext, AppStyles.bold]}
-                            adjustsFontSizeToFit
-                            numberOfLines={1}
-                        />
                     </InfoMessage>
                     <Spacer size={40} />
                 </>

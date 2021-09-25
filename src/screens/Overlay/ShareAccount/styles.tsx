@@ -5,7 +5,7 @@ import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     visibleContent: {
-        height: AppSizes.moderateScale(670) + AppSizes.navigationBarHeight,
+        height: AppSizes.moderateScale(620) + AppSizes.navigationBarHeight,
         backgroundColor: '$background',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,

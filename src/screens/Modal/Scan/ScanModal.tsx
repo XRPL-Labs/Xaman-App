@@ -260,7 +260,7 @@ class ScanView extends Component<Props, State> {
                     payload,
                 },
             );
-        } catch (e) {
+        } catch (e: any) {
             Prompt(Localize.t('global.error'), e.message, [{ text: 'OK', onPress: () => this.setShouldRead(true) }], {
                 cancelable: false,
                 type: 'default',

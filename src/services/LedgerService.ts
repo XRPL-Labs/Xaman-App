@@ -2,7 +2,7 @@
  * LedgerService service
  * fetching details from XRPL ledger - submit/verify transaction
  */
-
+import BigNumber from 'bignumber.js';
 import moment from 'moment-timezone';
 import EventEmitter from 'events';
 import { map, isEmpty, assign, startsWith } from 'lodash';
@@ -42,10 +42,14 @@ class LedgerService extends EventEmitter {
         return new Promise<void>((resolve, reject) => {
             try {
                 // set default network reserve base on prev values
+                const { baseReserve, ownerReserve } = coreSettings;
+
                 this.networkReserve = {
-                    base: coreSettings.baseReserve,
-                    owner: coreSettings.ownerReserve,
+                    base: baseReserve,
+                    owner: ownerReserve,
                 };
+
+                this.logger.debug(`Current Network Base/Owner reserve: ${baseReserve}/${ownerReserve}`);
 
                 // on socket service connect
                 SocketService.on('connect', () => {
@@ -309,6 +313,7 @@ class LedgerService extends EventEmitter {
             return {
                 success: false,
                 engineResult: 'telFAILED',
+                // @ts-ignore
                 message: e.message,
                 node: SocketService.node,
                 nodeType: SocketService.chain,
@@ -372,14 +377,14 @@ class LedgerService extends EventEmitter {
     updateNetworkReserve = (ledger: { reserve_base: number; reserve_inc: number }) => {
         const { reserve_base, reserve_inc } = ledger;
 
-        const reserveBase = Number(reserve_base) / 1_000_000 || null;
-        const reserveOwner = Number(reserve_inc) / 1_000_000 || null;
+        const reserveBase = new BigNumber(reserve_base).dividedBy(1000000.0).toNumber();
+        const reserveOwner = new BigNumber(reserve_inc).dividedBy(1000000.0).toNumber();
 
         if (reserveBase && reserveOwner) {
             const { base, owner } = this.networkReserve;
 
             if (reserveBase !== base || reserveOwner !== owner) {
-                this.logger.debug(`Network Owner/Base reserve changed to Base: ${reserveBase} Owner: ${reserveOwner}`);
+                this.logger.debug(`Network Base/Owner reserve changed to ${reserveBase}/${reserveOwner}`);
                 this.networkReserve = {
                     base: reserveBase,
                     owner: reserveOwner,

@@ -108,7 +108,7 @@ class BaseTransaction {
                     this.Flags = [txFlags.Universal.FullyCanonicalSig];
                 }
             }
-        } catch (e) {
+        } catch (e: any) {
             throw new Error(`Unable to prepare the transaction, ${e?.message}`);
         }
     };
@@ -221,7 +221,7 @@ class BaseTransaction {
             };
 
             return submitResult;
-        } catch (e) {
+        } catch (e: any) {
             // something wrong happened
             // temporary set the result
             this.TransactionResult = {

@@ -51,9 +51,9 @@ class EventsList extends PureComponent<Props> {
     };
 
     listEmpty = () => {
-        const { isLoading, dataSource } = this.props;
+        const { isLoading } = this.props;
 
-        if (isLoading && typeof dataSource === 'undefined') {
+        if (isLoading) {
             return (
                 <View style={styles.listEmptyContainer}>
                     <LoadingIndicator />

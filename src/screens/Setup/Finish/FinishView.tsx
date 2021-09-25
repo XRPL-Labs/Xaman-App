@@ -90,6 +90,7 @@ class FinishView extends Component<Props, State> {
             this.setState({
                 isLoading: false,
             });
+            // @ts-ignore
             Alert.alert('Error', e.message || e);
         }
     };

@@ -1,14 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 import groovy.json.JsonSlurper
 
 
 buildscript {
     ext {
-        buildToolsVersion = "29.0.3"
+        buildToolsVersion = "30.0.2"
         minSdkVersion = 24
-        compileSdkVersion = 29
-        targetSdkVersion = 29
+        compileSdkVersion = 30
+        targetSdkVersion = 30
         ndkVersion = "20.1.5948944"
         supportLibVersion = "29.0.0"
         kotlinVersion = "1.4.21"
@@ -18,19 +17,15 @@ buildscript {
     }
     repositories {
         google()
-        mavenLocal()
         mavenCentral()
-        jcenter()
-        maven {
-            url 'https://maven.fabric.io/public'
-        }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:4.1.0")
-        classpath 'com.google.gms:google-services:4.2.0'
-        classpath 'io.fabric.tools:gradle:1.28.1'
+        classpath("com.android.tools.build:gradle:4.2.1")
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 
+        // Firebase
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.1'
+        classpath 'com.google.gms:google-services:4.3.10'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -46,21 +41,20 @@ allprojects {
         google()
         mavenCentral()
         mavenLocal()
-        jcenter()
-        maven { url "https://cdn.veriff.me/android/" } //veriff
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
             url "$rootDir/../node_modules/react-native/android"
-        }
-        maven { url 'https://jitpack.io' }
-        maven {
-            // All of Detox' artifacts are provided via the npm module
-            url "$rootDir/../node_modules/detox/Detox-android"
         }
         maven {
             // Android JSC is installed from npm
             url("$rootDir/../node_modules/jsc-android/dist")
         }
+        maven {
+            // All of Detox' artifacts are provided via the npm module
+            url "$rootDir/../node_modules/detox/Detox-android"
+        }
+        maven { url 'https://jitpack.io' }
+        maven { url "https://cdn.veriff.me/android/" } //veriff
     }
 
     // Make sure we use the react-native version in node_modules and not the one
@@ -92,7 +86,7 @@ subprojects { subproject ->
         versionMajor = npmVersion[0]
         versionMinor = npmVersion[1]
         versionPatch = npmVersion[2]
-        buildNumber = 1
+        buildNumber = 2
     }
     afterEvaluate {
         if (project.hasProperty("android")) {

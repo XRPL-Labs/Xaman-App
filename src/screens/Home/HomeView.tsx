@@ -11,7 +11,6 @@ import {
     Text,
     Image,
     TouchableOpacity,
-    TouchableWithoutFeedback,
     ImageBackground,
     InteractionManager,
     Share,
@@ -668,17 +667,16 @@ class HomeView extends Component<Props, State> {
                     <Text style={[AppStyles.h5]} numberOfLines={1}>
                         {account.label}
                     </Text>
-                    <TouchableWithoutFeedback onPress={this.onShowAccountQRPress}>
+                    <TouchableOpacity onPress={this.onShowAccountQRPress} activeOpacity={0.8}>
                         <Text
                             testID="account-address-text"
                             adjustsFontSizeToFit
                             numberOfLines={1}
-                            selectable={!discreetMode}
                             style={[styles.cardAddressText, discreetMode && AppStyles.colorGrey]}
                         >
                             {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
                         </Text>
-                    </TouchableWithoutFeedback>
+                    </TouchableOpacity>
                 </View>
                 <TouchableOpacity hitSlop={{ left: 25, right: 25 }} onPress={this.onShowAccountQRPress}>
                     <Icon style={[styles.iconShare]} size={16} name="IconShare" />

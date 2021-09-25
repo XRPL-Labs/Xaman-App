@@ -286,7 +286,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 if (!payload.isGenerated()) {
                     await payload.validate();
                 }
-            } catch (e) {
+            } catch (e: any) {
                 Navigator.showAlertModal({
                     type: 'error',
                     text: e.message,
@@ -310,7 +310,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 if (typeof transaction.validate === 'function') {
                     await transaction.validate(source, payload.isMultiSign());
                 }
-            } catch (e) {
+            } catch (e: any) {
                 Navigator.showAlertModal({
                     type: 'error',
                     text: e.message,

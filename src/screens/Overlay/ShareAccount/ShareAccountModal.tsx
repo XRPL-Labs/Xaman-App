@@ -113,7 +113,10 @@ class ShareAccountModal extends Component<Props, State> {
         this.slideDown();
 
         Clipboard.setString(account.address);
-        Toast(Localize.t('account.publicKeyCopiedToClipboard'));
+
+        setTimeout(() => {
+            Toast(Localize.t('account.publicKeyCopiedToClipboard'));
+        }, 1000);
     };
 
     onPaymentRequestPress = () => {
@@ -153,10 +156,10 @@ class ShareAccountModal extends Component<Props, State> {
                     verticalOnly
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
-                        { y: AppSizes.screen.height - (AppSizes.moderateScale(650) + AppSizes.navigationBarHeight) },
+                        { y: AppSizes.screen.height - (AppSizes.moderateScale(600) + AppSizes.navigationBarHeight) },
                     ]}
                     boundaries={{
-                        top: AppSizes.screen.height - (AppSizes.moderateScale(670) + AppSizes.navigationBarHeight),
+                        top: AppSizes.screen.height - (AppSizes.moderateScale(620) + AppSizes.navigationBarHeight),
                     }}
                     alertAreas={[
                         { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
@@ -165,7 +168,7 @@ class ShareAccountModal extends Component<Props, State> {
                             influenceArea: {
                                 top:
                                     AppSizes.screen.height -
-                                    (AppSizes.moderateScale(520) + AppSizes.navigationBarHeight),
+                                    (AppSizes.moderateScale(600) + AppSizes.navigationBarHeight),
                             },
                         },
                     ]}
@@ -200,7 +203,7 @@ class ShareAccountModal extends Component<Props, State> {
 
                         <View style={styles.qrCodeContainer}>
                             <View style={styles.qrCode}>
-                                <QRCode size={AppSizes.moderateScale(200)} value={`${account.address}`} />
+                                <QRCode size={AppSizes.moderateScale(150)} value={`${account.address}`} />
                             </View>
                         </View>
 
@@ -208,7 +211,9 @@ class ShareAccountModal extends Component<Props, State> {
                             <Text style={[AppStyles.pbold, AppStyles.textCenterAligned]}>
                                 {Localize.t('global.address')}:
                             </Text>
-                            <Text style={styles.addressText}>{account.address}</Text>
+                            <Text selectable adjustsFontSizeToFit numberOfLines={1} style={styles.addressText}>
+                                {account.address}
+                            </Text>
                         </View>
 
                         <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingHorizontalSml]}>

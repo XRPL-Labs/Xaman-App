@@ -145,7 +145,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                             this.setState(
                                 {
                                     latestLineBalance: balance.toNumber(),
-                                    canRemove: balance.isLessThan(0.00000001),
+                                    canRemove: balance.isLessThan(0.0001),
                                 },
                                 resolve,
                             );
@@ -340,7 +340,7 @@ class CurrencySettingsModal extends Component<Props, State> {
             }
 
             this.dismiss();
-        } catch (e) {
+        } catch (e: any) {
             if (e) {
                 InteractionManager.runAfterInteractions(() => {
                     Alert.alert(Localize.t('global.error'), e.message);
