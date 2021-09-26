@@ -261,7 +261,8 @@ class BaseTransaction {
         }
 
         if (this.Type === 'AccountDelete') {
-            baseFee = new BigNumber(5).multipliedBy(1000000);
+            const { OwnerReserve } = LedgerService.getNetworkReserve();
+            baseFee = new BigNumber(OwnerReserve).multipliedBy(1000000);
         }
         // 10 drops × (1 + Number of Signatures Provided)
         if (this.Signers.length > 0) {
