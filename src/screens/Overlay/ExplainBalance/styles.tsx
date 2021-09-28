@@ -30,34 +30,27 @@ const styles = StyleService.create({
         alignItems: 'flex-start',
         justifyContent: 'center',
     },
-    currencyItemCard: {
+    scrollStickyHeader: {
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        backgroundColor: '$background',
+        shadowColor: '$background',
+        paddingHorizontal: AppSizes.paddingSml,
+        shadowOffset: { width: 0, height: 5 },
+        shadowRadius: 5,
+        shadowOpacity: 1,
+    },
+    objectItemCard: {
         justifyContent: 'space-between',
         flexDirection: 'row',
         marginTop: 10,
     },
-    currencyItem: {
-        paddingTop: 10,
-        paddingBottom: 10,
-        paddingRight: 5,
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-    },
-    currencyItemLabel: {
+    currencyLabel: {
         fontSize: AppFonts.h5.size,
         fontFamily: AppFonts.base.familyMonoBold,
         color: '$textPrimary',
         alignItems: 'flex-start',
         justifyContent: 'center',
-    },
-    currencyItemLabelSmall: {
-        fontSize: AppFonts.p.size,
-        fontFamily: AppFonts.base.familyMono,
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        marginRight: 10,
-        marginBottom: 3,
-        // borderWidth: 1,
-        // borderColor: 'red',
     },
     xrpAvatar: {
         resizeMode: 'contain',
@@ -93,9 +86,17 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyMono,
         color: '$grey',
     },
+    rowLabelBig: {
+        fontSize: AppFonts.p.size,
+        fontFamily: AppFonts.base.familyBold,
+        color: '$textPrimary',
+    },
     listHeader: {
         paddingVertical: 5,
         backgroundColor: '$white',
+    },
+    separatorLine: {
+        marginTop: 10,
     },
 });
 

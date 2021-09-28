@@ -6,7 +6,6 @@ import moment from 'moment-timezone';
 
 import { UIManager, I18nManager, Platform, Alert, Text, TextInput } from 'react-native';
 
-import messaging from '@react-native-firebase/messaging';
 import { Navigation } from 'react-native-navigation';
 
 // constants
@@ -35,11 +34,7 @@ import StorageBackend from '@store/storage';
 // services
 import * as services from '@services';
 
-messaging().setBackgroundMessageHandler(async () => {
-    // FIXME: temporary fix for error
-    // Invariant Violation: Module AppRegistry is not a registered callable module (calling startHeadlessTask)
-});
-
+/* Application  ==================================================================== */
 class Application {
     storage: StorageBackend;
     initialized: boolean;
@@ -292,6 +287,8 @@ class Application {
                 Text.defaultProps = {};
                 // @ts-ignore
                 Text.defaultProps.allowFontScaling = false;
+                // @ts-ignore
+                TextInput.defaultProps = {};
                 // @ts-ignore
                 TextInput.defaultProps.allowFontScaling = false;
 

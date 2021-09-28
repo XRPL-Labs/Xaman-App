@@ -82,6 +82,7 @@ export const Images = {
     IconTabBarActionsLight: buildImageSource('IconTabBarActionsLight', 'icon_tabbar_actions_light'),
 
     IconLock: buildImageSource('IconLock', 'icon_lock'),
+    IconUnlock: buildImageSource('IconUnlock', 'icon_unlock'),
     IconChevronLeft: buildImageSource('IconChevronLeft', 'icon_chevron_left'),
     IconChevronRight: buildImageSource('IconChevronRight', 'icon_chevron_right'),
     IconShield: buildImageSource('IconShield', 'icon_shield'),

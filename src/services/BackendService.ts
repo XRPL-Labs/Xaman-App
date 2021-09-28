@@ -3,7 +3,7 @@
  * Interact with xumm backend
  */
 
-import { map, isEmpty, flatMap, get } from 'lodash';
+import { map, isEmpty, flatMap, get, reduce } from 'lodash';
 import moment from 'moment-timezone';
 
 import { Platform } from 'react-native';
@@ -15,7 +15,7 @@ import { GetAppReadableVersion, GetDeviceUniqueId } from '@common/helpers/device
 
 import { CurrencySchema } from '@store/schemas/latest';
 
-import { CoreRepository } from '@store/repositories';
+import CoreRepository from '@store/repositories/core';
 import ProfileRepository from '@store/repositories/profile';
 import CounterPartyRepository from '@store/repositories/counterParty';
 import CurrencyRepository from '@store/repositories/currency';
@@ -66,15 +66,7 @@ class BackendService {
     sync = async () => {
         this.logger.debug('Start Syncing with backend');
         await this.syncCuratedIous();
-        // await this.syncContacts();
     };
-
-    /*
-    Sync the contacts
-    */
-    // syncContacts = () => {
-    // this.logger.debug('Syncing contacts ...');
-    // };
 
     /*
     Update IOUs from backend
@@ -82,41 +74,52 @@ class BackendService {
     syncCuratedIous = async () => {
         ApiService.curatedIOUs
             .get()
-            .then((res: any) => {
+            .then(async (res: any) => {
                 const { details } = res;
 
-                // clear the CounterParty store
-                CounterPartyRepository.deleteAll();
+                const updatedParties = await reduce(
+                    details,
+                    async (result, value) => {
+                        const currenciesList = [] as CurrencySchema[];
 
-                map(details, async (value) => {
-                    const normalizedList = [] as CurrencySchema[];
+                        await Promise.all(
+                            map(value.currencies, async (c) => {
+                                const currency = await CurrencyRepository.include({
+                                    issuer: c.issuer,
+                                    currency: c.currency,
+                                    name: c.name,
+                                    avatar: c.avatar || '',
+                                    shortlist: c.shortlist === 1,
+                                });
 
-                    await Promise.all(
-                        map(value.currencies, async (c) => {
-                            const currency = await CurrencyRepository.include({
-                                issuer: c.issuer,
-                                currency: c.currency,
-                                name: c.name,
-                                avatar: c.avatar || '',
-                                shortlist: c.shortlist === 1,
-                            });
+                                currenciesList.push(currency);
+                            }),
+                        );
 
-                            normalizedList.push(currency);
-                        }),
-                    );
-
-                    CounterPartyRepository.create(
-                        {
+                        CounterPartyRepository.upsert({
                             id: value.id,
                             name: value.name,
                             domain: value.domain,
                             avatar: value.avatar || '',
                             shortlist: value.shortlist === 1,
-                            currencies: normalizedList,
-                        },
-                        true,
-                    );
+                            currencies: currenciesList,
+                        });
+
+                        (await result).push(value.id);
+                        return result;
+                    },
+                    Promise.resolve([]),
+                );
+
+                // delete removed parties from local database
+                const counterParties = CounterPartyRepository.findAll();
+                const removedParties = counterParties.filter((c: any) => {
+                    return !updatedParties.includes(c.id);
                 });
+
+                if (removedParties.length > 0) {
+                    CounterPartyRepository.delete(removedParties);
+                }
             })
             .catch((error: string) => {
                 this.logger.error('Fetch Curated Ious Error: ', error);

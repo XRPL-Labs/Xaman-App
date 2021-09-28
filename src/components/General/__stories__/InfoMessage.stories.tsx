@@ -34,6 +34,6 @@ storiesOf('InfoMessage', module)
             type: TYPES,
             label: [label],
             icon: ['IconInfo'],
-            onMorePress: [() => {}],
+            onMoreButtonPress: [() => {}],
         }),
     );

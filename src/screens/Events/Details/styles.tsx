@@ -27,6 +27,14 @@ const styles = StyleService.create({
         paddingBottom: 25,
         paddingHorizontal: 25,
     },
+    reserveContainer: {
+        width: AppSizes.screen.width,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 10,
+        paddingBottom: 25,
+        paddingHorizontal: 25,
+    },
     extraHeaderContainer: {
         padding: 25,
         borderTopColor: '$tint',

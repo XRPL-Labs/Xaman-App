@@ -225,7 +225,7 @@ class VaultModal extends Component<Props, State> {
             signedObject = { ...signedObject, signMethod: method };
 
             this.onSign(signedObject);
-        } catch (e) {
+        } catch (e: any) {
             this.onSignError(method, e);
         }
     };
@@ -279,7 +279,7 @@ class VaultModal extends Component<Props, State> {
                         RNTangemSdk.stopSession();
                     }, 10000);
                 });
-        } catch (e) {
+        } catch (e: any) {
             this.onSignError(AuthMethods.TANGEM, e);
         }
     };

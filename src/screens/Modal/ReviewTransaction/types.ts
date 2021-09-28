@@ -27,6 +27,8 @@ export interface State {
     hasError: boolean;
     errorMessage: string;
     isPreparing: boolean;
+    isValidating: boolean;
+    isValidPayload: boolean;
 }
 
 export interface ContextProps extends State {

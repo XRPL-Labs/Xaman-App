@@ -59,7 +59,8 @@ export interface PatchSuccessType {
     tx_id: string;
     multisigned: string;
     dispatched?: Dispatched;
-    permission: Permission;
+    permission?: Permission;
+    origintype?: PayloadOrigin;
 }
 
 export interface PatchRejectType {

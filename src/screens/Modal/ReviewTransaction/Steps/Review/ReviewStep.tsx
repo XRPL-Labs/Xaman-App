@@ -239,7 +239,8 @@ class ReviewStep extends Component<Props, State> {
     render() {
         const { accounts, canScroll } = this.state;
 
-        const { payload, source, isPreparing, setSource, onAccept, onClose, getTransactionLabel } = this.context;
+        const { payload, source, isValidating, isPreparing, setSource, onAccept, onClose, getTransactionLabel } =
+            this.context;
 
         return (
             <ImageBackground
@@ -317,7 +318,7 @@ class ReviewStep extends Component<Props, State> {
                             <SwipeButton
                                 testID="accept-button"
                                 color={this.getSwipeButtonColor()}
-                                isLoading={isPreparing}
+                                isLoading={isValidating || isPreparing}
                                 onSwipeSuccess={onAccept}
                                 label={Localize.t('global.slideToAccept')}
                                 shouldResetAfterSuccess

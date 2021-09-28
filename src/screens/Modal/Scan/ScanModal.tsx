@@ -260,7 +260,7 @@ class ScanView extends Component<Props, State> {
                     payload,
                 },
             );
-        } catch (e) {
+        } catch (e: any) {
             Prompt(Localize.t('global.error'), e.message, [{ text: 'OK', onPress: () => this.setShouldRead(true) }], {
                 cancelable: false,
                 type: 'default',
@@ -351,7 +351,7 @@ class ScanView extends Component<Props, State> {
             }
 
             // if amount present as XRP pass the amount
-            if (!destination.currency && new RegExp(/^(?![0.]+$)\d+(\.\d{1,2})?$/gm).test(destination.amount)) {
+            if (!destination.currency && new RegExp(/^(?![0.]+$)\d+(\.\d{1,8})?$/gm).test(destination.amount)) {
                 amount = destination.amount;
             }
 

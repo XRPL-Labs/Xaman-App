@@ -15,6 +15,8 @@ import { AppScreens } from '@common/constants';
 import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { NormalizeDestination } from '@common/utils/codec';
 
 import { BackendService, LedgerService } from '@services';
@@ -396,7 +398,9 @@ class RecipientStep extends Component<Props, State> {
                 if (typeof currency !== 'string') {
                     Navigator.showAlertModal({
                         type: 'warning',
-                        text: Localize.t('send.destinationCannotActivateWithIOU'),
+                        text: Localize.t('send.destinationCannotActivateWithIOU', {
+                            baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+                        }),
                         buttons: [
                             {
                                 text: Localize.t('global.back'),
@@ -412,10 +416,15 @@ class RecipientStep extends Component<Props, State> {
                 }
 
                 // check if amount is not covering the creation of account
-                if (typeof currency === 'string' && parseFloat(amount) < 20) {
+                if (
+                    typeof currency === 'string' &&
+                    parseFloat(amount) < LedgerService.getNetworkReserve().BaseReserve
+                ) {
                     Navigator.showAlertModal({
                         type: 'warning',
-                        text: Localize.t('send.destinationNotExistTooLittleToCreate'),
+                        text: Localize.t('send.destinationNotExistTooLittleToCreate', {
+                            baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+                        }),
                         buttons: [
                             {
                                 text: Localize.t('global.back'),
@@ -431,10 +440,16 @@ class RecipientStep extends Component<Props, State> {
                 }
 
                 // check if the amount will create the account
-                if (typeof currency === 'string' && parseFloat(amount) >= 20) {
+                if (
+                    typeof currency === 'string' &&
+                    parseFloat(amount) >= LedgerService.getNetworkReserve().BaseReserve
+                ) {
                     Navigator.showAlertModal({
                         type: 'warning',
-                        text: Localize.t('send.destinationNotExistCreationWarning', { amount }),
+                        text: Localize.t('send.destinationNotExistCreationWarning', {
+                            amount,
+                            baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+                        }),
                         buttons: [
                             {
                                 text: Localize.t('global.back'),
@@ -492,7 +507,10 @@ class RecipientStep extends Component<Props, State> {
             if (destinationInfo.blackHole) {
                 Navigator.showAlertModal({
                     type: 'warning',
-                    text: Localize.t('send.theDestinationAccountIsSetAsBlackHole'),
+                    text: Localize.t('send.theDestinationAccountIsSetAsBlackHole', {
+                        currency:
+                            typeof currency === 'object' ? NormalizeCurrencyCode(currency.currency.currency) : 'XRP',
+                    }),
                     buttons: [
                         {
                             text: Localize.t('global.back'),

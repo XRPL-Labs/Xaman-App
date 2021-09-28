@@ -17,6 +17,7 @@ import { Images } from '@common/helpers/images';
 import { Prompt, Toast } from '@common/helpers/interface';
 
 import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
+import { CalculateAvailableBalance } from '@common/utils/balance';
 
 // components
 import { Button, AccordionPicker, KeyboardAwareScrollView, AmountInput, AmountText, Footer } from '@components/General';
@@ -87,7 +88,7 @@ class DetailsStep extends Component<Props, State> {
 
         // XRP
         if (typeof currency === 'string') {
-            availableBalance = source.availableBalance;
+            availableBalance = CalculateAvailableBalance(source);
         } else if (sendingNFT) {
             availableBalance = XRPLValueToNFT(currency.balance);
         } else {
@@ -288,7 +289,8 @@ class DetailsStep extends Component<Props, State> {
                             <Text
                                 style={[styles.currencyBalance, selected ? AppStyles.colorBlue : AppStyles.colorGrey]}
                             >
-                                {Localize.t('global.available')}: {Localize.formatNumber(source.availableBalance)}
+                                {Localize.t('global.available')}:{' '}
+                                {Localize.formatNumber(CalculateAvailableBalance(source))}
                             </Text>
                         </View>
                     </View>

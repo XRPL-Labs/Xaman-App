@@ -2,7 +2,6 @@
  * Account Model
  */
 
-import BigNumber from 'bignumber.js';
 import Realm from 'realm';
 
 import TrustLineSchema from '@store/schemas/v1/trustLine';
@@ -51,39 +50,6 @@ class Account extends Realm.Object {
     constructor(obj: Partial<Account>) {
         super();
         Object.assign(this, obj);
-    }
-
-    /**
-     * get account reserve
-     */
-    get accountReserve(): number {
-        const RESERVER_ITEM = 5;
-        const RESERVER_BASE = 20;
-
-        return RESERVER_BASE + this.ownerCount * RESERVER_ITEM;
-    }
-
-    /**
-     * get account available balance
-     */
-    get availableBalance(): number {
-        if (this.balance === 0) {
-            return 0;
-        }
-        // TODO: get reserve amount from ledger reserveBaseXRP
-        const RESERVER_ITEM = 5;
-        const RESERVER_BASE = 20;
-
-        // calculate the spendable amount
-        const spendable = this.balance - RESERVER_BASE - this.ownerCount * RESERVER_ITEM;
-
-        const availableBalance = new BigNumber(spendable).decimalPlaces(8).toNumber();
-
-        if (availableBalance < 0) {
-            return 0;
-        }
-
-        return availableBalance;
     }
 
     /**

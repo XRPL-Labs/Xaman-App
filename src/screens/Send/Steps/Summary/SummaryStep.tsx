@@ -15,7 +15,7 @@ import { Images } from '@common/helpers/images';
 
 import Preferences from '@common/libs/preferences';
 import { NormalizeCurrencyCode } from '@common/utils/amount';
-
+import { CalculateAvailableBalance } from '@common/utils/balance';
 // components
 import {
     AmountText,
@@ -291,7 +291,8 @@ class SummaryStep extends Component<Props, State> {
                         <View style={[AppStyles.column, AppStyles.centerContent]}>
                             <Text style={[styles.currencyItemLabel]}>XRP</Text>
                             <Text style={[styles.currencyBalance]}>
-                                {Localize.t('global.available')}: {Localize.formatNumber(source.availableBalance)}
+                                {Localize.t('global.available')}:{' '}
+                                {Localize.formatNumber(CalculateAvailableBalance(source))}
                             </Text>
                         </View>
                     </View>

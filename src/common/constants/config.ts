@@ -93,8 +93,11 @@ export default {
         },
     ],
 
-    thirdParty: {
-        XRPToolkit: 'https://www.xrptoolkit.com/',
+    // default network base and owner reserve
+    network: {
+        baseReserve: 10, // in XRP
+        ownerReserve: 2, // in XRP
+        netFee: 12, // in drops
     },
 
     // localization config

@@ -61,8 +61,8 @@ Some distributions come with git preinstalled but you'll most likely have to ins
 
 ### Additional setup for iOS
 
-1.  Install [Xcode](https://itunes.apple.com/us/app/xcode/id497799835?ls=1&mt=12) to build and run the app on iOS. (minimum required version is 12.4)
-2.  Install [Cocoapods](https://cocoapods.org/) using the `gem` method. You'll need it to install the project's iOS dependencies. (required version is 1.10.1)
+1.  Install [Xcode](https://itunes.apple.com/us/app/xcode/id497799835?ls=1&mt=12) to build and run the app on iOS. (minimum required version is 12.5)
+2.  Install [Cocoapods](https://cocoapods.org/) using the `gem` method. You'll need it to install the project's iOS dependencies. (required version is >=1.10.1)
 
 ### Additional setup for Android
 

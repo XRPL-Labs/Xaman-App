@@ -176,7 +176,7 @@ class XAppBrowserModal extends Component<Props, State> {
                     onDecline: this.onPayloadDecline,
                 },
             );
-        } catch (e) {
+        } catch (e: any) {
             Alert.alert(Localize.t('global.error'), e.message, [{ text: 'OK' }], { cancelable: false });
         }
     };
@@ -582,7 +582,7 @@ class XAppBrowserModal extends Component<Props, State> {
                         testID="close-button"
                         numberOfLines={1}
                         roundedSmall
-                        label={Localize.t('global.close')}
+                        label={Localize.t('global.quitXApp')}
                         onPress={this.onClose}
                     />
                 </View>

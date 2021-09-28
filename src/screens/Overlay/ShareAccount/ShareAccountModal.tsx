@@ -14,7 +14,7 @@ import { AppScreens } from '@common/constants';
 import { AccountSchema } from '@store/schemas/latest';
 
 // components
-import { Button, QRCode, Spacer } from '@components/General';
+import { Button, QRCode } from '@components/General';
 
 import Localize from '@locale';
 
@@ -113,7 +113,18 @@ class ShareAccountModal extends Component<Props, State> {
         this.slideDown();
 
         Clipboard.setString(account.address);
-        Toast(Localize.t('account.publicKeyCopiedToClipboard'));
+
+        setTimeout(() => {
+            Toast(Localize.t('account.publicKeyCopiedToClipboard'));
+        }, 1000);
+    };
+
+    onPaymentRequestPress = () => {
+        this.slideDown();
+
+        setTimeout(() => {
+            Navigator.push(AppScreens.Transaction.Request);
+        }, 1000);
     };
 
     render() {
@@ -128,7 +139,7 @@ class ShareAccountModal extends Component<Props, State> {
                             {
                                 opacity: this.deltaY.interpolate({
                                     inputRange: [0, AppSizes.screen.height],
-                                    outputRange: [1.3, 0],
+                                    outputRange: [1.2, 0],
                                     extrapolateRight: 'clamp',
                                 }),
                             },
@@ -145,10 +156,10 @@ class ShareAccountModal extends Component<Props, State> {
                     verticalOnly
                     snapPoints={[
                         { y: AppSizes.screen.height + 3 },
-                        { y: AppSizes.screen.height - (AppSizes.moderateScale(430) + AppSizes.navigationBarHeight) },
+                        { y: AppSizes.screen.height - (AppSizes.moderateScale(600) + AppSizes.navigationBarHeight) },
                     ]}
                     boundaries={{
-                        top: AppSizes.screen.height - (AppSizes.moderateScale(450) + AppSizes.navigationBarHeight),
+                        top: AppSizes.screen.height - (AppSizes.moderateScale(620) + AppSizes.navigationBarHeight),
                     }}
                     alertAreas={[
                         { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
@@ -157,7 +168,7 @@ class ShareAccountModal extends Component<Props, State> {
                             influenceArea: {
                                 top:
                                     AppSizes.screen.height -
-                                    (AppSizes.moderateScale(430) + AppSizes.navigationBarHeight),
+                                    (AppSizes.moderateScale(600) + AppSizes.navigationBarHeight),
                             },
                         },
                     ]}
@@ -169,37 +180,73 @@ class ShareAccountModal extends Component<Props, State> {
                         <View style={AppStyles.panelHeader}>
                             <View style={AppStyles.panelHandle} />
                         </View>
-                        <View style={styles.qrCodeContainer}>
-                            <QRCode
-                                size={AppSizes.moderateScale(150)}
-                                value={`${account.address}`}
-                                style={styles.qrCode}
-                            />
-                            <Text style={styles.addressText}>{account.address}</Text>
+
+                        <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
+                            <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
+                                <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
+                                    {Localize.t('send.myAccount')}
+                                </Text>
+                            </View>
+                            <View
+                                style={[AppStyles.row, AppStyles.flex1, AppStyles.paddingRightSml, AppStyles.flexEnd]}
+                            >
+                                <Button
+                                    light
+                                    roundedSmall
+                                    isDisabled={false}
+                                    onPress={this.slideDown}
+                                    textStyle={[AppStyles.subtext, AppStyles.bold]}
+                                    label={Localize.t('global.close')}
+                                />
+                            </View>
                         </View>
 
-                        {/* <Spacer size={10} /> */}
+                        <View style={styles.qrCodeContainer}>
+                            <View style={styles.qrCode}>
+                                <QRCode size={AppSizes.moderateScale(150)} value={`${account.address}`} />
+                            </View>
+                        </View>
 
-                        <Button
-                            numberOfLines={1}
-                            light
-                            rounded
-                            icon="IconShare"
-                            iconStyle={AppStyles.imgColorBlue}
-                            label={Localize.t('global.share')}
-                            onPress={this.onSharePress}
-                        />
-                        <Spacer size={10} />
+                        <View style={[AppStyles.paddingBottom, AppStyles.paddingHorizontalSml]}>
+                            <Text style={[AppStyles.pbold, AppStyles.textCenterAligned]}>
+                                {Localize.t('global.address')}:
+                            </Text>
+                            <Text selectable adjustsFontSizeToFit numberOfLines={1} style={styles.addressText}>
+                                {account.address}
+                            </Text>
+                        </View>
 
-                        <Button
-                            numberOfLines={1}
-                            light
-                            rounded
-                            label={Localize.t('account.copyAddress')}
-                            icon="IconClipboard"
-                            iconStyle={AppStyles.imgColorBlue}
-                            onPress={this.onCopyAddressPress}
-                        />
+                        <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingHorizontalSml]}>
+                            <Button
+                                light
+                                rounded
+                                numberOfLines={1}
+                                icon="IconShare"
+                                iconStyle={AppStyles.imgColorBlue}
+                                label={Localize.t('global.share')}
+                                onPress={this.onSharePress}
+                                style={[AppStyles.flex1, AppStyles.marginRight]}
+                            />
+                            <Button
+                                light
+                                rounded
+                                numberOfLines={1}
+                                icon="IconClipboard"
+                                iconStyle={AppStyles.imgColorBlue}
+                                label={Localize.t('global.copy')}
+                                onPress={this.onCopyAddressPress}
+                                style={[AppStyles.flex1]}
+                            />
+                        </View>
+
+                        <View style={[AppStyles.paddingTop, AppStyles.paddingHorizontalSml]}>
+                            <Button
+                                numberOfLines={1}
+                                label={Localize.t('global.createPaymentRequestLink')}
+                                onPress={this.onPaymentRequestPress}
+                                style={AppStyles.buttonGreen}
+                            />
+                        </View>
                     </View>
                 </Interactable.View>
             </View>

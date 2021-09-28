@@ -108,7 +108,7 @@ class BaseTransaction {
                     this.Flags = [txFlags.Universal.FullyCanonicalSig];
                 }
             }
-        } catch (e) {
+        } catch (e: any) {
             throw new Error(`Unable to prepare the transaction, ${e?.message}`);
         }
     };
@@ -221,7 +221,7 @@ class BaseTransaction {
             };
 
             return submitResult;
-        } catch (e) {
+        } catch (e: any) {
             // something wrong happened
             // temporary set the result
             this.TransactionResult = {
@@ -261,7 +261,8 @@ class BaseTransaction {
         }
 
         if (this.Type === 'AccountDelete') {
-            baseFee = new BigNumber(5).multipliedBy(1000000);
+            const { OwnerReserve } = LedgerService.getNetworkReserve();
+            baseFee = new BigNumber(OwnerReserve).multipliedBy(1000000);
         }
         // 10 drops × (1 + Number of Signatures Provided)
         if (this.Signers.length > 0) {
@@ -315,6 +316,16 @@ class BaseTransaction {
         }
 
         return changes;
+    }
+
+    OwnerCountChange(owner?: string) {
+        if (!owner) {
+            owner = this.Account.address;
+        }
+
+        const change = find(new Meta(this.meta).parseOwnerCountChanges(), { address: owner });
+
+        return change;
     }
 
     get Type(): string {

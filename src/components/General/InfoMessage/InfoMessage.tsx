@@ -27,8 +27,9 @@ interface Props {
     label?: string;
     type: 'info' | 'warning' | 'error' | 'success' | 'neutral';
     flat?: boolean;
-    moreInfoLabel?: string;
-    onMorePress?: () => void;
+    moreButtonLabel?: string;
+    onMoreButtonPress?: () => void;
+    isMoreButtonLoading?: boolean;
 }
 
 /* Component ==================================================================== */
@@ -137,17 +138,18 @@ class InfoMessage extends PureComponent<Props> {
     };
 
     renderFooter = () => {
-        const { onMorePress, moreInfoLabel } = this.props;
+        const { onMoreButtonPress, moreButtonLabel, isMoreButtonLoading } = this.props;
 
-        if (typeof onMorePress === 'function') {
+        if (typeof onMoreButtonPress === 'function') {
             return (
                 <Button
-                    onPress={onMorePress}
+                    onPress={onMoreButtonPress}
                     style={styles.moreInfoButton}
                     icon="IconInfo"
+                    label={moreButtonLabel || Localize.t('global.moreInfo')}
+                    isLoading={isMoreButtonLoading}
                     light
                     roundedSmallBlock
-                    label={moreInfoLabel || Localize.t('global.moreInfo')}
                 />
             );
         }

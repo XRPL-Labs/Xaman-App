@@ -88,7 +88,7 @@ class EventsView extends Component<Props, State> {
             transactions: [],
             pendingRequests: [],
             plannedTransactions: [],
-            dataSource: undefined,
+            dataSource: [],
         };
     }
 
@@ -137,7 +137,7 @@ class EventsView extends Component<Props, State> {
         this.setState(
             {
                 account,
-                dataSource: undefined,
+                dataSource: [],
                 transactions: [],
                 plannedTransactions: [],
                 lastMarker: undefined,

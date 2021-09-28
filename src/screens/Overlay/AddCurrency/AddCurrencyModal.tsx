@@ -160,7 +160,9 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     value: lineLimit,
                 },
             },
-            Localize.t('asset.addingAssetReserveDescription'),
+            Localize.t('asset.addingAssetReserveDescription', {
+                ownerReserve: LedgerService.getNetworkReserve().OwnerReserve,
+            }),
         );
 
         Navigator.showModal(
@@ -225,7 +227,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     key={index}
                     style={[styles.listItem, selectedCurrency.id === c.id && styles.selectedRow]}
                     onPress={() => {
-                        if (c.isValid()) {
+                        if (c.isValid() && selectedParty.isValid()) {
                             this.setState({
                                 selectedCurrency: c,
                             });

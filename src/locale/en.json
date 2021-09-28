@@ -136,6 +136,10 @@
     "domain": "Domain",
     "owner": "Owner",
     "reserved": "Reserved",
+    "reservedOnLedger": "Reserved on ledger",
+    "totalReserved": "Total Reserved",
+    "otherReserveSeeExplorer": "Other (see ledger explorer)",
+    "reserve": "Reserve",
     "password": "Password",
     "passcode": "Passcode",
     "longTap": "Long Tap",
@@ -273,6 +277,7 @@
     "unableToLoadXApp": "Unable to load the xApp!",
     "requestWithAmount": "Request with amount",
     "openXApp": "Open xApp",
+    "quitXApp": "Quit xApp",
     "reallySmallAmount": "Really small amount",
     "about": "About",
     "default": "Default",
@@ -286,7 +291,8 @@
     "customNodeSuccessfullyAddedToXUMM": "Custom node successfully added to XUMM. Do you want to switch to the added node?",
     "addingCustomNodeWarning": "You are adding a custom node to XUMM, do you want to continue?",
     "unableToLoadCustomEndpointDetails": "Unable to load the endpoint details. Please try again!",
-    "nodeDetermined": "Node determined"
+    "nodeDetermined": "Node determined",
+    "createPaymentRequestLink": "Create Payment Request link"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",
@@ -312,7 +318,7 @@
   },
   "setupPermissions": {
     "enableNotifications": "Enable push notifications?",
-    "permissionDescription": "We use push notifications to alert you of sign requests"
+    "permissionDescription": "We use push notification to send sign requests"
   },
   "setupTermOfService": {
     "XUMMIsNonCustodial": "XUMM is non-custodial",
@@ -338,6 +344,9 @@
     "pleaseReadTheTextAboveCarefully": "Please read the above text carefully"
   },
   "home": {
+    "explainBalance": "Explain",
+    "hideBalance": "Hide",
+    "showBalance": "Show",
     "balance": "Balance",
     "addAsset": "Add",
     "shareAccount": "Share Account Address",
@@ -347,7 +356,7 @@
     "otherAssets": "Other tokens",
     "youDonNotHaveOtherAssets": "You have no other (non-XRP) tokens",
     "howActivateMyAccount": "How can I activate my account?",
-    "howActivateMyAccountDesc": "To prevent spam account creation, the XRP Ledger requires at least 20 XRP to be deposited into an account to activate it. The 20 XRP is not lost: it will remain in your account, but you cannot spend it. To start using your account, make sure a deposit greater than 20 XRP is made to your account.",
+    "howActivateMyAccountDesc": "To prevent spam account creation, the XRP Ledger requires at least %{baseReserve} XRP to be deposited into an account to activate it. The %{baseReserve} XRP is not lost: it will remain in your account, but you cannot spend it. To start using your account, make sure a deposit greater than %{baseReserve} XRP is made to your account.",
     "otherAssetsDesc": "The XRP ledger also allows you to hold balances of, and to send and receive, tokens other than XRP. These tokens can be issued by other accounts on the XRP ledger. If you want to be able to send or receive a non-XRP token, you will have to trust the issuer of the non-XRP token.",
     "explainMyBalance": "Explain my balance",
     "xrpYouOwnVsYourSpendableBalance": "XRP you own vs. your spendable balance.",
@@ -469,7 +478,9 @@
     "itWillUpdateThePaymentChannel": "It will update the payment channel %{channel}",
     "itWillIncreaseTheChannelAmount": "It will increase the channel amount by %{amount} XRP",
     "theChannelBalanceClaimedIs": "The channel balance claimed is %{balance} XRP",
-    "thePaymentChannelWillBeClosed": "The payment channel will be closed, any remaining balance will be returned to the source account"
+    "thePaymentChannelWillBeClosed": "The payment channel will be closed. Any remaining funds will be returned to the source account.",
+    "thisTransactionIncreaseAccountReserve": "This transaction increased the account reserve by %{ownerReserve} XRP",
+    "thisTransactionDecreaseAccountReserve": "This transaction decreased the account reserve by %{ownerReserve} XRP"
   },
   "profile": {
     "availableInFuture": "This feature will be available in the future.",
@@ -676,7 +687,7 @@
     "walletReserve": "Wallet reserve",
     "accountBalance": "Account balance",
     "availableForSpending": "Available for spending",
-    "deleteAccountWarning": "This is an Account Delete transaction. When signing your account will be deleted, and all your remaining funds (except for the last 5 reserved XRP, as the fee on the XRP ledger for deleting an account is 5 XRP) will be sent to the configured destination. Please check the destination twice, and ONLY continue if you ACTUALLY want to delete your account on the XRP ledger",
+    "deleteAccountWarning": "This is an Account Delete transaction. When signing your account will be deleted, and all your remaining funds (except for the last %{ownerReserve} reserved XRP, as the fee on the XRP ledger for deleting an account is %{ownerReserve} XRP) will be sent to the configured destination. Please check the destination twice, and ONLY continue if you ACTUALLY want to delete your account on the XRP ledger",
     "deleteAccountObjectsExistError": "You cannot delete this account, because it contains specific XRP ledger objects, like tokens (non-XRP), Decentralized Exchange (DEX) offers, Escrows (as a creator or beneficiary)",
     "deleteAccountSequenceIsNotEnoughError": "This account cannot be deleted yet. It takes %{remainingSequence} more ledgers to close before this account can be deleted.",
     "unableToCheckAccountObjects": "Unable to check for account objects, please make sure you are connected to the XRP ledger node",
@@ -685,9 +696,9 @@
     "destinationAccountIsNotActivated": "Destination account is not activated, Must be a funded account in the XRP ledger.",
     "destinationAddressRequiredDestinationTag": "Destination Address requires a Destination Tag",
     "destinationAccountAndSourceCannotBeSame": "Destination account and source cannot be the same.",
-    "accountGenerateActivationExplain": "Account activation is a requirement on the XRP ledger. To activate, you will have to make a first deposit of at least 20 XRP.",
-    "accountImportActivationExplain": "You imported a new account on the XRP ledger. The account is not activated. Account activation is a requirement on the XRP ledger. To activate, you will have to make a first deposit of at least 20 XRP.",
-    "accountActivateReserveExplain": "The first 20 XRP deposited into your account cannot be spent, but will be reserved to keep your account active and pay for on ledger fees.",
+    "accountGenerateActivationExplain": "Account activation is a requirement on the XRP ledger. To activate, you will have to make a first deposit of at least %{baseReserve} XRP.",
+    "accountImportActivationExplain": "You imported a new account on the XRP ledger. The account is not activated. Account activation is a requirement on the XRP ledger. To activate, you will have to make a first deposit of at least %{baseReserve} XRP.",
+    "accountActivateReserveExplain": "The first %{baseReserve} XRP deposited into your account cannot be spent, but will be reserved to keep your account active and pay for on ledger fees.",
     "accountReserveNotShownExplain": "Your reserved XRP will not show up as balance in XUMM, but you can view your reserve with the \"Explain my balance\" button in the home screen, above your XRP balance.",
     "thisAddressAppearsToBeExchangeAddress": "This address appears to be an exchange address, are you sure you want to continue?\r\n\r\nYou can never send to this address without respecting the instructions of your exchange.",
     "accountDestroyWarning": "Your account will be deleted permanently, are you sure?",
@@ -745,12 +756,12 @@
     "destinationIsProbableIsScam": "The destination account is flagged as high risk",
     "selectedAccountDoNotSupportAsset": "The selected account does not support the selected token.",
     "memoPublicWarning": "Memo info will be public for everyone",
-    "destinationNotExistTooLittleToCreate": "The destination account hasn't been used before, and doesn't have a balance. To activate an account on the XRP ledger, an initial deposit of at least 20 XRP is required.",
-    "destinationNotExistCreationWarning": "The destination account hasn't been used before, and doesn't have any balance. If you continue sending to this account, 20 XRP of the %{amount} XRP will be used to activate the account on the XRP ledger, meaning 20 XRP will not be spendable. Are you sure you want to continue?",
-    "destinationCannotActivateWithIOU": "The destination account is not activated as it doesn't hold the XRP Ledger enforced minimum balance of 20 XRP. To activate an account on the XRP Ledger, an initial deposit of at least 20 XRP has to be sent to the account. Non-XRP tokens cannot be used for the initial deposit.",
+    "destinationNotExistTooLittleToCreate": "The destination account hasn't been used before, and doesn't have a balance. To activate an account on the XRP ledger, an initial deposit of at least %{baseReserve} XRP is required.",
+    "destinationNotExistCreationWarning": "The destination account hasn't been used before, and doesn't have any balance. If you continue sending to this account, %{baseReserve} XRP of the %{amount} XRP will be used to activate the account on the XRP ledger, meaning %{baseReserve} XRP will not be spendable. Are you sure you want to continue?",
+    "destinationCannotActivateWithIOU": "The destination account is not activated as it doesn't hold the XRP Ledger enforced minimum balance of %{baseReserve} XRP. To activate an account on the XRP Ledger, an initial deposit of at least %{baseReserve} XRP has to be sent to the account. Non-XRP tokens cannot be used for the initial deposit.",
     "destinationTagIsRequired": "The destination tag is required for sending this payment.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "Unable to get recipient account info please try again.",
-    "theDestinationAccountIsSetAsBlackHole": "The destination account is set as black hole, sending to this account will cause losing sent XRP.",
+    "theDestinationAccountIsSetAsBlackHole": "The destination account is set as black hole, sending to this account will cause losing sent %{currency}.",
     "noDestinationTag": "No destination tag",
     "thisAddressRequiredDestinationTag": "This address requires a Destination Tag",
     "pleaseEnterAmount": "Please enter the transaction amount",
@@ -774,11 +785,13 @@
     "removeAsset": "Remove token",
     "trustLineDustRemoveWarning": "This TrustLine still contains a really small amount of %{balance} %{currency}. If you continue, it will be sent back to the issuer before your TrustLine is deleted. ",
     "dustAmountRemovedYouCanRemoveTrustLineNow": "Your dust balance has been sent back to the issuer. The TrustLine can now be eliminated.",
-    "addingAssetReserveDescription": "Adding a token to your XRP Ledger account will increase your XRP Ledger enforced account reserve by 5 XRP",
+    "addingAssetReserveDescription": "Adding a token to your XRP Ledger account will increase your XRP Ledger enforced account reserve by %{ownerReserve} XRP",
     "unableToRemoveAssetNotInDefaultState": "This token cannot be removed from your account. The issuer either added specific settings for this token or their account is not properly configured.",
     "ripplingMisconfigurationWarning": "Rippling not turned off for this Trust Line, if you don't know what this is and/or this is not on purpose, please update this setting to prevent potential loss of %{token} tokens",
+    "lineLimitMisconfigurationWarning": "This TrustLine has a limit of zero (0) configured, meaning others cannot send this token to you: you can only hold the token. To be able to receive this token as well, XUMM can update your TrustLine to remove the zero (0) TrustLine limit.",
     "dangerousConfigurationDetected": "Dangerous configuration detected",
-    "moreInfoAndFix": "More info & fix"
+    "moreInfoAndFix": "More info & fix",
+    "addingTrustLineWarning": "XRPL Labs / XUMM does not endorse any token or token issuer. You should only proceed if you trust the token issuer.\r\nIn case of questions or problems regarding the token (Trust Line) you will need to contact the token issuer.\r\n\r\nContinue at your own risk."
   },
   "exchange": {
     "exchanging": "Exchanging",
@@ -791,10 +804,10 @@
     "liquidityIsNotEnough": "There is not enough liquidity, cannot exchange right now!",
     "liquidityIsNotSoMuch": "There's relatively low liquidity. You can still continue, but you may not get the best rate for your entire exchange!",
     "theMaxAmountYouCanExchangeIs": "The maximum amount you can exchange is %{spendable} %{currency}",
-    "exchangeByThirdPartyMessage": "If you want to create an offer for execution at a requested price level, you can use the 3rd party XUMM enabled XRP Toolkit application to create a limit order.",
+    "exchangeByThirdPartyMessage": "If you want to create an offer for execution at a requested price level, you can use the 3rd party XUMM enabled applications to create a limit order.",
     "requestedLiquidityNotAvailable": "The amount can't be exchanged: there are not enough offers available on the Decentralized Exchange.",
     "reverseLiquidityNotAvailable": "The amount can't be exchanged: based on the lack of offers on the Decentralized Exchange, you would not be able to exchange it back.",
-    "maxSpreadExceeded": "The price difference (spread) between selling and buying offers is too high.",
+    "maxSpreadExceeded": "The price difference between selling and buying offers is too high.",
     "maxSlippageExceeded": "The exchange rate will be bad as there are not enough (good) offers on the Decentralized Exchange.",
     "maxReverseSlippageExceeded": "The exchange rate will be bad if you would try to exchange back, as there are not enough (good) offers on the Decentralized Exchange."
   },

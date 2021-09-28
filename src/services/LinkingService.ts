@@ -93,7 +93,7 @@ class LinkingService extends EventEmitter {
                 { payload },
                 ComponentTypes.Modal,
             );
-        } catch (e) {
+        } catch (e: any) {
             Alert.alert(Localize.t('global.error'), e.message, [{ text: 'OK' }], { cancelable: false });
         }
     };

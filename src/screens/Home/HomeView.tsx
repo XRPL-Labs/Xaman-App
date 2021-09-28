@@ -19,7 +19,7 @@ import {
 
 import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
-import { LedgerService, SocketService, BackendService, StyleService } from '@services';
+import { AccountService, SocketService, BackendService, StyleService, LedgerService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
@@ -29,6 +29,8 @@ import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
 import { VibrateHapticFeedback, Prompt, Toast } from '@common/helpers/interface';
+
+import { CalculateAvailableBalance } from '@common/utils/balance';
 
 import Localize from '@locale';
 
@@ -119,7 +121,7 @@ class HomeView extends Component<Props, State> {
         InteractionManager.runAfterInteractions(() => {
             if (account?.isValid() && SocketService.isConnected()) {
                 // update account details
-                LedgerService.updateAccountsDetails([account.address]);
+                AccountService.updateAccountsDetails([account.address]);
             }
         });
     }
@@ -254,7 +256,9 @@ class HomeView extends Component<Props, State> {
             {},
             {
                 title: Localize.t('home.howActivateMyAccount'),
-                content: Localize.t('home.howActivateMyAccountDesc'),
+                content: Localize.t('home.howActivateMyAccountDesc', {
+                    baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+                }),
             },
         );
     };
@@ -307,10 +311,6 @@ class HomeView extends Component<Props, State> {
 
     showExchangeAccountAlert = () => {
         Alert.alert(Localize.t('global.warning'), Localize.t('home.exchangeAccountReadonlyExplain'));
-    };
-
-    onRequestPress = () => {
-        Navigator.push(AppScreens.Transaction.Request);
     };
 
     onShowAccountQRPress = () => {
@@ -546,7 +546,7 @@ class HomeView extends Component<Props, State> {
                         iconPosition="right"
                         label={Localize.t('global.request')}
                         textStyle={[styles.requestButtonText]}
-                        onPress={this.onRequestPress}
+                        onPress={this.onShowAccountQRPress}
                         activeOpacity={0}
                     />
                 </View>
@@ -603,12 +603,13 @@ class HomeView extends Component<Props, State> {
         let balance = '0';
 
         if (!isLoadingRate) {
+            const availableBalance = CalculateAvailableBalance(account, true);
             if (showRate) {
                 balance = `${currencyRate.symbol} ${Localize.formatNumber(
-                    Number(account.availableBalance) * Number(currencyRate.lastRate),
+                    Number(availableBalance) * Number(currencyRate.lastRate),
                 )}`;
             } else {
-                balance = Localize.formatNumber(account.availableBalance);
+                balance = Localize.formatNumber(availableBalance);
             }
         }
 
@@ -627,14 +628,15 @@ class HomeView extends Component<Props, State> {
                                 name={discreetMode ? 'IconEyeOff' : 'IconEye'}
                             />
                             {'  '}
-                            {discreetMode ? 'Show' : 'Hide'}
+                            {discreetMode ? Localize.t('home.showBalance') : Localize.t('home.hideBalance')}
                         </Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={this.showBalanceExplain}>
                         <Text style={[styles.cardSmallLabel]}>
                             <Icon style={[AppStyles.imgColorGrey]} size={12} name="IconInfo" />
-                            {'  '}Explain
+                            {'  '}
+                            {Localize.t('home.explainBalance')}
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -665,15 +667,16 @@ class HomeView extends Component<Props, State> {
                     <Text style={[AppStyles.h5]} numberOfLines={1}>
                         {account.label}
                     </Text>
-                    <Text
-                        testID="account-address-text"
-                        adjustsFontSizeToFit
-                        numberOfLines={1}
-                        selectable={!discreetMode}
-                        style={[styles.cardAddressText, discreetMode && AppStyles.colorGrey]}
-                    >
-                        {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
-                    </Text>
+                    <TouchableOpacity onPress={this.onShowAccountQRPress} activeOpacity={0.8}>
+                        <Text
+                            testID="account-address-text"
+                            adjustsFontSizeToFit
+                            numberOfLines={1}
+                            style={[styles.cardAddressText, discreetMode && AppStyles.colorGrey]}
+                        >
+                            {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
+                        </Text>
+                    </TouchableOpacity>
                 </View>
                 <TouchableOpacity hitSlop={{ left: 25, right: 25 }} onPress={this.onShowAccountQRPress}>
                     <Icon style={[styles.iconShare]} size={16} name="IconShare" />

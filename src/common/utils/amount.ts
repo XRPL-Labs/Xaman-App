@@ -12,6 +12,10 @@ const XRPLValueToNFT = (value: number): number | boolean => {
 
     const finish = (returnValue: string) => {
         const unsignedReturnValue = returnValue.replace(/^-/, '');
+        if (unsignedReturnValue.length > 83) {
+            // Too many tokens to be NFT-like as per XLS14d proposal
+            return false;
+        }
         if (data.length > 1 && unsignedReturnValue.slice(0, 2) === '0.' && Number(data[1]) < -70) {
             // Positive below zero amount, could be NFT
             return (
