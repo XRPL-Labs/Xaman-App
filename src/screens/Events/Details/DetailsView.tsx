@@ -1165,7 +1165,17 @@ class TransactionDetailsView extends Component<Props, State> {
         const { account } = this.props;
         const { tx } = this.state;
 
-        const changes = tx.OwnerCountChange(account.address);
+        let changes;
+        // ledger objects always have reserve change increase
+        if (tx.ClassName === 'LedgerObject') {
+            changes = {
+                address: account.address,
+                value: 1,
+                action: 'INC',
+            };
+        } else if (tx.ClassName === 'Transaction' && typeof tx.OwnerCountChange === 'function') {
+            changes = tx.OwnerCountChange(account.address);
+        }
 
         if (!changes) {
             return null;

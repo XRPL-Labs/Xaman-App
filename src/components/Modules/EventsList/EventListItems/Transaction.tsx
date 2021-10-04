@@ -381,7 +381,11 @@ class TransactionTemplate extends Component<Props, State> {
     renderReserveIcon = () => {
         const { item, account } = this.props;
 
-        const changes = item.OwnerCountChange(account.address);
+        let changes;
+
+        if (typeof item.OwnerCountChange === 'function') {
+            changes = item.OwnerCountChange(account.address);
+        }
 
         if (changes) {
             return (
