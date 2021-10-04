@@ -119,7 +119,7 @@ class XAppBrowserModal extends Component<Props, State> {
     componentDidMount() {
         // handle back button in android
         if (Platform.OS === 'android') {
-            this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
+            this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
         }
 
         // fetch OTT on browser start
