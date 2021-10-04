@@ -790,6 +790,7 @@
     "ripplingMisconfigurationWarning": "Rippling not turned off for this Trust Line, if you don't know what this is and/or this is not on purpose, please update this setting to prevent potential loss of %{token} tokens",
     "lineLimitMisconfigurationWarning": "This TrustLine has a limit of zero (0) configured, meaning others cannot send this token to you: you can only hold the token. To be able to receive this token as well, XUMM can update your TrustLine to remove the zero (0) TrustLine limit.",
     "dangerousConfigurationDetected": "Dangerous configuration detected",
+    "restrictingConfigurationDetected": "Restricting configuration detected",
     "moreInfoAndFix": "More info & fix",
     "addingTrustLineWarning": "XRPL Labs / XUMM does not endorse any token or token issuer. You should only proceed if you trust the token issuer.\r\nIn case of questions or problems regarding the token (Trust Line) you will need to contact the token issuer.\r\n\r\nContinue at your own risk."
   },

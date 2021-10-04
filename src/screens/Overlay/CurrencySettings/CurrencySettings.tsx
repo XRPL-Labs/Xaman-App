@@ -45,7 +45,6 @@ export interface State {
     isLoading: boolean;
     latestLineBalance: number;
     canRemove: boolean;
-    isNFT: boolean;
 }
 /* Component ==================================================================== */
 class CurrencySettingsModal extends Component<Props, State> {
@@ -70,7 +69,6 @@ class CurrencySettingsModal extends Component<Props, State> {
             isLoading: false,
             latestLineBalance: 0,
             canRemove: false,
-            isNFT: props.trustLine.isNFT,
         };
 
         this.animatedColor = new Animated.Value(0);
@@ -534,7 +532,7 @@ class CurrencySettingsModal extends Component<Props, State> {
 
     render() {
         const { trustLine } = this.props;
-        const { isRemoving, isLoading, canRemove, isNFT } = this.state;
+        const { isRemoving, isLoading, canRemove } = this.state;
 
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],
@@ -590,7 +588,11 @@ class CurrencySettingsModal extends Component<Props, State> {
                                     type="warning"
                                     containerStyle={styles.infoContainer}
                                     labelStyle={styles.infoText}
-                                    label={Localize.t('asset.dangerousConfigurationDetected')}
+                                    label={
+                                        !trustLine.no_ripple
+                                            ? Localize.t('asset.dangerousConfigurationDetected')
+                                            : Localize.t('asset.restrictingConfigurationDetected')
+                                    }
                                     moreButtonLabel={Localize.t('asset.moreInfoAndFix')}
                                     onMoreButtonPress={this.showConfigurationAlert}
                                     isMoreButtonLoading={isLoading}
@@ -613,7 +615,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                                     Navigator.push(AppScreens.Transaction.Payment, {}, { currency: trustLine });
                                 }}
                             />
-                            {isNFT ? (
+                            {trustLine.isNFT ? (
                                 <RaisedButton
                                     style={styles.infoButton}
                                     icon="IconInfo"
