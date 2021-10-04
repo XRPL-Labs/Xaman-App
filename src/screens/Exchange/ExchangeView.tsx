@@ -12,7 +12,6 @@ import {
     Alert,
     TextInput,
     Keyboard,
-    TouchableOpacity,
     InteractionManager,
 } from 'react-native';
 
@@ -563,23 +562,19 @@ class ExchangeView extends Component<Props, State> {
                         </View>
                         <Spacer />
 
-                        <TouchableOpacity
-                            activeOpacity={1}
-                            onPress={() => {
-                                this.amountInput.current?.focus();
-                            }}
-                            style={[styles.inputContainer]}
-                        >
-                            <Text style={styles.fromAmount}>-</Text>
-                            <AmountInput
-                                ref={this.amountInput}
-                                decimalPlaces={direction === 'sell' ? 6 : 8}
-                                onChange={this.onAmountChange}
-                                placeholderTextColor={AppColors.red}
-                                style={styles.fromAmount}
-                                value={amount}
-                            />
-                        </TouchableOpacity>
+                        <View style={[styles.inputContainer]}>
+                            <Text style={[styles.fromAmount]}>-</Text>
+                            <View style={AppStyles.flex1}>
+                                <AmountInput
+                                    ref={this.amountInput}
+                                    decimalPlaces={direction === 'sell' ? 6 : 8}
+                                    onChange={this.onAmountChange}
+                                    placeholderTextColor={AppColors.red}
+                                    style={styles.fromAmount}
+                                    value={amount}
+                                />
+                            </View>
+                        </View>
                     </View>
 
                     {/* switch button */}
