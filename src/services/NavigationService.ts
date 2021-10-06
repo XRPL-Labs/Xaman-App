@@ -127,9 +127,9 @@ class NavigationService extends EventEmitter {
         }
     };
 
-    modalDismissedListener = ({ componentId, componentName }: ModalDismissedEvent) => {
+    modalDismissedListener = ({ componentId }: ModalDismissedEvent) => {
         // on android componentId is stack id and in Ios componentName is undefined
-        if (componentName || componentId === last(this.modals)) {
+        if (componentId === last(this.modals)) {
             this.pullCurrentModal();
         }
     };

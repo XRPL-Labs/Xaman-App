@@ -215,6 +215,7 @@ const Navigator = {
         if (currentScreen !== modal) {
             return Navigation.showModal({
                 stack: {
+                    id: modal,
                     children: [
                         {
                             component: {
@@ -253,7 +254,7 @@ const Navigator = {
         });
     },
 
-    showAlertModal(options: {
+    showAlertModal(props: {
         type: 'success' | 'info' | 'warning' | 'error';
         text: string;
         title?: string;
@@ -271,7 +272,7 @@ const Navigator = {
                     componentBackgroundColor: 'transparent',
                 },
             },
-            options,
+            props,
         );
     },
 
