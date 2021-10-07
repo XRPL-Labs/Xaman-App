@@ -248,6 +248,13 @@ export class Payload {
     };
 
     /**
+     * get payload return url
+     */
+    getReturnURL = () => {
+        return this.meta.return_url_app;
+    };
+
+    /**
      * check if we need to submit the tx to the ledger
      */
     shouldSubmit = (): boolean => {

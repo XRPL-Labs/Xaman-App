@@ -192,6 +192,9 @@ class BaseTransaction {
             this.tx = transaction;
         }
 
+        // persist verify result in meta
+        this.VerifyResult = { success: verifyResult.success };
+
         return verifyResult;
     };
 
@@ -428,6 +431,23 @@ class BaseTransaction {
         if (isUndefined(date)) return undefined;
         const ledgerDate = new LedgerDate(date);
         return ledgerDate.toISO8601();
+    }
+
+    get VerifyResult(): VerifyResultType {
+        const result = get(this, ['meta', 'VerifyResult'], undefined);
+
+        // already verified by network
+        if (isUndefined(result)) {
+            return {
+                success: !isUndefined(this.LedgerIndex),
+            };
+        }
+
+        return result;
+    }
+
+    set VerifyResult(result: VerifyResultType) {
+        set(this, ['meta', 'VerifyResult'], result);
     }
 
     get TransactionResult(): TransactionResult {
