@@ -104,7 +104,6 @@ class HomeView extends Component<Props, State> {
 
     componentWillUnmount() {
         // remove listeners
-
         if (this.navigationListener) {
             this.navigationListener.remove();
         }
@@ -152,9 +151,7 @@ class HomeView extends Component<Props, State> {
         }
 
         if (has(changes, 'developerMode') || has(changes, 'defaultNode')) {
-            setTimeout(() => {
-                this.setNodeChainHeader(coreSettings);
-            }, 500);
+            this.setNodeChainHeader(coreSettings);
         }
     };
 

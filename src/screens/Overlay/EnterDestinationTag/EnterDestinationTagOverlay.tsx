@@ -42,6 +42,7 @@ export interface State {
 class EnterDestinationTagOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.EnterDestinationTag;
     private textInputView: React.RefObject<View>;
+    private setListenerTimeout: any;
 
     textInput: TextInput;
     panel: any;
@@ -83,20 +84,18 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
         this.slideUp();
 
         // add listeners with delay as a bug in ios 14
-        setTimeout(() => {
-            this.addKeyboardListeners();
+        this.setListenerTimeout = setTimeout(() => {
+            Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
+            Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
         }, 500);
     }
 
-    removeKeyboardListeners = () => {
+    componentWillUnmount() {
+        if (this.setListenerTimeout) clearTimeout(this.setListenerTimeout);
+
         Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
         Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
-    };
-
-    addKeyboardListeners = () => {
-        Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
-        Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
-    };
+    }
 
     onKeyboardShow = (e: KeyboardEvent) => {
         if (this.keyboardShow) return;
@@ -146,8 +145,6 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
     };
 
     slideDown = () => {
-        this.removeKeyboardListeners();
-
         Keyboard.dismiss();
 
         setTimeout(() => {

@@ -189,7 +189,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
             if (this.panel) {
                 this.panel.snapTo({ index: 0 });
             }
-        });
+        }, 10);
     };
 
     onAlert = (event: any) => {

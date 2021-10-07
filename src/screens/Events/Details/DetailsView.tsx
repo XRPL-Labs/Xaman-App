@@ -72,6 +72,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
     private forceFetchDetails: boolean;
     private navigationListener: any;
+    private closeTimeout: any;
 
     static options() {
         return {
@@ -118,6 +119,8 @@ class TransactionDetailsView extends Component<Props, State> {
         if (this.navigationListener) {
             this.navigationListener.remove();
         }
+
+        if (this.closeTimeout) clearTimeout(this.closeTimeout);
     }
 
     componentDidAppear() {
@@ -178,7 +181,7 @@ class TransactionDetailsView extends Component<Props, State> {
             })
             .catch(() => {
                 Toast(Localize.t('events.unableToLoadTheTransaction'));
-                setTimeout(this.close, 2000);
+                this.closeTimeout = setTimeout(this.close, 2000);
             });
     };
 

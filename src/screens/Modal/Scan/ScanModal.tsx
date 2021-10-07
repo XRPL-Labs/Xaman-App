@@ -56,6 +56,7 @@ class ScanView extends Component<Props, State> {
 
     private shouldRead: boolean;
     private backHandler: NativeEventSubscription;
+    private shouldReadTimeout: any;
 
     static options() {
         return {
@@ -85,6 +86,8 @@ class ScanView extends Component<Props, State> {
         if (this.backHandler) {
             this.backHandler.remove();
         }
+
+        if (this.shouldReadTimeout) clearTimeout(this.shouldReadTimeout);
     }
 
     componentDidMount() {
@@ -506,7 +509,7 @@ class ScanView extends Component<Props, State> {
                 onRead(content);
             } else {
                 // if detected in black list just return and enable reading after 1 sec
-                setTimeout(() => {
+                this.shouldReadTimeout = setTimeout(() => {
                     this.setShouldRead(true);
                 }, 1000);
             }

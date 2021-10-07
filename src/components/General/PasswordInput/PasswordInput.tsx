@@ -123,7 +123,7 @@ export default class PasswordInput extends Component<Props, State> {
                 if (this.instance) {
                     this.instance.focus();
                 }
-            }, 50);
+            }, 100);
         }
     }
 
@@ -132,7 +132,7 @@ export default class PasswordInput extends Component<Props, State> {
             if (this.instance) {
                 this.instance.focus();
             }
-        }, 50);
+        }, 100);
     };
 
     public blur = () => {
@@ -140,7 +140,7 @@ export default class PasswordInput extends Component<Props, State> {
             if (this.instance) {
                 this.instance.blur();
             }
-        }, 50);
+        }, 100);
     };
 
     toggleSwitch = () => {

@@ -43,6 +43,7 @@ class FlaggedDestinationModal extends Component<Props, State> {
     private bottomOffset: Animated.Value;
 
     private mounted: boolean;
+    private setListenerTimeout: any;
 
     static options() {
         return {
@@ -78,25 +79,20 @@ class FlaggedDestinationModal extends Component<Props, State> {
         }).start();
 
         // add listeners with delay as a bug in ios 14
-        setTimeout(() => {
-            this.addKeyboardListeners();
+        this.setListenerTimeout = setTimeout(() => {
+            Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
+            Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
         }, 500);
     }
 
     componentWillUnmount() {
         this.mounted = false;
-        this.removeKeyboardListeners();
-    }
 
-    addKeyboardListeners = () => {
-        Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
-        Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
-    };
+        if (this.setListenerTimeout) clearTimeout(this.setListenerTimeout);
 
-    removeKeyboardListeners = () => {
         Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
         Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
-    };
+    }
 
     onKeyboardShow = (e: KeyboardEvent) => {
         if (this.keyboardShow) return;

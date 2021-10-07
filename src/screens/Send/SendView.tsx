@@ -42,6 +42,8 @@ import { Steps, Props, State } from './types';
 class SendView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Payment;
 
+    private closeTimeout: any;
+
     static options() {
         return {
             bottomTabs: { visible: false },
@@ -79,11 +81,15 @@ class SendView extends Component<Props, State> {
 
         // go back if no spendable account is available
         if (accounts.length === 0) {
-            setTimeout(() => {
+            this.closeTimeout = setTimeout(() => {
                 Navigator.pop();
                 Toast(Localize.t('global.noSpendableAccountIsAvailableForSendingPayment'));
             }, 1000);
         }
+    }
+
+    componentWillUnmount() {
+        if (this.closeTimeout) clearTimeout(this.closeTimeout);
     }
 
     setSource = (source: AccountSchema) => {

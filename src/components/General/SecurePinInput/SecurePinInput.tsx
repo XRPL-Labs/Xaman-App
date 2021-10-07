@@ -43,6 +43,7 @@ const BUTTONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'Y', 0, 'X'];
 class SecurePinInput extends Component<Props, State> {
     currentIndex: number;
     input: TextInput;
+    private clearInputTimeout: any;
 
     public static defaultProps = {
         virtualKeyboard: false,
@@ -60,6 +61,10 @@ class SecurePinInput extends Component<Props, State> {
         };
 
         this.currentIndex = 0;
+    }
+
+    componentWillUnmount() {
+        if (this.clearInputTimeout) clearTimeout(this.clearInputTimeout);
     }
 
     public focus = () => {
@@ -163,7 +168,9 @@ class SecurePinInput extends Component<Props, State> {
             onInputFinish(digits);
         }
 
-        if (clearOnFinish) setTimeout(() => this.clearInput(), 1000);
+        if (clearOnFinish) {
+            this.clearInputTimeout = setTimeout(() => this.clearInput(), 1000);
+        }
     };
 
     clearInput = () => {

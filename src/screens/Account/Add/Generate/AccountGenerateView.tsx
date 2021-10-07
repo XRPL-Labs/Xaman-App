@@ -64,25 +64,23 @@ class AccountGenerateView extends Component<Props, State> {
 
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
-            this.generateAccount();
+            requestAnimationFrame(this.generateAccount);
         });
     }
 
     generateAccount = () => {
-        setTimeout(() => {
-            // generate new account base on secret numbers
-            const generatedAccount = AccountLib.generate.secretNumbers();
+        // generate new account base on secret numbers
+        const generatedAccount = AccountLib.generate.secretNumbers();
 
-            // assign generated account to the store object
-            const account = {
-                publicKey: generatedAccount.keypair.publicKey,
-                accessLevel: AccessLevels.Full,
-                address: generatedAccount.address,
-                default: true,
-            };
+        // assign generated account to the store object
+        const account = {
+            publicKey: generatedAccount.keypair.publicKey,
+            accessLevel: AccessLevels.Full,
+            address: generatedAccount.address,
+            default: true,
+        };
 
-            this.setState({ generatedAccount, account });
-        }, 300);
+        this.setState({ generatedAccount, account });
     };
 
     setEncryptionLevel = (encryptionLevel: EncryptionLevels) => {

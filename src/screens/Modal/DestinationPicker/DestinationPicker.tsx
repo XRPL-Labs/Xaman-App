@@ -84,6 +84,8 @@ class DestinationPicker extends Component<Props, State> {
         if (this.backHandler) {
             this.backHandler.remove();
         }
+
+        if (this.lookupTimeout) clearTimeout(this.lookupTimeout);
     }
 
     doAccountLookUp = async (result: XrplDestination) => {

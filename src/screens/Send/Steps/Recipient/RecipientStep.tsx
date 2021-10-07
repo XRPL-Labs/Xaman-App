@@ -81,6 +81,10 @@ class RecipientStep extends Component<Props, State> {
         }
     }
 
+    componentWillUnmount() {
+        if (this.lookupTimeout) clearTimeout(this.lookupTimeout);
+    }
+
     doAccountLookUp = async (result: XrplDestination) => {
         const { setDestination } = this.context;
 
