@@ -9,7 +9,6 @@ buildscript {
         compileSdkVersion = 30
         targetSdkVersion = 30
         ndkVersion = "20.1.5948944"
-        supportLibVersion = "29.0.0"
         kotlinVersion = "1.4.21"
         RNNKotlinVersion = ext.kotlinVersion
         RNNKotlinStdlib = "kotlin-stdlib-jdk8"
