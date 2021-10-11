@@ -29,28 +29,7 @@ const styles = StyleService.create({
         color: '$textPrimary',
     },
     currencyImageContainer: {
-        height: AppSizes.scale(38),
-        width: AppSizes.scale(38),
         marginRight: 10,
-        borderWidth: 1,
-        borderRadius: 8,
-        justifyContent: 'center',
-        overflow: 'hidden',
-        alignSelf: 'center',
-        alignItems: 'center',
-    },
-    xrpImageContainer: {
-        padding: 10,
-        backgroundColor: '$white',
-        borderColor: '$grey',
-    },
-    iouImageContainer: {
-        borderColor: '$light',
-    },
-    currencyImage: {
-        width: AppSizes.scale(37),
-        height: AppSizes.scale(37),
-        resizeMode: 'cover',
     },
     subLabel: {
         fontSize: AppFonts.subtext.size,
