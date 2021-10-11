@@ -467,7 +467,10 @@ class TransactionDetailsView extends Component<Props, State> {
             case 'AccountDelete':
                 return Localize.t('events.deleteAccount');
             case 'SetRegularKey':
-                return Localize.t('events.setRegularKey');
+                if (tx.RegularKey) {
+                    return Localize.t('events.setRegularKey');
+                }
+                return Localize.t('events.removeRegularKey');
             case 'DepositPreauth':
                 if (tx.Authorize) {
                     return Localize.t('events.authorizeDeposit');
@@ -902,10 +905,26 @@ class TransactionDetailsView extends Component<Props, State> {
         });
     };
 
+    renderSetRegularKey = () => {
+        const { tx } = this.state;
+
+        let content = Localize.t('events.thisIsAnSetRegularKeyTransaction');
+
+        content += '\n';
+
+        if (tx.RegularKey) {
+            content += Localize.t('events.itSetsAccountRegularKeyTo', { regularKey: tx.RegularKey });
+        } else {
+            content += Localize.t('events.itRemovesTheAccountRegularKey');
+        }
+
+        return content;
+    };
+
     renderAccountSet = () => {
         const { tx } = this.state;
 
-        let content = `This is an ${tx.Type} transaction`;
+        let content = Localize.t('events.thisIsAnAccountSetTransaction');
 
         if (
             isUndefined(tx.SetFlag) &&
@@ -1081,6 +1100,9 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case 'AccountSet':
                 content += this.renderAccountSet();
+                break;
+            case 'SetRegularKey':
+                content += this.renderSetRegularKey();
                 break;
             case 'TicketCreate':
                 content += this.renderTicketCreate();

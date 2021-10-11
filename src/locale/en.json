@@ -410,6 +410,7 @@
     "updateAccountSettings": "Update account settings",
     "setARegularKey": "Set a Regular Key",
     "setRegularKey": "Set Regular Key",
+    "removeRegularKey": "Remove Regular Key",
     "createPaymentChannel": "Create payment channel",
     "claimPaymentChannel": "Claim payment channel",
     "fundPaymentChannel": "Fund payment channel",
@@ -480,7 +481,11 @@
     "theChannelBalanceClaimedIs": "The channel balance claimed is %{balance} XRP",
     "thePaymentChannelWillBeClosed": "The payment channel will be closed. Any remaining funds will be returned to the source account.",
     "thisTransactionIncreaseAccountReserve": "This transaction increased the account reserve by %{ownerReserve} XRP",
-    "thisTransactionDecreaseAccountReserve": "This transaction decreased the account reserve by %{ownerReserve} XRP"
+    "thisTransactionDecreaseAccountReserve": "This transaction decreased the account reserve by %{ownerReserve} XRP",
+    "thisIsAnAccountSetTransaction": "This is an AccountSet transaction",
+    "thisIsAnSetRegularKeyTransaction": "This is an SetRegularKey transaction",
+    "itRemovesTheAccountRegularKey": "It removes the account regular key",
+    "itSetsAccountRegularKeyTo": "It sets the account regular key to %{regularKey}"
   },
   "profile": {
     "availableInFuture": "This feature will be available in the future.",

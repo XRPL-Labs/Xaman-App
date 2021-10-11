@@ -338,7 +338,10 @@ class TransactionTemplate extends Component<Props, State> {
             case 'AccountDelete':
                 return Localize.t('events.deleteAccount');
             case 'SetRegularKey':
-                return Localize.t('events.setRegularKey');
+                if (item.RegularKey) {
+                    return Localize.t('events.setRegularKey');
+                }
+                return Localize.t('events.removeRegularKey');
             case 'DepositPreauth':
                 if (item.Authorize) {
                     return Localize.t('events.authorizeDeposit');
