@@ -1,7 +1,7 @@
 /**
  * Currency Settings Overlay
  */
-import { has, get, find } from 'lodash';
+import { has, get } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
@@ -127,15 +127,8 @@ class CurrencySettingsModal extends Component<Props, State> {
         if (trustLine.obligation || trustLine.isNFT) return Promise.resolve();
 
         return new Promise((resolve) => {
-            return LedgerService.getAccountLines(account.address)
-                .then((accountLines: any) => {
-                    const { lines } = accountLines;
-
-                    const line = find(lines, {
-                        account: trustLine.currency.issuer,
-                        currency: trustLine.currency.currency,
-                    });
-
+            return LedgerService.getAccountLine(account.address, trustLine.currency)
+                .then((line: any) => {
                     if (line) {
                         const balance = new BigNumber(line.balance);
 

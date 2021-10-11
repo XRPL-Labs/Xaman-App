@@ -1,6 +1,6 @@
 /* eslint-disable no-lonely-if */
 import BigNumber from 'bignumber.js';
-import { get, set, has, isUndefined, isNumber, toInteger, findIndex } from 'lodash';
+import { get, set, has, isUndefined, isNumber, toInteger } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
 import LedgerService from '@services/LedgerService';
@@ -310,15 +310,9 @@ class Payment extends BaseTransaction {
 
             if (IOUAmount) {
                 // ===== check if recipient have same trustline for sending IOU =====
-                const destinationLinesResp = await LedgerService.getAccountLines(this.Destination.address);
-                const { lines: destinationLines } = destinationLinesResp;
+                const destinationLine = await LedgerService.getAccountLine(this.Destination.address, IOUAmount);
 
-                const haveSameTrustLine =
-                    findIndex(destinationLines, (l: any) => {
-                        return l.currency === IOUAmount.currency && l.account === IOUAmount.issuer;
-                    }) !== -1;
-
-                if (!haveSameTrustLine && IOUAmount.issuer !== this.Destination.address) {
+                if (!destinationLine && IOUAmount.issuer !== this.Destination.address) {
                     return reject(new Error(Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine')));
                 }
 
@@ -344,25 +338,22 @@ class Payment extends BaseTransaction {
                             ),
                         );
                     }
-                    // sender is the issuer
                 } else {
+                    // sender is the issuer
                     // check for exceed the trustline Limit on obligations
-                    const sourceLines = await LedgerService.getAccountLines(source.address);
+                    const sourceLine = await LedgerService.getAccountLine(source.address, {
+                        issuer: this.Destination.address,
+                        currency: IOUAmount.currency,
+                    });
 
-                    const { lines } = sourceLines;
-
-                    const trustLine = lines.filter(
-                        (l: any) => l.currency === IOUAmount.currency && l.account === this.Destination.address,
-                    )[0];
-
-                    if (Number(IOUAmount.value) + Math.abs(trustLine.balance) > Number(trustLine.limit_peer)) {
+                    if (Number(IOUAmount.value) + Math.abs(sourceLine.balance) > Number(sourceLine.limit_peer)) {
                         return reject(
                             new Error(
                                 Localize.t('send.trustLineLimitExceeded', {
-                                    balance: Localize.formatNumber(NormalizeAmount(Math.abs(trustLine.balance))),
-                                    peer_limit: Localize.formatNumber(NormalizeAmount(trustLine.limit_peer)),
+                                    balance: Localize.formatNumber(NormalizeAmount(Math.abs(sourceLine.balance))),
+                                    peer_limit: Localize.formatNumber(NormalizeAmount(sourceLine.limit_peer)),
                                     available: Localize.formatNumber(
-                                        NormalizeAmount(Number(trustLine.limit_peer - Math.abs(trustLine.balance))),
+                                        NormalizeAmount(Number(sourceLine.limit_peer - Math.abs(sourceLine.balance))),
                                     ),
                                 }),
                             ),

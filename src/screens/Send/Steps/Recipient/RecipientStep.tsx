@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import { Results } from 'realm';
-import { isEmpty, flatMap, remove, get, uniqBy, toNumber, findIndex } from 'lodash';
+import { isEmpty, flatMap, remove, get, uniqBy, toNumber } from 'lodash';
 import { View, Text, SectionList, Alert } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
@@ -477,19 +477,9 @@ class RecipientStep extends Component<Props, State> {
 
             // check if recipient have same trustline for sending IOU
             if (typeof currency === 'object') {
-                const destinationLines = await LedgerService.getAccountLines(destination.address);
-                const { lines } = destinationLines;
+                const destinationLine = await LedgerService.getAccountLine(destination.address, currency.currency);
 
-                const haveProperTrustLine =
-                    findIndex(lines, (l: any) => {
-                        return (
-                            l.currency === currency.currency.currency &&
-                            l.account === currency.currency.issuer &&
-                            l.limit > 0
-                        );
-                    }) !== -1;
-
-                if (!haveProperTrustLine && currency.currency.issuer !== destination.address) {
+                if (!destinationLine && currency.currency.issuer !== destination.address) {
                     Navigator.showAlertModal({
                         type: 'error',
                         text: Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine'),

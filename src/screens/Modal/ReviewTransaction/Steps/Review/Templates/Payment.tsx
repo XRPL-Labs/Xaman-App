@@ -182,17 +182,11 @@ class PaymentTemplate extends Component<Props, State> {
 
         try {
             // get source trust lines
-            const sourceLines = await LedgerService.getAccountLines(transaction.Account.address);
-
-            const { lines } = sourceLines;
-
-            const trustLine = lines.filter(
-                (l: any) => l.currency === transaction.Amount.currency && l.account === transaction.Amount.issuer,
-            )[0];
+            const sourceLine = await LedgerService.getAccountLine(transaction.Account.address, transaction.Amount);
 
             let shouldPayWithXRP =
-                !trustLine ||
-                (parseFloat(trustLine.balance) < parseFloat(transaction.Amount.value) &&
+                !sourceLine ||
+                (parseFloat(sourceLine.balance) < parseFloat(transaction.Amount.value) &&
                     account !== transaction.Amount.issuer);
 
             // just ignore if the sender is the issuer

@@ -5,7 +5,7 @@
 import BigNumber from 'bignumber.js';
 import moment from 'moment-timezone';
 import EventEmitter from 'events';
-import { map, isEmpty, assign, startsWith } from 'lodash';
+import { find, map, isEmpty, assign, startsWith } from 'lodash';
 
 import { CoreSchema } from '@store/schemas/latest';
 import CoreRepository from '@store/repositories/core';
@@ -13,6 +13,7 @@ import CoreRepository from '@store/repositories/core';
 import { Amount } from '@common/libs/ledger/parser/common';
 
 import { AccountTxResponse, LedgerMarker, SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
+import { Issuer } from '@common/libs/ledger/parser/types';
 
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
@@ -153,13 +154,36 @@ class LedgerService extends EventEmitter {
     /**
      * Get account trust lines
      */
-    getAccountLines = (account: string): any => {
-        return SocketService.send({
+    getAccountLines = (account: string, peer?: string): any => {
+        const request = {
             command: 'account_lines',
             account,
+        };
+        if (peer) {
+            Object.assign(request, { peer });
+        }
+        return SocketService.send(request);
+    };
+
+    /**
+     * Get account line base on provided peer
+     */
+    getAccountLine = (account: string, peer: Issuer): Promise<any> => {
+        return new Promise((resolve) => {
+            return this.getAccountLines(account, peer.issuer)
+                .then((resp: any) => {
+                    const { lines } = resp;
+                    return resolve(find(lines, { account: peer.issuer, currency: peer.currency }));
+                })
+                .catch(() => {
+                    resolve(undefined);
+                });
         });
     };
 
+    /**
+     * Get single transaction by providing transaction id
+     */
     getTransaction = (txId: string) => {
         return SocketService.send({
             command: 'tx',
