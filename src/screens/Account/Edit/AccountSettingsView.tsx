@@ -9,6 +9,7 @@ import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
 
+import { GetCardPasscodeStatus } from '@common/utils/tangem';
 import { AppScreens } from '@common/constants';
 
 import { AccountRepository } from '@store/repositories';
@@ -339,9 +340,9 @@ class AccountSettingsView extends Component<Props, State> {
                                     <Text style={[styles.value]}>
                                         {/*
                                          // @ts-ignore */}
-                                        {account.additionalInfo?.isPin2Default
-                                            ? Localize.t('global.longTap')
-                                            : Localize.t('global.passcode')}
+                                        {GetCardPasscodeStatus(account.additionalInfo)
+                                            ? Localize.t('global.passcode')
+                                            : Localize.t('global.longTap')}
                                     </Text>
                                 </View>
                                 <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />

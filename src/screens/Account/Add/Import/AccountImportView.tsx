@@ -11,8 +11,10 @@ import { utils, XRPL_Account } from 'xrpl-accountlib';
 import { PayloadOrigin } from '@common/libs/payload';
 import { Toast } from '@common/helpers/interface';
 import { getAccountName } from '@common/helpers/resolver';
-import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
+
+import { GetWalletPublicKey } from '@common/utils/tangem';
+import { AppScreens } from '@common/constants';
 
 import { LedgerService } from '@services';
 
@@ -106,7 +108,7 @@ class AccountImportView extends Component<Props, State> {
     populateTangemCard = () => {
         const { tangemCard } = this.props;
 
-        const { walletPublicKey } = tangemCard;
+        const walletPublicKey = GetWalletPublicKey(tangemCard);
 
         const publicKey = utils.compressPubKey(walletPublicKey);
         const address = utils.deriveAddress(publicKey);
@@ -210,14 +212,8 @@ class AccountImportView extends Component<Props, State> {
     };
 
     goNext = async (nextStep: ImportSteps) => {
-        const {
-            account,
-            upgradeAccount,
-            importedAccount,
-            alternativeSeedAlphabet,
-            currentStep,
-            prevSteps,
-        } = this.state;
+        const { account, upgradeAccount, importedAccount, alternativeSeedAlphabet, currentStep, prevSteps } =
+            this.state;
 
         // we are in the last screen, just import the account and close the screen
         if (currentStep === 'FinishStep') {

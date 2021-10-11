@@ -41,7 +41,7 @@
     "react-native-webview": "11.14.0",
     "realm": "10.8.0",
     "ripple-binary-codec": "1.1.3",
-    "tangem-sdk-react-native": "1.2.1",
+    "tangem-sdk-react-native": "github:XRPL-Labs/tangem-sdk-react-native#develop",
     "uuid": "8.3.2",
     "xrpl-accountlib": "1.1.4",
     "xrpl-client": "1.9.2",
