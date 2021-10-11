@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { Results } from 'realm';
 import { isEmpty, flatMap, remove, get, uniqBy, toNumber } from 'lodash';
-import { View, Text, SectionList, Alert } from 'react-native';
+import { View, Text, SectionList, Alert, RefreshControl } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
 import { AccountRepository, ContactRepository } from '@store/repositories';
@@ -19,10 +19,10 @@ import { Navigator } from '@common/helpers/navigator';
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { NormalizeDestination } from '@common/utils/codec';
 
-import { BackendService, LedgerService } from '@services';
+import { BackendService, LedgerService, StyleService } from '@services';
 
 // components
-import { Button, TextInput, Footer, InfoMessage, LoadingIndicator } from '@components/General';
+import { Button, TextInput, Footer, InfoMessage } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 // locale
@@ -749,18 +749,18 @@ class RecipientStep extends Component<Props, State> {
                     </View>
 
                     <View style={[AppStyles.flex8, AppStyles.paddingTopSml]}>
-                        {isSearching ? (
-                            <LoadingIndicator />
-                        ) : (
-                            <SectionList
-                                ListEmptyComponent={this.renderListEmptyComponent}
-                                extraData={searchText}
-                                sections={dataSource}
-                                renderItem={this.renderItem}
-                                renderSectionHeader={this.renderSectionHeader}
-                                keyExtractor={(item) => `${item.address}${item.tag}`}
-                            />
-                        )}
+                        <SectionList
+                            ListEmptyComponent={this.renderListEmptyComponent}
+                            extraData={searchText}
+                            sections={dataSource}
+                            renderItem={this.renderItem}
+                            renderSectionHeader={this.renderSectionHeader}
+                            keyExtractor={(item) => `${item.address}${item.tag}`}
+                            refreshControl={
+                                <RefreshControl refreshing={isSearching} tintColor={StyleService.value('$contrast')} />
+                            }
+                            indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
+                        />
                     </View>
                 </View>
 
