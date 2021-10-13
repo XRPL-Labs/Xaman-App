@@ -1,22 +1,9 @@
 import StyleService from '@services/StyleService';
 
-import { AppSizes, AppFonts } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    visibleContent: {
-        height: AppSizes.moderateScale(620) + AppSizes.navigationBarHeight,
-        backgroundColor: '$background',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        borderColor: '$tint',
-        borderWidth: 1,
-        shadowColor: '$grey',
-        shadowOffset: { width: 0, height: 0 },
-        shadowRadius: 5,
-        shadowOpacity: 0.3,
-        padding: 15,
-    },
     qrCodeContainer: {
         width: '90%',
         backgroundColor: '$tint',
@@ -46,6 +33,9 @@ const styles = StyleService.create({
         overflow: 'hidden',
         textAlign: 'center',
         alignSelf: 'center',
+    },
+    footer: {
+        paddingBottom: AppSizes.bottomStableInset,
     },
 });
 

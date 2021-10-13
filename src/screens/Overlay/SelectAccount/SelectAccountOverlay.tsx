@@ -4,9 +4,7 @@
 
 import { sortBy } from 'lodash';
 import React, { Component } from 'react';
-import { Animated, View, Text, TouchableWithoutFeedback, TouchableOpacity, Platform, ScrollView } from 'react-native';
-
-import Interactable from 'react-native-interactable';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 
 import { AccountSchema } from '@store/schemas/latest';
 
@@ -15,7 +13,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button } from '@components/General';
+import { Button, ActionPanel } from '@components/General';
 
 import Localize from '@locale';
 
@@ -36,16 +34,12 @@ export interface State {
     paddingBottom: number;
 }
 
-const BOUNDARY_HEIGHT = 50;
 const ROW_ITEM_HEIGHT = AppSizes.scale(80);
 /* Component ==================================================================== */
 class SelectAccountOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.SelectAccount;
 
-    panel: any;
-    deltaY: Animated.Value;
-    deltaX: Animated.Value;
-    isOpening: boolean;
+    private actionPanel: ActionPanel;
 
     static options() {
         return {
@@ -66,11 +60,6 @@ class SelectAccountOverlay extends Component<Props, State> {
             contentHeight: 0,
             paddingBottom: 0,
         };
-
-        this.deltaY = new Animated.Value(AppSizes.screen.height);
-        this.deltaX = new Animated.Value(0);
-
-        this.isOpening = true;
     }
 
     componentDidMount() {
@@ -82,66 +71,20 @@ class SelectAccountOverlay extends Component<Props, State> {
         // calculate the overlay height
         const headerContentHeight = AppSizes.scale(33) + 90;
 
-        const bottomGap = Platform.select({
-            ios: 0,
-            android: AppSizes.navigationBarHeight,
-        });
-
-        let contentHeight = count * (ROW_ITEM_HEIGHT + 10) + bottomGap + headerContentHeight;
+        let contentHeight = count * (ROW_ITEM_HEIGHT + 10) + headerContentHeight;
 
         let paddingBottom = 0;
 
         if (contentHeight > AppSizes.screen.height * 0.9) {
             contentHeight = AppSizes.screen.height * 0.9;
-            paddingBottom = ROW_ITEM_HEIGHT + bottomGap;
+            paddingBottom = ROW_ITEM_HEIGHT;
         }
 
-        this.setState(
-            {
-                contentHeight,
-                paddingBottom,
-            },
-            () => {
-                this.slideUp();
-            },
-        );
+        this.setState({
+            contentHeight,
+            paddingBottom,
+        });
     }
-
-    slideUp = () => {
-        setTimeout(() => {
-            if (this.panel) {
-                this.panel.snapTo({ index: 1 });
-            }
-        }, 10);
-    };
-
-    slideDown = () => {
-        setTimeout(() => {
-            if (this.panel) {
-                this.panel.snapTo({ index: 0 });
-            }
-        }, 10);
-    };
-
-    onAlert = (event: any) => {
-        const { top, bottom } = event.nativeEvent;
-
-        if (top && bottom) return;
-
-        if (top === 'enter' && this.isOpening) {
-            this.isOpening = false;
-        }
-
-        if (bottom === 'leave' && !this.isOpening) {
-            const { onClose } = this.props;
-
-            if (typeof onClose === 'function') {
-                onClose();
-            }
-
-            Navigator.dismissOverlay();
-        }
-    };
 
     onSelect = (account: AccountSchema) => {
         const { onSelect } = this.props;
@@ -150,7 +93,19 @@ class SelectAccountOverlay extends Component<Props, State> {
             onSelect(account);
         }
 
-        this.slideDown();
+        if (this.actionPanel) {
+            this.actionPanel.slideDown();
+        }
+    };
+
+    onClose = () => {
+        const { onClose } = this.props;
+
+        if (typeof onClose === 'function') {
+            onClose();
+        }
+
+        Navigator.dismissOverlay();
     };
 
     renderRow = (account: AccountSchema) => {
@@ -222,71 +177,35 @@ class SelectAccountOverlay extends Component<Props, State> {
         if (!accounts || !contentHeight) return null;
 
         return (
-            <View style={AppStyles.flex1}>
-                <TouchableWithoutFeedback onPress={this.slideDown}>
-                    <Animated.View
-                        style={[
-                            AppStyles.shadowContent,
-                            {
-                                opacity: this.deltaY.interpolate({
-                                    inputRange: [0, AppSizes.screen.height],
-                                    outputRange: [1, 0],
-                                    extrapolateRight: 'clamp',
-                                }),
-                            },
-                        ]}
-                    />
-                </TouchableWithoutFeedback>
-
-                <Interactable.View
-                    ref={(r) => {
-                        this.panel = r;
-                    }}
-                    animatedNativeDriver
-                    onAlert={this.onAlert}
-                    verticalOnly
-                    snapPoints={[
-                        { y: AppSizes.screen.height + 3, id: 'bottom' },
-                        { y: AppSizes.screen.height - contentHeight, id: 'top' },
-                    ]}
-                    boundaries={{
-                        top: AppSizes.screen.height - (contentHeight + BOUNDARY_HEIGHT),
-                    }}
-                    alertAreas={[
-                        { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
-                        { id: 'top', influenceArea: { top: AppSizes.screen.height - contentHeight } },
-                    ]}
-                    initialPosition={{ y: AppSizes.screen.height }}
-                    animatedValueY={this.deltaY}
-                    animatedValueX={this.deltaX}
-                >
-                    <View style={[styles.visibleContent, { height: contentHeight + BOUNDARY_HEIGHT }]}>
-                        <View style={AppStyles.panelHeader}>
-                            <View style={AppStyles.panelHandle} />
-                        </View>
-
-                        <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
-                            <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                                <Text numberOfLines={1} style={[AppStyles.h5]}>
-                                    {Localize.t('account.myAccounts')}
-                                </Text>
-                            </View>
-                            <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
-                                <Button
-                                    numberOfLines={1}
-                                    light
-                                    roundedSmall
-                                    isDisabled={false}
-                                    onPress={this.slideDown}
-                                    textStyle={[AppStyles.subtext, AppStyles.bold]}
-                                    label={Localize.t('global.cancel')}
-                                />
-                            </View>
-                        </View>
-                        <ScrollView contentContainerStyle={{ paddingBottom }}>{this.renderContent()}</ScrollView>
+            <ActionPanel
+                height={contentHeight}
+                onSlideDown={this.onClose}
+                ref={(r) => {
+                    this.actionPanel = r;
+                }}
+            >
+                <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
+                    <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
+                        <Text numberOfLines={1} style={[AppStyles.h5]}>
+                            {Localize.t('account.myAccounts')}
+                        </Text>
                     </View>
-                </Interactable.View>
-            </View>
+                    <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
+                        <Button
+                            numberOfLines={1}
+                            light
+                            roundedSmall
+                            isDisabled={false}
+                            onPress={() => {
+                                this.actionPanel?.slideDown();
+                            }}
+                            textStyle={[AppStyles.subtext, AppStyles.bold]}
+                            label={Localize.t('global.cancel')}
+                        />
+                    </View>
+                </View>
+                <ScrollView contentContainerStyle={{ paddingBottom }}>{this.renderContent()}</ScrollView>
+            </ActionPanel>
         );
     }
 }

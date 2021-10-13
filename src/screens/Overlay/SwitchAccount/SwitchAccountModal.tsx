@@ -6,9 +6,7 @@ import { Results } from 'realm';
 import { find } from 'lodash';
 
 import React, { Component } from 'react';
-import { Animated, View, Text, TouchableWithoutFeedback, TouchableOpacity, Platform, ScrollView } from 'react-native';
-
-import Interactable from 'react-native-interactable';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 
 import { AccessLevels } from '@store/types';
 import { AccountRepository } from '@store/repositories';
@@ -20,7 +18,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Icon } from '@components/General';
+import { Button, Icon, ActionPanel } from '@components/General';
 
 import Localize from '@locale';
 
@@ -38,16 +36,12 @@ export interface State {
     paddingBottom: number;
 }
 
-const BOUNDARY_HEIGHT = 50;
 const ROW_ITEM_HEIGHT = AppSizes.scale(80);
 /* Component ==================================================================== */
 class SwitchAccountOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.SwitchAccount;
 
-    panel: any;
-    deltaY: Animated.Value;
-    deltaX: Animated.Value;
-    isOpening: boolean;
+    private actionPanel: ActionPanel;
 
     static options() {
         return {
@@ -70,15 +64,11 @@ class SwitchAccountOverlay extends Component<Props, State> {
             contentHeight: 0,
             paddingBottom: 0,
         };
-
-        this.deltaY = new Animated.Value(AppSizes.screen.height);
-        this.deltaX = new Animated.Value(0);
-
-        this.isOpening = true;
     }
 
     componentDidMount() {
         const accounts = AccountRepository.getAccounts({ hidden: false }).sorted([['order', false]]);
+
         const signableAccount = AccountRepository.getSignableAccounts();
 
         // accounts count or as 3 item height
@@ -87,80 +77,39 @@ class SwitchAccountOverlay extends Component<Props, State> {
         // calculate the overlay height
         const headerContentHeight = AppSizes.scale(33) + 90;
 
-        const bottomGap = Platform.select({
-            ios: 0,
-            android: AppSizes.navigationBarHeight,
-        });
-
-        let contentHeight = count * (ROW_ITEM_HEIGHT + 10) + bottomGap + headerContentHeight;
+        let contentHeight = count * (ROW_ITEM_HEIGHT + 10) + headerContentHeight;
 
         let paddingBottom = 0;
 
         if (contentHeight > AppSizes.screen.height * 0.9) {
             contentHeight = AppSizes.screen.height * 0.9;
-            paddingBottom = ROW_ITEM_HEIGHT + bottomGap;
+            paddingBottom = ROW_ITEM_HEIGHT;
         }
 
-        this.setState(
-            {
-                accounts,
-                signableAccount,
-                contentHeight,
-                paddingBottom,
-            },
-            () => {
-                this.slideUp();
-            },
-        );
+        this.setState({
+            accounts,
+            signableAccount,
+            contentHeight,
+            paddingBottom,
+        });
     }
 
-    slideUp = () => {
-        setTimeout(() => {
-            if (this.panel) {
-                this.panel.snapTo({ index: 1 });
-            }
-        }, 10);
-    };
-
-    slideDown = () => {
-        setTimeout(() => {
-            if (this.panel) {
-                this.panel.snapTo({ index: 0 });
-            }
-        }, 10);
-    };
-
-    onAlert = (event: any) => {
-        const { top, bottom } = event.nativeEvent;
-
-        if (top && bottom) return;
-
-        if (top === 'enter' && this.isOpening) {
-            this.isOpening = false;
-        }
-
-        if (bottom === 'leave' && !this.isOpening) {
-            Navigator.dismissOverlay();
-        }
-    };
-
     onAddPressed = () => {
-        if (Platform.OS === 'ios') {
-            this.slideDown();
-            setTimeout(() => {
-                Navigator.push(AppScreens.Account.Add);
-            }, 300);
-        } else {
-            Navigator.dismissOverlay();
-            setTimeout(() => {
-                Navigator.push(AppScreens.Account.Add);
-            }, 100);
+        if (this.actionPanel) {
+            this.actionPanel.slideDown();
         }
+
+        setTimeout(() => {
+            Navigator.push(AppScreens.Account.Add);
+        }, 300);
     };
 
     changeDefaultAccount = (address: string) => {
         AccountRepository.setDefaultAccount(address);
-        this.slideDown();
+
+        if (this.actionPanel) {
+            this.actionPanel.slideDown();
+        }
     };
 
     isRegularKey = (account: AccountSchema) => {
@@ -281,72 +230,37 @@ class SwitchAccountOverlay extends Component<Props, State> {
     render() {
         const { accounts, contentHeight, paddingBottom } = this.state;
 
-        if (!accounts) return null;
+        if (!accounts || !contentHeight) return null;
 
         return (
-            <View style={AppStyles.flex1}>
-                <TouchableWithoutFeedback onPress={this.slideDown}>
-                    <Animated.View
-                        style={[
-                            AppStyles.shadowContent,
-                            {
-                                opacity: this.deltaY.interpolate({
-                                    inputRange: [0, AppSizes.screen.height],
-                                    outputRange: [1, 0],
-                                    extrapolateRight: 'clamp',
-                                }),
-                            },
-                        ]}
-                    />
-                </TouchableWithoutFeedback>
-
-                <Interactable.View
-                    ref={(r) => {
-                        this.panel = r;
-                    }}
-                    animatedNativeDriver
-                    onAlert={this.onAlert}
-                    verticalOnly
-                    snapPoints={[{ y: AppSizes.screen.height + 3 }, { y: AppSizes.screen.height - contentHeight }]}
-                    boundaries={{
-                        top: AppSizes.screen.height - (contentHeight + BOUNDARY_HEIGHT),
-                    }}
-                    alertAreas={[
-                        { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
-                        { id: 'top', influenceArea: { top: AppSizes.screen.height - contentHeight } },
-                    ]}
-                    initialPosition={{ y: AppSizes.screen.height }}
-                    animatedValueY={this.deltaY}
-                    animatedValueX={this.deltaX}
-                >
-                    <View style={[styles.visibleContent, { height: contentHeight + BOUNDARY_HEIGHT }]}>
-                        <View style={AppStyles.panelHeader}>
-                            <View style={AppStyles.panelHandle} />
-                        </View>
-
-                        <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
-                            <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                                <Text numberOfLines={1} style={[AppStyles.h5]}>
-                                    {Localize.t('account.myAccounts')}
-                                </Text>
-                            </View>
-                            <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
-                                <Button
-                                    light
-                                    roundedSmall
-                                    label={Localize.t('home.addAccount')}
-                                    icon="IconPlus"
-                                    isDisabled={false}
-                                    onPress={this.onAddPressed}
-                                />
-                            </View>
-                        </View>
-                        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom }}>
-                            {this.renderContent()}
-                        </ScrollView>
+            <ActionPanel
+                height={contentHeight}
+                onSlideDown={Navigator.dismissOverlay}
+                ref={(r) => {
+                    this.actionPanel = r;
+                }}
+            >
+                <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
+                    <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
+                        <Text numberOfLines={1} style={[AppStyles.h5]}>
+                            {Localize.t('account.myAccounts')}
+                        </Text>
                     </View>
-                </Interactable.View>
-            </View>
+                    <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
+                        <Button
+                            light
+                            roundedSmall
+                            label={Localize.t('home.addAccount')}
+                            icon="IconPlus"
+                            isDisabled={false}
+                            onPress={this.onAddPressed}
+                        />
+                    </View>
+                </View>
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom }}>
+                    {this.renderContent()}
+                </ScrollView>
+            </ActionPanel>
         );
     }
 }
