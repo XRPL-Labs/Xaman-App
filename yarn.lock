@@ -14070,10 +14070,10 @@ react-native-keychain@4.0.5:
   resolved "https://registry.yarnpkg.com/react-native-keychain/-/react-native-keychain-4.0.5.tgz#6d3aef8f2789fc0dfa8149b8400d82ff77be361a"
   integrity sha512-TbiO8AO055EPjaxIuKxrCEOB4r81uQCVDFbtcs+e4pEOHxf6z3JgDC0UU0poJElKfCh37b+TFRxQhg6DbsYJBA==
 
-react-native-navigation@7.22.1:
-  version "7.22.1"
-  resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-7.22.1.tgz#5896467b7d9db2b500a6cc52e16c189b83f17190"
-  integrity sha512-8zLDJ/w+bvFxMCih3DMi15vBE9IRnkrQi86l+/oPT9WTm4GLecZ99FXHj06IQbeAq/HVczeTydwEklILZPtfoA==
+react-native-navigation@7.22.3:
+  version "7.22.3"
+  resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-7.22.3.tgz#faeac9eaa3cc4737906cb557244d8ef62b8388a8"
+  integrity sha512-h6CpYWqlFli//hvzAFQWwUWCB8kHt8VoG3pDC7QhJCuCPW6ARlSEHOAyN0yW9axpYNXTgy7xZ+p1pu752iMvJA==
   dependencies:
     hoist-non-react-statics "3.x.x"
     lodash "4.17.x"
