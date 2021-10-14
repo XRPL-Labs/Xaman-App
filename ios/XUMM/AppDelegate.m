@@ -89,8 +89,6 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-  
-  NSLog(@"applicationDidBecomeActive");
     // grab a reference to our custom blur view
     UIView *blurEffectView = [self.window viewWithTag:1234];
 
