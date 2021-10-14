@@ -188,6 +188,37 @@ class AccountSettingsView extends Component<Props, State> {
     removeAccount = () => {
         const { account } = this.state;
 
+        AccountRepository.purge(account);
+        Navigator.pop();
+    };
+
+    onAccountRemoveRequest = () => {
+        const { account } = this.state;
+
+        // if full access auth before remove
+        if (account.accessLevel === AccessLevels.Full) {
+            Navigator.showOverlay(
+                AppScreens.Overlay.Auth,
+                {
+                    overlay: {
+                        handleKeyboardEvents: true,
+                    },
+                    layout: {
+                        backgroundColor: 'transparent',
+                        componentBackgroundColor: 'transparent',
+                    },
+                },
+                {
+                    biometricAvailable: false,
+                    onSuccess: this.removeAccount,
+                },
+            );
+        } else {
+            this.removeAccount();
+        }
+    };
+
+    onRemovePress = () => {
         Prompt(
             Localize.t('global.warning'),
             Localize.t('account.accountRemoveWarning'),
@@ -195,11 +226,7 @@ class AccountSettingsView extends Component<Props, State> {
                 { text: Localize.t('global.cancel') },
                 {
                     text: Localize.t('global.doIt'),
-                    onPress: () => {
-                        // downgrade the access level
-                        AccountRepository.purge(account);
-                        Navigator.pop();
-                    },
+                    onPress: this.onAccountRemoveRequest,
                     style: 'destructive',
                 },
             ],
@@ -368,7 +395,7 @@ class AccountSettingsView extends Component<Props, State> {
                             icon="IconTrash"
                             iconStyle={AppStyles.imgColorWhite}
                             style={[AppStyles.marginSml, AppStyles.buttonRed]}
-                            onPress={this.removeAccount}
+                            onPress={this.onRemovePress}
                         />
                     </ScrollView>
                 </View>
