@@ -169,13 +169,13 @@ class VaultModal extends Component<Props, State> {
         Prompt(
             Localize.t('global.unexpectedErrorOccurred'),
             Localize.t('global.pleaseCheckSessionLogForMoreInfo'),
-            [{ text: Localize.t('global.tryAgain') }],
+            [{ text: Localize.t('global.tryAgain'), onPress: this.dismiss }],
             { type: 'default' },
         );
     };
 
     openTroubleshootLink = () => {
-        const url = `http://xumm.app/redir/faq/account-signing-password/${Localize.getCurrentLocale()}`;
+        const url = `https://xumm.app/redir/faq/account-signing-password/${Localize.getCurrentLocale()}`;
         Linking.canOpenURL(url).then((supported) => {
             if (supported) {
                 Linking.openURL(url);
@@ -185,7 +185,7 @@ class VaultModal extends Component<Props, State> {
         });
     };
 
-    sign = async (method: AuthMethods, options: any) => {
+    sign = (method: AuthMethods, options: any) => {
         switch (method) {
             case AuthMethods.BIOMETRIC:
             case AuthMethods.PIN:
@@ -249,8 +249,6 @@ class VaultModal extends Component<Props, State> {
             // start tangem session
             await RNTangemSdk.startSession();
 
-            // run sign command
-            // @ts-ignore
             await RNTangemSdk.sign({ cardId, walletPublicKey, hashes: [preparedTx.hashToSign] })
                 .then((resp) => {
                     const { signatures } = resp;
