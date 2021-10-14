@@ -166,7 +166,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     payload,
                 },
             );
-        }, 2000);
+        }, 800);
     };
 
     renderCurrencies = () => {
