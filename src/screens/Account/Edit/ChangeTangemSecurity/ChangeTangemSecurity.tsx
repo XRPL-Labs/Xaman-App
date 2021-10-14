@@ -78,7 +78,7 @@ class ChangeTangemSecurityView extends Component<Props, State> {
         });
     };
 
-    onSuccessChange = (isPin2Default: boolean) => {
+    onSuccessChange = (isPasscodeSet: boolean) => {
         const { chosenSecurity } = this.state;
         const { account } = this.props;
 
@@ -86,7 +86,7 @@ class ChangeTangemSecurityView extends Component<Props, State> {
             address: account.address,
             additionalInfoString: JSON.stringify({
                 ...account.additionalInfo,
-                ...{ isPin2Default },
+                ...{ isPasscodeSet },
             }),
         });
 
@@ -109,7 +109,7 @@ class ChangeTangemSecurityView extends Component<Props, State> {
         const { cardId } = account.additionalInfo as Card;
 
         RNTangemSdk.resetUserCodes({ cardId })
-            .then(this.onSuccessChange.bind(null, true))
+            .then(this.onSuccessChange.bind(null, false))
             .catch(() => {
                 // ignore
             });
@@ -120,7 +120,7 @@ class ChangeTangemSecurityView extends Component<Props, State> {
         const { cardId } = account.additionalInfo as Card;
 
         RNTangemSdk.setPasscode({ cardId })
-            .then(this.onSuccessChange.bind(null, false))
+            .then(this.onSuccessChange.bind(null, true))
             .catch(() => {
                 // ignore
             });

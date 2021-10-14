@@ -34,13 +34,13 @@ const GetWalletPublicKey = (card: Card): string => {
 };
 
 const GetCardPasscodeStatus = (card: any): boolean => {
+    if (Object.prototype.hasOwnProperty.call(card, 'isPasscodeSet')) {
+        return card.isPasscodeSet;
+    }
+
     // older version of tangem sdk
     if (Object.prototype.hasOwnProperty.call(card, 'isPin2Default')) {
         return card.isPin2Default;
-    }
-
-    if (Object.prototype.hasOwnProperty.call(card, 'isPasscodeSet')) {
-        return card.isPasscodeSet;
     }
 
     return false;
