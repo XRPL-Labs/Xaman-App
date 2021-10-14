@@ -13,6 +13,8 @@ import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 
+import { GetCardPasscodeStatus } from '@common/utils/tangem';
+
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
@@ -52,9 +54,9 @@ class ChangeTangemSecurityView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const { isPin2Default } = props.account.additionalInfo as Card;
-
-        const current = isPin2Default ? TangemSecurity.LongTap : TangemSecurity.Passcode;
+        const current = GetCardPasscodeStatus(props.account.additionalInfo)
+            ? TangemSecurity.Passcode
+            : TangemSecurity.LongTap;
 
         this.state = {
             currentSecurity: current,
@@ -106,10 +108,7 @@ class ChangeTangemSecurityView extends Component<Props, State> {
         const { account } = this.props;
         const { cardId } = account.additionalInfo as Card;
 
-        // setting pin2 to 000 will revert settings to default
-        const defaultPin2 = '000';
-
-        RNTangemSdk.changePin2({ cardId, pin: defaultPin2 })
+        RNTangemSdk.resetUserCodes({ cardId })
             .then(this.onSuccessChange.bind(null, true))
             .catch(() => {
                 // ignore
@@ -120,7 +119,7 @@ class ChangeTangemSecurityView extends Component<Props, State> {
         const { account } = this.props;
         const { cardId } = account.additionalInfo as Card;
 
-        RNTangemSdk.changePin2({ cardId })
+        RNTangemSdk.setPasscode({ cardId })
             .then(this.onSuccessChange.bind(null, false))
             .catch(() => {
                 // ignore

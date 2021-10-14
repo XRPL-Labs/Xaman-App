@@ -20,6 +20,8 @@ import { SignedObjectType } from '@common/libs/ledger/types';
 
 import Vault from '@common/libs/vault';
 
+import { GetWalletPublicKey } from '@common/utils/tangem';
+
 import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import Keyboard from '@common/helpers/keyboard';
@@ -239,7 +241,8 @@ class VaultModal extends Component<Props, State> {
                 throw new Error('No card details provided for signing!');
             }
 
-            const { cardId, walletPublicKey } = tangemCard;
+            const { cardId } = tangemCard;
+            const walletPublicKey = GetWalletPublicKey(tangemCard);
 
             const preparedTx = AccountLib.rawSigning.prepare(txJson, walletPublicKey, multiSign);
 
@@ -247,11 +250,12 @@ class VaultModal extends Component<Props, State> {
             await RNTangemSdk.startSession();
 
             // run sign command
-            await RNTangemSdk.sign([preparedTx.hashToSign], { cardId })
+            // @ts-ignore
+            await RNTangemSdk.sign({ cardId, walletPublicKey, hashes: [preparedTx.hashToSign] })
                 .then((resp) => {
-                    const { signature } = resp;
+                    const { signatures } = resp;
 
-                    const sig = signature instanceof Array ? signature[0] : signature;
+                    const sig = signatures instanceof Array ? signatures[0] : signatures;
 
                     let signedObject = undefined as SignedObjectType;
 

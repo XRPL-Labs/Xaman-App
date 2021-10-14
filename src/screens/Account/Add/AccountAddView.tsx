@@ -3,14 +3,17 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, Image, ImageBackground, Alert, InteractionManager } from 'react-native';
+import { View, Text, Image, ImageBackground, Alert, InteractionManager, EventSubscription } from 'react-native';
 
-import RNTangemSdk, { Card, CardStatus, EventCallback } from 'tangem-sdk-react-native';
+import RNTangemSdk, { Card, EventCallback } from 'tangem-sdk-react-native';
+
+import StyleService from '@services/StyleService';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 
-import StyleService from '@services/StyleService';
+import { GetPreferCurve } from '@common/utils/tangem';
+
 import { AppScreens } from '@common/constants';
 
 // components
@@ -34,6 +37,8 @@ export interface State {
 class AccountAddView extends Component<Props, State> {
     static screenName = AppScreens.Account.Add;
 
+    private nfcListener: EventSubscription;
+
     static options() {
         return {
             bottomTabs: { visible: false },
@@ -52,10 +57,9 @@ class AccountAddView extends Component<Props, State> {
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
             // on NFC state change (Android)
-            RNTangemSdk.on('NFCStateChange', this.onNFCStateChange);
+            this.nfcListener = RNTangemSdk.addListener('NFCStateChange', this.onNFCStateChange);
 
             // get current NFC status
-
             RNTangemSdk.getNFCStatus().then((status) => {
                 const { support, enabled } = status;
 
@@ -68,7 +72,9 @@ class AccountAddView extends Component<Props, State> {
     }
 
     componentWillUnmount() {
-        RNTangemSdk.removeListener('NFCStateChange', this.onNFCStateChange);
+        if (this.nfcListener) {
+            this.nfcListener.remove();
+        }
 
         RNTangemSdk.stopSession();
     }
@@ -88,9 +94,9 @@ class AccountAddView extends Component<Props, State> {
     };
 
     createTangemWallet = (card: Card) => {
-        const { cardId } = card;
+        const { cardId, supportedCurves } = card;
 
-        RNTangemSdk.createWallet({ cardId })
+        RNTangemSdk.createWallet({ cardId, curve: GetPreferCurve(supportedCurves) })
             .then((resp) => {
                 this.goToImport({ tangemCard: { ...card, ...resp } });
             })
@@ -102,8 +108,8 @@ class AccountAddView extends Component<Props, State> {
     scanTangemCard = () => {
         RNTangemSdk.scanCard()
             .then((card) => {
-                const { status } = card;
-                if (status === CardStatus.Empty) {
+                const { wallets } = card;
+                if (wallets.length === 0) {
                     Prompt(
                         Localize.t('global.notice'),
                         Localize.t('account.tangemCardEmptyGenerateWalletAlert'),
