@@ -46,6 +46,7 @@ describe('Navigator helper', () => {
                         },
                     },
                 ],
+                id: modal,
             },
         });
 

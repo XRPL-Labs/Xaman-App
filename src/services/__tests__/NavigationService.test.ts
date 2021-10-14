@@ -154,8 +154,8 @@ describe('NavigationService', () => {
         expect(navigationService.getCurrentModal()).toBe(AppScreens.Modal.DestinationPicker);
 
         navigationService.modalDismissedListener({
-            componentId: '',
-            componentName: AppScreens.Modal.Scan,
+            componentId: AppScreens.Modal.DestinationPicker,
+            componentName: '',
             modalsDismissed: undefined,
         });
 

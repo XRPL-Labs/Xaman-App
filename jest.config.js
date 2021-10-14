@@ -14,6 +14,7 @@ module.exports = {
         window: {},
         'ts-jest': {
             babelConfig: false,
+            isolatedModules: true,
             tsconfig: 'tsconfig.jest.json',
         },
     },
@@ -26,4 +27,6 @@ module.exports = {
     cacheDirectory: '.jest/cache',
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'ios.ts', 'ios.tsx', 'android.ts', 'android.tsx'],
     setupFilesAfterEnv: ['<rootDir>/src/__mocks__/globalMock.ts'],
+    maxWorkers: 1,
+    testTimeout: 20000,
 };
