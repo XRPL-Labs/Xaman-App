@@ -126,6 +126,32 @@ class AccountSettingsView extends Component<Props, State> {
         );
     };
 
+    downgradeAccountAccessLevel = () => {
+        const { account } = this.state;
+
+        // downgrade the access level
+        AccountRepository.downgrade(account);
+    };
+
+    onAccountDowngradeRequest = () => {
+        Navigator.showOverlay(
+            AppScreens.Overlay.Auth,
+            {
+                overlay: {
+                    handleKeyboardEvents: true,
+                },
+                layout: {
+                    backgroundColor: 'transparent',
+                    componentBackgroundColor: 'transparent',
+                },
+            },
+            {
+                biometricAvailable: false,
+                onSuccess: this.downgradeAccountAccessLevel,
+            },
+        );
+    };
+
     onAccessLevelSelected = (item: any) => {
         const { account } = this.state;
 
@@ -145,10 +171,7 @@ class AccountSettingsView extends Component<Props, State> {
                     { text: Localize.t('global.cancel') },
                     {
                         text: Localize.t('global.doIt'),
-                        onPress: () => {
-                            // downgrade the access level
-                            AccountRepository.downgrade(account);
-                        },
+                        onPress: this.onAccountDowngradeRequest,
                         style: 'destructive',
                     },
                 ],
