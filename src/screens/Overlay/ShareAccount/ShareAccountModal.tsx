@@ -127,9 +127,11 @@ class ShareAccountModal extends Component<Props, State> {
 
                 <View style={[AppStyles.paddingBottom, AppStyles.paddingHorizontalSml]}>
                     <Text style={[AppStyles.pbold, AppStyles.textCenterAligned]}>{Localize.t('global.address')}:</Text>
-                    <Text selectable adjustsFontSizeToFit numberOfLines={1} style={styles.addressText}>
-                        {account.address}
-                    </Text>
+                    <View style={styles.addressTextContainer}>
+                        <Text selectable adjustsFontSizeToFit numberOfLines={1} style={styles.addressText}>
+                            {account.address}
+                        </Text>
+                    </View>
                 </View>
 
                 <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingHorizontalSml]}>

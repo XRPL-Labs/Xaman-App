@@ -20,19 +20,18 @@ const styles = StyleService.create({
         padding: 5,
         margin: 30,
     },
-    addressText: {
+    addressTextContainer: {
         width: '100%',
-        fontFamily: AppFonts.base.familyMono,
-        fontSize: AppFonts.base.size,
         backgroundColor: '$tint',
-        color: '$textPrimary',
         marginTop: 15,
         paddingHorizontal: 15,
         paddingVertical: 8,
         borderRadius: 8,
-        overflow: 'hidden',
-        textAlign: 'center',
-        alignSelf: 'center',
+    },
+    addressText: {
+        fontFamily: AppFonts.base.familyMono,
+        fontSize: AppFonts.base.size,
+        color: '$textPrimary',
     },
     footer: {
         paddingBottom: AppSizes.bottomStableInset,
