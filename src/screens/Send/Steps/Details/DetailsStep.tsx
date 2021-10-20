@@ -7,7 +7,7 @@
 import { filter } from 'lodash';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
-import { View, Image, Text, Alert, InteractionManager } from 'react-native';
+import { View, Image, Text, Alert, InteractionManager, Platform } from 'react-native';
 
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
@@ -26,7 +26,7 @@ import { AccountPicker } from '@components/Modules';
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppStyles, AppColors, AppSizes } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
@@ -266,7 +266,7 @@ class DetailsStep extends Component<Props, State> {
         const { currency } = this.context;
 
         if (input === this.amountInput.current && typeof currency === 'string') {
-            return inputHeight;
+            return inputHeight + Platform.select({ ios: 10, android: AppSizes.bottomStableInset });
         }
         return 0;
     };

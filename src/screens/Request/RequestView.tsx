@@ -6,7 +6,7 @@ import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Keyboard, Share, InteractionManager } from 'react-native';
+import { View, Text, TouchableOpacity, Keyboard, Share, InteractionManager, Platform } from 'react-native';
 
 import { BackendService } from '@services';
 import { Toast } from '@common/helpers/interface';
@@ -194,7 +194,7 @@ class RequestView extends Component<Props, State> {
 
     calcKeyboardAwareExtraOffset = (input: any, inputHeight: number) => {
         if (input === this.amountInput.current) {
-            return inputHeight;
+            return inputHeight + Platform.select({ ios: 10, android: AppSizes.bottomStableInset });
         }
         return 0;
     };
