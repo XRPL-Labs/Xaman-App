@@ -1,11 +1,8 @@
 package com.xrpllabs.xumm;
 
-import android.content.Context;
-
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
-import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.modules.network.OkHttpClientProvider;
 
 // Local Libs
@@ -30,47 +27,43 @@ import com.reactnativenavigation.react.NavigationReactNativeHost;
 
 // PlayService
 import android.content.Intent;
+
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.android.gms.security.ProviderInstaller.ProviderInstallListener;
 
 import java.util.List;
-import java.lang.reflect.InvocationTargetException;
 
 public class MainApplication extends NavigationApplication {
     private final ReactNativeHost mReactNativeHost =
-        new NavigationReactNativeHost(this) {
-            @Override
-            protected String getJSMainModuleName() {
-                return "index";
-            }
+            new NavigationReactNativeHost(this) {
+                @Override
+                protected String getJSMainModuleName() {
+                    return "index";
+                }
 
-            @Override
-            public boolean getUseDeveloperSupport() {
-                return BuildConfig.DEBUG;
-            }
+                @Override
+                public boolean getUseDeveloperSupport() {
+                    return BuildConfig.DEBUG;
+                }
 
-            @Override
-            protected List<ReactPackage> getPackages() {
-                @SuppressWarnings("UnnecessaryLocalVariable")
-                List<ReactPackage> packages = new PackageList(this).getPackages();
-                // Local Libs
-                packages.add(new UtilsPackage());
-                packages.add(new KeyboardPackage());
-                packages.add(new CryptoPackage());
-                packages.add(new ActionSheetPackage());
-                packages.add(new PromptPackage());
-                packages.add(new QRCodePackage());
-                packages.add(new SharedPreferencesPackage());
-                packages.add(new LocalNotificationPackage());
-                packages.add(new AppUpdatePackage());
-                packages.add(new InAppPurchasePackage());
-                packages.add(new DimensionPackage());
-                return packages;
-            }
-
-            
-        };
-
+                @Override
+                protected List<ReactPackage> getPackages() {
+                    List<ReactPackage> packages = new PackageList(this).getPackages();
+                    // Local Libs
+                    packages.add(new UtilsPackage());
+                    packages.add(new KeyboardPackage());
+                    packages.add(new CryptoPackage());
+                    packages.add(new ActionSheetPackage());
+                    packages.add(new PromptPackage());
+                    packages.add(new QRCodePackage());
+                    packages.add(new SharedPreferencesPackage());
+                    packages.add(new LocalNotificationPackage());
+                    packages.add(new AppUpdatePackage());
+                    packages.add(new InAppPurchasePackage());
+                    packages.add(new DimensionPackage());
+                    return packages;
+                }
+            };
 
     @Override
     public ReactNativeHost getReactNativeHost() {
@@ -92,7 +85,7 @@ public class MainApplication extends NavigationApplication {
     private void upgradeSecurityProvider() {
         ProviderInstaller.installIfNeededAsync(this, new ProviderInstallListener() {
             @Override
-                public void onProviderInstalled() {
+            public void onProviderInstalled() {
             }
 
             @Override

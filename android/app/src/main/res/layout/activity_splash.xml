@@ -7,10 +7,10 @@
     >
 
   <ImageView
+      app:tint="@color/splashBackground"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:alpha="0.5"
-      android:tint="@color/splashBackground"
       android:scaleType="centerCrop"
       android:src="@drawable/image_background_shapes"
       android:contentDescription="@string/splash_image_content_description"

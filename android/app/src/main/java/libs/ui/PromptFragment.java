@@ -1,7 +1,6 @@
 package libs.ui;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -11,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 
 import com.xrpllabs.xumm.R;
 
@@ -65,13 +65,9 @@ public class PromptFragment extends DialogFragment implements DialogInterface.On
 
     public Dialog createDialog(Context activityContext, Bundle arguments) {
         AlertDialog.Builder builder;
-        String style = arguments.containsKey(ARG_STYLE) ? arguments.getString(ARG_STYLE) : "default";
+        // String style = arguments.containsKey(ARG_STYLE) ? arguments.getString(ARG_STYLE) : "default";
 
-
-        // AlertDialog style
         builder = new AlertDialog.Builder(activityContext, R.style.AlertDialogStyle);
-
-
 
         builder.setTitle(arguments.getString(ARG_TITLE));
 

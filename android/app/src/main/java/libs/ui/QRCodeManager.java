@@ -71,7 +71,6 @@ public class QRCodeManager extends SimpleViewManager<ReactImageView> {
     mCallerContext = null;
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public ReactImageView createViewInstance(ThemedReactContext context) {
     mImageView = new ReactImageView(context, Fresco.newDraweeControllerBuilder(), null, mCallerContext);
@@ -81,11 +80,13 @@ public class QRCodeManager extends SimpleViewManager<ReactImageView> {
 
   @SuppressWarnings("deprecation")
   private void generateImage() {
-    if (this.qrCodeValue != "") {
+    if (!this.qrCodeValue.equals("")) {
       Bitmap myBitmap = QRCode.from(this.qrCodeValue).withSize(this.size, this.size)
           .withColor(this.onColor, this.offColor).bitmap();
 
-      mImageView.setImageBitmap(myBitmap);
+      if(mImageView != null){
+        mImageView.setImageBitmap(myBitmap);
+      }
     }
   }
 

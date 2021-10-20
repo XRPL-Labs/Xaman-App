@@ -38,9 +38,9 @@ public class DimensionModule extends ReactContextBaseJavaModule {
 
     private Map<String, Object> _getLayoutInsets() {
         final Map<String, Object> layoutInsets = new HashMap<>();
+        final Activity activity = getCurrentActivity();
 
-        if (getCurrentActivity() != null) {
-            final Activity activity = getCurrentActivity();
+        if (activity != null) {
             final View view = activity.getWindow().getDecorView();
             final WindowInsets insets = view.getRootWindowInsets();
 
@@ -60,8 +60,16 @@ public class DimensionModule extends ReactContextBaseJavaModule {
 
         Map layoutInsets = this._getLayoutInsets();
 
-        result.putInt("top", (Integer) layoutInsets.get("top"));
-        result.putInt("bottom", (Integer) layoutInsets.get("bottom"));
+        Integer top = (Integer) layoutInsets.get("top");
+        Integer bottom = (Integer) layoutInsets.get("bottom");
+
+        if (top == null || bottom == null) {
+            promise.reject("-1", "Unable to fetch layout insets!");
+            return;
+        }
+
+        result.putInt("top", top);
+        result.putInt("bottom", top);
 
         promise.resolve(result);
     }

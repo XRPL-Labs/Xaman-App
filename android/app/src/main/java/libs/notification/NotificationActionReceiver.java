@@ -163,7 +163,7 @@ public class NotificationActionReceiver extends BroadcastReceiver {
 
 
         // Dismiss the notification popup.
-        NotificationManager manager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancel(remoteMessage.getCollapseKey(), notificationId);
 
 

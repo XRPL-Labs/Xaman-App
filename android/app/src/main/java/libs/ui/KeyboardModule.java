@@ -104,7 +104,7 @@ public class KeyboardModule extends ReactContextBaseJavaModule {
 
 
     private void sendEvent(String event, Object payload) {
-        if (getReactApplicationContext().hasActiveCatalystInstance()) {
+        if (getReactApplicationContext().hasActiveReactInstance()) {
             getReactApplicationContext()
                     .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                     .emit(event, payload);
