@@ -13,7 +13,7 @@ import { Navigator } from '@common/helpers/navigator';
 // services
 import { PushNotificationsService, AccountService, LedgerService, StyleService } from '@services';
 
-import { CoreRepository } from '@store/repositories';
+import { CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
 // transaction parser
@@ -361,6 +361,45 @@ class ReviewTransactionModal extends Component<Props, State> {
                         type: 'warning',
                         title: Localize.t('global.warning'),
                         text: Localize.t('asset.addingTrustLineWarning'),
+                        buttons: [
+                            {
+                                text: Localize.t('global.back'),
+                                light: false,
+                            },
+                            {
+                                text: Localize.t('global.continue'),
+                                onPress: this.prepareAndSignTransaction,
+                                type: 'dismiss',
+                                light: true,
+                            },
+                        ],
+                    });
+                    return;
+                }
+            }
+
+            // show alert if user trading not vetted tokens
+            if (transaction.Type === 'OfferCreate') {
+                let shouldShowAlert = false;
+
+                const takerPays = transaction.TakerPays;
+
+                if (takerPays.currency !== 'XRP') {
+                    if (
+                        !CurrencyRepository.isVettedCurrency({
+                            issuer: takerPays.issuer,
+                            currency: takerPays.currency,
+                        })
+                    ) {
+                        shouldShowAlert = true;
+                    }
+                }
+
+                if (shouldShowAlert) {
+                    Navigator.showAlertModal({
+                        type: 'warning',
+                        title: Localize.t('global.warning'),
+                        text: Localize.t('payload.notVettedTokenTradeWarning'),
                         buttons: [
                             {
                                 text: Localize.t('global.back'),
