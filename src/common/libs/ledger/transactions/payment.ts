@@ -346,14 +346,23 @@ class Payment extends BaseTransaction {
                         currency: IOUAmount.currency,
                     });
 
-                    if (Number(IOUAmount.value) + Math.abs(sourceLine.balance) > Number(sourceLine.limit_peer)) {
+                    if (
+                        Number(IOUAmount.value) + Math.abs(Number(sourceLine.balance)) >
+                        Number(sourceLine.limit_peer)
+                    ) {
                         return reject(
                             new Error(
                                 Localize.t('send.trustLineLimitExceeded', {
-                                    balance: Localize.formatNumber(NormalizeAmount(Math.abs(sourceLine.balance))),
-                                    peer_limit: Localize.formatNumber(NormalizeAmount(sourceLine.limit_peer)),
+                                    balance: Localize.formatNumber(
+                                        NormalizeAmount(Math.abs(Number(sourceLine.balance))),
+                                    ),
+                                    peer_limit: Localize.formatNumber(NormalizeAmount(Number(sourceLine.limit_peer))),
                                     available: Localize.formatNumber(
-                                        NormalizeAmount(Number(sourceLine.limit_peer - Math.abs(sourceLine.balance))),
+                                        NormalizeAmount(
+                                            Number(
+                                                Number(sourceLine.limit_peer) - Math.abs(Number(sourceLine.balance)),
+                                            ),
+                                        ),
                                     ),
                                 }),
                             ),

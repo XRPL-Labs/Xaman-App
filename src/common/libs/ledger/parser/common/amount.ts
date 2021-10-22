@@ -50,8 +50,11 @@ class Amount {
         return drops.toString(10);
     }
 
-    toString(): string {
-        return this.amount.toFixed();
+    toString(toFixed = true): string {
+        if (toFixed) {
+            return this.amount.toFixed();
+        }
+        return this.amount.toString();
     }
 
     toNumber(): number {

@@ -11,12 +11,12 @@ import RNTangemSdk from 'tangem-sdk-react-native';
 
 import LoggerService from '@services/LoggerService';
 
-import Flag from '@common/libs/ledger/parser/common/flag';
 import { CoreRepository, AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 import { AccessLevels, EncryptionLevels } from '@store/types';
 
 import { SignedObjectType } from '@common/libs/ledger/types';
+import Flag from '@common/libs/ledger/parser/common/flag';
 
 import Vault from '@common/libs/vault';
 

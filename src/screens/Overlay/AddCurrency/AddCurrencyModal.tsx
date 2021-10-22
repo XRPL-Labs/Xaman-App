@@ -121,14 +121,14 @@ class AddCurrencyOverlay extends Component<Props, State> {
         });
 
         // set the default line limit
-        let lineLimit = 1000000000;
+        let lineLimit = '1000000000';
 
         try {
             // set the trustline limit by gateway balance if it's more than our default value
             const resp = await LedgerService.getGatewayBalances(selectedCurrency.issuer);
             const gatewayBalances = get(resp, ['obligations', selectedCurrency.currency]);
 
-            if (gatewayBalances && Number(gatewayBalances) > lineLimit) {
+            if (gatewayBalances && Number(gatewayBalances) > Number(lineLimit)) {
                 lineLimit = gatewayBalances;
             }
         } catch {

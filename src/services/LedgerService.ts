@@ -12,7 +12,17 @@ import CoreRepository from '@store/repositories/core';
 
 import { Amount } from '@common/libs/ledger/parser/common';
 
-import { AccountTxResponse, LedgerMarker, SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
+import {
+    LedgerMarker,
+    LedgerTrustline,
+    SubmitResultType,
+    VerifyResultType,
+    AccountTxResponse,
+    AccountLinesResponse,
+    GatewayBalancesResponse,
+    AccountInfoResponse,
+} from '@common/libs/ledger/types';
+
 import { Issuer } from '@common/libs/ledger/parser/types';
 
 import SocketService from '@services/SocketService';
@@ -108,7 +118,7 @@ class LedgerService extends EventEmitter {
     /**
      * Get account info
      */
-    getGatewayBalances = (account: string): any => {
+    getGatewayBalances = (account: string): Promise<GatewayBalancesResponse> => {
         return SocketService.send({
             command: 'gateway_balances',
             account,
@@ -121,12 +131,12 @@ class LedgerService extends EventEmitter {
     /**
      * Get account info
      */
-    getAccountInfo = (account: string): any => {
+    getAccountInfo = (account: string): Promise<AccountInfoResponse> => {
         return SocketService.send({
             command: 'account_info',
             account,
             ledger_index: 'validated',
-            signer_lists: true,
+            signer_lists: false,
         });
     };
 
@@ -154,13 +164,13 @@ class LedgerService extends EventEmitter {
     /**
      * Get account trust lines
      */
-    getAccountLines = (account: string, peer?: string): any => {
+    getAccountLines = (account: string, options?: any): Promise<AccountLinesResponse> => {
         const request = {
             command: 'account_lines',
             account,
         };
-        if (peer) {
-            Object.assign(request, { peer });
+        if (typeof options === 'object') {
+            Object.assign(request, options);
         }
         return SocketService.send(request);
     };
@@ -168,9 +178,9 @@ class LedgerService extends EventEmitter {
     /**
      * Get account line base on provided peer
      */
-    getAccountLine = (account: string, peer: Issuer): Promise<any> => {
+    getAccountLine = (account: string, peer: Issuer): Promise<LedgerTrustline> => {
         return new Promise((resolve) => {
-            return this.getAccountLines(account, peer.issuer)
+            return this.getAccountLines(account, { peer: peer.issuer })
                 .then((resp: any) => {
                     const { lines } = resp;
                     return resolve(find(lines, { account: peer.issuer, currency: peer.currency }));
