@@ -23,14 +23,24 @@ const GetPreferCurve = (supportedCurves: Array<EllipticCurve>): EllipticCurve =>
 };
 
 const GetWalletPublicKey = (card: Card): string => {
-    const { wallets } = card;
+    if (Object.prototype.hasOwnProperty.call(card, 'wallets')) {
+        const { wallets } = card;
 
-    if (Array.isArray(wallets) && wallets.length > 0) {
-        const { publicKey } = wallets[0];
+        if (Array.isArray(wallets) && wallets.length > 0) {
+            const { publicKey } = wallets[0];
 
-        return publicKey;
+            return publicKey;
+        }
     }
-    throw new Error('Card does not contain wallet!');
+
+    // older version of tangem SDK
+    if (Object.prototype.hasOwnProperty.call(card, 'walletPublicKey')) {
+        // @ts-ignore
+        const { walletPublicKey } = card;
+        return walletPublicKey;
+    }
+
+    throw new Error('Unable to found walletPublicKey in card data!');
 };
 
 const GetCardPasscodeStatus = (card: any): boolean => {
@@ -40,7 +50,7 @@ const GetCardPasscodeStatus = (card: any): boolean => {
 
     // older version of tangem sdk
     if (Object.prototype.hasOwnProperty.call(card, 'isPin2Default')) {
-        return card.isPin2Default;
+        return !card.isPin2Default;
     }
 
     return false;
