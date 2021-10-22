@@ -5,7 +5,7 @@
 import BigNumber from 'bignumber.js';
 import moment from 'moment-timezone';
 import EventEmitter from 'events';
-import { find, map, isEmpty, assign, startsWith } from 'lodash';
+import { has, find, map, isEmpty, assign, startsWith } from 'lodash';
 
 import { CoreSchema } from '@store/schemas/latest';
 import CoreRepository from '@store/repositories/core';
@@ -177,6 +177,25 @@ class LedgerService extends EventEmitter {
                 })
                 .catch(() => {
                     resolve(undefined);
+                });
+        });
+    };
+
+    /**
+     * Get account transfer rate
+     */
+    getAccountTransferRate = (account: string): any => {
+        return new Promise((resolve, reject) => {
+            return this.getAccountInfo(account)
+                .then((issuerAccountInfo: any) => {
+                    if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
+                        const { TransferRate } = issuerAccountInfo.account_data;
+                        return resolve(TransferRate);
+                    }
+                    return resolve(0);
+                })
+                .catch(() => {
+                    return reject(new Error('Unable to fetch issuer transfer rate!'));
                 });
         });
     };

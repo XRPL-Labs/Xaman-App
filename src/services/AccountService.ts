@@ -221,20 +221,11 @@ class AccountService extends EventEmitter {
                                 currency: l.currency,
                             });
 
-                            // get transfer rate from issuer account
-                            let transfer_rate = 0;
-                            const issuerAccountInfo = await LedgerService.getAccountInfo(l.account);
-                            if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
-                                const { TransferRate } = issuerAccountInfo.account_data;
-                                transfer_rate = TransferRate;
-                            }
-
                             // add to trustLines list
                             normalizedList.push({
                                 id: `${account}.${currency.id}`,
                                 currency,
                                 balance: new Amount(l.balance, false).toNumber(),
-                                transfer_rate,
                                 no_ripple: l.no_ripple || false,
                                 no_ripple_peer: l.no_ripple_peer || false,
                                 limit: new Amount(l.limit, false).toNumber(),

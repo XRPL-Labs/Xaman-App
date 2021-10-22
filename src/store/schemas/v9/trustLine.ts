@@ -34,6 +34,9 @@ class TrustLine extends Realm.Object {
     public id: string;
     public currency: any;
     public balance: number;
+    /**
+     * @deprecated this field should not be used
+     */
     public transfer_rate: number;
     public no_ripple?: boolean;
     public no_ripple_peer?: boolean;
