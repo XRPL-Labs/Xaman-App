@@ -65,23 +65,25 @@
   UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
   UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
   
-  NSPredicate *isKeyWindow = [NSPredicate predicateWithFormat:@"isKeyWindow == YES"];
-  UIWindow *topView = [[[UIApplication sharedApplication] windows] filteredArrayUsingPredicate:isKeyWindow].firstObject;
+  UIWindow *topWindow = [[[UIApplication sharedApplication].windows sortedArrayUsingComparator:^NSComparisonResult(UIWindow *win1, UIWindow *win2) {
+      return win1.windowLevel - win2.windowLevel;
+  }] lastObject];
   
-  blurEffectView.frame = topView.frame;
-  blurEffectView.tag = 3549886;
+  blurEffectView.frame = topWindow.frame;
+  blurEffectView.tag = 763609;
   blurEffectView.alpha = 0;
-  [topView addSubview:blurEffectView];
+  [topWindow addSubview:blurEffectView];
   [UIView animateWithDuration:0.5 animations:^{
     blurEffectView.alpha = 1;
   }];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-  NSPredicate *isKeyWindow = [NSPredicate predicateWithFormat:@"isKeyWindow == YES"];
-  UIWindow *topView = [[[UIApplication sharedApplication] windows] filteredArrayUsingPredicate:isKeyWindow].firstObject;
-  
-  UIView *blurEffectView = [topView viewWithTag:3549886];
+  UIWindow *topWindow = [[[UIApplication sharedApplication].windows sortedArrayUsingComparator:^NSComparisonResult(UIWindow *win1, UIWindow *win2) {
+      return win1.windowLevel - win2.windowLevel;
+  }] lastObject];
+
+  UIView *blurEffectView = [topWindow viewWithTag:763609];
   if (blurEffectView){
     // fade away colour view from main view
     [UIView animateWithDuration:0.5 animations:^{
