@@ -17,7 +17,7 @@ interface Props {
 }
 
 /* Component ==================================================================== */
-class EventsList extends PureComponent<Props> {
+class NodeList extends PureComponent<Props> {
     renderItem = ({ item }: { item: any }): React.ReactElement => {
         const { selectedNode, onItemPress, onItemRemovePress } = this.props;
 
@@ -61,4 +61,4 @@ class EventsList extends PureComponent<Props> {
     }
 }
 
-export default EventsList;
+export default NodeList;

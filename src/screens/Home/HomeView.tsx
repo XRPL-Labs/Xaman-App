@@ -183,7 +183,13 @@ class HomeView extends Component<Props, State> {
         const { componentId } = this.props;
         const { coreSettings } = this.state;
 
-        if (settings ? settings.developerMode : coreSettings.developerMode) {
+        const currentSettings = settings || coreSettings;
+
+        if (currentSettings.developerMode) {
+            // get chain from current default node
+            const chain = CoreRepository.getChainFromNode(currentSettings.defaultNode);
+
+            // show the header
             Navigator.mergeOptions(
                 {
                     topBar: {
@@ -191,10 +197,10 @@ class HomeView extends Component<Props, State> {
                         visible: true,
                         animate: true,
                         background: {
-                            color: ChainColors[SocketService.chain],
+                            color: ChainColors[chain],
                         },
                         title: {
-                            text: SocketService.chain.toUpperCase(),
+                            text: chain.toUpperCase(),
                             color: 'white',
                             fontFamily: AppFonts.base.familyExtraBold,
                             fontSize: AppFonts.h5.size,
