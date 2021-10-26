@@ -394,10 +394,10 @@ class CurrencySettingsModal extends Component<Props, State> {
 
         Navigator.showModal(
             AppScreens.Modal.ReviewTransaction,
-            { modalPresentationStyle: 'fullScreen' },
             {
                 payload,
             },
+            { modalPresentationStyle: 'fullScreen' },
         );
     };
 
@@ -441,10 +441,10 @@ class CurrencySettingsModal extends Component<Props, State> {
 
         Navigator.showModal(
             AppScreens.Modal.ReviewTransaction,
-            { modalPresentationStyle: 'fullScreen' },
             {
                 payload,
             },
+            { modalPresentationStyle: 'fullScreen' },
         );
     };
 
@@ -463,16 +463,16 @@ class CurrencySettingsModal extends Component<Props, State> {
             Navigator.showModal(
                 AppScreens.Modal.XAppBrowser,
                 {
-                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-                },
-                {
                     identifier: 'xumm.nft-info',
                     account,
                     params: {
                         issuer: trustLine.currency.issuer,
                         token: trustLine.currency.currency,
                     },
+                },
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                 },
             );
         });

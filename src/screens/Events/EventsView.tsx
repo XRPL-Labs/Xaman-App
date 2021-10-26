@@ -636,14 +636,10 @@ class EventsView extends Component<Props, State> {
                         iconSize: 25,
                         iconStyle: styles.filterIcon,
                         onPress: () => {
-                            Navigator.showModal(
-                                AppScreens.Modal.FilterEvents,
-                                {},
-                                {
-                                    currentFilters: filters,
-                                    onApply: this.applyFilters,
-                                },
-                            );
+                            Navigator.showModal(AppScreens.Modal.FilterEvents, {
+                                currentFilters: filters,
+                                onApply: this.applyFilters,
+                            });
                         },
                     }}
                     centerComponent={{

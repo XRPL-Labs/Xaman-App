@@ -57,7 +57,7 @@ class LinkingService extends EventEmitter {
         });
     };
 
-    routeUser = async (screen: string, options: any, passProps: any, screenType?: ComponentTypes) => {
+    routeUser = async (screen: string, passProps: any, options: any, screenType?: ComponentTypes) => {
         // close any overlay
         const currentOverlay = NavigationService.getCurrentOverlay();
 
@@ -72,7 +72,7 @@ class LinkingService extends EventEmitter {
 
         if (screenType === ComponentTypes.Modal) {
             setTimeout(() => {
-                Navigator.showModal(screen, options, passProps);
+                Navigator.showModal(screen, passProps, options);
             }, 10);
         } else if (screenType === ComponentTypes.Screen) {
             setTimeout(() => {
@@ -89,8 +89,8 @@ class LinkingService extends EventEmitter {
             // review the transaction
             this.routeUser(
                 AppScreens.Modal.ReviewTransaction,
-                { modalPresentationStyle: 'fullScreen' },
                 { payload },
+                { modalPresentationStyle: 'fullScreen' },
                 ComponentTypes.Modal,
             );
         } catch (e: any) {
@@ -111,8 +111,8 @@ class LinkingService extends EventEmitter {
                     onPress: () => {
                         this.routeUser(
                             AppScreens.Modal.Submit,
-                            { modalPresentationStyle: 'fullScreen' },
                             { txblob },
+                            { modalPresentationStyle: 'fullScreen' },
                             ComponentTypes.Modal,
                         );
                     },
@@ -127,12 +127,12 @@ class LinkingService extends EventEmitter {
         if (destination.payId) {
             this.routeUser(
                 AppScreens.Transaction.Payment,
-                {},
                 {
                     scanResult: {
                         to: destination.payId,
                     },
                 },
+                {},
                 ComponentTypes.Screen,
             );
             return;
@@ -149,7 +149,6 @@ class LinkingService extends EventEmitter {
 
         this.routeUser(
             AppScreens.Transaction.Payment,
-            {},
             {
                 scanResult: {
                     to,
@@ -157,6 +156,7 @@ class LinkingService extends EventEmitter {
                 },
                 amount,
             },
+            {},
             ComponentTypes.Screen,
         );
     };
@@ -178,14 +178,14 @@ class LinkingService extends EventEmitter {
             this.routeUser(
                 AppScreens.Modal.XAppBrowser,
                 {
-                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-                },
-                {
                     identifier: xapp,
                     origin: PayloadOrigin.DEEP_LINK,
                     originData: { url },
                     params,
+                },
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                 },
                 ComponentTypes.Modal,
             );
@@ -201,10 +201,10 @@ class LinkingService extends EventEmitter {
         if (alphabet) {
             this.routeUser(
                 AppScreens.Account.Import,
-                {},
                 {
                     alternativeSeedAlphabet: parsed,
                 },
+                {},
                 ComponentTypes.Screen,
             );
         }
@@ -228,10 +228,10 @@ class LinkingService extends EventEmitter {
                         onPress: () => {
                             this.routeUser(
                                 AppScreens.Account.Import,
-                                {},
                                 {
                                     importOfflineSecretNumber: true,
                                 },
+                                {},
                                 ComponentTypes.Screen,
                             );
                         },

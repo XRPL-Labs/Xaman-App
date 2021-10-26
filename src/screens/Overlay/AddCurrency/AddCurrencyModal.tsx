@@ -161,10 +161,10 @@ class AddCurrencyOverlay extends Component<Props, State> {
         setTimeout(() => {
             Navigator.showModal(
                 AppScreens.Modal.ReviewTransaction,
-                { modalPresentationStyle: 'fullScreen' },
                 {
                     payload,
                 },
+                { modalPresentationStyle: 'fullScreen' },
             );
         }, 800);
     };

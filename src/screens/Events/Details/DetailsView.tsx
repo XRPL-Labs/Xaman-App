@@ -506,13 +506,13 @@ class TransactionDetailsView extends Component<Props, State> {
             Navigator.showModal(
                 AppScreens.Modal.XAppBrowser,
                 {
-                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-                },
-                {
                     identifier: tx.getXappIdentifier(),
                     origin: PayloadOrigin.TRANSACTION_MEMO,
                     originData: { txid: tx.Hash },
+                },
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                 },
             );
             return;
@@ -607,11 +607,11 @@ class TransactionDetailsView extends Component<Props, State> {
 
             Navigator.showModal(
                 AppScreens.Modal.ReviewTransaction,
-                { modalPresentationStyle: 'fullScreen' },
                 {
                     payload,
                     onResolve: Navigator.pop,
                 },
+                { modalPresentationStyle: 'fullScreen' },
             );
         }
     };

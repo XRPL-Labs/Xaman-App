@@ -169,12 +169,12 @@ class XAppBrowserModal extends Component<Props, State> {
             // review the transaction
             Navigator.showModal(
                 AppScreens.Modal.ReviewTransaction,
-                { modalPresentationStyle: 'fullScreen' },
                 {
                     payload,
                     onResolve: this.onPayloadResolve,
                     onDecline: this.onPayloadDecline,
                 },
+                { modalPresentationStyle: 'fullScreen' },
             );
         } catch (e: any) {
             Alert.alert(Localize.t('global.error'), e.message, [{ text: 'OK' }], { cancelable: false });
@@ -209,14 +209,14 @@ class XAppBrowserModal extends Component<Props, State> {
         Navigator.showModal(
             AppScreens.Modal.Scan,
             {
-                modal: {
-                    swipeToDismiss: false,
-                },
-            },
-            {
                 onRead: this.onScannerRead,
                 onClose: this.onScannerClose,
                 blackList: [StringType.XrplSecret, StringType.XummPairingToken],
+            },
+            {
+                modal: {
+                    swipeToDismiss: false,
+                },
             },
         );
     };
@@ -225,13 +225,13 @@ class XAppBrowserModal extends Component<Props, State> {
         Navigator.showModal(
             AppScreens.Modal.DestinationPicker,
             {
+                onSelect: this.onDestinationSelect,
+                onClose: this.onDestinationClose,
+            },
+            {
                 modal: {
                     swipeToDismiss: false,
                 },
-            },
-            {
-                onSelect: this.onDestinationSelect,
-                onClose: this.onDestinationClose,
             },
         );
     };
@@ -324,7 +324,7 @@ class XAppBrowserModal extends Component<Props, State> {
         }
 
         setTimeout(() => {
-            Navigator.showModal(AppScreens.Transaction.Details, {}, { hash, account, asModal: true });
+            Navigator.showModal(AppScreens.Transaction.Details, { hash, account, asModal: true });
         }, delay);
     };
 

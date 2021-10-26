@@ -36,14 +36,10 @@ class TrustLineList extends PureComponent<Props> {
     };
 
     openTrustLineDescription = () => {
-        Navigator.showModal(
-            AppScreens.Modal.Help,
-            {},
-            {
-                title: Localize.t('home.whatAreOtherAssets'),
-                content: Localize.t('home.otherAssetsDesc'),
-            },
-        );
+        Navigator.showModal(AppScreens.Modal.Help, {
+            title: Localize.t('home.whatAreOtherAssets'),
+            content: Localize.t('home.otherAssetsDesc'),
+        });
     };
 
     openAddCurrency = () => {

@@ -157,16 +157,12 @@ class Input extends Component<Props, State> {
             onScannerOpen();
         }
 
-        Navigator.showModal(
-            AppScreens.Modal.Scan,
-            {},
-            {
-                type: scannerType,
-                onRead: onScannerRead,
-                onClose: onScannerClose,
-                fallback: scannerFallback,
-            },
-        );
+        Navigator.showModal(AppScreens.Modal.Scan, {
+            type: scannerType,
+            onRead: onScannerRead,
+            onClose: onScannerClose,
+            fallback: scannerFallback,
+        });
     };
 
     render() {

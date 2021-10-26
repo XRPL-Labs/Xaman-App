@@ -82,10 +82,14 @@ class HomeActionsOverlay extends Component<Props, State> {
         }
 
         setTimeout(() => {
-            Navigator.showModal(AppScreens.Modal.Scan, {
-                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-            });
+            Navigator.showModal(
+                AppScreens.Modal.Scan,
+                {},
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+                },
+            );
         }, 800);
     };
 
@@ -114,13 +118,13 @@ class HomeActionsOverlay extends Component<Props, State> {
             Navigator.showModal(
                 AppScreens.Modal.XAppBrowser,
                 {
-                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-                },
-                {
                     identifier,
                     title,
                     account,
+                },
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                 },
             );
         }, 800);

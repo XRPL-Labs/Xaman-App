@@ -245,16 +245,12 @@ class HomeView extends Component<Props, State> {
     };
 
     openActiveAccountDescription = () => {
-        Navigator.showModal(
-            AppScreens.Modal.Help,
-            {},
-            {
-                title: Localize.t('home.howActivateMyAccount'),
-                content: Localize.t('home.howActivateMyAccountDesc', {
-                    baseReserve: LedgerService.getNetworkReserve().BaseReserve,
-                }),
-            },
-        );
+        Navigator.showModal(AppScreens.Modal.Help, {
+            title: Localize.t('home.howActivateMyAccount'),
+            content: Localize.t('home.howActivateMyAccountDesc', {
+                baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+            }),
+        });
     };
 
     showCurrencyOptions = (trustLine: TrustLineSchema) => {
@@ -269,16 +265,16 @@ class HomeView extends Component<Props, State> {
         Navigator.showModal(
             AppScreens.Modal.XAppBrowser,
             {
-                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-            },
-            {
                 identifier: 'xumm.nft-info',
                 account,
                 params: {
                     issuer: trustLine.currency.issuer,
                     token: trustLine.currency.currency,
                 },
+            },
+            {
+                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
             },
         );
     };

@@ -220,7 +220,7 @@ const Navigator = {
         return Navigation.dismissOverlay(currentOverlay);
     },
 
-    showModal(modal: any, options = {}, passProps = {}) {
+    showModal(modal: any, passProps = {}, options = {}) {
         const currentScreen = NavigationService.getCurrentModal();
         if (currentScreen !== modal) {
             return Navigation.showModal({

@@ -362,14 +362,14 @@ class AccountImportView extends Component<Props, State> {
                     Navigator.showModal(
                         AppScreens.Modal.XAppBrowser,
                         {
-                            modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                            modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-                        },
-                        {
                             account: createdAccount,
                             identifier: xappIdentifier,
                             origin: PayloadOrigin.IMPORT_ACCOUNT,
                             originData: alternativeSeedAlphabet,
+                        },
+                        {
+                            modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                            modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                         },
                     );
                 }
