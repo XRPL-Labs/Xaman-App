@@ -5,13 +5,10 @@
 #import <React/RCTRootView.h>
 #import <React/RCTLinkingManager.h>
 
+#import <Firebase.h>
 #import <ReactNativeNavigation/ReactNativeNavigation.h>
 
-#import <Firebase.h>
-
-
 #import "Libs/Notification/LocalNotification.h"
-
 
 @implementation AppDelegate
 
@@ -33,7 +30,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   // bootstrap rnn
-  [ReactNativeNavigation bootstrapWithDelegate:self launchOptions:launchOptions];
+  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
+  [ReactNativeNavigation bootstrapWithBridge:bridge];
   
   // bootstrap local notification
   [LocalNotificationModule initialise];
@@ -62,28 +60,36 @@
 
 // hide snapshot in task switcher
 - (void)applicationWillResignActive:(UIApplication *)application {
-  UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-  UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    UIViewController *parentViewController = [[[UIApplication sharedApplication] delegate] window].rootViewController;
+    while (parentViewController.presentedViewController != nil){
+        parentViewController = parentViewController.presentedViewController;
+    }
+    UIViewController *currentViewController = parentViewController;
   
-  UIWindow *topWindow = [[[UIApplication sharedApplication].windows sortedArrayUsingComparator:^NSComparisonResult(UIWindow *win1, UIWindow *win2) {
-      return win1.windowLevel - win2.windowLevel;
-  }] lastObject];
+    if(![NSStringFromClass([currentViewController class]) hasPrefix:@"RNN"]){
+      return;
+    }
   
-  blurEffectView.frame = topWindow.frame;
-  blurEffectView.tag = 763609;
-  blurEffectView.alpha = 0;
-  [topWindow addSubview:blurEffectView];
-  [UIView animateWithDuration:0.5 animations:^{
-    blurEffectView.alpha = 1;
-  }];
+    NSPredicate *isKeyWindow = [NSPredicate predicateWithFormat:@"isKeyWindow == YES"];
+    UIWindow *topWindow = [[[UIApplication sharedApplication] windows] filteredArrayUsingPredicate:isKeyWindow].firstObject;
+  
+    UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+    UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+
+    blurEffectView.frame = topWindow.frame;
+    blurEffectView.tag = 0xDEADBEEF;
+    blurEffectView.alpha = 0;
+    [topWindow addSubview:blurEffectView];
+    [UIView animateWithDuration:0.5 animations:^{
+      blurEffectView.alpha = 1;
+    }];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-  UIWindow *topWindow = [[[UIApplication sharedApplication].windows sortedArrayUsingComparator:^NSComparisonResult(UIWindow *win1, UIWindow *win2) {
-      return win1.windowLevel - win2.windowLevel;
-  }] lastObject];
+  NSPredicate *isKeyWindow = [NSPredicate predicateWithFormat:@"isKeyWindow == YES"];
+  UIWindow *topWindow = [[[UIApplication sharedApplication] windows] filteredArrayUsingPredicate:isKeyWindow].firstObject;
 
-  UIView *blurEffectView = [topWindow viewWithTag:763609];
+  UIView *blurEffectView = [topWindow viewWithTag:0xDEADBEEF];
   if (blurEffectView){
     // fade away colour view from main view
     [UIView animateWithDuration:0.5 animations:^{
