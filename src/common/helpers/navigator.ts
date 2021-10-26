@@ -174,7 +174,7 @@ const Navigator = {
         });
     },
 
-    push(nextScreen: any, options = {}, passProps = {}) {
+    push(nextScreen: any, passProps = {}, options = {}) {
         const currentScreen = NavigationService.getCurrentScreen();
         if (currentScreen !== nextScreen) {
             return Navigation.push(currentScreen, {

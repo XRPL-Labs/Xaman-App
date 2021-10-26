@@ -117,7 +117,7 @@ class ScanView extends Component<Props, State> {
             }, 10);
         } else {
             setTimeout(() => {
-                Navigator.push(screen, options, passProps);
+                Navigator.push(screen, passProps, options);
             }, 10);
         }
     };

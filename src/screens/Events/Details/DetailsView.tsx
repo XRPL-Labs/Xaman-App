@@ -541,7 +541,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 Object.assign(params, { amount: tx.DeliveredAmount?.value, currency });
             }
-            Navigator.push(AppScreens.Transaction.Payment, {}, params);
+            Navigator.push(AppScreens.Transaction.Payment, params);
             return;
         }
 

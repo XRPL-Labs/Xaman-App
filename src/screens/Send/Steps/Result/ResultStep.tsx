@@ -88,7 +88,7 @@ class ResultStep extends Component<Props, State> {
                         Navigator.popToRoot();
 
                         setTimeout(() => {
-                            Navigator.push(AppScreens.Settings.AddressBook.Add, {}, destination);
+                            Navigator.push(AppScreens.Settings.AddressBook.Add, destination);
                         }, 1000);
                     }}
                 />

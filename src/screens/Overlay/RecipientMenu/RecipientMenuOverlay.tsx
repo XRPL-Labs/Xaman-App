@@ -94,7 +94,7 @@ class RecipientMenuOverlay extends Component<Props, State> {
         }
 
         setTimeout(() => {
-            Navigator.push(AppScreens.Settings.AddressBook.Add, {}, recipient);
+            Navigator.push(AppScreens.Settings.AddressBook.Add, recipient);
         }, 500);
     };
 

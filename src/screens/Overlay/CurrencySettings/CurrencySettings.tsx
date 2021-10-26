@@ -452,7 +452,7 @@ class CurrencySettingsModal extends Component<Props, State> {
         const { trustLine } = this.props;
 
         this.dismiss().then(() => {
-            Navigator.push(AppScreens.Transaction.Exchange, {}, { trustLine });
+            Navigator.push(AppScreens.Transaction.Exchange, { trustLine });
         });
     };
 
@@ -602,7 +602,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 textStyle={[styles.sendButtonText]}
                                 onPress={() => {
                                     this.dismiss();
-                                    Navigator.push(AppScreens.Transaction.Payment, {}, { currency: trustLine });
+                                    Navigator.push(AppScreens.Transaction.Payment, { currency: trustLine });
                                 }}
                             />
                             {trustLine.isNFT ? (

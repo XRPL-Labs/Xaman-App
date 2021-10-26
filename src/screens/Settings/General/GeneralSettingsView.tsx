@@ -78,30 +78,22 @@ class GeneralSettingsView extends Component<Props, State> {
 
         normalizedLocales = sortBy(uniqBy(normalizedLocales, 'title'), 'title');
 
-        Navigator.push(
-            AppScreens.Global.Picker,
-            {},
-            {
-                title: Localize.t('global.language'),
-                description: Localize.t('settings.selectLanguage'),
-                items: normalizedLocales,
-                selected: coreSettings.language,
-                onSelect: this.onLanguageSelected,
-            },
-        );
+        Navigator.push(AppScreens.Global.Picker, {
+            title: Localize.t('global.language'),
+            description: Localize.t('settings.selectLanguage'),
+            items: normalizedLocales,
+            selected: coreSettings.language,
+            onSelect: this.onLanguageSelected,
+        });
     };
 
     showCurrencyPicker = () => {
         const { coreSettings } = this.state;
 
-        Navigator.push(
-            AppScreens.Modal.CurrencyPicker,
-            {},
-            {
-                selected: coreSettings.currency,
-                onSelect: this.onCurrencySelected,
-            },
-        );
+        Navigator.push(AppScreens.Modal.CurrencyPicker, {
+            selected: coreSettings.currency,
+            onSelect: this.onCurrencySelected,
+        });
     };
 
     onCurrencySelected = (currencyCode: string) => {

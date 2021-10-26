@@ -76,7 +76,7 @@ class LinkingService extends EventEmitter {
             }, 10);
         } else if (screenType === ComponentTypes.Screen) {
             setTimeout(() => {
-                Navigator.push(screen, options, passProps);
+                Navigator.push(screen, passProps, options);
             }, 10);
         }
     };

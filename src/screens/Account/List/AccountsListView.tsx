@@ -94,7 +94,7 @@ class AccountListView extends Component<Props, State> {
         const { reorderEnabled } = this.state;
 
         if (!reorderEnabled) {
-            Navigator.push(AppScreens.Account.Edit.Settings, {}, { account });
+            Navigator.push(AppScreens.Account.Edit.Settings, { account });
         }
     };
 

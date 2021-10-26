@@ -86,7 +86,7 @@ class AccountAddView extends Component<Props, State> {
     };
 
     goToImport = (props?: any) => {
-        Navigator.push(AppScreens.Account.Import, {}, props);
+        Navigator.push(AppScreens.Account.Import, props);
     };
 
     goToGenerate = () => {

@@ -110,20 +110,16 @@ class AccountSettingsView extends Component<Props, State> {
     showAccessLevelPicker = () => {
         const { account } = this.state;
 
-        Navigator.push(
-            AppScreens.Global.Picker,
-            {},
-            {
-                title: Localize.t('account.accessLevel'),
-                description: Localize.t('account.accessLevelChangeAlert'),
-                items: [
-                    { title: Localize.t('account.readOnly'), value: AccessLevels.Readonly },
-                    { title: Localize.t('account.fullAccess'), value: AccessLevels.Full },
-                ],
-                selected: account.accessLevel,
-                onSelect: this.onAccessLevelSelected,
-            },
-        );
+        Navigator.push(AppScreens.Global.Picker, {
+            title: Localize.t('account.accessLevel'),
+            description: Localize.t('account.accessLevelChangeAlert'),
+            items: [
+                { title: Localize.t('account.readOnly'), value: AccessLevels.Readonly },
+                { title: Localize.t('account.fullAccess'), value: AccessLevels.Full },
+            ],
+            selected: account.accessLevel,
+            onSelect: this.onAccessLevelSelected,
+        });
     };
 
     downgradeAccountAccessLevel = () => {
@@ -178,7 +174,7 @@ class AccountSettingsView extends Component<Props, State> {
                     text: Localize.t('global.doIt'),
                     testID: 'yes-iam-sure-button',
                     onPress: () => {
-                        Navigator.push(AppScreens.Account.Import, {}, { upgradeAccount: account });
+                        Navigator.push(AppScreens.Account.Import, { upgradeAccount: account });
                     },
                 },
             ],
@@ -188,12 +184,12 @@ class AccountSettingsView extends Component<Props, State> {
 
     showChangePassphrase = () => {
         const { account } = this.props;
-        Navigator.push(AppScreens.Account.Edit.ChangePassphrase, {}, { account });
+        Navigator.push(AppScreens.Account.Edit.ChangePassphrase, { account });
     };
 
     showChangeTangemSecurity = () => {
         const { account } = this.props;
-        Navigator.push(AppScreens.Account.Edit.ChangeTangemSecurityEnforce, {}, { account });
+        Navigator.push(AppScreens.Account.Edit.ChangeTangemSecurityEnforce, { account });
     };
 
     removeAccount = () => {
