@@ -199,7 +199,7 @@ class TransactionTemplate extends Component<Props, State> {
 
         getAccountName(address, tag)
             .then((res: any) => {
-                if (!isEmpty(res) && res.name) {
+                if (!isEmpty(res)) {
                     if (this.mounted) {
                         if (key) {
                             item[key] = {
