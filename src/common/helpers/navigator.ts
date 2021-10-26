@@ -79,16 +79,6 @@ const getTabBarIcons = () => {
     };
 };
 
-const defaultOverlayOptions = {
-    overlay: {
-        handleKeyboardEvents: true,
-    },
-    layout: {
-        backgroundColor: 'transparent',
-        componentBackgroundColor: 'transparent',
-    },
-};
-
 /* Lib ==================================================================== */
 
 const Navigator = {
@@ -208,7 +198,18 @@ const Navigator = {
                     name: overlay,
                     id: overlay,
                     passProps: assign(passProps, { componentType: ComponentTypes.Overlay }),
-                    options: assign(defaultOverlayOptions, options),
+                    options: assign(
+                        {
+                            overlay: {
+                                handleKeyboardEvents: true,
+                            },
+                            layout: {
+                                backgroundColor: 'transparent',
+                                componentBackgroundColor: 'transparent',
+                            },
+                        },
+                        options,
+                    ),
                 },
             });
         }
