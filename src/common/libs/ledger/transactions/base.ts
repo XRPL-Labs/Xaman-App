@@ -138,40 +138,28 @@ class BaseTransaction {
                 // prepare tranaction for signing
                 await this.prepare();
 
-                Navigator.showOverlay(
-                    AppScreens.Overlay.Vault,
-                    {
-                        overlay: {
-                            handleKeyboardEvents: true,
-                        },
-                        layout: {
-                            backgroundColor: 'transparent',
-                            componentBackgroundColor: 'transparent',
-                        },
+                Navigator.showOverlay(AppScreens.Overlay.Vault, {
+                    account,
+                    txJson: this.Json,
+                    multiSign,
+                    onSign: (signedObject: SignedObjectType) => {
+                        const { id, signedTransaction } = signedObject;
+
+                        if (!id || !signedTransaction) {
+                            reject(new Error('Unable sign the transaction, please try again!'));
+                            return;
+                        }
+
+                        this.Hash = signedObject.id;
+                        this.TxnSignature = signedObject.signedTransaction;
+                        this.SignMethod = signedObject.signMethod || 'OTHER';
+
+                        resolve(this.TxnSignature);
                     },
-                    {
-                        account,
-                        txJson: this.Json,
-                        multiSign,
-                        onSign: (signedObject: SignedObjectType) => {
-                            const { id, signedTransaction } = signedObject;
-
-                            if (!id || !signedTransaction) {
-                                reject(new Error('Unable sign the transaction, please try again!'));
-                                return;
-                            }
-
-                            this.Hash = signedObject.id;
-                            this.TxnSignature = signedObject.signedTransaction;
-                            this.SignMethod = signedObject.signMethod || 'OTHER';
-
-                            resolve(this.TxnSignature);
-                        },
-                        onDismissed: () => {
-                            reject();
-                        },
+                    onDismissed: () => {
+                        reject();
                     },
-                );
+                });
             } catch (e) {
                 reject(e);
             }

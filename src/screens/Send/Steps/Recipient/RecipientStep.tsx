@@ -329,31 +329,22 @@ class RecipientStep extends Component<Props, State> {
             return;
         }
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.EnterDestinationTag,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
+        Navigator.showOverlay(AppScreens.Overlay.EnterDestinationTag, {
+            buttonType: 'next',
+            destination,
+            onFinish: (destinationTag: string) => {
+                Object.assign(destination, { tag: destinationTag });
+                setDestination(destination);
+                goNext();
             },
-            {
-                buttonType: 'next',
-                destination,
-                onFinish: (destinationTag: string) => {
-                    Object.assign(destination, { tag: destinationTag });
-                    setDestination(destination);
-                    goNext();
-                },
-                onScannerRead: ({ tag }: { tag: number }) => {
-                    Object.assign(destination, { tag: String(tag) });
-                    setDestination(destination);
+            onScannerRead: ({ tag }: { tag: number }) => {
+                Object.assign(destination, { tag: String(tag) });
+                setDestination(destination);
 
-                    this.showEnterDestinationTag();
-                },
-                onScannerClose: this.showEnterDestinationTag,
+                this.showEnterDestinationTag();
             },
-        );
+            onScannerClose: this.showEnterDestinationTag,
+        });
     };
 
     clearDestination = () => {
@@ -545,23 +536,11 @@ class RecipientStep extends Component<Props, State> {
             }
 
             if (destinationInfo.risk === 'CONFIRMED') {
-                Navigator.showOverlay(
-                    AppScreens.Overlay.FlaggedDestination,
-                    {
-                        overlay: {
-                            handleKeyboardEvents: true,
-                        },
-                        layout: {
-                            backgroundColor: 'transparent',
-                            componentBackgroundColor: 'transparent',
-                        },
-                    },
-                    {
-                        destination: destination.address,
-                        onContinue: goNext,
-                        onDismissed: this.resetResult,
-                    },
-                );
+                Navigator.showOverlay(AppScreens.Overlay.FlaggedDestination, {
+                    destination: destination.address,
+                    onContinue: goNext,
+                    onDismissed: this.resetResult,
+                });
 
                 // don't move to next step
                 return;

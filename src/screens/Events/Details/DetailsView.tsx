@@ -414,16 +414,7 @@ class TransactionDetailsView extends Component<Props, State> {
             };
         }
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.RecipientMenu,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            { recipient },
-        );
+        Navigator.showOverlay(AppScreens.Overlay.RecipientMenu, { recipient });
     };
 
     getLabel = () => {
@@ -633,16 +624,7 @@ class TransactionDetailsView extends Component<Props, State> {
             return;
         }
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.ExplainBalance,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            { account },
-        );
+        Navigator.showOverlay(AppScreens.Overlay.ExplainBalance, { account });
     };
 
     renderStatus = () => {

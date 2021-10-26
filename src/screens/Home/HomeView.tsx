@@ -241,16 +241,7 @@ class HomeView extends Component<Props, State> {
             return;
         }
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.ExplainBalance,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            { account },
-        );
+        Navigator.showOverlay(AppScreens.Overlay.ExplainBalance, { account });
     };
 
     openActiveAccountDescription = () => {
@@ -269,19 +260,7 @@ class HomeView extends Component<Props, State> {
     showCurrencyOptions = (trustLine: TrustLineSchema) => {
         const { account } = this.state;
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.CurrencySettings,
-            {
-                overlay: {
-                    handleKeyboardEvents: true,
-                },
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            { trustLine, account },
-        );
+        Navigator.showOverlay(AppScreens.Overlay.CurrencySettings, { trustLine, account });
     };
 
     showNFTDetails = (trustLine: TrustLineSchema) => {
@@ -346,16 +325,7 @@ class HomeView extends Component<Props, State> {
     showShareOverlay = () => {
         const { account } = this.state;
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.ShareAccount,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            { account },
-        );
+        Navigator.showOverlay(AppScreens.Overlay.ShareAccount, { account });
     };
 
     pushSendScreen = () => {
@@ -417,12 +387,7 @@ class HomeView extends Component<Props, State> {
                     <View style={[AppStyles.flex1]}>
                         <Button
                             onPress={() => {
-                                Navigator.showOverlay(AppScreens.Overlay.SwitchAccount, {
-                                    layout: {
-                                        backgroundColor: 'transparent',
-                                        componentBackgroundColor: 'transparent',
-                                    },
-                                });
+                                Navigator.showOverlay(AppScreens.Overlay.SwitchAccount);
                             }}
                             light
                             roundedSmall

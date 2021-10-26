@@ -221,19 +221,7 @@ class SocketService extends EventEmitter {
      * Show's connection problem overlay
      */
     showConnectionProblem = () => {
-        Navigator.showOverlay(
-            AppScreens.Overlay.ConnectionIssue,
-            {
-                overlay: {
-                    handleKeyboardEvents: true,
-                },
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            {},
-        );
+        Navigator.showOverlay(AppScreens.Overlay.ConnectionIssue);
     };
 
     /**

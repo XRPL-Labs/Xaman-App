@@ -100,6 +100,9 @@ class NavigationService extends EventEmitter {
                             backgroundColor: 'transparent',
                             componentBackgroundColor: 'transparent',
                         },
+                        overlay: {
+                            handleKeyboardEvents: true,
+                        },
                     },
                 },
             });
@@ -120,6 +123,9 @@ class NavigationService extends EventEmitter {
                         layout: {
                             backgroundColor: 'transparent',
                             componentBackgroundColor: 'transparent',
+                        },
+                        overlay: {
+                            handleKeyboardEvents: true,
                         },
                     },
                 },

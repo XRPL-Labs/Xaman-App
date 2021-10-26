@@ -49,16 +49,7 @@ class TrustLineList extends PureComponent<Props> {
     openAddCurrency = () => {
         const { account } = this.props;
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.AddCurrency,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            { account },
-        );
+        Navigator.showOverlay(AppScreens.Overlay.AddCurrency, { account });
     };
 
     renderEmptyList = () => {

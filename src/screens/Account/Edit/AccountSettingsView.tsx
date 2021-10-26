@@ -134,22 +134,10 @@ class AccountSettingsView extends Component<Props, State> {
     };
 
     onAccountDowngradeRequest = () => {
-        Navigator.showOverlay(
-            AppScreens.Overlay.Auth,
-            {
-                overlay: {
-                    handleKeyboardEvents: true,
-                },
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            {
-                biometricAvailable: false,
-                onSuccess: this.downgradeAccountAccessLevel,
-            },
-        );
+        Navigator.showOverlay(AppScreens.Overlay.Auth, {
+            biometricAvailable: false,
+            onSuccess: this.downgradeAccountAccessLevel,
+        });
     };
 
     onAccessLevelSelected = (item: any) => {
@@ -220,22 +208,10 @@ class AccountSettingsView extends Component<Props, State> {
 
         // if full access auth before remove
         if (account.accessLevel === AccessLevels.Full) {
-            Navigator.showOverlay(
-                AppScreens.Overlay.Auth,
-                {
-                    overlay: {
-                        handleKeyboardEvents: true,
-                    },
-                    layout: {
-                        backgroundColor: 'transparent',
-                        componentBackgroundColor: 'transparent',
-                    },
-                },
-                {
-                    biometricAvailable: false,
-                    onSuccess: this.removeAccount,
-                },
-            );
+            Navigator.showOverlay(AppScreens.Overlay.Auth, {
+                biometricAvailable: false,
+                onSuccess: this.removeAccount,
+            });
         } else {
             this.removeAccount();
         }

@@ -242,19 +242,10 @@ class ReviewTransactionModal extends Component<Props, State> {
             this.onDecline();
         } else {
             // otherwise show dialog for reject
-            Navigator.showOverlay(
-                AppScreens.Overlay.RequestDecline,
-                {
-                    layout: {
-                        backgroundColor: 'transparent',
-                        componentBackgroundColor: 'transparent',
-                    },
-                },
-                {
-                    onDecline: this.onDecline,
-                    onClose: this.closeReviewModal,
-                },
-            );
+            Navigator.showOverlay(AppScreens.Overlay.RequestDecline, {
+                onDecline: this.onDecline,
+                onClose: this.closeReviewModal,
+            });
         }
     };
 

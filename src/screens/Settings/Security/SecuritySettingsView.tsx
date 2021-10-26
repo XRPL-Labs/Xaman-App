@@ -150,24 +150,12 @@ class SecuritySettingsView extends Component<Props, State> {
     biometricMethodChange = (value: boolean) => {
         // if disable the biometric ask for passcode
         if (!value) {
-            Navigator.showOverlay(
-                AppScreens.Overlay.Auth,
-                {
-                    overlay: {
-                        handleKeyboardEvents: true,
-                    },
-                    layout: {
-                        backgroundColor: 'transparent',
-                        componentBackgroundColor: 'transparent',
-                    },
+            Navigator.showOverlay(AppScreens.Overlay.Auth, {
+                biometricAvailable: false,
+                onSuccess: () => {
+                    this.changeBiometricMethod(value);
                 },
-                {
-                    biometricAvailable: false,
-                    onSuccess: () => {
-                        this.changeBiometricMethod(value);
-                    },
-                },
-            );
+            });
         } else {
             this.changeBiometricMethod(value);
         }

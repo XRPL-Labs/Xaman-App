@@ -110,19 +110,7 @@ class AdvancedSettingsView extends Component<Props, State> {
     showChangeLog = () => {
         const currentVersionCode = GetAppVersionCode();
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.ChangeLog,
-            {
-                overlay: {
-                    handleKeyboardEvents: true,
-                },
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            { version: currentVersionCode },
-        );
+        Navigator.showOverlay(AppScreens.Overlay.ChangeLog, { version: currentVersionCode });
     };
 
     reRegisterPushToken = async () => {

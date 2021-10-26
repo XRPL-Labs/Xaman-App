@@ -79,6 +79,16 @@ const getTabBarIcons = () => {
     };
 };
 
+const defaultOverlayOptions = {
+    overlay: {
+        handleKeyboardEvents: true,
+    },
+    layout: {
+        backgroundColor: 'transparent',
+        componentBackgroundColor: 'transparent',
+    },
+};
+
 /* Lib ==================================================================== */
 
 const Navigator = {
@@ -190,7 +200,7 @@ const Navigator = {
         return Navigation.popToRoot(currentScreen, options);
     },
 
-    showOverlay(overlay: any, options = {}, passProps = {}) {
+    showOverlay(overlay: any, passProps = {}, options = {}) {
         const currentOverlay = NavigationService.getCurrentOverlay();
         if (currentOverlay !== overlay) {
             return Navigation.showOverlay({
@@ -198,7 +208,7 @@ const Navigator = {
                     name: overlay,
                     id: overlay,
                     passProps: assign(passProps, { componentType: ComponentTypes.Overlay }),
-                    options,
+                    options: assign(defaultOverlayOptions, options),
                 },
             });
         }
@@ -261,19 +271,7 @@ const Navigator = {
         buttons: { text: string; onPress?: () => void; type?: 'continue' | 'dismiss'; light?: boolean }[];
         onDismissed?: () => void;
     }) {
-        Navigator.showOverlay(
-            AppScreens.Overlay.Alert,
-            {
-                overlay: {
-                    handleKeyboardEvents: true,
-                },
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            props,
-        );
+        Navigator.showOverlay(AppScreens.Overlay.Alert, props);
     },
 
     mergeOptions(options = {}, componentId?: string) {

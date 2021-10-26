@@ -150,39 +150,30 @@ class SummaryStep extends Component<Props, State> {
             });
         }
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.EnterDestinationTag,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            {
-                buttonType: 'apply',
-                destination,
-                onFinish: (destinationTag: string) => {
-                    Object.assign(destination, { tag: destinationTag });
-                    setDestination(destination);
+        Navigator.showOverlay(AppScreens.Overlay.EnterDestinationTag, {
+            buttonType: 'apply',
+            destination,
+            onFinish: (destinationTag: string) => {
+                Object.assign(destination, { tag: destinationTag });
+                setDestination(destination);
 
-                    this.setState({
-                        destinationTagInputVisible: false,
-                    });
-                },
-                onClose: () => {
-                    this.setState({
-                        destinationTagInputVisible: false,
-                    });
-                },
-                onScannerRead: ({ tag }: { tag: number }) => {
-                    Object.assign(destination, { tag: String(tag) });
-                    setDestination(destination);
-
-                    this.showEnterDestinationTag();
-                },
-                onScannerClose: this.showEnterDestinationTag,
+                this.setState({
+                    destinationTagInputVisible: false,
+                });
             },
-        );
+            onClose: () => {
+                this.setState({
+                    destinationTagInputVisible: false,
+                });
+            },
+            onScannerRead: ({ tag }: { tag: number }) => {
+                Object.assign(destination, { tag: String(tag) });
+                setDestination(destination);
+
+                this.showEnterDestinationTag();
+            },
+            onScannerClose: this.showEnterDestinationTag,
+        });
     };
 
     onDestinationTagConfirm = () => {
@@ -237,20 +228,11 @@ class SummaryStep extends Component<Props, State> {
         }
 
         if (!isEmpty(destination.tag) && destination.tag !== confirmedDestinationTag) {
-            Navigator.showOverlay(
-                AppScreens.Overlay.ConfirmDestinationTag,
-                {
-                    layout: {
-                        backgroundColor: 'transparent',
-                        componentBackgroundColor: 'transparent',
-                    },
-                },
-                {
-                    destinationTag: destination.tag,
-                    onConfirm: this.onDestinationTagConfirm,
-                    onChange: this.showEnterDestinationTag,
-                },
-            );
+            Navigator.showOverlay(AppScreens.Overlay.ConfirmDestinationTag, {
+                destinationTag: destination.tag,
+                onConfirm: this.onDestinationTagConfirm,
+                onChange: this.showEnterDestinationTag,
+            });
             return;
         }
 
