@@ -349,15 +349,18 @@ class ReviewTransactionModal extends Component<Props, State> {
                     })
                 ) {
                     Navigator.showAlertModal({
+                        testID: 'new-trust-line-alert-overlay',
                         type: 'warning',
                         title: Localize.t('global.warning'),
                         text: Localize.t('asset.addingTrustLineWarning'),
                         buttons: [
                             {
+                                testID: 'back-button',
                                 text: Localize.t('global.back'),
                                 light: false,
                             },
                             {
+                                testID: 'continue-button',
                                 text: Localize.t('global.continue'),
                                 onPress: this.prepareAndSignTransaction,
                                 type: 'dismiss',

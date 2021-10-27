@@ -8,6 +8,24 @@ Then('I tap {string}', async (buttonId) => {
     await element(by.id(buttonId)).tap();
 });
 
+Then('I wait {int} sec for button {string} to be enabled', async (timeoutSec, buttonId) => {
+    let sec_passed = 0;
+    let enabled = false;
+    while (sec_passed < timeoutSec) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const attributes = await element(by.id(buttonId)).getAttributes();
+        if (attributes.enabled) {
+            enabled = true;
+            break;
+        }
+        sec_passed += 1;
+    }
+
+    if (!enabled) {
+        throw new Error(`button with id ${buttonId} is not enabled after ${timeoutSec} seconds!`);
+    }
+});
+
 Then('I enter {string} in {string}', async (value, textInputId) => {
     await element(by.id(textInputId)).typeText(value);
 });

@@ -266,10 +266,17 @@ const Navigator = {
     },
 
     showAlertModal(props: {
+        testID?: string;
         type: 'success' | 'info' | 'warning' | 'error';
         text: string;
         title?: string;
-        buttons: { text: string; onPress?: () => void; type?: 'continue' | 'dismiss'; light?: boolean }[];
+        buttons: {
+            testID?: string;
+            text: string;
+            onPress?: () => void;
+            type?: 'continue' | 'dismiss';
+            light?: boolean;
+        }[];
         onDismissed?: () => void;
     }) {
         Navigator.showOverlay(AppScreens.Overlay.Alert, props);

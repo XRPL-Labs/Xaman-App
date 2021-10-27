@@ -55,7 +55,15 @@ describe('Navigator helper', () => {
                 name: overlay,
                 id: overlay,
                 passProps: { componentType: ComponentTypes.Overlay },
-                options: {},
+                options: {
+                    overlay: {
+                        handleKeyboardEvents: true,
+                    },
+                    layout: {
+                        backgroundColor: 'transparent',
+                        componentBackgroundColor: 'transparent',
+                    },
+                },
             },
         });
     });

@@ -71,6 +71,9 @@ describe('NavigationService', () => {
                         backgroundColor: 'transparent',
                         componentBackgroundColor: 'transparent',
                     },
+                    overlay: {
+                        handleKeyboardEvents: true,
+                    },
                 },
             },
         });
@@ -90,6 +93,9 @@ describe('NavigationService', () => {
                     layout: {
                         backgroundColor: 'transparent',
                         componentBackgroundColor: 'transparent',
+                    },
+                    overlay: {
+                        handleKeyboardEvents: true,
                     },
                 },
             },

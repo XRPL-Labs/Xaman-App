@@ -52,6 +52,8 @@ Feature: Lock
         Then I scroll up 'review-content-container'
         Given I should see 'accept-button'
         Then I slide right 'accept-button'
+        Given I should wait 10 sec to see 'new-trust-line-alert-overlay'
+        Then I tap 'continue-button'
         Then I type my passcode
         Given I should see 'submitting-view'
         Given I should wait 20 sec to see 'success-result-view'

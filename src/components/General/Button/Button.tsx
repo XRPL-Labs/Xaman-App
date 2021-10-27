@@ -217,6 +217,7 @@ export default class Button extends Component<Props> {
                 ]}
                 onPress={this.onPress}
                 onLongPress={this.onLongPress}
+                disabled={isDisabled}
                 {...touchableProps}
             >
                 {this.renderInnerContent()}
