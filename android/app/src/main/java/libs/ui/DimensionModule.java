@@ -40,15 +40,18 @@ public class DimensionModule extends ReactContextBaseJavaModule {
         final Map<String, Object> layoutInsets = new HashMap<>();
         final Activity activity = getCurrentActivity();
 
-        if (activity != null) {
-            final View view = activity.getWindow().getDecorView();
-            final WindowInsets insets = view.getRootWindowInsets();
+        // apply default to zero
+        layoutInsets.put("top", 0);
+        layoutInsets.put("bottom", 0);
 
-            layoutInsets.put("top", Math.round(PixelUtil.toDIPFromPixel(insets.getSystemWindowInsetTop())));
-            layoutInsets.put("bottom", Math.round(PixelUtil.toDIPFromPixel(insets.getSystemWindowInsetBottom())));
-        } else {
-            layoutInsets.put("top", 0);
-            layoutInsets.put("bottom", 0);
+        if (activity != null) {
+            final View decorView = activity.getWindow().getDecorView();
+            // if view is not isAttachedToWindow getSystemWindowInsetTop can return null
+            if (decorView != null &&  decorView.isAttachedToWindow()) {
+                final WindowInsets insets = decorView.getRootWindowInsets();
+                layoutInsets.put("top", Math.round(PixelUtil.toDIPFromPixel(insets.getSystemWindowInsetTop())));
+                layoutInsets.put("bottom", Math.round(PixelUtil.toDIPFromPixel(insets.getSystemWindowInsetBottom())));
+            }
         }
 
         return layoutInsets;
@@ -69,7 +72,7 @@ public class DimensionModule extends ReactContextBaseJavaModule {
         }
 
         result.putInt("top", top);
-        result.putInt("bottom", top);
+        result.putInt("bottom", bottom);
 
         promise.resolve(result);
     }
