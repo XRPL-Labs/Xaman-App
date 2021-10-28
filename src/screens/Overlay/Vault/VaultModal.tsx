@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { Alert, Linking, InteractionManager } from 'react-native';
+import { Alert, Linking, BackHandler, InteractionManager } from 'react-native';
 
 import * as AccountLib from 'xrpl-accountlib';
 import RNTangemSdk from 'tangem-sdk-react-native';
@@ -43,6 +43,8 @@ import { Props, State, AuthMethods, SignOptions } from './types';
 class VaultModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Vault;
 
+    private backHandler: any;
+
     static options() {
         return {
             topBar: {
@@ -63,6 +65,14 @@ class VaultModal extends Component<Props, State> {
 
     componentDidMount() {
         InteractionManager.runAfterInteractions(this.setSignerAccount);
+
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.dismiss);
+    }
+
+    componentWillUnmount() {
+        if (this.backHandler) {
+            this.backHandler.remove();
+        }
     }
 
     setSignerAccount = () => {
@@ -112,6 +122,11 @@ class VaultModal extends Component<Props, State> {
         });
     };
 
+    close = () => {
+        Keyboard.dismiss();
+        Navigator.dismissOverlay();
+    };
+
     dismiss = () => {
         const { onDismissed } = this.props;
 
@@ -119,8 +134,8 @@ class VaultModal extends Component<Props, State> {
             onDismissed();
         }
 
-        Keyboard.dismiss();
-        Navigator.dismissOverlay();
+        this.close();
+        return true;
     };
 
     onInvalidAuth = (method: AuthMethods) => {
@@ -293,7 +308,7 @@ class VaultModal extends Component<Props, State> {
             onSign(signedObject);
         }
 
-        Navigator.dismissOverlay();
+        this.close();
     };
 
     render() {
