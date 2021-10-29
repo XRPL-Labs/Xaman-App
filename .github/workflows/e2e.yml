@@ -6,9 +6,6 @@ jobs:
   build-run:
     runs-on: macos-11
 
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_13.app
-
     steps:
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1.1
