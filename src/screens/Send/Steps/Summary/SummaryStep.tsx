@@ -4,7 +4,7 @@
 
 import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { View, Image, Text, Alert, InteractionManager } from 'react-native';
+import { View, Text, Alert, InteractionManager } from 'react-native';
 
 import { BackendService, SocketService } from '@services';
 
@@ -18,6 +18,7 @@ import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 // components
 import {
+    Avatar,
     AmountText,
     Button,
     Footer,
@@ -267,8 +268,8 @@ class SummaryStep extends Component<Props, State> {
             return (
                 <View style={[styles.pickerItem]}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[styles.xrpAvatarContainer]}>
-                            <Image style={[styles.xrpAvatar]} source={Images.IconXrp} />
+                        <View style={[styles.currencyImageContainer]}>
+                            <Avatar border size={35} source={Images.IconXrpNew} />
                         </View>
                         <View style={[AppStyles.column, AppStyles.centerContent]}>
                             <Text style={[styles.currencyItemLabel]}>XRP</Text>
@@ -285,8 +286,8 @@ class SummaryStep extends Component<Props, State> {
         return (
             <View style={[styles.pickerItem]}>
                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                    <View style={[styles.brandAvatarContainer]}>
-                        <Image style={[styles.brandAvatar]} source={{ uri: item.counterParty.avatar }} />
+                    <View style={[styles.currencyImageContainer]}>
+                        <Avatar border size={35} source={{ uri: item.counterParty.avatar }} />
                     </View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
                         <Text style={[styles.currencyItemLabel]}>

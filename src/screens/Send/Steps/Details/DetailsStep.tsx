@@ -7,7 +7,7 @@
 import { filter } from 'lodash';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
-import { View, Image, Text, Alert, InteractionManager, Platform } from 'react-native';
+import { View, Text, Alert, InteractionManager, Platform } from 'react-native';
 
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
@@ -20,7 +20,15 @@ import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 // components
-import { Button, AccordionPicker, KeyboardAwareScrollView, AmountInput, AmountText, Footer } from '@components/General';
+import {
+    Avatar,
+    Button,
+    AccordionPicker,
+    KeyboardAwareScrollView,
+    AmountInput,
+    AmountText,
+    Footer,
+} from '@components/General';
 import { AccountPicker } from '@components/Modules';
 
 import Localize from '@locale';
@@ -244,7 +252,7 @@ class DetailsStep extends Component<Props, State> {
         setSource(item);
     };
 
-    onCurrencyChange = (item: TrustLineSchema) => {
+    onCurrencyChange = (item: string | TrustLineSchema) => {
         const { setCurrency, setAmount } = this.context;
 
         // xrp
@@ -276,11 +284,10 @@ class DetailsStep extends Component<Props, State> {
         // XRP
         if (typeof item === 'string') {
             return (
-                <View style={[styles.pickerItemCurrency]}>
+                <View>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        {/* <View style={[styles.xrpAvatarContainer]}> */}
                         <View style={[styles.currencyImageContainer]}>
-                            <Image style={[styles.currencyImageIcon]} source={Images.IconXrpNew} />
+                            <Avatar border size={35} source={Images.IconXrpNew} />
                         </View>
                         <View style={[AppStyles.column, AppStyles.centerContent]}>
                             <Text style={[styles.currencyItemLabel, selected && styles.currencyItemLabelSelected]}>
@@ -299,16 +306,20 @@ class DetailsStep extends Component<Props, State> {
         }
 
         return (
-            <View style={[styles.pickerItemCurrency]}>
+            <View>
                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[styles.currencyImageContainer]}>
-                        <Image style={[styles.currencyImageIcon]} source={{ uri: item.counterParty.avatar }} />
+                        <Avatar border size={35} source={{ uri: item.counterParty.avatar }} />
                     </View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
                         <Text style={[styles.currencyItemLabel, selected && styles.currencyItemLabelSelected]}>
                             {NormalizeCurrencyCode(item.currency.currency)}
-
-                            {item.currency.name && <Text style={[AppStyles.subtext]}> - {item.currency.name}</Text>}
+                            {item.currency.name && (
+                                <Text style={[AppStyles.subtext, selected && styles.currencyItemLabelSelected]}>
+                                    {' '}
+                                    - {item.currency.name}
+                                </Text>
+                            )}
                         </Text>
 
                         <AmountText

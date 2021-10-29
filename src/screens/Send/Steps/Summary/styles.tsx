@@ -55,18 +55,8 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyMono,
         color: '$grey',
     },
-    brandAvatarContainer: {
+    currencyImageContainer: {
         marginRight: 10,
-        borderWidth: 1,
-        borderColor: '$grey',
-        borderRadius: 8,
-        justifyContent: 'center',
-        overflow: 'hidden',
-    },
-    brandAvatar: {
-        width: AppSizes.screen.width * 0.1,
-        height: AppSizes.screen.width * 0.1,
-        resizeMode: 'cover',
     },
     xrpAvatarContainer: {
         backgroundColor: '$white',

@@ -1,4 +1,4 @@
-import { isEqual, findIndex, isEmpty } from 'lodash';
+import { get, isEqual, findIndex, isEmpty } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Text, ViewStyle, Modal, FlatList, TouchableOpacity, LayoutChangeEvent } from 'react-native';
@@ -186,10 +186,68 @@ class AccordionPicker extends Component<Props, State> {
         );
     };
 
-    render() {
-        const { containerStyle, renderItem, keyExtractor, items } = this.props;
+    renderSelectedItem = () => {
+        const { renderItem, items } = this.props;
+        const { expanded, selectedIndex } = this.state;
 
-        const { expanded, itemHeight, itemWidth, pageX, pageY, selectedIndex } = this.state;
+        const selectedItem = get(items, selectedIndex);
+
+        if (!selectedItem) {
+            return null;
+        }
+
+        return (
+            <TouchableOpacity
+                activeOpacity={0.9}
+                onLayout={this.setItemHeight}
+                onPress={this.onPress}
+                style={[styles.pickerDropDownItem, AppStyles.centerContent]}
+            >
+                <View style={[AppStyles.row]}>
+                    <View style={AppStyles.flex1}>{renderItem(selectedItem)}</View>
+                    {items.length > 1 && (
+                        <TouchableOpacity style={[styles.collapseButton]} onPress={this.toggle}>
+                            <Icon
+                                name={expanded ? 'IconChevronUp' : 'IconChevronDown'}
+                                size={20}
+                                style={styles.collapseIcon}
+                            />
+                        </TouchableOpacity>
+                    )}
+                </View>
+            </TouchableOpacity>
+        );
+    };
+
+    renderExpandedModal = () => {
+        const { keyExtractor, items } = this.props;
+
+        const { expanded, itemHeight, itemWidth, pageX, pageY } = this.state;
+
+        return (
+            <Modal visible={expanded} transparent onRequestClose={this.close}>
+                <View style={[styles.overlay]} onStartShouldSetResponder={() => true} onResponderRelease={this.close}>
+                    <View
+                        style={[
+                            styles.pickerDropDownContainer,
+                            {
+                                top: itemHeight + pageY,
+                                left: pageX,
+                                height: itemHeight * items.length + 10,
+                                width: itemWidth,
+                            },
+                        ]}
+                    >
+                        <FlatList data={items} renderItem={this.renderRow} keyExtractor={keyExtractor} />
+                    </View>
+                </View>
+            </Modal>
+        );
+    };
+
+    render() {
+        const { containerStyle, items } = this.props;
+        const { expanded } = this.state;
 
         if (isEmpty(items)) {
             return (
@@ -214,47 +272,8 @@ class AccordionPicker extends Component<Props, State> {
                     items.length > 1 && expanded && styles.pickerContainerExpanded,
                 ]}
             >
-                <TouchableOpacity
-                    activeOpacity={0.9}
-                    onLayout={this.setItemHeight}
-                    onPress={this.onPress}
-                    style={[styles.pickerDropDownItem, AppStyles.centerContent]}
-                >
-                    <View style={[AppStyles.row]}>
-                        <View style={AppStyles.flex1}>{renderItem(items[selectedIndex])}</View>
-                        {items.length > 1 && (
-                            <TouchableOpacity style={[styles.collapseButton]} onPress={this.toggle}>
-                                <Icon
-                                    name={expanded ? 'IconChevronUp' : 'IconChevronDown'}
-                                    size={20}
-                                    style={styles.collapseIcon}
-                                />
-                            </TouchableOpacity>
-                        )}
-                    </View>
-                </TouchableOpacity>
-
-                <Modal visible={expanded} transparent onRequestClose={this.close}>
-                    <View
-                        style={[styles.overlay]}
-                        onStartShouldSetResponder={() => true}
-                        onResponderRelease={this.close}
-                    >
-                        <View
-                            style={[
-                                styles.pickerDropDownContainer,
-                                {
-                                    top: itemHeight + pageY,
-                                    left: pageX,
-                                    height: itemHeight * items.length + 10,
-                                    width: itemWidth,
-                                },
-                            ]}
-                        >
-                            <FlatList data={items} renderItem={this.renderRow} keyExtractor={keyExtractor} />
-                        </View>
-                    </View>
-                </Modal>
+                {this.renderSelectedItem()}
+                {this.renderExpandedModal()}
             </View>
         );
     }
