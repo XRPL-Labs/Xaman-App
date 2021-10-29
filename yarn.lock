@@ -13897,10 +13897,10 @@ react-native-webview@11.14.0:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
 
-react-native@0.66.0:
-  version "0.66.0"
-  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.66.0.tgz#99bdd83a9a612a71b94242767989d666d445b007"
-  integrity sha512-m26TKwzsfHVdZ1hDG+7mZ4M4ftxFFZrhtiT0OXuwfBzmNtB3xhsJtYszPeizw33c9YNp8rvehKT3c4ldDCW6kA==
+react-native@0.66.1:
+  version "0.66.1"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.66.1.tgz#96defaf60579406321340ebe1dcea76a3c942806"
+  integrity sha512-BBvytmqlOLL+bRcO0jBiYfg16lYRsYDOC8/5E+bpnhb3EGtU+YCQAYfszw6JL7Hfy0ftnQNP5yj8pt+vqMHXIA==
   dependencies:
     "@jest/create-cache-key-function" "^27.0.1"
     "@react-native-community/cli" "^6.0.0"
@@ -14170,10 +14170,10 @@ realm-network-transport@^0.7.0:
     abort-controller "^3.0.0"
     node-fetch "^2.6.0"
 
-realm@10.8.0:
-  version "10.8.0"
-  resolved "https://registry.yarnpkg.com/realm/-/realm-10.8.0.tgz#76bcf4d09ddad72304e1376d5ad7c605ed581f73"
-  integrity sha512-mrQEHf5dfSZVEE3Ol4L2Ulhl8I1z4IytZuB/tTH4sG/jAG21wuN4JJPmp81hiNf5/PtekN+3I55w0ix/r4vSWQ==
+realm@10.9.1:
+  version "10.9.1"
+  resolved "https://registry.yarnpkg.com/realm/-/realm-10.9.1.tgz#d0c0ce62726af43c564d89f7593cc6a015e66d77"
+  integrity sha512-56P4XCHiwKqeb5x9+g5+yQyxkcIHWhz3jAF+3bCE5dk4yjzSgTyEHYA94sGeoX45yWI6FWv68mxBpm1ctKfIyw==
   dependencies:
     bindings "^1.5.0"
     bson "4.4.1"
@@ -15757,10 +15757,10 @@ tail@^2.0.0:
   resolved "https://registry.yarnpkg.com/tail/-/tail-2.2.0.tgz#ef9a7f170c5a33bc0b3ca92a5d5fcd4748a77f46"
   integrity sha512-QqUMtWlnzArTvGyjVnAE5fAiXEm2Psvk/BlE7vWx2/dIEWMsAhcNPz7iW6WTiSM8h1fjtCkRMsaWBS1j6rpGBg==
 
-tangem-sdk-react-native@2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/tangem-sdk-react-native/-/tangem-sdk-react-native-2.0.1.tgz#fa5bbaccb7e500d3c3d46410062706d406366c95"
-  integrity sha512-7BAQl0agv9R73e2K2FmfhmRz+aNLyr953/0/2YvXx2QYcgLLGNRJfzcDw37qPWCa3xlNFisqbkQcUwnZT+PqXg==
+tangem-sdk-react-native@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/tangem-sdk-react-native/-/tangem-sdk-react-native-2.0.2.tgz#c54c8112c9eef1c669d0f247f8629565a61597c2"
+  integrity sha512-NV3VF1DvDc92FfIPxBKhx8+w7b0ZRKDNBh/y1Gqm5oQGoae9yXhN+yRGUNHg2vNhenjC3HOW5ZVPUn6kdjVhBA==
 
 tapable@^1.0.0, tapable@^1.1.3:
   version "1.1.3"
