@@ -9,6 +9,7 @@ import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
 
+import { GetCardPasscodeStatus } from '@common/utils/tangem';
 import { AppScreens } from '@common/constants';
 
 import { AccountRepository } from '@store/repositories';
@@ -109,20 +110,30 @@ class AccountSettingsView extends Component<Props, State> {
     showAccessLevelPicker = () => {
         const { account } = this.state;
 
-        Navigator.push(
-            AppScreens.Global.Picker,
-            {},
-            {
-                title: Localize.t('account.accessLevel'),
-                description: Localize.t('account.accessLevelChangeAlert'),
-                items: [
-                    { title: Localize.t('account.readOnly'), value: AccessLevels.Readonly },
-                    { title: Localize.t('account.fullAccess'), value: AccessLevels.Full },
-                ],
-                selected: account.accessLevel,
-                onSelect: this.onAccessLevelSelected,
-            },
-        );
+        Navigator.push(AppScreens.Global.Picker, {
+            title: Localize.t('account.accessLevel'),
+            description: Localize.t('account.accessLevelChangeAlert'),
+            items: [
+                { title: Localize.t('account.readOnly'), value: AccessLevels.Readonly },
+                { title: Localize.t('account.fullAccess'), value: AccessLevels.Full },
+            ],
+            selected: account.accessLevel,
+            onSelect: this.onAccessLevelSelected,
+        });
+    };
+
+    downgradeAccountAccessLevel = () => {
+        const { account } = this.state;
+
+        // downgrade the access level
+        AccountRepository.downgrade(account);
+    };
+
+    onAccountDowngradeRequest = () => {
+        Navigator.showOverlay(AppScreens.Overlay.Auth, {
+            biometricAvailable: false,
+            onSuccess: this.downgradeAccountAccessLevel,
+        });
     };
 
     onAccessLevelSelected = (item: any) => {
@@ -144,10 +155,7 @@ class AccountSettingsView extends Component<Props, State> {
                     { text: Localize.t('global.cancel') },
                     {
                         text: Localize.t('global.doIt'),
-                        onPress: () => {
-                            // downgrade the access level
-                            AccountRepository.downgrade(account);
-                        },
+                        onPress: this.onAccountDowngradeRequest,
                         style: 'destructive',
                     },
                 ],
@@ -166,7 +174,7 @@ class AccountSettingsView extends Component<Props, State> {
                     text: Localize.t('global.doIt'),
                     testID: 'yes-iam-sure-button',
                     onPress: () => {
-                        Navigator.push(AppScreens.Account.Import, {}, { upgradeAccount: account });
+                        Navigator.push(AppScreens.Account.Import, { upgradeAccount: account });
                     },
                 },
             ],
@@ -176,17 +184,36 @@ class AccountSettingsView extends Component<Props, State> {
 
     showChangePassphrase = () => {
         const { account } = this.props;
-        Navigator.push(AppScreens.Account.Edit.ChangePassphrase, {}, { account });
+        Navigator.push(AppScreens.Account.Edit.ChangePassphrase, { account });
     };
 
     showChangeTangemSecurity = () => {
         const { account } = this.props;
-        Navigator.push(AppScreens.Account.Edit.ChangeTangemSecurityEnforce, {}, { account });
+        Navigator.push(AppScreens.Account.Edit.ChangeTangemSecurityEnforce, { account });
     };
 
     removeAccount = () => {
         const { account } = this.state;
 
+        AccountRepository.purge(account);
+        Navigator.pop();
+    };
+
+    onAccountRemoveRequest = () => {
+        const { account } = this.state;
+
+        // if full access auth before remove
+        if (account.accessLevel === AccessLevels.Full) {
+            Navigator.showOverlay(AppScreens.Overlay.Auth, {
+                biometricAvailable: false,
+                onSuccess: this.removeAccount,
+            });
+        } else {
+            this.removeAccount();
+        }
+    };
+
+    onRemovePress = () => {
         Prompt(
             Localize.t('global.warning'),
             Localize.t('account.accountRemoveWarning'),
@@ -194,11 +221,7 @@ class AccountSettingsView extends Component<Props, State> {
                 { text: Localize.t('global.cancel') },
                 {
                     text: Localize.t('global.doIt'),
-                    onPress: () => {
-                        // downgrade the access level
-                        AccountRepository.purge(account);
-                        Navigator.pop();
-                    },
+                    onPress: this.onAccountRemoveRequest,
                     style: 'destructive',
                 },
             ],
@@ -339,9 +362,9 @@ class AccountSettingsView extends Component<Props, State> {
                                     <Text style={[styles.value]}>
                                         {/*
                                          // @ts-ignore */}
-                                        {account.additionalInfo?.isPin2Default
-                                            ? Localize.t('global.longTap')
-                                            : Localize.t('global.passcode')}
+                                        {GetCardPasscodeStatus(account.additionalInfo)
+                                            ? Localize.t('global.passcode')
+                                            : Localize.t('global.longTap')}
                                     </Text>
                                 </View>
                                 <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
@@ -367,7 +390,7 @@ class AccountSettingsView extends Component<Props, State> {
                             icon="IconTrash"
                             iconStyle={AppStyles.imgColorWhite}
                             style={[AppStyles.marginSml, AppStyles.buttonRed]}
-                            onPress={this.removeAccount}
+                            onPress={this.onRemovePress}
                         />
                     </ScrollView>
                 </View>

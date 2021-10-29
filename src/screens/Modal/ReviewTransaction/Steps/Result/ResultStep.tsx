@@ -22,15 +22,26 @@ import { StepsContext } from '../../Context';
 /* types ==================================================================== */
 export interface Props {}
 
-export interface State {}
+export interface State {
+    closeButtonLabel: string;
+}
 
 /* Component ==================================================================== */
 class ResultStep extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
+    constructor(props: Props, context: React.ContextType<typeof StepsContext>) {
+        super(props);
+
+        this.state = {
+            closeButtonLabel: context.payload.getReturnURL() ? Localize.t('global.next') : Localize.t('global.close'),
+        };
+    }
+
     renderSuccess = () => {
-        const { payload, onFinish, getTransactionLabel } = this.context;
+        const { onFinish, getTransactionLabel } = this.context;
+        const { closeButtonLabel } = this.state;
 
         return (
             <SafeAreaView testID="success-result-view" style={[styles.container, styles.containerSuccess]}>
@@ -54,7 +65,7 @@ class ResultStep extends Component<Props, State> {
                         testID="close-button"
                         style={{ backgroundColor: AppColors.green }}
                         onPress={onFinish}
-                        label={payload.meta.return_url_app ? Localize.t('global.next') : Localize.t('global.close')}
+                        label={closeButtonLabel}
                     />
                 </Footer>
             </SafeAreaView>
@@ -62,7 +73,8 @@ class ResultStep extends Component<Props, State> {
     };
 
     renderFailed = () => {
-        const { transaction, payload, onFinish } = this.context;
+        const { transaction, onFinish } = this.context;
+        const { closeButtonLabel } = this.state;
 
         return (
             <SafeAreaView testID="failed-result-view" style={[styles.container, styles.containerFailed]}>
@@ -112,7 +124,7 @@ class ResultStep extends Component<Props, State> {
                         testID="close-button"
                         style={{ backgroundColor: AppColors.red }}
                         onPress={onFinish}
-                        label={payload.meta.return_url_app ? Localize.t('global.next') : Localize.t('global.close')}
+                        label={closeButtonLabel}
                     />
                 </Footer>
             </SafeAreaView>
@@ -120,7 +132,8 @@ class ResultStep extends Component<Props, State> {
     };
 
     renderSigned = () => {
-        const { transaction, payload, onFinish } = this.context;
+        const { transaction, onFinish } = this.context;
+        const { closeButtonLabel } = this.state;
 
         return (
             <SafeAreaView testID="signed-result-view" style={[AppStyles.container, styles.containerSigned]}>
@@ -164,23 +177,59 @@ class ResultStep extends Component<Props, State> {
                 </View>
 
                 <Footer>
-                    <Button
-                        onPress={onFinish}
-                        label={payload.meta.return_url_app ? Localize.t('global.next') : Localize.t('global.close')}
-                    />
+                    <Button onPress={onFinish} label={closeButtonLabel} />
+                </Footer>
+            </SafeAreaView>
+        );
+    };
+
+    renderVerificationFailed = () => {
+        const { onFinish } = this.context;
+        const { closeButtonLabel } = this.state;
+
+        return (
+            <SafeAreaView
+                testID="verification-failed-result-view"
+                style={[styles.container, styles.containerVerificationFailed]}
+            >
+                <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}>
+                    <Text style={[AppStyles.h3, AppStyles.strong, AppStyles.colorOrange, AppStyles.textCenterAligned]}>
+                        {Localize.t('send.verificationFailed')}
+                    </Text>
+                    <Text
+                        style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorOrange, AppStyles.textCenterAligned]}
+                    >
+                        {Localize.t('send.couldNotVerifyTransaction')}
+                    </Text>
+                </View>
+
+                <View style={[AppStyles.flex2]}>
+                    <View style={styles.detailsCard}>
+                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
+                        <Spacer />
+                        <Text style={[AppStyles.subtext]}>{Localize.t('send.verificationFailedDescription')}</Text>
+                    </View>
+                </View>
+
+                <Footer>
+                    <Button onPress={onFinish} label={closeButtonLabel} style={{ backgroundColor: AppColors.orange }} />
                 </Footer>
             </SafeAreaView>
         );
     };
 
     render() {
-        const { submitResult } = this.context;
+        const { submitResult, transaction } = this.context;
 
         if (!submitResult) {
             return this.renderSigned();
         }
 
-        if (submitResult.success) {
+        if (transaction.TransactionResult?.success) {
+            // submitted successfully but cannot verified
+            if (transaction.VerifyResult.success === false) {
+                return this.renderVerificationFailed();
+            }
             return this.renderSuccess();
         }
 

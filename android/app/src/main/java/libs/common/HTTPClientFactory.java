@@ -18,10 +18,10 @@ import okhttp3.Request;
 
 public class HTTPClientFactory implements OkHttpClientFactory {
     // TODO: remove "xumm-cdn.imgix.net" after migration period
-    private static List<String> trustedHosts = Arrays.asList("xumm-cdn.imgix.net", "cdn.xumm.pro", "xumm.app");
-    private static String defaultHost = "xumm.app";
+    private static final List<String> trustedHosts = Arrays.asList("xumm-cdn.imgix.net", "cdn.xumm.pro", "xumm.app");
+    private static final String defaultHost = "xumm.app";
 
-    private final class HostSelectionInterceptor implements Interceptor {
+    private static final class HostSelectionInterceptor implements Interceptor {
         @Override
         public okhttp3.Response intercept(Chain chain) throws IOException {
             Request request = chain.request();

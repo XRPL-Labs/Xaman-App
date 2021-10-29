@@ -1,5 +1,17 @@
+import { isEqual } from 'lodash';
+
 import React, { Component, Fragment } from 'react';
-import { View, TouchableOpacity, TextInput, Text, ViewStyle, Animated, LayoutChangeEvent } from 'react-native';
+import {
+    View,
+    TouchableOpacity,
+    TextInput,
+    Text,
+    ViewStyle,
+    Animated,
+    Platform,
+    LayoutChangeEvent,
+    KeyboardTypeOptions,
+} from 'react-native';
 
 import StyleService from '@services/StyleService';
 import { Icon } from '@components/General/Icon';
@@ -27,6 +39,7 @@ interface State {
     inputWidth: number;
     hidePassword: boolean;
     score: number;
+    keyboardType: KeyboardTypeOptions;
 }
 
 /* Constants ==================================================================== */
@@ -92,9 +105,14 @@ export default class PasswordInput extends Component<Props, State> {
             inputWidth: 0,
             hidePassword: true,
             score: 0,
+            keyboardType: 'default',
         };
 
         this.animatedBarWidth = new Animated.Value(0);
+    }
+
+    shouldComponentUpdate(nextProps: Props, nextState: State) {
+        return !isEqual(nextState, this.state) || !isEqual(nextProps, this.props);
     }
 
     componentDidMount() {
@@ -105,7 +123,7 @@ export default class PasswordInput extends Component<Props, State> {
                 if (this.instance) {
                     this.instance.focus();
                 }
-            }, 50);
+            }, 100);
         }
     }
 
@@ -114,7 +132,7 @@ export default class PasswordInput extends Component<Props, State> {
             if (this.instance) {
                 this.instance.focus();
             }
-        }, 50);
+        }, 100);
     };
 
     public blur = () => {
@@ -122,13 +140,23 @@ export default class PasswordInput extends Component<Props, State> {
             if (this.instance) {
                 this.instance.blur();
             }
-        }, 50);
+        }, 100);
     };
 
-    toggleSwitch() {
+    toggleSwitch = () => {
         const { hidePassword } = this.state;
-        this.setState({ hidePassword: !hidePassword });
-    }
+
+        let keyboardType = 'default' as KeyboardTypeOptions;
+
+        if (Platform.OS === 'android' && !hidePassword === false) {
+            keyboardType = 'visible-password';
+        }
+
+        this.setState({
+            hidePassword: Platform.OS !== 'android' ? !hidePassword : hidePassword,
+            keyboardType,
+        });
+    };
 
     calculateScore = (passphrase: string) => {
         const { minLength } = this.props;
@@ -221,7 +249,7 @@ export default class PasswordInput extends Component<Props, State> {
         return res;
     };
 
-    onChangeText(password: string) {
+    onChangeText = (password: string) => {
         const { onChange, validate } = this.props;
 
         if (!validate) {
@@ -247,7 +275,7 @@ export default class PasswordInput extends Component<Props, State> {
         }
 
         return undefined;
-    }
+    };
 
     setInputWidth = (event: LayoutChangeEvent) => {
         const { width } = event.nativeEvent.layout;
@@ -257,7 +285,7 @@ export default class PasswordInput extends Component<Props, State> {
         });
     };
 
-    renderPasswordStrength() {
+    renderPasswordStrength = () => {
         const { score, inputWidth } = this.state;
 
         const absoluteWidth = Math.round((score * inputWidth) / 100);
@@ -282,11 +310,11 @@ export default class PasswordInput extends Component<Props, State> {
                 {score !== 0 ? <Text style={[styles.label, { color: labelColor }]}>{label}</Text> : null}
             </View>
         );
-    }
+    };
 
     renderPasswordInput() {
         const { testID, inputWrapperStyle, inputStyle, editable, placeholder, selectTextOnFocus } = this.props;
-        const { hidePassword } = this.state;
+        const { hidePassword, keyboardType } = this.state;
 
         return (
             <View style={[styles.inputWrapper, inputWrapperStyle, AppStyles.stretchSelf]} onLayout={this.setInputWidth}>
@@ -295,6 +323,7 @@ export default class PasswordInput extends Component<Props, State> {
                     ref={(r) => {
                         this.instance = r;
                     }}
+                    keyboardType={keyboardType}
                     editable={editable}
                     placeholderTextColor={StyleService.value('$grey')}
                     secureTextEntry={hidePassword}

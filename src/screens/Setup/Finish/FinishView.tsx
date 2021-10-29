@@ -41,6 +41,7 @@ class FinishView extends Component<Props, State> {
             topBar: {
                 visible: false,
             },
+            popGesture: false,
         };
     }
 
@@ -109,6 +110,12 @@ class FinishView extends Component<Props, State> {
         }
     };
 
+    onTOSLoaded = () => {
+        this.setState({
+            isTOSLoaded: true,
+        });
+    };
+
     getHeaders = () => {
         return {
             'X-XUMM-Style': StyleService.getCurrentTheme(),
@@ -120,7 +127,7 @@ class FinishView extends Component<Props, State> {
     };
 
     render() {
-        const { isLoading, isTOSLoaded } = this.state;
+        const { isLoading, isTOSLoaded, TOSVersion } = this.state;
         return (
             <SafeAreaView testID="agreement-setup-screen" style={[styles.container]}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerAligned]}>
@@ -131,11 +138,7 @@ class FinishView extends Component<Props, State> {
                     <WebView
                         startInLoadingState
                         onMessage={this.fetchTOSVersion}
-                        onLoadEnd={() => {
-                            this.setState({
-                                isTOSLoaded: true,
-                            });
-                        }}
+                        onLoadEnd={this.onTOSLoaded}
                         renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                         source={{ uri: this.getURI(), headers: this.getHeaders() }}
                         style={styles.webView}
@@ -146,7 +149,7 @@ class FinishView extends Component<Props, State> {
                 <Footer>
                     <Button
                         numberOfLines={1}
-                        isDisabled={!isTOSLoaded}
+                        isDisabled={!isTOSLoaded || !TOSVersion}
                         testID="confirm-button"
                         isLoading={isLoading}
                         onPress={this.onConfirmPress}

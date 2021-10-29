@@ -4,8 +4,8 @@
 
 import React, { Component } from 'react';
 import { Results } from 'realm';
-import { isEmpty, flatMap, remove, get, uniqBy, toNumber, findIndex } from 'lodash';
-import { View, Text, SectionList, Alert } from 'react-native';
+import { isEmpty, flatMap, remove, get, uniqBy, toNumber } from 'lodash';
+import { View, Text, SectionList, Alert, RefreshControl } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
 import { AccountRepository, ContactRepository } from '@store/repositories';
@@ -19,10 +19,10 @@ import { Navigator } from '@common/helpers/navigator';
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { NormalizeDestination } from '@common/utils/codec';
 
-import { BackendService, LedgerService } from '@services';
+import { BackendService, LedgerService, StyleService } from '@services';
 
 // components
-import { Button, TextInput, Footer, InfoMessage, LoadingIndicator } from '@components/General';
+import { Button, TextInput, Footer, InfoMessage } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 // locale
@@ -79,6 +79,10 @@ class RecipientStep extends Component<Props, State> {
         } else {
             this.setDefaultDataSource();
         }
+    }
+
+    componentWillUnmount() {
+        if (this.lookupTimeout) clearTimeout(this.lookupTimeout);
     }
 
     doAccountLookUp = async (result: XrplDestination) => {
@@ -325,31 +329,22 @@ class RecipientStep extends Component<Props, State> {
             return;
         }
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.EnterDestinationTag,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
+        Navigator.showOverlay(AppScreens.Overlay.EnterDestinationTag, {
+            buttonType: 'next',
+            destination,
+            onFinish: (destinationTag: string) => {
+                Object.assign(destination, { tag: destinationTag });
+                setDestination(destination);
+                goNext();
             },
-            {
-                buttonType: 'next',
-                destination,
-                onFinish: (destinationTag: string) => {
-                    Object.assign(destination, { tag: destinationTag });
-                    setDestination(destination);
-                    goNext();
-                },
-                onScannerRead: ({ tag }: { tag: number }) => {
-                    Object.assign(destination, { tag: String(tag) });
-                    setDestination(destination);
+            onScannerRead: ({ tag }: { tag: number }) => {
+                Object.assign(destination, { tag: String(tag) });
+                setDestination(destination);
 
-                    this.showEnterDestinationTag();
-                },
-                onScannerClose: this.showEnterDestinationTag,
+                this.showEnterDestinationTag();
             },
-        );
+            onScannerClose: this.showEnterDestinationTag,
+        });
     };
 
     clearDestination = () => {
@@ -473,19 +468,9 @@ class RecipientStep extends Component<Props, State> {
 
             // check if recipient have same trustline for sending IOU
             if (typeof currency === 'object') {
-                const destinationLines = await LedgerService.getAccountLines(destination.address);
-                const { lines } = destinationLines;
+                const destinationLine = await LedgerService.getAccountLine(destination.address, currency.currency);
 
-                const haveProperTrustLine =
-                    findIndex(lines, (l: any) => {
-                        return (
-                            l.currency === currency.currency.currency &&
-                            l.account === currency.currency.issuer &&
-                            l.limit > 0
-                        );
-                    }) !== -1;
-
-                if (!haveProperTrustLine && currency.currency.issuer !== destination.address) {
+                if (!destinationLine && currency.currency.issuer !== destination.address) {
                     Navigator.showAlertModal({
                         type: 'error',
                         text: Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine'),
@@ -551,23 +536,11 @@ class RecipientStep extends Component<Props, State> {
             }
 
             if (destinationInfo.risk === 'CONFIRMED') {
-                Navigator.showOverlay(
-                    AppScreens.Overlay.FlaggedDestination,
-                    {
-                        overlay: {
-                            handleKeyboardEvents: true,
-                        },
-                        layout: {
-                            backgroundColor: 'transparent',
-                            componentBackgroundColor: 'transparent',
-                        },
-                    },
-                    {
-                        destination: destination.address,
-                        onContinue: goNext,
-                        onDismissed: this.resetResult,
-                    },
-                );
+                Navigator.showOverlay(AppScreens.Overlay.FlaggedDestination, {
+                    destination: destination.address,
+                    onContinue: goNext,
+                    onDismissed: this.resetResult,
+                });
 
                 // don't move to next step
                 return;
@@ -755,18 +728,18 @@ class RecipientStep extends Component<Props, State> {
                     </View>
 
                     <View style={[AppStyles.flex8, AppStyles.paddingTopSml]}>
-                        {isSearching ? (
-                            <LoadingIndicator />
-                        ) : (
-                            <SectionList
-                                ListEmptyComponent={this.renderListEmptyComponent}
-                                extraData={searchText}
-                                sections={dataSource}
-                                renderItem={this.renderItem}
-                                renderSectionHeader={this.renderSectionHeader}
-                                keyExtractor={(item) => `${item.address}${item.tag}`}
-                            />
-                        )}
+                        <SectionList
+                            ListEmptyComponent={this.renderListEmptyComponent}
+                            extraData={searchText}
+                            sections={dataSource}
+                            renderItem={this.renderItem}
+                            renderSectionHeader={this.renderSectionHeader}
+                            keyExtractor={(item) => `${item.address}${item.tag}`}
+                            refreshControl={
+                                <RefreshControl refreshing={isSearching} tintColor={StyleService.value('$contrast')} />
+                            }
+                            indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
+                        />
                     </View>
                 </View>
 

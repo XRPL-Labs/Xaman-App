@@ -2,6 +2,7 @@ package libs.notification;
 
 import com.xrpllabs.xumm.R;
 
+import android.content.Context;
 import android.os.SystemClock;
 import android.os.Build;
 
@@ -20,6 +21,7 @@ import com.facebook.react.bridge.Promise;
 import com.google.firebase.messaging.RemoteMessage;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 
@@ -28,14 +30,13 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule {
     private static final String BADGE_KEY = "BadgeCount";
 
     private final ReactApplicationContext context;
-    private SharedPreferences sharedPreferences = null;
-
+    private final SharedPreferences sharedPreferences;
 
     public LocalNotificationModule(ReactApplicationContext context) {
         super(context);
         this.context = context;
 
-        sharedPreferences = context.getSharedPreferences(BADGE_FILE, context.MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(BADGE_FILE, Context.MODE_PRIVATE);
 
     }
 
@@ -69,7 +70,7 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule {
 
 
                 PendingIntent pendingActionIntent = PendingIntent.getBroadcast(this.context, notificationId, intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+                        PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
 
 
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this.context, channelId)
@@ -80,24 +81,17 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule {
                         .setContentText(notification.getBody())
                         .setContentIntent(pendingActionIntent);
 
+                NotificationManager manager = (NotificationManager) this.context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-                NotificationManager manager = (NotificationManager) this.context.getSystemService(this.context.NOTIFICATION_SERVICE);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    builder.setCategory(NotificationCompat.CATEGORY_CALL);
-
-                    builder.setColor(this.context.getResources().getColor(R.color.pushIcon));
-                }
-
+                builder.setCategory(NotificationCompat.CATEGORY_CALL);
+                builder.setColor(ContextCompat.getColor(this.context, R.color.pushIcon));
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     NotificationChannel channel = new NotificationChannel(channelId, "Notification channel", NotificationManager.IMPORTANCE_DEFAULT);
                     manager.createNotificationChannel(channel);
                 }
 
-
                 manager.notify(remoteMessage.getCollapseKey(), notificationId, builder.build());
-
             }
 
             // remove the notification

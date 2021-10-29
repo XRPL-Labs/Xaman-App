@@ -9,10 +9,10 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.BaseActivityEventListener;
@@ -111,13 +111,13 @@ public class AppUpdateModule extends ReactContextBaseJavaModule implements Insta
     public void startUpdate(Promise promise) {
         // set promise for resolve
         updatePromise = promise;
-
-        if (appUpdateManager != null && appUpdateInfo != null) {
+        Activity activity = reactContext.getCurrentActivity();
+        if (appUpdateManager != null && appUpdateInfo != null && activity != null) {
             try {
                 appUpdateManager.startUpdateFlowForResult(
                         appUpdateInfo,
                         AppUpdateType.FLEXIBLE,
-                        reactContext.getCurrentActivity(),
+                        activity,
                         UPDATE_REQUEST);
             } catch (IntentSender.SendIntentException e) {
                 e.printStackTrace();
@@ -139,7 +139,12 @@ public class AppUpdateModule extends ReactContextBaseJavaModule implements Insta
         ViewGroup decorView;
 
         try {
-            decorView = (ViewGroup) reactContext.getCurrentActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+            Activity activity = reactContext.getCurrentActivity();
+            if (activity != null) {
+                decorView = (ViewGroup) reactContext.getCurrentActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+            } else {
+                return;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -151,7 +156,6 @@ public class AppUpdateModule extends ReactContextBaseJavaModule implements Insta
 
 
         View snackBarView = snackbar.getView();
-
 
         Typeface font = Typeface.createFromAsset(decorView.getContext().getAssets(), "fonts/Proxima Nova Regular.otf");
         Typeface fontBold = Typeface.createFromAsset(decorView.getContext().getAssets(), "fonts/Proxima Nova Bold.otf");
@@ -172,10 +176,7 @@ public class AppUpdateModule extends ReactContextBaseJavaModule implements Insta
 
         // shadow
         snackBarView.setElevation(9f);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            snackbar.getView().setBackground(reactContext.getDrawable(R.drawable.contianer_snackbar));
-        }
+        snackbar.getView().setBackground(ContextCompat.getDrawable(reactContext, R.drawable.contianer_snackbar));
 
         snackbar.setAction("RESTART", view -> appUpdateManager.completeUpdate());
         snackbar.show();
@@ -193,12 +194,16 @@ public class AppUpdateModule extends ReactContextBaseJavaModule implements Insta
                                 }
                                 if (appUpdateInfo.updateAvailability()
                                         == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+
                                     try {
-                                        appUpdateManager.startUpdateFlowForResult(
-                                                appUpdateInfo,
-                                                AppUpdateType.IMMEDIATE,
-                                                reactContext.getCurrentActivity(),
-                                                UPDATE_REQUEST);
+                                        Activity activity = reactContext.getCurrentActivity();
+                                        if (activity != null) {
+                                            appUpdateManager.startUpdateFlowForResult(
+                                                    appUpdateInfo,
+                                                    AppUpdateType.IMMEDIATE,
+                                                    activity,
+                                                    UPDATE_REQUEST);
+                                        }
                                     } catch (IntentSender.SendIntentException e) {
                                         e.printStackTrace();
                                     }

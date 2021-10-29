@@ -470,26 +470,6 @@ export default StyleService.create({
         marginBottom: 30,
     },
 
-    // Slide up modal
-    shadowContent: {
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: '$darkGrey',
-    },
-    panelHeader: {
-        alignItems: 'center',
-        marginBottom: 20,
-    },
-    panelHandle: {
-        width: 40,
-        height: 6,
-        borderRadius: 4,
-        backgroundColor: '$grey',
-    },
-
     // Empty view
     emptyIcon: {
         // width: Sizes.screen.width * 0.3,

@@ -5,6 +5,8 @@ import AccountDelete from '../accountDelete';
 
 import txTemplates from './templates/AccountDeleteTx.json';
 
+jest.mock('@services/LedgerService');
+
 describe('AccountDelete tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new AccountDelete();
@@ -30,6 +32,6 @@ describe('AccountDelete tx', () => {
     it('it should calcualte right fee', () => {
         const instance = new AccountDelete(txTemplates);
 
-        expect(instance.calculateFee()).toBe('5000000');
+        expect(instance.calculateFee()).toBe('2000000');
     });
 });

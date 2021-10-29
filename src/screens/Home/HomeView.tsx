@@ -104,7 +104,6 @@ class HomeView extends Component<Props, State> {
 
     componentWillUnmount() {
         // remove listeners
-
         if (this.navigationListener) {
             this.navigationListener.remove();
         }
@@ -152,9 +151,7 @@ class HomeView extends Component<Props, State> {
         }
 
         if (has(changes, 'developerMode') || has(changes, 'defaultNode')) {
-            setTimeout(() => {
-                this.setNodeChainHeader(coreSettings);
-            }, 500);
+            this.setNodeChainHeader(coreSettings);
         }
     };
 
@@ -186,7 +183,13 @@ class HomeView extends Component<Props, State> {
         const { componentId } = this.props;
         const { coreSettings } = this.state;
 
-        if (settings ? settings.developerMode : coreSettings.developerMode) {
+        const currentSettings = settings || coreSettings;
+
+        if (currentSettings.developerMode) {
+            // get chain from current default node
+            const chain = CoreRepository.getChainFromNode(currentSettings.defaultNode);
+
+            // show the header
             Navigator.mergeOptions(
                 {
                     topBar: {
@@ -194,10 +197,10 @@ class HomeView extends Component<Props, State> {
                         visible: true,
                         animate: true,
                         background: {
-                            color: ChainColors[SocketService.chain],
+                            color: ChainColors[chain],
                         },
                         title: {
-                            text: SocketService.chain.toUpperCase(),
+                            text: chain.toUpperCase(),
                             color: 'white',
                             fontFamily: AppFonts.base.familyExtraBold,
                             fontSize: AppFonts.h5.size,
@@ -238,47 +241,22 @@ class HomeView extends Component<Props, State> {
             return;
         }
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.ExplainBalance,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            { account },
-        );
+        Navigator.showOverlay(AppScreens.Overlay.ExplainBalance, { account });
     };
 
     openActiveAccountDescription = () => {
-        Navigator.showModal(
-            AppScreens.Modal.Help,
-            {},
-            {
-                title: Localize.t('home.howActivateMyAccount'),
-                content: Localize.t('home.howActivateMyAccountDesc', {
-                    baseReserve: LedgerService.getNetworkReserve().BaseReserve,
-                }),
-            },
-        );
+        Navigator.showModal(AppScreens.Modal.Help, {
+            title: Localize.t('home.howActivateMyAccount'),
+            content: Localize.t('home.howActivateMyAccountDesc', {
+                baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+            }),
+        });
     };
 
     showCurrencyOptions = (trustLine: TrustLineSchema) => {
         const { account } = this.state;
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.CurrencySettings,
-            {
-                overlay: {
-                    handleKeyboardEvents: true,
-                },
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            { trustLine, account },
-        );
+        Navigator.showOverlay(AppScreens.Overlay.CurrencySettings, { trustLine, account });
     };
 
     showNFTDetails = (trustLine: TrustLineSchema) => {
@@ -287,16 +265,16 @@ class HomeView extends Component<Props, State> {
         Navigator.showModal(
             AppScreens.Modal.XAppBrowser,
             {
-                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-            },
-            {
                 identifier: 'xumm.nft-info',
                 account,
                 params: {
                     issuer: trustLine.currency.issuer,
                     token: trustLine.currency.currency,
                 },
+            },
+            {
+                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
             },
         );
     };
@@ -343,16 +321,7 @@ class HomeView extends Component<Props, State> {
     showShareOverlay = () => {
         const { account } = this.state;
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.ShareAccount,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            { account },
-        );
+        Navigator.showOverlay(AppScreens.Overlay.ShareAccount, { account });
     };
 
     pushSendScreen = () => {
@@ -414,12 +383,7 @@ class HomeView extends Component<Props, State> {
                     <View style={[AppStyles.flex1]}>
                         <Button
                             onPress={() => {
-                                Navigator.showOverlay(AppScreens.Overlay.SwitchAccount, {
-                                    layout: {
-                                        backgroundColor: 'transparent',
-                                        componentBackgroundColor: 'transparent',
-                                    },
-                                });
+                                Navigator.showOverlay(AppScreens.Overlay.SwitchAccount);
                             }}
                             light
                             roundedSmall

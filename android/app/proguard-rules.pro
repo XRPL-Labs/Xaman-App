@@ -43,7 +43,6 @@
 -keep class * extends com.facebook.react.bridge.JavaScriptModule { *; }
 -keep class * extends com.facebook.react.bridge.NativeModule { *; }
 -keepclassmembers,includedescriptorclasses class * { native <methods>; }
--keepclassmembers class *  { @com.facebook.react.uimanager.UIProp <fields>; }
 -keepclassmembers class *  { @com.facebook.react.uimanager.annotations.ReactProp <methods>; }
 -keepclassmembers class *  { @com.facebook.react.uimanager.annotations.ReactPropGroup <methods>; }
 
@@ -52,10 +51,6 @@
 # TextLayoutBuilder uses a non-public Android constructor within StaticLayout.
 # See libs/proxy/src/main/java/com/facebook/fbui/textlayoutbuilder/proxy for details.
 -dontwarn android.text.StaticLayout
-
--keep class com.facebook.imagepipeline.animated.factory.AnimatedFactoryImpl {
-  public AnimatedFactoryImpl(com.facebook.imagepipeline.bitmaps.PlatformBitmapFactory, com.facebook.imagepipeline.core.ExecutorSupplier);
-}
 
 -keep class com.facebook.crypto.** {
    *;
@@ -69,7 +64,6 @@
 -dontwarn okhttp3.**
 
 #------------- okio ------------------
--keep class sun.misc.Unsafe { *; }
 -dontwarn java.nio.file.*
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -dontwarn okio.**
@@ -96,3 +90,32 @@
 # Samsung Fingerprint
 -keep class com.samsung.android.sdk.** { *; }
 -dontwarn com.samsung.android.sdk.**
+
+#proguard for org.spongycastle
+-keep class org.spongycastle.crypto.* {*;}
+-keep class org.spongycastle.crypto.agreement.** {*;}
+-keep class org.spongycastle.crypto.digests.* {*;}
+-keep class org.spongycastle.crypto.ec.* {*;}
+-keep class org.spongycastle.crypto.encodings.* {*;}
+-keep class org.spongycastle.crypto.engines.* {*;}
+-keep class org.spongycastle.crypto.macs.* {*;}
+-keep class org.spongycastle.crypto.modes.* {*;}
+-keep class org.spongycastle.crypto.paddings.* {*;}
+-keep class org.spongycastle.crypto.params.* {*;}
+-keep class org.spongycastle.crypto.prng.* {*;}
+-keep class org.spongycastle.crypto.signers.* {*;}
+
+-keep class org.spongycastle.jcajce.provider.asymmetric.* {*;}
+-keep class org.spongycastle.jcajce.provider.asymmetric.util.* {*;}
+-keep class org.spongycastle.jcajce.provider.asymmetric.dh.* {*;}
+-keep class org.spongycastle.jcajce.provider.asymmetric.ec.* {*;}
+-keep class org.spongycastle.jcajce.provider.asymmetric.x509.* {*;}
+-keep class org.spongycastle.jcajce.provider.asymmetric.rsa.* {*;}
+
+-keep class org.spongycastle.jcajce.provider.digest.** {*;}
+-keep class org.spongycastle.jcajce.provider.keystore.** {*;}
+-keep class org.spongycastle.jcajce.provider.symmetric.** {*;}
+-keep class org.spongycastle.jcajce.spec.* {*;}
+-keep class org.spongycastle.jce.** {*;}
+
+-dontwarn org.spongycastle.**

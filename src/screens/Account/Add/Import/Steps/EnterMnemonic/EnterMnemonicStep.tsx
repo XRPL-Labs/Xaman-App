@@ -177,14 +177,10 @@ class EnterMnemonicStep extends Component<Props, State> {
     };
 
     showScanner = () => {
-        Navigator.showModal(
-            AppScreens.Modal.Scan,
-            {},
-            {
-                onRead: this.onScannerRead,
-                type: StringType.XrplSecret,
-            },
-        );
+        Navigator.showModal(AppScreens.Modal.Scan, {
+            onRead: this.onScannerRead,
+            type: StringType.XrplSecret,
+        });
     };
 
     setValue = (col: number, value: string) => {

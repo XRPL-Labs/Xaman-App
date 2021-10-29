@@ -64,27 +64,8 @@ const styles = StyleService.create({
         color: '$textPrimary',
         paddingVertical: 15,
     },
-    // Currency
-    pickerItemCurrency: {
-        // paddingLeft: 8,
-        // paddingTop: 10,
-        // paddingBottom: 10,
-        // borderWidth: 1,
-        // borderColor: '$green,
-    },
     currencyImageContainer: {
-        backgroundColor: '$white',
-        // padding: 10,
         marginRight: 10,
-        borderWidth: 1,
-        borderColor: '$light',
-        borderRadius: 10,
-        justifyContent: 'center',
-    },
-    currencyImageIcon: {
-        width: AppSizes.screen.width * 0.1,
-        height: AppSizes.screen.width * 0.1,
-        resizeMode: 'contain',
     },
     currencyItemLabel: {
         fontSize: AppFonts.h5.size,

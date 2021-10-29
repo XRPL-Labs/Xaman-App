@@ -185,7 +185,7 @@ class PushNotificationsService extends EventEmitter {
         this.updateBadge();
     };
 
-    routeUser = async (screen: string, options: any, passProps: any, screenType?: ComponentTypes) => {
+    routeUser = async (screen: string, passProps: any, options: any, screenType?: ComponentTypes) => {
         // close any overlay
         const currentOverlay = NavigationService.getCurrentOverlay();
 
@@ -200,11 +200,11 @@ class PushNotificationsService extends EventEmitter {
 
         if (screenType === ComponentTypes.Modal) {
             setTimeout(() => {
-                Navigator.showModal(screen, options, passProps);
+                Navigator.showModal(screen, passProps, options);
             }, 10);
         } else if (screenType === ComponentTypes.Screen) {
             setTimeout(() => {
-                Navigator.push(screen, options, passProps);
+                Navigator.push(screen, passProps, options);
             }, 10);
         }
     };
@@ -219,10 +219,10 @@ class PushNotificationsService extends EventEmitter {
                 // show review transaction screen
                 this.routeUser(
                     AppScreens.Modal.ReviewTransaction,
-                    { modalPresentationStyle: 'fullScreen' },
                     {
                         payload,
                     },
+                    { modalPresentationStyle: 'fullScreen' },
                     ComponentTypes.Modal,
                 );
             })
@@ -252,14 +252,14 @@ class PushNotificationsService extends EventEmitter {
             this.routeUser(
                 AppScreens.Modal.XAppBrowser,
                 {
-                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-                },
-                {
                     identifier: xappIdentifier,
                     title: xappTitle,
                     origin: PayloadOrigin.PUSH_NOTIFICATION,
                     originData: get(notification, 'data'),
+                },
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                 },
                 ComponentTypes.Modal,
             );
@@ -294,7 +294,7 @@ class PushNotificationsService extends EventEmitter {
         }
 
         setTimeout(() => {
-            this.routeUser(AppScreens.Transaction.Details, {}, { hash, account, asModal: true }, ComponentTypes.Modal);
+            this.routeUser(AppScreens.Transaction.Details, { hash, account, asModal: true }, {}, ComponentTypes.Modal);
         }, delay);
     };
 

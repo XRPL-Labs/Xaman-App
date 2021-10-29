@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <EditText xmlns:android="http://schemas.android.com/apk/res/android"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:textCursorDrawable="@drawable/edit_text_cursor"
-          style="@style/EditTextStyle"
-          android:imeOptions="actionDone"
-          android:theme="@style/EditTextStyle"/>
+    style="@style/EditTextStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:imeOptions="actionDone"
+    android:textCursorDrawable="@drawable/edit_text_cursor"
+    android:theme="@style/EditTextStyle"
+    />

@@ -3,7 +3,9 @@
 exports[`[RadioButton] renders checked correctly 1`] = `
 <View
   accessible={true}
+  collapsable={false}
   focusable={true}
+  nativeID="animatedComponent"
   onClick={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
@@ -136,7 +138,9 @@ exports[`[RadioButton] renders checked correctly 1`] = `
 exports[`[RadioButton] renders correctly 1`] = `
 <View
   accessible={true}
+  collapsable={false}
   focusable={true}
+  nativeID="animatedComponent"
   onClick={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}

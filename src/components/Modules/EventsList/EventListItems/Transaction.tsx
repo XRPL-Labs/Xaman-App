@@ -219,7 +219,7 @@ class TransactionTemplate extends Component<Props, State> {
 
         getAccountName(address, tag)
             .then((res: any) => {
-                if (!isEmpty(res) && res.name) {
+                if (!isEmpty(res)) {
                     if (this.mounted) {
                         if (key) {
                             item[key] = {
@@ -238,7 +238,7 @@ class TransactionTemplate extends Component<Props, State> {
 
     debouncedOnPress = () => {
         const { item, account } = this.props;
-        Navigator.push(AppScreens.Transaction.Details, {}, { tx: item, account });
+        Navigator.push(AppScreens.Transaction.Details, { tx: item, account });
     };
 
     onPress = debounce(this.debouncedOnPress, 300, { leading: true, trailing: false });
@@ -358,7 +358,10 @@ class TransactionTemplate extends Component<Props, State> {
             case 'AccountDelete':
                 return Localize.t('events.deleteAccount');
             case 'SetRegularKey':
-                return Localize.t('events.setRegularKey');
+                if (item.RegularKey) {
+                    return Localize.t('events.setRegularKey');
+                }
+                return Localize.t('events.removeRegularKey');
             case 'DepositPreauth':
                 if (item.Authorize) {
                     return Localize.t('events.authorizeDeposit');
@@ -411,7 +414,11 @@ class TransactionTemplate extends Component<Props, State> {
     renderReserveIcon = () => {
         const { item, account } = this.props;
 
-        const changes = item.OwnerCountChange(account.address);
+        let changes;
+
+        if (typeof item.OwnerCountChange === 'function') {
+            changes = item.OwnerCountChange(account.address);
+        }
 
         if (changes) {
             return (

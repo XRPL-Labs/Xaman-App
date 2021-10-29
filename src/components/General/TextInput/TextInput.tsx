@@ -68,7 +68,7 @@ class Input extends Component<Props, State> {
             if (this.instance) {
                 this.instance.focus();
             }
-        }, 50);
+        }, 100);
     };
 
     public blur = () => {
@@ -76,7 +76,7 @@ class Input extends Component<Props, State> {
             if (this.instance) {
                 this.instance.blur();
             }
-        }, 50);
+        }, 100);
     };
 
     onFocus = (e: any) => {
@@ -157,16 +157,12 @@ class Input extends Component<Props, State> {
             onScannerOpen();
         }
 
-        Navigator.showModal(
-            AppScreens.Modal.Scan,
-            {},
-            {
-                type: scannerType,
-                onRead: onScannerRead,
-                onClose: onScannerClose,
-                fallback: scannerFallback,
-            },
-        );
+        Navigator.showModal(AppScreens.Modal.Scan, {
+            type: scannerType,
+            onRead: onScannerRead,
+            onClose: onScannerClose,
+            fallback: scannerFallback,
+        });
     };
 
     render() {

@@ -5,13 +5,10 @@
 #import <React/RCTRootView.h>
 #import <React/RCTLinkingManager.h>
 
+#import <Firebase.h>
 #import <ReactNativeNavigation/ReactNativeNavigation.h>
 
-#import <Firebase.h>
-
-
 #import "Libs/Notification/LocalNotification.h"
-//#import "Libs/Common/InAppPurchase.h"
 
 @implementation AppDelegate
 
@@ -19,21 +16,22 @@
             openURL:(NSURL *)url
             options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
-    return [RCTLinkingManager application:application openURL:url options:options];
+  return [RCTLinkingManager application:application openURL:url options:options];
 }
 
 - (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity
  restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
 {
-    return [RCTLinkingManager application:application
-                     continueUserActivity:userActivity
-                       restorationHandler:restorationHandler];
+  return [RCTLinkingManager application:application
+                   continueUserActivity:userActivity
+                     restorationHandler:restorationHandler];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   // bootstrap rnn
-  [ReactNativeNavigation bootstrapWithDelegate:self launchOptions:launchOptions];
+  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
+  [ReactNativeNavigation bootstrapWithBridge:bridge];
   
   // bootstrap local notification
   [LocalNotificationModule initialise];
@@ -49,11 +47,11 @@
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
-  #if DEBUG
-    return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
-  #else
-    return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
-  #endif
+#if DEBUG
+  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+#else
+  return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+#endif
 }
 
 - (NSArray<id<RCTBridgeModule>> *)extraModulesForBridge:(RCTBridge *)bridge {
@@ -62,45 +60,45 @@
 
 // hide snapshot in task switcher
 - (void)applicationWillResignActive:(UIApplication *)application {
+    UIViewController *parentViewController = [[[UIApplication sharedApplication] delegate] window].rootViewController;
+    while (parentViewController.presentedViewController != nil){
+        parentViewController = parentViewController.presentedViewController;
+    }
+    UIViewController *currentViewController = parentViewController;
   
-    // prevent from showing blur view if user is purchasing
-    // if([InAppPurchaseModule isUserPurchasing]){
-    //      return;
-    // }
-    
-    self.window.backgroundColor = [UIColor clearColor];
-
+    if(![NSStringFromClass([currentViewController class]) hasPrefix:@"RNN"]){
+      return;
+    }
+  
+    NSPredicate *isKeyWindow = [NSPredicate predicateWithFormat:@"isKeyWindow == YES"];
+    UIWindow *topWindow = [[[UIApplication sharedApplication] windows] filteredArrayUsingPredicate:isKeyWindow].firstObject;
+  
     UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
     UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    blurEffectView.frame = self.window.bounds;
-    blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
-    blurEffectView.tag = 1234;
+    blurEffectView.frame = topWindow.frame;
+    blurEffectView.tag = 0xDEADBEEF;
     blurEffectView.alpha = 0;
-    [self.window addSubview:blurEffectView];
-    [self.window bringSubviewToFront:blurEffectView];
-
-    // fade in the view
+    [topWindow addSubview:blurEffectView];
     [UIView animateWithDuration:0.5 animations:^{
-        blurEffectView.alpha = 1;
+      blurEffectView.alpha = 1;
     }];
-  
-    blureViewActive = YES;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-  
-  NSLog(@"applicationDidBecomeActive");
-    // grab a reference to our custom blur view
-    UIView *blurEffectView = [self.window viewWithTag:1234];
+  NSPredicate *isKeyWindow = [NSPredicate predicateWithFormat:@"isKeyWindow == YES"];
+  UIWindow *topWindow = [[[UIApplication sharedApplication] windows] filteredArrayUsingPredicate:isKeyWindow].firstObject;
 
+  UIView *blurEffectView = [topWindow viewWithTag:0xDEADBEEF];
+  if (blurEffectView){
     // fade away colour view from main view
     [UIView animateWithDuration:0.5 animations:^{
-        blurEffectView.alpha = 0;
+      blurEffectView.alpha = 0;
     } completion:^(BOOL finished) {
-        // remove when finished fading
-        [blurEffectView removeFromSuperview];
+      // remove when finished fading
+      [blurEffectView removeFromSuperview];
     }];
+  }
 }
 
 - (BOOL)application:(UIApplication *)application shouldAllowExtensionPointIdentifier:(NSString *)extensionPointIdentifier

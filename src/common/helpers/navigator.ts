@@ -164,7 +164,7 @@ const Navigator = {
         });
     },
 
-    push(nextScreen: any, options = {}, passProps = {}) {
+    push(nextScreen: any, passProps = {}, options = {}) {
         const currentScreen = NavigationService.getCurrentScreen();
         if (currentScreen !== nextScreen) {
             return Navigation.push(currentScreen, {
@@ -182,15 +182,25 @@ const Navigator = {
 
     pop(options = {}) {
         const currentScreen = NavigationService.getCurrentScreen();
-        return Navigation.pop(currentScreen, options);
+
+        if (currentScreen) {
+            return Navigation.pop(currentScreen, options);
+        }
+
+        return Promise.resolve();
     },
 
     popToRoot(options = {}) {
         const currentScreen = NavigationService.getCurrentScreen();
-        return Navigation.popToRoot(currentScreen, options);
+
+        if (currentScreen) {
+            return Navigation.popToRoot(currentScreen, options);
+        }
+
+        return Promise.resolve();
     },
 
-    showOverlay(overlay: any, options = {}, passProps = {}) {
+    showOverlay(overlay: any, passProps = {}, options = {}) {
         const currentOverlay = NavigationService.getCurrentOverlay();
         if (currentOverlay !== overlay) {
             return Navigation.showOverlay({
@@ -198,7 +208,18 @@ const Navigator = {
                     name: overlay,
                     id: overlay,
                     passProps: assign(passProps, { componentType: ComponentTypes.Overlay }),
-                    options,
+                    options: assign(
+                        {
+                            overlay: {
+                                handleKeyboardEvents: true,
+                            },
+                            layout: {
+                                backgroundColor: 'transparent',
+                                componentBackgroundColor: 'transparent',
+                            },
+                        },
+                        options,
+                    ),
                 },
             });
         }
@@ -207,14 +228,20 @@ const Navigator = {
 
     dismissOverlay() {
         const currentOverlay = NavigationService.getCurrentOverlay();
-        return Navigation.dismissOverlay(currentOverlay);
+
+        if (currentOverlay) {
+            return Navigation.dismissOverlay(currentOverlay);
+        }
+
+        return Promise.resolve();
     },
 
-    showModal(modal: any, options = {}, passProps = {}) {
+    showModal(modal: any, passProps = {}, options = {}) {
         const currentScreen = NavigationService.getCurrentModal();
         if (currentScreen !== modal) {
             return Navigation.showModal({
                 stack: {
+                    id: modal,
                     children: [
                         {
                             component: {
@@ -234,7 +261,12 @@ const Navigator = {
 
     dismissModal() {
         const currentModal = NavigationService.getCurrentModal();
-        return Navigation.dismissModal(currentModal);
+
+        if (currentModal) {
+            return Navigation.dismissModal(currentModal);
+        }
+
+        return Promise.resolve();
     },
 
     setBadge(tab: string, badge: string) {
@@ -253,26 +285,21 @@ const Navigator = {
         });
     },
 
-    showAlertModal(options: {
+    showAlertModal(props: {
+        testID?: string;
         type: 'success' | 'info' | 'warning' | 'error';
         text: string;
         title?: string;
-        buttons: { text: string; onPress?: () => void; type?: 'continue' | 'dismiss'; light?: boolean }[];
+        buttons: {
+            testID?: string;
+            text: string;
+            onPress?: () => void;
+            type?: 'continue' | 'dismiss';
+            light?: boolean;
+        }[];
         onDismissed?: () => void;
     }) {
-        Navigator.showOverlay(
-            AppScreens.Overlay.Alert,
-            {
-                overlay: {
-                    handleKeyboardEvents: true,
-                },
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            options,
-        );
+        Navigator.showOverlay(AppScreens.Overlay.Alert, props);
     },
 
     mergeOptions(options = {}, componentId?: string) {

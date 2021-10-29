@@ -221,19 +221,7 @@ class SocketService extends EventEmitter {
      * Show's connection problem overlay
      */
     showConnectionProblem = () => {
-        Navigator.showOverlay(
-            AppScreens.Overlay.ConnectionIssue,
-            {
-                overlay: {
-                    handleKeyboardEvents: true,
-                },
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            {},
-        );
+        Navigator.showOverlay(AppScreens.Overlay.ConnectionIssue);
     };
 
     /**
@@ -358,9 +346,9 @@ class SocketService extends EventEmitter {
 
         // load node's list base on selected node chain
         if (this.chain === NodeChain.Main) {
-            nodes = AppConfig.nodes.main;
+            nodes = [...AppConfig.nodes.main];
         } else if (this.chain === NodeChain.Test) {
-            nodes = AppConfig.nodes.test;
+            nodes = [...AppConfig.nodes.test];
         } else {
             // if not belong to any chain then it's custom node
             // wrap it in proxy

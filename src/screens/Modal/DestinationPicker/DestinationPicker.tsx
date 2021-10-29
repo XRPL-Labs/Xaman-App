@@ -84,6 +84,8 @@ class DestinationPicker extends Component<Props, State> {
         if (this.backHandler) {
             this.backHandler.remove();
         }
+
+        if (this.lookupTimeout) clearTimeout(this.lookupTimeout);
     }
 
     doAccountLookUp = async (result: XrplDestination) => {
@@ -346,38 +348,29 @@ class DestinationPicker extends Component<Props, State> {
     showEnterDestinationTag = () => {
         const { destination } = this.state;
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.EnterDestinationTag,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
+        Navigator.showOverlay(AppScreens.Overlay.EnterDestinationTag, {
+            buttonType: 'next',
+            destination,
+            onFinish: (destinationTag: string) => {
+                Object.assign(destination, { tag: destinationTag });
+                this.setState(
+                    {
+                        destination,
+                    },
+                    this.onSelect,
+                );
             },
-            {
-                buttonType: 'next',
-                destination,
-                onFinish: (destinationTag: string) => {
-                    Object.assign(destination, { tag: destinationTag });
-                    this.setState(
-                        {
-                            destination,
-                        },
-                        this.onSelect,
-                    );
-                },
-                onScannerRead: ({ tag }: { tag: number }) => {
-                    Object.assign(destination, { tag: String(tag) });
-                    this.setState(
-                        {
-                            destination,
-                        },
-                        this.showEnterDestinationTag,
-                    );
-                },
-                onScannerClose: this.showEnterDestinationTag,
+            onScannerRead: ({ tag }: { tag: number }) => {
+                Object.assign(destination, { tag: String(tag) });
+                this.setState(
+                    {
+                        destination,
+                    },
+                    this.showEnterDestinationTag,
+                );
             },
-        );
+            onScannerClose: this.showEnterDestinationTag,
+        });
     };
 
     clearRecipient = () => {
@@ -429,23 +422,11 @@ class DestinationPicker extends Component<Props, State> {
             }
 
             if (destinationInfo.risk === 'CONFIRMED') {
-                Navigator.showOverlay(
-                    AppScreens.Overlay.FlaggedDestination,
-                    {
-                        overlay: {
-                            handleKeyboardEvents: true,
-                        },
-                        layout: {
-                            backgroundColor: 'transparent',
-                            componentBackgroundColor: 'transparent',
-                        },
-                    },
-                    {
-                        destination: destination.address,
-                        onContinue: this.onSelect,
-                        onDismissed: this.resetResult,
-                    },
-                );
+                Navigator.showOverlay(AppScreens.Overlay.FlaggedDestination, {
+                    destination: destination.address,
+                    onContinue: this.onSelect,
+                    onDismissed: this.resetResult,
+                });
 
                 // don't move to next step
                 return;

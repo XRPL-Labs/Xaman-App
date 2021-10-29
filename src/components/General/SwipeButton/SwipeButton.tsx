@@ -49,6 +49,7 @@ class SwipeButton extends Component<Props, State> {
     private defaultContainerWidth: number;
     private maxWidth: number;
     private panResponder: any;
+    private resetDelayTimeout: any;
 
     constructor(props: Props) {
         super(props);
@@ -67,6 +68,10 @@ class SwipeButton extends Component<Props, State> {
             onPanResponderRelease: this.onPanResponderRelease,
             onPanResponderGrant: this.onPanResponderGrant,
         });
+    }
+
+    componentWillUnmount() {
+        if (this.resetDelayTimeout) clearTimeout(this.resetDelayTimeout);
     }
 
     onLayoutChange = (e: any) => {
@@ -157,7 +162,7 @@ class SwipeButton extends Component<Props, State> {
 
         // Animate back to initial position after successfully swiped
         const resetDelay = DEFAULT_ANIMATION_DURATION + RESET_AFTER_SUCCESS_DEFAULT_DELAY;
-        setTimeout(() => {
+        this.resetDelayTimeout = setTimeout(() => {
             shouldResetAfterSuccess && this.reset();
         }, resetDelay);
     };

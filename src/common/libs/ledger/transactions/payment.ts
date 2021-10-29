@@ -1,6 +1,6 @@
 /* eslint-disable no-lonely-if */
 import BigNumber from 'bignumber.js';
-import { get, set, has, isUndefined, isNumber, toInteger, findIndex } from 'lodash';
+import { get, set, has, isUndefined, isNumber, toInteger } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
 import LedgerService from '@services/LedgerService';
@@ -270,17 +270,24 @@ class Payment extends BaseTransaction {
                 return resolve();
             }
 
+            // check if amount is present
             if (!this.Amount || !this.Amount?.value || this.Amount?.value === '0') {
                 return reject(new Error(Localize.t('send.pleaseEnterAmount')));
             }
 
-            // Sending XRP
-            if (this.Amount.currency === 'XRP' || (this.SendMax && this.SendMax.currency === 'XRP')) {
-                const XRPAmount = (this.SendMax && this.SendMax.value) || this.Amount.value;
+            let XRPAmount = undefined as AmountType;
 
+            // SendMax have higher priority
+            if (this.SendMax && this.SendMax.currency === 'XRP') {
+                XRPAmount = this.SendMax;
+            } else if (this.Amount.currency === 'XRP' && !this.SendMax) {
+                XRPAmount = this.Amount;
+            }
+
+            if (XRPAmount) {
                 // ===== check balance =====
                 const availableBalance = CalculateAvailableBalance(source);
-                if (Number(XRPAmount) > Number(availableBalance)) {
+                if (Number(XRPAmount.value) > Number(availableBalance)) {
                     return reject(
                         new Error(
                             Localize.t('send.insufficientBalanceSpendableBalance', {
@@ -290,35 +297,38 @@ class Payment extends BaseTransaction {
                         ),
                     );
                 }
-            } else {
-                // Sending IOU
+            }
 
+            let IOUAmount = undefined as AmountType;
+
+            // SendMax have higher priority
+            if (this.SendMax && this.SendMax.currency !== 'XRP') {
+                IOUAmount = this.SendMax;
+            } else if (this.Amount.currency !== 'XRP' && !this.SendMax) {
+                IOUAmount = this.Amount;
+            }
+
+            if (IOUAmount) {
                 // ===== check if recipient have same trustline for sending IOU =====
-                const destinationLinesResp = await LedgerService.getAccountLines(this.Destination.address);
-                const { lines: destinationLines } = destinationLinesResp;
+                const destinationLine = await LedgerService.getAccountLine(this.Destination.address, IOUAmount);
 
-                const haveSameTrustLine =
-                    findIndex(destinationLines, (l: any) => {
-                        return l.currency === this.Amount.currency && l.account === this.Amount.issuer;
-                    }) !== -1;
-
-                if (!haveSameTrustLine && this.Amount.issuer !== this.Destination.address) {
+                if (!destinationLine && IOUAmount.issuer !== this.Destination.address) {
                     return reject(new Error(Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine')));
                 }
 
                 // ===== check balances =====
                 // sender is not issuer
-                if (source.address !== this.Amount.issuer) {
+                if (IOUAmount.issuer !== source.address) {
                     // check IOU balance
                     const line = source.lines.find(
                         (e: any) =>
                             // eslint-disable-next-line implicit-arrow-linebreak
-                            e.currency.issuer === this.Amount.issuer && e.currency.currency === this.Amount.currency,
+                            e.currency.issuer === IOUAmount.issuer && e.currency.currency === IOUAmount.currency,
                     );
 
                     if (!line) return resolve();
 
-                    if (Number(this.Amount.value) > Number(line.balance)) {
+                    if (Number(IOUAmount.value) > Number(line.balance)) {
                         return reject(
                             new Error(
                                 Localize.t('send.insufficientBalanceSpendableBalance', {
@@ -328,25 +338,31 @@ class Payment extends BaseTransaction {
                             ),
                         );
                     }
-                    // sender is the issuer
                 } else {
+                    // sender is the issuer
                     // check for exceed the trustline Limit on obligations
-                    const sourceLines = await LedgerService.getAccountLines(source.address);
+                    const sourceLine = await LedgerService.getAccountLine(source.address, {
+                        issuer: this.Destination.address,
+                        currency: IOUAmount.currency,
+                    });
 
-                    const { lines } = sourceLines;
-
-                    const trustLine = lines.filter(
-                        (l: any) => l.currency === this.Amount.currency && l.account === this.Destination.address,
-                    )[0];
-
-                    if (Number(this.Amount.value) + Math.abs(trustLine.balance) > Number(trustLine.limit_peer)) {
+                    if (
+                        Number(IOUAmount.value) + Math.abs(Number(sourceLine.balance)) >
+                        Number(sourceLine.limit_peer)
+                    ) {
                         return reject(
                             new Error(
                                 Localize.t('send.trustLineLimitExceeded', {
-                                    balance: Localize.formatNumber(NormalizeAmount(Math.abs(trustLine.balance))),
-                                    peer_limit: Localize.formatNumber(NormalizeAmount(trustLine.limit_peer)),
+                                    balance: Localize.formatNumber(
+                                        NormalizeAmount(Math.abs(Number(sourceLine.balance))),
+                                    ),
+                                    peer_limit: Localize.formatNumber(NormalizeAmount(Number(sourceLine.limit_peer))),
                                     available: Localize.formatNumber(
-                                        NormalizeAmount(Number(trustLine.limit_peer - Math.abs(trustLine.balance))),
+                                        NormalizeAmount(
+                                            Number(
+                                                Number(sourceLine.limit_peer) - Math.abs(Number(sourceLine.balance)),
+                                            ),
+                                        ),
                                     ),
                                 }),
                             ),

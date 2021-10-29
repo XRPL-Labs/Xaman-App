@@ -170,7 +170,7 @@ public class CryptoModule extends ReactContextBaseJavaModule {
         SecretKey secretKey = new SecretKeySpec(keyBytes, KEY_ALGORITHM);
 
         Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey, hexIv == null ? emptyIvSpec : new IvParameterSpec(Hex.decodeHex(hexIv)));
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, new IvParameterSpec(Hex.decodeHex(hexIv)));
         byte[] encrypted = cipher.doFinal(data.getBytes("UTF-8"));
 
         WritableMap result = Arguments.createMap();
@@ -201,8 +201,7 @@ public class CryptoModule extends ReactContextBaseJavaModule {
         byte[] key = new byte[length];
         SecureRandom rand = new SecureRandom();
         rand.nextBytes(key);
-        String keyHex = bytesToHex(key);
-        return keyHex;
+        return bytesToHex(key);
     }
 
     

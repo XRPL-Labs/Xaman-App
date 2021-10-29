@@ -43,14 +43,14 @@ class RequestTemplate extends Component<Props, State> {
             Navigator.showModal(
                 AppScreens.Modal.XAppBrowser,
                 {
-                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-                },
-                {
                     title,
                     identifier: xappIdentifier,
                     origin: PayloadOrigin.EVENT_LIST,
                     originData,
+                },
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                 },
             );
         }
@@ -66,10 +66,10 @@ class RequestTemplate extends Component<Props, State> {
 
         Navigator.showModal(
             AppScreens.Modal.ReviewTransaction,
-            { modalPresentationStyle: 'fullScreen' },
             {
                 payload: item,
             },
+            { modalPresentationStyle: 'fullScreen' },
         );
     };
 

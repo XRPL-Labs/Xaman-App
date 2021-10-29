@@ -138,40 +138,28 @@ class BaseTransaction {
                 // prepare tranaction for signing
                 await this.prepare();
 
-                Navigator.showOverlay(
-                    AppScreens.Overlay.Vault,
-                    {
-                        overlay: {
-                            handleKeyboardEvents: true,
-                        },
-                        layout: {
-                            backgroundColor: 'transparent',
-                            componentBackgroundColor: 'transparent',
-                        },
+                Navigator.showOverlay(AppScreens.Overlay.Vault, {
+                    account,
+                    txJson: this.Json,
+                    multiSign,
+                    onSign: (signedObject: SignedObjectType) => {
+                        const { id, signedTransaction } = signedObject;
+
+                        if (!id || !signedTransaction) {
+                            reject(new Error('Unable sign the transaction, please try again!'));
+                            return;
+                        }
+
+                        this.Hash = signedObject.id;
+                        this.TxnSignature = signedObject.signedTransaction;
+                        this.SignMethod = signedObject.signMethod || 'OTHER';
+
+                        resolve(this.TxnSignature);
                     },
-                    {
-                        account,
-                        txJson: this.Json,
-                        multiSign,
-                        onSign: (signedObject: SignedObjectType) => {
-                            const { id, signedTransaction } = signedObject;
-
-                            if (!id || !signedTransaction) {
-                                reject(new Error('Unable sign the transaction, please try again!'));
-                                return;
-                            }
-
-                            this.Hash = signedObject.id;
-                            this.TxnSignature = signedObject.signedTransaction;
-                            this.SignMethod = signedObject.signMethod || 'OTHER';
-
-                            resolve(this.TxnSignature);
-                        },
-                        onDismissed: () => {
-                            reject();
-                        },
+                    onDismissed: () => {
+                        reject();
                     },
-                );
+                });
             } catch (e) {
                 reject(e);
             }
@@ -191,6 +179,9 @@ class BaseTransaction {
             this.meta = transaction.meta;
             this.tx = transaction;
         }
+
+        // persist verify result in meta
+        this.VerifyResult = { success: verifyResult.success };
 
         return verifyResult;
     };
@@ -261,7 +252,8 @@ class BaseTransaction {
         }
 
         if (this.Type === 'AccountDelete') {
-            baseFee = new BigNumber(5).multipliedBy(1000000);
+            const { OwnerReserve } = LedgerService.getNetworkReserve();
+            baseFee = new BigNumber(OwnerReserve).multipliedBy(1000000);
         }
         // 10 drops × (1 + Number of Signatures Provided)
         if (this.Signers.length > 0) {
@@ -427,6 +419,23 @@ class BaseTransaction {
         if (isUndefined(date)) return undefined;
         const ledgerDate = new LedgerDate(date);
         return ledgerDate.toISO8601();
+    }
+
+    get VerifyResult(): VerifyResultType {
+        const result = get(this, ['meta', 'VerifyResult'], undefined);
+
+        // already verified by network
+        if (isUndefined(result)) {
+            return {
+                success: !isUndefined(this.LedgerIndex),
+            };
+        }
+
+        return result;
+    }
+
+    set VerifyResult(result: VerifyResultType) {
+        set(this, ['meta', 'VerifyResult'], result);
     }
 
     get TransactionResult(): TransactionResult {

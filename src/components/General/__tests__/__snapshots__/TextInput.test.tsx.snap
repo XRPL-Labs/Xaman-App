@@ -35,14 +35,12 @@ exports[`[TextInput] renders correctly 1`] = `
     }
   >
     <TextInput
-      allowFontScaling={true}
       autoCapitalize="none"
       autoCorrect={false}
       multiline={false}
       onBlur={[Function]}
       onFocus={[Function]}
       placeholderTextColor="#606885"
-      rejectResponderTermination={true}
       style={
         Array [
           Object {
@@ -59,7 +57,6 @@ exports[`[TextInput] renders correctly 1`] = `
           false,
         ]
       }
-      underlineColorAndroid="transparent"
     />
   </View>
 </View>

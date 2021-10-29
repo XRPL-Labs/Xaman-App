@@ -8,8 +8,7 @@ buildscript {
         minSdkVersion = 24
         compileSdkVersion = 30
         targetSdkVersion = 30
-        ndkVersion = "20.1.5948944"
-        supportLibVersion = "29.0.0"
+        ndkVersion = "21.4.7075529"
         kotlinVersion = "1.4.21"
         RNNKotlinVersion = ext.kotlinVersion
         RNNKotlinStdlib = "kotlin-stdlib-jdk8"
@@ -20,7 +19,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:4.2.1")
+        classpath("com.android.tools.build:gradle:4.2.2")
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 
         // Firebase
@@ -56,27 +55,6 @@ allprojects {
         maven { url 'https://jitpack.io' }
         maven { url "https://cdn.veriff.me/android/" } //veriff
     }
-
-    // Make sure we use the react-native version in node_modules and not the one
-    // published in jcenter / elsewhere.
-    configurations.all {
-        resolutionStrategy {
-            eachDependency { DependencyResolveDetails details ->
-                if (details.requested.group == 'com.facebook.react'
-                        && details.requested.name == 'react-native') {
-                    def file = new File("$rootDir/../node_modules/react-native/package.json")
-                    def version = new groovy.json.JsonSlurper().parseText(file.text).version
-                    details.useVersion version
-                }
-                if (details.requested.group == 'org.webkit'
-                        && details.requested.name == 'android-jsc') {
-                    def file = new File("$rootDir/../node_modules/jsc-android/package.json")
-                    def version = new groovy.json.JsonSlurper().parseText(file.text).version
-                    details.useVersion "r${version.tokenize('.')[0]}"
-                }
-            }
-        }
-    }
 }
 
 
@@ -86,18 +64,7 @@ subprojects { subproject ->
         versionMajor = npmVersion[0]
         versionMinor = npmVersion[1]
         versionPatch = npmVersion[2]
-        buildNumber = 3
-    }
-    afterEvaluate {
-        if (project.hasProperty("android")) {
-            android {
-                compileSdkVersion 29
-                buildToolsVersion "29.0.2"
-                defaultConfig {
-                    targetSdkVersion 29
-                }
-            }
-        }
+        buildNumber = 4
     }
 }
 

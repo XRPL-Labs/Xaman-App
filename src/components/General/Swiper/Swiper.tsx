@@ -16,6 +16,8 @@ class Swiper extends Component<Props, State> {
     scroll: ScrollView = undefined;
     views: Map<number, View> = new Map();
 
+    private measureViewTimeout: any;
+
     constructor(props: Props) {
         super(props);
         this.state = {};
@@ -29,6 +31,10 @@ class Swiper extends Component<Props, State> {
         }, 10);
     }
 
+    componentWillUnmount() {
+        if (this.measureViewTimeout) clearTimeout(this.measureViewTimeout);
+    }
+
     onItemChange(item: any) {
         const { onChange } = this.props;
 
@@ -39,7 +45,7 @@ class Swiper extends Component<Props, State> {
 
     onScrollEnd = () => {
         const { items } = this.props;
-        setTimeout(() => {
+        this.measureViewTimeout = setTimeout(() => {
             for (const [index, view] of this.views.entries()) {
                 view.measure((x, y, width, height, pageX) => {
                     if (pageX > 20 && pageX < 40) {

@@ -1,7 +1,7 @@
 /**
  * Currency Settings Overlay
  */
-import { has, get, find } from 'lodash';
+import { has, get } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
@@ -26,7 +26,7 @@ import { AppScreens } from '@common/constants';
 import LedgerService from '@services/LedgerService';
 
 // components
-import { Button, Spacer, RaisedButton, AmountText, InfoMessage } from '@components/General';
+import { Button, Spacer, RaisedButton, AmountText, InfoMessage, Avatar } from '@components/General';
 
 import Localize from '@locale';
 
@@ -45,7 +45,6 @@ export interface State {
     isLoading: boolean;
     latestLineBalance: number;
     canRemove: boolean;
-    isNFT: boolean;
 }
 /* Component ==================================================================== */
 class CurrencySettingsModal extends Component<Props, State> {
@@ -70,7 +69,6 @@ class CurrencySettingsModal extends Component<Props, State> {
             isLoading: false,
             latestLineBalance: 0,
             canRemove: false,
-            isNFT: props.trustLine.isNFT,
         };
 
         this.animatedColor = new Animated.Value(0);
@@ -129,15 +127,8 @@ class CurrencySettingsModal extends Component<Props, State> {
         if (trustLine.obligation || trustLine.isNFT) return Promise.resolve();
 
         return new Promise((resolve) => {
-            return LedgerService.getAccountLines(account.address)
-                .then((accountLines: any) => {
-                    const { lines } = accountLines;
-
-                    const line = find(lines, {
-                        account: trustLine.currency.issuer,
-                        currency: trustLine.currency.currency,
-                    });
-
+            return LedgerService.getAccountLine(account.address, trustLine.currency)
+                .then((line: any) => {
                     if (line) {
                         const balance = new BigNumber(line.balance);
 
@@ -403,10 +394,10 @@ class CurrencySettingsModal extends Component<Props, State> {
 
         Navigator.showModal(
             AppScreens.Modal.ReviewTransaction,
-            { modalPresentationStyle: 'fullScreen' },
             {
                 payload,
             },
+            { modalPresentationStyle: 'fullScreen' },
         );
     };
 
@@ -417,14 +408,14 @@ class CurrencySettingsModal extends Component<Props, State> {
             isLoading: true,
         });
         // set the default line limit
-        let lineLimit = 1000000000;
+        let lineLimit = '1000000000';
 
         try {
             // set the trustline limit by gateway balance if it's more than our default value
             const resp = await LedgerService.getGatewayBalances(trustLine.currency.issuer);
             const gatewayBalances = get(resp, ['obligations', trustLine.currency.currency]);
 
-            if (gatewayBalances && Number(gatewayBalances) > lineLimit) {
+            if (gatewayBalances && Number(gatewayBalances) > Number(lineLimit)) {
                 lineLimit = gatewayBalances;
             }
         } catch {
@@ -450,10 +441,10 @@ class CurrencySettingsModal extends Component<Props, State> {
 
         Navigator.showModal(
             AppScreens.Modal.ReviewTransaction,
-            { modalPresentationStyle: 'fullScreen' },
             {
                 payload,
             },
+            { modalPresentationStyle: 'fullScreen' },
         );
     };
 
@@ -461,7 +452,7 @@ class CurrencySettingsModal extends Component<Props, State> {
         const { trustLine } = this.props;
 
         this.dismiss().then(() => {
-            Navigator.push(AppScreens.Transaction.Exchange, {}, { trustLine });
+            Navigator.push(AppScreens.Transaction.Exchange, { trustLine });
         });
     };
 
@@ -472,16 +463,16 @@ class CurrencySettingsModal extends Component<Props, State> {
             Navigator.showModal(
                 AppScreens.Modal.XAppBrowser,
                 {
-                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-                },
-                {
                     identifier: 'xumm.nft-info',
                     account,
                     params: {
                         issuer: trustLine.currency.issuer,
                         token: trustLine.currency.currency,
                     },
+                },
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                 },
             );
         });
@@ -534,7 +525,7 @@ class CurrencySettingsModal extends Component<Props, State> {
 
     render() {
         const { trustLine } = this.props;
-        const { isRemoving, isLoading, canRemove, isNFT } = this.state;
+        const { isRemoving, isLoading, canRemove } = this.state;
 
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],
@@ -556,10 +547,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                         <View style={[styles.currencyItem]}>
                             <View style={[AppStyles.row, AppStyles.centerAligned]}>
                                 <View style={[styles.brandAvatarContainer]}>
-                                    <Image
-                                        style={[styles.brandAvatar]}
-                                        source={{ uri: trustLine.counterParty.avatar }}
-                                    />
+                                    <Avatar border size={35} source={{ uri: trustLine.counterParty.avatar }} />
                                 </View>
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
                                     <Text style={[styles.currencyItemLabelSmall]}>
@@ -590,7 +578,11 @@ class CurrencySettingsModal extends Component<Props, State> {
                                     type="warning"
                                     containerStyle={styles.infoContainer}
                                     labelStyle={styles.infoText}
-                                    label={Localize.t('asset.dangerousConfigurationDetected')}
+                                    label={
+                                        !trustLine.no_ripple
+                                            ? Localize.t('asset.dangerousConfigurationDetected')
+                                            : Localize.t('asset.restrictingConfigurationDetected')
+                                    }
                                     moreButtonLabel={Localize.t('asset.moreInfoAndFix')}
                                     onMoreButtonPress={this.showConfigurationAlert}
                                     isMoreButtonLoading={isLoading}
@@ -610,10 +602,10 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 textStyle={[styles.sendButtonText]}
                                 onPress={() => {
                                     this.dismiss();
-                                    Navigator.push(AppScreens.Transaction.Payment, {}, { currency: trustLine });
+                                    Navigator.push(AppScreens.Transaction.Payment, { currency: trustLine });
                                 }}
                             />
-                            {isNFT ? (
+                            {trustLine.isNFT ? (
                                 <RaisedButton
                                     style={styles.infoButton}
                                     icon="IconInfo"

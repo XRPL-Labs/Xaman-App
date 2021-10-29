@@ -275,12 +275,15 @@ class AuthenticationService extends EventEmitter {
             ) {
                 // lock the app
                 this.locked = true;
-                await Navigator.showOverlay(AppScreens.Overlay.Lock, {
-                    layout: {
-                        backgroundColor: 'transparent',
-                        componentBackgroundColor: 'transparent',
+                await Navigator.showOverlay(
+                    AppScreens.Overlay.Lock,
+                    {},
+                    {
+                        overlay: {
+                            handleKeyboardEvents: false,
+                        },
                     },
-                });
+                );
             } else {
                 // run services/functions need to run after success auth
                 this.runAfterSuccessAuth();

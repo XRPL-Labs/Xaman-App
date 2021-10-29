@@ -10,11 +10,12 @@ import { View, Text, Image, ImageBackground, ScrollView } from 'react-native';
 
 import { Navigation } from 'react-native-navigation';
 
+import { AppScreens } from '@common/constants';
+
 // helpers
 import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
-import { AppScreens } from '@common/constants';
 
 // store
 import { AccessLevels } from '@store/types';
@@ -93,7 +94,7 @@ class AccountListView extends Component<Props, State> {
         const { reorderEnabled } = this.state;
 
         if (!reorderEnabled) {
-            Navigator.push(AppScreens.Account.Edit.Settings, {}, { account });
+            Navigator.push(AppScreens.Account.Edit.Settings, { account });
         }
     };
 
