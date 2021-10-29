@@ -54,7 +54,8 @@ jobs:
         run: |
           brew tap wix/brew
           brew install applesimutils
-          sh scripts/build-env.sh
+          make build-env
+          make generate-locales
           mv src/app.tsx src/app.tsx.old && cat src/app.tsx.old|perl -pe'BEGIN{undef $/;} s/if \(isJailBroken.+?}/\/\/ No root or jailbreak detection/gms' > src/app.tsx
     
       - run: yarn detox build e2e --configuration ios.sim.release
