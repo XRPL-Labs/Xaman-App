@@ -182,12 +182,22 @@ const Navigator = {
 
     pop(options = {}) {
         const currentScreen = NavigationService.getCurrentScreen();
-        return Navigation.pop(currentScreen, options);
+
+        if (currentScreen) {
+            return Navigation.pop(currentScreen, options);
+        }
+
+        return Promise.resolve();
     },
 
     popToRoot(options = {}) {
         const currentScreen = NavigationService.getCurrentScreen();
-        return Navigation.popToRoot(currentScreen, options);
+
+        if (currentScreen) {
+            return Navigation.popToRoot(currentScreen, options);
+        }
+
+        return Promise.resolve();
     },
 
     showOverlay(overlay: any, passProps = {}, options = {}) {
@@ -218,7 +228,12 @@ const Navigator = {
 
     dismissOverlay() {
         const currentOverlay = NavigationService.getCurrentOverlay();
-        return Navigation.dismissOverlay(currentOverlay);
+
+        if (currentOverlay) {
+            return Navigation.dismissOverlay(currentOverlay);
+        }
+
+        return Promise.resolve();
     },
 
     showModal(modal: any, passProps = {}, options = {}) {
@@ -246,7 +261,12 @@ const Navigator = {
 
     dismissModal() {
         const currentModal = NavigationService.getCurrentModal();
-        return Navigation.dismissModal(currentModal);
+
+        if (currentModal) {
+            return Navigation.dismissModal(currentModal);
+        }
+
+        return Promise.resolve();
     },
 
     setBadge(tab: string, badge: string) {
