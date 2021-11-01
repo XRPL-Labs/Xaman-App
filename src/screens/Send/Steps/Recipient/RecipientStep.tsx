@@ -348,9 +348,10 @@ class RecipientStep extends Component<Props, State> {
     };
 
     clearDestination = () => {
-        const { setDestination } = this.context;
+        const { setDestination, setDestinationInfo } = this.context;
 
         setDestination(undefined);
+        setDestinationInfo(undefined);
     };
 
     resetResult = () => {
@@ -598,11 +599,9 @@ class RecipientStep extends Component<Props, State> {
     };
 
     goBack = () => {
-        const { goBack, setDestination, setDestinationInfo } = this.context;
+        const { goBack } = this.context;
 
-        // clear destination on go back
-        setDestination(undefined);
-        setDestinationInfo(undefined);
+        this.clearDestination();
 
         goBack();
     };

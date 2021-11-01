@@ -321,7 +321,9 @@ class HomeView extends Component<Props, State> {
     showShareOverlay = () => {
         const { account } = this.state;
 
-        Navigator.showOverlay(AppScreens.Overlay.ShareAccount, { account });
+        if (account) {
+            Navigator.showOverlay(AppScreens.Overlay.ShareAccount, { account });
+        }
     };
 
     pushSendScreen = () => {
@@ -400,6 +402,10 @@ class HomeView extends Component<Props, State> {
 
     onTrustLinePress = (line: TrustLineSchema) => {
         const { isSpendable } = this.state;
+
+        if (!line) {
+            return;
+        }
 
         if (isSpendable) {
             this.showCurrencyOptions(line);

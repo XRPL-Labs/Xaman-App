@@ -126,6 +126,11 @@ class BaseTransaction {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             try {
+                if (!account) {
+                    reject(new Error('Account param is required!'));
+                    return;
+                }
+
                 if (this.TxnSignature) {
                     reject(new Error('Transaction already signed!'));
                     return;
