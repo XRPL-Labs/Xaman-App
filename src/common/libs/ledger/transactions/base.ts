@@ -33,6 +33,9 @@ import { TransactionResult, Account, Memo, AmountType } from '../parser/types';
 class BaseTransaction {
     [key: string]: any;
 
+    private _SubmitResult?: SubmitResultType;
+    private _VerifyResult?: VerifyResultType;
+
     constructor(_transaction?: LedgerTransactionType) {
         if (!isUndefined(_transaction)) {
             const { transaction, tx, meta } = _transaction;
@@ -180,7 +183,7 @@ class BaseTransaction {
             this.tx = transaction;
         }
 
-        // persist verify result in meta
+        // persist verify result
         this.VerifyResult = { success: verifyResult.success };
 
         return verifyResult;
@@ -198,34 +201,28 @@ class BaseTransaction {
 
             const submitResult = await LedgerService.submitTX(this.TxnSignature);
 
-            const { engineResult, message, success, transactionId } = submitResult;
+            const { transactionId } = submitResult;
 
             if (transactionId) {
                 this.Hash = transactionId;
             }
 
-            // temporary set the result
-            this.TransactionResult = {
-                code: engineResult,
-                message,
-                success,
-            };
+            // set submit result
+            this.SubmitResult = submitResult;
 
             return submitResult;
         } catch (e: any) {
             // something wrong happened
-            // temporary set the result
-            this.TransactionResult = {
-                code: 'telFAILED',
-                message: e?.message,
-                success: false,
-            };
-
-            return {
+            const result = {
                 success: false,
                 engineResult: 'telFAILED',
                 message: e?.message,
             };
+
+            // set submit result
+            this.SubmitResult = result;
+
+            return result;
         }
     };
 
@@ -421,10 +418,18 @@ class BaseTransaction {
         return ledgerDate.toISO8601();
     }
 
-    get VerifyResult(): VerifyResultType {
-        const result = get(this, ['meta', 'VerifyResult'], undefined);
+    get SubmitResult(): SubmitResultType {
+        return get(this, '_SubmitResult', undefined);
+    }
 
-        // already verified by network
+    set SubmitResult(result: SubmitResultType) {
+        set(this, '_SubmitResult', result);
+    }
+
+    get VerifyResult(): VerifyResultType {
+        const result = get(this, '_VerifyResult', undefined);
+
+        // check if already went through network and verified
         if (isUndefined(result)) {
             return {
                 success: !isUndefined(this.LedgerIndex),
@@ -435,27 +440,36 @@ class BaseTransaction {
     }
 
     set VerifyResult(result: VerifyResultType) {
-        set(this, ['meta', 'VerifyResult'], result);
+        set(this, '_VerifyResult', result);
     }
 
     get TransactionResult(): TransactionResult {
-        const engine_result = get(this, ['meta', 'TransactionResult']);
-        const message = get(this, ['meta', 'TransactionResultMessage']);
+        const transactionResult = get(this, ['meta', 'TransactionResult'], undefined);
 
-        if (!engine_result) {
-            return undefined;
+        // this transaction already verified by network
+        if (transactionResult === 'tesSUCCESS') {
+            return {
+                success: true,
+                code: transactionResult,
+                message: undefined,
+            };
         }
 
+        const submitResult = get(this, 'SubmitResult', undefined);
+        const verifyResult = get(this, 'VerifyResult', undefined);
+
+        // if already verified by network or
+        // submitted result was successful
+        // or verify result was successful
+        const code = transactionResult || submitResult?.engineResult;
+        const success = code === 'tesSUCCESS' || verifyResult?.success;
+        const message = !success ? submitResult?.message : undefined;
+
         return {
-            success: engine_result === 'tesSUCCESS',
-            code: engine_result,
+            success,
+            code,
             message,
         };
-    }
-
-    set TransactionResult(result: TransactionResult) {
-        set(this, ['meta', 'TransactionResult'], result.code);
-        set(this, ['meta', 'TransactionResultMessage'], result?.message);
     }
 
     get Hash(): string {
