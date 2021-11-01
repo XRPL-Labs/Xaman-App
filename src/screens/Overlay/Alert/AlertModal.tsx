@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Animated, Text, StyleSheet } from 'react-native';
+import { View, Animated, Text, StyleSheet, BackHandler } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
@@ -31,6 +31,7 @@ export interface State {}
 class AlertModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Alert;
 
+    private backHandler: any;
     private animateScale: Animated.Value;
     private animatedColor: Animated.Value;
     private animatedOpacity: Animated.Value;
@@ -52,6 +53,9 @@ class AlertModal extends Component<Props, State> {
     }
 
     componentDidMount() {
+        // prevent from hardware back in android devices
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
+
         Animated.parallel([
             Animated.spring(this.animateScale, {
                 toValue: 1,
@@ -67,6 +71,12 @@ class AlertModal extends Component<Props, State> {
                 useNativeDriver: false,
             }),
         ]).start();
+    }
+
+    componentWillUnmount() {
+        if (this.backHandler) {
+            this.backHandler.remove();
+        }
     }
 
     dismiss = (callback?: () => void) => {
