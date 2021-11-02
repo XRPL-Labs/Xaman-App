@@ -60,18 +60,19 @@
 
 // hide snapshot in task switcher
 - (void)applicationWillResignActive:(UIApplication *)application {
-    UIViewController *parentViewController = [[[UIApplication sharedApplication] delegate] window].rootViewController;
-    while (parentViewController.presentedViewController != nil){
-        parentViewController = parentViewController.presentedViewController;
-    }
-    UIViewController *currentViewController = parentViewController;
+    NSPredicate *isKeyWindow = [NSPredicate predicateWithFormat:@"isKeyWindow == YES"];
+    UIWindow *topWindow = [[[UIApplication sharedApplication] windows] filteredArrayUsingPredicate:isKeyWindow].firstObject;
   
+    UIViewController *rootViewController = topWindow.rootViewController;
+    UIViewController *currentViewController = rootViewController;
+
+    if ([rootViewController presentedViewController]) {
+      currentViewController = [rootViewController presentedViewController];
+    }
+
     if(![NSStringFromClass([currentViewController class]) hasPrefix:@"RNN"]){
       return;
     }
-  
-    NSPredicate *isKeyWindow = [NSPredicate predicateWithFormat:@"isKeyWindow == YES"];
-    UIWindow *topWindow = [[[UIApplication sharedApplication] windows] filteredArrayUsingPredicate:isKeyWindow].firstObject;
   
     UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
     UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
