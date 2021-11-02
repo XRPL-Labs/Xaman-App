@@ -434,10 +434,9 @@ class BaseTransaction {
     get VerifyResult(): VerifyResultType {
         const result = get(this, '_VerifyResult', undefined);
 
-        // check if already went through network and verified
         if (isUndefined(result)) {
             return {
-                success: !isUndefined(this.LedgerIndex),
+                success: false,
             };
         }
 
