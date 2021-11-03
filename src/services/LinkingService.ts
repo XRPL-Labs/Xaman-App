@@ -2,8 +2,6 @@
  * DeepLink service
  * handle app deep linking
  */
-
-import EventEmitter from 'events';
 import { Linking, Alert } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
@@ -19,12 +17,10 @@ import { NormalizeDestination } from '@common/utils/codec';
 
 import Localize from '@locale';
 /* Service  ==================================================================== */
-class LinkingService extends EventEmitter {
+class LinkingService {
     private initialURL: string;
 
     constructor() {
-        super();
-
         this.initialURL = null;
     }
 

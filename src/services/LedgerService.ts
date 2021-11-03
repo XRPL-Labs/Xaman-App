@@ -4,7 +4,6 @@
  */
 import BigNumber from 'bignumber.js';
 import moment from 'moment-timezone';
-import EventEmitter from 'events';
 import { has, find, map, isEmpty, assign, startsWith } from 'lodash';
 
 import { CoreSchema } from '@store/schemas/latest';
@@ -29,21 +28,13 @@ import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
 import { AppConfig } from '@common/constants';
 
-/* events  ==================================================================== */
-declare interface LedgerService {
-    on(event: 'transaction', listener: (name: string) => void): this;
-    on(event: string, listener: Function): this;
-}
-
 /* Service  ==================================================================== */
-class LedgerService extends EventEmitter {
+class LedgerService {
     networkReserve: any;
     logger: any;
     ledgerListener: any;
 
     constructor() {
-        super();
-
         this.networkReserve = undefined;
 
         this.logger = LoggerService.createLogger('Ledger');

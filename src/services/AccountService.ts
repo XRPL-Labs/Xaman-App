@@ -19,6 +19,12 @@ import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
 import LedgerService from '@services/LedgerService';
 
+/* events  ==================================================================== */
+declare interface AccountService {
+    on(event: 'transaction', listener: (name: string) => void): this;
+    on(event: string, listener: Function): this;
+}
+
 /* Service  ==================================================================== */
 class AccountService extends EventEmitter {
     accounts: Array<any>;

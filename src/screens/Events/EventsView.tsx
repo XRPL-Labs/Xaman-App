@@ -27,7 +27,7 @@ import { Payload } from '@common/libs/payload';
 import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterView';
 
 // Services
-import { LedgerService, BackendService, PushNotificationsService, StyleService } from '@services';
+import { LedgerService, AccountService, BackendService, PushNotificationsService, StyleService } from '@services';
 
 // Components
 import { SearchBar, Button, SegmentButton, Header } from '@components/General';
@@ -113,7 +113,7 @@ class EventsView extends Component<Props, State> {
         AccountRepository.on('changeDefaultAccount', this.onDefaultAccountChange);
 
         // update list on transaction received
-        LedgerService.on('transaction', this.updateDataSource);
+        AccountService.on('transaction', this.updateDataSource);
 
         // update list on sign request received
         PushNotificationsService.on('signRequestUpdate', this.updateDataSource);
@@ -129,7 +129,7 @@ class EventsView extends Component<Props, State> {
     componentWillUnmount = () => {
         // remove listeners
         AccountRepository.off('changeDefaultAccount', this.onDefaultAccountChange);
-        LedgerService.off('transaction', this.updateDataSource);
+        AccountService.off('transaction', this.updateDataSource);
         PushNotificationsService.off('signRequestUpdate', this.updateDataSource);
     };
 
