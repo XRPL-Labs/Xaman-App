@@ -191,12 +191,8 @@ class VaultModal extends Component<Props, State> {
 
     openTroubleshootLink = () => {
         const url = `https://xumm.app/redir/faq/account-signing-password/${Localize.getCurrentLocale()}`;
-        Linking.canOpenURL(url).then((supported) => {
-            if (supported) {
-                Linking.openURL(url);
-            } else {
-                Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
-            }
+        Linking.openURL(url).catch(() => {
+            Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
         });
     };
 

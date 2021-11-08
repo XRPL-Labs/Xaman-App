@@ -120,12 +120,8 @@ class RecipientMenuOverlay extends Component<Props, State> {
             this.actionPanel.slideDown();
         }
         setTimeout(() => {
-            Linking.canOpenURL(url).then((supported) => {
-                if (supported) {
-                    Linking.openURL(url);
-                } else {
-                    Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
-                }
+            Linking.openURL(url).catch(() => {
+                Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
             });
         }, 500);
     };
