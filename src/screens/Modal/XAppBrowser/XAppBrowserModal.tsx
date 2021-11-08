@@ -291,12 +291,8 @@ class XAppBrowserModal extends Component<Props, State> {
                 {
                     text: 'Open',
                     onPress: () => {
-                        Linking.canOpenURL(url).then((supported) => {
-                            if (supported) {
-                                Linking.openURL(url);
-                            } else {
-                                Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
-                            }
+                        Linking.openURL(url).catch(() => {
+                            Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
                         });
                     },
                     style: 'destructive',

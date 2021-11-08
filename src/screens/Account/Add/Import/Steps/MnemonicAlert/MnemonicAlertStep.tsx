@@ -28,14 +28,10 @@ class MnemonicAlertStep extends Component<Props, State> {
     context: React.ContextType<typeof StepsContext>;
 
     openFAQ = () => {
-        const url = 'http://xumm.app/redir/faq/security-hardware/en';
+        const url = 'https://xumm.app/redir/faq/security-hardware/en';
 
-        Linking.canOpenURL(url).then((supported) => {
-            if (supported) {
-                Linking.openURL(url);
-            } else {
-                Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
-            }
+        Linking.openURL(url).catch(() => {
+            Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
         });
     };
 

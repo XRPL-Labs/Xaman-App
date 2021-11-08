@@ -354,13 +354,11 @@ class TransactionDetailsView extends Component<Props, State> {
 
     openTxLink = () => {
         const url = this.getTransactionLink();
-        Linking.canOpenURL(url).then((supported) => {
-            if (supported) {
-                Linking.openURL(url);
-            } else {
+        if (url) {
+            Linking.openURL(url).catch(() => {
                 Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
-            }
-        });
+            });
+        }
     };
 
     showMenu = () => {

@@ -60,45 +60,46 @@
 
 // hide snapshot in task switcher
 - (void)applicationWillResignActive:(UIApplication *)application {
-    NSPredicate *isKeyWindow = [NSPredicate predicateWithFormat:@"isKeyWindow == YES"];
-    UIWindow *topWindow = [[[UIApplication sharedApplication] windows] filteredArrayUsingPredicate:isKeyWindow].firstObject;
+  NSPredicate *isKeyWindow = [NSPredicate predicateWithFormat:@"isKeyWindow == YES"];
+  UIWindow *topWindow = [[[UIApplication sharedApplication] windows] filteredArrayUsingPredicate:isKeyWindow].firstObject;
   
-    UIViewController *rootViewController = topWindow.rootViewController;
-    UIViewController *currentViewController = rootViewController;
-
-    if ([rootViewController presentedViewController]) {
-      currentViewController = [rootViewController presentedViewController];
-    }
-
-    if(![NSStringFromClass([currentViewController class]) hasPrefix:@"RNN"]){
-      return;
-    }
+  UIViewController *rootViewController = topWindow.rootViewController;
+  UIViewController *currentViewController = rootViewController;
   
-    UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-
-    blurEffectView.frame = topWindow.frame;
-    blurEffectView.tag = 0xDEADBEEF;
-    blurEffectView.alpha = 0;
-    [topWindow addSubview:blurEffectView];
-    [UIView animateWithDuration:0.5 animations:^{
-      blurEffectView.alpha = 1;
-    }];
+  if ([rootViewController presentedViewController]) {
+    currentViewController = [rootViewController presentedViewController];
+  }
+  
+  if(![NSStringFromClass([currentViewController class]) hasPrefix:@"RNN"]){
+    return;
+  }
+  
+  UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+  UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+  
+  blurEffectView.frame = topWindow.frame;
+  blurEffectView.tag = 0xDEADBEEF;
+  blurEffectView.alpha = 0;
+  [topWindow addSubview:blurEffectView];
+  [UIView animateWithDuration:0.5 animations:^{
+    blurEffectView.alpha = 1;
+  }];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-  NSPredicate *isKeyWindow = [NSPredicate predicateWithFormat:@"isKeyWindow == YES"];
-  UIWindow *topWindow = [[[UIApplication sharedApplication] windows] filteredArrayUsingPredicate:isKeyWindow].firstObject;
-
-  UIView *blurEffectView = [topWindow viewWithTag:0xDEADBEEF];
-  if (blurEffectView){
-    // fade away colour view from main view
-    [UIView animateWithDuration:0.5 animations:^{
-      blurEffectView.alpha = 0;
-    } completion:^(BOOL finished) {
-      // remove when finished fading
-      [blurEffectView removeFromSuperview];
-    }];
+  NSArray *windows = [UIApplication sharedApplication].windows;
+  for(UIWindow *window in [windows reverseObjectEnumerator]) {
+    UIView *blurEffectView = [window viewWithTag:0xDEADBEEF];
+    if (blurEffectView){
+      // fade away colour view from main view
+      [UIView animateWithDuration:0.5 animations:^{
+        blurEffectView.alpha = 0;
+      } completion:^(BOOL finished) {
+        // remove when finished fading
+        [blurEffectView removeFromSuperview];
+      }];
+      return;
+    }
   }
 }
 

@@ -556,12 +556,8 @@ class ReviewTransactionModal extends Component<Props, State> {
         const { return_url_app } = payload.meta;
 
         if (return_url_app) {
-            Linking.canOpenURL(return_url_app).then((support) => {
-                if (support) {
-                    Linking.openURL(return_url_app);
-                } else {
-                    Alert.alert(Localize.t('global.error'), Localize.t('global.unableOpenReturnURL'));
-                }
+            Linking.openURL(return_url_app).catch(() => {
+                Alert.alert(Localize.t('global.error'), Localize.t('global.unableOpenReturnURL'));
             });
         }
         Navigator.dismissModal().then(() => {
