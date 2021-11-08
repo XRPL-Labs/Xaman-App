@@ -1,7 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.xrpllabs.xumm"
     xmlns:tools="http://schemas.android.com/tools"
-    >
+    package="com.xrpllabs.xumm">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -9,28 +8,36 @@
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
-    
-    <uses-permission tools:node="remove" android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission tools:node="remove" android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission tools:node="remove" android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission
+        android:name="android.permission.READ_PHONE_STATE"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        tools:node="remove" />
 
     <application
         android:name=".MainApplication"
-        android:label="@string/app_name"
-        android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:allowBackup="false"
-        android:theme="@style/AppTheme"
-        android:resizeableActivity="false">
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:resizeableActivity="false"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:taskAffinity=""
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing">
-            
+            android:taskAffinity=""
+            android:windowSoftInputMode="adjustNothing"
+            tools:ignore="LockedOrientationActivity"
+            android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -38,8 +45,10 @@
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="xumm.app"
                     android:pathPrefix="/detect"
@@ -57,11 +66,13 @@
                     android:pathPrefix="/sign"
                     android:scheme="https" />
             </intent-filter>
-            
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="xrpl" />
                 <data android:scheme="xrp" />
                 <data android:scheme="xumm" />
@@ -69,22 +80,23 @@
 
 
             <intent-filter>
-                <action android:name="android.nfc.action.TECH_DISCOVERED"/>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
             </intent-filter>
 
-            <meta-data android:name="android.nfc.action.TECH_DISCOVERED"
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter" />
-            
+
         </activity>
 
         <meta-data
-            tools:replace="android:resource"
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_stat_icon_xumm_android_notification" />
+            android:resource="@drawable/ic_stat_icon_xumm_android_notification"
+            tools:replace="android:resource" />
         <meta-data
-            tools:replace="android:resource"
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/pushIcon" />
+            android:resource="@color/pushIcon"
+            tools:replace="android:resource" />
 
         <receiver
             android:name="libs.notification.NotificationMessageReceiver"
@@ -95,7 +107,10 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="libs.notification.NotificationActionReceiver" android:enabled="true" >
+        <receiver
+            android:name="libs.notification.NotificationActionReceiver"
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.xrpllabs.xumm.ACTION_NOTIFICATION_OPENED" />
             </intent-filter>

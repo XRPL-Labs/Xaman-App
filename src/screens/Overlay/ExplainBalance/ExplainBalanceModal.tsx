@@ -4,9 +4,7 @@
 
 import { sortBy, filter } from 'lodash';
 import React, { Component } from 'react';
-import { Animated, View, Text, TouchableWithoutFeedback, ScrollView, InteractionManager } from 'react-native';
-
-import Interactable from 'react-native-interactable';
+import { View, Text, ScrollView, InteractionManager } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Toast } from '@common/helpers/interface';
@@ -19,7 +17,7 @@ import LedgerService from '@services/LedgerService';
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 // components
-import { Avatar, Button, Icon, Spacer, LoadingIndicator } from '@components/General';
+import { Avatar, Button, Icon, Spacer, LoadingIndicator, ActionPanel } from '@components/General';
 
 import Localize from '@locale';
 
@@ -42,10 +40,7 @@ export interface State {
 class ExplainBalanceOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.ExplainBalance;
 
-    panel: any;
-    deltaY: Animated.Value;
-    deltaX: Animated.Value;
-    isOpening: boolean;
+    private actionPanel: ActionPanel;
 
     static options() {
         return {
@@ -67,16 +62,9 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             accountObjects: [],
             networkReserve: LedgerService.getNetworkReserve(),
         };
-
-        this.deltaY = new Animated.Value(AppSizes.screen.height);
-        this.deltaX = new Animated.Value(0);
-
-        this.isOpening = true;
     }
 
     componentDidMount() {
-        this.slideUp();
-
         InteractionManager.runAfterInteractions(this.loadAccountObjects);
     }
 
@@ -107,36 +95,6 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                     isLoading: false,
                 });
             });
-    };
-
-    slideUp = () => {
-        setTimeout(() => {
-            if (this.panel) {
-                this.panel.snapTo({ index: 1 });
-            }
-        }, 10);
-    };
-
-    slideDown = () => {
-        setTimeout(() => {
-            if (this.panel) {
-                this.panel.snapTo({ index: 0 });
-            }
-        });
-    };
-
-    onAlert = (event: any) => {
-        const { top, bottom } = event.nativeEvent;
-
-        if (top && bottom) return;
-
-        if (top === 'enter' && this.isOpening) {
-            this.isOpening = false;
-        }
-
-        if (bottom === 'leave' && !this.isOpening) {
-            Navigator.dismissOverlay();
-        }
     };
 
     renderAccountObjects = () => {
@@ -255,7 +213,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         const { networkReserve } = this.state;
 
         return (
-            <View style={[AppStyles.paddingHorizontalSml, { marginBottom: AppSizes.navigationBarHeight }]}>
+            <View style={[AppStyles.paddingHorizontalSml]}>
                 <View style={[styles.objectItemCard]}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
                         <View style={[styles.iconContainer]}>
@@ -282,140 +240,103 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         const { isLoading } = this.state;
 
         return (
-            <View style={AppStyles.flex1}>
-                <TouchableWithoutFeedback onPress={this.slideDown}>
-                    <Animated.View
-                        style={[
-                            AppStyles.shadowContent,
-                            {
-                                opacity: this.deltaY.interpolate({
-                                    inputRange: [0, AppSizes.screen.height],
-                                    outputRange: [0.9, 0],
-                                    extrapolateRight: 'clamp',
-                                }),
-                            },
-                        ]}
-                    />
-                </TouchableWithoutFeedback>
-
-                <Interactable.View
-                    ref={(r) => {
-                        this.panel = r;
-                    }}
-                    animatedNativeDriver
-                    onAlert={this.onAlert}
-                    verticalOnly
-                    snapPoints={[{ y: AppSizes.screen.height + 3 }, { y: AppSizes.heightPercentageToDP(10) }]}
-                    boundaries={{ top: AppSizes.heightPercentageToDP(8) }}
-                    initialPosition={{ y: AppSizes.screen.height }}
-                    alertAreas={[
-                        { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
-                        { id: 'top', influenceArea: { top: AppSizes.heightPercentageToDP(10) } },
+            <ActionPanel
+                height={AppSizes.heightPercentageToDP(88)}
+                onSlideDown={Navigator.dismissOverlay}
+                ref={(r) => {
+                    this.actionPanel = r;
+                }}
+            >
+                <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
+                    <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
+                        <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
+                            {Localize.t('global.balance')}
+                        </Text>
+                    </View>
+                    <View style={[AppStyles.row, AppStyles.flex1, AppStyles.paddingRightSml, AppStyles.flexEnd]}>
+                        <Button
+                            numberOfLines={1}
+                            light
+                            roundedSmall
+                            isDisabled={false}
+                            onPress={() => {
+                                if (this.actionPanel) {
+                                    this.actionPanel.slideDown();
+                                }
+                            }}
+                            textStyle={[AppStyles.subtext, AppStyles.bold]}
+                            label={Localize.t('global.close')}
+                        />
+                    </View>
+                </View>
+                <View
+                    style={[
+                        AppStyles.row,
+                        AppStyles.centerContent,
+                        AppStyles.paddingBottom,
+                        AppStyles.paddingHorizontalSml,
                     ]}
-                    animatedValueY={this.deltaY}
-                    animatedValueX={this.deltaX}
                 >
-                    <View style={[styles.visibleContent]}>
-                        <View style={AppStyles.panelHeader}>
-                            <View style={AppStyles.panelHandle} />
-                        </View>
+                    <Text style={[AppStyles.p, AppStyles.subtext, AppStyles.textCenterAligned]}>
+                        {Localize.t('home.xrpYouOwnVsYourSpendableBalance')}
+                    </Text>
+                </View>
 
-                        <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
-                            <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                                <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
-                                    {Localize.t('global.balance')}
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    bounces={false}
+                    contentContainerStyle={[AppStyles.stretchSelf]}
+                    stickyHeaderIndices={[1]}
+                    scrollEventThrottle={1}
+                >
+                    <View style={[AppStyles.paddingHorizontalSml]}>
+                        <Text style={[styles.rowTitle]}>{Localize.t('account.accountBalance')}</Text>
+                        <View style={[styles.objectItemCard]}>
+                            <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                                <View style={[styles.iconContainer]}>
+                                    <Icon name="IconXrp" size={20} style={[AppStyles.imgColorGrey]} />
+                                </View>
+                                <Text style={[styles.currencyLabel, AppStyles.colorGrey]}>XRP</Text>
+                            </View>
+                            <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
+                                <Text style={[AppStyles.h5, AppStyles.monoBold, AppStyles.colorGrey]}>
+                                    {Localize.formatNumber(account.balance)}
                                 </Text>
                             </View>
-                            <View
-                                style={[AppStyles.row, AppStyles.flex1, AppStyles.paddingRightSml, AppStyles.flexEnd]}
-                            >
-                                <Button
-                                    numberOfLines={1}
-                                    light
-                                    roundedSmall
-                                    isDisabled={false}
-                                    onPress={() => {
-                                        this.slideDown();
-                                    }}
-                                    textStyle={[AppStyles.subtext, AppStyles.bold]}
-                                    label={Localize.t('global.close')}
-                                />
-                            </View>
-                        </View>
-                        <View
-                            style={[
-                                AppStyles.row,
-                                AppStyles.centerContent,
-                                AppStyles.paddingBottom,
-                                AppStyles.paddingHorizontalSml,
-                            ]}
-                        >
-                            <Text style={[AppStyles.p, AppStyles.subtext, AppStyles.textCenterAligned]}>
-                                {Localize.t('home.xrpYouOwnVsYourSpendableBalance')}
-                            </Text>
                         </View>
 
-                        <View style={[AppStyles.paddingHorizontalSml]}>
-                            <Text style={[styles.rowTitle]}>{Localize.t('account.accountBalance')}</Text>
-                            <View style={[styles.objectItemCard]}>
-                                <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                    <View style={[styles.iconContainer]}>
-                                        <Icon name="IconXrp" size={20} style={[AppStyles.imgColorGrey]} />
-                                    </View>
-                                    <Text style={[styles.currencyLabel, AppStyles.colorGrey]}>XRP</Text>
-                                </View>
-                                <View
-                                    style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}
-                                >
-                                    <Text style={[AppStyles.h5, AppStyles.monoBold, AppStyles.colorGrey]}>
-                                        {Localize.formatNumber(account.balance)}
-                                    </Text>
-                                </View>
-                            </View>
+                        <Spacer size={30} />
 
-                            <Spacer size={30} />
-
-                            <Text style={[styles.rowTitle]}>{Localize.t('account.availableForSpending')}</Text>
-                            <View style={[styles.objectItemCard]}>
-                                <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                    <View style={[styles.iconContainer]}>
-                                        <Icon name="IconXrp" size={20} />
-                                    </View>
-                                    <Text style={[styles.currencyLabel]}>XRP</Text>
+                        <Text style={[styles.rowTitle]}>{Localize.t('account.availableForSpending')}</Text>
+                        <View style={[styles.objectItemCard]}>
+                            <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                                <View style={[styles.iconContainer]}>
+                                    <Icon name="IconXrp" size={20} />
                                 </View>
-                                <View
-                                    style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}
-                                >
-                                    <Text style={[AppStyles.h5, AppStyles.monoBold]}>
-                                        {Localize.formatNumber(CalculateAvailableBalance(account))}
-                                    </Text>
-                                </View>
+                                <Text style={[styles.currencyLabel]}>XRP</Text>
                             </View>
-                            <Spacer size={30} />
-                            <Text style={[styles.rowTitle]}>{Localize.t('global.reservedOnLedger')}</Text>
-                            <Spacer size={10} />
+                            <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
+                                <Text style={[AppStyles.h5, AppStyles.monoBold]}>
+                                    {Localize.formatNumber(CalculateAvailableBalance(account))}
+                                </Text>
+                            </View>
                         </View>
-
-                        <ScrollView
-                            showsVerticalScrollIndicator={false}
-                            scrollEventThrottle={16}
-                            bounces={false}
-                            contentContainerStyle={[AppStyles.stretchSelf]}
-                            stickyHeaderIndices={[0]}
-                        >
-                            {this.renderTotalReserve()}
-                            {isLoading ? (
-                                <>
-                                    <Spacer size={20} />
-                                    <LoadingIndicator />
-                                </>
-                            ) : (
-                                this.renderReserves()
-                            )}
-                        </ScrollView>
+                        <Spacer size={30} />
+                        <Text style={[styles.rowTitle]}>{Localize.t('global.reservedOnLedger')}</Text>
+                        <Spacer size={10} />
                     </View>
-                </Interactable.View>
-            </View>
+
+                    {this.renderTotalReserve()}
+                    {isLoading ? (
+                        <>
+                            <Spacer size={20} />
+                            <LoadingIndicator />
+                        </>
+                    ) : (
+                        this.renderReserves()
+                    )}
+                </ScrollView>
+            </ActionPanel>
         );
     }
 }

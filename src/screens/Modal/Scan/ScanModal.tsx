@@ -56,6 +56,7 @@ class ScanView extends Component<Props, State> {
 
     private shouldRead: boolean;
     private backHandler: NativeEventSubscription;
+    private shouldReadTimeout: any;
 
     static options() {
         return {
@@ -85,6 +86,8 @@ class ScanView extends Component<Props, State> {
         if (this.backHandler) {
             this.backHandler.remove();
         }
+
+        if (this.shouldReadTimeout) clearTimeout(this.shouldReadTimeout);
     }
 
     componentDidMount() {
@@ -97,7 +100,7 @@ class ScanView extends Component<Props, State> {
         this.shouldRead = value;
     };
 
-    routeUser = async (screen: string, options: any, passProps: any) => {
+    routeUser = async (screen: string, passProps?: any, options?: any) => {
         // close scan modal
         await Navigator.dismissModal();
 
@@ -110,11 +113,11 @@ class ScanView extends Component<Props, State> {
 
         if (screen.indexOf('modal.') !== -1) {
             setTimeout(() => {
-                Navigator.showModal(screen, options, passProps);
+                Navigator.showModal(screen, passProps, options);
             }, 10);
         } else {
             setTimeout(() => {
-                Navigator.push(screen, options, passProps);
+                Navigator.push(screen, passProps, options);
             }, 10);
         }
     };
@@ -255,10 +258,10 @@ class ScanView extends Component<Props, State> {
             // review the transaction
             this.routeUser(
                 AppScreens.Modal.ReviewTransaction,
-                { modalPresentationStyle: 'fullScreen' },
                 {
                     payload,
                 },
+                { modalPresentationStyle: 'fullScreen' },
             );
         } catch (e: any) {
             Prompt(Localize.t('global.error'), e.message, [{ text: 'OK', onPress: () => this.setShouldRead(true) }], {
@@ -298,10 +301,10 @@ class ScanView extends Component<Props, State> {
                     onPress: async () => {
                         this.routeUser(
                             AppScreens.Modal.Submit,
-                            { modalPresentationStyle: 'fullScreen' },
                             {
                                 txblob: cleanBlob,
                             },
+                            { modalPresentationStyle: 'fullScreen' },
                         );
                     },
                     style: 'default',
@@ -320,12 +323,12 @@ class ScanView extends Component<Props, State> {
             if (destination.payId) {
                 this.routeUser(
                     AppScreens.Transaction.Payment,
-                    {},
                     {
                         scanResult: {
                             to: destination.payId,
                         },
                     },
+                    {},
                 );
                 return;
             }
@@ -357,7 +360,6 @@ class ScanView extends Component<Props, State> {
 
             this.routeUser(
                 AppScreens.Transaction.Payment,
-                {},
                 {
                     scanResult: {
                         to,
@@ -365,6 +367,7 @@ class ScanView extends Component<Props, State> {
                     },
                     amount,
                 },
+                {},
             );
         } else {
             Prompt(
@@ -380,15 +383,15 @@ class ScanView extends Component<Props, State> {
         this.routeUser(
             AppScreens.Modal.XAppBrowser,
             {
-                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-            },
-            {
                 identifier: parsed.xapp,
                 origin: PayloadOrigin.QR,
                 originData: { content },
                 path: parsed.path,
                 params: parsed.params,
+            },
+            {
+                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
             },
         );
     };
@@ -402,10 +405,10 @@ class ScanView extends Component<Props, State> {
         if (alphabet) {
             this.routeUser(
                 AppScreens.Account.Import,
-                {},
                 {
                     alternativeSeedAlphabet: parsed,
                 },
+                {},
             );
         } else {
             this.handleUndetectedType();
@@ -431,10 +434,10 @@ class ScanView extends Component<Props, State> {
                         onPress: () => {
                             this.routeUser(
                                 AppScreens.Account.Import,
-                                {},
                                 {
                                     importOfflineSecretNumber: true,
                                 },
+                                {},
                             );
                         },
                     },
@@ -469,7 +472,7 @@ class ScanView extends Component<Props, State> {
     handleUndetectedType = (content?: string, clipboard?: boolean) => {
         // some users scan QR on tangem card, navigate them to the account add screen
         if (content === 'https://xumm.app/tangem') {
-            this.routeUser(AppScreens.Account.Add, {}, {});
+            this.routeUser(AppScreens.Account.Add);
             return;
         }
 
@@ -506,7 +509,7 @@ class ScanView extends Component<Props, State> {
                 onRead(content);
             } else {
                 // if detected in black list just return and enable reading after 1 sec
-                setTimeout(() => {
+                this.shouldReadTimeout = setTimeout(() => {
                     this.setShouldRead(true);
                 }, 1000);
             }

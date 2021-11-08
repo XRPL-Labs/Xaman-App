@@ -44,7 +44,7 @@ describe('BaseTransaction tx', () => {
         });
     });
 
-    it('Should set/get fields', () => {
+    it('Should set/get common fields', () => {
         const instance = new BaseTransaction();
 
         instance.Account = {
@@ -66,17 +66,6 @@ describe('BaseTransaction tx', () => {
         instance.Fee = '0.000012';
         expect(instance.Fee).toBe('0.000012');
 
-        instance.TransactionResult = {
-            success: true,
-            code: 'tesSUCCESS',
-            message: undefined,
-        };
-        expect(instance.TransactionResult).toStrictEqual({
-            success: true,
-            code: 'tesSUCCESS',
-            message: undefined,
-        });
-
         instance.Hash = '7F10793B5781BD5DD52F70096520321A08DD2ED19AFC7E3F193AAC293954F7DF';
         expect(instance.Hash).toBe('7F10793B5781BD5DD52F70096520321A08DD2ED19AFC7E3F193AAC293954F7DF');
 
@@ -88,6 +77,57 @@ describe('BaseTransaction tx', () => {
 
         instance.SigningPubKey = '03DF3AB842EB1B57F0A848CD7CC2CFD35F66E4AD0625EEACFFE72A45E4D13E49A';
         expect(instance.SigningPubKey).toBe('03DF3AB842EB1B57F0A848CD7CC2CFD35F66E4AD0625EEACFFE72A45E4D13E49A');
+    });
+
+    it('Should return right transaction result', () => {
+        const instance = new BaseTransaction();
+
+        // transaction already veriffied by network
+        instance.meta.TransactionResult = 'tesSUCCESS';
+
+        expect(instance.TransactionResult).toStrictEqual({
+            success: true,
+            code: 'tesSUCCESS',
+            message: undefined,
+        });
+
+        // transaction is not veriffied by network and failed
+        instance.meta.TransactionResult = 'tecNO_LINE_INSUF_RESERVE';
+
+        instance.SubmitResult = {
+            success: true,
+            engineResult: 'tecNO_LINE_INSUF_RESERVE',
+            message: 'No such line. Too little reserve to create it.',
+        };
+
+        instance.VerifyResult = {
+            success: false,
+        };
+
+        expect(instance.TransactionResult).toStrictEqual({
+            success: false,
+            code: 'tecNO_LINE_INSUF_RESERVE',
+            message: 'No such line. Too little reserve to create it.',
+        });
+
+        // transaction is not veriffied by network and hard failed
+        instance.meta.TransactionResult = undefined;
+
+        instance.SubmitResult = {
+            success: false,
+            engineResult: 'temBAD_FEE',
+            message: 'temBAD_FEE description',
+        };
+
+        instance.VerifyResult = {
+            success: false,
+        };
+
+        expect(instance.TransactionResult).toStrictEqual({
+            success: false,
+            code: 'temBAD_FEE',
+            message: 'temBAD_FEE description',
+        });
     });
 
     it('Should be able to prepare the transaction for signing', async () => {

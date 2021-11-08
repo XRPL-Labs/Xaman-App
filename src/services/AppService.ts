@@ -83,19 +83,7 @@ class AppService extends EventEmitter {
 
         if (!savedVersionCode || VersionDiff(currentVersionCode, savedVersionCode) > 0) {
             // showChangeLogModal
-            Navigator.showOverlay(
-                AppScreens.Overlay.ChangeLog,
-                {
-                    overlay: {
-                        handleKeyboardEvents: true,
-                    },
-                    layout: {
-                        backgroundColor: 'transparent',
-                        componentBackgroundColor: 'transparent',
-                    },
-                },
-                { version: currentVersionCode },
-            );
+            Navigator.showOverlay(AppScreens.Overlay.ChangeLog, { version: currentVersionCode });
 
             // update the latest version code
             Preferences.set(Preferences.keys.LATEST_VERSION_CODE, currentVersionCode);

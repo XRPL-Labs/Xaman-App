@@ -33,6 +33,9 @@ import { TransactionResult, Account, Memo, AmountType } from '../parser/types';
 class BaseTransaction {
     [key: string]: any;
 
+    private _SubmitResult?: SubmitResultType;
+    private _VerifyResult?: VerifyResultType;
+
     constructor(_transaction?: LedgerTransactionType) {
         if (!isUndefined(_transaction)) {
             const { transaction, tx, meta } = _transaction;
@@ -123,6 +126,11 @@ class BaseTransaction {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             try {
+                if (!account) {
+                    reject(new Error('Account param is required!'));
+                    return;
+                }
+
                 if (this.TxnSignature) {
                     reject(new Error('Transaction already signed!'));
                     return;
@@ -138,40 +146,28 @@ class BaseTransaction {
                 // prepare tranaction for signing
                 await this.prepare();
 
-                Navigator.showOverlay(
-                    AppScreens.Overlay.Vault,
-                    {
-                        overlay: {
-                            handleKeyboardEvents: true,
-                        },
-                        layout: {
-                            backgroundColor: 'transparent',
-                            componentBackgroundColor: 'transparent',
-                        },
+                Navigator.showOverlay(AppScreens.Overlay.Vault, {
+                    account,
+                    txJson: this.Json,
+                    multiSign,
+                    onSign: (signedObject: SignedObjectType) => {
+                        const { id, signedTransaction } = signedObject;
+
+                        if (!id || !signedTransaction) {
+                            reject(new Error('Unable sign the transaction, please try again!'));
+                            return;
+                        }
+
+                        this.Hash = signedObject.id;
+                        this.TxnSignature = signedObject.signedTransaction;
+                        this.SignMethod = signedObject.signMethod || 'OTHER';
+
+                        resolve(this.TxnSignature);
                     },
-                    {
-                        account,
-                        txJson: this.Json,
-                        multiSign,
-                        onSign: (signedObject: SignedObjectType) => {
-                            const { id, signedTransaction } = signedObject;
-
-                            if (!id || !signedTransaction) {
-                                reject(new Error('Unable sign the transaction, please try again!'));
-                                return;
-                            }
-
-                            this.Hash = signedObject.id;
-                            this.TxnSignature = signedObject.signedTransaction;
-                            this.SignMethod = signedObject.signMethod || 'OTHER';
-
-                            resolve(this.TxnSignature);
-                        },
-                        onDismissed: () => {
-                            reject();
-                        },
+                    onDismissed: () => {
+                        reject();
                     },
-                );
+                });
             } catch (e) {
                 reject(e);
             }
@@ -192,6 +188,9 @@ class BaseTransaction {
             this.tx = transaction;
         }
 
+        // persist verify result
+        this.VerifyResult = { success: verifyResult.success };
+
         return verifyResult;
     };
 
@@ -207,34 +206,28 @@ class BaseTransaction {
 
             const submitResult = await LedgerService.submitTX(this.TxnSignature);
 
-            const { engineResult, message, success, transactionId } = submitResult;
+            const { transactionId } = submitResult;
 
             if (transactionId) {
                 this.Hash = transactionId;
             }
 
-            // temporary set the result
-            this.TransactionResult = {
-                code: engineResult,
-                message,
-                success,
-            };
+            // set submit result
+            this.SubmitResult = submitResult;
 
             return submitResult;
         } catch (e: any) {
             // something wrong happened
-            // temporary set the result
-            this.TransactionResult = {
-                code: 'telFAILED',
-                message: e?.message,
-                success: false,
-            };
-
-            return {
+            const result = {
                 success: false,
                 engineResult: 'telFAILED',
                 message: e?.message,
             };
+
+            // set submit result
+            this.SubmitResult = result;
+
+            return result;
         }
     };
 
@@ -430,24 +423,57 @@ class BaseTransaction {
         return ledgerDate.toISO8601();
     }
 
-    get TransactionResult(): TransactionResult {
-        const engine_result = get(this, ['meta', 'TransactionResult']);
-        const message = get(this, ['meta', 'TransactionResultMessage']);
-
-        if (!engine_result) {
-            return undefined;
-        }
-
-        return {
-            success: engine_result === 'tesSUCCESS',
-            code: engine_result,
-            message,
-        };
+    get SubmitResult(): SubmitResultType {
+        return get(this, '_SubmitResult', undefined);
     }
 
-    set TransactionResult(result: TransactionResult) {
-        set(this, ['meta', 'TransactionResult'], result.code);
-        set(this, ['meta', 'TransactionResultMessage'], result?.message);
+    set SubmitResult(result: SubmitResultType) {
+        set(this, '_SubmitResult', result);
+    }
+
+    get VerifyResult(): VerifyResultType {
+        const result = get(this, '_VerifyResult', undefined);
+
+        if (isUndefined(result)) {
+            return {
+                success: false,
+            };
+        }
+
+        return result;
+    }
+
+    set VerifyResult(result: VerifyResultType) {
+        set(this, '_VerifyResult', result);
+    }
+
+    get TransactionResult(): TransactionResult {
+        const transactionResult = get(this, ['meta', 'TransactionResult'], undefined);
+
+        // this transaction already verified by network
+        if (transactionResult === 'tesSUCCESS') {
+            return {
+                success: true,
+                code: transactionResult,
+                message: undefined,
+            };
+        }
+
+        const submitResult = get(this, 'SubmitResult', undefined);
+        const verifyResult = get(this, 'VerifyResult', undefined);
+
+        // if already verified by network or
+        // submitted result was successful
+        // or verify result was successful
+        const code = transactionResult || submitResult?.engineResult;
+        const success = code === 'tesSUCCESS' || verifyResult?.success;
+        const message = !success ? submitResult?.message : undefined;
+
+        return {
+            success,
+            code,
+            message,
+        };
     }
 
     get Hash(): string {

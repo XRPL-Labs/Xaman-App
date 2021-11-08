@@ -114,17 +114,21 @@ export class Payload {
      * @returns Promise<boolean>
      */
     verify = async (payload: PayloadReferenceType): Promise<boolean> => {
-        const deviceId = GetDeviceUniqueId();
+        try {
+            const deviceId = GetDeviceUniqueId();
 
-        const encodedTX = codec.encode(payload.request_json);
+            const encodedTX = codec.encode(payload.request_json);
 
-        const checksum = await SHA1(`${encodedTX}+${deviceId}`);
+            const checksum = await SHA1(`${encodedTX}+${deviceId}`);
 
-        if (checksum === payload.hash) {
-            return true;
+            if (checksum === payload.hash) {
+                return true;
+            }
+
+            return false;
+        } catch {
+            return false;
         }
-
-        return false;
     };
 
     /**
@@ -245,6 +249,13 @@ export class Payload {
      */
     validate = () => {
         return this.fetch(this.meta.uuid);
+    };
+
+    /**
+     * get payload return url
+     */
+    getReturnURL = () => {
+        return this.meta.return_url_app;
     };
 
     /**

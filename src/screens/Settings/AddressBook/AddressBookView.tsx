@@ -128,7 +128,7 @@ class AddressBookView extends Component<Props, State> {
     };
 
     onItemPress = (item: any) => {
-        Navigator.push(AppScreens.Settings.AddressBook.Edit, {}, { contact: item });
+        Navigator.push(AppScreens.Settings.AddressBook.Edit, { contact: item });
     };
 
     renderSectionHeader = ({ section: { title } }: any) => {

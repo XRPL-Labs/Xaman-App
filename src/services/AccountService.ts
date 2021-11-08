@@ -3,8 +3,6 @@
  * Subscribe to account changes and transactions
  * This is the service we use for update accounts real time details and listen for ledger transactions
  */
-
-import moment from 'moment-timezone';
 import EventEmitter from 'events';
 import { map, isEmpty, flatMap, forEach, has, get, omitBy, keys } from 'lodash';
 
@@ -15,11 +13,17 @@ import CurrencyRepository from '@store/repositories/currency';
 import { Amount } from '@common/libs/ledger/parser/common';
 import Meta from '@common/libs/ledger/parser/meta';
 
-import { LedgerTransactionType } from '@common/libs/ledger/types';
+import { LedgerTransactionType, LedgerTrustline } from '@common/libs/ledger/types';
 
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
 import LedgerService from '@services/LedgerService';
+
+/* events  ==================================================================== */
+declare interface AccountService {
+    on(event: 'transaction', listener: (name: string) => void): this;
+    on(event: string, listener: Function): this;
+}
 
 /* Service  ==================================================================== */
 class AccountService extends EventEmitter {
@@ -94,9 +98,7 @@ class AccountService extends EventEmitter {
     loadAccounts = () => {
         const accounts = AccountRepository.getAccounts();
 
-        this.accounts = flatMap(accounts, (a) => {
-            return { address: a.address, lastSync: 0 };
-        });
+        this.accounts = flatMap(accounts, (a) => a.address);
 
         // add listeners for account changes
         AccountRepository.on('accountCreate', this.onAccountsChange);
@@ -154,25 +156,25 @@ class AccountService extends EventEmitter {
         });
     };
 
-    getAccountObligations = (account: string) => {
+    getAccountObligations = (account: string): Promise<LedgerTrustline[]> => {
         return new Promise((resolve) => {
             LedgerService.getGatewayBalances(account)
                 .then((accountObligations: any) => {
-                    const obligationsLines = [] as any[];
-
                     const { obligations } = accountObligations;
 
                     if (isEmpty(obligations)) return resolve([]);
 
+                    const obligationsLines = [] as LedgerTrustline[];
+
                     map(obligations, (b, c) => {
-                        // add to trustLines list
                         obligationsLines.push({
                             account,
                             currency: c,
-                            balance: new Amount(-b, false).toNumber(),
-                            limit: 0,
-                            limit_peer: 0,
-                            transfer_rate: 0,
+                            balance: new Amount(-b, false).toString(false),
+                            limit: '0',
+                            limit_peer: '0',
+                            quality_in: 0,
+                            quality_out: 0,
                             obligation: true,
                         });
                     });
@@ -186,55 +188,60 @@ class AccountService extends EventEmitter {
     };
 
     /**
+     * returns all outgoing account lines
+     */
+    getFilteredAccountLines = async (
+        account: string,
+        marker?: string,
+        combined = [] as LedgerTrustline[],
+    ): Promise<LedgerTrustline[]> => {
+        return LedgerService.getAccountLines(account, { marker }).then((resp) => {
+            const { lines, marker: _marker } = resp;
+            // filter incoming trust lines
+            const filtered = flatMap(
+                omitBy(lines, (l: any) => {
+                    return (
+                        Number(l.balance) < 0 ||
+                        (Number(l.limit) === 0 && Number(l.limit_peer) > 0) ||
+                        (Number(l.balance) === 0 && Number(l.limit) === 0 && Number(l.limit_peer) === 0)
+                    );
+                }),
+            );
+            if (_marker) {
+                return this.getFilteredAccountLines(account, _marker, filtered);
+            }
+            return filtered.concat(combined);
+        });
+    };
+
+    /**
      * Update account trustLines
      */
     updateAccountLines = (account: string) => {
         return new Promise<void>((resolve, reject) => {
-            LedgerService.getAccountLines(account)
-                .then(async (accountLines: any) => {
-                    const { lines } = accountLines;
-
+            this.getFilteredAccountLines(account)
+                .then(async (accountLines: any[]) => {
                     const normalizedList = [] as Partial<TrustLineSchema>[];
-
-                    // ignore incoming trustline
-                    let filteredLines = flatMap(
-                        omitBy(lines, (l: any) => {
-                            return (
-                                Number(l.balance) < 0 ||
-                                (Number(l.limit) === 0 && Number(l.limit_peer) > 0) ||
-                                (Number(l.balance) === 0 && Number(l.limit) === 0 && Number(l.limit_peer) === 0)
-                            );
-                        }),
-                    );
 
                     // get obligationsLines
                     const obligationsLines = await this.getAccountObligations(account);
 
                     // combine obligations lines with normal lines
-                    filteredLines = filteredLines.concat(obligationsLines);
+                    accountLines = accountLines.concat(obligationsLines);
 
                     await Promise.all(
-                        map(filteredLines, async (l) => {
+                        map(accountLines, async (l) => {
                             // update currency
                             const currency = await CurrencyRepository.include({
                                 issuer: l.account,
                                 currency: l.currency,
                             });
 
-                            // get transfer rate from issuer account
-                            let transfer_rate = 0;
-                            const issuerAccountInfo = await LedgerService.getAccountInfo(l.account);
-                            if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
-                                const { TransferRate } = issuerAccountInfo.account_data;
-                                transfer_rate = TransferRate;
-                            }
-
                             // add to trustLines list
                             normalizedList.push({
                                 id: `${account}.${currency.id}`,
                                 currency,
                                 balance: new Amount(l.balance, false).toNumber(),
-                                transfer_rate,
                                 no_ripple: l.no_ripple || false,
                                 no_ripple_peer: l.no_ripple_peer || false,
                                 limit: new Amount(l.limit, false).toNumber(),
@@ -272,28 +279,14 @@ class AccountService extends EventEmitter {
         forEach(this.accounts, (account) => {
             // check if include present
             if (!isEmpty(include)) {
-                if (include.indexOf(account.address) === -1) return;
+                if (include.indexOf(account) === -1) return;
             }
 
-            // prevent unnecessary requests
-            // if (account.lastSync) {
-            //     const passedSeconds = moment().diff(moment.unix(account.lastSync), 'second');
-
-            //     if (passedSeconds <= 2) {
-            //         return;
-            //     }
-            // }
-
-            this.updateAccountInfo(account.address)
-                .then(() => this.updateAccountLines(account.address))
+            this.updateAccountInfo(account)
+                .then(() => this.updateAccountLines(account))
                 .catch((e) => {
-                    this.logger.warn(`Update account info [${account.address}] `, e);
+                    this.logger.warn(`Update account info [${account}] `, e);
                 });
-
-            // update last sync
-            this.accounts = map(this.accounts, (a) => {
-                return a.address === account.address ? { address: account.address, lastSync: moment().unix() } : a;
-            });
         });
     };
 
@@ -306,9 +299,7 @@ class AccountService extends EventEmitter {
 
         // reload accounts
         const accounts = AccountRepository.getAccounts();
-        this.accounts = flatMap(accounts, (a) => {
-            return { address: a.address, lastSync: 0 };
-        });
+        this.accounts = flatMap(accounts, (a) => a.address);
 
         // subscribe
         this.subscribe();
@@ -321,13 +312,11 @@ class AccountService extends EventEmitter {
      * Unsubscribe for streaming
      */
     unsubscribe() {
-        const arrayAccounts = flatMap(this.accounts, (a) => [a.address]);
-
-        this.logger.debug(`Unsubscribe to ${arrayAccounts} accounts`, arrayAccounts);
+        this.logger.debug(`Unsubscribe to ${this.accounts.length} accounts`, this.accounts);
 
         SocketService.send({
             command: 'unsubscribe',
-            accounts: arrayAccounts,
+            accounts: this.accounts,
         }).catch((e: any) => {
             this.logger.warn('Unable to Unsubscribe accounts', e);
         });
@@ -341,13 +330,11 @@ class AccountService extends EventEmitter {
             this.unsubscribe();
         }
 
-        const arrayAccounts = flatMap(this.accounts, (a) => [a.address]);
-
-        this.logger.debug(`Subscribed to ${arrayAccounts.length} accounts`, arrayAccounts);
+        this.logger.debug(`Subscribed to ${this.accounts.length} accounts`, this.accounts);
 
         SocketService.send({
             command: 'subscribe',
-            accounts: arrayAccounts,
+            accounts: this.accounts,
         }).catch((e: any) => {
             this.logger.warn('Unable to Subscribe accounts', e);
         });

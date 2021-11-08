@@ -145,7 +145,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
 
     debouncedOnPress = () => {
         const { item, account } = this.props;
-        Navigator.push(AppScreens.Transaction.Details, {}, { tx: item, account });
+        Navigator.push(AppScreens.Transaction.Details, { tx: item, account });
     };
 
     onPress = debounce(this.debouncedOnPress, 300, { leading: true, trailing: false });

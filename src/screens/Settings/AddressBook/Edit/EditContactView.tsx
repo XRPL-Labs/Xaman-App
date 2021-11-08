@@ -64,14 +64,10 @@ class EditContactView extends Component<Props, State> {
     }
 
     showScanner = () => {
-        Navigator.showModal(
-            AppScreens.Modal.Scan,
-            {},
-            {
-                type: StringType.XrplDestination,
-                onRead: this.onScannerRead,
-            },
-        );
+        Navigator.showModal(AppScreens.Modal.Scan, {
+            type: StringType.XrplDestination,
+            onRead: this.onScannerRead,
+        });
     };
 
     onScannerRead = async (result: any) => {

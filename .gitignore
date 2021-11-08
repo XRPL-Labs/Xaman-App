@@ -23,7 +23,6 @@ DerivedData
 xcshareddata
 ios/Pods/
 GoogleService-Info.plist
-ios/Podfile.lock
 .podinstall
 
 # Android/IntelliJ
@@ -33,6 +32,7 @@ build/
 .gradle
 local.properties
 *.iml
+*.hprof
 google-services.json
 
 # node.js

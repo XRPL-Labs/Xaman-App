@@ -4,7 +4,7 @@
 
 import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { View, Image, Text, Alert, InteractionManager } from 'react-native';
+import { View, Text, Alert, InteractionManager } from 'react-native';
 
 import { BackendService, SocketService } from '@services';
 
@@ -18,6 +18,7 @@ import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 // components
 import {
+    Avatar,
     AmountText,
     Button,
     Footer,
@@ -150,39 +151,30 @@ class SummaryStep extends Component<Props, State> {
             });
         }
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.EnterDestinationTag,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            {
-                buttonType: 'apply',
-                destination,
-                onFinish: (destinationTag: string) => {
-                    Object.assign(destination, { tag: destinationTag });
-                    setDestination(destination);
+        Navigator.showOverlay(AppScreens.Overlay.EnterDestinationTag, {
+            buttonType: 'apply',
+            destination,
+            onFinish: (destinationTag: string) => {
+                Object.assign(destination, { tag: destinationTag });
+                setDestination(destination);
 
-                    this.setState({
-                        destinationTagInputVisible: false,
-                    });
-                },
-                onClose: () => {
-                    this.setState({
-                        destinationTagInputVisible: false,
-                    });
-                },
-                onScannerRead: ({ tag }: { tag: number }) => {
-                    Object.assign(destination, { tag: String(tag) });
-                    setDestination(destination);
-
-                    this.showEnterDestinationTag();
-                },
-                onScannerClose: this.showEnterDestinationTag,
+                this.setState({
+                    destinationTagInputVisible: false,
+                });
             },
-        );
+            onClose: () => {
+                this.setState({
+                    destinationTagInputVisible: false,
+                });
+            },
+            onScannerRead: ({ tag }: { tag: number }) => {
+                Object.assign(destination, { tag: String(tag) });
+                setDestination(destination);
+
+                this.showEnterDestinationTag();
+            },
+            onScannerClose: this.showEnterDestinationTag,
+        });
     };
 
     onDestinationTagConfirm = () => {
@@ -237,20 +229,11 @@ class SummaryStep extends Component<Props, State> {
         }
 
         if (!isEmpty(destination.tag) && destination.tag !== confirmedDestinationTag) {
-            Navigator.showOverlay(
-                AppScreens.Overlay.ConfirmDestinationTag,
-                {
-                    layout: {
-                        backgroundColor: 'transparent',
-                        componentBackgroundColor: 'transparent',
-                    },
-                },
-                {
-                    destinationTag: destination.tag,
-                    onConfirm: this.onDestinationTagConfirm,
-                    onChange: this.showEnterDestinationTag,
-                },
-            );
+            Navigator.showOverlay(AppScreens.Overlay.ConfirmDestinationTag, {
+                destinationTag: destination.tag,
+                onConfirm: this.onDestinationTagConfirm,
+                onChange: this.showEnterDestinationTag,
+            });
             return;
         }
 
@@ -285,8 +268,8 @@ class SummaryStep extends Component<Props, State> {
             return (
                 <View style={[styles.pickerItem]}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[styles.xrpAvatarContainer]}>
-                            <Image style={[styles.xrpAvatar]} source={Images.IconXrp} />
+                        <View style={[styles.currencyImageContainer]}>
+                            <Avatar border size={35} source={Images.IconXrpNew} />
                         </View>
                         <View style={[AppStyles.column, AppStyles.centerContent]}>
                             <Text style={[styles.currencyItemLabel]}>XRP</Text>
@@ -303,8 +286,8 @@ class SummaryStep extends Component<Props, State> {
         return (
             <View style={[styles.pickerItem]}>
                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                    <View style={[styles.brandAvatarContainer]}>
-                        <Image style={[styles.brandAvatar]} source={{ uri: item.counterParty.avatar }} />
+                    <View style={[styles.currencyImageContainer]}>
+                        <Avatar border size={35} source={{ uri: item.counterParty.avatar }} />
                     </View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
                         <Text style={[styles.currencyItemLabel]}>

@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 
 import android.content.ComponentName;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Debug;
 import android.content.pm.ApplicationInfo;
 import android.app.Activity;
@@ -76,14 +75,15 @@ public class UtilsModule extends ReactContextBaseJavaModule {
     public void isFlagSecure(Promise promise) {
         final Activity activity = getCurrentActivity();
 
-        if ((activity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_SECURE) != 0) {
-            promise.resolve(true);
-        }else{
+        if (activity != null) {
+            if ((activity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_SECURE) != 0) {
+                promise.resolve(true);
+            } else {
+                promise.resolve(false);
+            }
+        } else {
             promise.resolve(false);
         }
-
-
-
     }
 
 
@@ -147,7 +147,7 @@ public class UtilsModule extends ReactContextBaseJavaModule {
             Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
             TimeZone zone = calendar.getTimeZone();
             promise.resolve(zone.getID());
-        }catch (Exception e){
+        } catch (Exception e) {
             promise.reject(e);
         }
     }
@@ -158,12 +158,7 @@ public class UtilsModule extends ReactContextBaseJavaModule {
 
             WritableMap settings = Arguments.createMap();
 
-            Locale locale;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
-                locale =  getReactApplicationContext().getResources().getConfiguration().getLocales().get(0);
-            } else{
-                locale = getReactApplicationContext().getResources().getConfiguration().locale;
-            }
+            Locale locale = getReactApplicationContext().getResources().getConfiguration().getLocales().get(0);
 
             DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
 
@@ -176,7 +171,7 @@ public class UtilsModule extends ReactContextBaseJavaModule {
 
             promise.resolve(settings);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             promise.reject(e);
         }
     }
@@ -223,15 +218,15 @@ public class UtilsModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void timeoutEvent(final String id, final int timeout) {
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable(){
+        handler.postDelayed(new Runnable() {
             @Override
-            public void run(){
-                if (getReactApplicationContext().hasActiveCatalystInstance()) {
+            public void run() {
+                if (getReactApplicationContext().hasActiveReactInstance()) {
                     getReactApplicationContext()
-                        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                        .emit("Utils.timeout", id);
+                            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                            .emit("Utils.timeout", id);
                 }
-           }
+            }
         }, timeout);
     }
 

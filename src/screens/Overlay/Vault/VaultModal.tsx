@@ -4,21 +4,23 @@
  */
 
 import React, { Component } from 'react';
-import { Alert, Linking, InteractionManager } from 'react-native';
+import { Alert, Linking, BackHandler, InteractionManager } from 'react-native';
 
 import * as AccountLib from 'xrpl-accountlib';
 import RNTangemSdk from 'tangem-sdk-react-native';
 
 import LoggerService from '@services/LoggerService';
 
-import Flag from '@common/libs/ledger/parser/common/flag';
 import { CoreRepository, AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 import { AccessLevels, EncryptionLevels } from '@store/types';
 
 import { SignedObjectType } from '@common/libs/ledger/types';
+import Flag from '@common/libs/ledger/parser/common/flag';
 
 import Vault from '@common/libs/vault';
+
+import { GetWalletPublicKey } from '@common/utils/tangem';
 
 import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
@@ -41,6 +43,8 @@ import { Props, State, AuthMethods, SignOptions } from './types';
 class VaultModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Vault;
 
+    private backHandler: any;
+
     static options() {
         return {
             topBar: {
@@ -61,6 +65,14 @@ class VaultModal extends Component<Props, State> {
 
     componentDidMount() {
         InteractionManager.runAfterInteractions(this.setSignerAccount);
+
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.dismiss);
+    }
+
+    componentWillUnmount() {
+        if (this.backHandler) {
+            this.backHandler.remove();
+        }
     }
 
     setSignerAccount = () => {
@@ -110,6 +122,11 @@ class VaultModal extends Component<Props, State> {
         });
     };
 
+    close = () => {
+        Keyboard.dismiss();
+        Navigator.dismissOverlay();
+    };
+
     dismiss = () => {
         const { onDismissed } = this.props;
 
@@ -117,8 +134,8 @@ class VaultModal extends Component<Props, State> {
             onDismissed();
         }
 
-        Keyboard.dismiss();
-        Navigator.dismissOverlay();
+        this.close();
+        return true;
     };
 
     onInvalidAuth = (method: AuthMethods) => {
@@ -167,13 +184,13 @@ class VaultModal extends Component<Props, State> {
         Prompt(
             Localize.t('global.unexpectedErrorOccurred'),
             Localize.t('global.pleaseCheckSessionLogForMoreInfo'),
-            [{ text: Localize.t('global.tryAgain') }],
+            [{ text: Localize.t('global.tryAgain'), onPress: this.dismiss }],
             { type: 'default' },
         );
     };
 
     openTroubleshootLink = () => {
-        const url = `http://xumm.app/redir/faq/account-signing-password/${Localize.getCurrentLocale()}`;
+        const url = `https://xumm.app/redir/faq/account-signing-password/${Localize.getCurrentLocale()}`;
         Linking.canOpenURL(url).then((supported) => {
             if (supported) {
                 Linking.openURL(url);
@@ -183,7 +200,7 @@ class VaultModal extends Component<Props, State> {
         });
     };
 
-    sign = async (method: AuthMethods, options: any) => {
+    sign = (method: AuthMethods, options: any) => {
         switch (method) {
             case AuthMethods.BIOMETRIC:
             case AuthMethods.PIN:
@@ -239,19 +256,19 @@ class VaultModal extends Component<Props, State> {
                 throw new Error('No card details provided for signing!');
             }
 
-            const { cardId, walletPublicKey } = tangemCard;
+            const { cardId } = tangemCard;
+            const walletPublicKey = GetWalletPublicKey(tangemCard);
 
             const preparedTx = AccountLib.rawSigning.prepare(txJson, walletPublicKey, multiSign);
 
             // start tangem session
             await RNTangemSdk.startSession();
 
-            // run sign command
-            await RNTangemSdk.sign([preparedTx.hashToSign], { cardId })
+            await RNTangemSdk.sign({ cardId, walletPublicKey, hashes: [preparedTx.hashToSign] })
                 .then((resp) => {
-                    const { signature } = resp;
+                    const { signatures } = resp;
 
-                    const sig = signature instanceof Array ? signature[0] : signature;
+                    const sig = signatures instanceof Array ? signatures[0] : signatures;
 
                     let signedObject = undefined as SignedObjectType;
 
@@ -291,7 +308,7 @@ class VaultModal extends Component<Props, State> {
             onSign(signedObject);
         }
 
-        Navigator.dismissOverlay();
+        this.close();
     };
 
     render() {

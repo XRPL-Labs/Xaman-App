@@ -2,6 +2,8 @@ package com.xrpllabs.xumm;
 
 import com.reactnativenavigation.NavigationActivity;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -29,5 +31,13 @@ public class MainActivity extends NavigationActivity {
 
     private void setSplashLayout() {
         setContentView(R.layout.activity_splash);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        final Configuration override = new Configuration(newBase.getResources().getConfiguration());
+        override.fontScale = 1.0f;
+        applyOverrideConfiguration(override);
+        super.attachBaseContext(newBase);
     }
 }

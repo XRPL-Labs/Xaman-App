@@ -236,13 +236,13 @@ class BackendService {
                             // show the modal to check new policy and confirm new agreement
                             Navigator.showModal(
                                 AppScreens.Settings.TermOfUse,
+                                { asModal: true },
                                 {
                                     modalPresentationStyle: 'fullScreen',
                                     modal: {
                                         swipeToDismiss: false,
                                     },
                                 },
-                                { asModal: true },
                             );
                         }
                     }

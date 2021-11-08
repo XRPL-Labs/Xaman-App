@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Animated, Text, StyleSheet } from 'react-native';
+import { View, Animated, Text, StyleSheet, BackHandler } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
@@ -18,6 +18,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
+    testID?: string;
     type: 'success' | 'info' | 'warning' | 'error';
     text: string;
     title?: string;
@@ -30,6 +31,7 @@ export interface State {}
 class AlertModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Alert;
 
+    private backHandler: any;
     private animateScale: Animated.Value;
     private animatedColor: Animated.Value;
     private animatedOpacity: Animated.Value;
@@ -51,6 +53,9 @@ class AlertModal extends Component<Props, State> {
     }
 
     componentDidMount() {
+        // prevent from hardware back in android devices
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
+
         Animated.parallel([
             Animated.spring(this.animateScale, {
                 toValue: 1,
@@ -66,6 +71,12 @@ class AlertModal extends Component<Props, State> {
                 useNativeDriver: false,
             }),
         ]).start();
+    }
+
+    componentWillUnmount() {
+        if (this.backHandler) {
+            this.backHandler.remove();
+        }
     }
 
     dismiss = (callback?: () => void) => {
@@ -148,7 +159,7 @@ class AlertModal extends Component<Props, State> {
         const { buttons } = this.props;
 
         if (!buttons) {
-            return <Button onPress={this.dismiss} light label={Localize.t('global.back')} />;
+            return <Button testID="back-button" onPress={this.dismiss} light label={Localize.t('global.back')} />;
         }
 
         return (
@@ -160,6 +171,7 @@ class AlertModal extends Component<Props, State> {
                             style={[AppStyles.flex1, index === 0 && buttons.length > 1 && AppStyles.paddingRightSml]}
                         >
                             <Button
+                                testID={b.testID}
                                 onPress={() => {
                                     this.dismiss(b.onPress);
                                 }}
@@ -174,7 +186,7 @@ class AlertModal extends Component<Props, State> {
     };
 
     render() {
-        const { text } = this.props;
+        const { testID, text } = this.props;
         const transform = [
             {
                 scale: this.animateScale.interpolate({
@@ -191,6 +203,7 @@ class AlertModal extends Component<Props, State> {
 
         return (
             <Animated.View
+                testID={testID}
                 onStartShouldSetResponder={() => true}
                 style={[styles.container, { backgroundColor: interpolateColor }]}
             >

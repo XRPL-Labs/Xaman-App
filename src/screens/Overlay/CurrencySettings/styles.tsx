@@ -39,16 +39,6 @@ const styles = StyleService.create({
     },
     brandAvatarContainer: {
         marginRight: 10,
-        borderWidth: 1,
-        borderColor: '$light',
-        borderRadius: 8,
-        justifyContent: 'center',
-        overflow: 'hidden',
-    },
-    brandAvatar: {
-        height: AppSizes.scale(35),
-        width: AppSizes.scale(35),
-        alignSelf: 'center',
     },
     currencyItemLabelSmall: {
         fontSize: AppFonts.p.size,

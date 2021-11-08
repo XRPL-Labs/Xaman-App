@@ -72,6 +72,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
     private forceFetchDetails: boolean;
     private navigationListener: any;
+    private closeTimeout: any;
 
     static options() {
         return {
@@ -118,6 +119,8 @@ class TransactionDetailsView extends Component<Props, State> {
         if (this.navigationListener) {
             this.navigationListener.remove();
         }
+
+        if (this.closeTimeout) clearTimeout(this.closeTimeout);
     }
 
     componentDidAppear() {
@@ -178,7 +181,7 @@ class TransactionDetailsView extends Component<Props, State> {
             })
             .catch(() => {
                 Toast(Localize.t('events.unableToLoadTheTransaction'));
-                setTimeout(this.close, 2000);
+                this.closeTimeout = setTimeout(this.close, 2000);
             });
     };
 
@@ -411,16 +414,7 @@ class TransactionDetailsView extends Component<Props, State> {
             };
         }
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.RecipientMenu,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            { recipient },
-        );
+        Navigator.showOverlay(AppScreens.Overlay.RecipientMenu, { recipient });
     };
 
     getLabel = () => {
@@ -464,7 +458,10 @@ class TransactionDetailsView extends Component<Props, State> {
             case 'AccountDelete':
                 return Localize.t('events.deleteAccount');
             case 'SetRegularKey':
-                return Localize.t('events.setRegularKey');
+                if (tx.RegularKey) {
+                    return Localize.t('events.setRegularKey');
+                }
+                return Localize.t('events.removeRegularKey');
             case 'DepositPreauth':
                 if (tx.Authorize) {
                     return Localize.t('events.authorizeDeposit');
@@ -509,13 +506,13 @@ class TransactionDetailsView extends Component<Props, State> {
             Navigator.showModal(
                 AppScreens.Modal.XAppBrowser,
                 {
-                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-                },
-                {
                     identifier: tx.getXappIdentifier(),
                     origin: PayloadOrigin.TRANSACTION_MEMO,
                     originData: { txid: tx.Hash },
+                },
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                 },
             );
             return;
@@ -544,7 +541,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 Object.assign(params, { amount: tx.DeliveredAmount?.value, currency });
             }
-            Navigator.push(AppScreens.Transaction.Payment, {}, params);
+            Navigator.push(AppScreens.Transaction.Payment, params);
             return;
         }
 
@@ -610,11 +607,11 @@ class TransactionDetailsView extends Component<Props, State> {
 
             Navigator.showModal(
                 AppScreens.Modal.ReviewTransaction,
-                { modalPresentationStyle: 'fullScreen' },
                 {
                     payload,
                     onResolve: Navigator.pop,
                 },
+                { modalPresentationStyle: 'fullScreen' },
             );
         }
     };
@@ -627,16 +624,7 @@ class TransactionDetailsView extends Component<Props, State> {
             return;
         }
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.ExplainBalance,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            { account },
-        );
+        Navigator.showOverlay(AppScreens.Overlay.ExplainBalance, { account });
     };
 
     renderStatus = () => {
@@ -899,10 +887,26 @@ class TransactionDetailsView extends Component<Props, State> {
         });
     };
 
+    renderSetRegularKey = () => {
+        const { tx } = this.state;
+
+        let content = Localize.t('events.thisIsAnSetRegularKeyTransaction');
+
+        content += '\n';
+
+        if (tx.RegularKey) {
+            content += Localize.t('events.itSetsAccountRegularKeyTo', { regularKey: tx.RegularKey });
+        } else {
+            content += Localize.t('events.itRemovesTheAccountRegularKey');
+        }
+
+        return content;
+    };
+
     renderAccountSet = () => {
         const { tx } = this.state;
 
-        let content = `This is an ${tx.Type} transaction`;
+        let content = Localize.t('events.thisIsAnAccountSetTransaction');
 
         if (
             isUndefined(tx.SetFlag) &&
@@ -1078,6 +1082,9 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case 'AccountSet':
                 content += this.renderAccountSet();
+                break;
+            case 'SetRegularKey':
+                content += this.renderSetRegularKey();
                 break;
             case 'TicketCreate':
                 content += this.renderTicketCreate();

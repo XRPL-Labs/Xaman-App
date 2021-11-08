@@ -4,35 +4,37 @@
  */
 import BigNumber from 'bignumber.js';
 import moment from 'moment-timezone';
-import EventEmitter from 'events';
-import { map, isEmpty, assign, startsWith } from 'lodash';
+import { has, find, map, isEmpty, assign, startsWith } from 'lodash';
 
 import { CoreSchema } from '@store/schemas/latest';
 import CoreRepository from '@store/repositories/core';
 
 import { Amount } from '@common/libs/ledger/parser/common';
 
-import { AccountTxResponse, LedgerMarker, SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
+import {
+    LedgerMarker,
+    LedgerTrustline,
+    SubmitResultType,
+    VerifyResultType,
+    AccountTxResponse,
+    AccountLinesResponse,
+    GatewayBalancesResponse,
+    AccountInfoResponse,
+} from '@common/libs/ledger/types';
+
+import { Issuer } from '@common/libs/ledger/parser/types';
 
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
 import { AppConfig } from '@common/constants';
 
-/* events  ==================================================================== */
-declare interface LedgerService {
-    on(event: 'transaction', listener: (name: string) => void): this;
-    on(event: string, listener: Function): this;
-}
-
 /* Service  ==================================================================== */
-class LedgerService extends EventEmitter {
+class LedgerService {
     networkReserve: any;
     logger: any;
     ledgerListener: any;
 
     constructor() {
-        super();
-
         this.networkReserve = undefined;
 
         this.logger = LoggerService.createLogger('Ledger');
@@ -107,7 +109,7 @@ class LedgerService extends EventEmitter {
     /**
      * Get account info
      */
-    getGatewayBalances = (account: string): any => {
+    getGatewayBalances = (account: string): Promise<GatewayBalancesResponse> => {
         return SocketService.send({
             command: 'gateway_balances',
             account,
@@ -120,12 +122,12 @@ class LedgerService extends EventEmitter {
     /**
      * Get account info
      */
-    getAccountInfo = (account: string): any => {
+    getAccountInfo = (account: string): Promise<AccountInfoResponse> => {
         return SocketService.send({
             command: 'account_info',
             account,
             ledger_index: 'validated',
-            signer_lists: true,
+            signer_lists: false,
         });
     };
 
@@ -153,13 +155,55 @@ class LedgerService extends EventEmitter {
     /**
      * Get account trust lines
      */
-    getAccountLines = (account: string): any => {
-        return SocketService.send({
+    getAccountLines = (account: string, options?: any): Promise<AccountLinesResponse> => {
+        const request = {
             command: 'account_lines',
             account,
+        };
+        if (typeof options === 'object') {
+            Object.assign(request, options);
+        }
+        return SocketService.send(request);
+    };
+
+    /**
+     * Get account line base on provided peer
+     */
+    getAccountLine = (account: string, peer: Issuer): Promise<LedgerTrustline> => {
+        return new Promise((resolve) => {
+            return this.getAccountLines(account, { peer: peer.issuer })
+                .then((resp: any) => {
+                    const { lines } = resp;
+                    return resolve(find(lines, { account: peer.issuer, currency: peer.currency }));
+                })
+                .catch(() => {
+                    resolve(undefined);
+                });
         });
     };
 
+    /**
+     * Get account transfer rate
+     */
+    getAccountTransferRate = (account: string): any => {
+        return new Promise((resolve, reject) => {
+            return this.getAccountInfo(account)
+                .then((issuerAccountInfo: any) => {
+                    if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
+                        const { TransferRate } = issuerAccountInfo.account_data;
+                        return resolve(TransferRate);
+                    }
+                    return resolve(0);
+                })
+                .catch(() => {
+                    return reject(new Error('Unable to fetch issuer transfer rate!'));
+                });
+        });
+    };
+
+    /**
+     * Get single transaction by providing transaction id
+     */
     getTransaction = (txId: string) => {
         return SocketService.send({
             command: 'tx',

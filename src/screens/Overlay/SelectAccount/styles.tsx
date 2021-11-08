@@ -3,18 +3,6 @@ import StyleService from '@services/StyleService';
 import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    visibleContent: {
-        backgroundColor: '$background',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        borderColor: '$tint',
-        borderWidth: 1,
-        shadowColor: '$black',
-        shadowOffset: { width: 0, height: 0 },
-        shadowRadius: 5,
-        shadowOpacity: 0.3,
-        padding: 15,
-    },
     iconAccount: {
         marginRight: 15,
         opacity: 0.4,
@@ -30,19 +18,16 @@ const styles = StyleService.create({
         paddingBottom: 20,
         marginBottom: 10,
         borderRadius: 18,
-        // borderRadius: AppSizes.scale(50) / 4,
         backgroundColor: '$tint',
     },
     accountRowSelected: {
         borderBottomWidth: 0,
-        // borderRadius: 20,
         backgroundColor: '$lightBlue',
     },
     selectedText: {
         marginRight: 10,
         color: '$green',
     },
-
     iconKey: {
         tintColor: '$blue',
         marginRight: 5,

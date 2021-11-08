@@ -150,24 +150,12 @@ class SecuritySettingsView extends Component<Props, State> {
     biometricMethodChange = (value: boolean) => {
         // if disable the biometric ask for passcode
         if (!value) {
-            Navigator.showOverlay(
-                AppScreens.Overlay.Auth,
-                {
-                    overlay: {
-                        handleKeyboardEvents: true,
-                    },
-                    layout: {
-                        backgroundColor: 'transparent',
-                        componentBackgroundColor: 'transparent',
-                    },
+            Navigator.showOverlay(AppScreens.Overlay.Auth, {
+                biometricAvailable: false,
+                onSuccess: () => {
+                    this.changeBiometricMethod(value);
                 },
-                {
-                    biometricAvailable: false,
-                    onSuccess: () => {
-                        this.changeBiometricMethod(value);
-                    },
-                },
-            );
+            });
         } else {
             this.changeBiometricMethod(value);
         }
@@ -182,17 +170,13 @@ class SecuritySettingsView extends Component<Props, State> {
     showLogoutTimePicker = () => {
         const { coreSettings, timeItems } = this.state;
 
-        Navigator.push(
-            AppScreens.Global.Picker,
-            {},
-            {
-                title: Localize.t('global.autoLock'),
-                description: Localize.t('settings.autoLockAfter'),
-                items: timeItems,
-                selected: coreSettings.minutesAutoLock,
-                onSelect: this.onLogoutTimeSelected,
-            },
-        );
+        Navigator.push(AppScreens.Global.Picker, {
+            title: Localize.t('global.autoLock'),
+            description: Localize.t('settings.autoLockAfter'),
+            items: timeItems,
+            selected: coreSettings.minutesAutoLock,
+            onSelect: this.onLogoutTimeSelected,
+        });
     };
 
     eraseDataChange = (value: boolean) => {
@@ -239,13 +223,17 @@ class SecuritySettingsView extends Component<Props, State> {
                         testID="change-passcode-button"
                         style={styles.row}
                         onPress={() => {
-                            Navigator.push(AppScreens.Settings.ChangePasscode, {
-                                animations: {
-                                    push: {
-                                        enabled: false,
+                            Navigator.push(
+                                AppScreens.Settings.ChangePasscode,
+                                {},
+                                {
+                                    animations: {
+                                        push: {
+                                            enabled: false,
+                                        },
                                     },
                                 },
-                            });
+                            );
                         }}
                     >
                         <View style={[AppStyles.flex3]}>

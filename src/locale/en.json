@@ -310,7 +310,11 @@
     "repeatPasscode": "Please repeat your new passcode",
     "passcodeDoNotMatch": "The passcodes do not match!",
     "warnNeedPasscode": "You will need your passcode to unlock the app",
-    "UnableToStoreThePasscode": "Unable to store the passcode. This should not happen. A bug report was sent to the XUMM support team. Please contact us at support@xumm.app for more information."
+    "UnableToStoreThePasscode": "Unable to store the passcode. This should not happen. A bug report was sent to the XUMM support team. Please contact us at support@xumm.app for more information.",
+    "weakPasscode": "Weak passcode",
+    "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you choose a stronger one.",
+    "useAnyway": "Use Anyway",
+    "changePasscode": "Change Passcode"
   },
   "setupBiometry": {
     "useBiometry": "Use FaceID or Fingerprint?",
@@ -410,6 +414,7 @@
     "updateAccountSettings": "Update account settings",
     "setARegularKey": "Set a Regular Key",
     "setRegularKey": "Set Regular Key",
+    "removeRegularKey": "Remove Regular Key",
     "createPaymentChannel": "Create payment channel",
     "claimPaymentChannel": "Claim payment channel",
     "fundPaymentChannel": "Fund payment channel",
@@ -480,7 +485,11 @@
     "theChannelBalanceClaimedIs": "The channel balance claimed is %{balance} XRP",
     "thePaymentChannelWillBeClosed": "The payment channel will be closed. Any remaining funds will be returned to the source account.",
     "thisTransactionIncreaseAccountReserve": "This transaction increased the account reserve by %{ownerReserve} XRP",
-    "thisTransactionDecreaseAccountReserve": "This transaction decreased the account reserve by %{ownerReserve} XRP"
+    "thisTransactionDecreaseAccountReserve": "This transaction decreased the account reserve by %{ownerReserve} XRP",
+    "thisIsAnAccountSetTransaction": "This is an AccountSet transaction",
+    "thisIsAnSetRegularKeyTransaction": "This is a SetRegularKey transaction",
+    "itRemovesTheAccountRegularKey": "It removes the account regular key",
+    "itSetsAccountRegularKeyTo": "It sets the account regular key to %{regularKey}"
   },
   "profile": {
     "availableInFuture": "This feature will be available in the future.",
@@ -741,6 +750,9 @@
     "submittingDone": "Done submitting!",
     "addToContacts": "Add to contacts",
     "sendingFailed": "Sending failed!",
+    "verificationFailed": "Verification failed!",
+    "couldNotVerifyTransaction": "Couldn't verify transaction finality",
+    "verificationFailedDescription": "Your transaction has been signed and submitted successfully, however, we could not confirm transaction finality.\r\n\r\nThis can be caused by an internet connection hiccup or increased load on the XRP Ledger node you are connected to.\r\n\r\nPlease manually verify if this transaction shows in your transaction history (Events).",
     "submitFailed": "Submission failed!",
     "somethingWentWrong": "Something went wrong!",
     "resultCopiedToClipboard": "Result copied to clipboard",
@@ -790,8 +802,9 @@
     "ripplingMisconfigurationWarning": "Rippling not turned off for this Trust Line, if you don't know what this is and/or this is not on purpose, please update this setting to prevent potential loss of %{token} tokens",
     "lineLimitMisconfigurationWarning": "This TrustLine has a limit of zero (0) configured, meaning others cannot send this token to you: you can only hold the token. To be able to receive this token as well, XUMM can update your TrustLine to remove the zero (0) TrustLine limit.",
     "dangerousConfigurationDetected": "Dangerous configuration detected",
+    "restrictingConfigurationDetected": "Restricting configuration detected",
     "moreInfoAndFix": "More info & fix",
-    "addingTrustLineWarning": "XRPL Labs / XUMM does not endorse any token or token issuer. You should only proceed if you trust the token issuer.\r\nIn case of questions or problems regarding the token (Trust Line) you will need to contact the token issuer.\r\n\r\nContinue at your own risk."
+    "addingTrustLineWarning": "XRPL Labs / XUMM does not endorse any token or token issuer. You should only proceed if you trust the token issuer.\r\nIn case of questions or problems regarding the token (TrustLine) you will need to contact the token issuer.\r\n\r\nContinue at your own risk."
   },
   "exchange": {
     "exchanging": "Exchanging",
@@ -852,6 +865,7 @@
     "checkObjectDoesNotExist": "Unable to get the Check object. Please make sure the Check exists on the XRP Ledger.",
     "insufficientCashAmount": "Insufficient amount, cashable amount:  %{amount} %{currency}",
     "nonExpiredCheckCanOnlyCancelByCreatedAccount": "A (non expired) check can only be cancelled by the account that created it or destination account.",
-    "accountDeleteExchangeSupportWarning": "Note: when deleting your XRP ledger account and sending the remaining balance to an exchange, make sure the destination exchange supports deposits using AccountDelete transactions. Not all exchanges do, which results in a support procedure with the exchange to get your funds credited to your account"
+    "accountDeleteExchangeSupportWarning": "Note: when deleting your XRP ledger account and sending the remaining balance to an exchange, make sure the destination exchange supports deposits using AccountDelete transactions. Not all exchanges do, which results in a support procedure with the exchange to get your funds credited to your account",
+    "notVettedTokenTradeWarning": "Trade at your own risk! The token you are about to trade **has not been vetted**.\n\nAnyone can create a token, including creating fake versions of existing tokens that claim to represent projects. If you trade this token, you may not be able to sell it back. You are potentially putting your assets/savings at risk!"
   }
 }

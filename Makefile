@@ -158,7 +158,9 @@ pre-e2e: | pre-build  ## build for e2e test
 test: | pre-run validate-style ## Runs tests
 	@yarn test
 
-test-e2e: | pre-e2e ## Runs e2e tests
+test-e2e: ## Runs e2e tests
+	@yarn detox clean-framework-cache
+	@yarn detox build-framework-cache
 	@yarn cucumber-js ./e2e --configuration ios.sim.debug --cleanup
 
 generate-locales: ## Generates app locales

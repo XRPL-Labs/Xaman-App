@@ -5,9 +5,7 @@
 import { head, first, forEach, isEmpty, get } from 'lodash';
 
 import React, { Component } from 'react';
-import { Animated, View, Text, Image, TouchableWithoutFeedback, TouchableOpacity, ScrollView } from 'react-native';
-
-import Interactable from 'react-native-interactable';
+import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
 
@@ -19,7 +17,7 @@ import { CounterPartyRepository } from '@store/repositories';
 import { CounterPartySchema, CurrencySchema, AccountSchema } from '@store/schemas/latest';
 
 // components
-import { Button, Footer } from '@components/General';
+import { Button, Footer, ActionPanel } from '@components/General';
 
 import Localize from '@locale';
 
@@ -48,10 +46,7 @@ export interface State {
 class AddCurrencyOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.AddCurrency;
 
-    panel: any;
-    deltaY: Animated.Value;
-    deltaX: Animated.Value;
-    isOpening: boolean;
+    private actionPanel: ActionPanel;
 
     static options() {
         return {
@@ -74,16 +69,10 @@ class AddCurrencyOverlay extends Component<Props, State> {
             selectedCurrency: undefined,
             isLoading: false,
         };
-
-        this.deltaY = new Animated.Value(AppSizes.screen.height);
-        this.deltaX = new Animated.Value(0);
-
-        this.isOpening = true;
     }
 
     componentDidMount() {
         this.setDefaults();
-        this.slideUp();
     }
 
     setDefaults = () => {
@@ -132,14 +121,14 @@ class AddCurrencyOverlay extends Component<Props, State> {
         });
 
         // set the default line limit
-        let lineLimit = 1000000000;
+        let lineLimit = '1000000000';
 
         try {
             // set the trustline limit by gateway balance if it's more than our default value
             const resp = await LedgerService.getGatewayBalances(selectedCurrency.issuer);
             const gatewayBalances = get(resp, ['obligations', selectedCurrency.currency]);
 
-            if (gatewayBalances && Number(gatewayBalances) > lineLimit) {
+            if (gatewayBalances && Number(gatewayBalances) > Number(lineLimit)) {
                 lineLimit = gatewayBalances;
             }
         } catch {
@@ -165,45 +154,19 @@ class AddCurrencyOverlay extends Component<Props, State> {
             }),
         );
 
-        Navigator.showModal(
-            AppScreens.Modal.ReviewTransaction,
-            { modalPresentationStyle: 'fullScreen' },
-            {
-                payload,
-            },
-        );
-
-        this.slideDown();
-    };
-
-    slideUp = () => {
-        setTimeout(() => {
-            if (this.panel) {
-                this.panel.snapTo({ index: 1 });
-            }
-        }, 10);
-    };
-
-    slideDown = () => {
-        setTimeout(() => {
-            if (this.panel) {
-                this.panel.snapTo({ index: 0 });
-            }
-        });
-    };
-
-    onAlert = (event: any) => {
-        const { top, bottom } = event.nativeEvent;
-
-        if (top && bottom) return;
-
-        if (top === 'enter' && this.isOpening) {
-            this.isOpening = false;
+        if (this.actionPanel) {
+            this.actionPanel.slideDown();
         }
 
-        if (bottom === 'leave' && !this.isOpening) {
-            Navigator.dismissOverlay();
-        }
+        setTimeout(() => {
+            Navigator.showModal(
+                AppScreens.Modal.ReviewTransaction,
+                {
+                    payload,
+                },
+                { modalPresentationStyle: 'fullScreen' },
+            );
+        }, 800);
     };
 
     renderCurrencies = () => {
@@ -307,15 +270,19 @@ class AddCurrencyOverlay extends Component<Props, State> {
         });
     };
 
-    renderContent = () => {
+    render() {
         const { selectedCurrency, isLoading } = this.state;
 
         return (
-            <View style={[styles.visibleContent, AppStyles.centerAligned]}>
-                <View style={AppStyles.panelHeader}>
-                    <View style={AppStyles.panelHandle} />
-                </View>
-
+            <ActionPanel
+                height={AppSizes.heightPercentageToDP(90)}
+                onSlideDown={Navigator.dismissOverlay}
+                testID="add-asset-overlay"
+                ref={(r) => {
+                    this.actionPanel = r;
+                }}
+                contentStyle={AppStyles.centerAligned}
+            >
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
                         <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
@@ -327,14 +294,18 @@ class AddCurrencyOverlay extends Component<Props, State> {
                             light
                             roundedSmall
                             isDisabled={false}
-                            onPress={this.slideDown}
+                            onPress={() => {
+                                if (this.actionPanel) {
+                                    this.actionPanel.slideDown();
+                                }
+                            }}
                             textStyle={[AppStyles.subtext, AppStyles.bold]}
                             label={Localize.t('global.cancel')}
                         />
                     </View>
                 </View>
                 <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.marginBottomSml]}>
-                    <Text numberOfLines={3} style={[AppStyles.p, AppStyles.subtext]}>
+                    <Text numberOfLines={3} style={[AppStyles.p, AppStyles.subtext, AppStyles.textCenterAligned]}>
                         {Localize.t('asset.selectAnExchangeAndSelectAsset')}
                     </Text>
                 </View>
@@ -364,7 +335,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                     <ScrollView style={[AppStyles.flex1]}>{this.renderCurrencies()}</ScrollView>
                 </View>
 
-                <Footer safeArea style={styles.footer}>
+                <Footer style={styles.footer}>
                     <Button
                         isLoading={isLoading}
                         numberOfLines={1}
@@ -375,48 +346,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                         label={Localize.t('asset.addAndSign')}
                     />
                 </Footer>
-            </View>
-        );
-    };
-
-    render() {
-        return (
-            <View testID="add-asset-overlay" style={AppStyles.flex1}>
-                <TouchableWithoutFeedback onPress={this.slideDown}>
-                    <Animated.View
-                        style={[
-                            AppStyles.shadowContent,
-                            {
-                                opacity: this.deltaY.interpolate({
-                                    inputRange: [0, AppSizes.screen.height],
-                                    outputRange: [0.9, 0],
-                                    extrapolateRight: 'clamp',
-                                }),
-                            },
-                        ]}
-                    />
-                </TouchableWithoutFeedback>
-
-                <Interactable.View
-                    ref={(r) => {
-                        this.panel = r;
-                    }}
-                    animatedNativeDriver
-                    onAlert={this.onAlert}
-                    verticalOnly
-                    snapPoints={[{ y: AppSizes.screen.height + 3 }, { y: AppSizes.heightPercentageToDP(10) }]}
-                    boundaries={{ top: AppSizes.heightPercentageToDP(8) }}
-                    alertAreas={[
-                        { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
-                        { id: 'top', influenceArea: { top: AppSizes.heightPercentageToDP(10) } },
-                    ]}
-                    initialPosition={{ y: AppSizes.screen.height }}
-                    animatedValueY={this.deltaY}
-                    animatedValueX={this.deltaX}
-                >
-                    {this.renderContent()}
-                </Interactable.View>
-            </View>
+            </ActionPanel>
         );
     }
 }

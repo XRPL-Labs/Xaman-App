@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import { Results } from 'realm';
-import { View, Text, Alert } from 'react-native';
+import { View, Text, Alert, InteractionManager } from 'react-native';
 
 import { CoreRepository, AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -12,6 +12,7 @@ import { EncryptionLevels } from '@store/types';
 
 import Vault from '@common/libs/vault';
 import { Navigator } from '@common/helpers/navigator';
+import { Prompt } from '@common/helpers/interface';
 
 import { AuthenticationService } from '@services';
 
@@ -26,14 +27,19 @@ import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {}
-
-export interface State {
-    newPasscode: string;
-    step: 'current' | 'new' | 'confirm';
-    description: string;
+enum Steps {
+    ENTER_OLD_PASSCODE = 'ENTER_OLD_PASSCODE',
+    ENTER_NEW_PASSCODE = 'ENTER_NEW_PASSCODE',
+    CONFIRM_NEW_PASSCODE = 'CONFIRM_NEW_PASSCODE',
 }
 
+interface Props {}
+
+interface State {
+    newPasscode: string;
+    currentStep: Steps;
+    stepDescription: string;
+}
 /* Component ==================================================================== */
 class ChangePasscodeView extends Component<Props, State> {
     static screenName = AppScreens.Settings.ChangePasscode;
@@ -50,13 +56,13 @@ class ChangePasscodeView extends Component<Props, State> {
 
         this.state = {
             newPasscode: '',
-            step: 'current',
-            description: Localize.t('settings.enterOldPasscode'),
+            currentStep: Steps.ENTER_OLD_PASSCODE,
+            stepDescription: Localize.t('settings.enterOldPasscode'),
         };
     }
 
     componentDidMount() {
-        this.focusPinInput();
+        InteractionManager.runAfterInteractions(this.focusPinInput);
     }
 
     focusPinInput = () => {
@@ -67,9 +73,32 @@ class ChangePasscodeView extends Component<Props, State> {
         }, 100);
     };
 
-    onFinish = () => {
-        Navigator.pop();
-        Alert.alert(Localize.t('global.success'), Localize.t('settings.passcodeChangedSuccess'));
+    changeStep = (step: Steps) => {
+        let stepDescription;
+        switch (step) {
+            case Steps.ENTER_OLD_PASSCODE:
+                stepDescription = Localize.t('settings.enterOldPasscode');
+                break;
+            case Steps.ENTER_NEW_PASSCODE:
+                stepDescription = Localize.t('settings.enterNewPasscode');
+                break;
+            case Steps.CONFIRM_NEW_PASSCODE:
+                stepDescription = Localize.t('settings.enterNewPasscodeAgain');
+                break;
+            default:
+                break;
+        }
+
+        this.setState(
+            {
+                currentStep: step,
+                stepDescription,
+            },
+            () => {
+                this.pinInput.clean();
+                this.focusPinInput();
+            },
+        );
     };
 
     changePasscode = () => {
@@ -84,62 +113,97 @@ class ChangePasscodeView extends Component<Props, State> {
                 return;
             }
             // reKey all accounts with new passcode
-            const accounts = AccountRepository.findBy('encryptionLevel', EncryptionLevels.Passcode) as Results<
-                AccountSchema
-            >;
+            const accounts = AccountRepository.findBy(
+                'encryptionLevel',
+                EncryptionLevels.Passcode,
+            ) as Results<AccountSchema>;
 
             for (const account of accounts) {
                 await Vault.reKey(account.publicKey, passcode, newEncPasscode);
             }
 
             // everything went well
-            this.onFinish();
+            Navigator.pop();
+            Alert.alert(Localize.t('global.success'), Localize.t('settings.passcodeChangedSuccess'));
         });
     };
 
-    onPasscodeEntered = (passcode: string) => {
-        const { step, newPasscode } = this.state;
-
-        switch (step) {
-            case 'current':
-                AuthenticationService.checkPasscode(passcode)
-                    .then(() => {
-                        this.setState({ step: 'new', description: Localize.t('settings.enterNewPasscode') });
-                        this.pinInput.clean();
-                        this.focusPinInput();
-                    })
-                    .catch((e) => {
-                        this.pinInput.clean();
-                        Alert.alert(
-                            Localize.t('global.error'),
-                            e.toString(),
-                            [{ text: 'OK', onPress: this.focusPinInput }],
-                            { cancelable: false },
-                        );
-                    });
-                break;
-            case 'new':
-                this.setState({
-                    newPasscode: passcode,
-                    step: 'confirm',
-                    description: Localize.t('settings.enterNewPasscodeAgain'),
-                });
+    checkOldPasscode = (oldPasscode: string) => {
+        AuthenticationService.checkPasscode(oldPasscode)
+            .then(() => {
+                this.changeStep(Steps.ENTER_NEW_PASSCODE);
+            })
+            .catch((e) => {
                 this.pinInput.clean();
-                this.focusPinInput();
+                Alert.alert(Localize.t('global.error'), e.toString(), [{ text: 'OK', onPress: this.focusPinInput }], {
+                    cancelable: false,
+                });
+            });
+    };
+
+    checkNewPasscode = (newPasscode: string, isStrong: boolean) => {
+        if (isStrong) {
+            this.setState({
+                newPasscode,
+            });
+            this.changeStep(Steps.CONFIRM_NEW_PASSCODE);
+        } else {
+            Prompt(
+                Localize.t('setupPasscode.weakPasscode'),
+                Localize.t('setupPasscode.weakPasscodeDescription'),
+                [
+                    {
+                        text: Localize.t('setupPasscode.useAnyway'),
+                        onPress: () => {
+                            this.setState({
+                                newPasscode,
+                            });
+                            this.changeStep(Steps.CONFIRM_NEW_PASSCODE);
+                        },
+                        style: 'destructive',
+                    },
+                    {
+                        text: Localize.t('setupPasscode.changePasscode'),
+                        onPress: () => {
+                            this.pinInput.clean();
+                            this.focusPinInput();
+                        },
+                    },
+                ],
+                { type: 'default' },
+            );
+        }
+    };
+
+    checkConfirmPasscode = (newPasscodeConfirm: string) => {
+        const { newPasscode } = this.state;
+
+        if (newPasscode !== newPasscodeConfirm) {
+            this.setState({ currentStep: Steps.ENTER_NEW_PASSCODE });
+            this.pinInput.clean();
+            Alert.alert(
+                Localize.t('global.error'),
+                Localize.t('settings.newOldPasscodeNotMatch'),
+                [{ text: 'OK', onPress: this.focusPinInput }],
+                { cancelable: false },
+            );
+        } else {
+            this.changePasscode();
+        }
+    };
+
+    onPasscodeEntered = (passcode: string, isStrong?: boolean) => {
+        const { currentStep } = this.state;
+
+        switch (currentStep) {
+            case Steps.ENTER_OLD_PASSCODE:
+                this.checkOldPasscode(passcode);
                 break;
-            case 'confirm':
-                if (newPasscode !== passcode) {
-                    this.setState({ step: 'new' });
-                    this.pinInput.clean();
-                    Alert.alert(
-                        Localize.t('global.error'),
-                        Localize.t('settings.newOldPasscodeNotMatch'),
-                        [{ text: 'OK', onPress: this.focusPinInput }],
-                        { cancelable: false },
-                    );
-                } else {
-                    this.changePasscode();
-                }
+            case Steps.ENTER_NEW_PASSCODE:
+                this.checkNewPasscode(passcode, isStrong);
+                break;
+            case Steps.CONFIRM_NEW_PASSCODE:
+                this.checkConfirmPasscode(passcode);
                 break;
             default:
                 break;
@@ -147,7 +211,7 @@ class ChangePasscodeView extends Component<Props, State> {
     };
 
     render() {
-        const { description } = this.state;
+        const { currentStep, stepDescription } = this.state;
 
         return (
             <View testID="change-passcode-screen" style={[styles.container]}>
@@ -161,7 +225,7 @@ class ChangePasscodeView extends Component<Props, State> {
                     centerComponent={{ text: Localize.t('settings.changePasscode') }}
                 />
                 <View style={[AppStyles.flex3, AppStyles.flexEnd]}>
-                    <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>{description}</Text>
+                    <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>{stepDescription}</Text>
                 </View>
                 <View style={[AppStyles.flex8, AppStyles.paddingSml, AppStyles.centerAligned]}>
                     <PinInput
@@ -170,6 +234,7 @@ class ChangePasscodeView extends Component<Props, State> {
                         }}
                         autoFocus={false}
                         codeLength={6}
+                        checkStrength={currentStep === Steps.ENTER_NEW_PASSCODE}
                         onFinish={this.onPasscodeEntered}
                     />
                 </View>

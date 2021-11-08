@@ -12,7 +12,6 @@ import {
     Alert,
     TextInput,
     Keyboard,
-    TouchableOpacity,
     InteractionManager,
 } from 'react-native';
 
@@ -36,6 +35,7 @@ import { AppScreens } from '@common/constants';
 
 // components
 import {
+    Avatar,
     AmountInput,
     Header,
     Spacer,
@@ -525,18 +525,18 @@ class ExchangeView extends Component<Props, State> {
                     <View style={styles.fromContainer}>
                         <View style={AppStyles.row}>
                             <View style={[AppStyles.row, AppStyles.flex1]}>
-                                {direction === 'sell' ? (
-                                    <View style={[styles.currencyImageContainer, styles.xrpImageContainer]}>
-                                        <Image source={Images.IconXrpNew} style={[styles.currencyImage]} />
-                                    </View>
-                                ) : (
-                                    <View style={[styles.currencyImageContainer, styles.iouImageContainer]}>
-                                        <Image
-                                            style={[styles.currencyImage]}
-                                            source={{ uri: trustLine.counterParty.avatar }}
-                                        />
-                                    </View>
-                                )}
+                                <View style={[styles.currencyImageContainer]}>
+                                    <Avatar
+                                        border
+                                        size={37}
+                                        source={
+                                            direction === 'sell'
+                                                ? Images.IconXrpNew
+                                                : { uri: trustLine.counterParty.avatar }
+                                        }
+                                    />
+                                </View>
+
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
                                     <Text style={[styles.currencyLabel]}>
                                         {direction === 'sell'
@@ -563,23 +563,19 @@ class ExchangeView extends Component<Props, State> {
                         </View>
                         <Spacer />
 
-                        <TouchableOpacity
-                            activeOpacity={1}
-                            onPress={() => {
-                                this.amountInput.current?.focus();
-                            }}
-                            style={[styles.inputContainer]}
-                        >
-                            <Text style={styles.fromAmount}>-</Text>
-                            <AmountInput
-                                ref={this.amountInput}
-                                decimalPlaces={direction === 'sell' ? 6 : 8}
-                                onChange={this.onAmountChange}
-                                placeholderTextColor={AppColors.red}
-                                style={styles.fromAmount}
-                                value={amount}
-                            />
-                        </TouchableOpacity>
+                        <View style={[styles.inputContainer]}>
+                            <Text style={[styles.fromAmount]}>-</Text>
+                            <View style={AppStyles.flex1}>
+                                <AmountInput
+                                    ref={this.amountInput}
+                                    decimalPlaces={direction === 'sell' ? 6 : 8}
+                                    onChange={this.onAmountChange}
+                                    placeholderTextColor={AppColors.red}
+                                    style={styles.fromAmount}
+                                    value={amount}
+                                />
+                            </View>
+                        </View>
                     </View>
 
                     {/* switch button */}
@@ -600,18 +596,17 @@ class ExchangeView extends Component<Props, State> {
                     <View style={styles.toContainer}>
                         <View style={[AppStyles.row]}>
                             <View style={[AppStyles.row, AppStyles.flex1]}>
-                                {direction === 'buy' ? (
-                                    <View style={[styles.currencyImageContainer, styles.xrpImageContainer]}>
-                                        <Image source={Images.IconXrpNew} style={[styles.currencyImage]} />
-                                    </View>
-                                ) : (
-                                    <View style={[styles.currencyImageContainer, styles.iouImageContainer]}>
-                                        <Image
-                                            style={[styles.currencyImage]}
-                                            source={{ uri: trustLine.counterParty.avatar }}
-                                        />
-                                    </View>
-                                )}
+                                <View style={[styles.currencyImageContainer]}>
+                                    <Avatar
+                                        border
+                                        size={37}
+                                        source={
+                                            direction === 'buy'
+                                                ? Images.IconXrpNew
+                                                : { uri: trustLine.counterParty.avatar }
+                                        }
+                                    />
+                                </View>
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
                                     <Text style={[styles.currencyLabel]}>
                                         {direction === 'buy'

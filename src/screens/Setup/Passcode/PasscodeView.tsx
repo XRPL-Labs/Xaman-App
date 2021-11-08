@@ -12,7 +12,7 @@ import { BiometryType } from '@store/types';
 
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
-import { VibrateHapticFeedback, Toast } from '@common/helpers/interface';
+import { VibrateHapticFeedback, Toast, Prompt } from '@common/helpers/interface';
 
 import { PushNotificationsService, StyleService } from '@services';
 
@@ -27,12 +27,18 @@ import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
+enum Steps {
+    EXPLANATION = 'EXPLANATION',
+    ENTER_PASSCODE = 'ENTER_PASSCODE',
+    CONFIRM_PASSCODE = 'CONFIRM_PASSCODE',
+}
+
 export interface Props {}
 
 export interface State {
     passcode: string;
     passcodeConfirm: string;
-    step: 'explanation' | 'entry' | 'confirm';
+    currentStep: Steps;
 }
 
 /* Component ==================================================================== */
@@ -54,7 +60,7 @@ class PasscodeSetupView extends Component<Props, State> {
         this.state = {
             passcode: '',
             passcodeConfirm: '',
-            step: 'explanation',
+            currentStep: Steps.EXPLANATION,
         };
     }
 
@@ -97,17 +103,17 @@ class PasscodeSetupView extends Component<Props, State> {
     };
 
     onNext = () => {
-        const { step } = this.state;
+        const { currentStep } = this.state;
 
         LayoutAnimation.easeInEaseOut();
 
-        if (step === 'explanation') {
+        if (currentStep === Steps.EXPLANATION) {
             this.setState({
-                step: 'entry',
+                currentStep: Steps.ENTER_PASSCODE,
             });
-        } else if (step === 'entry') {
+        } else if (currentStep === Steps.ENTER_PASSCODE) {
             this.setState({
-                step: 'confirm',
+                currentStep: Steps.CONFIRM_PASSCODE,
             });
 
             if (this.pinInput) {
@@ -120,23 +126,25 @@ class PasscodeSetupView extends Component<Props, State> {
     };
 
     onBack = () => {
-        const { step } = this.state;
+        const { currentStep } = this.state;
 
         // animation the step change
         LayoutAnimation.easeInEaseOut();
 
-        if (step === 'entry') {
+        if (currentStep === Steps.ENTER_PASSCODE) {
             this.setState({
                 passcode: '',
-                step: 'explanation',
+                currentStep: Steps.EXPLANATION,
             });
         } else {
             this.setState({
                 passcode: '',
                 passcodeConfirm: '',
-                step: 'entry',
+                currentStep: Steps.ENTER_PASSCODE,
             });
-            this.pinInput.clean();
+            if (this.pinInput) {
+                this.pinInput.clean();
+            }
         }
     };
 
@@ -152,41 +160,85 @@ class PasscodeSetupView extends Component<Props, State> {
         });
     };
 
-    onPinFinish = (code: string) => {
-        const { step, passcode } = this.state;
-
-        if (step === 'entry') {
+    checkPasscode = (passcode: string, isStrong: boolean) => {
+        if (isStrong) {
             VibrateHapticFeedback('impactLight');
             this.setState({
-                passcode: code,
+                passcode,
+            });
+        } else {
+            Prompt(
+                Localize.t('setupPasscode.weakPasscode'),
+                Localize.t('setupPasscode.weakPasscodeDescription'),
+                [
+                    {
+                        text: Localize.t('setupPasscode.useAnyway'),
+                        onPress: () => {
+                            VibrateHapticFeedback('impactLight');
+                            this.setState(
+                                {
+                                    passcode,
+                                },
+                                this.onNext,
+                            );
+                        },
+                        style: 'destructive',
+                    },
+                    {
+                        text: Localize.t('setupPasscode.changePasscode'),
+                        onPress: () => {
+                            if (this.pinInput) {
+                                this.pinInput.clean();
+                                this.pinInput.focus();
+                            }
+                        },
+                    },
+                ],
+                { type: 'default' },
+            );
+        }
+    };
+
+    checkPasscodeConfirm = (passcodeConfirm: string) => {
+        const { passcode } = this.state;
+
+        // pincode doesn't match the confirm pin
+        if (passcode !== passcodeConfirm) {
+            Toast(Localize.t('setupPasscode.passcodeDoNotMatch'));
+            VibrateHapticFeedback('notificationError');
+
+            // clean pin code
+            if (this.pinInput) {
+                this.pinInput.clean();
+                this.pinInput.focus();
+            }
+
+            // go back to entry step
+            this.setState({
+                passcode: '',
+                currentStep: Steps.ENTER_PASSCODE,
             });
             return;
         }
 
-        if (step === 'confirm') {
-            // pincode doesn't match the confirm pin
-            if (passcode !== code) {
-                Toast(Localize.t('setupPasscode.passcodeDoNotMatch'));
-                VibrateHapticFeedback('notificationError');
+        VibrateHapticFeedback('impactLight');
+        this.setState({
+            passcodeConfirm,
+        });
+    };
 
-                // clean pin code
-                if (this.pinInput) {
-                    this.pinInput.clean();
-                    this.pinInput.focus();
-                }
+    onPasscodeEnter = (code: string, isStrong?: boolean) => {
+        const { currentStep } = this.state;
 
-                // go back to entry step
-                this.setState({
-                    passcode: '',
-                    step: 'entry',
-                });
-                return;
-            }
-
-            VibrateHapticFeedback('impactLight');
-            this.setState({
-                passcodeConfirm: code,
-            });
+        switch (currentStep) {
+            case Steps.ENTER_PASSCODE:
+                this.checkPasscode(code, isStrong);
+                break;
+            case Steps.CONFIRM_PASSCODE:
+                this.checkPasscodeConfirm(code);
+                break;
+            default:
+                break;
         }
     };
 
@@ -199,9 +251,9 @@ class PasscodeSetupView extends Component<Props, State> {
     };
 
     renderFooter = () => {
-        const { step, passcode, passcodeConfirm } = this.state;
+        const { currentStep, passcode, passcodeConfirm } = this.state;
 
-        if (step === 'explanation') {
+        if (currentStep === Steps.EXPLANATION) {
             return (
                 <Footer style={[AppStyles.paddingBottom]}>
                     <Button testID="go-button" onPress={this.onNext} label={Localize.t('global.go')} />
@@ -224,9 +276,13 @@ class PasscodeSetupView extends Component<Props, State> {
                 <View style={[AppStyles.flex4]}>
                     <Button
                         testID="next-button"
-                        isDisabled={step === 'entry' ? passcode.length < 6 : passcode !== passcodeConfirm}
+                        isDisabled={
+                            currentStep === Steps.ENTER_PASSCODE ? passcode.length < 6 : passcode !== passcodeConfirm
+                        }
                         onPress={this.onNext}
-                        label={step === 'entry' ? Localize.t('global.next') : Localize.t('global.save')}
+                        label={
+                            currentStep === Steps.ENTER_PASSCODE ? Localize.t('global.next') : Localize.t('global.save')
+                        }
                     />
                 </View>
             </Footer>
@@ -234,9 +290,9 @@ class PasscodeSetupView extends Component<Props, State> {
     };
 
     renderContent() {
-        const { step } = this.state;
+        const { currentStep } = this.state;
 
-        if (step === 'explanation') {
+        if (currentStep === Steps.EXPLANATION) {
             return (
                 <View testID="pin-code-explanation-view" style={[AppStyles.flex8, AppStyles.paddingSml]}>
                     <View style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.centerContent]}>
@@ -260,7 +316,7 @@ class PasscodeSetupView extends Component<Props, State> {
             <View testID="pin-code-entry-view" style={[AppStyles.flex8, AppStyles.paddingSml, AppStyles.stretchSelf]}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerAligned]}>
                     <Text style={[AppStyles.h5, AppStyles.textCenterAligned, AppStyles.stretchSelf]}>
-                        {step === 'entry'
+                        {currentStep === Steps.ENTER_PASSCODE
                             ? Localize.t('setupPasscode.setPasscode')
                             : Localize.t('setupPasscode.repeatPasscode')}
                     </Text>
@@ -270,8 +326,9 @@ class PasscodeSetupView extends Component<Props, State> {
                             this.pinInput = r;
                         }}
                         autoFocus
+                        checkStrength={currentStep === Steps.ENTER_PASSCODE}
                         codeLength={6}
-                        onFinish={this.onPinFinish}
+                        onFinish={this.onPasscodeEnter}
                     />
                 </View>
 

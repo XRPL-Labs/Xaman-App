@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/viewcontrollers/component/ComponentViewController.java b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/viewcontrollers/component/ComponentViewController.java
+index 3117dcc..863f7cd 100644
+--- a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/viewcontrollers/component/ComponentViewController.java
++++ b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/viewcontrollers/component/ComponentViewController.java
+@@ -139,7 +139,7 @@ public class ComponentViewController extends ChildController<ComponentLayout> {
+     protected WindowInsetsCompat applyWindowInsets(ViewController<?> view, WindowInsetsCompat insets) {
+         ViewCompat.onApplyWindowInsets(view.getView(), insets.replaceSystemWindowInsets(
+                 insets.getSystemWindowInsetLeft(),
+-                insets.getSystemWindowInsetTop(),
++                Math.max(insets.getSystemWindowInsetTop() - getTopInset(), 0),
+                 insets.getSystemWindowInsetRight(),
+                 Math.max(insets.getSystemWindowInsetBottom() - getBottomInset(), 0)
+         ));

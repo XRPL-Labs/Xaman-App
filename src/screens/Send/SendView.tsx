@@ -7,13 +7,14 @@ import { find } from 'lodash';
 import React, { Component } from 'react';
 import { View, Keyboard } from 'react-native';
 
-import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
-import { Navigator } from '@common/helpers/navigator';
+import { LedgerService } from '@services';
+import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import { AppScreens } from '@common/constants';
 
-import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
+import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
 
 import { Payment } from '@common/libs/ledger/transactions';
 import { Destination } from '@common/libs/ledger/parser/types';
@@ -41,6 +42,8 @@ import { Steps, Props, State } from './types';
 /* Component ==================================================================== */
 class SendView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Payment;
+
+    private closeTimeout: any;
 
     static options() {
         return {
@@ -79,11 +82,15 @@ class SendView extends Component<Props, State> {
 
         // go back if no spendable account is available
         if (accounts.length === 0) {
-            setTimeout(() => {
+            this.closeTimeout = setTimeout(() => {
                 Navigator.pop();
                 Toast(Localize.t('global.noSpendableAccountIsAvailableForSendingPayment'));
             }, 1000);
         }
+    }
+
+    componentWillUnmount() {
+        if (this.closeTimeout) clearTimeout(this.closeTimeout);
     }
 
     setSource = (source: AccountSchema) => {
@@ -169,50 +176,42 @@ class SendView extends Component<Props, State> {
             isLoading: true,
         });
 
-        // XRP
-        if (typeof currency === 'string') {
-            // @ts-ignore
-            payment.Amount = amount;
-        } else {
-            // IOU
+        try {
+            // XRP
+            if (typeof currency === 'string') {
+                payment.Amount = amount;
+            } else {
+                // IOU
+                const transfer_rate = await LedgerService.getAccountTransferRate(currency.currency.issuer);
 
-            // IF issuer has transfer rate:
-            if (currency.transfer_rate) {
-                // FIXME
-                /**
-                 *      NOTIFICATION (question) to user: who pays fee of 0.X % (transfer rate?)
-                 *          Me (1.002 » 1):
-                 *              DeliverMin + Transfer Rate
-                 *          Recipient (1 » deliver 0.998):
-                 *              DeliverMin
-                 */
+                // IF issuer has transfer rate:
+                if (transfer_rate) {
+                    payment.TransferRate = transfer_rate;
+                }
 
-                payment.TransferRate = currency.transfer_rate;
+                // if issuer has transfer fee and sender is not issuer add partial payment flag
+                if (transfer_rate || currency.currency.issuer === source.address) {
+                    payment.Flags = [txFlags.Payment.PartialPayment];
+                }
+
+                payment.Amount = {
+                    currency: currency.currency.currency,
+                    issuer: currency.currency.issuer,
+                    value: sendingNFT ? NFTValueToXRPL(amount) : amount,
+                };
             }
 
-            payment.Amount = {
-                currency: currency.currency.currency,
-                issuer: currency.currency.issuer,
-                value: sendingNFT ? NFTValueToXRPL(amount) : amount,
+            // set the destination
+            payment.Destination = {
+                address: destination.address,
+                tag: destination.tag,
             };
 
-            if (currency.transfer_rate || currency.currency.issuer === source.address) {
-                payment.Flags = [txFlags.Payment.PartialPayment];
-            }
-        }
+            // set source account
+            payment.Account = {
+                address: source.address,
+            };
 
-        // set the destination
-        payment.Destination = {
-            address: destination.address,
-            tag: destination.tag,
-        };
-
-        // set source account
-        payment.Account = {
-            address: source.address,
-        };
-
-        try {
             // validate payment for all possible mistakes
             await payment.validate(source);
 

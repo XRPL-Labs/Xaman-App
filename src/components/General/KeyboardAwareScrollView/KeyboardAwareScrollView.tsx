@@ -38,6 +38,7 @@ class KeyboardAwareScrollView extends PureComponent<Props, State> {
     private scrollPosition: any;
     private viewHeight: number;
     private contentHeight: number;
+    private scrollToTimeout: any;
 
     static defaultProps = {
         extraOffset: 0,
@@ -67,6 +68,9 @@ class KeyboardAwareScrollView extends PureComponent<Props, State> {
     }
 
     componentWillUnmount() {
+        // clear timeout
+        if (this.scrollToTimeout) clearTimeout(this.scrollToTimeout);
+
         Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
         Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
     }
@@ -115,7 +119,7 @@ class KeyboardAwareScrollView extends PureComponent<Props, State> {
                 useNativeDriver: false,
                 duration: 200,
             }).start(() => {
-                setTimeout(() => {
+                this.scrollToTimeout = setTimeout(() => {
                     // @ts-ignore
                     responder.scrollTo({
                         x: 0,

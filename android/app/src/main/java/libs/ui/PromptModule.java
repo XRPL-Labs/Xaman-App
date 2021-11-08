@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.fragment.app.FragmentActivity;
+
 import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -147,14 +149,14 @@ public class PromptModule extends ReactContextBaseJavaModule implements Lifecycl
         // Exactly one of the two is null
         private final
         @Nullable
-        android.app.FragmentManager mFragmentManager;
+        androidx.fragment.app.FragmentManager mFragmentManager;
 
         private
         @Nullable
         PromptFragment mFragmentToShow;
 
 
-        public FragmentManagerHelper(android.app.FragmentManager fragmentManager) {
+        public FragmentManagerHelper(androidx.fragment.app.FragmentManager fragmentManager) {
             mFragmentManager = fragmentManager;
         }
 
@@ -213,7 +215,7 @@ public class PromptModule extends ReactContextBaseJavaModule implements Lifecycl
 
         public void onConfirm(int which, String input) {
             if (!mCallbackConsumed) {
-                if (getReactApplicationContext().hasActiveCatalystInstance()) {
+                if (getReactApplicationContext().hasActiveReactInstance()) {
                     mCallback.invoke(ACTION_BUTTON_CLICKED, which, input);
                     mCallbackConsumed = true;
                 }
@@ -223,7 +225,7 @@ public class PromptModule extends ReactContextBaseJavaModule implements Lifecycl
         @Override
         public void onDismiss(DialogInterface dialog) {
             if (!mCallbackConsumed) {
-                if (getReactApplicationContext().hasActiveCatalystInstance()) {
+                if (getReactApplicationContext().hasActiveReactInstance()) {
                     mCallback.invoke(ACTION_DISMISSED);
                     mCallbackConsumed = true;
                 }
@@ -240,9 +242,9 @@ public class PromptModule extends ReactContextBaseJavaModule implements Lifecycl
     @Nullable
     FragmentManagerHelper getFragmentManagerHelper() {
         Activity activity = getCurrentActivity();
-        if (activity == null) {
+        if (activity == null || !(activity instanceof FragmentActivity)) {
             return null;
         }
-        return new FragmentManagerHelper(activity.getFragmentManager());
+        return new FragmentManagerHelper(((FragmentActivity) activity).getSupportFragmentManager());
     }
 }

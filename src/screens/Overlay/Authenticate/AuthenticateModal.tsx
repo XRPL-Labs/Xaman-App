@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Animated, Text, Alert, KeyboardEvent, LayoutAnimation } from 'react-native';
+import { View, Animated, Text, Alert, BackHandler, KeyboardEvent, LayoutAnimation } from 'react-native';
 
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
@@ -46,6 +46,7 @@ class AuthenticateModal extends Component<Props, State> {
     private contentView: View = undefined;
     private animatedColor: Animated.Value;
     private securePinInput: SecurePinInput = undefined;
+    private backHandler: any;
 
     static options() {
         return {
@@ -83,6 +84,8 @@ class AuthenticateModal extends Component<Props, State> {
                 this.securePinInput.focus();
             }
         }, 300);
+
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.dismiss);
     }
 
     componentWillUnmount() {
@@ -109,14 +112,21 @@ class AuthenticateModal extends Component<Props, State> {
         this.setState({ offsetBottom: 0 });
     };
 
+    close = () => {
+        Keyboard.dismiss();
+        Navigator.dismissOverlay();
+    };
+
     dismiss = () => {
         const { onDismissed } = this.props;
 
         if (onDismissed) {
             onDismissed();
         }
-        Keyboard.dismiss();
-        Navigator.dismissOverlay();
+
+        this.close();
+
+        return true;
     };
 
     onSuccess = () => {
@@ -125,7 +135,8 @@ class AuthenticateModal extends Component<Props, State> {
         if (typeof onSuccess === 'function') {
             onSuccess();
         }
-        this.dismiss();
+
+        this.close();
     };
 
     requestBiometricAuthenticate = (system: boolean = false) => {

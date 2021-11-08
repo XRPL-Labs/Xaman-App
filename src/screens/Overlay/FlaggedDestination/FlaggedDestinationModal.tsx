@@ -4,7 +4,7 @@
 
 import toUpper from 'lodash/toUpper';
 import React, { Component, createRef } from 'react';
-import { View, Animated, Text, KeyboardEvent, Platform } from 'react-native';
+import { View, Animated, Text, KeyboardEvent, Platform, BackHandler } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -42,7 +42,9 @@ class FlaggedDestinationModal extends Component<Props, State> {
     private textInputView: React.RefObject<View>;
     private bottomOffset: Animated.Value;
 
+    private backHandler: any;
     private mounted: boolean;
+    private setListenerTimeout: any;
 
     static options() {
         return {
@@ -71,6 +73,9 @@ class FlaggedDestinationModal extends Component<Props, State> {
     componentDidMount() {
         this.mounted = true;
 
+        // prevent from hardware back in android devices
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
+
         Animated.timing(this.animatedColor, {
             toValue: 150,
             duration: 350,
@@ -78,25 +83,24 @@ class FlaggedDestinationModal extends Component<Props, State> {
         }).start();
 
         // add listeners with delay as a bug in ios 14
-        setTimeout(() => {
-            this.addKeyboardListeners();
+        this.setListenerTimeout = setTimeout(() => {
+            Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
+            Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
         }, 500);
     }
 
     componentWillUnmount() {
         this.mounted = false;
-        this.removeKeyboardListeners();
-    }
 
-    addKeyboardListeners = () => {
-        Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
-        Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
-    };
+        if (this.backHandler) {
+            this.backHandler.remove();
+        }
 
-    removeKeyboardListeners = () => {
+        if (this.setListenerTimeout) clearTimeout(this.setListenerTimeout);
+
         Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
         Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
-    };
+    }
 
     onKeyboardShow = (e: KeyboardEvent) => {
         if (this.keyboardShow) return;
@@ -158,10 +162,12 @@ class FlaggedDestinationModal extends Component<Props, State> {
         });
     };
 
-    onCancelPressed = () => {
+    onDismiss = () => {
         const { onDismissed } = this.props;
 
         this.dismiss(onDismissed);
+
+        return true;
     };
 
     onContinuePressed = () => {
@@ -251,7 +257,7 @@ class FlaggedDestinationModal extends Component<Props, State> {
 
                     <View style={[AppStyles.row]}>
                         <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
-                            <Button onPress={this.onCancelPressed} label="Cancel" />
+                            <Button onPress={this.onDismiss} label="Cancel" />
                         </View>
                         <View style={[AppStyles.flex1]}>
                             <Button

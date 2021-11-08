@@ -103,60 +103,6 @@ const styles = StyleService.create({
     textButtonRounded: {
         fontSize: AppFonts.base.size * 1,
     },
-    /*
-    // Light
-    buttonLight: {
-        backgroundColor: '$lightGrey,
-    },
-    textButtonLight: {
-        fontFamily: AppFonts.base.familyBold,
-        color: '$blue,
-        fontSize: AppFonts.base.size * 1.1,
-    },
-    // Outline
-    buttonOutline: {
-        backgroundColor: '$white,
-        borderColor: '$blue,
-        borderWidth: 1.5,
-    },
-    textButtonOutline: {
-        color: '$blue,
-    },
-    // Clear
-    buttonClear: {
-        backgroundColor: '$white,
-        borderColor: '$transparent,
-        borderWidth: 1.5,
-        height: AppSizes.heightPercentageToDP(5.5),
-        minHeight: 45,
-        paddingHorizontal: 5,
-    },
-    textButtonClear: {
-        color: '$black,
-        fontSize: AppFonts.base.size * 1,
-    },
-
-    // Rounded Small
-    buttonRoundedSmall: {
-        height: AppSizes.scale(33),
-        paddingHorizontal: 18,
-        alignSelf: 'center',
-        borderRadius: AppSizes.scale(33) / 2,
-    },
-    textButtonRoundedSmall: {
-        fontSize: AppFonts.base.size * 0.9,
-    },
-    // Rounded Mini
-    buttonRoundedMini: {
-        height: AppSizes.scale(20),
-        paddingHorizontal: 80,
-        alignSelf: 'center',
-        borderRadius: AppSizes.scale(33) / 2,
-    },
-    textButtonRoundedMini: {
-        fontSize: AppFonts.base.size * 0.7,
-    },
-    */
     iconLeft: {
         marginRight: 3,
         tintColor: '$white',

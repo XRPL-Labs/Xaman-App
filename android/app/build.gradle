@@ -123,7 +123,12 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  * on project.ext.react, JavaScript will not be compiled to Hermes Bytecode
  * and the benefits of using Hermes will therefore be sharply reduced.
  */
-def enableHermes = project.ext.react.get("enableHermes", false);
+def enableHermes = project.ext.react.get("enableHermes", false)
+
+/**
+ * Architectures to build native code for in debug.
+ */
+def nativeArchitectures = project.getProperties().get("reactNativeDebugArchitectures")
 
 android {
     ndkVersion rootProject.ext.ndkVersion
@@ -168,6 +173,11 @@ android {
         debug {
             signingConfig signingConfigs.debug
             manifestPlaceholders = [excludeSystemAlertWindowPermission: "false"]
+            if (nativeArchitectures) {
+                ndk {
+                    abiFilters nativeArchitectures.split(',')
+                }
+            }
         }
         release {
             minifyEnabled enableProguardInReleaseBuilds
@@ -213,7 +223,7 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
     if (enableHermes) {
-        def hermesPath = "../../node_modules/hermes-engine/android/";
+        def hermesPath = "../../node_modules/hermes-engine/android/"
         debugImplementation files(hermesPath + "hermes-debug.aar")
         releaseImplementation files(hermesPath + "hermes-release.aar")
     } else {
@@ -221,10 +231,10 @@ dependencies {
     }
 
     // Firebase
-    implementation "com.google.firebase:firebase-messaging:+"
+    implementation 'com.google.firebase:firebase-messaging'
     implementation 'me.leolin:ShortcutBadger:1.1.22@aar'
     // e2e dependencies
-    androidTestImplementation('com.wix:detox:+')
+    androidTestImplementation('com.wix:detox')
     androidTestImplementation 'junit:junit:4.12'
     // qrcode generate dependencies
     implementation 'com.github.kenglxn.QRGen:android:2.6.0'

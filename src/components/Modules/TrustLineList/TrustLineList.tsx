@@ -36,29 +36,16 @@ class TrustLineList extends PureComponent<Props> {
     };
 
     openTrustLineDescription = () => {
-        Navigator.showModal(
-            AppScreens.Modal.Help,
-            {},
-            {
-                title: Localize.t('home.whatAreOtherAssets'),
-                content: Localize.t('home.otherAssetsDesc'),
-            },
-        );
+        Navigator.showModal(AppScreens.Modal.Help, {
+            title: Localize.t('home.whatAreOtherAssets'),
+            content: Localize.t('home.otherAssetsDesc'),
+        });
     };
 
     openAddCurrency = () => {
         const { account } = this.props;
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.AddCurrency,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            { account },
-        );
+        Navigator.showOverlay(AppScreens.Overlay.AddCurrency, { account });
     };
 
     renderEmptyList = () => {

@@ -1,7 +1,8 @@
 const { Then } = require('cucumber');
 const { expect, element, by } = require('detox');
 
-let passcode = '111111';
+let passcode = '167349';
+
 const passphrase = '&uHCnPv4T=#~;Ca';
 const newPassphrase = '4b<8xu8HbP)%hzpgh';
 
@@ -20,7 +21,7 @@ Then('I type my passcode', async () => {
 });
 
 Then('I type my new passcode', async () => {
-    passcode = '222222';
+    passcode = '958347';
     await element(by.id('pin-input')).typeText(passcode);
 });
 

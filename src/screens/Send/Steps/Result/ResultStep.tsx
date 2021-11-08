@@ -36,7 +36,7 @@ class ResultStep extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
-    private mounted: boolean;
+    private showDetailsTimeout: any;
 
     constructor(props: Props) {
         super(props);
@@ -44,26 +44,18 @@ class ResultStep extends Component<Props, State> {
         this.state = {
             showDetailsCard: false,
         };
-
-        this.mounted = false;
     }
 
     componentDidMount() {
         const { payment } = this.context;
 
-        this.mounted = true;
-
-        if (payment.TransactionResult?.success) {
-            setTimeout(() => {
-                if (this.mounted) {
-                    this.showDetailsCard();
-                }
-            }, 4500);
+        if (payment.VerifyResult.success) {
+            this.showDetailsTimeout = setTimeout(this.showDetailsCard, 4500);
         }
     }
 
     componentWillUnmount() {
-        this.mounted = false;
+        if (this.showDetailsTimeout) clearTimeout(this.showDetailsTimeout);
     }
 
     showDetailsCard = () => {
@@ -96,7 +88,7 @@ class ResultStep extends Component<Props, State> {
                         Navigator.popToRoot();
 
                         setTimeout(() => {
-                            Navigator.push(AppScreens.Settings.AddressBook.Add, {}, destination);
+                            Navigator.push(AppScreens.Settings.AddressBook.Add, destination);
                         }, 1000);
                     }}
                 />
@@ -231,10 +223,49 @@ class ResultStep extends Component<Props, State> {
         );
     };
 
+    renderVerificationFailed = () => {
+        return (
+            <SafeAreaView testID="send-result-view" style={[styles.container, styles.containerVerificationFailed]}>
+                <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}>
+                    <Text style={[AppStyles.h3, AppStyles.strong, AppStyles.colorOrange, AppStyles.textCenterAligned]}>
+                        {Localize.t('send.verificationFailed')}
+                    </Text>
+                    <Text
+                        style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorOrange, AppStyles.textCenterAligned]}
+                    >
+                        {Localize.t('send.couldNotVerifyTransaction')}
+                    </Text>
+                </View>
+
+                <View style={[AppStyles.flex2]}>
+                    <View style={styles.detailsCard}>
+                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
+                        <Spacer />
+                        <Text style={[AppStyles.subtext]}>{Localize.t('send.verificationFailedDescription')}</Text>
+                    </View>
+                </View>
+
+                <Footer style={[]}>
+                    <Button
+                        onPress={() => {
+                            Navigator.popToRoot();
+                        }}
+                        style={{ backgroundColor: AppColors.orange }}
+                        label={Localize.t('global.close')}
+                    />
+                </Footer>
+            </SafeAreaView>
+        );
+    };
+
     render() {
         const { payment } = this.context;
 
         if (payment.TransactionResult?.success) {
+            // submitted successfully but cannot verified
+            if (payment.VerifyResult.success === false) {
+                return this.renderVerificationFailed();
+            }
             return this.renderSuccess();
         }
 

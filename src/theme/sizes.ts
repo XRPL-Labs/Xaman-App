@@ -6,7 +6,9 @@ import { Dimensions, Platform, PixelRatio } from 'react-native';
 
 import { hasNotch, GetLayoutInsets } from '@common/helpers/device';
 
-const { width, height } = Dimensions.get('screen');
+const { height: screenHeight } = Dimensions.get('screen');
+const { width, height } = Dimensions.get('window');
+
 const { bottom: bottomInset, top: topInset } = GetLayoutInsets();
 
 // Guideline sizes are based on standard ~5" screen mobile device
@@ -23,8 +25,18 @@ const tabbarHeight = Platform.select({
 // status bar size
 const statusBarHeight = topInset;
 
-// soft menu bar
-const navigationBarHeight = Platform.OS === 'android' ? bottomInset : 0;
+// in some android devices the screen goes under navigation bar
+// this help's us to add extra padding if necessary
+let bottomStableInset = 0;
+
+if (Platform.OS === 'android') {
+    bottomStableInset = Math.floor(topInset + bottomInset - Math.floor(screenHeight - height));
+    if (bottomStableInset < 0) {
+        bottomStableInset = 0;
+    }
+} else if (Platform.OS === 'ios') {
+    bottomStableInset = bottomInset;
+}
 
 const Sizes = {
     // Screen Dimensions
@@ -44,12 +56,12 @@ const Sizes = {
         widthQuarter: width * 0.25,
         widthThreeQuarters: width * 0.75,
     },
-    navigationBarHeight,
     statusBarHeight,
     tabbarHeight,
 
     bottomInset,
     topInset,
+    bottomStableInset,
 
     padding: 30,
     paddingSml: 20,

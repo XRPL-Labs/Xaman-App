@@ -94,35 +94,19 @@ class AdvancedSettingsView extends Component<Props, State> {
         // if connected to custom chain return
         if (!canSelectExplorer) return;
 
-        Navigator.push(
-            AppScreens.Global.Picker,
-            {},
-            {
-                title: Localize.t('global.explorer'),
-                description: Localize.t('settings.selectExplorer'),
-                items: AppConfig.explorer,
-                selected: coreSettings.defaultExplorer,
-                onSelect: this.changeDefaultExplorer,
-            },
-        );
+        Navigator.push(AppScreens.Global.Picker, {
+            title: Localize.t('global.explorer'),
+            description: Localize.t('settings.selectExplorer'),
+            items: AppConfig.explorer,
+            selected: coreSettings.defaultExplorer,
+            onSelect: this.changeDefaultExplorer,
+        });
     };
 
     showChangeLog = () => {
         const currentVersionCode = GetAppVersionCode();
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.ChangeLog,
-            {
-                overlay: {
-                    handleKeyboardEvents: true,
-                },
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            { version: currentVersionCode },
-        );
+        Navigator.showOverlay(AppScreens.Overlay.ChangeLog, { version: currentVersionCode });
     };
 
     reRegisterPushToken = async () => {

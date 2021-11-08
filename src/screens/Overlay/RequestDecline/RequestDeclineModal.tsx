@@ -2,16 +2,14 @@
  * Request decline overlay
  */
 import React, { Component } from 'react';
-import { Animated, View, Text, TouchableWithoutFeedback } from 'react-native';
-
-import Interactable from 'react-native-interactable';
+import { View, Text } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Spacer } from '@components/General';
+import { Button, Spacer, ActionPanel } from '@components/General';
 
 import Localize from '@locale';
 
@@ -31,10 +29,7 @@ export interface State {}
 class RequestDeclineOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.RequestDecline;
 
-    panel: any;
-    deltaY: Animated.Value;
-    deltaX: Animated.Value;
-    isOpening: boolean;
+    private actionPanel: ActionPanel;
 
     static options() {
         return {
@@ -47,51 +42,6 @@ class RequestDeclineOverlay extends Component<Props, State> {
             },
         };
     }
-
-    constructor(props: Props) {
-        super(props);
-
-        this.state = {};
-
-        this.deltaY = new Animated.Value(AppSizes.screen.height);
-        this.deltaX = new Animated.Value(0);
-
-        this.isOpening = true;
-    }
-
-    componentDidMount() {
-        this.slideUp();
-    }
-
-    slideUp = () => {
-        setTimeout(() => {
-            if (this.panel) {
-                this.panel.snapTo({ index: 1 });
-            }
-        }, 10);
-    };
-
-    slideDown = () => {
-        setTimeout(() => {
-            if (this.panel) {
-                this.panel.snapTo({ index: 0 });
-            }
-        }, 10);
-    };
-
-    onAlert = (event: any) => {
-        const { top, bottom } = event.nativeEvent;
-
-        if (top && bottom) return;
-
-        if (top === 'enter' && this.isOpening) {
-            this.isOpening = false;
-        }
-
-        if (bottom === 'leave' && !this.isOpening) {
-            Navigator.dismissOverlay();
-        }
-    };
 
     onClose = async () => {
         const { onClose } = this.props;
@@ -116,85 +66,38 @@ class RequestDeclineOverlay extends Component<Props, State> {
 
     render() {
         return (
-            <View style={AppStyles.flex1}>
-                <TouchableWithoutFeedback onPress={this.slideDown}>
-                    <Animated.View
-                        style={[
-                            AppStyles.shadowContent,
-                            {
-                                opacity: this.deltaY.interpolate({
-                                    inputRange: [0, AppSizes.screen.height],
-                                    outputRange: [1.5, 0],
-                                    extrapolateRight: 'clamp',
-                                }),
-                            },
-                        ]}
+            <ActionPanel
+                height={AppSizes.moderateScale(380)}
+                onSlideDown={Navigator.dismissOverlay}
+                extraBottomInset
+                ref={(r) => {
+                    this.actionPanel = r;
+                }}
+            >
+                <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingVerticalSml]}>
+                    <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>
+                        {Localize.t('payload.whatDoYouWantToDo')}
+                    </Text>
+                </View>
+                <View style={[AppStyles.flex1, AppStyles.paddingHorizontalSml]}>
+                    <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
+                        <Text style={[AppStyles.bold, AppStyles.colorGrey]}>{Localize.t('global.close')} </Text>
+                        {Localize.t('payload.willIgnoreTheRequestAndClose')}{' '}
+                        <Text style={[AppStyles.bold, AppStyles.colorRed]}>{Localize.t('global.decline')} </Text>
+                        {Localize.t('payload.willRejectTheSignRequest')}
+                    </Text>
+                </View>
+                <View style={[AppStyles.flex2, AppStyles.paddingHorizontalSml]}>
+                    <Button secondary numberOfLines={1} onPress={this.onClose} label={Localize.t('global.close')} />
+                    <Spacer size={20} />
+                    <Button
+                        onPress={this.onDecline}
+                        style={styles.declineButton}
+                        label={Localize.t('global.decline')}
+                        icon="IconTrash"
                     />
-                </TouchableWithoutFeedback>
-
-                <Interactable.View
-                    ref={(r) => {
-                        this.panel = r;
-                    }}
-                    animatedNativeDriver
-                    onAlert={this.onAlert}
-                    verticalOnly
-                    snapPoints={[
-                        { y: AppSizes.screen.height + 3 },
-                        { y: AppSizes.screen.height - (AppSizes.moderateScale(360) + AppSizes.navigationBarHeight) },
-                    ]}
-                    boundaries={{
-                        top: AppSizes.screen.height - (AppSizes.moderateScale(410) + AppSizes.navigationBarHeight),
-                    }}
-                    alertAreas={[
-                        { id: 'bottom', influenceArea: { bottom: AppSizes.screen.height } },
-                        {
-                            id: 'top',
-                            influenceArea: {
-                                top:
-                                    AppSizes.screen.height -
-                                    (AppSizes.moderateScale(360) + AppSizes.navigationBarHeight),
-                            },
-                        },
-                    ]}
-                    initialPosition={{ y: AppSizes.screen.height + 3 }}
-                    animatedValueY={this.deltaY}
-                    animatedValueX={this.deltaX}
-                >
-                    <View style={[styles.container]}>
-                        <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingVerticalSml]}>
-                            <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>
-                                {Localize.t('payload.whatDoYouWantToDo')}
-                            </Text>
-                        </View>
-                        <View style={[AppStyles.flex1, AppStyles.paddingHorizontalSml]}>
-                            <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                                <Text style={[AppStyles.bold, AppStyles.colorGrey]}>{Localize.t('global.close')} </Text>
-                                {Localize.t('payload.willIgnoreTheRequestAndClose')}{' '}
-                                <Text style={[AppStyles.bold, AppStyles.colorRed]}>
-                                    {Localize.t('global.decline')}{' '}
-                                </Text>
-                                {Localize.t('payload.willRejectTheSignRequest')}
-                            </Text>
-                        </View>
-                        <View style={[AppStyles.flex2, AppStyles.paddingHorizontalSml]}>
-                            <Button
-                                secondary
-                                numberOfLines={1}
-                                onPress={this.onClose}
-                                label={Localize.t('global.close')}
-                            />
-                            <Spacer size={20} />
-                            <Button
-                                onPress={this.onDecline}
-                                style={styles.declineButton}
-                                label={Localize.t('global.decline')}
-                                icon="IconTrash"
-                            />
-                        </View>
-                    </View>
-                </Interactable.View>
-            </View>
+                </View>
+            </ActionPanel>
         );
     }
 }

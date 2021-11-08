@@ -72,7 +72,7 @@ class AccountPicker extends Component<Props, State> {
         const { selectedItem, accounts } = this.props;
         const { expanded } = this.state;
 
-        if (expanded || !Array.isArray(accounts) || accounts.length <= 1) {
+        if (expanded || typeof accounts.length !== 'number' || accounts.length <= 1) {
             return;
         }
 
@@ -80,16 +80,12 @@ class AccountPicker extends Component<Props, State> {
             expanded: true,
         });
 
-        Navigator.showOverlay(
-            AppScreens.Overlay.SelectAccount,
-            {
-                layout: {
-                    backgroundColor: 'transparent',
-                    componentBackgroundColor: 'transparent',
-                },
-            },
-            { selected: selectedItem, accounts, onSelect: this.onSelect, onClose: this.onPickerClose },
-        );
+        Navigator.showOverlay(AppScreens.Overlay.SelectAccount, {
+            selected: selectedItem,
+            accounts,
+            onSelect: this.onSelect,
+            onClose: this.onPickerClose,
+        });
     };
 
     render() {
