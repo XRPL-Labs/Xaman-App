@@ -365,7 +365,9 @@ class SummaryStep extends Component<Props, State> {
 
                         <View style={[styles.rowTitle]}>
                             <View style={[styles.pickerItem]}>
-                                <Text style={[styles.pickerItemTitle]}>{destination.name}</Text>
+                                <Text style={[styles.pickerItemTitle]}>
+                                    {destination?.name || Localize.t('global.noNameFound')}
+                                </Text>
                                 <Text
                                     style={[styles.pickerItemSub, AppStyles.colorGrey]}
                                     adjustsFontSizeToFit
