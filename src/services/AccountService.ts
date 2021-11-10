@@ -208,7 +208,7 @@ class AccountService extends EventEmitter {
                 }),
             );
             if (_marker) {
-                return this.getFilteredAccountLines(account, _marker, filtered);
+                return this.getFilteredAccountLines(account, _marker, filtered.concat(combined));
             }
             return filtered.concat(combined);
         });
