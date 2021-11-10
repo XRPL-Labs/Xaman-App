@@ -57,6 +57,11 @@ const styles = StyleService.create({
         fontSize: AppFonts.base.size,
         color: '$textPrimary',
     },
+    amountValueContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+    },
     currency: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.subtext.size * 0.9,

@@ -8,7 +8,10 @@ import { AccountSchema } from '@store/schemas/latest';
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
 import { Images } from '@common/helpers/images';
+
 import { NormalizeCurrencyCode, NormalizeAmount } from '@common/utils/amount';
+import { Truncate } from '@common/utils/string';
+
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
@@ -289,7 +292,7 @@ class TransactionTemplate extends Component<Props, State> {
         }
 
         if (name) return name;
-        if (address) return address;
+        if (address) return Truncate(address, 16);
 
         return Localize.t('global.unknown');
     };
@@ -418,9 +421,11 @@ class TransactionTemplate extends Component<Props, State> {
                     return (
                         <AmountText
                             value={amount.value}
-                            postfix={amount.currency}
+                            currency={amount.currency}
                             style={[styles.amount, styles.naturalColor]}
-                            postfixStyle={styles.currency}
+                            currencyStyle={styles.currency}
+                            valueContainerStyle={styles.amountValueContainer}
+                            truncateCurrency
                         />
                     );
                 }
@@ -428,9 +433,11 @@ class TransactionTemplate extends Component<Props, State> {
                     return (
                         <AmountText
                             value={balanceChanges.received?.value}
-                            postfix={balanceChanges.received?.currency}
+                            currency={balanceChanges.received?.currency}
                             style={styles.amount}
-                            postfixStyle={styles.currency}
+                            currencyStyle={styles.currency}
+                            valueContainerStyle={styles.amountValueContainer}
+                            truncateCurrency
                         />
                     );
                 }
@@ -439,10 +446,12 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={amount.value}
-                    postfix={amount.currency}
+                    currency={amount.currency}
                     prefix={!incoming && '-'}
                     style={[styles.amount, !incoming && styles.outgoingColor]}
-                    postfixStyle={styles.currency}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
                 />
             );
         }
@@ -451,10 +460,12 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.Amount.value}
-                    postfix={item.Amount.currency}
+                    currency={item.Amount.currency}
                     prefix={!incoming && '-'}
                     style={[styles.amount, !incoming && styles.outgoingColor]}
-                    postfixStyle={styles.currency}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
                 />
             );
         }
@@ -463,10 +474,12 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.Amount.value}
-                    postfix={item.Amount.currency}
+                    currency={item.Amount.currency}
                     prefix={!incoming && '-'}
                     style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]}
-                    postfixStyle={styles.currency}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
                 />
             );
         }
@@ -475,10 +488,12 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.Amount.value}
-                    postfix={item.Amount.currency}
+                    currency={item.Amount.currency}
                     prefix={!incoming && '-'}
                     style={[styles.amount, !incoming && styles.naturalColor]}
-                    postfixStyle={styles.currency}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
                 />
             );
         }
@@ -487,9 +502,11 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.SendMax.value}
-                    postfix={item.SendMax.currency}
+                    currency={item.SendMax.currency}
                     style={[styles.amount, styles.naturalColor]}
-                    postfixStyle={styles.currency}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
                 />
             );
         }
@@ -500,9 +517,11 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={amount.value}
-                    postfix={amount.currency}
+                    currency={amount.currency}
                     style={[styles.amount, !incoming && styles.outgoingColor]}
-                    postfixStyle={styles.currency}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
                 />
             );
         }
@@ -514,18 +533,22 @@ class TransactionTemplate extends Component<Props, State> {
                 return (
                     <AmountText
                         value={takerPaid.value}
-                        postfix={takerPaid.currency}
+                        currency={takerPaid.currency}
                         style={[styles.amount]}
-                        postfixStyle={styles.currency}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
                     />
                 );
             }
             return (
                 <AmountText
                     value={item.TakerPays.value}
-                    postfix={item.TakerPays.currency}
+                    currency={item.TakerPays.currency}
                     style={[styles.amount, styles.naturalColor]}
-                    postfixStyle={styles.currency}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
                 />
             );
         }
@@ -539,9 +562,11 @@ class TransactionTemplate extends Component<Props, State> {
                 return (
                     <AmountText
                         value={amount.value}
-                        postfix={amount.currency}
+                        currency={amount.currency}
                         style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
-                        postfixStyle={styles.currency}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
                     />
                 );
             }

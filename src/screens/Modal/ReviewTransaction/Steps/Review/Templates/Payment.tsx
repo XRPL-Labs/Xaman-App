@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { isEmpty, isEqual, has, get } from 'lodash';
 import React, { Component } from 'react';
-import { View, Alert, Text, Platform, TouchableOpacity, InteractionManager } from 'react-native';
+import { View, Alert, Text, TouchableOpacity, InteractionManager } from 'react-native';
 
 import { BackendService, LedgerService, StyleService } from '@services';
 
@@ -415,14 +415,14 @@ class PaymentTemplate extends Component<Props, State> {
                             <AmountText
                                 style={styles.amountInput}
                                 value={amount}
-                                postfix={transaction.Amount.currency}
+                                currency={transaction.Amount.currency}
                             />
                         )}
                     </TouchableOpacity>
                     {isPartialPayment &&
                         (exchangeRate ? (
                             <>
-                                <Spacer size={Platform.OS === 'ios' ? 15 : 0} />
+                                <Spacer size={15} />
                                 <InfoMessage
                                     label={Localize.t('payload.payingWithXRPExchangeRate', {
                                         xrpRoundedUp,
@@ -433,7 +433,7 @@ class PaymentTemplate extends Component<Props, State> {
                             </>
                         ) : (
                             <>
-                                <Spacer size={Platform.OS === 'ios' ? 15 : 0} />
+                                <Spacer size={15} />
                                 <InfoMessage
                                     label={Localize.t('payload.notEnoughLiquidityToSendThisPayment')}
                                     type="error"
@@ -450,7 +450,7 @@ class PaymentTemplate extends Component<Props, State> {
                         <View style={[styles.contentBox]}>
                             <AmountText
                                 value={transaction.SendMax.value}
-                                postfix={transaction.SendMax.currency}
+                                currency={transaction.SendMax.currency}
                                 style={styles.amount}
                             />
                         </View>
@@ -463,7 +463,7 @@ class PaymentTemplate extends Component<Props, State> {
                         <View style={[styles.contentBox]}>
                             <AmountText
                                 value={transaction.DeliverMin.value}
-                                postfix={transaction.DeliverMin.currency}
+                                currency={transaction.DeliverMin.currency}
                                 style={styles.amount}
                             />
                         </View>

@@ -111,7 +111,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                 <View style={[styles.contentBox]}>
                     <AmountText
                         value={transaction.TakerGets.value}
-                        postfix={transaction.TakerGets.currency}
+                        currency={transaction.TakerGets.currency}
                         style={styles.amount}
                     />
                 </View>
@@ -120,7 +120,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                 <View style={[styles.contentBox]}>
                     <AmountText
                         value={transaction.TakerPays.value}
-                        postfix={transaction.TakerPays.currency}
+                        currency={transaction.TakerPays.currency}
                         style={styles.amount}
                     />
                 </View>

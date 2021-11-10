@@ -39,7 +39,7 @@ class PaymentChannelClaimTemplate extends Component<Props, State> {
                         <View style={[styles.contentBox]}>
                             <AmountText
                                 value={transaction.Amount.value}
-                                postfix={transaction.Amount.currency}
+                                currency={transaction.Amount.currency}
                                 style={styles.amount}
                             />
                         </View>
@@ -52,7 +52,7 @@ class PaymentChannelClaimTemplate extends Component<Props, State> {
                         <View style={[styles.contentBox]}>
                             <AmountText
                                 value={transaction.Balance.value}
-                                postfix={transaction.Balance.currency}
+                                currency={transaction.Balance.currency}
                                 style={styles.amount}
                             />
                         </View>
