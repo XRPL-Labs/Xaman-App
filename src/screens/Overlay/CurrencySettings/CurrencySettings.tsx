@@ -376,6 +376,22 @@ class CurrencySettingsModal extends Component<Props, State> {
         );
     };
 
+    onSendPress = async () => {
+        const { trustLine } = this.props;
+
+        this.dismiss().then(() => {
+            Navigator.push(AppScreens.Transaction.Payment, { currency: trustLine });
+        });
+    };
+
+    onExchangePress = () => {
+        const { trustLine } = this.props;
+
+        this.dismiss().then(() => {
+            Navigator.push(AppScreens.Transaction.Exchange, { trustLine });
+        });
+    };
+
     disableRippling = async () => {
         const { account, trustLine } = this.props;
 
@@ -446,14 +462,6 @@ class CurrencySettingsModal extends Component<Props, State> {
             },
             { modalPresentationStyle: 'fullScreen' },
         );
-    };
-
-    showExchangeScreen = () => {
-        const { trustLine } = this.props;
-
-        this.dismiss().then(() => {
-            Navigator.push(AppScreens.Transaction.Exchange, { trustLine });
-        });
     };
 
     showNFTInfo = () => {
@@ -600,10 +608,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 iconStyle={[styles.sendButtonIcon]}
                                 label={Localize.t('global.send')}
                                 textStyle={[styles.sendButtonText]}
-                                onPress={() => {
-                                    this.dismiss();
-                                    Navigator.push(AppScreens.Transaction.Payment, { currency: trustLine });
-                                }}
+                                onPress={this.onSendPress}
                             />
                             {trustLine.isNFT ? (
                                 <RaisedButton
@@ -626,7 +631,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                                     iconPosition="right"
                                     label={Localize.t('global.exchange')}
                                     textStyle={[styles.exchangeButtonText]}
-                                    onPress={this.showExchangeScreen}
+                                    onPress={this.onExchangePress}
                                 />
                             )}
                         </View>
