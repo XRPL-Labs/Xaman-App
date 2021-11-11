@@ -321,6 +321,7 @@ class ReviewStep extends Component<Props, State> {
                                 isLoading={isValidating || isPreparing}
                                 onSwipeSuccess={onAccept}
                                 label={Localize.t('global.slideToAccept')}
+                                accessibilityLabel={Localize.t('global.accept')}
                                 shouldResetAfterSuccess
                                 onPanResponderGrant={this.toggleCanScroll}
                                 onPanResponderRelease={this.toggleCanScroll}

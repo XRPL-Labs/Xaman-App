@@ -453,6 +453,7 @@ class SummaryStep extends Component<Props, State> {
                     <SwipeButton
                         color={this.getSwipeButtonColor()}
                         label={Localize.t('global.slideToSend')}
+                        accessibilityLabel={Localize.t('global.send')}
                         onSwipeSuccess={this.goNext}
                         isLoading={isLoading}
                         shouldResetAfterSuccess
