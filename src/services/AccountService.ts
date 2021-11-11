@@ -21,7 +21,10 @@ import LedgerService from '@services/LedgerService';
 
 /* events  ==================================================================== */
 declare interface AccountService {
-    on(event: 'transaction', listener: (name: string) => void): this;
+    on(
+        event: 'transaction',
+        listener: (transaction: LedgerTransactionType, effectedAccounts: Array<string>) => void,
+    ): this;
     on(event: string, listener: Function): this;
 }
 
@@ -88,7 +91,7 @@ class AccountService extends EventEmitter {
             this.updateAccountsDetails(effectedAccounts);
 
             // emit onTransaction event
-            this.emit('transaction', transaction);
+            this.emit('transaction', transaction, effectedAccounts);
         }
     };
 

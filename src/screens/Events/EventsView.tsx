@@ -113,7 +113,7 @@ class EventsView extends Component<Props, State> {
         AccountRepository.on('changeDefaultAccount', this.onDefaultAccountChange);
 
         // update list on transaction received
-        AccountService.on('transaction', this.updateDataSource);
+        AccountService.on('transaction', this.onTransactionReceived);
 
         // update list on sign request received
         PushNotificationsService.on('signRequestUpdate', this.updateDataSource);
@@ -129,7 +129,7 @@ class EventsView extends Component<Props, State> {
     componentWillUnmount = () => {
         // remove listeners
         AccountRepository.off('changeDefaultAccount', this.onDefaultAccountChange);
-        AccountService.off('transaction', this.updateDataSource);
+        AccountService.off('transaction', this.onTransactionReceived);
         PushNotificationsService.off('signRequestUpdate', this.updateDataSource);
     };
 
@@ -146,6 +146,16 @@ class EventsView extends Component<Props, State> {
                 this.updateDataSource(true);
             },
         );
+    };
+
+    onTransactionReceived = (transaction: any, effectedAccounts: Array<string>) => {
+        const { account } = this.state;
+
+        if (account.isValid()) {
+            if (effectedAccounts.indexOf(account.address) !== -1) {
+                this.updateDataSource();
+            }
+        }
     };
 
     loadPlannedTransactions = () => {
