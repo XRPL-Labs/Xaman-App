@@ -3,7 +3,7 @@
  */
 import Fuse from 'fuse.js';
 import moment from 'moment-timezone';
-import { isEmpty, flatMap, isUndefined, isEqual, filter, get, uniqBy, groupBy, map, without, sortBy } from 'lodash';
+import { isEmpty, flatMap, isUndefined, isEqual, filter, get, uniqBy, groupBy, map, without, orderBy } from 'lodash';
 import React, { Component } from 'react';
 import { SafeAreaView, Text, InteractionManager, ImageBackground, Image } from 'react-native';
 
@@ -170,11 +170,16 @@ class EventsView extends Component<Props, State> {
 
     loadPendingRequests = () => {
         return new Promise((resolve) => {
-            return BackendService.getPendingPayloads().then((payloads) => {
-                this.setState({ pendingRequests: payloads }, () => {
-                    return resolve(payloads);
+            return BackendService.getPendingPayloads()
+                .then((payloads) => {
+                    this.setState({ pendingRequests: payloads }, () => {
+                        return resolve(payloads);
+                    });
+                })
+                .catch(() => {
+                    Toast(Localize.t('events.canNotFetchSignRequests'));
+                    return resolve([]);
                 });
-            });
         });
     };
 
@@ -246,12 +251,12 @@ class EventsView extends Component<Props, State> {
         let items = [] as any;
 
         if (sectionIndex === 1) {
-            const open = sortBy(
+            const open = orderBy(
                 filter(plannedTransactions, (p) => p.Type === 'Offer' || p.Type === 'Check'),
                 ['Date'],
             );
 
-            const planned = sortBy(filter(plannedTransactions, { Type: 'Escrow' }), ['Date']);
+            const planned = orderBy(filter(plannedTransactions, { Type: 'Escrow' }), ['Date']);
             const dataSource = [];
 
             if (!isEmpty(open)) {
@@ -273,7 +278,7 @@ class EventsView extends Component<Props, State> {
                 });
             }
 
-            return dataSource;
+            return orderBy(dataSource, ['title']);
         }
         if (sectionIndex === 2) {
             items = [...pendingRequests];
@@ -284,13 +289,14 @@ class EventsView extends Component<Props, State> {
         // group items by month name and then get the name for each month
         const grouped = groupBy(items, (item) => moment(item.Date).format('YYYY-MM-DD'));
 
-        const dateSource = [] as any;
+        const dataSource = [] as any;
 
         map(grouped, (v, k) => {
-            dateSource.push({ title: k, data: v, type: 'date' });
+            dataSource.push({ title: k, data: v, type: 'date' });
         });
 
-        return dateSource;
+        // sort by date
+        return orderBy(dataSource, ['title'], ['desc']);
     };
 
     updateDataSource = async (background = false) => {

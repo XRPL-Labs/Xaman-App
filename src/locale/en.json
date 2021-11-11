@@ -419,6 +419,7 @@
     "claimPaymentChannel": "Claim payment channel",
     "fundPaymentChannel": "Fund payment channel",
     "canNotFetchTransactions": "Can not fetch account transactions!",
+    "canNotFetchSignRequests": "Can not fetch account sign requests!",
     "unableToLoadTheTransaction": "Unable to load the transaction, please make sure you are connected to internet!",
     "emptyEventsNoAccount": "There are no events because you do not have an account.",
     "returnPayment": "Return payment",
