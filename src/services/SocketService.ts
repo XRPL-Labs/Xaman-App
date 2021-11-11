@@ -298,19 +298,21 @@ class SocketService extends EventEmitter {
      */
     onConnect = () => {
         // fetch connected node from connection
-        let connectedNode = this.connection.getState().server.uri;
+        const { uri, publicKey } = this.connection.getState().server;
+
+        let connectedNode = uri;
 
         // remove proxy from url if present
         if (connectedNode.startsWith(AppConfig.nodes.proxy)) {
             connectedNode = connectedNode.replace(`${AppConfig.nodes.proxy}/`, '');
         }
+
         // set node and connection
         this.node = connectedNode;
-
-        this.logger.debug(`Connected to node ${connectedNode} [${this.chain}]`);
-
         // change socket status
         this.status = SocketStateStatus.Connected;
+
+        this.logger.debug(`Connected to node ${connectedNode} [${this.chain}][${publicKey}]`);
 
         // emit on connect event
         this.emit('connect', this.connection);
