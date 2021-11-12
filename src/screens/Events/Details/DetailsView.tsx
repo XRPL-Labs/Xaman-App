@@ -1311,6 +1311,13 @@ class TransactionDetailsView extends Component<Props, State> {
                             currency: tx.Amount.currency,
                         });
                     }
+                } else if (tx.Account.address === account.address && tx.Destination.address === account.address) {
+                    // payment to self
+                    Object.assign(props, {
+                        value: tx.Amount.value,
+                        currency: tx.Amount.currency,
+                        icon: undefined,
+                    });
                 } else {
                     Object.assign(props, {
                         color: incomingTx ? styles.incomingColor : styles.outgoingColor,

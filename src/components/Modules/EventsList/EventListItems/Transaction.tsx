@@ -443,6 +443,20 @@ class TransactionTemplate extends Component<Props, State> {
                 }
             }
 
+            // path payment to self
+            if (item.Account.address === account.address && item.Destination.address === account.address) {
+                return (
+                    <AmountText
+                        value={amount.value}
+                        currency={amount.currency}
+                        style={[styles.amount]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+
             return (
                 <AmountText
                     value={amount.value}

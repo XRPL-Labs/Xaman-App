@@ -1,6 +1,6 @@
 // https://github.com/ripple/ripple-lib-extensions/tree/d266933698a38c51878b4b8806b39ca264526fdc/transactionparser
 
-import { has, groupBy, mapValues, map, isEmpty, compact, flatten } from 'lodash';
+import { has, groupBy, mapValues, map, isEmpty, compact, flatten, sumBy } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import { BalanceChangeType } from './types';
@@ -30,13 +30,18 @@ class Meta {
     };
 
     private groupByAddress = (balanceChanges: any) => {
-        const grouped = groupBy(balanceChanges, (node) => {
-            return node.address;
-        });
-        return mapValues(grouped, (group) => {
-            return map(group, (node) => {
-                return node.balance;
-            });
+        return mapValues(groupBy(balanceChanges, 'address'), (group) => {
+            return map(
+                groupBy(group, (node) => [node.balance.action, node.balance.currency]),
+                (node) => {
+                    return {
+                        issuer: node[0].balance.issuer,
+                        currency: node[0].balance.currency,
+                        value: sumBy(node, (v) => Number(v.balance.value)),
+                        action: node[0].balance.action,
+                    };
+                },
+            );
         });
     };
 
