@@ -58,7 +58,7 @@ class PushNotificationsService extends EventEmitter {
                         if (hasPermission) {
                             this.onPermissionGranted();
                         } else {
-                            this.logger.warn('Push don"t have the right permission');
+                            this.logger.warn('Push don"t have the right permission or unable to get FCM token');
                         }
                         return resolve();
                     })

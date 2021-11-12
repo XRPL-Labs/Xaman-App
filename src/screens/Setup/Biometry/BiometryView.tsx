@@ -29,11 +29,25 @@ export interface Props {
     passcode: string;
 }
 
-export interface State {}
+export interface State {
+    isButtonsDisabled: boolean;
+    isSkipButtonLoading: boolean;
+    isSaveButtonLoading: boolean;
+}
 
 /* Component ==================================================================== */
 class BiometrySetupView extends Component<Props, State> {
     static screenName = AppScreens.Setup.Biometric;
+
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            isButtonsDisabled: false,
+            isSkipButtonLoading: false,
+            isSaveButtonLoading: false,
+        };
+    }
 
     static options() {
         return {
@@ -43,66 +57,95 @@ class BiometrySetupView extends Component<Props, State> {
         };
     }
 
-    requestAuthenticate = () => {
-        FingerprintScanner.isSensorAvailable()
-            .then((biometryType) => {
-                FingerprintScanner.authenticate({
-                    description: Localize.t('global.authenticate'),
-                    fallbackEnabled: false,
-                })
-                    .then(() => {
-                        let type;
+    onYesPress = async () => {
+        try {
+            // check current biometric type;
+            const biometryType = await FingerprintScanner.isSensorAvailable();
 
-                        switch (biometryType) {
-                            case 'Face ID':
-                                type = BiometryType.FaceID;
-                                break;
-                            case 'Touch ID':
-                                type = BiometryType.TouchID;
-                                break;
-                            case 'Biometrics':
-                                type = BiometryType.Biometrics;
-                                break;
+            // request authentication for biometric
+            await FingerprintScanner.authenticate({
+                description: Localize.t('global.authenticate'),
+                fallbackEnabled: false,
+            }).finally(FingerprintScanner.release);
 
-                            default:
-                                type = BiometryType.None;
-                        }
+            // normalize biometric method
+            let biometricMethod;
 
-                        CoreRepository.saveSettings({ biometricMethod: type });
+            switch (biometryType) {
+                case 'Face ID':
+                    biometricMethod = BiometryType.FaceID;
+                    break;
+                case 'Touch ID':
+                    biometricMethod = BiometryType.TouchID;
+                    break;
+                case 'Biometrics':
+                    biometricMethod = BiometryType.Biometrics;
+                    break;
+                default:
+                    // this should never happen as we check biometrics in the prev screen
+                    biometricMethod = BiometryType.None;
+                    break;
+            }
 
-                        this.nextStep();
-                    })
-                    .catch(() => {
-                        Alert.alert(Localize.t('global.invalidAuth'), Localize.t('global.invalidBiometryAuth'));
-                    })
-                    .finally(() => {
-                        FingerprintScanner.release();
-                    });
+            // go to next step
+            this.nextStep(biometricMethod);
+        } catch {
+            Alert.alert(Localize.t('global.invalidAuth'), Localize.t('global.invalidBiometryAuth'));
+        }
+    };
+
+    onSkipPress = () => {
+        // go to next step
+        this.nextStep(BiometryType.None);
+    };
+
+    nextStep = (biometricMethod: BiometryType) => {
+        // save selected biometric method
+        // if skipped biometric method will be BiometryType.None
+        CoreRepository.saveSettings({ biometricMethod });
+
+        // if firebase is down or user don't have internet connection
+        // this process may take a while and we need to show loading indicator
+
+        // disable both buttons
+        this.setState({
+            isButtonsDisabled: true,
+        });
+
+        // set loading base on the skipped or authorized biometrics
+        if (biometricMethod === BiometryType.None) {
+            this.setState({
+                isSkipButtonLoading: true,
+            });
+        } else {
+            this.setState({
+                isSaveButtonLoading: true,
+            });
+        }
+
+        // if push notification already granted then go to last part
+        PushNotificationsService.checkPermission()
+            .then((granted) => {
+                if (granted) {
+                    Navigator.push(AppScreens.Setup.Disclaimers);
+                    return;
+                }
+
+                // show push notification permission screen
+                Navigator.push(AppScreens.Setup.PushNotification);
             })
-            .catch(() => {
-                Alert.alert(Localize.t('global.invalidAuth'), Localize.t('global.invalidBiometryAuth'));
+            .finally(() => {
+                this.setState({
+                    isButtonsDisabled: false,
+                    isSkipButtonLoading: false,
+                    isSaveButtonLoading: false,
+                });
             });
     };
 
-    ignoreBiometric = () => {
-        CoreRepository.saveSettings({ biometricMethod: BiometryType.None });
-
-        this.nextStep();
-    };
-
-    nextStep = () => {
-        // if push notification already granted then go to last part
-        PushNotificationsService.checkPermission().then((granted) => {
-            if (granted) {
-                Navigator.push(AppScreens.Setup.Disclaimers);
-                return;
-            }
-
-            Navigator.push(AppScreens.Setup.PushNotification);
-        });
-    };
-
     render() {
+        const { isButtonsDisabled, isSkipButtonLoading, isSaveButtonLoading } = this.state;
+
         return (
             <SafeAreaView testID="biometric-setup-view" style={[AppStyles.container]}>
                 <View style={[AppStyles.flex2, AppStyles.centerContent]}>
@@ -128,10 +171,18 @@ class BiometrySetupView extends Component<Props, State> {
                         light
                         testID="skip-button"
                         label={Localize.t('global.maybeLater')}
-                        onPress={this.ignoreBiometric}
+                        onPress={this.onSkipPress}
+                        isDisabled={isButtonsDisabled && !isSkipButtonLoading}
+                        isLoading={isSkipButtonLoading}
                     />
                     <Spacer />
-                    <Button testID="save-button" label={Localize.t('global.yes')} onPress={this.requestAuthenticate} />
+                    <Button
+                        testID="yes-button"
+                        label={Localize.t('global.yes')}
+                        onPress={this.onYesPress}
+                        isDisabled={isButtonsDisabled}
+                        isLoading={isSaveButtonLoading}
+                    />
                 </Footer>
             </SafeAreaView>
         );
