@@ -54,6 +54,9 @@ class LoggerService {
      * normalize error message
      */
     normalizeError = (err: any) => {
+        if (!err) {
+            return ErrorMessages.default;
+        }
         let error = '';
         if (typeof err === 'string') {
             error = err;
@@ -64,7 +67,6 @@ class LoggerService {
         } else if (typeof err.toString === 'function') {
             error = err.toString();
         }
-
         if (!err) {
             error = ErrorMessages.default;
         }
