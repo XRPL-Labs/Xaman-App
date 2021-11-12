@@ -3,7 +3,7 @@
  */
 import { isNumber } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, BackHandler } from 'react-native';
+import { View, Text, BackHandler, NativeEventSubscription } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { hasNotch } from '@common/helpers/device';
@@ -37,7 +37,8 @@ export interface State {
 /* Component ==================================================================== */
 class TermOfUseView extends Component<Props, State> {
     static screenName = AppScreens.Settings.TermOfUse;
-    private backHandler: any;
+
+    private backHandler: NativeEventSubscription;
 
     static options() {
         return {
@@ -56,17 +57,17 @@ class TermOfUseView extends Component<Props, State> {
         };
     }
 
-    componentWillUnmount() {
-        if (this.backHandler) {
-            this.backHandler.remove();
-        }
-    }
-
     componentDidMount() {
         const { asModal } = this.props;
 
         if (asModal) {
             this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.backHandler) {
+            this.backHandler.remove();
         }
     }
 

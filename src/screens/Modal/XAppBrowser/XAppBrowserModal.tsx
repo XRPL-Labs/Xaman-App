@@ -5,16 +5,7 @@
 import { has, get, assign, toUpper } from 'lodash';
 import moment from 'moment-timezone';
 import React, { Component } from 'react';
-import {
-    View,
-    Text,
-    BackHandler,
-    Alert,
-    InteractionManager,
-    Linking,
-    Platform,
-    NativeEventSubscription,
-} from 'react-native';
+import { View, Text, BackHandler, Alert, InteractionManager, Linking, NativeEventSubscription } from 'react-native';
 import VeriffSdk from '@veriff/react-native-sdk';
 import { WebView } from 'react-native-webview';
 import { StringType } from 'xumm-string-decode';
@@ -110,20 +101,18 @@ class XAppBrowserModal extends Component<Props, State> {
         this.lastMessageReceived = 0;
     }
 
+    componentDidMount() {
+        // disable android back button on xApp browser
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
+
+        // fetch OTT on browser start
+        InteractionManager.runAfterInteractions(this.fetchOTT);
+    }
+
     componentWillUnmount() {
         if (this.backHandler) {
             this.backHandler.remove();
         }
-    }
-
-    componentDidMount() {
-        // handle back button in android
-        if (Platform.OS === 'android') {
-            this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
-        }
-
-        // fetch OTT on browser start
-        InteractionManager.runAfterInteractions(this.fetchOTT);
     }
 
     onClose = (data?: { refreshEvents?: boolean }) => {

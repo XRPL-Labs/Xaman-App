@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { Results } from 'realm';
 import { isEmpty, flatMap, get, uniqBy, toNumber } from 'lodash';
-import { View, Text, SectionList, BackHandler } from 'react-native';
+import { View, Text, SectionList, BackHandler, NativeEventSubscription } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
 import { AccountRepository, ContactRepository } from '@store/repositories';
@@ -53,7 +53,7 @@ class DestinationPicker extends Component<Props, State> {
 
     private lookupTimeout: any;
     private sequence: number;
-    private backHandler: any;
+    private backHandler: NativeEventSubscription;
 
     constructor(props: Props) {
         super(props);

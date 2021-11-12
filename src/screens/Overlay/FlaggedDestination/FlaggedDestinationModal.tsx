@@ -4,7 +4,7 @@
 
 import toUpper from 'lodash/toUpper';
 import React, { Component, createRef } from 'react';
-import { View, Animated, Text, KeyboardEvent, Platform, BackHandler } from 'react-native';
+import { View, Animated, Text, KeyboardEvent, Platform, BackHandler, NativeEventSubscription } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -42,7 +42,7 @@ class FlaggedDestinationModal extends Component<Props, State> {
     private textInputView: React.RefObject<View>;
     private bottomOffset: Animated.Value;
 
-    private backHandler: any;
+    private backHandler: NativeEventSubscription;
     private mounted: boolean;
     private setListenerTimeout: any;
 

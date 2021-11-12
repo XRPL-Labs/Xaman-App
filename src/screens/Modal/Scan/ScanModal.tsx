@@ -5,7 +5,7 @@
 import upperFirst from 'lodash/upperFirst';
 
 import React, { Component } from 'react';
-import { View, ImageBackground, Text, Linking, BackHandler, Platform, NativeEventSubscription } from 'react-native';
+import { View, ImageBackground, Text, Linking, BackHandler, NativeEventSubscription } from 'react-native';
 
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 import Clipboard from '@react-native-community/clipboard';
@@ -82,18 +82,16 @@ class ScanView extends Component<Props, State> {
         this.shouldRead = true;
     }
 
+    componentDidMount() {
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
+    }
+
     componentWillUnmount() {
         if (this.backHandler) {
             this.backHandler.remove();
         }
 
         if (this.shouldReadTimeout) clearTimeout(this.shouldReadTimeout);
-    }
-
-    componentDidMount() {
-        if (Platform.OS === 'android') {
-            this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
-        }
     }
 
     setShouldRead = (value: boolean) => {

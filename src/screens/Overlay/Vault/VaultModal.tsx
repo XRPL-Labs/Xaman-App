@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { Alert, Linking, BackHandler, InteractionManager } from 'react-native';
+import { Alert, Linking, BackHandler, InteractionManager, NativeEventSubscription } from 'react-native';
 
 import * as AccountLib from 'xrpl-accountlib';
 import RNTangemSdk from 'tangem-sdk-react-native';
@@ -43,7 +43,7 @@ import { Props, State, AuthMethods, SignOptions } from './types';
 class VaultModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Vault;
 
-    private backHandler: any;
+    private backHandler: NativeEventSubscription;
 
     static options() {
         return {

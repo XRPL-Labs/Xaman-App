@@ -4,7 +4,16 @@
  */
 
 import React, { Component } from 'react';
-import { View, Animated, Text, Alert, BackHandler, KeyboardEvent, LayoutAnimation } from 'react-native';
+import {
+    View,
+    Animated,
+    Text,
+    Alert,
+    BackHandler,
+    KeyboardEvent,
+    LayoutAnimation,
+    NativeEventSubscription,
+} from 'react-native';
 
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
@@ -46,7 +55,7 @@ class AuthenticateModal extends Component<Props, State> {
     private contentView: View = undefined;
     private animatedColor: Animated.Value;
     private securePinInput: SecurePinInput = undefined;
-    private backHandler: any;
+    private backHandler: NativeEventSubscription;
 
     static options() {
         return {
@@ -89,6 +98,10 @@ class AuthenticateModal extends Component<Props, State> {
     }
 
     componentWillUnmount() {
+        if (this.backHandler) {
+            this.backHandler.remove();
+        }
+
         Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
         Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
     }

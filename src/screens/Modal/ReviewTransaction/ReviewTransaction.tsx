@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, Alert, Linking, BackHandler, Keyboard, Platform } from 'react-native';
+import { View, Text, Alert, Linking, BackHandler, Keyboard, NativeEventSubscription } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -39,7 +39,7 @@ import { Steps, Props, State } from './types';
 class ReviewTransactionModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.ReviewTransaction;
 
-    private backHandler: any;
+    private backHandler: NativeEventSubscription;
 
     static options() {
         return {
@@ -67,20 +67,18 @@ class ReviewTransactionModal extends Component<Props, State> {
         };
     }
 
+    componentDidMount() {
+        // back handler listener on android
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress);
+
+        // update the accounts details before process the review
+        AccountService.updateAccountsDetails();
+    }
+
     componentWillUnmount() {
         if (this.backHandler) {
             this.backHandler.remove();
         }
-    }
-
-    componentDidMount() {
-        // back handler listener on android
-        if (Platform.OS === 'android') {
-            this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress);
-        }
-
-        // update the accounts details before process the review
-        AccountService.updateAccountsDetails();
     }
 
     componentDidCatch() {
