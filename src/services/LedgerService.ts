@@ -168,18 +168,25 @@ class LedgerService {
 
     /**
      * Get account line base on provided peer
+     * Note: should look for marker as it can be not in first page
      */
-    getAccountLine = (account: string, peer: Issuer): Promise<LedgerTrustline> => {
-        return new Promise((resolve) => {
-            return this.getAccountLines(account, { peer: peer.issuer })
-                .then((resp: any) => {
-                    const { lines } = resp;
-                    return resolve(find(lines, { account: peer.issuer, currency: peer.currency }));
-                })
-                .catch(() => {
-                    resolve(undefined);
-                });
-        });
+    getAccountLine = (
+        account: string,
+        peer: Issuer,
+        marker?: string,
+        combined = [] as LedgerTrustline[],
+    ): Promise<LedgerTrustline> => {
+        return this.getAccountLines(account, { peer: peer.issuer, marker })
+            .then((resp) => {
+                const { lines, marker: _marker } = resp;
+                if (_marker) {
+                    return this.getAccountLine(account, peer, _marker, lines.concat(combined));
+                }
+                return find(lines.concat(combined), { account: peer.issuer, currency: peer.currency });
+            })
+            .catch(() => {
+                return undefined;
+            });
     };
 
     /**
