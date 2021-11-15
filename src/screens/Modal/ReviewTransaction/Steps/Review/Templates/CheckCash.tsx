@@ -10,6 +10,7 @@ import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { AmountInput, AmountText, Button } from '@components/General';
+import { AmountValueType } from '@components/General/AmountInput';
 import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
@@ -170,7 +171,7 @@ class CheckCashTemplate extends Component<Props, State> {
                                 <View style={[AppStyles.row, AppStyles.flex1]}>
                                     <AmountInput
                                         ref={this.amountInput}
-                                        decimalPlaces={currencyName === 'XRP' ? 6 : 8}
+                                        valueType={currencyName === 'XRP' ? AmountValueType.XRP : AmountValueType.IOU}
                                         onChange={this.onAmountChange}
                                         style={[styles.amountInput]}
                                         value={cashAmount}

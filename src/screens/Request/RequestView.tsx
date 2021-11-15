@@ -19,6 +19,7 @@ import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 
 // components
 import { Header, AmountInput, QRCode, CheckBox, HorizontalLine, KeyboardAwareScrollView } from '@components/General';
+import { AmountValueType } from '@components/General/AmountInput';
 import { AccountPicker } from '@components/Modules';
 
 // local
@@ -211,12 +212,12 @@ class RequestView extends Component<Props, State> {
                         <AmountInput
                             ref={this.amountInput}
                             testID="amount-input"
-                            decimalPlaces={6}
+                            value={amount}
+                            valueType={AmountValueType.XRP}
                             onChange={this.onAmountChange}
-                            returnKeyType="done"
                             style={[styles.amountInput]}
                             placeholderTextColor={AppColors.grey}
-                            value={amount}
+                            returnKeyType="done"
                         />
                     </View>
                 </View>
@@ -228,13 +229,14 @@ class RequestView extends Component<Props, State> {
                     <View style={AppStyles.flex1}>
                         <AmountInput
                             ref={this.amountRateInput}
-                            editable={!!currencyRate}
                             testID="amount-rate-input"
+                            value={amountRate}
+                            valueType={AmountValueType.IOU}
+                            editable={!!currencyRate}
                             onChange={this.onRateAmountChange}
-                            returnKeyType="done"
                             style={[styles.amountRateInput]}
                             placeholderTextColor={AppColors.grey}
-                            value={amountRate}
+                            returnKeyType="done"
                         />
                     </View>
                     <View style={styles.currencySymbolTextContainer}>

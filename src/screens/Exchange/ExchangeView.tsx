@@ -46,6 +46,8 @@ import {
     HorizontalLine,
 } from '@components/General';
 
+import { AmountValueType } from '@components/General/AmountInput';
+
 import Localize from '@locale';
 
 // style
@@ -568,11 +570,11 @@ class ExchangeView extends Component<Props, State> {
                             <View style={AppStyles.flex1}>
                                 <AmountInput
                                     ref={this.amountInput}
-                                    decimalPlaces={direction === 'sell' ? 6 : 8}
+                                    value={amount}
+                                    valueType={direction === 'sell' ? AmountValueType.XRP : AmountValueType.IOU}
                                     onChange={this.onAmountChange}
                                     placeholderTextColor={AppColors.red}
                                     style={styles.fromAmount}
-                                    value={amount}
                                 />
                             </View>
                         </View>
