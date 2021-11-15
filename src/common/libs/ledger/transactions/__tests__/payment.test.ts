@@ -29,6 +29,24 @@ describe('Payment tx', () => {
         });
     });
 
+    it('Should return right parsed values for tx to self with path sets', () => {
+        // @ts-ignore
+        const instance = new Payment(txTemplates.ToSelfWithPath);
+        expect(instance.BalanceChange()).toStrictEqual({
+            received: {
+                action: 'INC',
+                currency: 'XRP',
+                value: '0.999988',
+            },
+            sent: {
+                action: 'DEC',
+                currency: 'USD',
+                issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
+                value: '1.23905437',
+            },
+        });
+    });
+
     it('Should set/get payment fields', () => {
         const instance = new Payment();
 
