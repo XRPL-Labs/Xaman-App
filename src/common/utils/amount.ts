@@ -92,7 +92,7 @@ const NormalizeAmount = (amount: number): number => {
  * @returns normalized XRPL currency code
  */
 const NormalizeCurrencyCode = (currencyCode: string): string => {
-    if (!currencyCode) return '';
+    if (!currencyCode || typeof currencyCode !== 'string') return '';
 
     // Native XRP
     if (currencyCode === 'XRP') {
@@ -100,7 +100,7 @@ const NormalizeCurrencyCode = (currencyCode: string): string => {
     }
 
     // IOU claims as XRP which consider as fake XRP
-    if (currencyCode === 'xrp') {
+    if (currencyCode.toLowerCase() === 'xrp') {
         return 'FakeXRP';
     }
 
