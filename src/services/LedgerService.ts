@@ -179,7 +179,7 @@ class LedgerService {
         return this.getAccountLines(account, { peer: peer.issuer, marker })
             .then((resp) => {
                 const { lines, marker: _marker } = resp;
-                if (_marker) {
+                if (_marker && _marker !== marker) {
                     return this.getAccountLine(account, peer, _marker, lines.concat(combined));
                 }
                 return find(lines.concat(combined), { account: peer.issuer, currency: peer.currency });
