@@ -119,15 +119,11 @@ class PaymentTemplate extends Component<Props, State> {
         this.setState({ isLoadingIssuerFee: true, shouldShowIssuerFee: true });
 
         // get transfer rate from issuer account
-        LedgerService.getAccountInfo(transaction.Amount?.issuer || transaction.SendMax?.issuer)
-            .then((issuerAccountInfo: any) => {
-                if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
-                    const { TransferRate } = issuerAccountInfo.account_data;
-
-                    const fee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
-
+        LedgerService.getAccountTransferRate(transaction.Amount?.issuer || transaction.SendMax?.issuer)
+            .then((issuerFee) => {
+                if (issuerFee) {
                     this.setState({
-                        issuerFee: fee,
+                        issuerFee,
                     });
                 }
             })

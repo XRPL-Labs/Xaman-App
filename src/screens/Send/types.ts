@@ -28,6 +28,8 @@ export interface State {
     currency: TrustLineSchema | string;
     sendingNFT: boolean;
     amount: string;
+    fee: string;
+    issuerFee: number;
     payment: Payment;
     scanResult: XrplDestination;
     coreSettings: CoreSchema;
@@ -41,6 +43,8 @@ export interface ContextProps extends State {
     setDestination: (destination: Destination) => void;
     setDestinationInfo: (info: any) => void;
     setScanResult: (result: XrplDestination) => void;
+    setIssuerFee: (issuerFee: number) => void;
+    setFee: (fee: string) => void;
     goNext: () => void;
     goBack: () => void;
 }

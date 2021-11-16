@@ -47,6 +47,7 @@ export interface State {
     confirmedDestinationTag: number;
     destinationTagInputVisible: boolean;
     currencyRate: any;
+    canScroll: boolean;
 }
 
 /* Component ==================================================================== */
@@ -63,6 +64,7 @@ class SummaryStep extends Component<Props, State> {
             confirmedDestinationTag: undefined,
             destinationTagInputVisible: false,
             currencyRate: undefined,
+            canScroll: true,
         };
     }
 
@@ -260,6 +262,14 @@ class SummaryStep extends Component<Props, State> {
         return undefined;
     };
 
+    toggleCanScroll = () => {
+        const { canScroll } = this.state;
+
+        this.setState({
+            canScroll: !canScroll,
+        });
+    };
+
     renderCurrencyItem = (item: any) => {
         const { source } = this.context;
 
@@ -329,14 +339,15 @@ class SummaryStep extends Component<Props, State> {
     };
 
     render() {
-        const { source, amount, destination, currency, isLoading } = this.context;
-        const { destinationTagInputVisible } = this.state;
+        const { source, amount, destination, currency, fee, issuerFee, isLoading } = this.context;
+        const { destinationTagInputVisible, canScroll } = this.state;
 
         return (
             <View testID="send-summary-view" style={[styles.container]}>
                 <KeyboardAwareScrollView
                     style={[AppStyles.flex1, AppStyles.stretchSelf]}
                     enabled={!destinationTagInputVisible}
+                    scrollEnabled={canScroll}
                 >
                     <View style={[styles.rowItem, styles.rowItemGrey]}>
                         <View style={[styles.rowTitle]}>
@@ -410,7 +421,6 @@ class SummaryStep extends Component<Props, State> {
                             </Text>
                         </View>
                         <Spacer size={15} />
-
                         <View style={[styles.rowTitle]}>{this.renderCurrencyItem(currency)}</View>
                     </View>
 
@@ -426,6 +436,32 @@ class SummaryStep extends Component<Props, State> {
                         <AmountText value={amount} style={[styles.amountInput]} />
 
                         {this.renderAmountRate()}
+                    </View>
+
+                    {/* Fee */}
+                    <View style={[styles.rowItem, styles.rowItemMulti]}>
+                        <View style={[AppStyles.flex1]}>
+                            <View style={[styles.rowTitle]}>
+                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                    {Localize.t('global.fee')}
+                                </Text>
+                            </View>
+                            <View style={styles.feeContainer}>
+                                <Text style={[styles.feeText]}>{fee} XRP</Text>
+                            </View>
+                        </View>
+                        {issuerFee && (
+                            <View style={[AppStyles.flex1]}>
+                                <View style={[styles.rowTitle]}>
+                                    <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                        {Localize.t('global.issuerFee')}
+                                    </Text>
+                                </View>
+                                <View style={styles.feeContainer}>
+                                    <Text style={[styles.feeText]}>{issuerFee} %</Text>
+                                </View>
+                            </View>
+                        )}
                     </View>
 
                     {/* Memo */}
@@ -447,18 +483,21 @@ class SummaryStep extends Component<Props, State> {
                             numberOfLines={1}
                         />
                     </View>
+
+                    <Footer safeArea>
+                        <SwipeButton
+                            color={this.getSwipeButtonColor()}
+                            label={Localize.t('global.slideToSend')}
+                            accessibilityLabel={Localize.t('global.send')}
+                            onSwipeSuccess={this.goNext}
+                            isLoading={isLoading}
+                            shouldResetAfterSuccess
+                            onPanResponderGrant={this.toggleCanScroll}
+                            onPanResponderRelease={this.toggleCanScroll}
+                        />
+                    </Footer>
                 </KeyboardAwareScrollView>
                 {/* Bottom Bar */}
-                <Footer safeArea>
-                    <SwipeButton
-                        color={this.getSwipeButtonColor()}
-                        label={Localize.t('global.slideToSend')}
-                        accessibilityLabel={Localize.t('global.send')}
-                        onSwipeSuccess={this.goNext}
-                        isLoading={isLoading}
-                        shouldResetAfterSuccess
-                    />
-                </Footer>
             </View>
         );
     }

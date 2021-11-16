@@ -53,9 +53,6 @@ describe('Payment tx', () => {
         instance.InvoiceID = '123';
         expect(instance.InvoiceID).toBe('123');
 
-        instance.TransferRate = 1002000000;
-        expect(instance.TransferRate).toBe(0.2);
-
         // amount
         // @ts-ignore
         instance.Amount = '85.5321';

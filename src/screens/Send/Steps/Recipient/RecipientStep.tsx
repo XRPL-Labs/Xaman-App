@@ -16,6 +16,8 @@ import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
+import { Amount } from '@common/libs/ledger/parser/common';
+
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { NormalizeDestination } from '@common/utils/codec';
 
@@ -323,7 +325,7 @@ class RecipientStep extends Component<Props, State> {
     };
 
     showEnterDestinationTag = () => {
-        const { setDestination, destination, goNext } = this.context;
+        const { setDestination, destination } = this.context;
 
         if (!destination) {
             return;
@@ -335,7 +337,7 @@ class RecipientStep extends Component<Props, State> {
             onFinish: (destinationTag: string) => {
                 Object.assign(destination, { tag: destinationTag });
                 setDestination(destination);
-                goNext();
+                this.goNext();
             },
             onScannerRead: ({ tag }: { tag: number }) => {
                 Object.assign(destination, { tag: String(tag) });
@@ -368,13 +370,13 @@ class RecipientStep extends Component<Props, State> {
     };
 
     checkAndNext = async () => {
-        const { setDestinationInfo, amount, currency, destination, source, goNext } = this.context;
-
-        this.setState({
-            isLoading: true,
-        });
+        const { setDestinationInfo, amount, currency, destination, source } = this.context;
 
         try {
+            this.setState({
+                isLoading: true,
+            });
+
             // check for same destination as source
             if (destination.address === source.address) {
                 Alert.alert(Localize.t('global.error'), Localize.t('send.sourceAndDestinationCannotBeSame'));
@@ -455,7 +457,7 @@ class RecipientStep extends Component<Props, State> {
                             },
                             {
                                 text: Localize.t('global.continue'),
-                                onPress: goNext,
+                                onPress: this.goNext,
                                 type: 'continue',
                                 light: false,
                             },
@@ -525,7 +527,7 @@ class RecipientStep extends Component<Props, State> {
                         },
                         {
                             text: Localize.t('global.continue'),
-                            onPress: goNext,
+                            onPress: this.goNext,
                             type: 'continue',
                             light: true,
                         },
@@ -539,7 +541,7 @@ class RecipientStep extends Component<Props, State> {
             if (destinationInfo.risk === 'CONFIRMED') {
                 Navigator.showOverlay(AppScreens.Overlay.FlaggedDestination, {
                     destination: destination.address,
-                    onContinue: goNext,
+                    onContinue: this.goNext,
                     onDismissed: this.resetResult,
                 });
 
@@ -561,7 +563,7 @@ class RecipientStep extends Component<Props, State> {
                         },
                         {
                             text: Localize.t('global.continue'),
-                            onPress: goNext,
+                            onPress: this.goNext,
                             type: 'continue',
                             light: true,
                         },
@@ -587,7 +589,7 @@ class RecipientStep extends Component<Props, State> {
         }
 
         // go to the next step if everything was fine
-        goNext();
+        this.goNext();
     };
 
     onScannerRead = (content: any) => {
@@ -595,6 +597,36 @@ class RecipientStep extends Component<Props, State> {
             this.doAccountLookUp({ to: content.payId });
         } else {
             this.doAccountLookUp(content);
+        }
+    };
+
+    goNext = async () => {
+        const { goNext, setFee, setIssuerFee, currency, payment } = this.context;
+
+        try {
+            this.setState({
+                isLoading: true,
+            });
+
+            // sending IOU
+            if (typeof currency !== 'string') {
+                // fetching/applying issuer fee from network
+                const issuerFee = await LedgerService.getAccountTransferRate(currency.currency.issuer);
+                if (issuerFee) {
+                    setIssuerFee(issuerFee);
+                }
+            }
+
+            // calculate and persist the transaction fee
+            const { Fee: BaseFee } = LedgerService.getLedgerStatus();
+            const fee = new Amount(payment.calculateFee(BaseFee)).dropsToXrp();
+            setFee(fee);
+
+            // move to summary step
+            goNext();
+        } catch (e) {
+            this.setState({ isLoading: false });
+            Toast(Localize.t('send.unableToSetFeesPleaseTryAgain'));
         }
     };
 

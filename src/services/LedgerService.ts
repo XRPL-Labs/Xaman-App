@@ -190,20 +190,21 @@ class LedgerService {
     };
 
     /**
-     * Get account transfer rate
+     * Get account transfer rate on percent format
      */
-    getAccountTransferRate = (account: string): any => {
+    getAccountTransferRate = (account: string): Promise<number> => {
         return new Promise((resolve, reject) => {
             return this.getAccountInfo(account)
                 .then((issuerAccountInfo: any) => {
                     if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
                         const { TransferRate } = issuerAccountInfo.account_data;
-                        return resolve(TransferRate);
+                        const transferFee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
+                        return resolve(transferFee);
                     }
                     return resolve(0);
                 })
                 .catch(() => {
-                    return reject(new Error('Unable to fetch issuer transfer rate!'));
+                    return reject(new Error('Unable to fetch account transfer rate!'));
                 });
         });
     };

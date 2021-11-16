@@ -74,10 +74,10 @@ class BaseTransaction {
             // just for known tx types
             if (this.Type) {
                 if (isUndefined(this.Fee)) {
-                    const { Fee } = LedgerService.getLedgerStatus();
+                    const { Fee: netFee } = LedgerService.getLedgerStatus();
 
-                    if (Fee) {
-                        this.Fee = new Amount(this.calculateFee(Fee)).dropsToXrp();
+                    if (netFee) {
+                        this.Fee = new Amount(this.calculateFee(netFee)).dropsToXrp();
                     } else {
                         throw new Error('Unable to set transaction Fee, check you are connected to the internet.');
                     }

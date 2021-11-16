@@ -155,15 +155,6 @@ class Payment extends BaseTransaction {
         }
     }
 
-    set TransferRate(rate: number) {
-        const ratePercent = new BigNumber(rate).dividedBy(1000000).minus(1000).dividedBy(10);
-        set(this, ['tx', 'TransferRate'], ratePercent.toNumber());
-    }
-
-    get TransferRate(): number {
-        return get(this, 'tx.TransferRate', 0);
-    }
-
     get SendMax(): AmountType {
         const sendMax = get(this, ['tx', 'SendMax'], undefined);
 
