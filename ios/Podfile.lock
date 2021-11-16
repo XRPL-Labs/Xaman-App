@@ -419,10 +419,10 @@ PODS:
     - RNFBApp
   - RNKeychain (4.0.5):
     - React
-  - RNTangemSdk (2.0.2):
+  - RNTangemSdk (2.0.3):
     - React
-    - TangemSdk (= 3.1.3)
-  - TangemSdk (3.1.3)
+    - TangemSdk (= 3.1.4)
+  - TangemSdk (3.1.4)
   - VeriffSDK (4.12.0)
   - Yoga (1.14.0)
 
@@ -654,8 +654,8 @@ SPEC CHECKSUMS:
   RNFBCrashlytics: 1b32d35f44bacdeee49c522585037d2ba32e074e
   RNFBMessaging: dd0bd7d837b7b6b8e881248a2639af5dc36b28ef
   RNKeychain: 840f8e6f13be0576202aefcdffd26a4f54bfe7b5
-  RNTangemSdk: 838ab7a8b99a6bcc624a894fea05880aad9bf7db
-  TangemSdk: 1a5c49cb7e6a5fda603e938727594b99d1ee5e3a
+  RNTangemSdk: 19da56ea0b6c167971576ac737a5f9021ad6452e
+  TangemSdk: ef514f64ce20c021dca9679659e035c8afe40caa
   VeriffSDK: 4e8f87832aaa57f178d555c416110995e81d3882
   Yoga: 2b4a01651f42a32f82e6cef3830a3ba48088237f
 
