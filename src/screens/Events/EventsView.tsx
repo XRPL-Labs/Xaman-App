@@ -288,7 +288,7 @@ class EventsView extends Component<Props, State> {
                 });
             }
 
-            return orderBy(dataSource, ['title']);
+            return dataSource;
         }
         if (sectionIndex === 2) {
             items = [...pendingRequests];
