@@ -1,5 +1,3 @@
-import { isEmpty } from 'lodash';
-
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
@@ -46,14 +44,10 @@ class SignerListSetTemplate extends Component<Props, State> {
         const signers = [] as any;
 
         await Promise.all(
-            transaction.SignerEntries.map(async (e) => {
-                const signer = e;
-                // fetch destination details
-                await getAccountName(e.account)
+            transaction.SignerEntries.map(async (signer) => {
+                await getAccountName(signer.account)
                     .then((res: any) => {
-                        if (!isEmpty(res)) {
-                            signers.push(Object.assign(signer, res));
-                        }
+                        signers.push(Object.assign(signer, res));
                     })
                     .catch(() => {
                         signers.push(signer);
@@ -86,8 +80,7 @@ class SignerListSetTemplate extends Component<Props, State> {
                 ) : (
                     signers.map((e) => {
                         return (
-                            // eslint-disable-next-line react-native/no-inline-styles
-                            <View style={[styles.contentBox, styles.addressContainer, { paddingLeft: 18 }]}>
+                            <View key={`${e.account}`} style={[styles.contentBox, styles.addressContainer]}>
                                 {e.name && (
                                     <>
                                         <Text selectable style={styles.address}>
