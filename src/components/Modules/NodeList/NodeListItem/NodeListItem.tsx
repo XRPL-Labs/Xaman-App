@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, Animated, TouchableOpacity } from 'react-native';
+import { View, Text, Animated } from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
-import { Icon } from '@components/General';
+import { TouchableDebounce, Icon } from '@components/General';
 
 import { AppStyles, AppSizes } from '@theme';
 
@@ -70,9 +70,9 @@ class NodeListItem extends Component<Props, State> {
                             },
                         ]}
                     >
-                        <TouchableOpacity onPress={this.onRemovePress}>
+                        <TouchableDebounce onPress={this.onRemovePress}>
                             <Icon name="IconTrash" size={28} style={AppStyles.imgColorWhite} />
-                        </TouchableOpacity>
+                        </TouchableDebounce>
                     </Animated.View>
                 </View>
 
@@ -88,7 +88,7 @@ class NodeListItem extends Component<Props, State> {
                     animatedValueX={this.deltaX}
                     animatedValueY={this.deltaY}
                 >
-                    <TouchableOpacity activeOpacity={0.8} testID={`node-${item.url}`} onPress={this.onPress}>
+                    <TouchableDebounce activeOpacity={0.8} testID={`node-${item.url}`} onPress={this.onPress}>
                         <View style={[styles.row]}>
                             <View style={[AppStyles.row, AppStyles.flex6, AppStyles.centerAligned]}>
                                 <Text style={styles.url}>{item.url}</Text>
@@ -99,7 +99,7 @@ class NodeListItem extends Component<Props, State> {
                                 </View>
                             )}
                         </View>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
                 </Interactable.View>
             </View>
         );

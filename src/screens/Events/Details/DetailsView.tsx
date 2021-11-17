@@ -14,7 +14,6 @@ import {
     Linking,
     Alert,
     InteractionManager,
-    TouchableOpacity,
     Share,
     ImageBackground,
 } from 'react-native';
@@ -36,7 +35,17 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { Header, Button, Badge, Spacer, Icon, ReadMore, AmountText, LoadingIndicator } from '@components/General';
+import {
+    TouchableDebounce,
+    Header,
+    Button,
+    Badge,
+    Spacer,
+    Icon,
+    ReadMore,
+    AmountText,
+    LoadingIndicator,
+} from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import { GetTransactionLink } from '@common/utils/explorer';
@@ -1154,13 +1163,13 @@ class TransactionDetailsView extends Component<Props, State> {
                         })}
                     </ReadMore>
                 ) : (
-                    <TouchableOpacity
+                    <TouchableDebounce
                         onPress={() => {
                             this.setState({ showMemo: true });
                         }}
                     >
                         <Text style={[styles.contentText, AppStyles.colorRed]}>{Localize.t('events.showMemo')}</Text>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
                 )}
             </View>
         );

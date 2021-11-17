@@ -3,12 +3,12 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Text, ScrollView } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-import { Header, Icon } from '@components/General';
+import { TouchableDebounce, Header, Icon } from '@components/General';
 
 import Localize from '@locale';
 
@@ -40,7 +40,7 @@ class SettingsView extends Component<Props, State> {
 
     renderRow = (icon: any, label: string, screen: string, testID: string) => {
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 testID={testID}
                 onPress={() => {
                     this.onRowPress(screen);
@@ -59,7 +59,7 @@ class SettingsView extends Component<Props, State> {
                         <Icon size={25} name="IconChevronRight" style={styles.rowIcon} />
                     </View>
                 </View>
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     };
 

@@ -5,14 +5,14 @@ import { has, flatMap, isFunction, isEmpty } from 'lodash';
 import Fuse from 'fuse.js';
 
 import React, { Component } from 'react';
-import { View, Text, SectionList, TouchableOpacity, InteractionManager } from 'react-native';
+import { View, Text, SectionList, RefreshControl, InteractionManager } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-import { BackendService } from '@services';
+import { BackendService, StyleService } from '@services';
 
-import { Header, SearchBar, Icon, Button, Spacer, LoadingIndicator } from '@components/General';
+import { TouchableDebounce, Header, SearchBar, Icon, Button, Spacer } from '@components/General';
 
 import Localize from '@locale';
 // style
@@ -48,8 +48,8 @@ class CurrencyPickerModal extends Component<Props, State> {
         this.state = {
             isLoading: true,
             error: false,
-            currencies: undefined,
-            dataSource: undefined,
+            currencies: [],
+            dataSource: [],
         };
     }
 
@@ -141,7 +141,7 @@ class CurrencyPickerModal extends Component<Props, State> {
         const { selected } = this.props;
 
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 testID={`${item.code}`}
                 key={index}
                 style={styles.rowContainer}
@@ -159,7 +159,7 @@ class CurrencyPickerModal extends Component<Props, State> {
                         <Icon size={20} style={styles.checkIcon} name="IconCheck" />
                     </View>
                 )}
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     };
 
@@ -172,6 +172,10 @@ class CurrencyPickerModal extends Component<Props, State> {
     };
 
     renderListEmptyComponent = () => {
+        const { isLoading } = this.state;
+
+        if (isLoading) return null;
+
         return (
             <View style={[AppStyles.centerAligned, AppStyles.paddingTopSml]}>
                 <Text style={[AppStyles.p]}>{Localize.t('global.noResultFound')}</Text>
@@ -221,8 +225,6 @@ class CurrencyPickerModal extends Component<Props, State> {
                             label={Localize.t('global.tryAgain')}
                         />
                     </View>
-                ) : isLoading ? (
-                    <LoadingIndicator style={styles.container} />
                 ) : (
                     <SectionList
                         style={[AppStyles.paddingHorizontalSml]}
@@ -232,6 +234,14 @@ class CurrencyPickerModal extends Component<Props, State> {
                         renderSectionHeader={this.renderSectionHeader}
                         keyExtractor={(item, index) => `${index}`}
                         ListEmptyComponent={this.renderListEmptyComponent}
+                        windowSize={30}
+                        removeClippedSubviews
+                        maxToRenderPerBatch={60}
+                        onRefresh={this.fetchCurrencies}
+                        refreshControl={
+                            <RefreshControl refreshing={isLoading} tintColor={StyleService.value('$contrast')} />
+                        }
+                        indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
                     />
                 )}
             </View>

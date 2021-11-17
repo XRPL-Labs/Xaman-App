@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { isEmpty, isEqual, debounce } from 'lodash';
+import { View, Text } from 'react-native';
+import { isEmpty, isEqual } from 'lodash';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import { AccountSchema } from '@store/schemas/latest';
@@ -12,7 +12,7 @@ import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
 
-import { Icon, Avatar, AmountText } from '@components/General';
+import { TouchableDebounce, Icon, Avatar, AmountText } from '@components/General';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -143,12 +143,10 @@ class LedgerObjectTemplate extends Component<Props, State> {
             .catch(() => {});
     };
 
-    debouncedOnPress = () => {
+    onPress = () => {
         const { item, account } = this.props;
         Navigator.push(AppScreens.Transaction.Details, { tx: item, account });
     };
-
-    onPress = debounce(this.debouncedOnPress, 300, { leading: true, trailing: false });
 
     getIcon = () => {
         const { item } = this.props;
@@ -257,7 +255,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
 
     render() {
         return (
-            <TouchableOpacity onPress={this.onPress} activeOpacity={0.8} style={styles.container}>
+            <TouchableDebounce onPress={this.onPress} activeOpacity={0.8} style={styles.container}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
                 <View style={[AppStyles.flex3, AppStyles.centerContent]}>
                     <Text style={[styles.label]} numberOfLines={1}>
@@ -272,7 +270,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
                 <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>
                     {this.renderRightPanel()}
                 </View>
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     }
 }

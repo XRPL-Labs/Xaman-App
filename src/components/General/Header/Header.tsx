@@ -1,9 +1,9 @@
-import debounce from 'lodash/debounce';
 import React, { PureComponent } from 'react';
-import { Platform, Text, TextStyle, TouchableOpacity, View, ViewStyle, ImageStyle } from 'react-native';
+import { Platform, Text, TextStyle, View, ViewStyle, ImageStyle } from 'react-native';
 
 import { Images } from '@common/helpers/images';
-import { Icon } from '@components/General/Icon';
+
+import { TouchableDebounce, Icon } from '@components/General';
 
 import { AppStyles, AppSizes } from '@theme';
 
@@ -67,14 +67,14 @@ const Children = ({
         return React.createElement(children.render);
     }
 
-    const debouncedOnPress = () => {
-        children.onPress && children.onPress();
+    const onPress = () => {
+        if (typeof children.onPress === 'function') {
+            children.onPress();
+        }
     };
 
-    const onPress = debounce(debouncedOnPress, 300, { leading: true, trailing: false });
-
     return (
-        <TouchableOpacity
+        <TouchableDebounce
             testID={children.testID}
             style={[
                 {
@@ -114,7 +114,7 @@ const Children = ({
                     style={[styles.iconStyle, children.iconStyle]}
                 />
             )}
-        </TouchableOpacity>
+        </TouchableDebounce>
     );
 };
 

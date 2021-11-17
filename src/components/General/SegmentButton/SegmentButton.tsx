@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Text, View, ViewStyle } from 'react-native';
+
+import { TouchableDebounce } from '@components/General';
 
 import styles from './styles';
 /* Types ==================================================================== */
@@ -47,7 +49,7 @@ class SegmentButton extends PureComponent<Props, State> {
         return (
             <View style={[styles.container, containerStyle]}>
                 {buttons.map((button, i) => (
-                    <TouchableOpacity
+                    <TouchableDebounce
                         activeOpacity={0.6}
                         onPress={() => {
                             this.onButtonPress(i);
@@ -63,7 +65,7 @@ class SegmentButton extends PureComponent<Props, State> {
                                 {button}
                             </Text>
                         </View>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
                 ))}
             </View>
         );

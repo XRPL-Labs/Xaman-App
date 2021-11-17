@@ -6,7 +6,7 @@ import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Keyboard, Share, InteractionManager, Platform } from 'react-native';
+import { View, Text, Keyboard, Share, InteractionManager, Platform } from 'react-native';
 
 import { BackendService } from '@services';
 import { Toast } from '@common/helpers/interface';
@@ -18,7 +18,15 @@ import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 
 // components
-import { Header, AmountInput, QRCode, CheckBox, HorizontalLine, KeyboardAwareScrollView } from '@components/General';
+import {
+    TouchableDebounce,
+    Header,
+    AmountInput,
+    QRCode,
+    CheckBox,
+    HorizontalLine,
+    KeyboardAwareScrollView,
+} from '@components/General';
 import { AmountValueType } from '@components/General/AmountInput';
 import { AccountPicker } from '@components/Modules';
 
@@ -290,7 +298,7 @@ class RequestView extends Component<Props, State> {
 
                     {/* Amount */}
                     <View style={[styles.rowItem]}>
-                        <TouchableOpacity
+                        <TouchableDebounce
                             activeOpacity={0.8}
                             style={[AppStyles.row, styles.rowTitle]}
                             onPress={this.toggleUseAmount}
@@ -303,7 +311,7 @@ class RequestView extends Component<Props, State> {
                             <View style={AppStyles.flex1}>
                                 <CheckBox checked={withAmount} onPress={this.toggleUseAmount} />
                             </View>
-                        </TouchableOpacity>
+                        </TouchableDebounce>
 
                         {this.renderAmountInput()}
                     </View>

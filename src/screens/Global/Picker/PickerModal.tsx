@@ -4,12 +4,12 @@
 
 import { isFunction } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
-import { Header, Icon } from '@components/General';
+import { TouchableDebounce, Header, Icon } from '@components/General';
 
 // style
 import { AppStyles } from '@theme';
@@ -50,7 +50,7 @@ class PickerModal extends Component<Props, State> {
         const { selected } = this.props;
 
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 testID={`${item.value}-item`}
                 key={index}
                 style={styles.rowContainer}
@@ -66,7 +66,7 @@ class PickerModal extends Component<Props, State> {
                         <Icon size={20} style={styles.checkIcon} name="IconCheck" />
                     </View>
                 )}
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     };
 

@@ -3,7 +3,7 @@
  */
 
 import React, { Component, Fragment } from 'react';
-import { Alert, View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { Alert, View, Text, ScrollView } from 'react-native';
 
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
@@ -16,7 +16,7 @@ import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
 
-import { Header, Spacer, Icon, Button, Switch } from '@components/General';
+import { TouchableDebounce, Header, Spacer, Icon, Button, Switch } from '@components/General';
 
 import Localize from '@locale';
 
@@ -275,7 +275,7 @@ class AccountSettingsView extends Component<Props, State> {
                         </View>
 
                         {/* Account Label */}
-                        <TouchableOpacity
+                        <TouchableDebounce
                             testID="account-label-button"
                             style={styles.row}
                             onPress={this.accountLabelPressed}
@@ -290,11 +290,11 @@ class AccountSettingsView extends Component<Props, State> {
                                 <Text style={[styles.value]}>{account.label}</Text>
                                 <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                             </View>
-                        </TouchableOpacity>
+                        </TouchableDebounce>
 
                         {/* Account Access Level */}
                         {account.type === AccountTypes.Regular && (
-                            <TouchableOpacity
+                            <TouchableDebounce
                                 testID="account-access-level-button"
                                 style={[styles.row]}
                                 onPress={this.showAccessLevelPicker}
@@ -313,7 +313,7 @@ class AccountSettingsView extends Component<Props, State> {
                                     </Text>
                                     <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                                 </View>
-                            </TouchableOpacity>
+                            </TouchableDebounce>
                         )}
                         {/* <Text style={styles.descriptionText}>{Localize.t('account.passwordOptionDesc')}</Text> */}
                         {account.accessLevel === AccessLevels.Full && (
@@ -337,7 +337,7 @@ class AccountSettingsView extends Component<Props, State> {
 
                                 {/* Change passphrase */}
                                 {account.encryptionLevel === EncryptionLevels.Passphrase && (
-                                    <TouchableOpacity
+                                    <TouchableDebounce
                                         testID="change-password-button"
                                         style={styles.row}
                                         onPress={this.showChangePassphrase}
@@ -345,13 +345,13 @@ class AccountSettingsView extends Component<Props, State> {
                                         <View style={[AppStyles.flex3]}>
                                             <Text style={styles.label}>{Localize.t('account.changePassword')}</Text>
                                         </View>
-                                    </TouchableOpacity>
+                                    </TouchableDebounce>
                                 )}
                             </Fragment>
                         )}
 
                         {account.type === AccountTypes.Tangem && (
-                            <TouchableOpacity style={[styles.row]} onPress={this.showChangeTangemSecurity}>
+                            <TouchableDebounce style={[styles.row]} onPress={this.showChangeTangemSecurity}>
                                 <View style={[AppStyles.flex3]}>
                                     <Text numberOfLines={1} style={styles.label}>
                                         {Localize.t('account.cardEnforcedSecurity')}
@@ -368,7 +368,7 @@ class AccountSettingsView extends Component<Props, State> {
                                     </Text>
                                 </View>
                                 <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
-                            </TouchableOpacity>
+                            </TouchableDebounce>
                         )}
 
                         <View style={styles.row}>

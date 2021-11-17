@@ -2,7 +2,7 @@
  * home actions overlay
  */
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, InteractionManager } from 'react-native';
+import { View, Text, Image, InteractionManager } from 'react-native';
 
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
@@ -16,7 +16,7 @@ import { BackendService, StyleService } from '@services';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Spacer, LoadingIndicator, ActionPanel } from '@components/General';
+import { TouchableDebounce, Button, Spacer, LoadingIndicator, ActionPanel } from '@components/General';
 
 import Localize from '@locale';
 
@@ -177,7 +177,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                     <View style={[AppStyles.row, AppStyles.paddingVertical]}>
                         {apps.map((app: any, index: number) => {
                             return (
-                                <TouchableOpacity
+                                <TouchableDebounce
                                     activeOpacity={0.8}
                                     style={[AppStyles.flex1, AppStyles.centerAligned]}
                                     onPress={() => {
@@ -190,7 +190,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                                     <Text numberOfLines={2} style={styles.appTitle}>
                                         {app.title}
                                     </Text>
-                                </TouchableOpacity>
+                                </TouchableDebounce>
                             );
                         })}
                     </View>

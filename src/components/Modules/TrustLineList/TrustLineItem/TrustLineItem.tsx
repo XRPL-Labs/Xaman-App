@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, Image } from 'react-native';
 
-import { AmountText, Icon, Avatar } from '@components/General';
+import { TouchableDebounce, AmountText, Icon, Avatar } from '@components/General';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 
@@ -101,7 +101,7 @@ class TrustLineItem extends PureComponent<Props> {
         const { line } = this.props;
 
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 testID={`line-${line.currency.issuer}`}
                 onPress={this.onPress}
                 activeOpacity={0.8}
@@ -129,7 +129,7 @@ class TrustLineItem extends PureComponent<Props> {
                 >
                     {this.renderBalance()}
                 </View>
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     }
 }

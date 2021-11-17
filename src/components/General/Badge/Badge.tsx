@@ -1,7 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 
-import { TouchableOpacity, Text, ViewStyle } from 'react-native';
+import { Text, ViewStyle } from 'react-native';
+
+import { TouchableDebounce } from '@components/General';
 
 import Localize from '@locale';
 
@@ -81,14 +83,14 @@ export default class Badge extends PureComponent<Props> {
         const { testID, type, onPress, containerStyle } = this.props;
 
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 activeOpacity={onPress ? 0.8 : 1}
                 style={[styles.container, { backgroundColor: COLORS[type] }, containerStyle]}
                 onPress={this.onPress}
                 testID={testID}
             >
                 {this.renderInnerContent()}
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     }
 }

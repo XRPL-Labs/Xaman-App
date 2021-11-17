@@ -5,7 +5,9 @@
  *
  */
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
+import { View, Text } from 'react-native';
+
+import { TouchableDebounce } from '@components/General';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -33,7 +35,7 @@ class RadioButton extends Component<Props> {
     render() {
         const { checked, label, labelSmall, description, testID } = this.props;
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 testID={testID}
                 activeOpacity={0.8}
                 onPress={this.onPress}
@@ -67,7 +69,7 @@ class RadioButton extends Component<Props> {
                         </Text>
                     )}
                 </View>
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     }
 }

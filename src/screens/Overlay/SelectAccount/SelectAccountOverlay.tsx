@@ -4,7 +4,7 @@
 
 import { sortBy } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 
 import { AccountSchema } from '@store/schemas/latest';
 
@@ -13,7 +13,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, ActionPanel } from '@components/General';
+import { TouchableDebounce, Button, ActionPanel } from '@components/General';
 
 import Localize from '@locale';
 
@@ -114,7 +114,7 @@ class SelectAccountOverlay extends Component<Props, State> {
         const isSelected = account.address === selected.address;
 
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 key={account.address}
                 onPress={() => {
                     this.onSelect(account);
@@ -150,7 +150,7 @@ class SelectAccountOverlay extends Component<Props, State> {
                         </View>
                     </View>
                 </View>
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     };
 
