@@ -115,6 +115,15 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
         } as AccountInfoType;
 
         try {
+            // get account risk level
+            const accountRisk = await BackendService.getAccountRisk(address);
+
+            if (has(accountRisk, 'danger')) {
+                assign(info, { risk: accountRisk.danger });
+            } else {
+                return reject();
+            }
+
             const accountInfo = await LedgerService.getAccountInfo(address);
 
             // account doesn't exist no need to check account risk
@@ -122,14 +131,6 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                 if (get(accountInfo, 'error') === 'actNotFound') {
                     return resolve(assign(info, { exist: false }));
                 }
-                return reject();
-            }
-
-            const accountRisk = await BackendService.getAccountRisk(address);
-
-            if (has(accountRisk, 'danger')) {
-                assign(info, { risk: accountRisk.danger });
-            } else {
                 return reject();
             }
 
