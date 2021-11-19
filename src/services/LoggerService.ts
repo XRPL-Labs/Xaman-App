@@ -67,7 +67,7 @@ class LoggerService {
         } else if (typeof err.toString === 'function') {
             error = err.toString();
         }
-        if (!err) {
+        if (!error) {
             error = ErrorMessages.default;
         }
         return error;
