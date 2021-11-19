@@ -202,14 +202,14 @@ class EventsView extends Component<Props, State> {
                 return resolve([]);
             }
 
-            return LedgerService.getTransactions(account.address, loadMore && lastMarker, 100)
+            return LedgerService.getTransactions(account.address, loadMore && lastMarker, 50)
                 .then((resp) => {
                     const { transactions: txResp, marker } = resp;
                     let canLoadMore = true;
 
-                    // if we got less than 100 transaction, means there is no transaction
+                    // if we got less than 50 transaction, means there is no transaction
                     // also only handle recent 1000 transactions
-                    if (txResp.length < 100 || transactions.length >= 1000) {
+                    if (txResp.length < 50 || transactions.length >= 1000) {
                         canLoadMore = false;
                     }
 

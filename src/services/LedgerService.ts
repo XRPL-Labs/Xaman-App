@@ -227,7 +227,7 @@ class LedgerService {
         const request = {
             command: 'account_tx',
             account,
-            limit: limit || 20,
+            limit: limit || 50,
             binary: false,
         };
         if (marker) {
