@@ -37,9 +37,13 @@ class LoggerService {
     /**
      * record a error in firebase crashlytics
      */
-    recordError = (msg: string, e: any) => {
-        crashlytics().log(msg);
-        crashlytics().recordError(e);
+    recordError = (message: string, exception: any) => {
+        if (message) {
+            crashlytics().log(message);
+        }
+        if (exception) {
+            crashlytics().recordError(exception);
+        }
     };
 
     /**

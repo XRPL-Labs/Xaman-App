@@ -115,7 +115,7 @@ class Application {
             Alert.alert('Error', 'Unexpected error happened');
         }
 
-        // services.LoggerService.recordError('APP RUN ERROR', exception);
+        services.LoggerService.recordError('APP_STARTUP_ERROR', exception);
     };
 
     wipeStorage = () => {
