@@ -19,5 +19,5 @@ export default {
         'Try again later, or wipe XUMM and import your accounts with their secrets again.',
     appAlreadyRunningInDifferentProcess:
         'The secure XUMM datastore could not be opened. ' +
-        'This is usually the case when the OS tried to open multiple instance of XUMM, Please quite and relaunch XUMM.',
+        'This can occur when the OS tries to update XUMM to a new version. Please force quit and relaunch XUMM.',
 };

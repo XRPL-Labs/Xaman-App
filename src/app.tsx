@@ -104,7 +104,7 @@ class Application {
             } else if (message.indexOf('Encrypted interprocess sharing is currently unsupported') > -1) {
                 Alert.alert('Error', ErrorMessages.appAlreadyRunningInDifferentProcess, [
                     {
-                        text: 'Quite',
+                        text: 'Quit',
                         onPress: ExitApp,
                     },
                 ]);
