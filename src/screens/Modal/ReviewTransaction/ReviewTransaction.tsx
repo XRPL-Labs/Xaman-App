@@ -466,13 +466,15 @@ class ReviewTransactionModal extends Component<Props, State> {
         const { payload } = this.props;
         const { transaction, coreSettings } = this.state;
 
+        // in this phase transaction is already signed
+        // check if we need to submit or not and patch the payload
         try {
             // create patch object
             const payloadPatch = {
                 signed_blob: transaction.TxnSignature,
                 tx_id: transaction.Hash,
                 signmethod: transaction.SignMethod,
-                multisigned: payload.isMultiSign() ? transaction.Account.address : '',
+                multisigned: payload.isMultiSign() ? transaction.SignerAccount : '',
             };
 
             // check if we need to submit the payload to the XRP Ledger

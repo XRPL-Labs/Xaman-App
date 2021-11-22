@@ -151,7 +151,7 @@ class BaseTransaction {
                     txJson: this.Json,
                     multiSign,
                     onSign: (signedObject: SignedObjectType) => {
-                        const { id, signedTransaction } = signedObject;
+                        const { id, signedTransaction, signers } = signedObject;
 
                         if (!id || !signedTransaction) {
                             reject(new Error('Unable sign the transaction, please try again!'));
@@ -161,6 +161,10 @@ class BaseTransaction {
                         this.Hash = signedObject.id;
                         this.TxnSignature = signedObject.signedTransaction;
                         this.SignMethod = signedObject.signMethod || 'OTHER';
+
+                        if (Array.isArray(signers) && signers.length > 0) {
+                            [this.SignerAccount] = signers;
+                        }
 
                         resolve(this.TxnSignature);
                     },
