@@ -1,5 +1,6 @@
+import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, InteractionManager } from 'react-native';
 
 import { SignerListSet } from '@common/libs/ledger/transactions';
 
@@ -35,11 +36,18 @@ class SignerListSetTemplate extends Component<Props, State> {
 
     componentDidMount() {
         // fetch the signers details
-        this.fetchSignersDetails();
+        InteractionManager.runAfterInteractions(this.fetchSignersDetails);
     }
 
     fetchSignersDetails = async () => {
         const { transaction } = this.props;
+
+        if (isEmpty(transaction.SignerEntries)) {
+            this.setState({
+                isLoading: false,
+            });
+            return;
+        }
 
         const signers = [] as any;
 
@@ -63,9 +71,49 @@ class SignerListSetTemplate extends Component<Props, State> {
         });
     };
 
-    render() {
+    renderSigners = () => {
         const { transaction } = this.props;
         const { signers, isLoading } = this.state;
+
+        if (isEmpty(transaction.SignerEntries)) {
+            return (
+                <View style={[styles.contentBox]}>
+                    <Text style={styles.value}>{Localize.t('global.empty')}</Text>
+                </View>
+            );
+        }
+
+        if (isLoading) {
+            return <LoadingIndicator />;
+        }
+
+        return signers.map((signer) => {
+            return (
+                <View key={`${signer.account}`} style={[styles.contentBox, styles.addressContainer]}>
+                    {signer.name && (
+                        <>
+                            <Text selectable style={styles.address}>
+                                {signer.name}
+                            </Text>
+                            <Spacer size={5} />
+                        </>
+                    )}
+                    <Text selectable style={styles.address}>
+                        {signer.account}
+                    </Text>
+                    <Spacer size={10} />
+                    <View style={AppStyles.hr} />
+                    <Spacer size={10} />
+                    <Text style={styles.value}>
+                        {Localize.t('global.weight')}: {signer.weight}
+                    </Text>
+                </View>
+            );
+        });
+    };
+
+    render() {
+        const { transaction } = this.props;
 
         return (
             <>
@@ -75,37 +123,11 @@ class SignerListSetTemplate extends Component<Props, State> {
                     </Text>
                 </View>
 
-                {isLoading ? (
-                    <LoadingIndicator />
-                ) : (
-                    signers.map((e) => {
-                        return (
-                            <View key={`${e.account}`} style={[styles.contentBox, styles.addressContainer]}>
-                                {e.name && (
-                                    <>
-                                        <Text selectable style={styles.address}>
-                                            {e.name}
-                                        </Text>
-                                        <Spacer size={5} />
-                                    </>
-                                )}
-                                <Text selectable style={styles.address}>
-                                    {e.account}
-                                </Text>
-                                <Spacer size={10} />
-                                <View style={AppStyles.hr} />
-                                <Spacer size={10} />
-                                <Text style={styles.value}>
-                                    {Localize.t('global.weight')}: {e.weight}
-                                </Text>
-                            </View>
-                        );
-                    })
-                )}
+                {this.renderSigners()}
 
                 <Text style={[styles.label]}>{Localize.t('global.signerQuorum')}</Text>
                 <View style={[styles.contentBox]}>
-                    <Text style={styles.value}>{transaction.SignerQuorum}</Text>
+                    <Text style={styles.value}>{transaction.SignerQuorum || 'NOT PRESENT'}</Text>
                 </View>
             </>
         );
