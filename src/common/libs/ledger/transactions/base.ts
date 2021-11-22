@@ -53,6 +53,7 @@ class BaseTransaction {
             'Flags',
             'Fee',
             'Sequence',
+            'TicketSequence',
             'AccountTxnID',
             'LastLedgerSequence',
             'Signers',
@@ -527,6 +528,14 @@ class BaseTransaction {
 
     set Sequence(sequence: number) {
         set(this, ['tx', 'Sequence'], sequence);
+    }
+
+    get TicketSequence(): number {
+        return get(this, ['tx', 'TicketSequence'], undefined);
+    }
+
+    set TicketSequence(ticketSequence: number) {
+        set(this, ['tx', 'TicketSequence'], ticketSequence);
     }
 
     get LastLedgerSequence(): number {
