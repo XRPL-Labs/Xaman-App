@@ -207,7 +207,7 @@ class AmountText extends Component<Props, State> {
         }
 
         if (normalized.length > 4 && truncateCurrency) {
-            normalized = `${normalized.slice(0, 3)}…`;
+            normalized = `${normalized.slice(0, 4)}…`;
         }
 
         return (
