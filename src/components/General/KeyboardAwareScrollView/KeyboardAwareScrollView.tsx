@@ -75,6 +75,10 @@ class KeyboardAwareScrollView extends PureComponent<Props, State> {
         Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
     }
 
+    public scrollTo = (y: number) => {
+        this.scrollViewRef?.current?.scrollTo({ y });
+    };
+
     measureElement = (element: any): Promise<any> => {
         return new Promise((resolve: any) => {
             element.measureInWindow((x: number, y: number, width: number, height: number) => {
