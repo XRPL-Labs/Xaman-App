@@ -225,7 +225,7 @@ class SummaryStep extends Component<Props, State> {
         }
 
         // check if destination requires the destination tag
-        if (destinationInfo.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
+        if (destinationInfo?.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
             Alert.alert(Localize.t('global.warning'), Localize.t('send.destinationTagIsRequired'));
             return;
         }

@@ -117,8 +117,12 @@ class SendView extends Component<Props, State> {
         this.setState({ issuerFee });
     };
 
-    setDestination = (destination: Destination) => {
-        this.setState({ destination, destinationInfo: undefined });
+    setDestination = (_destination: Destination) => {
+        const { destination, destinationInfo } = this.state;
+        this.setState({
+            destination: _destination,
+            destinationInfo: _destination?.address !== destination?.address ? undefined : destinationInfo,
+        });
     };
 
     setDestinationInfo = (info: any) => {
