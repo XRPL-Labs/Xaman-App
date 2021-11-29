@@ -20,6 +20,7 @@ import {
     AccountLinesResponse,
     GatewayBalancesResponse,
     AccountInfoResponse,
+    AccountObjectsResponse,
 } from '@common/libs/ledger/types';
 
 import { Issuer } from '@common/libs/ledger/parser/types';
@@ -134,22 +135,16 @@ class LedgerService {
     /**
      * Get account objects
      */
-    getAccountObjects = (account: string): any => {
-        return SocketService.send({
+    getAccountObjects = (account: string, options?: any): Promise<AccountObjectsResponse> => {
+        const request = {
             command: 'account_objects',
             account,
             ledger_index: 'validated',
-        });
-    };
-
-    /**
-     * Get Offers from order book
-     */
-    getOffers = (request: any): any => {
-        return SocketService.send({
-            command: 'book_offers',
-            ...request,
-        });
+        };
+        if (typeof options === 'object') {
+            Object.assign(request, options);
+        }
+        return SocketService.send(request);
     };
 
     /**

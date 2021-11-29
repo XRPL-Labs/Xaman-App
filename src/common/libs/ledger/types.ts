@@ -1,4 +1,4 @@
-import { Memo } from './parser/types';
+import { Memo, AmountType } from './parser/types';
 
 /**
  * TX Json Transaction Type
@@ -101,6 +101,22 @@ export type AccountTxResponse = {
     transactions: Array<LedgerTransactionType>;
 };
 
+export interface LedgerRippleState {
+    LedgerEntryType: 'RippleState';
+    Flags: number;
+    Balance: AmountType;
+    LowLimit: AmountType;
+    HighLimit: AmountType;
+    PreviousTxnID: string;
+    PreviousTxnLgrSeq: number;
+    LowNode?: string;
+    HighNode?: string;
+    LowQualityIn?: number;
+    LowQualityOut?: number;
+    HighQualityIn?: number;
+    HighQualityOut?: number;
+}
+
 /**
  * Ledger trustline type
  */
@@ -146,13 +162,24 @@ export interface GatewayBalancesResponse {
     ledger_index?: number;
 }
 
-/**
- * Ledger account_info response
- */
 export interface AccountInfoResponse {
     account_data: AccountRoot;
     signer_lists?: any;
     ledger_current_index?: number;
     ledger_index?: number;
+    validated?: boolean;
+}
+
+/**
+ * Ledger account_objects response
+ */
+export interface AccountObjectsResponse {
+    account: string;
+    account_objects: LedgerRippleState[];
+    ledger_hash?: string;
+    ledger_index?: number;
+    ledger_current_index?: number;
+    limit?: number;
+    marker?: string;
     validated?: boolean;
 }
