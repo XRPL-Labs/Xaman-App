@@ -224,33 +224,6 @@ class CurrencySettingsModal extends Component<Props, State> {
         }
     };
 
-    checkForIssuerState = () => {
-        const { trustLine } = this.props;
-
-        return new Promise<void>((resolve, reject) => {
-            LedgerService.getAccountInfo(trustLine.currency.issuer)
-                .then((issuerAccountInfo: any) => {
-                    const issuerFlags = new Flag(
-                        'Account',
-                        get(issuerAccountInfo, ['account_data', 'Flags'], 0),
-                    ).parse();
-
-                    if (
-                        trustLine.limit_peer > 0 ||
-                        (!trustLine.no_ripple_peer && !issuerFlags.defaultRipple) ||
-                        (trustLine.no_ripple_peer && issuerFlags.defaultRipple)
-                    ) {
-                        return reject();
-                    }
-
-                    return resolve();
-                })
-                .catch(() => {
-                    return reject();
-                });
-        });
-    };
-
     removeTrustLine = async () => {
         const { trustLine, account } = this.props;
         const { latestLineBalance } = this.state;
@@ -348,17 +321,6 @@ class CurrencySettingsModal extends Component<Props, State> {
         this.setState({
             isRemoving: true,
         });
-
-        try {
-            await this.checkForIssuerState().finally(() => {
-                this.setState({
-                    isRemoving: false,
-                });
-            });
-        } catch {
-            Alert.alert(Localize.t('global.error'), Localize.t('asset.unableToRemoveAssetNotInDefaultState'));
-            return;
-        }
 
         Prompt(
             Localize.t('global.warning'),
