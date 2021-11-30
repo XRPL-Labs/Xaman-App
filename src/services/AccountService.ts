@@ -239,7 +239,7 @@ class AccountService extends EventEmitter {
             });
 
             const filtered = accountLinesFormatted.filter((l) => {
-                if (l.limit === '0' && l.balance === '0') {
+                if (l.limit === '0' && (l.balance === '0' || l.balance.startsWith('-'))) {
                     return false;
                 }
                 return true;
