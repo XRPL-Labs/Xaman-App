@@ -523,16 +523,42 @@ class RecipientStep extends Component<Props, State> {
                 }
             }
 
-            // check if recipient have same trustline for sending IOU
+            // check if recipient have proper trustline for receiving this IOU
+            // ignore if the recipient is the issuer
             // IMMEDIATE REJECT
-            if (typeof currency !== 'string') {
+            if (typeof currency !== 'string' && currency.currency.issuer !== destination.address) {
                 const destinationLine = await LedgerService.getAccountLine(destination.address, currency.currency);
 
-                if (!destinationLine && currency.currency.issuer !== destination.address) {
+                // recipient does not have the proper trustline
+                if (
+                    !destinationLine ||
+                    (Number(destinationLine.limit) === 0 && Number(destinationLine.balance) === 0)
+                ) {
                     setTimeout(() => {
                         Navigator.showAlertModal({
                             type: 'error',
                             text: Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine'),
+                            buttons: [
+                                {
+                                    text: Localize.t('global.ok'),
+                                    onPress: this.clearDestination,
+                                    light: false,
+                                },
+                            ],
+                        });
+                    }, 50);
+                    return;
+                }
+
+                // check if sending this payment will exceed the limit
+                if (
+                    destinationLine &&
+                    Number(amount) + Number(destinationLine.balance) > Number(destinationLine.limit)
+                ) {
+                    setTimeout(() => {
+                        Navigator.showAlertModal({
+                            type: 'error',
+                            text: Localize.t('send.unableToSendPaymentTrustLineLimitIsExceeded'),
                             buttons: [
                                 {
                                     text: Localize.t('global.ok'),

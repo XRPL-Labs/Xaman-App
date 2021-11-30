@@ -301,10 +301,15 @@ class Payment extends BaseTransaction {
                 }
 
                 if (IOUAmount) {
-                    // ===== check if recipient have same trustline for sending IOU =====
+                    // ===== check if recipient have same trustline for receiving IOU =====
+                    // ignore if sending to the issuer
                     const destinationLine = await LedgerService.getAccountLine(this.Destination.address, IOUAmount);
 
-                    if (!destinationLine && IOUAmount.issuer !== this.Destination.address) {
+                    if (
+                        (!destinationLine ||
+                            (Number(destinationLine.limit) === 0 && Number(destinationLine.balance) === 0)) &&
+                        IOUAmount.issuer !== this.Destination.address
+                    ) {
                         return reject(new Error(Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine')));
                     }
 

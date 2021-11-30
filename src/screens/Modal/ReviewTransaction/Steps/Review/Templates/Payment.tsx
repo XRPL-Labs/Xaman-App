@@ -181,15 +181,15 @@ class PaymentTemplate extends Component<Props, State> {
             // get source trust lines
             const sourceLine = await LedgerService.getAccountLine(transaction.Account.address, transaction.Amount);
 
-            let shouldPayWithXRP =
+            // if this condition applies we try to pay the requested amount with XRP
+            // the source account doesn't the trustline or proper trustline
+            // the source account balance doesn't cover the entire requested amount
+            // the sender is not issuer
+            const shouldPayWithXRP =
                 !sourceLine ||
-                (parseFloat(sourceLine.balance) < parseFloat(transaction.Amount.value) &&
+                (Number(sourceLine.limit) === 0 && Number(sourceLine.balance) === 0) ||
+                (Number(sourceLine.balance) < Number(transaction.Amount.value) &&
                     account !== transaction.Amount.issuer);
-
-            // just ignore if the sender is the issuer
-            if (account === transaction.Amount.issuer) {
-                shouldPayWithXRP = false;
-            }
 
             // if not have the same trust line or the balance is not covering requested value
             // Pay with XRP instead

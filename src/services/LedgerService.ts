@@ -54,10 +54,8 @@ class LedgerService {
 
                 this.logger.debug(`Current Network Base/Owner reserve: ${baseReserve}/${ownerReserve}`);
 
-                // on socket service connect
-                SocketService.on('connect', () => {
-                    this.setLedgerListener();
-                });
+                // on socket service connect set ledger listener if not set
+                SocketService.on('connect', this.setLedgerListener);
 
                 return resolve();
             } catch (e) {
