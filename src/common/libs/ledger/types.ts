@@ -1,4 +1,5 @@
-import { Memo, AmountType } from './parser/types';
+import { LedgerEntriesTypes } from './objects/types';
+import { Memo } from './parser/types';
 
 /**
  * TX Json Transaction Type
@@ -101,22 +102,6 @@ export type AccountTxResponse = {
     transactions: Array<LedgerTransactionType>;
 };
 
-export interface LedgerRippleState {
-    LedgerEntryType: 'RippleState';
-    Flags: number;
-    Balance: AmountType;
-    LowLimit: AmountType;
-    HighLimit: AmountType;
-    PreviousTxnID: string;
-    PreviousTxnLgrSeq: number;
-    LowNode?: string;
-    HighNode?: string;
-    LowQualityIn?: number;
-    LowQualityOut?: number;
-    HighQualityIn?: number;
-    HighQualityOut?: number;
-}
-
 /**
  * Ledger trustline type
  */
@@ -175,7 +160,7 @@ export interface AccountInfoResponse {
  */
 export interface AccountObjectsResponse {
     account: string;
-    account_objects: LedgerRippleState[];
+    account_objects: LedgerEntriesTypes[];
     ledger_hash?: string;
     ledger_index?: number;
     ledger_current_index?: number;

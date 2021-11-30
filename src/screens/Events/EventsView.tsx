@@ -18,6 +18,7 @@ import { Navigator } from '@common/helpers/navigator';
 // Parses
 import transactionFactory from '@common/libs/ledger/parser/transaction';
 import ledgerObjectFactory from '@common/libs/ledger/parser/object';
+import { LedgerEntriesTypes } from '@common/libs/ledger/objects/types';
 
 import { LedgerMarker } from '@common/libs/ledger/types';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
@@ -161,20 +162,38 @@ class EventsView extends Component<Props, State> {
     loadPlannedTransactions = () => {
         const { account } = this.state;
 
-        return new Promise((resolve) => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve) => {
             // return if no account exist
             if (!account) {
                 return resolve([]);
             }
-            return LedgerService.getAccountObjects(account.address).then((res: any) => {
-                const { account_objects } = res;
-                const parsedList = flatMap(account_objects, ledgerObjectFactory);
-                const filtered = without(parsedList, null);
 
-                this.setState({ plannedTransactions: filtered }, () => {
-                    return resolve(filtered);
+            // account objects we are interested in
+            const objectTypes = ['check', 'escrow', 'offer'];
+            let objects = [] as LedgerEntriesTypes[];
+
+            return objectTypes
+                .reduce((accumulator, type) => {
+                    return accumulator.then(() => {
+                        return LedgerService.getAccountObjects(account.address, { type }).then((res: any) => {
+                            const { account_objects } = res;
+                            objects = [...objects, ...account_objects];
+                        });
+                    });
+                }, Promise.resolve())
+                .then(() => {
+                    const parsedList = flatMap(objects, ledgerObjectFactory);
+                    const filtered = without(parsedList, null);
+
+                    this.setState({ plannedTransactions: filtered }, () => {
+                        return resolve(filtered);
+                    });
+                })
+                .catch(() => {
+                    Toast(Localize.t('events.canNotFetchTransactions'));
+                    return resolve([]);
                 });
-            });
         });
     };
 

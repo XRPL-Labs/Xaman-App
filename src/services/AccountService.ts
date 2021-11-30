@@ -10,9 +10,10 @@ import { TrustLineSchema } from '@store/schemas/latest';
 import AccountRepository from '@store/repositories/account';
 import CurrencyRepository from '@store/repositories/currency';
 
+import Meta from '@common/libs/ledger/parser/meta';
 import { Amount } from '@common/libs/ledger/parser/common';
 import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
-import Meta from '@common/libs/ledger/parser/meta';
+import { RippleStateLedgerEntry } from '@common/libs/ledger/objects/types';
 
 import { LedgerTransactionType, LedgerTrustline } from '@common/libs/ledger/types';
 
@@ -200,7 +201,10 @@ class AccountService extends EventEmitter {
         combined = [] as LedgerTrustline[],
     ): Promise<LedgerTrustline[]> => {
         return LedgerService.getAccountObjects(account, { marker, type: 'state' }).then((resp) => {
-            const { account_objects, marker: _marker } = resp;
+            const { account_objects, marker: _marker } = resp as {
+                account_objects: RippleStateLedgerEntry[];
+                marker?: string;
+            };
 
             const notInDefaultState = account_objects.filter((obj) => {
                 return (
