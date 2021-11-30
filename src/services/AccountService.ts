@@ -222,7 +222,10 @@ class AccountService extends EventEmitter {
                 const [no_ripple, no_ripple_peer] =
                     obj.HighLimit.issuer === account ? ripplingFlags : ripplingFlags.reverse();
 
-                const balance = obj.Balance.value === '0' ? obj.Balance.value : obj.Balance.value.slice(1);
+                const balance =
+                    obj.HighLimit.issuer === account && obj.Balance.value.startsWith('-')
+                        ? obj.Balance.value.slice(1)
+                        : obj.Balance.value;
 
                 return {
                     account: counterparty.issuer,
@@ -236,7 +239,7 @@ class AccountService extends EventEmitter {
             });
 
             const filtered = accountLinesFormatted.filter((l) => {
-                if (l.limit === '0' && (l.balance === '0' || l.balance.slice(0, 1) === '-')) {
+                if (l.limit === '0' && l.balance === '0') {
                     return false;
                 }
                 return true;
