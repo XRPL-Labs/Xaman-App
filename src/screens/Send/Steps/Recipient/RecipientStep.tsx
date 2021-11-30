@@ -18,7 +18,7 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { Amount } from '@common/libs/ledger/parser/common';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode, NFTValueToXRPL } from '@common/utils/amount';
 import { NormalizeDestination } from '@common/utils/codec';
 
 import { BackendService, LedgerService, StyleService } from '@services';
@@ -375,7 +375,7 @@ class RecipientStep extends Component<Props, State> {
     };
 
     checkAndNext = async (passedChecks = [] as Array<PassableChecks>) => {
-        const { setDestinationInfo, amount, currency, destination, source } = this.context;
+        const { setDestinationInfo, amount, currency, destination, source, sendingNFT } = this.context;
         let { destinationInfo } = this.context;
 
         try {
@@ -551,9 +551,10 @@ class RecipientStep extends Component<Props, State> {
                 }
 
                 // check if sending this payment will exceed the limit
+                const normalizeAmount = sendingNFT ? NFTValueToXRPL(amount) : amount;
                 if (
                     destinationLine &&
-                    Number(amount) + Number(destinationLine.balance) > Number(destinationLine.limit)
+                    Number(normalizeAmount) + Number(destinationLine.balance) > Number(destinationLine.limit)
                 ) {
                     setTimeout(() => {
                         Navigator.showAlertModal({
