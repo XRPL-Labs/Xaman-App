@@ -50,6 +50,7 @@ import RecipientMenu from './Overlay/RecipientMenu';
 import ConfirmDestinationTag from './Overlay/ConfirmDestinationTag';
 import SelectAccount from './Overlay/SelectAccount';
 import HomeActions from './Overlay/HomeActions';
+import SelectFee from './Overlay/SelectFee';
 
 // Transaction
 import Send from './Send';
@@ -132,6 +133,7 @@ export {
     ConfirmDestinationTag,
     SelectAccount,
     HomeActions,
+    SelectFee,
     // transaction
     Send,
     Request,

@@ -160,6 +160,78 @@ class LedgerService {
     };
 
     /**
+     * Get available fees on network base on the load
+     * NOTE: values are in drop
+     */
+    getAvailableNetworkFee = (): Promise<any> => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+            try {
+                const feeDataSet = (await SocketService.send({ command: 'fee' })) as {
+                    current_queue_size: string;
+                    max_queue_size: string;
+                    drops: { minimum_fee: string; median_fee: string; open_ledger_fee: string };
+                };
+
+                const queue_pct = Number(feeDataSet.current_queue_size) / Number(feeDataSet.max_queue_size);
+                const suggestedFee = queue_pct === 1 ? 'feeHigh' : queue_pct === 0 ? 'feeLow' : 'feeMedium';
+
+                const { minimum_fee, median_fee, open_ledger_fee } = feeDataSet.drops;
+
+                const feeMedium = Math.min(
+                    queue_pct > 0.1
+                        ? Math.round((Number(minimum_fee) + Number(median_fee) + Number(open_ledger_fee)) / 3)
+                        : queue_pct === 0
+                        ? Math.max(10 * Number(minimum_fee), Math.min(Number(minimum_fee), Number(open_ledger_fee)))
+                        : Math.max(
+                              10 * Number(minimum_fee),
+                              Math.round((Number(minimum_fee) + Number(median_fee)) / 2),
+                          ),
+                    10000,
+                );
+
+                const feeHigh = Math.min(
+                    Math.max(
+                        10 * Number(minimum_fee),
+                        Math.round(Math.max(Number(median_fee), Number(open_ledger_fee)) * 1.1),
+                    ),
+                    100000,
+                );
+
+                const feeLow = Math.min(
+                    Math.max(
+                        Number(minimum_fee),
+                        Math.round(Math.max(Number(median_fee), Number(open_ledger_fee)) / 500),
+                    ),
+                    1000,
+                );
+
+                return resolve({
+                    availableFees: [
+                        {
+                            type: 'low',
+                            value: feeLow,
+                            suggested: suggestedFee === 'feeLow',
+                        },
+                        {
+                            type: 'medium',
+                            value: feeMedium,
+                            suggested: suggestedFee === 'feeMedium',
+                        },
+                        {
+                            type: 'high',
+                            value: feeHigh,
+                            suggested: suggestedFee === 'feeHigh',
+                        },
+                    ],
+                });
+            } catch {
+                return reject(new Error('Unable to calculate available network fees!'));
+            }
+        });
+    };
+
+    /**
      * Get account line base on provided peer
      * Note: should look for marker as it can be not in first page
      */

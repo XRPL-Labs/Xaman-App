@@ -15,6 +15,7 @@ import { AppScreens } from '@common/constants';
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
+import { Amount } from '@common/libs/ledger/parser/common';
 import { Payment } from '@common/libs/ledger/transactions';
 import { Destination } from '@common/libs/ledger/parser/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
@@ -36,7 +37,7 @@ import { StepsContext } from './Context';
 import styles from './styles';
 
 /* types ==================================================================== */
-import { Steps, Props, State } from './types';
+import { Steps, Props, State, FeeItem } from './types';
 
 /* Component ==================================================================== */
 class SendView extends Component<Props, State> {
@@ -67,7 +68,8 @@ class SendView extends Component<Props, State> {
             currency,
             sendingNFT,
             amount,
-            fee: undefined,
+            availableFees: undefined,
+            selectedFee: undefined,
             issuerFee: undefined,
             destination: undefined,
             destinationInfo: undefined,
@@ -91,7 +93,14 @@ class SendView extends Component<Props, State> {
     }
 
     componentWillUnmount() {
+        const { isLoading, payment } = this.state;
+
         if (this.closeTimeout) clearTimeout(this.closeTimeout);
+
+        // abort the transaction if already running
+        if (isLoading && payment) {
+            payment.abort();
+        }
     }
 
     setSource = (source: AccountSchema) => {
@@ -109,8 +118,12 @@ class SendView extends Component<Props, State> {
         this.setState({ amount });
     };
 
-    setFee = (fee: string) => {
-        this.setState({ fee });
+    setAvailableFees = (availableFees: FeeItem[]) => {
+        this.setState({ availableFees });
+    };
+
+    setFee = (selectedFee: FeeItem) => {
+        this.setState({ selectedFee });
     };
 
     setIssuerFee = (issuerFee: number) => {
@@ -183,7 +196,7 @@ class SendView extends Component<Props, State> {
     };
 
     send = async () => {
-        const { currency, amount, fee, issuerFee, destination, source, payment, sendingNFT } = this.state;
+        const { currency, amount, selectedFee, issuerFee, destination, source, payment, sendingNFT } = this.state;
 
         this.setState({
             isLoading: true,
@@ -208,7 +221,7 @@ class SendView extends Component<Props, State> {
             }
 
             // set the calculated fee
-            payment.Fee = fee;
+            payment.Fee = new Amount(selectedFee.value).dropsToXrp();
 
             // set the destination
             payment.Destination = {
@@ -322,6 +335,7 @@ class SendView extends Component<Props, State> {
                     setAmount: this.setAmount,
                     setCurrency: this.setCurrency,
                     setFee: this.setFee,
+                    setAvailableFees: this.setAvailableFees,
                     setIssuerFee: this.setIssuerFee,
                     setSource: this.setSource,
                     setDestination: this.setDestination,

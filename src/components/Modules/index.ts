@@ -5,3 +5,4 @@ export * from './EventsList';
 export * from './AccountPicker';
 export * from './TrustLineList';
 export * from './NodeList';
+export * from './FeeList';

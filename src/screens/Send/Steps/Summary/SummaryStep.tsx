@@ -6,7 +6,7 @@ import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, Alert, InteractionManager } from 'react-native';
 
-import { BackendService, SocketService } from '@services';
+import { BackendService, SocketService, StyleService } from '@services';
 
 import { AppScreens } from '@common/constants';
 import { Prompt, Toast } from '@common/helpers/interface';
@@ -14,12 +14,18 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
 import Preferences from '@common/libs/preferences';
+import { Amount } from '@common/libs/ledger/parser/common';
+
+import { Capitalize } from '@common/utils/string';
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
+
 // components
 import {
+    TouchableDebounce,
     Avatar,
     AmountText,
+    Badge,
     Button,
     Footer,
     Spacer,
@@ -270,6 +276,32 @@ class SummaryStep extends Component<Props, State> {
         });
     };
 
+    getFeeColor = () => {
+        const { selectedFee } = this.context;
+
+        switch (selectedFee.type) {
+            case 'low':
+                return StyleService.value('$green');
+            case 'medium':
+                return StyleService.value('$orange');
+            case 'high':
+                return StyleService.value('$red');
+            default:
+                return StyleService.value('$textPrimary');
+        }
+    };
+
+    showFeeSelectOverlay = () => {
+        const { setFee, availableFees, selectedFee } = this.context;
+
+        Navigator.showOverlay(AppScreens.Overlay.SelectFee, { availableFees, selectedFee, onSelect: setFee });
+    };
+
+    getNormalizedFee = () => {
+        const { selectedFee } = this.context;
+        return new Amount(selectedFee.value).dropsToXrp();
+    };
+
     renderCurrencyItem = (item: any) => {
         const { source } = this.context;
 
@@ -339,7 +371,7 @@ class SummaryStep extends Component<Props, State> {
     };
 
     render() {
-        const { source, amount, destination, currency, fee, issuerFee, isLoading } = this.context;
+        const { source, amount, destination, currency, selectedFee, issuerFee, isLoading } = this.context;
         const { destinationTagInputVisible, canScroll } = this.state;
 
         return (
@@ -438,30 +470,43 @@ class SummaryStep extends Component<Props, State> {
                         {this.renderAmountRate()}
                     </View>
 
-                    {/* Fee */}
-                    <View style={[styles.rowItem, styles.rowItemMulti]}>
-                        <View style={[AppStyles.flex1]}>
+                    {issuerFee && (
+                        <View style={[styles.rowItem]}>
                             <View style={[styles.rowTitle]}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
-                                    {Localize.t('global.fee')}
+                                    {Localize.t('global.issuerFee')}
                                 </Text>
                             </View>
                             <View style={styles.feeContainer}>
-                                <Text style={[styles.feeText]}>{fee} XRP</Text>
+                                <Text style={[styles.feeText]}>{issuerFee} %</Text>
                             </View>
                         </View>
-                        {issuerFee && (
-                            <View style={[AppStyles.flex1]}>
-                                <View style={[styles.rowTitle]}>
-                                    <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
-                                        {Localize.t('global.issuerFee')}
-                                    </Text>
-                                </View>
-                                <View style={styles.feeContainer}>
-                                    <Text style={[styles.feeText]}>{issuerFee} %</Text>
-                                </View>
+                    )}
+
+                    <View style={[styles.rowItem, AppStyles.centerContent]}>
+                        <View style={[styles.rowTitle]}>
+                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                {Localize.t('global.fee')}
+                            </Text>
+                        </View>
+                        <TouchableDebounce
+                            activeOpacity={0.8}
+                            style={[styles.feeContainer, AppStyles.row]}
+                            onPress={this.showFeeSelectOverlay}
+                        >
+                            <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
+                                <Text style={[styles.feeText]}>{this.getNormalizedFee()} XRP</Text>
+                                <Badge label={Capitalize(selectedFee.type)} size="medium" color={this.getFeeColor()} />
                             </View>
-                        )}
+                            <Button
+                                onPress={this.showFeeSelectOverlay}
+                                style={styles.editButton}
+                                roundedSmall
+                                iconSize={13}
+                                light
+                                icon="IconEdit"
+                            />
+                        </TouchableDebounce>
                     </View>
 
                     {/* Memo */}

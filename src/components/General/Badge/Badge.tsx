@@ -16,7 +16,9 @@ type BadgeType = 'bithomp' | 'xrplns' | 'xrpscan' | 'payid' | 'contacts' | 'acco
 interface Props {
     containerStyle?: ViewStyle | ViewStyle[];
     testID?: string;
-    type: BadgeType;
+    label?: string;
+    color?: string;
+    type?: BadgeType;
     size?: 'small' | 'medium' | 'large';
     onPress?: () => void;
 }
@@ -53,9 +55,13 @@ export default class Badge extends PureComponent<Props> {
     };
 
     renderInnerContent = () => {
-        const { type, size } = this.props;
+        const { label, type, size } = this.props;
 
         const style = [styles.label, { fontSize: SIZES[size] }];
+
+        if (label) {
+            return <Text style={style}>{label}</Text>;
+        }
 
         switch (type) {
             case 'xrplns':
@@ -80,12 +86,12 @@ export default class Badge extends PureComponent<Props> {
     };
 
     render() {
-        const { testID, type, onPress, containerStyle } = this.props;
+        const { testID, color, type, onPress, containerStyle } = this.props;
 
         return (
             <TouchableDebounce
                 activeOpacity={onPress ? 0.8 : 1}
-                style={[styles.container, { backgroundColor: COLORS[type] }, containerStyle]}
+                style={[styles.container, { backgroundColor: color || COLORS[type] }, containerStyle]}
                 onPress={this.onPress}
                 testID={testID}
             >

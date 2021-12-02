@@ -74,12 +74,13 @@ const styles = StyleService.create({
         borderRadius: 10,
     },
     editButton: {
+        backgroundColor: '$tint',
         borderRadius: 8,
-        height: 20,
+        height: 25,
         width: 40,
         justifyContent: 'center',
         alignSelf: 'center',
-        marginRight: 10,
+        marginRight: 15,
     },
     amountInput: {
         fontSize: AppFonts.h3.size,
@@ -107,6 +108,12 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size,
         color: '$textSecondary',
+    },
+    feeText: {
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontWeight: '600',
+        fontSize: AppFonts.base.size,
+        color: '$textPrimary',
     },
 });
 

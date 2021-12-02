@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import { Results } from 'realm';
-import { isEmpty, flatMap, remove, get, uniqBy, toNumber } from 'lodash';
+import { isEmpty, flatMap, remove, get, uniqBy, toNumber, find } from 'lodash';
 import { View, Text, SectionList, Alert, RefreshControl } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
@@ -15,8 +15,6 @@ import { AppScreens } from '@common/constants';
 import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-
-import { Amount } from '@common/libs/ledger/parser/common';
 
 import { NormalizeCurrencyCode, NFTValueToXRPL } from '@common/utils/amount';
 import { NormalizeDestination } from '@common/utils/codec';
@@ -659,7 +657,7 @@ class RecipientStep extends Component<Props, State> {
     };
 
     goNext = async () => {
-        const { goNext, setFee, setIssuerFee, currency, payment } = this.context;
+        const { goNext, setFee, setAvailableFees, setIssuerFee, currency } = this.context;
 
         try {
             this.setState({
@@ -675,10 +673,12 @@ class RecipientStep extends Component<Props, State> {
                 }
             }
 
-            // calculate and persist the transaction fee
-            const { Fee: BaseFee } = LedgerService.getLedgerStatus();
-            const fee = new Amount(payment.calculateFee(BaseFee)).dropsToXrp();
-            setFee(fee);
+            // calculate and persist the transaction fees
+            const { availableFees } = await LedgerService.getAvailableNetworkFee();
+
+            setAvailableFees(availableFees);
+            // set the suggested fee as selected fee
+            setFee(find(availableFees, { suggested: true }));
 
             // move to summary step
             goNext();

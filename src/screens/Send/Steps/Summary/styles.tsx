@@ -16,6 +16,7 @@ const styles = StyleService.create({
     rowItem: {
         paddingHorizontal: AppSizes.paddingSml,
         paddingVertical: AppSizes.paddingSml,
+        // paddingTop: AppSizes.padding,
         borderTopColor: '$lightGrey',
         borderTopWidth: 1,
     },
