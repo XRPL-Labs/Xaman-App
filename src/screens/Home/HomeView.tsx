@@ -254,7 +254,15 @@ class HomeView extends Component<Props, State> {
     showCurrencyOptions = (trustLine: TrustLineSchema) => {
         const { account } = this.state;
 
-        Navigator.showOverlay(AppScreens.Overlay.CurrencySettings, { trustLine, account });
+        Navigator.showOverlay(
+            AppScreens.Overlay.CurrencySettings,
+            { trustLine, account },
+            {
+                overlay: {
+                    interceptTouchOutside: false,
+                },
+            },
+        );
     };
 
     showNFTDetails = (trustLine: TrustLineSchema) => {
