@@ -23,11 +23,21 @@ export interface Props {
     passcode: string;
 }
 
-export interface State {}
+export interface State {
+    isLoading: boolean;
+}
 
 /* Component ==================================================================== */
 class PushNotificationSetupView extends Component<Props, State> {
     static screenName = AppScreens.Setup.PushNotification;
+
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            isLoading: false,
+        };
+    }
 
     static options() {
         return {
@@ -42,26 +52,36 @@ class PushNotificationSetupView extends Component<Props, State> {
     };
 
     requestPermission = () => {
-        PushNotificationsService.requestPermission().then((granted) => {
-            if (granted) {
-                this.nextStep();
-                return;
-            }
-
-            if (Platform.OS === 'ios') {
-                Alert.alert(
-                    Localize.t('global.error'),
-                    Localize.t('global.pushErrorPermissionMessage'),
-                    [
-                        { text: Localize.t('global.approvePermissions'), onPress: this.openAppSettings },
-                        { text: Localize.t('global.cancel') },
-                    ],
-                    { cancelable: true },
-                );
-            } else {
-                Alert.alert(Localize.t('global.error'), Localize.t('global.UnableToRegisterPushNotifications'));
-            }
+        this.setState({
+            isLoading: true,
         });
+
+        PushNotificationsService.requestPermission()
+            .then((granted) => {
+                if (granted) {
+                    this.nextStep();
+                    return;
+                }
+
+                if (Platform.OS === 'ios') {
+                    Alert.alert(
+                        Localize.t('global.error'),
+                        Localize.t('global.pushErrorPermissionMessage'),
+                        [
+                            { text: Localize.t('global.approvePermissions'), onPress: this.openAppSettings },
+                            { text: Localize.t('global.cancel') },
+                        ],
+                        { cancelable: true },
+                    );
+                } else {
+                    Alert.alert(Localize.t('global.error'), Localize.t('global.UnableToRegisterPushNotifications'));
+                }
+            })
+            .finally(() => {
+                this.setState({
+                    isLoading: false,
+                });
+            });
     };
 
     nextStep = () => {
@@ -69,6 +89,8 @@ class PushNotificationSetupView extends Component<Props, State> {
     };
 
     render() {
+        const { isLoading } = this.state;
+
         return (
             <SafeAreaView testID="permission-setup-view" style={[AppStyles.container]}>
                 <View style={[AppStyles.flex2, AppStyles.centerContent]}>
@@ -94,7 +116,12 @@ class PushNotificationSetupView extends Component<Props, State> {
                 <Footer style={[AppStyles.paddingBottom]}>
                     <Button numberOfLines={1} light label={Localize.t('global.maybeLater')} onPress={this.nextStep} />
                     <Spacer />
-                    <Button numberOfLines={1} label={Localize.t('global.yes')} onPress={this.requestPermission} />
+                    <Button
+                        isLoading={isLoading}
+                        numberOfLines={1}
+                        label={Localize.t('global.yes')}
+                        onPress={this.requestPermission}
+                    />
                 </Footer>
             </SafeAreaView>
         );

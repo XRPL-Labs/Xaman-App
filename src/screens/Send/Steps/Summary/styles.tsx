@@ -16,8 +16,14 @@ const styles = StyleService.create({
     rowItem: {
         paddingHorizontal: AppSizes.paddingSml,
         paddingVertical: AppSizes.paddingSml,
+        // paddingTop: AppSizes.padding,
         borderTopColor: '$lightGrey',
         borderTopWidth: 1,
+    },
+    rowItemMulti: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     rowTitle: {
         paddingLeft: 15,
@@ -123,6 +129,18 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size,
         color: '$grey',
+    },
+    feeContainer: {
+        paddingLeft: 15,
+        paddingTop: 15,
+    },
+    feeText: {
+        padding: 0,
+        margin: 0,
+        fontSize: AppFonts.base.size,
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontWeight: '600',
+        color: '$textPrimary',
     },
 });
 

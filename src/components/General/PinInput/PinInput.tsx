@@ -227,9 +227,7 @@ class PinInput extends Component<Props, State> {
             pins.push(
                 <TouchableOpacity
                     activeOpacity={0.8}
-                    onPress={() => {
-                        this.focus();
-                    }}
+                    onPress={this.focus}
                     key={index}
                     style={[styles.pinInput, code.length === index && styles.pinInputActive]}
                 >

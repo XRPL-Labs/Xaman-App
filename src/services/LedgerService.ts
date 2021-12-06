@@ -20,6 +20,7 @@ import {
     AccountLinesResponse,
     GatewayBalancesResponse,
     AccountInfoResponse,
+    AccountObjectsResponse,
 } from '@common/libs/ledger/types';
 
 import { Issuer } from '@common/libs/ledger/parser/types';
@@ -53,10 +54,8 @@ class LedgerService {
 
                 this.logger.debug(`Current Network Base/Owner reserve: ${baseReserve}/${ownerReserve}`);
 
-                // on socket service connect
-                SocketService.on('connect', () => {
-                    this.setLedgerListener();
-                });
+                // on socket service connect set ledger listener if not set
+                SocketService.on('connect', this.setLedgerListener);
 
                 return resolve();
             } catch (e) {
@@ -134,22 +133,16 @@ class LedgerService {
     /**
      * Get account objects
      */
-    getAccountObjects = (account: string): any => {
-        return SocketService.send({
+    getAccountObjects = (account: string, options?: any): Promise<AccountObjectsResponse> => {
+        const request = {
             command: 'account_objects',
             account,
             ledger_index: 'validated',
-        });
-    };
-
-    /**
-     * Get Offers from order book
-     */
-    getOffers = (request: any): any => {
-        return SocketService.send({
-            command: 'book_offers',
-            ...request,
-        });
+        };
+        if (typeof options === 'object') {
+            Object.assign(request, options);
+        }
+        return SocketService.send(request);
     };
 
     /**
@@ -167,36 +160,116 @@ class LedgerService {
     };
 
     /**
-     * Get account line base on provided peer
+     * Get available fees on network base on the load
+     * NOTE: values are in drop
      */
-    getAccountLine = (account: string, peer: Issuer): Promise<LedgerTrustline> => {
-        return new Promise((resolve) => {
-            return this.getAccountLines(account, { peer: peer.issuer })
-                .then((resp: any) => {
-                    const { lines } = resp;
-                    return resolve(find(lines, { account: peer.issuer, currency: peer.currency }));
-                })
-                .catch(() => {
-                    resolve(undefined);
+    getAvailableNetworkFee = (): Promise<any> => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+            try {
+                const feeDataSet = (await SocketService.send({ command: 'fee' })) as {
+                    current_queue_size: string;
+                    max_queue_size: string;
+                    drops: { minimum_fee: string; median_fee: string; open_ledger_fee: string };
+                };
+
+                const queue_pct = Number(feeDataSet.current_queue_size) / Number(feeDataSet.max_queue_size);
+                const suggestedFee = queue_pct === 1 ? 'feeHigh' : queue_pct === 0 ? 'feeLow' : 'feeMedium';
+
+                const { minimum_fee, median_fee, open_ledger_fee } = feeDataSet.drops;
+
+                const feeMedium = Math.min(
+                    queue_pct > 0.1
+                        ? Math.round((Number(minimum_fee) + Number(median_fee) + Number(open_ledger_fee)) / 3)
+                        : queue_pct === 0
+                        ? Math.max(10 * Number(minimum_fee), Math.min(Number(minimum_fee), Number(open_ledger_fee)))
+                        : Math.max(
+                              10 * Number(minimum_fee),
+                              Math.round((Number(minimum_fee) + Number(median_fee)) / 2),
+                          ),
+                    10000,
+                );
+
+                const feeHigh = Math.min(
+                    Math.max(
+                        10 * Number(minimum_fee),
+                        Math.round(Math.max(Number(median_fee), Number(open_ledger_fee)) * 1.1),
+                    ),
+                    100000,
+                );
+
+                const feeLow = Math.min(
+                    Math.max(
+                        Number(minimum_fee),
+                        Math.round(Math.max(Number(median_fee), Number(open_ledger_fee)) / 500),
+                    ),
+                    1000,
+                );
+
+                return resolve({
+                    availableFees: [
+                        {
+                            type: 'low',
+                            value: feeLow,
+                            suggested: suggestedFee === 'feeLow',
+                        },
+                        {
+                            type: 'medium',
+                            value: feeMedium,
+                            suggested: suggestedFee === 'feeMedium',
+                        },
+                        {
+                            type: 'high',
+                            value: feeHigh,
+                            suggested: suggestedFee === 'feeHigh',
+                        },
+                    ],
                 });
+            } catch {
+                return reject(new Error('Unable to calculate available network fees!'));
+            }
         });
     };
 
     /**
-     * Get account transfer rate
+     * Get account line base on provided peer
+     * Note: should look for marker as it can be not in first page
      */
-    getAccountTransferRate = (account: string): any => {
+    getAccountLine = (
+        account: string,
+        peer: Issuer,
+        marker?: string,
+        combined = [] as LedgerTrustline[],
+    ): Promise<LedgerTrustline> => {
+        return this.getAccountLines(account, { peer: peer.issuer, marker })
+            .then((resp) => {
+                const { lines, marker: _marker } = resp;
+                if (_marker && _marker !== marker) {
+                    return this.getAccountLine(account, peer, _marker, lines.concat(combined));
+                }
+                return find(lines.concat(combined), { account: peer.issuer, currency: peer.currency });
+            })
+            .catch(() => {
+                return undefined;
+            });
+    };
+
+    /**
+     * Get account transfer rate on percent format
+     */
+    getAccountTransferRate = (account: string): Promise<number> => {
         return new Promise((resolve, reject) => {
             return this.getAccountInfo(account)
                 .then((issuerAccountInfo: any) => {
                     if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
                         const { TransferRate } = issuerAccountInfo.account_data;
-                        return resolve(TransferRate);
+                        const transferFee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
+                        return resolve(transferFee);
                     }
                     return resolve(0);
                 })
                 .catch(() => {
-                    return reject(new Error('Unable to fetch issuer transfer rate!'));
+                    return reject(new Error('Unable to fetch account transfer rate!'));
                 });
         });
     };
@@ -219,7 +292,7 @@ class LedgerService {
         const request = {
             command: 'account_tx',
             account,
-            limit: limit || 20,
+            limit: limit || 50,
             binary: false,
         };
         if (marker) {

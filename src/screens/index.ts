@@ -2,7 +2,7 @@ import Onboarding from './Onboarding';
 // setup
 import PasscodeSetup from './Setup/Passcode';
 import BiometrySetup from './Setup/Biometry';
-import PermissionsSetup from './Setup/Permissions';
+import PushNotificationSetup from './Setup/PushNotification';
 import DisclaimersSetup from './Setup/Disclaimers';
 import FinishSetup from './Setup/Finish';
 
@@ -50,6 +50,7 @@ import RecipientMenu from './Overlay/RecipientMenu';
 import ConfirmDestinationTag from './Overlay/ConfirmDestinationTag';
 import SelectAccount from './Overlay/SelectAccount';
 import HomeActions from './Overlay/HomeActions';
+import SelectFee from './Overlay/SelectFee';
 
 // Transaction
 import Send from './Send';
@@ -88,7 +89,7 @@ export {
     // Setup
     PasscodeSetup,
     BiometrySetup,
-    PermissionsSetup,
+    PushNotificationSetup,
     DisclaimersSetup,
     FinishSetup,
     // Tab bar
@@ -132,6 +133,7 @@ export {
     ConfirmDestinationTag,
     SelectAccount,
     HomeActions,
+    SelectFee,
     // transaction
     Send,
     Request,

@@ -7,7 +7,7 @@
  */
 
 import React, { Component } from 'react';
-import { Text, TextStyle, Pressable, Alert } from 'react-native';
+import { Text, Pressable, Alert, TextStyle, ViewStyle, View } from 'react-native';
 import BigNumber from 'bignumber.js';
 
 import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
@@ -19,11 +19,13 @@ import styles from './styles';
 /* Types ==================================================================== */
 interface Props {
     testID?: string;
-    value: number | string;
-    postfix?: string;
     prefix?: string | (() => React.ReactNode);
+    value: number | string;
+    currency?: string;
+    truncateCurrency?: boolean;
     style?: TextStyle | TextStyle[];
-    postfixStyle?: TextStyle | TextStyle[];
+    valueContainerStyle?: ViewStyle | ViewStyle[];
+    currencyStyle?: TextStyle | TextStyle[];
     discreet?: boolean;
     discreetStyle?: TextStyle | TextStyle[];
 }
@@ -167,7 +169,7 @@ class AmountText extends Component<Props, State> {
     };
 
     getValue = () => {
-        const { style, discreet, discreetStyle } = this.props;
+        const { prefix, style, discreet, discreetStyle, valueContainerStyle } = this.props;
         const { value, originalValue, showOriginalValue } = this.state;
 
         let showValue = '';
@@ -179,53 +181,53 @@ class AmountText extends Component<Props, State> {
         }
 
         return (
-            <Text numberOfLines={1} style={[style, discreet && discreetStyle]}>
-                {showValue}
+            <View style={[styles.container, valueContainerStyle]}>
+                {typeof prefix === 'function' && prefix()}
+                <Text numberOfLines={1} style={[style, discreet && discreetStyle]}>
+                    {typeof prefix === 'string' && prefix}
+                    {`${showValue}`}
+                </Text>
+            </View>
+        );
+    };
+
+    getCurrency = () => {
+        const { currency, style, currencyStyle, truncateCurrency } = this.props;
+
+        if (typeof currency !== 'string' || !currency) {
+            return null;
+        }
+
+        // normalize currency code
+        let normalized = NormalizeCurrencyCode(currency);
+
+        // this can happen if we unable to decode currency code
+        if (!normalized) {
+            return null;
+        }
+
+        if (normalized.length > 4 && truncateCurrency) {
+            normalized = `${normalized.slice(0, 4)}…`;
+        }
+
+        return (
+            <Text numberOfLines={1} style={[style, currencyStyle]}>
+                {' '}
+                {normalized}
             </Text>
         );
     };
 
-    getPostfix = () => {
-        const { postfix, style, postfixStyle } = this.props;
-
-        // if currency passed then include it in the content
-        if (typeof postfix === 'string') {
-            return (
-                <Text numberOfLines={1} style={[style, postfixStyle]}>
-                    {' '}
-                    {NormalizeCurrencyCode(postfix)}
-                </Text>
-            );
-        }
-
-        return null;
-    };
-
-    getPrefix = () => {
-        const { prefix, style } = this.props;
-
-        switch (typeof prefix) {
-            case 'string':
-                return (
-                    <Text numberOfLines={1} style={[style]}>
-                        {prefix}
-                    </Text>
-                );
-
-            case 'function':
-                return prefix();
-            default:
-                return null;
-        }
-    };
-
     render() {
+        const { truncated } = this.state;
+
+        const ItemComponent = truncated ? Pressable : View;
+
         return (
-            <Pressable onPress={this.onPress} style={styles.container}>
-                {this.getPrefix()}
+            <ItemComponent onPress={this.onPress} style={styles.container}>
                 {this.getValue()}
-                {this.getPostfix()}
-            </Pressable>
+                {this.getCurrency()}
+            </ItemComponent>
         );
     }
 }

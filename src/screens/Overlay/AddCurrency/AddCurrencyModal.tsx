@@ -5,7 +5,7 @@
 import { head, first, forEach, isEmpty, get } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, Image, ScrollView } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
 
@@ -17,7 +17,7 @@ import { CounterPartyRepository } from '@store/repositories';
 import { CounterPartySchema, CurrencySchema, AccountSchema } from '@store/schemas/latest';
 
 // components
-import { Button, Footer, ActionPanel } from '@components/General';
+import { TouchableDebounce, Button, Footer, ActionPanel } from '@components/General';
 
 import Localize from '@locale';
 
@@ -186,7 +186,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
             }
 
             return (
-                <TouchableOpacity
+                <TouchableDebounce
                     key={index}
                     style={[styles.listItem, selectedCurrency.id === c.id && styles.selectedRow]}
                     onPress={() => {
@@ -211,7 +211,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                             </Text>
                         </View>
                     </View>
-                </TouchableOpacity>
+                </TouchableDebounce>
             );
         });
     };
@@ -238,7 +238,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
             const selected = selectedParty.id === c.id;
 
             return (
-                <TouchableOpacity
+                <TouchableDebounce
                     key={index}
                     style={[styles.listItem, selected && styles.selectedRow]}
                     onPress={() => {
@@ -265,7 +265,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                             </Text>
                         </View>
                     </View>
-                </TouchableOpacity>
+                </TouchableDebounce>
             );
         });
     };

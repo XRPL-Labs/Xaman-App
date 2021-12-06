@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Animated, Text, StyleSheet, BackHandler } from 'react-native';
+import { View, Animated, Text, StyleSheet, BackHandler, NativeEventSubscription } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
@@ -31,7 +31,7 @@ export interface State {}
 class AlertModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Alert;
 
-    private backHandler: any;
+    private backHandler: NativeEventSubscription;
     private animateScale: Animated.Value;
     private animatedColor: Animated.Value;
     private animatedOpacity: Animated.Value;

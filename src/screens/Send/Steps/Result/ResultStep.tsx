@@ -107,7 +107,7 @@ class ResultStep extends Component<Props, State> {
                 <AmountText
                     style={[AppStyles.h4, AppStyles.monoBold]}
                     value={amount}
-                    postfix={typeof currency === 'string' ? 'XRP' : currency.currency.currency}
+                    currency={typeof currency === 'string' ? 'XRP' : currency.currency.currency}
                 />
 
                 <Spacer />

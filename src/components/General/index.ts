@@ -3,6 +3,7 @@ export * from './Badge';
 export * from './Spacer';
 export * from './Slider';
 export * from './Button';
+export * from './TouchableDebounce';
 export * from './RaisedButton';
 export * from './TextInput';
 export * from './RadioButton';

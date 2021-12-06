@@ -29,14 +29,29 @@ describe('Payment tx', () => {
         });
     });
 
+    it('Should return right parsed values for tx to self with path sets', () => {
+        // @ts-ignore
+        const instance = new Payment(txTemplates.ToSelfWithPath);
+        expect(instance.BalanceChange()).toStrictEqual({
+            received: {
+                action: 'INC',
+                currency: 'XRP',
+                value: '0.999988',
+            },
+            sent: {
+                action: 'DEC',
+                currency: 'USD',
+                issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
+                value: '1.23905437',
+            },
+        });
+    });
+
     it('Should set/get payment fields', () => {
         const instance = new Payment();
 
         instance.InvoiceID = '123';
         expect(instance.InvoiceID).toBe('123');
-
-        instance.TransferRate = 1002000000;
-        expect(instance.TransferRate).toBe(0.2);
 
         // amount
         // @ts-ignore

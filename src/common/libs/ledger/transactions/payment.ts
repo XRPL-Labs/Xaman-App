@@ -155,15 +155,6 @@ class Payment extends BaseTransaction {
         }
     }
 
-    set TransferRate(rate: number) {
-        const ratePercent = new BigNumber(rate).dividedBy(1000000).minus(1000).dividedBy(10);
-        set(this, ['tx', 'TransferRate'], ratePercent.toNumber());
-    }
-
-    get TransferRate(): number {
-        return get(this, 'tx.TransferRate', 0);
-    }
-
     get SendMax(): AmountType {
         const sendMax = get(this, ['tx', 'SendMax'], undefined);
 
@@ -265,113 +256,133 @@ class Payment extends BaseTransaction {
     validate = (source: AccountSchema, multiSign?: boolean) => {
         /* eslint-disable-next-line */
         return new Promise<void>(async (resolve, reject) => {
-            // ignore validation if multiSign
-            if (multiSign) {
-                return resolve();
-            }
-
-            // check if amount is present
-            if (!this.Amount || !this.Amount?.value || this.Amount?.value === '0') {
-                return reject(new Error(Localize.t('send.pleaseEnterAmount')));
-            }
-
-            let XRPAmount = undefined as AmountType;
-
-            // SendMax have higher priority
-            if (this.SendMax && this.SendMax.currency === 'XRP') {
-                XRPAmount = this.SendMax;
-            } else if (this.Amount.currency === 'XRP' && !this.SendMax) {
-                XRPAmount = this.Amount;
-            }
-
-            if (XRPAmount) {
-                // ===== check balance =====
-                const availableBalance = CalculateAvailableBalance(source);
-                if (Number(XRPAmount.value) > Number(availableBalance)) {
-                    return reject(
-                        new Error(
-                            Localize.t('send.insufficientBalanceSpendableBalance', {
-                                spendable: Localize.formatNumber(availableBalance),
-                                currency: 'XRP',
-                            }),
-                        ),
-                    );
-                }
-            }
-
-            let IOUAmount = undefined as AmountType;
-
-            // SendMax have higher priority
-            if (this.SendMax && this.SendMax.currency !== 'XRP') {
-                IOUAmount = this.SendMax;
-            } else if (this.Amount.currency !== 'XRP' && !this.SendMax) {
-                IOUAmount = this.Amount;
-            }
-
-            if (IOUAmount) {
-                // ===== check if recipient have same trustline for sending IOU =====
-                const destinationLine = await LedgerService.getAccountLine(this.Destination.address, IOUAmount);
-
-                if (!destinationLine && IOUAmount.issuer !== this.Destination.address) {
-                    return reject(new Error(Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine')));
+            try {
+                // ignore validation if multiSign and payload including Path
+                if (multiSign || this.Paths) {
+                    return resolve();
                 }
 
-                // ===== check balances =====
-                // sender is not issuer
-                if (IOUAmount.issuer !== source.address) {
-                    // check IOU balance
-                    const line = source.lines.find(
-                        (e: any) =>
-                            // eslint-disable-next-line implicit-arrow-linebreak
-                            e.currency.issuer === IOUAmount.issuer && e.currency.currency === IOUAmount.currency,
-                    );
+                // check if amount is present
+                if (!this.Amount || !this.Amount?.value || this.Amount?.value === '0') {
+                    return reject(new Error(Localize.t('send.pleaseEnterAmount')));
+                }
 
-                    if (!line) return resolve();
+                let XRPAmount = undefined as AmountType;
 
-                    if (Number(IOUAmount.value) > Number(line.balance)) {
+                // SendMax have higher priority
+                if (this.SendMax && this.SendMax.currency === 'XRP') {
+                    XRPAmount = this.SendMax;
+                } else if (this.Amount.currency === 'XRP' && !this.SendMax) {
+                    XRPAmount = this.Amount;
+                }
+
+                if (XRPAmount) {
+                    // ===== check balance =====
+                    const availableBalance = CalculateAvailableBalance(source);
+                    if (Number(XRPAmount.value) > Number(availableBalance)) {
                         return reject(
                             new Error(
                                 Localize.t('send.insufficientBalanceSpendableBalance', {
-                                    spendable: Localize.formatNumber(NormalizeAmount(line.balance)),
-                                    currency: NormalizeCurrencyCode(line.currency.currency),
-                                }),
-                            ),
-                        );
-                    }
-                } else {
-                    // sender is the issuer
-                    // check for exceed the trustline Limit on obligations
-                    const sourceLine = await LedgerService.getAccountLine(source.address, {
-                        issuer: this.Destination.address,
-                        currency: IOUAmount.currency,
-                    });
-
-                    if (
-                        Number(IOUAmount.value) + Math.abs(Number(sourceLine.balance)) >
-                        Number(sourceLine.limit_peer)
-                    ) {
-                        return reject(
-                            new Error(
-                                Localize.t('send.trustLineLimitExceeded', {
-                                    balance: Localize.formatNumber(
-                                        NormalizeAmount(Math.abs(Number(sourceLine.balance))),
-                                    ),
-                                    peer_limit: Localize.formatNumber(NormalizeAmount(Number(sourceLine.limit_peer))),
-                                    available: Localize.formatNumber(
-                                        NormalizeAmount(
-                                            Number(
-                                                Number(sourceLine.limit_peer) - Math.abs(Number(sourceLine.balance)),
-                                            ),
-                                        ),
-                                    ),
+                                    spendable: Localize.formatNumber(availableBalance),
+                                    currency: 'XRP',
                                 }),
                             ),
                         );
                     }
                 }
-            }
 
-            return resolve();
+                let IOUAmount = undefined as AmountType;
+
+                // SendMax have higher priority
+                if (this.SendMax && this.SendMax.currency !== 'XRP') {
+                    IOUAmount = this.SendMax;
+                } else if (this.Amount.currency !== 'XRP' && !this.SendMax) {
+                    IOUAmount = this.Amount;
+                }
+
+                if (IOUAmount) {
+                    // ===== check if recipient have same trustline for receiving IOU =====
+                    // ignore if sending to the issuer
+                    const destinationLine = await LedgerService.getAccountLine(this.Destination.address, IOUAmount);
+
+                    if (
+                        (!destinationLine ||
+                            (Number(destinationLine.limit) === 0 && Number(destinationLine.balance) === 0)) &&
+                        IOUAmount.issuer !== this.Destination.address
+                    ) {
+                        return reject(new Error(Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine')));
+                    }
+
+                    // ===== check balances =====
+                    // sender is not issuer
+                    if (IOUAmount.issuer !== source.address) {
+                        // check IOU balance
+                        const line = source.lines.find(
+                            (e: any) =>
+                                // eslint-disable-next-line implicit-arrow-linebreak
+                                e.currency.issuer === IOUAmount.issuer && e.currency.currency === IOUAmount.currency,
+                        );
+
+                        // TODO: show proper error message
+                        if (!line) return resolve();
+
+                        if (Number(IOUAmount.value) > Number(line.balance)) {
+                            return reject(
+                                new Error(
+                                    Localize.t('send.insufficientBalanceSpendableBalance', {
+                                        spendable: Localize.formatNumber(NormalizeAmount(line.balance)),
+                                        currency: NormalizeCurrencyCode(line.currency.currency),
+                                    }),
+                                ),
+                            );
+                        }
+                    } else {
+                        // sender is the issuer
+                        // check for exceed the trustline Limit on obligations
+                        const sourceLine = await LedgerService.getAccountLine(source.address, {
+                            issuer: this.Destination.address,
+                            currency: IOUAmount.currency,
+                        });
+
+                        // TODO: show proper error message
+                        if (!sourceLine) return resolve();
+
+                        if (
+                            Number(IOUAmount.value) + Math.abs(Number(sourceLine.balance)) >
+                            Number(sourceLine.limit_peer)
+                        ) {
+                            return reject(
+                                new Error(
+                                    Localize.t('send.trustLineLimitExceeded', {
+                                        balance: Localize.formatNumber(
+                                            NormalizeAmount(Math.abs(Number(sourceLine.balance))),
+                                        ),
+                                        peer_limit: Localize.formatNumber(
+                                            NormalizeAmount(Number(sourceLine.limit_peer)),
+                                        ),
+                                        available: Localize.formatNumber(
+                                            NormalizeAmount(
+                                                Number(
+                                                    Number(sourceLine.limit_peer) -
+                                                        Math.abs(Number(sourceLine.balance)),
+                                                ),
+                                            ),
+                                        ),
+                                    }),
+                                ),
+                            );
+                        }
+                    }
+                }
+                return resolve();
+            } catch (e) {
+                return reject(
+                    new Error(
+                        // eslint-disable-next-line max-len
+                        'An unexpected error occurred while validating the transaction.\n\nPlease try again later, if the problem continues, contact XUMM support.',
+                    ),
+                );
+            }
         });
     };
 }

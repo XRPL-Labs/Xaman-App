@@ -1,1 +1,1 @@
-export { RefForwardingAmountInput as AmountInput } from './AmountInput';
+export { RefForwardingAmountInput as AmountInput, AmountValueType } from './AmountInput';

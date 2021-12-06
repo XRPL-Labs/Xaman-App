@@ -12,18 +12,7 @@ exports[`Storyshots AmountText discreet 1`] = `
   }
 >
   <View
-    accessible={true}
-    collapsable={false}
-    focusable={true}
-    onBlur={[Function]}
-    onClick={[Function]}
-    onFocus={[Function]}
-    onResponderGrant={[Function]}
-    onResponderMove={[Function]}
-    onResponderRelease={[Function]}
-    onResponderTerminate={[Function]}
-    onResponderTerminationRequest={[Function]}
-    onStartShouldSetResponder={[Function]}
+    onPress={[Function]}
     style={
       Object {
         "alignItems": "center",
@@ -31,17 +20,29 @@ exports[`Storyshots AmountText discreet 1`] = `
       }
     }
   >
-    <Text
-      numberOfLines={1}
+    <View
       style={
         Array [
-          undefined,
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          },
           undefined,
         ]
       }
     >
-      ••••••••
-    </Text>
+      <Text
+        numberOfLines={1}
+        style={
+          Array [
+            undefined,
+            undefined,
+          ]
+        }
+      >
+        ••••••••
+      </Text>
+    </View>
     <Text
       numberOfLines={1}
       style={
@@ -108,17 +109,71 @@ exports[`Storyshots AmountText original 1`] = `
           }
         }
       >
-        <Text
-          numberOfLines={1}
+        <View
           style={
             Array [
-              undefined,
+              Object {
+                "alignItems": "center",
+                "flexDirection": "row",
+              },
               undefined,
             ]
           }
         >
-          0…
-        </Text>
+          <Text
+            numberOfLines={1}
+            style={
+              Array [
+                undefined,
+                undefined,
+              ]
+            }
+          >
+            0…
+          </Text>
+        </View>
+      </View>
+    </View>
+    <View
+      style={
+        Object {
+          "alignSelf": "stretch",
+          "marginTop": 10,
+        }
+      }
+    >
+      <View
+        onPress={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "flexDirection": "row",
+              },
+              undefined,
+            ]
+          }
+        >
+          <Text
+            numberOfLines={1}
+            style={
+              Array [
+                undefined,
+                undefined,
+              ]
+            }
+          >
+            2.2222
+          </Text>
+        </View>
       </View>
     </View>
     <View
@@ -149,58 +204,29 @@ exports[`Storyshots AmountText original 1`] = `
           }
         }
       >
-        <Text
-          numberOfLines={1}
+        <View
           style={
             Array [
-              undefined,
+              Object {
+                "alignItems": "center",
+                "flexDirection": "row",
+              },
               undefined,
             ]
           }
         >
-          2.2222
-        </Text>
-      </View>
-    </View>
-    <View
-      style={
-        Object {
-          "alignSelf": "stretch",
-          "marginTop": 10,
-        }
-      }
-    >
-      <View
-        accessible={true}
-        collapsable={false}
-        focusable={true}
-        onBlur={[Function]}
-        onClick={[Function]}
-        onFocus={[Function]}
-        onResponderGrant={[Function]}
-        onResponderMove={[Function]}
-        onResponderRelease={[Function]}
-        onResponderTerminate={[Function]}
-        onResponderTerminationRequest={[Function]}
-        onStartShouldSetResponder={[Function]}
-        style={
-          Object {
-            "alignItems": "center",
-            "flexDirection": "row",
-          }
-        }
-      >
-        <Text
-          numberOfLines={1}
-          style={
-            Array [
-              undefined,
-              undefined,
-            ]
-          }
-        >
-          99,999
-        </Text>
+          <Text
+            numberOfLines={1}
+            style={
+              Array [
+                undefined,
+                undefined,
+              ]
+            }
+          >
+            99,999
+          </Text>
+        </View>
       </View>
     </View>
   </View>
@@ -257,29 +283,71 @@ exports[`Storyshots AmountText withPostfix 1`] = `
           }
         }
       >
-        <Text
-          numberOfLines={1}
+        <View
           style={
             Array [
-              undefined,
+              Object {
+                "alignItems": "center",
+                "flexDirection": "row",
+              },
               undefined,
             ]
           }
         >
-          0…
-        </Text>
-        <Text
-          numberOfLines={1}
+          <Text
+            numberOfLines={1}
+            style={
+              Array [
+                undefined,
+                undefined,
+              ]
+            }
+          >
+            0…
+          </Text>
+        </View>
+      </View>
+    </View>
+    <View
+      style={
+        Object {
+          "alignSelf": "stretch",
+          "marginTop": 10,
+        }
+      }
+    >
+      <View
+        onPress={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
           style={
             Array [
-              undefined,
+              Object {
+                "alignItems": "center",
+                "flexDirection": "row",
+              },
               undefined,
             ]
           }
         >
-           
-          USD
-        </Text>
+          <Text
+            numberOfLines={1}
+            style={
+              Array [
+                undefined,
+                undefined,
+              ]
+            }
+          >
+            2.2222
+          </Text>
+        </View>
       </View>
     </View>
     <View
@@ -310,82 +378,29 @@ exports[`Storyshots AmountText withPostfix 1`] = `
           }
         }
       >
-        <Text
-          numberOfLines={1}
+        <View
           style={
             Array [
-              undefined,
+              Object {
+                "alignItems": "center",
+                "flexDirection": "row",
+              },
               undefined,
             ]
           }
         >
-          2.2222
-        </Text>
-        <Text
-          numberOfLines={1}
-          style={
-            Array [
-              undefined,
-              undefined,
-            ]
-          }
-        >
-           
-          USD
-        </Text>
-      </View>
-    </View>
-    <View
-      style={
-        Object {
-          "alignSelf": "stretch",
-          "marginTop": 10,
-        }
-      }
-    >
-      <View
-        accessible={true}
-        collapsable={false}
-        focusable={true}
-        onBlur={[Function]}
-        onClick={[Function]}
-        onFocus={[Function]}
-        onResponderGrant={[Function]}
-        onResponderMove={[Function]}
-        onResponderRelease={[Function]}
-        onResponderTerminate={[Function]}
-        onResponderTerminationRequest={[Function]}
-        onStartShouldSetResponder={[Function]}
-        style={
-          Object {
-            "alignItems": "center",
-            "flexDirection": "row",
-          }
-        }
-      >
-        <Text
-          numberOfLines={1}
-          style={
-            Array [
-              undefined,
-              undefined,
-            ]
-          }
-        >
-          99,999
-        </Text>
-        <Text
-          numberOfLines={1}
-          style={
-            Array [
-              undefined,
-              undefined,
-            ]
-          }
-        >
-           
-          USD
-        </Text>
+          <Text
+            numberOfLines={1}
+            style={
+              Array [
+                undefined,
+                undefined,
+              ]
+            }
+          >
+            99,999
+          </Text>
+        </View>
       </View>
     </View>
   </View>
@@ -442,27 +457,73 @@ exports[`Storyshots AmountText withPrefix 1`] = `
           }
         }
       >
-        <Text
-          numberOfLines={1}
+        <View
           style={
             Array [
+              Object {
+                "alignItems": "center",
+                "flexDirection": "row",
+              },
               undefined,
             ]
           }
         >
-          -
-        </Text>
-        <Text
-          numberOfLines={1}
+          <Text
+            numberOfLines={1}
+            style={
+              Array [
+                undefined,
+                undefined,
+              ]
+            }
+          >
+            -
+            0…
+          </Text>
+        </View>
+      </View>
+    </View>
+    <View
+      style={
+        Object {
+          "alignSelf": "stretch",
+          "marginTop": 10,
+        }
+      }
+    >
+      <View
+        onPress={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <View
           style={
             Array [
-              undefined,
+              Object {
+                "alignItems": "center",
+                "flexDirection": "row",
+              },
               undefined,
             ]
           }
         >
-          0…
-        </Text>
+          <Text
+            numberOfLines={1}
+            style={
+              Array [
+                undefined,
+                undefined,
+              ]
+            }
+          >
+            -
+            2.2222
+          </Text>
+        </View>
       </View>
     </View>
     <View
@@ -493,78 +554,30 @@ exports[`Storyshots AmountText withPrefix 1`] = `
           }
         }
       >
-        <Text
-          numberOfLines={1}
+        <View
           style={
             Array [
+              Object {
+                "alignItems": "center",
+                "flexDirection": "row",
+              },
               undefined,
             ]
           }
         >
-          -
-        </Text>
-        <Text
-          numberOfLines={1}
-          style={
-            Array [
-              undefined,
-              undefined,
-            ]
-          }
-        >
-          2.2222
-        </Text>
-      </View>
-    </View>
-    <View
-      style={
-        Object {
-          "alignSelf": "stretch",
-          "marginTop": 10,
-        }
-      }
-    >
-      <View
-        accessible={true}
-        collapsable={false}
-        focusable={true}
-        onBlur={[Function]}
-        onClick={[Function]}
-        onFocus={[Function]}
-        onResponderGrant={[Function]}
-        onResponderMove={[Function]}
-        onResponderRelease={[Function]}
-        onResponderTerminate={[Function]}
-        onResponderTerminationRequest={[Function]}
-        onStartShouldSetResponder={[Function]}
-        style={
-          Object {
-            "alignItems": "center",
-            "flexDirection": "row",
-          }
-        }
-      >
-        <Text
-          numberOfLines={1}
-          style={
-            Array [
-              undefined,
-            ]
-          }
-        >
-          -
-        </Text>
-        <Text
-          numberOfLines={1}
-          style={
-            Array [
-              undefined,
-              undefined,
-            ]
-          }
-        >
-          99,999
-        </Text>
+          <Text
+            numberOfLines={1}
+            style={
+              Array [
+                undefined,
+                undefined,
+              ]
+            }
+          >
+            -
+            99,999
+          </Text>
+        </View>
       </View>
     </View>
   </View>

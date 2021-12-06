@@ -4,14 +4,16 @@
  * This is the service we use for update accounts real time details and listen for ledger transactions
  */
 import EventEmitter from 'events';
-import { map, isEmpty, flatMap, forEach, has, get, omitBy, keys } from 'lodash';
+import { map, isEmpty, flatMap, forEach, has, get, keys } from 'lodash';
 
 import { TrustLineSchema } from '@store/schemas/latest';
 import AccountRepository from '@store/repositories/account';
 import CurrencyRepository from '@store/repositories/currency';
 
-import { Amount } from '@common/libs/ledger/parser/common';
 import Meta from '@common/libs/ledger/parser/meta';
+import { Amount } from '@common/libs/ledger/parser/common';
+import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
+import { RippleStateLedgerEntry } from '@common/libs/ledger/objects/types';
 
 import { LedgerTransactionType, LedgerTrustline } from '@common/libs/ledger/types';
 
@@ -21,7 +23,10 @@ import LedgerService from '@services/LedgerService';
 
 /* events  ==================================================================== */
 declare interface AccountService {
-    on(event: 'transaction', listener: (name: string) => void): this;
+    on(
+        event: 'transaction',
+        listener: (transaction: LedgerTransactionType, effectedAccounts: Array<string>) => void,
+    ): this;
     on(event: string, listener: Function): this;
 }
 
@@ -88,7 +93,7 @@ class AccountService extends EventEmitter {
             this.updateAccountsDetails(effectedAccounts);
 
             // emit onTransaction event
-            this.emit('transaction', transaction);
+            this.emit('transaction', transaction, effectedAccounts);
         }
     };
 
@@ -115,7 +120,7 @@ class AccountService extends EventEmitter {
                     // TODO: handle errors
                     if (!accountInfo || has(accountInfo, 'error')) {
                         if (get(accountInfo, 'error') === 'actNotFound') {
-                            // reset account , this is good for node change
+                            // reset account , this is necessary for when changing node chain
                             AccountRepository.update({
                                 address: account,
                                 ownerCount: 0,
@@ -140,7 +145,6 @@ class AccountService extends EventEmitter {
                         address: account,
                         ownerCount: account_data.OwnerCount,
                         sequence: account_data.Sequence,
-                        // @ts-ignore
                         balance: new Amount(account_data.Balance).dropsToXrp(true),
                         flags: account_data.Flags,
                         regularKey: account_data.RegularKey || '',
@@ -189,26 +193,64 @@ class AccountService extends EventEmitter {
 
     /**
      * returns all outgoing account lines
+     * NOTE: we use account_objects to get account lines as it's more accurate and efficient
      */
     getFilteredAccountLines = async (
         account: string,
         marker?: string,
         combined = [] as LedgerTrustline[],
     ): Promise<LedgerTrustline[]> => {
-        return LedgerService.getAccountLines(account, { marker }).then((resp) => {
-            const { lines, marker: _marker } = resp;
-            // filter incoming trust lines
-            const filtered = flatMap(
-                omitBy(lines, (l: any) => {
-                    return (
-                        Number(l.balance) < 0 ||
-                        (Number(l.limit) === 0 && Number(l.limit_peer) > 0) ||
-                        (Number(l.balance) === 0 && Number(l.limit) === 0 && Number(l.limit_peer) === 0)
-                    );
-                }),
-            );
-            if (_marker) {
-                return this.getFilteredAccountLines(account, _marker, filtered);
+        return LedgerService.getAccountObjects(account, { marker, type: 'state' }).then((resp) => {
+            const { account_objects, marker: _marker } = resp as {
+                account_objects: RippleStateLedgerEntry[];
+                marker?: string;
+            };
+
+            const notInDefaultState = account_objects.filter((obj) => {
+                return (
+                    obj.Flags &
+                    LedgerObjectFlags.RippleState[obj.HighLimit.issuer === account ? 'lsfHighReserve' : 'lsfLowReserve']
+                );
+            });
+
+            const accountLinesFormatted = notInDefaultState.map((obj) => {
+                const parties = [obj.HighLimit, obj.LowLimit];
+                const [self, counterparty] = obj.HighLimit.issuer === account ? parties : parties.reverse();
+
+                const ripplingFlags = [
+                    (LedgerObjectFlags.RippleState.lsfHighNoRipple & obj.Flags) ===
+                        LedgerObjectFlags.RippleState.lsfHighNoRipple,
+                    (LedgerObjectFlags.RippleState.lsfLowNoRipple & obj.Flags) ===
+                        LedgerObjectFlags.RippleState.lsfLowNoRipple,
+                ];
+                const [no_ripple, no_ripple_peer] =
+                    obj.HighLimit.issuer === account ? ripplingFlags : ripplingFlags.reverse();
+
+                const balance =
+                    obj.HighLimit.issuer === account && obj.Balance.value.startsWith('-')
+                        ? obj.Balance.value.slice(1)
+                        : obj.Balance.value;
+
+                return {
+                    account: counterparty.issuer,
+                    balance,
+                    currency: self.currency,
+                    limit: self.value,
+                    limit_peer: counterparty.value,
+                    no_ripple,
+                    no_ripple_peer,
+                } as LedgerTrustline;
+            });
+
+            const filtered = accountLinesFormatted.filter((l) => {
+                if (l.limit === '0' && (l.balance === '0' || l.balance.startsWith('-'))) {
+                    return false;
+                }
+                return true;
+            });
+
+            if (_marker && _marker !== marker) {
+                return this.getFilteredAccountLines(account, _marker, filtered.concat(combined));
             }
             return filtered.concat(combined);
         });

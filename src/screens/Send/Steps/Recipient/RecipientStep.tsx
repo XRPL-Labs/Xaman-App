@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import { Results } from 'realm';
-import { isEmpty, flatMap, remove, get, uniqBy, toNumber } from 'lodash';
+import { isEmpty, flatMap, remove, get, uniqBy, toNumber, find } from 'lodash';
 import { View, Text, SectionList, Alert, RefreshControl } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
@@ -16,7 +16,7 @@ import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode, NFTValueToXRPL } from '@common/utils/amount';
 import { NormalizeDestination } from '@common/utils/codec';
 
 import { BackendService, LedgerService, StyleService } from '@services';
@@ -46,6 +46,14 @@ export interface State {
     contacts: Results<ContactSchema>;
     dataSource: any[];
 }
+
+enum PassableChecks {
+    AMOUNT_CREATE_ACCOUNT = 'AMOUNT_CREATE_ACCOUNT',
+    PROBABLE_SCAM = 'PROBABLE_SCAM',
+    CONFIRMED_SCAM = 'CONFIRMED_SCAM',
+    DISALLOWED_XRP_FLAG = 'DISALLOWED_XRP_FLAG',
+}
+
 /* Component ==================================================================== */
 class RecipientStep extends Component<Props, State> {
     lookupTimeout: any;
@@ -323,7 +331,7 @@ class RecipientStep extends Component<Props, State> {
     };
 
     showEnterDestinationTag = () => {
-        const { setDestination, destination, goNext } = this.context;
+        const { setDestination, destination } = this.context;
 
         if (!destination) {
             return;
@@ -335,7 +343,7 @@ class RecipientStep extends Component<Props, State> {
             onFinish: (destinationTag: string) => {
                 Object.assign(destination, { tag: destinationTag });
                 setDestination(destination);
-                goNext();
+                this.goNext();
             },
             onScannerRead: ({ tag }: { tag: number }) => {
                 Object.assign(destination, { tag: String(tag) });
@@ -348,16 +356,13 @@ class RecipientStep extends Component<Props, State> {
     };
 
     clearDestination = () => {
-        const { setDestination, setDestinationInfo } = this.context;
-
-        setDestination(undefined);
-        setDestinationInfo(undefined);
-    };
-
-    resetResult = () => {
         const { setDestination } = this.context;
 
         setDestination(undefined);
+    };
+
+    resetResult = () => {
+        this.clearDestination();
 
         this.setState(
             {
@@ -367,214 +372,267 @@ class RecipientStep extends Component<Props, State> {
         );
     };
 
-    checkAndNext = async () => {
-        const { setDestinationInfo, amount, currency, destination, source, goNext } = this.context;
-
-        this.setState({
-            isLoading: true,
-        });
+    checkAndNext = async (passedChecks = [] as Array<PassableChecks>) => {
+        const { setDestinationInfo, amount, currency, destination, source, sendingNFT } = this.context;
+        let { destinationInfo } = this.context;
 
         try {
+            this.setState({
+                isLoading: true,
+            });
+
             // check for same destination as source
+            // IMMEDIATE REJECT
             if (destination.address === source.address) {
                 Alert.alert(Localize.t('global.error'), Localize.t('send.sourceAndDestinationCannotBeSame'));
                 // don't move to next step
                 return;
             }
 
-            // check for account exist and potential destination tag required
-            const destinationInfo = await getAccountInfo(destination.address);
+            if (!destinationInfo) {
+                // check for account exist and potential destination tag required
+                destinationInfo = await getAccountInfo(destination.address);
+                // set destination account info
+                setDestinationInfo(destinationInfo);
+            }
 
-            // set destination account info
-            setDestinationInfo(destinationInfo);
+            // check for account risk and scam
+            if (
+                (destinationInfo.risk === 'PROBABLE' || destinationInfo.risk === 'HIGH_PROBABILITY') &&
+                passedChecks.indexOf(PassableChecks.PROBABLE_SCAM) === -1
+            ) {
+                setTimeout(() => {
+                    Navigator.showAlertModal({
+                        type: 'warning',
+                        text: Localize.t('send.destinationIsProbableIsScam'),
+                        buttons: [
+                            {
+                                text: Localize.t('global.back'),
+                                onPress: this.resetResult,
+                                type: 'dismiss',
+                                light: false,
+                            },
+                            {
+                                text: Localize.t('global.continue'),
+                                onPress: this.checkAndNext.bind(null, [...passedChecks, PassableChecks.PROBABLE_SCAM]),
+                                type: 'continue',
+                                light: true,
+                            },
+                        ],
+                    });
+                }, 50);
+                return;
+            }
+
+            if (destinationInfo.risk === 'CONFIRMED' && passedChecks.indexOf(PassableChecks.CONFIRMED_SCAM) === -1) {
+                setTimeout(() => {
+                    Navigator.showOverlay(AppScreens.Overlay.FlaggedDestination, {
+                        destination: destination.address,
+                        onContinue: this.checkAndNext.bind(null, [...passedChecks, PassableChecks.CONFIRMED_SCAM]),
+                        onDismissed: this.resetResult,
+                    });
+                }, 50);
+                return;
+            }
 
             // account doesn't exist no need to check account risk
             if (!destinationInfo.exist) {
                 // account does not exist and cannot activate with IOU
+                // IMMEDIATE REJECT
                 if (typeof currency !== 'string') {
-                    Navigator.showAlertModal({
-                        type: 'warning',
-                        text: Localize.t('send.destinationCannotActivateWithIOU', {
-                            baseReserve: LedgerService.getNetworkReserve().BaseReserve,
-                        }),
-                        buttons: [
-                            {
-                                text: Localize.t('global.back'),
-                                onPress: this.clearDestination,
-                                type: 'dismiss',
-                                light: false,
-                            },
-                        ],
-                    });
-
-                    // don't move to next step
+                    setTimeout(() => {
+                        Navigator.showAlertModal({
+                            type: 'warning',
+                            text: Localize.t('send.destinationCannotActivateWithIOU', {
+                                baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+                            }),
+                            buttons: [
+                                {
+                                    text: Localize.t('global.back'),
+                                    onPress: this.clearDestination,
+                                    type: 'dismiss',
+                                    light: false,
+                                },
+                            ],
+                        });
+                    }, 50);
                     return;
                 }
 
                 // check if amount is not covering the creation of account
+                // IMMEDIATE REJECT
                 if (
                     typeof currency === 'string' &&
                     parseFloat(amount) < LedgerService.getNetworkReserve().BaseReserve
                 ) {
-                    Navigator.showAlertModal({
-                        type: 'warning',
-                        text: Localize.t('send.destinationNotExistTooLittleToCreate', {
-                            baseReserve: LedgerService.getNetworkReserve().BaseReserve,
-                        }),
-                        buttons: [
-                            {
-                                text: Localize.t('global.back'),
-                                onPress: this.clearDestination,
-                                type: 'dismiss',
-                                light: false,
-                            },
-                        ],
-                    });
-
-                    // don't move to next step
+                    setTimeout(() => {
+                        Navigator.showAlertModal({
+                            type: 'warning',
+                            text: Localize.t('send.destinationNotExistTooLittleToCreate', {
+                                baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+                            }),
+                            buttons: [
+                                {
+                                    text: Localize.t('global.back'),
+                                    onPress: this.clearDestination,
+                                    type: 'dismiss',
+                                    light: false,
+                                },
+                            ],
+                        });
+                    }, 50);
                     return;
                 }
 
                 // check if the amount will create the account
                 if (
                     typeof currency === 'string' &&
-                    parseFloat(amount) >= LedgerService.getNetworkReserve().BaseReserve
+                    parseFloat(amount) >= LedgerService.getNetworkReserve().BaseReserve &&
+                    passedChecks.indexOf(PassableChecks.AMOUNT_CREATE_ACCOUNT) === -1
                 ) {
+                    setTimeout(() => {
+                        Navigator.showAlertModal({
+                            type: 'warning',
+                            text: Localize.t('send.destinationNotExistCreationWarning', {
+                                amount,
+                                baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+                            }),
+                            buttons: [
+                                {
+                                    text: Localize.t('global.back'),
+                                    onPress: this.clearDestination,
+                                    type: 'dismiss',
+                                    light: true,
+                                },
+                                {
+                                    text: Localize.t('global.continue'),
+                                    onPress: this.checkAndNext.bind(null, [
+                                        ...passedChecks,
+                                        PassableChecks.AMOUNT_CREATE_ACCOUNT,
+                                    ]),
+                                    type: 'continue',
+                                    light: false,
+                                },
+                            ],
+                        });
+                    }, 50);
+
+                    return;
+                }
+            }
+
+            // check if recipient have proper trustline for receiving this IOU
+            // ignore if the recipient is the issuer
+            // IMMEDIATE REJECT
+            if (typeof currency !== 'string' && currency.currency.issuer !== destination.address) {
+                const destinationLine = await LedgerService.getAccountLine(destination.address, currency.currency);
+
+                // recipient does not have the proper trustline
+                if (
+                    !destinationLine ||
+                    (Number(destinationLine.limit) === 0 && Number(destinationLine.balance) === 0)
+                ) {
+                    setTimeout(() => {
+                        Navigator.showAlertModal({
+                            type: 'error',
+                            text: Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine'),
+                            buttons: [
+                                {
+                                    text: Localize.t('global.ok'),
+                                    onPress: this.clearDestination,
+                                    light: false,
+                                },
+                            ],
+                        });
+                    }, 50);
+                    return;
+                }
+
+                // check if sending this payment will exceed the limit
+                const normalizeAmount = sendingNFT ? NFTValueToXRPL(amount) : amount;
+                if (
+                    destinationLine &&
+                    Number(normalizeAmount) + Number(destinationLine.balance) > Number(destinationLine.limit)
+                ) {
+                    setTimeout(() => {
+                        Navigator.showAlertModal({
+                            type: 'error',
+                            text: Localize.t('send.unableToSendPaymentTrustLineLimitIsExceeded'),
+                            buttons: [
+                                {
+                                    text: Localize.t('global.ok'),
+                                    onPress: this.clearDestination,
+                                    light: false,
+                                },
+                            ],
+                        });
+                    }, 50);
+                    return;
+                }
+            }
+
+            // if account is set to black hole then reject sending
+            // IMMEDIATE REJECT
+            if (destinationInfo.blackHole) {
+                setTimeout(() => {
                     Navigator.showAlertModal({
                         type: 'warning',
-                        text: Localize.t('send.destinationNotExistCreationWarning', {
-                            amount,
-                            baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+                        text: Localize.t('send.theDestinationAccountIsSetAsBlackHole', {
+                            currency:
+                                typeof currency === 'string'
+                                    ? 'XRP'
+                                    : NormalizeCurrencyCode(currency.currency.currency),
                         }),
                         buttons: [
                             {
                                 text: Localize.t('global.back'),
                                 onPress: this.clearDestination,
                                 type: 'dismiss',
-                                light: true,
-                            },
-                            {
-                                text: Localize.t('global.continue'),
-                                onPress: goNext,
-                                type: 'continue',
                                 light: false,
                             },
                         ],
                     });
-
-                    // don't move to next step
-                    return;
-                }
-            }
-
-            // check if recipient have same trustline for sending IOU
-            if (typeof currency === 'object') {
-                const destinationLine = await LedgerService.getAccountLine(destination.address, currency.currency);
-
-                if (!destinationLine && currency.currency.issuer !== destination.address) {
-                    Navigator.showAlertModal({
-                        type: 'error',
-                        text: Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine'),
-                        buttons: [
-                            {
-                                text: Localize.t('global.ok'),
-                                onPress: this.clearDestination,
-                                light: false,
-                            },
-                        ],
-                    });
-
-                    // don't move to next step
-                    return;
-                }
-            }
-
-            // if account is set to black hole then reject sending
-            if (destinationInfo.blackHole) {
-                Navigator.showAlertModal({
-                    type: 'warning',
-                    text: Localize.t('send.theDestinationAccountIsSetAsBlackHole', {
-                        currency:
-                            typeof currency === 'object' ? NormalizeCurrencyCode(currency.currency.currency) : 'XRP',
-                    }),
-                    buttons: [
-                        {
-                            text: Localize.t('global.back'),
-                            onPress: this.clearDestination,
-                            type: 'dismiss',
-                            light: false,
-                        },
-                    ],
-                });
-
-                // don't move to next step
-                return;
-            }
-
-            // check for account risk and scam
-            if (destinationInfo.risk === 'PROBABLE' || destinationInfo.risk === 'HIGH_PROBABILITY') {
-                Navigator.showAlertModal({
-                    type: 'warning',
-                    text: Localize.t('send.destinationIsProbableIsScam'),
-                    buttons: [
-                        {
-                            text: Localize.t('global.back'),
-                            onPress: this.resetResult,
-                            type: 'dismiss',
-                            light: false,
-                        },
-                        {
-                            text: Localize.t('global.continue'),
-                            onPress: goNext,
-                            type: 'continue',
-                            light: true,
-                        },
-                    ],
-                });
-
-                // don't move to next step
-                return;
-            }
-
-            if (destinationInfo.risk === 'CONFIRMED') {
-                Navigator.showOverlay(AppScreens.Overlay.FlaggedDestination, {
-                    destination: destination.address,
-                    onContinue: goNext,
-                    onDismissed: this.resetResult,
-                });
-
-                // don't move to next step
+                }, 50);
                 return;
             }
 
             // check for xrp income disallow
-            if (destinationInfo.disallowIncomingXRP && typeof currency === 'string') {
-                Navigator.showAlertModal({
-                    type: 'warning',
-                    text: Localize.t('send.sendToAccountWithDisallowXrpFlagWarning'),
-                    buttons: [
-                        {
-                            text: Localize.t('global.back'),
-                            onPress: this.clearDestination,
-                            type: 'dismiss',
-                            light: false,
-                        },
-                        {
-                            text: Localize.t('global.continue'),
-                            onPress: goNext,
-                            type: 'continue',
-                            light: true,
-                        },
-                    ],
-                });
-
-                // don't move to next step
+            if (
+                destinationInfo.disallowIncomingXRP &&
+                typeof currency === 'string' &&
+                passedChecks.indexOf(PassableChecks.DISALLOWED_XRP_FLAG) === -1
+            ) {
+                setTimeout(() => {
+                    Navigator.showAlertModal({
+                        type: 'warning',
+                        text: Localize.t('send.sendToAccountWithDisallowXrpFlagWarning'),
+                        buttons: [
+                            {
+                                text: Localize.t('global.back'),
+                                onPress: this.clearDestination,
+                                type: 'dismiss',
+                                light: false,
+                            },
+                            {
+                                text: Localize.t('global.continue'),
+                                onPress: this.checkAndNext.bind(null, [
+                                    ...passedChecks,
+                                    PassableChecks.DISALLOWED_XRP_FLAG,
+                                ]),
+                                type: 'continue',
+                                light: true,
+                            },
+                        ],
+                    });
+                }, 50);
                 return;
             }
 
             // check for destination tag require
             if (destinationInfo.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
-                this.showEnterDestinationTag();
+                setTimeout(() => {
+                    this.showEnterDestinationTag();
+                }, 50);
 
                 // don't move to next step
                 return;
@@ -587,7 +645,7 @@ class RecipientStep extends Component<Props, State> {
         }
 
         // go to the next step if everything was fine
-        goNext();
+        this.goNext();
     };
 
     onScannerRead = (content: any) => {
@@ -595,6 +653,38 @@ class RecipientStep extends Component<Props, State> {
             this.doAccountLookUp({ to: content.payId });
         } else {
             this.doAccountLookUp(content);
+        }
+    };
+
+    goNext = async () => {
+        const { goNext, setFee, setAvailableFees, setIssuerFee, currency } = this.context;
+
+        try {
+            this.setState({
+                isLoading: true,
+            });
+
+            // sending IOU
+            if (typeof currency !== 'string') {
+                // fetching/applying issuer fee from network
+                const issuerFee = await LedgerService.getAccountTransferRate(currency.currency.issuer);
+                if (issuerFee) {
+                    setIssuerFee(issuerFee);
+                }
+            }
+
+            // calculate and persist the transaction fees
+            const { availableFees } = await LedgerService.getAvailableNetworkFee();
+
+            setAvailableFees(availableFees);
+            // set the suggested fee as selected fee
+            setFee(find(availableFees, { suggested: true }));
+
+            // move to summary step
+            goNext();
+        } catch (e) {
+            this.setState({ isLoading: false });
+            Toast(Localize.t('send.unableToSetFeesPleaseTryAgain'));
         }
     };
 
@@ -668,8 +758,6 @@ class RecipientStep extends Component<Props, State> {
     };
 
     renderListEmptyComponent = () => {
-        const { setDestination } = this.context;
-
         return (
             <>
                 <View style={[styles.sectionHeader, AppStyles.row]}>
@@ -684,7 +772,7 @@ class RecipientStep extends Component<Props, State> {
                                     searchText: '',
                                 });
                                 // clear the destination if any set
-                                setDestination(undefined);
+                                this.clearDestination();
                                 // set the default source
                                 this.setDefaultDataSource();
                             }}

@@ -1,6 +1,6 @@
 // https://github.com/ripple/ripple-lib-extensions/tree/d266933698a38c51878b4b8806b39ca264526fdc/transactionparser
 
-import { has, groupBy, mapValues, map, isEmpty, compact, flatten } from 'lodash';
+import { has, groupBy, mapValues, map, isEmpty, compact, flatten, flatMap } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import { BalanceChangeType } from './types';
@@ -29,15 +29,32 @@ class Meta {
         };
     };
 
+    private combineChanges = (group: any) => {
+        return map(
+            groupBy(group, (node) => [node.balance.action, node.balance.currency]),
+            (changes) => {
+                const change = changes[0].balance;
+                // must of the case this applies
+                if (changes.length === 1) {
+                    return change;
+                }
+                // in some case's like applied path multiple of same currency can be transferred
+                // so we need to combine the values with out considering the issuer
+                return {
+                    currency: change.currency,
+                    issuer: change.issuer,
+                    // @ts-ignore
+                    value: BigNumber.sum(...flatMap(changes, 'balance.value'))
+                        .decimalPlaces(8)
+                        .toString(10),
+                    action: change.action,
+                };
+            },
+        );
+    };
+
     private groupByAddress = (balanceChanges: any) => {
-        const grouped = groupBy(balanceChanges, (node) => {
-            return node.address;
-        });
-        return mapValues(grouped, (group) => {
-            return map(group, (node) => {
-                return node.balance;
-            });
-        });
+        return mapValues(groupBy(balanceChanges, 'address'), this.combineChanges);
     };
 
     private parseValue = (value: any) => {
@@ -101,7 +118,6 @@ class Meta {
             address: node.finalFields.Account || node.newFields.Account,
             balance: {
                 currency: 'XRP',
-                // eslint-disable-next-line newline-per-chained-call
                 value: valueNumber.absoluteValue().dividedBy(1000000.0).decimalPlaces(8).toString(10),
                 action: valueNumber.isNegative() ? 'DEC' : 'INC',
             },

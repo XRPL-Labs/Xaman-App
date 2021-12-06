@@ -13,6 +13,12 @@ export enum Steps {
     Result = 'Result',
 }
 
+export interface FeeItem {
+    type: string;
+    value: string;
+    suggested?: boolean;
+}
+
 export interface Props {
     currency?: TrustLineSchema;
     scanResult?: XrplDestination;
@@ -28,6 +34,9 @@ export interface State {
     currency: TrustLineSchema | string;
     sendingNFT: boolean;
     amount: string;
+    availableFees: FeeItem[];
+    selectedFee: FeeItem;
+    issuerFee: number;
     payment: Payment;
     scanResult: XrplDestination;
     coreSettings: CoreSchema;
@@ -41,6 +50,9 @@ export interface ContextProps extends State {
     setDestination: (destination: Destination) => void;
     setDestinationInfo: (info: any) => void;
     setScanResult: (result: XrplDestination) => void;
+    setIssuerFee: (issuerFee: number) => void;
+    setFee: (fee: FeeItem) => void;
+    setAvailableFees: (availableFees: FeeItem[]) => void;
     goNext: () => void;
     goBack: () => void;
 }

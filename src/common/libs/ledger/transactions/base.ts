@@ -53,6 +53,7 @@ class BaseTransaction {
             'Flags',
             'Fee',
             'Sequence',
+            'TicketSequence',
             'AccountTxnID',
             'LastLedgerSequence',
             'Signers',
@@ -74,13 +75,9 @@ class BaseTransaction {
             // just for known tx types
             if (this.Type) {
                 if (isUndefined(this.Fee)) {
-                    const { Fee } = LedgerService.getLedgerStatus();
-
-                    if (Fee) {
-                        this.Fee = new Amount(this.calculateFee(Fee)).dropsToXrp();
-                    } else {
-                        throw new Error('Unable to set transaction Fee, check you are connected to the internet.');
-                    }
+                    // throw error if transaction fee is not set
+                    // transaction fee's should always been set and shown to user before signing
+                    throw new Error('Transaction fee is not set, please wait until transaction fee to be set!');
                 }
 
                 // if account sequence not set get the latest account sequence
@@ -95,14 +92,18 @@ class BaseTransaction {
                     }
                 }
 
-                // When a transaction has a Max Ledger property + value and the value < 32570,
-                // use the existing Ledger + the entered value at the moment of signing.
-                if (this.LastLedgerSequence) {
-                    if (this.LastLedgerSequence < 32570) {
-                        const { LastLedger } = LedgerService.getLedgerStatus();
-                        if (LastLedger) {
-                            this.LastLedgerSequence = Number(LastLedger) + this.LastLedgerSequence;
-                        }
+                // if no LastLedgerSequence set then {current ledger + 10}
+                const { LastLedger } = LedgerService.getLedgerStatus();
+                if (isUndefined(this.LastLedgerSequence)) {
+                    // only set if if last ledger is set
+                    if (LastLedger) {
+                        this.LastLedgerSequence = Number(LastLedger) + 10;
+                    }
+                } else if (this.LastLedgerSequence < 32570) {
+                    // When a transaction has a Max Ledger property + value and the value < 32570,
+                    // use the existing Ledger + the entered value at the moment of signing.
+                    if (LastLedger) {
+                        this.LastLedgerSequence = Number(LastLedger) + this.LastLedgerSequence;
                     }
                 }
 
@@ -144,14 +145,23 @@ class BaseTransaction {
                 }
 
                 // prepare tranaction for signing
-                await this.prepare();
+                // skip if multiSing transaction
+                if (!multiSign) {
+                    await this.prepare();
+                }
+
+                // if transaction aborted then don't continue
+                if (this.isAborted) {
+                    reject(new Error('Transaction aborted!'));
+                    return;
+                }
 
                 Navigator.showOverlay(AppScreens.Overlay.Vault, {
                     account,
                     txJson: this.Json,
                     multiSign,
                     onSign: (signedObject: SignedObjectType) => {
-                        const { id, signedTransaction } = signedObject;
+                        const { id, signedTransaction, signers } = signedObject;
 
                         if (!id || !signedTransaction) {
                             reject(new Error('Unable sign the transaction, please try again!'));
@@ -161,6 +171,10 @@ class BaseTransaction {
                         this.Hash = signedObject.id;
                         this.TxnSignature = signedObject.signedTransaction;
                         this.SignMethod = signedObject.signMethod || 'OTHER';
+
+                        if (Array.isArray(signers) && signers.length > 0) {
+                            [this.SignerAccount] = signers;
+                        }
 
                         resolve(this.TxnSignature);
                     },
@@ -229,6 +243,14 @@ class BaseTransaction {
 
             return result;
         }
+    };
+
+    /*
+    Abort the transaction if on progress
+    this will just set a flag
+    */
+    abort = () => {
+        this.isAborted = true;
     };
 
     /**
@@ -523,6 +545,14 @@ class BaseTransaction {
 
     set Sequence(sequence: number) {
         set(this, ['tx', 'Sequence'], sequence);
+    }
+
+    get TicketSequence(): number {
+        return get(this, ['tx', 'TicketSequence'], undefined);
+    }
+
+    set TicketSequence(ticketSequence: number) {
+        set(this, ['tx', 'TicketSequence'], ticketSequence);
     }
 
     get LastLedgerSequence(): number {

@@ -4,7 +4,7 @@
 
 import { uniqBy, flatMap, map } from 'lodash';
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, ScrollView, BackHandler } from 'react-native';
+import { SafeAreaView, View, Text, ScrollView, BackHandler, NativeEventSubscription } from 'react-native';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
@@ -55,7 +55,7 @@ export interface State {
 class EventsFilterView extends Component<Props, State> {
     static screenName = AppScreens.Modal.FilterEvents;
 
-    private backHandler: any;
+    private backHandler: NativeEventSubscription;
 
     static options() {
         return {
@@ -85,14 +85,14 @@ class EventsFilterView extends Component<Props, State> {
         };
     }
 
+    componentDidMount() {
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.dismiss);
+    }
+
     componentWillUnmount() {
         if (this.backHandler) {
             this.backHandler.remove();
         }
-    }
-
-    componentDidMount() {
-        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.dismiss);
     }
 
     dismiss = () => {

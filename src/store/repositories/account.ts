@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { first, has, filter, find } from 'lodash';
+import { flatMap, first, has, filter, find } from 'lodash';
 import Realm, { Results, ObjectSchema } from 'realm';
 
 import LedgerService from '@services/LedgerService';
@@ -94,6 +94,13 @@ class AccountRepository extends BaseRepository {
             return this.query(filters);
         }
         return this.findAll();
+    };
+
+    /**
+     * get list of accounts with full access
+     */
+    getFullAccessAccounts = (): Array<AccountSchema> => {
+        return flatMap(this.query({ accessLevel: AccessLevels.Full }));
     };
 
     /**

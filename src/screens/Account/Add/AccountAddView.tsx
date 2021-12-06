@@ -1,6 +1,7 @@
 /**
  * Add Account Screen
  */
+import { set } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Text, Image, ImageBackground, Alert, InteractionManager, EventSubscription } from 'react-native';
@@ -98,7 +99,9 @@ class AccountAddView extends Component<Props, State> {
 
         RNTangemSdk.createWallet({ cardId, curve: GetPreferCurve(supportedCurves) })
             .then((resp) => {
-                this.goToImport({ tangemCard: { ...card, ...resp } });
+                const { wallet } = resp;
+                set(card, 'wallets', [wallet]);
+                this.goToImport({ tangemCard: card });
             })
             .catch(() => {
                 // ignore

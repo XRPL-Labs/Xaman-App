@@ -1,9 +1,9 @@
 import { get, isEqual, findIndex, isEmpty } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text, ViewStyle, Modal, FlatList, TouchableOpacity, LayoutChangeEvent } from 'react-native';
+import { View, Text, ViewStyle, Modal, FlatList, LayoutChangeEvent } from 'react-native';
 
-import { Icon } from '@components/General/Icon';
+import { TouchableDebounce, Icon } from '@components/General';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -166,7 +166,7 @@ class AccordionPicker extends Component<Props, State> {
         const { selectedIndex, expanded } = this.state;
 
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 activeOpacity={0.8}
                 style={[
                     index === selectedIndex ? styles.pickerDropDownItemActive : styles.pickerDropDownItem,
@@ -182,7 +182,7 @@ class AccordionPicker extends Component<Props, State> {
                         </View>
                     )}
                 </View>
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     };
 
@@ -197,7 +197,7 @@ class AccordionPicker extends Component<Props, State> {
         }
 
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 activeOpacity={0.9}
                 onLayout={this.setItemHeight}
                 onPress={this.onPress}
@@ -206,16 +206,16 @@ class AccordionPicker extends Component<Props, State> {
                 <View style={[AppStyles.row]}>
                     <View style={AppStyles.flex1}>{renderItem(selectedItem)}</View>
                     {items.length > 1 && (
-                        <TouchableOpacity style={[styles.collapseButton]} onPress={this.toggle}>
+                        <TouchableDebounce style={[styles.collapseButton]} onPress={this.toggle}>
                             <Icon
                                 name={expanded ? 'IconChevronUp' : 'IconChevronDown'}
                                 size={20}
                                 style={styles.collapseIcon}
                             />
-                        </TouchableOpacity>
+                        </TouchableDebounce>
                     )}
                 </View>
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     };
 

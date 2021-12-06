@@ -5,17 +5,7 @@
 import { get, set, isEmpty } from 'lodash';
 
 import React, { Component } from 'react';
-import {
-    SafeAreaView,
-    View,
-    Text,
-    TextInput,
-    Alert,
-    ScrollView,
-    Platform,
-    TouchableOpacity,
-    KeyboardEvent,
-} from 'react-native';
+import { SafeAreaView, View, Text, TextInput, Alert, Platform, TouchableOpacity } from 'react-native';
 
 import { derive } from 'xrpl-accountlib';
 
@@ -24,12 +14,19 @@ import { StringType, XrplSecret } from 'xumm-string-decode';
 import Localize from '@locale';
 
 import { Navigator } from '@common/helpers/navigator';
-import Keyboard from '@common/helpers/keyboard';
 
 import { AppScreens } from '@common/constants';
 
 // components
-import { PasswordInput, DerivationPathInput, Button, Spacer, Switch, Footer } from '@components/General';
+import {
+    KeyboardAwareScrollView,
+    PasswordInput,
+    DerivationPathInput,
+    Button,
+    Spacer,
+    Switch,
+    Footer,
+} from '@components/General';
 
 // style
 import { AppStyles } from '@theme';
@@ -48,7 +45,6 @@ export interface State {
     passphrase: string;
     derivationPath: any;
     activeRow: number;
-    keyboardHeight: number;
     isLoading: boolean;
 }
 
@@ -57,7 +53,7 @@ class EnterMnemonicStep extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
-    scrollView: ScrollView;
+    scrollView: KeyboardAwareScrollView;
     inputs: TextInput[];
     derivationPathInput: DerivationPathInput;
     scrollToBottomY: number;
@@ -73,34 +69,11 @@ class EnterMnemonicStep extends Component<Props, State> {
             passphrase: '',
             derivationPath: undefined,
             activeRow: -1,
-            keyboardHeight: 0,
             isLoading: false,
         };
 
         this.inputs = [];
     }
-
-    componentDidMount() {
-        Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
-        Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
-    }
-
-    componentWillUnmount() {
-        Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
-        Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
-    }
-
-    onKeyboardShow = (e: KeyboardEvent) => {
-        const { height } = e.endCoordinates;
-
-        this.setState({
-            keyboardHeight: height,
-        });
-    };
-
-    onKeyboardHide = () => {
-        this.setState({ keyboardHeight: 0 });
-    };
 
     goNext = () => {
         const { goNext, setImportedAccount } = this.context;
@@ -217,6 +190,14 @@ class EnterMnemonicStep extends Component<Props, State> {
         });
     };
 
+    scrollToBottom = () => {
+        setTimeout(() => {
+            if (this.scrollView) {
+                this.scrollView.scrollTo(this.scrollToBottomY);
+            }
+        }, 100);
+    };
+
     renderRows = () => {
         const { words, length, activeRow } = this.state;
 
@@ -260,7 +241,9 @@ class EnterMnemonicStep extends Component<Props, State> {
                         onSubmitEditing={() => {
                             if (i + 1 !== length) {
                                 if (this.inputs[i + 1]) {
-                                    this.inputs[i + 1].focus();
+                                    setTimeout(() => {
+                                        this.inputs[i + 1].focus();
+                                    }, 200);
                                 }
                             }
                         }}
@@ -289,13 +272,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                     <View style={[AppStyles.leftAligned]}>
                         <Switch
                             onChange={(enabled) => {
-                                this.setState({ usePassphrase: enabled });
-
-                                setTimeout(() => {
-                                    if (this.scrollView) {
-                                        this.scrollView.scrollTo({ y: this.scrollToBottomY });
-                                    }
-                                }, 100);
+                                this.setState({ usePassphrase: enabled }, this.scrollToBottom);
                             }}
                             checked={usePassphrase}
                         />
@@ -326,20 +303,14 @@ class EnterMnemonicStep extends Component<Props, State> {
         const { useAlternativePath } = this.state;
 
         return (
-            <View style={[AppStyles.flex1]}>
+            <View style={[AppStyles.flex1, AppStyles.paddingBottomSml]}>
                 <View style={AppStyles.hr} />
 
                 <View style={[AppStyles.row, AppStyles.paddingVerticalSml]}>
                     <View style={[AppStyles.leftAligned]}>
                         <Switch
                             onChange={(enabled) => {
-                                this.setState({ useAlternativePath: enabled });
-
-                                setTimeout(() => {
-                                    if (this.scrollView) {
-                                        this.scrollView.scrollTo({ y: this.scrollToBottomY });
-                                    }
-                                }, 100);
+                                this.setState({ useAlternativePath: enabled }, this.scrollToBottom);
                             }}
                             checked={useAlternativePath}
                         />
@@ -366,7 +337,7 @@ class EnterMnemonicStep extends Component<Props, State> {
 
     render() {
         const { goBack } = this.context;
-        const { length, keyboardHeight, isLoading } = this.state;
+        const { length, isLoading } = this.state;
 
         return (
             <SafeAreaView testID="account-import-enter-mnemonic-view" style={[AppStyles.container]}>
@@ -440,13 +411,12 @@ class EnterMnemonicStep extends Component<Props, State> {
                     />
                 </View>
 
-                <ScrollView
+                <KeyboardAwareScrollView
                     ref={(r) => {
                         this.scrollView = r;
                     }}
                     style={[AppStyles.flex1, AppStyles.stretchSelf]}
                     contentContainerStyle={[AppStyles.paddingHorizontal]}
-                    contentInset={{ bottom: keyboardHeight, top: 0 }}
                     onContentSizeChange={(contentWidth, contentHeight) => {
                         this.scrollToBottomY = contentHeight;
                     }}
@@ -454,7 +424,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                     {this.renderRows()}
                     {this.renderPassphrase()}
                     {this.renderDerivationPath()}
-                </ScrollView>
+                </KeyboardAwareScrollView>
 
                 <Footer style={[AppStyles.centerAligned, AppStyles.row]}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>

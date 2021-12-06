@@ -46,5 +46,12 @@ const Truncate = (fullString: string, string_length: number): string => {
     return fullString.substr(0, frontChars) + separator + fullString.substr(fullString.length - backChars);
 };
 
+const Capitalize = (str: string) => {
+    if (!str) {
+        return '';
+    }
+    return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
 /* Export ==================================================================== */
-export { HexEncoding, Truncate };
+export { HexEncoding, Truncate, Capitalize };

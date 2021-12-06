@@ -4,6 +4,8 @@ import {
     View,
     PanResponder,
     Animated,
+    TouchableOpacity,
+    AccessibilityInfo,
     PanResponderGestureState,
     GestureResponderEvent,
     ViewStyle,
@@ -28,6 +30,7 @@ const SWIPE_SUCCESS_THRESHOLD = 80;
 interface Props {
     testID?: string;
     label?: string;
+    accessibilityLabel?: string;
     isLoading?: boolean;
     secondary?: boolean;
     onSwipeSuccess: () => void;
@@ -38,7 +41,9 @@ interface Props {
     color?: string;
 }
 
-interface State {}
+interface State {
+    screenReaderEnabled: boolean;
+}
 /* Component ==================================================================== */
 class SwipeButton extends Component<Props, State> {
     static defaultProps = {
@@ -53,6 +58,10 @@ class SwipeButton extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
+
+        this.state = {
+            screenReaderEnabled: false,
+        };
 
         this.defaultContainerWidth = AppSizes.scale(45);
         this.maxWidth = 0;
@@ -70,9 +79,29 @@ class SwipeButton extends Component<Props, State> {
         });
     }
 
+    componentDidMount() {
+        AccessibilityInfo.addEventListener('change', this.onScreenReaderChange);
+
+        AccessibilityInfo.isScreenReaderEnabled().then((enabled) => {
+            this.setState({
+                screenReaderEnabled: enabled,
+            });
+        });
+    }
+
     componentWillUnmount() {
         if (this.resetDelayTimeout) clearTimeout(this.resetDelayTimeout);
     }
+
+    onScreenReaderChange = (enabled: boolean) => {
+        const { screenReaderEnabled } = this.state;
+
+        if (enabled !== screenReaderEnabled) {
+            this.setState({
+                screenReaderEnabled: enabled,
+            });
+        }
+    };
 
     onLayoutChange = (e: any) => {
         const { width } = e.nativeEvent.layout;
@@ -172,13 +201,40 @@ class SwipeButton extends Component<Props, State> {
     };
 
     render() {
-        const { label, isLoading, secondary, testID, style, color } = this.props;
+        const { screenReaderEnabled } = this.state;
+        const { label, accessibilityLabel, isLoading, secondary, testID, style, color, onSwipeSuccess } = this.props;
 
         if (isLoading) {
             return (
-                <View style={[styles.container]}>
+                <View
+                    style={[
+                        styles.container,
+                        secondary && styles.containerSecondary,
+                        style,
+                        color && { backgroundColor: color, borderColor: color },
+                    ]}
+                >
                     <LoadingIndicator style={styles.spinner} color="light" />
                 </View>
+            );
+        }
+
+        if (screenReaderEnabled) {
+            return (
+                <TouchableOpacity
+                    accessible
+                    accessibilityRole="button"
+                    onPress={onSwipeSuccess}
+                    style={[
+                        styles.container,
+                        secondary && styles.containerSecondary,
+                        style,
+                        color && { backgroundColor: color, borderColor: color },
+                    ]}
+                >
+                    {/* eslint-disable-next-line react-native/no-inline-styles */}
+                    <Text style={[styles.label, { paddingLeft: 0 }]}>{accessibilityLabel}</Text>
+                </TouchableOpacity>
             );
         }
 
@@ -192,9 +248,7 @@ class SwipeButton extends Component<Props, State> {
                 ]}
                 onLayout={this.onLayoutChange}
             >
-                <Text importantForAccessibility="no-hide-descendants" style={[styles.label]}>
-                    {label}
-                </Text>
+                <Text style={[styles.label]}>{label}</Text>
                 <Animated.View
                     testID={testID}
                     style={[styles.thumpContainer, { width: this.animatedWidth }]}

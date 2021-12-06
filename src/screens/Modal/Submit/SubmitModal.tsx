@@ -5,7 +5,15 @@
  */
 
 import React, { Component, Fragment } from 'react';
-import { View, Text, SafeAreaView, Image, InteractionManager, BackHandler } from 'react-native';
+import {
+    View,
+    Text,
+    SafeAreaView,
+    Image,
+    InteractionManager,
+    BackHandler,
+    NativeEventSubscription,
+} from 'react-native';
 
 import Clipboard from '@react-native-community/clipboard';
 
@@ -40,7 +48,7 @@ export interface State {
 class SubmitModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.Submit;
 
-    private backHandler: any;
+    private backHandler: NativeEventSubscription;
 
     static options() {
         return {
@@ -60,18 +68,18 @@ class SubmitModal extends Component<Props, State> {
         };
     }
 
-    componentWillUnmount() {
-        if (this.backHandler) {
-            this.backHandler.remove();
-        }
-    }
-
     componentDidMount() {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
 
         InteractionManager.runAfterInteractions(() => {
             this.submit();
         });
+    }
+
+    componentWillUnmount() {
+        if (this.backHandler) {
+            this.backHandler.remove();
+        }
     }
 
     submit = async () => {

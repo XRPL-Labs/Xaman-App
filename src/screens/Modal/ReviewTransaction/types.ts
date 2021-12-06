@@ -13,8 +13,9 @@ export enum Steps {
 
 export interface Props {
     payload: Payload;
-    onResolve?: () => void;
+    onResolve?: (transaction: TransactionsType) => void;
     onDecline?: () => void;
+    onClose?: () => void;
 }
 
 export interface State {

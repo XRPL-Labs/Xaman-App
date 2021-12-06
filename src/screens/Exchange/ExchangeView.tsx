@@ -3,17 +3,7 @@
  */
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
-import {
-    View,
-    SafeAreaView,
-    ScrollView,
-    Text,
-    Image,
-    Alert,
-    TextInput,
-    Keyboard,
-    InteractionManager,
-} from 'react-native';
+import { View, ScrollView, Text, TextInput, Keyboard, InteractionManager } from 'react-native';
 
 import { Result as LiquidityResult } from 'xrpl-orderbook-reader';
 
@@ -23,6 +13,8 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 import { AccountRepository } from '@store/repositories';
+
+import { Payload } from '@common/libs/payload';
 
 import LedgerExchange from '@common/libs/ledger/exchange';
 import { OfferCreate } from '@common/libs/ledger/transactions';
@@ -39,12 +31,13 @@ import {
     AmountInput,
     Header,
     Spacer,
-    Icon,
     Button,
     InfoMessage,
     LoadingIndicator,
     HorizontalLine,
 } from '@components/General';
+
+import { AmountValueType } from '@components/General/AmountInput';
 
 import Localize from '@locale';
 
@@ -62,11 +55,8 @@ export interface State {
     direction: 'sell' | 'buy';
     amount: string;
     liquidity: LiquidityResult;
-    offer: OfferCreate;
     isLoading: boolean;
-    isPreparing: boolean;
     isExchanging: boolean;
-    isVerifying: boolean;
 }
 
 /* Component ==================================================================== */
@@ -93,11 +83,8 @@ class ExchangeView extends Component<Props, State> {
             direction: 'sell',
             amount: '',
             liquidity: undefined,
-            offer: new OfferCreate(),
             isLoading: true,
-            isPreparing: false,
             isExchanging: false,
-            isVerifying: false,
         };
 
         const PAIR = { issuer: props.trustLine.currency.issuer, currency: props.trustLine.currency.currency };
@@ -259,9 +246,9 @@ class ExchangeView extends Component<Props, State> {
 
     prepareAndSign = async () => {
         const { trustLine } = this.props;
-        const { sourceAccount, offer, amount, direction, liquidity } = this.state;
+        const { sourceAccount, amount, direction, liquidity } = this.state;
 
-        this.setState({ isPreparing: true });
+        this.setState({ isExchanging: true });
 
         const XRPL_PAIR = { issuer: trustLine.currency.issuer, currency: trustLine.currency.currency };
 
@@ -270,6 +257,8 @@ class ExchangeView extends Component<Props, State> {
         );
 
         const getsAmount = new BigNumber(amount).multipliedBy(paddedExchangeRate).decimalPlaces(8).toString(10);
+
+        const offer = new OfferCreate();
 
         if (direction === 'sell') {
             offer.TakerGets = { currency: 'XRP', value: amount };
@@ -285,69 +274,58 @@ class ExchangeView extends Component<Props, State> {
         // set source account
         offer.Account = { address: sourceAccount.address };
 
-        offer
-            .sign(sourceAccount)
-            .then(this.submit)
-            .catch((e) => {
-                if (e) {
-                    Alert.alert(Localize.t('global.error'), e.message);
-                }
-            })
-            .finally(() => {
-                this.setState({
-                    isPreparing: false,
-                });
-            });
+        const payload = await Payload.build(offer.Json);
+
+        Navigator.showModal(
+            AppScreens.Modal.ReviewTransaction,
+            {
+                payload,
+                onResolve: this.onReviewScreenResolve,
+                onClose: this.onReviewScreenClose,
+            },
+            { modalPresentationStyle: 'fullScreen' },
+        );
     };
 
-    submit = async () => {
-        const { sourceAccount, offer } = this.state;
+    onReviewScreenClose = () => {
+        this.setState({
+            isExchanging: false,
+        });
+    };
 
-        this.setState({ isExchanging: true });
+    onReviewScreenResolve = (offer: OfferCreate) => {
+        const { sourceAccount } = this.state;
 
-        // submit to the ledger
-        const submitResult = await offer.submit();
+        this.setState({
+            isExchanging: false,
+        });
 
-        if (!submitResult.success) {
+        if (offer.TransactionResult?.success === false) {
             this.showResultAlert(
                 Localize.t('global.error'),
-                Localize.t('exchange.errorDuringExchange', { error: submitResult.message }),
+                Localize.t('exchange.errorDuringExchange', {
+                    error: offer.TransactionResult.message || 'UNKNOW ERROR',
+                }),
             );
-            this.setState({ isExchanging: false });
             return;
         }
 
-        this.setState({ isVerifying: true });
+        if (offer.Executed) {
+            // calculate delivered amounts
+            const takerGot = offer.TakerGot(sourceAccount.address);
+            const takerPaid = offer.TakerPaid(sourceAccount.address);
 
-        // transaction submitted successfully
-        // verify
-        const verifyResult = await offer.verify();
-
-        this.setState({ isExchanging: false });
-
-        if (verifyResult.success) {
-            if (offer.Executed) {
-                // calculate delivered amounts
-                const takerGot = offer.TakerGot(sourceAccount.address);
-                const takerPaid = offer.TakerPaid(sourceAccount.address);
-
-                this.showResultAlert(
-                    Localize.t('global.success'),
-                    Localize.t('exchange.successfullyExchanged', {
-                        payAmount: Localize.formatNumber(Number(takerGot.value)),
-                        payCurrency: NormalizeCurrencyCode(takerGot.currency),
-                        getAmount: Localize.formatNumber(Number(takerPaid.value)),
-                        getCurrency: NormalizeCurrencyCode(takerPaid.currency),
-                    }),
-                );
-            } else {
-                this.showResultAlert(Localize.t('global.failed'), Localize.t('exchange.failedExchange'));
-            }
-        } else {
             this.showResultAlert(
-                Localize.t('global.error'),
-                Localize.t('exchange.errorDuringExchange', { error: submitResult.message }),
+                Localize.t('global.success'),
+                Localize.t('exchange.successfullyExchanged', {
+                    payAmount: Localize.formatNumber(Number(takerGot.value)),
+                    payCurrency: NormalizeCurrencyCode(takerGot.currency),
+                    getAmount: Localize.formatNumber(Number(takerPaid.value)),
+                    getCurrency: NormalizeCurrencyCode(takerPaid.currency),
+                }),
             );
+        } else {
+            this.showResultAlert(Localize.t('global.failed'), Localize.t('exchange.failedExchange'));
         }
     };
 
@@ -397,7 +375,7 @@ class ExchangeView extends Component<Props, State> {
 
     renderBottomContainer = () => {
         const { trustLine } = this.props;
-        const { direction, liquidity, amount, isPreparing, isLoading } = this.state;
+        const { direction, liquidity, amount, isExchanging, isLoading } = this.state;
 
         if (isLoading || !liquidity) {
             return <LoadingIndicator />;
@@ -443,7 +421,7 @@ class ExchangeView extends Component<Props, State> {
                 <Spacer size={40} />
                 <Button
                     onPress={this.exchange}
-                    isLoading={isPreparing}
+                    isLoading={isExchanging}
                     isDisabled={!amount || amount === '0' || !liquidity.rate || isLoading}
                     label={Localize.t('global.exchange')}
                 />
@@ -453,54 +431,12 @@ class ExchangeView extends Component<Props, State> {
 
     render() {
         const { trustLine } = this.props;
-        const { direction, liquidity, amount, isExchanging, isVerifying } = this.state;
+        const { direction, liquidity, amount } = this.state;
 
         let getsAmount = '0';
 
         if (liquidity?.rate) {
             getsAmount = new BigNumber(amount || 0).multipliedBy(liquidity.rate).decimalPlaces(3).toString(10);
-        }
-
-        if (isExchanging) {
-            return (
-                <SafeAreaView style={[AppStyles.container, AppStyles.paddingSml]}>
-                    <View style={[AppStyles.flex5, AppStyles.centerContent]}>
-                        <Image style={styles.backgroundImageStyle} source={Images.IconRepeat} />
-                    </View>
-
-                    <View style={[AppStyles.flex4]}>
-                        <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerAligned]}>
-                            {!isVerifying ? (
-                                <Text style={[AppStyles.h4, AppStyles.textCenterAligned]}>
-                                    {!isVerifying ? Localize.t('send.sending') : Localize.t('send.verifying')}
-                                </Text>
-                            ) : (
-                                <Text style={[AppStyles.h5, AppStyles.textCenterAligned, AppStyles.colorGreen]}>
-                                    {Localize.t('send.sent')}{' '}
-                                    <Icon name="IconCheck" size={20} style={AppStyles.imgColorGreen} />
-                                </Text>
-                            )}
-
-                            <Spacer size={10} />
-                            {isVerifying && (
-                                <Text style={[AppStyles.h4, AppStyles.textCenterAligned]}>
-                                    {Localize.t('send.verifying')}
-                                </Text>
-                            )}
-                        </View>
-                        <View style={[AppStyles.flex2]}>
-                            <LoadingIndicator size="large" />
-                            <Spacer size={20} />
-                            <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
-                                {Localize.t('send.submittingToLedger')}
-                            </Text>
-                            <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
-                                {Localize.t('global.thisMayTakeFewSeconds')}
-                            </Text>
-                        </View>
-                    </View>
-                </SafeAreaView>
-            );
         }
 
         return (
@@ -568,11 +504,11 @@ class ExchangeView extends Component<Props, State> {
                             <View style={AppStyles.flex1}>
                                 <AmountInput
                                     ref={this.amountInput}
-                                    decimalPlaces={direction === 'sell' ? 6 : 8}
+                                    value={amount}
+                                    valueType={direction === 'sell' ? AmountValueType.XRP : AmountValueType.IOU}
                                     onChange={this.onAmountChange}
                                     placeholderTextColor={AppColors.red}
                                     style={styles.fromAmount}
-                                    value={amount}
                                 />
                             </View>
                         </View>

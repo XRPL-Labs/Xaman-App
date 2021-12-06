@@ -5,7 +5,7 @@
 import { uniqBy, sortBy, toLower } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetDeviceLocaleSettings, RestartBundle } from '@common/helpers/device';
@@ -17,7 +17,7 @@ import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 import { Themes } from '@store/types';
 
-import { Header, Icon, Switch } from '@components/General';
+import { TouchableDebounce, Header, Icon, Switch } from '@components/General';
 
 import Localize from '@locale';
 
@@ -193,7 +193,7 @@ class GeneralSettingsView extends Component<Props, State> {
         const selected = toLower(coreSettings.theme) === theme;
 
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 key={theme}
                 testID={`theme-${theme}`}
                 activeOpacity={selected ? 1 : 0.8}
@@ -218,7 +218,7 @@ class GeneralSettingsView extends Component<Props, State> {
                 <View style={[AppStyles.flex1, styles.themePreview, previewStyle]}>
                     <Text style={[AppStyles.p, AppStyles.strong, previewStyle]}>Aa</Text>
                 </View>
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     };
 
@@ -268,7 +268,7 @@ class GeneralSettingsView extends Component<Props, State> {
                         </View>
                     </View>
 
-                    <TouchableOpacity style={[styles.row]} onPress={this.showLanguagePicker}>
+                    <TouchableDebounce style={[styles.row]} onPress={this.showLanguagePicker}>
                         <View style={[AppStyles.flex3]}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('global.language')}
@@ -278,9 +278,9 @@ class GeneralSettingsView extends Component<Props, State> {
                             <Text style={[styles.value]}>{this.getLanguageTitle()}</Text>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
 
-                    <TouchableOpacity style={[styles.row]} onPress={this.showCurrencyPicker}>
+                    <TouchableDebounce style={[styles.row]} onPress={this.showCurrencyPicker}>
                         <View style={[AppStyles.flex3]}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('global.currency')}
@@ -290,7 +290,7 @@ class GeneralSettingsView extends Component<Props, State> {
                             <Text style={[styles.value]}>{coreSettings.currency}</Text>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
 
                     <View style={styles.row}>
                         <View style={[AppStyles.flex3]}>

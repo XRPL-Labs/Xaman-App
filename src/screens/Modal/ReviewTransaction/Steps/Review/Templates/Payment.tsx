@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { isEmpty, isEqual, has, get } from 'lodash';
 import React, { Component } from 'react';
-import { View, Alert, Text, Platform, TouchableOpacity, InteractionManager } from 'react-native';
+import { View, Alert, Text, TouchableOpacity, InteractionManager } from 'react-native';
 
 import { BackendService, LedgerService, StyleService } from '@services';
 
@@ -15,6 +15,7 @@ import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { AmountInput, AmountText, Button, InfoMessage, Spacer } from '@components/General';
+import { AmountValueType } from '@components/General/AmountInput';
 import { RecipientElement } from '@components/Modules';
 
 import { Toast } from '@common/helpers/interface';
@@ -118,15 +119,11 @@ class PaymentTemplate extends Component<Props, State> {
         this.setState({ isLoadingIssuerFee: true, shouldShowIssuerFee: true });
 
         // get transfer rate from issuer account
-        LedgerService.getAccountInfo(transaction.Amount?.issuer || transaction.SendMax?.issuer)
-            .then((issuerAccountInfo: any) => {
-                if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
-                    const { TransferRate } = issuerAccountInfo.account_data;
-
-                    const fee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
-
+        LedgerService.getAccountTransferRate(transaction.Amount?.issuer || transaction.SendMax?.issuer)
+            .then((issuerFee) => {
+                if (issuerFee) {
                     this.setState({
-                        issuerFee: fee,
+                        issuerFee,
                     });
                 }
             })
@@ -184,15 +181,15 @@ class PaymentTemplate extends Component<Props, State> {
             // get source trust lines
             const sourceLine = await LedgerService.getAccountLine(transaction.Account.address, transaction.Amount);
 
-            let shouldPayWithXRP =
+            // if this condition applies we try to pay the requested amount with XRP
+            // the source account doesn't the trustline or proper trustline
+            // the source account balance doesn't cover the entire requested amount
+            // the sender is not issuer
+            const shouldPayWithXRP =
                 !sourceLine ||
-                (parseFloat(sourceLine.balance) < parseFloat(transaction.Amount.value) &&
+                (Number(sourceLine.limit) === 0 && Number(sourceLine.balance) === 0) ||
+                (Number(sourceLine.balance) < Number(transaction.Amount.value) &&
                     account !== transaction.Amount.issuer);
-
-            // just ignore if the sender is the issuer
-            if (account === transaction.Amount.issuer) {
-                shouldPayWithXRP = false;
-            }
 
             // if not have the same trust line or the balance is not covering requested value
             // Pay with XRP instead
@@ -389,7 +386,7 @@ class PaymentTemplate extends Component<Props, State> {
                                 <View style={[AppStyles.row, AppStyles.flex1]}>
                                     <AmountInput
                                         ref={this.amountInput}
-                                        decimalPlaces={currencyName === 'XRP' ? 6 : 8}
+                                        valueType={currencyName === 'XRP' ? AmountValueType.XRP : AmountValueType.IOU}
                                         onChange={this.onAmountChange}
                                         style={[styles.amountInput]}
                                         value={amount}
@@ -415,14 +412,14 @@ class PaymentTemplate extends Component<Props, State> {
                             <AmountText
                                 style={styles.amountInput}
                                 value={amount}
-                                postfix={transaction.Amount.currency}
+                                currency={transaction.Amount.currency}
                             />
                         )}
                     </TouchableOpacity>
                     {isPartialPayment &&
                         (exchangeRate ? (
                             <>
-                                <Spacer size={Platform.OS === 'ios' ? 15 : 0} />
+                                <Spacer size={15} />
                                 <InfoMessage
                                     label={Localize.t('payload.payingWithXRPExchangeRate', {
                                         xrpRoundedUp,
@@ -433,7 +430,7 @@ class PaymentTemplate extends Component<Props, State> {
                             </>
                         ) : (
                             <>
-                                <Spacer size={Platform.OS === 'ios' ? 15 : 0} />
+                                <Spacer size={15} />
                                 <InfoMessage
                                     label={Localize.t('payload.notEnoughLiquidityToSendThisPayment')}
                                     type="error"
@@ -450,7 +447,7 @@ class PaymentTemplate extends Component<Props, State> {
                         <View style={[styles.contentBox]}>
                             <AmountText
                                 value={transaction.SendMax.value}
-                                postfix={transaction.SendMax.currency}
+                                currency={transaction.SendMax.currency}
                                 style={styles.amount}
                             />
                         </View>
@@ -463,7 +460,7 @@ class PaymentTemplate extends Component<Props, State> {
                         <View style={[styles.contentBox]}>
                             <AmountText
                                 value={transaction.DeliverMin.value}
-                                postfix={transaction.DeliverMin.currency}
+                                currency={transaction.DeliverMin.currency}
                                 style={styles.amount}
                             />
                         </View>

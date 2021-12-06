@@ -7,7 +7,6 @@ import { find } from 'lodash';
 import React, { Component } from 'react';
 import { View, Keyboard } from 'react-native';
 
-import { LedgerService } from '@services';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
@@ -16,6 +15,7 @@ import { AppScreens } from '@common/constants';
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
+import { Amount } from '@common/libs/ledger/parser/common';
 import { Payment } from '@common/libs/ledger/transactions';
 import { Destination } from '@common/libs/ledger/parser/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
@@ -37,7 +37,7 @@ import { StepsContext } from './Context';
 import styles from './styles';
 
 /* types ==================================================================== */
-import { Steps, Props, State } from './types';
+import { Steps, Props, State, FeeItem } from './types';
 
 /* Component ==================================================================== */
 class SendView extends Component<Props, State> {
@@ -68,6 +68,9 @@ class SendView extends Component<Props, State> {
             currency,
             sendingNFT,
             amount,
+            availableFees: undefined,
+            selectedFee: undefined,
+            issuerFee: undefined,
             destination: undefined,
             destinationInfo: undefined,
             payment: new Payment(),
@@ -90,7 +93,14 @@ class SendView extends Component<Props, State> {
     }
 
     componentWillUnmount() {
+        const { isLoading, payment } = this.state;
+
         if (this.closeTimeout) clearTimeout(this.closeTimeout);
+
+        // abort the transaction if already running
+        if (isLoading && payment) {
+            payment.abort();
+        }
     }
 
     setSource = (source: AccountSchema) => {
@@ -108,8 +118,24 @@ class SendView extends Component<Props, State> {
         this.setState({ amount });
     };
 
-    setDestination = (destination: Destination) => {
-        this.setState({ destination });
+    setAvailableFees = (availableFees: FeeItem[]) => {
+        this.setState({ availableFees });
+    };
+
+    setFee = (selectedFee: FeeItem) => {
+        this.setState({ selectedFee });
+    };
+
+    setIssuerFee = (issuerFee: number) => {
+        this.setState({ issuerFee });
+    };
+
+    setDestination = (_destination: Destination) => {
+        const { destination, destinationInfo } = this.state;
+        this.setState({
+            destination: _destination,
+            destinationInfo: _destination?.address !== destination?.address ? undefined : destinationInfo,
+        });
     };
 
     setDestinationInfo = (info: any) => {
@@ -170,7 +196,7 @@ class SendView extends Component<Props, State> {
     };
 
     send = async () => {
-        const { currency, amount, destination, source, payment, sendingNFT } = this.state;
+        const { currency, amount, selectedFee, issuerFee, destination, source, payment, sendingNFT } = this.state;
 
         this.setState({
             isLoading: true,
@@ -181,25 +207,21 @@ class SendView extends Component<Props, State> {
             if (typeof currency === 'string') {
                 payment.Amount = amount;
             } else {
-                // IOU
-                const transfer_rate = await LedgerService.getAccountTransferRate(currency.currency.issuer);
-
-                // IF issuer has transfer rate:
-                if (transfer_rate) {
-                    payment.TransferRate = transfer_rate;
-                }
-
                 // if issuer has transfer fee and sender is not issuer add partial payment flag
-                if (transfer_rate || currency.currency.issuer === source.address) {
+                if (issuerFee || currency.currency.issuer === source.address) {
                     payment.Flags = [txFlags.Payment.PartialPayment];
                 }
 
+                // set the amount
                 payment.Amount = {
                     currency: currency.currency.currency,
                     issuer: currency.currency.issuer,
                     value: sendingNFT ? NFTValueToXRPL(amount) : amount,
                 };
             }
+
+            // set the calculated fee
+            payment.Fee = new Amount(selectedFee.value).dropsToXrp();
 
             // set the destination
             payment.Destination = {
@@ -312,6 +334,9 @@ class SendView extends Component<Props, State> {
                     goBack: this.goBack,
                     setAmount: this.setAmount,
                     setCurrency: this.setCurrency,
+                    setFee: this.setFee,
+                    setAvailableFees: this.setAvailableFees,
+                    setIssuerFee: this.setIssuerFee,
                     setSource: this.setSource,
                     setDestination: this.setDestination,
                     setDestinationInfo: this.setDestinationInfo,

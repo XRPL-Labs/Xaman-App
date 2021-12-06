@@ -1,8 +1,8 @@
 import isEqual from 'lodash/isEqual';
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ViewStyle } from 'react-native';
+import { View, Text, ViewStyle } from 'react-native';
 
-import { Avatar, Badge, Icon, LoadingIndicator } from '@components/General';
+import { TouchableDebounce, Avatar, Badge, Icon, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
@@ -146,13 +146,13 @@ class RecipientElement extends Component<Props> {
         if (!showMoreButton) return null;
 
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 onPress={this.onMorePress}
                 activeOpacity={0.7}
                 style={[AppStyles.flex1, AppStyles.rightAligned, AppStyles.centerContent]}
             >
                 <Icon name="IconMoreVertical" size={30} style={AppStyles.imgColorGrey} />
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     };
 
@@ -160,7 +160,7 @@ class RecipientElement extends Component<Props> {
         const { recipient, selected, containerStyle, onPress } = this.props;
 
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 testID={`recipient-${recipient.address}`}
                 activeOpacity={onPress ? 0.7 : 1}
                 onPress={this.onPress}
@@ -177,7 +177,7 @@ class RecipientElement extends Component<Props> {
                     {this.renderDestinationTag()}
                 </View>
                 {this.renderActions()}
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     }
 }

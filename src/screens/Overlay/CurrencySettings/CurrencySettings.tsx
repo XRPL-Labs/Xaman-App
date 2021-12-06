@@ -43,6 +43,7 @@ export interface Props {
 export interface State {
     isRemoving: boolean;
     isLoading: boolean;
+    isReviewScreenVisible: boolean;
     latestLineBalance: number;
     canRemove: boolean;
 }
@@ -67,6 +68,7 @@ class CurrencySettingsModal extends Component<Props, State> {
         this.state = {
             isRemoving: false,
             isLoading: false,
+            isReviewScreenVisible: false,
             latestLineBalance: 0,
             canRemove: false,
         };
@@ -187,68 +189,65 @@ class CurrencySettingsModal extends Component<Props, State> {
                 payment.Flags = [txFlags.Payment.PartialPayment];
             }
 
-            // sign & submit the partial payment to clear dust balance
-            await payment.submit(account).then(async (submitResult) => {
-                if (submitResult.success) {
-                    await payment.verify().then((verifyResult) => {
-                        if (verifyResult.success) {
-                            Prompt(
-                                Localize.t('global.success'),
-                                Localize.t('asset.dustAmountRemovedYouCanRemoveTrustLineNow'),
-                                [
-                                    { text: Localize.t('global.cancel') },
-                                    {
-                                        text: Localize.t('global.continue'),
-                                        onPress: () => {
-                                            this.getLatestLineBalance().then(this.removeTrustLine);
-                                        },
-                                        style: 'destructive',
-                                    },
-                                ],
-                                { type: 'default' },
-                            );
-                        } else {
-                            throw new Error('Submit was not successful');
-                        }
-                    });
-                } else {
-                    throw new Error('Submit was not successful');
-                }
+            const payload = await Payload.build(payment.Json);
+
+            Animated.parallel([
+                Animated.timing(this.animatedColor, {
+                    toValue: 0,
+                    duration: 350,
+                    useNativeDriver: false,
+                }),
+                Animated.timing(this.animatedOpacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true,
+                }),
+            ]).start(() => {
+                this.setState({
+                    isReviewScreenVisible: true,
+                });
+
+                Navigator.showModal(
+                    AppScreens.Modal.ReviewTransaction,
+                    {
+                        payload,
+                        onResolve: this.onClearDustResolve,
+                        onClose: this.onReviewScreenClose,
+                    },
+                    { modalPresentationStyle: 'fullScreen' },
+                );
             });
         } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
-        } finally {
-            this.setState({
-                isRemoving: false,
-            });
         }
     };
 
-    checkForIssuerState = () => {
-        const { trustLine } = this.props;
-
-        return new Promise<void>((resolve, reject) => {
-            LedgerService.getAccountInfo(trustLine.currency.issuer)
-                .then((issuerAccountInfo: any) => {
-                    const issuerFlags = new Flag(
-                        'Account',
-                        get(issuerAccountInfo, ['account_data', 'Flags'], 0),
-                    ).parse();
-
-                    if (
-                        trustLine.limit_peer > 0 ||
-                        (!trustLine.no_ripple_peer && !issuerFlags.defaultRipple) ||
-                        (trustLine.no_ripple_peer && issuerFlags.defaultRipple)
-                    ) {
-                        return reject();
-                    }
-
-                    return resolve();
-                })
-                .catch(() => {
-                    return reject();
-                });
+    onClearDustResolve = (transaction: Payment) => {
+        this.setState({
+            isRemoving: false,
+            isReviewScreenVisible: false,
         });
+
+        if (transaction.TransactionResult?.success === false) {
+            Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
+            return;
+        }
+
+        Prompt(
+            Localize.t('global.success'),
+            Localize.t('asset.dustAmountRemovedYouCanRemoveTrustLineNow'),
+            [
+                { text: Localize.t('global.cancel') },
+                {
+                    text: Localize.t('global.continue'),
+                    onPress: () => {
+                        this.getLatestLineBalance().then(this.removeTrustLine);
+                    },
+                    style: 'destructive',
+                },
+            ],
+            { type: 'default' },
+        );
     };
 
     removeTrustLine = async () => {
@@ -307,58 +306,106 @@ class CurrencySettingsModal extends Component<Props, State> {
                 },
             });
 
-            await clearTrustline.sign(account);
+            const payload = await Payload.build(clearTrustline.Json);
 
-            // sign and submit
-            const submitResult = await clearTrustline.submit();
-
-            if (submitResult.success) {
-                const verifyResult = await clearTrustline.verify();
-
-                if (verifyResult.success) {
-                    InteractionManager.runAfterInteractions(() => {
-                        Alert.alert(Localize.t('global.success'), Localize.t('asset.successRemoved'));
-                    });
-                } else {
-                    InteractionManager.runAfterInteractions(() => {
-                        Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
-                    });
-                }
-            } else {
-                InteractionManager.runAfterInteractions(() => {
-                    Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
+            Animated.parallel([
+                Animated.timing(this.animatedColor, {
+                    toValue: 0,
+                    duration: 350,
+                    useNativeDriver: false,
+                }),
+                Animated.timing(this.animatedOpacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true,
+                }),
+            ]).start(() => {
+                this.setState({
+                    isReviewScreenVisible: true,
                 });
-            }
 
-            this.dismiss();
+                Navigator.showModal(
+                    AppScreens.Modal.ReviewTransaction,
+                    {
+                        payload,
+                        onResolve: this.onRemoveLineResolve,
+                        onClose: this.onReviewScreenClose,
+                    },
+                    { modalPresentationStyle: 'overCurrentContext' },
+                );
+            });
         } catch (e: any) {
             if (e) {
                 InteractionManager.runAfterInteractions(() => {
                     Alert.alert(Localize.t('global.error'), e.message);
                 });
             }
-        } finally {
-            this.setState({
-                isRemoving: false,
-            });
         }
+    };
+
+    onReviewScreenClose = () => {
+        this.setState(
+            {
+                isRemoving: false,
+                isReviewScreenVisible: false,
+            },
+            () => {
+                Animated.parallel([
+                    Animated.timing(this.animatedColor, {
+                        toValue: 150,
+                        duration: 350,
+                        useNativeDriver: false,
+                    }),
+                    Animated.timing(this.animatedOpacity, {
+                        toValue: 1,
+                        duration: 200,
+                        useNativeDriver: true,
+                    }),
+                ]).start();
+            },
+        );
+    };
+
+    onRemoveLineResolve = (transaction: TrustSet) => {
+        this.setState(
+            {
+                isRemoving: false,
+                isReviewScreenVisible: false,
+            },
+            () => {
+                Animated.parallel([
+                    Animated.timing(this.animatedColor, {
+                        toValue: 150,
+                        duration: 350,
+                        useNativeDriver: false,
+                    }),
+                    Animated.timing(this.animatedOpacity, {
+                        toValue: 1,
+                        duration: 200,
+                        useNativeDriver: true,
+                    }),
+                ]).start();
+            },
+        );
+
+        if (transaction.TransactionResult?.success === false) {
+            InteractionManager.runAfterInteractions(() => {
+                Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
+            });
+            return;
+        }
+
+        InteractionManager.runAfterInteractions(() => {
+            Alert.alert(Localize.t('global.success'), Localize.t('asset.successRemoved'));
+        });
+
+        this.dismiss();
     };
 
     onRemovePress = async () => {
         this.setState({
             isRemoving: true,
         });
-
-        try {
-            await this.checkForIssuerState().finally(() => {
-                this.setState({
-                    isRemoving: false,
-                });
-            });
-        } catch {
-            Alert.alert(Localize.t('global.error'), Localize.t('asset.unableToRemoveAssetNotInDefaultState'));
-            return;
-        }
 
         Prompt(
             Localize.t('global.warning'),
@@ -374,6 +421,22 @@ class CurrencySettingsModal extends Component<Props, State> {
             ],
             { type: 'default' },
         );
+    };
+
+    onSendPress = async () => {
+        const { trustLine } = this.props;
+
+        this.dismiss().then(() => {
+            Navigator.push(AppScreens.Transaction.Payment, { currency: trustLine });
+        });
+    };
+
+    onExchangePress = () => {
+        const { trustLine } = this.props;
+
+        this.dismiss().then(() => {
+            Navigator.push(AppScreens.Transaction.Exchange, { trustLine });
+        });
     };
 
     disableRippling = async () => {
@@ -448,14 +511,6 @@ class CurrencySettingsModal extends Component<Props, State> {
         );
     };
 
-    showExchangeScreen = () => {
-        const { trustLine } = this.props;
-
-        this.dismiss().then(() => {
-            Navigator.push(AppScreens.Transaction.Exchange, { trustLine });
-        });
-    };
-
     showNFTInfo = () => {
         const { trustLine, account } = this.props;
 
@@ -525,7 +580,11 @@ class CurrencySettingsModal extends Component<Props, State> {
 
     render() {
         const { trustLine } = this.props;
-        const { isRemoving, isLoading, canRemove } = this.state;
+        const { isReviewScreenVisible, isRemoving, isLoading, canRemove } = this.state;
+
+        if (isReviewScreenVisible) {
+            return null;
+        }
 
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],
@@ -600,10 +659,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 iconStyle={[styles.sendButtonIcon]}
                                 label={Localize.t('global.send')}
                                 textStyle={[styles.sendButtonText]}
-                                onPress={() => {
-                                    this.dismiss();
-                                    Navigator.push(AppScreens.Transaction.Payment, { currency: trustLine });
-                                }}
+                                onPress={this.onSendPress}
                             />
                             {trustLine.isNFT ? (
                                 <RaisedButton
@@ -626,7 +682,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                                     iconPosition="right"
                                     label={Localize.t('global.exchange')}
                                     textStyle={[styles.exchangeButtonText]}
-                                    onPress={this.showExchangeScreen}
+                                    onPress={this.onExchangePress}
                                 />
                             )}
                         </View>

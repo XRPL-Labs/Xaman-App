@@ -58,6 +58,7 @@ const screens = {
         ConfirmDestinationTag: 'overlay.ConfirmDestinationTag',
         SelectAccount: 'overlay.SelectAccount',
         HomeActions: 'overlay.HomeActions',
+        SelectFee: 'overlay.SelectFee',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',

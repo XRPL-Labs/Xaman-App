@@ -6,7 +6,7 @@ import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, Alert, InteractionManager } from 'react-native';
 
-import { BackendService, SocketService } from '@services';
+import { BackendService, SocketService, StyleService } from '@services';
 
 import { AppScreens } from '@common/constants';
 import { Prompt, Toast } from '@common/helpers/interface';
@@ -14,12 +14,18 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
 import Preferences from '@common/libs/preferences';
+import { Amount } from '@common/libs/ledger/parser/common';
+
+import { Capitalize } from '@common/utils/string';
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
+
 // components
 import {
+    TouchableDebounce,
     Avatar,
     AmountText,
+    Badge,
     Button,
     Footer,
     Spacer,
@@ -47,6 +53,7 @@ export interface State {
     confirmedDestinationTag: number;
     destinationTagInputVisible: boolean;
     currencyRate: any;
+    canScroll: boolean;
 }
 
 /* Component ==================================================================== */
@@ -63,6 +70,7 @@ class SummaryStep extends Component<Props, State> {
             confirmedDestinationTag: undefined,
             destinationTagInputVisible: false,
             currencyRate: undefined,
+            canScroll: true,
         };
     }
 
@@ -223,7 +231,7 @@ class SummaryStep extends Component<Props, State> {
         }
 
         // check if destination requires the destination tag
-        if (destinationInfo.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
+        if (destinationInfo?.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
             Alert.alert(Localize.t('global.warning'), Localize.t('send.destinationTagIsRequired'));
             return;
         }
@@ -258,6 +266,40 @@ class SummaryStep extends Component<Props, State> {
         }
 
         return undefined;
+    };
+
+    toggleCanScroll = () => {
+        const { canScroll } = this.state;
+
+        this.setState({
+            canScroll: !canScroll,
+        });
+    };
+
+    getFeeColor = () => {
+        const { selectedFee } = this.context;
+
+        switch (selectedFee.type) {
+            case 'low':
+                return StyleService.value('$green');
+            case 'medium':
+                return StyleService.value('$orange');
+            case 'high':
+                return StyleService.value('$red');
+            default:
+                return StyleService.value('$textPrimary');
+        }
+    };
+
+    showFeeSelectOverlay = () => {
+        const { setFee, availableFees, selectedFee } = this.context;
+
+        Navigator.showOverlay(AppScreens.Overlay.SelectFee, { availableFees, selectedFee, onSelect: setFee });
+    };
+
+    getNormalizedFee = () => {
+        const { selectedFee } = this.context;
+        return new Amount(selectedFee.value).dropsToXrp();
     };
 
     renderCurrencyItem = (item: any) => {
@@ -329,14 +371,15 @@ class SummaryStep extends Component<Props, State> {
     };
 
     render() {
-        const { source, amount, destination, currency, isLoading } = this.context;
-        const { destinationTagInputVisible } = this.state;
+        const { source, amount, destination, currency, selectedFee, issuerFee, isLoading } = this.context;
+        const { destinationTagInputVisible, canScroll } = this.state;
 
         return (
             <View testID="send-summary-view" style={[styles.container]}>
                 <KeyboardAwareScrollView
                     style={[AppStyles.flex1, AppStyles.stretchSelf]}
                     enabled={!destinationTagInputVisible}
+                    scrollEnabled={canScroll}
                 >
                     <View style={[styles.rowItem, styles.rowItemGrey]}>
                         <View style={[styles.rowTitle]}>
@@ -365,7 +408,9 @@ class SummaryStep extends Component<Props, State> {
 
                         <View style={[styles.rowTitle]}>
                             <View style={[styles.pickerItem]}>
-                                <Text style={[styles.pickerItemTitle]}>{destination.name}</Text>
+                                <Text style={[styles.pickerItemTitle]}>
+                                    {destination?.name || Localize.t('global.noNameFound')}
+                                </Text>
                                 <Text
                                     style={[styles.pickerItemSub, AppStyles.colorGrey]}
                                     adjustsFontSizeToFit
@@ -408,7 +453,6 @@ class SummaryStep extends Component<Props, State> {
                             </Text>
                         </View>
                         <Spacer size={15} />
-
                         <View style={[styles.rowTitle]}>{this.renderCurrencyItem(currency)}</View>
                     </View>
 
@@ -424,6 +468,45 @@ class SummaryStep extends Component<Props, State> {
                         <AmountText value={amount} style={[styles.amountInput]} />
 
                         {this.renderAmountRate()}
+                    </View>
+
+                    {issuerFee && (
+                        <View style={[styles.rowItem]}>
+                            <View style={[styles.rowTitle]}>
+                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                    {Localize.t('global.issuerFee')}
+                                </Text>
+                            </View>
+                            <View style={styles.feeContainer}>
+                                <Text style={[styles.feeText]}>{issuerFee} %</Text>
+                            </View>
+                        </View>
+                    )}
+
+                    <View style={[styles.rowItem, AppStyles.centerContent]}>
+                        <View style={[styles.rowTitle]}>
+                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                {Localize.t('global.fee')}
+                            </Text>
+                        </View>
+                        <TouchableDebounce
+                            activeOpacity={0.8}
+                            style={[styles.feeContainer, AppStyles.row]}
+                            onPress={this.showFeeSelectOverlay}
+                        >
+                            <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
+                                <Text style={[styles.feeText]}>{this.getNormalizedFee()} XRP</Text>
+                                <Badge label={Capitalize(selectedFee.type)} size="medium" color={this.getFeeColor()} />
+                            </View>
+                            <Button
+                                onPress={this.showFeeSelectOverlay}
+                                style={styles.editButton}
+                                roundedSmall
+                                iconSize={13}
+                                light
+                                icon="IconEdit"
+                            />
+                        </TouchableDebounce>
                     </View>
 
                     {/* Memo */}
@@ -445,17 +528,21 @@ class SummaryStep extends Component<Props, State> {
                             numberOfLines={1}
                         />
                     </View>
+
+                    <Footer safeArea>
+                        <SwipeButton
+                            color={this.getSwipeButtonColor()}
+                            label={Localize.t('global.slideToSend')}
+                            accessibilityLabel={Localize.t('global.send')}
+                            onSwipeSuccess={this.goNext}
+                            isLoading={isLoading}
+                            shouldResetAfterSuccess
+                            onPanResponderGrant={this.toggleCanScroll}
+                            onPanResponderRelease={this.toggleCanScroll}
+                        />
+                    </Footer>
                 </KeyboardAwareScrollView>
                 {/* Bottom Bar */}
-                <Footer safeArea>
-                    <SwipeButton
-                        color={this.getSwipeButtonColor()}
-                        label={Localize.t('global.slideToSend')}
-                        onSwipeSuccess={this.goNext}
-                        isLoading={isLoading}
-                        shouldResetAfterSuccess
-                    />
-                </Footer>
             </View>
         );
     }

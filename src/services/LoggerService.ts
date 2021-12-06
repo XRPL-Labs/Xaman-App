@@ -37,9 +37,13 @@ class LoggerService {
     /**
      * record a error in firebase crashlytics
      */
-    recordError = (msg: string, e: any) => {
-        crashlytics().log(msg);
-        crashlytics().recordError(e);
+    recordError = (message: string, exception: any) => {
+        if (message) {
+            crashlytics().log(message);
+        }
+        if (exception) {
+            crashlytics().recordError(exception);
+        }
     };
 
     /**
@@ -54,6 +58,9 @@ class LoggerService {
      * normalize error message
      */
     normalizeError = (err: any) => {
+        if (!err) {
+            return ErrorMessages.default;
+        }
         let error = '';
         if (typeof err === 'string') {
             error = err;
@@ -64,8 +71,7 @@ class LoggerService {
         } else if (typeof err.toString === 'function') {
             error = err.toString();
         }
-
-        if (!err) {
+        if (!error) {
             error = ErrorMessages.default;
         }
         return error;

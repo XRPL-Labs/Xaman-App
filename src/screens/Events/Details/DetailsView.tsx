@@ -14,7 +14,6 @@ import {
     Linking,
     Alert,
     InteractionManager,
-    TouchableOpacity,
     Share,
     ImageBackground,
 } from 'react-native';
@@ -36,7 +35,17 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { Header, Button, Badge, Spacer, Icon, ReadMore, AmountText, LoadingIndicator } from '@components/General';
+import {
+    TouchableDebounce,
+    Header,
+    Button,
+    Badge,
+    Spacer,
+    Icon,
+    ReadMore,
+    AmountText,
+    LoadingIndicator,
+} from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import { GetTransactionLink } from '@common/utils/explorer';
@@ -1154,13 +1163,13 @@ class TransactionDetailsView extends Component<Props, State> {
                         })}
                     </ReadMore>
                 ) : (
-                    <TouchableOpacity
+                    <TouchableDebounce
                         onPress={() => {
                             this.setState({ showMemo: true });
                         }}
                     >
                         <Text style={[styles.contentText, AppStyles.colorRed]}>{Localize.t('events.showMemo')}</Text>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
                 )}
             </View>
         );
@@ -1311,6 +1320,13 @@ class TransactionDetailsView extends Component<Props, State> {
                             currency: tx.Amount.currency,
                         });
                     }
+                } else if (tx.Account.address === account.address && tx.Destination.address === account.address) {
+                    // payment to self
+                    Object.assign(props, {
+                        value: tx.Amount.value,
+                        currency: tx.Amount.currency,
+                        icon: undefined,
+                    });
                 } else {
                     Object.assign(props, {
                         color: incomingTx ? styles.incomingColor : styles.outgoingColor,
@@ -1432,7 +1448,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     <View style={[AppStyles.row, styles.amountContainerSmall]}>
                         <AmountText
                             value={takerGets.value}
-                            postfix={takerGets.currency}
+                            currency={takerGets.currency}
                             style={[styles.amountTextSmall]}
                         />
                     </View>
@@ -1448,7 +1464,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         )}
                         <AmountText
                             value={props.value}
-                            postfix={props.currency}
+                            currency={props.currency}
                             prefix={props.prefix}
                             style={[styles.amountText, props.color]}
                         />
@@ -1466,7 +1482,7 @@ class TransactionDetailsView extends Component<Props, State> {
                             <View style={[AppStyles.row, styles.amountContainerSmall]}>
                                 <AmountText
                                     value={balanceChanges.sent.value}
-                                    postfix={balanceChanges.sent.currency}
+                                    currency={balanceChanges.sent.currency}
                                     style={[styles.amountTextSmall]}
                                 />
                             </View>
@@ -1482,7 +1498,7 @@ class TransactionDetailsView extends Component<Props, State> {
                                 )}
                                 <AmountText
                                     value={props.value}
-                                    postfix={props.currency}
+                                    currency={props.currency}
                                     prefix={props.prefix}
                                     style={[styles.amountText, props.color]}
                                 />
@@ -1500,7 +1516,7 @@ class TransactionDetailsView extends Component<Props, State> {
                             <View style={[AppStyles.row, styles.amountContainerSmall]}>
                                 <AmountText
                                     value={balanceChanges.sent.value}
-                                    postfix={balanceChanges.sent.currency}
+                                    currency={balanceChanges.sent.currency}
                                     style={[styles.amountTextSmall]}
                                 />
                             </View>
@@ -1516,7 +1532,7 @@ class TransactionDetailsView extends Component<Props, State> {
                                 )}
                                 <AmountText
                                     value={props.value}
-                                    postfix={props.currency}
+                                    currency={props.currency}
                                     prefix={props.prefix}
                                     style={[styles.amountText, props.color]}
                                 />
@@ -1536,7 +1552,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     )}
                     <AmountText
                         value={props.value}
-                        postfix={props.currency}
+                        currency={props.currency}
                         prefix={props.prefix}
                         style={[styles.amountText, props.color]}
                     />

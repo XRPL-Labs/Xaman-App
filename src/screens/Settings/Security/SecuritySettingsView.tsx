@@ -3,7 +3,7 @@
  */
 import { find } from 'lodash';
 import React, { Component } from 'react';
-import { Text, ScrollView, View, TouchableOpacity, Alert, Platform } from 'react-native';
+import { Text, ScrollView, View, Alert, Platform } from 'react-native';
 
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
@@ -16,7 +16,7 @@ import { BiometryType } from '@store/types';
 import { Navigator } from '@common/helpers/navigator';
 import { IsFlagSecure, FlagSecure } from '@common/helpers/device';
 
-import { Header, Switch, Icon, InfoMessage } from '@components/General';
+import { TouchableDebounce, Header, Switch, Icon, InfoMessage } from '@components/General';
 
 import Localize from '@locale';
 // style
@@ -219,7 +219,7 @@ class SecuritySettingsView extends Component<Props, State> {
 
                 <ScrollView>
                     <Text style={styles.descriptionText}>{Localize.t('global.authentication')}</Text>
-                    <TouchableOpacity
+                    <TouchableDebounce
                         testID="change-passcode-button"
                         style={styles.row}
                         onPress={() => {
@@ -245,9 +245,9 @@ class SecuritySettingsView extends Component<Props, State> {
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
 
-                    <TouchableOpacity
+                    <TouchableDebounce
                         testID="auto-lock-button"
                         style={[styles.row]}
                         onPress={this.showLogoutTimePicker}
@@ -264,7 +264,7 @@ class SecuritySettingsView extends Component<Props, State> {
                             </Text>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
 
                     <View style={styles.row}>
                         <View style={[AppStyles.flex3]}>

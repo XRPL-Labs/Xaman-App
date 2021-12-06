@@ -4,9 +4,9 @@
  */
 
 import EventEmitter from 'events';
-import { get, last, take, values } from 'lodash';
+import { get, last, take, values, debounce } from 'lodash';
 
-import { BackHandler, Platform } from 'react-native';
+import { BackHandler } from 'react-native';
 
 import analytics from '@react-native-firebase/analytics';
 
@@ -68,12 +68,10 @@ class NavigationService extends EventEmitter {
                 Navigation.events().registerCommandListener(this.navigatorCommandListener);
                 Navigation.events().registerModalDismissedListener(this.modalDismissedListener);
                 Navigation.events().registerBottomTabLongPressedListener(this.bottomTabLongPressedListener);
-                Navigation.events().registerBottomTabPressedListener(this.bottomTabPressedListener);
+                Navigation.events().registerBottomTabPressedListener(this.debouncedBottomTabPressedListener);
 
                 // set android back handler
-                if (Platform.OS === 'android') {
-                    this.setBackHandlerListener();
-                }
+                BackHandler.addEventListener('hardwareBackPress', this.handleAndroidBackButton);
 
                 return resolve();
             } catch (e) {
@@ -133,6 +131,11 @@ class NavigationService extends EventEmitter {
         }
     };
 
+    debouncedBottomTabPressedListener = debounce(this.bottomTabPressedListener, 300, {
+        leading: true,
+        trailing: false,
+    });
+
     modalDismissedListener = ({ componentId }: ModalDismissedEvent) => {
         // on android componentId is stack id and in Ios componentName is undefined
         if (componentId === last(this.modals)) {
@@ -181,10 +184,6 @@ class NavigationService extends EventEmitter {
             default:
                 break;
         }
-    };
-
-    setBackHandlerListener = () => {
-        BackHandler.addEventListener('hardwareBackPress', this.handleAndroidBackButton);
     };
 
     /**

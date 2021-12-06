@@ -1,7 +1,6 @@
 package libs.ui;
 
-
-import android.util.Log;
+import android.app.Activity;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -13,7 +12,6 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.DisplayMetricsHolder;
 
 
-import android.app.Activity;
 
 public class KeyboardModule extends ReactContextBaseJavaModule {
     private static final String TAG = "KeyboardModule";
@@ -54,27 +52,20 @@ public class KeyboardModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void startKeyboardListener() {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (keyboardProvider != null) {
-                    return;
-                }
-                final Activity wActivity = getCurrentActivity();
-                if (wActivity == null) {
-                    Log.e(TAG, "wActivity is null");
-                    return;
-                }
-                keyboardProvider = new KeyboardProvider(wActivity).init();
-                keyboardProvider.setHeightListener(new KeyboardProvider.HeightListener() {
-                    @Override
-                    public void onHeightChanged(int height) {
-                        int value = Math.round(height / DisplayMetricsHolder.getScreenDisplayMetrics().density);
-                        emit(value);
-                    }
-                });
-
+        UiThreadUtil.runOnUiThread(() -> {
+            if (keyboardProvider != null) {
+                return;
             }
+            final Activity wActivity = getCurrentActivity();
+            if (wActivity == null) {
+                return;
+            }
+            keyboardProvider = new KeyboardProvider(wActivity).init();
+            keyboardProvider.setHeightListener(height -> {
+                int value = Math.round(height / DisplayMetricsHolder.getScreenDisplayMetrics().density);
+                emit(value);
+            });
+
         });
     }
 
