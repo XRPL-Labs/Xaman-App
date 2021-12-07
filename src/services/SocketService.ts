@@ -18,55 +18,6 @@ import LoggerService from '@services/LoggerService';
 import NavigationService, { RootType } from '@services/NavigationService';
 
 /* Types  ==================================================================== */
-type BaseCommand = {
-    id?: string;
-    command: string;
-};
-
-interface ServerInfoPayload extends BaseCommand {}
-
-interface SubscribePayload extends BaseCommand {
-    accounts: string[];
-}
-
-interface AccountInfoPayload extends BaseCommand {
-    account: string;
-    ledger_index?: string;
-    signer_lists?: boolean;
-}
-
-interface SubmitPayload extends BaseCommand {
-    tx_blob: string;
-}
-
-interface AccountTransactionsPayload extends BaseCommand {
-    account: string;
-    ledger_index_min: number;
-    ledger_index_max: number;
-    binary: boolean;
-    limit: number;
-    forward?: boolean;
-}
-
-interface GetTransactionPayload extends BaseCommand {
-    transaction: string;
-}
-
-interface BookOffersPayload extends BaseCommand {
-    limit?: number;
-    taker_pays: any;
-    taker_gets: any;
-}
-
-interface GatewayBalancesPayload extends BaseCommand {
-    strict: boolean;
-    hotwallet: Array<string>;
-}
-
-interface LedgerEntryPayload extends BaseCommand {
-    index: string;
-}
-
 enum SocketStateStatus {
     Connected = 'Connected',
     Disconnected = 'Disconnected',
@@ -270,18 +221,7 @@ class SocketService extends EventEmitter {
      * @param payload
      * @returns {Promise<any>}
      */
-    send = (
-        payload:
-            | ServerInfoPayload
-            | SubscribePayload
-            | AccountInfoPayload
-            | SubmitPayload
-            | AccountTransactionsPayload
-            | GetTransactionPayload
-            | BookOffersPayload
-            | GatewayBalancesPayload
-            | LedgerEntryPayload,
-    ): any => {
+    send = (payload: any): any => {
         return this.connection.send(payload, { timeoutSeconds: 40 });
     };
 

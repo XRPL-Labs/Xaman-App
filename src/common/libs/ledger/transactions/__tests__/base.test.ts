@@ -134,8 +134,8 @@ describe('BaseTransaction tx', () => {
         const address = 'rEAa7TDpBdL1hoRRAp3WDmzBcuQzaXssmb';
 
         // mock the ledger service response
-        const spy = jest.spyOn(LedgerService, 'getAccountInfo').mockImplementation(() => {
-            return {
+        const spy = jest.spyOn(LedgerService, 'getAccountInfo').mockImplementation(() =>
+            Promise.resolve({
                 account_data: {
                     address,
                     Balance: '49507625423',
@@ -152,8 +152,8 @@ describe('BaseTransaction tx', () => {
                     signer_lists: [],
                     urlgravatar: 'http://www.gravatar.com/avatar/833237b8665d2f4e00135e8de646589f',
                 },
-            };
-        });
+            }),
+        );
 
         // create a transaction instance for signing
         const instance = new BaseTransaction(paymentTxTemplates.SimplePayment);

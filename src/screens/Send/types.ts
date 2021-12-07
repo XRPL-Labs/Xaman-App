@@ -15,7 +15,7 @@ export enum Steps {
 
 export interface FeeItem {
     type: string;
-    value: string;
+    value: number;
     suggested?: boolean;
 }
 

@@ -9,6 +9,7 @@
     ],
     "extends": [
       "airbnb",
+      "prettier",
       "plugin:import/typescript"
     ],
     "parserOptions":  {

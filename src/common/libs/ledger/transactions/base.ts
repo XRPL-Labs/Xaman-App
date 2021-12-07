@@ -259,15 +259,14 @@ class BaseTransaction {
      * @returns {string} calculated fee in drops
      */
     calculateFee = (netFee?: number): string => {
-        let baseFee;
-
         // if netFee is not set, default to 12 drops
         if (!netFee) {
             netFee = 12;
         }
 
-        // 10 drops × (33 + (Fulfillment size in bytes ÷ 16))
-        // @ts-ignore
+        let baseFee = new BigNumber(0);
+
+        // netFee × (33 + (Fulfillment size in bytes ÷ 16))
         if (this.Type === 'EscrowFinish' && this.Fulfillment) {
             baseFee = new BigNumber(netFee).multipliedBy(
                 // @ts-ignore
@@ -275,16 +274,14 @@ class BaseTransaction {
             );
         }
 
+        // AccountDelete transactions require at least the owner reserve amount
         if (this.Type === 'AccountDelete') {
             const { OwnerReserve } = LedgerService.getNetworkReserve();
             baseFee = new BigNumber(OwnerReserve).multipliedBy(1000000);
         }
-        // 10 drops × (1 + Number of Signatures Provided)
-        if (this.Signers.length > 0) {
-            baseFee = new BigNumber(this.Signers.length).plus(1).multipliedBy(netFee).plus(baseFee);
-        }
 
-        if (!baseFee) {
+        // if no changing needs to apply set the net fee as base fee
+        if (baseFee.isZero()) {
             baseFee = new BigNumber(netFee);
         }
 
