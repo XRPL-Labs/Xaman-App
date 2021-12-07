@@ -50,7 +50,7 @@ class CheckCashTemplate extends Component<Props, State> {
             cashAmount: props.transaction.DeliverMin?.value || props.transaction.Amount?.value,
             amountField,
             currencyName,
-            sourceDetails: { name: '', source: '' },
+            sourceDetails: undefined,
         };
 
         this.amountInput = React.createRef();

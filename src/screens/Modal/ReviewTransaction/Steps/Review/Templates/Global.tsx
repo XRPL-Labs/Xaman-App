@@ -6,15 +6,18 @@ import { StyleService, LedgerService } from '@services';
 
 import { AppScreens } from '@common/constants';
 
-import { Capitalize } from '@common/utils/string';
+import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 import { Navigator } from '@common/helpers/navigator';
+
+import { Capitalize } from '@common/utils/string';
 
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import { Amount } from '@common/libs/ledger/parser/common';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 
 // components
-import { TouchableDebounce, Badge, Button, InfoMessage } from '@components/General';
+import { TouchableDebounce, LoadingIndicator, Badge, Button, InfoMessage } from '@components/General';
+import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -24,7 +27,7 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface FeeItem {
     type: string;
-    value: string;
+    value: number;
     suggested?: boolean;
 }
 
@@ -37,7 +40,9 @@ export interface Props {
 export interface State {
     availableFees: FeeItem[];
     selectedFee: FeeItem;
+    signers: AccountNameType[];
     isLoadingFee: boolean;
+    isLoadingSigners: boolean;
 }
 
 /* Component ==================================================================== */
@@ -48,13 +53,48 @@ class GlobalTemplate extends Component<Props, State> {
         this.state = {
             availableFees: undefined,
             selectedFee: undefined,
+            signers: undefined,
             isLoadingFee: true,
+            isLoadingSigners: true,
         };
     }
 
     componentDidMount() {
         this.loadTransactionFee();
+        this.fetchSignersDetails();
     }
+
+    fetchSignersDetails = async () => {
+        const { transaction } = this.props;
+
+        if (isEmpty(transaction.Signers)) {
+            this.setState({
+                isLoadingSigners: false,
+            });
+            return;
+        }
+
+        const signers = [] as any;
+
+        await Promise.all(
+            transaction.Signers.map(async (signer) => {
+                await getAccountName(signer.account)
+                    .then((res) => {
+                        signers.push(res);
+                    })
+                    .catch(() => {
+                        signers.push({ account: signer.Account });
+                    });
+
+                return signers;
+            }),
+        );
+
+        this.setState({
+            signers,
+            isLoadingSigners: false,
+        });
+    };
 
     loadTransactionFee = async () => {
         const { transaction, canOverride } = this.props;
@@ -64,19 +104,19 @@ class GlobalTemplate extends Component<Props, State> {
             const shouldOverrideFee = typeof transaction.Fee === 'undefined' && canOverride;
 
             if (shouldOverrideFee) {
-                // fetch current network fee
-
                 // calculate and persist the transaction fees
-                const { availableFees } = await LedgerService.getAvailableNetworkFee();
+                let { availableFees } = await LedgerService.getAvailableNetworkFee();
 
                 // normalize suggested and available fees base on transaction type
-                availableFees.reduce((fee: FeeItem) => {
+                availableFees = availableFees.map((fee: FeeItem) => {
                     return {
                         type: fee.type,
-                        value: transaction.calculateFee(Number(fee.value)),
+                        value: transaction.calculateFee(fee.value),
+                        suggested: fee.suggested,
                     };
                 });
 
+                // get suggested fee
                 const suggestedFee = find(availableFees, { suggested: true });
 
                 this.setState(
@@ -92,11 +132,11 @@ class GlobalTemplate extends Component<Props, State> {
                 this.setState({
                     selectedFee: {
                         type: 'unknown',
-                        value: transaction.Fee,
+                        value: Number(transaction.Fee),
                     },
                 });
             }
-        } catch {
+        } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('payload.unableToGetNetworkFee'));
         } finally {
             this.setState({
@@ -108,7 +148,7 @@ class GlobalTemplate extends Component<Props, State> {
     setTransactionFee = (fee: FeeItem) => {
         const { transaction } = this.props;
 
-        // setting a transaction fee require xrp and not drops
+        // NOTE: setting the transaction fee require XRP and not drops
         transaction.Fee = new Amount(fee.value).dropsToXrp();
     };
 
@@ -124,12 +164,7 @@ class GlobalTemplate extends Component<Props, State> {
     };
 
     showFeeSelectOverlay = () => {
-        const { transaction } = this.props;
         const { availableFees, selectedFee } = this.state;
-
-        if (transaction.Type === 'AccountDelete') {
-            return;
-        }
 
         Navigator.showOverlay(AppScreens.Overlay.SelectFee, {
             availableFees,
@@ -145,12 +180,7 @@ class GlobalTemplate extends Component<Props, State> {
     };
 
     getFeeColor = () => {
-        const { transaction } = this.props;
         const { selectedFee } = this.state;
-
-        if (transaction.Type === 'AccountDelete') {
-            return StyleService.value('$textPrimary');
-        }
 
         switch (selectedFee.type) {
             case 'low':
@@ -165,8 +195,10 @@ class GlobalTemplate extends Component<Props, State> {
     };
 
     renderFee = () => {
+        const { transaction } = this.props;
         const { isLoadingFee, selectedFee } = this.state;
 
+        // we are loading the fee
         if (isLoadingFee || !selectedFee) {
             return (
                 <>
@@ -178,13 +210,27 @@ class GlobalTemplate extends Component<Props, State> {
             );
         }
 
-        // fee is set by payload owner
+        // fee is set by payload as it's already transformed to XRP from drops
+        // we show it as it is
         if (selectedFee.type === 'unknown') {
             return (
                 <>
                     <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
                     <View style={styles.contentBox}>
                         <Text style={[styles.feeText]}>{selectedFee.value} XRP</Text>
+                    </View>
+                </>
+            );
+        }
+
+        // AccountDelete transaction have fixed fee value
+        // NOTE: this may change in future, we may need to let user to select higher fees
+        if (transaction.Type === 'AccountDelete') {
+            return (
+                <>
+                    <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
+                    <View style={styles.contentBox}>
+                        <Text style={[styles.feeText]}>{this.getNormalizedFee()} XRP</Text>
                     </View>
                 </>
             );
@@ -253,6 +299,30 @@ class GlobalTemplate extends Component<Props, State> {
         );
     };
 
+    renderSigners = () => {
+        const { transaction } = this.props;
+        const { signers, isLoadingSigners } = this.state;
+
+        if (isEmpty(transaction.Signers)) {
+            return null;
+        }
+
+        if (isLoadingSigners || !signers) {
+            return <LoadingIndicator />;
+        }
+
+        return (
+            <>
+                <Text style={[styles.label]}>{Localize.t('global.signers')}</Text>
+                <View style={styles.signersContainer}>
+                    {signers.map((signer) => {
+                        return <RecipientElement key={`${signer.address}`} recipient={signer} />;
+                    })}
+                </View>
+            </>
+        );
+    };
+
     renderMemos = () => {
         const { transaction } = this.props;
 
@@ -285,6 +355,7 @@ class GlobalTemplate extends Component<Props, State> {
     render() {
         return (
             <>
+                {this.renderSigners()}
                 {this.renderMemos()}
                 {this.renderFlags()}
                 {this.renderFee()}

@@ -2,7 +2,7 @@
  * Base Ledger transaction parser
  */
 import BigNumber from 'bignumber.js';
-import { set, get, has, isUndefined, find } from 'lodash';
+import { set, get, has, isUndefined, find, flatMap } from 'lodash';
 
 import LedgerService from '@services/LedgerService';
 
@@ -521,7 +521,11 @@ class BaseTransaction {
     }
 
     get Signers(): Array<any> {
-        return get(this, ['tx', 'Signers'], []);
+        const signers = get(this, ['tx', 'Signers']);
+
+        return flatMap(signers, (e) => {
+            return { account: e.Signer.Account, signature: e.Signer.TxnSignature, pubKey: e.Signer.SigningPubKey };
+        });
     }
 
     set Signers(signers: Array<any>) {

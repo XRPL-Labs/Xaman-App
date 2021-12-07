@@ -134,6 +134,7 @@
     "setFlag": "Set Flag",
     "clearFlag": "Clear Flag",
     "messageKey": "MessageKey",
+    "signers": "Signers",
     "hidden": "Hidden",
     "transferRate": "TransferRate",
     "emailHash": "EmailHash",

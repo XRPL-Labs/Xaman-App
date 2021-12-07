@@ -14,7 +14,7 @@ export interface PayIDInfo {
     tag: string;
 }
 export interface AccountNameType {
-    address?: string;
+    address: string;
     name: string;
     source: string;
     kycApproved?: boolean;

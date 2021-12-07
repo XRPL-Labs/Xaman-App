@@ -28,6 +28,8 @@ interface Props {
     showAvatar?: boolean;
     showTag?: boolean;
     showSource?: boolean;
+    extraInfoLabel?: string;
+    extraInfoValue?: string;
     onPress?: () => void;
     onMorePress?: () => void;
 }
@@ -83,7 +85,7 @@ class RecipientElement extends Component<Props> {
 
         if (!showAvatar) return null;
 
-        const address = recipient.address || 'rxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+        const { address } = recipient;
 
         let badge = undefined as any;
         if (recipient.kycApproved) {
@@ -119,11 +121,7 @@ class RecipientElement extends Component<Props> {
     renderAddress = () => {
         const { recipient, selected } = this.props;
 
-        return (
-            <Text style={[styles.addressText, selected ? styles.selectedText : null]}>
-                {recipient.address || 'rxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}
-            </Text>
-        );
+        return <Text style={[styles.addressText, selected ? styles.selectedText : null]}>{recipient.address}</Text>;
     };
 
     renderDestinationTag = () => {
@@ -135,6 +133,22 @@ class RecipientElement extends Component<Props> {
             <View style={styles.destinationTagContainer}>
                 <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
                     {Localize.t('global.destinationTag')}: <Text style={AppStyles.colorBlue}>{recipient.tag}</Text>
+                </Text>
+            </View>
+        );
+    };
+
+    renderExtraInfo = () => {
+        const { extraInfoLabel, extraInfoValue } = this.props;
+
+        if (!extraInfoLabel || !extraInfoValue) {
+            return null;
+        }
+
+        return (
+            <View style={styles.destinationTagContainer}>
+                <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
+                    {extraInfoLabel}: <Text style={AppStyles.colorBlue}>{extraInfoValue}</Text>
                 </Text>
             </View>
         );
@@ -175,6 +189,7 @@ class RecipientElement extends Component<Props> {
                     </View>
                     {this.renderAddress()}
                     {this.renderDestinationTag()}
+                    {this.renderExtraInfo()}
                 </View>
                 {this.renderActions()}
             </TouchableDebounce>

@@ -65,7 +65,7 @@ class PaymentTemplate extends Component<Props, State> {
             editableAmount: !transaction.Amount?.value,
             amount: transaction.Amount?.value,
             currencyName: transaction.Amount?.currency ? NormalizeCurrencyCode(transaction.Amount.currency) : 'XRP',
-            destinationDetails: { name: '', source: '' },
+            destinationDetails: undefined,
             isPartialPayment: false,
             shouldCheckForConversation: !transaction.SendMax && props.canOverride,
             exchangeRate: undefined,

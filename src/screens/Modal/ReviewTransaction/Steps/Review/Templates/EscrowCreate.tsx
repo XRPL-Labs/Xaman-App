@@ -33,10 +33,7 @@ class EscrowCreateTemplate extends Component<Props, State> {
 
         this.state = {
             isLoading: false,
-            destinationDetails: {
-                name: '',
-                source: '',
-            },
+            destinationDetails: undefined,
         };
     }
     componentDidMount() {

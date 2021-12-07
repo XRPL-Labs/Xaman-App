@@ -40,10 +40,7 @@ class TrustSetTemplate extends Component<Props, State> {
         this.state = {
             isLoadingIssuerDetails: true,
             isLoadingIssuerFee: true,
-            issuerDetails: {
-                name: '',
-                source: '',
-            },
+            issuerDetails: undefined,
             issuerFee: 0,
         };
     }
