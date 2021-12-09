@@ -188,7 +188,7 @@ class LedgerService {
                     : 'feeMedium';
 
                 // set the drops values to BigNumber instance
-                const minimumFee = new BigNumber(feeDataSet.drops.minimum_fee);
+                const minimumFee = new BigNumber(feeDataSet.drops.minimum_fee).multipliedBy(1.5);
                 const medianFee = new BigNumber(feeDataSet.drops.median_fee);
                 const openLedgerFee = new BigNumber(feeDataSet.drops.open_ledger_fee);
 
@@ -393,8 +393,14 @@ class LedgerService {
                 tx_blob,
             });
 
-            const { error, error_message, error_exception, engine_result, tx_json, engine_result_message } =
-                submitResult;
+            const {
+                error,
+                error_message,
+                error_exception,
+                engine_result,
+                tx_json,
+                engine_result_message,
+            } = submitResult;
 
             this.logger.debug('Submit Result TX:', submitResult);
 
