@@ -188,7 +188,9 @@ class LedgerService {
                     : 'feeMedium';
 
                 // set the drops values to BigNumber instance
-                const minimumFee = new BigNumber(feeDataSet.drops.minimum_fee).multipliedBy(1.5);
+                const minimumFee = new BigNumber(feeDataSet.drops.minimum_fee)
+                    .multipliedBy(1.5)
+                    .integerValue(BigNumber.ROUND_HALF_FLOOR);
                 const medianFee = new BigNumber(feeDataSet.drops.median_fee);
                 const openLedgerFee = new BigNumber(feeDataSet.drops.open_ledger_fee);
 
