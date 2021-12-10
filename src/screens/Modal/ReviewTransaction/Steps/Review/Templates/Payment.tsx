@@ -186,10 +186,10 @@ class PaymentTemplate extends Component<Props, State> {
             // the source account balance doesn't cover the entire requested amount
             // the sender is not issuer
             const shouldPayWithXRP =
-                !sourceLine ||
+                (!sourceLine ||
                 (Number(sourceLine.limit) === 0 && Number(sourceLine.balance) === 0) ||
-                (Number(sourceLine.balance) < Number(transaction.Amount.value) &&
-                    account !== transaction.Amount.issuer);
+                Number(sourceLine.balance) < Number(transaction.Amount.value)) &&
+                account !== transaction.Amount.issuer;
 
             // if not have the same trust line or the balance is not covering requested value
             // Pay with XRP instead
