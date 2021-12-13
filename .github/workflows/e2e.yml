@@ -4,6 +4,7 @@ on: [pull_request]
 
 jobs:
   build-run:
+    if: "contains(github.event.commits[0].message, '[include e2e]')"
     runs-on: macos-11
 
     steps:
