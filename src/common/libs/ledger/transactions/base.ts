@@ -20,6 +20,8 @@ import {
     VerifyResultType,
 } from '@common/libs/ledger/types';
 
+import Localize from '@locale';
+
 import Meta from '../parser/meta';
 import LedgerDate from '../parser/common/date';
 import Amount from '../parser/common/amount';
@@ -71,49 +73,68 @@ class BaseTransaction {
     */
     prepare = async () => {
         try {
-            // if fee not set then get current network fee
-            // just for known tx types
-            if (this.Type) {
-                if (isUndefined(this.Fee)) {
-                    // throw error if transaction fee is not set
-                    // transaction fee's should always been set and shown to user before signing
-                    throw new Error('Transaction fee is not set, please wait until transaction fee to be set!');
-                }
+            // prepare only for known transaction types types
+            if (!this.Type) {
+                return;
+            }
 
-                // if account sequence not set get the latest account sequence
-                if (isUndefined(this.Sequence)) {
-                    const accountInfo = await LedgerService.getAccountInfo(this.Account.address);
+            // throw error if transaction fee is not set
+            // transaction fee's should always been set and shown to user before signing
+            if (isUndefined(this.Fee)) {
+                throw new Error(Localize.t('global.transactionFeeIsNotSet'));
+            }
 
-                    if (!has(accountInfo, 'error') && has(accountInfo, ['account_data', 'Sequence'])) {
-                        const { account_data } = accountInfo;
-                        this.Sequence = Number(account_data.Sequence);
-                    } else {
-                        throw new Error('Unable to set account Sequence, check you are connected to the internet.');
-                    }
-                }
+            // if account sequence not set get the latest account sequence
+            if (isUndefined(this.Sequence)) {
+                const accountInfo = await LedgerService.getAccountInfo(this.Account.address);
 
-                // if no LastLedgerSequence set then {current ledger + 10}
-                const { LastLedger } = LedgerService.getLedgerStatus();
-                if (isUndefined(this.LastLedgerSequence)) {
-                    // only set if if last ledger is set
-                    if (LastLedger) {
-                        this.LastLedgerSequence = Number(LastLedger) + 10;
-                    }
-                } else if (this.LastLedgerSequence < 32570) {
-                    // When a transaction has a Max Ledger property + value and the value < 32570,
-                    // use the existing Ledger + the entered value at the moment of signing.
-                    if (LastLedger) {
-                        this.LastLedgerSequence = Number(LastLedger) + this.LastLedgerSequence;
-                    }
+                if (!has(accountInfo, 'error') && has(accountInfo, ['account_data', 'Sequence'])) {
+                    const { account_data } = accountInfo;
+                    this.Sequence = Number(account_data.Sequence);
+                } else {
+                    throw new Error(Localize.t('global.unableToSetAccountSequence'));
                 }
+            }
 
-                // if FullyCanonicalSig is not set, add it
-                if (!this.Flags.FullyCanonicalSig) {
-                    this.Flags = [txFlags.Universal.FullyCanonicalSig];
-                }
+            // if FullyCanonicalSig is not set, add it
+            if (!this.Flags.FullyCanonicalSig) {
+                this.Flags = [txFlags.Universal.FullyCanonicalSig];
             }
         } catch (e: any) {
             throw new Error(`Unable to prepare the transaction, ${e?.message}`);
+        }
+    };
+
+    /**
+    Populate transaction LastLedgerSequence
+    * @param {number} maxLedgerGap max ledger gap
+    * @returns {void}
+    */
+    populateLastLedgerSequence = (ledgerOffset = 10) => {
+        // just for known tx types
+        if (!this.Type) {
+            return;
+        }
+        // if no LastLedgerSequence or LastLedgerSequence is already pass the threshold
+        // update with LastLedger + 10
+        const { LastLedger } = LedgerService.getLedgerStatus();
+        // if unable to fetch the LastLedger probably user is not connected to the node
+        if (!LastLedger) {
+            throw new Error(Localize.t('global.unableToGetLastClosedLedger'));
+        }
+        // expected LastLedger sequence
+        const ExpectedLastLedger = LastLedger + ledgerOffset;
+        // if LastLedgerSequence is not set
+        if (isUndefined(this.LastLedgerSequence)) {
+            // only set if if last ledger is set
+            this.LastLedgerSequence = ExpectedLastLedger;
+        } else if (this.LastLedgerSequence < 32570) {
+            // When a transaction has a Max Ledger property + value and the value < 32570,
+            // use the existing Ledger + the entered value at the moment of signing.
+            this.LastLedgerSequence = LastLedger + this.LastLedgerSequence;
+        } else if (this.LastLedgerSequence < ExpectedLastLedger) {
+            // the Last Ledger is already passed, update it base on Last ledger
+            this.LastLedgerSequence = ExpectedLastLedger;
         }
     };
 
@@ -158,8 +179,8 @@ class BaseTransaction {
 
                 Navigator.showOverlay(AppScreens.Overlay.Vault, {
                     account,
-                    txJson: this.Json,
                     multiSign,
+                    transaction: this,
                     onSign: (signedObject: SignedObjectType) => {
                         const { id, signedTransaction, signers } = signedObject;
 

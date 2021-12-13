@@ -297,7 +297,10 @@
     "addingCustomNodeWarning": "You are adding a custom node to XUMM, do you want to continue?",
     "unableToLoadCustomEndpointDetails": "Unable to load the endpoint details. Please try again!",
     "nodeDetermined": "Node determined",
-    "createPaymentRequestLink": "Create Payment Request link"
+    "createPaymentRequestLink": "Create Payment Request link",
+    "transactionFeeIsNotSet": "Transaction fee is not set, please wait until transaction fee to be set, and try again!",
+    "unableToSetAccountSequence": "Unable to set account Sequence, please check you are connected to the internet.",
+    "unableToGetLastClosedLedger": "Unable to get Last closed ledger, please check you are connected to the internet."
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",

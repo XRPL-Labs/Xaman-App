@@ -179,8 +179,32 @@ describe('BaseTransaction tx', () => {
             PartialPayment: false,
         });
 
-        // should set the LastLedgerSequence if lower than 32570
-        expect(instance.LastLedgerSequence).toBe(6032000);
+        spy.mockRestore();
+    });
+
+    it('Should be able to populate the transaction LastLedgerSequence', async () => {
+        const LastLedger = 68312096;
+
+        // mock the ledger service response
+        const spy = jest.spyOn(LedgerService, 'getLedgerStatus').mockImplementation(() => {
+            return { Fee: 12, LastLedger };
+        });
+
+        // should set if LastLedgerSequence undefined
+        const instance = new BaseTransaction(paymentTxTemplates.SimplePayment);
+        instance.LastLedgerSequence = undefined;
+        instance.populateLastLedgerSequence();
+        expect(instance.LastLedgerSequence).toBe(LastLedger + 10);
+
+        // should update LastLedgerSequence if sequence is passed
+        instance.LastLedgerSequence = LastLedger - 500;
+        instance.populateLastLedgerSequence();
+        expect(instance.LastLedgerSequence).toBe(LastLedger + 10);
+
+        // should update LastLedgerSequence if sequence is less than 32570
+        instance.LastLedgerSequence = 50;
+        instance.populateLastLedgerSequence();
+        expect(instance.LastLedgerSequence).toBe(LastLedger + 50);
 
         spy.mockRestore();
     });

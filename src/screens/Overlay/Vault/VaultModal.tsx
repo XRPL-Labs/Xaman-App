@@ -15,16 +15,16 @@ import { CoreRepository, AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 import { AccessLevels, EncryptionLevels } from '@store/types';
 
-import { SignedObjectType } from '@common/libs/ledger/types';
 import Flag from '@common/libs/ledger/parser/common/flag';
+import { SignedObjectType } from '@common/libs/ledger/types';
 
 import Vault from '@common/libs/vault';
 
 import { GetWalletPublicKey } from '@common/utils/tangem';
 
+import Keyboard from '@common/helpers/keyboard';
 import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-import Keyboard from '@common/helpers/keyboard';
 
 import { AppScreens } from '@common/constants';
 
@@ -57,6 +57,7 @@ class VaultModal extends Component<Props, State> {
         super(props);
 
         this.state = {
+            isLoading: true,
             signer: undefined,
             alternativeSigner: undefined,
             coreSettings: CoreRepository.getSettings(),
@@ -213,7 +214,7 @@ class VaultModal extends Component<Props, State> {
 
     signWithPrivateKey = async (method: AuthMethods, options: SignOptions) => {
         const { signer } = this.state;
-        const { txJson, multiSign } = this.props;
+        const { transaction, multiSign } = this.props;
         const { encryptionKey } = options;
 
         try {
@@ -223,18 +224,27 @@ class VaultModal extends Component<Props, State> {
 
             // fetch private key from vault
             const privateKey = await Vault.open(signer.publicKey, encryptionKey);
+
+            // unable to fetch private key from vault base on provided encryption key
             if (!privateKey) {
                 this.onInvalidAuth(method);
                 return;
             }
 
+            // get signer instance from private key
             let signerInstance = AccountLib.derive.privatekey(privateKey);
-            // check if multi sign
+            // check if multi sign then add sign as
             if (multiSign) {
                 signerInstance = signerInstance.signAs(signer.address);
             }
 
-            let signedObject = AccountLib.sign(txJson, signerInstance) as SignedObjectType;
+            // populate transaction LastLedgerSequence before signing
+            // INGORE if multi signing
+            if (!multiSign) {
+                transaction.populateLastLedgerSequence();
+            }
+
+            let signedObject = AccountLib.sign(transaction.Json, signerInstance) as SignedObjectType;
             signedObject = { ...signedObject, signMethod: method };
 
             this.onSign(signedObject);
@@ -244,7 +254,7 @@ class VaultModal extends Component<Props, State> {
     };
 
     signWithTangemCard = async (options: SignOptions) => {
-        const { txJson, multiSign } = this.props;
+        const { transaction, multiSign } = this.props;
         const { tangemCard } = options;
 
         try {
@@ -255,7 +265,14 @@ class VaultModal extends Component<Props, State> {
             const { cardId } = tangemCard;
             const walletPublicKey = GetWalletPublicKey(tangemCard);
 
-            const preparedTx = AccountLib.rawSigning.prepare(txJson, walletPublicKey, multiSign);
+            // populate transaction LastLedgerSequence before signing
+            // NOTE: as tangem signing can take a lot of time we increase gap to 150 ledger
+            // INGORE if multi signing
+            if (!multiSign) {
+                transaction.populateLastLedgerSequence(150);
+            }
+
+            const preparedTx = AccountLib.rawSigning.prepare(transaction.Json, walletPublicKey, multiSign);
 
             // start tangem session
             await RNTangemSdk.startSession();
@@ -269,7 +286,7 @@ class VaultModal extends Component<Props, State> {
                     let signedObject = undefined as SignedObjectType;
 
                     if (multiSign) {
-                        signedObject = AccountLib.rawSigning.completeMultiSigned(txJson, [
+                        signedObject = AccountLib.rawSigning.completeMultiSigned(transaction.Json, [
                             {
                                 pubKey: walletPublicKey,
                                 signature: sig,
