@@ -196,9 +196,10 @@ class LedgerService {
 
                 // calculate fees
                 const feeLow = BigNumber.minimum(
-                    BigNumber.maximum(minimumFee, BigNumber.maximum(medianFee, openLedgerFee))
-                        .dividedBy(500)
-                        .integerValue(BigNumber.ROUND_HALF_CEIL),
+                    BigNumber.maximum(
+                        minimumFee,
+                        BigNumber.maximum(medianFee, openLedgerFee).dividedBy(500),
+                    ).integerValue(BigNumber.ROUND_HALF_CEIL),
                     new BigNumber(1000),
                 ).toNumber();
 
@@ -395,14 +396,8 @@ class LedgerService {
                 tx_blob,
             });
 
-            const {
-                error,
-                error_message,
-                error_exception,
-                engine_result,
-                tx_json,
-                engine_result_message,
-            } = submitResult;
+            const { error, error_message, error_exception, engine_result, tx_json, engine_result_message } =
+                submitResult;
 
             this.logger.debug('Submit Result TX:', submitResult);
 
