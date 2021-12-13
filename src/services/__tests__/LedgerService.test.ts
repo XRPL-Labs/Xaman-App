@@ -30,7 +30,7 @@ describe('LedgerService', () => {
         expect(availableFees).toStrictEqual({
             availableFees: [
                 { type: 'low', value: 11, suggested: false },
-                { type: 'medium', value: 3451, suggested: true },
+                { type: 'medium', value: 165, suggested: true },
                 { type: 'high', value: 5877, suggested: false },
             ],
         });
