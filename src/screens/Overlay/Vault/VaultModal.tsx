@@ -57,7 +57,6 @@ class VaultModal extends Component<Props, State> {
         super(props);
 
         this.state = {
-            isLoading: true,
             signer: undefined,
             alternativeSigner: undefined,
             coreSettings: CoreRepository.getSettings(),

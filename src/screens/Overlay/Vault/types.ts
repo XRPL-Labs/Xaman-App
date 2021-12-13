@@ -27,7 +27,6 @@ export interface Props {
 }
 
 export interface State {
-    isLoading: boolean;
     signer: AccountSchema;
     alternativeSigner: AccountSchema;
     coreSettings: CoreSchema;
