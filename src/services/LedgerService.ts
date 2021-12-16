@@ -24,6 +24,8 @@ import {
     FeeResponse,
 } from '@common/libs/ledger/types';
 
+import { LedgerEntriesTypes } from '@common/libs/ledger/objects/types';
+
 import { Issuer } from '@common/libs/ledger/parser/types';
 
 import SocketService from '@services/SocketService';
@@ -168,96 +170,6 @@ class LedgerService {
     };
 
     /**
-     * Get available fees on network base on the load
-     * NOTE: values are in drop
-     */
-    getAvailableNetworkFee = (): Promise<any> => {
-        // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async (resolve, reject) => {
-            try {
-                const feeDataSet = await this.getLedgerFee();
-
-                // set the suggested fee base on queue percentage
-                const { current_queue_size, max_queue_size } = feeDataSet;
-                const queuePercentage = new BigNumber(current_queue_size).dividedBy(max_queue_size);
-
-                const suggestedFee = queuePercentage.isEqualTo(1)
-                    ? 'feeHigh'
-                    : queuePercentage.isEqualTo(0)
-                    ? 'feeLow'
-                    : 'feeMedium';
-
-                // set the drops values to BigNumber instance
-                const minimumFee = new BigNumber(feeDataSet.drops.minimum_fee)
-                    .multipliedBy(1.5)
-                    .integerValue(BigNumber.ROUND_HALF_FLOOR);
-                const medianFee = new BigNumber(feeDataSet.drops.median_fee);
-                const openLedgerFee = new BigNumber(feeDataSet.drops.open_ledger_fee);
-
-                // calculate fees
-                const feeLow = BigNumber.minimum(
-                    BigNumber.maximum(
-                        minimumFee,
-                        BigNumber.maximum(medianFee, openLedgerFee).dividedBy(500),
-                    ).integerValue(BigNumber.ROUND_HALF_CEIL),
-                    new BigNumber(1000),
-                ).toNumber();
-
-                const feeMedium = BigNumber.minimum(
-                    queuePercentage.isGreaterThan(0.1)
-                        ? minimumFee
-                              .plus(medianFee)
-                              .plus(openLedgerFee)
-                              .dividedBy(3)
-                              .integerValue(BigNumber.ROUND_HALF_CEIL)
-                        : queuePercentage.isEqualTo(0)
-                        ? BigNumber.maximum(minimumFee.multipliedBy(10), BigNumber.minimum(minimumFee, openLedgerFee))
-                        : BigNumber.maximum(
-                              minimumFee.multipliedBy(10),
-                              minimumFee.plus(medianFee).dividedBy(2).integerValue(BigNumber.ROUND_HALF_CEIL),
-                          ),
-
-                    new BigNumber(feeLow).multipliedBy(15),
-                    new BigNumber(10000),
-                ).toNumber();
-
-                const feeHigh = BigNumber.minimum(
-                    BigNumber.maximum(
-                        minimumFee.multipliedBy(10),
-                        BigNumber.maximum(medianFee, openLedgerFee)
-                            .multipliedBy(1.1)
-                            .integerValue(BigNumber.ROUND_HALF_CEIL),
-                    ),
-                    new BigNumber(100000),
-                ).toNumber();
-
-                return resolve({
-                    availableFees: [
-                        {
-                            type: 'low',
-                            value: feeLow,
-                            suggested: suggestedFee === 'feeLow',
-                        },
-                        {
-                            type: 'medium',
-                            value: feeMedium,
-                            suggested: suggestedFee === 'feeMedium',
-                        },
-                        {
-                            type: 'high',
-                            value: feeHigh,
-                            suggested: suggestedFee === 'feeHigh',
-                        },
-                    ],
-                });
-            } catch (e) {
-                this.logger.warn('Unable to calculate available network fees:', e);
-                return reject(new Error('Unable to calculate available network fees!'));
-            }
-        });
-    };
-
-    /**
      * Get account line base on provided peer
      * Note: should look for marker as it can be not in first page
      */
@@ -383,6 +295,115 @@ class LedgerService {
                 .catch(() => {
                     return resolve([]);
                 });
+        });
+    };
+
+    /**
+     * Get account blocker objects
+     * Note: should look for marker as it can be not in first page
+     */
+    getAccountBlockerObjects = (
+        account: string,
+        marker?: string,
+        combined = [] as LedgerEntriesTypes[],
+    ): Promise<LedgerEntriesTypes[]> => {
+        return this.getAccountObjects(account, { deletion_blockers_only: true, marker })
+            .then((resp) => {
+                const { account_objects, marker: _marker } = resp;
+                if (_marker && _marker !== marker) {
+                    return this.getAccountBlockerObjects(account, _marker, account_objects.concat(combined));
+                }
+                return account_objects.concat(combined);
+            });
+    };
+
+    /**
+     * Get available fees on network base on the load
+     * NOTE: values are in drop
+     */
+    getAvailableNetworkFee = (): Promise<any> => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+            try {
+                const feeDataSet = await this.getLedgerFee();
+
+                // set the suggested fee base on queue percentage
+                const { current_queue_size, max_queue_size } = feeDataSet;
+                const queuePercentage = new BigNumber(current_queue_size).dividedBy(max_queue_size);
+
+                const suggestedFee = queuePercentage.isEqualTo(1)
+                    ? 'feeHigh'
+                    : queuePercentage.isEqualTo(0)
+                    ? 'feeLow'
+                    : 'feeMedium';
+
+                // set the drops values to BigNumber instance
+                const minimumFee = new BigNumber(feeDataSet.drops.minimum_fee)
+                    .multipliedBy(1.5)
+                    .integerValue(BigNumber.ROUND_HALF_FLOOR);
+                const medianFee = new BigNumber(feeDataSet.drops.median_fee);
+                const openLedgerFee = new BigNumber(feeDataSet.drops.open_ledger_fee);
+
+                // calculate fees
+                const feeLow = BigNumber.minimum(
+                    BigNumber.maximum(
+                        minimumFee,
+                        BigNumber.maximum(medianFee, openLedgerFee).dividedBy(500),
+                    ).integerValue(BigNumber.ROUND_HALF_CEIL),
+                    new BigNumber(1000),
+                ).toNumber();
+
+                const feeMedium = BigNumber.minimum(
+                    queuePercentage.isGreaterThan(0.1)
+                        ? minimumFee
+                              .plus(medianFee)
+                              .plus(openLedgerFee)
+                              .dividedBy(3)
+                              .integerValue(BigNumber.ROUND_HALF_CEIL)
+                        : queuePercentage.isEqualTo(0)
+                        ? BigNumber.maximum(minimumFee.multipliedBy(10), BigNumber.minimum(minimumFee, openLedgerFee))
+                        : BigNumber.maximum(
+                              minimumFee.multipliedBy(10),
+                              minimumFee.plus(medianFee).dividedBy(2).integerValue(BigNumber.ROUND_HALF_CEIL),
+                          ),
+
+                    new BigNumber(feeLow).multipliedBy(15),
+                    new BigNumber(10000),
+                ).toNumber();
+
+                const feeHigh = BigNumber.minimum(
+                    BigNumber.maximum(
+                        minimumFee.multipliedBy(10),
+                        BigNumber.maximum(medianFee, openLedgerFee)
+                            .multipliedBy(1.1)
+                            .integerValue(BigNumber.ROUND_HALF_CEIL),
+                    ),
+                    new BigNumber(100000),
+                ).toNumber();
+
+                return resolve({
+                    availableFees: [
+                        {
+                            type: 'low',
+                            value: feeLow,
+                            suggested: suggestedFee === 'feeLow',
+                        },
+                        {
+                            type: 'medium',
+                            value: feeMedium,
+                            suggested: suggestedFee === 'feeMedium',
+                        },
+                        {
+                            type: 'high',
+                            value: feeHigh,
+                            suggested: suggestedFee === 'feeHigh',
+                        },
+                    ],
+                });
+            } catch (e) {
+                this.logger.warn('Unable to calculate available network fees:', e);
+                return reject(new Error('Unable to calculate available network fees!'));
+            }
         });
     };
 
