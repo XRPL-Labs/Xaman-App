@@ -379,6 +379,33 @@ class HomeView extends Component<Props, State> {
         }
     };
 
+    onBalancePress = () => {
+        const { account } = this.state;
+
+        // if account is negative show balance explain
+        const availableBalance = CalculateAvailableBalance(account, true);
+
+        if (availableBalance < 0) {
+            this.showBalanceExplain();
+        } else {
+            this.toggleBalance();
+        }
+    };
+
+    onTrustLinePress = (line: TrustLineSchema) => {
+        const { isSpendable } = this.state;
+
+        if (!line) {
+            return;
+        }
+
+        if (isSpendable) {
+            this.showCurrencyOptions(line);
+        } else if (line.isNFT) {
+            this.showNFTDetails(line);
+        }
+    };
+
     renderHeader = () => {
         const { account } = this.state;
 
@@ -404,20 +431,6 @@ class HomeView extends Component<Props, State> {
                 )}
             </Fragment>
         );
-    };
-
-    onTrustLinePress = (line: TrustLineSchema) => {
-        const { isSpendable } = this.state;
-
-        if (!line) {
-            return;
-        }
-
-        if (isSpendable) {
-            this.showCurrencyOptions(line);
-        } else if (line.isNFT) {
-            this.showNFTDetails(line);
-        }
     };
 
     renderAssets = () => {
@@ -574,6 +587,7 @@ class HomeView extends Component<Props, State> {
     renderBalance = () => {
         const { showRate, isLoadingRate, account, discreetMode, currencyRate } = this.state;
 
+        // account is not activated
         if (account.balance === 0) return null;
 
         let balance = '0';
@@ -616,7 +630,7 @@ class HomeView extends Component<Props, State> {
                         </Text>
                     </TouchableDebounce>
                 </View>
-                <TouchableDebounce activeOpacity={0.7} style={[styles.balanceContainer]} onPress={this.toggleBalance}>
+                <TouchableDebounce activeOpacity={0.7} style={[styles.balanceContainer]} onPress={this.onBalancePress}>
                     {!discreetMode && !showRate && <Icon name="IconXrp" size={16} style={styles.xrpIcon} />}
 
                     {isLoadingRate ? (

@@ -331,7 +331,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                             </View>
                             <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
                                 <Text style={[AppStyles.h5, AppStyles.monoBold]}>
-                                    {Localize.formatNumber(CalculateAvailableBalance(account))}
+                                    {Localize.formatNumber(CalculateAvailableBalance(account, true))}
                                 </Text>
                             </View>
                         </View>
