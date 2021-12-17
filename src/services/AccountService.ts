@@ -242,17 +242,10 @@ class AccountService extends EventEmitter {
                 } as LedgerTrustline;
             });
 
-            const filtered = accountLinesFormatted.filter((l) => {
-                if (l.limit === '0' && (l.balance === '0' || l.balance.startsWith('-'))) {
-                    return false;
-                }
-                return true;
-            });
-
             if (_marker && _marker !== marker) {
-                return this.getFilteredAccountLines(account, _marker, filtered.concat(combined));
+                return this.getFilteredAccountLines(account, _marker, accountLinesFormatted.concat(combined));
             }
-            return filtered.concat(combined);
+            return accountLinesFormatted.concat(combined);
         });
     };
 
