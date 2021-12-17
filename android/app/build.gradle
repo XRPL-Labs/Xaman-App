@@ -139,7 +139,7 @@ android {
         applicationId "com.xrpllabs.xumm"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        missingDimensionStrategy 'react-native-camera', 'general'
+        missingDimensionStrategy 'react-native-camera', 'mlkit'
         versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch * 10 + buildNumber
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         testBuildType System.getProperty('testBuildType', 'debug')
