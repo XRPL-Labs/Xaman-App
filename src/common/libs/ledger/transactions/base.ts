@@ -213,7 +213,7 @@ class BaseTransaction {
     Verify the transaction from ledger
     */
     verify = async (): Promise<VerifyResultType> => {
-        const verifyResult = await LedgerService.verifyTx(this.Hash);
+        const verifyResult = await LedgerService.verifyTransaction(this.Hash);
 
         // assign the new transaction from ledger
         if (has(verifyResult, 'transaction')) {
@@ -232,17 +232,28 @@ class BaseTransaction {
     /*
     Submit the signed transaction to the Ledger
     */
-    submit = async (account?: AccountSchema, multiSign?: boolean): Promise<SubmitResultType> => {
+    submit = async (): Promise<SubmitResultType> => {
         try {
-            // if not signed trigger sing function
+            // if transaction is not signed exit
             if (!this.TxnSignature) {
-                await this.sign(account, multiSign);
+                throw new Error('transaction is not signed!');
             }
 
-            const submitResult = await LedgerService.submitTX(this.TxnSignature);
+            // if transaction is already submitted exit
+            if (this.SubmitResult) {
+                throw new Error('transaction already submitted!');
+            }
 
+            // fail transaction locally if AccountDelete
+            // do not retry or relay the transaction to other servers
+            // this will prevent fee burn if something wrong on AccountDelete transactions
+            const shouldFailHard = this.Type === 'AccountDelete';
+
+            // Submit signed transaction to the XRPL
+            const submitResult = await LedgerService.submitTransaction(this.TxnSignature, shouldFailHard);
+
+            // update transaction hash base on submit result
             const { transactionId } = submitResult;
-
             if (transactionId) {
                 this.Hash = transactionId;
             }
@@ -326,6 +337,10 @@ class BaseTransaction {
         return undefined;
     }
 
+    /**
+     * get transaction balance changes
+     * @returns changes
+     */
     BalanceChange(owner?: string) {
         if (!owner) {
             owner = this.Account.address;
@@ -351,6 +366,10 @@ class BaseTransaction {
         return changes;
     }
 
+    /**
+     * get transaction balance changes
+     * @returns changes
+     */
     OwnerCountChange(owner?: string) {
         if (!owner) {
             owner = this.Account.address;

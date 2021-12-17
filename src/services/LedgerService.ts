@@ -307,14 +307,13 @@ class LedgerService {
         marker?: string,
         combined = [] as LedgerEntriesTypes[],
     ): Promise<LedgerEntriesTypes[]> => {
-        return this.getAccountObjects(account, { deletion_blockers_only: true, marker })
-            .then((resp) => {
-                const { account_objects, marker: _marker } = resp;
-                if (_marker && _marker !== marker) {
-                    return this.getAccountBlockerObjects(account, _marker, account_objects.concat(combined));
-                }
-                return account_objects.concat(combined);
-            });
+        return this.getAccountObjects(account, { deletion_blockers_only: true, marker }).then((resp) => {
+            const { account_objects, marker: _marker } = resp;
+            if (_marker && _marker !== marker) {
+                return this.getAccountBlockerObjects(account, _marker, account_objects.concat(combined));
+            }
+            return account_objects.concat(combined);
+        });
     };
 
     /**
@@ -410,11 +409,12 @@ class LedgerService {
     /**
      * Submit signed transaction to the XRP Ledger
      */
-    submitTX = async (tx_blob: string): Promise<SubmitResultType> => {
+    submitTransaction = async (tx_blob: string, fail_hard = false): Promise<SubmitResultType> => {
         try {
             const submitResult = await SocketService.send({
                 command: 'submit',
                 tx_blob,
+                fail_hard,
             });
 
             const { error, error_message, error_exception, engine_result, tx_json, engine_result_message } =
@@ -467,7 +467,10 @@ class LedgerService {
         }
     };
 
-    verifyTx = (transactionId: string): Promise<VerifyResultType> => {
+    /**
+     * Verify transaction on XRPL
+     */
+    verifyTransaction = (transactionId: string): Promise<VerifyResultType> => {
         return new Promise((resolve) => {
             let timeout = undefined as ReturnType<typeof setTimeout>;
 

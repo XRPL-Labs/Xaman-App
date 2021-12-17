@@ -85,13 +85,13 @@ class SubmitModal extends Component<Props, State> {
     submit = async () => {
         const { txblob } = this.props;
 
-        const submitResult = await LedgerService.submitTX(txblob);
+        const submitResult = await LedgerService.submitTransaction(txblob);
 
         // submitted verify
         if (submitResult.success) {
             this.setState({ step: 'verifying', submitResult });
 
-            const verifyResult = await LedgerService.verifyTx(submitResult.transactionId);
+            const verifyResult = await LedgerService.verifyTransaction(submitResult.transactionId);
 
             this.setState({
                 step: 'result',
