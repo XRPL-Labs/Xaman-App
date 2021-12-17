@@ -5,7 +5,7 @@
 import { head, first, forEach, isEmpty, get } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text, Image, ScrollView } from 'react-native';
+import { View, Text, Image, ScrollView, Alert } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
 
@@ -106,10 +106,17 @@ class AddCurrencyOverlay extends Component<Props, State> {
         });
     };
 
-    addCurrency = async () => {
+    onAddPress = async () => {
+        const { account } = this.props;
         const { selectedCurrency } = this.state;
 
         if (!selectedCurrency.isValid()) {
+            return;
+        }
+
+        // if trustline is already exist return
+        if (account.hasCurrency(selectedCurrency)) {
+            Alert.alert(Localize.t('global.error'), Localize.t('asset.trustLineIsAlreadyExist'));
             return;
         }
 
@@ -338,7 +345,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                         numberOfLines={1}
                         testID="add-and-sign-button"
                         isDisabled={!selectedCurrency}
-                        onPress={this.addCurrency}
+                        onPress={this.onAddPress}
                         style={[AppStyles.buttonGreen]}
                         label={Localize.t('asset.addAndSign')}
                     />

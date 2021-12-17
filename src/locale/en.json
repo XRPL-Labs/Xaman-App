@@ -815,7 +815,8 @@
     "dangerousConfigurationDetected": "Dangerous configuration detected",
     "restrictingConfigurationDetected": "Restricting configuration detected",
     "moreInfoAndFix": "More info & fix",
-    "addingTrustLineWarning": "XRPL Labs / XUMM does not endorse any token or token issuer. You should only proceed if you trust the token issuer.\r\nIn case of questions or problems regarding the token (TrustLine) you will need to contact the token issuer.\r\n\r\nContinue at your own risk."
+    "addingTrustLineWarning": "XRPL Labs / XUMM does not endorse any token or token issuer. You should only proceed if you trust the token issuer.\r\nIn case of questions or problems regarding the token (TrustLine) you will need to contact the token issuer.\r\n\r\nContinue at your own risk.",
+    "trustLineIsAlreadyExist": "This token already exists. You cannot add the same token again."
   },
   "exchange": {
     "exchanging": "Exchanging",
