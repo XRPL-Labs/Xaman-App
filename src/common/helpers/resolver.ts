@@ -143,18 +143,20 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                 }
             }
 
-            // check for black hole
-            if (has(account_data, ['RegularKey'])) {
-                if (
-                    ['rrrrrrrrrrrrrrrrrrrrrhoLvTp', 'rrrrrrrrrrrrrrrrrrrrBZbvji'].indexOf(account_data.RegularKey) > -1
-                ) {
-                    assign(info, { blackHole: true });
-                }
-            }
-
-            // check if destination requires the destination tag
+            // check for account flags
             if (has(account_data, ['Flags'])) {
                 const accountFlags = new Flag('Account', account_data.Flags).parse();
+
+                // check for black hole
+                if (has(account_data, ['RegularKey'])) {
+                    if (
+                        accountFlags.disableMasterKey &&
+                        ['rrrrrrrrrrrrrrrrrrrrrhoLvTp', 'rrrrrrrrrrrrrrrrrrrrBZbvji'].indexOf(account_data.RegularKey) >
+                            -1
+                    ) {
+                        assign(info, { blackHole: true });
+                    }
+                }
 
                 if (accountFlags.disallowIncomingXRP) {
                     assign(info, { disallowIncomingXRP: true });
