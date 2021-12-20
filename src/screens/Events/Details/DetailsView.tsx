@@ -437,14 +437,20 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 return Localize.t('global.payment');
 
-            case 'TrustSet':
-                if (tx.Account.address !== account.address && tx.Limit !== 0) {
+            case 'TrustSet': {
+                // incoming trustline
+                if (tx.Account.address !== account.address) {
                     return Localize.t('events.incomingTrustLineAdded');
                 }
-                if (tx.Limit === 0) {
+                const ownerCountChange = tx.OwnerCountChange(account.address);
+                if (ownerCountChange) {
+                    if (ownerCountChange.action === 'INC') {
+                        return Localize.t('events.addedATrustLine');
+                    }
                     return Localize.t('events.removedATrustLine');
                 }
-                return Localize.t('events.addedATrustLine');
+                return Localize.t('events.updatedATrustLine');
+            }
             case 'EscrowCreate':
                 return Localize.t('events.createEscrow');
             case 'EscrowFinish':
@@ -542,7 +548,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 } else {
                     currency = account.lines.find(
                         // eslint-disable-next-line max-len
-                        (l: any) => l.currency.currency === tx.DeliveredAmount.currency &&
+                        (l: any) =>
+                            l.currency.currency === tx.DeliveredAmount.currency &&
                             l.currency.issuer === tx.DeliveredAmount.issuer,
                     );
                 }
@@ -877,9 +884,12 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderTrustSet = () => {
+        const { account } = this.props;
         const { tx } = this.state;
 
-        if (tx.Limit === 0) {
+        const ownerCountChange = tx.OwnerCountChange(account.address);
+
+        if (ownerCountChange && ownerCountChange.action === 'DEC') {
             return Localize.t('events.itRemovedTrustLineCurrencyTo', {
                 currency: NormalizeCurrencyCode(tx.Currency),
                 issuer: tx.Issuer,

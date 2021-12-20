@@ -311,14 +311,20 @@ class TransactionTemplate extends Component<Props, State> {
                     return Localize.t('events.paymentReceived');
                 }
                 return Localize.t('events.paymentSent');
-            case 'TrustSet':
-                if (item.Account.address !== account.address && item.Limit !== 0) {
+            case 'TrustSet': {
+                // incoming trustline
+                if (item.Account.address !== account.address) {
                     return Localize.t('events.incomingTrustLineAdded');
                 }
-                if (item.Limit === 0) {
+                const ownerCountChange = item.OwnerCountChange(account.address);
+                if (ownerCountChange) {
+                    if (ownerCountChange.action === 'INC') {
+                        return Localize.t('events.addedATrustLine');
+                    }
                     return Localize.t('events.removedATrustLine');
                 }
-                return Localize.t('events.addedATrustLine');
+                return Localize.t('events.updatedATrustLine');
+            }
             case 'EscrowCreate':
                 return Localize.t('events.createEscrow');
             case 'EscrowFinish':

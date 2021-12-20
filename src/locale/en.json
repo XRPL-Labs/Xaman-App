@@ -402,6 +402,7 @@
     "exchangedAssets": "Exchanged tokens",
     "addedATrustLine": "Added a token (TrustLine)",
     "removedATrustLine": "Removed a token (TrustLine)",
+    "updatedATrustLine": "Updated a token (TrustLine)",
     "incomingTrustLineAdded": "Incoming TrustLine added",
     "addATrustLine": "Add a token (TrustLine)",
     "updateAccountAssets": "Update account tokens",
