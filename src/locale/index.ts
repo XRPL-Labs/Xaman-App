@@ -1,20 +1,24 @@
 /**
  * App Localization
  */
+import BigNumber from 'bignumber.js';
 
 class Localize {
     instance: any;
     moment: any;
-    settings: any;
+    bigNumber: any;
     meta: any;
+    settings: any;
 
     constructor() {
         this.instance = require('i18n-js');
-        this.meta = require('./meta.json');
         this.moment = require('moment-timezone');
+        this.meta = require('./meta.json');
+        this.settings = undefined;
+
+        // set default values
         this.instance.fallbacks = true;
         this.instance.defaultLocale = 'en';
-        this.settings = undefined;
     }
 
     getLocales = () => {
@@ -93,15 +97,15 @@ class Localize {
      * @param n number
      * @returns string 1,333.855222
      */
-    formatNumber = (n: number, precision = 8): string => {
-        const options = { precision, strip_insignificant_zeros: true };
+    formatNumber = (number: number, precision = 8): string => {
+        const formatOptions = { groupSize: 3 };
 
         if (this.settings) {
             const { separator, delimiter } = this.settings;
-            Object.assign(options, { separator, delimiter });
+            Object.assign(formatOptions, { decimalSeparator: separator, groupSeparator: delimiter });
         }
 
-        return this.instance.toNumber(n, options);
+        return new BigNumber(number).decimalPlaces(precision, BigNumber.ROUND_DOWN).toFormat(formatOptions);
     };
 
     t = (key: string, options?: any) => {
