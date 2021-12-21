@@ -233,7 +233,7 @@ exports[`Storyshots AmountText original 1`] = `
 </View>
 `;
 
-exports[`Storyshots AmountText withPostfix 1`] = `
+exports[`Storyshots AmountText withCurrency 1`] = `
 <View
   style={
     Object {
@@ -306,6 +306,18 @@ exports[`Storyshots AmountText withPostfix 1`] = `
             0…
           </Text>
         </View>
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
+        >
+           
+          USD
+        </Text>
       </View>
     </View>
     <View
@@ -348,6 +360,18 @@ exports[`Storyshots AmountText withPostfix 1`] = `
             2.2222
           </Text>
         </View>
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
+        >
+           
+          USD
+        </Text>
       </View>
     </View>
     <View
@@ -401,6 +425,18 @@ exports[`Storyshots AmountText withPostfix 1`] = `
             99,999
           </Text>
         </View>
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
+        >
+           
+          USD
+        </Text>
       </View>
     </View>
   </View>
