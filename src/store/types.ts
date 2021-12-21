@@ -26,6 +26,7 @@ export enum BiometryType {
 export enum NodeChain {
     Main = 'Mainnet',
     Test = 'Testnet',
+    Dev = 'Devnet',
     Custom = 'Custom',
 }
 

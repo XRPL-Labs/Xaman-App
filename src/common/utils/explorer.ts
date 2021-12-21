@@ -1,4 +1,4 @@
-import find from 'lodash/find';
+import { get, find } from 'lodash';
 import { AppConfig } from '@common/constants';
 
 import { CoreRepository, CustomNodeRepository } from '@store/repositories';
@@ -24,13 +24,16 @@ const GetExplorer = (): ExplorerDetails => {
 
     const coreSettings = CoreRepository.getSettings();
 
-    const net = connectedChain === NodeChain.Main ? 'main' : 'test';
+    // main,test,dev
+    const net = connectedChain.replace('net', '').toLowerCase();
+
+    // get explorer object
     const explorer = find(AppConfig.explorer, { value: coreSettings.defaultExplorer });
 
     return {
-        title: explorer.title,
-        tx: explorer.tx[net],
-        account: explorer.account[net],
+        title: get(explorer, 'title', ''),
+        tx: get(explorer.tx, net, '#'),
+        account: get(explorer.account, net, '#'),
     };
 };
 

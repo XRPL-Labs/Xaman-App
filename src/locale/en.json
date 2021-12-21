@@ -85,6 +85,7 @@
     "deviceUUID": "Device ID",
     "mainnet": "Main net",
     "testnet": "Test net",
+    "devnet": "Dev net",
     "custom": "Custom",
     "warning": "Warning",
     "pleaseNote": "Please note",

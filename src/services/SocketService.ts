@@ -291,6 +291,8 @@ class SocketService extends EventEmitter {
             nodes = [...AppConfig.nodes.main];
         } else if (this.chain === NodeChain.Test) {
             nodes = [...AppConfig.nodes.test];
+        } else if (this.chain === NodeChain.Dev) {
+            nodes = [...AppConfig.nodes.dev];
         } else {
             // if not belong to any chain then it's custom node
             // wrap it in proxy
