@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-one-expression-per-line */
-import BigNumber from 'bignumber.js';
-import { has, isEmpty } from 'lodash';
+
+import { isEmpty } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
@@ -40,10 +40,7 @@ class TrustSetTemplate extends Component<Props, State> {
         this.state = {
             isLoadingIssuerDetails: true,
             isLoadingIssuerFee: true,
-            issuerDetails: {
-                name: '',
-                source: '',
-            },
+            issuerDetails: undefined,
             issuerFee: 0,
         };
     }
@@ -52,15 +49,11 @@ class TrustSetTemplate extends Component<Props, State> {
         const { transaction } = this.props;
 
         // get transfer rate from issuer account
-        LedgerService.getAccountInfo(transaction.Issuer)
-            .then((issuerAccountInfo: any) => {
-                if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
-                    const { TransferRate } = issuerAccountInfo.account_data;
-
-                    const fee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
-
+        LedgerService.getAccountTransferRate(transaction.Issuer)
+            .then((issuerFee) => {
+                if (issuerFee) {
                     this.setState({
-                        issuerFee: fee,
+                        issuerFee,
                     });
                 }
             })

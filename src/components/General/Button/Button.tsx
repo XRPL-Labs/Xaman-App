@@ -1,11 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
-import { isEqual, debounce } from 'lodash';
+import { isEqual } from 'lodash';
 
-import { View, TouchableOpacity, Text, TextStyle, ViewStyle, ImageStyle } from 'react-native';
+import { View, Text, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 
 import { Images } from '@common/helpers/images';
-import { Icon, LoadingIndicator } from '@components/General';
+import { TouchableDebounce, Icon, LoadingIndicator } from '@components/General';
 
 import styles from './styles';
 
@@ -140,15 +140,13 @@ export default class Button extends Component<Props> {
         return this.renderChildren();
     }
 
-    debouncedOnPress = () => {
+    onPress = () => {
         const { onPress, isLoading } = this.props;
 
         if (!isLoading && typeof onPress === 'function') {
             onPress();
         }
     };
-
-    onPress = debounce(this.debouncedOnPress, 300, { leading: true, trailing: false });
 
     onLongPress = () => {
         const { onLongPress, isLoading } = this.props;
@@ -201,7 +199,7 @@ export default class Button extends Component<Props> {
         };
 
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 accessibilityRole="button"
                 delayPressIn={0}
                 style={[
@@ -221,7 +219,7 @@ export default class Button extends Component<Props> {
                 {...touchableProps}
             >
                 {this.renderInnerContent()}
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     }
 }

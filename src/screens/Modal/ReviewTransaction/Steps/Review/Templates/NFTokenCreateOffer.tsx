@@ -39,14 +39,8 @@ class NFTokenCreateOfferTemplate extends Component<Props, State> {
         this.state = {
             isLoadingDestinationDetails: true,
             isLoadingOwnerDetails: true,
-            destinationDetails: {
-                name: '',
-                source: '',
-            },
-            ownerDetails: {
-                name: '',
-                source: '',
-            },
+            destinationDetails: undefined,
+            ownerDetails: undefined,
         };
     }
 
@@ -138,7 +132,7 @@ class NFTokenCreateOfferTemplate extends Component<Props, State> {
                 <View style={[styles.contentBox]}>
                     <AmountText
                         value={transaction.Amount.value}
-                        postfix={transaction.Amount.currency}
+                        currency={transaction.Amount.currency}
                         style={styles.amount}
                     />
                 </View>

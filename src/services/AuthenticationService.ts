@@ -1,9 +1,6 @@
 /**
  * Authentication Service
  */
-
-import EventEmitter from 'events';
-
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 import { GetElapsedRealtime } from '@common/helpers/device';
@@ -21,15 +18,13 @@ import PushNotificationsService from '@services/PushNotificationsService';
 import Localize from '@locale';
 
 /* Service  ==================================================================== */
-class AuthenticationService extends EventEmitter {
+class AuthenticationService {
     locked: boolean;
     postSuccess: Array<() => void>;
     appStateChangeListener: any;
     logger: any;
 
     constructor() {
-        super();
-
         this.locked = false;
         this.logger = LoggerService.createLogger('App State');
 

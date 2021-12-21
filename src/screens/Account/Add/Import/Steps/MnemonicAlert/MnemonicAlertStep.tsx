@@ -3,12 +3,12 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, TouchableOpacity, View, Text, Image, Linking, Alert } from 'react-native';
+import { SafeAreaView, View, Text, Image, Linking, Alert } from 'react-native';
 
 import StyleService from '@services/StyleService';
 
 // components
-import { Button, Icon, Footer, Spacer } from '@components/General';
+import { TouchableDebounce, Button, Icon, Footer, Spacer } from '@components/General';
 
 import Localize from '@locale';
 
@@ -28,14 +28,10 @@ class MnemonicAlertStep extends Component<Props, State> {
     context: React.ContextType<typeof StepsContext>;
 
     openFAQ = () => {
-        const url = 'http://xumm.app/redir/faq/security-hardware/en';
+        const url = 'https://xumm.app/redir/faq/security-hardware/en';
 
-        Linking.canOpenURL(url).then((supported) => {
-            if (supported) {
-                Linking.openURL(url);
-            } else {
-                Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
-            }
+        Linking.openURL(url).catch(() => {
+            Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
         });
     };
 
@@ -58,7 +54,7 @@ class MnemonicAlertStep extends Component<Props, State> {
                         {Localize.t('account.mnemonicLargeAmountAlert')}
                     </Text>
 
-                    <TouchableOpacity
+                    <TouchableDebounce
                         style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingSml]}
                         onPress={this.openFAQ}
                     >
@@ -73,7 +69,7 @@ class MnemonicAlertStep extends Component<Props, State> {
                         >
                             {Localize.t('global.readMoreInTheFAQ')}
                         </Text>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
                 </View>
 
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>

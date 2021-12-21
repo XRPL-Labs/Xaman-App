@@ -129,7 +129,7 @@ export default class RaisedButton extends Component<Props, State> {
         });
     };
 
-    onPress = debounce(this.debouncedOnPress, 300, { leading: true, trailing: false });
+    onPress = debounce(this.debouncedOnPress, 500, { leading: true, trailing: false });
 
     press = () => {
         const { onPress } = this.props;

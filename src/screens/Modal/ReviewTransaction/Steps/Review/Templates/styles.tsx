@@ -3,18 +3,18 @@ import StyleService from '@services/StyleService';
 import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    // container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '$lightBlue },
     contentBox: {
         marginBottom: AppSizes.paddingSml,
         paddingHorizontal: 5,
-        // borderColor: '$red,
-        // borderWidth: 1,
     },
     addressContainer: {
         borderRadius: 15,
         zIndex: 2,
         paddingHorizontal: 5,
         paddingVertical: 10,
+        marginBottom: AppSizes.paddingSml,
+    },
+    signersContainer: {
         marginBottom: AppSizes.paddingSml,
     },
     label: {
@@ -74,12 +74,13 @@ const styles = StyleService.create({
         borderRadius: 10,
     },
     editButton: {
+        backgroundColor: '$tint',
         borderRadius: 8,
-        height: 20,
+        height: 25,
         width: 40,
         justifyContent: 'center',
         alignSelf: 'center',
-        marginRight: 10,
+        marginRight: 15,
     },
     amountInput: {
         fontSize: AppFonts.h3.size,
@@ -107,6 +108,12 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size,
         color: '$textSecondary',
+    },
+    feeText: {
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontWeight: '600',
+        fontSize: AppFonts.base.size,
+        color: '$textPrimary',
     },
 });
 

@@ -1,6 +1,11 @@
 import { AmountType } from '../parser/types';
 
-export type LedgerEntriesTypes = OfferLedgerEntry | EscrowLedgerEntry | CheckLedgerEntry | NFTokenOfferLedgerEntry;
+export type LedgerEntriesTypes =
+    | OfferLedgerEntry
+    | EscrowLedgerEntry
+    | CheckLedgerEntry
+    | RippleStateLedgerEntry
+    | NFTokenOfferLedgerEntry;
 
 /**
  * Ledger objects Entries
@@ -52,6 +57,22 @@ export interface CheckLedgerEntry {
     Expiration: number;
     InvoiceID: string;
     SourceTag: number;
+}
+
+export interface RippleStateLedgerEntry {
+    LedgerEntryType: 'RippleState';
+    Flags: number;
+    Balance: AmountType;
+    LowLimit: AmountType;
+    HighLimit: AmountType;
+    PreviousTxnID: string;
+    PreviousTxnLgrSeq: number;
+    LowNode?: string;
+    HighNode?: string;
+    LowQualityIn?: number;
+    LowQualityOut?: number;
+    HighQualityIn?: number;
+    HighQualityOut?: number;
 }
 
 export interface NFTokenOfferLedgerEntry {

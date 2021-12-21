@@ -335,13 +335,7 @@ export default class PasswordInput extends Component<Props, State> {
                     placeholder={placeholder}
                     selectTextOnFocus={selectTextOnFocus}
                 />
-                <TouchableOpacity
-                    style={{}}
-                    disabled={!editable}
-                    onPress={() => {
-                        this.toggleSwitch();
-                    }}
-                >
+                <TouchableOpacity style={{}} disabled={!editable} onPress={this.toggleSwitch}>
                     <Icon
                         size={22}
                         name={hidePassword ? 'IconEye' : 'IconEyeOff'}

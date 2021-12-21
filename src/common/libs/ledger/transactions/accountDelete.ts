@@ -79,6 +79,37 @@ class AccountDelete extends BaseTransaction {
             if (this.Account.address === this.Destination.address) {
                 return reject(new Error(Localize.t('account.destinationAccountAndSourceCannotBeSame')));
             }
+
+            // check if account have any blocker object
+            await LedgerService.getAccountBlockerObjects(this.Account.address)
+                .then((accountObjects) => {
+                    if (!Array.isArray(accountObjects) || accountObjects.length > 0) {
+                        return reject(new Error(Localize.t('account.deleteAccountObjectsExistError')));
+                    }
+                    return true;
+                })
+                .catch(() => {
+                    return reject(new Error(Localize.t('account.unableToCheckAccountObjects')));
+                });
+
+            // check if account sequence is met the account delete condition
+            const { LastLedger } = LedgerService.getLedgerStatus();
+
+            if (LastLedger === 0) {
+                return reject(new Error(Localize.t('account.unableToFetchLedgerSequence')));
+            }
+
+            const remainingSequence = Number(account.sequence) + 256 - LastLedger;
+            if (remainingSequence > 0) {
+                return reject(
+                    new Error(
+                        Localize.t('account.deleteAccountSequenceIsNotEnoughError', {
+                            remainingSequence,
+                        }),
+                    ),
+                );
+            }
+
             // check if destination is exist or required destination tag flag is set
             await LedgerService.getAccountInfo(this.Destination.address)
                 /* eslint-disable-next-line */
@@ -100,30 +131,6 @@ class AccountDelete extends BaseTransaction {
                 .catch(() => {
                     return reject(new Error(Localize.t('account.unableGetDestinationAccountInfo')));
                 });
-
-            // check if there is no account object belong to this account
-            if (account.ownerCount > 0) {
-                return reject(new Error(Localize.t('account.deleteAccountObjectsExistError')));
-            }
-
-            // check if account sequence is met the account delete condition
-            const { LastLedger } = LedgerService.getLedgerStatus();
-
-            if (LastLedger === 0) {
-                return reject(new Error(Localize.t('account.unableToFetchLedgerSequence')));
-            }
-
-            const remainingSequence = Number(account.sequence) + 256 - LastLedger;
-
-            if (remainingSequence > 0) {
-                return reject(
-                    new Error(
-                        Localize.t('account.deleteAccountSequenceIsNotEnoughError', {
-                            remainingSequence,
-                        }),
-                    ),
-                );
-            }
 
             return resolve();
         });

@@ -5,17 +5,7 @@
 import { find, has } from 'lodash';
 
 import React, { Component, Fragment } from 'react';
-import {
-    View,
-    SafeAreaView,
-    Text,
-    Image,
-    TouchableOpacity,
-    ImageBackground,
-    InteractionManager,
-    Share,
-    Alert,
-} from 'react-native';
+import { View, SafeAreaView, Text, Image, ImageBackground, InteractionManager, Share, Alert } from 'react-native';
 
 import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
@@ -35,7 +25,15 @@ import { CalculateAvailableBalance } from '@common/utils/balance';
 import Localize from '@locale';
 
 // components
-import { Button, RaisedButton, InfoMessage, Spacer, Icon, LoadingIndicator } from '@components/General';
+import {
+    TouchableDebounce,
+    Button,
+    RaisedButton,
+    InfoMessage,
+    Spacer,
+    Icon,
+    LoadingIndicator,
+} from '@components/General';
 import { TrustLineList } from '@components/Modules';
 
 // style
@@ -256,7 +254,15 @@ class HomeView extends Component<Props, State> {
     showCurrencyOptions = (trustLine: TrustLineSchema) => {
         const { account } = this.state;
 
-        Navigator.showOverlay(AppScreens.Overlay.CurrencySettings, { trustLine, account });
+        Navigator.showOverlay(
+            AppScreens.Overlay.CurrencySettings,
+            { trustLine, account },
+            {
+                overlay: {
+                    interceptTouchOutside: false,
+                },
+            },
+        );
     };
 
     showNFTDetails = (trustLine: TrustLineSchema) => {
@@ -321,7 +327,9 @@ class HomeView extends Component<Props, State> {
     showShareOverlay = () => {
         const { account } = this.state;
 
-        Navigator.showOverlay(AppScreens.Overlay.ShareAccount, { account });
+        if (account) {
+            Navigator.showOverlay(AppScreens.Overlay.ShareAccount, { account });
+        }
     };
 
     pushSendScreen = () => {
@@ -371,6 +379,33 @@ class HomeView extends Component<Props, State> {
         }
     };
 
+    onBalancePress = () => {
+        const { account } = this.state;
+
+        // if account is negative show balance explain
+        const availableBalance = CalculateAvailableBalance(account, true);
+
+        if (availableBalance < 0) {
+            this.showBalanceExplain();
+        } else {
+            this.toggleBalance();
+        }
+    };
+
+    onTrustLinePress = (line: TrustLineSchema) => {
+        const { isSpendable } = this.state;
+
+        if (!line) {
+            return;
+        }
+
+        if (isSpendable) {
+            this.showCurrencyOptions(line);
+        } else if (line.isNFT) {
+            this.showNFTDetails(line);
+        }
+    };
+
     renderHeader = () => {
         const { account } = this.state;
 
@@ -398,16 +433,6 @@ class HomeView extends Component<Props, State> {
         );
     };
 
-    onTrustLinePress = (line: TrustLineSchema) => {
-        const { isSpendable } = this.state;
-
-        if (isSpendable) {
-            this.showCurrencyOptions(line);
-        } else if (line.isNFT) {
-            this.showNFTDetails(line);
-        }
-    };
-
     renderAssets = () => {
         const { account, discreetMode, isSpendable } = this.state;
 
@@ -425,7 +450,7 @@ class HomeView extends Component<Props, State> {
                         <Spacer />
                         {keysForAccounts.map((a, index) => {
                             return (
-                                <TouchableOpacity
+                                <TouchableDebounce
                                     key={index}
                                     style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow]}
                                     onPress={() => {
@@ -442,7 +467,7 @@ class HomeView extends Component<Props, State> {
                                             </Text>
                                         </View>
                                     </View>
-                                </TouchableOpacity>
+                                </TouchableDebounce>
                             );
                         })}
                     </View>
@@ -452,7 +477,7 @@ class HomeView extends Component<Props, State> {
             return (
                 <View style={[AppStyles.flex6]} testID="not-activated-account-container">
                     <InfoMessage type="error" label={Localize.t('account.yourAccountIsNotActivated')} />
-                    <TouchableOpacity
+                    <TouchableDebounce
                         style={[AppStyles.row, AppStyles.centerContent, AppStyles.marginTopSml]}
                         onPress={this.openActiveAccountDescription}
                     >
@@ -467,7 +492,7 @@ class HomeView extends Component<Props, State> {
                         >
                             {Localize.t('home.howActivateMyAccount')}
                         </Text>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
                 </View>
             );
         }
@@ -562,6 +587,7 @@ class HomeView extends Component<Props, State> {
     renderBalance = () => {
         const { showRate, isLoadingRate, account, discreetMode, currencyRate } = this.state;
 
+        // account is not activated
         if (account.balance === 0) return null;
 
         let balance = '0';
@@ -584,7 +610,7 @@ class HomeView extends Component<Props, State> {
                         {Localize.t('home.balance')}
                     </Text>
 
-                    <TouchableOpacity style={AppStyles.paddingRightSml} onPress={this.toggleDiscreetMode}>
+                    <TouchableDebounce style={AppStyles.paddingRightSml} onPress={this.toggleDiscreetMode}>
                         <Text style={[styles.cardSmallLabel]}>
                             <Icon
                                 style={[AppStyles.imgColorGrey]}
@@ -594,17 +620,17 @@ class HomeView extends Component<Props, State> {
                             {'  '}
                             {discreetMode ? Localize.t('home.showBalance') : Localize.t('home.hideBalance')}
                         </Text>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
 
-                    <TouchableOpacity onPress={this.showBalanceExplain}>
+                    <TouchableDebounce onPress={this.showBalanceExplain}>
                         <Text style={[styles.cardSmallLabel]}>
                             <Icon style={[AppStyles.imgColorGrey]} size={12} name="IconInfo" />
                             {'  '}
                             {Localize.t('home.explainBalance')}
                         </Text>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
                 </View>
-                <TouchableOpacity activeOpacity={0.7} style={[styles.balanceContainer]} onPress={this.toggleBalance}>
+                <TouchableDebounce activeOpacity={0.7} style={[styles.balanceContainer]} onPress={this.onBalancePress}>
                     {!discreetMode && !showRate && <Icon name="IconXrp" size={16} style={styles.xrpIcon} />}
 
                     {isLoadingRate ? (
@@ -617,7 +643,7 @@ class HomeView extends Component<Props, State> {
                             {discreetMode ? '••••••••' : balance}
                         </Text>
                     )}
-                </TouchableOpacity>
+                </TouchableDebounce>
             </>
         );
     };
@@ -631,7 +657,7 @@ class HomeView extends Component<Props, State> {
                     <Text style={[AppStyles.h5]} numberOfLines={1}>
                         {account.label}
                     </Text>
-                    <TouchableOpacity onPress={this.onShowAccountQRPress} activeOpacity={0.8}>
+                    <TouchableDebounce onPress={this.onShowAccountQRPress} activeOpacity={0.8}>
                         <Text
                             testID="account-address-text"
                             adjustsFontSizeToFit
@@ -640,11 +666,11 @@ class HomeView extends Component<Props, State> {
                         >
                             {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
                         </Text>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
                 </View>
-                <TouchableOpacity hitSlop={{ left: 25, right: 25 }} onPress={this.onShowAccountQRPress}>
+                <TouchableDebounce hitSlop={{ left: 25, right: 25 }} onPress={this.onShowAccountQRPress}>
                     <Icon style={[styles.iconShare]} size={16} name="IconShare" />
-                </TouchableOpacity>
+                </TouchableDebounce>
             </View>
         );
     };

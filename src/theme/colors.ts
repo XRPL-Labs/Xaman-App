@@ -108,7 +108,8 @@ const ColorsTheme = {
 const ChainColors = {
     [NodeChain.Main]: ColorsGeneral.blue,
     [NodeChain.Test]: ColorsGeneral.green,
-    [NodeChain.Custom]: ColorsGeneral.orange,
+    [NodeChain.Dev]: ColorsGeneral.orange,
+    [NodeChain.Custom]: ColorsGeneral.red,
 };
 
 export default ColorsGeneral;

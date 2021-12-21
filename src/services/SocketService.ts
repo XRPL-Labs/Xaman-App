@@ -18,55 +18,6 @@ import LoggerService from '@services/LoggerService';
 import NavigationService, { RootType } from '@services/NavigationService';
 
 /* Types  ==================================================================== */
-type BaseCommand = {
-    id?: string;
-    command: string;
-};
-
-interface ServerInfoPayload extends BaseCommand {}
-
-interface SubscribePayload extends BaseCommand {
-    accounts: string[];
-}
-
-interface AccountInfoPayload extends BaseCommand {
-    account: string;
-    ledger_index?: string;
-    signer_lists?: boolean;
-}
-
-interface SubmitPayload extends BaseCommand {
-    tx_blob: string;
-}
-
-interface AccountTransactionsPayload extends BaseCommand {
-    account: string;
-    ledger_index_min: number;
-    ledger_index_max: number;
-    binary: boolean;
-    limit: number;
-    forward?: boolean;
-}
-
-interface GetTransactionPayload extends BaseCommand {
-    transaction: string;
-}
-
-interface BookOffersPayload extends BaseCommand {
-    limit?: number;
-    taker_pays: any;
-    taker_gets: any;
-}
-
-interface GatewayBalancesPayload extends BaseCommand {
-    strict: boolean;
-    hotwallet: Array<string>;
-}
-
-interface LedgerEntryPayload extends BaseCommand {
-    index: string;
-}
-
 enum SocketStateStatus {
     Connected = 'Connected',
     Disconnected = 'Disconnected',
@@ -270,18 +221,7 @@ class SocketService extends EventEmitter {
      * @param payload
      * @returns {Promise<any>}
      */
-    send = (
-        payload:
-            | ServerInfoPayload
-            | SubscribePayload
-            | AccountInfoPayload
-            | SubmitPayload
-            | AccountTransactionsPayload
-            | GetTransactionPayload
-            | BookOffersPayload
-            | GatewayBalancesPayload
-            | LedgerEntryPayload,
-    ): any => {
+    send = (payload: any): any => {
         return this.connection.send(payload, { timeoutSeconds: 40 });
     };
 
@@ -298,19 +238,21 @@ class SocketService extends EventEmitter {
      */
     onConnect = () => {
         // fetch connected node from connection
-        let connectedNode = this.connection.getState().server.uri;
+        const { uri, publicKey } = this.connection.getState().server;
+
+        let connectedNode = uri;
 
         // remove proxy from url if present
         if (connectedNode.startsWith(AppConfig.nodes.proxy)) {
             connectedNode = connectedNode.replace(`${AppConfig.nodes.proxy}/`, '');
         }
+
         // set node and connection
         this.node = connectedNode;
-
-        this.logger.debug(`Connected to node ${connectedNode} [${this.chain}]`);
-
         // change socket status
         this.status = SocketStateStatus.Connected;
+
+        this.logger.debug(`Connected to node ${connectedNode} [${this.chain}][${publicKey}]`);
 
         // emit on connect event
         this.emit('connect', this.connection);
@@ -349,6 +291,8 @@ class SocketService extends EventEmitter {
             nodes = [...AppConfig.nodes.main];
         } else if (this.chain === NodeChain.Test) {
             nodes = [...AppConfig.nodes.test];
+        } else if (this.chain === NodeChain.Dev) {
+            nodes = [...AppConfig.nodes.dev];
         } else {
             // if not belong to any chain then it's custom node
             // wrap it in proxy

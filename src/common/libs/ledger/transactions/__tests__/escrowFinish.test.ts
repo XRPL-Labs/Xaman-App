@@ -33,7 +33,7 @@ describe('EscrowFinish tx', () => {
         expect(instance.OfferSequence).toBe(txTemplates.tx.OfferSequence);
     });
 
-    it('it should calcualte right fee', () => {
+    it('it should calcualte right fee with fulfillment ', () => {
         const instance = new EscrowFinish(txTemplates);
 
         expect(instance.calculateFee()).toBe('402');

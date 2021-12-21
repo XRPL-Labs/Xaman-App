@@ -1,13 +1,13 @@
 import { isEqual, findIndex } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text, ViewStyle, TouchableOpacity } from 'react-native';
+import { View, Text, ViewStyle } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
 
-import { Icon } from '@components/General/Icon';
+import { TouchableDebounce, Icon } from '@components/General';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -105,7 +105,7 @@ class AccountPicker extends Component<Props, State> {
         }
 
         return (
-            <TouchableOpacity activeOpacity={0.9} onPress={this.showPicker} style={[styles.pickerContainer]}>
+            <TouchableDebounce activeOpacity={0.9} onPress={this.showPicker} style={[styles.pickerContainer]}>
                 <View style={[AppStyles.row]}>
                     <View style={[AppStyles.flex1]}>
                         <Text style={[styles.accountItemTitle]}>{selectedItem.label}</Text>
@@ -114,16 +114,16 @@ class AccountPicker extends Component<Props, State> {
                         </Text>
                     </View>
                     {accounts.length > 1 && (
-                        <TouchableOpacity style={[styles.collapseButton]} onPress={this.showPicker}>
+                        <TouchableDebounce style={[styles.collapseButton]} onPress={this.showPicker}>
                             <Icon
                                 name={expanded ? 'IconChevronUp' : 'IconChevronDown'}
                                 size={20}
                                 style={styles.collapseIcon}
                             />
-                        </TouchableOpacity>
+                        </TouchableDebounce>
                     )}
                 </View>
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     }
 }

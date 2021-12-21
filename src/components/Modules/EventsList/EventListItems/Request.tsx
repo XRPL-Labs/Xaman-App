@@ -1,6 +1,6 @@
-import { has, get, debounce } from 'lodash';
+import { has, get } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { AccountSchema } from '@store/schemas/latest';
@@ -10,7 +10,7 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
 
-import { Avatar } from '@components/General';
+import { TouchableDebounce, Avatar } from '@components/General';
 
 import Localize from '@locale';
 
@@ -73,7 +73,7 @@ class RequestTemplate extends Component<Props, State> {
         );
     };
 
-    debouncedOnPress = () => {
+    onPress = () => {
         switch (this.getType()) {
             case RequestType.OpenXApp:
                 this.openXApp();
@@ -85,8 +85,6 @@ class RequestTemplate extends Component<Props, State> {
                 break;
         }
     };
-
-    onPress = debounce(this.debouncedOnPress, 1500, { leading: true, trailing: false });
 
     getType = (): RequestType => {
         const { item } = this.props;
@@ -115,7 +113,7 @@ class RequestTemplate extends Component<Props, State> {
         const { item } = this.props;
 
         return (
-            <TouchableOpacity onPress={this.onPress} activeOpacity={0.6} style={styles.container}>
+            <TouchableDebounce onPress={this.onPress} activeOpacity={0.6} style={styles.container}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                     <Avatar border source={{ uri: item.application.icon_url }} />
                 </View>
@@ -123,7 +121,7 @@ class RequestTemplate extends Component<Props, State> {
                     <Text style={[styles.label]}>{item.application.name}</Text>
                     <Text style={[styles.description]}>{this.getDescription()}</Text>
                 </View>
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     }
 }

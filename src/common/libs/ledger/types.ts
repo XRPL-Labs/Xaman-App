@@ -1,3 +1,4 @@
+import { LedgerEntriesTypes } from './objects/types';
 import { Memo } from './parser/types';
 
 /**
@@ -155,4 +156,32 @@ export interface AccountInfoResponse {
     ledger_current_index?: number;
     ledger_index?: number;
     validated?: boolean;
+}
+
+/**
+ * Ledger account_objects response
+ */
+export interface AccountObjectsResponse {
+    account: string;
+    account_objects: LedgerEntriesTypes[];
+    ledger_hash?: string;
+    ledger_index?: number;
+    ledger_current_index?: number;
+    limit?: number;
+    marker?: string;
+    validated?: boolean;
+}
+
+/**
+ * Ledger fee command response
+ */
+interface FeeResponseDrops {
+    minimum_fee: string;
+    median_fee: string;
+    open_ledger_fee: string;
+}
+export interface FeeResponse {
+    current_queue_size: string;
+    max_queue_size: string;
+    drops: FeeResponseDrops;
 }

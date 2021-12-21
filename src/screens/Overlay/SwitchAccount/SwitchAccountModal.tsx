@@ -6,7 +6,7 @@ import { Results } from 'realm';
 import { find } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 
 import { AccessLevels } from '@store/types';
 import { AccountRepository } from '@store/repositories';
@@ -18,7 +18,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Icon, ActionPanel } from '@components/General';
+import { TouchableDebounce, Button, Icon, ActionPanel } from '@components/General';
 
 import Localize from '@locale';
 
@@ -183,7 +183,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
         }
 
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 key={account.address}
                 onPress={() => {
                     this.changeDefaultAccount(account.address);
@@ -207,7 +207,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
                         <View style={[styles.radioCircle, AppStyles.rightSelf]} />
                     </View>
                 </View>
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     };
 

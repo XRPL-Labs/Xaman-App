@@ -4,7 +4,7 @@
  */
 import { isEqual, get } from 'lodash';
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, Animated } from 'react-native';
+import { View, Text, Animated } from 'react-native';
 
 import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
@@ -70,7 +70,7 @@ class SecretNumberRow extends Component<Props, State> {
                         ]}
                     />
                 ),
-                <TouchableOpacity
+                <View
                     key={`${i}`}
                     style={[
                         styles.inputBox,
@@ -90,7 +90,7 @@ class SecretNumberRow extends Component<Props, State> {
                     >
                         {value}
                     </Text>
-                </TouchableOpacity>,
+                </View>,
             );
         }
         return columns;

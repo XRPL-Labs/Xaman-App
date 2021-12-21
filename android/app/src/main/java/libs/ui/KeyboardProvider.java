@@ -9,11 +9,17 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.WindowManager.LayoutParams;
 import android.widget.PopupWindow;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class KeyboardProvider extends PopupWindow implements OnGlobalLayoutListener {
-    private Activity mActivity;
-    private View rootView;
+    private final Activity mActivity;
+    private final View rootView;
+
     private HeightListener listener;
     private int heightMax;
+
+    private Timer eventTimer;
 
     public KeyboardProvider(Activity activity) {
         super(activity);
@@ -41,9 +47,8 @@ public class KeyboardProvider extends PopupWindow implements OnGlobalLayoutListe
         return this;
     }
 
-    public KeyboardProvider setHeightListener(HeightListener listener) {
+    public void setHeightListener(HeightListener listener) {
         this.listener = listener;
-        return this;
     }
 
     @Override
@@ -51,14 +56,32 @@ public class KeyboardProvider extends PopupWindow implements OnGlobalLayoutListe
         Rect rect = new Rect();
         rootView.getWindowVisibleDisplayFrame(rect);
 
+        // calculate the keyboard height
         if (rect.bottom > heightMax) {
             heightMax = rect.bottom;
         }
         int keyboardHeight = heightMax - rect.bottom;
 
-        if (listener != null) {
-            listener.onHeightChanged(keyboardHeight);
+        // send the height change event
+        sendHeightChangeEvent(keyboardHeight);
+    }
+
+    private void sendHeightChangeEvent(int height){
+        if(eventTimer != null){
+            eventTimer.cancel();
+            eventTimer.purge();
+            eventTimer = null;
         }
+        eventTimer = new Timer();
+        eventTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (listener != null) {
+                    listener.onHeightChanged(height);
+                }
+            }
+        }, 100L);
+
     }
 
     public interface HeightListener {

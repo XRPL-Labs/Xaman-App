@@ -7,7 +7,7 @@ import Fuse from 'fuse.js';
 import { Results } from 'realm';
 
 import React, { Component } from 'react';
-import { View, Text, SectionList, TouchableOpacity, Image, ImageBackground } from 'react-native';
+import { View, Text, SectionList, Image, ImageBackground } from 'react-native';
 
 import { Navigation } from 'react-native-navigation';
 
@@ -19,7 +19,7 @@ import { AppScreens } from '@common/constants';
 import { ContactRepository } from '@store/repositories';
 import { ContactSchema } from '@store/schemas/latest';
 
-import { Header, Button, SearchBar, Avatar } from '@components/General';
+import { TouchableDebounce, Header, Button, SearchBar, Avatar } from '@components/General';
 
 import Localize from '@locale';
 // style
@@ -143,7 +143,7 @@ class AddressBookView extends Component<Props, State> {
         const { item } = contact;
 
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 onPress={() => {
                     this.onItemPress(item);
                 }}
@@ -156,7 +156,7 @@ class AddressBookView extends Component<Props, State> {
                         <Text style={styles.address}>{item.address}</Text>
                     </View>
                 </View>
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     };
 

@@ -33,10 +33,7 @@ class PaymentChannelCreateTemplate extends Component<Props, State> {
 
         this.state = {
             isLoading: false,
-            destinationDetails: {
-                name: '',
-                source: '',
-            },
+            destinationDetails: undefined,
         };
     }
     componentDidMount() {
@@ -88,7 +85,7 @@ class PaymentChannelCreateTemplate extends Component<Props, State> {
                 <View style={[styles.contentBox]}>
                     <AmountText
                         value={transaction.Amount.value}
-                        postfix={transaction.Amount.currency}
+                        currency={transaction.Amount.currency}
                         style={styles.amount}
                     />
                 </View>

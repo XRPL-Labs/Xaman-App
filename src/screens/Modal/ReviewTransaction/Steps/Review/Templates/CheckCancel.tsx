@@ -33,7 +33,7 @@ class CheckCancelTemplate extends Component<Props, State> {
 
         this.state = {
             isLoading: false,
-            destinationDetails: { name: '', source: '' },
+            destinationDetails: undefined,
         };
     }
 
@@ -51,18 +51,18 @@ class CheckCancelTemplate extends Component<Props, State> {
 
         // assign actual check object to the CashCheck tx
         LedgerService.getLedgerEntry(transaction.CheckID)
-            .then((res: any) => {
-                const checkObject = get(res, 'node', undefined);
+            .then((ledgerEntry: any) => {
+                const checkObject = get(ledgerEntry, 'node', undefined);
 
                 if (checkObject) {
                     transaction.Check = new CheckCreate(checkObject);
 
                     // fetch destination details
                     getAccountName(transaction.Check?.Destination.address, transaction.Check?.Destination.tag)
-                        .then((r: any) => {
-                            if (!isEmpty(res)) {
+                        .then((resp) => {
+                            if (!isEmpty(resp)) {
                                 this.setState({
-                                    destinationDetails: r,
+                                    destinationDetails: resp,
                                 });
                             }
                         })

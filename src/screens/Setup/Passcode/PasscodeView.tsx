@@ -39,6 +39,7 @@ export interface State {
     passcode: string;
     passcodeConfirm: string;
     currentStep: Steps;
+    isLoading: boolean;
 }
 
 /* Component ==================================================================== */
@@ -61,6 +62,7 @@ class PasscodeSetupView extends Component<Props, State> {
             passcode: '',
             passcodeConfirm: '',
             currentStep: Steps.EXPLANATION,
+            isLoading: false,
         };
     }
 
@@ -68,6 +70,11 @@ class PasscodeSetupView extends Component<Props, State> {
         const { passcode } = this.state;
 
         try {
+            // set loading
+            this.setState({
+                isLoading: true,
+            });
+
             // encrypt/save passcode
             const encryptedPasscode = await CoreRepository.setPasscode(passcode);
 
@@ -99,6 +106,16 @@ class PasscodeSetupView extends Component<Props, State> {
             Navigator.push(AppScreens.Setup.PushNotification);
         } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+        } finally {
+            // clear state
+            setTimeout(() => {
+                this.setState({
+                    passcode: '',
+                    passcodeConfirm: '',
+                    currentStep: Steps.EXPLANATION,
+                    isLoading: false,
+                });
+            }, 500);
         }
     };
 
@@ -251,7 +268,7 @@ class PasscodeSetupView extends Component<Props, State> {
     };
 
     renderFooter = () => {
-        const { currentStep, passcode, passcodeConfirm } = this.state;
+        const { currentStep, passcode, passcodeConfirm, isLoading } = this.state;
 
         if (currentStep === Steps.EXPLANATION) {
             return (
@@ -266,7 +283,7 @@ class PasscodeSetupView extends Component<Props, State> {
                 <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
                     <Button
                         light
-                        isDisabled={false}
+                        isDisabled={isLoading}
                         icon="IconChevronLeft"
                         iconStyle={styles.IconChevronLeft}
                         onPress={this.onBack}
@@ -283,6 +300,7 @@ class PasscodeSetupView extends Component<Props, State> {
                         label={
                             currentStep === Steps.ENTER_PASSCODE ? Localize.t('global.next') : Localize.t('global.save')
                         }
+                        isLoading={isLoading}
                     />
                 </View>
             </Footer>

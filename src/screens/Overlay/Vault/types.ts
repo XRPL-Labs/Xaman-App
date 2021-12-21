@@ -2,7 +2,8 @@ import { Card } from 'tangem-sdk-react-native';
 
 import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 
-import { TransactionJSONType, SignedObjectType } from '@common/libs/ledger/types';
+import { TransactionsType } from '@common/libs/ledger/transactions/types';
+import { SignedObjectType } from '@common/libs/ledger/types';
 
 export enum AuthMethods {
     PIN = 'PIN',
@@ -19,7 +20,7 @@ export interface SignOptions {
 
 export interface Props {
     account: AccountSchema;
-    txJson: TransactionJSONType;
+    transaction: TransactionsType;
     multiSign?: boolean;
     onDismissed: () => void;
     onSign: (signedObject: SignedObjectType) => void;

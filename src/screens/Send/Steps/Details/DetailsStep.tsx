@@ -29,6 +29,7 @@ import {
     AmountText,
     Footer,
 } from '@components/General';
+import { AmountValueType } from '@components/General/AmountInput';
 import { AccountPicker } from '@components/Modules';
 
 import Localize from '@locale';
@@ -396,14 +397,14 @@ class DetailsStep extends Component<Props, State> {
                             <View style={AppStyles.flex1}>
                                 <AmountInput
                                     ref={this.amountInput}
-                                    fractional={!sendingNFT}
-                                    decimalPlaces={typeof currency === 'string' ? 6 : 8}
                                     testID="amount-input"
+                                    value={amount}
+                                    valueType={typeof currency === 'string' ? AmountValueType.XRP : AmountValueType.IOU}
+                                    fractional={!sendingNFT}
                                     onChange={this.onAmountChange}
-                                    returnKeyType="done"
                                     style={[styles.amountInput]}
                                     placeholderTextColor={AppColors.grey}
-                                    value={amount}
+                                    returnKeyType="done"
                                 />
                             </View>
                             <Button
@@ -427,13 +428,14 @@ class DetailsStep extends Component<Props, State> {
                                 <View style={AppStyles.flex1}>
                                     <AmountInput
                                         ref={this.amountRateInput}
-                                        editable={!!currencyRate}
                                         testID="amount-rate-input"
+                                        value={amountRate}
+                                        valueType={AmountValueType.IOU}
                                         onChange={this.onRateAmountChange}
-                                        returnKeyType="done"
+                                        editable={!!currencyRate}
                                         style={[styles.amountRateInput]}
                                         placeholderTextColor={AppColors.grey}
-                                        value={amountRate}
+                                        returnKeyType="done"
                                     />
                                 </View>
                                 <View style={styles.currencySymbolTextContainer}>

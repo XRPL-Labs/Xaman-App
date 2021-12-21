@@ -8,6 +8,8 @@
 import React, { Component } from 'react';
 import { View, TextInput, Text, NativeSyntheticEvent, TextInputKeyPressEventData } from 'react-native';
 
+import StyleService from '@services/StyleService';
+
 import styles from './styles';
 /* Types ==================================================================== */
 interface PathObjectType {
@@ -42,7 +44,7 @@ class DerivationPathInput extends Component<Props, State> {
         const { autoFocus } = this.props;
 
         if (autoFocus) {
-            this.focus();
+            setTimeout(this.focus, 200);
         }
     }
 
@@ -94,6 +96,14 @@ class DerivationPathInput extends Component<Props, State> {
         }
     };
 
+    changeInputFocus = (nextInput: any) => {
+        setTimeout(() => {
+            if (nextInput) {
+                nextInput.focus();
+            }
+        }, 200);
+    };
+
     render() {
         const { accountPath, changePath, addressIndex } = this.state;
 
@@ -106,13 +116,12 @@ class DerivationPathInput extends Component<Props, State> {
                     }}
                     value={accountPath}
                     style={styles.input}
+                    placeholderTextColor={StyleService.value('$lightGrey')}
                     placeholder="0"
                     returnKeyType="next"
                     keyboardType="number-pad"
                     onSubmitEditing={() => {
-                        if (this.changePathInput) {
-                            this.changePathInput.focus();
-                        }
+                        this.changeInputFocus(this.changePathInput);
                     }}
                     onChangeText={this.onPathChange.bind(null, 'accountPath')}
                 />
@@ -123,13 +132,12 @@ class DerivationPathInput extends Component<Props, State> {
                     }}
                     value={changePath}
                     style={styles.input}
+                    placeholderTextColor={StyleService.value('$lightGrey')}
                     placeholder="0"
                     returnKeyType="next"
                     keyboardType="number-pad"
                     onSubmitEditing={() => {
-                        if (this.addressIndexInput) {
-                            this.addressIndexInput.focus();
-                        }
+                        this.changeInputFocus(this.addressIndexInput);
                     }}
                     onChangeText={this.onPathChange.bind(null, 'changePath')}
                     onKeyPress={this.onKeyPress.bind(null, 'changePath')}
@@ -139,6 +147,7 @@ class DerivationPathInput extends Component<Props, State> {
                     ref={(r) => {
                         this.addressIndexInput = r;
                     }}
+                    placeholderTextColor={StyleService.value('$lightGrey')}
                     value={addressIndex}
                     returnKeyType="done"
                     keyboardType="number-pad"

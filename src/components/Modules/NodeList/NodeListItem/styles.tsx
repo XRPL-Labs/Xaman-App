@@ -7,7 +7,7 @@ const styles = StyleService.create({
     row: {
         width: AppSizes.screen.width,
         paddingHorizontal: AppSizes.paddingSml,
-        paddingVertical: AppSizes.paddingSml,
+        paddingBottom: AppSizes.padding,
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '$background',

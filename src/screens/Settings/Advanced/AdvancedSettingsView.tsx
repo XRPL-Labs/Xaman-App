@@ -4,7 +4,7 @@
 
 import { find } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, Alert } from 'react-native';
 
 import { PushNotificationsService, ApiService, SocketService } from '@services';
 
@@ -16,7 +16,7 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { GetAppVersionCode, GetAppReadableVersion } from '@common/helpers/device';
 
-import { Header, Icon, Switch } from '@components/General';
+import { TouchableDebounce, Header, Icon, Switch } from '@components/General';
 
 import Localize from '@locale';
 
@@ -175,7 +175,7 @@ class AdvancedSettingsView extends Component<Props, State> {
                     <Text numberOfLines={1} style={styles.descriptionText}>
                         {Localize.t('settings.nodeAndExplorer')}
                     </Text>
-                    <TouchableOpacity
+                    <TouchableDebounce
                         testID="change-node-button"
                         style={[styles.row]}
                         onPress={() => {
@@ -194,8 +194,8 @@ class AdvancedSettingsView extends Component<Props, State> {
                             </Text>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                    </TouchableDebounce>
+                    <TouchableDebounce
                         activeOpacity={canSelectExplorer ? 0.8 : 1}
                         style={[styles.row]}
                         onPress={this.showExplorerPicker}
@@ -212,19 +212,19 @@ class AdvancedSettingsView extends Component<Props, State> {
                             </Text>
                             {canSelectExplorer && <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />}
                         </View>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
 
                     {/* push notification section */}
                     <Text numberOfLines={1} style={styles.descriptionText}>
                         {Localize.t('settings.pushNotifications')}
                     </Text>
-                    <TouchableOpacity style={[styles.row]} onPress={this.reRegisterPushToken}>
+                    <TouchableDebounce style={[styles.row]} onPress={this.reRegisterPushToken}>
                         <View style={[AppStyles.flex3]}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('settings.reRegisterForPushNotifications')}
                             </Text>
                         </View>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
 
                     {/* release information section */}
                     <Text numberOfLines={1} style={styles.descriptionText}>
@@ -237,13 +237,16 @@ class AdvancedSettingsView extends Component<Props, State> {
                             </Text>
                         </View>
 
-                        <TouchableOpacity style={[AppStyles.centerAligned, AppStyles.row]} onPress={this.showChangeLog}>
+                        <TouchableDebounce
+                            style={[AppStyles.centerAligned, AppStyles.row]}
+                            onPress={this.showChangeLog}
+                        >
                             <Text selectable style={[styles.value]}>
                                 {GetAppReadableVersion()}
                             </Text>
-                        </TouchableOpacity>
+                        </TouchableDebounce>
                     </View>
-                    <TouchableOpacity style={[styles.row]} onPress={this.showChangeLog}>
+                    <TouchableDebounce style={[styles.row]} onPress={this.showChangeLog}>
                         <View style={[AppStyles.flex3]}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('settings.viewChangeLog')}
@@ -253,7 +256,7 @@ class AdvancedSettingsView extends Component<Props, State> {
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
 
                     {/* debug section */}
                     <Text numberOfLines={1} style={styles.descriptionText}>
@@ -283,7 +286,7 @@ class AdvancedSettingsView extends Component<Props, State> {
                             <Switch checked={coreSettings.developerMode} onChange={this.developerModeChange} />
                         </View>
                     </View>
-                    <TouchableOpacity
+                    <TouchableDebounce
                         style={[styles.row]}
                         onPress={() => {
                             Navigator.push(AppScreens.Settings.SessionLog);
@@ -298,7 +301,7 @@ class AdvancedSettingsView extends Component<Props, State> {
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
                             <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
                         </View>
-                    </TouchableOpacity>
+                    </TouchableDebounce>
                 </ScrollView>
             </View>
         );

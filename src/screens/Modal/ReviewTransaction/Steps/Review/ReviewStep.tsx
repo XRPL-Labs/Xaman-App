@@ -61,10 +61,17 @@ class ReviewStep extends Component<Props, State> {
         const { transaction, payload, setSource, setError } = this.context;
 
         // get available account base on transaction type
-        let availableAccounts =
-            payload.payload.tx_type === 'SignIn' || payload.meta.multisign
-                ? AccountRepository.getSignableAccounts()
-                : AccountRepository.getSpendableAccounts(true);
+
+        let availableAccounts = [] as AccountSchema[];
+
+        // only accounts with full access
+        if (payload.isMultiSign()) {
+            availableAccounts = AccountRepository.getFullAccessAccounts();
+        } else if (payload.payload.tx_type === 'SignIn') {
+            availableAccounts = AccountRepository.getSignableAccounts();
+        } else {
+            availableAccounts = AccountRepository.getSpendableAccounts(true);
+        }
 
         // if no account for signing is available then just return
         if (isEmpty(availableAccounts)) {
@@ -99,12 +106,12 @@ class ReviewStep extends Component<Props, State> {
         // set the preffered account to the tx
         if (preferredAccount && !transaction.Account) {
             // ignore if it's multisign
-            if (!payload.meta.multisign) {
+            if (!payload.isMultiSign()) {
                 transaction.Account = { address: preferredAccount.address };
             }
         }
 
-        // remove hidden accounts but keep preffered account even if hiddemn
+        // remove hidden accounts but keep preffered account even if hidden
         availableAccounts = filter(availableAccounts, (a) => !a.hidden || a.address === preferredAccount.address);
 
         this.setState({
@@ -321,6 +328,7 @@ class ReviewStep extends Component<Props, State> {
                                 isLoading={isValidating || isPreparing}
                                 onSwipeSuccess={onAccept}
                                 label={Localize.t('global.slideToAccept')}
+                                accessibilityLabel={Localize.t('global.accept')}
                                 shouldResetAfterSuccess
                                 onPanResponderGrant={this.toggleCanScroll}
                                 onPanResponderRelease={this.toggleCanScroll}

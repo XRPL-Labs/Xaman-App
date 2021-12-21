@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { isEmpty, isEqual, debounce } from 'lodash';
+import { View, Text } from 'react-native';
+import { isEmpty, isEqual } from 'lodash';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import { AccountSchema } from '@store/schemas/latest';
@@ -12,7 +12,7 @@ import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
 
-import { Icon, Avatar } from '@components/General';
+import { TouchableDebounce, Icon, Avatar, AmountText } from '@components/General';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -143,12 +143,10 @@ class LedgerObjectTemplate extends Component<Props, State> {
             .catch(() => {});
     };
 
-    debouncedOnPress = () => {
+    onPress = () => {
         const { item, account } = this.props;
         Navigator.push(AppScreens.Transaction.Details, { tx: item, account });
     };
-
-    onPress = debounce(this.debouncedOnPress, 300, { leading: true, trailing: false });
 
     getIcon = () => {
         const { item } = this.props;
@@ -214,39 +212,41 @@ class LedgerObjectTemplate extends Component<Props, State> {
 
         if (item.Type === 'Escrow') {
             return (
-                <Text style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]} numberOfLines={1}>
-                    {!incoming && '-'}
-                    {Localize.formatNumber(item.Amount.value)}{' '}
-                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.Amount.currency)}</Text>
-                </Text>
+                <AmountText
+                    value={item.Amount.value}
+                    currency={item.Amount.currency}
+                    prefix={!incoming && '-'}
+                    style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
+                />
             );
         }
 
         if (item.Type === 'Check') {
             return (
-                <Text style={[styles.amount, styles.naturalColor]} numberOfLines={1}>
-                    {Localize.formatNumber(item.SendMax.value)}{' '}
-                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.SendMax.currency)}</Text>
-                </Text>
+                <AmountText
+                    value={item.SendMax.value}
+                    currency={item.SendMax.currency}
+                    style={[styles.amount, styles.naturalColor]}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
+                />
             );
         }
 
         if (item.Type === 'Offer') {
-            if (item.Executed) {
-                const takerPaid = item.TakerPaid(account.address);
-
-                return (
-                    <Text style={[styles.amount]} numberOfLines={1}>
-                        {Localize.formatNumber(takerPaid.value)}{' '}
-                        <Text style={[styles.currency]}>{NormalizeCurrencyCode(takerPaid.currency)}</Text>
-                    </Text>
-                );
-            }
             return (
-                <Text style={[styles.amount, styles.naturalColor]} numberOfLines={1}>
-                    {Localize.formatNumber(item.TakerPays.value)}{' '}
-                    <Text style={[styles.currency]}>{NormalizeCurrencyCode(item.TakerPays.currency)}</Text>
-                </Text>
+                <AmountText
+                    value={item.TakerPays.value}
+                    currency={item.TakerPays.currency}
+                    style={[styles.amount, styles.naturalColor]}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
+                />
             );
         }
 
@@ -255,7 +255,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
 
     render() {
         return (
-            <TouchableOpacity onPress={this.onPress} activeOpacity={0.8} style={styles.container}>
+            <TouchableDebounce onPress={this.onPress} activeOpacity={0.8} style={styles.container}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
                 <View style={[AppStyles.flex3, AppStyles.centerContent]}>
                     <Text style={[styles.label]} numberOfLines={1}>
@@ -270,7 +270,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
                 <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>
                     {this.renderRightPanel()}
                 </View>
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     }
 }

@@ -81,6 +81,7 @@ const styles = StyleService.create({
     acceptButtonContainer: {
         flex: 1,
         justifyContent: 'flex-end',
+        paddingTop: AppSizes.paddingSml,
         paddingBottom: hasNotch() ? 20 : 0,
     },
     keyboardAvoidContainerStyle: {

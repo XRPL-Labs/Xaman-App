@@ -2,12 +2,14 @@
 
 /* eslint-disable no-underscore-dangle */
 import React, { Component } from 'react';
-import { Animated, Dimensions, Easing, PanResponder, TouchableOpacity, View } from 'react-native';
+import { Animated, Easing, PanResponder, View } from 'react-native';
 
+import { TouchableDebounce } from '@components/General';
+
+import { AppSizes } from '@theme';
 import styles from './styles';
 
-const { width } = Dimensions.get('window');
-
+/* Constants ==================================================================== */
 const defaultZIndex = 8;
 const touchZIndex = 99;
 
@@ -65,7 +67,7 @@ export default class DragSortableView extends Component<Props, State> {
         marginChildrenBottom: 0,
         marginChildrenLeft: 0,
         marginChildrenRight: 0,
-        parentWidth: width,
+        parentWidth: AppSizes.screen.width,
         sortable: true,
         scaleStatus: 'scale',
         fixedItems: [] as any,
@@ -551,7 +553,7 @@ export default class DragSortableView extends Component<Props, State> {
                         },
                     ]}
                 >
-                    <TouchableOpacity
+                    <TouchableDebounce
                         testID={testID}
                         activeOpacity={1}
                         delayLongPress={delayLongPress}
@@ -564,7 +566,7 @@ export default class DragSortableView extends Component<Props, State> {
                         }}
                     >
                         {renderItem(item.data, index)}
-                    </TouchableOpacity>
+                    </TouchableDebounce>
                 </Animated.View>
             );
         });

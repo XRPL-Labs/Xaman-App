@@ -6,7 +6,7 @@ import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Keyboard, Share, InteractionManager, Platform } from 'react-native';
+import { View, Text, Keyboard, Share, InteractionManager, Platform } from 'react-native';
 
 import { BackendService } from '@services';
 import { Toast } from '@common/helpers/interface';
@@ -18,7 +18,16 @@ import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 
 // components
-import { Header, AmountInput, QRCode, CheckBox, HorizontalLine, KeyboardAwareScrollView } from '@components/General';
+import {
+    TouchableDebounce,
+    Header,
+    AmountInput,
+    QRCode,
+    CheckBox,
+    HorizontalLine,
+    KeyboardAwareScrollView,
+} from '@components/General';
+import { AmountValueType } from '@components/General/AmountInput';
 import { AccountPicker } from '@components/Modules';
 
 // local
@@ -211,12 +220,12 @@ class RequestView extends Component<Props, State> {
                         <AmountInput
                             ref={this.amountInput}
                             testID="amount-input"
-                            decimalPlaces={6}
+                            value={amount}
+                            valueType={AmountValueType.XRP}
                             onChange={this.onAmountChange}
-                            returnKeyType="done"
                             style={[styles.amountInput]}
                             placeholderTextColor={AppColors.grey}
-                            value={amount}
+                            returnKeyType="done"
                         />
                     </View>
                 </View>
@@ -228,13 +237,14 @@ class RequestView extends Component<Props, State> {
                     <View style={AppStyles.flex1}>
                         <AmountInput
                             ref={this.amountRateInput}
-                            editable={!!currencyRate}
                             testID="amount-rate-input"
+                            value={amountRate}
+                            valueType={AmountValueType.IOU}
+                            editable={!!currencyRate}
                             onChange={this.onRateAmountChange}
-                            returnKeyType="done"
                             style={[styles.amountRateInput]}
                             placeholderTextColor={AppColors.grey}
-                            value={amountRate}
+                            returnKeyType="done"
                         />
                     </View>
                     <View style={styles.currencySymbolTextContainer}>
@@ -288,7 +298,7 @@ class RequestView extends Component<Props, State> {
 
                     {/* Amount */}
                     <View style={[styles.rowItem]}>
-                        <TouchableOpacity
+                        <TouchableDebounce
                             activeOpacity={0.8}
                             style={[AppStyles.row, styles.rowTitle]}
                             onPress={this.toggleUseAmount}
@@ -301,7 +311,7 @@ class RequestView extends Component<Props, State> {
                             <View style={AppStyles.flex1}>
                                 <CheckBox checked={withAmount} onPress={this.toggleUseAmount} />
                             </View>
-                        </TouchableOpacity>
+                        </TouchableDebounce>
 
                         {this.renderAmountInput()}
                     </View>

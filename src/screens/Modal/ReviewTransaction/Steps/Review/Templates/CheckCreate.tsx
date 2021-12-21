@@ -11,6 +11,7 @@ import { FormatDate } from '@common/utils/date';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { AmountInput, Button } from '@components/General';
+import { AmountValueType } from '@components/General/AmountInput';
 import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
@@ -45,7 +46,7 @@ class CheckCreateTemplate extends Component<Props, State> {
             currencyName: props.transaction.SendMax?.currency
                 ? NormalizeCurrencyCode(props.transaction.SendMax.currency)
                 : 'XRP',
-            destinationDetails: { name: '', source: '' },
+            destinationDetails: undefined,
         };
 
         this.amountInput = React.createRef();
@@ -139,7 +140,7 @@ class CheckCreateTemplate extends Component<Props, State> {
                         <View style={[AppStyles.row, AppStyles.flex1]}>
                             <AmountInput
                                 ref={this.amountInput}
-                                decimalPlaces={currencyName === 'XRP' ? 6 : 8}
+                                valueType={currencyName === 'XRP' ? AmountValueType.XRP : AmountValueType.IOU}
                                 onChange={this.onSendMaxChange}
                                 style={[styles.amountInput]}
                                 value={amount}

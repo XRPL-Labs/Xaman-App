@@ -5,9 +5,9 @@
  *
  */
 import React, { PureComponent } from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
+import { View, Text } from 'react-native';
 
-import { Icon } from '@components/General/Icon';
+import { TouchableDebounce, Icon } from '@components/General';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -34,7 +34,7 @@ class CheckBox extends PureComponent<Props> {
     render() {
         const { checked, label, labelSmall, description, testID } = this.props;
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 testID={testID}
                 activeOpacity={0.8}
                 onPress={this.onPress}
@@ -60,7 +60,7 @@ class CheckBox extends PureComponent<Props> {
                         </Text>
                     )}
                 </View>
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     }
 }

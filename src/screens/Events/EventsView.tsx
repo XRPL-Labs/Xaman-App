@@ -3,7 +3,7 @@
  */
 import Fuse from 'fuse.js';
 import moment from 'moment-timezone';
-import { isEmpty, flatMap, isUndefined, isEqual, filter, get, uniqBy, groupBy, map, without, sortBy } from 'lodash';
+import { isEmpty, flatMap, isUndefined, isEqual, filter, get, uniqBy, groupBy, map, without, orderBy } from 'lodash';
 import React, { Component } from 'react';
 import { SafeAreaView, Text, InteractionManager, ImageBackground, Image } from 'react-native';
 
@@ -18,6 +18,7 @@ import { Navigator } from '@common/helpers/navigator';
 // Parses
 import transactionFactory from '@common/libs/ledger/parser/transaction';
 import ledgerObjectFactory from '@common/libs/ledger/parser/object';
+import { LedgerEntriesTypes } from '@common/libs/ledger/objects/types';
 
 import { LedgerMarker } from '@common/libs/ledger/types';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
@@ -27,7 +28,7 @@ import { Payload } from '@common/libs/payload';
 import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterView';
 
 // Services
-import { LedgerService, BackendService, PushNotificationsService, StyleService } from '@services';
+import { LedgerService, AccountService, BackendService, PushNotificationsService, StyleService } from '@services';
 
 // Components
 import { SearchBar, Button, SegmentButton, Header } from '@components/General';
@@ -113,7 +114,7 @@ class EventsView extends Component<Props, State> {
         AccountRepository.on('changeDefaultAccount', this.onDefaultAccountChange);
 
         // update list on transaction received
-        LedgerService.on('transaction', this.updateDataSource);
+        AccountService.on('transaction', this.onTransactionReceived);
 
         // update list on sign request received
         PushNotificationsService.on('signRequestUpdate', this.updateDataSource);
@@ -129,7 +130,7 @@ class EventsView extends Component<Props, State> {
     componentWillUnmount = () => {
         // remove listeners
         AccountRepository.off('changeDefaultAccount', this.onDefaultAccountChange);
-        LedgerService.off('transaction', this.updateDataSource);
+        AccountService.off('transaction', this.onTransactionReceived);
         PushNotificationsService.off('signRequestUpdate', this.updateDataSource);
     };
 
@@ -148,33 +149,66 @@ class EventsView extends Component<Props, State> {
         );
     };
 
+    onTransactionReceived = (transaction: any, effectedAccounts: Array<string>) => {
+        const { account } = this.state;
+
+        if (account.isValid()) {
+            if (effectedAccounts.indexOf(account.address) !== -1) {
+                this.updateDataSource();
+            }
+        }
+    };
+
     loadPlannedTransactions = () => {
         const { account } = this.state;
 
-        return new Promise((resolve) => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve) => {
             // return if no account exist
             if (!account) {
                 return resolve([]);
             }
-            return LedgerService.getAccountObjects(account.address).then((res: any) => {
-                const { account_objects } = res;
-                const parsedList = flatMap(account_objects, ledgerObjectFactory);
-                const filtered = without(parsedList, null);
 
-                this.setState({ plannedTransactions: filtered }, () => {
-                    return resolve(filtered);
+            // account objects we are interested in
+            const objectTypes = ['check', 'escrow', 'offer'];
+            let objects = [] as LedgerEntriesTypes[];
+
+            return objectTypes
+                .reduce((accumulator, type) => {
+                    return accumulator.then(() => {
+                        return LedgerService.getAccountObjects(account.address, { type }).then((res: any) => {
+                            const { account_objects } = res;
+                            objects = [...objects, ...account_objects];
+                        });
+                    });
+                }, Promise.resolve())
+                .then(() => {
+                    const parsedList = flatMap(objects, ledgerObjectFactory);
+                    const filtered = without(parsedList, null);
+
+                    this.setState({ plannedTransactions: filtered }, () => {
+                        return resolve(filtered);
+                    });
+                })
+                .catch(() => {
+                    Toast(Localize.t('events.canNotFetchTransactions'));
+                    return resolve([]);
                 });
-            });
         });
     };
 
     loadPendingRequests = () => {
         return new Promise((resolve) => {
-            return BackendService.getPendingPayloads().then((payloads) => {
-                this.setState({ pendingRequests: payloads }, () => {
-                    return resolve(payloads);
+            return BackendService.getPendingPayloads()
+                .then((payloads) => {
+                    this.setState({ pendingRequests: payloads }, () => {
+                        return resolve(payloads);
+                    });
+                })
+                .catch(() => {
+                    Toast(Localize.t('events.canNotFetchSignRequests'));
+                    return resolve([]);
                 });
-            });
         });
     };
 
@@ -187,14 +221,14 @@ class EventsView extends Component<Props, State> {
                 return resolve([]);
             }
 
-            return LedgerService.getTransactions(account.address, loadMore && lastMarker, 100)
+            return LedgerService.getTransactions(account.address, loadMore && lastMarker, 50)
                 .then((resp) => {
                     const { transactions: txResp, marker } = resp;
                     let canLoadMore = true;
 
-                    // if we got less than 100 transaction, means there is no transaction
+                    // if we got less than 50 transaction, means there is no transaction
                     // also only handle recent 1000 transactions
-                    if (txResp.length < 100 || transactions.length >= 1000) {
+                    if (txResp.length < 50 || transactions.length >= 1000) {
                         canLoadMore = false;
                     }
 
@@ -246,12 +280,12 @@ class EventsView extends Component<Props, State> {
         let items = [] as any;
 
         if (sectionIndex === 1) {
-            const open = sortBy(
+            const open = orderBy(
                 filter(plannedTransactions, (p) => p.Type === 'Offer' || p.Type === 'Check'),
                 ['Date'],
             );
 
-            const planned = sortBy(filter(plannedTransactions, { Type: 'Escrow' }), ['Date']);
+            const planned = orderBy(filter(plannedTransactions, { Type: 'Escrow' }), ['Date']);
             const dataSource = [];
 
             if (!isEmpty(open)) {
@@ -284,13 +318,14 @@ class EventsView extends Component<Props, State> {
         // group items by month name and then get the name for each month
         const grouped = groupBy(items, (item) => moment(item.Date).format('YYYY-MM-DD'));
 
-        const dateSource = [] as any;
+        const dataSource = [] as any;
 
         map(grouped, (v, k) => {
-            dateSource.push({ title: k, data: v, type: 'date' });
+            dataSource.push({ title: k, data: v, type: 'date' });
         });
 
-        return dateSource;
+        // sort by date
+        return orderBy(dataSource, ['title'], ['desc']);
     };
 
     updateDataSource = async (background = false) => {

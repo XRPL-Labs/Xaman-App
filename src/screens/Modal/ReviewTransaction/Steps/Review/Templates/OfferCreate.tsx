@@ -1,5 +1,4 @@
-import BigNumber from 'bignumber.js';
-import { has, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
@@ -38,10 +37,7 @@ class OfferCreateTemplate extends Component<Props, State> {
         this.state = {
             isLoadingIssuerDetails: true,
             isLoadingIssuerFee: true,
-            issuerDetails: {
-                name: '',
-                source: '',
-            },
+            issuerDetails: undefined,
             issuerFee: 0,
         };
     }
@@ -52,15 +48,11 @@ class OfferCreateTemplate extends Component<Props, State> {
         const issuerAddress = transaction.TakerGets.issuer || transaction.TakerPays.issuer;
 
         // get transfer rate from issuer account
-        LedgerService.getAccountInfo(issuerAddress)
-            .then((issuerAccountInfo: any) => {
-                if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
-                    const { TransferRate } = issuerAccountInfo.account_data;
-
-                    const fee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
-
+        LedgerService.getAccountTransferRate(issuerAddress)
+            .then((issuerFee) => {
+                if (issuerFee) {
                     this.setState({
-                        issuerFee: fee,
+                        issuerFee,
                     });
                 }
             })
@@ -111,7 +103,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                 <View style={[styles.contentBox]}>
                     <AmountText
                         value={transaction.TakerGets.value}
-                        postfix={transaction.TakerGets.currency}
+                        currency={transaction.TakerGets.currency}
                         style={styles.amount}
                     />
                 </View>
@@ -120,7 +112,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                 <View style={[styles.contentBox]}>
                     <AmountText
                         value={transaction.TakerPays.value}
-                        postfix={transaction.TakerPays.currency}
+                        currency={transaction.TakerPays.currency}
                         style={styles.amount}
                     />
                 </View>

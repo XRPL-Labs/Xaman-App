@@ -1,8 +1,8 @@
 import isEqual from 'lodash/isEqual';
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ViewStyle } from 'react-native';
+import { View, Text, ViewStyle } from 'react-native';
 
-import { Avatar, Badge, Icon, LoadingIndicator } from '@components/General';
+import { TouchableDebounce, Avatar, Badge, Icon, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
@@ -28,6 +28,8 @@ interface Props {
     showAvatar?: boolean;
     showTag?: boolean;
     showSource?: boolean;
+    extraInfoLabel?: string;
+    extraInfoValue?: string;
     onPress?: () => void;
     onMorePress?: () => void;
 }
@@ -83,7 +85,7 @@ class RecipientElement extends Component<Props> {
 
         if (!showAvatar) return null;
 
-        const address = recipient.address || 'rxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+        const { address } = recipient;
 
         let badge = undefined as any;
         if (recipient.kycApproved) {
@@ -119,11 +121,7 @@ class RecipientElement extends Component<Props> {
     renderAddress = () => {
         const { recipient, selected } = this.props;
 
-        return (
-            <Text style={[styles.addressText, selected ? styles.selectedText : null]}>
-                {recipient.address || 'rxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}
-            </Text>
-        );
+        return <Text style={[styles.addressText, selected ? styles.selectedText : null]}>{recipient.address}</Text>;
     };
 
     renderDestinationTag = () => {
@@ -140,19 +138,35 @@ class RecipientElement extends Component<Props> {
         );
     };
 
+    renderExtraInfo = () => {
+        const { extraInfoLabel, extraInfoValue } = this.props;
+
+        if (!extraInfoLabel || !extraInfoValue) {
+            return null;
+        }
+
+        return (
+            <View style={styles.destinationTagContainer}>
+                <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
+                    {extraInfoLabel}: <Text style={AppStyles.colorBlue}>{extraInfoValue}</Text>
+                </Text>
+            </View>
+        );
+    };
+
     renderActions = () => {
         const { showMoreButton } = this.props;
 
         if (!showMoreButton) return null;
 
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 onPress={this.onMorePress}
                 activeOpacity={0.7}
                 style={[AppStyles.flex1, AppStyles.rightAligned, AppStyles.centerContent]}
             >
                 <Icon name="IconMoreVertical" size={30} style={AppStyles.imgColorGrey} />
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     };
 
@@ -160,7 +174,7 @@ class RecipientElement extends Component<Props> {
         const { recipient, selected, containerStyle, onPress } = this.props;
 
         return (
-            <TouchableOpacity
+            <TouchableDebounce
                 testID={`recipient-${recipient.address}`}
                 activeOpacity={onPress ? 0.7 : 1}
                 onPress={this.onPress}
@@ -175,9 +189,10 @@ class RecipientElement extends Component<Props> {
                     </View>
                     {this.renderAddress()}
                     {this.renderDestinationTag()}
+                    {this.renderExtraInfo()}
                 </View>
                 {this.renderActions()}
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     }
 }

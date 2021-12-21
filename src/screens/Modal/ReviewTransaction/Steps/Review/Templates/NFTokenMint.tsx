@@ -33,10 +33,7 @@ class NFTokenMintTemplate extends Component<Props, State> {
 
         this.state = {
             isLoadingIssuerDetails: true,
-            issuerDetails: {
-                name: '',
-                source: '',
-            },
+            issuerDetails: undefined,
         };
     }
 

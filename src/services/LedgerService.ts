@@ -4,7 +4,6 @@
  */
 import BigNumber from 'bignumber.js';
 import moment from 'moment-timezone';
-import EventEmitter from 'events';
 import { has, find, map, isEmpty, assign, startsWith } from 'lodash';
 
 import { CoreSchema } from '@store/schemas/latest';
@@ -21,7 +20,11 @@ import {
     AccountLinesResponse,
     GatewayBalancesResponse,
     AccountInfoResponse,
+    AccountObjectsResponse,
+    FeeResponse,
 } from '@common/libs/ledger/types';
+
+import { LedgerEntriesTypes } from '@common/libs/ledger/objects/types';
 
 import { Issuer } from '@common/libs/ledger/parser/types';
 
@@ -29,21 +32,13 @@ import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
 import { AppConfig } from '@common/constants';
 
-/* events  ==================================================================== */
-declare interface LedgerService {
-    on(event: 'transaction', listener: (name: string) => void): this;
-    on(event: string, listener: Function): this;
-}
-
 /* Service  ==================================================================== */
-class LedgerService extends EventEmitter {
+class LedgerService {
     networkReserve: any;
     logger: any;
     ledgerListener: any;
 
     constructor() {
-        super();
-
         this.networkReserve = undefined;
 
         this.logger = LoggerService.createLogger('Ledger');
@@ -62,10 +57,8 @@ class LedgerService extends EventEmitter {
 
                 this.logger.debug(`Current Network Base/Owner reserve: ${baseReserve}/${ownerReserve}`);
 
-                // on socket service connect
-                SocketService.on('connect', () => {
-                    this.setLedgerListener();
-                });
+                // on socket service connect set ledger listener if not set
+                SocketService.on('connect', this.setLedgerListener);
 
                 return resolve();
             } catch (e) {
@@ -107,12 +100,19 @@ class LedgerService extends EventEmitter {
     /**
      * Get ledger info
      */
-    getLedgerEntry = (index: string): any => {
+    getLedgerEntry = (index: string): Promise<any> => {
         return SocketService.send({
             command: 'ledger_entry',
             index,
             ledger_index: 'validated',
         });
+    };
+
+    /**
+     * get ledger fee info
+     */
+    getLedgerFee = (): Promise<FeeResponse> => {
+        return SocketService.send({ command: 'fee' });
     };
 
     /**
@@ -143,22 +143,16 @@ class LedgerService extends EventEmitter {
     /**
      * Get account objects
      */
-    getAccountObjects = (account: string): any => {
-        return SocketService.send({
+    getAccountObjects = (account: string, options?: any): Promise<AccountObjectsResponse> => {
+        const request = {
             command: 'account_objects',
             account,
             ledger_index: 'validated',
-        });
-    };
-
-    /**
-     * Get Offers from order book
-     */
-    getOffers = (request: any): any => {
-        return SocketService.send({
-            command: 'book_offers',
-            ...request,
-        });
+        };
+        if (typeof options === 'object') {
+            Object.assign(request, options);
+        }
+        return SocketService.send(request);
     };
 
     /**
@@ -177,35 +171,43 @@ class LedgerService extends EventEmitter {
 
     /**
      * Get account line base on provided peer
+     * Note: should look for marker as it can be not in first page
      */
-    getAccountLine = (account: string, peer: Issuer): Promise<LedgerTrustline> => {
-        return new Promise((resolve) => {
-            return this.getAccountLines(account, { peer: peer.issuer })
-                .then((resp: any) => {
-                    const { lines } = resp;
-                    return resolve(find(lines, { account: peer.issuer, currency: peer.currency }));
-                })
-                .catch(() => {
-                    resolve(undefined);
-                });
-        });
+    getAccountLine = (
+        account: string,
+        peer: Issuer,
+        marker?: string,
+        combined = [] as LedgerTrustline[],
+    ): Promise<LedgerTrustline> => {
+        return this.getAccountLines(account, { peer: peer.issuer, marker })
+            .then((resp) => {
+                const { lines, marker: _marker } = resp;
+                if (_marker && _marker !== marker) {
+                    return this.getAccountLine(account, peer, _marker, lines.concat(combined));
+                }
+                return find(lines.concat(combined), { account: peer.issuer, currency: peer.currency });
+            })
+            .catch(() => {
+                return undefined;
+            });
     };
 
     /**
-     * Get account transfer rate
+     * Get account transfer rate on percent format
      */
-    getAccountTransferRate = (account: string): any => {
+    getAccountTransferRate = (account: string): Promise<number> => {
         return new Promise((resolve, reject) => {
             return this.getAccountInfo(account)
                 .then((issuerAccountInfo: any) => {
                     if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
                         const { TransferRate } = issuerAccountInfo.account_data;
-                        return resolve(TransferRate);
+                        const transferFee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
+                        return resolve(transferFee);
                     }
                     return resolve(0);
                 })
                 .catch(() => {
-                    return reject(new Error('Unable to fetch issuer transfer rate!'));
+                    return reject(new Error('Unable to fetch account transfer rate!'));
                 });
         });
     };
@@ -228,7 +230,7 @@ class LedgerService extends EventEmitter {
         const request = {
             command: 'account_tx',
             account,
-            limit: limit || 20,
+            limit: limit || 50,
             binary: false,
         };
         if (marker) {
@@ -312,13 +314,122 @@ class LedgerService extends EventEmitter {
     };
 
     /**
+     * Get account blocker objects
+     * Note: should look for marker as it can be not in first page
+     */
+    getAccountBlockerObjects = (
+        account: string,
+        marker?: string,
+        combined = [] as LedgerEntriesTypes[],
+    ): Promise<LedgerEntriesTypes[]> => {
+        return this.getAccountObjects(account, { deletion_blockers_only: true, marker }).then((resp) => {
+            const { account_objects, marker: _marker } = resp;
+            if (_marker && _marker !== marker) {
+                return this.getAccountBlockerObjects(account, _marker, account_objects.concat(combined));
+            }
+            return account_objects.concat(combined);
+        });
+    };
+
+    /**
+     * Get available fees on network base on the load
+     * NOTE: values are in drop
+     */
+    getAvailableNetworkFee = (): Promise<any> => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+            try {
+                const feeDataSet = await this.getLedgerFee();
+
+                // set the suggested fee base on queue percentage
+                const { current_queue_size, max_queue_size } = feeDataSet;
+                const queuePercentage = new BigNumber(current_queue_size).dividedBy(max_queue_size);
+
+                const suggestedFee = queuePercentage.isEqualTo(1)
+                    ? 'feeHigh'
+                    : queuePercentage.isEqualTo(0)
+                    ? 'feeLow'
+                    : 'feeMedium';
+
+                // set the drops values to BigNumber instance
+                const minimumFee = new BigNumber(feeDataSet.drops.minimum_fee)
+                    .multipliedBy(1.5)
+                    .integerValue(BigNumber.ROUND_HALF_FLOOR);
+                const medianFee = new BigNumber(feeDataSet.drops.median_fee);
+                const openLedgerFee = new BigNumber(feeDataSet.drops.open_ledger_fee);
+
+                // calculate fees
+                const feeLow = BigNumber.minimum(
+                    BigNumber.maximum(
+                        minimumFee,
+                        BigNumber.maximum(medianFee, openLedgerFee).dividedBy(500),
+                    ).integerValue(BigNumber.ROUND_HALF_CEIL),
+                    new BigNumber(1000),
+                ).toNumber();
+
+                const feeMedium = BigNumber.minimum(
+                    queuePercentage.isGreaterThan(0.1)
+                        ? minimumFee
+                              .plus(medianFee)
+                              .plus(openLedgerFee)
+                              .dividedBy(3)
+                              .integerValue(BigNumber.ROUND_HALF_CEIL)
+                        : queuePercentage.isEqualTo(0)
+                        ? BigNumber.maximum(minimumFee.multipliedBy(10), BigNumber.minimum(minimumFee, openLedgerFee))
+                        : BigNumber.maximum(
+                              minimumFee.multipliedBy(10),
+                              minimumFee.plus(medianFee).dividedBy(2).integerValue(BigNumber.ROUND_HALF_CEIL),
+                          ),
+
+                    new BigNumber(feeLow).multipliedBy(15),
+                    new BigNumber(10000),
+                ).toNumber();
+
+                const feeHigh = BigNumber.minimum(
+                    BigNumber.maximum(
+                        minimumFee.multipliedBy(10),
+                        BigNumber.maximum(medianFee, openLedgerFee)
+                            .multipliedBy(1.1)
+                            .integerValue(BigNumber.ROUND_HALF_CEIL),
+                    ),
+                    new BigNumber(100000),
+                ).toNumber();
+
+                return resolve({
+                    availableFees: [
+                        {
+                            type: 'low',
+                            value: feeLow,
+                            suggested: suggestedFee === 'feeLow',
+                        },
+                        {
+                            type: 'medium',
+                            value: feeMedium,
+                            suggested: suggestedFee === 'feeMedium',
+                        },
+                        {
+                            type: 'high',
+                            value: feeHigh,
+                            suggested: suggestedFee === 'feeHigh',
+                        },
+                    ],
+                });
+            } catch (e) {
+                this.logger.warn('Unable to calculate available network fees:', e);
+                return reject(new Error('Unable to calculate available network fees!'));
+            }
+        });
+    };
+
+    /**
      * Submit signed transaction to the XRP Ledger
      */
-    submitTX = async (tx_blob: string): Promise<SubmitResultType> => {
+    submitTransaction = async (tx_blob: string, fail_hard = false): Promise<SubmitResultType> => {
         try {
             const submitResult = await SocketService.send({
                 command: 'submit',
                 tx_blob,
+                fail_hard,
             });
 
             const { error, error_message, error_exception, engine_result, tx_json, engine_result_message } =
@@ -371,7 +482,10 @@ class LedgerService extends EventEmitter {
         }
     };
 
-    verifyTx = (transactionId: string): Promise<VerifyResultType> => {
+    /**
+     * Verify transaction on XRPL
+     */
+    verifyTransaction = (transactionId: string): Promise<VerifyResultType> => {
         return new Promise((resolve) => {
             let timeout = undefined as ReturnType<typeof setTimeout>;
 

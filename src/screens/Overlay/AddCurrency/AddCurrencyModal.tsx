@@ -5,7 +5,7 @@
 import { head, first, forEach, isEmpty, get } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, Image, ScrollView, Alert } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
 
@@ -17,7 +17,7 @@ import { CounterPartyRepository } from '@store/repositories';
 import { CounterPartySchema, CurrencySchema, AccountSchema } from '@store/schemas/latest';
 
 // components
-import { Button, Footer, ActionPanel } from '@components/General';
+import { TouchableDebounce, Button, Footer, ActionPanel } from '@components/General';
 
 import Localize from '@locale';
 
@@ -76,8 +76,6 @@ class AddCurrencyOverlay extends Component<Props, State> {
     }
 
     setDefaults = () => {
-        const { account } = this.props;
-
         const counterParties = CounterPartyRepository.query({ shortlist: true }) as any;
 
         if (counterParties.isEmpty()) return;
@@ -89,14 +87,13 @@ class AddCurrencyOverlay extends Component<Props, State> {
             const currencies = [] as any;
 
             forEach(counterParty.currencies, (currency) => {
-                if (!account.hasCurrency(currency) && currency.shortlist === true) {
+                if (currency.shortlist === true) {
                     currencies.push(currency);
                 }
             });
 
             if (!isEmpty(currencies)) {
                 availableParties.push(counterParty);
-
                 availableCurrencies[counterParty.id] = currencies;
             }
         });
@@ -109,10 +106,17 @@ class AddCurrencyOverlay extends Component<Props, State> {
         });
     };
 
-    addCurrency = async () => {
+    onAddPress = async () => {
+        const { account } = this.props;
         const { selectedCurrency } = this.state;
 
         if (!selectedCurrency.isValid()) {
+            return;
+        }
+
+        // if trustline is already exist return
+        if (account.hasCurrency(selectedCurrency)) {
+            Alert.alert(Localize.t('global.error'), Localize.t('asset.trustLineIsAlreadyExist'));
             return;
         }
 
@@ -186,7 +190,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
             }
 
             return (
-                <TouchableOpacity
+                <TouchableDebounce
                     key={index}
                     style={[styles.listItem, selectedCurrency.id === c.id && styles.selectedRow]}
                     onPress={() => {
@@ -211,7 +215,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                             </Text>
                         </View>
                     </View>
-                </TouchableOpacity>
+                </TouchableDebounce>
             );
         });
     };
@@ -238,7 +242,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
             const selected = selectedParty.id === c.id;
 
             return (
-                <TouchableOpacity
+                <TouchableDebounce
                     key={index}
                     style={[styles.listItem, selected && styles.selectedRow]}
                     onPress={() => {
@@ -265,7 +269,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                             </Text>
                         </View>
                     </View>
-                </TouchableOpacity>
+                </TouchableDebounce>
             );
         });
     };
@@ -341,7 +345,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                         numberOfLines={1}
                         testID="add-and-sign-button"
                         isDisabled={!selectedCurrency}
-                        onPress={this.addCurrency}
+                        onPress={this.onAddPress}
                         style={[AppStyles.buttonGreen]}
                         label={Localize.t('asset.addAndSign')}
                     />

@@ -4,7 +4,7 @@
 
 import toUpper from 'lodash/toUpper';
 import React, { Component, createRef } from 'react';
-import { View, Animated, Text, KeyboardEvent, Platform } from 'react-native';
+import { View, Animated, Text, KeyboardEvent, Platform, BackHandler, NativeEventSubscription } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -42,6 +42,7 @@ class FlaggedDestinationModal extends Component<Props, State> {
     private textInputView: React.RefObject<View>;
     private bottomOffset: Animated.Value;
 
+    private backHandler: NativeEventSubscription;
     private mounted: boolean;
     private setListenerTimeout: any;
 
@@ -72,6 +73,9 @@ class FlaggedDestinationModal extends Component<Props, State> {
     componentDidMount() {
         this.mounted = true;
 
+        // prevent from hardware back in android devices
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
+
         Animated.timing(this.animatedColor, {
             toValue: 150,
             duration: 350,
@@ -87,6 +91,10 @@ class FlaggedDestinationModal extends Component<Props, State> {
 
     componentWillUnmount() {
         this.mounted = false;
+
+        if (this.backHandler) {
+            this.backHandler.remove();
+        }
 
         if (this.setListenerTimeout) clearTimeout(this.setListenerTimeout);
 
@@ -154,10 +162,12 @@ class FlaggedDestinationModal extends Component<Props, State> {
         });
     };
 
-    onCancelPressed = () => {
+    onDismiss = () => {
         const { onDismissed } = this.props;
 
         this.dismiss(onDismissed);
+
+        return true;
     };
 
     onContinuePressed = () => {
@@ -247,7 +257,7 @@ class FlaggedDestinationModal extends Component<Props, State> {
 
                     <View style={[AppStyles.row]}>
                         <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
-                            <Button onPress={this.onCancelPressed} label="Cancel" />
+                            <Button onPress={this.onDismiss} label="Cancel" />
                         </View>
                         <View style={[AppStyles.flex1]}>
                             <Button

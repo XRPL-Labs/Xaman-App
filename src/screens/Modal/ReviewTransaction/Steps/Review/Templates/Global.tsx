@@ -1,21 +1,36 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, find } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, Alert } from 'react-native';
 
-import { LedgerService } from '@services';
+import { StyleService, LedgerService } from '@services';
+
+import { AppScreens } from '@common/constants';
+
+import { getAccountName, AccountNameType } from '@common/helpers/resolver';
+import { Navigator } from '@common/helpers/navigator';
+
+import { Capitalize } from '@common/utils/string';
 
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import { Amount } from '@common/libs/ledger/parser/common';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 
 // components
-import { InfoMessage } from '@components/General';
+import { TouchableDebounce, LoadingIndicator, Badge, Button, InfoMessage } from '@components/General';
+import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
 
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
+export interface FeeItem {
+    type: string;
+    value: number;
+    suggested?: boolean;
+}
+
 export interface Props {
     transaction: TransactionsType;
     canOverride: boolean;
@@ -23,7 +38,11 @@ export interface Props {
 }
 
 export interface State {
-    networkFee: number;
+    availableFees: FeeItem[];
+    selectedFee: FeeItem;
+    signers: AccountNameType[];
+    isLoadingFee: boolean;
+    isLoadingSigners: boolean;
 }
 
 /* Component ==================================================================== */
@@ -32,43 +51,215 @@ class GlobalTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            networkFee: undefined,
+            availableFees: undefined,
+            selectedFee: undefined,
+            signers: undefined,
+            isLoadingFee: true,
+            isLoadingSigners: true,
         };
     }
 
     componentDidMount() {
+        this.loadTransactionFee();
+        this.fetchSignersDetails();
+    }
+
+    fetchSignersDetails = async () => {
+        const { transaction } = this.props;
+
+        if (isEmpty(transaction.Signers)) {
+            this.setState({
+                isLoadingSigners: false,
+            });
+            return;
+        }
+
+        const signers = [] as any;
+
+        await Promise.all(
+            transaction.Signers.map(async (signer) => {
+                await getAccountName(signer.account)
+                    .then((res) => {
+                        signers.push(res);
+                    })
+                    .catch(() => {
+                        signers.push({ account: signer.Account });
+                    });
+
+                return signers;
+            }),
+        );
+
+        this.setState({
+            signers,
+            isLoadingSigners: false,
+        });
+    };
+
+    loadTransactionFee = async () => {
         const { transaction, canOverride } = this.props;
 
         try {
-            // override the fee if
-            // fee not set
-            // the fee is more than enough
+            // set the fee if not set and canOverride the details of transaction
+            const shouldOverrideFee = typeof transaction.Fee === 'undefined' && canOverride;
 
-            const shouldOverrideFee = typeof transaction.Fee === 'undefined' || Number(transaction.Fee) > 0.1;
+            if (shouldOverrideFee) {
+                // calculate and persist the transaction fees
+                let { availableFees } = await LedgerService.getAvailableNetworkFee();
 
-            // ignore overriding fee if multi sign
-            if (shouldOverrideFee && canOverride) {
-                // fetch current network fee
-                const { Fee } = LedgerService.getLedgerStatus();
-
-                // calculate min transaction fee base on transaction type
-                const minTransactionFee = new Amount(transaction.calculateFee(Fee)).dropsToXrp();
-
-                // set the min transaction fee
-                transaction.Fee = minTransactionFee;
-
-                this.setState({
-                    networkFee: Number(minTransactionFee),
+                // normalize suggested and available fees base on transaction type
+                availableFees = availableFees.map((fee: FeeItem) => {
+                    return {
+                        type: fee.type,
+                        value: transaction.calculateFee(fee.value),
+                        suggested: fee.suggested,
+                    };
                 });
+
+                // get suggested fee
+                const suggestedFee = find(availableFees, { suggested: true });
+
+                this.setState(
+                    {
+                        availableFees,
+                        selectedFee: suggestedFee,
+                    },
+                    () => {
+                        this.setTransactionFee(suggestedFee);
+                    },
+                );
             } else {
                 this.setState({
-                    networkFee: Number(transaction.Fee),
+                    selectedFee: {
+                        type: 'unknown',
+                        value: Number(transaction.Fee),
+                    },
                 });
             }
-        } catch {
-            Alert.alert(Localize.t('global.error', Localize.t('payload.unableToGetNetworkFee')));
+        } catch (e) {
+            Alert.alert(Localize.t('global.error'), Localize.t('payload.unableToGetNetworkFee'));
+        } finally {
+            this.setState({
+                isLoadingFee: false,
+            });
         }
-    }
+    };
+
+    setTransactionFee = (fee: FeeItem) => {
+        const { transaction } = this.props;
+
+        // NOTE: setting the transaction fee require XRP and not drops
+        transaction.Fee = new Amount(fee.value).dropsToXrp();
+    };
+
+    onTransactionFeeSelect = (fee: FeeItem) => {
+        this.setState(
+            {
+                selectedFee: fee,
+            },
+            () => {
+                this.setTransactionFee(fee);
+            },
+        );
+    };
+
+    showFeeSelectOverlay = () => {
+        const { availableFees, selectedFee } = this.state;
+
+        Navigator.showOverlay(AppScreens.Overlay.SelectFee, {
+            availableFees,
+            selectedFee,
+            onSelect: this.onTransactionFeeSelect,
+        });
+    };
+
+    getNormalizedFee = () => {
+        const { selectedFee } = this.state;
+
+        return new Amount(selectedFee.value).dropsToXrp();
+    };
+
+    getFeeColor = () => {
+        const { selectedFee } = this.state;
+
+        switch (selectedFee.type) {
+            case 'low':
+                return StyleService.value('$green');
+            case 'medium':
+                return StyleService.value('$orange');
+            case 'high':
+                return StyleService.value('$red');
+            default:
+                return StyleService.value('$textPrimary');
+        }
+    };
+
+    renderFee = () => {
+        const { transaction } = this.props;
+        const { isLoadingFee, selectedFee } = this.state;
+
+        // we are loading the fee
+        if (isLoadingFee || !selectedFee) {
+            return (
+                <>
+                    <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
+                    <View style={styles.contentBox}>
+                        <Text style={[styles.value]}>Loading ...</Text>
+                    </View>
+                </>
+            );
+        }
+
+        // fee is set by payload as it's already transformed to XRP from drops
+        // we show it as it is
+        if (selectedFee.type === 'unknown') {
+            return (
+                <>
+                    <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
+                    <View style={styles.contentBox}>
+                        <Text style={[styles.feeText]}>{selectedFee.value} XRP</Text>
+                    </View>
+                </>
+            );
+        }
+
+        // AccountDelete transaction have fixed fee value
+        // NOTE: this may change in future, we may need to let user to select higher fees
+        if (transaction.Type === 'AccountDelete') {
+            return (
+                <>
+                    <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
+                    <View style={styles.contentBox}>
+                        <Text style={[styles.feeText]}>{this.getNormalizedFee()} XRP</Text>
+                    </View>
+                </>
+            );
+        }
+
+        return (
+            <>
+                <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
+                <TouchableDebounce
+                    activeOpacity={0.8}
+                    style={[styles.contentBox, AppStyles.row]}
+                    onPress={this.showFeeSelectOverlay}
+                >
+                    <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
+                        <Text style={[styles.feeText]}>{this.getNormalizedFee()} XRP</Text>
+                        <Badge label={Capitalize(selectedFee.type)} size="medium" color={this.getFeeColor()} />
+                    </View>
+                    <Button
+                        onPress={this.showFeeSelectOverlay}
+                        style={styles.editButton}
+                        roundedSmall
+                        iconSize={13}
+                        light
+                        icon="IconEdit"
+                    />
+                </TouchableDebounce>
+            </>
+        );
+    };
 
     renderWarnings = () => {
         const { transaction } = this.props;
@@ -108,40 +299,66 @@ class GlobalTemplate extends Component<Props, State> {
         );
     };
 
-    render() {
+    renderSigners = () => {
         const { transaction } = this.props;
-        const { networkFee } = this.state;
+        const { signers, isLoadingSigners } = this.state;
+
+        if (isEmpty(transaction.Signers)) {
+            return null;
+        }
+
+        if (isLoadingSigners || !signers) {
+            return <LoadingIndicator />;
+        }
 
         return (
             <>
-                {transaction.Memos && (
-                    <>
-                        <Text style={[styles.label]}>{Localize.t('global.memo')}</Text>
-                        <View style={[styles.contentBox]}>
-                            {transaction.Memos.map((m: any, index: number) => {
-                                let memo = '';
-                                memo += m.type ? `${m.type}\n` : '';
-                                memo += m.format ? `${m.format}\n` : '';
-                                memo += m.data ? `${m.data}` : '';
-                                return (
-                                    <>
-                                        <Text key={`memo-${index}`} style={styles.value}>
-                                            {memo}
-                                        </Text>
-                                    </>
-                                );
-                            })}
-                        </View>
-                    </>
-                )}
-
-                {this.renderFlags()}
-
-                <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
-                <View style={[styles.contentBox]}>
-                    <Text style={styles.value}>{transaction.Fee || networkFee} XRP</Text>
+                <Text style={[styles.label]}>{Localize.t('global.signers')}</Text>
+                <View style={styles.signersContainer}>
+                    {signers.map((signer) => {
+                        return <RecipientElement key={`${signer.address}`} recipient={signer} />;
+                    })}
                 </View>
+            </>
+        );
+    };
 
+    renderMemos = () => {
+        const { transaction } = this.props;
+
+        if (!transaction.Memos) {
+            return null;
+        }
+
+        return (
+            <>
+                <Text style={[styles.label]}>{Localize.t('global.memo')}</Text>
+                <View style={[styles.contentBox]}>
+                    {transaction.Memos.map((m: any, index: number) => {
+                        let memo = '';
+                        memo += m.type ? `${m.type}\n` : '';
+                        memo += m.format ? `${m.format}\n` : '';
+                        memo += m.data ? `${m.data}` : '';
+                        return (
+                            <>
+                                <Text key={`memo-${index}`} style={styles.value}>
+                                    {memo}
+                                </Text>
+                            </>
+                        );
+                    })}
+                </View>
+            </>
+        );
+    };
+
+    render() {
+        return (
+            <>
+                {this.renderSigners()}
+                {this.renderMemos()}
+                {this.renderFlags()}
+                {this.renderFee()}
                 {this.renderWarnings()}
             </>
         );

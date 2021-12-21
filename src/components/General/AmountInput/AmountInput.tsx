@@ -12,14 +12,19 @@ import { TextInput, TextStyle, ReturnKeyTypeOptions } from 'react-native';
 import Localize from '@locale';
 
 /* Types ==================================================================== */
+export enum AmountValueType {
+    XRP = 'XRP',
+    IOU = 'IOU',
+}
+
 interface Props {
+    valueType: AmountValueType;
     forwardedRef?: any;
     testID?: string;
     style?: TextStyle | TextStyle[];
     value?: string;
     editable?: boolean;
     fractional?: boolean;
-    decimalPlaces?: number;
     returnKeyType?: ReturnKeyTypeOptions;
     placeholderTextColor?: string;
     onChange?: (value: string) => void;
@@ -29,20 +34,25 @@ interface State {
     formatted: string;
     value: string;
 }
+/* Constants ==================================================================== */
+const MAX_XRP_DECIMAL_PLACES = 6;
+const MAX_IOU_DECIMAL_PLACES = 8;
+const MAX_IOU_PRECISION = 15;
+
 /* Component ==================================================================== */
 class AmountInput extends PureComponent<Props, State> {
-    instance: TextInput;
+    private instance: TextInput;
 
     static defaultProps = {
         fractional: true,
-        decimalPlaces: 8,
+        valueType: AmountValueType.XRP,
     };
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            formatted: props.value ? AmountInput.format(props.value, props.fractional, props.decimalPlaces) : '',
+            formatted: props.value ? AmountInput.format(props.value, props.valueType, props.fractional) : '',
             value: props.value ? AmountInput.normalize(props.value) : '',
         };
     }
@@ -55,7 +65,7 @@ class AmountInput extends PureComponent<Props, State> {
 
     static getDerivedStateFromProps(nextProps: Props) {
         const formatted = nextProps.value
-            ? AmountInput.format(nextProps.value, nextProps.fractional, nextProps.decimalPlaces)
+            ? AmountInput.format(nextProps.value, nextProps.valueType, nextProps.fractional)
             : '';
         const value = nextProps.value ? AmountInput.normalize(nextProps.value) : '';
 
@@ -75,9 +85,15 @@ class AmountInput extends PureComponent<Props, State> {
         return value.replace(',', '.');
     };
 
-    static format = (value: string, fractional?: boolean, decimalPlaces = 8): string => {
+    static format = (value: string, valueType: AmountValueType, fractional?: boolean): string => {
         if (!value) {
             return '';
+        }
+
+        // 6 decimal places for XRP input
+        let decimalPlaces = MAX_XRP_DECIMAL_PLACES;
+        if (valueType === AmountValueType.IOU) {
+            decimalPlaces = MAX_IOU_DECIMAL_PLACES;
         }
 
         let formatted = value;
@@ -90,44 +106,54 @@ class AmountInput extends PureComponent<Props, State> {
             formatted = formatted.replace(',', '.');
         }
 
-        if (fractional) {
-            // filter amount
-            formatted = formatted.replace(new RegExp(`[^0-9${separator}]`, 'g'), '');
-            if (formatted.split(separator).length > 2) {
-                formatted = formatted.replace(new RegExp(`\\${separator}+$`), '');
-            }
-
-            // not more than 8 decimal places
-            if (formatted.split(separator)[1] && formatted.split(separator).reverse()[0].length >= decimalPlaces) {
-                formatted = `${formatted.split(separator).reverse()[1]}${separator}${formatted
-                    .split(separator)
-                    .reverse()[0]
-                    .slice(0, decimalPlaces)}`;
-            }
-
-            // "." to "0."
-            if (formatted.length === 1 && formatted[0] === separator) {
-                // eslint-disable-next-line
-                formatted = `0${separator}`;
-            }
-        } else {
-            // filter amount
-            formatted = formatted.replace(new RegExp('[^0-9]', 'g'), '');
-        }
-
         // "01" to "1"
         if (formatted.length === 2 && formatted[0] === '0' && formatted[1] !== separator) {
             // eslint-disable-next-line
             formatted = formatted[1];
         }
 
+        if (!fractional) {
+            // filter only digits are allowed for non fractional values
+            return formatted.replace(new RegExp('[^0-9]', 'g'), '');
+        }
+
+        // FRACTIONAL values
+
+        // filter only digits and separator
+        formatted = formatted.replace(new RegExp(`[^0-9${separator}]`, 'g'), '');
+
+        // remove multiple separator
+        if (formatted.split(separator).length > 2) {
+            formatted = formatted.replace(new RegExp(`\\${separator}+$`), '');
+        }
+
+        // check for decimal places
+        if (formatted.split(separator)[1] && formatted.split(separator).reverse()[0].length >= decimalPlaces) {
+            formatted = `${formatted.split(separator).reverse()[1]}${separator}${formatted
+                .split(separator)
+                .reverse()[0]
+                .slice(0, decimalPlaces)}`;
+        }
+
+        // "." to "0."
+        if (formatted.length === 1 && formatted[0] === separator) {
+            formatted = `0${separator}`;
+        }
+
+        // check for max precision for IOU
+        if (valueType === AmountValueType.IOU) {
+            if (formatted.replace(separator, '').replace(/0+$/, '').length > MAX_IOU_PRECISION) {
+                formatted = formatted.slice(0, formatted.length - 1);
+            }
+        }
+
         return formatted;
     };
 
     onValueChange = (value: string) => {
-        const { onChange, fractional, decimalPlaces } = this.props;
+        const { onChange, fractional, valueType } = this.props;
 
-        const formatted = AmountInput.format(value, fractional, decimalPlaces);
+        const formatted = AmountInput.format(value, valueType, fractional);
         const clean = AmountInput.normalize(formatted);
 
         this.setState(

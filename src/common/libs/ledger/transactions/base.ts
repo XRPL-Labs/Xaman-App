@@ -2,7 +2,7 @@
  * Base Ledger transaction parser
  */
 import BigNumber from 'bignumber.js';
-import { set, get, has, isUndefined, find } from 'lodash';
+import { set, get, has, isUndefined, find, flatMap } from 'lodash';
 
 import LedgerService from '@services/LedgerService';
 
@@ -20,6 +20,8 @@ import {
     VerifyResultType,
 } from '@common/libs/ledger/types';
 
+import Localize from '@locale';
+
 import Meta from '../parser/meta';
 import LedgerDate from '../parser/common/date';
 import Amount from '../parser/common/amount';
@@ -32,6 +34,9 @@ import { TransactionResult, Account, Memo, AmountType } from '../parser/types';
 /* Class ==================================================================== */
 class BaseTransaction {
     [key: string]: any;
+
+    private _SubmitResult?: SubmitResultType;
+    private _VerifyResult?: VerifyResultType;
 
     constructor(_transaction?: LedgerTransactionType) {
         if (!isUndefined(_transaction)) {
@@ -50,6 +55,7 @@ class BaseTransaction {
             'Flags',
             'Fee',
             'Sequence',
+            'TicketSequence',
             'AccountTxnID',
             'LastLedgerSequence',
             'Signers',
@@ -67,49 +73,68 @@ class BaseTransaction {
     */
     prepare = async () => {
         try {
-            // if fee not set then get current network fee
-            // just for known tx types
-            if (this.Type) {
-                if (isUndefined(this.Fee)) {
-                    const { Fee } = LedgerService.getLedgerStatus();
+            // prepare only for known transaction types types
+            if (!this.Type) {
+                return;
+            }
 
-                    if (Fee) {
-                        this.Fee = new Amount(this.calculateFee(Fee)).dropsToXrp();
-                    } else {
-                        throw new Error('Unable to set transaction Fee, check you are connected to the internet.');
-                    }
+            // throw error if transaction fee is not set
+            // transaction fee's should always been set and shown to user before signing
+            if (isUndefined(this.Fee)) {
+                throw new Error(Localize.t('global.transactionFeeIsNotSet'));
+            }
+
+            // if account sequence not set get the latest account sequence
+            if (isUndefined(this.Sequence)) {
+                const accountInfo = await LedgerService.getAccountInfo(this.Account.address);
+
+                if (!has(accountInfo, 'error') && has(accountInfo, ['account_data', 'Sequence'])) {
+                    const { account_data } = accountInfo;
+                    this.Sequence = Number(account_data.Sequence);
+                } else {
+                    throw new Error(Localize.t('global.unableToSetAccountSequence'));
                 }
+            }
 
-                // if account sequence not set get the latest account sequence
-                if (isUndefined(this.Sequence)) {
-                    const accountInfo = await LedgerService.getAccountInfo(this.Account.address);
-
-                    if (!has(accountInfo, 'error') && has(accountInfo, ['account_data', 'Sequence'])) {
-                        const { account_data } = accountInfo;
-                        this.Sequence = Number(account_data.Sequence);
-                    } else {
-                        throw new Error('Unable to set account Sequence, check you are connected to the internet.');
-                    }
-                }
-
-                // When a transaction has a Max Ledger property + value and the value < 32570,
-                // use the existing Ledger + the entered value at the moment of signing.
-                if (this.LastLedgerSequence) {
-                    if (this.LastLedgerSequence < 32570) {
-                        const { LastLedger } = LedgerService.getLedgerStatus();
-                        if (LastLedger) {
-                            this.LastLedgerSequence = Number(LastLedger) + this.LastLedgerSequence;
-                        }
-                    }
-                }
-
-                // if FullyCanonicalSig is not set, add it
-                if (!this.Flags.FullyCanonicalSig) {
-                    this.Flags = [txFlags.Universal.FullyCanonicalSig];
-                }
+            // if FullyCanonicalSig is not set, add it
+            if (!this.Flags.FullyCanonicalSig) {
+                this.Flags = [txFlags.Universal.FullyCanonicalSig];
             }
         } catch (e: any) {
             throw new Error(`Unable to prepare the transaction, ${e?.message}`);
+        }
+    };
+
+    /**
+    Populate transaction LastLedgerSequence
+    * @param {number} maxLedgerGap max ledger gap
+    * @returns {void}
+    */
+    populateLastLedgerSequence = (ledgerOffset = 10) => {
+        // just for known tx types
+        if (!this.Type) {
+            return;
+        }
+        // if no LastLedgerSequence or LastLedgerSequence is already pass the threshold
+        // update with LastLedger + 10
+        const { LastLedger } = LedgerService.getLedgerStatus();
+        // if unable to fetch the LastLedger probably user is not connected to the node
+        if (!LastLedger) {
+            throw new Error(Localize.t('global.unableToGetLastClosedLedger'));
+        }
+        // expected LastLedger sequence
+        const ExpectedLastLedger = LastLedger + ledgerOffset;
+        // if LastLedgerSequence is not set
+        if (isUndefined(this.LastLedgerSequence)) {
+            // only set if if last ledger is set
+            this.LastLedgerSequence = ExpectedLastLedger;
+        } else if (this.LastLedgerSequence < 32570) {
+            // When a transaction has a Max Ledger property + value and the value < 32570,
+            // use the existing Ledger + the entered value at the moment of signing.
+            this.LastLedgerSequence = LastLedger + this.LastLedgerSequence;
+        } else if (this.LastLedgerSequence < ExpectedLastLedger) {
+            // the Last Ledger is already passed, update it base on Last ledger
+            this.LastLedgerSequence = ExpectedLastLedger;
         }
     };
 
@@ -123,6 +148,11 @@ class BaseTransaction {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             try {
+                if (!account) {
+                    reject(new Error('Account param is required!'));
+                    return;
+                }
+
                 if (this.TxnSignature) {
                     reject(new Error('Transaction already signed!'));
                     return;
@@ -136,14 +166,23 @@ class BaseTransaction {
                 }
 
                 // prepare tranaction for signing
-                await this.prepare();
+                // skip if multiSing transaction
+                if (!multiSign) {
+                    await this.prepare();
+                }
+
+                // if transaction aborted then don't continue
+                if (this.isAborted) {
+                    reject(new Error('Transaction aborted!'));
+                    return;
+                }
 
                 Navigator.showOverlay(AppScreens.Overlay.Vault, {
                     account,
-                    txJson: this.Json,
                     multiSign,
+                    transaction: this,
                     onSign: (signedObject: SignedObjectType) => {
-                        const { id, signedTransaction } = signedObject;
+                        const { id, signedTransaction, signers } = signedObject;
 
                         if (!id || !signedTransaction) {
                             reject(new Error('Unable sign the transaction, please try again!'));
@@ -153,6 +192,10 @@ class BaseTransaction {
                         this.Hash = signedObject.id;
                         this.TxnSignature = signedObject.signedTransaction;
                         this.SignMethod = signedObject.signMethod || 'OTHER';
+
+                        if (Array.isArray(signers) && signers.length > 0) {
+                            [this.SignerAccount] = signers;
+                        }
 
                         resolve(this.TxnSignature);
                     },
@@ -170,7 +213,7 @@ class BaseTransaction {
     Verify the transaction from ledger
     */
     verify = async (): Promise<VerifyResultType> => {
-        const verifyResult = await LedgerService.verifyTx(this.Hash);
+        const verifyResult = await LedgerService.verifyTransaction(this.Hash);
 
         // assign the new transaction from ledger
         if (has(verifyResult, 'transaction')) {
@@ -180,7 +223,7 @@ class BaseTransaction {
             this.tx = transaction;
         }
 
-        // persist verify result in meta
+        // persist verify result
         this.VerifyResult = { success: verifyResult.success };
 
         return verifyResult;
@@ -189,44 +232,57 @@ class BaseTransaction {
     /*
     Submit the signed transaction to the Ledger
     */
-    submit = async (account?: AccountSchema, multiSign?: boolean): Promise<SubmitResultType> => {
+    submit = async (): Promise<SubmitResultType> => {
         try {
-            // if not signed trigger sing function
+            // if transaction is not signed exit
             if (!this.TxnSignature) {
-                await this.sign(account, multiSign);
+                throw new Error('transaction is not signed!');
             }
 
-            const submitResult = await LedgerService.submitTX(this.TxnSignature);
+            // if transaction is already submitted exit
+            if (this.SubmitResult) {
+                throw new Error('transaction already submitted!');
+            }
 
-            const { engineResult, message, success, transactionId } = submitResult;
+            // fail transaction locally if AccountDelete
+            // do not retry or relay the transaction to other servers
+            // this will prevent fee burn if something wrong on AccountDelete transactions
+            const shouldFailHard = this.Type === 'AccountDelete';
 
+            // Submit signed transaction to the XRPL
+            const submitResult = await LedgerService.submitTransaction(this.TxnSignature, shouldFailHard);
+
+            // update transaction hash base on submit result
+            const { transactionId } = submitResult;
             if (transactionId) {
                 this.Hash = transactionId;
             }
 
-            // temporary set the result
-            this.TransactionResult = {
-                code: engineResult,
-                message,
-                success,
-            };
+            // set submit result
+            this.SubmitResult = submitResult;
 
             return submitResult;
         } catch (e: any) {
             // something wrong happened
-            // temporary set the result
-            this.TransactionResult = {
-                code: 'telFAILED',
-                message: e?.message,
-                success: false,
-            };
-
-            return {
+            const result = {
                 success: false,
                 engineResult: 'telFAILED',
                 message: e?.message,
             };
+
+            // set submit result
+            this.SubmitResult = result;
+
+            return result;
         }
+    };
+
+    /*
+    Abort the transaction if on progress
+    this will just set a flag
+    */
+    abort = () => {
+        this.isAborted = true;
     };
 
     /**
@@ -235,15 +291,14 @@ class BaseTransaction {
      * @returns {string} calculated fee in drops
      */
     calculateFee = (netFee?: number): string => {
-        let baseFee;
-
         // if netFee is not set, default to 12 drops
         if (!netFee) {
             netFee = 12;
         }
 
-        // 10 drops × (33 + (Fulfillment size in bytes ÷ 16))
-        // @ts-ignore
+        let baseFee = new BigNumber(0);
+
+        // netFee × (33 + (Fulfillment size in bytes ÷ 16))
         if (this.Type === 'EscrowFinish' && this.Fulfillment) {
             baseFee = new BigNumber(netFee).multipliedBy(
                 // @ts-ignore
@@ -251,16 +306,14 @@ class BaseTransaction {
             );
         }
 
+        // AccountDelete transactions require at least the owner reserve amount
         if (this.Type === 'AccountDelete') {
             const { OwnerReserve } = LedgerService.getNetworkReserve();
             baseFee = new BigNumber(OwnerReserve).multipliedBy(1000000);
         }
-        // 10 drops × (1 + Number of Signatures Provided)
-        if (this.Signers.length > 0) {
-            baseFee = new BigNumber(this.Signers.length).plus(1).multipliedBy(netFee).plus(baseFee);
-        }
 
-        if (!baseFee) {
+        // if no changing needs to apply set the net fee as base fee
+        if (baseFee.isZero()) {
             baseFee = new BigNumber(netFee);
         }
 
@@ -284,6 +337,10 @@ class BaseTransaction {
         return undefined;
     }
 
+    /**
+     * get transaction balance changes
+     * @returns changes
+     */
     BalanceChange(owner?: string) {
         if (!owner) {
             owner = this.Account.address;
@@ -309,6 +366,10 @@ class BaseTransaction {
         return changes;
     }
 
+    /**
+     * get transaction balance changes
+     * @returns changes
+     */
     OwnerCountChange(owner?: string) {
         if (!owner) {
             owner = this.Account.address;
@@ -421,13 +482,20 @@ class BaseTransaction {
         return ledgerDate.toISO8601();
     }
 
-    get VerifyResult(): VerifyResultType {
-        const result = get(this, ['meta', 'VerifyResult'], undefined);
+    get SubmitResult(): SubmitResultType {
+        return get(this, '_SubmitResult', undefined);
+    }
 
-        // already verified by network
+    set SubmitResult(result: SubmitResultType) {
+        set(this, '_SubmitResult', result);
+    }
+
+    get VerifyResult(): VerifyResultType {
+        const result = get(this, '_VerifyResult', undefined);
+
         if (isUndefined(result)) {
             return {
-                success: !isUndefined(this.LedgerIndex),
+                success: false,
             };
         }
 
@@ -435,27 +503,36 @@ class BaseTransaction {
     }
 
     set VerifyResult(result: VerifyResultType) {
-        set(this, ['meta', 'VerifyResult'], result);
+        set(this, '_VerifyResult', result);
     }
 
     get TransactionResult(): TransactionResult {
-        const engine_result = get(this, ['meta', 'TransactionResult']);
-        const message = get(this, ['meta', 'TransactionResultMessage']);
+        const transactionResult = get(this, ['meta', 'TransactionResult'], undefined);
 
-        if (!engine_result) {
-            return undefined;
+        // this transaction already verified by network
+        if (transactionResult === 'tesSUCCESS') {
+            return {
+                success: true,
+                code: transactionResult,
+                message: undefined,
+            };
         }
 
+        const submitResult = get(this, 'SubmitResult', undefined);
+        const verifyResult = get(this, 'VerifyResult', undefined);
+
+        // if already verified by network or
+        // submitted result was successful
+        // or verify result was successful
+        const code = transactionResult || submitResult?.engineResult;
+        const success = code === 'tesSUCCESS' || verifyResult?.success;
+        const message = !success ? submitResult?.message : undefined;
+
         return {
-            success: engine_result === 'tesSUCCESS',
-            code: engine_result,
+            success,
+            code,
             message,
         };
-    }
-
-    set TransactionResult(result: TransactionResult) {
-        set(this, ['meta', 'TransactionResult'], result.code);
-        set(this, ['meta', 'TransactionResultMessage'], result?.message);
     }
 
     get Hash(): string {
@@ -484,7 +561,11 @@ class BaseTransaction {
     }
 
     get Signers(): Array<any> {
-        return get(this, ['tx', 'Signers'], []);
+        const signers = get(this, ['tx', 'Signers']);
+
+        return flatMap(signers, (e) => {
+            return { account: e.Signer.Account, signature: e.Signer.TxnSignature, pubKey: e.Signer.SigningPubKey };
+        });
     }
 
     set Signers(signers: Array<any>) {
@@ -505,6 +586,14 @@ class BaseTransaction {
 
     set Sequence(sequence: number) {
         set(this, ['tx', 'Sequence'], sequence);
+    }
+
+    get TicketSequence(): number {
+        return get(this, ['tx', 'TicketSequence'], undefined);
+    }
+
+    set TicketSequence(ticketSequence: number) {
+        set(this, ['tx', 'TicketSequence'], ticketSequence);
     }
 
     get LastLedgerSequence(): number {

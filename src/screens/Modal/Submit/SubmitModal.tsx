@@ -5,7 +5,15 @@
  */
 
 import React, { Component, Fragment } from 'react';
-import { View, Text, SafeAreaView, Image, InteractionManager, BackHandler } from 'react-native';
+import {
+    View,
+    Text,
+    SafeAreaView,
+    Image,
+    InteractionManager,
+    BackHandler,
+    NativeEventSubscription,
+} from 'react-native';
 
 import Clipboard from '@react-native-community/clipboard';
 
@@ -40,7 +48,7 @@ export interface State {
 class SubmitModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.Submit;
 
-    private backHandler: any;
+    private backHandler: NativeEventSubscription;
 
     static options() {
         return {
@@ -60,12 +68,6 @@ class SubmitModal extends Component<Props, State> {
         };
     }
 
-    componentWillUnmount() {
-        if (this.backHandler) {
-            this.backHandler.remove();
-        }
-    }
-
     componentDidMount() {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
 
@@ -74,16 +76,22 @@ class SubmitModal extends Component<Props, State> {
         });
     }
 
+    componentWillUnmount() {
+        if (this.backHandler) {
+            this.backHandler.remove();
+        }
+    }
+
     submit = async () => {
         const { txblob } = this.props;
 
-        const submitResult = await LedgerService.submitTX(txblob);
+        const submitResult = await LedgerService.submitTransaction(txblob);
 
         // submitted verify
         if (submitResult.success) {
             this.setState({ step: 'verifying', submitResult });
 
-            const verifyResult = await LedgerService.verifyTx(submitResult.transactionId);
+            const verifyResult = await LedgerService.verifyTransaction(submitResult.transactionId);
 
             this.setState({
                 step: 'result',

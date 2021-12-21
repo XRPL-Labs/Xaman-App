@@ -37,9 +37,10 @@ class NodeList extends PureComponent<Props> {
         );
     };
 
-    renderSectionHeader = ({ section: { title } }: any) => {
+    renderSectionHeader = ({ section: { title, color } }: any) => {
         return (
             <View style={styles.sectionHeader}>
+                <View style={[styles.colorCircle, { backgroundColor: color }]} />
                 <Text numberOfLines={1} style={styles.sectionHeaderText}>
                     {title}
                 </Text>

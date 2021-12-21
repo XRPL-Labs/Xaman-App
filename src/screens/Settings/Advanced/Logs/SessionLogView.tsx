@@ -68,12 +68,8 @@ class SessionLogView extends Component<Props, State> {
 
         const content = `mailto:${AppConfig.supportEmail}?subject=SessionLogs&body=${body}`;
 
-        Linking.canOpenURL(content).then((support) => {
-            if (support) {
-                Linking.openURL(content);
-            } else {
-                Alert.alert(Localize.t('global.error'), Localize.t('settings.canNotSendLogsByEmail'));
-            }
+        Linking.openURL(content).catch(() => {
+            Alert.alert(Localize.t('global.error'), Localize.t('settings.canNotSendLogsByEmail'));
         });
     };
 

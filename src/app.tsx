@@ -91,30 +91,31 @@ class Application {
 
     // handle errors in app startup
     handleError = (exception: any) => {
-        if (typeof exception.toString === 'function') {
-            const message = exception.toString();
-
-            if (message.indexOf('Realm file decryption failed') > 0) {
-                Prompt(
-                    'Error',
-                    ErrorMessages.storageDecryptionFailed,
-                    [
-                        {
-                            text: 'Try again later',
-                            onPress: ExitApp,
-                        },
-                        { text: 'WIPE XUMM', style: 'destructive', onPress: this.wipeStorage },
-                    ],
-                    { type: 'default' },
-                );
+        const message = services.LoggerService.normalizeError(exception);
+        if (message) {
+            if (message.indexOf('Realm file decryption failed') > -1) {
+                Alert.alert('Error', ErrorMessages.storageDecryptionFailed, [
+                    {
+                        text: 'Try again later',
+                        onPress: ExitApp,
+                    },
+                    { text: 'WIPE XUMM', style: 'destructive', onPress: this.wipeStorage },
+                ]);
+            } else if (message.indexOf('Encrypted interprocess sharing is currently unsupported') > -1) {
+                Alert.alert('Error', ErrorMessages.appAlreadyRunningInDifferentProcess, [
+                    {
+                        text: 'Quit',
+                        onPress: ExitApp,
+                    },
+                ]);
             } else {
-                Alert.alert('Error', exception.toString());
+                Alert.alert('Error', message);
             }
         } else {
             Alert.alert('Error', 'Unexpected error happened');
         }
 
-        services.LoggerService.recordError('APP RUN ERROR', exception);
+        services.LoggerService.recordError('APP_STARTUP_ERROR', exception);
     };
 
     wipeStorage = () => {

@@ -10,12 +10,15 @@ import { Navigator } from '@common/helpers/navigator';
 import { Toast } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
+import { LedgerEntriesTypes } from '@common/libs/ledger/objects/types';
+
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import LedgerService from '@services/LedgerService';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
+
 // components
 import { Avatar, Button, Icon, Spacer, LoadingIndicator, ActionPanel } from '@components/General';
 
@@ -65,27 +68,39 @@ class ExplainBalanceOverlay extends Component<Props, State> {
     }
 
     componentDidMount() {
-        InteractionManager.runAfterInteractions(this.loadAccountObjects);
+        InteractionManager.runAfterInteractions(this.setAccountObjects);
     }
 
-    loadAccountObjects = () => {
+    loadAccountObjects = (
+        account: string,
+        marker?: string,
+        combined = [] as LedgerEntriesTypes[],
+    ): Promise<LedgerEntriesTypes[]> => {
+        return LedgerService.getAccountObjects(account).then((resp) => {
+            const { account_objects, marker: _marker } = resp;
+            // ignore trustline as we handle them in better way
+            // ignore incoming objects
+            const filtered = filter(account_objects, (o) => {
+                // @ts-ignore
+                return o.LedgerEntryType !== 'RippleState' && (o.Account === account || o.Owner === account);
+            });
+
+            if (_marker && _marker !== marker) {
+                return this.loadAccountObjects(account, _marker, filtered.concat(combined));
+            }
+
+            return filtered.concat(combined);
+        });
+    };
+
+    setAccountObjects = async () => {
         const { account } = this.props;
 
-        LedgerService.getAccountObjects(account.address)
-            .then((res: any) => {
-                const { account_objects } = res;
-                if (account_objects) {
-                    // ignore trustline as we handle them in better way
-                    // ignore incoming objects
-                    const filtered = filter(account_objects, (o) => {
-                        return o.LedgerEntryType !== 'RippleState' && o.Account === account.address;
-                    });
-                    this.setState({
-                        accountObjects: sortBy(filtered),
-                    });
-                } else {
-                    Toast(Localize.t('account.unableToCheckAccountObjects'));
-                }
+        this.loadAccountObjects(account.address)
+            .then((accountObjects) => {
+                this.setState({
+                    accountObjects: sortBy(accountObjects, 'LedgerEntryType'),
+                });
             })
             .catch(() => {
                 Toast(Localize.t('account.unableToCheckAccountObjects'));
@@ -317,7 +332,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                             </View>
                             <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
                                 <Text style={[AppStyles.h5, AppStyles.monoBold]}>
-                                    {Localize.formatNumber(CalculateAvailableBalance(account))}
+                                    {Localize.formatNumber(CalculateAvailableBalance(account, true))}
                                 </Text>
                             </View>
                         </View>

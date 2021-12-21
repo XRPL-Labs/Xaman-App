@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, ImageBackground, BackHandler, ScrollView } from 'react-native';
+import { View, Text, ImageBackground, BackHandler, ScrollView, NativeEventSubscription } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
@@ -29,7 +29,7 @@ export interface State {}
 class HelpView extends Component<Props, State> {
     static screenName = AppScreens.Modal.Help;
 
-    private backHandler: any;
+    private backHandler: NativeEventSubscription;
 
     static options() {
         return {
@@ -39,14 +39,14 @@ class HelpView extends Component<Props, State> {
         };
     }
 
+    componentDidMount() {
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
+    }
+
     componentWillUnmount() {
         if (this.backHandler) {
             this.backHandler.remove();
         }
-    }
-
-    componentDidMount() {
-        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
     }
 
     onClose = () => {

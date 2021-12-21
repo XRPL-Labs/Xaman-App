@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
-import { isEmpty, isEqual, debounce } from 'lodash';
+import { View, Text, Image } from 'react-native';
+import { isEmpty, isEqual } from 'lodash';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import { AccountSchema } from '@store/schemas/latest';
@@ -8,12 +8,15 @@ import { AccountSchema } from '@store/schemas/latest';
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
 import { Images } from '@common/helpers/images';
+
 import { NormalizeCurrencyCode, NormalizeAmount } from '@common/utils/amount';
+import { Truncate } from '@common/utils/string';
+
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
 
-import { Icon, Avatar, AmountText } from '@components/General';
+import { TouchableDebounce, Icon, Avatar, AmountText } from '@components/General';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -236,12 +239,10 @@ class TransactionTemplate extends Component<Props, State> {
             .catch(() => {});
     };
 
-    debouncedOnPress = () => {
+    onPress = () => {
         const { item, account } = this.props;
         Navigator.push(AppScreens.Transaction.Details, { tx: item, account });
     };
-
-    onPress = debounce(this.debouncedOnPress, 300, { leading: true, trailing: false });
 
     getIcon = () => {
         const { address, kycApproved } = this.state;
@@ -309,7 +310,7 @@ class TransactionTemplate extends Component<Props, State> {
         }
 
         if (name) return name;
-        if (address) return address;
+        if (address) return Truncate(address, 16);
 
         return Localize.t('global.unknown');
     };
@@ -330,14 +331,20 @@ class TransactionTemplate extends Component<Props, State> {
                     return Localize.t('events.paymentReceived');
                 }
                 return Localize.t('events.paymentSent');
-            case 'TrustSet':
-                if (item.Account.address !== account.address && item.Limit !== 0) {
+            case 'TrustSet': {
+                // incoming trustline
+                if (item.Account.address !== account.address) {
                     return Localize.t('events.incomingTrustLineAdded');
                 }
-                if (item.Limit === 0) {
+                const ownerCountChange = item.OwnerCountChange(account.address);
+                if (ownerCountChange) {
+                    if (ownerCountChange.action === 'INC') {
+                        return Localize.t('events.addedATrustLine');
+                    }
                     return Localize.t('events.removedATrustLine');
                 }
-                return Localize.t('events.addedATrustLine');
+                return Localize.t('events.updatedATrustLine');
+            }
             case 'EscrowCreate':
                 return Localize.t('events.createEscrow');
             case 'EscrowFinish':
@@ -448,9 +455,11 @@ class TransactionTemplate extends Component<Props, State> {
                     return (
                         <AmountText
                             value={amount.value}
-                            postfix={amount.currency}
+                            currency={amount.currency}
                             style={[styles.amount, styles.naturalColor]}
-                            postfixStyle={styles.currency}
+                            currencyStyle={styles.currency}
+                            valueContainerStyle={styles.amountValueContainer}
+                            truncateCurrency
                         />
                     );
                 }
@@ -458,21 +467,39 @@ class TransactionTemplate extends Component<Props, State> {
                     return (
                         <AmountText
                             value={balanceChanges.received?.value}
-                            postfix={balanceChanges.received?.currency}
+                            currency={balanceChanges.received?.currency}
                             style={styles.amount}
-                            postfixStyle={styles.currency}
+                            currencyStyle={styles.currency}
+                            valueContainerStyle={styles.amountValueContainer}
+                            truncateCurrency
                         />
                     );
                 }
             }
 
+            // path payment to self
+            if (item.Account.address === account.address && item.Destination.address === account.address) {
+                return (
+                    <AmountText
+                        value={amount.value}
+                        currency={amount.currency}
+                        style={[styles.amount]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+
             return (
                 <AmountText
                     value={amount.value}
-                    postfix={amount.currency}
+                    currency={amount.currency}
                     prefix={!incoming && '-'}
                     style={[styles.amount, !incoming && styles.outgoingColor]}
-                    postfixStyle={styles.currency}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
                 />
             );
         }
@@ -481,10 +508,12 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.Amount.value}
-                    postfix={item.Amount.currency}
+                    currency={item.Amount.currency}
                     prefix={!incoming && '-'}
                     style={[styles.amount, !incoming && styles.outgoingColor]}
-                    postfixStyle={styles.currency}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
                 />
             );
         }
@@ -493,10 +522,12 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.Amount.value}
-                    postfix={item.Amount.currency}
+                    currency={item.Amount.currency}
                     prefix={!incoming && '-'}
                     style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]}
-                    postfixStyle={styles.currency}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
                 />
             );
         }
@@ -505,10 +536,12 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.Amount.value}
-                    postfix={item.Amount.currency}
+                    currency={item.Amount.currency}
                     prefix={!incoming && '-'}
                     style={[styles.amount, !incoming && styles.naturalColor]}
-                    postfixStyle={styles.currency}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
                 />
             );
         }
@@ -517,9 +550,11 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={item.SendMax.value}
-                    postfix={item.SendMax.currency}
+                    currency={item.SendMax.currency}
                     style={[styles.amount, styles.naturalColor]}
-                    postfixStyle={styles.currency}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
                 />
             );
         }
@@ -530,9 +565,11 @@ class TransactionTemplate extends Component<Props, State> {
             return (
                 <AmountText
                     value={amount.value}
-                    postfix={amount.currency}
+                    currency={amount.currency}
                     style={[styles.amount, !incoming && styles.outgoingColor]}
-                    postfixStyle={styles.currency}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
                 />
             );
         }
@@ -544,18 +581,22 @@ class TransactionTemplate extends Component<Props, State> {
                 return (
                     <AmountText
                         value={takerPaid.value}
-                        postfix={takerPaid.currency}
+                        currency={takerPaid.currency}
                         style={[styles.amount]}
-                        postfixStyle={styles.currency}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
                     />
                 );
             }
             return (
                 <AmountText
                     value={item.TakerPays.value}
-                    postfix={item.TakerPays.currency}
+                    currency={item.TakerPays.currency}
                     style={[styles.amount, styles.naturalColor]}
-                    postfixStyle={styles.currency}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
                 />
             );
         }
@@ -569,9 +610,11 @@ class TransactionTemplate extends Component<Props, State> {
                 return (
                     <AmountText
                         value={amount.value}
-                        postfix={amount.currency}
+                        currency={amount.currency}
                         style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
-                        postfixStyle={styles.currency}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
                     />
                 );
             }
@@ -582,7 +625,7 @@ class TransactionTemplate extends Component<Props, State> {
 
     render() {
         return (
-            <TouchableOpacity onPress={this.onPress} activeOpacity={0.6} style={[styles.container]}>
+            <TouchableDebounce onPress={this.onPress} activeOpacity={0.6} style={[styles.container]}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
                 <View style={[AppStyles.flex3, AppStyles.centerContent]}>
                     <Text style={[styles.label]} numberOfLines={1}>
@@ -600,7 +643,7 @@ class TransactionTemplate extends Component<Props, State> {
                 <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>
                     {this.renderRightPanel()}
                 </View>
-            </TouchableOpacity>
+            </TouchableDebounce>
         );
     }
 }

@@ -14,7 +14,7 @@ export interface PayIDInfo {
     tag: string;
 }
 export interface AccountNameType {
-    address?: string;
+    address: string;
     name: string;
     source: string;
     kycApproved?: boolean;
@@ -115,6 +115,15 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
         } as AccountInfoType;
 
         try {
+            // get account risk level
+            const accountRisk = await BackendService.getAccountRisk(address);
+
+            if (has(accountRisk, 'danger')) {
+                assign(info, { risk: accountRisk.danger });
+            } else {
+                return reject();
+            }
+
             const accountInfo = await LedgerService.getAccountInfo(address);
 
             // account doesn't exist no need to check account risk
@@ -122,14 +131,6 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                 if (get(accountInfo, 'error') === 'actNotFound') {
                     return resolve(assign(info, { exist: false }));
                 }
-                return reject();
-            }
-
-            const accountRisk = await BackendService.getAccountRisk(address);
-
-            if (has(accountRisk, 'danger')) {
-                assign(info, { risk: accountRisk.danger });
-            } else {
                 return reject();
             }
 
@@ -142,18 +143,20 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                 }
             }
 
-            // check for black hole
-            if (has(account_data, ['RegularKey'])) {
-                if (
-                    ['rrrrrrrrrrrrrrrrrrrrrhoLvTp', 'rrrrrrrrrrrrrrrrrrrrBZbvji'].indexOf(account_data.RegularKey) > -1
-                ) {
-                    assign(info, { blackHole: true });
-                }
-            }
-
-            // check if destination requires the destination tag
+            // check for account flags
             if (has(account_data, ['Flags'])) {
                 const accountFlags = new Flag('Account', account_data.Flags).parse();
+
+                // check for black hole
+                if (has(account_data, ['RegularKey'])) {
+                    if (
+                        accountFlags.disableMasterKey &&
+                        ['rrrrrrrrrrrrrrrrrrrrrhoLvTp', 'rrrrrrrrrrrrrrrrrrrrBZbvji'].indexOf(account_data.RegularKey) >
+                            -1
+                    ) {
+                        assign(info, { blackHole: true });
+                    }
+                }
 
                 if (accountFlags.disallowIncomingXRP) {
                     assign(info, { disallowIncomingXRP: true });

@@ -23,7 +23,7 @@ class TicketCreateTemplate extends Component<Props, State> {
             <>
                 <Text style={[styles.label]}>{Localize.t('global.ticketCount')}</Text>
                 <View style={[styles.contentBox]}>
-                    <Text style={styles.value}>{transaction.TicketCount}</Text>
+                    <Text style={styles.value}>{transaction.TicketCount || 'NOT PRESENT'}</Text>
                 </View>
             </>
         );

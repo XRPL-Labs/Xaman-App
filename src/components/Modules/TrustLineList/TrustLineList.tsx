@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ViewStyle } from 'react-native';
+import { View, Text, FlatList, ViewStyle } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -9,7 +9,7 @@ import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import Localize from '@locale';
 
-import { InfoMessage, Icon, Button } from '@components/General';
+import { TouchableDebounce, InfoMessage, Icon, Button } from '@components/General';
 import { TrustLineItem } from '@components/Modules/TrustLineList/TrustLineItem';
 
 import { AppStyles } from '@theme';
@@ -52,7 +52,7 @@ class TrustLineList extends PureComponent<Props> {
         return (
             <View testID="assets-empty-view" style={[styles.noTrustlineMessage]}>
                 <InfoMessage type="warning" label={Localize.t('home.youDonNotHaveOtherAssets')} />
-                <TouchableOpacity
+                <TouchableDebounce
                     style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingSml]}
                     onPress={this.openTrustLineDescription}
                 >
@@ -60,7 +60,7 @@ class TrustLineList extends PureComponent<Props> {
                     <Text style={[AppStyles.subtext, AppStyles.textCenterAligned, AppStyles.link, AppStyles.colorGrey]}>
                         {Localize.t('home.whatAreOtherAssets')}
                     </Text>
-                </TouchableOpacity>
+                </TouchableDebounce>
             </View>
         );
     };

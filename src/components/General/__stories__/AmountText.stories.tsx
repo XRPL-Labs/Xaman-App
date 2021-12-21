@@ -31,4 +31,4 @@ storiesOf('AmountText', module)
             postfix: ['USD'],
         }),
     )
-    .add('discreet', () => <AmountText postfix="USD" value="123" discreet />);
+    .add('discreet', () => <AmountText currency="USD" value="123" discreet />);

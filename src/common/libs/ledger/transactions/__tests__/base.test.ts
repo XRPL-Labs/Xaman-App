@@ -44,7 +44,7 @@ describe('BaseTransaction tx', () => {
         });
     });
 
-    it('Should set/get fields', () => {
+    it('Should set/get common fields', () => {
         const instance = new BaseTransaction();
 
         instance.Account = {
@@ -66,17 +66,6 @@ describe('BaseTransaction tx', () => {
         instance.Fee = '0.000012';
         expect(instance.Fee).toBe('0.000012');
 
-        instance.TransactionResult = {
-            success: true,
-            code: 'tesSUCCESS',
-            message: undefined,
-        };
-        expect(instance.TransactionResult).toStrictEqual({
-            success: true,
-            code: 'tesSUCCESS',
-            message: undefined,
-        });
-
         instance.Hash = '7F10793B5781BD5DD52F70096520321A08DD2ED19AFC7E3F193AAC293954F7DF';
         expect(instance.Hash).toBe('7F10793B5781BD5DD52F70096520321A08DD2ED19AFC7E3F193AAC293954F7DF');
 
@@ -90,12 +79,63 @@ describe('BaseTransaction tx', () => {
         expect(instance.SigningPubKey).toBe('03DF3AB842EB1B57F0A848CD7CC2CFD35F66E4AD0625EEACFFE72A45E4D13E49A');
     });
 
+    it('Should return right transaction result', () => {
+        const instance = new BaseTransaction();
+
+        // transaction already veriffied by network
+        instance.meta.TransactionResult = 'tesSUCCESS';
+
+        expect(instance.TransactionResult).toStrictEqual({
+            success: true,
+            code: 'tesSUCCESS',
+            message: undefined,
+        });
+
+        // transaction is not veriffied by network and failed
+        instance.meta.TransactionResult = 'tecNO_LINE_INSUF_RESERVE';
+
+        instance.SubmitResult = {
+            success: true,
+            engineResult: 'tecNO_LINE_INSUF_RESERVE',
+            message: 'No such line. Too little reserve to create it.',
+        };
+
+        instance.VerifyResult = {
+            success: false,
+        };
+
+        expect(instance.TransactionResult).toStrictEqual({
+            success: false,
+            code: 'tecNO_LINE_INSUF_RESERVE',
+            message: 'No such line. Too little reserve to create it.',
+        });
+
+        // transaction is not veriffied by network and hard failed
+        instance.meta.TransactionResult = undefined;
+
+        instance.SubmitResult = {
+            success: false,
+            engineResult: 'temBAD_FEE',
+            message: 'temBAD_FEE description',
+        };
+
+        instance.VerifyResult = {
+            success: false,
+        };
+
+        expect(instance.TransactionResult).toStrictEqual({
+            success: false,
+            code: 'temBAD_FEE',
+            message: 'temBAD_FEE description',
+        });
+    });
+
     it('Should be able to prepare the transaction for signing', async () => {
         const address = 'rEAa7TDpBdL1hoRRAp3WDmzBcuQzaXssmb';
 
         // mock the ledger service response
-        const spy = jest.spyOn(LedgerService, 'getAccountInfo').mockImplementation(() => {
-            return {
+        const spy = jest.spyOn(LedgerService, 'getAccountInfo').mockImplementation(() =>
+            Promise.resolve({
                 account_data: {
                     address,
                     Balance: '49507625423',
@@ -112,8 +152,8 @@ describe('BaseTransaction tx', () => {
                     signer_lists: [],
                     urlgravatar: 'http://www.gravatar.com/avatar/833237b8665d2f4e00135e8de646589f',
                 },
-            };
-        });
+            }),
+        );
 
         // create a transaction instance for signing
         const instance = new BaseTransaction(paymentTxTemplates.SimplePayment);
@@ -139,8 +179,32 @@ describe('BaseTransaction tx', () => {
             PartialPayment: false,
         });
 
-        // should set the LastLedgerSequence if lower than 32570
-        expect(instance.LastLedgerSequence).toBe(6032000);
+        spy.mockRestore();
+    });
+
+    it('Should be able to populate the transaction LastLedgerSequence', async () => {
+        const LastLedger = 68312096;
+
+        // mock the ledger service response
+        const spy = jest.spyOn(LedgerService, 'getLedgerStatus').mockImplementation(() => {
+            return { Fee: 12, LastLedger };
+        });
+
+        // should set if LastLedgerSequence undefined
+        const instance = new BaseTransaction(paymentTxTemplates.SimplePayment);
+        instance.LastLedgerSequence = undefined;
+        instance.populateLastLedgerSequence();
+        expect(instance.LastLedgerSequence).toBe(LastLedger + 10);
+
+        // should update LastLedgerSequence if sequence is passed
+        instance.LastLedgerSequence = LastLedger - 500;
+        instance.populateLastLedgerSequence();
+        expect(instance.LastLedgerSequence).toBe(LastLedger + 10);
+
+        // should update LastLedgerSequence if sequence is less than 32570
+        instance.LastLedgerSequence = 50;
+        instance.populateLastLedgerSequence();
+        expect(instance.LastLedgerSequence).toBe(LastLedger + 50);
 
         spy.mockRestore();
     });

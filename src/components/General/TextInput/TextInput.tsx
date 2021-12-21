@@ -6,7 +6,7 @@
  *
  */
 import React, { Component } from 'react';
-import { View, TouchableOpacity, TextInput, TextInputProps, ViewStyle, TextStyle, Platform } from 'react-native';
+import { View, TextInput, TextInputProps, ViewStyle, TextStyle, Platform } from 'react-native';
 
 import { StringType } from 'xumm-string-decode';
 
@@ -15,7 +15,7 @@ import { AppScreens } from '@common/constants';
 
 import StyleService from '@services/StyleService';
 
-import { Icon, LoadingIndicator } from '@components/General';
+import { TouchableDebounce, Icon, LoadingIndicator } from '@components/General';
 
 import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
@@ -174,9 +174,9 @@ class Input extends Component<Props, State> {
             <View style={[AppStyles.row]}>
                 {input}
                 {showScanner && (
-                    <TouchableOpacity activeOpacity={0.8} style={styles.scanButton} onPress={this.showScanner}>
+                    <TouchableDebounce activeOpacity={0.8} style={styles.scanButton} onPress={this.showScanner}>
                         <Icon size={25} name="IconScan" style={styles.scanIcon} />
-                    </TouchableOpacity>
+                    </TouchableDebounce>
                 )}
 
                 {isLoading && (
