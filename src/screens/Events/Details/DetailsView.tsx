@@ -1732,6 +1732,11 @@ class TransactionDetailsView extends Component<Props, State> {
             }
         }
 
+        // ignore async third party offer executed
+        if (tx.Type === 'OfferCreate' && to.address !== account.address) {
+            return null;
+        }
+
         if (!to.address) {
             return (
                 <View style={styles.extraHeaderContainer}>
