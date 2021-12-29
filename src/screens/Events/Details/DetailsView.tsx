@@ -204,7 +204,15 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx } = this.state;
         const { account } = this.props;
 
-        if (['Payment', 'PaymentChannelClaim', 'PaymentChannelCreate', 'PaymentChannelFund'].includes(tx.Type)) {
+        if (
+            [
+                'Payment',
+                'PaymentChannelClaim',
+                'PaymentChannelCreate',
+                'PaymentChannelFund',
+                'NFTokenAcceptOffer',
+            ].includes(tx.Type)
+        ) {
             this.setState({
                 balanceChanges: tx.BalanceChange(account.address),
             });
@@ -335,7 +343,14 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case 'NFTokenCreateOffer':
                 if (tx.Destination) {
-                    address = tx.Destination;
+                    address = tx.Destination.address;
+                }
+                break;
+            case 'NFTokenAcceptOffer':
+                if (incomingTx) {
+                    address = tx.Account.address;
+                } else if (tx.Offer) {
+                    address = tx.Offer.Owner;
                 }
                 break;
             default:
@@ -1100,7 +1115,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
         let content = '';
 
-        content += Localize.t('events.theTokenIdIs', { tokenID: tx.TokenID });
+        content += Localize.t('events.nftokenBurnExplain', { tokenID: tx.TokenID });
 
         return content;
     };
@@ -1154,7 +1169,7 @@ class TransactionDetailsView extends Component<Props, State> {
         content += Localize.t('events.theTransactionWillCancelNftOffer', { address: tx.Account.address });
         content += '\n';
 
-        tx.TokenIDs.forEach((id: string) => {
+        tx.TokenOffers?.forEach((id: string) => {
             content += `${id}\n`;
         });
 
@@ -1162,16 +1177,35 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderNFTokenAcceptOffer = () => {
-        // const { tx } = this.state;
+        const { tx } = this.state;
 
-        const content = '';
+        const offerID = tx.BuyOffer || tx.SellOffer;
 
-        // content += Localize.t('events.theTransactionWillCancelNftOffer', { address: tx.Account.address });
-        // content += '\n';
+        // this should never happen
+        // but as we are in beta we should to check this
+        if (!tx.Offer) {
+            return 'No Description!';
+        }
 
-        // tx.TokenIDs.forEach((id: string) => {
-        //     content += `${id}\n`;
-        // });
+        let content = '';
+
+        if (tx.Offer.Flags.SellToken) {
+            content += Localize.t('events.nftAcceptOfferBuyExplanation', {
+                address: tx.Account.address,
+                offerID,
+                tokenID: tx.Offer.TokenID,
+                amount: tx.Offer.Amount.value,
+                currency: NormalizeCurrencyCode(tx.Offer.Amount.currency),
+            });
+        } else {
+            content += Localize.t('events.nftAcceptOfferSellExplanation', {
+                address: tx.Account.address,
+                offerID,
+                tokenID: tx.Offer.TokenID,
+                amount: tx.Offer.Amount.value,
+                currency: NormalizeCurrencyCode(tx.Offer.Amount.currency),
+            });
+        }
 
         return content;
     };
@@ -1552,7 +1586,6 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             }
-
             case 'NFTokenCreateOffer': {
                 Object.assign(props, {
                     color: styles.naturalColor,
@@ -1562,6 +1595,24 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
                 break;
             }
+            case 'NFTokenAcceptOffer': {
+                if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                    const incoming = !!balanceChanges.received;
+                    const amount = balanceChanges?.received || balanceChanges?.sent;
+
+                    Object.assign(props, {
+                        icon: incoming ? 'IconCornerRightDown' : 'IconCornerRightUp',
+                        color: incoming ? styles.incomingColor : styles.outgoingColor,
+                        prefix: incoming ? '' : '-',
+                        value: amount.value,
+                        currency: amount.currency,
+                    });
+                } else {
+                    shouldShowAmount = false;
+                }
+                break;
+            }
+
             default:
                 shouldShowAmount = false;
                 break;
@@ -1848,6 +1899,36 @@ class TransactionDetailsView extends Component<Props, State> {
             }
         }
 
+        // Accepted NFT offer
+        if (tx.Type === 'NFTokenAcceptOffer') {
+            const offerer = tx.Offer.Owner;
+            const accepter = tx.Account.address;
+            const isSellOffer = tx.Offer?.Flags.SellToken;
+            const buyer = isSellOffer ? accepter : offerer;
+            const seller = isSellOffer ? offerer : accepter;
+
+            from = {
+                address: buyer,
+                ...(buyer !== account.address
+                    ? { ...partiesDetails }
+                    : {
+                          address: account.address,
+                          name: account.label,
+                          source: 'accounts',
+                      }),
+            };
+            to = {
+                address: seller,
+                ...(seller !== account.address
+                    ? { ...partiesDetails }
+                    : {
+                          address: account.address,
+                          name: account.label,
+                          source: 'accounts',
+                      }),
+            };
+        }
+
         // 3rd party consuming own offer
         if (tx.Type === 'Payment') {
             if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
@@ -1857,6 +1938,10 @@ class TransactionDetailsView extends Component<Props, State> {
                     through = { address: account.address, name: account.label, source: 'accounts' };
                 }
             }
+        }
+
+        if (!to.address && !from.address) {
+            return null;
         }
 
         if (!to.address) {

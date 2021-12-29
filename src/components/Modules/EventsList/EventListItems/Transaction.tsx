@@ -185,8 +185,13 @@ class TransactionTemplate extends Component<Props, State> {
                 key = 'Account';
                 break;
             case 'NFTokenAcceptOffer':
-                address = item.Account.address;
-                key = 'Account';
+                if (item.Account?.address === account.address) {
+                    if (item.Offer) {
+                        address = item.Offer.Owner;
+                    }
+                } else {
+                    address = item.Account.address;
+                }
                 break;
             default:
                 break;
@@ -566,6 +571,7 @@ class TransactionTemplate extends Component<Props, State> {
                 <AmountText
                     value={amount.value}
                     currency={amount.currency}
+                    prefix={!incoming && '-'}
                     style={[styles.amount, !incoming && styles.outgoingColor]}
                     currencyStyle={styles.currency}
                     valueContainerStyle={styles.amountValueContainer}
@@ -611,6 +617,26 @@ class TransactionTemplate extends Component<Props, State> {
                     <AmountText
                         value={amount.value}
                         currency={amount.currency}
+                        prefix={!!balanceChanges.sent && '-'}
+                        style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
+        if (item.Type === 'NFTokenAcceptOffer') {
+            const balanceChanges = item.BalanceChange(account.address);
+            if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                const amount = balanceChanges?.received || balanceChanges?.sent;
+
+                return (
+                    <AmountText
+                        value={amount.value}
+                        currency={amount.currency}
+                        prefix={!!balanceChanges.sent && '-'}
                         style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
                         currencyStyle={styles.currency}
                         valueContainerStyle={styles.amountValueContainer}

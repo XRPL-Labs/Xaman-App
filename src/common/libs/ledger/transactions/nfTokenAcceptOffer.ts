@@ -1,8 +1,10 @@
-import { get, isUndefined } from 'lodash';
+import { set, get, find, isUndefined } from 'lodash';
 
 import BaseTransaction from './base';
 
 import Amount from '../parser/common/amount';
+
+import NFTokenCreateOffer from './nfTokenCreateOffer';
 
 /* Types ==================================================================== */
 import { AmountType } from '../parser/types';
@@ -22,7 +24,31 @@ class NFTokenAcceptOffer extends BaseTransaction {
         this.fields = this.fields.concat(['Amount', 'SellOffer', 'BuyOffer']);
     }
 
-    // @ts-ignore
+    set Offer(offer: NFTokenCreateOffer) {
+        set(this, 'acceptedOffer', offer);
+    }
+
+    get Offer(): NFTokenCreateOffer {
+        let offer = get(this, 'acceptedOffer', undefined);
+
+        // if we already set the token id return
+        if (offer) {
+            return offer;
+        }
+
+        // if not look at the meta data for token id
+        const affectedNodes = get(this.meta, 'AffectedNodes', []);
+        offer = get(
+            find(affectedNodes, (node) => node.DeletedNode?.LedgerEntryType === 'NFTokenOffer'),
+            ['DeletedNode', 'FinalFields'],
+            undefined,
+        );
+        if (offer) {
+            this.Offer = new NFTokenCreateOffer(offer);
+        }
+        return offer;
+    }
+
     get Amount(): AmountType {
         let amount = undefined as AmountType;
 

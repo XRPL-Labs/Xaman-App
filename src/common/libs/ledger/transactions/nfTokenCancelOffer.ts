@@ -16,11 +16,11 @@ class NFTokenCancelOffer extends BaseTransaction {
             this.Type = 'NFTokenCancelOffer';
         }
 
-        this.fields = this.fields.concat(['TokenIDs']);
+        this.fields = this.fields.concat(['TokenOffers']);
     }
 
-    get TokenIDs(): Array<string> {
-        return get(this, ['tx', 'TokenIDs']);
+    get TokenOffers(): Array<string> {
+        return get(this, ['tx', 'TokenOffers']);
     }
 }
 

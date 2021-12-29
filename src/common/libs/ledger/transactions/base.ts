@@ -353,13 +353,32 @@ class BaseTransaction {
             received: find(balanceChanges, (o) => o.action === 'INC'),
         } as { sent: AmountType; received: AmountType };
 
-        // remove fee from sender
+        // remove fee from transaction owner balance changes
+        // this should apply for NFTokenAcceptOffer transactions as well
+        let feeFieldKey = undefined as 'sent' | 'received';
         if (owner === this.Account.address && changes.sent && changes.sent.currency === 'XRP') {
-            const afterFee = new BigNumber(changes.sent.value).minus(new BigNumber(this.Fee));
-            if (afterFee.isZero()) {
-                set(changes, 'sent', undefined);
+            feeFieldKey = 'sent';
+        } else if (
+            owner === this.Account.address &&
+            this.Type === 'NFTokenAcceptOffer' &&
+            changes.received &&
+            changes.received.currency === 'XRP'
+        ) {
+            feeFieldKey = 'received';
+        }
+
+        if (feeFieldKey) {
+            let afterFee;
+            if (feeFieldKey === 'sent') {
+                afterFee = new BigNumber(changes[feeFieldKey].value).minus(new BigNumber(this.Fee));
             } else {
-                set(changes, 'sent.value', afterFee.decimalPlaces(8).toString(10));
+                afterFee = new BigNumber(changes[feeFieldKey].value).plus(new BigNumber(this.Fee));
+            }
+
+            if (afterFee.isZero()) {
+                set(changes, feeFieldKey, undefined);
+            } else {
+                set(changes, [feeFieldKey, 'value'], afterFee.decimalPlaces(8).toString(10));
             }
         }
 

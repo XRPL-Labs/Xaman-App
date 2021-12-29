@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 
-import { isEmpty } from 'lodash';
+import { isEmpty, isUndefined } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
@@ -100,7 +100,7 @@ class NFTokenMintTemplate extends Component<Props, State> {
                     </>
                 )}
 
-                {transaction.TransferFee && (
+                {!isUndefined(transaction.TransferFee) && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.transferFee')}</Text>
                         <View style={[styles.contentBox]}>

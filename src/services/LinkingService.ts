@@ -33,45 +33,6 @@ class LinkingService {
                         Linking.addEventListener('url', this.handleDeepLink);
                     }
                 });
-
-                // const mint = {
-                //     TransactionType: 'NFTokenMint',
-                //     TokenTaxon: 1,
-                //     Flags: 2147483659,
-                // };
-
-                // const offer = {
-                //     TransactionType: 'NFTokenCreateOffer',
-                //     TokenID: '000B09291BFB1ECDCD89560CBB2BB21F94559F32820FAD040000053800000000',
-                //     Amount: '100000000',
-                //     Owner: 'rsYxnKtb8JBzfG4hp6sVF3WiVNw2broUFo',
-                //     // Flags: 1,
-                // };
-
-                // const cancel = {
-                //     TransactionType: 'NFTokenCancelOffer',
-                //     TokenIDs: ['000B09291BFB1ECDCD89560CBB2BB21F94559F32820FAD040000053800000000'],
-                // };
-
-                // const accept = {
-                //     TransactionType: 'NFTokenAcceptOffer',
-                //     // Amount: '100000000',
-                //     SellOffer: '66418F3C4CDF5BC1DF0145DAEF39E74524398D465B5E6F290D1D83A3743467D1',
-                //     // SellOffer: '66418F3C4CDF5BC1DF0145DAEF39E74524398D465B5E6F290D1D83A3743467D1',
-                // };
-
-                // setTimeout(async () => {
-                //     // fetch the payload
-                //     const payload = await Payload.build(accept);
-
-                //     // review the transaction
-                //     this.routeUser(
-                //         AppScreens.Modal.ReviewTransaction,
-                //         { modalPresentationStyle: 'fullScreen' },
-                //         { payload },
-                //         ComponentTypes.Modal,
-                //     );
-                // }, 3000);
                 return resolve();
             } catch (e) {
                 return reject(e);
