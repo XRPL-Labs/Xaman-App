@@ -341,6 +341,11 @@ class TransactionDetailsView extends Component<Props, State> {
                     address = tx.Issuer;
                 }
                 break;
+            case 'NFTokenBurn':
+                if (incomingTx) {
+                    address = tx.Account.address;
+                }
+                break;
             case 'NFTokenCreateOffer':
                 if (tx.Destination) {
                     address = tx.Destination.address;
