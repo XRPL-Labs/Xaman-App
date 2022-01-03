@@ -78,11 +78,16 @@ class ExplainBalanceOverlay extends Component<Props, State> {
     ): Promise<LedgerEntriesTypes[]> => {
         return LedgerService.getAccountObjects(account).then((resp) => {
             const { account_objects, marker: _marker } = resp;
-            // ignore trustline as we handle them in better way
+            // ignore TrustLines as we handle them in better way
+            // ignore NFTokenOffers as we will show them in better way
             // ignore incoming objects
             const filtered = filter(account_objects, (o) => {
-                // @ts-ignore
-                return o.LedgerEntryType !== 'RippleState' && (o.Account === account || o.Owner === account);
+                return (
+                    o.LedgerEntryType !== 'RippleState' &&
+                    o.LedgerEntryType !== 'NFTokenOffer' &&
+                    // @ts-ignore
+                    (o.Account === account || o.Owner === account)
+                );
             });
 
             if (_marker && _marker !== marker) {
