@@ -128,19 +128,27 @@ class NFTokenCreateOfferTemplate extends Component<Props, State> {
                     </>
                 )}
 
-                <Text style={[styles.label]}>{Localize.t('global.amount')}</Text>
-                <View style={[styles.contentBox]}>
-                    <AmountText
-                        value={transaction.Amount.value}
-                        currency={transaction.Amount.currency}
-                        style={styles.amount}
-                    />
-                </View>
+                {transaction.Amount && (
+                    <>
+                        <Text style={[styles.label]}>{Localize.t('global.amount')}</Text>
+                        <View style={[styles.contentBox]}>
+                            <AmountText
+                                value={transaction.Amount.value}
+                                currency={transaction.Amount.currency}
+                                style={styles.amount}
+                            />
+                        </View>
+                    </>
+                )}
 
-                <Text style={[styles.label]}>{Localize.t('global.tokenID')}</Text>
-                <View style={[styles.contentBox]}>
-                    <Text style={[styles.value]}>{transaction.TokenID}</Text>
-                </View>
+                {transaction.TokenID && (
+                    <>
+                        <Text style={[styles.label]}>{Localize.t('global.tokenID')}</Text>
+                        <View style={[styles.contentBox]}>
+                            <Text style={[styles.value]}>{transaction.TokenID}</Text>
+                        </View>
+                    </>
+                )}
 
                 {transaction.Expiration && (
                     <>
