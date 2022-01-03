@@ -862,7 +862,9 @@
     "reverseLiquidityNotAvailable": "The amount can't be exchanged: based on the lack of offers on the Decentralized Exchange, you would not be able to exchange it back.",
     "maxSpreadExceeded": "The price difference between selling and buying offers is too high.",
     "maxSlippageExceeded": "The exchange rate will be bad as there are not enough (good) offers on the Decentralized Exchange.",
-    "maxReverseSlippageExceeded": "The exchange rate will be bad if you would try to exchange back, as there are not enough (good) offers on the Decentralized Exchange."
+    "maxReverseSlippageExceeded": "The exchange rate will be bad if you would try to exchange back, as there are not enough (good) offers on the Decentralized Exchange.",
+    "slippageSpreadWarning": "The exchange rate displayed is an estimate based on the current offers available on the XRP Ledger Decentralized Exchange.\nWhen you execute this trade and the liquidity changed while executing your transaction, you may get an up to %{slippage}% worse exchange rate. Please only continue if you accept this",
+    "iAcceptExchange": "I accept, exchange"
   },
   "scan": {
     "aimAtTheCode": "Aim at the QR code",

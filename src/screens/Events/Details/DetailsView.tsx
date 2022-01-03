@@ -1945,7 +1945,14 @@ class TransactionDetailsView extends Component<Props, State> {
             }
         }
 
+
+        // no information to show
         if (!to.address && !from.address) {
+            return null;
+        }
+
+        // ignore async third party offer executed
+        if (tx.Type === 'OfferCreate' && to.address !== account.address) {
             return null;
         }
 

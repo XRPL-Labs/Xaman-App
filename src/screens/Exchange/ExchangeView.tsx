@@ -224,7 +224,7 @@ class ExchangeView extends Component<Props, State> {
         }
 
         Prompt(
-            Localize.t('global.pleaseNote'),
+            Localize.t('global.exchange'),
             Localize.t('exchange.doYouWantToExchange', {
                 payAmount: Localize.formatNumber(Number(amount)),
                 payCurrency: direction === 'sell' ? 'XRP' : NormalizeCurrencyCode(trustLine.currency.currency),
@@ -235,6 +235,25 @@ class ExchangeView extends Component<Props, State> {
                 { text: Localize.t('global.cancel') },
                 {
                     text: Localize.t('global.doIt'),
+
+                    onPress: this.showSlippageWarning,
+                    style: 'destructive',
+                },
+            ],
+            { type: 'default' },
+        );
+    };
+
+    showSlippageWarning = () => {
+        Prompt(
+            Localize.t('global.pleaseNote'),
+            Localize.t('exchange.slippageSpreadWarning', {
+                slippage: this.ledgerExchange.boundaryOptions.maxSlippagePercentage,
+            }),
+            [
+                { text: Localize.t('global.cancel') },
+                {
+                    text: Localize.t('exchange.iAcceptExchange'),
 
                     onPress: this.prepareAndSign,
                     style: 'destructive',

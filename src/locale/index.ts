@@ -98,7 +98,7 @@ class Localize {
      * @returns string 1,333.855222
      */
     formatNumber = (number: number, precision = 8): string => {
-        const formatOptions = { groupSize: 3 };
+        const formatOptions = { groupSize: 3, decimalSeparator: '.', groupSeparator: ',' };
 
         if (this.settings) {
             const { separator, delimiter } = this.settings;
