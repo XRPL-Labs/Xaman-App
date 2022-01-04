@@ -38,6 +38,7 @@ class NFTokenAcceptOfferTemplate extends Component<Props, State> {
                                 value={transaction.Amount.value}
                                 currency={transaction.Amount.currency}
                                 style={styles.amount}
+                                immutable
                             />
                         </View>
                     </>

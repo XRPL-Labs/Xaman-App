@@ -105,6 +105,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                         value={transaction.TakerGets.value}
                         currency={transaction.TakerGets.currency}
                         style={styles.amount}
+                        immutable
                     />
                 </View>
 
@@ -114,6 +115,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                         value={transaction.TakerPays.value}
                         currency={transaction.TakerPays.currency}
                         style={styles.amount}
+                        immutable
                     />
                 </View>
 

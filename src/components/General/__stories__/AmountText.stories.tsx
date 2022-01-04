@@ -31,4 +31,12 @@ storiesOf('AmountText', module)
             currency: ['USD'],
         }),
     )
-    .add('discreet', () => <AmountText currency="USD" value="123" discreet />);
+    .add('discreet', () => <AmountText currency="USD" value="123" discreet />)
+    .add(
+        'immutable;',
+        withPropsCombinations(AmountText, {
+            value: VALUES,
+            currency: ['USD'],
+            immutable: [true],
+        }),
+    );

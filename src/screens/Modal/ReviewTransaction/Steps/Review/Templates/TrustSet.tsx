@@ -116,7 +116,7 @@ class TrustSetTemplate extends Component<Props, State> {
                 <Text style={[styles.label]}>{Localize.t('global.balanceLimit')}</Text>
                 <View style={[styles.contentBox]}>
                     {transaction.Limit ? (
-                        <AmountText style={[styles.value]} value={transaction.Limit} />
+                        <AmountText style={[styles.value]} value={transaction.Limit} immutable={false} />
                     ) : (
                         <Text style={[styles.value, AppStyles.colorRed]}>{Localize.t('asset.removeAsset')}</Text>
                     )}

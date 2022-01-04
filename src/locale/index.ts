@@ -90,19 +90,29 @@ class Localize {
         }
     };
 
+    /**
+     * get current local
+     */
     getCurrentLocale = (): string => this.instance.locale;
 
     /**
      * format the number
-     * @param n number
+     * @param number number
+     * @param precision decimal places precision
+     * @param rounding should apply rounding
      * @returns string 1,333.855222
      */
-    formatNumber = (number: number, precision = 8): string => {
+    formatNumber = (number: number, precision = 8, rounding = true): string => {
         const formatOptions = { groupSize: 3, decimalSeparator: '.', groupSeparator: ',' };
 
         if (this.settings) {
             const { separator, delimiter } = this.settings;
             Object.assign(formatOptions, { decimalSeparator: separator, groupSeparator: delimiter });
+        }
+
+        // do not change decimal places
+        if (!rounding) {
+            return new BigNumber(number).toFormat(formatOptions);
         }
 
         return new BigNumber(number).decimalPlaces(precision, BigNumber.ROUND_DOWN).toFormat(formatOptions);

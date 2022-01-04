@@ -187,8 +187,8 @@ class PaymentTemplate extends Component<Props, State> {
             // the sender is not issuer
             const shouldPayWithXRP =
                 (!sourceLine ||
-                (Number(sourceLine.limit) === 0 && Number(sourceLine.balance) === 0) ||
-                Number(sourceLine.balance) < Number(transaction.Amount.value)) &&
+                    (Number(sourceLine.limit) === 0 && Number(sourceLine.balance) === 0) ||
+                    Number(sourceLine.balance) < Number(transaction.Amount.value)) &&
                 account !== transaction.Amount.issuer;
 
             // if not have the same trust line or the balance is not covering requested value
@@ -410,9 +410,10 @@ class PaymentTemplate extends Component<Props, State> {
                             </>
                         ) : (
                             <AmountText
-                                style={styles.amountInput}
                                 value={amount}
                                 currency={transaction.Amount.currency}
+                                style={styles.amountInput}
+                                immutable
                             />
                         )}
                     </TouchableOpacity>
@@ -449,6 +450,7 @@ class PaymentTemplate extends Component<Props, State> {
                                 value={transaction.SendMax.value}
                                 currency={transaction.SendMax.currency}
                                 style={styles.amount}
+                                immutable
                             />
                         </View>
                     </>
@@ -462,6 +464,7 @@ class PaymentTemplate extends Component<Props, State> {
                                 value={transaction.DeliverMin.value}
                                 currency={transaction.DeliverMin.currency}
                                 style={styles.amount}
+                                immutable
                             />
                         </View>
                     </>
