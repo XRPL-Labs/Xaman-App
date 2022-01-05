@@ -56,4 +56,12 @@ const GetCardPasscodeStatus = (card: any): boolean => {
     return false;
 };
 
-export { GetPreferCurve, GetWalletPublicKey, GetCardPasscodeStatus };
+const GetCardId = (card: any): string => {
+    if (Object.prototype.hasOwnProperty.call(card, 'cardId')) {
+        return card.cardId;
+    }
+
+    return '';
+};
+
+export { GetPreferCurve, GetWalletPublicKey, GetCardPasscodeStatus, GetCardId };

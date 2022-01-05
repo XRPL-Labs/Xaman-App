@@ -274,7 +274,11 @@ class VaultModal extends Component<Props, State> {
             const preparedTx = AccountLib.rawSigning.prepare(transaction.Json, walletPublicKey, multiSign);
 
             // start tangem session
-            await RNTangemSdk.startSession();
+            await RNTangemSdk.startSession({
+                attestationMode: 'offline',
+            }).catch(() => {
+                // ignore
+            });
 
             await RNTangemSdk.sign({ cardId, walletPublicKey, hashes: [preparedTx.hashToSign] })
                 .then((resp) => {
@@ -305,7 +309,9 @@ class VaultModal extends Component<Props, State> {
                 .catch(this.dismiss)
                 .finally(() => {
                     setTimeout(() => {
-                        RNTangemSdk.stopSession();
+                        RNTangemSdk.stopSession().catch(() => {
+                            // ignore
+                        });
                     }, 10000);
                 });
         } catch (e: any) {

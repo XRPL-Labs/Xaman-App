@@ -65,11 +65,17 @@ class ChangeTangemSecurityView extends Component<Props, State> {
     }
 
     componentDidMount() {
-        RNTangemSdk.startSession();
+        RNTangemSdk.startSession({
+            attestationMode: 'offline',
+        }).catch(() => {
+            // ignore
+        });
     }
 
     componentWillUnmount() {
-        RNTangemSdk.stopSession();
+        RNTangemSdk.stopSession().catch(() => {
+            // ignore
+        });
     }
 
     onSecurityChange = (security: TangemSecurity) => {

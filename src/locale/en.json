@@ -655,6 +655,7 @@
     "tangemLongTapExplain": "This mechanism protects the card against proximity attacks: it will enforce a delay between reception and execution of commands.",
     "tangemPasscodeExplain": "Before the execution of any command entailing a change of the state of the card, you will have to enter the passcode.",
     "cardSecuritySuccessfullyChangedTo": "Card security successfully changed to  %{security}",
+    "cardId": "Card Id",
     "tangemNFCNotSupportedDeviceAlert": "Using Tangem cards requires NFC capabilities. Your phone does not seem to support NFC.",
     "cardEnforcedSecurity": "Card enforced security",
     "readOnly": "Read only",
