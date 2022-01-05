@@ -29,6 +29,7 @@ interface Props {
     discreet?: boolean;
     discreetStyle?: TextStyle | TextStyle[];
     immutable?: boolean;
+    numberOfLines?: number;
 }
 
 interface State {
@@ -196,11 +197,11 @@ class AmountText extends Component<Props, State> {
     };
 
     renderImmutableContent = () => {
-        const { style, prefix } = this.props;
+        const { style, prefix, numberOfLines } = this.props;
         const { value, currency } = this.state;
 
         return (
-            <Text style={style}>
+            <Text numberOfLines={numberOfLines} style={style}>
                 {typeof prefix === 'string' && prefix}
                 {value} {typeof currency === 'string' && currency}
             </Text>
@@ -208,7 +209,7 @@ class AmountText extends Component<Props, State> {
     };
 
     renderValue = () => {
-        const { prefix, style, discreet, discreetStyle, valueContainerStyle } = this.props;
+        const { prefix, style, discreet, discreetStyle, valueContainerStyle, numberOfLines } = this.props;
         const { value, originalValue, showOriginalValue } = this.state;
 
         let showValue = '';
@@ -222,7 +223,7 @@ class AmountText extends Component<Props, State> {
         return (
             <View style={[styles.container, valueContainerStyle]}>
                 {typeof prefix === 'function' && prefix()}
-                <Text numberOfLines={1} style={[style, discreet && discreetStyle]}>
+                <Text numberOfLines={numberOfLines || 1} style={[style, discreet && discreetStyle]}>
                     {typeof prefix === 'string' && prefix}
                     {`${showValue}`}
                 </Text>
@@ -231,7 +232,7 @@ class AmountText extends Component<Props, State> {
     };
 
     renderCurrency = () => {
-        const { style, currencyStyle, truncateCurrency } = this.props;
+        const { style, currencyStyle, truncateCurrency, numberOfLines } = this.props;
         let { currency } = this.state;
 
         if (typeof currency !== 'string' || !currency) {
@@ -243,7 +244,7 @@ class AmountText extends Component<Props, State> {
         }
 
         return (
-            <Text numberOfLines={1} style={[style, currencyStyle]}>
+            <Text numberOfLines={numberOfLines || 1} style={[style, currencyStyle]}>
                 {' '}
                 {currency}
             </Text>

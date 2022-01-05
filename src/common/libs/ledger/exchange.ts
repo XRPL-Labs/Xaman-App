@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { has } from 'lodash';
 
 import {
@@ -13,6 +14,11 @@ import Localize from '@locale';
 
 import { ApiService, SocketService } from '@services';
 /* types ==================================================================== */
+export enum MarketDirection {
+    SELL = 'SELL',
+    BUY = 'BUY',
+}
+
 export type ExchangePair = {
     currency: string;
     issuer?: string;
@@ -46,7 +52,7 @@ class LedgerExchange {
         };
     }
 
-    initialize = () => {
+    initialize = (direction: MarketDirection) => {
         // fetch liquidity boundaries
         return ApiService.liquidityBoundaries
             .get({
@@ -63,19 +69,51 @@ class LedgerExchange {
             })
             .finally(() => {
                 // build default params
-                const params = this.getLiquidityCheckParams('sell', 0);
+                const params = this.getLiquidityCheckParams(direction, 0);
                 this.liquidityCheck = new LiquidityCheck(params);
             });
     };
 
-    getLiquidityCheckParams = (direction: 'sell' | 'buy', amount: number): LiquidityCheckParams => {
+    calculateOutcomes = (value: string, liquidity: LiquidityResult, precision = 8) => {
+        if (!value || value === '0') {
+            return {
+                expected: '0',
+                minimum: '0',
+            };
+        }
+
+        const { maxSlippagePercentage } = this.boundaryOptions;
+        const amount = new BigNumber(value);
+
+        // expected outcome base on liquidity rate
+        const expected = amount.multipliedBy(liquidity.rate).decimalPlaces(precision).toString(10);
+
+        // calculate padded exchange rate base on maxSlippagePercentage
+        const paddedExchangeRate = new BigNumber(liquidity.rate).dividedBy(
+            new BigNumber(100).plus(maxSlippagePercentage).dividedBy(100),
+        );
+        const minimum = amount.multipliedBy(paddedExchangeRate).decimalPlaces(precision).toString(10);
+
+        return {
+            expected,
+            minimum,
+        };
+    };
+
+    calculateExchangeRate = (direction: MarketDirection, liquidity: LiquidityResult): string => {
+        return direction === MarketDirection.SELL
+            ? new BigNumber(liquidity.rate).decimalPlaces(3).toString(10)
+            : new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(3).toString(10);
+    };
+
+    getLiquidityCheckParams = (direction: MarketDirection, amount: number): LiquidityCheckParams => {
         const pair = {
             currency: this.pair.currency,
             issuer: this.pair.issuer,
         };
 
-        const from = direction === 'sell' ? { currency: 'XRP' } : pair;
-        const to = direction === 'sell' ? pair : { currency: 'XRP' };
+        const from = direction === MarketDirection.SELL ? { currency: 'XRP' } : pair;
+        const to = direction === MarketDirection.SELL ? pair : { currency: 'XRP' };
 
         return {
             trade: {
@@ -88,7 +126,7 @@ class LedgerExchange {
         };
     };
 
-    getLiquidity = (direction: 'sell' | 'buy', amount: number): Promise<LiquidityResult> => {
+    getLiquidity = (direction: MarketDirection, amount: number): Promise<LiquidityResult> => {
         try {
             const params = this.getLiquidityCheckParams(direction, amount);
 

@@ -164,6 +164,7 @@
     "takerGets": "Taker Gets",
     "selling": "Selling",
     "inExchangeForReceive": "In exchange for (receive)",
+    "inExchangeForAtLeastReceive": "In exchange for at least (receive)",
     "fee": "Transaction fee",
     "issuerFee": "Issuer fee",
     "invoiceID": "Invoice ID",

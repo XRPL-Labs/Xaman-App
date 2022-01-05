@@ -432,10 +432,10 @@ class CurrencySettingsModal extends Component<Props, State> {
     };
 
     onExchangePress = () => {
-        const { trustLine } = this.props;
+        const { account, trustLine } = this.props;
 
         this.dismiss().then(() => {
-            Navigator.push(AppScreens.Transaction.Exchange, { trustLine });
+            Navigator.push(AppScreens.Transaction.Exchange, { account, trustLine });
         });
     };
 

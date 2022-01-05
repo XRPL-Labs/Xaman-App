@@ -7,7 +7,7 @@ import { BackendService, LedgerService, StyleService } from '@services';
 
 import { CoreRepository } from '@store/repositories';
 
-import LedgerExchange from '@common/libs/ledger/exchange';
+import LedgerExchange, { MarketDirection } from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
@@ -198,10 +198,13 @@ class PaymentTemplate extends Component<Props, State> {
 
                 const ledgerExchange = new LedgerExchange(PAIR);
                 // sync with latest order book
-                await ledgerExchange.initialize();
+                await ledgerExchange.initialize(MarketDirection.BUY);
 
                 // get liquidity grade
-                const liquidity = await ledgerExchange.getLiquidity('buy', Number(transaction.Amount.value));
+                const liquidity = await ledgerExchange.getLiquidity(
+                    MarketDirection.BUY,
+                    Number(transaction.Amount.value),
+                );
 
                 // not enough liquidity
                 if (!liquidity || !liquidity.safe || liquidity.errors.length > 0) {
