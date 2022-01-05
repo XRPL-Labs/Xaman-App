@@ -402,18 +402,18 @@ PODS:
     - React-Core
   - RNDeviceInfo (8.3.3):
     - React-Core
-  - RNFBAnalytics (13.1.0):
+  - RNFBAnalytics (14.2.1):
     - Firebase/AnalyticsWithoutAdIdSupport (= 8.10.0)
     - React-Core
     - RNFBApp
-  - RNFBApp (13.1.0):
+  - RNFBApp (14.2.1):
     - Firebase/CoreOnly (= 8.10.0)
     - React-Core
-  - RNFBCrashlytics (13.1.0):
+  - RNFBCrashlytics (14.2.1):
     - Firebase/Crashlytics (= 8.10.0)
     - React-Core
     - RNFBApp
-  - RNFBMessaging (13.1.0):
+  - RNFBMessaging (14.2.1):
     - Firebase/Messaging (= 8.10.0)
     - React-Core
     - RNFBApp
@@ -649,10 +649,10 @@ SPEC CHECKSUMS:
   RealmJS: 2925b36a86fc179b0b58ad48386e43eb95188e9a
   RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
   RNDeviceInfo: cc7de0772378f85d8f36ae439df20f05c590a651
-  RNFBAnalytics: e85f5353ac97fd6fe5bde3c9c09b6abfb8cd1027
-  RNFBApp: 1d553b3f201e9aaeba03d777b1dea51eaacc24cc
-  RNFBCrashlytics: 5b0472223e5bfcdf5760ee787f1d114bc1cf2162
-  RNFBMessaging: 0815242e4c06e3200f79e6eea312d124be357a13
+  RNFBAnalytics: d22ddd7910aa1537bceffe98bca30aeee0c31850
+  RNFBApp: 4f490a1e02e41721c55b354019f39f2323d72f82
+  RNFBCrashlytics: be2b4abeaf1cfe019a95f0ced8a7e7594a59f14e
+  RNFBMessaging: e0ce43e32c59a95a5143a5f6a0bc197fd98a46bf
   RNKeychain: 840f8e6f13be0576202aefcdffd26a4f54bfe7b5
   RNTangemSdk: ab4fdefa12aaa25ebc9ef7bc4a032e2f3bfad3b4
   TangemSdk: 436eab945e920c45cec1d0e4b795f4bffa423b42
