@@ -31,6 +31,7 @@ const colors = {
     brandXrplns: '#3767CE',
     brandXrpscan: '#004a7c',
     brandPayid: '#38D39F',
+    brandFIO: '#564FC6',
 };
 
 const ColorsGeneral = {

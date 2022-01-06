@@ -11,7 +11,16 @@ import { AppColors, AppFonts } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
-type BadgeType = 'bithomp' | 'xrplns' | 'xrpscan' | 'payid' | 'contacts' | 'accounts' | 'success' | 'planned';
+type BadgeType =
+    | 'bithomp'
+    | 'xrplns'
+    | 'xrpscan'
+    | 'payid'
+    | 'fioprotocol'
+    | 'contacts'
+    | 'accounts'
+    | 'success'
+    | 'planned';
 
 interface Props {
     containerStyle?: ViewStyle | ViewStyle[];
@@ -28,6 +37,7 @@ const COLORS = {
     xrplns: AppColors.brandXrplns,
     xrpscan: AppColors.brandXrpscan,
     payid: AppColors.brandPayid,
+    fioprotocol: AppColors.brandFIO,
     accounts: AppColors.blue,
     contacts: AppColors.blue,
     success: AppColors.green,
@@ -71,7 +81,9 @@ export default class Badge extends PureComponent<Props> {
             case 'xrpscan':
                 return <Text style={style}>XRPScan</Text>;
             case 'payid':
-                return <Text style={style}>PayID</Text>;
+                return <Text style={style}>PayString</Text>;
+            case 'fioprotocol':
+                return <Text style={style}>FIO</Text>;
             case 'accounts':
                 return <Text style={style}>Myself</Text>;
             case 'contacts':
