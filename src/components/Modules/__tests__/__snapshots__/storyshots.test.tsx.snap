@@ -1205,7 +1205,7 @@ exports[`Storyshots Badge PayId 1`] = `
             ]
           }
         >
-          PayID
+          PayString
         </Text>
       </View>
     </View>
@@ -1255,7 +1255,7 @@ exports[`Storyshots Badge PayId 1`] = `
             ]
           }
         >
-          PayID
+          PayString
         </Text>
       </View>
     </View>
@@ -1305,7 +1305,7 @@ exports[`Storyshots Badge PayId 1`] = `
             ]
           }
         >
-          PayID
+          PayString
         </Text>
       </View>
     </View>
