@@ -143,6 +143,11 @@ class AccountAddView extends Component<Props, State> {
             // go to import section
             this.validateAndImportCard(card);
         } catch (e) {
+            // ignore use cancel operation
+            // @ts-ignore
+            if (e?.message && e?.message === 'The user cancelled the operation') {
+                return;
+            }
             LoggerService.logError('Unexpected error in creating tangem wallet', e);
             Alert.alert(
                 Localize.t('global.unexpectedErrorOccurred'),
