@@ -135,6 +135,8 @@
     "setFlag": "Set Flag",
     "clearFlag": "Clear Flag",
     "messageKey": "MessageKey",
+    "mintAccount": "Mint Account",
+    "tickSize": "Tick Size",
     "signers": "Signers",
     "hidden": "Hidden",
     "transferRate": "TransferRate",
