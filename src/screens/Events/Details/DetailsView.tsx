@@ -573,6 +573,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
         // handle return or new payment process
         if (type === 'Payment') {
+            // create new payment
             const params = {
                 scanResult: {
                     to: incomingTx ? tx.Account.address : tx.Destination.address,
@@ -580,21 +581,29 @@ class TransactionDetailsView extends Component<Props, State> {
                 },
             };
 
-            if (incomingTx) {
-                let currency;
+            // prefill the currency
+            let currency;
 
-                if (tx.DeliveredAmount?.currency === 'XRP') {
-                    currency = 'XRP';
-                } else {
-                    currency = account.lines.find(
-                        // eslint-disable-next-line max-len
-                        (l: any) =>
-                            l.currency.currency === tx.DeliveredAmount.currency &&
-                            l.currency.issuer === tx.DeliveredAmount.issuer,
-                    );
-                }
-                Object.assign(params, { amount: tx.DeliveredAmount?.value, currency });
+            if (tx.DeliveredAmount.currency === 'XRP') {
+                currency = 'XRP';
+            } else {
+                currency = account.lines.find(
+                    (l: any) =>
+                        l.currency.currency === tx.DeliveredAmount.currency &&
+                        l.currency.issuer === tx.DeliveredAmount.issuer &&
+                        l.balance > 0,
+                );
             }
+            if (!currency) {
+                return;
+            }
+            Object.assign(params, { currency });
+
+            // if return payment prefill the amount
+            if (incomingTx) {
+                Object.assign(params, { amount: tx.DeliveredAmount.value });
+            }
+
             Navigator.push(AppScreens.Transaction.Payment, params);
             return;
         }
@@ -1572,6 +1581,27 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
                 break;
             }
+            case 'OfferCreate':
+            case 'Offer': {
+                if (tx.Executed) {
+                    const takerPaid = tx.TakerPaid(account.address);
+                    Object.assign(props, {
+                        color: styles.incomingColor,
+                        icon: 'IconCornerRightDown',
+                        value: takerPaid.value,
+                        currency: takerPaid.currency,
+                    });
+                } else {
+                    Object.assign(props, {
+                        color: styles.naturalColor,
+                        icon: 'IconCornerRightDown',
+                        value: tx.TakerPays.value,
+                        currency: tx.TakerPays.currency,
+                    });
+                }
+
+                break;
+            }
             case 'PaymentChannelClaim':
             case 'PaymentChannelFund':
             case 'PaymentChannelCreate': {
@@ -1767,7 +1797,21 @@ class TransactionDetailsView extends Component<Props, State> {
 
         switch (tx.Type) {
             case 'Payment':
-                if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) > -1) {
+                if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) > -1 && tx.DeliveredAmount) {
+                    // check if we can return the payment
+                    if (tx.DeliveredAmount.currency !== 'XRP') {
+                        const trustLine = account.lines.find(
+                            (l: any) =>
+                                l.currency.currency === tx.DeliveredAmount.currency &&
+                                l.currency.issuer === tx.DeliveredAmount.issuer &&
+                                l.balance > 0,
+                        );
+                        // do not show the button if user does not have the proper trustline
+                        if (!trustLine) {
+                            break;
+                        }
+                    }
+
                     const label = incomingTx ? Localize.t('events.returnPayment') : Localize.t('events.newPayment');
                     actionButtons.push({
                         label,
@@ -1944,7 +1988,6 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
             }
         }
-
 
         // no information to show
         if (!to.address && !from.address) {
