@@ -108,6 +108,7 @@ class ResultStep extends Component<Props, State> {
                     style={[AppStyles.h4, AppStyles.monoBold]}
                     value={amount}
                     currency={typeof currency === 'string' ? 'XRP' : currency.currency.currency}
+                    immutable
                 />
 
                 <Spacer />
@@ -115,7 +116,9 @@ class ResultStep extends Component<Props, State> {
                 <Spacer />
                 <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.recipient')}:</Text>
                 <Spacer />
-                <Text style={[AppStyles.p, AppStyles.bold, AppStyles.colorBlue]}>{destination.name}</Text>
+                <Text style={[AppStyles.p, AppStyles.bold, AppStyles.colorBlue]}>
+                    {destination.name || Localize.t('global.noNameFound')}
+                </Text>
                 <Text style={[AppStyles.subtext, AppStyles.mono]}>{destination.address}</Text>
 
                 {this.renderAddToContactButton()}

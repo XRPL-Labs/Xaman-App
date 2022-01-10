@@ -465,7 +465,7 @@ class SummaryStep extends Component<Props, State> {
                         </View>
                         <Spacer size={15} />
 
-                        <AmountText value={amount} style={[styles.amountInput]} />
+                        <AmountText value={amount} style={[styles.amountInput]} immutable />
 
                         {this.renderAmountRate()}
                     </View>
