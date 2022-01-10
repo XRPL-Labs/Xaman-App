@@ -4143,7 +4143,7 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
                 "fontFamily": "ProximaNova-Bold",
                 "fontSize": 32.14285714285714,
               },
-              null,
+              undefined,
             ]
           }
         >
@@ -4158,7 +4158,7 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
               "fontFamily": "UbuntuMono-Regular",
               "fontSize": 25.71428571428571,
             },
-            null,
+            undefined,
           ]
         }
       >
@@ -4260,7 +4260,7 @@ exports[`Storyshots RecipientElement default 1`] = `
                 "fontFamily": "ProximaNova-Bold",
                 "fontSize": 32.14285714285714,
               },
-              null,
+              undefined,
             ]
           }
         >
@@ -4275,7 +4275,7 @@ exports[`Storyshots RecipientElement default 1`] = `
               "fontFamily": "UbuntuMono-Regular",
               "fontSize": 25.71428571428571,
             },
-            null,
+            undefined,
           ]
         }
       >
