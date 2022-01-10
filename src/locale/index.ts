@@ -6,7 +6,6 @@ import BigNumber from 'bignumber.js';
 class Localize {
     instance: any;
     moment: any;
-    bigNumber: any;
     meta: any;
     settings: any;
 

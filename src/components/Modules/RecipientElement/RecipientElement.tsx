@@ -108,11 +108,7 @@ class RecipientElement extends Component<Props> {
         }
 
         return (
-            <Text
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                style={[styles.nameText, selected ? styles.selectedText : null]}
-            >
+            <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.nameText, selected && styles.selectedText]}>
                 {recipient.name || Localize.t('global.noNameFound')}
             </Text>
         );
@@ -121,7 +117,7 @@ class RecipientElement extends Component<Props> {
     renderAddress = () => {
         const { recipient, selected } = this.props;
 
-        return <Text style={[styles.addressText, selected ? styles.selectedText : null]}>{recipient.address}</Text>;
+        return <Text style={[styles.addressText, selected && styles.selectedText]}>{recipient.address}</Text>;
     };
 
     renderDestinationTag = () => {
