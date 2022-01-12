@@ -16,7 +16,7 @@ import LoggerService from '@services/LoggerService';
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 
-import { GetPreferCurve, GetWalletPublicKey } from '@common/utils/tangem';
+import { GetPreferCurve, GetWalletDerivedPublicKey, DefaultDerivationPaths } from '@common/utils/tangem';
 
 import { AppScreens } from '@common/constants';
 
@@ -101,7 +101,7 @@ class AccountAddView extends Component<Props, State> {
 
     validateAndImportCard = (card: Card) => {
         try {
-            const walletPubKey = GetWalletPublicKey(card);
+            const walletPubKey = GetWalletDerivedPublicKey(card);
 
             // validate generated wallet publicKey
             const address = rawSigning.accountAddress(walletPubKey);
@@ -161,16 +161,10 @@ class AccountAddView extends Component<Props, State> {
             const card = await RNTangemSdk.scanCard();
 
             // get current card wallets status
-            const { wallets, settings, batchId } = card;
+            const { wallets } = card;
 
             if (!card || !Array.isArray(wallets)) {
                 throw new Error('response is not contain card details or wallet details');
-            }
-
-            // we do not support HD wallet's yet
-            if (get(settings, 'isHDWalletAllowed') || batchId === 'AC01') {
-                Alert.alert(Localize.t('global.error'), 'Unsupported Card!');
-                return;
             }
 
             // card already contains existing wallet
@@ -218,6 +212,7 @@ class AccountAddView extends Component<Props, State> {
         // start the NFC/Tangem session
         RNTangemSdk.startSession({
             attestationMode: 'offline',
+            defaultDerivationPaths: DefaultDerivationPaths,
         }).catch((e) => {
             LoggerService.logError('Unexpected error in startSession TangemSDK', e);
         });

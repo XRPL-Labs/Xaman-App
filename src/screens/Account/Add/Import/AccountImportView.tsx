@@ -13,7 +13,7 @@ import { Toast } from '@common/helpers/interface';
 import { getAccountName } from '@common/helpers/resolver';
 import { Navigator } from '@common/helpers/navigator';
 
-import { GetWalletPublicKey } from '@common/utils/tangem';
+import { GetWalletDerivedPublicKey } from '@common/utils/tangem';
 import { AppScreens } from '@common/constants';
 
 import { LedgerService } from '@services';
@@ -108,11 +108,14 @@ class AccountImportView extends Component<Props, State> {
     populateTangemCard = () => {
         const { tangemCard } = this.props;
 
-        const walletPublicKey = GetWalletPublicKey(tangemCard);
+        const walletDerivedPublicKey = GetWalletDerivedPublicKey(tangemCard);
 
-        const publicKey = utils.compressPubKey(walletPublicKey);
+        // compress the key if it's in uncompressed form
+        const publicKey = utils.compressPubKey(walletDerivedPublicKey);
+        // derive XRPL address
         const address = utils.deriveAddress(publicKey);
 
+        // generate XRPL account
         const account = new XRPL_Account({ address, keypair: { publicKey, privateKey: undefined } });
 
         this.setState({

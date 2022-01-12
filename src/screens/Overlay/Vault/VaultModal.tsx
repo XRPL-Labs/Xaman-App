@@ -20,7 +20,7 @@ import { SignedObjectType } from '@common/libs/ledger/types';
 
 import Vault from '@common/libs/vault';
 
-import { GetWalletPublicKey } from '@common/utils/tangem';
+import { GetSignOptions, GetWalletDerivedPublicKey } from '@common/utils/tangem';
 
 import Keyboard from '@common/helpers/keyboard';
 import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
@@ -261,9 +261,6 @@ class VaultModal extends Component<Props, State> {
                 throw new Error('No card details provided for signing!');
             }
 
-            const { cardId } = tangemCard;
-            const walletPublicKey = GetWalletPublicKey(tangemCard);
-
             // populate transaction LastLedgerSequence before signing
             // NOTE: as tangem signing can take a lot of time we increase gap to 150 ledger
             // INGORE if multi signing
@@ -271,7 +268,14 @@ class VaultModal extends Component<Props, State> {
                 transaction.populateLastLedgerSequence(150);
             }
 
-            const preparedTx = AccountLib.rawSigning.prepare(transaction.Json, walletPublicKey, multiSign);
+            // get derived pub key from tangem card
+            const derivedPublicKey = GetWalletDerivedPublicKey(tangemCard);
+
+            // prepare the transaction for signing
+            const preparedTx = AccountLib.rawSigning.prepare(transaction.Json, derivedPublicKey, multiSign);
+
+            // get sign options base on HD wallet support
+            const tangemSignOptions = GetSignOptions(tangemCard, preparedTx.hashToSign);
 
             // start tangem session
             await RNTangemSdk.startSession({
@@ -280,7 +284,7 @@ class VaultModal extends Component<Props, State> {
                 // ignore
             });
 
-            await RNTangemSdk.sign({ cardId, walletPublicKey, hashes: [preparedTx.hashToSign] })
+            await RNTangemSdk.sign(tangemSignOptions)
                 .then((resp) => {
                     const { signatures } = resp;
 
@@ -291,7 +295,7 @@ class VaultModal extends Component<Props, State> {
                     if (multiSign) {
                         signedObject = AccountLib.rawSigning.completeMultiSigned(transaction.Json, [
                             {
-                                pubKey: walletPublicKey,
+                                pubKey: derivedPublicKey,
                                 signature: sig,
                             },
                         ]);
