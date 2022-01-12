@@ -74,6 +74,33 @@ const NFTValueToXRPL = (value: string, balance?: number): string => {
 };
 
 /**
+ * normalize value to IOU value
+ * @param value string
+ * @returns IOU value in normalized string
+ */
+const ValueToIOU = (value: string): string => {
+    const MAX_IOU_PRECISION = 15;
+
+    if (!value || typeof value !== 'string') {
+        throw new Error('Value is not valid string!');
+    }
+
+    if (value.split('.')[0].length > MAX_IOU_PRECISION) {
+        throw new Error('Amount too high to reliably slice!');
+    }
+
+    let iouValue = value;
+    if (iouValue.replace('.', '').replace(/0+$/, '').length > MAX_IOU_PRECISION) {
+        iouValue = iouValue
+            .slice(0, MAX_IOU_PRECISION + (iouValue.includes('.') ? 1 : 0))
+            .replace(/0+$/, '')
+            .replace(/\.$/, '');
+    }
+
+    return iouValue;
+};
+
+/**
  * normalize amount
  * @param n number
  * @returns string 1333.855222
@@ -140,4 +167,4 @@ const NormalizeCurrencyCode = (currencyCode: string): string => {
 };
 
 /* Export ==================================================================== */
-export { NormalizeAmount, NormalizeCurrencyCode, XRPLValueToNFT, NFTValueToXRPL };
+export { NormalizeAmount, NormalizeCurrencyCode, XRPLValueToNFT, NFTValueToXRPL, ValueToIOU };

@@ -13,6 +13,8 @@ import {
 import Localize from '@locale';
 
 import { ApiService, SocketService } from '@services';
+
+import { ValueToIOU } from '@common/utils/amount';
 /* types ==================================================================== */
 export enum MarketDirection {
     SELL = 'SELL',
@@ -23,6 +25,10 @@ export type ExchangePair = {
     currency: string;
     issuer?: string;
 };
+
+/* Constants ==================================================================== */
+const MAX_XRP_DECIMAL_PLACES = 6;
+const MAX_IOU_DECIMAL_PLACES = 8;
 
 /* Class ==================================================================== */
 class LedgerExchange {
@@ -74,7 +80,7 @@ class LedgerExchange {
             });
     };
 
-    calculateOutcomes = (value: string, liquidity: LiquidityResult, precision = 8) => {
+    calculateOutcomes = (value: string, liquidity: LiquidityResult, direction: MarketDirection) => {
         if (!value || value === '0') {
             return {
                 expected: '0',
@@ -82,17 +88,26 @@ class LedgerExchange {
             };
         }
 
+        const decimalPlaces = direction === MarketDirection.SELL ? MAX_IOU_DECIMAL_PLACES : MAX_XRP_DECIMAL_PLACES;
+
         const { maxSlippagePercentage } = this.boundaryOptions;
         const amount = new BigNumber(value);
 
         // expected outcome base on liquidity rate
-        const expected = amount.multipliedBy(liquidity.rate).decimalPlaces(precision).toString(10);
-
+        let expected = amount.multipliedBy(liquidity.rate).decimalPlaces(decimalPlaces).toString(10);
         // calculate padded exchange rate base on maxSlippagePercentage
         const paddedExchangeRate = new BigNumber(liquidity.rate).dividedBy(
             new BigNumber(100).plus(maxSlippagePercentage).dividedBy(100),
         );
-        const minimum = amount.multipliedBy(paddedExchangeRate).decimalPlaces(precision).toString(10);
+
+        // calculate minimum value
+        let minimum = amount.multipliedBy(paddedExchangeRate).decimalPlaces(decimalPlaces).toString(10);
+
+        // fix the precision for IOU values if more than MAX_IOU_PRECISION
+        if (direction === MarketDirection.SELL) {
+            minimum = ValueToIOU(minimum);
+            expected = ValueToIOU(expected);
+        }
 
         return {
             expected,
@@ -100,7 +115,7 @@ class LedgerExchange {
         };
     };
 
-    calculateExchangeRate = (direction: MarketDirection, liquidity: LiquidityResult): string => {
+    calculateExchangeRate = (liquidity: LiquidityResult, direction: MarketDirection): string => {
         return direction === MarketDirection.SELL
             ? new BigNumber(liquidity.rate).decimalPlaces(3).toString(10)
             : new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(3).toString(10);

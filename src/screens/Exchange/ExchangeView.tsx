@@ -159,9 +159,8 @@ class ExchangeView extends Component<Props, State> {
 
                 // this will make sure the latest call will apply
                 if (sequence === this.sequence && liquidity && this.mounted) {
-                    const precision = direction === MarketDirection.SELL ? 8 : 6;
-                    const { expected, minimum } = this.ledgerExchange.calculateOutcomes(amount, liquidity, precision);
-                    const exchangeRate = this.ledgerExchange.calculateExchangeRate(direction, liquidity);
+                    const { expected, minimum } = this.ledgerExchange.calculateOutcomes(amount, liquidity, direction);
+                    const exchangeRate = this.ledgerExchange.calculateExchangeRate(liquidity, direction);
 
                     this.setState({
                         liquidity,
@@ -473,11 +472,12 @@ class ExchangeView extends Component<Props, State> {
                     <View style={[styles.detailsRow]}>
                         <Text style={styles.subLabel}>Exchange rate</Text>
                         <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
-                            <Text style={[styles.subLabel, AppStyles.textCenterAligned]}>
-                                {`${Localize.formatNumber(Number(exchangeRate))} ${NormalizeCurrencyCode(
-                                    trustLine.currency.currency,
-                                )}/XRP`}
-                            </Text>
+                            <AmountText
+                                value={exchangeRate}
+                                currency={`${NormalizeCurrencyCode(trustLine.currency.currency)}/XRP`}
+                                style={[styles.subLabel, AppStyles.textRightAligned]}
+                                immutable
+                            />
                         </View>
                     </View>
                     <View style={[styles.detailsRow]}>
@@ -485,12 +485,9 @@ class ExchangeView extends Component<Props, State> {
                         <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
                             <AmountText
                                 value={minimumOutcome}
-                                currency={
-                                    direction === MarketDirection.SELL
-                                        ? NormalizeCurrencyCode(trustLine.currency.currency)
-                                        : 'XRP'
-                                }
-                                style={[styles.subLabel, AppStyles.textCenterAligned, AppStyles.colorRed]}
+                                currency={direction === MarketDirection.SELL ? trustLine.currency.currency : 'XRP'}
+                                style={[styles.subLabel, AppStyles.textRightAligned, AppStyles.colorRed]}
+                                immutable
                             />
                         </View>
                     </View>
