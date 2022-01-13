@@ -1,9 +1,20 @@
 import { has, get, first, keys, isPlainObject } from 'lodash';
 
+import { utils } from 'xrpl-accountlib';
+
 import { Card, EllipticCurve, OptionsSign } from 'tangem-sdk-react-native';
 
 // eslint-disable-next-line quotes
 const DefaultDerivationPaths = "m/44'/144'/0'/0/0";
+
+/**
+ * normalize public key
+ * UnComppressed -> Compressed
+ * include ED prefix if not exist
+ */
+const NormalizedPublicKey = (publicKey: string): string => {
+    return utils.compressPubKey(publicKey);
+};
 
 /**
  * get prefer curve base on card supported curves
@@ -32,6 +43,7 @@ const GetPreferCurve = (supportedCurves: Array<EllipticCurve>): EllipticCurve =>
 
 /**
  * get card wallet public key
+ * NOTE: this public key is not normalized
  */
 const GetWalletPublicKey = (card: Card): string => {
     if (has(card, 'wallets')) {
@@ -57,7 +69,7 @@ const GetWalletPublicKey = (card: Card): string => {
 };
 
 /**
- * get card wallet derived public key
+ * get card normalized wallet derived public key
  * NOTE: for deriving the address from pubKey this method should be used
  */
 const GetWalletDerivedPublicKey = (card: Card): string => {
@@ -93,11 +105,13 @@ const GetWalletDerivedPublicKey = (card: Card): string => {
         if (!get(derivedKey, 'publicKey')) {
             throw new Error('HDWallet, No derived keys present in the card');
         }
-        return derivedKey.publicKey;
+
+        // return normalized public key
+        return NormalizedPublicKey(derivedKey.publicKey);
     }
 
     // normal card
-    return GetWalletPublicKey(card);
+    return NormalizedPublicKey(GetWalletPublicKey(card));
 };
 
 /**
@@ -126,12 +140,19 @@ const GetCardId = (card: any): string => {
     throw new Error('Unable to found cardId in card data!');
 };
 
+
+/**
+ * get HD wallet support status
+ */
+const GetHDWalletStatus = (card: Card): boolean => {
+    const { settings } = card;
+    return get(settings, 'isHDWalletAllowed', false);
+};
+
 /**
  * get sign options base on wallet HD wallet support
  */
 const GetSignOptions = (card: Card, hashToSign: string): OptionsSign => {
-    const { settings } = card;
-
     const options = {
         cardId: GetCardId(card),
         walletPublicKey: GetWalletPublicKey(card),
@@ -139,7 +160,7 @@ const GetSignOptions = (card: Card, hashToSign: string): OptionsSign => {
     } as OptionsSign;
 
     // multi currency card
-    if (get(settings, 'isHDWalletAllowed', false)) {
+    if (GetHDWalletStatus(card)) {
         Object.assign(options, {
             derivationPath: DefaultDerivationPaths,
         });
@@ -148,10 +169,6 @@ const GetSignOptions = (card: Card, hashToSign: string): OptionsSign => {
     return options;
 };
 
-const GetHDWalletStatus = (card: Card): boolean => {
-    const { settings } = card;
-    return get(settings, 'isHDWalletAllowed', false);
-};
 
 export {
     GetPreferCurve,

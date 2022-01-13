@@ -8,10 +8,12 @@ import { View, Text, Image, ImageBackground, Alert, InteractionManager, EventSub
 
 import RNTangemSdk, { Card, EventCallback } from 'tangem-sdk-react-native';
 
-import { rawSigning, utils } from 'xrpl-accountlib';
+import { utils } from 'xrpl-accountlib';
 
 import StyleService from '@services/StyleService';
 import LoggerService from '@services/LoggerService';
+
+import { AccountRepository } from '@store/repositories';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
@@ -101,12 +103,20 @@ class AccountAddView extends Component<Props, State> {
 
     validateAndImportCard = (card: Card) => {
         try {
-            const walletPubKey = GetWalletDerivedPublicKey(card);
+            // get normalized public key from card data
+            const publicKey = GetWalletDerivedPublicKey(card);
 
-            // validate generated wallet publicKey
-            const address = rawSigning.accountAddress(walletPubKey);
+            // validate wallet publicKey by deriving the address before moving to the next step
+            const address = utils.deriveAddress(publicKey);
             if (!address || !utils.isValidAddress(address)) {
                 throw new Error('generated wallet contains invalid wallet publicKey!');
+            }
+
+            // check if account exist
+            const exist = AccountRepository.findOne({ address });
+            if (exist) {
+                Alert.alert(Localize.t('global.error'), Localize.t('account.accountAlreadyExist'));
+                return;
             }
 
             this.goToImport({ tangemCard: card });

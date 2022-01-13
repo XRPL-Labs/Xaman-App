@@ -269,18 +269,16 @@ class VaultModal extends Component<Props, State> {
             }
 
             // get derived pub key from tangem card
-            const derivedPublicKey = GetWalletDerivedPublicKey(tangemCard);
+            const publicKey = GetWalletDerivedPublicKey(tangemCard);
 
             // prepare the transaction for signing
-            const preparedTx = AccountLib.rawSigning.prepare(transaction.Json, derivedPublicKey, multiSign);
+            const preparedTx = AccountLib.rawSigning.prepare(transaction.Json, publicKey, multiSign);
 
             // get sign options base on HD wallet support
             const tangemSignOptions = GetSignOptions(tangemCard, preparedTx.hashToSign);
 
             // start tangem session
-            await RNTangemSdk.startSession({
-                attestationMode: 'offline',
-            }).catch(() => {
+            await RNTangemSdk.startSession({}).catch(() => {
                 // ignore
             });
 
@@ -295,7 +293,7 @@ class VaultModal extends Component<Props, State> {
                     if (multiSign) {
                         signedObject = AccountLib.rawSigning.completeMultiSigned(transaction.Json, [
                             {
-                                pubKey: derivedPublicKey,
+                                pubKey: publicKey,
                                 signature: sig,
                             },
                         ]);

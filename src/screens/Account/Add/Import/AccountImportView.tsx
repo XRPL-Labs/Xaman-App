@@ -60,7 +60,7 @@ class AccountImportView extends Component<Props, State> {
                 initStep = 'SecretType';
                 break;
             case props.tangemCard !== undefined:
-                initStep = 'ConfirmPublicKey';
+                initStep = 'VerifySignature';
                 break;
             case props.alternativeSeedAlphabet !== undefined:
                 initStep = 'EnterSeed';
@@ -108,11 +108,10 @@ class AccountImportView extends Component<Props, State> {
     populateTangemCard = () => {
         const { tangemCard } = this.props;
 
-        const walletDerivedPublicKey = GetWalletDerivedPublicKey(tangemCard);
+        // get derived public key from card data
+        const publicKey = GetWalletDerivedPublicKey(tangemCard);
 
-        // compress the key if it's in uncompressed form
-        const publicKey = utils.compressPubKey(walletDerivedPublicKey);
-        // derive XRPL address
+        // derive XRPL address from normalized public key
         const address = utils.deriveAddress(publicKey);
 
         // generate XRPL account
@@ -444,6 +443,9 @@ class AccountImportView extends Component<Props, State> {
                 } else {
                     title = Localize.t('account.familySeed');
                 }
+                break;
+            case 'VerifySignature':
+                title = Localize.t('account.verifyTangemCard');
                 break;
             case 'ConfirmPublicKey':
                 title = Localize.t('account.publicAddress');

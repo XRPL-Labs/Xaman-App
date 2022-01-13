@@ -24,6 +24,7 @@ export type ImportSteps =
     | 'EnterSeed'
     | 'MnemonicAlert'
     | 'EnterMnemonic'
+    | 'VerifySignature'
     | 'ConfirmPublicKey'
     | 'ExplainActivation'
     | 'SecurityStep'
