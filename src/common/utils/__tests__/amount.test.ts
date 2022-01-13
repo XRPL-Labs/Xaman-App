@@ -163,7 +163,12 @@ describe('Utils.Amount', () => {
 
     describe('ValueToIOU', () => {
         it('should raise error', () => {
-            expect(ValueToIOU(undefined)).toThrowError('Value is not valid string!');
+            expect(() => ValueToIOU(undefined)).toThrowError('Value is not valid string!');
+            // @ts-ignore
+            expect(() => ValueToIOU(0.1)).toThrowError('Value is not valid string!');
+            // @ts-ignore
+            expect(() => ValueToIOU(0)).toThrowError('Value is not valid string!');
+            expect(() => ValueToIOU('9999999999999999.1234566')).toThrowError('Amount too high to reliably slice!');
         });
         it('should return right values', () => {
             const tests = [
@@ -194,6 +199,10 @@ describe('Utils.Amount', () => {
                 {
                     value: '0.1230000000000000000001',
                     output: '0.123',
+                },
+                {
+                    value: '999999999999999.123',
+                    output: '999999999999999',
                 },
             ];
             tests.forEach((v) => {
