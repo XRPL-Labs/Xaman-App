@@ -17,6 +17,7 @@ BeforeAll(async () => {
 
     await detox.device.launchApp({
         permissions: { notifications: 'YES', camera: 'YES' },
+        disableTouchIndicators: true,
     });
 
     await detox.device.setURLBlacklist(['.*xumm.app.*']);

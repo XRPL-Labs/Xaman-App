@@ -4786,6 +4786,16 @@ ajv@^8.0.1:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
+ajv@^8.6.3:
+  version "8.8.2"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.8.2.tgz#01b4fef2007a28bf75f0b7fc009f62679de4abbb"
+  integrity sha512-x9VuX+R/jcFj1DHo/fCp99esgGDWiHENrKxaCENuCxpoMCmAt/COCGVDwA7kleEpEzJjDnvh3yGoOuLu0Dtllw==
+  dependencies:
+    fast-deep-equal "^3.1.1"
+    json-schema-traverse "^1.0.0"
+    require-from-string "^2.0.2"
+    uri-js "^4.2.2"
+
 anser@^1.4.9:
   version "1.4.10"
   resolved "https://registry.yarnpkg.com/anser/-/anser-1.4.10.tgz#befa3eddf282684bd03b63dcda3927aef8c2e35b"
@@ -6306,15 +6316,10 @@ can-use-dom@^0.1.0:
   resolved "https://registry.yarnpkg.com/can-use-dom/-/can-use-dom-0.1.0.tgz#22cc4a34a0abc43950f42c6411024a3f6366b45a"
   integrity sha1-IsxKNKCrxDlQ9CxkEQJKP2NmtFo=
 
-caniuse-lite@^1.0.30000989, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001125, caniuse-lite@^1.0.30001181:
-  version "1.0.30001197"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001197.tgz#47ad15b977d2f32b3ec2fe2b087e0c50443771db"
-  integrity sha512-8aE+sqBqtXz4G8g35Eg/XEaFr2N7rd/VQ6eABGBmNtcB8cN6qNJhMi6oSFy4UWWZgqgL3filHT8Nha4meu3tsw==
-
-caniuse-lite@^1.0.30001219:
-  version "1.0.30001241"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001241.tgz#cd3fae47eb3d7691692b406568d7a3e5b23c7598"
-  integrity sha512-1uoSZ1Pq1VpH0WerIMqwptXHNNGfdl7d1cJUFs80CwQ/lVzdhTvsFZCeNFslze7AjsQnb4C85tzclPa1VShbeQ==
+caniuse-lite@^1.0.30000989, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001125, caniuse-lite@^1.0.30001181, caniuse-lite@^1.0.30001219:
+  version "1.0.30001299"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001299.tgz#d753bf6444ed401eb503cbbe17aa3e1451b5a68c"
+  integrity sha512-iujN4+x7QzqA2NCSrS5VUy+4gLmRd4xv6vbBBsmfVqTx8bLAD8097euLqQgKxSVLvxjSDcvF1T/i9ocgnUFexw==
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -7473,11 +7478,12 @@ detect-port@^1.3.0:
     address "^1.0.1"
     debug "^2.6.0"
 
-detox@18.23.1:
-  version "18.23.1"
-  resolved "https://registry.yarnpkg.com/detox/-/detox-18.23.1.tgz#f09f5e50291cdab3d62dc40ff2e8bb5cfb3cb776"
-  integrity sha512-MnOXfTcBBcXTrlLk3EeHq1nEfob79nChZbfOtlEummyec/X+PQzEvmKk2cvsUzu1f7GiNbCiBKN66w47Z7b/CQ==
+detox@19.4.2:
+  version "19.4.2"
+  resolved "https://registry.yarnpkg.com/detox/-/detox-19.4.2.tgz#2ee3f83a607181b72cf518ca517a2ca28224b1c2"
+  integrity sha512-6nC094kcsf/Gnkk9ybkbI1wMB+28yBiNfAqnfhtYdUU/5AEkMzragxjiose55xC7LuXgkalaseLJEdkUodh3Ig==
   dependencies:
+    ajv "^8.6.3"
     bunyan "^1.8.12"
     bunyan-debug-stream "^1.1.0"
     chalk "^2.4.2"

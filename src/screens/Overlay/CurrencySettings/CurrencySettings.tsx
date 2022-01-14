@@ -592,7 +592,10 @@ class CurrencySettingsModal extends Component<Props, State> {
         });
 
         return (
-            <Animated.View style={[styles.container, { backgroundColor: interpolateColor }]}>
+            <Animated.View
+                testID="currency-settings-overlay"
+                style={[styles.container, { backgroundColor: interpolateColor }]}
+            >
                 <Animated.View style={[styles.visibleContent, { opacity: this.animatedOpacity }]}>
                     <View style={styles.headerContainer}>
                         <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
@@ -690,6 +693,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                         <Spacer size={20} />
 
                         <RaisedButton
+                            testID="line-remove-button"
                             loadingIndicatorStyle="dark"
                             isLoading={isRemoving}
                             isDisabled={!canRemove}

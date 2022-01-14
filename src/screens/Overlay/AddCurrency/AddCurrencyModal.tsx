@@ -191,6 +191,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
             return (
                 <TouchableDebounce
+                    testID={c.id}
                     key={index}
                     style={[styles.listItem, selectedCurrency.id === c.id && styles.selectedRow]}
                     onPress={() => {

@@ -322,7 +322,7 @@ class AccountSettingsView extends Component<Props, State> {
                                 </View>
 
                                 <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                                    <Text style={[styles.value]}>
+                                    <Text testID='account-access-level-value' style={[styles.value]} >
                                         {account.accessLevel === AccessLevels.Full
                                             ? Localize.t('account.fullAccess')
                                             : Localize.t('account.readOnly')}
