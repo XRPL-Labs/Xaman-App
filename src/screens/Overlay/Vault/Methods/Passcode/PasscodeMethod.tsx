@@ -41,6 +41,7 @@ class PasscodeMethod extends Component<Props, State> {
     private contentView: View;
     private securePinInput: SecurePinInput;
     private animatedColor: Animated.Value;
+    private mounted: boolean;
 
     constructor(props: Props, context: React.ContextType<typeof MethodsContext>) {
         super(props);
@@ -58,6 +59,10 @@ class PasscodeMethod extends Component<Props, State> {
     }
 
     componentDidMount() {
+        // track component mounted status
+        this.mounted = true;
+
+        // add listeners
         Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
         Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
 
@@ -73,12 +78,16 @@ class PasscodeMethod extends Component<Props, State> {
     }
 
     componentWillUnmount() {
+        // track component mounted status
+        this.mounted = false;
+
+        // remove listeners
         Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
         Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
     }
 
     onKeyboardShow = (e: KeyboardEvent) => {
-        if (this.contentView) {
+        if (this.contentView && this.mounted) {
             this.contentView.measure((x, y, width, height) => {
                 const bottomView = (AppSizes.screen.height - height) / 2;
                 const KeyboardHeight = e.endCoordinates.height + 100;
@@ -92,8 +101,10 @@ class PasscodeMethod extends Component<Props, State> {
     };
 
     onKeyboardHide = () => {
-        LayoutAnimation.easeInEaseOut();
-        this.setState({ offsetBottom: 0 });
+        if (this.mounted) {
+            LayoutAnimation.easeInEaseOut();
+            this.setState({ offsetBottom: 0 });
+        }
     };
 
     setBiometricStatus = () => {

@@ -12,6 +12,7 @@ import {
     BackHandler,
     KeyboardEvent,
     LayoutAnimation,
+    InteractionManager,
     NativeEventSubscription,
 } from 'react-native';
 
@@ -56,6 +57,7 @@ class AuthenticateModal extends Component<Props, State> {
     private animatedColor: Animated.Value;
     private securePinInput: SecurePinInput = undefined;
     private backHandler: NativeEventSubscription;
+    private mounted: boolean;
 
     static options() {
         return {
@@ -77,8 +79,15 @@ class AuthenticateModal extends Component<Props, State> {
     }
 
     componentDidMount() {
+        // track component mount status
+        this.mounted = true;
+
+        // listen on keyboard events
         Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
         Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
+
+        // android back handler
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.dismiss);
 
         // animate the background color
         Animated.timing(this.animatedColor, {
@@ -87,17 +96,14 @@ class AuthenticateModal extends Component<Props, State> {
             useNativeDriver: false,
         }).start();
 
-        // focus the input
-        setTimeout(() => {
-            if (this.securePinInput) {
-                this.securePinInput.focus();
-            }
-        }, 300);
-
-        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.dismiss);
+        InteractionManager.runAfterInteractions(this.startAuthentication);
     }
 
     componentWillUnmount() {
+        // track component mount status
+        this.mounted = false;
+
+        // remove all listeners
         if (this.backHandler) {
             this.backHandler.remove();
         }
@@ -106,8 +112,15 @@ class AuthenticateModal extends Component<Props, State> {
         Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
     }
 
+    startAuthentication = () => {
+        // focus the input
+        if (this.securePinInput) {
+            this.securePinInput.focus();
+        }
+    };
+
     onKeyboardShow = (e: KeyboardEvent) => {
-        if (this.contentView) {
+        if (this.contentView && this.mounted) {
             this.contentView.measure((x, y, width, height) => {
                 const bottomView = (AppSizes.screen.height - height) / 2;
                 const KeyboardHeight = e.endCoordinates.height + 100;
@@ -121,8 +134,10 @@ class AuthenticateModal extends Component<Props, State> {
     };
 
     onKeyboardHide = () => {
-        LayoutAnimation.easeInEaseOut();
-        this.setState({ offsetBottom: 0 });
+        if (this.mounted) {
+            LayoutAnimation.easeInEaseOut();
+            this.setState({ offsetBottom: 0 });
+        }
     };
 
     close = () => {
