@@ -2,7 +2,7 @@
  * Action Panel component
  */
 import React, { Component } from 'react';
-import { Animated, View, TouchableWithoutFeedback, ViewStyle } from 'react-native';
+import { Animated, View, TouchableWithoutFeedback, InteractionManager, ViewStyle } from 'react-native';
 
 import Interactable from 'react-native-interactable';
 
@@ -58,7 +58,7 @@ class ActionPanel extends Component<Props, State> {
     }
 
     componentDidMount() {
-        this.slideUp();
+        InteractionManager.runAfterInteractions(this.slideUp);
     }
 
     static getDerivedStateFromProps(props: Props) {
@@ -108,7 +108,7 @@ class ActionPanel extends Component<Props, State> {
             if (this.panel) {
                 this.panel.snapTo({ index: 1 });
             }
-        }, 25);
+        }, 50);
     };
 
     public slideDown = () => {
@@ -116,7 +116,7 @@ class ActionPanel extends Component<Props, State> {
             if (this.panel) {
                 this.panel.snapTo({ index: 0 });
             }
-        }, 25);
+        }, 50);
     };
 
     public snapTo = (index: number) => {
@@ -124,7 +124,7 @@ class ActionPanel extends Component<Props, State> {
             if (this.panel) {
                 this.panel.snapTo({ index });
             }
-        }, 25);
+        }, 50);
     };
 
     onAlert = (event: any) => {
