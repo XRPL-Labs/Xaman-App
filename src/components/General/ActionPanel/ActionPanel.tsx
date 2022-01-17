@@ -108,7 +108,7 @@ class ActionPanel extends Component<Props, State> {
             if (this.panel) {
                 this.panel.snapTo({ index: 1 });
             }
-        }, 10);
+        }, 25);
     };
 
     public slideDown = () => {
@@ -116,7 +116,7 @@ class ActionPanel extends Component<Props, State> {
             if (this.panel) {
                 this.panel.snapTo({ index: 0 });
             }
-        }, 10);
+        }, 25);
     };
 
     public snapTo = (index: number) => {
@@ -124,7 +124,7 @@ class ActionPanel extends Component<Props, State> {
             if (this.panel) {
                 this.panel.snapTo({ index });
             }
-        }, 10);
+        }, 25);
     };
 
     onAlert = (event: any) => {
