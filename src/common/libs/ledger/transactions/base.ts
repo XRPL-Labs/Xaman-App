@@ -38,6 +38,9 @@ class BaseTransaction {
     private _SubmitResult?: SubmitResultType;
     private _VerifyResult?: VerifyResultType;
 
+    private isAborted: boolean;
+    private isSubmitted: boolean;
+
     constructor(_transaction?: LedgerTransactionType) {
         if (!isUndefined(_transaction)) {
             const { transaction, tx, meta } = _transaction;
@@ -240,9 +243,12 @@ class BaseTransaction {
             }
 
             // if transaction is already submitted exit
-            if (this.SubmitResult) {
-                throw new Error('transaction already submitted!');
+            if (this.SubmitResult || this.isSubmitted) {
+                throw new Error('transaction is in submitting phase or has been submitted to the ledger!');
             }
+
+            // set isSubmitted to true for preventing the transaction to be submitted multiple times
+            this.isSubmitted = true;
 
             // fail transaction locally if AccountDelete
             // do not retry or relay the transaction to other servers
