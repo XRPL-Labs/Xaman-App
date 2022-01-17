@@ -178,7 +178,11 @@ class EventsView extends Component<Props, State> {
                     return accumulator.then(() => {
                         return LedgerService.getAccountObjects(account.address, { type }).then((res: any) => {
                             const { account_objects } = res;
-                            objects = [...objects, ...account_objects];
+                            if (account_objects) {
+                                objects = [...objects, ...account_objects];
+                            } else {
+                                objects = [...objects];
+                            }
                         });
                     });
                 }, Promise.resolve())
