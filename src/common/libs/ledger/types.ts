@@ -147,6 +147,9 @@ export interface GatewayBalancesResponse {
     ledger_index?: number;
 }
 
+/**
+ * Ledger account_info response
+ */
 export interface AccountInfoResponse {
     account_data: AccountRoot;
     signer_lists?: any;
@@ -167,4 +170,18 @@ export interface AccountObjectsResponse {
     limit?: number;
     marker?: string;
     validated?: boolean;
+}
+
+/**
+ * Ledger fee command response
+ */
+interface FeeResponseDrops {
+    minimum_fee: string;
+    median_fee: string;
+    open_ledger_fee: string;
+}
+export interface FeeResponse {
+    current_queue_size: string;
+    max_queue_size: string;
+    drops: FeeResponseDrops;
 }

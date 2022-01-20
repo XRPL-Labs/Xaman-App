@@ -19,6 +19,7 @@ const getDefaultOptions = () => {
             backgroundColor: '$background',
             componentBackgroundColor: '$background',
             orientation: ['portrait'] as any,
+            adjustResize: false,
         },
         topBar: {
             visible: false,

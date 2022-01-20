@@ -9,7 +9,7 @@ import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
 
-import { GetCardPasscodeStatus } from '@common/utils/tangem';
+import { GetCardPasscodeStatus, GetCardId } from '@common/utils/tangem';
 import { AppScreens } from '@common/constants';
 
 import { AccountRepository } from '@store/repositories';
@@ -274,6 +274,22 @@ class AccountSettingsView extends Component<Props, State> {
                             </View>
                         </View>
 
+                        {account.type === AccountTypes.Tangem && (
+                            <View style={styles.row}>
+                                <View style={[AppStyles.flex3]}>
+                                    <Text numberOfLines={1} style={styles.label} testID="tangem-card-id">
+                                        {Localize.t('account.cardId')}
+                                    </Text>
+                                </View>
+
+                                <View style={[AppStyles.centerAligned, AppStyles.row]}>
+                                    <Text selectable style={[styles.address]}>
+                                        {GetCardId(account.additionalInfo)}
+                                    </Text>
+                                </View>
+                            </View>
+                        )}
+
                         {/* Account Label */}
                         <TouchableDebounce
                             testID="account-label-button"
@@ -306,7 +322,7 @@ class AccountSettingsView extends Component<Props, State> {
                                 </View>
 
                                 <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                                    <Text style={[styles.value]}>
+                                    <Text testID='account-access-level-value' style={[styles.value]} >
                                         {account.accessLevel === AccessLevels.Full
                                             ? Localize.t('account.fullAccess')
                                             : Localize.t('account.readOnly')}

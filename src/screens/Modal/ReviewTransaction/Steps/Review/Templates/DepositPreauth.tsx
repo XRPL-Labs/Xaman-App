@@ -30,10 +30,7 @@ class DepositPreauthTemplate extends Component<Props, State> {
 
         this.state = {
             isLoading: true,
-            addressDetails: {
-                name: '',
-                source: '',
-            },
+            addressDetails: undefined,
         };
     }
     componentDidMount() {

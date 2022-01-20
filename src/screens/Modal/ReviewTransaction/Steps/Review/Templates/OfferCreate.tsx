@@ -37,10 +37,7 @@ class OfferCreateTemplate extends Component<Props, State> {
         this.state = {
             isLoadingIssuerDetails: true,
             isLoadingIssuerFee: true,
-            issuerDetails: {
-                name: '',
-                source: '',
-            },
+            issuerDetails: undefined,
             issuerFee: 0,
         };
     }
@@ -108,15 +105,21 @@ class OfferCreateTemplate extends Component<Props, State> {
                         value={transaction.TakerGets.value}
                         currency={transaction.TakerGets.currency}
                         style={styles.amount}
+                        immutable
                     />
                 </View>
 
-                <Text style={[styles.label]}>{Localize.t('global.inExchangeForReceive')}</Text>
+                <Text style={[styles.label]}>
+                    {transaction.Flags.Sell
+                        ? Localize.t('global.inExchangeForAtLeastReceive')
+                        : Localize.t('global.inExchangeForReceive')}
+                </Text>
                 <View style={[styles.contentBox]}>
                     <AmountText
                         value={transaction.TakerPays.value}
                         currency={transaction.TakerPays.currency}
                         style={styles.amount}
+                        immutable
                     />
                 </View>
 

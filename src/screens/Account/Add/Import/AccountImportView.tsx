@@ -13,7 +13,7 @@ import { Toast } from '@common/helpers/interface';
 import { getAccountName } from '@common/helpers/resolver';
 import { Navigator } from '@common/helpers/navigator';
 
-import { GetWalletPublicKey } from '@common/utils/tangem';
+import { GetWalletDerivedPublicKey } from '@common/utils/tangem';
 import { AppScreens } from '@common/constants';
 
 import { LedgerService } from '@services';
@@ -60,7 +60,7 @@ class AccountImportView extends Component<Props, State> {
                 initStep = 'SecretType';
                 break;
             case props.tangemCard !== undefined:
-                initStep = 'ConfirmPublicKey';
+                initStep = 'VerifySignature';
                 break;
             case props.alternativeSeedAlphabet !== undefined:
                 initStep = 'EnterSeed';
@@ -108,11 +108,13 @@ class AccountImportView extends Component<Props, State> {
     populateTangemCard = () => {
         const { tangemCard } = this.props;
 
-        const walletPublicKey = GetWalletPublicKey(tangemCard);
+        // get derived public key from card data
+        const publicKey = GetWalletDerivedPublicKey(tangemCard);
 
-        const publicKey = utils.compressPubKey(walletPublicKey);
+        // derive XRPL address from normalized public key
         const address = utils.deriveAddress(publicKey);
 
+        // generate XRPL account
         const account = new XRPL_Account({ address, keypair: { publicKey, privateKey: undefined } });
 
         this.setState({
@@ -441,6 +443,9 @@ class AccountImportView extends Component<Props, State> {
                 } else {
                     title = Localize.t('account.familySeed');
                 }
+                break;
+            case 'VerifySignature':
+                title = Localize.t('account.verifyTangemCard');
                 break;
             case 'ConfirmPublicKey':
                 title = Localize.t('account.publicAddress');

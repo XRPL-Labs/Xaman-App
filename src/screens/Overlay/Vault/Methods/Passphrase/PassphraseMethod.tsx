@@ -34,6 +34,7 @@ class PassphraseMethod extends Component<Props, State> {
     private contentView: View;
     private passwordInput: PasswordInput;
     private animatedColor: Animated.Value;
+    private mounted: boolean;
 
     constructor(props: Props) {
         super(props);
@@ -47,8 +48,10 @@ class PassphraseMethod extends Component<Props, State> {
     }
 
     componentDidMount() {
-        this.startAuthentication();
+        // track component mounted status
+        this.mounted = true;
 
+        // add listeners
         Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
         Keyboard.addListener('keyboardWillHide', this.onKeyboardHide);
 
@@ -62,6 +65,10 @@ class PassphraseMethod extends Component<Props, State> {
     }
 
     componentWillUnmount() {
+        // track component mounted status
+        this.mounted = false;
+
+        // remove listeners
         Keyboard.removeListener('keyboardWillShow', this.onKeyboardShow);
         Keyboard.removeListener('keyboardWillHide', this.onKeyboardHide);
     }
@@ -74,7 +81,7 @@ class PassphraseMethod extends Component<Props, State> {
     };
 
     onKeyboardShow = (e: KeyboardEvent) => {
-        if (this.contentView) {
+        if (this.contentView && this.mounted) {
             this.contentView.measure((x, y, width, height) => {
                 const bottomView = (AppSizes.screen.height - height) / 2;
                 const KeyboardHeight = e.endCoordinates.height + 100;
@@ -88,8 +95,10 @@ class PassphraseMethod extends Component<Props, State> {
     };
 
     onKeyboardHide = () => {
-        LayoutAnimation.easeInEaseOut();
-        this.setState({ offsetBottom: 0 });
+        if (this.mounted) {
+            LayoutAnimation.easeInEaseOut();
+            this.setState({ offsetBottom: 0 });
+        }
     };
 
     onPassphraseChange = (passphrase: string) => {

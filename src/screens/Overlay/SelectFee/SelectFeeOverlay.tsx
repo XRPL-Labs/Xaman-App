@@ -21,7 +21,7 @@ import styles from './styles';
 /* types ==================================================================== */
 interface FeeItem {
     type: string;
-    value: string;
+    value: number;
     suggested?: boolean;
 }
 

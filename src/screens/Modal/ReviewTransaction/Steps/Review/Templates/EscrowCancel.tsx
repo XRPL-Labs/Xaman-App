@@ -31,10 +31,7 @@ class EscrowCancelTemplate extends Component<Props, State> {
 
         this.state = {
             isLoading: true,
-            ownerDetails: {
-                name: '',
-                source: '',
-            },
+            ownerDetails: undefined,
         };
     }
     async componentDidMount() {

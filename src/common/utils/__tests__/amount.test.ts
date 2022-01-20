@@ -1,5 +1,5 @@
 /* eslint-disable spellcheck/spell-checker */
-import { NormalizeAmount, NormalizeCurrencyCode, XRPLValueToNFT, NFTValueToXRPL } from '../amount';
+import { NormalizeAmount, NormalizeCurrencyCode, XRPLValueToNFT, NFTValueToXRPL, ValueToIOU } from '../amount';
 
 describe('Utils.Amount', () => {
     describe('XRPLValueToNFT', () => {
@@ -135,6 +135,10 @@ describe('Utils.Amount', () => {
                     output: 'FakeXRP',
                 },
                 {
+                    value: 'xrP',
+                    output: 'FakeXRP',
+                },
+                {
                     value: 'CSC',
                     output: 'CSC',
                 },
@@ -153,6 +157,56 @@ describe('Utils.Amount', () => {
             ];
             tests.forEach((v) => {
                 expect(NormalizeCurrencyCode(v.value)).toBe(v.output);
+            });
+        });
+    });
+
+    describe('ValueToIOU', () => {
+        it('should raise error', () => {
+            expect(() => ValueToIOU(undefined)).toThrowError('Value is not valid string!');
+            // @ts-ignore
+            expect(() => ValueToIOU(0.1)).toThrowError('Value is not valid string!');
+            // @ts-ignore
+            expect(() => ValueToIOU(0)).toThrowError('Value is not valid string!');
+            expect(() => ValueToIOU('9999999999999999.1234566')).toThrowError('Amount too high to reliably slice!');
+        });
+        it('should return right values', () => {
+            const tests = [
+                {
+                    value: '123.123',
+                    output: '123.123',
+                },
+                {
+                    value: '1337',
+                    output: '1337',
+                },
+                {
+                    value: '123456789101112.123456',
+                    output: '123456789101112',
+                },
+                {
+                    value: '90000000',
+                    output: '90000000',
+                },
+                {
+                    value: '123456.1234567891011',
+                    output: '123456.123456789',
+                },
+                {
+                    value: '0.0000000000000001',
+                    output: '0',
+                },
+                {
+                    value: '0.1230000000000000000001',
+                    output: '0.123',
+                },
+                {
+                    value: '999999999999999.123',
+                    output: '999999999999999',
+                },
+            ];
+            tests.forEach((v) => {
+                expect(ValueToIOU(v.value)).toBe(v.output);
             });
         });
     });

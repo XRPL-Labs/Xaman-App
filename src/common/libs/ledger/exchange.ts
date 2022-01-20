@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { has } from 'lodash';
 
 import {
@@ -12,11 +13,22 @@ import {
 import Localize from '@locale';
 
 import { ApiService, SocketService } from '@services';
+
+import { ValueToIOU } from '@common/utils/amount';
 /* types ==================================================================== */
+export enum MarketDirection {
+    SELL = 'SELL',
+    BUY = 'BUY',
+}
+
 export type ExchangePair = {
     currency: string;
     issuer?: string;
 };
+
+/* Constants ==================================================================== */
+const MAX_XRP_DECIMAL_PLACES = 6;
+const MAX_IOU_DECIMAL_PLACES = 8;
 
 /* Class ==================================================================== */
 class LedgerExchange {
@@ -46,7 +58,7 @@ class LedgerExchange {
         };
     }
 
-    initialize = () => {
+    initialize = (direction: MarketDirection) => {
         // fetch liquidity boundaries
         return ApiService.liquidityBoundaries
             .get({
@@ -63,19 +75,60 @@ class LedgerExchange {
             })
             .finally(() => {
                 // build default params
-                const params = this.getLiquidityCheckParams('sell', 0);
+                const params = this.getLiquidityCheckParams(direction, 0);
                 this.liquidityCheck = new LiquidityCheck(params);
             });
     };
 
-    getLiquidityCheckParams = (direction: 'sell' | 'buy', amount: number): LiquidityCheckParams => {
+    calculateOutcomes = (value: string, liquidity: LiquidityResult, direction: MarketDirection) => {
+        if (!value || value === '0') {
+            return {
+                expected: '0',
+                minimum: '0',
+            };
+        }
+
+        const decimalPlaces = direction === MarketDirection.SELL ? MAX_IOU_DECIMAL_PLACES : MAX_XRP_DECIMAL_PLACES;
+
+        const { maxSlippagePercentage } = this.boundaryOptions;
+        const amount = new BigNumber(value);
+
+        // expected outcome base on liquidity rate
+        let expected = amount.multipliedBy(liquidity.rate).decimalPlaces(decimalPlaces).toString(10);
+        // calculate padded exchange rate base on maxSlippagePercentage
+        const paddedExchangeRate = new BigNumber(liquidity.rate).dividedBy(
+            new BigNumber(100).plus(maxSlippagePercentage).dividedBy(100),
+        );
+
+        // calculate minimum value
+        let minimum = amount.multipliedBy(paddedExchangeRate).decimalPlaces(decimalPlaces).toString(10);
+
+        // fix the precision for IOU values if more than MAX_IOU_PRECISION
+        if (direction === MarketDirection.SELL) {
+            minimum = ValueToIOU(minimum);
+            expected = ValueToIOU(expected);
+        }
+
+        return {
+            expected,
+            minimum,
+        };
+    };
+
+    calculateExchangeRate = (liquidity: LiquidityResult, direction: MarketDirection): string => {
+        return direction === MarketDirection.SELL
+            ? new BigNumber(liquidity.rate).decimalPlaces(3).toString(10)
+            : new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(3).toString(10);
+    };
+
+    getLiquidityCheckParams = (direction: MarketDirection, amount: number): LiquidityCheckParams => {
         const pair = {
             currency: this.pair.currency,
             issuer: this.pair.issuer,
         };
 
-        const from = direction === 'sell' ? { currency: 'XRP' } : pair;
-        const to = direction === 'sell' ? pair : { currency: 'XRP' };
+        const from = direction === MarketDirection.SELL ? { currency: 'XRP' } : pair;
+        const to = direction === MarketDirection.SELL ? pair : { currency: 'XRP' };
 
         return {
             trade: {
@@ -88,7 +141,7 @@ class LedgerExchange {
         };
     };
 
-    getLiquidity = (direction: 'sell' | 'buy', amount: number): Promise<LiquidityResult> => {
+    getLiquidity = (direction: MarketDirection, amount: number): Promise<LiquidityResult> => {
         try {
             const params = this.getLiquidityCheckParams(direction, amount);
 

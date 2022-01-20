@@ -60,8 +60,16 @@ Then('I scroll up {string}', async (elementId) => {
     await element(by.id(elementId)).swipe('up', 'slow', 0.2);
 });
 
+Then('I scroll down {string}', async (elementId) => {
+    await element(by.id(elementId)).swipe('down', 'slow', 0.2);
+});
+
 Then('I scroll {string} to bottom', async (elementId) => {
     await element(by.id(elementId)).scrollTo('bottom');
+});
+
+Then('I scroll {string} to top', async (elementId) => {
+    await element(by.id(elementId)).scrollTo('top');
 });
 
 Then('I slide right {string}', async (elementId) => {

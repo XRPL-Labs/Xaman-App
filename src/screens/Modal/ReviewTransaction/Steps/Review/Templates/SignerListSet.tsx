@@ -6,7 +6,8 @@ import { SignerListSet } from '@common/libs/ledger/transactions';
 
 import { getAccountName } from '@common/helpers/resolver';
 
-import { Spacer, LoadingIndicator } from '@components/General';
+import { LoadingIndicator } from '@components/General';
+import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -89,25 +90,12 @@ class SignerListSetTemplate extends Component<Props, State> {
 
         return signers.map((signer) => {
             return (
-                <View key={`${signer.account}`} style={[styles.contentBox, styles.addressContainer]}>
-                    {signer.name && (
-                        <>
-                            <Text selectable style={styles.address}>
-                                {signer.name}
-                            </Text>
-                            <Spacer size={5} />
-                        </>
-                    )}
-                    <Text selectable style={styles.address}>
-                        {signer.account}
-                    </Text>
-                    <Spacer size={10} />
-                    <View style={AppStyles.hr} />
-                    <Spacer size={10} />
-                    <Text style={styles.value}>
-                        {Localize.t('global.weight')}: {signer.weight}
-                    </Text>
-                </View>
+                <RecipientElement
+                    key={signer.account}
+                    recipient={signer}
+                    extraInfoLabel={Localize.t('global.weight')}
+                    extraInfoValue={signer.weight}
+                />
             );
         });
     };

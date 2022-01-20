@@ -29,10 +29,7 @@ class SetRegularKeyTemplate extends Component<Props, State> {
 
         this.state = {
             isLoading: false,
-            regularKeyDetails: {
-                name: '',
-                source: '',
-            },
+            regularKeyDetails: undefined,
         };
     }
     componentDidMount() {

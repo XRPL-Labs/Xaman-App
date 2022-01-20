@@ -102,7 +102,7 @@ class TrustLineItem extends PureComponent<Props> {
 
         return (
             <TouchableDebounce
-                testID={`line-${line.currency.issuer}`}
+                testID={`${line.currency.id}`}
                 onPress={this.onPress}
                 activeOpacity={0.8}
                 style={[styles.currencyItem]}

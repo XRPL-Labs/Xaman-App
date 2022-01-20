@@ -30,6 +30,7 @@ class AccountSet extends BaseTransaction {
             'SetFlag',
             'TransferRate',
             'TickSize',
+            'MintAccount',
         ]);
     }
 
@@ -67,8 +68,7 @@ class AccountSet extends BaseTransaction {
         const transferRate = get(this, ['tx', 'TransferRate'], undefined);
 
         if (transferRate) {
-            return new BigNumber(transferRate).dividedBy(1000000).minus(1000).dividedBy(10)
-.toNumber();
+            return new BigNumber(transferRate).dividedBy(1000000).minus(1000).dividedBy(10).toNumber();
         }
 
         return undefined;
@@ -84,6 +84,10 @@ class AccountSet extends BaseTransaction {
 
     get WalletSize(): number {
         return get(this, ['tx', 'WalletSize'], undefined);
+    }
+
+    get MintAccount(): string {
+        return get(this, ['tx', 'MintAccount'], undefined);
     }
 }
 

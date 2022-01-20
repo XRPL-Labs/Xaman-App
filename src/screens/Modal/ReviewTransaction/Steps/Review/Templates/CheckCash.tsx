@@ -50,7 +50,7 @@ class CheckCashTemplate extends Component<Props, State> {
             cashAmount: props.transaction.DeliverMin?.value || props.transaction.Amount?.value,
             amountField,
             currencyName,
-            sourceDetails: { name: '', source: '' },
+            sourceDetails: undefined,
         };
 
         this.amountInput = React.createRef();
@@ -150,6 +150,7 @@ class CheckCashTemplate extends Component<Props, State> {
                         value={transaction.Check?.SendMax.value}
                         currency={transaction.Check?.SendMax.currency}
                         style={styles.amount}
+                        immutable
                     />
                 </View>
 
@@ -195,9 +196,10 @@ class CheckCashTemplate extends Component<Props, State> {
                             </>
                         ) : (
                             <AmountText
-                                style={styles.amountInput}
                                 value={cashAmount}
                                 currency={transaction[amountField]?.currency || 'XRP'}
+                                style={styles.amountInput}
+                                immutable
                             />
                         )}
                     </TouchableOpacity>

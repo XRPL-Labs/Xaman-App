@@ -35,8 +35,9 @@ export default StyleService.create({
         fontSize: AppFonts.base.size * 0.8,
     },
     destinationTagContainer: {
-        marginTop: 10,
-        paddingTop: 10,
+        marginTop: 8,
+        paddingTop: 8,
+        paddingBottom: 2,
         width: '100%',
         borderTopWidth: 1,
         borderTopColor: '$lightGrey',

@@ -7,7 +7,7 @@ import { BackendService, LedgerService, StyleService } from '@services';
 
 import { CoreRepository } from '@store/repositories';
 
-import LedgerExchange from '@common/libs/ledger/exchange';
+import LedgerExchange, { MarketDirection } from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
@@ -65,7 +65,7 @@ class PaymentTemplate extends Component<Props, State> {
             editableAmount: !transaction.Amount?.value,
             amount: transaction.Amount?.value,
             currencyName: transaction.Amount?.currency ? NormalizeCurrencyCode(transaction.Amount.currency) : 'XRP',
-            destinationDetails: { name: '', source: '' },
+            destinationDetails: undefined,
             isPartialPayment: false,
             shouldCheckForConversation: !transaction.SendMax && props.canOverride,
             exchangeRate: undefined,
@@ -186,10 +186,10 @@ class PaymentTemplate extends Component<Props, State> {
             // the source account balance doesn't cover the entire requested amount
             // the sender is not issuer
             const shouldPayWithXRP =
-                !sourceLine ||
-                (Number(sourceLine.limit) === 0 && Number(sourceLine.balance) === 0) ||
-                (Number(sourceLine.balance) < Number(transaction.Amount.value) &&
-                    account !== transaction.Amount.issuer);
+                (!sourceLine ||
+                    (Number(sourceLine.limit) === 0 && Number(sourceLine.balance) === 0) ||
+                    Number(sourceLine.balance) < Number(transaction.Amount.value)) &&
+                account !== transaction.Amount.issuer;
 
             // if not have the same trust line or the balance is not covering requested value
             // Pay with XRP instead
@@ -198,10 +198,13 @@ class PaymentTemplate extends Component<Props, State> {
 
                 const ledgerExchange = new LedgerExchange(PAIR);
                 // sync with latest order book
-                await ledgerExchange.initialize();
+                await ledgerExchange.initialize(MarketDirection.BUY);
 
                 // get liquidity grade
-                const liquidity = await ledgerExchange.getLiquidity('buy', Number(transaction.Amount.value));
+                const liquidity = await ledgerExchange.getLiquidity(
+                    MarketDirection.BUY,
+                    Number(transaction.Amount.value),
+                );
 
                 // not enough liquidity
                 if (!liquidity || !liquidity.safe || liquidity.errors.length > 0) {
@@ -410,9 +413,10 @@ class PaymentTemplate extends Component<Props, State> {
                             </>
                         ) : (
                             <AmountText
-                                style={styles.amountInput}
                                 value={amount}
                                 currency={transaction.Amount.currency}
+                                style={styles.amountInput}
+                                immutable
                             />
                         )}
                     </TouchableOpacity>
@@ -449,6 +453,7 @@ class PaymentTemplate extends Component<Props, State> {
                                 value={transaction.SendMax.value}
                                 currency={transaction.SendMax.currency}
                                 style={styles.amount}
+                                immutable
                             />
                         </View>
                     </>
@@ -462,6 +467,7 @@ class PaymentTemplate extends Component<Props, State> {
                                 value={transaction.DeliverMin.value}
                                 currency={transaction.DeliverMin.currency}
                                 style={styles.amount}
+                                immutable
                             />
                         </View>
                     </>

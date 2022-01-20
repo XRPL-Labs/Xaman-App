@@ -1,8 +1,8 @@
 diff --git a/node_modules/react-native/Libraries/Network/RCTNetworking.mm b/node_modules/react-native/Libraries/Network/RCTNetworking.mm
-index edbbe81..72907b1 100644
+index 22ca45b..9976519 100644
 --- a/node_modules/react-native/Libraries/Network/RCTNetworking.mm
 +++ b/node_modules/react-native/Libraries/Network/RCTNetworking.mm
-@@ -518,6 +518,15 @@ - (void)sendRequest:(NSURLRequest *)request
+@@ -528,6 +528,15 @@ - (void)sendRequest:(NSURLRequest *)request
   incrementalUpdates:(BOOL)incrementalUpdates
       responseSender:(RCTResponseSenderBlock)responseSender
  {
@@ -19,7 +19,7 @@ index edbbe81..72907b1 100644
    __weak __typeof(self) weakSelf = self;
    __block RCTNetworkTask *task;
 diff --git a/node_modules/react-native/Libraries/WebSocket/RCTSRWebSocket.m b/node_modules/react-native/Libraries/WebSocket/RCTSRWebSocket.m
-index 8ce6edc..795ad3b 100644
+index 8ce6edc..2affd68 100644
 --- a/node_modules/react-native/Libraries/WebSocket/RCTSRWebSocket.m
 +++ b/node_modules/react-native/Libraries/WebSocket/RCTSRWebSocket.m
 @@ -233,7 +233,22 @@ - (instancetype)initWithURLRequest:(NSURLRequest *)request protocols:(NSArray<NS
@@ -33,7 +33,7 @@ index 8ce6edc..795ad3b 100644
 +    #else
 +      // this will force the app to just connect to trusted nodes
 +      NSArray *allowedEndpoints;
-+      allowedEndpoints = [NSArray arrayWithObjects: @"localhost", @"xrplcluster.com", @"xrpl.link", @"s2.ripple.com", @"testnet.xrpl-labs.com", @"s.altnet.rippletest.net", @"custom-node.xrpl-labs.com", nil];
++      allowedEndpoints = [NSArray arrayWithObjects: @"xrplcluster.com", @"xrpl.link", @"s2.ripple.com", @"testnet.xrpl-labs.com", @"s.altnet.rippletest.net", @"s.devnet.rippletest.net", @"custom-node.xrpl-labs.com", nil];
 +      NSString* domain = [request.URL host];
 +
 +      if([allowedEndpoints containsObject: domain]){

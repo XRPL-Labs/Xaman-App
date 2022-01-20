@@ -145,6 +145,14 @@ const GetDeviceId = (): string => {
 };
 
 /**
+ * Gets the device name
+ * @returns string
+ */
+const GetDeviceName = (): string => {
+    return DeviceInfo.getDeviceNameSync();
+};
+
+/**
  * Gets the device OS version.
  * @returns string
  */
@@ -196,6 +204,7 @@ export {
     GetElapsedRealtime,
     GetAppReadableVersion,
     GetDeviceId,
+    GetDeviceName,
     GetSystemVersion,
     GetDeviceUniqueId,
     GetAppVersionCode,

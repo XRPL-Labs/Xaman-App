@@ -25,10 +25,18 @@ storiesOf('AmountText', module)
         }),
     )
     .add(
-        'withPostfix',
+        'withCurrency',
         withPropsCombinations(AmountText, {
             value: VALUES,
-            postfix: ['USD'],
+            currency: ['USD'],
         }),
     )
-    .add('discreet', () => <AmountText currency="USD" value="123" discreet />);
+    .add('discreet', () => <AmountText currency="USD" value="123" discreet />)
+    .add(
+        'immutable;',
+        withPropsCombinations(AmountText, {
+            value: VALUES,
+            currency: ['USD'],
+            immutable: [true],
+        }),
+    );

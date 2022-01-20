@@ -5,6 +5,7 @@ import EnterSeed from './EnterSeed';
 import MnemonicAlert from './MnemonicAlert';
 import EnterMnemonic from './EnterMnemonic';
 import EnterSecretNumbers from './EnterSecretNumbers';
+import VerifySignature from './VerifySignature';
 import ConfirmPublicKey from './ConfirmPublicKey';
 import ExplainActivation from './ExplainActivation';
 import SecurityStep from './Security';
@@ -20,6 +21,7 @@ export default {
     EnterSeed,
     MnemonicAlert,
     EnterMnemonic,
+    VerifySignature,
     ConfirmPublicKey,
     ExplainActivation,
     SecurityStep,

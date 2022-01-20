@@ -204,7 +204,15 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx } = this.state;
         const { account } = this.props;
 
-        if (['Payment', 'PaymentChannelClaim', 'PaymentChannelCreate', 'PaymentChannelFund'].includes(tx.Type)) {
+        if (
+            [
+                'Payment',
+                'PaymentChannelClaim',
+                'PaymentChannelCreate',
+                'PaymentChannelFund',
+                'NFTokenAcceptOffer',
+            ].includes(tx.Type)
+        ) {
             this.setState({
                 balanceChanges: tx.BalanceChange(account.address),
             });
@@ -328,6 +336,28 @@ class TransactionDetailsView extends Component<Props, State> {
                     address = tx.Account.address;
                 }
                 break;
+            case 'NFTokenMint':
+                if (tx.Issuer) {
+                    address = tx.Issuer;
+                }
+                break;
+            case 'NFTokenBurn':
+                if (incomingTx) {
+                    address = tx.Account.address;
+                }
+                break;
+            case 'NFTokenCreateOffer':
+                if (tx.Destination) {
+                    address = tx.Destination.address;
+                }
+                break;
+            case 'NFTokenAcceptOffer':
+                if (incomingTx) {
+                    address = tx.Account.address;
+                } else if (tx.Offer) {
+                    address = tx.Offer.Owner;
+                }
+                break;
             default:
                 break;
         }
@@ -437,14 +467,20 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 return Localize.t('global.payment');
 
-            case 'TrustSet':
-                if (tx.Account.address !== account.address && tx.Limit !== 0) {
+            case 'TrustSet': {
+                // incoming trustline
+                if (tx.Account.address !== account.address) {
                     return Localize.t('events.incomingTrustLineAdded');
                 }
-                if (tx.Limit === 0) {
+                const ownerCountChange = tx.OwnerCountChange(account.address);
+                if (ownerCountChange) {
+                    if (ownerCountChange.action === 'INC') {
+                        return Localize.t('events.addedATrustLine');
+                    }
                     return Localize.t('events.removedATrustLine');
                 }
-                return Localize.t('events.addedATrustLine');
+                return Localize.t('events.updatedATrustLine');
+            }
             case 'EscrowCreate':
                 return Localize.t('events.createEscrow');
             case 'EscrowFinish':
@@ -494,6 +530,16 @@ class TransactionDetailsView extends Component<Props, State> {
                 return Localize.t('events.claimPaymentChannel');
             case 'PaymentChannelFund':
                 return Localize.t('events.fundPaymentChannel');
+            case 'NFTokenMint':
+                return Localize.t('events.mintNFT');
+            case 'NFTokenBurn':
+                return Localize.t('events.burnNFT');
+            case 'NFTokenCreateOffer':
+                return Localize.t('events.createNFTOffer');
+            case 'NFTokenCancelOffer':
+                return Localize.t('events.cancelNFTOffer');
+            case 'NFTokenAcceptOffer':
+                return Localize.t('events.acceptNFTOffer');
             default:
                 return tx.Type;
         }
@@ -527,6 +573,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
         // handle return or new payment process
         if (type === 'Payment') {
+            // create new payment
             const params = {
                 scanResult: {
                     to: incomingTx ? tx.Account.address : tx.Destination.address,
@@ -534,20 +581,29 @@ class TransactionDetailsView extends Component<Props, State> {
                 },
             };
 
-            if (incomingTx) {
-                let currency;
+            // prefill the currency
+            let currency;
 
-                if (tx.DeliveredAmount?.currency === 'XRP') {
-                    currency = 'XRP';
-                } else {
-                    currency = account.lines.find(
-                        // eslint-disable-next-line max-len
-                        (l: any) => l.currency.currency === tx.DeliveredAmount.currency &&
-                            l.currency.issuer === tx.DeliveredAmount.issuer,
-                    );
-                }
-                Object.assign(params, { amount: tx.DeliveredAmount?.value, currency });
+            if (tx.DeliveredAmount.currency === 'XRP') {
+                currency = 'XRP';
+            } else {
+                currency = account.lines.find(
+                    (l: any) =>
+                        l.currency.currency === tx.DeliveredAmount.currency &&
+                        l.currency.issuer === tx.DeliveredAmount.issuer &&
+                        l.balance > 0,
+                );
             }
+            if (!currency) {
+                return;
+            }
+            Object.assign(params, { currency });
+
+            // if return payment prefill the amount
+            if (incomingTx) {
+                Object.assign(params, { amount: tx.DeliveredAmount.value });
+            }
+
             Navigator.push(AppScreens.Transaction.Payment, params);
             return;
         }
@@ -877,9 +933,12 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderTrustSet = () => {
+        const { account } = this.props;
         const { tx } = this.state;
 
-        if (tx.Limit === 0) {
+        const ownerCountChange = tx.OwnerCountChange(account.address);
+
+        if (ownerCountChange && ownerCountChange.action === 'DEC') {
             return Localize.t('events.itRemovedTrustLineCurrencyTo', {
                 currency: NormalizeCurrencyCode(tx.Currency),
                 issuer: tx.Issuer,
@@ -1045,6 +1104,126 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
+    renderNFTokenMint = () => {
+        const { tx } = this.state;
+
+        let content = '';
+
+        content += Localize.t('events.theTokenIdIs', { tokenID: tx.TokenID });
+
+        if (tx.TransferFee) {
+            content += '\n';
+            content += Localize.t('events.theTokenHasATransferFee', { transferFee: tx.TransferFee });
+        }
+
+        if (tx.TokenTaxon) {
+            content += '\n';
+            content += Localize.t('events.theTokenTaxonForThisTokenIs', { taxon: tx.TokenTaxon });
+        }
+
+        return content;
+    };
+
+    renderNFTokenBurn = () => {
+        const { tx } = this.state;
+
+        let content = '';
+
+        content += Localize.t('events.nftokenBurnExplain', { tokenID: tx.TokenID });
+
+        return content;
+    };
+
+    renderNFTokenCreateOffer = () => {
+        const { tx } = this.state;
+
+        let content = '';
+
+        if (tx.Flags.SellToken) {
+            content += Localize.t('events.nftOfferSellExplain', {
+                address: tx.Account.address,
+                tokenID: tx.TokenID,
+                amount: tx.Amount.value,
+                currency: NormalizeCurrencyCode(tx.Amount.currency),
+            });
+        } else {
+            content += Localize.t('events.nftOfferBuyExplain', {
+                address: tx.Account.address,
+                tokenID: tx.TokenID,
+                amount: tx.Amount.value,
+                currency: NormalizeCurrencyCode(tx.Amount.currency),
+            });
+        }
+
+        if (tx.Owner) {
+            content += '\n';
+            content += Localize.t('events.theNftOwnerIs', { address: tx.Owner });
+        }
+
+        if (tx.Destination) {
+            content += '\n';
+            content += Localize.t('events.thisNftOfferMayOnlyBeAcceptedBy', { address: tx.Destination.address });
+        }
+
+        if (tx.Expiration) {
+            content += '\n';
+            content += Localize.t('events.theOfferExpiresAtUnlessCanceledOrAccepted', {
+                expiration: moment(tx.CancelAfter).format('LLLL'),
+            });
+        }
+
+        return content;
+    };
+
+    renderNFTokenCancelOffer = () => {
+        const { tx } = this.state;
+
+        let content = '';
+
+        content += Localize.t('events.theTransactionWillCancelNftOffer', { address: tx.Account.address });
+        content += '\n';
+
+        tx.TokenOffers?.forEach((id: string) => {
+            content += `${id}\n`;
+        });
+
+        return content;
+    };
+
+    renderNFTokenAcceptOffer = () => {
+        const { tx } = this.state;
+
+        const offerID = tx.BuyOffer || tx.SellOffer;
+
+        // this should never happen
+        // but as we are in beta we should to check this
+        if (!tx.Offer) {
+            return 'No Description!';
+        }
+
+        let content = '';
+
+        if (tx.Offer.Flags.SellToken) {
+            content += Localize.t('events.nftAcceptOfferBuyExplanation', {
+                address: tx.Account.address,
+                offerID,
+                tokenID: tx.Offer.TokenID,
+                amount: tx.Offer.Amount.value,
+                currency: NormalizeCurrencyCode(tx.Offer.Amount.currency),
+            });
+        } else {
+            content += Localize.t('events.nftAcceptOfferSellExplanation', {
+                address: tx.Account.address,
+                offerID,
+                tokenID: tx.Offer.TokenID,
+                amount: tx.Offer.Amount.value,
+                currency: NormalizeCurrencyCode(tx.Offer.Amount.currency),
+            });
+        }
+
+        return content;
+    };
+
     renderDescription = () => {
         const { tx } = this.state;
 
@@ -1105,6 +1284,21 @@ class TransactionDetailsView extends Component<Props, State> {
             case 'PaymentChannelClaim':
                 content += this.renderPaymentChannelClaim();
                 break;
+            case 'NFTokenMint':
+                content += this.renderNFTokenMint();
+                break;
+            case 'NFTokenBurn':
+                content += this.renderNFTokenBurn();
+                break;
+            case 'NFTokenCreateOffer':
+                content += this.renderNFTokenCreateOffer();
+                break;
+            case 'NFTokenCancelOffer':
+                content += this.renderNFTokenCancelOffer();
+                break;
+            case 'NFTokenAcceptOffer':
+                content += this.renderNFTokenAcceptOffer();
+                break;
             default:
                 content += `This is a ${tx.Type} transaction`;
         }
@@ -1112,7 +1306,9 @@ class TransactionDetailsView extends Component<Props, State> {
         return (
             <>
                 <Text style={[styles.labelText]}>{Localize.t('global.description')}</Text>
-                <Text style={[styles.contentText]}>{content}</Text>
+                <Text selectable style={[styles.contentText]}>
+                    {content}
+                </Text>
             </>
         );
     };
@@ -1425,6 +1621,33 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             }
+            case 'NFTokenCreateOffer': {
+                Object.assign(props, {
+                    color: styles.naturalColor,
+                    icon: tx.Flags.SellToken ? 'IconCornerRightDown' : 'IconCornerRightUp',
+                    value: tx.Amount.value,
+                    currency: tx.Amount.currency,
+                });
+                break;
+            }
+            case 'NFTokenAcceptOffer': {
+                if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                    const incoming = !!balanceChanges.received;
+                    const amount = balanceChanges?.received || balanceChanges?.sent;
+
+                    Object.assign(props, {
+                        icon: incoming ? 'IconCornerRightDown' : 'IconCornerRightUp',
+                        color: incoming ? styles.incomingColor : styles.outgoingColor,
+                        prefix: incoming ? '' : '-',
+                        value: amount.value,
+                        currency: amount.currency,
+                    });
+                } else {
+                    shouldShowAmount = false;
+                }
+                break;
+            }
+
             default:
                 shouldShowAmount = false;
                 break;
@@ -1574,7 +1797,21 @@ class TransactionDetailsView extends Component<Props, State> {
 
         switch (tx.Type) {
             case 'Payment':
-                if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) > -1) {
+                if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) > -1 && tx.DeliveredAmount) {
+                    // check if we can return the payment
+                    if (tx.DeliveredAmount.currency !== 'XRP') {
+                        const trustLine = account.lines.find(
+                            (l: any) =>
+                                l.currency.currency === tx.DeliveredAmount.currency &&
+                                l.currency.issuer === tx.DeliveredAmount.issuer &&
+                                l.balance > 0,
+                        );
+                        // do not show the button if user does not have the proper trustline
+                        if (!trustLine) {
+                            break;
+                        }
+                    }
+
                     const label = incomingTx ? Localize.t('events.returnPayment') : Localize.t('events.newPayment');
                     actionButtons.push({
                         label,
@@ -1711,6 +1948,36 @@ class TransactionDetailsView extends Component<Props, State> {
             }
         }
 
+        // Accepted NFT offer
+        if (tx.Type === 'NFTokenAcceptOffer') {
+            const offerer = tx.Offer.Owner;
+            const accepter = tx.Account.address;
+            const isSellOffer = tx.Offer?.Flags.SellToken;
+            const buyer = isSellOffer ? accepter : offerer;
+            const seller = isSellOffer ? offerer : accepter;
+
+            from = {
+                address: buyer,
+                ...(buyer !== account.address
+                    ? { ...partiesDetails }
+                    : {
+                          address: account.address,
+                          name: account.label,
+                          source: 'accounts',
+                      }),
+            };
+            to = {
+                address: seller,
+                ...(seller !== account.address
+                    ? { ...partiesDetails }
+                    : {
+                          address: account.address,
+                          name: account.label,
+                          source: 'accounts',
+                      }),
+            };
+        }
+
         // 3rd party consuming own offer
         if (tx.Type === 'Payment') {
             if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
@@ -1720,6 +1987,16 @@ class TransactionDetailsView extends Component<Props, State> {
                     through = { address: account.address, name: account.label, source: 'accounts' };
                 }
             }
+        }
+
+        // no information to show
+        if (!to.address && !from.address) {
+            return null;
+        }
+
+        // ignore async third party offer executed
+        if (tx.Type === 'OfferCreate' && to.address !== account.address) {
+            return null;
         }
 
         if (!to.address) {

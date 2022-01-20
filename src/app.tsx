@@ -19,7 +19,7 @@ import {
     GetAppReadableVersion,
     GetDeviceTimeZone,
     GetDeviceLocaleSettings,
-    GetDeviceId,
+    GetDeviceName,
     GetSystemVersion,
     FlagSecure,
     IsDeviceJailBroken,
@@ -55,7 +55,7 @@ class Application {
     run() {
         // start the app
         this.logger.debug(`XUMM version ${GetAppReadableVersion()}`);
-        this.logger.debug(`Device ${GetDeviceId()} - OS Version ${GetSystemVersion()}`);
+        this.logger.debug(`Device ${GetDeviceName()} - OS Version ${GetSystemVersion()}`);
 
         // on app start
         Navigation.events().registerAppLaunchedListener(() => {

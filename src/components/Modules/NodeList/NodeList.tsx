@@ -37,9 +37,10 @@ class NodeList extends PureComponent<Props> {
         );
     };
 
-    renderSectionHeader = ({ section: { title } }: any) => {
+    renderSectionHeader = ({ section: { title, color } }: any) => {
         return (
             <View style={styles.sectionHeader}>
+                <View style={[styles.colorCircle, { backgroundColor: color }]} />
                 <Text numberOfLines={1} style={styles.sectionHeaderText}>
                     {title}
                 </Text>
@@ -55,6 +56,7 @@ class NodeList extends PureComponent<Props> {
                 sections={dataSource}
                 renderItem={this.renderItem}
                 renderSectionHeader={this.renderSectionHeader}
+                maxToRenderPerBatch={100}
                 keyExtractor={(item, index) => item.url + index}
             />
         );

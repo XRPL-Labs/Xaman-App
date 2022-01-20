@@ -41,6 +41,7 @@ class PaymentChannelClaimTemplate extends Component<Props, State> {
                                 value={transaction.Amount.value}
                                 currency={transaction.Amount.currency}
                                 style={styles.amount}
+                                immutable
                             />
                         </View>
                     </>
@@ -54,6 +55,7 @@ class PaymentChannelClaimTemplate extends Component<Props, State> {
                                 value={transaction.Balance.value}
                                 currency={transaction.Balance.currency}
                                 style={styles.amount}
+                                immutable
                             />
                         </View>
                     </>

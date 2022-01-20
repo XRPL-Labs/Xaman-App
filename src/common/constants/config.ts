@@ -26,6 +26,7 @@ export default {
         proxy: 'wss://custom-node.xrpl-labs.com',
         main: ['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'],
         test: ['wss://testnet.xrpl-labs.com', 'wss://s.altnet.rippletest.net:51233'],
+        dev: ['wss://s.devnet.rippletest.net:51233'],
         deprecated: ['wss://xrpl.ws'],
     },
 
@@ -37,10 +38,12 @@ export default {
             tx: {
                 main: 'https://livenet.xrpl.org/transactions/',
                 test: 'https://testnet.xrpl.org/transactions/',
+                dev: 'https://devnet.xrpl.org/transactions/',
             },
             account: {
                 main: 'https://livenet.xrpl.org/accounts/',
                 test: 'https://testnet.xrpl.org/accounts/',
+                dev: 'https://devnet.xrpl.org/accounts/',
             },
         },
         {
@@ -49,10 +52,12 @@ export default {
             tx: {
                 main: 'https://bithomp.com/explorer/',
                 test: 'https://test.bithomp.com/explorer/',
+                dev: 'https://devnet.xrpl.org/transactions/',
             },
             account: {
                 main: 'https://bithomp.com/explorer/',
                 test: 'https://test.bithomp.com/explorer/',
+                dev: 'https://devnet.xrpl.org/accounts/',
             },
         },
         {
@@ -61,10 +66,12 @@ export default {
             tx: {
                 main: 'https://xrpscan.com/tx/',
                 test: 'https://test.bithomp.com/explorer/',
+                dev: 'https://devnet.xrpl.org/transactions/',
             },
             account: {
                 main: 'https://xrpscan.com/account/',
                 test: 'https://test.bithomp.com/explorer/',
+                dev: 'https://devnet.xrpl.org/accounts/',
             },
         },
         {
@@ -73,10 +80,12 @@ export default {
             tx: {
                 main: 'https://xrplorer.com/transaction/',
                 test: 'https://test.bithomp.com/explorer/',
+                dev: 'https://devnet.xrpl.org/transactions/',
             },
             account: {
                 main: 'https://xrplorer.com/account/',
                 test: 'https://test.bithomp.com/explorer/',
+                dev: 'https://devnet.xrpl.org/accounts/',
             },
         },
         {
@@ -85,10 +94,12 @@ export default {
             tx: {
                 main: 'https://xrpintel.com/tx/',
                 test: 'https://test.bithomp.com/explorer/',
+                dev: 'https://devnet.xrpl.org/transactions/',
             },
             account: {
                 main: 'https://xrpintel.com/account/',
                 test: 'https://test.bithomp.com/explorer/',
+                dev: 'https://devnet.xrpl.org/accounts/',
             },
         },
     ],

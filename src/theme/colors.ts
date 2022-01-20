@@ -31,6 +31,7 @@ const colors = {
     brandXrplns: '#3767CE',
     brandXrpscan: '#004a7c',
     brandPayid: '#38D39F',
+    brandFIO: '#564FC6',
 };
 
 const ColorsGeneral = {
@@ -108,7 +109,8 @@ const ColorsTheme = {
 const ChainColors = {
     [NodeChain.Main]: ColorsGeneral.blue,
     [NodeChain.Test]: ColorsGeneral.green,
-    [NodeChain.Custom]: ColorsGeneral.orange,
+    [NodeChain.Dev]: ColorsGeneral.orange,
+    [NodeChain.Custom]: ColorsGeneral.red,
 };
 
 export default ColorsGeneral;

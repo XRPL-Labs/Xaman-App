@@ -7,7 +7,7 @@ import { FeeListItem } from './FeeListItem';
 /* Types ==================================================================== */
 interface FeeItems {
     type: string;
-    value: string;
+    value: number;
     suggested?: boolean;
 }
 

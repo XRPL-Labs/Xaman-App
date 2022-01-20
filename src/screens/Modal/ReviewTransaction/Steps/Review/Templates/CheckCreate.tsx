@@ -46,7 +46,7 @@ class CheckCreateTemplate extends Component<Props, State> {
             currencyName: props.transaction.SendMax?.currency
                 ? NormalizeCurrencyCode(props.transaction.SendMax.currency)
                 : 'XRP',
-            destinationDetails: { name: '', source: '' },
+            destinationDetails: undefined,
         };
 
         this.amountInput = React.createRef();

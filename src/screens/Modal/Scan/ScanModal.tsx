@@ -2,14 +2,14 @@
  * Scan Modal
  */
 
-import upperFirst from 'lodash/upperFirst';
+import { first, upperFirst } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, ImageBackground, Text, Linking, BackHandler, NativeEventSubscription } from 'react-native';
+import { View, Platform, ImageBackground, Text, Linking, BackHandler, NativeEventSubscription } from 'react-native';
 
-import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 import Clipboard from '@react-native-community/clipboard';
-import { RNCamera } from 'react-native-camera';
+import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
+import { RNCamera, GoogleVisionBarcodesDetectedEvent, BarCodeReadEvent } from 'react-native-camera';
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
 import { StyleService, BackendService, SocketService } from '@services';
@@ -589,7 +589,24 @@ class ScanView extends Component<Props, State> {
         }
     };
 
-    onReadCode = ({ data }: { data: string }) => {
+    onGoogleVisionBarcodesDetected = ({ barcodes }: GoogleVisionBarcodesDetectedEvent) => {
+        if (!Array.isArray(barcodes) || barcodes.length === 0) {
+            return;
+        }
+        // get first barcode that exist
+        const { data } = first(barcodes);
+        if (data) {
+            this.onReadCode(data);
+        }
+    };
+
+    onBarCodeRead = ({ data }: BarCodeReadEvent) => {
+        if (data) {
+            this.onReadCode(data);
+        }
+    };
+
+    onReadCode = (data: string) => {
         const { coreSettings } = this.state;
 
         if (data) {
@@ -639,7 +656,7 @@ class ScanView extends Component<Props, State> {
         return true;
     };
 
-    requestPermissions = async () => {
+    requestPermissions = () => {
         Linking.openSettings();
     };
 
@@ -717,7 +734,10 @@ class ScanView extends Component<Props, State> {
                     }}
                     notAuthorizedView={this.renderNotAuthorizedView()}
                     captureAudio={false}
-                    onBarCodeRead={this.onReadCode}
+                    onGoogleVisionBarcodesDetected={
+                        Platform.OS === 'android' ? this.onGoogleVisionBarcodesDetected : undefined
+                    }
+                    onBarCodeRead={Platform.OS === 'ios' ? this.onBarCodeRead : undefined}
                     barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
                 >
                     <View style={[styles.rectangleContainer]}>

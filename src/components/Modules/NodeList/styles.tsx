@@ -1,22 +1,30 @@
 import StyleService from '@services/StyleService';
 
-import { AppFonts } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     sectionHeader: {
-        paddingVertical: 10,
-        paddingHorizontal: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: AppSizes.paddingExtraSml,
+        paddingHorizontal: AppSizes.paddingSml,
+        marginBottom: AppSizes.padding,
         borderTopColor: '$tint',
         borderTopWidth: 1,
-        backgroundColor: '$background',
+        backgroundColor: '$tint',
     },
     sectionHeaderText: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size,
-        paddingLeft: 8,
+        paddingLeft: AppSizes.paddingExtraSml,
         color: '$textPrimary',
+    },
+    colorCircle: {
+        width: 15,
+        height: 15,
+        borderRadius: 15 / 2,
     },
 });
 

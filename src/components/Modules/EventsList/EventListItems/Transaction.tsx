@@ -168,6 +168,31 @@ class TransactionTemplate extends Component<Props, State> {
                 address = item.Account.address;
                 key = 'Account';
                 break;
+            case 'NFTokenMint':
+                address = item.Account.address;
+                key = 'Account';
+                break;
+            case 'NFTokenBurn':
+                address = item.Account.address;
+                key = 'Account';
+                break;
+            case 'NFTokenCreateOffer':
+                address = item.Account.address;
+                key = 'Account';
+                break;
+            case 'NFTokenCancelOffer':
+                address = item.Account.address;
+                key = 'Account';
+                break;
+            case 'NFTokenAcceptOffer':
+                if (item.Account?.address === account.address) {
+                    if (item.Offer) {
+                        address = item.Offer.Owner;
+                    }
+                } else {
+                    address = item.Account.address;
+                }
+                break;
             default:
                 break;
         }
@@ -311,14 +336,20 @@ class TransactionTemplate extends Component<Props, State> {
                     return Localize.t('events.paymentReceived');
                 }
                 return Localize.t('events.paymentSent');
-            case 'TrustSet':
-                if (item.Account.address !== account.address && item.Limit !== 0) {
+            case 'TrustSet': {
+                // incoming trustline
+                if (item.Account.address !== account.address) {
                     return Localize.t('events.incomingTrustLineAdded');
                 }
-                if (item.Limit === 0) {
+                const ownerCountChange = item.OwnerCountChange(account.address);
+                if (ownerCountChange) {
+                    if (ownerCountChange.action === 'INC') {
+                        return Localize.t('events.addedATrustLine');
+                    }
                     return Localize.t('events.removedATrustLine');
                 }
-                return Localize.t('events.addedATrustLine');
+                return Localize.t('events.updatedATrustLine');
+            }
             case 'EscrowCreate':
                 return Localize.t('events.createEscrow');
             case 'EscrowFinish':
@@ -362,6 +393,16 @@ class TransactionTemplate extends Component<Props, State> {
                 return Localize.t('events.claimPaymentChannel');
             case 'PaymentChannelFund':
                 return Localize.t('events.fundPaymentChannel');
+            case 'NFTokenMint':
+                return Localize.t('events.mintNFT');
+            case 'NFTokenBurn':
+                return Localize.t('events.burnNFT');
+            case 'NFTokenCreateOffer':
+                return Localize.t('events.createNFTOffer');
+            case 'NFTokenCancelOffer':
+                return Localize.t('events.cancelNFTOffer');
+            case 'NFTokenAcceptOffer':
+                return Localize.t('events.acceptNFTOffer');
             default:
                 return item.Type;
         }
@@ -530,6 +571,7 @@ class TransactionTemplate extends Component<Props, State> {
                 <AmountText
                     value={amount.value}
                     currency={amount.currency}
+                    prefix={!incoming && '-'}
                     style={[styles.amount, !incoming && styles.outgoingColor]}
                     currencyStyle={styles.currency}
                     valueContainerStyle={styles.amountValueContainer}
@@ -575,6 +617,26 @@ class TransactionTemplate extends Component<Props, State> {
                     <AmountText
                         value={amount.value}
                         currency={amount.currency}
+                        prefix={!!balanceChanges.sent && '-'}
+                        style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
+        if (item.Type === 'NFTokenAcceptOffer') {
+            const balanceChanges = item.BalanceChange(account.address);
+            if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                const amount = balanceChanges?.received || balanceChanges?.sent;
+
+                return (
+                    <AmountText
+                        value={amount.value}
+                        currency={amount.currency}
+                        prefix={!!balanceChanges.sent && '-'}
                         style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
                         currencyStyle={styles.currency}
                         valueContainerStyle={styles.amountValueContainer}

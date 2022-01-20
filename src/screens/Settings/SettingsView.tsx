@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, ScrollView } from 'react-native';
+import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
@@ -34,8 +35,21 @@ class SettingsView extends Component<Props, State> {
         };
     }
 
-    onRowPress = (screen: string) => {
-        Navigator.push(screen);
+    onRowPress = (route: string) => {
+        if (route === 'XUMM.Support.XApp') {
+            Navigator.showModal(
+                AppScreens.Modal.XAppBrowser,
+                {
+                    identifier: 'xumm.support',
+                },
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+                },
+            );
+        } else {
+            Navigator.push(route);
+        }
     };
 
     renderRow = (icon: any, label: string, screen: string, testID: string) => {
@@ -113,6 +127,12 @@ class SettingsView extends Component<Props, State> {
                             'advanced-button',
                         )}
                         <View style={styles.hr} />
+                        {this.renderRow(
+                            'IconHelpCircle',
+                            Localize.t('setupTermOfService.questionsAndSupport'),
+                            'XUMM.Support.XApp',
+                            'support-button',
+                        )}
                         {this.renderRow(
                             'IconInfo',
                             Localize.t('settings.termsAndConditions'),

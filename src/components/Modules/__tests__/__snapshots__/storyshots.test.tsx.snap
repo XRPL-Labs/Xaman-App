@@ -59,6 +59,74 @@ exports[`Storyshots AmountText discreet 1`] = `
 </View>
 `;
 
+exports[`Storyshots AmountText immutable; 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F0F3FF",
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "#F0F3FF",
+        "flex": 1,
+        "justifyContent": "center",
+        "paddingHorizontal": 10,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignSelf": "stretch",
+          "marginTop": 10,
+        }
+      }
+    >
+      <Text>
+        0.00000000000001
+         
+        USD
+      </Text>
+    </View>
+    <View
+      style={
+        Object {
+          "alignSelf": "stretch",
+          "marginTop": 10,
+        }
+      }
+    >
+      <Text>
+        2.2222
+         
+        USD
+      </Text>
+    </View>
+    <View
+      style={
+        Object {
+          "alignSelf": "stretch",
+          "marginTop": 10,
+        }
+      }
+    >
+      <Text>
+        99,999.123456
+         
+        USD
+      </Text>
+    </View>
+  </View>
+</View>
+`;
+
 exports[`Storyshots AmountText original 1`] = `
 <View
   style={
@@ -233,7 +301,7 @@ exports[`Storyshots AmountText original 1`] = `
 </View>
 `;
 
-exports[`Storyshots AmountText withPostfix 1`] = `
+exports[`Storyshots AmountText withCurrency 1`] = `
 <View
   style={
     Object {
@@ -306,6 +374,18 @@ exports[`Storyshots AmountText withPostfix 1`] = `
             0…
           </Text>
         </View>
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
+        >
+           
+          USD
+        </Text>
       </View>
     </View>
     <View
@@ -348,6 +428,18 @@ exports[`Storyshots AmountText withPostfix 1`] = `
             2.2222
           </Text>
         </View>
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
+        >
+           
+          USD
+        </Text>
       </View>
     </View>
     <View
@@ -401,6 +493,18 @@ exports[`Storyshots AmountText withPostfix 1`] = `
             99,999
           </Text>
         </View>
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              undefined,
+              undefined,
+            ]
+          }
+        >
+           
+          USD
+        </Text>
       </View>
     </View>
   </View>
@@ -1101,7 +1205,7 @@ exports[`Storyshots Badge PayId 1`] = `
             ]
           }
         >
-          PayID
+          PayString
         </Text>
       </View>
     </View>
@@ -1151,7 +1255,7 @@ exports[`Storyshots Badge PayId 1`] = `
             ]
           }
         >
-          PayID
+          PayString
         </Text>
       </View>
     </View>
@@ -1201,7 +1305,7 @@ exports[`Storyshots Badge PayId 1`] = `
             ]
           }
         >
-          PayID
+          PayString
         </Text>
       </View>
     </View>
@@ -4039,7 +4143,7 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
                 "fontFamily": "ProximaNova-Bold",
                 "fontSize": 32.14285714285714,
               },
-              null,
+              undefined,
             ]
           }
         >
@@ -4054,7 +4158,7 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
               "fontFamily": "UbuntuMono-Regular",
               "fontSize": 25.71428571428571,
             },
-            null,
+            undefined,
           ]
         }
       >
@@ -4156,7 +4260,7 @@ exports[`Storyshots RecipientElement default 1`] = `
                 "fontFamily": "ProximaNova-Bold",
                 "fontSize": 32.14285714285714,
               },
-              null,
+              undefined,
             ]
           }
         >
@@ -4171,7 +4275,7 @@ exports[`Storyshots RecipientElement default 1`] = `
               "fontFamily": "UbuntuMono-Regular",
               "fontSize": 25.71428571428571,
             },
-            null,
+            undefined,
           ]
         }
       >

@@ -51,6 +51,8 @@ class CoreRepository extends BaseRepository {
             chain = NodeChain.Main;
         } else if (AppConfig.nodes.test.indexOf(node) > -1) {
             chain = NodeChain.Test;
+        } else if (AppConfig.nodes.dev.indexOf(node) > -1) {
+            chain = NodeChain.Dev;
         } else {
             chain = NodeChain.Custom;
         }

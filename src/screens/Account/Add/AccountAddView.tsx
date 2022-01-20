@@ -1,19 +1,24 @@
 /**
  * Add Account Screen
  */
-import { set } from 'lodash';
+import { get, set, isEmpty } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Text, Image, ImageBackground, Alert, InteractionManager, EventSubscription } from 'react-native';
 
 import RNTangemSdk, { Card, EventCallback } from 'tangem-sdk-react-native';
 
+import { utils } from 'xrpl-accountlib';
+
 import StyleService from '@services/StyleService';
+import LoggerService from '@services/LoggerService';
+
+import { AccountRepository } from '@store/repositories';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 
-import { GetPreferCurve } from '@common/utils/tangem';
+import { GetPreferCurve, GetWalletDerivedPublicKey, DefaultDerivationPaths } from '@common/utils/tangem';
 
 import { AppScreens } from '@common/constants';
 
@@ -77,7 +82,9 @@ class AccountAddView extends Component<Props, State> {
             this.nfcListener.remove();
         }
 
-        RNTangemSdk.stopSession();
+        RNTangemSdk.stopSession().catch(() => {
+            // ignore
+        });
     }
 
     onNFCStateChange = ({ enabled }: EventCallback) => {
@@ -94,46 +101,114 @@ class AccountAddView extends Component<Props, State> {
         Navigator.push(AppScreens.Account.Generate);
     };
 
-    createTangemWallet = (card: Card) => {
-        const { cardId, supportedCurves } = card;
+    validateAndImportCard = (card: Card) => {
+        try {
+            // get normalized public key from card data
+            const publicKey = GetWalletDerivedPublicKey(card);
 
-        RNTangemSdk.createWallet({ cardId, curve: GetPreferCurve(supportedCurves) })
-            .then((resp) => {
-                const { wallet } = resp;
-                set(card, 'wallets', [wallet]);
-                this.goToImport({ tangemCard: card });
-            })
-            .catch(() => {
-                // ignore
-            });
+            // validate wallet publicKey by deriving the address before moving to the next step
+            const address = utils.deriveAddress(publicKey);
+            if (!address || !utils.isValidAddress(address)) {
+                throw new Error('generated wallet contains invalid wallet publicKey!');
+            }
+
+            // check if account exist
+            const exist = AccountRepository.findOne({ address });
+            if (exist) {
+                Alert.alert(Localize.t('global.error'), Localize.t('account.accountAlreadyExist'));
+                return;
+            }
+
+            this.goToImport({ tangemCard: card });
+        } catch (e) {
+            LoggerService.logError('Unexpected error in importing tangem wallet', e);
+            Alert.alert(
+                Localize.t('global.unexpectedErrorOccurred'),
+                Localize.t('global.pleaseCheckSessionLogForMoreInfo'),
+            );
+        }
     };
 
-    scanTangemCard = () => {
-        RNTangemSdk.scanCard()
-            .then((card) => {
-                const { wallets } = card;
-                if (wallets.length === 0) {
-                    Prompt(
-                        Localize.t('global.notice'),
-                        Localize.t('account.tangemCardEmptyGenerateWalletAlert'),
-                        [
-                            { text: Localize.t('global.cancel') },
-                            {
-                                text: Localize.t('account.generateAccount'),
-                                onPress: () => {
-                                    this.createTangemWallet(card);
-                                },
-                            },
-                        ],
-                        { type: 'default' },
-                    );
-                } else {
-                    this.goToImport({ tangemCard: card });
-                }
-            })
-            .catch(() => {
-                // ignore
-            });
+    createTangemWallet = async (card: Card) => {
+        const { cardId, supportedCurves } = card;
+
+        try {
+            const resp = await RNTangemSdk.createWallet({ cardId, curve: GetPreferCurve(supportedCurves) });
+
+            // validate response
+            const { wallet } = resp;
+
+            if (!resp || !wallet) {
+                throw new Error('No wallet present in createWallet response!');
+            }
+
+            // apply generated wallet to the scanned card
+            set(card, 'wallets', [wallet]);
+
+            // validate created card is apply to the card object
+            if (!get(card, 'wallets[0].publicKey')) {
+                throw new Error('Unable to set newly generated wallet to the card details!');
+            }
+
+            // go to import section
+            this.validateAndImportCard(card);
+        } catch (e) {
+            // ignore use cancel operation
+            // @ts-ignore
+            if (e?.message && e?.message === 'The user cancelled the operation') {
+                return;
+            }
+            LoggerService.logError('Unexpected error in creating tangem wallet', e);
+            Alert.alert(
+                Localize.t('global.unexpectedErrorOccurred'),
+                Localize.t('global.pleaseCheckSessionLogForMoreInfo'),
+            );
+        }
+    };
+
+    scanTangemCard = async () => {
+        try {
+            const card = await RNTangemSdk.scanCard();
+
+            // get current card wallets status
+            const { wallets } = card;
+
+            if (!card || !Array.isArray(wallets)) {
+                throw new Error('response is not contain card details or wallet details');
+            }
+
+            // card already contains existing wallet
+            if (!isEmpty(wallets)) {
+                this.validateAndImportCard(card);
+                return;
+            }
+
+            // no wallet exist in the card
+            Prompt(
+                Localize.t('global.notice'),
+                Localize.t('account.tangemCardEmptyGenerateWalletAlert'),
+                [
+                    { text: Localize.t('global.cancel') },
+                    {
+                        text: Localize.t('account.generateAccount'),
+                        onPress: () => {
+                            this.createTangemWallet(card);
+                        },
+                    },
+                ],
+                { type: 'default' },
+            );
+        } catch (e) {
+            // @ts-ignore
+            if (e?.message && e?.message === 'The user cancelled the operation') {
+                return;
+            }
+            LoggerService.logError('Unexpected error in scanning tangem card', e);
+            Alert.alert(
+                Localize.t('global.unexpectedErrorOccurred'),
+                Localize.t('global.pleaseCheckSessionLogForMoreInfo'),
+            );
+        }
     };
 
     onAddTangemCardPress = () => {
@@ -144,7 +219,13 @@ class AccountAddView extends Component<Props, State> {
             return;
         }
 
-        RNTangemSdk.startSession();
+        // start the NFC/Tangem session
+        RNTangemSdk.startSession({
+            attestationMode: 'offline',
+            defaultDerivationPaths: DefaultDerivationPaths,
+        }).catch((e) => {
+            LoggerService.logError('Unexpected error in startSession TangemSDK', e);
+        });
 
         if (NFCEnabled) {
             this.scanTangemCard();

@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import StyleService from '@services/StyleService';
 
 import { AppFonts, AppSizes } from '@theme';
@@ -55,7 +56,7 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.h3.size,
         color: '$red',
-        paddingVertical: 17,
+        paddingVertical: Platform.OS === 'ios' ? 17 : 12,
     },
     toAmount: {
         padding: 0,
@@ -86,6 +87,21 @@ const styles = StyleService.create({
     },
     separatorLine: {
         top: '50%',
+    },
+    detailsContainer: {
+        paddingHorizontal: 20,
+        paddingTop: 20,
+        paddingBottom: 10,
+        backgroundColor: '$tint',
+        borderRadius: 15,
+        borderColor: '$tint',
+        borderWidth: 2,
+    },
+    detailsRow: {
+        left: 0,
+        right: 0,
+        flexDirection: 'row',
+        paddingBottom: 10,
     },
 });
 

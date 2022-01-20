@@ -26,6 +26,7 @@ import Localize from '@locale';
 
 // style
 import { AppStyles } from '@theme';
+import { ChainColors } from '@theme/colors';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -77,14 +78,23 @@ class NodeListView extends Component<Props, State> {
         const nodesCategoryMap = [
             {
                 title: Localize.t('global.mainnet'),
+                color: ChainColors[NodeChain.Main],
                 data: flatMap(AppConfig.nodes.main, (n) => {
                     return { chain: NodeChain.Main, url: n };
                 }),
             },
             {
                 title: Localize.t('global.testnet'),
+                color: ChainColors[NodeChain.Test],
                 data: flatMap(AppConfig.nodes.test, (n) => {
                     return { chain: NodeChain.Test, url: n };
+                }),
+            },
+            {
+                title: Localize.t('global.devnet'),
+                color: ChainColors[NodeChain.Dev],
+                data: flatMap(AppConfig.nodes.dev, (n) => {
+                    return { chain: NodeChain.Dev, url: n };
                 }),
             },
         ];
@@ -92,6 +102,7 @@ class NodeListView extends Component<Props, State> {
         if (!customNodes.isEmpty()) {
             nodesCategoryMap.push({
                 title: Localize.t('global.custom'),
+                color: ChainColors[NodeChain.Custom],
                 data: flatMap(customNodes, (n) => {
                     return { chain: NodeChain.Custom, url: n.endpoint };
                 }),

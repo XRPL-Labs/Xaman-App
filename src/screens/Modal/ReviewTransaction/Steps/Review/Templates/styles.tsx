@@ -3,18 +3,18 @@ import StyleService from '@services/StyleService';
 import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    // container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '$lightBlue },
     contentBox: {
         marginBottom: AppSizes.paddingSml,
         paddingHorizontal: 5,
-        // borderColor: '$red,
-        // borderWidth: 1,
     },
     addressContainer: {
         borderRadius: 15,
         zIndex: 2,
         paddingHorizontal: 5,
         paddingVertical: 10,
+        marginBottom: AppSizes.paddingSml,
+    },
+    signersContainer: {
         marginBottom: AppSizes.paddingSml,
     },
     label: {

@@ -57,6 +57,12 @@ class Flag {
             case 'PaymentChannelClaim':
                 flagsList = txFlags.PaymentChannelClaim;
                 break;
+            case 'NFTokenMint':
+                flagsList = txFlags.NFTokenMint;
+                break;
+            case 'NFTokenCreateOffer':
+                flagsList = txFlags.NFTokenCreateOffer;
+                break;
             default:
                 break;
         }
