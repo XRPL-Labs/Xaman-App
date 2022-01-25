@@ -57,8 +57,9 @@ const screens = {
         RecipientMenu: 'overlay.RecipientMenu',
         ConfirmDestinationTag: 'overlay.ConfirmDestinationTag',
         SelectAccount: 'overlay.SelectAccount',
-        HomeActions: 'overlay.HomeActions',
+        SelectCurrency: 'overlay.SelectCurrency',
         SelectFee: 'overlay.SelectFee',
+        HomeActions: 'overlay.HomeActions',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',

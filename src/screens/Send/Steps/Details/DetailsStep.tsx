@@ -20,17 +20,9 @@ import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 // components
-import {
-    Avatar,
-    Button,
-    AccordionPicker,
-    KeyboardAwareScrollView,
-    AmountInput,
-    AmountText,
-    Footer,
-} from '@components/General';
+import { Avatar, Button, KeyboardAwareScrollView, AmountInput, AmountText, Footer } from '@components/General';
 import { AmountValueType } from '@components/General/AmountInput';
-import { AccountPicker } from '@components/Modules';
+import { AccountPicker, CurrencyPicker } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -360,16 +352,15 @@ class DetailsStep extends Component<Props, State> {
                                 {Localize.t('global.asset')}
                             </Text>
                         </View>
-                        <AccordionPicker
+                        <CurrencyPicker
+                            account={source}
                             onSelect={this.onCurrencyChange}
-                            items={
+                            currencies={
                                 source
                                     ? ['XRP', ...filter(source.lines, (l) => l.balance > 0 || l.obligation === true)]
                                     : []
                             }
-                            renderItem={this.renderCurrencyItem}
                             selectedItem={currency}
-                            keyExtractor={(i) => (typeof i === 'string' ? i : i.currency.id)}
                         />
                     </View>
 

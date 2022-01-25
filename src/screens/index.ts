@@ -49,8 +49,9 @@ import ConnectionIssue from './Overlay/ConnectionIssue';
 import RecipientMenu from './Overlay/RecipientMenu';
 import ConfirmDestinationTag from './Overlay/ConfirmDestinationTag';
 import SelectAccount from './Overlay/SelectAccount';
-import HomeActions from './Overlay/HomeActions';
+import SelectCurrency from './Overlay/SelectCurrency';
 import SelectFee from './Overlay/SelectFee';
+import HomeActions from './Overlay/HomeActions';
 
 // Transaction
 import Send from './Send';
@@ -132,8 +133,9 @@ export {
     RecipientMenu,
     ConfirmDestinationTag,
     SelectAccount,
-    HomeActions,
+    SelectCurrency,
     SelectFee,
+    HomeActions,
     // transaction
     Send,
     Request,
