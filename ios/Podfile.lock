@@ -400,7 +400,7 @@ PODS:
     - React
   - RNCClipboard (1.5.1):
     - React-Core
-  - RNDeviceInfo (8.3.3):
+  - RNDeviceInfo (8.4.8):
     - React-Core
   - RNFBAnalytics (14.2.1):
     - Firebase/AnalyticsWithoutAdIdSupport (= 8.10.0)
@@ -648,7 +648,7 @@ SPEC CHECKSUMS:
   ReactNativeNavigation: 0a768a3eb149e808ca28e12ffbca9b3efecb4ddf
   RealmJS: 2925b36a86fc179b0b58ad48386e43eb95188e9a
   RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
-  RNDeviceInfo: cc7de0772378f85d8f36ae439df20f05c590a651
+  RNDeviceInfo: 0400a6d0c94186d1120c3cbd97b23abc022187a9
   RNFBAnalytics: d22ddd7910aa1537bceffe98bca30aeee0c31850
   RNFBApp: 4f490a1e02e41721c55b354019f39f2323d72f82
   RNFBCrashlytics: be2b4abeaf1cfe019a95f0ced8a7e7594a59f14e
