@@ -180,8 +180,9 @@ export default class Storage {
         const encryptionKeyExist = await Vault.exist(this.keyName);
         const dbFileExist = Realm.exists({ path: this.path });
 
+        // if the database file exist but we cannot get the encryption key then throw an error
         if (!encryptionKeyExist && dbFileExist) {
-            this.wipe();
+            throw new Error('Realm file decryption failed');
         }
 
         // set encryption key

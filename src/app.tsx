@@ -30,7 +30,7 @@ import {
 
 // Storage
 import { CoreRepository } from '@store/repositories';
-import StorageBackend from '@store/storage';
+import DataStorage from '@store/storage';
 
 // services
 import * as services from '@services';
@@ -42,12 +42,12 @@ messaging().setBackgroundMessageHandler(async () => {
 
 /* Application  ==================================================================== */
 class Application {
-    storage: StorageBackend;
+    storage: DataStorage;
     initialized: boolean;
     logger: any;
 
     constructor() {
-        this.storage = new StorageBackend();
+        this.storage = new DataStorage();
         this.logger = services.LoggerService.createLogger('Application');
         this.initialized = false;
     }
@@ -71,7 +71,7 @@ class Application {
                 this.configure,
                 this.initializeStorage,
                 this.loadAppLocale,
-                this.initServices,
+                this.initializeServices,
                 this.registerScreens,
             ];
 
@@ -163,7 +163,7 @@ class Application {
     };
 
     // initialize all the services
-    initServices = () => {
+    initializeServices = () => {
         return new Promise<void>((resolve, reject) => {
             try {
                 const coreSettings = CoreRepository.getSettings();
@@ -182,11 +182,11 @@ class Application {
                         resolve();
                     })
                     .catch((e) => {
-                        this.logger.error('initServices Error:', e);
+                        this.logger.error('initializeServices Error:', e);
                         reject(e);
                     });
             } catch (e) {
-                this.logger.error('initServices Error:', e);
+                this.logger.error('initializeServices Error:', e);
             }
         });
     };
