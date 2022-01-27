@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { get, last, set, isUndefined } from 'lodash';
+import { get, differenceBy, set, isUndefined } from 'lodash';
 
 import { HexEncoding } from '@common/utils/string';
 
@@ -56,13 +56,17 @@ class NFTokenMint extends BaseTransaction {
             if (get(node, 'CreatedNode.LedgerEntryType') === 'NFTokenPage') {
                 tokenID = get(node, 'CreatedNode.NewFields.NonFungibleTokens[0].NonFungibleToken.TokenID');
             } else if (get(node, 'ModifiedNode.LedgerEntryType') === 'NFTokenPage') {
-                const tokenPage = get(node, 'ModifiedNode.FinalFields.NonFungibleTokens');
-                tokenID = get(last(tokenPage), 'NonFungibleToken.TokenID');
+                const nextTokenPage = get(node, 'ModifiedNode.FinalFields.NonFungibleTokens');
+                const prevTokenPage = get(node, 'ModifiedNode.PreviousFields.NonFungibleTokens');
+                tokenID = get(
+                    differenceBy(nextTokenPage, prevTokenPage, 'NonFungibleToken.TokenID'),
+                    '[0].NonFungibleToken.TokenID',
+                );
             }
-
-            this.TokenID = tokenID;
             return true;
         });
+
+        this.TokenID = tokenID;
 
         return tokenID;
     }
