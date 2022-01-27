@@ -93,7 +93,10 @@ class Application {
     handleError = (exception: any) => {
         const message = services.LoggerService.normalizeError(exception);
         if (message) {
-            if (message.indexOf('Realm file decryption failed') > -1) {
+            if (
+                message.indexOf('Realm file decryption failed') > -1 ||
+                message.indexOf('Attempt to get length of null array') > -1
+            ) {
                 Alert.alert('Error', ErrorMessages.storageDecryptionFailed, [
                     {
                         text: 'Try again later',
