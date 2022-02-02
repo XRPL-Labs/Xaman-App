@@ -1,4 +1,4 @@
-import isEmpty from 'lodash/isEmpty';
+import { isEmpty, isUndefined } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
@@ -40,7 +40,7 @@ class EscrowFinishTemplate extends Component<Props, State> {
 
         // in case of OfferSequence is not exist and PreviousTxnID is set fetch the sequence
         // from transaction id
-        if (!transaction.OfferSequence && transaction.PreviousTxnID) {
+        if (isUndefined(transaction.OfferSequence) && transaction.PreviousTxnID) {
             await LedgerService.getTransaction(transaction.PreviousTxnID).then((tx: any) => {
                 const { Sequence } = tx;
                 if (Sequence) {
@@ -85,10 +85,15 @@ class EscrowFinishTemplate extends Component<Props, State> {
                         ...ownerDetails,
                     }}
                 />
-                <Text style={[styles.label]}>{Localize.t('global.offerSequence')}</Text>
-                <View style={[styles.contentBox]}>
-                    <Text style={styles.value}>{transaction.OfferSequence}</Text>
-                </View>
+
+                {!isUndefined(transaction.OfferSequence) && (
+                    <>
+                        <Text style={[styles.label]}>{Localize.t('global.offerSequence')}</Text>
+                        <View style={[styles.contentBox]}>
+                            <Text style={styles.value}>{transaction.OfferSequence}</Text>
+                        </View>
+                    </>
+                )}
             </>
         );
     }

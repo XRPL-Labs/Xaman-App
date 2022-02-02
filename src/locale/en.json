@@ -152,6 +152,7 @@
     "passcode": "Passcode",
     "longTap": "Long Tap",
     "offerSequence": "Offer Sequence",
+    "ticketSequence": "Ticket Sequence",
     "ticketCount": "Ticket Count",
     "finishAfter": "Finish After",
     "cancelAfter": "Cancel After",
