@@ -81,7 +81,7 @@ class LedgerExchange {
     };
 
     calculateOutcomes = (value: string, liquidity: LiquidityResult, direction: MarketDirection) => {
-        if (!value || value === '0') {
+        if (!value || value === '0' || !liquidity.rate) {
             return {
                 expected: '0',
                 minimum: '0',
