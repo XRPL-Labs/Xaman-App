@@ -193,7 +193,7 @@ class SelectCurrencyOverlay extends Component<Props, State> {
 
         return (
             <ActionPanel
-                height={AppSizes.heightPercentageToDP(70)}
+                height={AppSizes.heightPercentageToDP(90)}
                 onSlideDown={this.onClose}
                 ref={(r) => {
                     this.actionPanel = r;
