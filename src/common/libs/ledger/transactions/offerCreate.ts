@@ -100,10 +100,10 @@ class OfferCreate extends BaseTransaction {
     }
 
     get OfferSequence(): number {
-        const offerSequence = get(this, ['tx', 'OfferSequence']);
+        const offerSequence = get(this, ['tx', 'OfferSequence'], undefined);
 
         if (isUndefined(offerSequence)) {
-            return get(this, ['tx', 'Sequence']);
+            return get(this, ['tx', 'Sequence'], undefined);
         }
 
         return offerSequence;

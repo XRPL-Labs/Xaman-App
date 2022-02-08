@@ -526,6 +526,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 onMessage={this.onMessage}
                 userAgent={this.getUserAgent()}
                 androidHardwareAccelerationDisabled={false}
+                cacheMode="LOAD_NO_CACHE"
             />
         );
     };

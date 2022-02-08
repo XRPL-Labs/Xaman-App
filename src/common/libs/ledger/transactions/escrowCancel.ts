@@ -24,7 +24,7 @@ class EscrowCancel extends BaseTransaction {
     }
 
     get Owner(): string {
-        return get(this, ['tx', 'Owner']);
+        return get(this, ['tx', 'Owner'], undefined);
     }
 
     set OfferSequence(sequence: number) {
@@ -32,7 +32,7 @@ class EscrowCancel extends BaseTransaction {
     }
 
     get OfferSequence(): number {
-        return get(this, ['tx', 'OfferSequence']);
+        return get(this, ['tx', 'OfferSequence'], undefined);
     }
 }
 

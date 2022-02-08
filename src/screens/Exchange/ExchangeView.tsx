@@ -270,9 +270,11 @@ class ExchangeView extends Component<Props, State> {
             Localize.t('global.exchange'),
             Localize.t('exchange.doYouWantToExchange', {
                 payAmount: Localize.formatNumber(Number(amount)),
-                payCurrency: MarketDirection.SELL ? 'XRP' : NormalizeCurrencyCode(trustLine.currency.currency),
+                payCurrency:
+                    direction === MarketDirection.SELL ? 'XRP' : NormalizeCurrencyCode(trustLine.currency.currency),
                 getAmount: Localize.formatNumber(Number(expectedOutcome)),
-                getCurrency: MarketDirection.SELL ? NormalizeCurrencyCode(trustLine.currency.currency) : 'XRP',
+                getCurrency:
+                    direction === MarketDirection.SELL ? NormalizeCurrencyCode(trustLine.currency.currency) : 'XRP',
             }),
             [
                 { text: Localize.t('global.cancel') },

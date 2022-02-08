@@ -15,7 +15,7 @@ interface Props {
     onChangeText?: (value: string) => void;
     placeholder?: string;
     inputStyle?: TextStyle;
-    containerStyle?: ViewStyle;
+    containerStyle?: ViewStyle | ViewStyle[];
 }
 
 interface State {
@@ -40,6 +40,10 @@ class SearchBar extends PureComponent<Props, State> {
         radius: 5,
         border: false,
         onChangeText: () => {},
+    };
+
+    public clearText = () => {
+        this.onChangeText('');
     };
 
     onChangeText = (value: string) => {

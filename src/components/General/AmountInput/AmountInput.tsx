@@ -37,7 +37,7 @@ interface State {
 /* Constants ==================================================================== */
 const MAX_XRP_DECIMAL_PLACES = 6;
 const MAX_IOU_DECIMAL_PLACES = 8;
-const MAX_IOU_PRECISION = 15;
+const MAX_IOU_PRECISION = 16;
 
 /* Component ==================================================================== */
 class AmountInput extends PureComponent<Props, State> {

@@ -1,8 +1,22 @@
 diff --git a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/viewcontrollers/component/ComponentViewController.java b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/viewcontrollers/component/ComponentViewController.java
-index 714bb20..e2bba9b 100644
+index 714bb20..9362e64 100644
 --- a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/viewcontrollers/component/ComponentViewController.java
 +++ b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/viewcontrollers/component/ComponentViewController.java
-@@ -144,7 +144,7 @@ public class ComponentViewController extends ChildController<ComponentLayout> {
+@@ -78,8 +78,11 @@ public class ComponentViewController extends ChildController<ComponentLayout> {
+         if (view != null)
+             view.sendComponentWillStart();
+         super.onViewDidAppear();
+-        view.requestApplyInsets();
+-        if (view != null && lastVisibilityState == VisibilityState.Disappear) view.sendComponentStart();
++        if (view != null) {
++            view.requestApplyInsets();
++            if (lastVisibilityState == VisibilityState.Disappear)
++                view.sendComponentStart();
++        }
+         lastVisibilityState = VisibilityState.Appear;
+     }
+ 
+@@ -144,7 +147,7 @@ public class ComponentViewController extends ChildController<ComponentLayout> {
      protected WindowInsetsCompat onApplyWindowInsets(View view, WindowInsetsCompat insets) {
          ViewController<?> viewController = findController(view);
          if (viewController == null || viewController.getView() == null) return insets;

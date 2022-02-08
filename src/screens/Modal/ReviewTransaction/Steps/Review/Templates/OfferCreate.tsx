@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, isUndefined } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
@@ -128,7 +128,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                     <Text style={[styles.value]}>{isLoadingIssuerFee ? 'Loading...' : `${issuerFee}%`}</Text>
                 </View>
 
-                {transaction.Expiration && (
+                {!isUndefined(transaction.Expiration) && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.expireAfter')}</Text>
                         <View style={[styles.contentBox]}>
@@ -137,7 +137,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                     </>
                 )}
 
-                {transaction.OfferSequence && (
+                {!isUndefined(transaction.OfferSequence) && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.offerSequence')}</Text>
                         <View style={[styles.contentBox]}>

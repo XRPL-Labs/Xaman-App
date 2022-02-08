@@ -79,7 +79,7 @@ const NFTValueToXRPL = (value: string, balance?: number): string => {
  * @returns IOU value in normalized string
  */
 const ValueToIOU = (value: string): string => {
-    const MAX_IOU_PRECISION = 15;
+    const MAX_IOU_PRECISION = 16;
 
     if (!value || typeof value !== 'string') {
         throw new Error('Value is not valid string!');

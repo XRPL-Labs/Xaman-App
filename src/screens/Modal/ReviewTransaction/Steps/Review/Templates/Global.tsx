@@ -1,4 +1,4 @@
-import { isEmpty, find } from 'lodash';
+import { isEmpty, find, isUndefined } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, Alert } from 'react-native';
 
@@ -323,6 +323,23 @@ class GlobalTemplate extends Component<Props, State> {
         );
     };
 
+    renderTicketSequence = () => {
+        const { transaction } = this.props;
+
+        if (isUndefined(transaction.TicketSequence)) {
+            return null;
+        }
+
+        return (
+            <>
+                <Text style={[styles.label]}>{Localize.t('global.ticketSequence')}</Text>
+                <View style={[styles.contentBox]}>
+                    <Text style={styles.value}>{transaction.TicketSequence}</Text>
+                </View>
+            </>
+        );
+    };
+
     renderMemos = () => {
         const { transaction } = this.props;
 
@@ -355,6 +372,7 @@ class GlobalTemplate extends Component<Props, State> {
     render() {
         return (
             <>
+                {this.renderTicketSequence()}
                 {this.renderSigners()}
                 {this.renderMemos()}
                 {this.renderFlags()}
