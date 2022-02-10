@@ -40,6 +40,7 @@ class ReviewTransactionModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.ReviewTransaction;
 
     private backHandler: NativeEventSubscription;
+    private mounted: boolean;
 
     static options() {
         return {
@@ -68,6 +69,9 @@ class ReviewTransactionModal extends Component<Props, State> {
     }
 
     componentDidMount() {
+        // track if component is mounted
+        this.mounted = true;
+
         // back handler listener on android
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress);
 
@@ -76,14 +80,18 @@ class ReviewTransactionModal extends Component<Props, State> {
     }
 
     componentWillUnmount() {
-        const { isPreparing, transaction } = this.state;
+        const { transaction } = this.state;
 
+        // track if component is mounted
+        this.mounted = false;
+
+        // unsubscribe from back handler
         if (this.backHandler) {
             this.backHandler.remove();
         }
 
-        // abort the transaction if we are preparing and leaving the review screen
-        if (isPreparing && transaction) {
+        // abort the transaction if we are leaving the review screen
+        if (transaction) {
             transaction.abort();
         }
     }
@@ -196,6 +204,11 @@ class ReviewTransactionModal extends Component<Props, State> {
         const { source, transaction } = this.state;
         const { payload } = this.props;
 
+        // if not mounted return
+        if (!this.mounted) {
+            return;
+        }
+
         this.setState({
             isPreparing: true,
         });
@@ -204,18 +217,20 @@ class ReviewTransactionModal extends Component<Props, State> {
             .sign(source, payload.isMultiSign())
             .then(this.submit)
             .catch((e) => {
-                if (e) {
-                    if (typeof e.toString === 'function') {
-                        Alert.alert(Localize.t('global.error'), e.toString());
-                    } else {
-                        Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+                if (this.mounted) {
+                    if (e) {
+                        if (typeof e.toString === 'function') {
+                            Alert.alert(Localize.t('global.error'), e.toString());
+                        } else {
+                            Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+                        }
                     }
-                }
 
-                this.setState({
-                    currentStep: Steps.Review,
-                    isPreparing: false,
-                });
+                    this.setState({
+                        currentStep: Steps.Review,
+                        isPreparing: false,
+                    });
+                }
             });
     };
 
@@ -289,20 +304,22 @@ class ReviewTransactionModal extends Component<Props, State> {
                     await payload.validate();
                 }
             } catch (e: any) {
-                Navigator.showAlertModal({
-                    type: 'error',
-                    text: e.message,
-                    buttons: [
-                        {
-                            text: Localize.t('global.ok'),
-                            type: 'dismiss',
-                        },
-                    ],
-                });
+                if (this.mounted) {
+                    Navigator.showAlertModal({
+                        type: 'error',
+                        text: e.message,
+                        buttons: [
+                            {
+                                text: Localize.t('global.ok'),
+                                type: 'dismiss',
+                            },
+                        ],
+                    });
 
-                this.setState({
-                    isValidPayload: false,
-                });
+                    this.setState({
+                        isValidPayload: false,
+                    });
+                }
 
                 return;
             }
@@ -313,16 +330,24 @@ class ReviewTransactionModal extends Component<Props, State> {
                     await transaction.validate(source, payload.isMultiSign());
                 }
             } catch (e: any) {
-                Navigator.showAlertModal({
-                    type: 'error',
-                    text: e.message,
-                    buttons: [
-                        {
-                            text: Localize.t('global.ok'),
-                            type: 'dismiss',
-                        },
-                    ],
-                });
+                if (this.mounted) {
+                    Navigator.showAlertModal({
+                        type: 'error',
+                        text: e.message,
+                        buttons: [
+                            {
+                                text: Localize.t('global.ok'),
+                                type: 'dismiss',
+                            },
+                        ],
+                    });
+                }
+                return;
+            }
+
+            // user may close the page at this point
+            // we need to return if component is not mounted
+            if (!this.mounted) {
                 return;
             }
 
@@ -461,9 +486,11 @@ class ReviewTransactionModal extends Component<Props, State> {
             // if everything is fine prepare the transacgtion for signing
             this.prepareAndSignTransaction();
         } finally {
-            this.setState({
-                isValidating: false,
-            });
+            if (this.mounted) {
+                this.setState({
+                    isValidating: false,
+                });
+            }
         }
     };
 
@@ -493,6 +520,11 @@ class ReviewTransactionModal extends Component<Props, State> {
     submit = async () => {
         const { payload } = this.props;
         const { transaction, coreSettings } = this.state;
+
+        // if not mounted return
+        if (!this.mounted) {
+            return;
+        }
 
         // in this phase transaction is already signed
         // check if we need to submit or not and patch the payload
@@ -567,13 +599,15 @@ class ReviewTransactionModal extends Component<Props, State> {
                 currentStep: Steps.Result,
             });
         } catch (e) {
-            this.setState({
-                currentStep: Steps.Review,
-            });
-            if (typeof e.toString === 'function') {
-                Alert.alert(Localize.t('global.error'), e.toString());
-            } else {
-                Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+            if (this.mounted) {
+                this.setState({
+                    currentStep: Steps.Review,
+                });
+                if (typeof e.toString === 'function') {
+                    Alert.alert(Localize.t('global.error'), e.toString());
+                } else {
+                    Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+                }
             }
         }
     };

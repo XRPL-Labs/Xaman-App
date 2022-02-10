@@ -247,6 +247,11 @@ class BaseTransaction {
                 throw new Error('transaction is in submitting phase or has been submitted to the ledger!');
             }
 
+            // if transaction aborted then don't continue
+            if (this.isAborted) {
+                throw new Error('Transaction aborted!');
+            }
+
             // set isSubmitted to true for preventing the transaction to be submitted multiple times
             this.isSubmitted = true;
 
