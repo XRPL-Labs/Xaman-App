@@ -304,7 +304,10 @@ class Payment extends BaseTransaction {
                     // ===== check if recipient have same trustline for receiving IOU =====
                     // ignore if sending to the issuer
                     if (IOUAmount.issuer !== this.Destination.address) {
-                        const destinationLine = await LedgerService.getAccountLine(this.Destination.address, IOUAmount);
+                        const destinationLine = await LedgerService.getFilteredAccountLine(
+                            this.Destination.address,
+                            IOUAmount,
+                        );
                         if (
                             !destinationLine ||
                             (Number(destinationLine.limit) === 0 && Number(destinationLine.balance) === 0)
@@ -341,7 +344,7 @@ class Payment extends BaseTransaction {
                     } else {
                         // sender is the issuer
                         // check for exceed the trustline Limit on obligations
-                        const sourceLine = await LedgerService.getAccountLine(source.address, {
+                        const sourceLine = await LedgerService.getFilteredAccountLine(source.address, {
                             issuer: this.Destination.address,
                             currency: IOUAmount.currency,
                         });

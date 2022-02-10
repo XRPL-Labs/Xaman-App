@@ -50,7 +50,7 @@ class CheckCancelTemplate extends Component<Props, State> {
         });
 
         // assign actual check object to the CashCheck tx
-        LedgerService.getLedgerEntry(transaction.CheckID)
+        LedgerService.getLedgerEntry({ index: transaction.CheckID })
             .then((ledgerEntry: any) => {
                 const checkObject = get(ledgerEntry, 'node', undefined);
 

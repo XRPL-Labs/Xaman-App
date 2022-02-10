@@ -179,12 +179,15 @@ class PaymentTemplate extends Component<Props, State> {
 
         try {
             // get source trust lines
-            const sourceLine = await LedgerService.getAccountLine(transaction.Account.address, transaction.Amount);
+            const sourceLine = await LedgerService.getFilteredAccountLine(
+                transaction.Account.address,
+                transaction.Amount,
+            );
 
             // if this condition applies we try to pay the requested amount with XRP
-            // the source account doesn't the trustline or proper trustline
-            // the source account balance doesn't cover the entire requested amount
-            // the sender is not issuer
+            // 1) the source account doesn't have the trustline or proper trustline
+            // 2) the source account balance doesn't cover the entire requested amount
+            // 3) the sender is not issuer
             const shouldPayWithXRP =
                 (!sourceLine ||
                     (Number(sourceLine.limit) === 0 && Number(sourceLine.balance) === 0) ||

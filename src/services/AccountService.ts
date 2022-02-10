@@ -12,10 +12,8 @@ import CurrencyRepository from '@store/repositories/currency';
 
 import Meta from '@common/libs/ledger/parser/meta';
 import { Amount } from '@common/libs/ledger/parser/common';
-import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
-import { RippleStateLedgerEntry } from '@common/libs/ledger/objects/types';
 
-import { LedgerTransactionType, LedgerTrustline } from '@common/libs/ledger/types';
+import { LedgerTransactionType } from '@common/libs/ledger/types';
 
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
@@ -160,106 +158,17 @@ class AccountService extends EventEmitter {
         });
     };
 
-    getAccountObligations = (account: string): Promise<LedgerTrustline[]> => {
-        return new Promise((resolve) => {
-            LedgerService.getGatewayBalances(account)
-                .then((accountObligations: any) => {
-                    const { obligations } = accountObligations;
-
-                    if (isEmpty(obligations)) return resolve([]);
-
-                    const obligationsLines = [] as LedgerTrustline[];
-
-                    map(obligations, (b, c) => {
-                        obligationsLines.push({
-                            account,
-                            currency: c,
-                            balance: new Amount(-b, false).toString(false),
-                            limit: '0',
-                            limit_peer: '0',
-                            quality_in: 0,
-                            quality_out: 0,
-                            obligation: true,
-                        });
-                    });
-
-                    return resolve(obligationsLines);
-                })
-                .catch(() => {
-                    return resolve([]);
-                });
-        });
-    };
-
-    /**
-     * returns all outgoing account lines
-     * NOTE: we use account_objects to get account lines as it's more accurate and efficient
-     */
-    getFilteredAccountLines = async (
-        account: string,
-        marker?: string,
-        combined = [] as LedgerTrustline[],
-    ): Promise<LedgerTrustline[]> => {
-        return LedgerService.getAccountObjects(account, { marker, type: 'state' }).then((resp) => {
-            const { account_objects, marker: _marker } = resp as {
-                account_objects: RippleStateLedgerEntry[];
-                marker?: string;
-            };
-
-            const notInDefaultState = account_objects.filter((obj) => {
-                return (
-                    obj.Flags &
-                    LedgerObjectFlags.RippleState[obj.HighLimit.issuer === account ? 'lsfHighReserve' : 'lsfLowReserve']
-                );
-            });
-
-            const accountLinesFormatted = notInDefaultState.map((obj) => {
-                const parties = [obj.HighLimit, obj.LowLimit];
-                const [self, counterparty] = obj.HighLimit.issuer === account ? parties : parties.reverse();
-
-                const ripplingFlags = [
-                    (LedgerObjectFlags.RippleState.lsfHighNoRipple & obj.Flags) ===
-                        LedgerObjectFlags.RippleState.lsfHighNoRipple,
-                    (LedgerObjectFlags.RippleState.lsfLowNoRipple & obj.Flags) ===
-                        LedgerObjectFlags.RippleState.lsfLowNoRipple,
-                ];
-                const [no_ripple, no_ripple_peer] =
-                    obj.HighLimit.issuer === account ? ripplingFlags : ripplingFlags.reverse();
-
-                const balance =
-                    obj.HighLimit.issuer === account && obj.Balance.value.startsWith('-')
-                        ? obj.Balance.value.slice(1)
-                        : obj.Balance.value;
-
-                return {
-                    account: counterparty.issuer,
-                    balance,
-                    currency: self.currency,
-                    limit: self.value,
-                    limit_peer: counterparty.value,
-                    no_ripple,
-                    no_ripple_peer,
-                } as LedgerTrustline;
-            });
-
-            if (_marker && _marker !== marker) {
-                return this.getFilteredAccountLines(account, _marker, accountLinesFormatted.concat(combined));
-            }
-            return accountLinesFormatted.concat(combined);
-        });
-    };
-
     /**
      * Update account trustLines
      */
     updateAccountLines = (account: string) => {
         return new Promise<void>((resolve, reject) => {
-            this.getFilteredAccountLines(account)
+            LedgerService.getFilteredAccountLines(account)
                 .then(async (accountLines: any[]) => {
                     const normalizedList = [] as Partial<TrustLineSchema>[];
 
                     // get obligationsLines
-                    const obligationsLines = await this.getAccountObligations(account);
+                    const obligationsLines = await LedgerService.getAccountObligations(account);
 
                     // combine obligations lines with normal lines
                     accountLines = accountLines.concat(obligationsLines);

@@ -13,8 +13,9 @@ import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 import { Payload } from '@common/libs/payload';
 
 import { TrustSet, Payment } from '@common/libs/ledger/transactions';
-import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
+
 import Flag from '@common/libs/ledger/parser/common/flag';
+import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 
@@ -129,8 +130,8 @@ class CurrencySettingsModal extends Component<Props, State> {
         if (trustLine.obligation || trustLine.isNFT) return Promise.resolve();
 
         return new Promise((resolve) => {
-            return LedgerService.getAccountLine(account.address, trustLine.currency)
-                .then((line: any) => {
+            return LedgerService.getFilteredAccountLine(account.address, trustLine.currency)
+                .then((line) => {
                     if (line) {
                         const balance = new BigNumber(line.balance);
 

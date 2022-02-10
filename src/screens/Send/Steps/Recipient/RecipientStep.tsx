@@ -525,7 +525,10 @@ class RecipientStep extends Component<Props, State> {
             // ignore if the recipient is the issuer
             // IMMEDIATE REJECT
             if (typeof currency !== 'string' && currency.currency.issuer !== destination.address) {
-                const destinationLine = await LedgerService.getAccountLine(destination.address, currency.currency);
+                const destinationLine = await LedgerService.getFilteredAccountLine(
+                    destination.address,
+                    currency.currency,
+                );
 
                 // recipient does not have the proper trustline
                 if (

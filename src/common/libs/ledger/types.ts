@@ -185,3 +185,13 @@ export interface FeeResponse {
     max_queue_size: string;
     drops: FeeResponseDrops;
 }
+
+/**
+ * Ledger ledger_entry command response
+ */
+export interface LedgerEntryResponse {
+    index: string;
+    ledger_current_index: number;
+    node?: LedgerEntriesTypes;
+    validated?: boolean;
+}

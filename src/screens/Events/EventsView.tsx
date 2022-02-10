@@ -16,8 +16,7 @@ import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 // Parses
-import transactionFactory from '@common/libs/ledger/parser/transaction';
-import ledgerObjectFactory from '@common/libs/ledger/parser/object';
+import { transactionFactory, ledgerObjectFactory } from '@common/libs/ledger/factory';
 import { LedgerEntriesTypes } from '@common/libs/ledger/objects/types';
 
 import { LedgerMarker } from '@common/libs/ledger/types';

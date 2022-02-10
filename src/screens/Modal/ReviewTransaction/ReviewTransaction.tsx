@@ -17,7 +17,7 @@ import { CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
 // transaction parser
-import transactionFactory from '@common/libs/ledger/parser/transaction';
+import { transactionFactory } from '@common/libs/ledger/factory';
 
 // components
 import { Button, Icon, Spacer } from '@components/General';

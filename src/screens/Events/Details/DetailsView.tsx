@@ -25,7 +25,7 @@ import AccountRepository from '@store/repositories/account';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
-import transactionFactory from '@common/libs/ledger/parser/transaction';
+import { transactionFactory } from '@common/libs/ledger/factory';
 
 import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 import { AppScreens } from '@common/constants';
