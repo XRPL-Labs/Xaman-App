@@ -13,7 +13,9 @@ import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
+
 import { NormalizeDestination } from '@common/utils/codec';
+import { StringTypeCheck } from '@common/utils/string';
 
 import Localize from '@locale';
 /* Service  ==================================================================== */
@@ -79,6 +81,11 @@ class LinkingService {
 
     handlePayloadReference = async (uuid: string) => {
         try {
+            // check if uuid is valid uuidv4 string
+            if (!StringTypeCheck.isValidUUID(uuid)) {
+                return;
+            }
+
             // fetch the payload
             const payload = await Payload.from(uuid, PayloadOrigin.DEEP_LINK);
 
@@ -138,8 +145,8 @@ class LinkingService {
 
         const { to, tag } = NormalizeDestination(destination);
 
-        // if amount present as XRP pass the amount
-        if (!destination.currency && new RegExp(/^(?![0.]+$)\d+(\.\d{1,15})?$/gm).test(destination.amount)) {
+        // if amount present as XRP and valid amount
+        if (!destination.currency && StringTypeCheck.isValidAmount(destination.amount)) {
             amount = destination.amount;
         }
 

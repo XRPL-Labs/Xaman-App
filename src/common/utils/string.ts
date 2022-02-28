@@ -46,6 +46,11 @@ const Truncate = (fullString: string, string_length: number): string => {
     return fullString.substr(0, frontChars) + separator + fullString.substr(fullString.length - backChars);
 };
 
+/**
+ * Capitalize string
+ * @param str string
+ * @returns capitalize string test -> Test
+ */
 const Capitalize = (str: string) => {
     if (!str) {
         return '';
@@ -53,5 +58,45 @@ const Capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
+/**
+ * Check string type
+ * @param str value in string
+ * @returns boolean
+ */
+const StringTypeCheck = {
+    isValidUUID: (input: string): boolean => {
+        if (typeof input !== 'string') {
+            return false;
+        }
+        const uuidv4RegExp = new RegExp('^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$', 'i');
+        return uuidv4RegExp.test(input);
+    },
+
+    isValidURL: (input: string): boolean => {
+        if (typeof input !== 'string') {
+            return false;
+        }
+        // eslint-disable-next-line no-control-regex
+        const urlRegExp = new RegExp('^https://[a-zA-Z0-9][a-zA-Z0-9-.]+[a-zA-Z0-9].[a-zA-Z]{1,}[?/]{0,3}[^\r\n\t]+');
+        return urlRegExp.test(input);
+    },
+
+    isValidAmount: (input: string): boolean => {
+        if (typeof input !== 'string') {
+            return false;
+        }
+        const amountRegExp = new RegExp(/^(?![0.]+$)\d+(\.\d{1,15})?$/gm);
+        return amountRegExp.test(input);
+    },
+
+    isValidHash: (input: string): boolean => {
+        if (typeof input !== 'string') {
+            return false;
+        }
+        const hashRegExp = new RegExp('^[A-F0-9]{64}$', 'i');
+        return hashRegExp.test(input);
+    },
+};
+
 /* Export ==================================================================== */
-export { HexEncoding, Truncate, Capitalize };
+export { HexEncoding, Truncate, Capitalize, StringTypeCheck };
