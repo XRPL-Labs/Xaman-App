@@ -143,7 +143,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
             });
         }
 
-        const payload = await Payload.build(
+        const payload = Payload.build(
             {
                 TransactionType: 'TrustSet',
                 Flags: 131072, // tfSetNoRipple

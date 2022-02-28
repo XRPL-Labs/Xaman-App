@@ -1,20 +1,18 @@
 import { isString, isObject, has, get } from 'lodash';
-
 import codec from 'ripple-binary-codec';
 
-// Services
 import ApiService from '@services/ApiService';
 import LoggerService from '@services/LoggerService';
 
 import { SHA1 } from '@common/libs/crypto';
 
 import { GetDeviceUniqueId } from '@common/helpers/device';
-// locale
 import Localize from '@locale';
 
-// types
-import { TransactionJSONType } from '@common/libs/ledger/types';
+import { TransactionFactory } from '@common/libs/ledger/factory';
 
+import { TransactionJSONType } from '@common/libs/ledger/types';
+import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import { PayloadType, MetaType, ApplicationType, PatchSuccessType, PayloadReferenceType, PayloadOrigin } from './types';
 
 // errors
@@ -30,6 +28,7 @@ export class Payload {
     payload: PayloadReferenceType;
     origin: PayloadOrigin;
     ClassName: string;
+    generated: boolean;
 
     constructor() {
         this.ClassName = 'Payload';
@@ -67,45 +66,32 @@ export class Payload {
      * build payload from inside the app
      * @param TxJson Ledger format TXJson
      */
-    static build(TxJson: TransactionJSONType, message?: string): Promise<Payload> {
-        const payload = {} as Payload;
+    static build(TxJson: TransactionJSONType, message?: string): Payload {
+        const payload = new Payload();
 
-        payload.application = {
-            name: 'XUMM',
-            description: 'Description about XUMM',
-            disabled: 0,
-            uuidv4: '',
-            icon_url: 'https://xumm-cdn.imgix.net/app-logo/91348bab-73d2-489a-bb7b-a8dba83e40ff.png',
-        };
-
+        // set meta flag including submit and instruction message
         payload.meta = {
             submit: true,
-            generated: true,
             custom_instruction: message,
         };
 
+        // set the payload and transaction type
         payload.payload = {
             tx_type: TxJson.TransactionType,
-            tx_destination: '',
-            tx_destination_tag: null,
             request_json: TxJson,
         };
 
-        return Payload.from(payload);
+        // set generated flag
+        payload.generated = true;
+
+        return payload;
     }
 
     /**
      * Get Payload create date
      */
-    get Date(): Date {
+    get Date(): string {
         return this.payload.created_at;
-    }
-
-    /**
-     * Get JSON transaction ledger format of payload
-     */
-    get TxJson(): TransactionJSONType {
-        return this.payload.request_json;
     }
 
     /**
@@ -115,13 +101,22 @@ export class Payload {
      */
     verify = async (payload: PayloadReferenceType): Promise<boolean> => {
         try {
+            const { hash, request_json, tx_type } = payload;
+
+            // check if tx_type is same as request_json
+            if (
+                (tx_type === 'SignIn' && request_json.TransactionType) ||
+                (tx_type !== 'SignIn' && request_json.TransactionType !== tx_type)
+            ) {
+                return false;
+            }
+
+            // encode + hash and check for the checksum
             const deviceId = GetDeviceUniqueId();
-
-            const encodedTX = codec.encode(payload.request_json);
-
+            const encodedTX = codec.encode(request_json);
             const checksum = await SHA1(`${encodedTX}+${deviceId}`);
 
-            if (checksum === payload.hash) {
+            if (checksum === hash) {
                 return true;
             }
 
@@ -152,7 +147,8 @@ export class Payload {
      * @param object
      */
     assign = (object: PayloadType) => {
-        Object.assign(this, object);
+        const { payload, application, meta } = object;
+        Object.assign(this, { payload, application, meta });
     };
 
     /**
@@ -209,7 +205,8 @@ export class Payload {
      * @param permission push permission
      */
     patch = (patch: PatchSuccessType) => {
-        if (!this.meta.generated) {
+        // ignore the method if payload is generated
+        if (!this.isGenerated()) {
             // set extra data to the patch
             Object.assign(patch, {
                 permission: {
@@ -219,20 +216,25 @@ export class Payload {
                 origintype: this.getOrigin(),
             });
 
-            ApiService.payload.patch({ uuid: this.meta.uuid }, patch).catch((e: any) => {
+            ApiService.payload.patch({ uuid: this.getPayloadUUID() }, patch).catch((e: any) => {
                 logger.debug('Patch error', e);
             });
+
+            return true;
         }
+
+        return false;
     };
 
     /**
      * reject the payload
      */
     reject = () => {
-        if (!this.meta.generated) {
+        // ignore the method if payload is generated
+        if (!this.isGenerated()) {
             ApiService.payload
                 .patch(
-                    { uuid: this.meta.uuid },
+                    { uuid: this.getPayloadUUID() },
                     {
                         reject: true,
                         origintype: this.getOrigin(),
@@ -241,21 +243,18 @@ export class Payload {
                 .catch((e: any) => {
                     logger.debug('Reject error', e);
                 });
+
+            return true;
         }
+
+        return false;
     };
 
     /**
      * validate payload by fetching it again
      */
     validate = () => {
-        return this.fetch(this.meta.uuid);
-    };
-
-    /**
-     * get payload return url
-     */
-    getReturnURL = () => {
-        return this.meta.return_url_app;
+        return this.fetch(this.getPayloadUUID());
     };
 
     /**
@@ -276,6 +275,81 @@ export class Payload {
      * Return true if payload generated by xumm
      */
     isGenerated = (): boolean => {
-        return !!this.meta.generated;
+        return !!this.generated;
+    };
+
+    /**
+     * Return true if payload is SignIn transaction
+     */
+    isSignIn = (): boolean => {
+        return this.getTransactionType() === 'SignIn';
+    };
+
+    /**
+     * Get transaction
+     */
+    getTransaction(): TransactionsType {
+        const craftedTransaction = TransactionFactory.fromJson(this.payload.request_json);
+
+        // validate assigned transaction have same type as reported from backend
+        // NOTE: this should never happen
+        if (!this.isSignIn() && craftedTransaction.Type !== this.getTransactionType()) {
+            throw new Error('Parsed transaction have invalid transaction type!');
+        }
+
+        // the SignIn transactions should not have type as it's a pseudo transaction
+        if (this.isSignIn() && craftedTransaction.Type) {
+            throw new Error('SignIn pseudo transaction should not contain transaction type!');
+        }
+
+        return craftedTransaction;
+    }
+
+    /**
+     * get payload uuid identifier
+     */
+    getPayloadUUID = () => {
+        return this.meta.uuid;
+    };
+
+    /**
+     * get payload return url
+     */
+    getReturnURL = () => {
+        return this.meta.return_url_app;
+    };
+
+    /**
+     * Return payload application name
+     */
+    getApplicationName = (): string => {
+        if (this.isGenerated()) {
+            return 'XUMM';
+        }
+        return this.application.name;
+    };
+
+    /**
+     * Return payload application icon
+     */
+    getApplicationIcon = (): string => {
+        if (this.isGenerated()) {
+            return 'https://xumm-cdn.imgix.net/app-logo/91348bab-73d2-489a-bb7b-a8dba83e40ff.png';
+        }
+        return this.application.icon_url;
+    };
+
+    /**
+     * Return payload custom instruction
+     */
+    getCustomInstruction = (): string => {
+        return this.meta.custom_instruction;
+    };
+
+    /**
+     * Return payload transaction type
+     */
+    getTransactionType = (): string => {
+        return this.payload.tx_type;
     };
 }

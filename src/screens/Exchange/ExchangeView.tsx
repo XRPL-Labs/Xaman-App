@@ -332,7 +332,7 @@ class ExchangeView extends Component<Props, State> {
         // set source account
         offer.Account = { address: account.address };
 
-        const payload = await Payload.build(offer.Json);
+        const payload = Payload.build(offer.Json);
 
         Navigator.showModal(
             AppScreens.Modal.ReviewTransaction,

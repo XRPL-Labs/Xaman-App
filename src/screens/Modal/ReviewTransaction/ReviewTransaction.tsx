@@ -16,9 +16,6 @@ import { PushNotificationsService, AccountService, LedgerService, StyleService }
 import { CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
-// transaction parser
-import { transactionFactory } from '@common/libs/ledger/factory';
-
 // components
 import { Button, Icon, Spacer } from '@components/General';
 
@@ -55,7 +52,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         this.state = {
             payload: props.payload,
-            transaction: transactionFactory(props.payload.TxJson),
+            transaction: props.payload.getTransaction(),
             source: undefined,
             currentStep: Steps.Review,
             submitResult: undefined,
@@ -115,7 +112,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         let type = '';
 
-        switch (payload.payload.tx_type) {
+        switch (payload.getTransactionType()) {
             case 'AccountSet':
                 type = Localize.t('events.updateAccountSettings');
                 break;
@@ -193,7 +190,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 type = Localize.t('global.signIn');
                 break;
             default:
-                type = payload.payload.tx_type;
+                type = payload.getTransactionType();
                 break;
         }
 
@@ -352,7 +349,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             }
 
             // account is not activated and want to sign a tx
-            if (payload.payload.tx_type !== 'SignIn' && !payload.isMultiSign() && source.balance === 0) {
+            if (!payload.isSignIn() && !payload.isMultiSign() && source.balance === 0) {
                 Navigator.showAlertModal({
                     type: 'error',
                     text: Localize.t('account.selectedAccountIsNotActivatedPleaseChooseAnotherOne'),
@@ -616,10 +613,10 @@ class ReviewTransactionModal extends Component<Props, State> {
         const { onResolve, payload } = this.props;
         const { transaction } = this.state;
 
-        const { return_url_app } = payload.meta;
+        const returnURL = payload.getReturnURL();
 
-        if (return_url_app) {
-            Linking.openURL(return_url_app).catch(() => {
+        if (returnURL) {
+            Linking.openURL(returnURL).catch(() => {
                 Alert.alert(Localize.t('global.error'), Localize.t('global.unableOpenReturnURL'));
             });
         }

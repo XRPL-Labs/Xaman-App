@@ -39,8 +39,8 @@ export interface PayloadReferenceType {
     tx_destination?: string;
     tx_destination_tag?: any;
     request_json: TransactionJSONType;
-    created_at?: Date;
-    expires_at?: Date;
+    created_at?: string;
+    expires_at?: string;
     hash?: string;
 }
 
@@ -91,5 +91,6 @@ export enum PayloadOrigin {
     TRANSACTION_MEMO = 'TRANSACTION_MEMO',
     XAPP = 'XAPP',
     IMPORT_ACCOUNT = 'IMPORT_ACCOUNT',
+    XUMM = 'XUMM',
     UNKNOWN = 'UNKNOWN',
 }

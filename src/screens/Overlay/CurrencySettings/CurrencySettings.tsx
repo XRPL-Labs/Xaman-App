@@ -190,7 +190,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                 payment.Flags = [txFlags.Payment.PartialPayment];
             }
 
-            const payload = await Payload.build(payment.Json);
+            const payload = Payload.build(payment.Json);
 
             Animated.parallel([
                 Animated.timing(this.animatedColor, {
@@ -296,18 +296,16 @@ class CurrencySettingsModal extends Component<Props, State> {
             }
 
             const clearTrustline = new TrustSet({
-                transaction: {
-                    Account: account.address,
-                    LimitAmount: {
-                        currency: trustLine.currency.currency,
-                        issuer: trustLine.currency.issuer,
-                        value: 0,
-                    },
-                    Flags: transactionFlags,
+                Account: account.address,
+                LimitAmount: {
+                    currency: trustLine.currency.currency,
+                    issuer: trustLine.currency.issuer,
+                    value: 0,
                 },
+                Flags: transactionFlags,
             });
 
-            const payload = await Payload.build(clearTrustline.Json);
+            const payload = Payload.build(clearTrustline.Json);
 
             Animated.parallel([
                 Animated.timing(this.animatedColor, {
@@ -443,7 +441,7 @@ class CurrencySettingsModal extends Component<Props, State> {
     disableRippling = async () => {
         const { account, trustLine } = this.props;
 
-        const payload = await Payload.build({
+        const payload = Payload.build({
             TransactionType: 'TrustSet',
             Account: account.address,
             LimitAmount: {
@@ -490,7 +488,7 @@ class CurrencySettingsModal extends Component<Props, State> {
             });
         }
 
-        const payload = await Payload.build({
+        const payload = Payload.build({
             TransactionType: 'TrustSet',
             Account: account.address,
             LimitAmount: {

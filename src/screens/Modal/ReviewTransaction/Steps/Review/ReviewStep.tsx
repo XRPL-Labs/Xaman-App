@@ -67,7 +67,7 @@ class ReviewStep extends Component<Props, State> {
         // only accounts with full access
         if (payload.isMultiSign()) {
             availableAccounts = AccountRepository.getFullAccessAccounts();
-        } else if (payload.payload.tx_type === 'SignIn') {
+        } else if (payload.isSignIn()) {
             availableAccounts = AccountRepository.getSignableAccounts();
         } else {
             availableAccounts = AccountRepository.getSpendableAccounts(true);
@@ -149,13 +149,13 @@ class ReviewStep extends Component<Props, State> {
     renderDetails = () => {
         const { payload, transaction } = this.context;
 
-        const Template = get(Templates, payload.payload.tx_type, View);
-        const Global = get(Templates, 'Global');
-
         // if tx is SignIn ignore to show details
-        if (payload.payload.tx_type === 'SignIn') {
+        if (payload.isSignIn()) {
             return null;
         }
+
+        const Template = get(Templates, payload.getTransactionType(), View);
+        const Global = get(Templates, 'Global');
 
         // render transaction details and global variables
         return (
@@ -287,14 +287,14 @@ class ReviewStep extends Component<Props, State> {
                     <View style={[AppStyles.centerContent]}>
                         <View style={[AppStyles.row, AppStyles.paddingSml]}>
                             <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
-                                <Avatar size={60} border source={{ uri: payload.application.icon_url }} />
+                                <Avatar size={60} border source={{ uri: payload.getApplicationIcon() }} />
 
-                                <Text style={[styles.appTitle]}>{payload.application.name}</Text>
+                                <Text style={[styles.appTitle]}>{payload.getApplicationName()}</Text>
 
-                                {!!payload.meta.custom_instruction && (
+                                {!!payload.getCustomInstruction() && (
                                     <>
                                         <Text style={[styles.descriptionLabel]}>{Localize.t('global.details')}</Text>
-                                        <Text style={[styles.instructionText]}>{payload.meta.custom_instruction}</Text>
+                                        <Text style={[styles.instructionText]}>{payload.getCustomInstruction()}</Text>
                                     </>
                                 )}
 
@@ -310,7 +310,7 @@ class ReviewStep extends Component<Props, State> {
                         <View style={[AppStyles.paddingHorizontalSml]}>
                             <View style={styles.rowLabel}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
-                                    {payload.payload.tx_type === 'SignIn' || payload.meta.multisign
+                                    {payload.isSignIn() || payload.isMultiSign()
                                         ? Localize.t('global.signAs')
                                         : Localize.t('global.signWith')}
                                 </Text>
