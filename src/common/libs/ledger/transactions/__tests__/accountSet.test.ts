@@ -13,7 +13,8 @@ describe('AccountSet tx', () => {
 
     it('Should return right parsed values', () => {
         // @ts-ignore
-        const instance = new AccountSet(txTemplates);
+        const { tx } = txTemplates;
+        const instance = new AccountSet(tx);
 
         expect(instance.Domain).toBe('example.com');
         expect(instance.MessageKey).toBe('03AB40A0490F9B7ED8DF29D246BF2D6269820A0EE7742ACDD457BEA7C7D0931EDB');

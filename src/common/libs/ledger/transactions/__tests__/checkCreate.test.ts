@@ -3,7 +3,7 @@
 
 import CheckCreate from '../checkCreate';
 
-import txTemplates from './templates/CheckCreateTx.json';
+import checkCreateTemplate from './templates/CheckCreateTx.json';
 
 describe('CheckCreate tx', () => {
     it('Should set tx type if not set', () => {
@@ -12,7 +12,8 @@ describe('CheckCreate tx', () => {
     });
 
     it('Should return right parsed values', () => {
-        const instance = new CheckCreate(txTemplates);
+        const { tx, meta } = checkCreateTemplate;
+        const instance = new CheckCreate(tx, meta);
 
         expect(instance.SendMax).toStrictEqual({
             currency: 'XRP',

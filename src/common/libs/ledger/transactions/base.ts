@@ -12,13 +12,7 @@ import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
 import { HexEncoding } from '@common/utils/string';
-import {
-    SignedObjectType,
-    TransactionJSONType,
-    LedgerTransactionType,
-    SubmitResultType,
-    VerifyResultType,
-} from '@common/libs/ledger/types';
+import { SignedObjectType, TransactionJSONType, SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
 
 import Localize from '@locale';
 
@@ -37,18 +31,16 @@ class BaseTransaction {
 
     private _SubmitResult?: SubmitResultType;
     private _VerifyResult?: VerifyResultType;
-
     private isAborted: boolean;
     private isSubmitted: boolean;
 
-    constructor(_transaction?: LedgerTransactionType) {
-        if (!isUndefined(_transaction)) {
-            const { transaction, tx, meta } = _transaction;
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        if (!isUndefined(tx)) {
+            this.tx = tx;
             this.meta = meta;
-            this.tx = transaction || tx || _transaction;
         } else {
-            this.meta = {};
             this.tx = {};
+            this.meta = {};
         }
 
         this.fields = [

@@ -5,26 +5,28 @@ import { LedgerTransactionType, TransactionJSONType } from '@common/libs/ledger/
 import * as Transactions from '@common/libs/ledger/transactions';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 
-const transactionFactory = (tx: LedgerTransactionType | TransactionJSONType): TransactionsType => {
-    let passedObject = {} as LedgerTransactionType;
-    let type;
+const TransactionFactory = {
+    getTransaction: (transaction: TransactionJSONType, meta?: any): TransactionsType => {
+        // get the transaction type
+        const type = get(transaction, ['TransactionType'], undefined);
+        // get transaction class
+        const Transaction = get(Transactions, type, Transactions.BaseTransaction);
+        return new Transaction(transaction, meta);
+    },
 
-    // if tx is LedgerTransactionType
-    if (has(tx, 'transaction') || has(tx, 'tx')) {
-        type = get(tx, ['transaction', 'TransactionType'], undefined);
-
-        if (!type) {
-            type = get(tx, ['tx', 'TransactionType'], undefined);
+    fromLedger: (item: LedgerTransactionType): TransactionsType => {
+        if (!has(item, 'tx') || !has(item, 'meta')) {
+            throw new Error('item is not a valid Ledger transaction type!');
         }
-        passedObject = tx;
-    } else {
-        // or TransactionJSONType
-        type = get(tx, ['TransactionType'], undefined);
-        passedObject = Object.assign(passedObject, { tx });
-    }
 
-    const Transaction = get(Transactions, type, Transactions.BaseTransaction);
-    return new Transaction(passedObject);
+        const transaction = get(item, 'tx');
+        const meta = get(item, 'meta');
+        return TransactionFactory.getTransaction(transaction, meta);
+    },
+
+    fromJson: (item: TransactionJSONType): TransactionsType => {
+        return TransactionFactory.getTransaction(item);
+    },
 };
 
-export default transactionFactory;
+export default TransactionFactory;

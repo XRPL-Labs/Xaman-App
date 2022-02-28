@@ -14,8 +14,8 @@ describe('AccountDelete tx', () => {
     });
 
     it('Should return right parsed values', () => {
-        // @ts-ignore
-        const instance = new AccountDelete(txTemplates);
+        const { tx, meta } = txTemplates;
+        const instance = new AccountDelete(tx, meta);
 
         expect(instance.Amount).toStrictEqual({
             currency: 'XRP',
@@ -30,7 +30,8 @@ describe('AccountDelete tx', () => {
     });
 
     it('it should calcualte right fee', () => {
-        const instance = new AccountDelete(txTemplates);
+        const { tx, meta } = txTemplates;
+        const instance = new AccountDelete(tx, meta);
 
         expect(instance.calculateFee()).toBe('2000000');
     });

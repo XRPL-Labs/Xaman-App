@@ -3,7 +3,7 @@
 
 import EscrowCreate from '../escrowCreate';
 
-import txTemplates from './templates/EscrowCreateTx.json';
+import escrowCreateTemplate from './templates/EscrowCreateTx.json';
 
 describe('EscrowCreate tx', () => {
     it('Should set tx type if not set', () => {
@@ -12,8 +12,8 @@ describe('EscrowCreate tx', () => {
     });
 
     it('Should return right parsed values', () => {
-        // @ts-ignore
-        const instance = new EscrowCreate(txTemplates);
+        const { tx, meta } = escrowCreateTemplate;
+        const instance = new EscrowCreate(tx, meta);
 
         expect(instance.Destination).toStrictEqual({
             tag: 23480,

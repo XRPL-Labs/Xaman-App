@@ -25,7 +25,7 @@ import AccountRepository from '@store/repositories/account';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
-import { transactionFactory } from '@common/libs/ledger/factory';
+import { TransactionFactory } from '@common/libs/ledger/factory';
 
 import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 import { AppScreens } from '@common/constants';
@@ -167,6 +167,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     throw new Error('Not found');
                 }
 
+                // separate transaction meta
                 const { meta } = resp;
 
                 // cleanup
@@ -177,7 +178,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 delete resp.__command;
                 delete resp.inLedger;
 
-                const tx = transactionFactory({ tx: resp, meta });
+                const tx = TransactionFactory.fromLedger({ tx: resp, meta });
 
                 this.setState(
                     {

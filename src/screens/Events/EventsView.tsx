@@ -16,7 +16,7 @@ import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 // Parses
-import { transactionFactory, ledgerObjectFactory } from '@common/libs/ledger/factory';
+import { TransactionFactory, LedgerObjectFactory } from '@common/libs/ledger/factory';
 import { LedgerEntriesTypes } from '@common/libs/ledger/objects/types';
 
 import { LedgerMarker } from '@common/libs/ledger/types';
@@ -186,7 +186,7 @@ class EventsView extends Component<Props, State> {
                     });
                 }, Promise.resolve())
                 .then(() => {
-                    const parsedList = flatMap(objects, ledgerObjectFactory);
+                    const parsedList = flatMap(objects, LedgerObjectFactory.fromLedger);
                     const filtered = without(parsedList, null);
 
                     this.setState({ plannedTransactions: filtered }, () => {
@@ -235,7 +235,7 @@ class EventsView extends Component<Props, State> {
                         canLoadMore = false;
                     }
 
-                    let parsedList = filter(flatMap(txResp, transactionFactory), (t) => {
+                    let parsedList = filter(flatMap(txResp, TransactionFactory.fromLedger), (t) => {
                         return t.TransactionResult.success;
                     });
 

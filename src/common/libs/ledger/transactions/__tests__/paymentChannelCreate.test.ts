@@ -3,7 +3,7 @@
 
 import PaymentChannelCreate from '../paymentChannelCreate';
 
-import txTemplates from './templates/PaymentChannelCreate.json';
+import paymentChannelCreateTemplate from './templates/PaymentChannelCreateTx.json';
 
 describe('PaymentChannelCreate tx', () => {
     it('Should set tx type if not set', () => {
@@ -12,7 +12,8 @@ describe('PaymentChannelCreate tx', () => {
     });
 
     it('Should return right parsed values', () => {
-        const instance = new PaymentChannelCreate(txTemplates);
+        const { tx, meta } = paymentChannelCreateTemplate;
+        const instance = new PaymentChannelCreate(tx, meta);
 
         expect(instance.Type).toBe('PaymentChannelCreate');
         expect(instance.Account).toEqual({

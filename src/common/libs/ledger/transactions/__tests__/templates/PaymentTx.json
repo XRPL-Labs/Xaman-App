@@ -1,16 +1,18 @@
 {
    "SimplePayment": {
-      "Account": "rEAa7TDpBdL1hoRRAp3WDmzBcuQzaXssmb",
-      "TransactionType" : "Payment",
-      "Destination" : "ra5nK24KXen9AHvsdFTKHSANinZseWnPcX",
-      "Amount" : {
-         "currency" : "USD",
-         "value" : "1",
-         "issuer" : "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn"
-      },
-      "LastLedgerSequence":32000,
-      "Fee" : "12"
-
+     "tx":{
+        "Account": "rEAa7TDpBdL1hoRRAp3WDmzBcuQzaXssmb",
+        "TransactionType" : "Payment",
+        "Destination" : "ra5nK24KXen9AHvsdFTKHSANinZseWnPcX",
+        "Amount" : {
+          "currency" : "USD",
+          "value" : "1",
+          "issuer" : "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn"
+        },
+        "LastLedgerSequence":32000,
+        "Fee" : "12"
+     },
+     "meta": {}
    },
     "XRP2XRP":{
        "tx":{
@@ -24,14 +26,6 @@
           "Fee":"12",
           "Flags":2147483648,
           "LastLedgerSequence":57913677,
-          "Memos":[
-             {
-                "Memo":{
-                   "MemoData":"5852502054697020426F74",
-                   "MemoType":"587270546970426F744E6F7465"
-                }
-             }
-          ],
           "InvoiceID": "123",
           "Sequence":34306,
           "SigningPubKey":"03DF3AB842EB1B57F0A848CD7CC2CFD35F66E4AD0625EEACFFE72A45E4D13E49A",
@@ -87,46 +81,48 @@
        }
     },
     "ToSelfWithPath": {
-      "Account": "rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ",
-      "Amount": "1000000",
-      "Destination": "rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ",
-      "Fee": "12",
-      "Flags": 2147614720,
-      "Paths": [
-        [
-          {
-            "account": "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq",
-            "type": 1
-          },
-          {
-            "currency": "XRP",
-            "type": 16
-          }
+      "tx": {
+        "Account": "rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ",
+        "Amount": "1000000",
+        "Destination": "rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ",
+        "Fee": "12",
+        "Flags": 2147614720,
+        "Paths": [
+          [
+            {
+              "account": "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq",
+              "type": 1
+            },
+            {
+              "currency": "XRP",
+              "type": 16
+            }
+          ],
+          [
+            {
+              "account": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
+              "type": 1
+            },
+            {
+              "currency": "XRP",
+              "type": 16
+            }
+          ]
         ],
-        [
-          {
-            "account": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
-            "type": 1
-          },
-          {
-            "currency": "XRP",
-            "type": 16
-          }
-        ]
-      ],
-      "SendMax": {
-        "currency": "USD",
-        "issuer": "rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ",
-        "value": "1.239054364262807"
+        "SendMax": {
+          "currency": "USD",
+          "issuer": "rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ",
+          "value": "1.239054364262807"
+        },
+        "Sequence": 989,
+        "SigningPubKey": "0350714189757DA0403CE1FF2025522337EA1B60D9796B11D5559EE914982D6AC3",
+        "TransactionType": "Payment",
+        "TxnSignature": "30450221009A70AEC89FB632C61F1CF61F8E8A50CB1787B18AF1CD64925D3153F8CF290A8F02207D8E334101D2FDD86097345CE0926FF794A4ADEA87A34E2C625E4487201CAF18",
+        "date": 689945571,
+        "hash": "09AD40BDA7091BDE0DA9B3C3B5A5855A52D004B1895A879ABC72FDE1A97FC094",
+        "inLedger": 67629165,
+        "ledger_index": 67629165
       },
-      "Sequence": 989,
-      "SigningPubKey": "0350714189757DA0403CE1FF2025522337EA1B60D9796B11D5559EE914982D6AC3",
-      "TransactionType": "Payment",
-      "TxnSignature": "30450221009A70AEC89FB632C61F1CF61F8E8A50CB1787B18AF1CD64925D3153F8CF290A8F02207D8E334101D2FDD86097345CE0926FF794A4ADEA87A34E2C625E4487201CAF18",
-      "date": 689945571,
-      "hash": "09AD40BDA7091BDE0DA9B3C3B5A5855A52D004B1895A879ABC72FDE1A97FC094",
-      "inLedger": 67629165,
-      "ledger_index": 67629165,
       "meta": {
         "AffectedNodes": [
           {

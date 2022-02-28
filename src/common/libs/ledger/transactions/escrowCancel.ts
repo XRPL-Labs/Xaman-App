@@ -3,14 +3,15 @@ import { get, set, isUndefined } from 'lodash';
 import BaseTransaction from './base';
 
 /* Types ==================================================================== */
-import { LedgerTransactionType } from '../types';
+import { TransactionJSONType } from '../types';
 
 /* Class ==================================================================== */
 class EscrowCancel extends BaseTransaction {
     [key: string]: any;
 
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
+
         // set transaction type if not set
         if (isUndefined(this.Type)) {
             this.Type = 'EscrowCancel';

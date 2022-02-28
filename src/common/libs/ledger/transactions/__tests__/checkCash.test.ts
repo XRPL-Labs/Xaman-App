@@ -4,7 +4,7 @@
 import CheckCash from '../checkCash';
 import CheckCreate from '../checkCreate';
 
-import txTemplates from './templates/CheckCashTx.json';
+import checkCashTemplates from './templates/CheckCashTx.json';
 import checkCreateTemplate from './templates/CheckCreateTx.json';
 
 describe('CheckCash tx', () => {
@@ -15,7 +15,8 @@ describe('CheckCash tx', () => {
 
     it('Should return right parsed values', () => {
         // @ts-ignore
-        const instance = new CheckCash(txTemplates);
+        const { tx, meta } = checkCashTemplates;
+        const instance = new CheckCash(tx, meta);
 
         expect(instance.CheckID).toBe('6F1DFD1D0FE8A32E40E1F2C05CF1C15545BAB56B617F9C6C2D63A6B704BEF59B');
 
@@ -27,9 +28,10 @@ describe('CheckCash tx', () => {
 
     it('Should set check object', () => {
         // @ts-ignore
-        const instance = new CheckCash(txTemplates);
+        const { tx, meta } = checkCashTemplates;
+        const instance = new CheckCash(tx, meta);
 
-        const checkCreate = new CheckCreate(checkCreateTemplate);
+        const checkCreate = new CheckCreate(checkCreateTemplate.tx);
 
         instance.Check = checkCreate;
 

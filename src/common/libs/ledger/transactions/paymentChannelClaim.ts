@@ -5,14 +5,15 @@ import Amount from '../parser/common/amount';
 
 /* Types ==================================================================== */
 import { AmountType } from '../parser/types';
-import { LedgerTransactionType } from '../types';
+import { TransactionJSONType } from '../types';
 
 /* Class ==================================================================== */
 class PaymentChannelClaim extends BaseTransaction {
     [key: string]: any;
 
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
+
         // set transaction type if not set
         if (isUndefined(this.Type)) {
             this.Type = 'PaymentChannelClaim';

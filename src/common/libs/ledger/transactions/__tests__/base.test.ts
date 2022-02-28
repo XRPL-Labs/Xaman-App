@@ -4,7 +4,7 @@
 import BaseTransaction from '../base';
 
 import txTemplates from './templates/baseTx.json';
-import paymentTxTemplates from './templates/PaymentTx.json';
+import paymentTemplates from './templates/PaymentTx.json';
 
 // mock the ledgerService
 import LedgerService from '../../../../../services/LedgerService';
@@ -13,12 +13,13 @@ jest.mock('../../../../../services/LedgerService');
 
 describe('BaseTransaction tx', () => {
     it('Should return right parsed values', () => {
-        // @ts-ignore
-        const instance = new BaseTransaction(txTemplates);
+        const { tx, meta } = txTemplates;
+
+        const instance = new BaseTransaction(tx, meta);
 
         expect(instance.Account).toStrictEqual({
             tag: 456,
-            address: txTemplates.tx.Account,
+            address: tx.Account,
             name: undefined,
         });
 
@@ -30,12 +31,12 @@ describe('BaseTransaction tx', () => {
 
         expect(instance.Date).toBe('2020-09-02T07:24:11.000Z');
 
-        expect(instance.Hash).toBe(txTemplates.tx.hash);
-        expect(instance.SigningPubKey).toBe(txTemplates.tx.SigningPubKey);
+        expect(instance.Hash).toBe(tx.hash);
+        expect(instance.SigningPubKey).toBe(tx.SigningPubKey);
 
-        expect(instance.LedgerIndex).toBe(txTemplates.tx.ledger_index);
-        expect(instance.LastLedgerSequence).toBe(txTemplates.tx.LastLedgerSequence);
-        expect(instance.Sequence).toBe(txTemplates.tx.Sequence);
+        expect(instance.LedgerIndex).toBe(tx.ledger_index);
+        expect(instance.LastLedgerSequence).toBe(tx.LastLedgerSequence);
+        expect(instance.Sequence).toBe(tx.Sequence);
 
         expect(instance.TransactionResult).toStrictEqual({
             success: true,
@@ -156,7 +157,8 @@ describe('BaseTransaction tx', () => {
         );
 
         // create a transaction instance for signing
-        const instance = new BaseTransaction(paymentTxTemplates.SimplePayment);
+        const { tx, meta } = paymentTemplates.SimplePayment;
+        const instance = new BaseTransaction(tx, meta);
 
         // prepare the transaction by applying the private key
         await instance.prepare();
@@ -191,7 +193,8 @@ describe('BaseTransaction tx', () => {
         });
 
         // should set if LastLedgerSequence undefined
-        const instance = new BaseTransaction(paymentTxTemplates.SimplePayment);
+        const { tx, meta } = paymentTemplates.SimplePayment;
+        const instance = new BaseTransaction(tx, meta);
         instance.LastLedgerSequence = undefined;
         instance.populateLastLedgerSequence();
         expect(instance.LastLedgerSequence).toBe(LastLedger + 10);

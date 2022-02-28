@@ -1,4 +1,5 @@
 {
+  "tx": {
     "TransactionType": "TrustSet",
     "Account": "ra5nK24KXen9AHvsdFTKHSANinZseWnPcX",
     "Fee": "12",
@@ -12,4 +13,6 @@
     "QualityIn": 1,
     "QualityOut": 1,
     "Sequence": 12
+  },
+  "meta": {}
 }

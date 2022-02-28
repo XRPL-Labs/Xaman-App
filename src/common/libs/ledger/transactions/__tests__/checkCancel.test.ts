@@ -4,7 +4,7 @@
 import CheckCancel from '../checkCancel';
 import CheckCreate from '../checkCreate';
 
-import txTemplates from './templates/CheckCancelTx.json';
+import checkCancelTemplates from './templates/CheckCancelTx.json';
 import checkCreateTemplate from './templates/CheckCreateTx.json';
 
 describe('CheckCancel tx', () => {
@@ -15,16 +15,18 @@ describe('CheckCancel tx', () => {
 
     it('Should return right parsed values', () => {
         // @ts-ignore
-        const instance = new CheckCancel(txTemplates);
+        const { tx, meta } = checkCancelTemplates;
+        const instance = new CheckCancel(tx, meta);
 
         expect(instance.CheckID).toBe('6F1DFD1D0FE8A32E40E1F2C05CF1C15545BAB56B617F9C6C2D63A6B704BEF59B');
     });
 
     it('Should set check object', () => {
         // @ts-ignore
-        const instance = new CheckCancel(txTemplates);
+        const { tx, meta } = checkCancelTemplates;
+        const instance = new CheckCancel(tx, meta);
 
-        const checkCreate = new CheckCreate(checkCreateTemplate);
+        const checkCreate = new CheckCreate(checkCreateTemplate.tx);
 
         instance.Check = checkCreate;
 

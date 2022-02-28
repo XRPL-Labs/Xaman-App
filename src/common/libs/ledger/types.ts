@@ -11,7 +11,7 @@ export type TransactionJSONType = {
     Flags?: number;
     Fulfillment?: string;
     LastLedgerSequence?: number;
-    [Field: string]: string | number | Array<any> | undefined | object;
+    [Field: string]: string | number | Array<any> | undefined | object | boolean;
 };
 
 /**
@@ -24,7 +24,6 @@ export interface LedgerTransactionType {
     ledger_hash?: string;
     ledger_index?: number;
     status?: string;
-    transaction?: TransactionJSONType;
     tx?: TransactionJSONType;
     meta?: any;
     [key: string]: any;

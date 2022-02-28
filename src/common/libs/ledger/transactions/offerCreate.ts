@@ -9,14 +9,15 @@ import Meta from '../parser/meta';
 
 /* Types ==================================================================== */
 import { AmountType } from '../parser/types';
-import { LedgerTransactionType } from '../types';
+import { TransactionJSONType } from '../types';
 
 /* Class ==================================================================== */
 class OfferCreate extends BaseTransaction {
     [key: string]: any;
 
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
+
         // set transaction type if not set
         if (isUndefined(this.Type)) {
             this.Type = 'OfferCreate';

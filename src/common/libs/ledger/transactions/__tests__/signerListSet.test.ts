@@ -3,7 +3,7 @@
 
 import SignerListSet from '../signerListSet';
 
-import txTemplates from './templates/signerListSetTx.json';
+import signerListSetTemplates from './templates/SignerListSetTx.json';
 
 describe('SignerListSet tx', () => {
     it('Should set tx type if not set', () => {
@@ -12,8 +12,8 @@ describe('SignerListSet tx', () => {
     });
 
     it('Should return right parsed values', () => {
-        // @ts-ignore
-        const instance = new SignerListSet(txTemplates);
+        const { tx, meta } = signerListSetTemplates;
+        const instance = new SignerListSet(tx, meta);
 
         expect(instance.SignerQuorum).toBe(3);
 

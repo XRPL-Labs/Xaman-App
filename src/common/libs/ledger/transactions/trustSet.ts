@@ -6,12 +6,14 @@ import { get, set, isUndefined, toNumber } from 'lodash';
 import BaseTransaction from './base';
 
 /* Types ==================================================================== */
-import { LedgerTransactionType } from '../types';
+import { TransactionJSONType } from '../types';
 
 /* Class ==================================================================== */
 class TrustSet extends BaseTransaction {
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    [key: string]: any;
+
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
 
         // set transaction type if not set
         if (isUndefined(this.Type)) {

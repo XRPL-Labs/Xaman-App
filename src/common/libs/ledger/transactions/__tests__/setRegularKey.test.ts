@@ -3,7 +3,7 @@
 
 import SetRegularKey from '../setRegularKey';
 
-import txTemplates from './templates/SetRegularKeyTx.json';
+import setRegularKeyTemplates from './templates/SetRegularKeyTx.json';
 
 describe('SetRegularKey tx', () => {
     it('Should set tx type if not set', () => {
@@ -13,7 +13,8 @@ describe('SetRegularKey tx', () => {
 
     it('Should return right parsed values', () => {
         // @ts-ignore
-        const instance = new SetRegularKey(txTemplates);
+        const { tx, meta } = setRegularKeyTemplates;
+        const instance = new SetRegularKey(tx, meta);
 
         expect(instance.RegularKey).toBe('rAR8rR8sUkBoCZFawhkWzY4Y5YoyuznwD');
     });

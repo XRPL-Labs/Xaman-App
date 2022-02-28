@@ -3,7 +3,7 @@
 
 import PaymentChannelClaim from '../paymentChannelClaim';
 
-import txTemplates from './templates/PaymentChannelClaim.json';
+import paymentChannelClaimTemplates from './templates/PaymentChannelClaimTx.json';
 
 describe('PaymentChannelClaim tx', () => {
     it('Should set tx type if not set', () => {
@@ -12,7 +12,8 @@ describe('PaymentChannelClaim tx', () => {
     });
 
     it('Should return right parsed values', () => {
-        const instance = new PaymentChannelClaim(txTemplates);
+        const { tx, meta } = paymentChannelClaimTemplates;
+        const instance = new PaymentChannelClaim(tx, meta);
 
         expect(instance.Type).toBe('PaymentChannelClaim');
 

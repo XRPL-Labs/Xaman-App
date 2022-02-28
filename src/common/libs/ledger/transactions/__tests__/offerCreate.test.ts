@@ -3,7 +3,7 @@
 
 import OfferCreate from '../offerCreate';
 
-import txTemplates from './templates/OfferCreateTx.json';
+import offerCreateTemplates from './templates/OfferCreateTx.json';
 
 describe('OfferCreate tx', () => {
     it('Should set tx type if not set', () => {
@@ -12,7 +12,8 @@ describe('OfferCreate tx', () => {
     });
 
     it('Should return right parsed values for executed order XRP->IOU', () => {
-        const instance = new OfferCreate(txTemplates.XRPIOU);
+        const { tx, meta } = offerCreateTemplates.XRPIOU;
+        const instance = new OfferCreate(tx, meta);
 
         expect(instance.Executed).toBe(true);
         expect(instance.OfferSequence).toBe(94);
@@ -42,7 +43,8 @@ describe('OfferCreate tx', () => {
     });
 
     it('Should return right parsed values for executed order IOU->XRP', () => {
-        const instance = new OfferCreate(txTemplates.IOUXRP);
+        const { tx, meta } = offerCreateTemplates.IOUXRP;
+        const instance = new OfferCreate(tx, meta);
 
         expect(instance.Executed).toBe(true);
         expect(instance.OfferSequence).toBe(112);
@@ -111,7 +113,8 @@ describe('OfferCreate tx', () => {
     });
 
     it('Should return right parsed values for executed order from another owner', () => {
-        const instance = new OfferCreate(txTemplates.XRPIOUDifferentOwner);
+        const { tx, meta } = offerCreateTemplates.XRPIOUDifferentOwner;
+        const instance = new OfferCreate(tx, meta);
 
         expect(instance.Executed).toBe(true);
         expect(instance.OfferSequence).toBe(56270334);
@@ -141,7 +144,8 @@ describe('OfferCreate tx', () => {
     });
 
     it('Should return zero for taker got and taker paid if order cancelled or killed', () => {
-        const instance = new OfferCreate(txTemplates.XRPIOUCANCELED);
+        const { tx, meta } = offerCreateTemplates.XRPIOUCANCELED;
+        const instance = new OfferCreate(tx, meta);
 
         expect(instance.Executed).toBe(true);
         expect(instance.OfferSequence).toBe(61160755);

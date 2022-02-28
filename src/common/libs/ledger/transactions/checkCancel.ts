@@ -8,14 +8,15 @@ import BaseTransaction from './base';
 import CheckCreate from './checkCreate';
 
 /* Types ==================================================================== */
-import { LedgerTransactionType } from '../types';
+import { TransactionJSONType } from '../types';
 
 /* Class ==================================================================== */
 class CheckCancel extends BaseTransaction {
     [key: string]: any;
 
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
+
         // set transaction type if not set
         if (isUndefined(this.Type)) {
             this.Type = 'CheckCancel';

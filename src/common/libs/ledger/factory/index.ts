@@ -1,4 +1,4 @@
-import transactionFactory from './transaction';
-import ledgerObjectFactory from './object';
+import TransactionFactory from './transaction';
+import LedgerObjectFactory from './object';
 
-export { transactionFactory, ledgerObjectFactory };
+export { TransactionFactory, LedgerObjectFactory };

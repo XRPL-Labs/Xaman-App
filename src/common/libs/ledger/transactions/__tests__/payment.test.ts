@@ -12,8 +12,8 @@ describe('Payment tx', () => {
     });
 
     it('Should return right parsed values for tx XRP->XRP', () => {
-        // @ts-ignore
-        const instance = new Payment(txTemplates.XRP2XRP);
+        const { tx, meta } = txTemplates.XRP2XRP;
+        const instance = new Payment(tx, meta);
 
         expect(instance.InvoiceID).toBe('123');
 
@@ -30,8 +30,9 @@ describe('Payment tx', () => {
     });
 
     it('Should return right parsed values for tx to self with path sets', () => {
-        // @ts-ignore
-        const instance = new Payment(txTemplates.ToSelfWithPath);
+        const { tx, meta } = txTemplates.ToSelfWithPath;
+        const instance = new Payment(tx, meta);
+
         expect(instance.BalanceChange()).toStrictEqual({
             received: {
                 action: 'INC',

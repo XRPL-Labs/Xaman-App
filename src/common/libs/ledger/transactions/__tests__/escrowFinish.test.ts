@@ -3,7 +3,7 @@
 
 import EscrowFinish from '../escrowFinish';
 
-import txTemplates from './templates/EscrowFinishTx.json';
+import escrowFinishTemplate from './templates/EscrowFinishTx.json';
 
 describe('EscrowFinish tx', () => {
     it('Should set tx type if not set', () => {
@@ -12,8 +12,8 @@ describe('EscrowFinish tx', () => {
     });
 
     it('Should return right parsed values', () => {
-        // @ts-ignore
-        const instance = new EscrowFinish(txTemplates);
+        const { tx, meta } = escrowFinishTemplate;
+        const instance = new EscrowFinish(tx, meta);
 
         expect(instance.Destination).toStrictEqual({
             tag: undefined,
@@ -25,17 +25,17 @@ describe('EscrowFinish tx', () => {
             value: '500000000',
         });
 
-        expect(instance.Owner).toBe(txTemplates.tx.Owner);
+        expect(instance.Owner).toBe(tx.Owner);
 
-        expect(instance.Fulfillment).toBe(txTemplates.tx.Fulfillment);
-        expect(instance.Condition).toBe(txTemplates.tx.Condition);
+        expect(instance.Fulfillment).toBe(tx.Fulfillment);
+        expect(instance.Condition).toBe(tx.Condition);
 
-        expect(instance.OfferSequence).toBe(txTemplates.tx.OfferSequence);
+        expect(instance.OfferSequence).toBe(tx.OfferSequence);
     });
 
     it('it should calcualte right fee with fulfillment ', () => {
-        const instance = new EscrowFinish(txTemplates);
-
+        const { tx, meta } = escrowFinishTemplate;
+        const instance = new EscrowFinish(tx, meta);
         expect(instance.calculateFee()).toBe('402');
     });
 });

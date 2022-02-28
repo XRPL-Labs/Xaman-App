@@ -10,12 +10,12 @@ import BaseTransaction from './base';
 import Flag from '../parser/common/flag';
 
 /* Types ==================================================================== */
-import { LedgerTransactionType } from '../types';
+import { TransactionJSONType } from '../types';
 
 /* Class ==================================================================== */
 class AccountSet extends BaseTransaction {
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
 
         // set transaction type if not set
         if (isUndefined(this.Type)) {
