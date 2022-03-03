@@ -30,7 +30,7 @@ class AccountSet extends BaseTransaction {
             'SetFlag',
             'TransferRate',
             'TickSize',
-            'MintAccount',
+            'Minter',
         ]);
     }
 
@@ -86,8 +86,8 @@ class AccountSet extends BaseTransaction {
         return get(this, ['tx', 'WalletSize'], undefined);
     }
 
-    get MintAccount(): string {
-        return get(this, ['tx', 'MintAccount'], undefined);
+    get Minter(): string {
+        return get(this, ['tx', 'Minter'], undefined);
     }
 }
 

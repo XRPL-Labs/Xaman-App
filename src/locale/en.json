@@ -500,6 +500,8 @@
     "itSetsAccountTransferRateTo": "It sets the account transfer rate to %{transferRate}",
     "itSetsTheAccountFlag": "It set the account flag %{flag}",
     "itClearsTheAccountFlag": "It clears the account flag %{flag}",
+    "itRemovesTheAccountMinter": "It removes the account minter",
+    "itSetsAccountMinterTo": "It sets the account minter to %{minter}",
     "itCreatesTicketForThisAccount": "It creates %{ticketCount} ticket(s) for this account.",
     "pleaseReleaseThisEscrowUsingTheToolUsedToCreateTheEscrow": "Please release this escrow using the tool / platform used to create it. XUMM cannot release the escrow as there is an Escrow Condition present on it.",
     "accountWillCreateAPaymentChannelTo": "The account %{account} will create a payment channel to %{destination}",

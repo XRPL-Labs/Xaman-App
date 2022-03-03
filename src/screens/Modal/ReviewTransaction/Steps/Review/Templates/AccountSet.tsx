@@ -80,12 +80,12 @@ class AccountSetTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
-                {transaction.MintAccount !== undefined && (
+                {transaction.Minter !== undefined && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.mintAccount')}</Text>
                         <View style={[styles.contentBox]}>
                             <Text selectable style={[styles.valueSubtext]}>
-                                {transaction.MintAccount || Localize.t('global.empty')}
+                                {transaction.Minter || Localize.t('global.empty')}
                             </Text>
                         </View>
                     </>

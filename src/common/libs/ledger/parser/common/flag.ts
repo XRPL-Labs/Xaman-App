@@ -1,18 +1,7 @@
 import { AccountFlags } from './flags/accountFlags';
 import { txFlags, txFlagIndices } from './flags/txFlags';
+
 /* Class ==================================================================== */
-
-// txFlags
-// Global Flag
-// Payment Flags
-// OfferCreate Flags
-// TrustSet Flags
-// AccountSet Flags
-// PaymentChannelClaim Flags
-// Other Transaction Types
-
-// TODO: support/parse all flags
-
 class Flag {
     type: string;
     flags: number;

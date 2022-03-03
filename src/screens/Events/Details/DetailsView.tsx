@@ -1022,6 +1022,15 @@ class TransactionDetailsView extends Component<Props, State> {
             }
         }
 
+        if (tx.Minter !== undefined) {
+            content += '\n';
+            if (tx.Minter === '') {
+                content += Localize.t('events.itRemovesTheAccountMinter');
+            } else {
+                content += Localize.t('events.itSetsAccountMinterTo', { minter: tx.Minter });
+            }
+        }
+
         if (tx.SetFlag !== undefined) {
             content += '\n';
             content += Localize.t('events.itSetsTheAccountFlag', { flag: tx.SetFlag });

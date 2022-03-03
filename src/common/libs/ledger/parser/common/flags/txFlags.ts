@@ -72,6 +72,7 @@ const txFlagIndices = {
         asfGlobalFreeze: 7,
         asfDefaultRipple: 8,
         asfDepositAuth: 9,
+        asfAuthorizedMinter: 10,
     },
 };
 

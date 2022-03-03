@@ -1,4 +1,4 @@
-import { has, set, get, isUndefined } from 'lodash';
+import { get, isUndefined } from 'lodash';
 
 import BaseTransaction from './base';
 
@@ -48,22 +48,12 @@ class NFTokenCreateOffer extends BaseTransaction {
 
     get Destination(): Destination {
         const destination = get(this, ['tx', 'Destination'], undefined);
-        const destinationTag = get(this, ['tx', 'DestinationTag'], undefined);
-        const destinationName = get(this, ['tx', 'DestinationName'], undefined);
 
         if (isUndefined(destination)) return undefined;
 
         return {
-            name: destinationName,
             address: destination,
-            tag: destinationTag,
         };
-    }
-
-    set Destination(destination: Destination) {
-        if (has(destination, 'name')) {
-            set(this, 'object.DestinationName', destination.name);
-        }
     }
 
     get Expiration(): string {
