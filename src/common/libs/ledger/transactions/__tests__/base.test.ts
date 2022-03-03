@@ -1,13 +1,13 @@
 /* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 
+import LedgerService from '@services/LedgerService';
 import BaseTransaction from '../base';
 
-import txTemplates from './templates/baseTx.json';
+import txTemplates from './templates/BaseTx.json';
 import paymentTemplates from './templates/PaymentTx.json';
 
 // mock the ledgerService
-import LedgerService from '../../../../../services/LedgerService';
 
 jest.mock('../../../../../services/LedgerService');
 
