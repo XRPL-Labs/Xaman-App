@@ -121,6 +121,7 @@
       "jest/no-disabled-tests": 1,
       "jest/no-focused-tests": 2,
       "jest/no-identical-title": 2,
+      "react/no-unused-class-component-methods": 0,
       "spellcheck/spell-checker": [1, {
         "comments": true,
         "strings": true,
