@@ -17,7 +17,6 @@ exports[`[SearchBar] renders correctly 1`] = `
 >
   <View
     collapsable={false}
-    nativeID="animatedComponent"
     style={
       Object {
         "alignItems": "center",
@@ -85,7 +84,6 @@ exports[`[SearchBar] renders correctly 1`] = `
     accessible={true}
     collapsable={false}
     focusable={true}
-    nativeID="animatedComponent"
     onClick={[Function]}
     onResponderGrant={[Function]}
     onResponderMove={[Function]}
@@ -108,7 +106,6 @@ exports[`[SearchBar] renders correctly 1`] = `
   >
     <View
       collapsable={false}
-      nativeID="animatedComponent"
       style={
         Object {
           "alignSelf": "center",
@@ -157,7 +154,6 @@ exports[`[SearchBar] should clear text 1`] = `
 >
   <View
     collapsable={false}
-    nativeID="animatedComponent"
     style={
       Object {
         "alignItems": "center",
@@ -225,7 +221,6 @@ exports[`[SearchBar] should clear text 1`] = `
     accessible={true}
     collapsable={false}
     focusable={true}
-    nativeID="animatedComponent"
     onClick={[Function]}
     onResponderGrant={[Function]}
     onResponderMove={[Function]}
@@ -247,6 +242,7 @@ exports[`[SearchBar] should clear text 1`] = `
     }
   >
     <View
+      collapsable={false}
       style={
         Object {
           "alignSelf": "center",
@@ -294,6 +290,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
   }
 >
   <View
+    collapsable={false}
     style={
       Object {
         "alignItems": "center",
@@ -359,6 +356,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
   </View>
   <View
     accessible={true}
+    collapsable={false}
     focusable={true}
     onClick={[Function]}
     onResponderGrant={[Function]}
@@ -381,6 +379,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
     }
   >
     <View
+      collapsable={false}
       style={
         Object {
           "alignSelf": "center",
