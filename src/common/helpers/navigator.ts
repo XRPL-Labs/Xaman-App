@@ -24,6 +24,9 @@ const getDefaultOptions = () => {
         topBar: {
             visible: false,
         },
+        navigationBar: {
+            backgroundColor: '$tint',
+        },
         statusBar: {
             style: Platform.select({
                 android: 'default',
@@ -303,12 +306,12 @@ const Navigator = {
         Navigator.showOverlay(AppScreens.Overlay.Alert, props);
     },
 
-    mergeOptions(options = {}, componentId?: string) {
+    mergeOptions(componentId?: string, options = {}) {
         const currentScreen = componentId || NavigationService.getCurrentScreen();
         Navigation.mergeOptions(currentScreen, options);
     },
 
-    updateProps(props = {}, componentId?: string) {
+    updateProps(componentId?: string, props = {}) {
         const currentScreen = componentId || NavigationService.getCurrentScreen();
         Navigation.updateProps(currentScreen, props);
     },

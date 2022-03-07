@@ -188,34 +188,28 @@ class HomeView extends Component<Props, State> {
             const chain = CoreRepository.getChainFromNode(currentSettings.defaultNode);
 
             // show the header
-            Navigator.mergeOptions(
-                {
-                    topBar: {
-                        hideOnScroll: true,
-                        visible: true,
-                        animate: true,
-                        background: {
-                            color: ChainColors[chain],
-                        },
-                        title: {
-                            text: chain.toUpperCase(),
-                            color: 'white',
-                            fontFamily: AppFonts.base.familyExtraBold,
-                            fontSize: AppFonts.h5.size,
-                        },
+            Navigator.mergeOptions(componentId, {
+                topBar: {
+                    hideOnScroll: true,
+                    visible: true,
+                    animate: true,
+                    background: {
+                        color: ChainColors[chain],
+                    },
+                    title: {
+                        text: chain.toUpperCase(),
+                        color: 'white',
+                        fontFamily: AppFonts.base.familyExtraBold,
+                        fontSize: AppFonts.h5.size,
                     },
                 },
-                componentId,
-            );
+            });
         } else {
-            Navigator.mergeOptions(
-                {
-                    topBar: {
-                        visible: false,
-                    },
+            Navigator.mergeOptions(componentId, {
+                topBar: {
+                    visible: false,
                 },
-                componentId,
-            );
+            });
         }
     };
 

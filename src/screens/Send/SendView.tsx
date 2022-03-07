@@ -147,10 +147,13 @@ class SendView extends Component<Props, State> {
     };
 
     changeStep = (step: Steps) => {
+        // @ts-ignore
+        const { componentId } = this.props;
+
         // disable pop gesture in summary step for preventing closing the screen
         // while swiping the submit button
         if (step === Steps.Summary) {
-            Navigator.mergeOptions({
+            Navigator.mergeOptions(componentId, {
                 popGesture: false,
             });
         }
