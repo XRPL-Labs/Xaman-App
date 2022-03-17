@@ -384,13 +384,13 @@ PODS:
     - React-jsi (= 0.67.3)
     - React-logger (= 0.67.3)
     - React-perflogger (= 0.67.3)
-  - ReactNativeNavigation (7.25.1):
+  - ReactNativeNavigation (7.26.0):
     - HMSegmentedControl
     - React-Core
     - React-RCTImage
     - React-RCTText
-    - ReactNativeNavigation/Core (= 7.25.1)
-  - ReactNativeNavigation/Core (7.25.1):
+    - ReactNativeNavigation/Core (= 7.26.0)
+  - ReactNativeNavigation/Core (7.26.0):
     - HMSegmentedControl
     - React-Core
     - React-RCTImage
@@ -645,7 +645,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: d0361f15ea978958fab7ffb6960f475b5063d83f
   React-runtimeexecutor: af1946623656f9c5fd64ca6f36f3863516193446
   ReactCommon: 650e33cde4fb7d36781cd3143f5276da0abb2f96
-  ReactNativeNavigation: 6e747bdf88f138088a105285274170b3fc0404ed
+  ReactNativeNavigation: b3344828dfe4a696425cbc00d61e05c4c0150f98
   RealmJS: 9ca55cce37eedc14f6f3db233ba3d3ad52838c6f
   RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
   RNDeviceInfo: 4944cf8787b9c5bffaf301fda68cc1a2ec003341
@@ -659,6 +659,6 @@ SPEC CHECKSUMS:
   VeriffSDK: b7fd8859fed9c7323272cc1f7c1c25a5723c8b49
   Yoga: 90dcd029e45d8a7c1ff059e8b3c6612ff409061a
 
-PODFILE CHECKSUM: a539f6187a40ee59d537d67e7849507bb70311c4
+PODFILE CHECKSUM: e302c8ad52c95a2c86d6da748305832a7cd28ac9
 
 COCOAPODS: 1.11.2
