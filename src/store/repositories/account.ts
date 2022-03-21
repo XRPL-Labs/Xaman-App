@@ -17,7 +17,7 @@ import BaseRepository from './base';
 // events
 declare interface AccountRepository {
     on(event: 'changeDefaultAccount', listener: (defaultAccount: AccountSchema) => void): this;
-    on(event: 'accountUpdate', listener: (account: AccountSchema) => void): this;
+    on(event: 'accountUpdate', listener: (account: AccountSchema, changes: Partial<AccountSchema>) => void): this;
     on(event: 'accountCreate', listener: (account: AccountSchema) => void): this;
     on(event: 'accountRemove', listener: () => void): this;
     on(event: string, listener: Function): this;
@@ -73,7 +73,7 @@ class AccountRepository extends BaseRepository {
         }
 
         return this.create(object, true).then((updatedAccount: AccountSchema) => {
-            this.emit('accountUpdate', updatedAccount);
+            this.emit('accountUpdate', updatedAccount, object);
             return updatedAccount;
         });
     };
