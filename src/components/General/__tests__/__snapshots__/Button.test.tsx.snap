@@ -125,6 +125,9 @@ exports[`Button Component should render with isDisabled 1`] = `
       },
       undefined,
       undefined,
+      undefined,
+      undefined,
+      undefined,
       Object {
         "opacity": 0.4,
       },
