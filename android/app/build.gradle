@@ -180,6 +180,7 @@ android {
             }
         }
         release {
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             manifestPlaceholders = [excludeSystemAlertWindowPermission: "true"]
@@ -193,8 +194,9 @@ android {
         }
     }
 
-    if (System.getenv("CI") != "true"){
-        buildTypes.release.signingConfig = signingConfigs.release
+    // building in CI, change the singing config for release to debug
+    if (System.getenv("CI") === "true"){
+        buildTypes.release.signingConfig = signingConfigs.debug
     }
 
     // applicationVariants are e.g. debug, release
