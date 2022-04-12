@@ -9,8 +9,8 @@ exports[`[SearchBar] renders correctly 1`] = `
         "borderRadius": 15,
         "flexDirection": "row",
         "height": 73.5,
-        "marginHorizontal": 10,
       },
+      false,
       undefined,
     ]
   }
@@ -59,24 +59,27 @@ exports[`[SearchBar] renders correctly 1`] = `
     <TextInput
       autoCapitalize="none"
       autoCorrect={false}
+      onBlur={[Function]}
       onChangeText={[Function]}
+      onFocus={[Function]}
       placeholder="Please type ..."
       placeholderTextColor="#606885"
       style={
         Array [
           Object {
             "color": "#000000",
-            "flex": 1,
             "fontFamily": "UbuntuMono-Bold",
             "fontSize": 34.285714285714285,
             "fontWeight": "600",
             "height": "100%",
             "paddingLeft": 50,
             "paddingRight": 50,
+            "paddingVertical": 0,
           },
           undefined,
         ]
       }
+      underlineColorAndroid="transparent"
       value=""
     />
   </View>
@@ -146,8 +149,8 @@ exports[`[SearchBar] should clear text 1`] = `
         "borderRadius": 15,
         "flexDirection": "row",
         "height": 73.5,
-        "marginHorizontal": 10,
       },
+      false,
       undefined,
     ]
   }
@@ -196,24 +199,27 @@ exports[`[SearchBar] should clear text 1`] = `
     <TextInput
       autoCapitalize="none"
       autoCorrect={false}
+      onBlur={[Function]}
       onChangeText={[Function]}
+      onFocus={[Function]}
       placeholder="Please type ..."
       placeholderTextColor="#606885"
       style={
         Array [
           Object {
             "color": "#000000",
-            "flex": 1,
             "fontFamily": "UbuntuMono-Bold",
             "fontSize": 34.285714285714285,
             "fontWeight": "600",
             "height": "100%",
             "paddingLeft": 50,
             "paddingRight": 50,
+            "paddingVertical": 0,
           },
           undefined,
         ]
       }
+      underlineColorAndroid="transparent"
       value=""
     />
   </View>
@@ -283,8 +289,8 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
         "borderRadius": 15,
         "flexDirection": "row",
         "height": 73.5,
-        "marginHorizontal": 10,
       },
+      false,
       undefined,
     ]
   }
@@ -333,24 +339,27 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
     <TextInput
       autoCapitalize="none"
       autoCorrect={false}
+      onBlur={[Function]}
       onChangeText={[Function]}
+      onFocus={[Function]}
       placeholder="Please type ..."
       placeholderTextColor="#606885"
       style={
         Array [
           Object {
             "color": "#000000",
-            "flex": 1,
             "fontFamily": "UbuntuMono-Bold",
             "fontSize": 34.285714285714285,
             "fontWeight": "600",
             "height": "100%",
             "paddingLeft": 50,
             "paddingRight": 50,
+            "paddingVertical": 0,
           },
           undefined,
         ]
       }
+      underlineColorAndroid="transparent"
       value="searched text"
     />
   </View>

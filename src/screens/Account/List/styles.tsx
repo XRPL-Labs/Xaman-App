@@ -17,6 +17,7 @@ const styles = StyleService.create({
     },
     rowAddContainer: {
         height: AppSizes.scale(90),
+        marginBottom: 10,
         borderWidth: 2,
         borderColor: '$tint',
         borderRadius: 15,
