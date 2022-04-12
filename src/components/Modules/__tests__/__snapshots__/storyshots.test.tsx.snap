@@ -700,28 +700,44 @@ exports[`Storyshots Avatar Big 1`] = `
   }
 >
   <View>
-    <Image
-      borderRadius={25}
-      resizeMode="cover"
-      source={
-        Object {
-          "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
-        }
-      }
+    <View
       style={
         Array [
           Object {
+            "alignItems": "center",
             "backgroundColor": "#F3F6FA",
             "borderRadius": 10,
+            "justifyContent": "center",
           },
+          false,
           Object {
             "height": 214.28571428571428,
             "width": 214.28571428571428,
           },
-          false,
+          undefined,
         ]
       }
-    />
+    >
+      <Image
+        resizeMode="cover"
+        source={
+          Object {
+            "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "borderRadius": 10,
+            },
+            Object {
+              "height": 214.28571428571428,
+              "width": 214.28571428571428,
+            },
+          ]
+        }
+      />
+    </View>
   </View>
 </View>
 `;
@@ -738,28 +754,44 @@ exports[`Storyshots Avatar Original 1`] = `
   }
 >
   <View>
-    <Image
-      borderRadius={25}
-      resizeMode="cover"
-      source={
-        Object {
-          "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
-        }
-      }
+    <View
       style={
         Array [
           Object {
+            "alignItems": "center",
             "backgroundColor": "#F3F6FA",
             "borderRadius": 10,
+            "justifyContent": "center",
           },
+          false,
           Object {
             "height": 85.71428571428571,
             "width": 85.71428571428571,
           },
-          false,
+          undefined,
         ]
       }
-    />
+    >
+      <Image
+        resizeMode="cover"
+        source={
+          Object {
+            "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "borderRadius": 10,
+            },
+            Object {
+              "height": 85.71428571428571,
+              "width": 85.71428571428571,
+            },
+          ]
+        }
+      />
+    </View>
   </View>
 </View>
 `;
@@ -776,31 +808,47 @@ exports[`Storyshots Avatar With Border 1`] = `
   }
 >
   <View>
-    <Image
-      borderRadius={25}
-      resizeMode="cover"
-      source={
-        Object {
-          "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
-        }
-      }
+    <View
       style={
         Array [
           Object {
+            "alignItems": "center",
             "backgroundColor": "#F3F6FA",
             "borderRadius": 10,
-          },
-          Object {
-            "height": 85.71428571428571,
-            "width": 85.71428571428571,
+            "justifyContent": "center",
           },
           Object {
             "borderColor": "rgba(96,104,133,0.06)",
             "borderWidth": 1,
           },
+          Object {
+            "height": 86.71428571428571,
+            "width": 86.71428571428571,
+          },
+          undefined,
         ]
       }
-    />
+    >
+      <Image
+        resizeMode="cover"
+        source={
+          Object {
+            "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "borderRadius": 10,
+            },
+            Object {
+              "height": 85.71428571428571,
+              "width": 85.71428571428571,
+            },
+          ]
+        }
+      />
+    </View>
   </View>
 </View>
 `;
@@ -817,28 +865,44 @@ exports[`Storyshots Avatar badge 1`] = `
   }
 >
   <View>
-    <Image
-      borderRadius={25}
-      resizeMode="cover"
-      source={
-        Object {
-          "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
-        }
-      }
+    <View
       style={
         Array [
           Object {
+            "alignItems": "center",
             "backgroundColor": "#F3F6FA",
             "borderRadius": 10,
+            "justifyContent": "center",
           },
+          false,
           Object {
             "height": 214.28571428571428,
             "width": 214.28571428571428,
           },
-          false,
+          undefined,
         ]
       }
-    />
+    >
+      <Image
+        resizeMode="cover"
+        source={
+          Object {
+            "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "borderRadius": 10,
+            },
+            Object {
+              "height": 214.28571428571428,
+              "width": 214.28571428571428,
+            },
+          ]
+        }
+      />
+    </View>
     <View
       style={
         Array [
@@ -894,28 +958,44 @@ exports[`Storyshots Avatar badge Color 1`] = `
   }
 >
   <View>
-    <Image
-      borderRadius={25}
-      resizeMode="cover"
-      source={
-        Object {
-          "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
-        }
-      }
+    <View
       style={
         Array [
           Object {
+            "alignItems": "center",
             "backgroundColor": "#F3F6FA",
             "borderRadius": 10,
+            "justifyContent": "center",
           },
+          false,
           Object {
             "height": 214.28571428571428,
             "width": 214.28571428571428,
           },
-          false,
+          undefined,
         ]
       }
-    />
+    >
+      <Image
+        resizeMode="cover"
+        source={
+          Object {
+            "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "borderRadius": 10,
+            },
+            Object {
+              "height": 214.28571428571428,
+              "width": 214.28571428571428,
+            },
+          ]
+        }
+      />
+    </View>
     <View
       style={
         Array [
@@ -3949,31 +4029,47 @@ exports[`Storyshots RecipientElement Selected 1`] = `
     testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
     <View>
-      <Image
-        borderRadius={25}
-        resizeMode="cover"
-        source={
-          Object {
-            "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
-          }
-        }
+      <View
         style={
           Array [
             Object {
+              "alignItems": "center",
               "backgroundColor": "#F3F6FA",
               "borderRadius": 10,
-            },
-            Object {
-              "height": 85.71428571428571,
-              "width": 85.71428571428571,
+              "justifyContent": "center",
             },
             Object {
               "borderColor": "rgba(96,104,133,0.06)",
               "borderWidth": 1,
             },
+            Object {
+              "height": 86.71428571428571,
+              "width": 86.71428571428571,
+            },
+            undefined,
           ]
         }
-      />
+      >
+        <Image
+          resizeMode="cover"
+          source={
+            Object {
+              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
+            }
+          }
+          style={
+            Array [
+              Object {
+                "borderRadius": 10,
+              },
+              Object {
+                "height": 85.71428571428571,
+                "width": 85.71428571428571,
+              },
+            ]
+          }
+        />
+      </View>
     </View>
     <View
       style={
@@ -4069,31 +4165,47 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
     testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
     <View>
-      <Image
-        borderRadius={25}
-        resizeMode="cover"
-        source={
-          Object {
-            "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
-          }
-        }
+      <View
         style={
           Array [
             Object {
+              "alignItems": "center",
               "backgroundColor": "#F3F6FA",
               "borderRadius": 10,
-            },
-            Object {
-              "height": 85.71428571428571,
-              "width": 85.71428571428571,
+              "justifyContent": "center",
             },
             Object {
               "borderColor": "rgba(96,104,133,0.06)",
               "borderWidth": 1,
             },
+            Object {
+              "height": 86.71428571428571,
+              "width": 86.71428571428571,
+            },
+            undefined,
           ]
         }
-      />
+      >
+        <Image
+          resizeMode="cover"
+          source={
+            Object {
+              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
+            }
+          }
+          style={
+            Array [
+              Object {
+                "borderRadius": 10,
+              },
+              Object {
+                "height": 85.71428571428571,
+                "width": 85.71428571428571,
+              },
+            ]
+          }
+        />
+      </View>
     </View>
     <View
       style={
@@ -4185,31 +4297,47 @@ exports[`Storyshots RecipientElement default 1`] = `
     testID="recipient-rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1"
   >
     <View>
-      <Image
-        borderRadius={25}
-        resizeMode="cover"
-        source={
-          Object {
-            "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
-          }
-        }
+      <View
         style={
           Array [
             Object {
+              "alignItems": "center",
               "backgroundColor": "#F3F6FA",
               "borderRadius": 10,
-            },
-            Object {
-              "height": 85.71428571428571,
-              "width": 85.71428571428571,
+              "justifyContent": "center",
             },
             Object {
               "borderColor": "rgba(96,104,133,0.06)",
               "borderWidth": 1,
             },
+            Object {
+              "height": 86.71428571428571,
+              "width": 86.71428571428571,
+            },
+            undefined,
           ]
         }
-      />
+      >
+        <Image
+          resizeMode="cover"
+          source={
+            Object {
+              "uri": "https://xumm.app/avatar/rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1_180_50.png",
+            }
+          }
+          style={
+            Array [
+              Object {
+                "borderRadius": 10,
+              },
+              Object {
+                "height": 85.71428571428571,
+                "width": 85.71428571428571,
+              },
+            ]
+          }
+        />
+      </View>
     </View>
     <View
       style={

@@ -8,7 +8,7 @@ const styles = StyleService.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
-    accountCard: {
+    actionButtonsContainer: {
         backgroundColor: '$tint',
         marginBottom: 20,
         padding: 16,
@@ -35,11 +35,6 @@ const styles = StyleService.create({
         marginTop: 12,
         marginRight: 3,
     },
-    iconShare: {
-        tintColor: '$grey',
-        marginTop: 12,
-        marginRight: 3,
-    },
     cardAddress: {
         backgroundColor: '$white',
         color: '$blue',
@@ -62,9 +57,9 @@ const styles = StyleService.create({
     shareIcon: {
         tintColor: '$blue',
     },
-    trustLineListContainer: {
+    tokenListContainer: {
         flex: 6,
-        paddingHorizontal: 10,
+        // backgroundColor: '$red',
     },
     balanceContainer: {
         justifyContent: 'center',
@@ -103,33 +98,31 @@ const styles = StyleService.create({
         resizeMode: 'contain',
     },
     buttonRow: {
-        justifyContent: 'space-between',
         flexDirection: 'row',
-        marginTop: 12,
-        marginBottom: 3,
-    },
-    buttonRowHalf: {
-        width: '50%',
+        backgroundColor: '$tint',
+        borderRadius: 16,
+        padding: 16,
+        marginBottom: 20,
+        marginTop: 15,
+        marginHorizontal: AppSizes.paddingSml,
     },
     // SEND BUTTON
     sendButton: {
-        marginRight: 1.5,
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
         backgroundColor: StyleService.isDarkMode() ? '$blue' : '$white',
     },
-    sendButtonIcon: { marginRight: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$blue' },
+    sendButtonIcon: { tintColor: StyleService.isDarkMode() ? '$white' : '$blue' },
     sendButtonText: { color: StyleService.isDarkMode() ? '$white' : '$blue' },
+
+    requestButtonContainer: {
+        marginLeft: 15,
+    },
 
     // REQUEST BUTTON
     requestButton: {
-        marginLeft: 1.5,
-        borderTopLeftRadius: 0,
-        borderBottomLeftRadius: 0,
         backgroundColor: StyleService.isDarkMode() ? '$grey' : '$white',
     },
 
-    requestButtonIcon: { marginLeft: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$green' },
+    requestButtonIcon: { tintColor: StyleService.isDarkMode() ? '$white' : '$green' },
     requestButtonText: { color: StyleService.isDarkMode() ? '$white' : '$green' },
 
     QRButtonText: { fontSize: AppFonts.base.size },

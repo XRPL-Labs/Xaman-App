@@ -4,11 +4,12 @@ import { AppFonts, AppSizes } from '@theme';
 /* Styles ==================================================================== */
 export default StyleService.create({
     currencyItem: {
-        paddingTop: 10,
-        paddingBottom: 10,
-        paddingRight: 5,
         justifyContent: 'space-between',
         flexDirection: 'row',
+        backgroundColor: '$lightBlue',
+        borderRadius: 15,
+        paddingHorizontal: 5,
+        marginHorizontal: AppSizes.paddingSml,
     },
     currencyItemLabel: {
         fontSize: AppFonts.h5.size,
@@ -18,28 +19,33 @@ export default StyleService.create({
         justifyContent: 'center',
     },
     currencyItemLabelSmall: {
-        fontSize: AppFonts.p.size,
-        fontFamily: AppFonts.base.familyMono,
+        fontSize: AppFonts.h5.size,
+        fontFamily: AppFonts.base.familyMonoBold,
         color: '$textPrimary',
         alignItems: 'flex-start',
         justifyContent: 'center',
         marginRight: 10,
-        marginBottom: 3,
+    },
+    balanceText: {
+        fontSize: AppFonts.h5.size,
+        fontFamily: AppFonts.base.familyMonoBold,
+        color: '$blue',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        marginRight: 5,
     },
     brandAvatarContainer: {
         marginRight: 10,
     },
-    issuerLabel: {
-        fontSize: AppFonts.subtext.size,
-        fontFamily: AppFonts.base.familyMono,
-        color: '$grey',
-    },
-    currencyAvatarContainer: {
-        paddingRight: 5,
+    brandAvatar: {
+        backgroundColor: '$white',
     },
     currencyAvatar: {
-        width: AppSizes.screen.width * 0.035,
-        height: AppSizes.screen.width * 0.035,
-        resizeMode: 'contain',
+        tintColor: '$blue',
+    },
+    currencyAvatarContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingRight: 10,
     },
 });

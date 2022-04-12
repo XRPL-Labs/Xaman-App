@@ -1,13 +1,16 @@
 import { StyleSheet } from 'react-native';
+import { AppSizes } from '@theme';
 
 const styles = StyleSheet.create({
     container: {
-        flexWrap: 'wrap',
-        flexDirection: 'row',
+        width: AppSizes.screen.width,
+    },
+    contentContainerStyle: {
+        flexGrow: 0,
     },
     item: {
         position: 'absolute',
-        zIndex: 8,
+        zIndex: 9,
     },
 });
 

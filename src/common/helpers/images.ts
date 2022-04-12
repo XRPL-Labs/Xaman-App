@@ -143,4 +143,8 @@ export const Images = {
     IconXAppsLight: buildImageSource('IconXAppsLight', 'icon_xapps_light'),
     IconXApp: buildImageSource('IconXApp', 'icon_xapp'),
     IconAlertTriangle: buildImageSource('IconAlertTriangle', 'icon_alert_triangle'),
+    IconSortTop: buildImageSource('IconSortTop', 'icon_sort_top'),
+    IconStarFull: buildImageSource('IconStarFull', 'icon_star_full'),
+    IconHideZero: buildImageSource('IconHideZero', 'icon_hide_zero'),
+    IconShowZero: buildImageSource('IconShowZero', 'icon_show_zero'),
 };

@@ -30,7 +30,7 @@ export * from './HorizontalLine';
 export * from './ProgressBar';
 export * from './CheckBox';
 export * from './SwipeButton';
-export * from './DragSortableView';
+export * from './SortableFlatList';
 export * from './AmountText';
 export * from './LoadingIndicator';
 export * from './KeyboardAwareScrollView';

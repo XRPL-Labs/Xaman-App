@@ -48,8 +48,6 @@ const styles = StyleService.create({
         marginRight: 10,
         marginBottom: 3,
         color: '$textPrimary',
-        // borderWidth: 1,
-        // borderColor: 'red',
     },
     issuerLabel: {
         fontSize: AppFonts.subtext.size,
@@ -63,10 +61,7 @@ const styles = StyleService.create({
         marginTop: 1,
         marginRight: 10,
     },
-
     buttonRow: {
-        width: '50%',
-        justifyContent: 'space-between',
         flexDirection: 'row',
         marginTop: 12,
         marginBottom: 3,
@@ -85,11 +80,10 @@ const styles = StyleService.create({
         borderBottomLeftRadius: 0,
         backgroundColor: StyleService.isDarkMode() ? '$grey' : '$white',
     },
-    exchangeButtonIcon: { marginLeft: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$blue' },
+    exchangeButtonIcon: { marginLeft: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$black' },
     exchangeButtonText: { color: StyleService.isDarkMode() ? '$white' : '$black' },
 
     infoButton: {
-        marginLeft: 1.5,
         borderTopLeftRadius: 0,
         borderBottomLeftRadius: 0,
     },
@@ -103,6 +97,32 @@ const styles = StyleService.create({
     },
     infoText: {
         color: '$white',
+    },
+    removeButtonContainer: {
+        flexDirection: 'row',
+        paddingTop: 10,
+    },
+    favoriteContainer: {
+        flex: 1,
+        flexDirection: 'row',
+    },
+    favoriteText: {
+        fontFamily: AppFonts.pb.family,
+        fontSize: AppFonts.base.size,
+        color: '$grey',
+        paddingLeft: 5,
+    },
+    favoriteTextActive: {
+        fontFamily: AppFonts.pb.family,
+        fontSize: AppFonts.base.size,
+        color: '$orange',
+        paddingLeft: 5,
+    },
+    favoriteIcon: {
+        tintColor: '$grey',
+    },
+    favoriteIconActive: {
+        tintColor: '$orange',
     },
 });
 

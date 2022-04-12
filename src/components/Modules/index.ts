@@ -4,6 +4,6 @@ export * from './EventsFilterChip';
 export * from './EventsList';
 export * from './AccountPicker';
 export * from './CurrencyPicker';
-export * from './TrustLineList';
+export * from './TokenList';
 export * from './NodeList';
 export * from './FeeList';

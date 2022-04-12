@@ -9,7 +9,7 @@ import { View, SafeAreaView, Text, Image, ImageBackground, InteractionManager, S
 
 import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
-import { AccountService, SocketService, BackendService, StyleService, LedgerService } from '@services';
+import { AccountService, SocketService, StyleService, LedgerService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
@@ -18,23 +18,13 @@ import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/lates
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
-import { VibrateHapticFeedback, Prompt, Toast } from '@common/helpers/interface';
-
-import { CalculateAvailableBalance } from '@common/utils/balance';
+import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
 
 import Localize from '@locale';
 
 // components
-import {
-    TouchableDebounce,
-    Button,
-    RaisedButton,
-    InfoMessage,
-    Spacer,
-    Icon,
-    LoadingIndicator,
-} from '@components/General';
-import { TrustLineList } from '@components/Modules';
+import { TouchableDebounce, Button, RaisedButton, InfoMessage, Spacer, Icon } from '@components/General';
+import { TokenList } from '@components/Modules';
 
 // style
 import { AppStyles, AppFonts } from '@theme';
@@ -49,10 +39,6 @@ export interface State {
     coreSettings: CoreSchema;
     isSpendable: boolean;
     discreetMode: boolean;
-    isLoadingRate: boolean;
-    showRate: boolean;
-    currency: string;
-    currencyRate: any;
 }
 
 /* Component ==================================================================== */
@@ -70,11 +56,7 @@ class HomeView extends Component<Props, State> {
             account: undefined,
             isSpendable: false,
             coreSettings,
-            currency: coreSettings.currency,
             discreetMode: coreSettings.discreetMode,
-            isLoadingRate: false,
-            showRate: false,
-            currencyRate: undefined,
         };
     }
 
@@ -116,38 +98,29 @@ class HomeView extends Component<Props, State> {
         const { account } = this.state;
 
         InteractionManager.runAfterInteractions(() => {
+            // Update account details when component didAppear and Socket is connected
             if (account?.isValid() && SocketService.isConnected()) {
-                // update account details
+                // only update current account details
                 AccountService.updateAccountsDetails([account.address]);
             }
         });
     }
 
+    /*
+        Handle events when something in CoreSettings has been changed
+        Monitoring `discreetMode`, `developerMode`, `defaultNode` changes
+     */
     onCoreSettingsUpdate = (coreSettings: CoreSchema, changes: Partial<CoreSchema>) => {
-        const { discreetMode, currency, showRate } = this.state;
+        const { discreetMode } = this.state;
 
-        // discreetMode changed
+        // default discreetMode has changed
         if (has(changes, 'discreetMode') && discreetMode !== changes.discreetMode) {
             this.setState({
                 discreetMode: coreSettings.discreetMode,
             });
         }
 
-        // currency changed
-        if (has(changes, 'currency') && currency !== changes.currency) {
-            this.setState(
-                {
-                    currency: coreSettings.currency,
-                },
-                () => {
-                    // turn to XRP
-                    if (showRate) {
-                        this.toggleBalance();
-                    }
-                },
-            );
-        }
-
+        // developer mode or default node has been changed
         if (has(changes, 'developerMode') || has(changes, 'defaultNode')) {
             this.setNodeChainHeader(coreSettings);
         }
@@ -342,51 +315,7 @@ class HomeView extends Component<Props, State> {
         }).catch(() => {});
     };
 
-    toggleBalance = () => {
-        const { showRate, currency } = this.state;
-
-        if (!showRate) {
-            this.setState({
-                isLoadingRate: true,
-                showRate: true,
-            });
-
-            BackendService.getCurrencyRate(currency)
-                .then((r) => {
-                    this.setState({
-                        currencyRate: r,
-                        isLoadingRate: false,
-                    });
-                })
-                .catch(() => {
-                    Toast(Localize.t('global.unableToFetchCurrencyRate'));
-
-                    this.setState({
-                        isLoadingRate: false,
-                        showRate: false,
-                    });
-                });
-        } else {
-            this.setState({
-                showRate: false,
-            });
-        }
-    };
-
-    onBalancePress = () => {
-        const { account } = this.state;
-
-        // if account is negative show balance explain
-        const availableBalance = CalculateAvailableBalance(account, true);
-
-        if (availableBalance < 0) {
-            this.showBalanceExplain();
-        } else {
-            this.toggleBalance();
-        }
-    };
-
-    onTrustLinePress = (line: TrustLineSchema) => {
+    onTokenPress = (line: TrustLineSchema) => {
         const { isSpendable } = this.state;
 
         if (!line) {
@@ -492,11 +421,11 @@ class HomeView extends Component<Props, State> {
         }
 
         return (
-            <TrustLineList
-                testID="trustLine-list-container"
-                style={[styles.trustLineListContainer]}
+            <TokenList
+                testID="token-list-container"
+                style={styles.tokenListContainer}
                 account={account}
-                onLinePress={this.onTrustLinePress}
+                onTokenPress={this.onTokenPress}
                 discreetMode={discreetMode}
                 showAddButton={isSpendable}
             />
@@ -508,29 +437,29 @@ class HomeView extends Component<Props, State> {
 
         if (isSpendable) {
             return (
-                <View style={[styles.buttonRow, styles.buttonRowHalf]}>
+                <View style={[styles.buttonRow]}>
                     <RaisedButton
+                        small
                         testID="send-button"
-                        style={[styles.sendButton]}
+                        style={styles.sendButton}
                         icon="IconCornerLeftUp"
-                        iconSize={25}
+                        iconSize={20}
                         iconStyle={[styles.sendButtonIcon]}
                         label={Localize.t('global.send')}
                         textStyle={[styles.sendButtonText]}
                         onPress={this.pushSendScreen}
-                        activeOpacity={0}
                     />
                     <RaisedButton
+                        small
                         testID="request-button"
                         style={[styles.requestButton]}
+                        containerStyle={styles.requestButtonContainer}
                         icon="IconCornerRightDown"
-                        iconSize={25}
+                        iconSize={20}
                         iconStyle={[styles.requestButtonIcon]}
-                        iconPosition="right"
                         label={Localize.t('global.request')}
                         textStyle={[styles.requestButtonText]}
                         onPress={this.onShowAccountQRPress}
-                        activeOpacity={0}
                     />
                 </View>
             );
@@ -539,13 +468,12 @@ class HomeView extends Component<Props, State> {
         return (
             <View style={[styles.buttonRow]}>
                 <RaisedButton
-                    testID="qr-button"
+                    testID="show-account-qr-button"
                     icon="IconQR"
                     iconSize={20}
                     label={Localize.t('account.showAccountQR')}
                     textStyle={[styles.QRButtonText]}
                     onPress={this.onShowAccountQRPress}
-                    activeOpacity={0}
                 />
             </View>
         );
@@ -578,75 +506,11 @@ class HomeView extends Component<Props, State> {
         );
     };
 
-    renderBalance = () => {
-        const { showRate, isLoadingRate, account, discreetMode, currencyRate } = this.state;
-
-        // account is not activated
-        if (account.balance === 0) return null;
-
-        let balance = '0';
-
-        if (!isLoadingRate) {
-            const availableBalance = CalculateAvailableBalance(account, true);
-            if (showRate) {
-                balance = `${currencyRate.symbol} ${Localize.formatNumber(
-                    Number(availableBalance) * Number(currencyRate.lastRate),
-                )}`;
-            } else {
-                balance = Localize.formatNumber(availableBalance);
-            }
-        }
-
-        return (
-            <>
-                <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                    <Text numberOfLines={1} style={[AppStyles.flex1, styles.balanceLabel]}>
-                        {Localize.t('home.balance')}
-                    </Text>
-
-                    <TouchableDebounce style={AppStyles.paddingRightSml} onPress={this.toggleDiscreetMode}>
-                        <Text style={[styles.cardSmallLabel]}>
-                            <Icon
-                                style={[AppStyles.imgColorGrey]}
-                                size={12}
-                                name={discreetMode ? 'IconEyeOff' : 'IconEye'}
-                            />
-                            {'  '}
-                            {discreetMode ? Localize.t('home.showBalance') : Localize.t('home.hideBalance')}
-                        </Text>
-                    </TouchableDebounce>
-
-                    <TouchableDebounce onPress={this.showBalanceExplain}>
-                        <Text style={[styles.cardSmallLabel]}>
-                            <Icon style={[AppStyles.imgColorGrey]} size={12} name="IconInfo" />
-                            {'  '}
-                            {Localize.t('home.explainBalance')}
-                        </Text>
-                    </TouchableDebounce>
-                </View>
-                <TouchableDebounce activeOpacity={0.7} style={[styles.balanceContainer]} onPress={this.onBalancePress}>
-                    {!discreetMode && !showRate && <Icon name="IconXrp" size={16} style={styles.xrpIcon} />}
-
-                    {isLoadingRate ? (
-                        <LoadingIndicator style={styles.rateLoader} />
-                    ) : (
-                        <Text
-                            testID="account-balance-label"
-                            style={[styles.balanceText, discreetMode && AppStyles.colorGrey]}
-                        >
-                            {discreetMode ? '••••••••' : balance}
-                        </Text>
-                    )}
-                </TouchableDebounce>
-            </>
-        );
-    };
-
     renderAccountDetails = () => {
         const { account, discreetMode } = this.state;
 
         return (
-            <View style={[AppStyles.row, AppStyles.paddingBottomSml]}>
+            <View style={[AppStyles.row, AppStyles.paddingHorizontal]}>
                 <View style={[AppStyles.flex1]}>
                     <Text style={[AppStyles.h5]} numberOfLines={1}>
                         {account.label}
@@ -662,8 +526,8 @@ class HomeView extends Component<Props, State> {
                         </Text>
                     </TouchableDebounce>
                 </View>
-                <TouchableDebounce hitSlop={{ left: 25, right: 25 }} onPress={this.onShowAccountQRPress}>
-                    <Icon style={[styles.iconShare]} size={16} name="IconShare" />
+                <TouchableDebounce hitSlop={{ left: 25, right: 25 }} onPress={this.toggleDiscreetMode}>
+                    <Icon style={[styles.iconEye]} size={18} name={discreetMode ? 'IconEyeOff' : 'IconEye'} />
                 </TouchableDebounce>
             </View>
         );
@@ -682,12 +546,9 @@ class HomeView extends Component<Props, State> {
                 <View style={[AppStyles.headerContainer]}>{this.renderHeader()}</View>
 
                 {/* Content */}
-                <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontalSml]}>
-                    <View style={[styles.accountCard]}>
-                        {this.renderAccountDetails()}
-                        {this.renderBalance()}
-                        {this.renderButtons()}
-                    </View>
+                <View style={[AppStyles.contentContainer]}>
+                    {this.renderAccountDetails()}
+                    {this.renderButtons()}
                     {this.renderAssets()}
                 </View>
             </SafeAreaView>

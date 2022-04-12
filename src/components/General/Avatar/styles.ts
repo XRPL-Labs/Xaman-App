@@ -2,9 +2,14 @@ import StyleService from '@services/StyleService';
 
 /* Styles ==================================================================== */
 export default StyleService.create({
-    image: {
+    container: {
         borderRadius: 10,
         backgroundColor: '$tint',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    image: {
+        borderRadius: 10,
     },
     border: {
         borderColor: '$lightGrey',
