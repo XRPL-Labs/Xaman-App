@@ -38,8 +38,8 @@ class SocketService extends EventEmitter {
     logger: any;
     status: SocketStateStatus;
     shownErrorDialog: boolean;
-    onEvent: (event: string, fn: any) => void;
-    offEvent: (event: string, fn: any) => void;
+    onEvent: (event: string, fn: any) => any;
+    offEvent: (event: string, fn: any) => any;
 
     constructor() {
         super();
@@ -107,9 +107,9 @@ class SocketService extends EventEmitter {
                     }
                 });
 
-                return resolve();
+                resolve();
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
     };
@@ -284,7 +284,7 @@ class SocketService extends EventEmitter {
             this.connection.destroy();
         }
 
-        let nodes = [];
+        let nodes: string[];
 
         // load node's list base on selected node chain
         if (this.chain === NodeChain.Main) {

@@ -1,12 +1,11 @@
 /* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
+import ApiService from '@services/ApiService';
 
 import { Payload } from '../object';
 import { PayloadOrigin } from '../types';
 
 import PayloadTemplate from './templates/payload.json';
-
-import ApiService from '../../../../services/ApiService';
 
 // "e24cfcfd-c737-4de7-9f18-b809aa6b571d"
 

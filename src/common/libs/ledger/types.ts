@@ -155,6 +155,7 @@ export interface AccountInfoResponse {
     ledger_current_index?: number;
     ledger_index?: number;
     validated?: boolean;
+    error?: string;
 }
 
 /**
