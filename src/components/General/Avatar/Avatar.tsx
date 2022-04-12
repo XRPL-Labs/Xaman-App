@@ -6,7 +6,7 @@
  */
 import React, { PureComponent } from 'react';
 
-import { View, Image, ImageSourcePropType } from 'react-native';
+import { View, Image, ImageSourcePropType, ViewStyle } from 'react-native';
 
 import { Images } from '@common/helpers/images';
 
@@ -19,15 +19,19 @@ import styles from './styles';
 interface Props {
     source: ImageSourcePropType;
     size?: number;
+    imageScale?: number;
     border?: boolean;
     badge?: (() => React.ReactNode) | Extract<keyof typeof Images, string>;
     badgeColor?: string;
+    containerStyle?: ViewStyle | ViewStyle[];
+    backgroundColor?: string;
 }
 
 /* Component ==================================================================== */
 class Avatar extends PureComponent<Props> {
     static defaultProps = {
         size: 40,
+        imageScale: 1,
         border: false,
         badgeBorder: true,
     };
@@ -76,19 +80,26 @@ class Avatar extends PureComponent<Props> {
     };
 
     renderAvatar = () => {
-        const { source, size, border } = this.props;
+        const { source, size, imageScale, border, containerStyle } = this.props;
 
         return (
-            <Image
-                resizeMode="cover"
-                borderRadius={25}
-                source={source}
+            <View
                 style={[
-                    styles.image,
-                    { height: AppSizes.scale(size), width: AppSizes.scale(size) },
+                    styles.container,
                     border && styles.border,
+                    { height: AppSizes.scale(size) + (border ? 1 : 0), width: AppSizes.scale(size) + (border ? 1 : 0) },
+                    containerStyle,
                 ]}
-            />
+            >
+                <Image
+                    resizeMode="cover"
+                    source={source}
+                    style={[
+                        styles.image,
+                        { height: AppSizes.scale(size) * imageScale, width: AppSizes.scale(size) * imageScale },
+                    ]}
+                />
+            </View>
         );
     };
 

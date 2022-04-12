@@ -1,4 +1,6 @@
 /* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable import/no-relative-packages */
+
 import React from 'react';
 import { storiesOf } from '@storybook/react-native';
 
@@ -6,7 +8,7 @@ import { withBackground } from '../../../../storybook/decoration';
 
 import { Avatar } from '../Avatar';
 
-const URI = { uri: 'https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg' };
+const URI = { uri: 'https://xumm.app/assets/icons/currencies/ex-bitstamp.png' };
 
 storiesOf('Avatar', module)
     .addDecorator(withBackground)
