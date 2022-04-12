@@ -395,7 +395,7 @@ PODS:
     - React-Core
     - React-RCTImage
     - React-RCTText
-  - RealmJS (10.13.0):
+  - RealmJS (10.10.1):
     - GCDWebServer
     - React
   - RNCClipboard (1.5.1):
@@ -646,7 +646,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: af1946623656f9c5fd64ca6f36f3863516193446
   ReactCommon: 650e33cde4fb7d36781cd3143f5276da0abb2f96
   ReactNativeNavigation: b3344828dfe4a696425cbc00d61e05c4c0150f98
-  RealmJS: 9ca55cce37eedc14f6f3db233ba3d3ad52838c6f
+  RealmJS: 2925b36a86fc179b0b58ad48386e43eb95188e9a
   RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
   RNDeviceInfo: 4944cf8787b9c5bffaf301fda68cc1a2ec003341
   RNFBAnalytics: b09c0c3b4a411be0dbc516cc6e357317ee77e019
