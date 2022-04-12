@@ -106,7 +106,7 @@ class EventsView extends Component<Props, State> {
         );
     }
 
-    componentDidMount = () => {
+    componentDidMount() {
         const { account } = this.state;
 
         // add listener for default account change
@@ -124,14 +124,14 @@ class EventsView extends Component<Props, State> {
                 this.updateDataSource(true);
             }
         });
-    };
+    }
 
-    componentWillUnmount = () => {
+    componentWillUnmount() {
         // remove listeners
         AccountRepository.off('changeDefaultAccount', this.onDefaultAccountChange);
         AccountService.off('transaction', this.onTransactionReceived);
         PushNotificationsService.off('signRequestUpdate', this.updateDataSource);
-    };
+    }
 
     onDefaultAccountChange = (account: AccountSchema) => {
         this.setState(
@@ -165,14 +165,15 @@ class EventsView extends Component<Props, State> {
         return new Promise(async (resolve) => {
             // return if no account exist
             if (!account) {
-                return resolve([]);
+                resolve([]);
+                return;
             }
 
             // account objects we are interested in
             const objectTypes = ['check', 'escrow', 'offer'];
             let objects = [] as LedgerEntriesTypes[];
 
-            return objectTypes
+            objectTypes
                 .reduce((accumulator, type) => {
                     return accumulator.then(() => {
                         return LedgerService.getAccountObjects(account.address, { type }).then((res: any) => {
@@ -190,27 +191,27 @@ class EventsView extends Component<Props, State> {
                     const filtered = without(parsedList, null);
 
                     this.setState({ plannedTransactions: filtered }, () => {
-                        return resolve(filtered);
+                        resolve(filtered);
                     });
                 })
                 .catch(() => {
                     Toast(Localize.t('events.canNotFetchTransactions'));
-                    return resolve([]);
+                    resolve([]);
                 });
         });
     };
 
     loadPendingRequests = () => {
         return new Promise((resolve) => {
-            return BackendService.getPendingPayloads()
+            BackendService.getPendingPayloads()
                 .then((payloads) => {
                     this.setState({ pendingRequests: payloads }, () => {
-                        return resolve(payloads);
+                        resolve(payloads);
                     });
                 })
                 .catch(() => {
                     Toast(Localize.t('events.canNotFetchSignRequests'));
-                    return resolve([]);
+                    resolve([]);
                 });
         });
     };
@@ -221,10 +222,11 @@ class EventsView extends Component<Props, State> {
         return new Promise((resolve) => {
             // return if no account exist
             if (!account) {
-                return resolve([]);
+                resolve([]);
+                return;
             }
 
-            return LedgerService.getTransactions(account.address, loadMore && lastMarker, 50)
+            LedgerService.getTransactions(account.address, loadMore && lastMarker, 50)
                 .then((resp) => {
                     const { transactions: txResp, marker } = resp;
                     let canLoadMore = true;
@@ -244,12 +246,12 @@ class EventsView extends Component<Props, State> {
                     }
 
                     this.setState({ transactions: parsedList, lastMarker: marker, canLoadMore }, () => {
-                        return resolve(parsedList);
+                        resolve(parsedList);
                     });
                 })
                 .catch(() => {
                     Toast(Localize.t('events.canNotFetchTransactions'));
-                    return resolve([]);
+                    resolve([]);
                 });
         });
     };
@@ -393,7 +395,7 @@ class EventsView extends Component<Props, State> {
             return;
         }
 
-        let newTransactions = [];
+        let newTransactions: TransactionsType[];
 
         if (sectionIndex === 0) {
             newTransactions = transactions;
@@ -482,9 +484,7 @@ class EventsView extends Component<Props, State> {
                     {
                         filters,
                     },
-                    () => {
-                        this.loadMore();
-                    },
+                    this.loadMore,
                 );
             } else {
                 this.setState({
@@ -572,9 +572,7 @@ class EventsView extends Component<Props, State> {
                     searchText: text,
                     filters: undefined,
                 },
-                () => {
-                    this.loadMore();
-                },
+                this.loadMore,
             );
         } else {
             this.setState({
