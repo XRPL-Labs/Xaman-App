@@ -6,14 +6,13 @@ import { find } from 'lodash';
 import { Results } from 'realm';
 
 import React, { Component } from 'react';
-import { View, Text, Image, ImageBackground, ScrollView } from 'react-native';
+import { View, Text, Image, ImageBackground } from 'react-native';
 
 import { Navigation } from 'react-native-navigation';
 
 import { AppScreens } from '@common/constants';
 
 // helpers
-import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
@@ -25,11 +24,11 @@ import { AccountSchema } from '@store/schemas/latest';
 import StyleService from '@services/StyleService';
 
 // components
-import { Button, Icon, Header, DragSortableView } from '@components/General';
+import { Button, Icon, Header, SortableFlatList } from '@components/General';
 
 import Localize from '@locale';
 // style
-import { AppStyles, AppSizes } from '@theme';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -39,7 +38,6 @@ export interface State {
     accounts: Results<AccountSchema>;
     dataSource: any;
     signableAccount: Array<AccountSchema>;
-    scrollEnabled: boolean;
     reorderEnabled: boolean;
 }
 
@@ -65,7 +63,6 @@ class AccountListView extends Component<Props, State> {
             accounts,
             dataSource: [...accounts],
             signableAccount: AccountRepository.getSignableAccounts(),
-            scrollEnabled: true,
             reorderEnabled: false,
         };
     }
@@ -132,21 +129,7 @@ class AccountListView extends Component<Props, State> {
         });
     };
 
-    onItemDragStart = () => {
-        this.setState({
-            scrollEnabled: false,
-        });
-        VibrateHapticFeedback('impactLight');
-    };
-
-    onItemDragEnd = () => {
-        this.setState({
-            scrollEnabled: true,
-        });
-        VibrateHapticFeedback('impactLight');
-    };
-
-    renderItem = (item: AccountSchema) => {
+    renderItem = ({ item }: { item: AccountSchema }) => {
         const { signableAccount, reorderEnabled } = this.state;
 
         if (!item?.isValid()) return null;
@@ -225,7 +208,7 @@ class AccountListView extends Component<Props, State> {
     };
 
     render() {
-        const { accounts, dataSource, scrollEnabled, reorderEnabled } = this.state;
+        const { accounts, dataSource, reorderEnabled } = this.state;
 
         return (
             <View testID="accounts-list-screen" style={[AppStyles.container]}>
@@ -275,14 +258,7 @@ class AccountListView extends Component<Props, State> {
                         />
                     </ImageBackground>
                 ) : (
-                    <ScrollView
-                        testID="account-list-scroll"
-                        scrollEnabled={scrollEnabled}
-                        style={[AppStyles.flex1]}
-                        contentContainerStyle={[AppStyles.paddingBottom]}
-                        horizontal={false}
-                        directionalLockEnabled
-                    >
+                    <View style={AppStyles.flex1}>
                         <View style={[styles.rowAddContainer]}>
                             {reorderEnabled ? (
                                 <View style={[AppStyles.paddingHorizontalSml]}>
@@ -308,22 +284,18 @@ class AccountListView extends Component<Props, State> {
                             )}
                         </View>
 
-                        <DragSortableView
-                            parentWidth={AppSizes.screen.width}
-                            childrenWidth={AppSizes.screen.width}
-                            childrenHeight={styles.rowContainer.height}
+                        <SortableFlatList
+                            testID="account-list-scroll"
+                            itemHeight={styles.rowContainer.height}
+                            separatorHeight={10}
                             dataSource={dataSource}
-                            marginChildrenTop={10}
-                            keyExtractor={(item, index) => `${item.address}${index}` || String(index)}
-                            testIDExtractor={(item) => `account-${item.address}`}
+                            keyExtractor={(item) => `account-${item.address}`}
                             renderItem={this.renderItem}
-                            onDragStart={this.onItemDragStart}
-                            onDragEnd={this.onItemDragEnd}
                             onDataChange={this.onAccountReorder}
-                            onClickItem={this.onItemPress}
+                            onItemPress={this.onItemPress}
                             sortable={reorderEnabled}
                         />
-                    </ScrollView>
+                    </View>
                 )}
             </View>
         );
