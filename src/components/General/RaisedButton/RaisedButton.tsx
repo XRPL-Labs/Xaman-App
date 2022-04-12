@@ -7,17 +7,20 @@ import { Images } from '@common/helpers/images';
 
 import { Icon, LoadingIndicator } from '@components/General';
 
+import { AppSizes } from '@theme';
+
 import { styles } from './styles';
 
 /* Types ==================================================================== */
 interface Props {
+    small?: boolean;
     style?: ViewStyle | ViewStyle[];
+    containerStyle?: ViewStyle | ViewStyle[];
     textStyle?: TextStyle | TextStyle[];
     disabledStyle?: TextStyle | TextStyle[];
     iconStyle?: ImageStyle | ImageStyle[];
     accessibilityLabel?: string;
     testID?: string;
-    activeOpacity?: number;
     isDisabled?: boolean;
     isLoading?: boolean;
     loadingIndicatorStyle?: 'light' | 'dark';
@@ -37,6 +40,7 @@ interface State {
 /* Component ==================================================================== */
 export default class RaisedButton extends Component<Props, State> {
     static defaultProps = {
+        small: false,
         iconPosition: 'left',
         iconSize: 20,
         isDisabled: false,
@@ -63,7 +67,7 @@ export default class RaisedButton extends Component<Props, State> {
         };
     }
 
-    getAnimatedValues() {
+    getAnimatedValues = () => {
         const { animatedActive, animatedValue } = this.state;
 
         return {
@@ -81,7 +85,17 @@ export default class RaisedButton extends Component<Props, State> {
                 ],
             },
         };
-    }
+    };
+
+    getContentHeight = () => {
+        const { small } = this.props;
+
+        if (small) {
+            return AppSizes.scale(40);
+        }
+
+        return AppSizes.scale(50);
+    };
 
     animateTiming = ({ variable, toValue, duration = 200, delay = 0, easing = undefined, callback = null }: any) => {
         Animated.timing(variable, {
@@ -188,15 +202,23 @@ export default class RaisedButton extends Component<Props, State> {
     }
 
     render() {
-        const { style, accessibilityLabel, testID } = this.props;
+        const { style, containerStyle, accessibilityLabel, testID } = this.props;
 
         const animatedValues = this.getAnimatedValues();
+        const contentHeight = this.getContentHeight();
 
         return (
             <TouchableWithoutFeedback testID={testID} onPress={this.onPress} accessibilityLabel={accessibilityLabel}>
-                <Animated.View style={[styles.container, animatedValues.animatedContainer]}>
-                    <View style={[styles.bottom, style]} />
-                    <Animated.View style={[styles.content, animatedValues.animatedContent]}>
+                <Animated.View
+                    style={[
+                        styles.container,
+                        { height: contentHeight },
+                        containerStyle,
+                        animatedValues.animatedContainer,
+                    ]}
+                >
+                    <View style={[styles.bottom, style, { height: contentHeight }]} />
+                    <Animated.View style={[styles.content, { height: contentHeight }, animatedValues.animatedContent]}>
                         <View style={[styles.children]}>{this.renderChildren()}</View>
                     </Animated.View>
                 </Animated.View>

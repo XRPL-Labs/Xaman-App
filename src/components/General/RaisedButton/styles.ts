@@ -1,16 +1,13 @@
-import { StyleSheet } from 'react-native';
+import StyleService from '@services/StyleService';
 
-import { AppColors, AppFonts, AppSizes } from '@theme';
+import { AppFonts } from '@theme';
 
-const BUTTON_HEIGHT = AppSizes.scale(50);
-
-export const styles = StyleSheet.create({
+export const styles = StyleService.create({
     container: {
-        height: BUTTON_HEIGHT,
-        width: '100%',
-        backgroundColor: AppColors.transparent,
+        flex: 1,
+        backgroundColor: '$transparent',
         zIndex: 10,
-        shadowColor: AppColors.blue,
+        shadowColor: '$blue',
         shadowOffset: { width: 0, height: 3 },
         shadowRadius: 3,
     },
@@ -34,16 +31,14 @@ export const styles = StyleSheet.create({
     },
     bottom: {
         width: '100%',
-        height: BUTTON_HEIGHT,
         borderRadius: 13,
-        backgroundColor: AppColors.white,
+        backgroundColor: '$white',
         position: 'absolute',
         bottom: 0,
         left: 0,
     },
     content: {
         width: '100%',
-        height: BUTTON_HEIGHT,
         position: 'absolute',
         top: 0,
         left: 0,
@@ -69,7 +64,7 @@ export const styles = StyleSheet.create({
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size * 1.1,
         textAlign: 'center',
-        color: AppColors.black,
+        color: '$black',
         paddingHorizontal: 5,
     },
 });
