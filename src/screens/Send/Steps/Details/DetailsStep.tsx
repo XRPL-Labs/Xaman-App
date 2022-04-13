@@ -357,7 +357,13 @@ class DetailsStep extends Component<Props, State> {
                             onSelect={this.onCurrencyChange}
                             currencies={
                                 source
-                                    ? ['XRP', ...filter(source.lines, (l) => l.balance > 0 || l.obligation === true)]
+                                    ? [
+                                          'XRP',
+                                          ...filter(
+                                              source.lines.sorted([['order', false]]),
+                                              (l) => l.balance > 0 || l.obligation === true,
+                                          ),
+                                      ]
                                     : []
                             }
                             selectedItem={currency}
