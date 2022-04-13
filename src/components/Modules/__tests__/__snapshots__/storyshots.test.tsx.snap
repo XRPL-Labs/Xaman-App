@@ -722,7 +722,7 @@ exports[`Storyshots Avatar Big 1`] = `
         resizeMode="cover"
         source={
           Object {
-            "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
+            "uri": "https://xumm.app/assets/icons/currencies/ex-bitstamp.png",
           }
         }
         style={
@@ -776,7 +776,7 @@ exports[`Storyshots Avatar Original 1`] = `
         resizeMode="cover"
         source={
           Object {
-            "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
+            "uri": "https://xumm.app/assets/icons/currencies/ex-bitstamp.png",
           }
         }
         style={
@@ -833,7 +833,7 @@ exports[`Storyshots Avatar With Border 1`] = `
         resizeMode="cover"
         source={
           Object {
-            "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
+            "uri": "https://xumm.app/assets/icons/currencies/ex-bitstamp.png",
           }
         }
         style={
@@ -887,7 +887,7 @@ exports[`Storyshots Avatar badge 1`] = `
         resizeMode="cover"
         source={
           Object {
-            "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
+            "uri": "https://xumm.app/assets/icons/currencies/ex-bitstamp.png",
           }
         }
         style={
@@ -980,7 +980,7 @@ exports[`Storyshots Avatar badge Color 1`] = `
         resizeMode="cover"
         source={
           Object {
-            "uri": "https://mdbcdn.b-cdn.net/img/new/avatars/2.jpg",
+            "uri": "https://xumm.app/assets/icons/currencies/ex-bitstamp.png",
           }
         }
         style={
