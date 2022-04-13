@@ -399,7 +399,7 @@ class DetailsStep extends Component<Props, State> {
                                     valueType={typeof currency === 'string' ? AmountValueType.XRP : AmountValueType.IOU}
                                     fractional={!sendingNFT}
                                     onChange={this.onAmountChange}
-                                    style={[styles.amountInput]}
+                                    style={styles.amountInput}
                                     placeholderTextColor={AppColors.grey}
                                     returnKeyType="done"
                                 />
@@ -430,7 +430,7 @@ class DetailsStep extends Component<Props, State> {
                                         valueType={AmountValueType.IOU}
                                         onChange={this.onRateAmountChange}
                                         editable={!!currencyRate}
-                                        style={[styles.amountRateInput]}
+                                        style={styles.amountRateInput}
                                         placeholderTextColor={AppColors.grey}
                                         returnKeyType="done"
                                     />
