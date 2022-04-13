@@ -158,6 +158,21 @@ class EventsView extends Component<Props, State> {
         }
     };
 
+    fetchPlannedObjects = (
+        account: string,
+        type: string,
+        marker?: string,
+        combined = [] as LedgerEntriesTypes[],
+    ): Promise<LedgerEntriesTypes[]> => {
+        return LedgerService.getAccountObjects(account, { type, marker }).then((resp) => {
+            const { account_objects, marker: _marker } = resp;
+            if (_marker && _marker !== marker) {
+                return this.fetchPlannedObjects(account, type, _marker, account_objects.concat(combined));
+            }
+            return account_objects.concat(combined);
+        });
+    };
+
     loadPlannedTransactions = () => {
         const { account } = this.state;
 
@@ -176,10 +191,9 @@ class EventsView extends Component<Props, State> {
             objectTypes
                 .reduce((accumulator, type) => {
                     return accumulator.then(() => {
-                        return LedgerService.getAccountObjects(account.address, { type }).then((res: any) => {
-                            const { account_objects } = res;
-                            if (account_objects) {
-                                objects = [...objects, ...account_objects];
+                        return this.fetchPlannedObjects(account.address, type).then((res) => {
+                            if (res) {
+                                objects = [...objects, ...res];
                             } else {
                                 objects = [...objects];
                             }
@@ -595,13 +609,18 @@ class EventsView extends Component<Props, State> {
     };
 
     onSectionChange = (index: number) => {
+        const { sectionIndex } = this.state;
+
+        if (index === sectionIndex) {
+            return;
+        }
+
         this.setState(
             {
                 sectionIndex: index,
+                dataSource: [],
             },
-            () => {
-                this.updateDataSource();
-            },
+            this.updateDataSource,
         );
     };
 
