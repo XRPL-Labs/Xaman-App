@@ -411,10 +411,6 @@ class CurrencySettingsModal extends Component<Props, State> {
     };
 
     onRemovePress = async () => {
-        this.setState({
-            isRemoving: true,
-        });
-
         Prompt(
             Localize.t('global.warning'),
             Localize.t('account.removeTrustLineWarning'),
@@ -422,7 +418,6 @@ class CurrencySettingsModal extends Component<Props, State> {
                 { text: Localize.t('global.cancel') },
                 {
                     text: Localize.t('global.doIt'),
-
                     onPress: this.removeTrustLine,
                     style: 'destructive',
                 },
