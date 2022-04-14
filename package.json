@@ -11,8 +11,7 @@
     "test": "jest --forceExit --detectOpenHandles",
     "update-snapshots": "jest --updateSnapshot",
     "storybook": "start-storybook -p 7007",
-    "postinstall": "make post-install",
-    "prestorybook": "rnstl"
+    "postinstall": "make post-install"
   },
   "dependencies": {
     "@react-native-community/blur": "3.6.0",
@@ -95,7 +94,6 @@
     "patch-package": "6.4.7",
     "prettier": "2.5.1",
     "react-dom": "17.0.2",
-    "react-native-storybook-loader": "2.0.5",
     "react-test-renderer": "17.0.2",
     "ts-jest": "26.5.0",
     "typescript": "4.6.2"
@@ -131,15 +129,6 @@
         "type": "android.emulator",
         "name": "Nexus_5X_API_28"
       }
-    }
-  },
-  "config": {
-    "react-native-storybook-loader": {
-      "searchDir": [
-        "./src/components"
-      ],
-      "pattern": "**/*.stories.tsx",
-      "outputFile": "./storybook/storyLoader.js"
     }
   }
 }
