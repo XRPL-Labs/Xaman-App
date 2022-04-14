@@ -26,6 +26,7 @@ import AccountRepository from '@store/repositories/account';
 import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
 import { TransactionFactory } from '@common/libs/ledger/factory';
+import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 import { AppScreens } from '@common/constants';
@@ -436,7 +437,7 @@ class TransactionDetailsView extends Component<Props, State> {
     showRecipientMenu = () => {
         const { partiesDetails, incomingTx, tx } = this.state;
 
-        let recipient = undefined as any;
+        let recipient: any;
 
         if (incomingTx) {
             recipient = {
@@ -700,7 +701,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         return (
-            <>
+            <View style={styles.detailContainer}>
                 <Text style={[styles.labelText]}>{Localize.t('global.status')}</Text>
                 <Text style={[styles.contentText]}>
                     {Localize.t('events.thisTransactionWasSuccessful')} {Localize.t('events.andValidatedInLedger')}
@@ -708,7 +709,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     {Localize.t('events.onDate')}
                     <Text style={AppStyles.monoBold}> {moment(tx.Date).format('LLLL')}</Text>
                 </Text>
-            </>
+            </View>
         );
     };
 
@@ -901,14 +902,12 @@ class TransactionDetailsView extends Component<Props, State> {
 
         const amount = tx.Amount || tx.DeliverMin;
 
-        const content = Localize.t('events.itWasInstructedToDeliverByCashingCheck', {
+        return Localize.t('events.itWasInstructedToDeliverByCashingCheck', {
             address: tx.Check?.Destination.address || 'address',
             amount: amount.value,
             currency: NormalizeCurrencyCode(amount.currency),
             checkId: tx.CheckID,
         });
-
-        return content;
     };
 
     renderCheckCancel = () => {
@@ -1314,12 +1313,12 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         return (
-            <>
+            <View style={styles.detailContainer}>
                 <Text style={[styles.labelText]}>{Localize.t('global.description')}</Text>
                 <Text selectable style={[styles.contentText]}>
                     {content}
                 </Text>
-            </>
+            </View>
         );
     };
 
@@ -1438,12 +1437,42 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         return (
-            <>
+            <View style={styles.detailContainer}>
                 <Text style={[styles.labelText]}>{Localize.t('events.transactionCost')}</Text>
                 <Text style={[styles.contentText]}>
                     {Localize.t('events.sendingThisTransactionConsumed', { fee: tx.Fee })}
                 </Text>
-            </>
+            </View>
+        );
+    };
+
+    renderFlags = () => {
+        const { tx } = this.state;
+
+        if (!tx.Flags) {
+            return null;
+        }
+
+        const flags = [];
+        for (const [key, value] of Object.entries(tx.Flags)) {
+            if (!(key in txFlags.Universal) && value) {
+                flags.push(
+                    <Text key={key} style={styles.contentText}>
+                        {key}
+                    </Text>,
+                );
+            }
+        }
+
+        if (isEmpty(flags)) {
+            return null;
+        }
+
+        return (
+            <View style={styles.detailContainer}>
+                <Text style={[styles.labelText]}>{Localize.t('global.flags')}</Text>
+                {flags}
+            </View>
         );
     };
 
@@ -1452,21 +1481,22 @@ class TransactionDetailsView extends Component<Props, State> {
 
         if (tx.ClassName === 'LedgerObject') {
             return (
-                <>
+                <View style={styles.detailContainer}>
                     <Text style={[styles.labelText]}>{Localize.t('events.ledgerIndex')}</Text>
                     <Text selectable style={[styles.hashText]}>
                         {tx.Index}
                     </Text>
-                </>
+                </View>
             );
         }
+
         return (
-            <>
+            <View style={styles.detailContainer}>
                 <Text style={[styles.labelText]}>{Localize.t('events.transactionId')}</Text>
                 <Text selectable style={[styles.hashText]}>
                     {tx.Hash}
                 </Text>
-            </>
+            </View>
         );
     };
 
@@ -2103,15 +2133,11 @@ class TransactionDetailsView extends Component<Props, State> {
                             {this.renderActionButtons()}
                             <View style={styles.detailsContainer}>
                                 {this.renderTransactionId()}
-                                <Spacer size={30} />
                                 {this.renderDescription()}
-                                <Spacer size={30} />
+                                {this.renderFlags()}
                                 {this.renderFee()}
-                                <Spacer size={30} />
                                 {this.renderStatus()}
                             </View>
-
-                            {/* renderFlags(tx); */}
                         </ScrollView>
                     </>
                 )}

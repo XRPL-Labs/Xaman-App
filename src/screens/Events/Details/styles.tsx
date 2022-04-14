@@ -11,6 +11,9 @@ const styles = StyleService.create({
         alignItems: 'center',
         padding: 25,
     },
+    detailContainer: {
+        paddingBottom: AppSizes.padding,
+    },
     amountHeaderContainer: {
         width: AppSizes.screen.width,
         justifyContent: 'center',
