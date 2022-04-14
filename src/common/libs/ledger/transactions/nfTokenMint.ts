@@ -51,7 +51,7 @@ class NFTokenMint extends BaseTransaction {
             return tokenID;
         }
 
-        // if not look at the meta data for token id
+        // if not look at the metadata for token id
         const affectedNodes = get(this.meta, 'AffectedNodes', []);
         affectedNodes.map((node: any) => {
             if (get(node, 'CreatedNode.LedgerEntryType') === 'NFTokenPage') {
@@ -77,7 +77,7 @@ class NFTokenMint extends BaseTransaction {
 
         if (isUndefined(transferFee)) return undefined;
 
-        return new BigNumber(transferFee).dividedBy(100).toNumber();
+        return new BigNumber(transferFee).dividedBy(1000).toNumber();
     }
 }
 
