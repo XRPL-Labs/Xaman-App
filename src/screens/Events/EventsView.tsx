@@ -417,42 +417,6 @@ class EventsView extends Component<Props, State> {
             newTransactions = plannedTransactions;
         }
 
-        if (filters.Amount && filters.AmountIndicator) {
-            newTransactions = filter(newTransactions, (t) => {
-                if (filters.AmountIndicator === 'Bigger') {
-                    return (
-                        parseFloat(get(t, 'Amount.value')) >= parseFloat(filters.Amount) ||
-                        parseFloat(get(t, 'DeliverMin.value')) >= parseFloat(filters.Amount) ||
-                        parseFloat(get(t, 'SendMax.value')) >= parseFloat(filters.Amount)
-                    );
-                }
-                return (
-                    parseFloat(get(t, 'Amount.value')) <= parseFloat(filters.Amount) ||
-                    parseFloat(get(t, 'DeliverMin.value')) <= parseFloat(filters.Amount) ||
-                    parseFloat(get(t, 'SendMax.value')) <= parseFloat(filters.Amount)
-                );
-            });
-        }
-
-        if (filters.Currency) {
-            newTransactions = filter(newTransactions, (t) => {
-                return (
-                    get(t, 'Amount.currency') === filters.Currency ||
-                    get(t, 'DeliverMin.currency') === filters.Currency ||
-                    get(t, 'SendMax.currency') === filters.Currency
-                );
-            });
-        }
-
-        if (filters.ExpenseType) {
-            newTransactions = filter(newTransactions, (t) => {
-                if (filters.ExpenseType === 'Income') {
-                    return get(t, 'Destination.address') === account.address;
-                }
-                return get(t, 'Destination.address') !== account.address;
-            });
-        }
-
         if (filters.TransactionType) {
             const includeTypes = [] as string[];
             switch (filters.TransactionType) {
@@ -489,6 +453,48 @@ class EventsView extends Component<Props, State> {
 
             newTransactions = filter(newTransactions, (t) => {
                 return includeTypes.indexOf(get(t, 'Type')) !== -1;
+            });
+        }
+
+        if (filters.Amount && filters.AmountIndicator) {
+            newTransactions = filter(newTransactions, (t) => {
+                if (filters.AmountIndicator === 'Bigger') {
+                    return (
+                        parseFloat(get(t, 'Amount.value')) >= parseFloat(filters.Amount) ||
+                        parseFloat(get(t, 'DeliverMin.value')) >= parseFloat(filters.Amount) ||
+                        parseFloat(get(t, 'SendMax.value')) >= parseFloat(filters.Amount) ||
+                        parseFloat(get(t, 'TakerGets.value')) >= parseFloat(filters.Amount) ||
+                        parseFloat(get(t, 'TakerPays.value')) >= parseFloat(filters.Amount)
+                    );
+                }
+                return (
+                    parseFloat(get(t, 'Amount.value')) <= parseFloat(filters.Amount) ||
+                    parseFloat(get(t, 'DeliverMin.value')) <= parseFloat(filters.Amount) ||
+                    parseFloat(get(t, 'SendMax.value')) <= parseFloat(filters.Amount) ||
+                    parseFloat(get(t, 'TakerGets.value')) <= parseFloat(filters.Amount) ||
+                    parseFloat(get(t, 'TakerPays.value')) <= parseFloat(filters.Amount)
+                );
+            });
+        }
+
+        if (filters.Currency) {
+            newTransactions = filter(newTransactions, (t) => {
+                return (
+                    get(t, 'Amount.currency') === filters.Currency ||
+                    get(t, 'DeliverMin.currency') === filters.Currency ||
+                    get(t, 'SendMax.currency') === filters.Currency ||
+                    get(t, 'TakerGets.currency') === filters.Currency ||
+                    get(t, 'TakerPays.currency') === filters.Currency
+                );
+            });
+        }
+
+        if (filters.ExpenseType) {
+            newTransactions = filter(newTransactions, (t) => {
+                if (filters.ExpenseType === 'Income') {
+                    return get(t, 'Destination.address') === account.address;
+                }
+                return get(t, 'Destination.address') !== account.address;
             });
         }
 
