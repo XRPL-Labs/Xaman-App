@@ -278,7 +278,7 @@ class BackendService {
     };
 
     getXAppShortList = () => {
-        return ApiService.xAppsShortList.get();
+        return ApiService.xAppsShortList.get({ featured: true });
     };
 
     getXAppLaunchToken = (xAppId: string, data: any) => {

@@ -7,3 +7,4 @@ export * from './CurrencyPicker';
 export * from './TokenList';
 export * from './NodeList';
 export * from './FeeList';
+export * from './XAppList';
