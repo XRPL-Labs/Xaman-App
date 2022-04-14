@@ -5,17 +5,15 @@
 import React from 'react';
 import { View } from 'react-native';
 
-import Locale from '../src/locale';
+import Locale from '@locale';
 
-const withBackground = (storyFn: any) => (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F0F3FF' }}>
-        {storyFn()}
-    </View>
-);
-
-const withLocale = (storyFn: any) => {
+const withContainer = (storyFn: any) => {
     Locale.setLocale('en');
-    return storyFn();
+    return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>
+            {storyFn()}
+        </View>
+    );
 };
 
-export { withBackground, withLocale };
+export { withContainer };

@@ -8,10 +8,10 @@ import { storiesOf } from '@storybook/react-native';
 
 import { SegmentButton } from '../SegmentButton';
 
-import { withBackground } from '../../../../storybook/decoration';
+import { withContainer } from '../../../../storybook/decoration';
 
 const BUTTONS = ['All', 'Planned', 'Requests'];
 
 storiesOf('SegmentButton', module)
-    .addDecorator(withBackground)
+    .addDecorator(withContainer)
     .add('Three Button', () => <SegmentButton buttons={BUTTONS} onPress={action('onPress')} />);

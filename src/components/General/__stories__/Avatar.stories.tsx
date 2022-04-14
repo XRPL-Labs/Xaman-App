@@ -4,14 +4,14 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react-native';
 
-import { withBackground } from '../../../../storybook/decoration';
+import { withContainer } from '../../../../storybook/decoration';
 
 import { Avatar } from '../Avatar';
 
 const URI = { uri: 'https://xumm.app/assets/icons/currencies/ex-bitstamp.png' };
 
 storiesOf('Avatar', module)
-    .addDecorator(withBackground)
+    .addDecorator(withContainer)
     .add('Original', () => <Avatar source={URI} />)
     .add('With Border', () => <Avatar source={URI} border />)
     .add('Big', () => <Avatar source={URI} size={100} />)

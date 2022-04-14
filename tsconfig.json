@@ -41,6 +41,6 @@
     "strict": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules", "**/*.test.tsx", "**/*.test.ts", "**/*.spec.ts", "e2e", "**/__mocks__/*.ts"],
+  "exclude": ["node_modules", "**/*.test.tsx", "**/*.test.ts", "**/*.stories.tsx","**/*.stories.ts", "**/*.spec.ts", "**/__mocks__/*.ts"],
   "types": ["typePatches"]
 }

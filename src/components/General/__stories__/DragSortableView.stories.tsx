@@ -4,16 +4,14 @@
 /* eslint-disable import/no-relative-packages */
 
 import React, { Component } from 'react';
-import { View, Text, LogBox } from 'react-native';
+import { View, Text } from 'react-native';
 import { storiesOf } from '@storybook/react-native';
 
 import { AppSizes } from '@theme';
 
 import { SortableFlatList } from '../SortableFlatList';
 
-import { withBackground } from '../../../../storybook/decoration';
-
-LogBox.ignoreLogs(['EventEmitter', 'Require cycle']);
+import { withContainer } from '../../../../storybook/decoration';
 
 const DATASOURCE = Array(1000).fill('ITEM ');
 
@@ -42,7 +40,7 @@ class Item extends Component<any, any> {
 }
 
 storiesOf('SortableFlatList', module)
-    .addDecorator(withBackground)
+    .addDecorator(withContainer)
     .add('Default', () => (
         <View style={{ flex: 1 }}>
             <SortableFlatList

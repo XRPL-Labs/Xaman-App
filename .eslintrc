@@ -25,6 +25,14 @@
     "globals": {
       "__DEV__": false
     },
+    "overrides": [
+      {
+        "files": ["*.stories.tsx"],
+        "rules": {
+          "import/no-relative-packages": "off"
+        }
+      }
+    ],
     "settings": {
       "import/resolver": {
         "typescript": {}
