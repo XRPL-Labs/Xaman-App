@@ -22,7 +22,7 @@ class ListEmpty extends PureComponent {
 
     render() {
         return (
-            <View testID="assets-empty-view" style={[styles.noTrustLineMessage]}>
+            <View testID="tokens-list-empty-view" style={[styles.container]}>
                 <InfoMessage type="warning" label={Localize.t('home.youDonNotHaveOtherAssets')} />
                 <TouchableDebounce
                     style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingSml]}

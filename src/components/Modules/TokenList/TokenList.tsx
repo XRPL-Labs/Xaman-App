@@ -1,4 +1,4 @@
-import { map, toLower, filter, sortBy, isEqual, has, isEmpty } from 'lodash';
+import { map, toLower, filter, sortBy, isEqual, has } from 'lodash';
 import React, { Component } from 'react';
 import { View, ViewStyle } from 'react-native';
 
@@ -259,13 +259,7 @@ class TokenList extends Component<Props, State> {
     };
 
     renderEmptyList = () => {
-        const { account } = this.state;
-
-        // only show empty list when no token exist in the account
-        if (isEmpty(account.lines)) {
-            return <ListEmpty />;
-        }
-        return null;
+        return <ListEmpty />;
     };
 
     keyExtractor = (item: TrustLineSchema) => {
@@ -291,7 +285,7 @@ class TokenList extends Component<Props, State> {
                     onFilterChange={this.onFilterChange}
                     onReorderPress={this.toggleReordering}
                 />
-                <NativeItem account={account} discreetMode={discreetMode} onPress={() => {}} />
+                <NativeItem account={account} discreetMode={discreetMode} />
                 <SortableFlatList
                     ref={this.dragSortableRef}
                     itemHeight={TokenItem.Height}

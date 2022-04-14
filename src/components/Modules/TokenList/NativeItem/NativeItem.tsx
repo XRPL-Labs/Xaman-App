@@ -15,7 +15,7 @@ import styles from './styles';
 interface Props {
     account: AccountSchema;
     discreetMode: boolean;
-    onPress: () => void;
+    onPress?: () => void;
 }
 
 /* Component ==================================================================== */

@@ -1,4 +1,3 @@
-// credits: https://github.com/mochixuan/react-native-drag-sort
 import React, { Component } from 'react';
 import {
     FlatList,
@@ -519,7 +518,10 @@ export default class SortableFlatList extends Component<Props, State> {
                 testID={testID}
                 ref={this.listRef}
                 style={[styles.container]}
-                contentContainerStyle={[styles.contentContainerStyle, { height: containerHeight }]}
+                contentContainerStyle={[
+                    styles.contentContainerStyle,
+                    { height: containerHeight !== 0 ? containerHeight : undefined },
+                ]}
                 data={dataSource}
                 renderItem={renderItem}
                 ListEmptyComponent={renderEmptyList}

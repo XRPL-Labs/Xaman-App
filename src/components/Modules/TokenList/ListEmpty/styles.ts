@@ -3,7 +3,7 @@ import StyleService from '@services/StyleService';
 import { AppSizes } from '@theme';
 /* Styles ==================================================================== */
 export default StyleService.create({
-    noTrustLineMessage: {
+    container: {
         marginTop: AppSizes.padding,
         marginHorizontal: AppSizes.paddingSml,
     },
