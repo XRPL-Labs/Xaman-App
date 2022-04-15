@@ -39,6 +39,7 @@ class HomeActionsOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.HomeActions;
 
     private actionPanel: React.RefObject<ActionPanel>;
+    private mounted: boolean;
 
     static options() {
         return {
@@ -65,12 +66,25 @@ class HomeActionsOverlay extends Component<Props, State> {
     }
 
     componentDidMount() {
+        // keep track of component mounted statue
+        this.mounted = true;
+
+        // fetch the apps short list
         InteractionManager.runAfterInteractions(this.fetchApps);
+    }
+
+    componentWillUnmount() {
+        // keep track of component mounted statue
+        this.mounted = false;
     }
 
     fetchApps = () => {
         BackendService.getXAppShortList().then((resp: any) => {
             const { apps, featured } = resp;
+
+            if (!this.mounted) {
+                return;
+            }
 
             this.setState({
                 apps,
