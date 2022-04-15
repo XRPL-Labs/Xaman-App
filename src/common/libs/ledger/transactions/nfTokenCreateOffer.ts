@@ -21,7 +21,7 @@ class NFTokenCreateOffer extends BaseTransaction {
             this.Type = 'NFTokenCreateOffer';
         }
 
-        this.fields = this.fields.concat(['Amount', 'Destination', 'Expiration', 'Owner', 'TokenID']);
+        this.fields = this.fields.concat(['Amount', 'Destination', 'Expiration', 'Owner', 'NFTokenID']);
     }
 
     // @ts-ignore
@@ -67,8 +67,8 @@ class NFTokenCreateOffer extends BaseTransaction {
         return get(this, ['tx', 'Owner']);
     }
 
-    get TokenID(): string {
-        return get(this, ['tx', 'TokenID']);
+    get NFTokenID(): string {
+        return get(this, ['tx', 'NFTokenID']);
     }
 }
 

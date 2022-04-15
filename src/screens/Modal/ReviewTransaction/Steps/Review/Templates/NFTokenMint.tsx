@@ -86,7 +86,7 @@ class NFTokenMintTemplate extends Component<Props, State> {
 
                 <Text style={[styles.label]}>{Localize.t('global.tokenTaxon')}</Text>
                 <View style={[styles.contentBox]}>
-                    <Text style={[styles.value]}>{transaction.TokenTaxon}</Text>
+                    <Text style={[styles.value]}>{transaction.NFTokenTaxon}</Text>
                 </View>
 
                 {transaction.URI && (

@@ -30,7 +30,7 @@ class NFTokenBurnTemplate extends Component<Props, State> {
             <>
                 <Text style={[styles.label]}>{Localize.t('global.tokenID')}</Text>
                 <View style={[styles.contentBox]}>
-                    <Text style={[styles.value]}>{transaction.TokenID}</Text>
+                    <Text style={[styles.value]}>{transaction.NFTokenID}</Text>
                 </View>
             </>
         );

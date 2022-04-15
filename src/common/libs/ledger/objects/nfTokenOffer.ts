@@ -10,8 +10,6 @@ import { AmountType, Destination } from '../parser/types';
 
 /* Class ==================================================================== */
 class NFTokenOffer extends BaseLedgerObject {
-    [key: string]: any;
-
     constructor(object?: any) {
         super(object);
     }
@@ -20,8 +18,8 @@ class NFTokenOffer extends BaseLedgerObject {
         return get(this, ['object', 'Owner'], undefined);
     }
 
-    get TokenID(): string {
-        return get(this, ['object', 'TokenID'], undefined);
+    get NFTokenID(): string {
+        return get(this, ['object', 'NFTokenID'], undefined);
     }
 
     get Destination(): Destination {

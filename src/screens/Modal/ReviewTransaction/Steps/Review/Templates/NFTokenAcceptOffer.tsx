@@ -44,20 +44,20 @@ class NFTokenAcceptOfferTemplate extends Component<Props, State> {
                     </>
                 )}
 
-                {transaction.SellOffer && (
+                {transaction.NFTokenSellOffer && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.sellOffer')}</Text>
                         <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{transaction.SellOffer}</Text>
+                            <Text style={[styles.value]}>{transaction.NFTokenSellOffer}</Text>
                         </View>
                     </>
                 )}
 
-                {transaction.BuyOffer && (
+                {transaction.NFTokenBuyOffer && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.buyOffer')}</Text>
                         <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{transaction.BuyOffer}</Text>
+                            <Text style={[styles.value]}>{transaction.NFTokenBuyOffer}</Text>
                         </View>
                     </>
                 )}

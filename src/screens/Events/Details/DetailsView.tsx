@@ -1021,12 +1021,12 @@ class TransactionDetailsView extends Component<Props, State> {
             }
         }
 
-        if (tx.Minter !== undefined) {
+        if (tx.NFTokenMinter !== undefined) {
             content += '\n';
-            if (tx.Minter === '') {
+            if (tx.NFTokenMinter === '') {
                 content += Localize.t('events.itRemovesTheAccountMinter');
             } else {
-                content += Localize.t('events.itSetsAccountMinterTo', { minter: tx.Minter });
+                content += Localize.t('events.itSetsAccountMinterTo', { minter: tx.NFTokenMinter });
             }
         }
 
@@ -1118,16 +1118,16 @@ class TransactionDetailsView extends Component<Props, State> {
 
         let content = '';
 
-        content += Localize.t('events.theTokenIdIs', { tokenID: tx.TokenID });
+        content += Localize.t('events.theTokenIdIs', { tokenID: tx.NFTokenID });
 
         if (tx.TransferFee) {
             content += '\n';
             content += Localize.t('events.theTokenHasATransferFee', { transferFee: tx.TransferFee });
         }
 
-        if (tx.TokenTaxon) {
+        if (tx.NFTokenTaxon) {
             content += '\n';
-            content += Localize.t('events.theTokenTaxonForThisTokenIs', { taxon: tx.TokenTaxon });
+            content += Localize.t('events.theTokenTaxonForThisTokenIs', { taxon: tx.NFTokenTaxon });
         }
 
         return content;
@@ -1138,7 +1138,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
         let content = '';
 
-        content += Localize.t('events.nftokenBurnExplain', { tokenID: tx.TokenID });
+        content += Localize.t('events.nftokenBurnExplain', { tokenID: tx.NFTokenID });
 
         return content;
     };
@@ -1151,14 +1151,14 @@ class TransactionDetailsView extends Component<Props, State> {
         if (tx.Flags.SellToken) {
             content += Localize.t('events.nftOfferSellExplain', {
                 address: tx.Account.address,
-                tokenID: tx.TokenID,
+                tokenID: tx.NFTokenID,
                 amount: tx.Amount.value,
                 currency: NormalizeCurrencyCode(tx.Amount.currency),
             });
         } else {
             content += Localize.t('events.nftOfferBuyExplain', {
                 address: tx.Account.address,
-                tokenID: tx.TokenID,
+                tokenID: tx.NFTokenID,
                 amount: tx.Amount.value,
                 currency: NormalizeCurrencyCode(tx.Amount.currency),
             });
@@ -1192,7 +1192,7 @@ class TransactionDetailsView extends Component<Props, State> {
         content += Localize.t('events.theTransactionWillCancelNftOffer', { address: tx.Account.address });
         content += '\n';
 
-        tx.TokenOffers?.forEach((id: string) => {
+        tx.NFTokenOffers?.forEach((id: string) => {
             content += `${id}\n`;
         });
 
@@ -1202,7 +1202,7 @@ class TransactionDetailsView extends Component<Props, State> {
     renderNFTokenAcceptOffer = () => {
         const { tx } = this.state;
 
-        const offerID = tx.BuyOffer || tx.SellOffer;
+        const offerID = tx.NFTokenBuyOffer || tx.NFTokenSellOffer;
 
         // this should never happen
         // but as we are in beta we should to check this
@@ -1216,7 +1216,7 @@ class TransactionDetailsView extends Component<Props, State> {
             content += Localize.t('events.nftAcceptOfferBuyExplanation', {
                 address: tx.Account.address,
                 offerID,
-                tokenID: tx.Offer.TokenID,
+                tokenID: tx.Offer.NFTokenID,
                 amount: tx.Offer.Amount.value,
                 currency: NormalizeCurrencyCode(tx.Offer.Amount.currency),
             });
@@ -1224,7 +1224,7 @@ class TransactionDetailsView extends Component<Props, State> {
             content += Localize.t('events.nftAcceptOfferSellExplanation', {
                 address: tx.Account.address,
                 offerID,
-                tokenID: tx.Offer.TokenID,
+                tokenID: tx.Offer.NFTokenID,
                 amount: tx.Offer.Amount.value,
                 currency: NormalizeCurrencyCode(tx.Offer.Amount.currency),
             });

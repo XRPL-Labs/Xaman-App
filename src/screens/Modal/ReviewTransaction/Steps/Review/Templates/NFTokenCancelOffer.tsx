@@ -33,7 +33,7 @@ class NFTokenCancelOfferTemplate extends Component<Props, State> {
                         {Localize.t('global.tokenOffers')}
                     </Text>
                 </View>
-                {transaction.TokenOffers?.map((token: string) => (
+                {transaction.NFTokenOffers?.map((token: string) => (
                     <View key={`${token}`} style={[styles.contentBox]}>
                         <Text style={styles.value}>{token}</Text>
                     </View>

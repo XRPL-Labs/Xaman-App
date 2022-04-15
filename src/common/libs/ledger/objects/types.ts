@@ -80,11 +80,11 @@ export interface NFTokenOfferLedgerEntry {
     Owner: string;
     Destination: string;
     Amount: AmountType;
-    TokenID: string;
+    NFTokenID: string;
     Expiration?: number;
     Flags: number;
     OwnerNode: string;
-    OfferNode: string;
+    NFTokenOfferNode: string;
     PreviousTxnID: string;
     PreviousTxnLgrSeq: number;
 }

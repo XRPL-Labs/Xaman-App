@@ -30,7 +30,7 @@ class AccountSet extends BaseTransaction {
             'SetFlag',
             'TransferRate',
             'TickSize',
-            'Minter',
+            'NFTokenMinter',
         ]);
     }
 
@@ -86,8 +86,8 @@ class AccountSet extends BaseTransaction {
         return get(this, ['tx', 'WalletSize'], undefined);
     }
 
-    get Minter(): string {
-        return get(this, ['tx', 'Minter'], undefined);
+    get NFTokenMinter(): string {
+        return get(this, ['tx', 'NFTokenMinter'], undefined);
     }
 }
 

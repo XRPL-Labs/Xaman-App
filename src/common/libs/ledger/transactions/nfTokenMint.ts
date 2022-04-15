@@ -20,7 +20,7 @@ class NFTokenMint extends BaseTransaction {
             this.Type = 'NFTokenMint';
         }
 
-        this.fields = this.fields.concat(['Issuer', 'URI', 'TokenTaxon', 'TransferFee']);
+        this.fields = this.fields.concat(['Issuer', 'URI', 'NFTokenTaxon', 'TransferFee']);
     }
 
     get Issuer(): string {
@@ -35,16 +35,16 @@ class NFTokenMint extends BaseTransaction {
         return HexEncoding.toString(uri);
     }
 
-    get TokenTaxon(): number {
-        return get(this, ['tx', 'TokenTaxon']);
+    get NFTokenTaxon(): number {
+        return get(this, ['tx', 'NFTokenTaxon']);
     }
 
-    set TokenID(id: string) {
-        set(this, 'tokenID', id);
+    set NFTokenID(id: string) {
+        set(this, 'nfTokenID', id);
     }
 
-    get TokenID(): string {
-        let tokenID = get(this, 'tokenID', undefined);
+    get NFTokenID(): string {
+        let tokenID = get(this, 'nfTokenID', undefined);
 
         // if we already set the token id return
         if (tokenID) {
@@ -53,21 +53,20 @@ class NFTokenMint extends BaseTransaction {
 
         // if not look at the metadata for token id
         const affectedNodes = get(this.meta, 'AffectedNodes', []);
+
         affectedNodes.map((node: any) => {
             if (get(node, 'CreatedNode.LedgerEntryType') === 'NFTokenPage') {
-                tokenID = get(node, 'CreatedNode.NewFields.NonFungibleTokens[0].NonFungibleToken.TokenID');
+                tokenID = get(node, 'CreatedNode.NewFields.NFTokens[0].NFToken.NFTokenID');
             } else if (get(node, 'ModifiedNode.LedgerEntryType') === 'NFTokenPage') {
-                const nextTokenPage = get(node, 'ModifiedNode.FinalFields.NonFungibleTokens');
-                const prevTokenPage = get(node, 'ModifiedNode.PreviousFields.NonFungibleTokens');
-                tokenID = get(
-                    differenceBy(nextTokenPage, prevTokenPage, 'NonFungibleToken.TokenID'),
-                    '[0].NonFungibleToken.TokenID',
-                );
+                const nextTokenPage = get(node, 'ModifiedNode.FinalFields.NFTokens');
+                const prevTokenPage = get(node, 'ModifiedNode.PreviousFields.NFTokens');
+                tokenID = get(differenceBy(nextTokenPage, prevTokenPage, 'NFToken.NFTokenID'), '[0].NFToken.NFTokenID');
             }
             return true;
         });
 
-        this.TokenID = tokenID;
+        // store the token id
+        this.NFTokenID = tokenID;
 
         return tokenID;
     }

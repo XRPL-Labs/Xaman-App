@@ -22,7 +22,7 @@ class NFTokenAcceptOffer extends BaseTransaction {
             this.Type = 'NFTokenAcceptOffer';
         }
 
-        this.fields = this.fields.concat(['Amount', 'SellOffer', 'BuyOffer']);
+        this.fields = this.fields.concat(['Amount', 'NFTokenSellOffer', 'NFTokenBuyOffer']);
     }
 
     set Offer(offer: NFTokenCreateOffer) {
@@ -71,12 +71,12 @@ class NFTokenAcceptOffer extends BaseTransaction {
         };
     }
 
-    get SellOffer(): string {
-        return get(this, ['tx', 'SellOffer']);
+    get NFTokenSellOffer(): string {
+        return get(this, ['tx', 'NFTokenSellOffer']);
     }
 
-    get BuyOffer(): string {
-        return get(this, ['tx', 'BuyOffer']);
+    get NFTokenBuyOffer(): string {
+        return get(this, ['tx', 'NFTokenBuyOffer']);
     }
 }
 
