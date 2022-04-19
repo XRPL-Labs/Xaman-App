@@ -7,7 +7,7 @@ import { View, Text, Alert, Keyboard } from 'react-native';
 
 import { StringType } from 'xumm-string-decode';
 import * as AccountLib from 'xrpl-accountlib';
-import { Decode } from 'xrpl-tagged-address-codec';
+import { xAddressToClassicAddress } from 'ripple-address-codec';
 
 import { NormalizeDestination } from '@common/utils/codec';
 import { getAccountName, getPayIdInfo } from '@common/helpers/resolver';
@@ -197,10 +197,10 @@ class EditContactView extends Component<Props, State> {
         // decode if it's x address
         if (address && address.startsWith('X')) {
             try {
-                const decoded = Decode(address);
+                const decoded = xAddressToClassicAddress(address);
                 if (decoded) {
                     this.setState({
-                        address: decoded.account,
+                        address: decoded.classicAddress,
                         tag: decoded.tag && decoded.tag.toString(),
                         xAddress: address,
                     });
