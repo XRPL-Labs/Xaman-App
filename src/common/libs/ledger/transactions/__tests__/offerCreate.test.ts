@@ -15,7 +15,7 @@ describe('OfferCreate tx', () => {
         const { tx, meta } = offerCreateTemplates.XRPIOU;
         const instance = new OfferCreate(tx, meta);
 
-        expect(instance.Executed).toBe(true);
+        expect(instance.GetOfferStatus(tx.Account)).toBe('FILLED');
         expect(instance.OfferSequence).toBe(94);
         expect(instance.Rate).toBe(0.000024271999999999997);
         expect(instance.Expiration).toBe(undefined);
@@ -46,7 +46,7 @@ describe('OfferCreate tx', () => {
         const { tx, meta } = offerCreateTemplates.IOUXRP;
         const instance = new OfferCreate(tx, meta);
 
-        expect(instance.Executed).toBe(true);
+        expect(instance.GetOfferStatus(tx.Account)).toBe('FILLED');
         expect(instance.OfferSequence).toBe(112);
         expect(instance.Rate).toBe(0.000025941414017897298);
         expect(instance.Expiration).toBe(undefined);
@@ -116,7 +116,7 @@ describe('OfferCreate tx', () => {
         const { tx, meta } = offerCreateTemplates.XRPIOUDifferentOwner;
         const instance = new OfferCreate(tx, meta);
 
-        expect(instance.Executed).toBe(true);
+        expect(instance.GetOfferStatus('rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ')).toBe('PARTIALLY_FILLED');
         expect(instance.OfferSequence).toBe(56270334);
         expect(instance.Rate).toBe(0.38076);
         expect(instance.Expiration).toBe(undefined);
@@ -147,7 +147,7 @@ describe('OfferCreate tx', () => {
         const { tx, meta } = offerCreateTemplates.XRPIOUCANCELED;
         const instance = new OfferCreate(tx, meta);
 
-        expect(instance.Executed).toBe(true);
+        // expect(instance.Executed).toBe(true);
         expect(instance.OfferSequence).toBe(61160755);
 
         expect(instance.TakerGets).toStrictEqual({
@@ -155,7 +155,6 @@ describe('OfferCreate tx', () => {
             value: '50',
         });
         expect(instance.TakerGot('rQamE9ddZiRZLKRAAzwGKboQ8rQHgesjEs')).toStrictEqual({
-            action: 'DEC',
             currency: 'XRP',
             value: '0',
         });

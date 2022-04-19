@@ -1,6 +1,22 @@
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
-import { Decode } from 'xrpl-tagged-address-codec';
+import { xAddressToClassicAddress, decodeAccountID } from 'ripple-address-codec';
 import { XrplDestination } from 'xumm-string-decode';
+
+import { HexEncoding } from '@common/utils/string';
+
+/**
+ * Calculate Ledger index hex
+ * @param account string
+ * @param sequence number
+ * @returns encoded offer index in hex
+ */
+const EncodeLedgerIndex = (account: string, sequence: number) => {
+    let sequenceHex = sequence.toString(16);
+    if (sequenceHex.length > 8) return false;
+    sequenceHex = '0'.repeat(8 - sequenceHex.length) + sequenceHex;
+    const payloadHex = `006F${decodeAccountID(account).toString('hex')}${sequenceHex}`;
+    return HexEncoding.toHex(AccountLibUtils.hash(payloadHex)).toUpperCase();
+};
 
 /**
  * Convert seed/address to another alphabet
@@ -31,8 +47,8 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination & {
         // decode if it's x address
         if (destination.to.startsWith('X')) {
             try {
-                const decoded = Decode(destination.to);
-                to = decoded.account;
+                const decoded = xAddressToClassicAddress(destination.to);
+                to = decoded.classicAddress;
                 tag = Number(decoded.tag);
 
                 xAddress = destination.to;
@@ -55,4 +71,4 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination & {
 };
 
 /* Export ==================================================================== */
-export { ConvertCodecAlphabet, NormalizeDestination };
+export { ConvertCodecAlphabet, NormalizeDestination, EncodeLedgerIndex };

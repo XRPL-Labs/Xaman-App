@@ -17,6 +17,7 @@ import { Payload } from '@common/libs/payload';
 
 import LedgerExchange, { MarketDirection } from '@common/libs/ledger/exchange';
 import { OfferCreate } from '@common/libs/ledger/transactions';
+import { OfferStatus } from '@common/libs/ledger/parser/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
@@ -362,13 +363,13 @@ class ExchangeView extends Component<Props, State> {
             this.showResultAlert(
                 Localize.t('global.error'),
                 Localize.t('exchange.errorDuringExchange', {
-                    error: offer.TransactionResult.message || 'UNKNOW ERROR',
+                    error: offer.TransactionResult.message || 'UNKNOWN ERROR',
                 }),
             );
             return;
         }
 
-        if (offer.Executed) {
+        if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(offer.GetOfferStatus(account.address)) > -1) {
             // calculate delivered amounts
             const takerGot = offer.TakerGot(account.address);
             const takerPaid = offer.TakerPaid(account.address);

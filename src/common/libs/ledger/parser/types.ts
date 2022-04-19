@@ -1,3 +1,12 @@
+export enum OfferStatus {
+    CREATED = 'CREATED',
+    PARTIALLY_FILLED = 'PARTIALLY_FILLED',
+    FILLED = 'FILLED',
+    CANCELLED = 'CANCELLED',
+    KILLED = 'KILLED',
+    UNKNOWN = 'UNKNOWN',
+}
+
 export interface BalanceChangeType extends AmountType {
     action: 'DEC' | 'INC';
 }

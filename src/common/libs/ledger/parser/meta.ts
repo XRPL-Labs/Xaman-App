@@ -1,10 +1,11 @@
 // https://github.com/ripple/ripple-lib-extensions/tree/d266933698a38c51878b4b8806b39ca264526fdc/transactionparser
-
-import { has, groupBy, mapValues, map, isEmpty, compact, flatten, flatMap } from 'lodash';
 import BigNumber from 'bignumber.js';
+import { compact, find, flatMap, flatten, groupBy, has, get, isEmpty, map, mapValues } from 'lodash';
 
-import { BalanceChangeType } from './types';
+/* Types ==================================================================== */
+import { BalanceChangeType, OfferStatus } from './types';
 
+/* Class ==================================================================== */
 class Meta {
     nodes: any[];
 
@@ -164,6 +165,60 @@ class Meta {
         };
 
         return [result, this.flipTrustlinePerspective(result, value)];
+    };
+
+    parseOfferStatus = (node: any): OfferStatus => {
+        if (node.diffType === 'CreatedNode') {
+            return OfferStatus.CREATED;
+        }
+        if (node.diffType === 'ModifiedNode') {
+            return OfferStatus.PARTIALLY_FILLED;
+        }
+        if (node.diffType === 'DeletedNode') {
+            // A filled order has previous fields
+            if (has(node, 'previousFields.TakerPays')) {
+                return OfferStatus.FILLED;
+            }
+            return OfferStatus.CANCELLED;
+        }
+        return OfferStatus.UNKNOWN;
+    };
+
+    parseOfferStatusChange = (owner: string, offerIndex: string): OfferStatus => {
+        const node = find(this.nodes, { entryType: 'Offer', LedgerIndex: offerIndex });
+
+        // default state if offer node not found in meta
+        let status = OfferStatus.UNKNOWN;
+
+        // if found then parse the offer status
+        if (node) {
+            status = this.parseOfferStatus(node);
+        }
+
+        // offer is created or not exist, it can be FILLED or PARTIALLY_FILLED or KILLED
+        if (status === OfferStatus.CREATED || status === OfferStatus.UNKNOWN) {
+            const hasRippleStateChange = find(this.nodes, (n) => {
+                return (
+                    n.diffType === 'ModifiedNode' &&
+                    n.entryType === 'RippleState' &&
+                    (get(n, 'finalFields.HighLimit.issuer') === owner ||
+                        get(n, 'finalFields.LowLimit.issuer') === owner)
+                );
+            });
+
+            if (status === OfferStatus.UNKNOWN) {
+                if (hasRippleStateChange) {
+                    return OfferStatus.FILLED;
+                }
+                return OfferStatus.KILLED;
+            }
+
+            if (status === OfferStatus.CREATED && hasRippleStateChange) {
+                return OfferStatus.PARTIALLY_FILLED;
+            }
+        }
+
+        return status;
     };
 
     parseBalanceChanges = (): { [key: string]: BalanceChangeType[] } => {

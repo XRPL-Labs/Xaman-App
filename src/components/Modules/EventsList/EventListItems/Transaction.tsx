@@ -3,6 +3,8 @@ import { View, Text, Image } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
 
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
+import { OfferStatus } from '@common/libs/ledger/parser/types';
+
 import { AccountSchema } from '@store/schemas/latest';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -289,7 +291,7 @@ class TransactionTemplate extends Component<Props, State> {
         const { item, account } = this.props;
 
         if (item.Type === 'OfferCreate') {
-            if (item.Executed) {
+            if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(item.GetOfferStatus(account.address)) > -1) {
                 const takerGot = item.TakerGot(account.address);
                 const takerPaid = item.TakerPaid(account.address);
 
@@ -361,7 +363,10 @@ class TransactionTemplate extends Component<Props, State> {
             case 'SignerListSet':
                 return Localize.t('events.setSignerList');
             case 'OfferCreate':
-                if (item.Executed) {
+                if (
+                    [OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(item.GetOfferStatus(account.address)) >
+                    -1
+                ) {
                     return Localize.t('events.exchangedAssets');
                 }
                 return Localize.t('events.createOffer');
@@ -581,7 +586,7 @@ class TransactionTemplate extends Component<Props, State> {
         }
 
         if (item.Type === 'OfferCreate') {
-            if (item.Executed) {
+            if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(item.GetOfferStatus(account.address)) > -1) {
                 const takerPaid = item.TakerPaid(account.address);
 
                 return (

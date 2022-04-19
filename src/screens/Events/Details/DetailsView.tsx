@@ -24,7 +24,9 @@ import { AccountSchema } from '@store/schemas/latest';
 import AccountRepository from '@store/repositories/account';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
+
 import { TransactionsType } from '@common/libs/ledger/transactions/types';
+import { OfferStatus } from '@common/libs/ledger/parser/types';
 import { TransactionFactory } from '@common/libs/ledger/factory';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
@@ -33,6 +35,7 @@ import { AppScreens } from '@common/constants';
 
 import { ActionSheet, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+import { GetTransactionLink } from '@common/utils/explorer';
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
@@ -48,8 +51,6 @@ import {
     LoadingIndicator,
 } from '@components/General';
 import { RecipientElement } from '@components/Modules';
-
-import { GetTransactionLink } from '@common/utils/explorer';
 
 import Localize from '@locale';
 
@@ -494,7 +495,9 @@ class TransactionDetailsView extends Component<Props, State> {
             case 'SignerListSet':
                 return Localize.t('events.setSignerList');
             case 'OfferCreate':
-                if (tx.Executed) {
+                if (
+                    [OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(tx.GetOfferStatus(account.address)) > -1
+                ) {
                     return Localize.t('events.exchangedAssets');
                 }
                 return Localize.t('events.createOffer');
@@ -1623,7 +1626,9 @@ class TransactionDetailsView extends Component<Props, State> {
             }
             case 'OfferCreate':
             case 'Offer': {
-                if (tx.Executed) {
+                if (
+                    [OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(tx.GetOfferStatus(account.address)) > -1
+                ) {
                     const takerPaid = tx.TakerPaid(account.address);
                     Object.assign(props, {
                         color: styles.incomingColor,
@@ -1700,7 +1705,7 @@ class TransactionDetailsView extends Component<Props, State> {
         if (tx.Type === 'OfferCreate' || tx.Type === 'Offer') {
             let takerGets;
 
-            if (tx.Executed) {
+            if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(tx.GetOfferStatus(account.address)) > -1) {
                 takerGets = tx.TakerGot(account.address);
             } else {
                 takerGets = tx.TakerGets;

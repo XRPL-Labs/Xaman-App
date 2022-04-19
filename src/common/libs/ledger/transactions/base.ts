@@ -60,15 +60,19 @@ class BaseTransaction {
         ];
 
         this.ClassName = 'Transaction';
+
+        // memorize balance and owner count changes
+        this.balanceChanges = new Map();
+        this.ownerCountChanges = new Map();
     }
 
     /**
-    Preprare the transaction for signing
+     Prepare the transaction for signing
     * @returns {Promise<void>}
     */
     prepare = async () => {
         try {
-            // prepare only for known transaction types types
+            // prepare only for known transaction types
             if (!this.Type) {
                 return;
             }
@@ -102,7 +106,7 @@ class BaseTransaction {
 
     /**
     Populate transaction LastLedgerSequence
-    * @param {number} maxLedgerGap max ledger gap
+    * @param {number} ledgerOffset max ledger gap
     * @returns {void}
     */
     populateLastLedgerSequence = (ledgerOffset = 10) => {
@@ -121,7 +125,7 @@ class BaseTransaction {
         const ExpectedLastLedger = LastLedger + ledgerOffset;
         // if LastLedgerSequence is not set
         if (isUndefined(this.LastLedgerSequence)) {
-            // only set if if last ledger is set
+            // only set if last ledger is set
             this.LastLedgerSequence = ExpectedLastLedger;
         } else if (this.LastLedgerSequence < 32570) {
             // When a transaction has a Max Ledger property + value and the value < 32570,
@@ -160,7 +164,7 @@ class BaseTransaction {
                     };
                 }
 
-                // prepare tranaction for signing
+                // prepare transaction for signing
                 // skip if multiSing transaction
                 if (!multiSign) {
                     await this.prepare();
@@ -302,6 +306,7 @@ class BaseTransaction {
         let baseFee = new BigNumber(0);
 
         // netFee × (33 + (Fulfillment size in bytes ÷ 16))
+        // @ts-ignore
         if (this.Type === 'EscrowFinish' && this.Fulfillment) {
             baseFee = new BigNumber(netFee).multipliedBy(
                 // @ts-ignore
@@ -349,6 +354,11 @@ class BaseTransaction {
             owner = this.Account.address;
         }
 
+        // if already calculated return value
+        if (this.balanceChanges.has(owner)) {
+            return this.balanceChanges.get(owner);
+        }
+
         const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
 
         const changes = {
@@ -357,33 +367,30 @@ class BaseTransaction {
         } as { sent: AmountType; received: AmountType };
 
         // remove fee from transaction owner balance changes
-        // this should apply for NFTokenAcceptOffer transactions as well
+        // this should apply for NFTokenAcceptOffer and OfferCreate transactions as well
         let feeFieldKey = undefined as 'sent' | 'received';
-        if (owner === this.Account.address && changes.sent && changes.sent.currency === 'XRP') {
-            feeFieldKey = 'sent';
-        } else if (
-            owner === this.Account.address &&
-            this.Type === 'NFTokenAcceptOffer' &&
-            changes.received &&
-            changes.received.currency === 'XRP'
-        ) {
-            feeFieldKey = 'received';
+        if (owner === this.Account.address) {
+            if (changes.sent?.currency === 'XRP') {
+                feeFieldKey = 'sent';
+            } else if (
+                ['NFTokenAcceptOffer', 'OfferCreate'].indexOf(this.Type) > -1 &&
+                changes.received?.currency === 'XRP'
+            ) {
+                feeFieldKey = 'received';
+            }
         }
 
         if (feeFieldKey) {
-            let afterFee;
-            if (feeFieldKey === 'sent') {
-                afterFee = new BigNumber(changes[feeFieldKey].value).minus(new BigNumber(this.Fee));
-            } else {
-                afterFee = new BigNumber(changes[feeFieldKey].value).plus(new BigNumber(this.Fee));
-            }
-
+            const afterFee = new BigNumber(changes[feeFieldKey].value).minus(new BigNumber(this.Fee));
             if (afterFee.isZero()) {
                 set(changes, feeFieldKey, undefined);
             } else {
                 set(changes, [feeFieldKey, 'value'], afterFee.decimalPlaces(8).toString(10));
             }
         }
+
+        // memorize the changes for this account
+        this.balanceChanges.set(owner, changes);
 
         return changes;
     }
@@ -397,9 +404,17 @@ class BaseTransaction {
             owner = this.Account.address;
         }
 
-        const change = find(new Meta(this.meta).parseOwnerCountChanges(), { address: owner });
+        // if value is already set return
+        if (this.ownerCountChanges.has(owner)) {
+            return this.ownerCountChanges.get(owner);
+        }
 
-        return change;
+        const ownerChanges = find(new Meta(this.meta).parseOwnerCountChanges(), { address: owner });
+
+        // memorize owner count changes
+        this.ownerCountChanges.set(owner, ownerChanges);
+
+        return ownerChanges;
     }
 
     get Type(): string {
