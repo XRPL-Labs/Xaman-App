@@ -427,7 +427,7 @@ class HomeView extends Component<Props, State> {
                 account={account}
                 onTokenPress={this.onTokenPress}
                 discreetMode={discreetMode}
-                showAddButton={isSpendable}
+                readonly={!isSpendable}
             />
         );
     };

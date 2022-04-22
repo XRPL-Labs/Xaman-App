@@ -16,6 +16,7 @@ export default StyleService.create({
         zIndex: 1,
     },
     filterButtonsContainer: {
+        paddingLeft: 10,
         flexDirection: 'row',
     },
     filterButton: {
@@ -51,7 +52,6 @@ export default StyleService.create({
     },
     searchBarContainer: {
         flex: 1,
-        marginRight: 10,
         paddingVertical: 10,
         justifyContent: 'center',
         alignItems: 'center',

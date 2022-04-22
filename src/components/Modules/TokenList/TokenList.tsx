@@ -25,7 +25,7 @@ interface Props {
     style: ViewStyle | ViewStyle[];
     account: AccountSchema;
     discreetMode: boolean;
-    showAddButton: boolean;
+    readonly?: boolean;
     onTokenPress: (token: TrustLineSchema) => void;
 }
 
@@ -67,11 +67,11 @@ class TokenList extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
-        const { discreetMode, showAddButton } = this.props;
+        const { discreetMode, readonly } = this.props;
         const { account, reorderEnabled, dataSource, timestamp, filters } = this.state;
 
         return (
-            !isEqual(nextProps.showAddButton, showAddButton) ||
+            !isEqual(nextProps.readonly, readonly) ||
             !isEqual(nextProps.discreetMode, discreetMode) ||
             !isEqual(nextProps.account, account) ||
             !isEqual(nextState.reorderEnabled, reorderEnabled) ||
@@ -267,14 +267,14 @@ class TokenList extends Component<Props, State> {
     };
 
     render() {
-        const { account, testID, style, showAddButton, discreetMode } = this.props;
+        const { account, testID, style, readonly, discreetMode } = this.props;
         const { dataSource, reorderEnabled, filters } = this.state;
 
         return (
             <View testID={testID} style={style}>
                 <ListHeader
                     reorderEnabled={reorderEnabled}
-                    showAddButton={showAddButton}
+                    showAddButton={!readonly}
                     onReorderSavePress={this.saveTokensOrder}
                     onAddPress={this.onAddButtonPress}
                     onExplainPress={this.onExplainBalanceButtonPress}
