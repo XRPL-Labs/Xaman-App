@@ -259,6 +259,13 @@ class TokenList extends Component<Props, State> {
     };
 
     renderEmptyList = () => {
+        const { filters } = this.state;
+
+        // return null if there is any filter active
+        if (filters) {
+            return null;
+        }
+
         return <ListEmpty />;
     };
 
