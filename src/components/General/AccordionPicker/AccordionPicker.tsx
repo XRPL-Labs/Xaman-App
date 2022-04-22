@@ -3,7 +3,8 @@ import { get, isEqual, findIndex, isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, ViewStyle, Modal, FlatList, LayoutChangeEvent } from 'react-native';
 
-import { TouchableDebounce, Icon } from '@components/General';
+import { TouchableDebounce } from '@components/General/TouchableDebounce';
+import { Icon } from '@components/General/Icon';
 
 import { AppStyles } from '@theme';
 import styles from './styles';

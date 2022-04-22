@@ -167,12 +167,12 @@ class PasscodeSetupView extends Component<Props, State> {
 
     isBiometricSupported = () => {
         return new Promise((resolve) => {
-            return FingerprintScanner.isSensorAvailable()
+            FingerprintScanner.isSensorAvailable()
                 .then(() => {
-                    return resolve(true);
+                    resolve(true);
                 })
                 .catch(() => {
-                    return resolve(false);
+                    resolve(false);
                 });
         });
     };

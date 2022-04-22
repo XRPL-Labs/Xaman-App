@@ -7,8 +7,9 @@ import txTemplates from './templates/PaymentTx.json';
 
 describe('Payment tx', () => {
     it('Should set tx type if not set', () => {
-        const payment = new Payment();
-        expect(payment.Type).toBe('Payment');
+        const instance = new Payment();
+        expect(instance.TransactionType).toBe('Payment');
+        expect(instance.Type).toBe('Payment');
     });
 
     it('Should return right parsed values for tx XRP->XRP', () => {
@@ -25,7 +26,6 @@ describe('Payment tx', () => {
         expect(instance.Destination).toStrictEqual({
             tag: 123,
             address: 'rLHzPsX6oXkzU2qL12kHCH8G8cnZv1rBJh',
-            name: undefined,
         });
     });
 
@@ -80,7 +80,6 @@ describe('Payment tx', () => {
         expect(instance.Destination).toStrictEqual({
             tag: 1234,
             address: 'rLHzPsX6oXkzU2qL12kHCH8G8cnZv1rBJh',
-            name: undefined,
         });
 
         instance.SendMax = {

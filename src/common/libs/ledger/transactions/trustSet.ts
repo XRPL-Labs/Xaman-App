@@ -6,18 +6,19 @@ import { get, set, isUndefined, toNumber } from 'lodash';
 import BaseTransaction from './base';
 
 /* Types ==================================================================== */
-import { TransactionJSONType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class TrustSet extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.TrustSet as const;
+    public readonly Type = TrustSet.Type;
 
     constructor(tx?: TransactionJSONType, meta?: any) {
         super(tx, meta);
 
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'TrustSet';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = TrustSet.Type;
         }
 
         this.fields = this.fields.concat(['LimitAmount', 'QualityIn', 'QualityOut']);

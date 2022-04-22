@@ -7,8 +7,9 @@ import offerCreateTemplates from './templates/OfferCreateTx.json';
 
 describe('OfferCreate tx', () => {
     it('Should set tx type if not set', () => {
-        const offer = new OfferCreate();
-        expect(offer.Type).toBe('OfferCreate');
+        const instance = new OfferCreate();
+        expect(instance.TransactionType).toBe('OfferCreate');
+        expect(instance.Type).toBe('OfferCreate');
     });
 
     it('Should return right parsed values for executed order XRP->IOU', () => {

@@ -3,18 +3,19 @@ import { get, isUndefined } from 'lodash';
 import BaseTransaction from './base';
 
 /* Types ==================================================================== */
-import { TransactionJSONType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class DepositPreauth extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.DepositPreauth as const;
+    public readonly Type = DepositPreauth.Type;
 
     constructor(tx?: TransactionJSONType, meta?: any) {
         super(tx, meta);
 
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'DepositPreauth';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = DepositPreauth.Type;
         }
 
         this.fields = this.fields.concat(['Authorize', 'Unauthorize']);

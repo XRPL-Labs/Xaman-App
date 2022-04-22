@@ -1,4 +1,10 @@
-import { TransactionJSONType, SubmitResultType, SignedObjectType } from '../ledger/types';
+import {
+    TransactionJSONType,
+    SubmitResultType,
+    SignedObjectType,
+    TransactionTypes,
+    PseudoTransactionTypes,
+} from '../ledger/types';
 
 export interface PayloadType {
     meta: MetaType;
@@ -35,7 +41,7 @@ export interface MetaType {
 }
 
 export interface PayloadReferenceType {
-    tx_type: string;
+    tx_type: TransactionTypes | PseudoTransactionTypes;
     tx_destination?: string;
     tx_destination_tag?: any;
     request_json: TransactionJSONType;

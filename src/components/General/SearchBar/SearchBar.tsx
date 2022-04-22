@@ -5,7 +5,7 @@ import { TextInput, View, TextStyle, ViewStyle, Animated, TouchableOpacity } fro
 
 import StyleService from '@services/StyleService';
 
-import { Icon } from '@components/General';
+import { Icon } from '@components/General/Icon';
 
 import { AppStyles } from '@theme';
 import styles from './styles';

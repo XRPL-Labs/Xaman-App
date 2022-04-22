@@ -300,7 +300,7 @@ class AccountRepository extends BaseRepository {
 
     /**
      * Remove account
-     * WARNING: this will be permanently and cannot be undo
+     * WARNING: this will be permanently and irreversible
      */
     purge = async (account: AccountSchema): Promise<boolean> => {
         const isDefault = account.default;
@@ -336,7 +336,7 @@ class AccountRepository extends BaseRepository {
 
     /**
      * Purge All accounts
-     * WARNING: this will be permanently and cannot be undo
+     * WARNING: this will be permanently and irreversible
      */
     purgePrivateKeys = (): boolean => {
         // clear the vault

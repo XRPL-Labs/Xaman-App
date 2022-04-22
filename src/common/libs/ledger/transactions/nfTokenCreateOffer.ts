@@ -7,18 +7,19 @@ import LedgerDate from '../parser/common/date';
 
 /* Types ==================================================================== */
 import { Destination, AmountType } from '../parser/types';
-import { TransactionJSONType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class NFTokenCreateOffer extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.NFTokenCreateOffer as const;
+    public readonly Type = NFTokenCreateOffer.Type;
 
     constructor(tx?: TransactionJSONType, meta?: any) {
         super(tx, meta);
 
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'NFTokenCreateOffer';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = NFTokenCreateOffer.Type;
         }
 
         this.fields = this.fields.concat(['Amount', 'Destination', 'Expiration', 'Owner', 'NFTokenID']);

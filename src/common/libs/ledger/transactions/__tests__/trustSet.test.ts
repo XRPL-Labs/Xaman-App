@@ -8,6 +8,7 @@ import trustSetTemplate from './templates/TrustSetTx.json';
 describe('TrustSet tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new TrustSet();
+        expect(instance.TransactionType).toBe('TrustSet');
         expect(instance.Type).toBe('TrustSet');
     });
 

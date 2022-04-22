@@ -5,18 +5,19 @@ import Amount from '../parser/common/amount';
 
 /* Types ==================================================================== */
 import { AmountType } from '../parser/types';
-import { TransactionJSONType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class PaymentChannelClaim extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.PaymentChannelClaim as const;
+    public readonly Type = PaymentChannelClaim.Type;
 
     constructor(tx?: TransactionJSONType, meta?: any) {
         super(tx, meta);
 
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'PaymentChannelClaim';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = PaymentChannelClaim.Type;
         }
 
         this.fields = this.fields.concat(['Channel', 'Balance', 'Amount', 'Signature', 'PublicKey']);

@@ -18,18 +18,19 @@ import Amount from '../parser/common/amount';
 
 /* Types ==================================================================== */
 import { LedgerAmount, Destination, AmountType } from '../parser/types';
-import { TransactionJSONType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class Payment extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.Payment as const;
+    public readonly Type = Payment.Type;
 
     constructor(tx?: TransactionJSONType, meta?: any) {
         super(tx, meta);
 
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'Payment';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = Payment.Type;
         }
 
         this.fields = this.fields.concat([
@@ -46,12 +47,10 @@ class Payment extends BaseTransaction {
     get Destination(): Destination {
         const destination = get(this, ['tx', 'Destination'], undefined);
         const destinationTag = get(this, ['tx', 'DestinationTag'], undefined);
-        const destinationName = get(this, ['tx', 'DestinationName'], undefined);
 
         if (isUndefined(destination)) return undefined;
 
         return {
-            name: destinationName,
             address: destination,
             tag: destinationTag,
         };
@@ -77,10 +76,6 @@ class Payment extends BaseTransaction {
             } else {
                 set(this, 'tx.DestinationTag', undefined);
             }
-        }
-
-        if (has(destination, 'name')) {
-            set(this, 'tx.DestinationName', destination.name);
         }
     }
 
@@ -253,18 +248,20 @@ class Payment extends BaseTransaction {
         return get(this, 'tx.Paths', undefined);
     }
 
-    validate = (source: AccountSchema, multiSign?: boolean) => {
-        /* eslint-disable-next-line */
-        return new Promise<void>(async (resolve, reject) => {
+    validate = (source: AccountSchema, multiSign?: boolean): Promise<void> => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
             try {
                 // ignore validation if multiSign and payload including Path
                 if (multiSign || this.Paths) {
-                    return resolve();
+                    resolve();
+                    return;
                 }
 
                 // check if amount is present
                 if (!this.Amount || !this.Amount?.value || this.Amount?.value === '0') {
-                    return reject(new Error(Localize.t('send.pleaseEnterAmount')));
+                    reject(new Error(Localize.t('send.pleaseEnterAmount')));
+                    return;
                 }
 
                 let XRPAmount = undefined as AmountType;
@@ -280,7 +277,7 @@ class Payment extends BaseTransaction {
                     // ===== check balance =====
                     const availableBalance = CalculateAvailableBalance(source);
                     if (Number(XRPAmount.value) > Number(availableBalance)) {
-                        return reject(
+                        reject(
                             new Error(
                                 Localize.t('send.insufficientBalanceSpendableBalance', {
                                     spendable: Localize.formatNumber(availableBalance),
@@ -288,6 +285,7 @@ class Payment extends BaseTransaction {
                                 }),
                             ),
                         );
+                        return;
                     }
                 }
 
@@ -312,9 +310,8 @@ class Payment extends BaseTransaction {
                             !destinationLine ||
                             (Number(destinationLine.limit) === 0 && Number(destinationLine.balance) === 0)
                         ) {
-                            return reject(
-                                new Error(Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine')),
-                            );
+                            reject(new Error(Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine')));
+                            return;
                         }
                     }
 
@@ -329,10 +326,13 @@ class Payment extends BaseTransaction {
                         );
 
                         // TODO: show proper error message
-                        if (!line) return resolve();
+                        if (!line) {
+                            resolve();
+                            return;
+                        }
 
                         if (Number(IOUAmount.value) > Number(line.balance)) {
-                            return reject(
+                            reject(
                                 new Error(
                                     Localize.t('send.insufficientBalanceSpendableBalance', {
                                         spendable: Localize.formatNumber(NormalizeAmount(line.balance)),
@@ -340,6 +340,7 @@ class Payment extends BaseTransaction {
                                     }),
                                 ),
                             );
+                            return;
                         }
                     } else {
                         // sender is the issuer
@@ -350,13 +351,16 @@ class Payment extends BaseTransaction {
                         });
 
                         // TODO: show proper error message
-                        if (!sourceLine) return resolve();
+                        if (!sourceLine) {
+                            resolve();
+                            return;
+                        }
 
                         if (
                             Number(IOUAmount.value) + Math.abs(Number(sourceLine.balance)) >
                             Number(sourceLine.limit_peer)
                         ) {
-                            return reject(
+                            reject(
                                 new Error(
                                     Localize.t('send.trustLineLimitExceeded', {
                                         balance: Localize.formatNumber(
@@ -376,12 +380,13 @@ class Payment extends BaseTransaction {
                                     }),
                                 ),
                             );
+                            return;
                         }
                     }
                 }
-                return resolve();
+                resolve();
             } catch (e) {
-                return reject(
+                reject(
                     new Error(
                         // eslint-disable-next-line max-len
                         'An unexpected error occurred while validating the transaction.\n\nPlease try again later, if the problem continues, contact XUMM support.',

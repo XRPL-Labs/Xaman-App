@@ -12,6 +12,8 @@ import LedgerService from '@services/LedgerService';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
+import { TransactionTypes } from '@common/libs/ledger/types';
+
 import { Payload } from '@common/libs/payload';
 import { CounterPartyRepository } from '@store/repositories';
 import { CounterPartySchema, CurrencySchema, AccountSchema } from '@store/schemas/latest';
@@ -145,7 +147,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
         const payload = Payload.build(
             {
-                TransactionType: 'TrustSet',
+                TransactionType: TransactionTypes.TrustSet,
                 Flags: 131072, // tfSetNoRipple
                 LimitAmount: {
                     currency: selectedCurrency.currency,

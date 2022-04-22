@@ -7,9 +7,13 @@ import BaseLedgerObject from './base';
 
 /* Types ==================================================================== */
 import { AmountType, Destination } from '../parser/types';
+import { LedgerObjectTypes } from '../types';
 
 /* Class ==================================================================== */
 class NFTokenOffer extends BaseLedgerObject {
+    public static Type = LedgerObjectTypes.NFTokenOffer as const;
+    public readonly Type = NFTokenOffer.Type;
+
     constructor(object?: any) {
         super(object);
     }

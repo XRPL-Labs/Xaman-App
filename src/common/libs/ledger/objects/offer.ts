@@ -6,10 +6,12 @@ import LedgerDate from '../parser/common/date';
 
 /* Types ==================================================================== */
 import { AmountType } from '../parser/types';
+import { LedgerObjectTypes } from '../types';
 
 /* Class ==================================================================== */
-class OfferCreate extends BaseLedgerObject {
-    [key: string]: any;
+class Offer extends BaseLedgerObject {
+    public static Type = LedgerObjectTypes.Offer as const;
+    public readonly Type = Offer.Type;
 
     constructor(object: any) {
         super(object);
@@ -94,4 +96,4 @@ class OfferCreate extends BaseLedgerObject {
 }
 
 /* Export ==================================================================== */
-export default OfferCreate;
+export default Offer;

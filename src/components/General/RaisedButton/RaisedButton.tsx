@@ -5,7 +5,8 @@ import { Animated, View, Text, TouchableWithoutFeedback, TextStyle, ViewStyle, I
 
 import { Images } from '@common/helpers/images';
 
-import { Icon, LoadingIndicator } from '@components/General';
+import { Icon } from '@components/General/Icon';
+import { LoadingIndicator } from '@components/General/LoadingIndicator';
 
 import { AppSizes } from '@theme';
 

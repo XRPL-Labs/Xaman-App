@@ -10,6 +10,7 @@ jest.mock('@services/LedgerService');
 describe('AccountDelete tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new AccountDelete();
+        expect(instance.TransactionType).toBe('AccountDelete');
         expect(instance.Type).toBe('AccountDelete');
     });
 
@@ -25,11 +26,10 @@ describe('AccountDelete tx', () => {
         expect(instance.Destination).toStrictEqual({
             tag: 0,
             address: 'r49LZgcrnFU7YRAjMwxWSoxAcsRom5ZGym',
-            name: undefined,
         });
     });
 
-    it('it should calcualte right fee', () => {
+    it('it should calculate right fee', () => {
         const { tx, meta } = txTemplates;
         const instance = new AccountDelete(tx, meta);
 

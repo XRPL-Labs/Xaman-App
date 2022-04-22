@@ -73,9 +73,9 @@ class NavigationService extends EventEmitter {
                 // set android back handler
                 BackHandler.addEventListener('hardwareBackPress', this.handleAndroidBackButton);
 
-                return resolve();
+                resolve();
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
     };

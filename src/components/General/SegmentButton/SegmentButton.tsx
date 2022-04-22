@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Text, View, ViewStyle } from 'react-native';
 
-import { TouchableDebounce } from '@components/General';
+import { TouchableDebounce } from '@components/General/TouchableDebounce';
 
 import styles from './styles';
 /* Types ==================================================================== */

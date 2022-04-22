@@ -101,7 +101,7 @@ const styles = StyleService.create({
         borderRadius: AppSizes.scale(42) / 2,
     },
     textButtonRounded: {
-        fontSize: AppFonts.base.size * 1,
+        fontSize: AppFonts.base.size,
     },
     iconLeft: {
         marginRight: 3,

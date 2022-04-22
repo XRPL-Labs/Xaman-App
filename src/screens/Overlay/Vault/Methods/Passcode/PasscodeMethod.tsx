@@ -39,9 +39,9 @@ class PasscodeMethod extends Component<Props, State> {
     context: React.ContextType<typeof MethodsContext>;
 
     private contentView: View;
-    private securePinInput: SecurePinInput;
     private animatedColor: Animated.Value;
     private mounted: boolean;
+    private securePinInput: React.RefObject<SecurePinInput>;
 
     constructor(props: Props, context: React.ContextType<typeof MethodsContext>) {
         super(props);
@@ -56,6 +56,7 @@ class PasscodeMethod extends Component<Props, State> {
         };
 
         this.animatedColor = new Animated.Value(0);
+        this.securePinInput = React.createRef();
     }
 
     componentDidMount() {
@@ -110,19 +111,24 @@ class PasscodeMethod extends Component<Props, State> {
     setBiometricStatus = () => {
         const { coreSettings } = this.context;
 
-        // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async (resolve) => {
-            return FingerprintScanner.isSensorAvailable()
+        return new Promise((resolve) => {
+            FingerprintScanner.isSensorAvailable()
                 .then(() => {
                     if (coreSettings.biometricMethod !== BiometryType.None) {
-                        this.setState({
-                            isBiometricAvailable: true,
-                        });
+                        this.setState(
+                            {
+                                isBiometricAvailable: true,
+                            },
+                            () => {
+                                resolve(true);
+                            },
+                        );
+                    } else {
+                        resolve(false);
                     }
-                    return resolve(false);
                 })
                 .catch(() => {
-                    return resolve(false);
+                    resolve(false);
                 });
         });
     };
@@ -132,9 +138,9 @@ class PasscodeMethod extends Component<Props, State> {
 
         if (isBiometricAvailable) {
             this.requestBiometricAuthenticate(true);
-        } else if (this.securePinInput) {
+        } else if (this.securePinInput.current) {
             // focus the input
-            this.securePinInput.focus();
+            this.securePinInput.current.focus();
         }
     };
 
@@ -176,8 +182,9 @@ class PasscodeMethod extends Component<Props, State> {
         AuthenticationService.checkPasscode(passcode)
             .then(this.onSuccessPasscodeAuthenticate)
             .catch((e) => {
-                this.securePinInput.clearInput();
-
+                if (this.securePinInput.current) {
+                    this.securePinInput.current.clearInput();
+                }
                 if (e?.message === Localize.t('global.invalidPasscode')) {
                     onInvalidAuth(AuthMethods.PIN);
                 } else {
@@ -236,9 +243,7 @@ class PasscodeMethod extends Component<Props, State> {
                             </Text>
 
                             <SecurePinInput
-                                ref={(r) => {
-                                    this.securePinInput = r;
-                                }}
+                                ref={this.securePinInput}
                                 onInputFinish={this.onPasscodeEntered}
                                 length={6}
                                 enableHapticFeedback={hapticFeedback}

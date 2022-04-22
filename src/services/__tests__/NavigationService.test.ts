@@ -1,6 +1,7 @@
 import { NativeModules } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import AppScreens from '../../common/constants/screens';
+
+import AppScreens from '@common/constants/screens';
 
 import NavigationService, { RootType, ComponentTypes } from '../NavigationService';
 

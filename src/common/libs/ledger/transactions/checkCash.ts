@@ -1,9 +1,9 @@
 import moment from 'moment-timezone';
-
 import { set, get, isUndefined } from 'lodash';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { AccountSchema } from '@store/schemas/latest';
 
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 import Localize from '@locale';
 
 import BaseTransaction from './base';
@@ -13,18 +13,19 @@ import Amount from '../parser/common/amount';
 
 /* Types ==================================================================== */
 import { AmountType } from '../parser/types';
-import { TransactionJSONType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class CheckCash extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.CheckCash as const;
+    public readonly Type = CheckCash.Type;
 
     constructor(tx?: TransactionJSONType, meta?: any) {
         super(tx, meta);
 
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'CheckCash';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = CheckCash.Type;
         }
 
         this.fields = this.fields.concat(['Amount', 'DeliverMin', 'CheckID']);
@@ -125,7 +126,7 @@ class CheckCash extends BaseTransaction {
         if (check) {
             return check;
         }
-        // if not look at the meta data for check object
+        // if not look at the metadata for check object
         const affectedNodes = get(this.meta, 'AffectedNodes', []);
         affectedNodes.map((node: any) => {
             if (node.DeletedNode?.LedgerEntryType === 'Check') {
@@ -147,23 +148,31 @@ class CheckCash extends BaseTransaction {
         return exp.isBefore(now);
     }
 
-    validate = () => {
-        /* eslint-disable-next-line */
-        return new Promise<void>((resolve, reject) => {
+    validate = (account: AccountSchema, multiSign?: boolean): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            // if multiSign resolve
+            if (multiSign) {
+                resolve();
+                return;
+            }
+
+            // check object should be assigned
             if (!this.Check) {
-                return reject(new Error(Localize.t('payload.unableToGetCheckObject')));
+                reject(new Error(Localize.t('payload.unableToGetCheckObject')));
+                return;
             }
             // The user must enter an amount
             if (
                 (!this.Amount || !this.Amount?.value || this.Amount?.value === '0') &&
                 (!this.DeliverMin || !this.DeliverMin?.value || this.DeliverMin?.value === '0')
             ) {
-                return reject(new Error(Localize.t('send.pleaseEnterAmount')));
+                reject(new Error(Localize.t('send.pleaseEnterAmount')));
+                return;
             }
 
             // check if the entered amount don't exceed the cash amount
             if (this.Amount && Number(this.Amount.value) > Number(this.Check.SendMax.value)) {
-                return reject(
+                reject(
                     new Error(
                         Localize.t('payload.insufficientCashAmount', {
                             amount: this.Check.SendMax.value,
@@ -171,10 +180,12 @@ class CheckCash extends BaseTransaction {
                         }),
                     ),
                 );
+                return;
             }
 
+            // check for insufficient amount
             if (this.DeliverMin && Number(this.DeliverMin.value) > Number(this.Check.SendMax.value)) {
-                return reject(
+                reject(
                     new Error(
                         Localize.t('payload.insufficientCashAmount', {
                             amount: this.Check.SendMax.value,
@@ -182,14 +193,16 @@ class CheckCash extends BaseTransaction {
                         }),
                     ),
                 );
+                return;
             }
 
             // the signer should be the same as check destination
             if (this.Account.address !== this.Check.Destination.address) {
-                return reject(new Error(Localize.t('payload.checkCanOnlyCashByCheckDestination')));
+                reject(new Error(Localize.t('payload.checkCanOnlyCashByCheckDestination')));
+                return;
             }
 
-            return resolve();
+            resolve();
         });
     };
 }

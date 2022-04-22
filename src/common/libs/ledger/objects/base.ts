@@ -7,17 +7,16 @@ import { Account } from '../parser/types';
 import Flag from '../parser/common/flag';
 
 /* Types ==================================================================== */
-import { LedgerEntriesTypes } from './types';
+import { LedgerEntriesTypes } from '../types';
 
 /* Class ==================================================================== */
 class BaseLedgerObject {
-    private object: LedgerEntriesTypes;
-    [key: string]: any;
+    public readonly ClassName = 'LedgerObject';
+
+    protected object: LedgerEntriesTypes;
 
     constructor(object?: LedgerEntriesTypes) {
         this.object = object;
-
-        this.ClassName = 'LedgerObject';
     }
 
     get Account(): Account {
@@ -46,7 +45,7 @@ class BaseLedgerObject {
         }
     }
 
-    get Type(): string {
+    get LedgerEntryType(): string {
         return get(this, ['object', 'LedgerEntryType'], undefined);
     }
 
@@ -72,7 +71,7 @@ class BaseLedgerObject {
 
     get Flags(): any {
         const intFlags = get(this, ['tx', 'Flags'], undefined);
-        const flagParser = new Flag(this.Type, intFlags);
+        const flagParser = new Flag(this.LedgerEntryType, intFlags);
         return flagParser.parse();
     }
 }

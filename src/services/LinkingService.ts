@@ -35,9 +35,9 @@ class LinkingService {
                         Linking.addEventListener('url', this.handleDeepLink);
                     }
                 });
-                return resolve();
+                resolve();
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
     };

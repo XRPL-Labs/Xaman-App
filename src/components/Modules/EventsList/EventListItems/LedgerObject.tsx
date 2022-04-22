@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
 
-import { TransactionsType } from '@common/libs/ledger/transactions/types';
+import { LedgerObjects } from '@common/libs/ledger/objects/types';
+import { LedgerObjectTypes } from '@common/libs/ledger/types';
 import { AccountSchema } from '@store/schemas/latest';
 
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
-import { NormalizeCurrencyCode, NormalizeAmount } from '@common/utils/amount';
+import { NormalizeAmount, NormalizeCurrencyCode } from '@common/utils/amount';
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
 
-import { TouchableDebounce, Icon, Avatar, AmountText } from '@components/General';
+import { AmountText, Avatar, Icon, TouchableDebounce } from '@components/General';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -20,7 +21,7 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     account: AccountSchema;
-    item: TransactionsType;
+    item: LedgerObjects;
     timestamp?: number;
 }
 
@@ -28,7 +29,6 @@ export interface State {
     name: string;
     address: string;
     tag: number;
-    key: string;
 }
 
 /* Component ==================================================================== */
@@ -44,7 +44,6 @@ class LedgerObjectTemplate extends Component<Props, State> {
             name: recipientDetails.name,
             address: recipientDetails.address,
             tag: recipientDetails.tag,
-            key: recipientDetails.key,
         };
     }
 
@@ -54,17 +53,12 @@ class LedgerObjectTemplate extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { name, key } = this.state;
-        const { item } = this.props;
+        const { name } = this.state;
 
         this.mounted = true;
 
         if (!name) {
             this.lookUpRecipientName();
-        } else if (key) {
-            item[key] = {
-                name,
-            };
         }
     }
 
@@ -89,12 +83,12 @@ class LedgerObjectTemplate extends Component<Props, State> {
         let key;
 
         switch (item.Type) {
-            case 'Check':
+            case LedgerObjectTypes.Check:
                 address = item.Destination.address;
                 tag = item.Destination.tag;
                 key = 'Destination';
                 break;
-            case 'Escrow':
+            case LedgerObjectTypes.Escrow:
                 address = item.Destination.address;
                 tag = item.Destination.tag;
                 key = 'Destination';
@@ -103,8 +97,8 @@ class LedgerObjectTemplate extends Component<Props, State> {
                 break;
         }
 
-        // this this transactions are belong to account
-        if (item.Type === 'Offer') {
+        //  transactions that are account center
+        if (item.Type === LedgerObjectTypes.Offer) {
             return {
                 address,
                 tag,
@@ -122,18 +116,12 @@ class LedgerObjectTemplate extends Component<Props, State> {
     };
 
     lookUpRecipientName = () => {
-        const { address, tag, key } = this.state;
-        const { item } = this.props;
+        const { address, tag } = this.state;
 
         getAccountName(address, tag)
             .then((res: any) => {
                 if (!isEmpty(res) && res.name) {
                     if (this.mounted) {
-                        if (key) {
-                            item[key] = {
-                                name: res.name,
-                            };
-                        }
                         this.setState({
                             name: res.name,
                         });
@@ -208,9 +196,13 @@ class LedgerObjectTemplate extends Component<Props, State> {
     renderRightPanel = () => {
         const { item, account } = this.props;
 
-        const incoming = item.Destination?.address === account.address;
+        let incoming = false;
 
-        if (item.Type === 'Escrow') {
+        if (item.Type !== LedgerObjectTypes.Offer) {
+            incoming = item.Destination?.address === account.address;
+        }
+
+        if (item.Type === LedgerObjectTypes.Escrow) {
             return (
                 <AmountText
                     value={item.Amount.value}
@@ -224,7 +216,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
             );
         }
 
-        if (item.Type === 'Check') {
+        if (item.Type === LedgerObjectTypes.Check) {
             return (
                 <AmountText
                     value={item.SendMax.value}
@@ -237,7 +229,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
             );
         }
 
-        if (item.Type === 'Offer') {
+        if (item.Type === LedgerObjectTypes.Offer) {
             return (
                 <AmountText
                     value={item.TakerPays.value}

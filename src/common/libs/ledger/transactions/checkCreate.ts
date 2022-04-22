@@ -14,18 +14,19 @@ import LedgerDate from '../parser/common/date';
 
 /* Types ==================================================================== */
 import { AmountType, Destination } from '../parser/types';
-import { TransactionJSONType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class CheckCreate extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.CheckCreate as const;
+    public readonly Type = CheckCreate.Type;
 
     constructor(tx?: TransactionJSONType, meta?: any) {
         super(tx, meta);
 
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'CheckCreate';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = CheckCreate.Type;
         }
 
         this.fields = this.fields.concat(['Destination', 'SendMax', 'DestinationTag', 'Expiration', 'InvoiceID']);
@@ -54,16 +55,16 @@ class CheckCreate extends BaseTransaction {
 
     set SendMax(input: AmountType | undefined) {
         if (typeof input === 'undefined') {
-            set(this, 'tx.SendMax', undefined);
+            set(this, ['tx', 'SendMax'], undefined);
             return;
         }
         // XRP
         if (typeof input === 'string') {
-            set(this, 'tx.SendMax', new Amount(input, false).xrpToDrops());
+            set(this, ['tx', 'SendMax'], new Amount(input, false).xrpToDrops());
         }
 
         if (typeof input === 'object') {
-            set(this, 'tx.SendMax', {
+            set(this, ['tx', 'SendMax'], {
                 currency: input.currency,
                 value: input.value,
                 issuer: input.issuer,
@@ -74,12 +75,10 @@ class CheckCreate extends BaseTransaction {
     get Destination(): Destination {
         const destination = get(this, ['tx', 'Destination'], undefined);
         const destinationTag = get(this, ['tx', 'DestinationTag'], undefined);
-        const destinationName = get(this, ['tx', 'DestinationName'], undefined);
 
         if (isUndefined(destination)) return undefined;
 
         return {
-            name: destinationName,
             address: destination,
             tag: destinationTag,
         };
@@ -90,22 +89,18 @@ class CheckCreate extends BaseTransaction {
             if (!AccountLib.utils.isValidAddress(destination.address)) {
                 throw new Error(`${destination.address} is not a valid XRP Address`);
             }
-            set(this, 'tx.Destination', destination.address);
+            set(this, ['tx', 'Destination'], destination.address);
         }
 
         if (has(destination, 'tag')) {
             if (!isNumber(destination.tag)) {
                 // try to convert to number
-                set(this, 'tx.DestinationTag', toInteger(destination.tag));
+                set(this, ['tx', 'DestinationTag'], toInteger(destination.tag));
             } else {
-                set(this, 'tx.DestinationTag', destination.tag);
+                set(this, ['tx', 'DestinationTag'], destination.tag);
             }
         } else {
-            set(this, 'tx.DestinationTag', undefined);
-        }
-
-        if (has(destination, 'name')) {
-            set(this, 'tx.DestinationName', destination.name);
+            set(this, ['tx', 'DestinationTag'], undefined);
         }
     }
 
@@ -117,25 +112,26 @@ class CheckCreate extends BaseTransaction {
     }
 
     get InvoiceID(): string {
-        return get(this, 'tx.InvoiceID', undefined);
+        return get(this, ['tx', 'InvoiceID'], undefined);
     }
 
-    validate = (source: AccountSchema, multiSign?: boolean) => {
-        /* eslint-disable-next-line */
-        return new Promise<void>((resolve, reject) => {
-            // this is a multisign tx & ignore balance check
+    validate = (account: AccountSchema, multiSign?: boolean): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            // if multiSign resolve
             if (multiSign) {
-                return resolve();
+                resolve();
+                return;
             }
 
             if (!this.SendMax || !this.SendMax?.value || this.SendMax?.value === '0') {
-                return reject(new Error(Localize.t('send.pleaseEnterAmount')));
+                reject(new Error(Localize.t('send.pleaseEnterAmount')));
+                return;
             }
 
             if (this.SendMax.currency === 'XRP') {
-                const availableBalance = CalculateAvailableBalance(source);
+                const availableBalance = CalculateAvailableBalance(account);
                 if (Number(this.SendMax.value) > Number(availableBalance)) {
-                    return reject(
+                    reject(
                         new Error(
                             Localize.t('send.insufficientBalanceSpendableBalance', {
                                 spendable: Localize.formatNumber(availableBalance),
@@ -143,16 +139,17 @@ class CheckCreate extends BaseTransaction {
                             }),
                         ),
                     );
+                    return;
                 }
             } else {
-                const line = source.lines.find(
+                const line = account.lines.find(
                     (e: any) =>
                         // eslint-disable-next-line implicit-arrow-linebreak
                         e.currency.issuer === this.SendMax.issuer && e.currency.currency === this.SendMax.currency,
                 );
 
                 if (line && Number(this.SendMax.value) > Number(line.balance)) {
-                    return reject(
+                    reject(
                         new Error(
                             Localize.t('send.insufficientBalanceSpendableBalance', {
                                 spendable: Localize.formatNumber(line.balance),
@@ -160,10 +157,11 @@ class CheckCreate extends BaseTransaction {
                             }),
                         ),
                     );
+                    return;
                 }
             }
 
-            return resolve();
+            resolve();
         });
     };
 }

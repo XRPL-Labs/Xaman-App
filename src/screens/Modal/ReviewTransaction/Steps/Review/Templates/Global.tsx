@@ -1,22 +1,23 @@
-import { isEmpty, find, isUndefined } from 'lodash';
+import { find, isEmpty, isUndefined } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, Alert } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 
-import { StyleService, LedgerService } from '@services';
+import { LedgerService, StyleService } from '@services';
 
 import { AppScreens } from '@common/constants';
 
-import { getAccountName, AccountNameType } from '@common/helpers/resolver';
+import { AccountNameType, getAccountName } from '@common/helpers/resolver';
 import { Navigator } from '@common/helpers/navigator';
 
 import { Capitalize } from '@common/utils/string';
 
+import { TransactionTypes } from '@common/libs/ledger/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import { Amount } from '@common/libs/ledger/parser/common';
-import { TransactionsType } from '@common/libs/ledger/transactions/types';
+import { Transactions } from '@common/libs/ledger/transactions/types';
 
 // components
-import { TouchableDebounce, LoadingIndicator, Badge, Button, InfoMessage } from '@components/General';
+import { Badge, Button, InfoMessage, LoadingIndicator, TouchableDebounce } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
@@ -32,7 +33,7 @@ export interface FeeItem {
 }
 
 export interface Props {
-    transaction: TransactionsType;
+    transaction: Transactions;
     canOverride: boolean;
     forceRender: () => void;
 }
@@ -225,7 +226,7 @@ class GlobalTemplate extends Component<Props, State> {
 
         // AccountDelete transaction have fixed fee value
         // NOTE: this may change in future, we may need to let user to select higher fees
-        if (transaction.Type === 'AccountDelete') {
+        if (transaction.Type === TransactionTypes.AccountDelete) {
             return (
                 <>
                     <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
@@ -264,7 +265,7 @@ class GlobalTemplate extends Component<Props, State> {
     renderWarnings = () => {
         const { transaction } = this.props;
 
-        if (transaction.Type === 'AccountDelete') {
+        if (transaction.Type === TransactionTypes.AccountDelete) {
             return <InfoMessage type="error" label={Localize.t('payload.accountDeleteExchangeSupportWarning')} />;
         }
 
@@ -357,11 +358,9 @@ class GlobalTemplate extends Component<Props, State> {
                         memo += m.format ? `${m.format}\n` : '';
                         memo += m.data ? `${m.data}` : '';
                         return (
-                            <>
-                                <Text key={`memo-${index}`} style={styles.value}>
-                                    {memo}
-                                </Text>
-                            </>
+                            <Text key={`memo-${index}`} style={styles.value}>
+                                {memo}
+                            </Text>
                         );
                     })}
                 </View>

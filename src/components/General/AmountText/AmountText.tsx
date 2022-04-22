@@ -168,6 +168,7 @@ class AmountText extends Component<Props, State> {
 
         let amount = String(originalValue);
         // if value is exponent they show fixed value to the user
+        // eslint-disable-next-line prefer-regex-literals
         if (new RegExp(/[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)/g).test(amount)) {
             amount = new BigNumber(originalValue).toFixed();
         }

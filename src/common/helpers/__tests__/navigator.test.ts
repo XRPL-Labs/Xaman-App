@@ -1,9 +1,9 @@
 import { Navigation } from 'react-native-navigation';
 
-import { Navigator } from '../navigator';
+import NavigationService, { ComponentTypes } from '@services/NavigationService';
+import AppScreens from '@common/constants/screens';
 
-import NavigationService, { ComponentTypes } from '../../../services/NavigationService';
-import AppScreens from '../../constants/screens';
+import { Navigator } from '../navigator';
 
 describe('Navigator helper', () => {
     const navigationService = NavigationService;

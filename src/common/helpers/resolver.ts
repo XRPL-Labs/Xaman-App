@@ -39,7 +39,8 @@ const getAccountName = memoize(
             };
 
             if (!address) {
-                return resolve(notFound);
+                resolve(notFound);
+                return;
             }
 
             // check address  book
@@ -48,11 +49,12 @@ const getAccountName = memoize(
                 const contact = ContactRepository.findOne(filter);
 
                 if (contact) {
-                    return resolve({
+                    resolve({
                         address,
                         name: contact.name,
                         source: 'contacts',
                     });
+                    return;
                 }
             } catch {
                 // ignore
@@ -62,11 +64,12 @@ const getAccountName = memoize(
                 // check in accounts list
                 const account = AccountRepository.findOne({ address });
                 if (account) {
-                    return resolve({
+                    resolve({
                         address,
                         name: account.label,
                         source: 'accounts',
                     });
+                    return;
                 }
             } catch {
                 // ignore
@@ -74,24 +77,26 @@ const getAccountName = memoize(
 
             // only lookup for local result
             if (internal) {
-                return resolve(notFound);
+                resolve(notFound);
+                return;
             }
 
             // check the backend
-            return BackendService.getAddressInfo(address)
+            BackendService.getAddressInfo(address)
                 .then((res: any) => {
                     if (res) {
-                        return resolve({
+                        resolve({
                             address,
                             name: res.name,
                             source: res.source?.replace('internal:', '').replace('.com', ''),
                             kycApproved: res.kycApproved,
                         });
+                        return;
                     }
-                    return resolve(notFound);
+                    resolve(notFound);
                 })
                 .catch(() => {
-                    return resolve(notFound);
+                    resolve(notFound);
                 });
         });
     },
@@ -102,7 +107,8 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
     /* eslint-disable-next-line  */
     return new Promise(async (resolve, reject) => {
         if (!address) {
-            return reject();
+            reject();
+            return;
         }
 
         const info = {
@@ -121,17 +127,20 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
             if (has(accountRisk, 'danger')) {
                 assign(info, { risk: accountRisk.danger });
             } else {
-                return reject();
+                reject();
+                return;
             }
 
             const accountInfo = await LedgerService.getAccountInfo(address);
 
-            // account doesn't exist no need to check account risk
+            // account doesn't exist, no need to check account risk
             if (has(accountInfo, 'error')) {
                 if (get(accountInfo, 'error') === 'actNotFound') {
-                    return resolve(assign(info, { exist: false }));
+                    resolve(assign(info, { exist: false }));
+                    return;
                 }
-                return reject();
+                reject();
+                return;
             }
 
             const { account_data } = accountInfo;
@@ -201,9 +210,9 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                 }
             }
 
-            return resolve(info);
+            resolve(info);
         } catch {
-            return reject();
+            reject();
         }
     });
 };

@@ -1,3 +1,6 @@
+/**
+ * Meta data types
+ */
 export enum OfferStatus {
     CREATED = 'CREATED',
     PARTIALLY_FILLED = 'PARTIALLY_FILLED',
@@ -11,6 +14,9 @@ export interface BalanceChangeType extends AmountType {
     action: 'DEC' | 'INC';
 }
 
+/**
+ * Ledger and transaction types
+ */
 export interface AmountType extends Issuer {
     value: string;
 }

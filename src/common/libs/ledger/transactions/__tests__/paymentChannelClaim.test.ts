@@ -8,6 +8,7 @@ import paymentChannelClaimTemplates from './templates/PaymentChannelClaimTx.json
 describe('PaymentChannelClaim tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new PaymentChannelClaim();
+        expect(instance.TransactionType).toBe('PaymentChannelClaim');
         expect(instance.Type).toBe('PaymentChannelClaim');
     });
 

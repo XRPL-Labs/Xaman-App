@@ -8,6 +8,7 @@ import paymentChannelCreateTemplate from './templates/PaymentChannelCreateTx.jso
 describe('PaymentChannelCreate tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new PaymentChannelCreate();
+        expect(instance.TransactionType).toBe('PaymentChannelCreate');
         expect(instance.Type).toBe('PaymentChannelCreate');
     });
 
@@ -18,12 +19,10 @@ describe('PaymentChannelCreate tx', () => {
         expect(instance.Type).toBe('PaymentChannelCreate');
         expect(instance.Account).toEqual({
             address: 'rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn',
-            name: undefined,
             tag: 11747,
         });
         expect(instance.Destination).toEqual({
             address: 'rsA2LpzuawewSBQXkiju3YQTMzW13pAAdW',
-            name: undefined,
             tag: 23480,
         });
         expect(instance.SettleDelay).toBe(86400);

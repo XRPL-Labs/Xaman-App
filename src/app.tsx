@@ -215,9 +215,9 @@ class Application {
                     this.logger.debug(`Locale set to: ${core.language.toUpperCase()}`);
                     Localize.setLocale(core.language, core.useSystemSeparators ? localeSettings : undefined);
                 }
-                return resolve();
+                resolve();
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
     };
@@ -236,9 +236,9 @@ class Application {
                     Navigation.registerComponent(Screen.screenName, () => Screen);
                     return true;
                 });
-                return resolve();
+                resolve();
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
     };
@@ -302,9 +302,9 @@ class Application {
                 // @ts-ignore
                 TextInput.defaultProps.allowFontScaling = false;
 
-                return resolve();
+                resolve();
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
     };

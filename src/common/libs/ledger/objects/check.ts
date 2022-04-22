@@ -9,10 +9,12 @@ import BaseLedgerObject from './base';
 
 /* Types ==================================================================== */
 import { AmountType, Destination } from '../parser/types';
+import { LedgerObjectTypes } from '../types';
 
 /* Class ==================================================================== */
 class Check extends BaseLedgerObject {
-    [key: string]: any;
+    public static Type = LedgerObjectTypes.Check as const;
+    public readonly Type = Check.Type;
 
     constructor(object?: any) {
         super(object);

@@ -8,6 +8,7 @@ import setRegularKeyTemplates from './templates/SetRegularKeyTx.json';
 describe('SetRegularKey tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new SetRegularKey();
+        expect(instance.TransactionType).toBe('SetRegularKey');
         expect(instance.Type).toBe('SetRegularKey');
     });
 

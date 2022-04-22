@@ -2,9 +2,9 @@
  * Review Step
  */
 
-import { isEmpty, get, find, filter } from 'lodash';
+import { filter, find, get, isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { ImageBackground, View, Text } from 'react-native';
+import { ImageBackground, Text, View } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -15,8 +15,10 @@ import { SocketService, StyleService } from '@services';
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
+import { TransactionTypes } from '@common/libs/ledger/types';
+
 // components
-import { Button, SwipeButton, Spacer, KeyboardAwareScrollView, Avatar } from '@components/General';
+import { Avatar, Button, KeyboardAwareScrollView, Spacer, SwipeButton } from '@components/General';
 import { AccountPicker } from '@components/Modules';
 
 import Localize from '@locale';
@@ -30,6 +32,7 @@ import styles from './styles';
 import * as Templates from './Templates';
 
 import { StepsContext } from '../../Context';
+
 /* types ==================================================================== */
 export interface Props {}
 
@@ -85,8 +88,8 @@ class ReviewStep extends Component<Props, State> {
         if (transaction.Account) {
             preferredAccount = find(availableAccounts, { address: transaction.Account.address });
 
-            // if CheckCash check if account is imported in the xumm
-            if (transaction.Type === 'CheckCash') {
+            // if CheckCash, check if account is imported in the xumm
+            if (transaction.Type === TransactionTypes.CheckCash) {
                 // cannot sign this tx as account is not imported in the XUMM
                 if (!preferredAccount) {
                     setError(Localize.t('payload.checkCanOnlyCashByCheckDestination'));
@@ -167,23 +170,6 @@ class ReviewStep extends Component<Props, State> {
                 />
                 <Global transaction={transaction} canOverride={!payload.isMultiSign()} forceRender={this.forceRender} />
             </>
-        );
-    };
-
-    renderAccountItem = (account: AccountSchema, selected: boolean) => {
-        return (
-            <View>
-                <Text style={[AppStyles.pbold, selected ? AppStyles.colorBlue : AppStyles.colorBlack]}>
-                    {account.label}
-                </Text>
-                <Text
-                    adjustsFontSizeToFit
-                    numberOfLines={1}
-                    style={[AppStyles.monoSubText, selected ? AppStyles.colorBlue : AppStyles.colorBlack]}
-                >
-                    {account.address}
-                </Text>
-            </View>
         );
     };
 

@@ -20,7 +20,6 @@ describe('BaseTransaction tx', () => {
         expect(instance.Account).toStrictEqual({
             tag: 456,
             address: tx.Account,
-            name: undefined,
         });
 
         expect(instance.Memos).toStrictEqual([{ data: 'XRP Tip Bot', format: undefined, type: 'XrpTipBotNote' }]);
@@ -55,7 +54,6 @@ describe('BaseTransaction tx', () => {
         expect(instance.Account).toStrictEqual({
             tag: 456,
             address: 'rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY',
-            name: undefined,
         });
 
         instance.Memos = [{ data: 'XRP Tip Bot', format: 'text/plain', type: 'XrpTipBotNote' }];
@@ -83,7 +81,8 @@ describe('BaseTransaction tx', () => {
     it('Should return right transaction result', () => {
         const instance = new BaseTransaction();
 
-        // transaction already veriffied by network
+        // transaction already verified by network
+        // @ts-ignore
         instance.meta.TransactionResult = 'tesSUCCESS';
 
         expect(instance.TransactionResult).toStrictEqual({
@@ -92,7 +91,8 @@ describe('BaseTransaction tx', () => {
             message: undefined,
         });
 
-        // transaction is not veriffied by network and failed
+        // transaction is not verified by network and failed
+        // @ts-ignore
         instance.meta.TransactionResult = 'tecNO_LINE_INSUF_RESERVE';
 
         instance.SubmitResult = {
@@ -111,7 +111,8 @@ describe('BaseTransaction tx', () => {
             message: 'No such line. Too little reserve to create it.',
         });
 
-        // transaction is not veriffied by network and hard failed
+        // transaction is not verified by network and hard failed
+        // @ts-ignore
         instance.meta.TransactionResult = undefined;
 
         instance.SubmitResult = {
@@ -138,7 +139,7 @@ describe('BaseTransaction tx', () => {
         const spy = jest.spyOn(LedgerService, 'getAccountInfo').mockImplementation(() =>
             Promise.resolve({
                 account_data: {
-                    address,
+                    Account: address,
                     Balance: '49507625423',
                     Domain: '787270746970626F742E636F6D',
                     EmailHash: '833237B8665D2F4E00135E8DE646589F',
@@ -149,9 +150,8 @@ describe('BaseTransaction tx', () => {
                     PreviousTxnLgrSeq: 58057100,
                     Sequence: 34321,
                     index: '44EF183C00DFCB5DAF505684AA7967C83F42C085EBA6B271E5349CB12C3D5965',
-                    // @ts-ignore
                     signer_lists: [],
-                    urlgravatar: 'http://www.gravatar.com/avatar/833237b8665d2f4e00135e8de646589f',
+                    urlgravatar: 'https://www.gravatar.com/avatar/833237b8665d2f4e00135e8de646589f',
                 },
             }),
         );
@@ -167,7 +167,6 @@ describe('BaseTransaction tx', () => {
         expect(instance.Account).toStrictEqual({
             tag: undefined,
             address,
-            name: undefined,
         });
 
         // should set the sequence number

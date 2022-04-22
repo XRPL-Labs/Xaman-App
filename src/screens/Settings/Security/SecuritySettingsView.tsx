@@ -307,18 +307,16 @@ class SecuritySettingsView extends Component<Props, State> {
                     </View>
 
                     {Platform.OS === 'android' && (
-                        <>
-                            <View style={styles.row}>
-                                <View style={[AppStyles.flex3]}>
-                                    <Text numberOfLines={1} style={styles.label}>
-                                        {Localize.t('settings.blockTakingScreenshots')}
-                                    </Text>
-                                </View>
-                                <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                                    <Switch checked={isFlagSecure} onChange={this.toggleFlagSecure} />
-                                </View>
+                        <View style={styles.row}>
+                            <View style={[AppStyles.flex3]}>
+                                <Text numberOfLines={1} style={styles.label}>
+                                    {Localize.t('settings.blockTakingScreenshots')}
+                                </Text>
                             </View>
-                        </>
+                            <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                                <Switch checked={isFlagSecure} onChange={this.toggleFlagSecure} />
+                            </View>
+                        </View>
                     )}
                 </ScrollView>
             </View>

@@ -17,10 +17,9 @@ import { Navigator } from '@common/helpers/navigator';
 
 // Parses
 import { TransactionFactory, LedgerObjectFactory } from '@common/libs/ledger/factory';
-import { LedgerEntriesTypes } from '@common/libs/ledger/objects/types';
-
-import { LedgerMarker } from '@common/libs/ledger/types';
-import { TransactionsType } from '@common/libs/ledger/transactions/types';
+import { LedgerMarker, LedgerEntriesTypes } from '@common/libs/ledger/types';
+import { Transactions } from '@common/libs/ledger/transactions/types';
+import { LedgerObjects } from '@common/libs/ledger/objects/types';
 import { Payload } from '@common/libs/payload';
 
 // types
@@ -54,10 +53,10 @@ export interface State {
     sectionIndex: number;
     lastMarker: LedgerMarker;
     account: AccountSchema;
-    transactions: Array<TransactionsType>;
-    plannedTransactions: Array<any>;
+    transactions: Array<Transactions>;
+    plannedTransactions: Array<LedgerObjects>;
     pendingRequests: Array<Payload>;
-    dataSource: Array<any>;
+    dataSource: Array<Transactions | LedgerObjects | Payload>;
 }
 
 /* Component ==================================================================== */
@@ -230,7 +229,7 @@ class EventsView extends Component<Props, State> {
         });
     };
 
-    loadTransactions = (loadMore?: boolean): Promise<TransactionsType[]> => {
+    loadTransactions = (loadMore?: boolean): Promise<Transactions[]> => {
         const { transactions, account, lastMarker } = this.state;
 
         return new Promise((resolve) => {
@@ -409,7 +408,7 @@ class EventsView extends Component<Props, State> {
             return;
         }
 
-        let newTransactions: TransactionsType[];
+        let newTransactions;
 
         if (sectionIndex === 0) {
             newTransactions = transactions;

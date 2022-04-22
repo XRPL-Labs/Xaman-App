@@ -16,16 +16,19 @@ import { Destination, AmountType } from '../parser/types';
 
 import BaseTransaction from './base';
 /* Types ==================================================================== */
-import { TransactionJSONType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class AccountDelete extends BaseTransaction {
+    public static Type = TransactionTypes.AccountDelete as const;
+    public readonly Type = AccountDelete.Type;
+
     constructor(tx?: TransactionJSONType, meta?: any) {
         super(tx, meta);
 
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'AccountDelete';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = AccountDelete.Type;
         }
 
         this.fields = this.fields.concat(['Destination', 'DestinationTag']);
@@ -62,77 +65,86 @@ class AccountDelete extends BaseTransaction {
     get Destination(): Destination {
         const destination = get(this, ['tx', 'Destination'], undefined);
         const destinationTag = get(this, ['tx', 'DestinationTag'], undefined);
-        const destinationName = get(this, ['tx', 'DestinationName'], undefined);
 
         if (isUndefined(destination)) return undefined;
 
         return {
-            name: destinationName,
             address: destination,
             tag: destinationTag,
         };
     }
 
-    validate = (account: AccountSchema) => {
-        /* eslint-disable-next-line */
-        return new Promise<void>(async (resolve, reject) => {
+    validate = (account: AccountSchema, multiSign?: boolean): Promise<void> => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+            // ignore if multiSign
+            if (multiSign) {
+                resolve();
+                return;
+            }
+
+            // account and destination cannot be same
             if (this.Account.address === this.Destination.address) {
-                return reject(new Error(Localize.t('account.destinationAccountAndSourceCannotBeSame')));
+                reject(new Error(Localize.t('account.destinationAccountAndSourceCannotBeSame')));
+                return;
             }
 
             // check if account have any blocker object
-            await LedgerService.getAccountBlockerObjects(this.Account.address)
-                .then((accountObjects) => {
-                    if (!Array.isArray(accountObjects) || accountObjects.length > 0) {
-                        return reject(new Error(Localize.t('account.deleteAccountObjectsExistError')));
-                    }
-                    return true;
-                })
-                .catch(() => {
-                    return reject(new Error(Localize.t('account.unableToCheckAccountObjects')));
-                });
+            try {
+                const accountObjects = await LedgerService.getAccountBlockerObjects(this.Account.address);
+                if (!Array.isArray(accountObjects) || accountObjects.length > 0) {
+                    reject(new Error(Localize.t('account.deleteAccountObjectsExistError')));
+                    return;
+                }
+            } catch {
+                reject(new Error(Localize.t('account.unableToCheckAccountObjects')));
+                return;
+            }
 
             // check if account sequence is met the account delete condition
             const { LastLedger } = LedgerService.getLedgerStatus();
 
             if (LastLedger === 0) {
-                return reject(new Error(Localize.t('account.unableToFetchLedgerSequence')));
+                reject(new Error(Localize.t('account.unableToFetchLedgerSequence')));
+                return;
             }
 
             const remainingSequence = Number(account.sequence) + 256 - LastLedger;
             if (remainingSequence > 0) {
-                return reject(
+                reject(
                     new Error(
                         Localize.t('account.deleteAccountSequenceIsNotEnoughError', {
                             remainingSequence,
                         }),
                     ),
                 );
+                return;
             }
 
-            // check if destination is exist or required destination tag flag is set
-            await LedgerService.getAccountInfo(this.Destination.address)
-                /* eslint-disable-next-line */
-                .then((accountInfo: any) => {
-                    if (!accountInfo || has(accountInfo, 'error')) {
-                        return reject(new Error(Localize.t('account.destinationAccountIsNotActivated')));
+            // check if destination exist or required destination tag flag is set
+            try {
+                const destinationAccountInfo = await LedgerService.getAccountInfo(this.Destination.address);
+
+                if (!destinationAccountInfo || has(destinationAccountInfo, 'error')) {
+                    reject(new Error(Localize.t('account.destinationAccountIsNotActivated')));
+                    return;
+                }
+
+                const { account_data } = destinationAccountInfo;
+
+                if (has(account_data, ['Flags'])) {
+                    const accountFlags = new Flag('Account', account_data.Flags).parse();
+                    if (accountFlags.requireDestinationTag && this.Destination.tag === undefined) {
+                        reject(new Error(Localize.t('account.destinationAddressRequiredDestinationTag')));
+                        return;
                     }
+                }
+            } catch {
+                reject(new Error(Localize.t('account.unableGetDestinationAccountInfo')));
+            }
 
-                    const { account_data } = accountInfo;
-
-                    if (has(account_data, ['Flags'])) {
-                        const accountFlags = new Flag('Account', account_data.Flags).parse();
-
-                        if (accountFlags.requireDestinationTag && this.Destination.tag === undefined) {
-                            return reject(new Error(Localize.t('account.destinationAddressRequiredDestinationTag')));
-                        }
-                    }
-                })
-                .catch(() => {
-                    return reject(new Error(Localize.t('account.unableGetDestinationAccountInfo')));
-                });
-
-            return resolve();
+            // everything is fine, resolve
+            resolve();
         });
     };
 }

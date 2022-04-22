@@ -8,6 +8,7 @@ import signerListSetTemplates from './templates/SignerListSetTx.json';
 describe('SignerListSet tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new SignerListSet();
+        expect(instance.TransactionType).toBe('SignerListSet');
         expect(instance.Type).toBe('SignerListSet');
     });
 

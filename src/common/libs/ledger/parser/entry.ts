@@ -1,5 +1,4 @@
-import { LedgerTrustline } from '@common/libs/ledger/types';
-import { RippleStateLedgerEntry } from '@common/libs/ledger/objects/types';
+import { LedgerTrustline, RippleStateLedgerEntry } from '@common/libs/ledger/types';
 import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
 
 const RippleStateToTrustLine = (ledgerEntry: RippleStateLedgerEntry, account: string): LedgerTrustline => {

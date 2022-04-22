@@ -8,6 +8,7 @@ import escrowFinishTemplate from './templates/EscrowFinishTx.json';
 describe('EscrowFinish tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new EscrowFinish();
+        expect(instance.TransactionType).toBe('EscrowFinish');
         expect(instance.Type).toBe('EscrowFinish');
     });
 
@@ -17,7 +18,6 @@ describe('EscrowFinish tx', () => {
 
         expect(instance.Destination).toStrictEqual({
             tag: undefined,
-            name: undefined,
             address: 'rKwJaGmB5Hz24Qs2iyCaTdUuL1WsEXUWy5',
         });
         expect(instance.Amount).toStrictEqual({

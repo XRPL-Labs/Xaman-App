@@ -8,18 +8,19 @@ import NFTokenCreateOffer from './nfTokenCreateOffer';
 
 /* Types ==================================================================== */
 import { AmountType } from '../parser/types';
-import { TransactionJSONType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class NFTokenAcceptOffer extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.NFTokenAcceptOffer as const;
+    public readonly Type = NFTokenAcceptOffer.Type;
 
     constructor(tx?: TransactionJSONType, meta?: any) {
         super(tx, meta);
 
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'NFTokenAcceptOffer';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = NFTokenAcceptOffer.Type;
         }
 
         this.fields = this.fields.concat(['Amount', 'NFTokenSellOffer', 'NFTokenBuyOffer']);
@@ -37,7 +38,7 @@ class NFTokenAcceptOffer extends BaseTransaction {
             return offer;
         }
 
-        // if not look at the meta data for token id
+        // if not look at the metadata for token id
         const affectedNodes = get(this.meta, 'AffectedNodes', []);
         offer = get(
             find(affectedNodes, (node) => node.DeletedNode?.LedgerEntryType === 'NFTokenOffer'),

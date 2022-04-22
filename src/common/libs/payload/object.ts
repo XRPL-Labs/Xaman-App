@@ -1,4 +1,4 @@
-import { isString, isObject, has, get } from 'lodash';
+import { get, has, isObject, isString } from 'lodash';
 import codec from 'ripple-binary-codec';
 
 import ApiService from '@services/ApiService';
@@ -11,9 +11,9 @@ import Localize from '@locale';
 
 import { TransactionFactory } from '@common/libs/ledger/factory';
 
-import { TransactionJSONType } from '@common/libs/ledger/types';
-import { TransactionsType } from '@common/libs/ledger/transactions/types';
-import { PayloadType, MetaType, ApplicationType, PatchSuccessType, PayloadReferenceType, PayloadOrigin } from './types';
+import { PseudoTransactionTypes, TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
+import { Transactions } from '@common/libs/ledger/transactions/types';
+import { ApplicationType, MetaType, PatchSuccessType, PayloadOrigin, PayloadReferenceType, PayloadType } from './types';
 
 // errors
 import errors from './errors';
@@ -23,20 +23,18 @@ const logger = LoggerService.createLogger('Payload');
 
 /* Payload  ==================================================================== */
 export class Payload {
+    public readonly ClassName = 'Payload';
+
     meta: MetaType;
     application: ApplicationType;
     payload: PayloadReferenceType;
     origin: PayloadOrigin;
-    ClassName: string;
     generated: boolean;
-
-    constructor() {
-        this.ClassName = 'Payload';
-    }
 
     /**
      * get payload object from payload UUID or payload Json
      * @param args
+     * @param origin
      */
     static async from(args: string | PayloadType, origin?: PayloadOrigin): Promise<Payload> {
         const payload = new Payload();
@@ -65,6 +63,7 @@ export class Payload {
     /**
      * build payload from inside the app
      * @param TxJson Ledger format TXJson
+     * @param message
      */
     static build(TxJson: TransactionJSONType, message?: string): Payload {
         const payload = new Payload();
@@ -77,7 +76,7 @@ export class Payload {
 
         // set the payload and transaction type
         payload.payload = {
-            tx_type: TxJson.TransactionType,
+            tx_type: TxJson.TransactionType as TransactionTypes,
             request_json: TxJson,
         };
 
@@ -105,8 +104,8 @@ export class Payload {
 
             // check if tx_type is same as request_json
             if (
-                (tx_type === 'SignIn' && request_json.TransactionType) ||
-                (tx_type !== 'SignIn' && request_json.TransactionType !== tx_type)
+                (tx_type === PseudoTransactionTypes.SignIn && request_json.TransactionType) ||
+                (tx_type !== PseudoTransactionTypes.SignIn && request_json.TransactionType !== tx_type)
             ) {
                 return false;
             }
@@ -116,11 +115,7 @@ export class Payload {
             const encodedTX = codec.encode(request_json);
             const checksum = await SHA1(`${encodedTX}+${deviceId}`);
 
-            if (checksum === hash) {
-                return true;
-            }
-
-            return false;
+            return checksum === hash;
         } catch {
             return false;
         }
@@ -157,25 +152,28 @@ export class Payload {
      */
     fetch = (uuid: string): Promise<PayloadType> => {
         return new Promise((resolve, reject) => {
-            return ApiService.payload
+            ApiService.payload
                 .get({ uuid, from: this.getOrigin() })
                 .then(async (res: PayloadType) => {
                     // get verification status
                     const verified = await this.verify(res.payload);
 
                     if (!verified) {
-                        return reject(new Error(Localize.t('payload.UnableVerifyPayload')));
+                        reject(new Error(Localize.t('payload.UnableVerifyPayload')));
+                        return;
                     }
 
                     if (get(res, 'response.resolved_at')) {
-                        return reject(new Error(Localize.t('payload.payloadAlreadyResolved')));
+                        reject(new Error(Localize.t('payload.payloadAlreadyResolved')));
+                        return;
                     }
 
                     if (get(res, 'meta.expired')) {
-                        return reject(new Error(Localize.t('payload.payloadExpired')));
+                        reject(new Error(Localize.t('payload.payloadExpired')));
+                        return;
                     }
 
-                    return resolve(res);
+                    resolve(res);
                 })
                 .catch((err: any) => {
                     if (has(err, 'code')) {
@@ -202,7 +200,7 @@ export class Payload {
 
     /**
      * patch the payload to the backend
-     * @param permission push permission
+     * @param patch
      */
     patch = (patch: PatchSuccessType) => {
         // ignore the method if payload is generated
@@ -261,11 +259,11 @@ export class Payload {
      * check if we need to submit the tx to the ledger
      */
     shouldSubmit = (): boolean => {
-        return this.meta.submit && this.payload.tx_type !== 'SignIn' && !this.meta.multisign;
+        return this.meta.submit && !this.isSignIn() && !this.isMultiSign();
     };
 
     /**
-     * Return true if should sign as multi sign
+     * Return true if transaction should be sign as multi sign
      */
     isMultiSign = (): boolean => {
         return !!this.meta.multisign;
@@ -282,23 +280,34 @@ export class Payload {
      * Return true if payload is SignIn transaction
      */
     isSignIn = (): boolean => {
-        return this.getTransactionType() === 'SignIn';
+        return this.getTransactionType() === PseudoTransactionTypes.SignIn;
     };
 
     /**
      * Get transaction
      */
-    getTransaction(): TransactionsType {
-        const craftedTransaction = TransactionFactory.fromJson(this.payload.request_json);
+    getTransaction(): Transactions {
+        const { request_json } = this.payload;
 
-        // validate assigned transaction have same type as reported from backend
+        // check if transaction type is supported
+        if (
+            request_json.TransactionType &&
+            !Object.values(TransactionTypes).includes(request_json.TransactionType as TransactionTypes)
+        ) {
+            throw new Error('Requested transaction type is not supported in XUMM!');
+        }
+
+        // craft transaction base on requested json
+        const craftedTransaction = TransactionFactory.fromJson(request_json);
+
+        // check assigned transaction have the same type as reported from backend
         // NOTE: this should never happen
-        if (!this.isSignIn() && craftedTransaction.Type !== this.getTransactionType()) {
+        if (!this.isSignIn() && craftedTransaction.TransactionType !== this.getTransactionType()) {
             throw new Error('Parsed transaction have invalid transaction type!');
         }
 
         // the SignIn transactions should not have type as it's a pseudo transaction
-        if (this.isSignIn() && craftedTransaction.Type) {
+        if (this.isSignIn() && craftedTransaction.TransactionType) {
             throw new Error('SignIn pseudo transaction should not contain transaction type!');
         }
 
@@ -349,7 +358,7 @@ export class Payload {
     /**
      * Return payload transaction type
      */
-    getTransactionType = (): string => {
+    getTransactionType = (): TransactionTypes | PseudoTransactionTypes => {
         return this.payload.tx_type;
     };
 }

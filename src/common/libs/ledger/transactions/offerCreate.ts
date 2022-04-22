@@ -10,18 +10,21 @@ import Meta from '../parser/meta';
 
 /* Types ==================================================================== */
 import { AmountType, OfferStatus } from '../parser/types';
-import { TransactionJSONType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class OfferCreate extends BaseTransaction {
+    public static Type = TransactionTypes.OfferCreate as const;
+    public readonly Type = OfferCreate.Type;
+
     private offerStatus: OfferStatus;
 
     constructor(tx?: TransactionJSONType, meta?: any) {
         super(tx, meta);
 
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'OfferCreate';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = OfferCreate.Type;
         }
 
         // concat keys

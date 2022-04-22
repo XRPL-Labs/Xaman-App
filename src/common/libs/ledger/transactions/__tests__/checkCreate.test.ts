@@ -7,8 +7,9 @@ import checkCreateTemplate from './templates/CheckCreateTx.json';
 
 describe('CheckCreate tx', () => {
     it('Should set tx type if not set', () => {
-        const checkCreate = new CheckCreate();
-        expect(checkCreate.Type).toBe('CheckCreate');
+        const instance = new CheckCreate();
+        expect(instance.TransactionType).toBe('CheckCreate');
+        expect(instance.Type).toBe('CheckCreate');
     });
 
     it('Should return right parsed values', () => {
@@ -25,7 +26,6 @@ describe('CheckCreate tx', () => {
         expect(instance.Destination).toStrictEqual({
             tag: 1,
             address: 'rfkE1aSy9G8Upk4JssnwBxhEv5p4mn2KTy',
-            name: undefined,
         });
 
         expect(instance.InvoiceID).toBe('6F1DFD1D0FE8A32E40E1F2C05CF1C15545BAB56B617F9C6C2D63A6B704BEF59B');

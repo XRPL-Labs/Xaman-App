@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, Image } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
 
-import { TransactionsType } from '@common/libs/ledger/transactions/types';
+import { TransactionTypes } from '@common/libs/ledger/types';
+import { Transactions } from '@common/libs/ledger/transactions/types';
 import { OfferStatus } from '@common/libs/ledger/parser/types';
 
 import { AccountSchema } from '@store/schemas/latest';
@@ -11,14 +12,14 @@ import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
 import { Images } from '@common/helpers/images';
 
-import { NormalizeCurrencyCode, NormalizeAmount } from '@common/utils/amount';
+import { NormalizeAmount, NormalizeCurrencyCode } from '@common/utils/amount';
 import { Truncate } from '@common/utils/string';
 
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
 
-import { TouchableDebounce, Icon, Avatar, AmountText } from '@components/General';
+import { AmountText, Avatar, Icon, TouchableDebounce } from '@components/General';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -26,7 +27,7 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     account: AccountSchema;
-    item: TransactionsType;
+    item: Transactions;
     timestamp?: number;
 }
 
@@ -35,7 +36,6 @@ export interface State {
     address: string;
     kycApproved: boolean;
     tag: number;
-    key: string;
 }
 
 /* Component ==================================================================== */
@@ -52,7 +52,6 @@ class TransactionTemplate extends Component<Props, State> {
             address: recipientDetails.address,
             kycApproved: false,
             tag: recipientDetails.tag,
-            key: recipientDetails.key,
         };
     }
 
@@ -62,17 +61,12 @@ class TransactionTemplate extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { name, key } = this.state;
-        const { item } = this.props;
+        const { name } = this.state;
 
         this.mounted = true;
 
         if (!name) {
             this.lookUpRecipientName();
-        } else if (key) {
-            item[key] = {
-                name,
-            };
         }
     }
 
@@ -94,99 +88,80 @@ class TransactionTemplate extends Component<Props, State> {
 
         let address;
         let tag;
-        let key;
 
         switch (item.Type) {
-            case 'Payment':
+            case TransactionTypes.Payment:
                 if (item.Account?.address !== account.address) {
                     address = item.Account.address;
-                    key = 'Account';
                 } else {
                     address = item.Destination.address;
                     tag = item.Destination.tag;
-                    key = 'Destination';
                 }
                 break;
-            case 'AccountDelete':
+            case TransactionTypes.AccountDelete:
                 address = item.Account.address;
-                key = 'Account';
                 break;
-            case 'CheckCreate':
+            case TransactionTypes.CheckCreate:
                 if (item.Account?.address !== account.address) {
                     address = item.Account.address;
-                    key = 'Account';
                 } else {
                     address = item.Destination.address;
                     tag = item.Destination.tag;
-                    key = 'Destination';
                 }
                 break;
-            case 'CheckCash':
+            case TransactionTypes.CheckCash:
                 address = item.Account.address;
-                key = 'Account';
                 break;
-            case 'CheckCancel':
+            case TransactionTypes.CheckCancel:
                 address = item.Account.address;
-                key = 'Account';
                 break;
-            case 'TrustSet':
+            case TransactionTypes.TrustSet:
                 address = item.Issuer;
                 break;
-            case 'EscrowCreate':
+            case TransactionTypes.EscrowCreate:
                 address = item.Destination.address;
                 tag = item.Destination.tag;
-                key = 'Destination';
                 break;
-            case 'EscrowCancel':
+            case TransactionTypes.EscrowCancel:
                 address = item.Owner;
                 break;
-            case 'EscrowFinish':
+            case TransactionTypes.EscrowFinish:
                 address = item.Destination.address;
                 tag = item.Destination.tag;
-                key = 'Destination';
                 break;
-            case 'DepositPreauth':
+            case TransactionTypes.DepositPreauth:
                 address = item.Authorize || item.Unauthorize;
                 break;
-            case 'TicketCreate':
+            case TransactionTypes.TicketCreate:
                 address = item.Account.address;
-                key = 'Account';
                 break;
-            case 'PaymentChannelCreate':
+            case TransactionTypes.PaymentChannelCreate:
                 if (item.Account?.address !== account.address) {
                     address = item.Account.address;
-                    key = 'Account';
                 } else {
                     address = item.Destination.address;
                     tag = item.Destination.tag;
-                    key = 'Destination';
                 }
                 break;
-            case 'PaymentChannelFund':
+            case TransactionTypes.PaymentChannelFund:
                 address = item.Account.address;
-                key = 'Account';
                 break;
-            case 'PaymentChannelClaim':
+            case TransactionTypes.PaymentChannelClaim:
                 address = item.Account.address;
-                key = 'Account';
                 break;
-            case 'NFTokenMint':
+            case TransactionTypes.NFTokenMint:
                 address = item.Account.address;
-                key = 'Account';
                 break;
-            case 'NFTokenBurn':
+            case TransactionTypes.NFTokenBurn:
                 address = item.Account.address;
-                key = 'Account';
                 break;
-            case 'NFTokenCreateOffer':
+            case TransactionTypes.NFTokenCreateOffer:
                 address = item.Account.address;
-                key = 'Account';
                 break;
-            case 'NFTokenCancelOffer':
+            case TransactionTypes.NFTokenCancelOffer:
                 address = item.Account.address;
-                key = 'Account';
                 break;
-            case 'NFTokenAcceptOffer':
+            case TransactionTypes.NFTokenAcceptOffer:
                 if (item.Account?.address === account.address) {
                     if (item.Offer) {
                         address = item.Offer.Owner;
@@ -199,7 +174,7 @@ class TransactionTemplate extends Component<Props, State> {
                 break;
         }
 
-        // this this transactions are belong to account
+        // transactions that listed only for current account
         if (
             item.Type === 'AccountSet' ||
             item.Type === 'SignerListSet' ||
@@ -211,7 +186,6 @@ class TransactionTemplate extends Component<Props, State> {
                 address,
                 tag,
                 name: account.label,
-                key: 'Account',
             };
         }
 
@@ -219,23 +193,16 @@ class TransactionTemplate extends Component<Props, State> {
             address,
             tag,
             name: undefined,
-            key,
         };
     };
 
     lookUpRecipientName = () => {
-        const { address, tag, key } = this.state;
-        const { item } = this.props;
+        const { address, tag } = this.state;
 
         getAccountName(address, tag)
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     if (this.mounted) {
-                        if (key) {
-                            item[key] = {
-                                name: res.name,
-                            };
-                        }
                         this.setState({
                             name: res.name,
                             kycApproved: res.kycApproved,

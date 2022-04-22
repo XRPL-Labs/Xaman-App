@@ -7,8 +7,9 @@ import depositPreauthTemplate from './templates/DepositPreauthTx.json';
 
 describe('DepositPreauth tx', () => {
     it('Should set tx type if not set', () => {
-        const depositPreauth = new DepositPreauth();
-        expect(depositPreauth.Type).toBe('DepositPreauth');
+        const instance = new DepositPreauth();
+        expect(instance.TransactionType).toBe('DepositPreauth');
+        expect(instance.Type).toBe('DepositPreauth');
     });
 
     it('Should return right parsed values', () => {

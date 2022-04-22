@@ -10,7 +10,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { Toast } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
-import { LedgerEntriesTypes } from '@common/libs/ledger/objects/types';
+import { LedgerEntriesTypes } from '@common/libs/ledger/types';
 
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 

@@ -9,8 +9,9 @@ import checkCreateTemplate from './templates/CheckCreateTx.json';
 
 describe('CheckCash tx', () => {
     it('Should set tx type if not set', () => {
-        const checkCash = new CheckCash();
-        expect(checkCash.Type).toBe('CheckCash');
+        const instance = new CheckCash();
+        expect(instance.TransactionType).toBe('CheckCash');
+        expect(instance.Type).toBe('CheckCash');
     });
 
     it('Should return right parsed values', () => {

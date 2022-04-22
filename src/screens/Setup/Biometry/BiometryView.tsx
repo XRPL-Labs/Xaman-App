@@ -105,7 +105,7 @@ class BiometrySetupView extends Component<Props, State> {
         CoreRepository.saveSettings({ biometricMethod });
 
         // if firebase is down or user don't have internet connection
-        // this process may take a while and we need to show loading indicator
+        // this process may take a while, we need to show loading indicator
 
         // disable both buttons
         this.setState({

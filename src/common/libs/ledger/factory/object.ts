@@ -1,10 +1,14 @@
 import { get } from 'lodash';
 
 import * as LedgerObjects from '@common/libs/ledger/objects';
-import { LedgerEntriesTypes } from '@common/libs/ledger/objects/types';
+import { LedgerObjects as LedgerObjectsType } from '@common/libs/ledger/objects/types';
+import { LedgerEntriesTypes } from '@common/libs/ledger/types';
 
 const LedgerObjectFactory = {
-    fromLedger: (object: LedgerEntriesTypes): typeof LedgerObjects => {
+    /*
+    Parse ledger entry to LedgerObject instance
+     */
+    fromLedger: (object: LedgerEntriesTypes): LedgerObjectsType => {
         // get ledger entry type
         const type = get(object, 'LedgerEntryType');
 

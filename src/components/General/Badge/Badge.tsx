@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 
 import { Text, ViewStyle } from 'react-native';
 
-import { TouchableDebounce } from '@components/General';
+import { TouchableDebounce } from '@components/General/TouchableDebounce';
 
 import Localize from '@locale';
 

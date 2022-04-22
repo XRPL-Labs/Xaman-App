@@ -55,20 +55,20 @@ class PushNotificationsService extends EventEmitter {
     initialize = () => {
         return new Promise<void>((resolve, reject) => {
             try {
-                return this.checkPermission()
+                this.checkPermission()
                     .then((hasPermission: boolean) => {
                         if (hasPermission) {
                             this.onPermissionGranted();
                         } else {
                             this.logger.warn('Push don"t have the right permission or unable to get FCM token');
                         }
-                        return resolve();
+                        resolve();
                     })
                     .catch((e) => {
-                        return reject(e);
+                        reject(e);
                     });
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
     };

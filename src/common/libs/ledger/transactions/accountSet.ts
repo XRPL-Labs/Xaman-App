@@ -10,16 +10,19 @@ import BaseTransaction from './base';
 import Flag from '../parser/common/flag';
 
 /* Types ==================================================================== */
-import { TransactionJSONType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class AccountSet extends BaseTransaction {
+    public static Type = TransactionTypes.AccountSet as const;
+    public readonly Type = AccountSet.Type;
+
     constructor(tx?: TransactionJSONType, meta?: any) {
         super(tx, meta);
 
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'AccountSet';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = AccountSet.Type;
         }
 
         this.fields = this.fields.concat([

@@ -257,7 +257,7 @@ class BackendService {
     };
 
     /*
-    Get details for an xrp address
+    Get details for an XRP address
     */
     getAddressInfo = (address: string) => {
         return ApiService.addressInfo.get(address, null, { 'X-XummNet': SocketService.chain });

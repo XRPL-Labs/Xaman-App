@@ -6,18 +6,19 @@ import { HexEncoding } from '@common/utils/string';
 import BaseTransaction from './base';
 
 /* Types ==================================================================== */
-import { TransactionJSONType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class NFTokenMint extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.NFTokenMint as const;
+    public readonly Type = NFTokenMint.Type;
 
     constructor(tx?: TransactionJSONType, meta?: any) {
         super(tx, meta);
 
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'NFTokenMint';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = NFTokenMint.Type;
         }
 
         this.fields = this.fields.concat(['Issuer', 'URI', 'NFTokenTaxon', 'TransferFee']);

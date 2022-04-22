@@ -53,6 +53,42 @@ describe('Payload', () => {
         payloadFetchSpy.mockClear();
     });
 
+    it('Should reject fetched payload if not verified ', async () => {
+        const { AccountSet: AccountSetPayload } = PayloadTemplate;
+
+        const invalidTypesPayload = JSON.parse(JSON.stringify(AccountSetPayload));
+        invalidTypesPayload.payload.tx_type = 'Something';
+        invalidTypesPayload.payload.request_json.TransactionType = 'SomethingElse';
+
+        let payloadFetchSpy = jest
+            .spyOn(ApiService.payload, 'get')
+            .mockImplementation(() => Promise.resolve(Object.assign(invalidTypesPayload)));
+
+        try {
+            await Payload.from(invalidTypesPayload.meta.uuid);
+        } catch (e) {
+            expect(e.toString()).toEqual('Error: [missing "en.payload.UnableVerifyPayload" translation]');
+        }
+
+        payloadFetchSpy.mockClear();
+
+        payloadFetchSpy = jest
+            .spyOn(ApiService.payload, 'get')
+            .mockImplementation(() => Promise.resolve(AccountSetPayload));
+
+        const invalidSignInPayload = JSON.parse(JSON.stringify(AccountSetPayload));
+        invalidSignInPayload.payload.tx_type = 'SignIn';
+        invalidSignInPayload.payload.request_json.TransactionType = 'SomeTransactionType';
+
+        try {
+            await Payload.from(invalidSignInPayload.meta.uuid);
+        } catch (e) {
+            expect(e.toString()).toEqual('Error: [missing "en.payload.UnableVerifyPayload" translation]');
+        }
+
+        payloadFetchSpy.mockClear();
+    });
+
     it('Should reject the paylaod if not be able to verify', async () => {
         const { InvalidPayload } = PayloadTemplate;
 
@@ -71,9 +107,12 @@ describe('Payload', () => {
 
     it('Should be able return right values for assigned payload', async () => {
         const { AccountSet: AccountSetPayload } = PayloadTemplate;
+
+        // @ts-ignore
         const fetchedPayload = await Payload.from(AccountSetPayload);
 
         expect(fetchedPayload.isGenerated()).toBe(false);
+        expect(fetchedPayload.shouldSubmit()).toBe(true);
         expect(fetchedPayload.getTransactionType()).toBe('AccountSet');
         expect(fetchedPayload.getApplicationIcon()).toBe(AccountSetPayload.application.icon_url);
         expect(fetchedPayload.getApplicationName()).toBe(AccountSetPayload.application.name);
@@ -85,13 +124,30 @@ describe('Payload', () => {
 
     it('Should be able return right values SignIn payload', async () => {
         const { SignIn: SignInPayload } = PayloadTemplate;
+        // @ts-ignore
         const fetchedPayload = await Payload.from(SignInPayload, PayloadOrigin.DEEP_LINK);
 
         expect(fetchedPayload.isGenerated()).toBe(false);
+        expect(fetchedPayload.isSignIn()).toBe(true);
+        expect(fetchedPayload.shouldSubmit()).toBe(false);
         expect(fetchedPayload.getTransactionType()).toBe('SignIn');
         expect(fetchedPayload.getTransaction().Json).toEqual({});
         expect(fetchedPayload.getTransaction().Type).toEqual(undefined);
         expect(fetchedPayload.getOrigin()).toEqual(PayloadOrigin.DEEP_LINK);
+    });
+
+    it('Should be able return right values for MultiSign payload', async () => {
+        const { AccountSet: AccountSetPayload } = PayloadTemplate;
+
+        // set multiSign flag
+        const multiSingPayload = JSON.parse(JSON.stringify(AccountSetPayload));
+        multiSingPayload.meta.multisign = true;
+
+        // @ts-ignore
+        const fetchedPayload = await Payload.from(multiSingPayload, PayloadOrigin.DEEP_LINK);
+
+        expect(fetchedPayload.isMultiSign()).toBe(true);
+        expect(fetchedPayload.shouldSubmit()).toBe(false);
     });
 
     it('Should throw error if payload is resolved or expired', async () => {
@@ -139,14 +195,49 @@ describe('Payload', () => {
     it('Should throw error if transaction types are mismatch', async () => {
         const { AccountSet: AccountSetPayload } = PayloadTemplate;
 
-        AccountSetPayload.payload.tx_type = 'Payment';
+        const invalidTypePayload = JSON.parse(JSON.stringify(AccountSetPayload));
+        invalidTypePayload.payload.tx_type = 'Payment';
 
-        const payload = await Payload.from(AccountSetPayload);
+        // @ts-ignore
+        const payload = await Payload.from(invalidTypePayload);
 
         try {
             payload.getTransaction();
         } catch (e) {
             expect(e.toString()).toEqual('Error: Parsed transaction have invalid transaction type!');
+        }
+    });
+
+    it('Should throw error if transaction type is not supported', async () => {
+        const { AccountSet: AccountSetPayload } = PayloadTemplate;
+
+        // set unsupported type
+        const unsupportedTypePayload = JSON.parse(JSON.stringify(AccountSetPayload));
+        unsupportedTypePayload.payload.request_json.TransactionType = 'Unsupported';
+
+        // @ts-ignore
+        const payload = await Payload.from(AccountSetPayload);
+
+        try {
+            payload.getTransaction();
+        } catch (e) {
+            expect(e.toString()).toEqual('Error: Requested transaction type is not supported in XUMM!');
+        }
+    });
+
+    it('Should throw error if Pseudo transaction and crafted tx have type', async () => {
+        const { AccountSet: AccountSetPayload } = PayloadTemplate;
+
+        // set unsupported type
+        AccountSetPayload.payload.tx_type = 'SignIn';
+
+        // @ts-ignore
+        const payload = await Payload.from(AccountSetPayload);
+
+        try {
+            payload.getTransaction();
+        } catch (e) {
+            expect(e.toString()).toEqual('Error: SignIn pseudo transaction should not contain transaction type!');
         }
     });
 });

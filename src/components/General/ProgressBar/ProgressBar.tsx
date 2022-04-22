@@ -27,7 +27,7 @@ class ProgressBar extends Component<Props> {
         this.progress = new Animated.Value(props.initialProgress);
     }
 
-    fill = (duration = 50000, callback?: any) => {
+    fill = (duration: number, callback?: any) => {
         this.progress.setValue(0);
 
         Animated.timing(this.progress, {
@@ -58,7 +58,7 @@ class ProgressBar extends Component<Props> {
 
         const fillWidth = this.progress.interpolate({
             inputRange: [0, 1],
-            outputRange: [0 * width, 1 * width],
+            outputRange: [0, width],
         });
 
         return (

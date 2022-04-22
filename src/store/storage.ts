@@ -38,9 +38,9 @@ export default class Storage {
      */
     initialize = () => {
         return new Promise<void>((resolve, reject) => {
-            return this.configure()
+            this.configure()
                 .then((config) => {
-                    return this.open(config)
+                    this.open(config)
                         .then((instance) => {
                             // set the db instance
                             this.db = instance;
@@ -48,20 +48,20 @@ export default class Storage {
                             // initialize repositories
                             this.initRepositories(instance)
                                 .then(() => {
-                                    return resolve();
+                                    resolve();
                                 })
                                 .catch((e) => {
-                                    return reject(e);
+                                    reject(e);
                                 });
                         })
                         .catch((e) => {
                             this.logger.error('Storage open error', e);
-                            return reject(e);
+                            reject(e);
                         });
                 })
                 .catch((e) => {
                     this.logger.error('Storage configure error', e);
-                    return reject(e);
+                    reject(e);
                 });
         });
     };
@@ -142,17 +142,17 @@ export default class Storage {
     initRepositories = async (db: Realm): Promise<void> => {
         return new Promise<void>((resolve, reject) => {
             try {
-                return Object.keys(repositories).map((key) => {
+                Object.keys(repositories).forEach((key) => {
                     // @ts-ignore
                     const repository = repositories[key];
                     if (typeof repository.initialize === 'function') {
                         repository.initialize(db);
                     }
-                    return resolve();
                 });
+                resolve();
             } catch (e) {
                 this.logger.error('initRepositories Error:', e);
-                return reject();
+                reject();
             }
         });
     };

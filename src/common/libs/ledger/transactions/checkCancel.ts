@@ -2,31 +2,34 @@ import moment from 'moment-timezone';
 
 import { set, get, isUndefined } from 'lodash';
 
+import { AccountSchema } from '@store/schemas/latest';
+
 import Localize from '@locale';
 
 import BaseTransaction from './base';
 import CheckCreate from './checkCreate';
 
 /* Types ==================================================================== */
-import { TransactionJSONType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class CheckCancel extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.CheckCancel as const;
+    public readonly Type = CheckCancel.Type;
 
     constructor(tx?: TransactionJSONType, meta?: any) {
         super(tx, meta);
 
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'CheckCancel';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = CheckCancel.Type;
         }
 
         this.fields = this.fields.concat(['CheckID']);
     }
 
     get CheckID(): string {
-        return get(this, 'tx.CheckID', undefined);
+        return get(this, ['tx', 'CheckID'], undefined);
     }
 
     set Check(check: CheckCreate) {
@@ -47,11 +50,17 @@ class CheckCancel extends BaseTransaction {
         return exp.isBefore(now);
     }
 
-    validate = () => {
-        /* eslint-disable-next-line */
-        return new Promise<void>((resolve, reject) => {
+    validate = (account: AccountSchema, multiSign?: boolean): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            // if multiSign resolve
+            if (multiSign) {
+                resolve();
+                return;
+            }
+
             if (!this.Check) {
-                return reject(new Error(Localize.t('payload.unableToGetCheckObject')));
+                reject(new Error(Localize.t('payload.unableToGetCheckObject')));
+                return;
             }
 
             // The source or the destination of the check can cancel a Check at any time using this transaction type.
@@ -61,11 +70,12 @@ class CheckCancel extends BaseTransaction {
                     this.Account.address !== this.Check.Destination.address &&
                     this.Account.address !== this.Check.Account.address
                 ) {
-                    return reject(new Error(Localize.t('payload.nonExpiredCheckCanOnlyCancelByCreatedAccount')));
+                    reject(new Error(Localize.t('payload.nonExpiredCheckCanOnlyCancelByCreatedAccount')));
+                    return;
                 }
             }
 
-            return resolve();
+            resolve();
         });
     };
 }

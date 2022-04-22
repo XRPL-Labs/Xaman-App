@@ -125,10 +125,10 @@ class CoreRepository extends BaseRepository {
                 return '';
             }
 
-            // as device unique id will pass to the HMAC256 method as hex we need to normalize it's value
+            // as device unique id will pass to the HMAC256 method as hex we need to normalize its value
             if (Platform.OS === 'android') {
                 if (deviceUniqueId.length < 16) {
-                    // in android it's 64-bit hex, in some devices it can be 15 length
+                    // in android, it's 64-bit hex, in some devices it can be 15 length
                     deviceUniqueId = '0'.repeat(16 - deviceUniqueId.length) + deviceUniqueId;
                 }
             }

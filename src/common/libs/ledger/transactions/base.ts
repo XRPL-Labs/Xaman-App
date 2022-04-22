@@ -2,7 +2,7 @@
  * Base Ledger transaction parser
  */
 import BigNumber from 'bignumber.js';
-import { set, get, has, isUndefined, find, flatMap } from 'lodash';
+import { find, flatMap, get, has, isUndefined, set } from 'lodash';
 
 import LedgerService from '@services/LedgerService';
 
@@ -12,7 +12,13 @@ import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
 import { HexEncoding } from '@common/utils/string';
-import { SignedObjectType, TransactionJSONType, SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
+import {
+    SignedObjectType,
+    SubmitResultType,
+    TransactionJSONType,
+    TransactionTypes,
+    VerifyResultType,
+} from '@common/libs/ledger/types';
 
 import Localize from '@locale';
 
@@ -23,16 +29,27 @@ import Flag from '../parser/common/flag';
 import { txFlags } from '../parser/common/flags/txFlags';
 
 /* Types ==================================================================== */
-import { TransactionResult, Account, Memo, AmountType } from '../parser/types';
+import { Account, AmountType, Memo, TransactionResult } from '../parser/types';
 
 /* Class ==================================================================== */
 class BaseTransaction {
-    [key: string]: any;
+    public readonly ClassName = 'Transaction';
 
-    private _SubmitResult?: SubmitResultType;
-    private _VerifyResult?: VerifyResultType;
+    protected tx: TransactionJSONType;
+    protected meta: any;
+    protected fields: string[];
+
+    private submitResult?: SubmitResultType;
+    private verifyResult?: VerifyResultType;
     private isAborted: boolean;
     private isSubmitted: boolean;
+    private balanceChanges: Map<string, any>;
+    private ownerCountChanges: Map<string, any>;
+
+    public SignMethod: 'PIN' | 'BIOMETRIC' | 'PASSPHRASE' | 'TANGEM' | 'OTHER';
+    public SignerAccount: any;
+
+    validate?: (account: AccountSchema, multiSign?: boolean) => Promise<void>;
 
     constructor(tx?: TransactionJSONType, meta?: any) {
         if (!isUndefined(tx)) {
@@ -59,8 +76,6 @@ class BaseTransaction {
             'TxnSignature',
         ];
 
-        this.ClassName = 'Transaction';
-
         // memorize balance and owner count changes
         this.balanceChanges = new Map();
         this.ownerCountChanges = new Map();
@@ -72,8 +87,8 @@ class BaseTransaction {
     */
     prepare = async () => {
         try {
-            // prepare only for known transaction types
-            if (!this.Type) {
+            // ignore for pseudo transactions
+            if (this.isPseudoTransaction()) {
                 return;
             }
 
@@ -110,8 +125,8 @@ class BaseTransaction {
     * @returns {void}
     */
     populateLastLedgerSequence = (ledgerOffset = 10) => {
-        // just for known tx types
-        if (!this.Type) {
+        // ignore for pseudo transactions
+        if (this.isPseudoTransaction()) {
             return;
         }
         // if no LastLedgerSequence or LastLedgerSequence is already pass the threshold
@@ -254,7 +269,7 @@ class BaseTransaction {
             // fail transaction locally if AccountDelete
             // do not retry or relay the transaction to other servers
             // this will prevent fee burn if something wrong on AccountDelete transactions
-            const shouldFailHard = this.Type === 'AccountDelete';
+            const shouldFailHard = this.TransactionType === TransactionTypes.AccountDelete;
 
             // Submit signed transaction to the XRPL
             const submitResult = await LedgerService.submitTransaction(this.TxnSignature, shouldFailHard);
@@ -307,7 +322,7 @@ class BaseTransaction {
 
         // netFee × (33 + (Fulfillment size in bytes ÷ 16))
         // @ts-ignore
-        if (this.Type === 'EscrowFinish' && this.Fulfillment) {
+        if (this.TransactionType === TransactionTypes.EscrowFinish && this.Fulfillment) {
             baseFee = new BigNumber(netFee).multipliedBy(
                 // @ts-ignore
                 new BigNumber(Buffer.from(this.Fulfillment).length).dividedBy(16).plus(33),
@@ -315,7 +330,7 @@ class BaseTransaction {
         }
 
         // AccountDelete transactions require at least the owner reserve amount
-        if (this.Type === 'AccountDelete') {
+        if (this.TransactionType === TransactionTypes.AccountDelete) {
             const { OwnerReserve } = LedgerService.getNetworkReserve();
             baseFee = new BigNumber(OwnerReserve).multipliedBy(1000000);
         }
@@ -373,7 +388,7 @@ class BaseTransaction {
             if (changes.sent?.currency === 'XRP') {
                 feeFieldKey = 'sent';
             } else if (
-                ['NFTokenAcceptOffer', 'OfferCreate'].indexOf(this.Type) > -1 &&
+                [TransactionTypes.NFTokenAcceptOffer, TransactionTypes.OfferCreate].includes(this.TransactionType) &&
                 changes.received?.currency === 'XRP'
             ) {
                 feeFieldKey = 'received';
@@ -417,23 +432,29 @@ class BaseTransaction {
         return ownerChanges;
     }
 
-    get Type(): string {
+    /**
+     * check if transaction is a Pseudo transaction
+     * @returns boolean
+     */
+    isPseudoTransaction(): boolean {
+        return isUndefined(this.TransactionType);
+    }
+
+    get TransactionType(): TransactionTypes {
         return get(this, ['tx', 'TransactionType'], undefined);
     }
 
-    set Type(type: string) {
+    set TransactionType(type: TransactionTypes) {
         set(this, ['tx', 'TransactionType'], type);
     }
 
     get Account(): Account {
         const source = get(this, ['tx', 'Account'], undefined);
         const sourceTag = get(this, ['tx', 'SourceTag'], undefined);
-        const sourceName = get(this, ['tx', 'AccountName'], undefined);
 
         if (isUndefined(source)) return undefined;
 
         return {
-            name: sourceName,
             address: source,
             tag: sourceTag,
         };
@@ -442,9 +463,6 @@ class BaseTransaction {
     set Account(account: Account) {
         if (has(account, 'address')) {
             set(this, 'tx.Account', account.address);
-        }
-        if (has(account, 'name')) {
-            set(this, 'tx.AccountName', account.name);
         }
         if (has(account, 'tag')) {
             set(this, 'tx.SourceTag', account.tag);
@@ -488,13 +506,13 @@ class BaseTransaction {
 
     get Flags(): any {
         const intFlags = get(this, ['tx', 'Flags'], undefined);
-        const flagParser = new Flag(this.Type, intFlags);
+        const flagParser = new Flag(this.TransactionType, intFlags);
         return flagParser.parse();
     }
 
     set Flags(flags: any) {
         const intFlags = get(this, ['tx', 'Flags'], undefined);
-        const flagParser = new Flag(this.Type, intFlags);
+        const flagParser = new Flag(this.TransactionType, intFlags);
 
         flags.forEach((f: any) => {
             flagParser.set(f);
@@ -520,15 +538,15 @@ class BaseTransaction {
     }
 
     get SubmitResult(): SubmitResultType {
-        return get(this, '_SubmitResult', undefined);
+        return get(this, 'submitResult', undefined);
     }
 
     set SubmitResult(result: SubmitResultType) {
-        set(this, '_SubmitResult', result);
+        set(this, 'submitResult', result);
     }
 
     get VerifyResult(): VerifyResultType {
-        const result = get(this, '_VerifyResult', undefined);
+        const result = get(this, 'verifyResult', undefined);
 
         if (isUndefined(result)) {
             return {
@@ -540,7 +558,7 @@ class BaseTransaction {
     }
 
     set VerifyResult(result: VerifyResultType) {
-        set(this, '_VerifyResult', result);
+        set(this, 'verifyResult', result);
     }
 
     get TransactionResult(): TransactionResult {

@@ -20,6 +20,8 @@ import {
     FeeResponse,
     LedgerTrustline,
     LedgerEntryResponse,
+    RippleStateLedgerEntry,
+    LedgerEntriesTypes,
 } from '@common/libs/ledger/types';
 
 import { Issuer } from '@common/libs/ledger/parser/types';
@@ -27,7 +29,6 @@ import { Amount } from '@common/libs/ledger/parser/common';
 import { RippleStateToTrustLine } from '@common/libs/ledger/parser/entry';
 
 import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
-import { RippleStateLedgerEntry, LedgerEntriesTypes } from '@common/libs/ledger/objects/types';
 
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
@@ -61,9 +62,9 @@ class LedgerService {
                 // on socket service connect set ledger listener if not set
                 SocketService.on('connect', this.setLedgerListener);
 
-                return resolve();
+                resolve();
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
     };
@@ -290,7 +291,7 @@ class LedgerService {
                     new BigNumber(100000),
                 ).toNumber();
 
-                return resolve({
+                resolve({
                     availableFees: [
                         {
                             type: 'low',
@@ -311,7 +312,7 @@ class LedgerService {
                 });
             } catch (e) {
                 this.logger.warn('Unable to calculate available network fees:', e);
-                return reject(new Error('Unable to calculate available network fees!'));
+                reject(new Error('Unable to calculate available network fees!'));
             }
         });
     };
@@ -352,17 +353,18 @@ class LedgerService {
      */
     getAccountTransferRate = (account: string): Promise<number> => {
         return new Promise((resolve, reject) => {
-            return this.getAccountInfo(account)
+            this.getAccountInfo(account)
                 .then((issuerAccountInfo: any) => {
                     if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
                         const { TransferRate } = issuerAccountInfo.account_data;
                         const transferFee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
-                        return resolve(transferFee);
+                        resolve(transferFee);
+                        return;
                     }
-                    return resolve(0);
+                    resolve(0);
                 })
                 .catch(() => {
-                    return reject(new Error('Unable to fetch account transfer rate!'));
+                    reject(new Error('Unable to fetch account transfer rate!'));
                 });
         });
     };

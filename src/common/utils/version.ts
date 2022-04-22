@@ -1,8 +1,8 @@
 /**
  * Compare two dotted version strings (like '10.2.3').
- * @returns {Integer} 0: v1 == v2, -1: v1 < v2, 1: v1 > v2
+ * @returns number 0: v1 == v2, -1: v1 < v2, 1: v1 > v2
  */
-const VersionDiff = (v1: string, v2: string) => {
+const VersionDiff = (v1: string, v2: string): number => {
     const v1parts = `${v1}`.split('.');
     const v2parts = `${v2}`.split('.');
 

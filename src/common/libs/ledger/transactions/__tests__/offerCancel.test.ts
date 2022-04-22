@@ -8,6 +8,7 @@ import offerCancelTemplates from './templates/OfferCancelTx.json';
 describe('OfferCancel tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new OfferCancel();
+        expect(instance.TransactionType).toBe('OfferCancel');
         expect(instance.Type).toBe('OfferCancel');
     });
 

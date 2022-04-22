@@ -5,10 +5,14 @@ import { isEqual } from 'lodash';
 import { View, Text, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 
 import { Images } from '@common/helpers/images';
-import { TouchableDebounce, Icon, LoadingIndicator } from '@components/General';
+
+import { TouchableDebounce } from '@components/General/TouchableDebounce';
+import { Icon } from '@components/General/Icon';
+import { LoadingIndicator } from '@components/General/LoadingIndicator';
 
 import styles from './styles';
 
+/* Types ==================================================================== */
 interface Props {
     style?: ViewStyle | ViewStyle[];
     textStyle?: TextStyle | TextStyle[];
@@ -40,6 +44,7 @@ interface Props {
     hitSlop?: any;
 }
 
+/* Component ==================================================================== */
 export default class Button extends Component<Props> {
     static defaultProps = {
         iconPosition: 'left',

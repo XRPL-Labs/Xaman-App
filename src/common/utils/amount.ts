@@ -7,7 +7,7 @@ import { HexEncoding } from './string';
  * @param value number
  * @returns number in NFT value or false if XRPL value is not NFT
  */
-const XRPLValueToNFT = (value: number): number | boolean => {
+const XRPLValueToNFT = (value: number | string): number | boolean => {
     const data = String(Number(value)).split(/e/i);
 
     const finish = (returnValue: string) => {
@@ -102,10 +102,10 @@ const ValueToIOU = (value: string): string => {
 
 /**
  * normalize amount
- * @param n number
  * @returns string 1333.855222
+ * @param amount
  */
-const NormalizeAmount = (amount: number): number => {
+const NormalizeAmount = (amount: number | string): number => {
     const nftValue = XRPLValueToNFT(amount);
     if (nftValue) {
         return Number(nftValue);

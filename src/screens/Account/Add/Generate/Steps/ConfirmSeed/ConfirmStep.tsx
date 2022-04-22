@@ -100,11 +100,9 @@ class ConfirmStep extends Component<Props, State> {
                         </Text>
                     </>
                 ) : (
-                    <>
-                        <Text style={[AppStyles.p, AppStyles.bold]}>
-                            {Localize.t('account.allDoneYouCanGoToNextStepNow')}
-                        </Text>
-                    </>
+                    <Text style={[AppStyles.p, AppStyles.bold]}>
+                        {Localize.t('account.allDoneYouCanGoToNextStepNow')}
+                    </Text>
                 )}
 
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal, AppStyles.centerAligned]}>

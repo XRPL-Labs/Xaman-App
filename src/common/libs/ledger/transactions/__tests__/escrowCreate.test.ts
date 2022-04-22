@@ -8,6 +8,7 @@ import escrowCreateTemplate from './templates/EscrowCreateTx.json';
 describe('EscrowCreate tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new EscrowCreate();
+        expect(instance.TransactionType).toBe('EscrowCreate');
         expect(instance.Type).toBe('EscrowCreate');
     });
 
@@ -18,7 +19,6 @@ describe('EscrowCreate tx', () => {
         expect(instance.Destination).toStrictEqual({
             tag: 23480,
             address: 'rsA2LpzuawewSBQXkiju3YQTMzW13pAAdW',
-            name: undefined,
         });
         expect(instance.Amount).toStrictEqual({
             currency: 'XRP',

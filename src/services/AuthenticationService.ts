@@ -28,7 +28,7 @@ class AuthenticationService {
         this.locked = false;
         this.logger = LoggerService.createLogger('App State');
 
-        // functions needs to run after success auth
+        // list of methods that needs to run after success auth
         this.postSuccess = [
             AppService.checkShowChangeLog,
             AppService.checkAppUpdate,
@@ -52,9 +52,9 @@ class AuthenticationService {
                         AppService.removeListener('appStateChange', this.onAppStateChange);
                     }
                 });
-                return resolve();
+                resolve();
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
     };
@@ -76,7 +76,7 @@ class AuthenticationService {
 
     /**
      * reset the entire app
-     * WARNING: this action cannot be undo, used carefully
+     * WARNING: this action is irreversible, USED CAREFULLY
      */
     resetApp = () => {
         // purge all account private keys
@@ -103,7 +103,7 @@ class AuthenticationService {
 
         switch (attemptNumber) {
             case 6:
-                return 1 * 60;
+                return 60;
             case 7:
                 return 5 * 60;
             case 8:
@@ -153,7 +153,7 @@ class AuthenticationService {
         });
 
         if (coreSettings.purgeOnBruteForce) {
-            // alert user next attempt will be wipe the app
+            // alert user next attempt will wipe the entire app
             if (coreSettings.passcodeFailedAttempts + 1 === 10) {
                 // alert
                 Navigator.showAlertModal({
@@ -192,7 +192,7 @@ class AuthenticationService {
         }
 
         const realTime = await GetElapsedRealtime();
-        // check if attempts is exceed
+        // check if attempts will exceed the threshold
         if (coreSettings.passcodeFailedAttempts > 5) {
             // calculate potential wait time
             const waitTime = this.calculateWrongAttemptWaitTime(coreSettings.passcodeFailedAttempts);
@@ -232,7 +232,8 @@ class AuthenticationService {
             const blockTime = await this.getInputBlockTime(coreSettings, realTime);
 
             if (blockTime) {
-                return reject(new Error(Localize.t('global.tooManyAttempts', { after: blockTime })));
+                reject(new Error(Localize.t('global.tooManyAttempts', { after: blockTime })));
+                return;
             }
 
             // get encrypted passcode from clear passcode
@@ -240,14 +241,15 @@ class AuthenticationService {
 
             // check if passcode is correct
             if (encryptedPasscode === coreSettings.passcode) {
-                this.onSuccessAuthentication(realTime);
+                await this.onSuccessAuthentication(realTime);
                 // resolve
-                return resolve(encryptedPasscode);
+                resolve(encryptedPasscode);
+                return;
             }
 
-            this.onWrongPasscodeInput(coreSettings, realTime);
+            await this.onWrongPasscodeInput(coreSettings, realTime);
 
-            return reject(new Error(Localize.t('global.invalidPasscode')));
+            reject(new Error(Localize.t('global.invalidPasscode')));
         });
     };
 
@@ -257,7 +259,10 @@ class AuthenticationService {
     checkLockScreen = async () => {
         /* eslint-disable-next-line */
         return new Promise<void>(async (resolve) => {
-            if (this.locked) return resolve();
+            if (this.locked) {
+                resolve();
+                return;
+            }
 
             const coreSettings = CoreRepository.getSettings();
 
@@ -284,19 +289,19 @@ class AuthenticationService {
                 this.runAfterSuccessAuth();
             }
 
-            return resolve();
+            resolve();
         });
     };
 
     /**
      * Listen for app state change to check for lock the app
      */
-    onAppStateChange = () => {
+    onAppStateChange = async () => {
         if (
             [AppStateStatus.Background, AppStateStatus.Inactive].indexOf(AppService.prevAppState) > -1 &&
             AppService.currentAppState === AppStateStatus.Active
         ) {
-            this.checkLockScreen();
+            await this.checkLockScreen();
         }
     };
 }

@@ -87,9 +87,9 @@ class ApiService {
 
                 this.uniqueDeviceIdentifier = GetDeviceUniqueId();
 
-                return resolve();
+                resolve();
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
     }
@@ -163,7 +163,8 @@ class ApiService {
             const apiTimedOut = setTimeout(() => reject(ErrorMessages.timeout), timeoutAfter * 1000);
 
             if (!method || !endpoint) {
-                return reject(new Error('Missing params (ApiService.fetcher).'));
+                reject(new Error('Missing params (ApiService.fetcher).'));
+                return;
             }
 
             // Build request
@@ -178,8 +179,7 @@ class ApiService {
 
             if (this.accessToken) {
                 // Add Authorization Token
-                // @ts-ignore
-                req.headers.Authorization = await this.generateAuthToken();
+                Object.assign(req.headers, { Authorization: await this.generateAuthToken() });
             }
 
             if (header) {
@@ -214,13 +214,8 @@ class ApiService {
                     // String or Number - eg. /recipes/23
                 } else if (typeof params === 'string' || typeof params === 'number') {
                     urlParams = `/${params}`;
-
-                    // Something else? Just log an error
                 } else {
-                    this.logger.warn(
-                        'You provided params, but it wasn\'t an object!',
-                        this.apiUrl + endpoint + urlParams,
-                    );
+                    this.logger.warn('params are not an object!', this.apiUrl + endpoint + urlParams);
                 }
             }
 
@@ -236,7 +231,7 @@ class ApiService {
             const thisUrl = this.apiUrl + endpoint + urlParams;
 
             // Make the request
-            return fetch(thisUrl, req)
+            fetch(thisUrl, req)
                 .then(async (rawRes) => {
                     // API got back to us, clear the timeout
                     clearTimeout(apiTimedOut);
@@ -259,13 +254,13 @@ class ApiService {
                 })
                 .then((res) => {
                     // TODO: inspect X-Call-Ref id
-                    return resolve(res);
+                    resolve(res);
                 })
                 .catch((err) => {
                     // API got back to us, clear the timeout
                     clearTimeout(apiTimedOut);
-
-                    return reject(err);
+                    // reject
+                    reject(err);
                 });
         });
     }

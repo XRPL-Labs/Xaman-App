@@ -7,12 +7,12 @@ import txTemplates from './templates/AccountSetTx.json';
 
 describe('AccountSet tx', () => {
     it('Should set tx type if not set', () => {
-        const accountSet = new AccountSet();
-        expect(accountSet.Type).toBe('AccountSet');
+        const instance = new AccountSet();
+        expect(instance.TransactionType).toBe('AccountSet');
+        expect(instance.Type).toBe('AccountSet');
     });
 
     it('Should return right parsed values', () => {
-        // @ts-ignore
         const { tx } = txTemplates;
         const instance = new AccountSet(tx);
 

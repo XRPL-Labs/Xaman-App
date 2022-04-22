@@ -3,7 +3,7 @@ import { get, has } from 'lodash';
 import { LedgerTransactionType, TransactionJSONType } from '@common/libs/ledger/types';
 
 import * as Transactions from '@common/libs/ledger/transactions';
-import { TransactionsType } from '@common/libs/ledger/transactions/types';
+import { Transactions as TransactionsType } from '@common/libs/ledger/transactions/types';
 
 const TransactionFactory = {
     getTransaction: (transaction: TransactionJSONType, meta?: any): TransactionsType => {
@@ -14,6 +14,9 @@ const TransactionFactory = {
         return new Transaction(transaction, meta);
     },
 
+    /*
+       Parse a LEDGER transaction to Transaction instance
+     */
     fromLedger: (item: LedgerTransactionType): TransactionsType => {
         if (!has(item, 'tx') || !has(item, 'meta')) {
             throw new Error('item is not a valid Ledger transaction type!');
@@ -23,7 +26,9 @@ const TransactionFactory = {
         const meta = get(item, 'meta');
         return TransactionFactory.getTransaction(transaction, meta);
     },
-
+    /*
+       Parse a JSON transaction to Transaction instance
+     */
     fromJson: (item: TransactionJSONType): TransactionsType => {
         return TransactionFactory.getTransaction(item);
     },

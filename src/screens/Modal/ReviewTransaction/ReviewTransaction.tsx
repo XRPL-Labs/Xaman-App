@@ -3,35 +3,31 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, Alert, Linking, BackHandler, Keyboard, NativeEventSubscription } from 'react-native';
+import { Alert, BackHandler, Keyboard, Linking, NativeEventSubscription, Text, View } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
-import { VibrateHapticFeedback } from '@common/helpers/interface';
-import { Navigator } from '@common/helpers/navigator';
-
-// services
-import { PushNotificationsService, AccountService, LedgerService, StyleService } from '@services';
+import { AccountService, LedgerService, PushNotificationsService, StyleService } from '@services';
 
 import { CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
-// components
-import { Button, Icon, Spacer } from '@components/General';
-
+import { TransactionTypes } from '@common/libs/ledger/types';
 import { PayloadOrigin } from '@common/libs/payload';
 
-// localize
+import { VibrateHapticFeedback } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+
+import { Button, Icon, Spacer } from '@components/General';
+
 import Localize from '@locale';
 
-// style
 import { AppStyles } from '@theme';
 
-import { ReviewStep, SubmittingStep, ResultStep } from './Steps';
-// context
+import { ResultStep, ReviewStep, SubmittingStep } from './Steps';
 import { StepsContext } from './Context';
+import { Props, State, Steps } from './types';
 
-import { Steps, Props, State } from './types';
 /* Component ==================================================================== */
 class ReviewTransactionModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.ReviewTransaction;
@@ -52,7 +48,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         this.state = {
             payload: props.payload,
-            transaction: props.payload.getTransaction(),
+            transaction: undefined,
             source: undefined,
             currentStep: Steps.Review,
             submitResult: undefined,
@@ -66,6 +62,8 @@ class ReviewTransactionModal extends Component<Props, State> {
     }
 
     componentDidMount() {
+        const { payload } = this.state;
+
         // track if component is mounted
         this.mounted = true;
 
@@ -74,6 +72,18 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         // update the accounts details before process the review
         AccountService.updateAccountsDetails();
+
+        // set transaction
+        try {
+            this.setState({
+                transaction: payload.getTransaction(),
+            });
+        } catch (e: any) {
+            this.setState({
+                hasError: true,
+                errorMessage: e?.message,
+            });
+        }
     }
 
     componentWillUnmount() {
@@ -108,89 +118,91 @@ class ReviewTransactionModal extends Component<Props, State> {
     };
 
     getTransactionLabel = () => {
-        const { payload, transaction } = this.state;
+        const { transaction } = this.state;
+
+        // pseudo transaction
+        if (transaction.isPseudoTransaction()) {
+            return Localize.t('global.signIn');
+        }
 
         let type = '';
 
-        switch (payload.getTransactionType()) {
-            case 'AccountSet':
+        switch (transaction.Type) {
+            case TransactionTypes.AccountSet:
                 type = Localize.t('events.updateAccountSettings');
                 break;
-            case 'AccountDelete':
+            case TransactionTypes.AccountDelete:
                 type = Localize.t('events.deleteAccount');
                 break;
-            case 'EscrowFinish':
+            case TransactionTypes.EscrowFinish:
                 type = Localize.t('events.finishEscrow');
                 break;
-            case 'EscrowCancel':
+            case TransactionTypes.EscrowCancel:
                 type = Localize.t('events.cancelEscrow');
                 break;
-            case 'EscrowCreate':
+            case TransactionTypes.EscrowCreate:
                 type = Localize.t('events.createEscrow');
                 break;
-            case 'SetRegularKey':
+            case TransactionTypes.SetRegularKey:
                 type = Localize.t('events.setARegularKey');
                 break;
-            case 'SignerListSet':
+            case TransactionTypes.SignerListSet:
                 type = Localize.t('events.setSignerList');
                 break;
-            case 'TrustSet':
+            case TransactionTypes.TrustSet:
                 type = Localize.t('events.updateAccountAssets');
                 break;
-            case 'OfferCreate':
+            case TransactionTypes.OfferCreate:
                 type = Localize.t('events.createOffer');
                 break;
-            case 'OfferCancel':
+            case TransactionTypes.OfferCancel:
                 type = Localize.t('events.cancelOffer');
                 break;
-            case 'DepositPreauth':
+            case TransactionTypes.DepositPreauth:
                 if (transaction.Authorize) {
                     type = Localize.t('events.authorizeDeposit');
                 } else {
                     type = Localize.t('events.unauthorizeDeposit');
                 }
                 break;
-            case 'CheckCreate':
+            case TransactionTypes.CheckCreate:
                 type = Localize.t('events.createCheck');
                 break;
-            case 'CheckCash':
+            case TransactionTypes.CheckCash:
                 type = Localize.t('events.cashCheck');
                 break;
-            case 'CheckCancel':
+            case TransactionTypes.CheckCancel:
                 type = Localize.t('events.cancelCheck');
                 break;
-            case 'TicketCreate':
+            case TransactionTypes.TicketCreate:
                 type = Localize.t('events.createTicket');
                 break;
-            case 'PaymentChannelCreate':
+            case TransactionTypes.PaymentChannelCreate:
                 type = Localize.t('events.createPaymentChannel');
                 break;
-            case 'PaymentChannelFund':
+            case TransactionTypes.PaymentChannelFund:
                 type = Localize.t('events.fundPaymentChannel');
                 break;
-            case 'PaymentChannelClaim':
+            case TransactionTypes.PaymentChannelClaim:
                 type = Localize.t('events.claimPaymentChannel');
                 break;
-            case 'NFTokenMint':
+            case TransactionTypes.NFTokenMint:
                 type = Localize.t('events.mintNFT');
                 break;
-            case 'NFTokenBurn':
+            case TransactionTypes.NFTokenBurn:
                 type = Localize.t('events.burnNFT');
                 break;
-            case 'NFTokenCreateOffer':
+            case TransactionTypes.NFTokenCreateOffer:
                 type = Localize.t('events.createNFTOffer');
                 break;
-            case 'NFTokenCancelOffer':
+            case TransactionTypes.NFTokenCancelOffer:
                 type = Localize.t('events.cancelNFTOffer');
                 break;
-            case 'NFTokenAcceptOffer':
+            case TransactionTypes.NFTokenAcceptOffer:
                 type = Localize.t('events.acceptNFTOffer');
                 break;
-            case 'SignIn':
-                type = Localize.t('global.signIn');
-                break;
             default:
-                type = payload.getTransactionType();
+                type = transaction.Type;
                 break;
         }
 
@@ -364,7 +376,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             }
 
             // check for account delete and alert user
-            if (transaction.Type === 'AccountDelete') {
+            if (transaction.Type === TransactionTypes.AccountDelete) {
                 Navigator.showAlertModal({
                     type: 'error',
                     title: Localize.t('global.danger'),
@@ -388,7 +400,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             }
 
             // show alert if user adding a new trustline
-            if (transaction.Type === 'TrustSet') {
+            if (transaction.Type === TransactionTypes.TrustSet) {
                 // check if user is adding the trustline
                 if (
                     !source.hasCurrency({
@@ -421,7 +433,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             }
 
             // show alert if user trading not vetted tokens
-            if (transaction.Type === 'OfferCreate') {
+            if (transaction.Type === TransactionTypes.OfferCreate) {
                 let shouldShowAlert = false;
 
                 const takerPays = transaction.TakerPays;
@@ -460,7 +472,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             }
 
             // check for asfDisableMaster
-            if (transaction.Type === 'AccountSet' && transaction.SetFlag === 'asfDisableMaster') {
+            if (transaction.Type === TransactionTypes.AccountSet && transaction.SetFlag === 'asfDisableMaster') {
                 Navigator.showAlertModal({
                     type: 'warning',
                     text: Localize.t('account.disableMasterKeyWarning'),
@@ -629,6 +641,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     renderError = () => {
         const { errorMessage } = this.state;
+
         return (
             <View
                 testID="review-error-view"
@@ -644,24 +657,21 @@ class ReviewTransactionModal extends Component<Props, State> {
                 <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
                     {errorMessage || Localize.t('payload.unexpectedPayloadErrorOccurred')}
                 </Text>
-                <Spacer size={40} />
-                <Button
-                    testID="back-button"
-                    label={Localize.t('global.back')}
-                    onPress={() => {
-                        this.onDecline();
-                    }}
-                />
+                <Spacer size={60} />
+                <Button testID="back-button" label={Localize.t('global.back')} onPress={this.onDecline} />
             </View>
         );
     };
 
     render() {
-        const { currentStep, hasError } = this.state;
+        const { transaction, currentStep, hasError } = this.state;
 
         // don't render if any error happened
         // this can happen if there is a missing field in the payload
         if (hasError) return this.renderError();
+
+        // wait for transaction to be set
+        if (!transaction) return null;
 
         let Step = null;
 
