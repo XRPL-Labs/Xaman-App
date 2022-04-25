@@ -176,11 +176,11 @@ class TransactionTemplate extends Component<Props, State> {
 
         // transactions that listed only for current account
         if (
-            item.Type === 'AccountSet' ||
-            item.Type === 'SignerListSet' ||
-            item.Type === 'SetRegularKey' ||
-            item.Type === 'OfferCancel' ||
-            item.Type === 'OfferCreate'
+            item.Type === TransactionTypes.AccountSet ||
+            item.Type === TransactionTypes.SignerListSet ||
+            item.Type === TransactionTypes.SetRegularKey ||
+            item.Type === TransactionTypes.OfferCancel ||
+            item.Type === TransactionTypes.OfferCreate
         ) {
             return {
                 address,
@@ -237,8 +237,8 @@ class TransactionTemplate extends Component<Props, State> {
         let iconColor;
 
         switch (item.Type) {
-            case 'OfferCreate':
-            case 'Payment':
+            case TransactionTypes.OfferCreate:
+            case TransactionTypes.Payment:
                 iconName = 'IconSwitchAccount';
                 break;
             default:
@@ -257,7 +257,7 @@ class TransactionTemplate extends Component<Props, State> {
         const { name, address } = this.state;
         const { item, account } = this.props;
 
-        if (item.Type === 'OfferCreate') {
+        if (item.Type === TransactionTypes.OfferCreate) {
             if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(item.GetOfferStatus(account.address)) > -1) {
                 const takerGot = item.TakerGot(account.address);
                 const takerPaid = item.TakerPaid(account.address);
@@ -271,7 +271,7 @@ class TransactionTemplate extends Component<Props, State> {
             )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
         }
 
-        if (item.Type === 'Payment') {
+        if (item.Type === TransactionTypes.Payment) {
             if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
                 const balanceChanges = item.BalanceChange(account.address);
 
@@ -293,7 +293,7 @@ class TransactionTemplate extends Component<Props, State> {
         const { item, account } = this.props;
 
         switch (item.Type) {
-            case 'Payment':
+            case TransactionTypes.Payment:
                 if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
                     const balanceChanges = item.BalanceChange(account.address);
                     if (balanceChanges?.sent && balanceChanges?.received) {
@@ -305,8 +305,8 @@ class TransactionTemplate extends Component<Props, State> {
                     return Localize.t('events.paymentReceived');
                 }
                 return Localize.t('events.paymentSent');
-            case 'TrustSet': {
-                // incoming trustline
+            case TransactionTypes.TrustSet: {
+                // incoming TrustLine
                 if (item.Account.address !== account.address) {
                     return Localize.t('events.incomingTrustLineAdded');
                 }
@@ -319,17 +319,17 @@ class TransactionTemplate extends Component<Props, State> {
                 }
                 return Localize.t('events.updatedATrustLine');
             }
-            case 'EscrowCreate':
+            case TransactionTypes.EscrowCreate:
                 return Localize.t('events.createEscrow');
-            case 'EscrowFinish':
+            case TransactionTypes.EscrowFinish:
                 return Localize.t('events.finishEscrow');
-            case 'EscrowCancel':
+            case TransactionTypes.EscrowCancel:
                 return Localize.t('events.cancelEscrow');
-            case 'AccountSet':
+            case TransactionTypes.AccountSet:
                 return Localize.t('events.accountSettings');
-            case 'SignerListSet':
+            case TransactionTypes.SignerListSet:
                 return Localize.t('events.setSignerList');
-            case 'OfferCreate':
+            case TransactionTypes.OfferCreate:
                 if (
                     [OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(item.GetOfferStatus(account.address)) >
                     -1
@@ -337,46 +337,46 @@ class TransactionTemplate extends Component<Props, State> {
                     return Localize.t('events.exchangedAssets');
                 }
                 return Localize.t('events.createOffer');
-            case 'OfferCancel':
+            case TransactionTypes.OfferCancel:
                 return Localize.t('events.cancelOffer');
-            case 'AccountDelete':
+            case TransactionTypes.AccountDelete:
                 return Localize.t('events.deleteAccount');
-            case 'SetRegularKey':
+            case TransactionTypes.SetRegularKey:
                 if (item.RegularKey) {
                     return Localize.t('events.setRegularKey');
                 }
                 return Localize.t('events.removeRegularKey');
-            case 'DepositPreauth':
+            case TransactionTypes.DepositPreauth:
                 if (item.Authorize) {
                     return Localize.t('events.authorizeDeposit');
                 }
                 return Localize.t('events.unauthorizeDeposit');
-            case 'CheckCreate':
+            case TransactionTypes.CheckCreate:
                 return Localize.t('events.createCheck');
-            case 'CheckCash':
+            case TransactionTypes.CheckCash:
                 return Localize.t('events.cashCheck');
-            case 'CheckCancel':
+            case TransactionTypes.CheckCancel:
                 return Localize.t('events.cancelCheck');
-            case 'TicketCreate':
+            case TransactionTypes.TicketCreate:
                 return Localize.t('events.createTicket');
-            case 'PaymentChannelCreate':
+            case TransactionTypes.PaymentChannelCreate:
                 return Localize.t('events.createPaymentChannel');
-            case 'PaymentChannelClaim':
+            case TransactionTypes.PaymentChannelClaim:
                 return Localize.t('events.claimPaymentChannel');
-            case 'PaymentChannelFund':
+            case TransactionTypes.PaymentChannelFund:
                 return Localize.t('events.fundPaymentChannel');
-            case 'NFTokenMint':
+            case TransactionTypes.NFTokenMint:
                 return Localize.t('events.mintNFT');
-            case 'NFTokenBurn':
+            case TransactionTypes.NFTokenBurn:
                 return Localize.t('events.burnNFT');
-            case 'NFTokenCreateOffer':
+            case TransactionTypes.NFTokenCreateOffer:
                 return Localize.t('events.createNFTOffer');
-            case 'NFTokenCancelOffer':
+            case TransactionTypes.NFTokenCancelOffer:
                 return Localize.t('events.cancelNFTOffer');
-            case 'NFTokenAcceptOffer':
+            case TransactionTypes.NFTokenAcceptOffer:
                 return Localize.t('events.acceptNFTOffer');
             default:
-                return item.Type;
+                return 'Unsupported transaction';
         }
     };
 
@@ -422,7 +422,7 @@ class TransactionTemplate extends Component<Props, State> {
 
         let incoming = item.Account?.address !== account.address;
 
-        if (item.Type === 'Payment') {
+        if (item.Type === TransactionTypes.Payment) {
             const balanceChanges = item.BalanceChange(account.address);
             const amount = item.DeliveredAmount || item.Amount;
 
@@ -481,7 +481,7 @@ class TransactionTemplate extends Component<Props, State> {
             );
         }
 
-        if (item.Type === 'AccountDelete') {
+        if (item.Type === TransactionTypes.AccountDelete) {
             return (
                 <AmountText
                     value={item.Amount.value}
@@ -495,7 +495,7 @@ class TransactionTemplate extends Component<Props, State> {
             );
         }
 
-        if (item.Type === 'EscrowCreate') {
+        if (item.Type === TransactionTypes.EscrowCreate) {
             return (
                 <AmountText
                     value={item.Amount.value}
@@ -509,7 +509,7 @@ class TransactionTemplate extends Component<Props, State> {
             );
         }
 
-        if (item.Type === 'EscrowFinish') {
+        if (item.Type === TransactionTypes.EscrowFinish) {
             return (
                 <AmountText
                     value={item.Amount.value}
@@ -523,7 +523,7 @@ class TransactionTemplate extends Component<Props, State> {
             );
         }
 
-        if (item.Type === 'CheckCreate') {
+        if (item.Type === TransactionTypes.CheckCreate) {
             return (
                 <AmountText
                     value={item.SendMax.value}
@@ -536,7 +536,7 @@ class TransactionTemplate extends Component<Props, State> {
             );
         }
 
-        if (item.Type === 'CheckCash') {
+        if (item.Type === TransactionTypes.CheckCash) {
             const amount = item.Amount || item.DeliverMin;
             incoming = item.Account.address === account.address;
             return (
@@ -552,7 +552,7 @@ class TransactionTemplate extends Component<Props, State> {
             );
         }
 
-        if (item.Type === 'OfferCreate') {
+        if (item.Type === TransactionTypes.OfferCreate) {
             if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(item.GetOfferStatus(account.address)) > -1) {
                 const takerPaid = item.TakerPaid(account.address);
 
@@ -599,7 +599,7 @@ class TransactionTemplate extends Component<Props, State> {
             }
         }
 
-        if (item.Type === 'NFTokenAcceptOffer') {
+        if (item.Type === TransactionTypes.NFTokenAcceptOffer) {
             const balanceChanges = item.BalanceChange(account.address);
             if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
                 const amount = balanceChanges?.received || balanceChanges?.sent;

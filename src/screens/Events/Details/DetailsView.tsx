@@ -1490,7 +1490,7 @@ class TransactionDetailsView extends Component<Props, State> {
         };
 
         switch (tx.Type) {
-            case 'Payment': {
+            case TransactionTypes.Payment: {
                 const amount = tx.DeliveredAmount || tx.Amount;
 
                 if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
@@ -1535,7 +1535,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
                 break;
             }
-            case 'AccountDelete': {
+            case TransactionTypes.AccountDelete: {
                 Object.assign(props, {
                     color: incomingTx ? styles.incomingColor : styles.outgoingColor,
                     prefix: incomingTx ? '' : '-',
@@ -1544,8 +1544,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
                 break;
             }
-            case 'EscrowCreate':
-            case 'Escrow':
+            case TransactionTypes.EscrowCreate:
+            case LedgerObjectTypes.Escrow:
                 Object.assign(props, {
                     color: incomingTx ? styles.orangeColor : styles.outgoingColor,
                     prefix: '-',
@@ -1553,7 +1553,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     currency: tx.Amount.currency,
                 });
                 break;
-            case 'EscrowFinish':
+            case TransactionTypes.EscrowFinish:
                 Object.assign(props, {
                     color: tx.Destination.address === account.address ? styles.incomingColor : styles.naturalColor,
                     icon: 'IconCornerRightDown',
@@ -1561,15 +1561,15 @@ class TransactionDetailsView extends Component<Props, State> {
                     currency: tx.Amount.currency,
                 });
                 break;
-            case 'CheckCreate':
-            case 'Check':
+            case TransactionTypes.CheckCreate:
+            case LedgerObjectTypes.Check:
                 Object.assign(props, {
                     color: styles.naturalColor,
                     value: tx.SendMax.value,
                     currency: tx.SendMax.currency,
                 });
                 break;
-            case 'CheckCash': {
+            case TransactionTypes.CheckCash: {
                 const amount = tx.Amount || tx.DeliverMin;
                 const incoming = tx.Account.address === account.address;
 
@@ -1582,7 +1582,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
                 break;
             }
-            case 'OfferCreate':
+            case TransactionTypes.OfferCreate:
                 if (
                     [OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(tx.GetOfferStatus(account.address)) > -1
                 ) {
@@ -1603,7 +1603,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
 
                 break;
-            case 'Offer':
+            case LedgerObjectTypes.Offer:
                 Object.assign(props, {
                     color: styles.naturalColor,
                     icon: 'IconCornerRightDown',
@@ -1612,9 +1612,9 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
 
                 break;
-            case 'PaymentChannelClaim':
-            case 'PaymentChannelFund':
-            case 'PaymentChannelCreate': {
+            case TransactionTypes.PaymentChannelClaim:
+            case TransactionTypes.PaymentChannelFund:
+            case TransactionTypes.PaymentChannelCreate: {
                 if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
                     const incoming = !!balanceChanges.received;
                     const amount = balanceChanges?.received || balanceChanges?.sent;
@@ -1631,7 +1631,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             }
-            case 'NFTokenCreateOffer': {
+            case TransactionTypes.NFTokenCreateOffer: {
                 Object.assign(props, {
                     color: styles.naturalColor,
                     icon: tx.Flags.SellToken ? 'IconCornerRightDown' : 'IconCornerRightUp',
@@ -1640,7 +1640,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
                 break;
             }
-            case 'NFTokenAcceptOffer': {
+            case TransactionTypes.NFTokenAcceptOffer: {
                 if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
                     const incoming = !!balanceChanges.received;
                     const amount = balanceChanges?.received || balanceChanges?.sent;
@@ -1667,11 +1667,11 @@ class TransactionDetailsView extends Component<Props, State> {
             return null;
         }
 
-        if (tx.Type === 'OfferCreate' || tx.Type === 'Offer') {
+        if (tx.Type === TransactionTypes.OfferCreate || tx.Type === LedgerObjectTypes.Offer) {
             let takerGets;
 
             if (
-                tx.Type === 'OfferCreate' &&
+                tx.Type === TransactionTypes.OfferCreate &&
                 [OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].includes(tx.GetOfferStatus(account.address))
             ) {
                 takerGets = tx.TakerGot(account.address);
@@ -1709,7 +1709,7 @@ class TransactionDetailsView extends Component<Props, State> {
             );
         }
 
-        if (tx.Type === 'Payment') {
+        if (tx.Type === TransactionTypes.Payment) {
             // rippling
             if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
                 if (balanceChanges?.sent) {
@@ -1934,7 +1934,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         // incoming trustline
-        if (tx.Type === 'TrustSet' && tx.Issuer === account.address) {
+        if (tx.Type === TransactionTypes.TrustSet && tx.Issuer === account.address) {
             from = { address: tx.Account.address, ...partiesDetails };
             to = {
                 address: account.address,
@@ -1944,7 +1944,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         // incoming CheckCash
-        if (tx.Type === 'CheckCash') {
+        if (tx.Type === TransactionTypes.CheckCash) {
             if (incomingTx) {
                 to = { address: tx.Account.address, ...partiesDetails };
                 from = {
@@ -1963,7 +1963,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         // Accepted NFT offer
-        if (tx.Type === 'NFTokenAcceptOffer') {
+        if (tx.Type === TransactionTypes.NFTokenAcceptOffer) {
             const offerer = tx.Offer.Owner;
             const accepter = tx.Account.address;
             const isSellOffer = tx.Offer?.Flags.SellToken;
@@ -1993,7 +1993,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         // 3rd party consuming own offer
-        if (tx.Type === 'Payment') {
+        if (tx.Type === TransactionTypes.Payment) {
             if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
                 if (balanceChanges?.sent || balanceChanges?.received) {
                     from = { address: tx.Account.address };
@@ -2009,7 +2009,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         // ignore async third party offer executed
-        if (tx.Type === 'OfferCreate' && to.address !== account.address) {
+        if (tx.Type === TransactionTypes.OfferCreate && to.address !== account.address) {
             return null;
         }
 

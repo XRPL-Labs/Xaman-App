@@ -17,7 +17,7 @@ import { Navigator } from '@common/helpers/navigator';
 
 // Parses
 import { TransactionFactory, LedgerObjectFactory } from '@common/libs/ledger/factory';
-import { LedgerMarker, LedgerEntriesTypes } from '@common/libs/ledger/types';
+import { LedgerMarker, LedgerEntriesTypes, LedgerObjectTypes } from '@common/libs/ledger/types';
 import { Transactions } from '@common/libs/ledger/transactions/types';
 import { LedgerObjects } from '@common/libs/ledger/objects/types';
 import { Payload } from '@common/libs/payload';
@@ -299,11 +299,11 @@ class EventsView extends Component<Props, State> {
 
         if (sectionIndex === 1) {
             const open = orderBy(
-                filter(plannedTransactions, (p) => p.Type === 'Offer' || p.Type === 'Check'),
+                filter(plannedTransactions, (p) => [LedgerObjectTypes.Offer, LedgerObjectTypes.Check].includes(p.Type)),
                 ['Date'],
             );
 
-            const planned = orderBy(filter(plannedTransactions, { Type: 'Escrow' }), ['Date']);
+            const planned = orderBy(filter(plannedTransactions, { Type: LedgerObjectTypes.Escrow }), ['Date']);
             const dataSource = [];
 
             if (!isEmpty(open)) {

@@ -147,7 +147,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
         }
 
         switch (item.Type) {
-            case 'Offer':
+            case LedgerObjectTypes.Offer:
                 iconName = 'IconSwitchAccount';
                 break;
             default:
@@ -166,7 +166,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
         const { name, address } = this.state;
         const { item } = this.props;
 
-        if (item.Type === 'Offer') {
+        if (item.Type === LedgerObjectTypes.Offer) {
             return `${Localize.formatNumber(NormalizeAmount(item.TakerGets.value))} ${NormalizeCurrencyCode(
                 item.TakerGets.currency,
             )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
@@ -182,11 +182,11 @@ class LedgerObjectTemplate extends Component<Props, State> {
         const { item } = this.props;
 
         switch (item.Type) {
-            case 'Escrow':
+            case LedgerObjectTypes.Escrow:
                 return Localize.t('global.escrow');
-            case 'Offer':
+            case LedgerObjectTypes.Offer:
                 return Localize.t('global.offer');
-            case 'Check':
+            case LedgerObjectTypes.Check:
                 return Localize.t('global.check');
             default:
                 return item.Type;
