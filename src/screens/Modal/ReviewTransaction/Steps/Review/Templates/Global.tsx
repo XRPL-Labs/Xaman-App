@@ -324,6 +324,23 @@ class GlobalTemplate extends Component<Props, State> {
         );
     };
 
+    renderSequence = () => {
+        const { transaction } = this.props;
+
+        if (isUndefined(transaction.Sequence)) {
+            return null;
+        }
+
+        return (
+            <>
+                <Text style={[styles.label]}>{Localize.t('global.sequence')}</Text>
+                <View style={[styles.contentBox]}>
+                    <Text style={styles.value}>{transaction.Sequence}</Text>
+                </View>
+            </>
+        );
+    };
+
     renderTicketSequence = () => {
         const { transaction } = this.props;
 
@@ -372,6 +389,7 @@ class GlobalTemplate extends Component<Props, State> {
         return (
             <>
                 {this.renderTicketSequence()}
+                {this.renderSequence()}
                 {this.renderSigners()}
                 {this.renderMemos()}
                 {this.renderFlags()}
