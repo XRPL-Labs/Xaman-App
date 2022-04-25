@@ -31,26 +31,14 @@ class AccountSetTemplate extends Component<Props, State> {
     render() {
         const { transaction } = this.props;
 
-        if (
-            isUndefined(transaction.SetFlag) &&
-            isUndefined(transaction.ClearFlag) &&
-            isUndefined(transaction.Domain) &&
-            isUndefined(transaction.EmailHash) &&
-            isUndefined(transaction.MessageKey) &&
-            isUndefined(transaction.TransferRate)
-        ) {
-            return (
-                <View key="details" style={[AppStyles.flex1, AppStyles.centerContent]}>
-                    <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
-                        {Localize.t('global.noInformationToShow')}
-                    </Text>
-                </View>
-            );
+        // this is a no-op transaction
+        if (transaction.isNoOperation()) {
+            return null;
         }
 
         return (
             <>
-                {transaction.Domain !== undefined && (
+                {!isUndefined(transaction.Domain) && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.domain')}</Text>
                         <View style={[styles.contentBox]}>
@@ -60,7 +48,7 @@ class AccountSetTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
-                {transaction.EmailHash !== undefined && (
+                {!isUndefined(transaction.EmailHash) && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.emailHash')}</Text>
                         <View style={[styles.contentBox]}>
@@ -70,7 +58,7 @@ class AccountSetTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
-                {transaction.MessageKey !== undefined && (
+                {!isUndefined(transaction.MessageKey) && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.messageKey')}</Text>
                         <View style={[styles.contentBox]}>
@@ -80,7 +68,7 @@ class AccountSetTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
-                {transaction.NFTokenMinter !== undefined && (
+                {!isUndefined(transaction.NFTokenMinter) && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.mintAccount')}</Text>
                         <View style={[styles.contentBox]}>
@@ -90,7 +78,7 @@ class AccountSetTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
-                {transaction.TransferRate !== undefined && (
+                {!isUndefined(transaction.TransferRate) && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.transferRate')}</Text>
                         <View style={[styles.contentBox]}>
@@ -100,7 +88,7 @@ class AccountSetTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
-                {transaction.TickSize !== undefined && (
+                {!isUndefined(transaction.TickSize) && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.tickSize')}</Text>
                         <View style={[styles.contentBox]}>

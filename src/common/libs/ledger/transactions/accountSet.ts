@@ -26,15 +26,28 @@ class AccountSet extends BaseTransaction {
         }
 
         this.fields = this.fields.concat([
+            'SetFlag',
             'ClearFlag',
             'Domain',
             'EmailHash',
             'MessageKey',
-            'SetFlag',
             'TransferRate',
             'TickSize',
             'NFTokenMinter',
         ]);
+    }
+
+    public isNoOperation(): boolean {
+        return (
+            isUndefined(this.SetFlag) &&
+            isUndefined(this.ClearFlag) &&
+            isUndefined(this.Domain) &&
+            isUndefined(this.EmailHash) &&
+            isUndefined(this.MessageKey) &&
+            isUndefined(this.TransferRate) &&
+            isUndefined(this.TickSize) &&
+            isUndefined(this.NFTokenMinter)
+        );
     }
 
     get SetFlag(): string {
