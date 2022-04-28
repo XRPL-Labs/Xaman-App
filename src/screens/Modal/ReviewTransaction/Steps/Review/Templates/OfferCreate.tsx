@@ -5,7 +5,7 @@ import { View, Text } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
@@ -116,10 +116,11 @@ class OfferCreateTemplate extends Component<Props, State> {
         } else {
             // sell IOU
             const line = source.lines.find(
-                (l: any) => l.currency.issuer === issuer && l.currency.currency === currency,
+                (l: TrustLineSchema) => l.currency.issuer === issuer && l.currency.currency === currency,
             );
-            if (line) {
-                showFullBalanceLiquidWarning = Number(value) >= line.balance;
+            // only if not XLS14
+            if (line && !line.isNFT()) {
+                showFullBalanceLiquidWarning = Number(value) >= Number(line.balance);
             }
         }
 
