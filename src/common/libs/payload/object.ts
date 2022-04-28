@@ -361,4 +361,17 @@ export class Payload {
     getTransactionType = (): TransactionTypes | PseudoTransactionTypes => {
         return this.payload.tx_type;
     };
+
+    /**
+     * Return list of signers payload forced
+     */
+    getSigners = (): string[] => {
+        const { signers } = this.meta;
+
+        if (Array.isArray(signers) && signers.length > 0) {
+            return signers;
+        }
+
+        return undefined;
+    };
 }

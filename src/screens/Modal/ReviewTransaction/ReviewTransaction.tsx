@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { Alert, BackHandler, Keyboard, Linking, NativeEventSubscription, Text, View } from 'react-native';
+import { View, Alert, BackHandler, Keyboard, Linking, NativeEventSubscription, Text } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -18,7 +18,7 @@ import { PayloadOrigin } from '@common/libs/payload';
 import { VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
-import { Button, Icon, Spacer } from '@components/General';
+import { Button, Icon, InfoMessage, Spacer } from '@components/General';
 
 import Localize from '@locale';
 
@@ -492,7 +492,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 return;
             }
 
-            // if everything is fine prepare the transacgtion for signing
+            // if everything is fine prepare the transaction for signing
             this.prepareAndSignTransaction();
         } finally {
             if (this.mounted) {
@@ -510,19 +510,19 @@ class ReviewTransactionModal extends Component<Props, State> {
         });
     };
 
-    setSource = (item: AccountSchema) => {
+    setSource = (account: AccountSchema) => {
         const { payload } = this.props;
         const { transaction } = this.state;
 
-        // set the source account to payload
-        // ignore if it's multisign
+        // set the source account to transaction
+        // ignore if the payload is multiSign
         if (!payload.isMultiSign()) {
-            transaction.Account = { address: item.address };
+            transaction.Account = { address: account.address };
         }
 
         // change state
         this.setState({
-            source: item,
+            source: account,
         });
     };
 
@@ -651,13 +651,17 @@ class ReviewTransactionModal extends Component<Props, State> {
                     { backgroundColor: StyleService.value('$lightBlue') },
                 ]}
             >
-                <Icon name="IconInfo" style={{ tintColor: StyleService.value('$contrast') }} size={70} />
-                <Spacer size={20} />
-                <Text style={AppStyles.h5}>{Localize.t('global.error')}</Text>
-                <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                    {errorMessage || Localize.t('payload.unexpectedPayloadErrorOccurred')}
+                <Icon name="IconInfo" style={{ tintColor: StyleService.value('$orange') }} size={70} />
+                <Text style={[AppStyles.h5, { color: StyleService.value('$orange') }]}>
+                    {Localize.t('global.error')}
                 </Text>
-                <Spacer size={60} />
+                <Spacer size={20} />
+                <InfoMessage
+                    type="neutral"
+                    labelStyle={[AppStyles.p, AppStyles.bold]}
+                    label={errorMessage || Localize.t('payload.unexpectedPayloadErrorOccurred')}
+                />
+                <Spacer size={40} />
                 <Button testID="back-button" label={Localize.t('global.back')} onPress={this.onDecline} />
             </View>
         );
@@ -694,6 +698,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             <StepsContext.Provider
                 value={{
                     ...this.state,
+                    setError: this.setError,
                     setSource: this.setSource,
                     onClose: this.onClose,
                     onAccept: this.onAccept,

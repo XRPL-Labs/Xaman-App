@@ -38,6 +38,7 @@ export interface MetaType {
     return_url_app?: string;
     return_url_web?: string;
     custom_instruction?: string;
+    signers?: string[];
 }
 
 export interface PayloadReferenceType {

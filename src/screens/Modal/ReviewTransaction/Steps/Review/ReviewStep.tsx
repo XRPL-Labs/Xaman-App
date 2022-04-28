@@ -2,9 +2,9 @@
  * Review Step
  */
 
-import { filter, find, get, isEmpty } from 'lodash';
+import { filter, find, first, get, isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { ImageBackground, Text, View } from 'react-native';
+import { View, ImageBackground, Text } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -14,8 +14,6 @@ import { SocketService, StyleService } from '@services';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
-
-import { TransactionTypes } from '@common/libs/ledger/types';
 
 // components
 import { Avatar, Button, KeyboardAwareScrollView, Spacer, SwipeButton } from '@components/General';
@@ -63,17 +61,14 @@ class ReviewStep extends Component<Props, State> {
     setAccounts = () => {
         const { transaction, payload, setSource, setError } = this.context;
 
-        // get available account base on transaction type
-
+        // get available accounts for signing
         let availableAccounts = [] as AccountSchema[];
 
         // only accounts with full access
         if (payload.isMultiSign()) {
             availableAccounts = AccountRepository.getFullAccessAccounts();
-        } else if (payload.isSignIn()) {
-            availableAccounts = AccountRepository.getSignableAccounts();
         } else {
-            availableAccounts = AccountRepository.getSpendableAccounts(true);
+            availableAccounts = AccountRepository.getSignableAccounts();
         }
 
         // if no account for signing is available then just return
@@ -83,45 +78,60 @@ class ReviewStep extends Component<Props, State> {
 
         // choose preferred account for sign
         let preferredAccount = undefined as AccountSchema;
+        let source = undefined as AccountSchema;
 
-        // if any account set from payload
+        // check for enforced signer accounts
+        const forcedSigners = payload.getSigners();
+
+        if (forcedSigners) {
+            // filter available accounts base on forced signers
+            availableAccounts = filter(availableAccounts, (account) => forcedSigners.includes(account.address));
+
+            // no available account for signing base on forced signers
+            if (isEmpty(availableAccounts)) {
+                setError(
+                    Localize.t('payload.forcedSignersAccountsDoesNotExist', { accounts: forcedSigners.join('\n') }),
+                );
+                return;
+            }
+        }
+
+        // if any account set from payload, set as preferred account
         if (transaction.Account) {
             preferredAccount = find(availableAccounts, { address: transaction.Account.address });
-
-            // if CheckCash, check if account is imported in the xumm
-            if (transaction.Type === TransactionTypes.CheckCash) {
-                // cannot sign this tx as account is not imported in the XUMM
-                if (!preferredAccount) {
-                    setError(Localize.t('payload.checkCanOnlyCashByCheckDestination'));
-                    return;
-                }
-                // override available Accounts
-                availableAccounts = [preferredAccount];
-            }
         }
 
-        // if the preferred account is not set in the payload
+        // remove hidden accounts but keep preferred account even if hidden
+        // ignore for forced signers
+        if (!forcedSigners) {
+            availableAccounts = filter(
+                availableAccounts,
+                (account) => !account.hidden || account.address === preferredAccount?.address,
+            );
+        }
+
+        // after removing the hidden accounts
+        // return if empty
+        if (isEmpty(availableAccounts)) {
+            return;
+        }
+
+        // if there is no preferred account base on transaction.Account
         // choose default || first available account
-        if (!preferredAccount) {
-            preferredAccount = find(availableAccounts, { default: true }) || availableAccounts[0];
+        // this will guarantee source to be set
+        if (preferredAccount) {
+            source = preferredAccount;
+        } else {
+            source = find(availableAccounts, { default: true }) || first(availableAccounts);
         }
 
-        // set the preffered account to the tx
-        if (preferredAccount && !transaction.Account) {
-            // ignore if it's multisign
-            if (!payload.isMultiSign()) {
-                transaction.Account = { address: preferredAccount.address };
-            }
-        }
+        // set the source
+        setSource(source);
 
-        // remove hidden accounts but keep preffered account even if hidden
-        availableAccounts = filter(availableAccounts, (a) => !a.hidden || a.address === preferredAccount.address);
-
+        // set available accounts
         this.setState({
             accounts: availableAccounts,
         });
-
-        setSource(preferredAccount);
     };
 
     toggleCanScroll = () => {
@@ -234,6 +244,11 @@ class ReviewStep extends Component<Props, State> {
 
         const { payload, source, isValidating, isPreparing, setSource, onAccept, onClose, getTransactionLabel } =
             this.context;
+
+        // return if source is not set yet
+        if (!source) {
+            return null;
+        }
 
         return (
             <ImageBackground
