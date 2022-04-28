@@ -62,8 +62,8 @@ export default StyleService.create({
     },
     successIcon: { tintColor: '$green' },
     neutral: {
-        backgroundColor: '$light',
-        borderColor: '$light',
+        backgroundColor: '$lightGrey',
+        borderColor: '$lightGrey',
         tintColor: '$grey',
     },
     neutralIcon: { tintColor: '$grey' },

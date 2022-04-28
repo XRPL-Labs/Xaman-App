@@ -2360,8 +2360,8 @@ exports[`Storyshots InfoMessage All 1`] = `
             },
             undefined,
             Object {
-              "backgroundColor": "#F3F6FA",
-              "borderColor": "#F3F6FA",
+              "backgroundColor": "rgba(96,104,133,0.06)",
+              "borderColor": "rgba(96,104,133,0.06)",
               "tintColor": "#606885",
             },
           ]
@@ -2911,8 +2911,8 @@ exports[`Storyshots InfoMessage Flat 1`] = `
               "borderRadius": 0,
             },
             Object {
-              "backgroundColor": "#F3F6FA",
-              "borderColor": "#F3F6FA",
+              "backgroundColor": "rgba(96,104,133,0.06)",
+              "borderColor": "rgba(96,104,133,0.06)",
               "tintColor": "#606885",
             },
           ]
@@ -3840,8 +3840,8 @@ exports[`Storyshots InfoMessage With More info 1`] = `
             },
             undefined,
             Object {
-              "backgroundColor": "#F3F6FA",
-              "borderColor": "#F3F6FA",
+              "backgroundColor": "rgba(96,104,133,0.06)",
+              "borderColor": "rgba(96,104,133,0.06)",
               "tintColor": "#606885",
             },
           ]
