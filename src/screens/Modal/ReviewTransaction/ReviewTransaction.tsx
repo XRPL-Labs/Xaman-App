@@ -79,10 +79,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 transaction: payload.getTransaction(),
             });
         } catch (e: any) {
-            this.setState({
-                hasError: true,
-                errorMessage: e?.message,
-            });
+            this.setError(e?.message);
         }
     }
 
@@ -108,10 +105,14 @@ class ReviewTransactionModal extends Component<Props, State> {
     }
 
     onHardwareBackPress = () => {
-        const { currentStep } = this.state;
+        const { currentStep, hasError } = this.state;
 
         if (currentStep === Steps.Review) {
-            this.onClose();
+            if (hasError) {
+                this.onDecline();
+            } else {
+                this.onClose();
+            }
         }
 
         return true;
