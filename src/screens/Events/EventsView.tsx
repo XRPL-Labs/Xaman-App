@@ -3,9 +3,9 @@
  */
 import Fuse from 'fuse.js';
 import moment from 'moment-timezone';
-import { isEmpty, flatMap, isUndefined, isEqual, filter, get, uniqBy, groupBy, map, without, orderBy } from 'lodash';
+import { filter, flatMap, get, groupBy, isEmpty, isEqual, isUndefined, map, orderBy, uniqBy, without } from 'lodash';
 import React, { Component } from 'react';
-import { SafeAreaView, Text, InteractionManager, ImageBackground, Image } from 'react-native';
+import { Image, ImageBackground, InteractionManager, SafeAreaView, Text } from 'react-native';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -16,8 +16,8 @@ import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 // Parses
-import { TransactionFactory, LedgerObjectFactory } from '@common/libs/ledger/factory';
-import { LedgerMarker, LedgerEntriesTypes, LedgerObjectTypes } from '@common/libs/ledger/types';
+import { LedgerObjectFactory, TransactionFactory } from '@common/libs/ledger/factory';
+import { LedgerEntriesTypes, LedgerMarker, LedgerObjectTypes, TransactionTypes } from '@common/libs/ledger/types';
 import { Transactions } from '@common/libs/ledger/transactions/types';
 import { LedgerObjects } from '@common/libs/ledger/objects/types';
 import { Payload } from '@common/libs/payload';
@@ -26,10 +26,10 @@ import { Payload } from '@common/libs/payload';
 import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterView';
 
 // Services
-import { LedgerService, AccountService, BackendService, PushNotificationsService, StyleService } from '@services';
+import { AccountService, BackendService, LedgerService, PushNotificationsService, StyleService } from '@services';
 
 // Components
-import { SearchBar, Button, SegmentButton, Header } from '@components/General';
+import { Button, Header, SearchBar, SegmentButton } from '@components/General';
 import { EventsFilterChip, EventsList } from '@components/Modules';
 
 // Locale
@@ -417,41 +417,61 @@ class EventsView extends Component<Props, State> {
         }
 
         if (filters.TransactionType) {
-            const includeTypes = [] as string[];
+            let includeTypes = [] as string[];
             switch (filters.TransactionType) {
                 case 'Payment':
-                    includeTypes.push('Payment');
+                    includeTypes = [TransactionTypes.Payment];
                     break;
                 case 'TrustSet':
-                    includeTypes.push('TrustSet');
+                    includeTypes = [TransactionTypes.TrustSet];
                     break;
                 case 'Escrow':
-                    includeTypes.push(...['EscrowCancel', 'EscrowCreate', 'EscrowFinish', 'Escrow']);
+                    includeTypes = [
+                        TransactionTypes.EscrowCancel,
+                        TransactionTypes.EscrowCreate,
+                        TransactionTypes.EscrowFinish,
+                        LedgerObjectTypes.Escrow,
+                    ];
                     break;
                 case 'Offer':
-                    includeTypes.push(...['OfferCancel', 'OfferCreate', 'Offer']);
+                    includeTypes = [
+                        TransactionTypes.OfferCancel,
+                        TransactionTypes.OfferCreate,
+                        LedgerObjectTypes.Offer,
+                    ];
                     break;
                 case 'Check':
-                    includeTypes.push(...['CheckCancel', 'CheckCreate', 'CheckCash', 'Check']);
+                    includeTypes = [
+                        TransactionTypes.CheckCancel,
+                        TransactionTypes.CheckCreate,
+                        TransactionTypes.CheckCash,
+                        LedgerObjectTypes.Check,
+                    ];
                     break;
                 case 'Other':
-                    includeTypes.push(
-                        ...[
-                            'AccountSet',
-                            'PaymentChannelClaim',
-                            'PaymentChannelCreate',
-                            'PaymentChannelFund',
-                            'SetRegularKey',
-                            'SignerListSet',
-                        ],
-                    );
+                    includeTypes = [
+                        TransactionTypes.AccountSet,
+                        TransactionTypes.PaymentChannelClaim,
+                        TransactionTypes.PaymentChannelCreate,
+                        TransactionTypes.PaymentChannelFund,
+                        TransactionTypes.SetRegularKey,
+                        TransactionTypes.SignerListSet,
+                        TransactionTypes.TicketCreate,
+                        TransactionTypes.DepositPreauth,
+                        TransactionTypes.AccountDelete,
+                        TransactionTypes.NFTokenAcceptOffer,
+                        TransactionTypes.NFTokenBurn,
+                        TransactionTypes.NFTokenCancelOffer,
+                        TransactionTypes.NFTokenCreateOffer,
+                        TransactionTypes.NFTokenMint,
+                    ];
                     break;
                 default:
                     break;
             }
 
             newTransactions = filter(newTransactions, (t) => {
-                return includeTypes.indexOf(get(t, 'Type')) !== -1;
+                return includeTypes.includes(get(t, 'Type'));
             });
         }
 
