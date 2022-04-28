@@ -924,6 +924,7 @@
     "nonExpiredCheckCanOnlyCancelByCreatedAccount": "A (non expired) check can only be cancelled by the account that created it or destination account.",
     "accountDeleteExchangeSupportWarning": "Note: when deleting your XRP ledger account and sending the remaining balance to an exchange, make sure the destination exchange supports deposits using AccountDelete transactions. Not all exchanges do, which results in a support procedure with the exchange to get your funds credited to your account",
     "notVettedTokenTradeWarning": "Trade at your own risk! The token you are about to trade **has not been vetted**.\n\nAnyone can create a token, including creating fake versions of existing tokens that claim to represent projects. If you trade this token, you may not be able to sell it back. You are potentially putting your assets/savings at risk!",
-    "forcedSignersAccountsDoesNotExist": "This request can only be signed by \n\n%{accounts}\n\nThis accounts are not present with signing access."
+    "forcedSignersAccountsDoesNotExist": "This request can only be signed by \n\n%{accounts}\n\nThis accounts are not present with signing access.",
+    "tradeEntireTokenWorthWarning": "Warning: the amount of %{currency} is equal to or higher than your %{currency} balance of this asset. If this offer is executed, you will fully liquidate your %{currency} position."
   }
 }

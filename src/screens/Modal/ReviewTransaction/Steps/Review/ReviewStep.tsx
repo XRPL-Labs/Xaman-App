@@ -160,7 +160,7 @@ class ReviewStep extends Component<Props, State> {
     };
 
     renderDetails = () => {
-        const { payload, transaction } = this.context;
+        const { payload, transaction, source } = this.context;
 
         // if tx is SignIn ignore to show details
         if (payload.isSignIn()) {
@@ -174,6 +174,7 @@ class ReviewStep extends Component<Props, State> {
         return (
             <>
                 <Template
+                    source={source}
                     transaction={transaction}
                     canOverride={!payload.isMultiSign()}
                     forceRender={this.forceRender}

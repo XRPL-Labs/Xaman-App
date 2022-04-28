@@ -5,21 +5,26 @@ import { View, Text } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
 
+import { AccountSchema } from '@store/schemas/latest';
+
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { AmountText } from '@components/General';
+import { AmountText, InfoMessage } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import { FormatDate } from '@common/utils/date';
+import { CalculateAvailableBalance } from '@common/utils/balance';
 
 import Localize from '@locale';
 
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
     transaction: OfferCreate;
+    source: AccountSchema;
 }
 
 export interface State {
@@ -27,6 +32,7 @@ export interface State {
     isLoadingIssuerFee: boolean;
     issuerDetails: AccountNameType;
     issuerFee: number;
+    warnings: string;
 }
 
 /* Component ==================================================================== */
@@ -39,10 +45,17 @@ class OfferCreateTemplate extends Component<Props, State> {
             isLoadingIssuerFee: true,
             issuerDetails: undefined,
             issuerFee: 0,
+            warnings: undefined,
         };
     }
 
     componentDidMount() {
+        this.setIssuerTransferFee();
+        this.setIssuerDetails();
+        this.setWarnings();
+    }
+
+    setIssuerTransferFee = () => {
         const { transaction } = this.props;
 
         const issuerAddress = transaction.TakerGets.issuer || transaction.TakerPays.issuer;
@@ -64,6 +77,12 @@ class OfferCreateTemplate extends Component<Props, State> {
                     isLoadingIssuerFee: false,
                 });
             });
+    };
+
+    setIssuerDetails = () => {
+        const { transaction } = this.props;
+
+        const issuerAddress = transaction.TakerGets.issuer || transaction.TakerPays.issuer;
 
         getAccountName(issuerAddress)
             .then((res: any) => {
@@ -81,11 +100,39 @@ class OfferCreateTemplate extends Component<Props, State> {
                     isLoadingIssuerDetails: false,
                 });
             });
-    }
+    };
+
+    setWarnings = () => {
+        const { transaction, source } = this.props;
+
+        let showFullBalanceLiquidWarning: boolean;
+
+        // Warn users if they are about to trade their entire token worth
+        const { issuer, currency, value } = transaction.TakerGets;
+
+        if (currency === 'XRP') {
+            // selling XRP
+            showFullBalanceLiquidWarning = Number(value) >= CalculateAvailableBalance(source);
+        } else {
+            // sell IOU
+            const line = source.lines.find(
+                (l: any) => l.currency.issuer === issuer && l.currency.currency === currency,
+            );
+            if (line) {
+                showFullBalanceLiquidWarning = Number(value) >= line.balance;
+            }
+        }
+
+        if (showFullBalanceLiquidWarning) {
+            this.setState({
+                warnings: Localize.t('payload.tradeEntireTokenWorthWarning', { currency }),
+            });
+        }
+    };
 
     render() {
         const { transaction } = this.props;
-        const { isLoadingIssuerDetails, issuerDetails, isLoadingIssuerFee, issuerFee } = this.state;
+        const { isLoadingIssuerDetails, issuerDetails, isLoadingIssuerFee, issuerFee, warnings } = this.state;
 
         return (
             <>
@@ -98,6 +145,12 @@ class OfferCreateTemplate extends Component<Props, State> {
                         ...issuerDetails,
                     }}
                 />
+
+                {warnings && (
+                    <View style={AppStyles.paddingBottomSml}>
+                        <InfoMessage type="error" label={warnings} />
+                    </View>
+                )}
 
                 <Text style={[styles.label]}>{Localize.t('global.selling')}</Text>
                 <View style={[styles.contentBox]}>
