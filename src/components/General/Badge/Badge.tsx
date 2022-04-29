@@ -20,6 +20,7 @@ type BadgeType =
     | 'contacts'
     | 'accounts'
     | 'success'
+    | 'open'
     | 'planned';
 
 interface Props {
@@ -42,6 +43,7 @@ const COLORS = {
     contacts: AppColors.blue,
     success: AppColors.green,
     planned: AppColors.blue,
+    open: AppColors.grey,
 };
 
 const SIZES = {
@@ -87,9 +89,11 @@ export default class Badge extends PureComponent<Props> {
             case 'accounts':
                 return <Text style={style}>Myself</Text>;
             case 'contacts':
-                return <Text style={style}>Contact</Text>;
+                return <Text style={style}>{Localize.t('global.contact')}</Text>;
             case 'success':
                 return <Text style={style}>{Localize.t('global.success')}</Text>;
+            case 'open':
+                return <Text style={style}>{Localize.t('events.eventTypeOpen')} </Text>;
             case 'planned':
                 return <Text style={style}>{Localize.t('events.eventTypePlanned')}</Text>;
             default:

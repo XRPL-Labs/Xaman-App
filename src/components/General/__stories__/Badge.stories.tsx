@@ -40,9 +40,44 @@ storiesOf('Badge', module)
         }),
     )
     .add(
+        'FioProtocol',
+        withPropsCombinations(Badge, {
+            size: SIZES,
+            type: ['fioprotocol'],
+        }),
+    )
+    .add(
+        'Contacts',
+        withPropsCombinations(Badge, {
+            size: SIZES,
+            type: ['contacts'],
+        }),
+    )
+    .add(
+        'Accounts',
+        withPropsCombinations(Badge, {
+            size: SIZES,
+            type: ['accounts'],
+        }),
+    )
+    .add(
         'Success',
         withPropsCombinations(Badge, {
             size: SIZES,
             type: ['success'],
+        }),
+    )
+    .add(
+        'Open',
+        withPropsCombinations(Badge, {
+            size: SIZES,
+            type: ['open'],
+        }),
+    )
+    .add(
+        'Planned',
+        withPropsCombinations(Badge, {
+            size: SIZES,
+            type: ['planned'],
         }),
     );
