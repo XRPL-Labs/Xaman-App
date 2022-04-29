@@ -2,7 +2,7 @@
  * Add Currency Screen
  */
 
-import { sortBy, filter } from 'lodash';
+import { sortBy, filter, countBy } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, ScrollView, InteractionManager } from 'react-native';
 
@@ -79,12 +79,10 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         return LedgerService.getAccountObjects(account).then((resp) => {
             const { account_objects, marker: _marker } = resp;
             // ignore TrustLines as we handle them in better way
-            // ignore NFTokenOffers as we will show them in better way
             // ignore incoming objects
             const filtered = filter(account_objects, (o) => {
                 return (
                     o.LedgerEntryType !== 'RippleState' &&
-                    o.LedgerEntryType !== 'NFTokenOffer' &&
                     // @ts-ignore
                     (o.Account === account || o.Owner === account)
                 );
@@ -124,19 +122,22 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             return null;
         }
 
-        return accountObjects.map((item: any, index: number) => {
-            const { LedgerEntryType } = item;
+        const accountObjectsCount = countBy(accountObjects, 'LedgerEntryType');
 
+        return Object.keys(accountObjectsCount).map((entryType) => {
+            const count = accountObjectsCount[entryType];
+            const label = count > 1 ? `${entryType}'s (${count})` : entryType;
+            const totalReserve = count * networkReserve.OwnerReserve;
             return (
-                <View key={`object-${index}`} style={[styles.objectItemCard]}>
+                <View key={`objects-${entryType}`} style={[styles.objectItemCard]}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
                         <View style={[styles.iconContainer]}>
                             <Icon name="IconInfo" size={16} style={[AppStyles.imgColorGrey]} />
                         </View>
-                        <Text style={[styles.rowLabel]}>{LedgerEntryType}</Text>
+                        <Text style={[styles.rowLabel]}>{label}</Text>
                     </View>
                     <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                        <Text style={[styles.reserveAmount]}>{networkReserve.OwnerReserve} XRP</Text>
+                        <Text style={[styles.reserveAmount]}>{totalReserve} XRP</Text>
                     </View>
                 </View>
             );
@@ -152,7 +153,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         return (
             <>
                 {account.lines.map((line: TrustLineSchema, index: number) => {
-                    // don't render obligation trustlines
+                    // don't render obligation TrustLines
                     if (line.obligation) return null;
 
                     return (
