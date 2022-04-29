@@ -246,6 +246,17 @@ class Meta {
 
         return compact(values);
     };
+
+    parseTicketSequences = (): number[] => {
+        const values = this.nodes.map((node) => {
+            if (node.entryType === 'Ticket') {
+                return node.newFields?.TicketSequence;
+            }
+            return undefined;
+        });
+
+        return compact(values);
+    };
 }
 
 export default Meta;

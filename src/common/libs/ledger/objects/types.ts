@@ -1,3 +1,3 @@
-import { Offer, Escrow, Check, NFTokenOffer } from '.';
+import { Offer, Escrow, Check, Ticket, NFTokenOffer } from '.';
 
-export type LedgerObjects = Offer | Escrow | Check | NFTokenOffer;
+export type LedgerObjects = Offer | Escrow | Check | Ticket | NFTokenOffer;

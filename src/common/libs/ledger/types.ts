@@ -36,6 +36,7 @@ export enum LedgerObjectTypes {
     Escrow = 'Escrow',
     NFTokenOffer = 'NFTokenOffer',
     Offer = 'Offer',
+    Ticket = 'Ticket',
 }
 
 /**

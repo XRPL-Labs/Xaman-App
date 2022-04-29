@@ -184,7 +184,7 @@ class EventsView extends Component<Props, State> {
             }
 
             // account objects we are interested in
-            const objectTypes = ['check', 'escrow', 'offer'];
+            const objectTypes = ['check', 'escrow', 'offer', 'ticket'];
             let objects = [] as LedgerEntriesTypes[];
 
             objectTypes
@@ -299,7 +299,9 @@ class EventsView extends Component<Props, State> {
 
         if (sectionIndex === 1) {
             const open = orderBy(
-                filter(plannedTransactions, (p) => [LedgerObjectTypes.Offer, LedgerObjectTypes.Check].includes(p.Type)),
+                filter(plannedTransactions, (p) =>
+                    [LedgerObjectTypes.Offer, LedgerObjectTypes.Check, LedgerObjectTypes.Ticket].includes(p.Type),
+                ),
                 ['Date'],
             );
 
@@ -438,6 +440,7 @@ class EventsView extends Component<Props, State> {
                         TransactionTypes.OfferCancel,
                         TransactionTypes.OfferCreate,
                         LedgerObjectTypes.Offer,
+                        LedgerObjectTypes.NFTokenOffer,
                     ];
                     break;
                 case 'Check':
@@ -464,6 +467,7 @@ class EventsView extends Component<Props, State> {
                         TransactionTypes.NFTokenCancelOffer,
                         TransactionTypes.NFTokenCreateOffer,
                         TransactionTypes.NFTokenMint,
+                        LedgerObjectTypes.Ticket,
                     ];
                     break;
                 default:
@@ -704,7 +708,6 @@ class EventsView extends Component<Props, State> {
 
         return (
             <SafeAreaView testID="events-tab-view" style={[AppStyles.tabContainer, styles.container]}>
-                {/* Header */}
                 <Header
                     containerStyle={AppStyles.headerContainer}
                     leftComponent={{
@@ -726,13 +729,11 @@ class EventsView extends Component<Props, State> {
                         render: (): any => null,
                     }}
                 />
-
                 <SearchBar
                     containerStyle={AppStyles.marginHorizontalSml}
                     onChangeText={this.applySearch}
                     placeholder={Localize.t('global.search')}
                 />
-
                 <SegmentButton
                     containerStyle={AppStyles.paddingHorizontalSml}
                     buttons={[
@@ -742,7 +743,6 @@ class EventsView extends Component<Props, State> {
                     ]}
                     onPress={this.onSectionChange}
                 />
-
                 <EventsList
                     account={account}
                     headerComponent={this.renderListHeader}

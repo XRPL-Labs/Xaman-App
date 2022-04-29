@@ -78,45 +78,30 @@ class LedgerObjectTemplate extends Component<Props, State> {
     getRecipientDetails = () => {
         const { item, account } = this.props;
 
-        let address;
-        let tag;
-        let key;
-
         switch (item.Type) {
             case LedgerObjectTypes.Check:
-                address = item.Destination.address;
-                tag = item.Destination.tag;
-                key = 'Destination';
-                break;
             case LedgerObjectTypes.Escrow:
-                address = item.Destination.address;
-                tag = item.Destination.tag;
-                key = 'Destination';
-                break;
+                return {
+                    address: item.Destination.address,
+                    tag: item.Destination.tag,
+                };
+            case LedgerObjectTypes.Offer:
+            case LedgerObjectTypes.Ticket:
+                return {
+                    address: account.address,
+                    name: account.label,
+                };
             default:
-                break;
+                return {};
         }
-
-        //  transactions that are account center
-        if (item.Type === LedgerObjectTypes.Offer) {
-            return {
-                address,
-                tag,
-                name: account.label,
-                key: 'Account',
-            };
-        }
-
-        return {
-            address,
-            tag,
-            name: undefined,
-            key,
-        };
     };
 
     lookUpRecipientName = () => {
         const { address, tag } = this.state;
+
+        if (!address) {
+            return;
+        }
 
         getAccountName(address, tag)
             .then((res: any) => {
@@ -188,6 +173,8 @@ class LedgerObjectTemplate extends Component<Props, State> {
                 return Localize.t('global.offer');
             case LedgerObjectTypes.Check:
                 return Localize.t('global.check');
+            case LedgerObjectTypes.Ticket:
+                return `${Localize.t('global.ticket')} #${item.TicketSequence}`;
             default:
                 return item.Type;
         }
@@ -196,13 +183,8 @@ class LedgerObjectTemplate extends Component<Props, State> {
     renderRightPanel = () => {
         const { item, account } = this.props;
 
-        let incoming = false;
-
-        if (item.Type !== LedgerObjectTypes.Offer) {
-            incoming = item.Destination?.address === account.address;
-        }
-
         if (item.Type === LedgerObjectTypes.Escrow) {
+            const incoming = item.Destination?.address === account.address;
             return (
                 <AmountText
                     value={item.Amount.value}

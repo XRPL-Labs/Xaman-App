@@ -531,6 +531,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 return Localize.t('global.escrow');
             case LedgerObjectTypes.Check:
                 return Localize.t('global.check');
+            case LedgerObjectTypes.Ticket:
+                return Localize.t('global.ticket');
             default:
                 return tx.Type;
         }
@@ -654,6 +656,15 @@ class TransactionDetailsView extends Component<Props, State> {
                     Owner: tx.Account.address,
                     PreviousTxnID: tx.PreviousTxnID,
                 });
+                break;
+            case 'CancelTicket':
+                if (tx.Type === LedgerObjectTypes.Ticket) {
+                    Object.assign(transaction, {
+                        TransactionType: 'AccountSet',
+                        Sequence: 0,
+                        TicketSequence: tx.TicketSequence,
+                    });
+                }
                 break;
             default:
                 transaction = undefined;
@@ -916,7 +927,10 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderTicketCreate = (tx: Extract<Transactions, { Type: TransactionTypes.TicketCreate }>): string => {
-        return Localize.t('events.itCreatesTicketForThisAccount', { ticketCount: tx.TicketCount });
+        let content = Localize.t('events.itCreatesTicketForThisAccount', { ticketCount: tx.TicketCount });
+        content += '\n\n';
+        content += Localize.t('events.createdTicketsSequence', { ticketsSequence: tx.TicketsSequence.join(', ') });
+        return content;
     };
 
     renderTrustSet = (tx: Extract<Transactions, { Type: TransactionTypes.TrustSet }>) => {
@@ -1194,6 +1208,10 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
+    renderTicketObject = (tx: Extract<LedgerObjects, { Type: LedgerObjectTypes.Ticket }>): string => {
+        return `${Localize.t('global.ticketSequence')} #${tx.TicketSequence}`;
+    };
+
     renderDescription = () => {
         const { tx } = this.state;
 
@@ -1268,6 +1286,9 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case TransactionTypes.NFTokenAcceptOffer:
                 content += this.renderNFTokenAcceptOffer(tx);
+                break;
+            case LedgerObjectTypes.Ticket:
+                content += this.renderTicketObject(tx);
                 break;
             default:
                 content += `This is a ${tx.Type} transaction`;
@@ -1464,13 +1485,31 @@ class TransactionDetailsView extends Component<Props, State> {
     renderHeader = () => {
         const { tx } = this.state;
 
+        let badgeType: any;
+
+        if (tx.ClassName === 'LedgerObject') {
+            if ([LedgerObjectTypes.Offer, LedgerObjectTypes.Check, LedgerObjectTypes.Ticket].includes(tx.Type)) {
+                badgeType = 'open';
+            } else {
+                badgeType = 'planned';
+            }
+        } else {
+            badgeType = 'success';
+        }
+
+        let date;
+
+        if (tx.Type !== LedgerObjectTypes.Ticket) {
+            date = moment(tx.Date).format('LLLL');
+        }
+
         return (
             <View style={styles.headerContainer}>
                 <Text style={AppStyles.h5}>{this.getLabel()}</Text>
                 <Spacer />
-                <Badge size="medium" type={tx.ClassName === 'Transaction' ? 'success' : 'planned'} />
+                <Badge size="medium" type={badgeType} />
                 <Spacer />
-                <Text style={[styles.dateText]}>{moment(tx.Date).format('LLLL')}</Text>
+                {date && <Text style={[styles.dateText]}>{date}</Text>}
             </View>
         );
     };
@@ -1873,7 +1912,13 @@ class TransactionDetailsView extends Component<Props, State> {
                         secondary: true,
                     });
                 }
-
+                break;
+            case 'Ticket':
+                actionButtons.push({
+                    label: Localize.t('events.cancelTicket'),
+                    type: 'CancelTicket',
+                    secondary: true,
+                });
                 break;
             default:
                 break;

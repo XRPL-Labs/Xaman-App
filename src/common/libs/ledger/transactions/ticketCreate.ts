@@ -1,7 +1,8 @@
-import { get, isUndefined } from 'lodash';
+import { get, isUndefined, set } from 'lodash';
 
 import BaseTransaction from './base';
 
+import Meta from '../parser/meta';
 /* Types ==================================================================== */
 import { TransactionJSONType, TransactionTypes } from '../types';
 
@@ -23,6 +24,27 @@ class TicketCreate extends BaseTransaction {
 
     get TicketCount(): number {
         return get(this, ['tx', 'TicketCount']);
+    }
+
+    set TicketsSequence(sequences: number[]) {
+        set(this, 'ticketsSequence', sequences);
+    }
+
+    get TicketsSequence(): number[] {
+        const ticketsSequence = get(this, 'ticketsSequence', undefined);
+
+        // if we already set the created tickets sequence's return
+        if (ticketsSequence) {
+            return ticketsSequence;
+        }
+
+        // get created tickets sequences from meta
+        const sequences = new Meta(this.meta).parseTicketSequences();
+
+        // store the sequences
+        this.TicketsSequence = sequences;
+
+        return sequences;
     }
 }
 
