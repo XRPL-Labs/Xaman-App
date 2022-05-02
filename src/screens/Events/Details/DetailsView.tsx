@@ -1793,8 +1793,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
             }
 
-            // path paid with different currency
-            if (tx.Paths && tx.SendMax && tx.SendMax.currency !== tx.Amount.currency) {
+            // cross currency
+            if (tx.SendMax && tx.SendMax.currency !== tx.Amount.currency) {
                 if (balanceChanges?.sent) {
                     return (
                         <View style={styles.amountHeaderContainer}>
