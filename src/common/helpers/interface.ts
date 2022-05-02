@@ -1,6 +1,12 @@
-/* eslint-disable operator-linebreak */
-
-import { Platform, ActionSheetIOS, ToastAndroid, Alert, NativeModules, AlertOptions } from 'react-native';
+import {
+    Platform,
+    ActionSheetIOS,
+    ToastAndroid,
+    Alert,
+    NativeModules,
+    AlertOptions,
+    ActionSheetIOSOptions,
+} from 'react-native';
 
 interface PromptOptions extends AlertOptions {
     type?: 'default' | 'plain-text';
@@ -19,7 +25,7 @@ const Toast = (message: string, duration?: number) => {
     );
 };
 
-const ActionSheet = (options: any, callback: any, style?: 'dark' | 'light') => {
+const ActionSheet = (options: ActionSheetIOSOptions, callback: any, style?: 'dark' | 'light') => {
     const defaultOptions = { userInterfaceStyle: style || 'light' };
     const actionSheet = Platform.OS === 'android' ? NativeModules.ActionSheetAndroid : ActionSheetIOS;
     actionSheet.showActionSheetWithOptions({ ...defaultOptions, ...options }, callback);
