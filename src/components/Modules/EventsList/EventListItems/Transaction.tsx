@@ -279,6 +279,9 @@ class TransactionTemplate extends Component<Props, State> {
             case TransactionTypes.TrustSet: {
                 // incoming TrustLine
                 if (item.Account.address !== account.address) {
+                    if (item.Limit === 0) {
+                        return Localize.t('events.incomingTrustLineRemoved');
+                    }
                     return Localize.t('events.incomingTrustLineAdded');
                 }
                 const ownerCountChange = item.OwnerCountChange(account.address);

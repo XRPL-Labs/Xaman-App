@@ -423,6 +423,7 @@
     "removedATrustLine": "Removed a token (TrustLine)",
     "updatedATrustLine": "Token Updated (TrustLine)",
     "incomingTrustLineAdded": "Incoming TrustLine added",
+    "incomingTrustLineRemoved": "Incoming TrustLine removed",
     "addATrustLine": "Add a token (TrustLine)",
     "updateAccountAssets": "Update account tokens",
     "createOffer": "Create offer",

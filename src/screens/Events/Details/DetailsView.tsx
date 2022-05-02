@@ -459,8 +459,11 @@ class TransactionDetailsView extends Component<Props, State> {
                 return Localize.t('global.payment');
 
             case TransactionTypes.TrustSet: {
-                // incoming trustline
+                // incoming TrustLine
                 if (tx.Account.address !== account.address) {
+                    if (tx.Limit === 0) {
+                        return Localize.t('events.incomingTrustLineRemoved');
+                    }
                     return Localize.t('events.incomingTrustLineAdded');
                 }
                 const ownerCountChange = tx.OwnerCountChange(account.address);
