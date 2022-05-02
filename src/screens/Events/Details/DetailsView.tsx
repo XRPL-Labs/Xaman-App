@@ -569,6 +569,11 @@ class TransactionDetailsView extends Component<Props, State> {
 
         // handle return or new payment process
         if (type === 'Payment' && tx.Type === TransactionTypes.Payment) {
+            // remove return feature
+            if (incomingTx) {
+                return;
+            }
+
             // create new payment
             const params = {
                 scanResult: {
@@ -590,16 +595,16 @@ class TransactionDetailsView extends Component<Props, State> {
                         l.balance > 0,
                 );
             }
+
+            // if no currency found just return
             if (!currency) {
                 return;
             }
+
+            // assign currency to the params
             Object.assign(params, { currency });
 
-            // if return payment prefill the amount
-            if (incomingTx) {
-                Object.assign(params, { amount: tx.DeliveredAmount.value });
-            }
-
+            // got to Payment screen
             Navigator.push(AppScreens.Transaction.Payment, params);
             return;
         }
@@ -1840,7 +1845,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
     renderActionButtons = () => {
         const { account } = this.props;
-        const { tx, incomingTx, spendableAccounts } = this.state;
+        const { tx, spendableAccounts } = this.state;
 
         // just return as the account is not a spendable account
         if (!find(spendableAccounts, { address: account.address })) {
@@ -1850,9 +1855,10 @@ class TransactionDetailsView extends Component<Props, State> {
         const actionButtons = [];
 
         switch (tx.Type) {
-            case 'Payment':
-                if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) > -1 && tx.DeliveredAmount) {
-                    // check if we can return the payment
+            case TransactionTypes.Payment:
+                // only new payment
+                if (tx.Account.address === account.address && tx.DeliveredAmount) {
+                    // check if we can make new payment base on sent currency
                     if (tx.DeliveredAmount.currency !== 'XRP') {
                         const trustLine = account.lines.find(
                             (l: any) =>
@@ -1860,28 +1866,26 @@ class TransactionDetailsView extends Component<Props, State> {
                                 l.currency.issuer === tx.DeliveredAmount.issuer &&
                                 l.balance > 0,
                         );
-                        // do not show the button if user does not have the proper trustline
+                        // do not show the button if user does not have the TrustLine
                         if (!trustLine) {
                             break;
                         }
                     }
-
-                    const label = incomingTx ? Localize.t('events.returnPayment') : Localize.t('events.newPayment');
                     actionButtons.push({
-                        label,
+                        label: Localize.t('events.newPayment'),
                         type: 'Payment',
                         secondary: false,
                     });
                 }
                 break;
-            case 'Offer':
+            case LedgerObjectTypes.Offer:
                 actionButtons.push({
                     label: Localize.t('events.cancelOffer'),
                     type: 'OfferCancel',
                     secondary: true,
                 });
                 break;
-            case 'Escrow':
+            case LedgerObjectTypes.Escrow:
                 if (tx.isExpired) {
                     actionButtons.push({
                         label: Localize.t('events.cancelEscrow'),
@@ -1899,7 +1903,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
 
                 break;
-            case 'Check':
+            case LedgerObjectTypes.Check:
                 if (tx.Destination.address === account.address && !tx.isExpired) {
                     actionButtons.push({
                         label: Localize.t('events.cashCheck'),
@@ -1915,7 +1919,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     });
                 }
                 break;
-            case 'Ticket':
+            case LedgerObjectTypes.Ticket:
                 actionButtons.push({
                     label: Localize.t('events.cancelTicket'),
                     type: 'CancelTicket',
