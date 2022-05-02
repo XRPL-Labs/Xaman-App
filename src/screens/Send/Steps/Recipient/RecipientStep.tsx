@@ -661,15 +661,19 @@ class RecipientStep extends Component<Props, State> {
     };
 
     goNext = async () => {
-        const { goNext, setFee, setAvailableFees, setIssuerFee, currency } = this.context;
+        const { goNext, setFee, setAvailableFees, setIssuerFee, source, destination, currency } = this.context;
 
         try {
             this.setState({
                 isLoading: true,
             });
 
-            // sending IOU
-            if (typeof currency !== 'string') {
+            // sending IOU && SENDER AND DESTINATION is not issuer, get issuer fee
+            if (
+                typeof currency !== 'string' &&
+                source.address !== currency.currency.issuer &&
+                destination.address !== currency.currency.issuer
+            ) {
                 // fetching/applying issuer fee from network
                 const issuerFee = await LedgerService.getAccountTransferRate(currency.currency.issuer);
                 if (issuerFee) {

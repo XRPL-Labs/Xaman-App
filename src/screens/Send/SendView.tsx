@@ -210,8 +210,12 @@ class SendView extends Component<Props, State> {
             if (typeof currency === 'string') {
                 payment.Amount = amount;
             } else {
-                // if issuer has transfer fee and sender is not issuer add partial payment flag
-                if (issuerFee || currency.currency.issuer === source.address) {
+                // if issuer has transfer fee and sender/destination is not issuer, add partial payment flag
+                if (
+                    issuerFee &&
+                    source.address !== currency.currency.issuer &&
+                    destination.address !== currency.currency.issuer
+                ) {
                     payment.Flags = [txFlags.Payment.PartialPayment];
                 }
 
