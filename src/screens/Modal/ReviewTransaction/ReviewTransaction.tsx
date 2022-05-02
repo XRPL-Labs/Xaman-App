@@ -130,7 +130,11 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         switch (transaction.Type) {
             case TransactionTypes.AccountSet:
-                type = Localize.t('events.updateAccountSettings');
+                if (transaction.isNoOperation() && transaction.isCancelTicket()) {
+                    type = Localize.t('events.cancelTicket');
+                } else {
+                    type = Localize.t('events.updateAccountSettings');
+                }
                 break;
             case TransactionTypes.AccountDelete:
                 type = Localize.t('events.deleteAccount');

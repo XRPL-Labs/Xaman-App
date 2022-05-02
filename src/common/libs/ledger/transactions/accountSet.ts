@@ -50,6 +50,15 @@ class AccountSet extends BaseTransaction {
         );
     }
 
+    public isCancelTicket(): boolean {
+        return (
+            !isUndefined(this.TicketSequence) &&
+            this.TicketSequence > 0 &&
+            !isUndefined(this.Sequence) &&
+            this.Sequence === 0
+        );
+    }
+
     get SetFlag(): string {
         const intFlag = get(this, ['tx', 'SetFlag'], undefined);
         if (isUndefined(intFlag)) return undefined;

@@ -2,6 +2,8 @@ import isUndefined from 'lodash/isUndefined';
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
+import { InfoMessage } from '@components/General';
+
 import { AccountSet } from '@common/libs/ledger/transactions';
 
 import Localize from '@locale';
@@ -28,12 +30,31 @@ class AccountSetTemplate extends Component<Props, State> {
         return <Text style={[styles.value]}>{transaction.SetFlag}</Text>;
     };
 
+    renderNoOperation = () => {
+        const { transaction } = this.props;
+
+        let message = Localize.t('events.thisTransactionDoesNotEffectAnyAccountSettings');
+
+        // cancel ticket
+        if (transaction.isCancelTicket()) {
+            message = Localize.t('events.thisTransactionClearTicket', {
+                ticketSequence: transaction.TicketSequence,
+            });
+        }
+
+        return (
+            <View style={styles.signersContainer}>
+                <InfoMessage type="info" label={message} />
+            </View>
+        );
+    };
+
     render() {
         const { transaction } = this.props;
 
         // this is a no-op transaction
         if (transaction.isNoOperation()) {
-            return null;
+            return this.renderNoOperation();
         }
 
         return (

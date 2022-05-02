@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Text, View } from 'react-native';
+import { Image, InteractionManager, Text, View } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
 
 import { TransactionTypes } from '@common/libs/ledger/types';
@@ -45,13 +45,11 @@ class TransactionTemplate extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const recipientDetails = this.getRecipientDetails();
-
         this.state = {
-            name: recipientDetails.name,
-            address: recipientDetails.address,
+            name: undefined,
+            address: undefined,
+            tag: undefined,
             kycApproved: false,
-            tag: recipientDetails.tag,
         };
     }
 
@@ -61,13 +59,11 @@ class TransactionTemplate extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { name } = this.state;
-
+        // track mounted
         this.mounted = true;
 
-        if (!name) {
-            this.lookUpRecipientName();
-        }
+        // fetch recipient details
+        InteractionManager.runAfterInteractions(this.fetchRecipientDetails);
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -75,19 +71,20 @@ class TransactionTemplate extends Component<Props, State> {
 
         // force the lookup if timestamp changed
         if (timestamp !== prevProps.timestamp) {
-            this.lookUpRecipientName();
+            this.fetchRecipientDetails();
         }
     }
 
     componentWillUnmount() {
+        // track mounted
         this.mounted = false;
     }
 
-    getRecipientDetails = () => {
+    fetchRecipientDetails = () => {
         const { item, account } = this.props;
 
-        let address;
-        let tag;
+        let address = '';
+        let tag = undefined as number;
 
         switch (item.Type) {
             case TransactionTypes.Payment:
@@ -98,9 +95,7 @@ class TransactionTemplate extends Component<Props, State> {
                     tag = item.Destination.tag;
                 }
                 break;
-            case TransactionTypes.AccountDelete:
-                address = item.Account.address;
-                break;
+
             case TransactionTypes.CheckCreate:
                 if (item.Account?.address !== account.address) {
                     address = item.Account.address;
@@ -108,12 +103,6 @@ class TransactionTemplate extends Component<Props, State> {
                     address = item.Destination.address;
                     tag = item.Destination.tag;
                 }
-                break;
-            case TransactionTypes.CheckCash:
-                address = item.Account.address;
-                break;
-            case TransactionTypes.CheckCancel:
-                address = item.Account.address;
                 break;
             case TransactionTypes.TrustSet:
                 address = item.Issuer;
@@ -132,9 +121,7 @@ class TransactionTemplate extends Component<Props, State> {
             case TransactionTypes.DepositPreauth:
                 address = item.Authorize || item.Unauthorize;
                 break;
-            case TransactionTypes.TicketCreate:
-                address = item.Account.address;
-                break;
+
             case TransactionTypes.PaymentChannelCreate:
                 if (item.Account?.address !== account.address) {
                     address = item.Account.address;
@@ -143,24 +130,7 @@ class TransactionTemplate extends Component<Props, State> {
                     tag = item.Destination.tag;
                 }
                 break;
-            case TransactionTypes.PaymentChannelFund:
-                address = item.Account.address;
-                break;
-            case TransactionTypes.PaymentChannelClaim:
-                address = item.Account.address;
-                break;
-            case TransactionTypes.NFTokenMint:
-                address = item.Account.address;
-                break;
-            case TransactionTypes.NFTokenBurn:
-                address = item.Account.address;
-                break;
-            case TransactionTypes.NFTokenCreateOffer:
-                address = item.Account.address;
-                break;
-            case TransactionTypes.NFTokenCancelOffer:
-                address = item.Account.address;
-                break;
+
             case TransactionTypes.NFTokenAcceptOffer:
                 if (item.Account?.address === account.address) {
                     if (item.Offer) {
@@ -170,47 +140,48 @@ class TransactionTemplate extends Component<Props, State> {
                     address = item.Account.address;
                 }
                 break;
+            case TransactionTypes.AccountDelete:
+            case TransactionTypes.AccountSet:
+            case TransactionTypes.SignerListSet:
+            case TransactionTypes.SetRegularKey:
+            case TransactionTypes.OfferCancel:
+            case TransactionTypes.OfferCreate:
+            case TransactionTypes.CheckCash:
+            case TransactionTypes.CheckCancel:
+            case TransactionTypes.TicketCreate:
+            case TransactionTypes.PaymentChannelFund:
+            case TransactionTypes.PaymentChannelClaim:
+            case TransactionTypes.NFTokenMint:
+            case TransactionTypes.NFTokenBurn:
+            case TransactionTypes.NFTokenCreateOffer:
+            case TransactionTypes.NFTokenCancelOffer:
+                address = item.Account.address;
+                break;
             default:
                 break;
         }
-
-        // transactions that listed only for current account
-        if (
-            item.Type === TransactionTypes.AccountSet ||
-            item.Type === TransactionTypes.SignerListSet ||
-            item.Type === TransactionTypes.SetRegularKey ||
-            item.Type === TransactionTypes.OfferCancel ||
-            item.Type === TransactionTypes.OfferCreate
-        ) {
-            return {
-                address,
-                tag,
-                name: account.label,
-            };
-        }
-
-        return {
-            address,
-            tag,
-            name: undefined,
-        };
-    };
-
-    lookUpRecipientName = () => {
-        const { address, tag } = this.state;
 
         getAccountName(address, tag)
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     if (this.mounted) {
                         this.setState({
+                            address,
+                            tag,
                             name: res.name,
                             kycApproved: res.kycApproved,
                         });
                     }
                 }
             })
-            .catch(() => {});
+            .catch(() => {
+                if (this.mounted) {
+                    this.setState({
+                        address,
+                        tag,
+                    });
+                }
+            });
     };
 
     onPress = () => {
@@ -326,6 +297,9 @@ class TransactionTemplate extends Component<Props, State> {
             case TransactionTypes.EscrowCancel:
                 return Localize.t('events.cancelEscrow');
             case TransactionTypes.AccountSet:
+                if (item.isNoOperation() && item.isCancelTicket()) {
+                    return Localize.t('events.cancelTicket');
+                }
                 return Localize.t('events.accountSettings');
             case TransactionTypes.SignerListSet:
                 return Localize.t('events.setSignerList');

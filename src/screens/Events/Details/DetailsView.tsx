@@ -1,7 +1,7 @@
 /**
  * Transaction Details screen
  */
-import { find, get, isEmpty, isUndefined } from 'lodash';
+import { find, get, isEmpty } from 'lodash';
 import moment from 'moment-timezone';
 import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
@@ -479,6 +479,9 @@ class TransactionDetailsView extends Component<Props, State> {
             case TransactionTypes.EscrowCancel:
                 return Localize.t('events.cancelEscrow');
             case TransactionTypes.AccountSet:
+                if (tx.isNoOperation() && tx.isCancelTicket()) {
+                    return Localize.t('events.cancelTicket');
+                }
                 return Localize.t('events.accountSettings');
             case TransactionTypes.SignerListSet:
                 return Localize.t('events.setSignerList');
@@ -967,14 +970,13 @@ class TransactionDetailsView extends Component<Props, State> {
     renderAccountSet = (tx: Extract<Transactions, { Type: TransactionTypes.AccountSet }>): string => {
         let content = Localize.t('events.thisIsAnAccountSetTransaction');
 
-        if (
-            isUndefined(tx.SetFlag) &&
-            isUndefined(tx.ClearFlag) &&
-            isUndefined(tx.Domain) &&
-            isUndefined(tx.EmailHash) &&
-            isUndefined(tx.MessageKey) &&
-            isUndefined(tx.TransferRate)
-        ) {
+        if (tx.isNoOperation()) {
+            content += '\n';
+            if (tx.isCancelTicket()) {
+                content += Localize.t('events.thisTransactionClearTicket', { ticketSequence: tx.TicketSequence });
+            } else {
+                content += Localize.t('events.thisTransactionDoesNotEffectAnyAccountSettings');
+            }
             return content;
         }
 

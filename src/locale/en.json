@@ -539,7 +539,9 @@
     "thisIsAnAccountSetTransaction": "This is an AccountSet transaction",
     "thisIsAnSetRegularKeyTransaction": "This is a SetRegularKey transaction",
     "itRemovesTheAccountRegularKey": "It removes the account regular key",
-    "itSetsAccountRegularKeyTo": "It sets the account regular key to %{regularKey}"
+    "itSetsAccountRegularKeyTo": "It sets the account regular key to %{regularKey}",
+    "thisTransactionDoesNotEffectAnyAccountSettings": "This transaction doesn't affect any account settings.",
+    "thisTransactionClearTicket": "This transaction does clear (consume & remove) ticket #%{ticketSequence}"
   },
   "profile": {
     "availableInFuture": "This feature will be available in the future.",
