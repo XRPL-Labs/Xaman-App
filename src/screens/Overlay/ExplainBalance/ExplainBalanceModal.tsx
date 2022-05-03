@@ -126,7 +126,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
         return Object.keys(accountObjectsCount).map((entryType) => {
             const count = accountObjectsCount[entryType];
-            const label = count > 1 ? `${entryType}'s (${count})` : entryType;
+            const label = count > 1 ? `${entryType}s (${count})` : entryType;
             const totalReserve = count * networkReserve.OwnerReserve;
             return (
                 <View key={`objects-${entryType}`} style={[styles.objectItemCard]}>
