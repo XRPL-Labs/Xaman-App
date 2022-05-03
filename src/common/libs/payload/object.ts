@@ -7,9 +7,10 @@ import LoggerService from '@services/LoggerService';
 import { SHA1 } from '@common/libs/crypto';
 
 import { GetDeviceUniqueId } from '@common/helpers/device';
-import Localize from '@locale';
 
 import { TransactionFactory } from '@common/libs/ledger/factory';
+
+import Localize from '@locale';
 
 import { PseudoTransactionTypes, TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
 import { Transactions } from '@common/libs/ledger/transactions/types';
@@ -175,23 +176,20 @@ export class Payload {
 
                     resolve(res);
                 })
-                .catch((err: any) => {
-                    if (has(err, 'code')) {
-                        const errorMessage = get(errors, err.code);
-                        return reject(new Error(errorMessage));
-                    }
+                .catch((response: any) => {
+                    if (has(response, 'error')) {
+                        const { error } = response;
 
-                    if (has(err, 'error')) {
-                        const { error } = err;
-                        if (has(error, 'code')) {
+                        const code = get(error, 'code');
+                        const reference = get(error, 'reference');
+
+                        // known error message's
+                        if (code && has(errors, code)) {
                             const errorMessage = get(errors, error.code);
-
                             return reject(new Error(errorMessage));
                         }
 
-                        return reject(
-                            new Error(Localize.t('payload.unexpectedErrorOccurred', { reference: error.reference })),
-                        );
+                        return reject(new Error(Localize.t('payload.unexpectedErrorOccurred', { reference })));
                     }
                     return reject(new Error(Localize.t('global.unexpectedErrorOccurred')));
                 });
