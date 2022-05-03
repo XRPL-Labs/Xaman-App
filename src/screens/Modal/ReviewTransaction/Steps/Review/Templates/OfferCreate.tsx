@@ -14,6 +14,7 @@ import { AmountText, InfoMessage } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import { FormatDate } from '@common/utils/date';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 import Localize from '@locale';
@@ -118,15 +119,18 @@ class OfferCreateTemplate extends Component<Props, State> {
             const line = source.lines.find(
                 (l: TrustLineSchema) => l.currency.issuer === issuer && l.currency.currency === currency,
             );
+
             // only if not XLS14
-            if (line && !line.isNFT()) {
+            if (line && !line.isNFT) {
                 showFullBalanceLiquidWarning = Number(value) >= Number(line.balance);
             }
         }
 
         if (showFullBalanceLiquidWarning) {
             this.setState({
-                warnings: Localize.t('payload.tradeEntireTokenWorthWarning', { currency }),
+                warnings: Localize.t('payload.tradeEntireTokenWorthWarning', {
+                    currency: NormalizeCurrencyCode(currency),
+                }),
             });
         }
     };
