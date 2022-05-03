@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Alert, BackHandler, Keyboard, Linking, NativeEventSubscription, Text } from 'react-native';
+import { Alert, BackHandler, Keyboard, Linking, NativeEventSubscription, Text, View } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -15,8 +15,9 @@ import { AccountSchema } from '@store/schemas/latest';
 import { TransactionTypes } from '@common/libs/ledger/types';
 import { PayloadOrigin } from '@common/libs/payload';
 
-import { VibrateHapticFeedback } from '@common/helpers/interface';
+import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+import { getAccountInfo } from '@common/helpers/resolver';
 
 import { Button, Icon, InfoMessage, Spacer } from '@components/General';
 
@@ -495,6 +496,60 @@ class ReviewTransactionModal extends Component<Props, State> {
                     ],
                 });
                 return;
+            }
+
+            if (transaction.Type === TransactionTypes.Payment) {
+                try {
+                    const destinationInfo = await getAccountInfo(transaction.Destination.address);
+
+                    // if sending to a blackHoled account
+                    if (destinationInfo.blackHole) {
+                        Navigator.showAlertModal({
+                            type: 'warning',
+                            text: Localize.t('payload.paymentToBlackHoledAccountWarning'),
+                            buttons: [
+                                {
+                                    text: Localize.t('global.cancel'),
+                                    light: false,
+                                },
+                                {
+                                    text: Localize.t('global.doIt'),
+                                    onPress: this.prepareAndSignTransaction,
+                                    type: 'dismiss',
+                                    light: true,
+                                },
+                            ],
+                        });
+                        return;
+                    }
+
+                    // if sending XRP and destination
+                    if (
+                        (transaction.DeliverMin?.currency === 'XRP' || transaction.Amount.currency === 'XRP') &&
+                        destinationInfo.disallowIncomingXRP
+                    ) {
+                        Navigator.showAlertModal({
+                            type: 'warning',
+                            text: Localize.t('payload.paymentToDisallowedXRPWarning'),
+                            buttons: [
+                                {
+                                    text: Localize.t('global.cancel'),
+                                    light: false,
+                                },
+                                {
+                                    text: Localize.t('global.continue'),
+                                    onPress: this.prepareAndSignTransaction,
+                                    type: 'dismiss',
+                                    light: true,
+                                },
+                            ],
+                        });
+                        return;
+                    }
+                } catch {
+                    Toast(Localize.t('send.unableGetRecipientAccountInfoPleaseTryAgain'));
+                    return;
+                }
             }
 
             // if everything is fine prepare the transaction for signing
