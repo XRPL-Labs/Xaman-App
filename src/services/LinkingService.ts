@@ -2,7 +2,7 @@
  * DeepLink service
  * handle app deep linking
  */
-import { Linking, Alert } from 'react-native';
+import { Linking, Alert, EmitterSubscription } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
@@ -21,6 +21,7 @@ import Localize from '@locale';
 /* Service  ==================================================================== */
 class LinkingService {
     private initialURL: string;
+    private eventListener: EmitterSubscription;
 
     constructor() {
         this.initialURL = null;
@@ -29,17 +30,33 @@ class LinkingService {
     initialize = () => {
         return new Promise<void>((resolve, reject) => {
             try {
-                NavigationService.on('setRoot', async (root: string) => {
-                    if (root === RootType.DefaultRoot) {
-                        // Listen for deep link as the app is open
-                        Linking.addEventListener('url', this.handleDeepLink);
-                    }
-                });
+                // listen for root changes
+                NavigationService.on('setRoot', this.onRootChange);
+                // resolve
                 resolve();
             } catch (e) {
                 reject(e);
             }
         });
+    };
+
+    onRootChange = (root: RootType) => {
+        if (root === RootType.DefaultRoot) {
+            // Listen for deep link as the app is open
+            this.addDeepLinkListeners();
+        } else {
+            this.removeDeepLinkListeners();
+        }
+    };
+
+    addDeepLinkListeners = () => {
+        this.eventListener = Linking.addEventListener('url', this.handleDeepLink);
+    };
+
+    removeDeepLinkListeners = () => {
+        if (this.eventListener) {
+            this.eventListener.remove();
+        }
     };
 
     checkInitialDeepLink = () => {
@@ -247,14 +264,6 @@ class LinkingService {
 
     handle = (url: string) => {
         const detected = new StringTypeDetector(url);
-
-        // normalize detected type
-        let detectedType = detected.getType();
-
-        if (detectedType === StringType.PayId) {
-            detectedType = StringType.XrplDestination;
-        }
-
         const parsed = new StringDecoder(detected).getAny();
 
         // the screen will handle the content

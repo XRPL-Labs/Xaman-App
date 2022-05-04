@@ -47,12 +47,9 @@ class BackendService {
         return new Promise<void>((resolve, reject) => {
             try {
                 // sync the details after moving to default stack
-                NavigationService.on('setRoot', (root: RootType) => {
-                    if (root === RootType.DefaultRoot) {
-                        this.sync();
-                    }
-                });
+                NavigationService.on('setRoot', this.onRootChange);
 
+                // resolve
                 resolve();
             } catch (e) {
                 reject(e);
@@ -61,18 +58,27 @@ class BackendService {
     };
 
     /*
+    On navigation root changed
+     */
+    onRootChange = (root: RootType) => {
+        if (root === RootType.DefaultRoot) {
+            this.sync();
+        }
+    };
+
+    /*
     Start syncing with backend
     NOTE: This includes Curated IOUs
     */
-    sync = async () => {
+    sync = () => {
         this.logger.debug('Start Syncing with backend');
-        await this.syncCuratedIOUs();
+        this.syncCuratedIOUs();
     };
 
     /*
     Update IOUs from backend
     */
-    syncCuratedIOUs = async () => {
+    syncCuratedIOUs = () => {
         ApiService.curatedIOUs
             .get()
             .then(async (res: any) => {

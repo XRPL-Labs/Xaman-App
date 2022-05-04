@@ -20,4 +20,7 @@ export default {
     appAlreadyRunningInDifferentProcess:
         'The secure XUMM datastore could not be opened. ' +
         'This can occur when the OS tries to update XUMM to a new version. Please force quit and relaunch XUMM.',
+
+    runningOnRootedDevice: 'For your security, XUMM cannot be opened on a rooted phone.',
+    runningOnJailBrokenDevice: 'For your security, XUMM cannot be opened on a Jail Broken phone.',
 };

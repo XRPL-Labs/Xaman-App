@@ -42,9 +42,9 @@ messaging().setBackgroundMessageHandler(async () => {
 
 /* Application  ==================================================================== */
 class Application {
-    storage: DataStorage;
-    initialized: boolean;
-    logger: any;
+    private storage: DataStorage;
+    private initialized: boolean;
+    private logger: any;
 
     constructor() {
         this.storage = new DataStorage();
@@ -53,30 +53,31 @@ class Application {
     }
 
     run() {
-        // start the app
-        this.logger.debug(`XUMM version ${GetAppReadableVersion()}`);
-        this.logger.debug(`Device ${GetDeviceName()} - OS Version ${GetSystemVersion()}`);
-
-        // on app start
+        // Listen for app launched event
         Navigation.events().registerAppLaunchedListener(() => {
-            // if already initialized then boot
-            // NOTE: this should never happen
+            // start the app
+            this.logger.debug(`XUMM version ${GetAppReadableVersion()}`);
+            this.logger.debug(`Device ${GetDeviceName()} - OS Version ${GetSystemVersion()}`);
+
+            // tasks need to run before booting the app
+            let tasks = [];
+
+            // if already initialized then soft boot
+            // NOTE: this can happen if Activity is destroyed and re-initiated
             if (this.initialized) {
-                this.boot();
-                return;
+                tasks = [this.configure, this.loadAppLocale, this.reinstateServices];
+            } else {
+                tasks = [
+                    this.configure,
+                    this.initializeStorage,
+                    this.loadAppLocale,
+                    this.initializeServices,
+                    this.registerScreens,
+                ];
             }
 
-            // all stuff we need to init before boot the app
-            const waterfall = [
-                this.configure,
-                this.initializeStorage,
-                this.loadAppLocale,
-                this.initializeServices,
-                this.registerScreens,
-            ];
-
             // run them in waterfall
-            waterfall
+            tasks
                 .reduce((accumulator: any, callback) => {
                     return accumulator.then(callback);
                 }, Promise.resolve())
@@ -90,7 +91,7 @@ class Application {
     }
 
     // handle errors in app startup
-    handleError = (exception: any) => {
+    handleError = (exception: Error) => {
         const message = services.LoggerService.normalizeError(exception);
         if (message) {
             if (
@@ -194,6 +195,25 @@ class Application {
         });
     };
 
+    // reinstate services
+    reinstateServices = () => {
+        return new Promise<void>((resolve, reject) => {
+            try {
+                Object.keys(services).forEach((key) => {
+                    // @ts-ignore
+                    const service = services[key];
+                    if (typeof service.reinstate === 'function') {
+                        service.reinstate();
+                    }
+                });
+                resolve();
+            } catch (e: any) {
+                this.logger.error('reinstate Services Error:', e);
+                reject(e);
+            }
+        });
+    };
+
     // load app locals and settings
     loadAppLocale = () => {
         // eslint-disable-next-line no-async-promise-executor
@@ -252,7 +272,7 @@ class Application {
                     // check for device root
                     await IsDeviceRooted().then((rooted: boolean) => {
                         if (rooted && !__DEV__) {
-                            return reject(new Error('For your security, XUMM cannot be opened on a rooted phone.'));
+                            return reject(new Error(ErrorMessages.runningOnRootedDevice));
                         }
 
                         // set secure flag for the app by default
@@ -269,9 +289,7 @@ class Application {
                     // check for device root
                     await IsDeviceJailBroken().then((isJailBroken: boolean) => {
                         if (isJailBroken && !__DEV__) {
-                            return reject(
-                                new Error('For your security, XUMM cannot be opened on a Jail Broken phone.'),
-                            );
+                            return reject(new Error(ErrorMessages.runningOnJailBrokenDevice));
                         }
 
                         return true;

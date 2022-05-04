@@ -18,15 +18,22 @@ import PushNotificationsService from '@services/PushNotificationsService';
 import Localize from '@locale';
 
 /* Service  ==================================================================== */
+export enum LockStatus {
+    LOCKED = 'LOCKED',
+    UNLOCKED = 'UNLOCKED',
+}
+
+/* Service  ==================================================================== */
 class AuthenticationService {
-    locked: boolean;
-    postSuccess: Array<() => void>;
-    appStateChangeListener: any;
-    logger: any;
+    private lockStatus: LockStatus;
+    private postSuccess: Array<() => void>;
+    private logger: any;
 
     constructor() {
-        this.locked = false;
         this.logger = LoggerService.createLogger('App State');
+
+        // track the status of app is locked
+        this.lockStatus = LockStatus.UNLOCKED;
 
         // list of methods that needs to run after success auth
         this.postSuccess = [
@@ -43,20 +50,50 @@ class AuthenticationService {
         return new Promise<void>(async (resolve, reject) => {
             try {
                 // we just need to require the lock if user initialized the app the
-                NavigationService.on('setRoot', (root: string) => {
-                    if (root === RootType.DefaultRoot) {
-                        // this will listen for app state changes and will check if we need to lock the app
-                        AppService.addListener('appStateChange', this.onAppStateChange);
-                    } else {
-                        // else remove listeners
-                        AppService.removeListener('appStateChange', this.onAppStateChange);
-                    }
-                });
+                NavigationService.on('setRoot', this.onRootChanged);
+                // resolve
                 resolve();
             } catch (e) {
                 reject(e);
             }
         });
+    };
+
+    /**
+     * On app root changed/set
+     */
+    private onRootChanged = (root: RootType) => {
+        if (root === RootType.DefaultRoot) {
+            // this will listen for app state changes and will check if we need to lock the app
+            this.addAppStateListener();
+        } else {
+            this.removeAppStateListener();
+        }
+    };
+
+    /**
+     * Add appState listener
+     */
+    private addAppStateListener = () => {
+        AppService.addListener('appStateChange', this.onAppStateChange);
+    };
+
+    /**
+     * Remove appState listener
+     */
+    private removeAppStateListener = () => {
+        AppService.removeListener('appStateChange', this.onAppStateChange);
+    };
+
+    /**
+     * reinstate service
+     */
+    public reinstate = () => {
+        // set locked to false
+        this.setLockStatus(LockStatus.UNLOCKED);
+
+        // remove appState listener
+        this.removeAppStateListener();
     };
 
     /**
@@ -94,11 +131,26 @@ class AuthenticationService {
     };
 
     /**
+     * set current lock status
+     * @param {LockStatus} status current lock status
+     */
+    private setLockStatus = (status: LockStatus) => {
+        this.lockStatus = status;
+    };
+
+    /**
+     * get current lock status
+     */
+    private getLockStatus = (): LockStatus => {
+        return this.lockStatus;
+    };
+
+    /**
      * Calculate who long the input should be blocked base on number of wrong attempts
      * @param  {number} attemptNumber latest wrong attempt
      * @returns number wait time in seconds
      */
-    calculateWrongAttemptWaitTime = (attemptNumber: number): number => {
+    private calculateWrongAttemptWaitTime = (attemptNumber: number): number => {
         if (attemptNumber < 6) return 0;
 
         switch (attemptNumber) {
@@ -123,8 +175,9 @@ class AuthenticationService {
         if (!ts) {
             ts = await GetElapsedRealtime();
         }
+
         // change to unlocked
-        this.locked = false;
+        this.setLockStatus(LockStatus.UNLOCKED);
 
         // reset everything
         CoreRepository.saveSettings({
@@ -142,7 +195,7 @@ class AuthenticationService {
      * @param  {any} coreSettings
      * @param  {number} ts?
      */
-    onWrongPasscodeInput = async (coreSettings: any, ts?: number) => {
+    private onWrongPasscodeInput = async (coreSettings: any, ts?: number) => {
         if (!ts) {
             ts = await GetElapsedRealtime();
         }
@@ -178,20 +231,11 @@ class AuthenticationService {
     };
     /**
      * Get the time app should not accept new pin code entry
-     * @param  {any} coreSettings?
-     * @param  {number} ts? timestamp in seconds
-     * @returns number
+     * @param  {any} coreSettings
+     * @param  {number} realTime timestamp in seconds
+     * @returns number block time in minutes
      */
-    getInputBlockTime = async (coreSettings?: any, ts?: number): Promise<number> => {
-        if (!coreSettings) {
-            coreSettings = CoreRepository.getSettings();
-        }
-
-        if (!ts) {
-            ts = await GetElapsedRealtime();
-        }
-
-        const realTime = await GetElapsedRealtime();
+    private getInputBlockTime = async (coreSettings: any, realTime: number): Promise<number> => {
         // check if attempts will exceed the threshold
         if (coreSettings.passcodeFailedAttempts > 5) {
             // calculate potential wait time
@@ -199,6 +243,7 @@ class AuthenticationService {
 
             // device is rebooted , we cannot calculate the wait time
             if (realTime < coreSettings.lastPasscodeFailedTimestamp) {
+                // store the new latest real time
                 CoreRepository.saveSettings({
                     lastPasscodeFailedTimestamp: realTime,
                 });
@@ -224,8 +269,10 @@ class AuthenticationService {
     checkPasscode = (passcode: string): Promise<string> => {
         /* eslint-disable-next-line */
         return new Promise(async (resolve, reject) => {
+            // get core settings
             const coreSettings = CoreRepository.getSettings();
 
+            // get device real time
             const realTime = await GetElapsedRealtime();
 
             // check if passcode input is blocked
@@ -259,7 +306,8 @@ class AuthenticationService {
     checkLockScreen = async () => {
         /* eslint-disable-next-line */
         return new Promise<void>(async (resolve) => {
-            if (this.locked) {
+            // already locked no need to check
+            if (this.getLockStatus() === LockStatus.LOCKED) {
                 resolve();
                 return;
             }
@@ -273,8 +321,7 @@ class AuthenticationService {
                 realTime < coreSettings.lastUnlockedTimestamp ||
                 realTime - coreSettings.lastUnlockedTimestamp > coreSettings.minutesAutoLock * 60
             ) {
-                // lock the app
-                this.locked = true;
+                // show lock overlay
                 await Navigator.showOverlay(
                     AppScreens.Overlay.Lock,
                     {},
@@ -284,6 +331,9 @@ class AuthenticationService {
                         },
                     },
                 );
+
+                // change the lock status to locked
+                this.setLockStatus(LockStatus.LOCKED);
             } else {
                 // run services/functions need to run after success auth
                 this.runAfterSuccessAuth();

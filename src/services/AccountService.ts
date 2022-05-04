@@ -52,20 +52,25 @@ class AccountService extends EventEmitter {
                 AccountRepository.on('accountRemove', this.onAccountsChange);
 
                 // on socket service connect
-                SocketService.on('connect', () => {
-                    // update account details
-                    this.updateAccountsDetails();
-                    // subscribe accounts for transactions stream
-                    this.subscribe();
-                    // register on transaction event handler
-                    this.setTransactionListener();
-                });
+                SocketService.on('connect', this.onSocketConnect);
 
                 resolve();
             } catch (e) {
                 reject(e);
             }
         });
+    };
+
+    /**
+     * Update the details when connect to the socket
+     */
+    onSocketConnect = () => {
+        // update account details
+        this.updateAccountsDetails();
+        // subscribe accounts for transactions stream
+        this.subscribe();
+        // register on transaction event handler
+        this.setTransactionListener();
     };
 
     /**

@@ -31,22 +31,22 @@ declare interface SocketService {
 
 /* Service  ==================================================================== */
 class SocketService extends EventEmitter {
-    node: string;
-    chain: NodeChain;
-    connection: any;
-    origin: string;
-    logger: any;
-    status: SocketStateStatus;
-    shownErrorDialog: boolean;
+    public node: string;
+    public chain: NodeChain;
+    public connection: XrplClient;
+    private origin: string;
+    private status: SocketStateStatus;
+    private shownErrorDialog: boolean;
+    private logger: any;
     onEvent: (event: string, fn: any) => any;
     offEvent: (event: string, fn: any) => any;
 
     constructor() {
         super();
 
-        this.node = null;
-        this.chain = null;
-        this.connection = null;
+        this.node = undefined;
+        this.chain = undefined;
+        this.connection = undefined;
         this.shownErrorDialog = false;
         this.origin = `https://xumm.app/#${Platform.OS}/${GetAppReadableVersion()}`;
         this.status = SocketStateStatus.Disconnected;
@@ -96,17 +96,10 @@ class SocketService extends EventEmitter {
                     this.node = node;
                 }
 
-                // listen on navigation change event
-                NavigationService.on('setRoot', (root: string) => {
-                    // we just need to connect to socket when we are in DefaultStack not Onboarding
-                    if (root === RootType.DefaultRoot) {
-                        // connect to the node
-                        this.connect();
-                        // listen for net/app state change
-                        this.setAppStateListeners();
-                    }
-                });
+                // listen on navigation root change
+                NavigationService.on('setRoot', this.onRootChange);
 
+                // resolve
                 resolve();
             } catch (e) {
                 reject(e);
@@ -114,28 +107,81 @@ class SocketService extends EventEmitter {
         });
     };
 
+    /**
+     * on navigation root changed
+     */
+    onRootChange = (root: RootType) => {
+        // we just need to connect to socket when we are in DefaultStack not Onboarding
+        if (root === RootType.DefaultRoot) {
+            // connect to the node
+            this.connect();
+            // listen for net/app state change
+            this.setAppStateListeners();
+        } else {
+            // reinstate the service
+            // this will destroy the connection and remove the listeners
+            this.reinstate();
+        }
+    };
+
+    /**
+     * reinstate service
+     */
+    reinstate = () => {
+        // destroy the connection
+        this.destroyConnection();
+        // set the new connection status
+        this.setConnectionStatus(SocketStateStatus.Disconnected);
+        // remove listeners
+        this.removeAppStateListeners();
+    };
+
     setAppStateListeners = () => {
         // on net state changed
-        AppService.on('netStateChange', (newState: NetStateStatus) => {
-            if (newState === NetStateStatus.Connected) {
-                this.reconnect();
-            } else {
-                this.close();
-            }
-        });
-
+        AppService.addListener('netStateChange', this.onNetStateChange);
         // on app state changed
-        AppService.on('appStateChange', (newState: AppStateStatus, prevState: AppStateStatus) => {
-            // reconnect when app comes from idle state to active
-            if (newState === AppStateStatus.Active && prevState === AppStateStatus.Inactive) {
-                this.reconnect();
-            }
+        AppService.addListener('appStateChange', this.onAppStateChange);
+    };
 
-            // disconnect socket when app is come to idle state
-            if (newState === AppStateStatus.Inactive) {
-                this.close();
-            }
-        });
+    removeAppStateListeners = () => {
+        AppService.removeListener('netStateChange', this.onNetStateChange);
+
+        AppService.removeListener('appStateChange', this.onAppStateChange);
+    };
+
+    /**
+     * On network state changes
+     */
+    onNetStateChange = (newState: NetStateStatus) => {
+        // if new network state is connected, reconnect the socket
+        if (newState === NetStateStatus.Connected) {
+            this.reconnect();
+        } else {
+            // no network connection, close the connection
+            this.closeConnection();
+        }
+    };
+
+    /**
+     * on AppState change
+     */
+    onAppStateChange = (newState: AppStateStatus, prevState: AppStateStatus) => {
+        // reconnect when app comes from idle state to active
+        if (newState === AppStateStatus.Active && prevState === AppStateStatus.Inactive) {
+            this.reconnect();
+        }
+
+        // disconnect socket when app is come to idle state
+        if (newState === AppStateStatus.Inactive) {
+            this.closeConnection();
+        }
+    };
+
+    /**
+     * Set current connection state
+     */
+    setConnectionStatus = (status: SocketStateStatus) => {
+        this.status = status;
     };
 
     /**
@@ -163,8 +209,14 @@ class SocketService extends EventEmitter {
             this.node = node;
             this.chain = newChain;
 
-            // destroy current connection and re-connect
-            this.connect(true);
+            // destroy prev connection
+            this.destroyConnection();
+
+            // change the connection status
+            this.setConnectionStatus(SocketStateStatus.Disconnected);
+
+            // reconnect
+            this.connect();
         }
     };
 
@@ -176,9 +228,22 @@ class SocketService extends EventEmitter {
     };
 
     /**
+     * Destroy the connection
+     */
+    destroyConnection = () => {
+        try {
+            if (this.connection) {
+                this.connection.destroy();
+            }
+        } catch (e) {
+            this.logger.error('Unable to destroy the connection', e);
+        }
+    };
+
+    /**
      * Close socket connection
      */
-    close = () => {
+    closeConnection = () => {
         try {
             if (this.connection) {
                 this.connection.close();
@@ -191,7 +256,7 @@ class SocketService extends EventEmitter {
     /**
      * Reinstate current socket connection
      */
-    reinstate = () => {
+    reinstateConnection = () => {
         try {
             if (this.connection) {
                 this.connection.reinstate();
@@ -208,9 +273,9 @@ class SocketService extends EventEmitter {
         try {
             this.logger.debug('Reconnecting socket service...');
             // close current connection
-            this.close();
+            this.closeConnection();
             // reinstate
-            this.reinstate();
+            this.reinstateConnection();
         } catch (e) {
             this.logger.error('Unable to reconnect', e);
         }
@@ -249,9 +314,11 @@ class SocketService extends EventEmitter {
 
         // set node and connection
         this.node = connectedNode;
-        // change socket status
-        this.status = SocketStateStatus.Connected;
 
+        // change socket status
+        this.setConnectionStatus(SocketStateStatus.Connected);
+
+        // log the connection
         this.logger.debug(`Connected to node ${connectedNode} [${this.chain}][${publicKey}]`);
 
         // emit on connect event
@@ -262,7 +329,10 @@ class SocketService extends EventEmitter {
      * Triggers when socket close
      */
     onClose = () => {
-        this.status = SocketStateStatus.Disconnected;
+        // change socket status
+        this.setConnectionStatus(SocketStateStatus.Disconnected);
+
+        // log that socked is closed
         this.logger.warn('Socket closed');
     };
 
@@ -277,13 +347,10 @@ class SocketService extends EventEmitter {
         }
     };
 
-    connect = (clean = false) => {
-        // if this is a clean connect
-        // clear any old connection
-        if (clean && this.connection) {
-            this.connection.destroy();
-        }
-
+    /**
+     * Establish connection to the socket
+     */
+    connect = () => {
         let nodes: string[];
 
         // load node's list base on selected node chain

@@ -40,12 +40,12 @@ export enum RootType {
 
 /* Service  ==================================================================== */
 class NavigationService extends EventEmitter {
-    currentRoot: string;
-    currentScreen: string;
-    modals: Array<string>;
-    overlays: Array<string>;
-    backHandlerClickCount: number;
-    backHandlerClickCountTimeout: any;
+    private currentRoot: string;
+    private currentScreen: string;
+    private modals: Array<string>;
+    private overlays: Array<string>;
+    private backHandlerClickCount: number;
+    private backHandlerClickCountTimeout: any;
 
     constructor() {
         super();
@@ -78,6 +78,23 @@ class NavigationService extends EventEmitter {
                 reject(e);
             }
         });
+    };
+
+    /**
+     * reinstate service
+     * Clear any prev navigation state
+     */
+    reinstate = () => {
+        this.currentRoot = '';
+        this.currentScreen = '';
+        this.modals = [];
+        this.overlays = [];
+        this.backHandlerClickCount = 0;
+
+        if (this.backHandlerClickCountTimeout) {
+            clearTimeout(this.backHandlerClickCountTimeout);
+            this.backHandlerClickCountTimeout = undefined;
+        }
     };
 
     bottomTabLongPressedListener = ({ selectedTabIndex }: BottomTabLongPressedEvent) => {
