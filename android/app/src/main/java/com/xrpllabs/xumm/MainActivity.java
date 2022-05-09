@@ -9,9 +9,9 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import com.reactnativenavigation.react.CommandListenerAdapter;
 
-import java.util.Locale;
-
 import libs.authentication.Biometric.BiometricModule;
+
+import java.util.Locale;
 
 public class MainActivity extends NavigationActivity {
 
@@ -44,13 +44,11 @@ public class MainActivity extends NavigationActivity {
     @Override
     protected void attachBaseContext(Context newBase) {
         final Configuration override = new Configuration(newBase.getResources().getConfiguration());
-
         // disable font scaling
         override.fontScale = 1.0f;
-
         // A workaround for AndroidKeyStore bug in RTL languages
         override.setLocale(Locale.ENGLISH);
-
+        
         applyOverrideConfiguration(override);
         super.attachBaseContext(newBase);
     }
