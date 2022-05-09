@@ -32,7 +32,7 @@ const ActionSheet = (options: ActionSheetIOSOptions, callback: any, style?: 'dar
 };
 
 const Prompt = (title: string, message: string, callbackOrButtons?: any, options?: PromptOptions) => {
-    if (options.type === 'default') {
+    if (!callbackOrButtons || !options || options.type === 'default') {
         // no input needed
         Alert.alert(title, message, callbackOrButtons, options);
     } else {

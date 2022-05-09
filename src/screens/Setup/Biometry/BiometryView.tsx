@@ -5,10 +5,10 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Alert, Image } from 'react-native';
 
-import FingerprintScanner from 'react-native-fingerprint-scanner';
-
 import { CoreRepository } from '@store/repositories';
 import { BiometryType } from '@store/types';
+
+import { Biometric } from '@common/libs/biometric';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
@@ -59,33 +59,12 @@ class BiometrySetupView extends Component<Props, State> {
 
     onYesPress = async () => {
         try {
+            // NOTE: this screen is only visible if in prev screen isSensorAvailable method returned biometric type
             // check current biometric type;
-            const biometryType = await FingerprintScanner.isSensorAvailable();
+            const biometricMethod = await Biometric.isSensorAvailable();
 
             // request authentication for biometric
-            await FingerprintScanner.authenticate({
-                description: Localize.t('global.authenticate'),
-                fallbackEnabled: false,
-            }).finally(FingerprintScanner.release);
-
-            // normalize biometric method
-            let biometricMethod;
-
-            switch (biometryType) {
-                case 'Face ID':
-                    biometricMethod = BiometryType.FaceID;
-                    break;
-                case 'Touch ID':
-                    biometricMethod = BiometryType.TouchID;
-                    break;
-                case 'Biometrics':
-                    biometricMethod = BiometryType.Biometrics;
-                    break;
-                default:
-                    // this should never happen as we check biometrics in the prev screen
-                    biometricMethod = BiometryType.None;
-                    break;
-            }
+            await Biometric.authenticate(Localize.t('global.authenticate'));
 
             // go to next step
             this.nextStep(biometricMethod);

@@ -1,6 +1,6 @@
 /**
  * Auth Modal
- * auth with pin code or fingerprint/face id
+ * Auth with pin code or biometrics
  */
 
 import React, { Component } from 'react';
@@ -16,13 +16,10 @@ import {
     NativeEventSubscription,
 } from 'react-native';
 
-import FingerprintScanner from 'react-native-fingerprint-scanner';
-
 import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
-import { BiometryType } from '@store/types';
 
-import { VibrateHapticFeedback } from '@common/helpers/interface';
+import { Prompt, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import Keyboard from '@common/helpers/keyboard';
 
@@ -30,6 +27,7 @@ import { AppScreens } from '@common/constants';
 
 import { AuthenticationService } from '@services';
 
+import { BiometricErrors } from '@common/libs/biometric';
 // components
 import { Button, SecurePinInput } from '@components/General';
 
@@ -41,21 +39,23 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    biometricAvailable: true;
+    canAuthorizeBiometrics: boolean;
     onDismissed: () => void;
     onSuccess: () => void;
 }
 
 export interface State {
     coreSettings: CoreSchema;
+    isBiometricAvailable: boolean;
     offsetBottom: number;
 }
 /* Component ==================================================================== */
 class AuthenticateModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Auth;
-    private contentView: View = undefined;
+    private contentViewRef: React.RefObject<View>;
+    private securePinInputRef: React.RefObject<SecurePinInput>;
+
     private animatedColor: Animated.Value;
-    private securePinInput: SecurePinInput = undefined;
     private backHandler: NativeEventSubscription;
     private mounted: boolean;
 
@@ -72,8 +72,12 @@ class AuthenticateModal extends Component<Props, State> {
 
         this.state = {
             coreSettings: CoreRepository.getSettings(),
+            isBiometricAvailable: false,
             offsetBottom: 0,
         };
+
+        this.contentViewRef = React.createRef();
+        this.securePinInputRef = React.createRef();
 
         this.animatedColor = new Animated.Value(0);
     }
@@ -96,7 +100,9 @@ class AuthenticateModal extends Component<Props, State> {
             useNativeDriver: false,
         }).start();
 
-        InteractionManager.runAfterInteractions(this.startAuthentication);
+        InteractionManager.runAfterInteractions(() => {
+            this.setBiometricStatus().then(this.startAuthentication);
+        });
     }
 
     componentWillUnmount() {
@@ -114,14 +120,27 @@ class AuthenticateModal extends Component<Props, State> {
 
     startAuthentication = () => {
         // focus the input
-        if (this.securePinInput) {
-            this.securePinInput.focus();
+        if (this.securePinInputRef.current) {
+            this.securePinInputRef.current.focus();
         }
     };
 
+    setBiometricStatus = () => {
+        return new Promise((resolve) => {
+            AuthenticationService.isBiometricAvailable().then((status) => {
+                this.setState(
+                    {
+                        isBiometricAvailable: status,
+                    },
+                    () => resolve(null),
+                );
+            });
+        });
+    };
+
     onKeyboardShow = (e: KeyboardEvent) => {
-        if (this.contentView && this.mounted) {
-            this.contentView.measure((x, y, width, height) => {
+        if (this.contentViewRef.current && this.mounted) {
+            this.contentViewRef.current.measure((x, y, width, height) => {
                 const bottomView = (AppSizes.screen.height - height) / 2;
                 const KeyboardHeight = e.endCoordinates.height + 100;
 
@@ -157,7 +176,7 @@ class AuthenticateModal extends Component<Props, State> {
         return true;
     };
 
-    onSuccess = () => {
+    onSuccessAuthentication = () => {
         const { onSuccess } = this.props;
 
         if (typeof onSuccess === 'function') {
@@ -167,44 +186,53 @@ class AuthenticateModal extends Component<Props, State> {
         this.close();
     };
 
-    requestBiometricAuthenticate = (system: boolean = false) => {
-        FingerprintScanner.authenticate({
-            description: Localize.t('global.authenticate'),
-            fallbackEnabled: true,
-            // @ts-ignore
-            fallbackTitle: Localize.t('global.enterPasscode'),
-        })
-            .then(this.onSuccess)
+    requestBiometricAuthenticate = () => {
+        AuthenticationService.authenticateBiometrics(Localize.t('global.authenticate'))
+            .then(this.onSuccessAuthentication)
             .catch((error: any) => {
-                if (system) return;
-                if (error.name !== 'UserCancel') {
-                    Alert.alert(Localize.t('global.error'), Localize.t('global.invalidBiometryAuth'));
+                let errorMessage;
+                // biometric's has been changed
+                if (error.name === BiometricErrors.ERROR_BIOMETRIC_HAS_BEEN_CHANGED) {
+                    errorMessage = Localize.t('global.biometricChangeError');
+                    // disable biometrics
+                    this.setState(
+                        {
+                            isBiometricAvailable: false,
+                        },
+                        this.startAuthentication,
+                    );
+                } else if (error.name !== BiometricErrors.ERROR_USER_CANCEL) {
+                    errorMessage = Localize.t('global.invalidBiometryAuth');
                 }
-            })
-            .finally(() => {
-                FingerprintScanner.release();
+
+                if (errorMessage) {
+                    Prompt(Localize.t('global.error'), errorMessage);
+                }
             });
     };
 
     onPasscodeEntered = (passcode: string) => {
         const { coreSettings } = this.state;
 
-        AuthenticationService.checkPasscode(passcode)
-            .then(this.onSuccess)
+        AuthenticationService.authenticatePasscode(passcode)
+            .then(this.onSuccessAuthentication)
             .catch((e) => {
                 // wrong passcode entered
                 if (coreSettings.hapticFeedback) {
                     VibrateHapticFeedback('notificationError');
                 }
 
-                this.securePinInput.clearInput();
+                if (this.securePinInputRef.current) {
+                    this.securePinInputRef.current.clearInput();
+                }
+
                 Alert.alert(Localize.t('global.error'), e.toString());
             });
     };
 
     renderPasscode = () => {
-        const { coreSettings } = this.state;
-        const { biometricAvailable } = this.props;
+        const { coreSettings, isBiometricAvailable } = this.state;
+        const { canAuthorizeBiometrics } = this.props;
 
         const { biometricMethod } = coreSettings;
 
@@ -215,15 +243,13 @@ class AuthenticateModal extends Component<Props, State> {
                 </Text>
 
                 <SecurePinInput
-                    ref={(r) => {
-                        this.securePinInput = r;
-                    }}
+                    ref={this.securePinInputRef}
                     onInputFinish={this.onPasscodeEntered}
                     length={6}
                     enableHapticFeedback={coreSettings.hapticFeedback}
                 />
 
-                {biometricMethod !== BiometryType.None && biometricAvailable && (
+                {isBiometricAvailable && canAuthorizeBiometrics && (
                     <View style={AppStyles.paddingTopSml}>
                         <Button
                             label={`${biometricMethod}`}
@@ -231,9 +257,7 @@ class AuthenticateModal extends Component<Props, State> {
                             roundedSmall
                             light
                             isDisabled={false}
-                            onPress={() => {
-                                this.requestBiometricAuthenticate();
-                            }}
+                            onPress={this.requestBiometricAuthenticate}
                         />
                     </View>
                 )}
@@ -251,12 +275,7 @@ class AuthenticateModal extends Component<Props, State> {
 
         return (
             <Animated.View style={[styles.container, { backgroundColor: interpolateColor }]}>
-                <View
-                    ref={(r) => {
-                        this.contentView = r;
-                    }}
-                    style={[styles.visibleContent, { marginBottom: offsetBottom }]}
-                >
+                <View ref={this.contentViewRef} style={[styles.visibleContent, { marginBottom: offsetBottom }]}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
                         <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
                             <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.authenticate')}</Text>

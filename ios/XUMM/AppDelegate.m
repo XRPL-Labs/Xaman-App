@@ -9,6 +9,7 @@
 #import <ReactNativeNavigation/ReactNativeNavigation.h>
 
 #import "Libs/Notification/LocalNotification.h"
+#import "Libs/Authentication/Biometric/BiometricModule.h"
 
 @implementation AppDelegate
 
@@ -33,8 +34,9 @@
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   [ReactNativeNavigation bootstrapWithBridge:bridge];
   
-  // bootstrap local notification
+  // bootstrap local notification and Biometric module
   [LocalNotificationModule initialise];
+  [BiometricModule initialise];
   
   // init firebase app
   if ([FIRApp defaultApp] == nil) {

@@ -13,7 +13,9 @@
 		2BE88BCE5EF176CAF34FA947 /* libPods-XUMM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBC6D01CA512AB17F704C7E6 /* libPods-XUMM.a */; };
 		A20B9293256FCE670066FECA /* Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20B9292256FCE670066FECA /* Empty.swift */; };
 		A20C14202524C8A000686A2A /* AppUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = A20C141F2524C8A000686A2A /* AppUpdate.m */; };
+		A248635D28229379004633C9 /* BiometricModule.m in Sources */ = {isa = PBXBuildFile; fileRef = A248635C28229379004633C9 /* BiometricModule.m */; };
 		A2805CE224D1982400B5552E /* LocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = A2805CE124D1982400B5552E /* LocalNotification.m */; };
+		A28BA8A6282409B600109CC8 /* SecurityProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = A28BA8A5282409B600109CC8 /* SecurityProvider.m */; };
 		A2AD77DA26AAB23B00733D6E /* Dimension.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AD77D926A9B8AF00733D6E /* Dimension.m */; };
 		A2AFF12E243E79C30007005E /* Proxima Nova Alt Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */; };
 		A2AFF12F243E79C30007005E /* UbuntuMono-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10B243E79C30007005E /* UbuntuMono-BoldItalic.ttf */; };
@@ -73,8 +75,12 @@
 		A20B9292256FCE670066FECA /* Empty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Empty.swift; sourceTree = "<group>"; };
 		A20C141E2524C8A000686A2A /* AppUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppUpdate.h; sourceTree = "<group>"; };
 		A20C141F2524C8A000686A2A /* AppUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppUpdate.m; sourceTree = "<group>"; };
+		A248635C28229379004633C9 /* BiometricModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BiometricModule.m; sourceTree = "<group>"; };
+		A248635E2822939E004633C9 /* BiometricModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BiometricModule.h; sourceTree = "<group>"; };
 		A2805CE124D1982400B5552E /* LocalNotification.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocalNotification.m; sourceTree = "<group>"; };
 		A2805CE324D1984700B5552E /* LocalNotification.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocalNotification.h; sourceTree = "<group>"; };
+		A28BA8A5282409B600109CC8 /* SecurityProvider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SecurityProvider.m; sourceTree = "<group>"; };
+		A28BA8A728240A4500109CC8 /* SecurityProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SecurityProvider.h; sourceTree = "<group>"; };
 		A2AD77D826A9B85400733D6E /* Dimension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Dimension.h; sourceTree = "<group>"; };
 		A2AD77D926A9B8AF00733D6E /* Dimension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Dimension.m; sourceTree = "<group>"; };
 		A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Alt Thin.otf"; sourceTree = "<group>"; };
@@ -223,6 +229,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		A248635B28229347004633C9 /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				A28BA8A42824098F00109CC8 /* Biometric */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
 		A266857724EEAD42000430B7 /* Notification */ = {
 			isa = PBXGroup;
 			children = (
@@ -230,6 +244,17 @@
 				A2805CE324D1984700B5552E /* LocalNotification.h */,
 			);
 			path = Notification;
+			sourceTree = "<group>";
+		};
+		A28BA8A42824098F00109CC8 /* Biometric */ = {
+			isa = PBXGroup;
+			children = (
+				A248635C28229379004633C9 /* BiometricModule.m */,
+				A248635E2822939E004633C9 /* BiometricModule.h */,
+				A28BA8A5282409B600109CC8 /* SecurityProvider.m */,
+				A28BA8A728240A4500109CC8 /* SecurityProvider.h */,
+			);
+			path = Biometric;
 			sourceTree = "<group>";
 		};
 		A2AFF109243E79C30007005E /* Fonts */ = {
@@ -255,6 +280,7 @@
 		A2AFF117243E79C30007005E /* Libs */ = {
 			isa = PBXGroup;
 			children = (
+				A248635B28229347004633C9 /* Authentication */,
 				A266857724EEAD42000430B7 /* Notification */,
 				A2B9D13B2449B81800259841 /* Common */,
 				A2AFF118243E79C30007005E /* UI */,
@@ -651,12 +677,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A248635D28229379004633C9 /* BiometricModule.m in Sources */,
 				A2AD77DA26AAB23B00733D6E /* Dimension.m in Sources */,
 				A2B9D13E2449BAA400259841 /* SharedPreferences.m in Sources */,
 				A20C14202524C8A000686A2A /* AppUpdate.m in Sources */,
 				A2AFF142243E79C30007005E /* Crypto.m in Sources */,
 				A2ED1312252DC717002AFC09 /* InAppPurchase.m in Sources */,
 				A2AFF143243E79C30007005E /* Utils.m in Sources */,
+				A28BA8A6282409B600109CC8 /* SecurityProvider.m in Sources */,
 				A20B9293256FCE670066FECA /* Empty.swift in Sources */,
 				A2AFF141243E79C30007005E /* UIView+Toast.m in Sources */,
 				A2AFF13D243E79C30007005E /* Toast.m in Sources */,

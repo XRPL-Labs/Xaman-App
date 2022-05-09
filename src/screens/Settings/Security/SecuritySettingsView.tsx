@@ -5,13 +5,13 @@ import { find } from 'lodash';
 import React, { Component } from 'react';
 import { Text, ScrollView, View, Alert, Platform } from 'react-native';
 
-import FingerprintScanner from 'react-native-fingerprint-scanner';
-
 import { AppScreens } from '@common/constants';
 
 import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 import { BiometryType } from '@store/types';
+
+import { Biometric, BiometricErrors } from '@common/libs/biometric';
 
 import { Navigator } from '@common/helpers/navigator';
 import { IsFlagSecure, FlagSecure } from '@common/helpers/device';
@@ -28,7 +28,6 @@ export interface Props {}
 
 export interface State {
     biometricEnabled: boolean;
-    isSensorAvailable: boolean;
     isFlagSecure: boolean;
     coreSettings: CoreSchema;
     timeItems: Array<any>;
@@ -51,7 +50,6 @@ class SecuritySettingsView extends Component<Props, State> {
 
         this.state = {
             coreSettings,
-            isSensorAvailable: false,
             biometricEnabled: coreSettings.biometricMethod !== BiometryType.None,
             isFlagSecure: true,
             timeItems: [
@@ -73,14 +71,7 @@ class SecuritySettingsView extends Component<Props, State> {
     componentDidMount() {
         CoreRepository.on('updateSettings', this.updateUI);
 
-        FingerprintScanner.isSensorAvailable()
-            .then(() => {
-                this.setState({
-                    isSensorAvailable: true,
-                });
-            })
-            .catch(() => {});
-
+        // check if flag secure is set
         IsFlagSecure().then((enabled) => {
             this.setState({
                 isFlagSecure: enabled,
@@ -96,69 +87,61 @@ class SecuritySettingsView extends Component<Props, State> {
         this.setState({ coreSettings });
     };
 
-    changeBiometricMethod = (value: boolean) => {
-        const { isSensorAvailable } = this.state;
+    enableBiometricAuthentication = async () => {
+        // NOTE: this method should only run after success passcode auth
+        try {
+            // before enabling the biometrics check if the sensor is available
+            await Biometric.isSensorAvailable();
+            // refresh authentication key
+            await Biometric.refreshAuthenticationKey();
+        } catch {
+            Alert.alert(Localize.t('global.error'), Localize.t('global.biometricIsNotAvailable'));
+            return;
+        }
 
-        if (value) {
-            if (!isSensorAvailable) {
-                Alert.alert(Localize.t('global.error'), Localize.t('global.biometricIsNotAvailable'));
-                return;
-            }
+        // authenticate to make sure user can authenticate with biometrics
+        Biometric.authenticate(Localize.t('global.authenticate'))
+            .then((biometryType) => {
+                // persist biometric method
+                CoreRepository.saveSettings({ biometricMethod: biometryType });
 
-            FingerprintScanner.authenticate({ description: Localize.t('global.authenticate'), fallbackEnabled: false })
-                .then(() => {
-                    FingerprintScanner.isSensorAvailable().then((biometryType) => {
-                        let type;
-
-                        switch (biometryType) {
-                            case 'Face ID':
-                                type = BiometryType.FaceID;
-                                break;
-                            case 'Touch ID':
-                                type = BiometryType.TouchID;
-                                break;
-                            case 'Biometrics':
-                                type = BiometryType.Biometrics;
-                                break;
-
-                            default:
-                                type = BiometryType.None;
-                        }
-
-                        CoreRepository.saveSettings({ biometricMethod: type });
-                    });
-
-                    this.setState({
-                        biometricEnabled: true,
-                    });
-                })
-                .catch(() => {
-                    Alert.alert(Localize.t('global.invalidAuth'), Localize.t('global.invalidBiometryAuth'));
-                })
-                .finally(() => {
-                    FingerprintScanner.release();
+                // set biometric enabled
+                this.setState({
+                    biometricEnabled: true,
                 });
-        } else {
-            CoreRepository.saveSettings({ biometricMethod: BiometryType.None });
-
-            this.setState({
-                biometricEnabled: false,
+            })
+            .catch((error: any) => {
+                if (error.name !== BiometricErrors.ERROR_USER_CANCEL) {
+                    Alert.alert(Localize.t('global.invalidAuth'), Localize.t('global.invalidBiometryAuth'));
+                }
             });
+    };
+
+    disableBiometricAuthentication = async () => {
+        // disable biometric
+        CoreRepository.saveSettings({ biometricMethod: BiometryType.None });
+
+        this.setState({
+            biometricEnabled: false,
+        });
+    };
+
+    changeBiometricStatus = (enabled: boolean) => {
+        if (enabled) {
+            this.enableBiometricAuthentication();
+        } else {
+            this.disableBiometricAuthentication();
         }
     };
 
-    biometricMethodChange = (value: boolean) => {
-        // if disable the biometric ask for passcode
-        if (!value) {
-            Navigator.showOverlay(AppScreens.Overlay.Auth, {
-                biometricAvailable: false,
-                onSuccess: () => {
-                    this.changeBiometricMethod(value);
-                },
-            });
-        } else {
-            this.changeBiometricMethod(value);
-        }
+    onBiometricEnableChange = (enabled: boolean) => {
+        // ask for passcode authentication before Enabling/Disabling the biometrics
+        Navigator.showOverlay(AppScreens.Overlay.Auth, {
+            canAuthorizeBiometrics: false,
+            onSuccess: () => {
+                this.changeBiometricStatus(enabled);
+            },
+        });
     };
 
     onLogoutTimeSelected = (item: any) => {
@@ -273,7 +256,7 @@ class SecuritySettingsView extends Component<Props, State> {
                             </Text>
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                            <Switch checked={biometricEnabled} onChange={this.biometricMethodChange} />
+                            <Switch checked={biometricEnabled} onChange={this.onBiometricEnableChange} />
                         </View>
                     </View>
 

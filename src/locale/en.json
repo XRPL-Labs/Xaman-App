@@ -222,6 +222,7 @@
     "invalidAuth": "Invalid Authentication",
     "invalidAddress": "Invalid XRP account address",
     "invalidBiometryAuth": "Invalid authentication for TouchID/FaceID",
+    "biometricChangeError": "Biometric authentication is disabled due a change in biometric data or system settings on your device. Please re-enable biometric authentication by manually going to Settings -> Security -> Biometric Authentication",
     "authenticationRequired": "Authentication required",
     "pleaseWait": "Please wait ...",
     "thisMayTakeFewSeconds": "This may take a few seconds...",

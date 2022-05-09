@@ -2,9 +2,13 @@
  * Authentication Service
  */
 import { AppScreens } from '@common/constants';
+
 import { Navigator } from '@common/helpers/navigator';
 import { GetElapsedRealtime } from '@common/helpers/device';
 
+import { Biometric, BiometricErrors } from '@common/libs/biometric';
+
+import { BiometryType } from '@store/types';
 import CoreRepository from '@store/repositories/core';
 import AccountRepository from '@store/repositories/account';
 
@@ -30,7 +34,7 @@ class AuthenticationService {
     private logger: any;
 
     constructor() {
-        this.logger = LoggerService.createLogger('App State');
+        this.logger = LoggerService.createLogger('Authentication');
 
         // track the status of app is locked
         this.lockStatus = LockStatus.UNLOCKED;
@@ -262,19 +266,17 @@ class AuthenticationService {
         return 0;
     };
     /**
-     * Check if the given passcode is correct
+     * Authenticate with passcode
      * @param  {string} passcode clear string passcode
      * @returns string encrypted passcode
      */
-    checkPasscode = (passcode: string): Promise<string> => {
+    authenticatePasscode = (passcode: string): Promise<string> => {
         /* eslint-disable-next-line */
         return new Promise(async (resolve, reject) => {
             // get core settings
             const coreSettings = CoreRepository.getSettings();
-
             // get device real time
             const realTime = await GetElapsedRealtime();
-
             // check if passcode input is blocked
             const blockTime = await this.getInputBlockTime(coreSettings, realTime);
 
@@ -288,6 +290,7 @@ class AuthenticationService {
 
             // check if passcode is correct
             if (encryptedPasscode === coreSettings.passcode) {
+                // reset block timers and set status to unlocked
                 await this.onSuccessAuthentication(realTime);
                 // resolve
                 resolve(encryptedPasscode);
@@ -340,6 +343,65 @@ class AuthenticationService {
             }
 
             resolve();
+        });
+    };
+
+    /**
+     * When biometric data has been changed, reset biometric method
+     */
+    onBiometricInvalidated = () => {
+        CoreRepository.saveSettings({
+            biometricMethod: BiometryType.None,
+        });
+    };
+
+    /**
+     * check if we can authenticate with biometrics
+     */
+    isBiometricAvailable = (): Promise<boolean> => {
+        return new Promise((resolve) => {
+            // check if biometry is active
+            const coreSettings = CoreRepository.getSettings();
+            if (coreSettings.biometricMethod === BiometryType.None) {
+                resolve(false);
+                return;
+            }
+
+            // check if we can authenticate with biometrics in the device level
+            Biometric.isSensorAvailable()
+                .then(() => {
+                    resolve(true);
+                })
+                .catch(() => {
+                    resolve(false);
+                });
+        });
+    };
+
+    /**
+     * start biometric authentication
+     */
+    authenticateBiometrics = (reason: string): Promise<Boolean> => {
+        return new Promise((resolve, reject) => {
+            // check if we can authenticate with biometrics in the device level
+            Biometric.authenticate(reason)
+                .then(async () => {
+                    // successfully authenticate
+                    // reset block timers and set status to unlocked
+                    await this.onSuccessAuthentication();
+                    // return resolve
+                    resolve(true);
+                })
+                .catch((error) => {
+                    this.logger.warn(`Biometric authentication error: ${error.name}`);
+                    // biometric's has been changed, we need to disable the biometric authentication
+                    if (error.name === BiometricErrors.ERROR_BIOMETRIC_HAS_BEEN_CHANGED) {
+                        this.onBiometricInvalidated();
+                    }
+
+                    // reject with error
+                    reject(error);
+                });
         });
     };
 

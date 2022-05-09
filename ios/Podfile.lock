@@ -310,8 +310,6 @@ PODS:
     - React-Core
   - react-native-camera/RN (4.2.1):
     - React-Core
-  - react-native-fingerprint-scanner (6.0.0):
-    - React
   - react-native-netinfo (8.0.0):
     - React-Core
   - react-native-sdk (2.6.0):
@@ -449,7 +447,6 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-camera (from `../node_modules/react-native-camera`)
-  - react-native-fingerprint-scanner (from `../node_modules/react-native-fingerprint-scanner`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - "react-native-sdk (from `../node_modules/@veriff/react-native-sdk`)"
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -538,8 +535,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/blur"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
-  react-native-fingerprint-scanner:
-    :path: "../node_modules/react-native-fingerprint-scanner"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-sdk:
@@ -629,7 +624,6 @@ SPEC CHECKSUMS:
   React-logger: 1e10789cb84f99288479ba5f20822ce43ced6ffe
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
-  react-native-fingerprint-scanner: ac6656f18c8e45a7459302b84da41a44ad96dbbe
   react-native-netinfo: ba4ea50d836c60580c59079233c400753fe5bcb6
   react-native-sdk: e3d44737e7563b18587c5e3092dfa0f5160a5507
   react-native-webview: 380c1a03ec94b7ed764dac8db1e7c9952d08c93a

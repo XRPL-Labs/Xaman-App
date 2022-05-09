@@ -3,19 +3,19 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, SafeAreaView, Image, Platform, Keyboard } from 'react-native';
-import FingerprintScanner from 'react-native-fingerprint-scanner';
+import { View, Text, SafeAreaView, Image, Platform, Keyboard, InteractionManager } from 'react-native';
 
 import { BlurView } from '@react-native-community/blur';
 
 import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
-import { BiometryType } from '@store/types';
 
 import { AuthenticationService, StyleService } from '@services';
 
+import { BiometricErrors } from '@common/libs/biometric';
+
 import { Navigator } from '@common/helpers/navigator';
-import { VibrateHapticFeedback } from '@common/helpers/interface';
+import { Prompt, VibrateHapticFeedback } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
 // components
@@ -34,14 +34,14 @@ export interface Props {
 
 export interface State {
     error: string;
-    isSensorAvailable: boolean;
+    isBiometricAvailable: boolean;
     coreSettings: CoreSchema;
 }
 /* Component ==================================================================== */
 class LockModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Lock;
 
-    private securePinInput: SecurePinInput;
+    private securePinInputRef: React.RefObject<SecurePinInput>;
 
     static options() {
         return {
@@ -56,49 +56,43 @@ class LockModal extends Component<Props, State> {
 
         this.state = {
             error: undefined,
-            isSensorAvailable: false,
+            isBiometricAvailable: false,
             coreSettings: CoreRepository.getSettings(),
         };
+
+        this.securePinInputRef = React.createRef();
     }
 
     componentDidMount() {
-        const { coreSettings } = this.state;
-
         // dismiss any keyboard when it's locked
         Keyboard.dismiss();
 
-        // check for biometric auth
-        FingerprintScanner.isSensorAvailable()
-            .then(() => {
-                this.setState({
-                    isSensorAvailable: true,
-                });
-                if (coreSettings.biometricMethod !== BiometryType.None) {
-                    setTimeout(() => {
-                        this.requestBiometricAuthenticate();
-                    }, 100);
-                }
-            })
-            .catch(() => {});
+        // check for biometric authentication
+        InteractionManager.runAfterInteractions(() => {
+            this.setBiometricStatus().then(this.startAuthentication);
+        });
     }
 
-    onPasscodeEntered = (passcode: string) => {
-        const { coreSettings } = this.state;
-
-        AuthenticationService.checkPasscode(passcode)
-            .then(this.onUnlock)
-            .catch((e) => {
-                // wrong passcode entered
-                if (coreSettings.hapticFeedback) {
-                    VibrateHapticFeedback('notificationError');
-                }
-
-                this.securePinInput.clearInput();
-
-                this.setState({
-                    error: e.toString().replace('Error: ', ''),
-                });
+    setBiometricStatus = () => {
+        return new Promise((resolve) => {
+            AuthenticationService.isBiometricAvailable().then((status) => {
+                this.setState(
+                    {
+                        isBiometricAvailable: status,
+                    },
+                    () => resolve(null),
+                );
             });
+        });
+    };
+
+    startAuthentication = () => {
+        const { isBiometricAvailable } = this.state;
+
+        // if any biometric method available start the biometric authentication
+        if (isBiometricAvailable) {
+            this.requestBiometricAuthenticate();
+        }
     };
 
     onUnlock = () => {
@@ -113,28 +107,54 @@ class LockModal extends Component<Props, State> {
         }
     };
 
-    onBiometricAuthenticateSuccess = () => {
-        // update latest unlock app
-        AuthenticationService.onSuccessAuthentication();
-        this.onUnlock();
+    onPasscodeEntered = (passcode: string) => {
+        const { coreSettings } = this.state;
+
+        AuthenticationService.authenticatePasscode(passcode)
+            .then(this.onUnlock)
+            .catch((e) => {
+                // wrong passcode entered
+                if (coreSettings.hapticFeedback) {
+                    VibrateHapticFeedback('notificationError');
+                }
+
+                // clear passcode input
+                if (this.securePinInputRef.current) {
+                    this.securePinInputRef.current.clearInput();
+                }
+
+                // set the error message
+                this.setState({
+                    error: e.toString().replace('Error: ', ''),
+                });
+            });
     };
 
     requestBiometricAuthenticate = () => {
-        FingerprintScanner.authenticate({
-            description: Localize.t('global.unlock'),
-            fallbackEnabled: true,
-            // @ts-ignore
-            fallbackTitle: Localize.t('global.enterPasscode'),
-        })
-            .then(this.onBiometricAuthenticateSuccess)
-            .catch(() => {})
-            .finally(() => {
-                FingerprintScanner.release();
+        AuthenticationService.authenticateBiometrics(Localize.t('global.unlock'))
+            .then(this.onUnlock)
+            .catch((error) => {
+                let errorMessage;
+                // biometric's has been changed
+                if (error.name === BiometricErrors.ERROR_BIOMETRIC_HAS_BEEN_CHANGED) {
+                    errorMessage = Localize.t('global.biometricChangeError');
+                    // disable biometrics
+                    this.setState({
+                        isBiometricAvailable: false,
+                    });
+                } else if (error.name !== BiometricErrors.ERROR_USER_CANCEL) {
+                    // craft a new Error and ignore errors from user cancel
+                    errorMessage = Localize.t('global.invalidBiometryAuth');
+                }
+
+                if (errorMessage) {
+                    Prompt(Localize.t('global.error'), errorMessage);
+                }
             });
     };
 
     render() {
-        const { error, coreSettings, isSensorAvailable } = this.state;
+        const { error, coreSettings, isBiometricAvailable } = this.state;
         return (
             <BlurView
                 style={styles.blurView}
@@ -164,11 +184,9 @@ class LockModal extends Component<Props, State> {
                             {error}
                         </Text>
                         <SecurePinInput
-                            ref={(r) => {
-                                this.securePinInput = r;
-                            }}
+                            ref={this.securePinInputRef}
                             virtualKeyboard
-                            supportBiometric={coreSettings.biometricMethod !== BiometryType.None && isSensorAvailable}
+                            supportBiometric={isBiometricAvailable}
                             onBiometryPress={this.requestBiometricAuthenticate}
                             onInputFinish={this.onPasscodeEntered}
                             enableHapticFeedback={coreSettings.hapticFeedback}
