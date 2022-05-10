@@ -13,6 +13,8 @@ static NSString *const ERROR_BIOMETRIC = @"BIOMETRIC_ERROR";
 static NSString *const ERROR_NOT_MEET_SECURITY_REQUIREMENTS = @"NOT_MEET_SECURITY_REQUIREMENTS";
 static NSString *const ERROR_BIOMETRIC_HAS_BEEN_CHANGED = @"BIOMETRIC_HAS_BEEN_CHANGED";
 static NSString *const ERROR_UNABLE_REFRESH_AUTHENTICATION_KEY = @"UNABLE_REFRESH_AUTHENTICATION_KEY";
+// tracking
+static bool _isUserAuthenticating = FALSE;
 
 @implementation BiometricModule
 
@@ -96,9 +98,16 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
     context.localizedFallbackTitle = @"";
     
     
+    // set the authenticating status
+    _isUserAuthenticating = TRUE;
+    
     // try to sign random bytes with private key
     // NOTE: this will trigger biometric authentication
     NSString *result = [SecurityProvider signRandomBytes:context];
+    
+    
+    // we got the result set isUserAuthenticating to false
+    _isUserAuthenticating = FALSE;
     
     
     if([result isEqual:ENCRYPTION_SUCCESS]){
@@ -138,5 +147,9 @@ RCT_EXPORT_METHOD(refreshAuthenticationKey:(RCTPromiseResolveBlock)resolve
     reject(ERROR_UNABLE_REFRESH_AUTHENTICATION_KEY, nil, nil);
   });
 }
+
+
++ (bool) isUserAuthenticating { return _isUserAuthenticating; }
+
 
 @end

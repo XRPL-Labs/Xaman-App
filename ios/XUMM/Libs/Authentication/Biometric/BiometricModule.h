@@ -2,5 +2,6 @@
 #import <LocalAuthentication/LocalAuthentication.h>
 
 @interface BiometricModule : NSObject <RCTBridgeModule>
-  + (void)initialise;
++ (void)initialise;
++ (bool)isUserAuthenticating;
 @end

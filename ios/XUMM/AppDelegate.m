@@ -62,6 +62,14 @@
 
 // hide snapshot in task switcher
 - (void)applicationWillResignActive:(UIApplication *)application {
+  
+  
+  // ignore if user is authenticating with biometric
+  if([BiometricModule isUserAuthenticating]){
+    return;
+  }
+
+  
   NSPredicate *isKeyWindow = [NSPredicate predicateWithFormat:@"isKeyWindow == YES"];
   UIWindow *topWindow = [[[UIApplication sharedApplication] windows] filteredArrayUsingPredicate:isKeyWindow].firstObject;
   
