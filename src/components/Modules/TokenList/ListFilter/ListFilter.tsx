@@ -86,12 +86,18 @@ class ListFilter extends Component<Props, State> {
         const { onFilterChange } = this.props;
         const { filterText, favoritesEnabled, hideZeroEnabled } = this.state;
 
-        if (typeof onFilterChange === 'function') {
-            onFilterChange({
+        // if no filter applied return undefined
+        let filters;
+        if (filterText || favoritesEnabled || hideZeroEnabled) {
+            filters = {
                 text: filterText,
                 favorite: favoritesEnabled,
                 hideZero: hideZeroEnabled,
-            });
+            };
+        }
+
+        if (typeof onFilterChange === 'function') {
+            onFilterChange(filters);
         }
     };
 

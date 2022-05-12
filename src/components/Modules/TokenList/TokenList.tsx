@@ -31,6 +31,7 @@ interface Props {
 
 interface State {
     account: AccountSchema;
+    tokens: TrustLineSchema[];
     dataSource: TrustLineSchema[];
     filters: FiltersType;
     reorderEnabled: boolean;
@@ -39,14 +40,17 @@ interface State {
 
 /* Component ==================================================================== */
 class TokenList extends Component<Props, State> {
-    private dragSortableRef: React.RefObject<SortableFlatList>;
+    private readonly dragSortableRef: React.RefObject<SortableFlatList>;
 
     constructor(props: Props) {
         super(props);
 
+        const tokens = props.account.lines.sorted([['order', false]]);
+
         this.state = {
             account: props.account,
-            dataSource: props.account.lines.sorted([['order', false]]),
+            tokens,
+            dataSource: tokens,
             filters: undefined,
             reorderEnabled: false,
             timestamp: +new Date(),
@@ -97,9 +101,13 @@ class TokenList extends Component<Props, State> {
                 };
             }
 
+            // update tokens and dataSource
+            const tokens = nextProps.account.lines.sorted([['order', false]]);
+
             return {
                 account: nextProps.account,
-                dataSource: nextProps.account.lines.sorted([['order', false]]),
+                tokens,
+                dataSource: tokens,
                 ...filtersState,
             };
         }
@@ -140,13 +148,12 @@ class TokenList extends Component<Props, State> {
     };
 
     toggleReordering = () => {
-        const { account } = this.props;
-        const { reorderEnabled, filters } = this.state;
+        const { tokens, reorderEnabled, filters } = this.state;
 
         // if we are enabling the re-ordering, we need to clear filters if any exist
         if (filters && (filters.text || filters.favorite || filters.hideZero)) {
             this.setState({
-                dataSource: account.lines.sorted([['order', false]]),
+                dataSource: tokens,
                 filters: undefined,
                 reorderEnabled: !reorderEnabled,
             });
@@ -193,15 +200,17 @@ class TokenList extends Component<Props, State> {
     };
 
     onFilterChange = (filters: FiltersType) => {
-        const { account } = this.state;
+        const { tokens } = this.state;
 
-        // list of lines
-        let dataSource = account.lines.sorted([['order', false]]);
+        // return if no token
+        if (tokens.length === 0) {
+            return;
+        }
 
         // if no filter is applied then return list
         if (!filters) {
             this.setState({
-                dataSource,
+                dataSource: tokens,
                 filters,
             });
             return;
@@ -209,6 +218,9 @@ class TokenList extends Component<Props, State> {
 
         // destruct filter variables
         const { text, favorite, hideZero } = filters;
+
+        // default dataSource
+        let dataSource = tokens;
 
         // filter base on filter text
         if (text) {
@@ -225,7 +237,7 @@ class TokenList extends Component<Props, State> {
         // hide lines with zero balance
         if (hideZero) {
             dataSource = filter(dataSource, (item: TrustLineSchema) => {
-                return item.balance > 0;
+                return item.balance !== 0;
             });
         }
 
