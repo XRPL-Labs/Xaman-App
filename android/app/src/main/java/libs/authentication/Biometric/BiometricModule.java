@@ -200,6 +200,6 @@ public class BiometricModule extends ReactContextBaseJavaModule {
             promise.resolve(true);
             return;
         }
-        promise.reject(ERROR_UNABLE_REFRESH_AUTHENTICATION_KEY, "null");
+        promise.reject(ERROR_UNABLE_REFRESH_AUTHENTICATION_KEY, "");
     }
 }
