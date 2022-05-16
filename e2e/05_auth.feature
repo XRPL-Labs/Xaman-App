@@ -44,7 +44,7 @@ Feature: Lock
         Then I tap 'tab-Home'
 
     Scenario: Add a asset for testing signing
-        Then I tap 'add-asset-button'
+        Then I tap 'add-token-button'
         Given I should have 'add-asset-overlay'
         Then I tap 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B.BTC'
         Given I should wait 10 sec to see 'add-and-sign-button'

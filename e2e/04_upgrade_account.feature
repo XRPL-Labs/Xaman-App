@@ -52,7 +52,7 @@ Feature: Upgrade Account
 
 
     Scenario: Add a asset
-        Then I tap 'add-asset-button'
+        Then I tap 'add-token-button'
         Given I should have 'add-asset-overlay'
         Given I should wait 10 sec to see 'add-and-sign-button'
         Then I tap 'add-and-sign-button'

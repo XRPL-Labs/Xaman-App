@@ -49,13 +49,13 @@ class ListHeader extends PureComponent<Props> {
         if (reorderEnabled) {
             return (
                 <Button
-                    roundedSmall
+                    roundedMini
                     numberOfLines={1}
                     testID="reorder-save-button"
                     label={Localize.t('global.save')}
                     onPress={this.onReorderSavePress}
                     icon="IconCheck"
-                    iconSize={20}
+                    iconSize={19}
                     style={[AppStyles.rightSelf]}
                 />
             );
@@ -64,13 +64,14 @@ class ListHeader extends PureComponent<Props> {
         if (showAddButton) {
             return (
                 <Button
-                    roundedSmall
+                    secondary
+                    roundedMini
                     numberOfLines={1}
                     testID="add-asset-button"
                     label={Localize.t('home.addAsset')}
                     onPress={this.onAddPress}
                     icon="IconPlus"
-                    iconSize={20}
+                    iconSize={19}
                     style={[AppStyles.rightSelf]}
                 />
             );

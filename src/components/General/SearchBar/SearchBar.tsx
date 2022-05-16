@@ -7,12 +7,13 @@ import StyleService from '@services/StyleService';
 
 import { Icon } from '@components/General/Icon';
 
-import { AppStyles } from '@theme';
+import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
 
 interface Props {
+    height?: number;
     onChangeText?: (value: string) => void;
     onFocus?: () => void;
     onBlur?: () => void;
@@ -36,6 +37,7 @@ class SearchBar extends PureComponent<Props, State> {
     private readonly inputRef: React.RefObject<TextInput | null>;
 
     static defaultProps = {
+        height: AppSizes.heightPercentageToDP(5.5),
         placeholder: 'Please type ...',
         iconSize: 20,
         border: false,
@@ -173,13 +175,18 @@ class SearchBar extends PureComponent<Props, State> {
     };
 
     render() {
-        const { placeholder, border, inputStyle, containerStyle, iconSize } = this.props;
+        const { height, placeholder, border, inputStyle, containerStyle, iconSize } = this.props;
         const { value, isClearButtonVisible } = this.state;
 
         return (
             <TouchableOpacity
                 activeOpacity={1}
-                style={[styles.searchContainer, border && styles.searchContainerBorder, containerStyle]}
+                style={[
+                    styles.searchContainer,
+                    { height, borderRadius: height / 4 },
+                    border && styles.searchContainerBorder,
+                    containerStyle,
+                ]}
                 onPress={this.focus}
             >
                 <Animated.View style={[styles.searchIcon]}>

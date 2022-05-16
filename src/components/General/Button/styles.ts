@@ -79,6 +79,17 @@ const styles = StyleService.create({
         fontSize: AppFonts.base.size * 0.9,
     },
 
+    // Rounded Mini
+    buttonRoundedMini: {
+        height: AppSizes.scale(28),
+        paddingHorizontal: 12,
+        alignSelf: 'center',
+        borderRadius: AppSizes.scale(28) / 2,
+    },
+    textButtonRoundedMini: {
+        fontSize: AppFonts.base.size * 0.8,
+    },
+
     // Disabled
     buttonDisabled: {
         opacity: 0.4,

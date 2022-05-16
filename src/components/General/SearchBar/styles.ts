@@ -1,12 +1,10 @@
 import StyleService from '@services/StyleService';
 
-import { AppSizes, AppFonts } from '@theme';
+import { AppFonts } from '@theme';
 /* Styles ==================================================================== */
 export default StyleService.create({
     searchContainer: {
         flexDirection: 'row',
-        height: AppSizes.heightPercentageToDP(5.5),
-        borderRadius: 15,
         backgroundColor: '$tint',
     },
     searchContainerBorder: {

@@ -6,6 +6,7 @@ import { TouchableDebounce, Icon, SearchBar } from '@components/General';
 
 import Localize from '@locale';
 
+import { AppSizes } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -32,7 +33,7 @@ interface State {
 /* Component ==================================================================== */
 class ListFilter extends Component<Props, State> {
     private animatedContainer: Animated.Value;
-    private searchInputRef: React.RefObject<SearchBar | null>;
+    private readonly searchInputRef: React.RefObject<SearchBar | null>;
 
     constructor(props: Props) {
         super(props);
@@ -185,9 +186,10 @@ class ListFilter extends Component<Props, State> {
         });
 
         return (
-            <View style={[styles.container]}>
+            <View style={styles.container}>
                 <SearchBar
                     ref={this.searchInputRef}
+                    height={AppSizes.heightPercentageToDP(4.5)}
                     onChangeText={this.onFilterTextChange}
                     onFocus={this.onSearchInputFocus}
                     onBlur={this.onSearchInputBlur}

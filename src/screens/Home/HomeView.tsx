@@ -68,6 +68,7 @@ class HomeView extends Component<Props, State> {
         AccountRepository.on('accountCreate', this.getDefaultAccount);
         AccountRepository.on('accountRemove', this.getDefaultAccount);
 
+        // update discreetMode and developerMode on change
         CoreRepository.on('updateSettings', this.onCoreSettingsUpdate);
 
         // listen for screen appear event
@@ -196,17 +197,6 @@ class HomeView extends Component<Props, State> {
                 isSpendable: !!find(spendableAccounts, { address: account.address }),
             });
         }
-    };
-
-    showBalanceExplain = () => {
-        const { account } = this.state;
-
-        // don't show the explain screen when account is not activated
-        if (account.balance === 0) {
-            return;
-        }
-
-        Navigator.showOverlay(AppScreens.Overlay.ExplainBalance, { account });
     };
 
     openActiveAccountDescription = () => {
@@ -338,15 +328,15 @@ class HomeView extends Component<Props, State> {
                     <Image style={[styles.logo]} source={StyleService.getImage('XummLogo')} />
                 </View>
                 {account?.isValid() && (
-                    <View style={[AppStyles.flex1]}>
+                    <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
                         <Button
                             onPress={() => {
                                 Navigator.showOverlay(AppScreens.Overlay.SwitchAccount);
                             }}
                             light
-                            roundedSmall
+                            roundedMini
                             style={styles.switchAccountButton}
-                            iconSize={14}
+                            iconSize={12}
                             icon="IconSwitchAccount"
                             label={Localize.t('account.switchAccount')}
                         />
@@ -443,22 +433,22 @@ class HomeView extends Component<Props, State> {
                         testID="send-button"
                         style={styles.sendButton}
                         icon="IconCornerLeftUp"
-                        iconSize={20}
+                        iconSize={18}
                         iconStyle={[styles.sendButtonIcon]}
                         label={Localize.t('global.send')}
-                        textStyle={[styles.sendButtonText]}
+                        textStyle={styles.sendButtonText}
                         onPress={this.pushSendScreen}
                     />
                     <RaisedButton
                         small
                         testID="request-button"
-                        style={[styles.requestButton]}
+                        style={styles.requestButton}
                         containerStyle={styles.requestButtonContainer}
                         icon="IconCornerRightDown"
-                        iconSize={20}
-                        iconStyle={[styles.requestButtonIcon]}
+                        iconSize={18}
+                        iconStyle={styles.requestButtonIcon}
                         label={Localize.t('global.request')}
-                        textStyle={[styles.requestButtonText]}
+                        textStyle={styles.requestButtonText}
                         onPress={this.onShowAccountQRPress}
                     />
                 </View>
@@ -512,7 +502,7 @@ class HomeView extends Component<Props, State> {
         return (
             <View style={[AppStyles.row, AppStyles.paddingHorizontal]}>
                 <View style={[AppStyles.flex1]}>
-                    <Text style={[AppStyles.h5]} numberOfLines={1}>
+                    <Text style={[styles.accountLabelText]} numberOfLines={1}>
                         {account.label}
                     </Text>
                     <TouchableDebounce onPress={this.onShowAccountQRPress} activeOpacity={0.8}>
@@ -520,7 +510,7 @@ class HomeView extends Component<Props, State> {
                             testID="account-address-text"
                             adjustsFontSizeToFit
                             numberOfLines={1}
-                            style={[styles.cardAddressText, discreetMode && AppStyles.colorGrey]}
+                            style={[styles.accountAddressText, discreetMode && AppStyles.colorGrey]}
                         >
                             {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
                         </Text>

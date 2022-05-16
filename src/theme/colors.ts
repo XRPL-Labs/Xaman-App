@@ -7,7 +7,7 @@ import { ColorLuminance, HexToRgbA } from '@common/utils/color';
 import { NodeChain } from '@store/types';
 
 const colors = {
-    blue: '#3052FF',
+    blue: '#0030CF',
     orange: '#F8BF4C',
     green: '#3BDC96',
     red: '#FF5B5B',
