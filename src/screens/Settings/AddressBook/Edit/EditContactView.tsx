@@ -217,11 +217,11 @@ class EditContactView extends Component<Props, State> {
     };
 
     shareContactAddress = () => {
-        const { name, address } = this.state;
+        const { name, address, tag } = this.state;
 
         Share.share({
             title: name,
-            message: address,
+            message: tag ? `${address}:${tag}` : `${address}`,
             url: undefined,
         }).catch(() => {});
     };
