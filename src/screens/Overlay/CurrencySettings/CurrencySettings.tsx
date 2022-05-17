@@ -624,7 +624,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 style={[styles.favoriteIcon, isFavorite && styles.favoriteIconActive]}
                             />
                             <Text style={[styles.favoriteText, isFavorite && styles.favoriteTextActive]}>
-                                {Localize.t('global.favorite')}
+                                {isFavorite ? Localize.t('global.favorite') : Localize.t('global.addToFavorite')}
                             </Text>
                         </TouchableDebounce>
                         <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>

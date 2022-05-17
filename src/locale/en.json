@@ -64,6 +64,7 @@
     "other": "Other",
     "filter": "Filter",
     "favorite": "Favorite",
+    "addToFavorite": "Add to favorite",
     "expense": "Expense",
     "direction": "Direction",
     "asset": "Token",
@@ -543,7 +544,7 @@
     "itRemovesTheAccountRegularKey": "It removes the account regular key",
     "itSetsAccountRegularKeyTo": "It sets the account regular key to %{regularKey}",
     "thisTransactionDoesNotEffectAnyAccountSettings": "This transaction doesn't affect any account settings.",
-    "thisTransactionClearTicket": "This transaction does clear (consume & remove) ticket #%{ticketSequence}"
+    "thisTransactionClearTicket": "This transaction clears (consumes & removes) ticket #%{ticketSequence}"
   },
   "profile": {
     "availableInFuture": "This feature will be available in the future.",

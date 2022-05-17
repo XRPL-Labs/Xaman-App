@@ -105,21 +105,22 @@ const styles = StyleService.create({
     favoriteContainer: {
         flex: 1,
         flexDirection: 'row',
+        alignItems: 'center',
     },
     favoriteText: {
         fontFamily: AppFonts.pb.family,
-        fontSize: AppFonts.base.size,
-        color: '$grey',
+        fontSize: AppFonts.subtext.size,
+        color: '$silver',
         paddingLeft: 5,
     },
     favoriteTextActive: {
         fontFamily: AppFonts.pb.family,
-        fontSize: AppFonts.base.size,
+        fontSize: AppFonts.subtext.size,
         color: '$orange',
         paddingLeft: 5,
     },
     favoriteIcon: {
-        tintColor: '$grey',
+        tintColor: '$silver',
     },
     favoriteIconActive: {
         tintColor: '$orange',
