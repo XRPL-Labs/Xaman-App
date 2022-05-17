@@ -26,7 +26,8 @@ export interface State {
     source: AccountSchema;
     submitResult: SubmitResultType;
     hasError: boolean;
-    errorMessage: string;
+    softErrorMessage: string;
+    hardErrorMessage: string;
     isPreparing: boolean;
     isValidating: boolean;
     isValidPayload: boolean;

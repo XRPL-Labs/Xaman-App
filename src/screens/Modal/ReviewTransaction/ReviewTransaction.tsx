@@ -57,9 +57,15 @@ class ReviewTransactionModal extends Component<Props, State> {
             isValidating: false,
             isValidPayload: true,
             hasError: false,
-            errorMessage: '',
+            softErrorMessage: '',
+            hardErrorMessage: '',
             coreSettings: CoreRepository.getSettings(),
         };
+    }
+
+    static getDerivedStateFromError(error: any) {
+        // Update state so the next render will show the fallback UI.
+        return { hasError: true, hardErrorMessage: error.message };
     }
 
     componentDidMount() {
@@ -99,10 +105,6 @@ class ReviewTransactionModal extends Component<Props, State> {
         if (transaction) {
             transaction.abort();
         }
-    }
-
-    componentDidCatch() {
-        this.setState({ hasError: true });
     }
 
     onHardwareBackPress = () => {
@@ -252,8 +254,10 @@ class ReviewTransactionModal extends Component<Props, State> {
     onDecline = () => {
         const { onDecline, payload } = this.props;
 
+        const { hasError, hardErrorMessage, softErrorMessage } = this.state;
+
         // reject the payload
-        payload.reject();
+        payload.reject(hasError ? 'XUMM' : 'USER', hardErrorMessage || softErrorMessage);
 
         // emit sign requests update
         setTimeout(() => {
@@ -566,7 +570,7 @@ class ReviewTransactionModal extends Component<Props, State> {
     setError = (message: string) => {
         this.setState({
             hasError: true,
-            errorMessage: message,
+            softErrorMessage: message,
         });
     };
 
@@ -700,7 +704,7 @@ class ReviewTransactionModal extends Component<Props, State> {
     };
 
     renderError = () => {
-        const { errorMessage } = this.state;
+        const { softErrorMessage } = this.state;
 
         return (
             <View
@@ -719,7 +723,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 <InfoMessage
                     type="neutral"
                     labelStyle={[AppStyles.p, AppStyles.bold]}
-                    label={errorMessage || Localize.t('payload.unexpectedPayloadErrorOccurred')}
+                    label={softErrorMessage || Localize.t('payload.unexpectedPayloadErrorOccurred')}
                 />
                 <Spacer size={40} />
                 <Button testID="back-button" label={Localize.t('global.back')} onPress={this.onDecline} />

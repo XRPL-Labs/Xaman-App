@@ -229,25 +229,25 @@ export class Payload {
     /**
      * reject the payload
      */
-    reject = () => {
+    reject = (initiator: 'USER' | 'XUMM', reason?: string) => {
         // ignore the method if payload is generated
-        if (!this.isGenerated()) {
-            ApiService.payload
-                .patch(
-                    { uuid: this.getPayloadUUID() },
-                    {
-                        reject: true,
-                        origintype: this.getOrigin(),
-                    },
-                )
-                .catch((e: any) => {
-                    logger.debug('Reject error', e);
-                });
-
-            return true;
+        if (this.isGenerated()) {
+            return;
         }
 
-        return false;
+        ApiService.payload
+            .patch(
+                { uuid: this.getPayloadUUID() },
+                {
+                    reject: true,
+                    reject_initiator: initiator,
+                    reject_reason: reason,
+                    origintype: this.getOrigin(),
+                },
+            )
+            .catch((e: any) => {
+                logger.debug('Reject error', e);
+            });
     };
 
     /**
