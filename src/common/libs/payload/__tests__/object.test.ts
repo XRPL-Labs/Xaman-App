@@ -13,6 +13,7 @@ describe('Payload', () => {
     it('Should be able to generate payload and return right values', () => {
         const transaction = {
             TransactionType: 'Payment',
+            Account: 'rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY',
             Destination: 'rXUMMaPpZqPutoRszR29jtC8amWq3APkx',
             Amount: '1337',
         };
@@ -26,6 +27,7 @@ describe('Payload', () => {
         );
         expect(craftedPayload.getApplicationName()).toBe('XUMM');
         expect(craftedPayload.getTransaction().Json).toEqual(transaction);
+        expect(craftedPayload.getSigners()).toEqual(['rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY']);
 
         const payloadPatchSpy = jest.spyOn(ApiService.payload, 'patch');
         craftedPayload.patch({ signed_blob: '', tx_id: '', multisigned: '' });

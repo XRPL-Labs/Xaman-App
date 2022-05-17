@@ -317,8 +317,12 @@ class ExchangeView extends Component<Props, State> {
 
         const pair = { issuer: trustLine.currency.issuer, currency: trustLine.currency.currency };
 
-        const offer = new OfferCreate();
+        // create offerCreate transaction
+        const offer = new OfferCreate({
+            Account: account.address,
+        });
 
+        // set offer values
         if (direction === MarketDirection.SELL) {
             offer.TakerGets = { currency: 'XRP', value: amount };
             offer.TakerPays = { value: minimumOutcome, ...pair };
@@ -330,9 +334,7 @@ class ExchangeView extends Component<Props, State> {
         // ImmediateOrCancel & Sell flag
         offer.Flags = [txFlags.OfferCreate.ImmediateOrCancel, txFlags.OfferCreate.Sell];
 
-        // set source account
-        offer.Account = { address: account.address };
-
+        // generate payload
         const payload = Payload.build(offer.Json);
 
         Navigator.showModal(

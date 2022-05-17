@@ -12,7 +12,7 @@ import LedgerService from '@services/LedgerService';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-import { TransactionTypes } from '@common/libs/ledger/types';
+import { TrustSet } from '@common/libs/ledger/transactions';
 
 import { Payload } from '@common/libs/payload';
 import { CounterPartyRepository } from '@store/repositories';
@@ -145,16 +145,18 @@ class AddCurrencyOverlay extends Component<Props, State> {
             });
         }
 
-        const payload = Payload.build(
-            {
-                TransactionType: TransactionTypes.TrustSet,
-                Flags: 131072, // tfSetNoRipple
-                LimitAmount: {
-                    currency: selectedCurrency.currency,
-                    issuer: selectedCurrency.issuer,
-                    value: lineLimit,
-                },
+        const trustSet = new TrustSet({
+            Account: account.address,
+            Flags: 131072, // tfSetNoRipple
+            LimitAmount: {
+                currency: selectedCurrency.currency,
+                issuer: selectedCurrency.issuer,
+                value: lineLimit,
             },
+        });
+
+        const payload = Payload.build(
+            trustSet.Json,
             Localize.t('asset.addingAssetReserveDescription', {
                 ownerReserve: LedgerService.getNetworkReserve().OwnerReserve,
             }),

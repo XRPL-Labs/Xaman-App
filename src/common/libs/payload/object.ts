@@ -67,24 +67,28 @@ export class Payload {
      * @param message
      */
     static build(TxJson: TransactionJSONType, message?: string): Payload {
-        const payload = new Payload();
+        const instance = new Payload();
+
+        // force the signer accounts if account is set in transaction
+        const signers = TxJson.Account ? [TxJson.Account] : [];
 
         // set meta flag including submit and instruction message
-        payload.meta = {
+        instance.meta = {
             submit: true,
             custom_instruction: message,
+            signers,
         };
 
         // set the payload and transaction type
-        payload.payload = {
+        instance.payload = {
             tx_type: TxJson.TransactionType as TransactionTypes,
             request_json: TxJson,
         };
 
         // set generated flag
-        payload.generated = true;
+        instance.generated = true;
 
-        return payload;
+        return instance;
     }
 
     /**
