@@ -61,6 +61,20 @@ class NFTokenAcceptOfferTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
+
+                {transaction.NFTokenBrokerFee && (
+                    <>
+                        <Text style={[styles.label]}>{Localize.t('global.brokerFee')}</Text>
+                        <View style={[styles.contentBox]}>
+                            <AmountText
+                                value={transaction.NFTokenBrokerFee.value}
+                                currency={transaction.NFTokenBrokerFee.currency}
+                                style={styles.amount}
+                                immutable
+                            />
+                        </View>
+                    </>
+                )}
             </>
         );
     }

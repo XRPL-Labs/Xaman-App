@@ -1190,9 +1190,9 @@ class TransactionDetailsView extends Component<Props, State> {
         const offerID = tx.NFTokenBuyOffer || tx.NFTokenSellOffer;
 
         // this should never happen
-        // but as we are in beta we should to check this
+        // but as we are in beta we should check
         if (!tx.Offer) {
-            return 'No Description!';
+            return 'Unable to fetch the offer for this transaction!';
         }
 
         let content = '';
@@ -1212,6 +1212,14 @@ class TransactionDetailsView extends Component<Props, State> {
                 tokenID: tx.Offer.NFTokenID,
                 amount: tx.Offer.Amount.value,
                 currency: NormalizeCurrencyCode(tx.Offer.Amount.currency),
+            });
+        }
+
+        if (tx.NFTokenBrokerFee) {
+            content += '\n';
+            content += Localize.t('events.nftAcceptOfferBrokerFee', {
+                brokerFee: tx.NFTokenBrokerFee.value,
+                currency: NormalizeCurrencyCode(tx.NFTokenBrokerFee.currency),
             });
         }
 
