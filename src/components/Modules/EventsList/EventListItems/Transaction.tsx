@@ -257,7 +257,7 @@ class TransactionTemplate extends Component<Props, State> {
         if (name) return name;
         if (address) return Truncate(address, 16);
 
-        return Localize.t('global.unknown');
+        return Localize.t('global.loading');
     };
 
     getDescription = () => {
