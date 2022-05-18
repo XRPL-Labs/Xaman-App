@@ -1,8 +1,6 @@
 import moment from 'moment-timezone';
 import { set, get, isUndefined } from 'lodash';
 
-import { AccountSchema } from '@store/schemas/latest';
-
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import Localize from '@locale';
 
@@ -148,14 +146,8 @@ class CheckCash extends BaseTransaction {
         return exp.isBefore(now);
     }
 
-    validate = (account: AccountSchema, multiSign?: boolean): Promise<void> => {
+    validate = (): Promise<void> => {
         return new Promise((resolve, reject) => {
-            // if multiSign resolve
-            if (multiSign) {
-                resolve();
-                return;
-            }
-
             // check object should be assigned
             if (!this.Check) {
                 reject(new Error(Localize.t('payload.unableToGetCheckObject')));

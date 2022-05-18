@@ -2,8 +2,6 @@ import moment from 'moment-timezone';
 
 import { set, get, isUndefined } from 'lodash';
 
-import { AccountSchema } from '@store/schemas/latest';
-
 import Localize from '@locale';
 
 import BaseTransaction from './base';
@@ -50,14 +48,8 @@ class CheckCancel extends BaseTransaction {
         return exp.isBefore(now);
     }
 
-    validate = (account: AccountSchema, multiSign?: boolean): Promise<void> => {
+    validate = (): Promise<void> => {
         return new Promise((resolve, reject) => {
-            // if multiSign resolve
-            if (multiSign) {
-                resolve();
-                return;
-            }
-
             if (!this.Check) {
                 reject(new Error(Localize.t('payload.unableToGetCheckObject')));
                 return;

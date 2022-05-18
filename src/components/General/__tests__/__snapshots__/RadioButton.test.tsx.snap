@@ -16,7 +16,7 @@ exports[`[RadioButton] renders checked correctly 1`] = `
     Object {
       "alignItems": "center",
       "backgroundColor": "#F3F6FA",
-      "borderColor": "#3052FF",
+      "borderColor": "#0030CF",
       "borderRadius": 20,
       "borderWidth": 3,
       "color": "#ACB1C1",
@@ -52,7 +52,7 @@ exports[`[RadioButton] renders checked correctly 1`] = `
             "width": 26,
           },
           Object {
-            "borderColor": "#3052FF",
+            "borderColor": "#0030CF",
           },
         ]
       }
@@ -60,9 +60,9 @@ exports[`[RadioButton] renders checked correctly 1`] = `
       <View
         style={
           Object {
-            "backgroundColor": "#3052FF",
+            "backgroundColor": "#0030CF",
             "borderRadius": 8,
-            "color": "#3052FF",
+            "color": "#0030CF",
             "height": 15,
             "width": 15,
           }

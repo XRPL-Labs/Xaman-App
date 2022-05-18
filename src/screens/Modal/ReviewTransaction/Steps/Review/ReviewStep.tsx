@@ -64,11 +64,15 @@ class ReviewStep extends Component<Props, State> {
         // get available accounts for signing
         let availableAccounts = [] as AccountSchema[];
 
-        // only accounts with full access
         if (payload.isMultiSign()) {
+            // only accounts with full access
             availableAccounts = AccountRepository.getFullAccessAccounts();
-        } else {
+        } else if (payload.isSignIn()) {
+            // account's that can sign the transaction
             availableAccounts = AccountRepository.getSignableAccounts();
+        } else {
+            // account's that can sign the transaction and also activated
+            availableAccounts = AccountRepository.getSpendableAccounts(true);
         }
 
         // if no account for signing is available then just return

@@ -317,6 +317,9 @@ class LedgerService {
         });
     };
 
+    /**
+     * Get account obligation lines
+     */
     getAccountObligations = (account: string): Promise<LedgerTrustline[]> => {
         return new Promise((resolve) => {
             this.getGatewayBalances(account)
@@ -365,6 +368,70 @@ class LedgerService {
                 })
                 .catch(() => {
                     reject(new Error('Unable to fetch account transfer rate!'));
+                });
+        });
+    };
+
+    /**
+     * Get account available XRP balance
+     */
+    getAccountAvailableBalance = (account: string): Promise<number> => {
+        return new Promise((resolve, reject) => {
+            this.getAccountInfo(account)
+                .then((accountInfo) => {
+                    if (
+                        !has(accountInfo, 'error') &&
+                        has(accountInfo, ['account_data', 'Balance']) &&
+                        has(accountInfo, ['account_data', 'OwnerCount'])
+                    ) {
+                        const { Balance, OwnerCount } = accountInfo.account_data;
+                        const { BaseReserve, OwnerReserve } = this.getNetworkReserve();
+
+                        const balance = new BigNumber(Balance);
+
+                        if (balance.isZero()) {
+                            resolve(0);
+                            return;
+                        }
+
+                        const availableBalance = balance
+                            .dividedBy(1000000.0)
+                            .minus(BaseReserve)
+                            .minus(Number(OwnerCount) * OwnerReserve)
+                            .decimalPlaces(8)
+                            .toNumber();
+
+                        if (availableBalance < 0) {
+                            resolve(0);
+                        }
+
+                        resolve(availableBalance);
+                    } else {
+                        reject(new Error('Unable to fetch account balance'));
+                    }
+                })
+                .catch(() => {
+                    reject(new Error('Unable to fetch account balance'));
+                });
+        });
+    };
+
+    /**
+     * Get account last sequence
+     */
+    getAccountSequence = (account: string): Promise<number> => {
+        return new Promise((resolve, reject) => {
+            this.getAccountInfo(account)
+                .then((accountInfo) => {
+                    if (!has(accountInfo, 'error') && has(accountInfo, ['account_data', 'Sequence'])) {
+                        const { account_data } = accountInfo;
+                        resolve(Number(account_data.Sequence));
+                    } else {
+                        reject(new Error('Unable to fetch account sequence'));
+                    }
+                })
+                .catch(() => {
+                    reject(new Error('Unable to fetch account sequence'));
                 });
         });
     };

@@ -761,6 +761,7 @@
     "unableToCheckAccountNFTs": "Unable to check for account NFTs, please make sure you are connected to the XRP ledger node",
     "unableToFetchLedgerSequence": "Unable to fetch the current ledger sequence. Please make sure you are connected to the XRP Ledger node.",
     "unableGetDestinationAccountInfo": "Unable to get destination account info, please make sure you are connected to the XRP ledger node",
+    "unableGetAccountInfo": "Unable to fetch account info, please make sure you are connected to the XRP ledger node",
     "destinationAccountIsNotActivated": "Destination account is not activated, Must be a funded account in the XRP ledger.",
     "destinationAddressRequiredDestinationTag": "Destination Address requires a Destination Tag",
     "destinationAccountAndSourceCannotBeSame": "Destination account and source cannot be the same.",

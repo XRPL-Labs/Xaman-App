@@ -7,10 +7,11 @@ export default {
     default: 'Hmm, an unknown error occurred',
     timeout: 'Server Timed Out. Check your internet connection',
     invalidJson: 'Response returned is not valid JSON',
-    notImplemented: 'Not Implemented Yet!',
+    notImplemented: 'Not Implemented',
 
-    transactions404: 'No Transaction ',
-    transactionNotFound: 'Can not load transaction!',
+    unexpectedValidationError:
+        'An unexpected error occurred while validating the transaction.\n\n' +
+        'Please try again later, if the problem continues, contact XUMM support.',
 
     storageDecryptionFailed:
         'The secure XUMM datastore could not be decrypted. ' +

@@ -4,8 +4,6 @@
 
 import { get, isUndefined, has } from 'lodash';
 
-import { AccountSchema } from '@store/schemas/latest';
-
 import LedgerService from '@services/LedgerService';
 
 import Localize from '@locale';
@@ -74,15 +72,9 @@ class AccountDelete extends BaseTransaction {
         };
     }
 
-    validate = (account: AccountSchema, multiSign?: boolean): Promise<void> => {
+    validate = (): Promise<void> => {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
-            // ignore if multiSign
-            if (multiSign) {
-                resolve();
-                return;
-            }
-
             // account and destination cannot be same
             if (this.Account.address === this.Destination.address) {
                 reject(new Error(Localize.t('account.destinationAccountAndSourceCannotBeSame')));
@@ -103,21 +95,28 @@ class AccountDelete extends BaseTransaction {
 
             // check if account sequence is met the account delete condition
             const { LastLedger } = LedgerService.getLedgerStatus();
-
             if (LastLedger === 0) {
                 reject(new Error(Localize.t('account.unableToFetchLedgerSequence')));
                 return;
             }
 
-            const remainingSequence = Number(account.sequence) + 256 - LastLedger;
-            if (remainingSequence > 0) {
-                reject(
-                    new Error(
-                        Localize.t('account.deleteAccountSequenceIsNotEnoughError', {
-                            remainingSequence,
-                        }),
-                    ),
-                );
+            // check if account have any blocker object
+            try {
+                const accountSequence = await LedgerService.getAccountSequence(this.Account.address);
+                const remainingSequence = accountSequence + 256 - LastLedger;
+
+                if (remainingSequence > 0) {
+                    reject(
+                        new Error(
+                            Localize.t('account.deleteAccountSequenceIsNotEnoughError', {
+                                remainingSequence,
+                            }),
+                        ),
+                    );
+                    return;
+                }
+            } catch {
+                reject(new Error(Localize.t('account.unableGetAccountInfo')));
                 return;
             }
 

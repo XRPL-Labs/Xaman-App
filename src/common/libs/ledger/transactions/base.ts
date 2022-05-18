@@ -26,7 +26,6 @@ import Meta from '../parser/meta';
 import LedgerDate from '../parser/common/date';
 import Amount from '../parser/common/amount';
 import Flag from '../parser/common/flag';
-import { txFlags } from '../parser/common/flags/txFlags';
 
 /* Types ==================================================================== */
 import { Account, AmountType, Memo, TransactionResult } from '../parser/types';
@@ -49,7 +48,7 @@ class BaseTransaction {
     public SignMethod: 'PIN' | 'BIOMETRIC' | 'PASSPHRASE' | 'TANGEM' | 'OTHER';
     public SignerAccount: any;
 
-    validate?: (account: AccountSchema, multiSign?: boolean) => Promise<void>;
+    validate?: () => Promise<void>;
 
     constructor(tx?: TransactionJSONType, meta?: any) {
         if (!isUndefined(tx)) {
@@ -82,40 +81,28 @@ class BaseTransaction {
     }
 
     /**
-     Prepare the transaction for signing
+     Prepare the transaction for signing, including setting the account sequence
     * @returns {Promise<void>}
     */
     prepare = async () => {
-        try {
-            // ignore for pseudo transactions
-            if (this.isPseudoTransaction()) {
-                return;
-            }
+        // ignore for pseudo transactions
+        if (this.isPseudoTransaction()) {
+            return;
+        }
 
-            // throw error if transaction fee is not set
-            // transaction fee's should always been set and shown to user before signing
-            if (isUndefined(this.Fee)) {
-                throw new Error(Localize.t('global.transactionFeeIsNotSet'));
-            }
+        // throw error if transaction fee is not set
+        // transaction fee's should always been set and shown to user before signing
+        if (isUndefined(this.Fee)) {
+            throw new Error(Localize.t('global.transactionFeeIsNotSet'));
+        }
 
-            // if account sequence not set get the latest account sequence
-            if (isUndefined(this.Sequence)) {
-                const accountInfo = await LedgerService.getAccountInfo(this.Account.address);
-
-                if (!has(accountInfo, 'error') && has(accountInfo, ['account_data', 'Sequence'])) {
-                    const { account_data } = accountInfo;
-                    this.Sequence = Number(account_data.Sequence);
-                } else {
-                    throw new Error(Localize.t('global.unableToSetAccountSequence'));
-                }
+        // if account sequence not set get the latest account sequence
+        if (isUndefined(this.Sequence)) {
+            try {
+                this.Sequence = await LedgerService.getAccountSequence(this.Account.address);
+            } catch {
+                throw new Error(Localize.t('global.unableToSetAccountSequence'));
             }
-
-            // if FullyCanonicalSig is not set, add it
-            if (!this.Flags.FullyCanonicalSig) {
-                this.Flags = [txFlags.Universal.FullyCanonicalSig];
-            }
-        } catch (e: any) {
-            throw new Error(`Unable to prepare the transaction, ${e?.message}`);
         }
     };
 

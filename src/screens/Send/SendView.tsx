@@ -242,7 +242,7 @@ class SendView extends Component<Props, State> {
             };
 
             // validate payment for all possible mistakes
-            await payment.validate(source);
+            await payment.validate();
 
             // sign the transaction
             await payment.sign(source).then(this.submit);

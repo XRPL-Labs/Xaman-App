@@ -1,5 +1,6 @@
 /* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
+import LedgerService from '@services/LedgerService';
 
 import Payment from '../payment';
 
@@ -115,5 +116,92 @@ describe('Payment tx', () => {
             currency: 'XRP',
             value: '85.5321',
         });
+    });
+
+    it('Should be able to validate the transaction', async () => {
+        const Account = 'rEAa7TDpBdL1hoRRAp3WDmzBcuQzaXssmb';
+        const Destination = 'r39CmfchUiq3y2xJ23nJpnDHVitPbiHbAz';
+
+        // should reject if no amount is added to the transaction
+        const paymentsWithEmptyAmount = [
+            {},
+            { Amount: '0' },
+            { Amount: { currency: 'USD' } },
+            { Amount: { currency: 'USD', value: '0' } },
+        ];
+        for (const payment of paymentsWithEmptyAmount) {
+            await expect(new Payment(payment).validate()).rejects.toThrow(
+                new Error('[missing "en.send.pleaseEnterAmount" translation]'),
+            );
+        }
+
+        // should reject if sending XRP and insufficient balance
+        const spy = jest
+            .spyOn(LedgerService, 'getAccountAvailableBalance')
+            .mockImplementation(() => Promise.resolve(10));
+
+        const paymentsWithXRPPayments = [
+            { Account, Amount: '20000000' },
+            { Account, Amount: { currency: 'USD', value: '1' }, SendMax: '20000000' },
+        ];
+
+        for (const payment of paymentsWithXRPPayments) {
+            await expect(new Payment(payment).validate()).rejects.toThrow(
+                new Error('[missing "en.send.insufficientBalanceSpendableBalance" translation]'),
+            );
+        }
+        spy.mockRestore();
+
+        // should reject if sending IOU and insufficient balance
+        const spy2 = jest.spyOn(LedgerService, 'getFilteredAccountLine').mockImplementation(() =>
+            Promise.resolve({
+                limit: '10000',
+                balance: '10',
+                account: 'r...',
+                currency: 'USD',
+                limit_peer: '0',
+                quality_in: 0,
+                quality_out: 0,
+            }),
+        );
+
+        const paymentsWithIOUPayments = [
+            { Account, Destination, Amount: { currency: 'USD', value: '20' } },
+            { Account, Destination, SendMax: { currency: 'USD', value: '20' }, Amount: '20000000' },
+        ];
+
+        for (const payment of paymentsWithIOUPayments) {
+            await expect(new Payment(payment).validate()).rejects.toThrow(
+                new Error('[missing "en.send.insufficientBalanceSpendableBalance" translation]'),
+            );
+        }
+        spy2.mockRestore();
+
+        // should reject if sending IOU and destination doesn't have proper TrustLine
+
+        const destinationLineConditions = [
+            undefined,
+            {
+                limit: '0',
+                balance: '0',
+                account: 'r...',
+                currency: 'USD',
+                limit_peer: '0',
+                quality_in: 0,
+                quality_out: 0,
+            },
+        ];
+
+        for (const condition of destinationLineConditions) {
+            const spy3 = jest
+                .spyOn(LedgerService, 'getFilteredAccountLine')
+                .mockImplementation(() => Promise.resolve(condition));
+            await expect(
+                new Payment({ Account, Destination, Amount: { currency: 'USD', value: '20' } }).validate(),
+            ).rejects.toThrow(
+                new Error('[missing "en.send.unableToSendPaymentRecipientDoesNotHaveTrustLine" translation]'),
+            );
+            spy3.mockRestore();
+        }
     });
 });

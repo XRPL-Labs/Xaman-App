@@ -7,7 +7,7 @@ import { Alert, BackHandler, Keyboard, Linking, NativeEventSubscription, Text, V
 
 import { AppScreens } from '@common/constants';
 
-import { AccountService, LedgerService, PushNotificationsService, StyleService } from '@services';
+import { LedgerService, PushNotificationsService, StyleService } from '@services';
 
 import { CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -76,9 +76,6 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         // back handler listener on android
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress);
-
-        // update the accounts details before process the review
-        AccountService.updateAccountsDetails();
 
         // set transaction
         try {
@@ -345,8 +342,9 @@ class ReviewTransactionModal extends Component<Props, State> {
 
             try {
                 // if any validation set to the transaction run and check
-                if (typeof transaction.validate === 'function') {
-                    await transaction.validate(source, payload.isMultiSign());
+                // ignore if multiSign
+                if (typeof transaction.validate === 'function' && !payload.isMultiSign()) {
+                    await transaction.validate();
                 }
             } catch (e: any) {
                 if (this.mounted) {

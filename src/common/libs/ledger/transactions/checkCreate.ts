@@ -2,9 +2,10 @@ import { has, get, set, isUndefined, isNumber, toInteger } from 'lodash';
 
 import * as AccountLib from 'xrpl-accountlib';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { ErrorMessages } from '@common/constants';
 import { NormalizeCurrencyCode } from '@common/utils/amount';
-import { CalculateAvailableBalance } from '@common/utils/balance';
+
+import LedgerService from '@services/LedgerService';
 
 import Localize from '@locale';
 
@@ -115,53 +116,60 @@ class CheckCreate extends BaseTransaction {
         return get(this, ['tx', 'InvoiceID'], undefined);
     }
 
-    validate = (account: AccountSchema, multiSign?: boolean): Promise<void> => {
-        return new Promise((resolve, reject) => {
-            // if multiSign resolve
-            if (multiSign) {
+    validate = (): Promise<void> => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+            try {
+                // check if check amount is set
+                if (!this.SendMax || !this.SendMax?.value || this.SendMax?.value === '0') {
+                    reject(new Error(Localize.t('send.pleaseEnterAmount')));
+                    return;
+                }
+
+                // check if the Check Amount is exceeding the balance
+                if (this.SendMax.currency === 'XRP') {
+                    try {
+                        // fetch fresh account balance from ledger
+                        const availableBalance = await LedgerService.getAccountAvailableBalance(this.Account.address);
+
+                        if (Number(this.SendMax.value) > Number(availableBalance)) {
+                            reject(
+                                new Error(
+                                    Localize.t('send.insufficientBalanceSpendableBalance', {
+                                        spendable: Localize.formatNumber(availableBalance),
+                                        currency: 'XRP',
+                                    }),
+                                ),
+                            );
+                            return;
+                        }
+                    } catch {
+                        reject(Localize.t('account.unableGetAccountInfo'));
+                        return;
+                    }
+                } else {
+                    // get TrustLine from ledger
+                    const line = await LedgerService.getFilteredAccountLine(this.Account.address, this.SendMax);
+
+                    // check if line exist
+                    if (line && Number(this.SendMax.value) > Number(line.balance)) {
+                        reject(
+                            new Error(
+                                Localize.t('send.insufficientBalanceSpendableBalance', {
+                                    spendable: Localize.formatNumber(Number(line.balance)),
+                                    currency: NormalizeCurrencyCode(line.currency),
+                                }),
+                            ),
+                        );
+                        return;
+                    }
+                }
+
+                // everything seems fine, resolve
                 resolve();
-                return;
+            } catch {
+                reject(new Error(ErrorMessages.unexpectedValidationError));
             }
-
-            if (!this.SendMax || !this.SendMax?.value || this.SendMax?.value === '0') {
-                reject(new Error(Localize.t('send.pleaseEnterAmount')));
-                return;
-            }
-
-            if (this.SendMax.currency === 'XRP') {
-                const availableBalance = CalculateAvailableBalance(account);
-                if (Number(this.SendMax.value) > Number(availableBalance)) {
-                    reject(
-                        new Error(
-                            Localize.t('send.insufficientBalanceSpendableBalance', {
-                                spendable: Localize.formatNumber(availableBalance),
-                                currency: 'XRP',
-                            }),
-                        ),
-                    );
-                    return;
-                }
-            } else {
-                const line = account.lines.find(
-                    (e: any) =>
-                        // eslint-disable-next-line implicit-arrow-linebreak
-                        e.currency.issuer === this.SendMax.issuer && e.currency.currency === this.SendMax.currency,
-                );
-
-                if (line && Number(this.SendMax.value) > Number(line.balance)) {
-                    reject(
-                        new Error(
-                            Localize.t('send.insufficientBalanceSpendableBalance', {
-                                spendable: Localize.formatNumber(line.balance),
-                                currency: NormalizeCurrencyCode(line.currency.currency),
-                            }),
-                        ),
-                    );
-                    return;
-                }
-            }
-
-            resolve();
         });
     };
 }

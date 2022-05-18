@@ -15,7 +15,7 @@ exports[`[SearchBar] renders correctly 1`] = `
   style={
     Object {
       "backgroundColor": "#F3F6FA",
-      "borderRadius": 15,
+      "borderRadius": 18.375,
       "flexDirection": "row",
       "height": 73.5,
       "opacity": 1,
@@ -108,7 +108,7 @@ exports[`[SearchBar] should clear text 1`] = `
   style={
     Object {
       "backgroundColor": "#F3F6FA",
-      "borderRadius": 15,
+      "borderRadius": 18.375,
       "flexDirection": "row",
       "height": 73.5,
       "opacity": 1,
@@ -201,7 +201,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
   style={
     Object {
       "backgroundColor": "#F3F6FA",
-      "borderRadius": 15,
+      "borderRadius": 18.375,
       "flexDirection": "row",
       "height": 73.5,
       "opacity": 1,
