@@ -208,6 +208,7 @@ export interface AccountObjectsResponse {
     limit?: number;
     marker?: string;
     validated?: boolean;
+    error?: string;
 }
 
 /**

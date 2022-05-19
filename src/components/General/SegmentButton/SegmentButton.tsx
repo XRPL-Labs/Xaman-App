@@ -6,6 +6,7 @@ import { TouchableDebounce } from '@components/General/TouchableDebounce';
 import styles from './styles';
 /* Types ==================================================================== */
 interface State {
+    ownUpdate: boolean;
     selectedIndex: number;
 }
 
@@ -26,14 +27,32 @@ class SegmentButton extends PureComponent<Props, State> {
         super(props);
 
         this.state = {
+            ownUpdate: false,
             selectedIndex: props.selectedIndex,
         };
+    }
+
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
+        if (prevState.ownUpdate) {
+            return {
+                ownUpdate: false,
+            };
+        }
+
+        if (nextProps.selectedIndex !== prevState.selectedIndex) {
+            return {
+                selectedIndex: nextProps.selectedIndex,
+            };
+        }
+
+        return null;
     }
 
     onButtonPress = (index: number) => {
         const { onPress } = this.props;
 
         this.setState({
+            ownUpdate: true,
             selectedIndex: index,
         });
 

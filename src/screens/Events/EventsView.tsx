@@ -59,6 +59,12 @@ export interface State {
     dataSource: Array<Transactions | LedgerObjects | Payload>;
 }
 
+enum DataSourceType {
+    PLANNED_TRANSACTIONS = 'PLANNED_TRANSACTIONS',
+    TRANSACTIONS = 'TRANSACTIONS',
+    PENDING_REQUESTS = 'PENDING_REQUESTS',
+}
+
 /* Component ==================================================================== */
 class EventsView extends Component<Props, State> {
     static screenName = AppScreens.TabBar.Events;
@@ -110,17 +116,15 @@ class EventsView extends Component<Props, State> {
 
         // add listener for default account change
         AccountRepository.on('changeDefaultAccount', this.onDefaultAccountChange);
-
         // update list on transaction received
         AccountService.on('transaction', this.onTransactionReceived);
-
         // update list on sign request received
-        PushNotificationsService.on('signRequestUpdate', this.updateDataSource);
+        PushNotificationsService.on('signRequestUpdate', this.onSignRequestReceived);
 
         // update data source after component mount
         InteractionManager.runAfterInteractions(() => {
             if (account?.isValid()) {
-                this.updateDataSource(true);
+                this.updateDataSource();
             }
         });
     }
@@ -129,10 +133,11 @@ class EventsView extends Component<Props, State> {
         // remove listeners
         AccountRepository.off('changeDefaultAccount', this.onDefaultAccountChange);
         AccountService.off('transaction', this.onTransactionReceived);
-        PushNotificationsService.off('signRequestUpdate', this.updateDataSource);
+        PushNotificationsService.off('signRequestUpdate', this.onSignRequestReceived);
     }
 
     onDefaultAccountChange = (account: AccountSchema) => {
+        // reset everything and load transaction
         this.setState(
             {
                 account,
@@ -140,19 +145,26 @@ class EventsView extends Component<Props, State> {
                 transactions: [],
                 plannedTransactions: [],
                 lastMarker: undefined,
+                canLoadMore: true,
             },
-            () => {
-                this.updateDataSource(true);
-            },
+            this.updateDataSource,
         );
+    };
+
+    onSignRequestReceived = () => {
+        const { account, sectionIndex } = this.state;
+
+        if (account?.isValid() && (sectionIndex === 0 || sectionIndex === 2)) {
+            this.updateDataSource([DataSourceType.PENDING_REQUESTS]);
+        }
     };
 
     onTransactionReceived = (transaction: any, effectedAccounts: Array<string>) => {
         const { account } = this.state;
 
-        if (account.isValid()) {
-            if (effectedAccounts.indexOf(account.address) !== -1) {
-                this.updateDataSource();
+        if (account?.isValid()) {
+            if (effectedAccounts.includes(account.address)) {
+                this.updateDataSource([DataSourceType.TRANSACTIONS, DataSourceType.PLANNED_TRANSACTIONS]);
             }
         }
     };
@@ -164,7 +176,11 @@ class EventsView extends Component<Props, State> {
         combined = [] as LedgerEntriesTypes[],
     ): Promise<LedgerEntriesTypes[]> => {
         return LedgerService.getAccountObjects(account, { type, marker }).then((resp) => {
-            const { account_objects, marker: _marker } = resp;
+            const { error, account_objects, marker: _marker } = resp;
+            // account is not found
+            if (error && error === 'actNotFound') {
+                return [];
+            }
             if (_marker && _marker !== marker) {
                 return this.fetchPlannedObjects(account, type, _marker, account_objects.concat(combined));
             }
@@ -348,28 +364,45 @@ class EventsView extends Component<Props, State> {
         return orderBy(dataSource, ['title'], ['desc']);
     };
 
-    updateDataSource = async (background = false) => {
+    updateDataSource = async (include?: DataSourceType[]) => {
         const { filters, searchText, sectionIndex } = this.state;
 
-        if (!background) {
-            this.setState({ isLoading: true });
+        this.setState({ isLoading: true });
+
+        let sourceTypes = [] as DataSourceType[];
+
+        switch (sectionIndex) {
+            case 0:
+                sourceTypes = [DataSourceType.TRANSACTIONS, DataSourceType.PENDING_REQUESTS];
+                break;
+
+            case 1:
+                sourceTypes = [DataSourceType.PLANNED_TRANSACTIONS];
+                break;
+            case 2:
+                sourceTypes = [DataSourceType.PENDING_REQUESTS];
+                break;
+            default:
+                break;
         }
 
-        if (sectionIndex === 1) {
-            await this.loadPlannedTransactions();
-        } else if (sectionIndex === 2) {
-            await this.loadPendingRequests();
-        } else {
-            // update all sources
-            await this.loadPendingRequests();
-            await this.loadTransactions();
+        // only update the included source if it can be updated
+        if (include) {
+            sourceTypes = sourceTypes.filter((source) => include.includes(source));
         }
 
-        const { isLoading } = this.state;
-
-        if (isLoading) {
-            this.setState({ isLoading: false });
+        // update data sources
+        for (const source of sourceTypes) {
+            if (source === DataSourceType.PENDING_REQUESTS) {
+                await this.loadPendingRequests();
+            } else if (source === DataSourceType.TRANSACTIONS) {
+                await this.loadTransactions();
+            } else if (source === DataSourceType.PLANNED_TRANSACTIONS) {
+                await this.loadPlannedTransactions();
+            }
         }
+
+        this.setState({ isLoading: false });
 
         // apply any new search ad filter to the new sources
         if (searchText) {
@@ -699,7 +732,7 @@ class EventsView extends Component<Props, State> {
     };
 
     render() {
-        const { dataSource, isLoading, isLoadingMore, filters, account } = this.state;
+        const { dataSource, isLoading, isLoadingMore, filters, account, sectionIndex } = this.state;
         const { timestamp } = this.props;
 
         if (!account) {
@@ -735,6 +768,7 @@ class EventsView extends Component<Props, State> {
                     placeholder={Localize.t('global.search')}
                 />
                 <SegmentButton
+                    selectedIndex={sectionIndex}
                     containerStyle={AppStyles.paddingHorizontalSml}
                     buttons={[
                         Localize.t('events.eventTypeAll'),
