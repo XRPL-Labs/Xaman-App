@@ -358,7 +358,7 @@ class HomeView extends Component<Props, State> {
                 const keysForAccounts = AccountRepository.findBy('regularKey', account.address);
 
                 return (
-                    <View style={[AppStyles.flex6]}>
+                    <View style={[AppStyles.flex6, AppStyles.paddingHorizontalSml]}>
                         <InfoMessage icon="IconKey" type="info" label={Localize.t('account.regularKeyFor')} />
                         <Spacer />
                         {keysForAccounts.map((a, index) => {
@@ -388,7 +388,10 @@ class HomeView extends Component<Props, State> {
             }
 
             return (
-                <View style={[AppStyles.flex6]} testID="not-activated-account-container">
+                <View
+                    style={[AppStyles.flex6, AppStyles.paddingHorizontalSml]}
+                    testID="not-activated-account-container"
+                >
                     <InfoMessage type="error" label={Localize.t('account.yourAccountIsNotActivated')} />
                     <TouchableDebounce
                         style={[AppStyles.row, AppStyles.centerContent, AppStyles.marginTopSml]}
@@ -458,6 +461,7 @@ class HomeView extends Component<Props, State> {
         return (
             <View style={[styles.buttonRow]}>
                 <RaisedButton
+                    small
                     testID="show-account-qr-button"
                     icon="IconQR"
                     iconSize={20}
