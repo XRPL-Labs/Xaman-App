@@ -101,18 +101,59 @@ class TokenList extends Component<Props, State> {
                 };
             }
 
+            const { filters } = prevState;
+
             // update tokens and dataSource
             const tokens = nextProps.account.lines.sorted([['order', false]]);
+            const dataSource = filters ? TokenList.getFilteredList(tokens, filters) : tokens;
 
             return {
                 account: nextProps.account,
                 tokens,
-                dataSource: tokens,
+                dataSource,
                 ...filtersState,
             };
         }
         return null;
     }
+
+    static getFilteredList = (tokens: TrustLineSchema[], filters: FiltersType): TrustLineSchema[] => {
+        if (!filters) {
+            return tokens;
+        }
+
+        // destruct filter variables
+        const { text, favorite, hideZero } = filters;
+
+        // default dataSource
+        let filtered = tokens;
+
+        // filter base on filter text
+        if (text) {
+            const normalizedSearch = toLower(text);
+
+            filtered = filter(filtered, (item: TrustLineSchema) => {
+                return (
+                    toLower(item.currency.name).indexOf(normalizedSearch) > -1 ||
+                    toLower(NormalizeCurrencyCode(item.currency.currency)).indexOf(normalizedSearch) > -1
+                );
+            });
+        }
+
+        // hide lines with zero balance
+        if (hideZero) {
+            filtered = filter(filtered, (item: TrustLineSchema) => {
+                return item.balance !== 0;
+            });
+        }
+
+        // only show favorite lines
+        if (favorite) {
+            filtered = filter(filtered, { favorite: true });
+        }
+
+        return filtered;
+    };
 
     onTrustLineUpdate = (updatedToken: TrustLineSchema, changes: Partial<TrustLineSchema>) => {
         // update the token in the list if token favorite changed
@@ -216,39 +257,9 @@ class TokenList extends Component<Props, State> {
             return;
         }
 
-        // destruct filter variables
-        const { text, favorite, hideZero } = filters;
-
-        // default dataSource
-        let dataSource = tokens;
-
-        // filter base on filter text
-        if (text) {
-            const normalizedSearch = toLower(text);
-
-            dataSource = filter(dataSource, (item: TrustLineSchema) => {
-                return (
-                    toLower(item.currency.name).indexOf(normalizedSearch) > -1 ||
-                    toLower(NormalizeCurrencyCode(item.currency.currency)).indexOf(normalizedSearch) > -1
-                );
-            });
-        }
-
-        // hide lines with zero balance
-        if (hideZero) {
-            dataSource = filter(dataSource, (item: TrustLineSchema) => {
-                return item.balance !== 0;
-            });
-        }
-
-        // only show favorite lines
-        if (favorite) {
-            dataSource = filter(dataSource, { favorite: true });
-        }
-
         // sort and update dataSource
         this.setState({
-            dataSource,
+            dataSource: TokenList.getFilteredList(tokens, filters),
             filters,
         });
     };
