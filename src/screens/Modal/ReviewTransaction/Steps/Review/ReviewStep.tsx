@@ -250,11 +250,6 @@ class ReviewStep extends Component<Props, State> {
         const { payload, source, isValidating, isPreparing, setSource, onAccept, onClose, getTransactionLabel } =
             this.context;
 
-        // return if source is not set yet
-        if (!source) {
-            return null;
-        }
-
         return (
             <ImageBackground
                 testID="review-transaction-modal"
