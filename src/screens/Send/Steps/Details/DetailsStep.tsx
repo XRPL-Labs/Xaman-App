@@ -280,7 +280,7 @@ class DetailsStep extends Component<Props, State> {
                 <View>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
                         <View style={[styles.currencyImageContainer]}>
-                            <Avatar border size={35} source={Images.IconXrpNew} />
+                            <Avatar border size={35} source={Images.IconXrpSquare} />
                         </View>
                         <View style={[AppStyles.column, AppStyles.centerContent]}>
                             <Text style={[styles.currencyItemLabel, selected && styles.currencyItemLabelSelected]}>

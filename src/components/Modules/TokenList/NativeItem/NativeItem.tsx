@@ -20,7 +20,7 @@ interface Props {
 
 /* Component ==================================================================== */
 class NativeItem extends PureComponent<Props> {
-    static Height = AppSizes.scale(50);
+    static Height = AppSizes.scale(45);
 
     onPress = () => {
         const { onPress } = this.props;
@@ -31,9 +31,7 @@ class NativeItem extends PureComponent<Props> {
     };
 
     getAvatar = () => {
-        return (
-            <Avatar border size={35} imageScale={0.8} source={Images.IconXrpNew} containerStyle={styles.brandAvatar} />
-        );
+        return <Avatar border size={35} source={Images.IconXrpSquare} containerStyle={styles.brandAvatar} />;
     };
 
     renderBalance = () => {

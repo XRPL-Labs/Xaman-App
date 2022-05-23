@@ -1,9 +1,19 @@
 import StyleService from '@services/StyleService';
 
 import { AppSizes, AppFonts } from '@theme';
+import Sizes from '@theme/sizes';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
+    headerContainer: {
+        backgroundColor: '$transparent',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: Sizes.moderateScale(60),
+        paddingRight: Sizes.padding,
+        paddingLeft: Sizes.paddingSml,
+    },
     row: {
         flexDirection: 'row',
         alignItems: 'center',

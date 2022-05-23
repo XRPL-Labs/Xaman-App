@@ -548,7 +548,7 @@ class ExchangeView extends Component<Props, State> {
                                         size={37}
                                         source={
                                             direction === MarketDirection.SELL
-                                                ? Images.IconXrpNew
+                                                ? Images.IconXrpSquare
                                                 : { uri: trustLine.counterParty.avatar }
                                         }
                                     />
@@ -621,7 +621,7 @@ class ExchangeView extends Component<Props, State> {
                                         size={37}
                                         source={
                                             direction === MarketDirection.BUY
-                                                ? Images.IconXrpNew
+                                                ? Images.IconXrpSquare
                                                 : { uri: trustLine.counterParty.avatar }
                                         }
                                     />

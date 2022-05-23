@@ -476,7 +476,7 @@ class HomeView extends Component<Props, State> {
     renderEmpty = () => {
         return (
             <SafeAreaView testID="home-tab-empty-view" style={[AppStyles.tabContainer]}>
-                <View style={[AppStyles.headerContainer]}>{this.renderHeader()}</View>
+                <View style={[styles.headerContainer]}>{this.renderHeader()}</View>
 
                 <ImageBackground
                     source={StyleService.getImage('BackgroundShapes')}
@@ -504,7 +504,7 @@ class HomeView extends Component<Props, State> {
         const { account, discreetMode } = this.state;
 
         return (
-            <View style={[AppStyles.row, AppStyles.paddingHorizontal]}>
+            <View style={[AppStyles.row, AppStyles.paddingHorizontalSml]}>
                 <View style={[AppStyles.flex1]}>
                     <Text style={[styles.accountLabelText]} numberOfLines={1}>
                         {account.label}
@@ -537,7 +537,7 @@ class HomeView extends Component<Props, State> {
         return (
             <SafeAreaView testID="home-tab-view" style={[AppStyles.tabContainer, AppStyles.centerAligned]}>
                 {/* Header */}
-                <View style={[AppStyles.headerContainer]}>{this.renderHeader()}</View>
+                <View style={[styles.headerContainer]}>{this.renderHeader()}</View>
 
                 {/* Content */}
                 <View style={[AppStyles.contentContainer]}>

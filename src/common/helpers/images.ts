@@ -112,7 +112,7 @@ export const Images = {
     IconSlider: buildImageSource('IconSlider', 'icon_sliders'),
     IconActivity: buildImageSource('IconActivity', 'icon_activity'),
     IconXrp: buildImageSource('IconXrp', 'icon_xrp'),
-    IconXrpNew: buildImageSource('IconXrpNew', 'icon_xrp_new'),
+    IconXrpSquare: buildImageSource('IconXrpSquare', 'icon_xrp_square'),
     IconShare: buildImageSource('IconShare', 'icon_share'),
     IconCheck: buildImageSource('IconCheck', 'icon_check'),
     IconInfo: buildImageSource('IconInfo', 'icon_info'),
