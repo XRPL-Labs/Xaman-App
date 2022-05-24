@@ -197,6 +197,7 @@ class ListFilter extends Component<Props, State> {
                     placeholder={Localize.t('global.filter')}
                     containerStyle={styles.searchBarContainer}
                     inputStyle={styles.searchBarInput}
+                    iconStyle={styles.searchBarIcon}
                     clearButtonVisibility="focus"
                     iconSize={15}
                     border

@@ -21,6 +21,7 @@ interface Props {
     placeholder?: string;
     inputStyle?: TextStyle;
     containerStyle?: ViewStyle | ViewStyle[];
+    iconStyle?: ViewStyle | ViewStyle[];
     border?: boolean;
     iconSize?: number;
     clearButtonVisibility: 'always' | 'typing' | 'focus' | 'never';
@@ -175,7 +176,7 @@ class SearchBar extends PureComponent<Props, State> {
     };
 
     render() {
-        const { height, placeholder, border, inputStyle, containerStyle, iconSize } = this.props;
+        const { height, placeholder, border, inputStyle, containerStyle, iconSize, iconStyle } = this.props;
         const { value, isClearButtonVisible } = this.state;
 
         return (
@@ -189,14 +190,14 @@ class SearchBar extends PureComponent<Props, State> {
                 ]}
                 onPress={this.focus}
             >
-                <Animated.View style={[styles.searchIcon]}>
+                <Animated.View style={[styles.searchIcon, iconStyle]}>
                     <Icon name="IconSearch" size={iconSize} style={AppStyles.imgColorPrimary} />
                 </Animated.View>
 
                 <View style={AppStyles.flex1}>
                     <TextInput
                         ref={this.inputRef}
-                        style={[styles.searchInput, inputStyle]}
+                        style={[styles.searchInput, { height }, inputStyle]}
                         onChangeText={this.onChangeText}
                         onFocus={this.onFocus}
                         onBlur={this.onBlur}

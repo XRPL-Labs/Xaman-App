@@ -60,7 +60,10 @@ export default StyleService.create({
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.subtext.size,
         color: '$grey',
-        paddingLeft: 40,
+        paddingLeft: 30,
         fontWeight: '400',
+    },
+    searchBarIcon: {
+        left: 8,
     },
 });

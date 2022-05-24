@@ -38,7 +38,8 @@ export default StyleService.create({
         marginRight: 10,
     },
     brandAvatar: {
-        backgroundColor: '$white',
+        backgroundColor: '$blue',
+        borderColor: '$blue',
     },
     currencyAvatar: {
         tintColor: '$blue',

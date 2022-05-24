@@ -13,11 +13,10 @@ export default StyleService.create({
     },
     searchIcon: {
         flexDirection: 'column',
-        width: 50,
         alignSelf: 'center',
         alignItems: 'center',
         position: 'absolute',
-        left: 0,
+        left: 15,
         tintColor: '$textPrimary',
     },
     searchInput: {
