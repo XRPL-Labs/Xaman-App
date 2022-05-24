@@ -95,7 +95,7 @@
             tools:replace="android:resource" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/pushIcon"
+            android:resource="@color/push_notification"
             tools:replace="android:resource" />
 
         <receiver

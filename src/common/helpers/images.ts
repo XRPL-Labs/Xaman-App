@@ -54,6 +54,7 @@ export const Images = {
     XummLogoLight: buildImageSource('XummLogoLight', 'xumm_logo_light'),
     XummIcon: buildImageSource('XummIcon', 'xumm_icon'),
     XummIconLight: buildImageSource('XummIconLight', 'xumm_icon_light'),
+    XummIconWhite: buildImageSource('XummIconWhite', 'xumm_icon_white'),
     SideGradient: buildImageSource('SideGradient', 'side_gradient'),
     // Icons
     IconTabBarScan: buildImageSource('IconTabBarScan', 'icon_tabbar_scan'),
