@@ -1,14 +1,13 @@
 import React, { PureComponent } from 'react';
 import { View, Text } from 'react-native';
 
-import { AmountText, Icon, Avatar } from '@components/General';
+import { AmountText, Icon, TokenAvatar } from '@components/General';
 
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 import { AccountSchema } from '@store/schemas/latest';
 
 import { AppStyles, AppSizes } from '@theme';
-import { Images } from '@common/helpers/images';
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -31,7 +30,7 @@ class NativeItem extends PureComponent<Props> {
     };
 
     getAvatar = () => {
-        return <Avatar border size={35} source={Images.IconXrpSquare} containerStyle={styles.brandAvatar} />;
+        return <TokenAvatar token="XRP" border size={35} containerStyle={styles.brandAvatar} />;
     };
 
     renderBalance = () => {

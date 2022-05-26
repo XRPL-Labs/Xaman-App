@@ -11,7 +11,6 @@ import { BackendService, SocketService, StyleService } from '@services';
 import { AppScreens } from '@common/constants';
 import { Prompt, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 
 import Preferences from '@common/libs/preferences';
 import { Amount } from '@common/libs/ledger/parser/common';
@@ -23,7 +22,6 @@ import { CalculateAvailableBalance } from '@common/utils/balance';
 // components
 import {
     TouchableDebounce,
-    Avatar,
     AmountText,
     Badge,
     Button,
@@ -32,6 +30,7 @@ import {
     TextInput,
     SwipeButton,
     KeyboardAwareScrollView,
+    TokenAvatar,
 } from '@components/General';
 import { AccountPicker } from '@components/Modules';
 
@@ -311,7 +310,7 @@ class SummaryStep extends Component<Props, State> {
                 <View style={[styles.pickerItem]}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
                         <View style={[styles.currencyImageContainer]}>
-                            <Avatar border size={35} source={Images.IconXrpSquare} />
+                            <TokenAvatar token="XRP" border size={35} />
                         </View>
                         <View style={[AppStyles.column, AppStyles.centerContent]}>
                             <Text style={[styles.currencyItemLabel]}>XRP</Text>
@@ -329,7 +328,7 @@ class SummaryStep extends Component<Props, State> {
             <View style={[styles.pickerItem]}>
                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[styles.currencyImageContainer]}>
-                        <Avatar border size={35} source={{ uri: item.counterParty.avatar }} />
+                        <TokenAvatar token={item} border size={35} />
                     </View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
                         <Text style={[styles.currencyItemLabel]}>

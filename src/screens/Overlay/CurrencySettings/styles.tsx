@@ -75,7 +75,7 @@ const styles = StyleService.create({
     sendButtonIcon: { marginRight: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$blue' },
     sendButtonText: { color: StyleService.isDarkMode() ? '$white' : '$blue' },
     exchangeButton: {
-        marginLeft: 1.5,
+        // marginLeft: 1.5,
         borderTopLeftRadius: 0,
         borderBottomLeftRadius: 0,
         backgroundColor: StyleService.isDarkMode() ? '$grey' : '$white',

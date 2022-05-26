@@ -70,9 +70,9 @@ const getTabBarIcons = () => {
             iconSelected: StyleService.getImage('IconTabBarActions'),
             scale: GetBottomTabScale(0.65),
         },
-        [AppScreens.TabBar.Profile]: {
-            icon: StyleService.getImage('IconTabBarProfile'),
-            iconSelected: StyleService.getImage('IconTabBarProfileSelected'),
+        [AppScreens.TabBar.Pro]: {
+            icon: StyleService.getImage('IconTabBarPro'),
+            iconSelected: StyleService.getImage('IconTabBarProSelected'),
             scale: GetBottomTabScale(),
         },
         [AppScreens.TabBar.Settings]: {

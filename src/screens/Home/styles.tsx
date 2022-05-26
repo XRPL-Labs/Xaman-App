@@ -108,18 +108,15 @@ const styles = StyleService.create({
         marginHorizontal: AppSizes.paddingSml,
     },
     // SEND BUTTON
-    sendButton: {
+    sendButtonContainer: {
         backgroundColor: '$blue',
     },
     sendButtonIcon: { tintColor: '$white' },
     sendButtonText: { fontSize: AppFonts.base.size, color: '$white' },
 
+    // REQUEST BUTTON
     requestButtonContainer: {
         marginLeft: 15,
-    },
-
-    // REQUEST BUTTON
-    requestButton: {
         backgroundColor: '$green',
     },
 

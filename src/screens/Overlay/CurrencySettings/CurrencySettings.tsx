@@ -35,8 +35,8 @@ import {
     RaisedButton,
     AmountText,
     InfoMessage,
-    Avatar,
     TouchableDebounce,
+    TokenAvatar,
 } from '@components/General';
 
 import Localize from '@locale';
@@ -104,7 +104,7 @@ class CurrencySettingsModal extends Component<Props, State> {
             Animated.timing(this.animatedOpacity, {
                 toValue: 1,
                 duration: 200,
-                useNativeDriver: true,
+                useNativeDriver: false,
             }),
         ]).start();
 
@@ -126,7 +126,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                 Animated.timing(this.animatedOpacity, {
                     toValue: 0,
                     duration: 200,
-                    useNativeDriver: true,
+                    useNativeDriver: false,
                 }),
             ]).start(async () => {
                 await Navigator.dismissOverlay();
@@ -204,7 +204,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                 Animated.timing(this.animatedOpacity, {
                     toValue: 0,
                     duration: 200,
-                    useNativeDriver: true,
+                    useNativeDriver: false,
                 }),
             ]).start(() => {
                 this.setState(
@@ -322,7 +322,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                 Animated.timing(this.animatedOpacity, {
                     toValue: 0,
                     duration: 200,
-                    useNativeDriver: true,
+                    useNativeDriver: false,
                 }),
             ]).start(() => {
                 this.setState(
@@ -367,7 +367,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                     Animated.timing(this.animatedOpacity, {
                         toValue: 1,
                         duration: 200,
-                        useNativeDriver: true,
+                        useNativeDriver: false,
                     }),
                 ]).start();
             },
@@ -390,7 +390,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                     Animated.timing(this.animatedOpacity, {
                         toValue: 1,
                         duration: 200,
-                        useNativeDriver: true,
+                        useNativeDriver: false,
                     }),
                 ]).start();
             },
@@ -612,10 +612,11 @@ class CurrencySettingsModal extends Component<Props, State> {
 
         return (
             <Animated.View
+                needsOffscreenAlphaCompositing
                 testID="currency-settings-overlay"
-                style={[styles.container, { backgroundColor: interpolateColor }]}
+                style={[styles.container, { opacity: this.animatedOpacity, backgroundColor: interpolateColor }]}
             >
-                <Animated.View style={[styles.visibleContent, { opacity: this.animatedOpacity }]}>
+                <Animated.View style={[styles.visibleContent]}>
                     <View style={styles.headerContainer}>
                         <TouchableDebounce style={styles.favoriteContainer} onPress={this.onFavoritePress}>
                             <Icon
@@ -635,7 +636,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                         <View style={[styles.currencyItem]}>
                             <View style={[AppStyles.row, AppStyles.centerAligned]}>
                                 <View style={[styles.brandAvatarContainer]}>
-                                    <Avatar border size={35} source={{ uri: trustLine.counterParty.avatar }} />
+                                    <TokenAvatar token={trustLine} border size={35} />
                                 </View>
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
                                     <Text style={[styles.currencyItemLabelSmall]}>
@@ -681,7 +682,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                         <View style={[styles.buttonRow]}>
                             <RaisedButton
                                 isDisabled={!this.canSend()}
-                                style={styles.sendButton}
+                                containerStyle={styles.sendButton}
                                 icon="IconCornerLeftUp"
                                 iconSize={20}
                                 iconStyle={[styles.sendButtonIcon]}
@@ -691,7 +692,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                             />
                             {trustLine.isNFT ? (
                                 <RaisedButton
-                                    style={styles.infoButton}
+                                    containerStyle={styles.infoButton}
                                     icon="IconInfo"
                                     iconSize={20}
                                     iconStyle={[styles.infoButtonIcon]}
@@ -702,7 +703,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                             ) : (
                                 <RaisedButton
                                     isDisabled={!this.canExchange()}
-                                    style={styles.exchangeButton}
+                                    containerStyle={styles.exchangeButton}
                                     icon="IconSwitchAccount"
                                     iconSize={20}
                                     iconStyle={[styles.exchangeButtonIcon]}

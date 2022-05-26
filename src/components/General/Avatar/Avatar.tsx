@@ -16,7 +16,7 @@ import { AppSizes } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
-interface Props {
+export interface Props {
     source: ImageSourcePropType;
     size?: number;
     imageScale?: number;

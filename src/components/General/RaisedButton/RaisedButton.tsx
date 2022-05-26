@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import { debounce, isEqual } from 'lodash';
 
-import { Animated, View, Text, TouchableWithoutFeedback, TextStyle, ViewStyle, ImageStyle } from 'react-native';
+import {
+    Animated,
+    View,
+    Text,
+    TouchableWithoutFeedback,
+    TextStyle,
+    ViewStyle,
+    ImageStyle,
+    Platform,
+} from 'react-native';
 
 import { Images } from '@common/helpers/images';
 
@@ -15,7 +24,6 @@ import { styles } from './styles';
 /* Types ==================================================================== */
 interface Props {
     small?: boolean;
-    style?: ViewStyle | ViewStyle[];
     containerStyle?: ViewStyle | ViewStyle[];
     textStyle?: TextStyle | TextStyle[];
     disabledStyle?: TextStyle | TextStyle[];
@@ -34,8 +42,9 @@ interface Props {
 }
 
 interface State {
-    animatedActive: Animated.Value;
-    animatedValue: Animated.Value;
+    isDisabled: boolean;
+    animatedShadow: Animated.Value;
+    animatedScale: Animated.Value;
 }
 
 /* Component ==================================================================== */
@@ -51,8 +60,9 @@ export default class RaisedButton extends Component<Props, State> {
         super(props);
 
         this.state = {
-            animatedActive: new Animated.Value(props.isDisabled ? 0 : 0.1),
-            animatedValue: new Animated.Value(0),
+            isDisabled: props.isDisabled,
+            animatedShadow: new Animated.Value(props.isDisabled ? 0 : Platform.select({ ios: 0.1, android: 5 })),
+            animatedScale: new Animated.Value(0),
         };
     }
 
@@ -60,33 +70,18 @@ export default class RaisedButton extends Component<Props, State> {
         return !isEqual(nextProps, this.props);
     }
 
-    static getDerivedStateFromProps(props: Props) {
-        const { isDisabled } = props;
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
+        if (nextProps.isDisabled !== prevState.isDisabled) {
+            return {
+                animatedShadow: new Animated.Value(
+                    nextProps.isDisabled ? 0 : Platform.select({ ios: 0.1, android: 5 }),
+                ),
+                isDisabled: nextProps.isDisabled,
+            };
+        }
 
-        return {
-            animatedActive: new Animated.Value(isDisabled ? 0 : 0.1),
-        };
+        return null;
     }
-
-    getAnimatedValues = () => {
-        const { animatedActive, animatedValue } = this.state;
-
-        return {
-            animatedContainer: {
-                shadowOpacity: animatedActive,
-            },
-            animatedContent: {
-                transform: [
-                    {
-                        translateY: animatedValue.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [0, 1.5],
-                        }),
-                    },
-                ],
-            },
-        };
-    };
 
     getContentHeight = () => {
         const { small } = this.props;
@@ -119,7 +114,7 @@ export default class RaisedButton extends Component<Props, State> {
     };
 
     debouncedOnPress = () => {
-        const { animatedActive, animatedValue } = this.state;
+        const { animatedShadow, animatedScale } = this.state;
         const { isDisabled, isLoading } = this.props;
 
         if (isDisabled || isLoading) {
@@ -127,13 +122,13 @@ export default class RaisedButton extends Component<Props, State> {
         }
 
         this.animateTiming({
-            variable: animatedValue,
+            variable: animatedScale,
             toValue: 1,
             duration: 50,
             useNativeDriver: true,
         });
         this.animateTiming({
-            variable: animatedActive,
+            variable: animatedShadow,
             toValue: 0,
             duration: 50,
             useNativeDriver: true,
@@ -154,14 +149,14 @@ export default class RaisedButton extends Component<Props, State> {
     };
 
     release(callback = () => {}) {
-        const { animatedActive, animatedValue } = this.state;
+        const { animatedShadow, animatedScale } = this.state;
 
         this.animateSpring({
-            variable: animatedActive,
-            toValue: 0.1,
+            variable: animatedShadow,
+            toValue: Platform.select({ ios: 0.1, android: 3 }),
         });
         this.animateSpring({
-            variable: animatedValue,
+            variable: animatedScale,
             toValue: 0,
             callback,
         });
@@ -203,9 +198,9 @@ export default class RaisedButton extends Component<Props, State> {
     }
 
     render() {
-        const { style, containerStyle, accessibilityLabel, testID } = this.props;
+        const { containerStyle, accessibilityLabel, testID } = this.props;
+        const { animatedShadow, animatedScale } = this.state;
 
-        const animatedValues = this.getAnimatedValues();
         const contentHeight = this.getContentHeight();
 
         return (
@@ -215,13 +210,21 @@ export default class RaisedButton extends Component<Props, State> {
                         styles.container,
                         { height: contentHeight },
                         containerStyle,
-                        animatedValues.animatedContainer,
+                        {
+                            shadowOpacity: animatedShadow,
+                            elevation: animatedShadow,
+                            transform: [
+                                {
+                                    translateY: animatedScale.interpolate({
+                                        inputRange: [0, 1],
+                                        outputRange: [0, 1.5],
+                                    }),
+                                },
+                            ],
+                        },
                     ]}
                 >
-                    <View style={[styles.bottom, style, { height: contentHeight }]} />
-                    <Animated.View style={[styles.content, { height: contentHeight }, animatedValues.animatedContent]}>
-                        <View style={[styles.children]}>{this.renderChildren()}</View>
-                    </Animated.View>
+                    {this.renderChildren()}
                 </Animated.View>
             </TouchableWithoutFeedback>
         );

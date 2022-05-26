@@ -30,7 +30,7 @@ describe('NavigationService', () => {
         expect(navigationService.isRootComponent(AppScreens.Onboarding)).toBe(true);
         expect(navigationService.isRootComponent(AppScreens.TabBar.Home)).toBe(true);
         expect(navigationService.isRootComponent(AppScreens.TabBar.Events)).toBe(true);
-        expect(navigationService.isRootComponent(AppScreens.TabBar.Profile)).toBe(true);
+        expect(navigationService.isRootComponent(AppScreens.TabBar.Pro)).toBe(true);
         expect(navigationService.isRootComponent(AppScreens.TabBar.Settings)).toBe(true);
         expect(navigationService.isRootComponent(AppScreens.Settings.General)).toBe(false);
     });

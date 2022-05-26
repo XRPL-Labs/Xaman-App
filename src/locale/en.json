@@ -23,6 +23,7 @@
     "home": "Home",
     "events": "Events",
     "profile": "Profile",
+    "pro": "Pro Beta",
     "settings": "Settings",
     "search": "Search",
     "send": "Send",
@@ -548,12 +549,11 @@
     "thisTransactionDoesNotEffectAnyAccountSettings": "This transaction doesn't affect any account settings.",
     "thisTransactionClearTicket": "This transaction clears (consumes & removes) ticket #%{ticketSequence}"
   },
-  "profile": {
-    "availableInFuture": "This feature will be available in the future.",
-    "profileBenefits": "Profile benefits:",
-    "personalPage": "Personal payments page",
-    "connectMobile": "Be found by phone number or email",
-    "earnBadge": "Unlock & Earn Badges"
+  "pro": {
+    "proBeta": "Pro beta",
+    "openProBeta": "Open Pro beta",
+    "xummProBeta": "Xumm Pro beta",
+    "xummProBetaDescription": "Make full use of the app and give sending and receiving a more personal touch!"
   },
   "settings": {
     "generalSettings": "General",

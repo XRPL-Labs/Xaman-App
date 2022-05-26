@@ -434,7 +434,7 @@ class HomeView extends Component<Props, State> {
                     <RaisedButton
                         small
                         testID="send-button"
-                        style={styles.sendButton}
+                        containerStyle={styles.sendButtonContainer}
                         icon="IconCornerLeftUp"
                         iconSize={18}
                         iconStyle={[styles.sendButtonIcon]}
@@ -445,7 +445,6 @@ class HomeView extends Component<Props, State> {
                     <RaisedButton
                         small
                         testID="request-button"
-                        style={styles.requestButton}
                         containerStyle={styles.requestButtonContainer}
                         icon="IconCornerRightDown"
                         iconSize={18}

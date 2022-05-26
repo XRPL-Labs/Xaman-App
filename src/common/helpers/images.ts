@@ -46,9 +46,11 @@ export const Images = {
     ImageCoinWallet: buildImageSource('ImageCoinWallet', 'image_coin_wallet'),
     ImageCoinWalletLight: buildImageSource('ImageCoinWalletLight', 'image_coin_wallet_light'),
     ImageUnknownTrustLine: buildImageSource('ImageUnknownTrustLine', 'image_unknown_trustline'),
+    ImageUnknownTrustLineLight: buildImageSource('ImageUnknownTrustLineLight', 'image_unknown_trustline_light'),
     ImageUnknownNFT: buildImageSource('ImageUnknownNFT', 'image_unknown_nft'),
     ImageTriangle: buildImageSource('ImageTriangle', 'image_triangle'),
     ImageSuccessCheckMark: buildImageSource('ImageSuccessCheckMark', 'image_success_check_mark'),
+    ImageProfilePro: buildImageSource('ImageProfilePro', 'image_profile_pro'),
     // Xumm
     XummLogo: buildImageSource('XummLogo', 'xumm_logo'),
     XummLogoLight: buildImageSource('XummLogoLight', 'xumm_logo_light'),
@@ -67,12 +69,10 @@ export const Images = {
         'IconTabBarEventsSelectedLight',
         'icon_tabbar_events_selected_light',
     ),
-    IconTabBarProfile: buildImageSource('IconTabBarProfile', 'icon_tabbar_profile'),
-    IconTabBarProfileSelected: buildImageSource('IconTabBarProfileSelected', 'icon_tabbar_profile_selected'),
-    IconTabBarProfileSelectedLight: buildImageSource(
-        'IconTabBarProfileSelectedLight',
-        'icon_tabbar_profile_selected_light',
-    ),
+    IconTabBarPro: buildImageSource('IconTabBarPro', 'icon_tabbar_pro'),
+    IconTabBarProSelected: buildImageSource('IconTabBarProSelected', 'icon_tabbar_pro_selected'),
+    IconTabBarProSelectedLight: buildImageSource('IconTabBarProSelectedLight', 'icon_tabbar_pro_selected_light'),
+
     IconTabBarSettings: buildImageSource('IconTabBarSettings', 'icon_tabbar_settings'),
     IconTabBarSettingsSelected: buildImageSource('IconTabBarSettingsSelected', 'icon_tabbar_settings_selected'),
     IconTabBarSettingsSelectedLight: buildImageSource(
@@ -148,4 +148,5 @@ export const Images = {
     IconStarFull: buildImageSource('IconStarFull', 'icon_star_full'),
     IconHideZero: buildImageSource('IconHideZero', 'icon_hide_zero'),
     IconShowZero: buildImageSource('IconShowZero', 'icon_show_zero'),
+    IconPro: buildImageSource('IconPro', 'icon_pro'),
 };

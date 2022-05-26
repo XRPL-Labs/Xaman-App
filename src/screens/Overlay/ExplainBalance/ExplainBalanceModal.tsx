@@ -20,7 +20,7 @@ import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 // components
-import { Avatar, Button, Icon, Spacer, LoadingIndicator, ActionPanel } from '@components/General';
+import { Button, Icon, Spacer, LoadingIndicator, ActionPanel, TokenAvatar } from '@components/General';
 
 import Localize from '@locale';
 
@@ -160,7 +160,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         <View key={`line-${index}`} style={[styles.objectItemCard]}>
                             <View style={[AppStyles.flex5, AppStyles.row, AppStyles.centerAligned]}>
                                 <View style={[styles.brandAvatarContainer]}>
-                                    <Avatar border size={32} source={{ uri: line.counterParty.avatar }} />
+                                    <TokenAvatar token={line} border size={32} />
                                 </View>
                                 <Text style={[styles.rowLabel]}>
                                     {Localize.t('global.asset')}

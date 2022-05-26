@@ -2,7 +2,6 @@ import Realm from 'realm';
 
 import { Truncate } from '@common/utils/string';
 import { XRPLValueToNFT } from '@common/utils/amount';
-import { Images } from '@common/helpers/images';
 
 /**
  * Account Trust Lines Model
@@ -95,7 +94,7 @@ class TrustLine extends Realm.Object {
 
         return {
             name: Truncate(this.currency.issuer, 11),
-            avatar: this.isNFT ? Images.ImageUnknownNFT.uri : Images.ImageUnknownTrustLine.uri,
+            avatar: '',
             domain: '',
         };
     }

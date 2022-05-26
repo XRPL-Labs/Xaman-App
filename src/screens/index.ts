@@ -9,7 +9,7 @@ import FinishSetup from './Setup/Finish';
 // TabBar
 import Home from './Home';
 import Events from './Events';
-import Profile from './Profile';
+import Profile from './Pro';
 import Settings from './Settings';
 
 // Account

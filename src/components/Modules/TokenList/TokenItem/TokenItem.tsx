@@ -2,7 +2,7 @@ import { isEqual } from 'lodash';
 import React, { PureComponent } from 'react';
 import { View, Text, Image } from 'react-native';
 
-import { Button, AmountText, Icon, Avatar } from '@components/General';
+import { Button, AmountText, Icon, TokenAvatar } from '@components/General';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 
@@ -120,7 +120,7 @@ class TokenItem extends PureComponent<Props, State> {
             badge = <Icon name="ImageTriangle" size={15} />;
         }
 
-        return <Avatar border size={35} source={{ uri: token.counterParty.avatar }} badge={() => badge} />;
+        return <TokenAvatar token={token} border size={35} badge={() => badge} />;
     };
 
     renderReorderButtons = () => {

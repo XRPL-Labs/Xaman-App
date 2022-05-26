@@ -7,7 +7,6 @@ import { Animated, View, ScrollView, Text, Keyboard, InteractionManager } from '
 
 import { Result as LiquidityResult } from 'xrpl-orderbook-reader';
 
-import { Images } from '@common/helpers/images';
 import { Prompt, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -27,7 +26,6 @@ import { AppScreens } from '@common/constants';
 
 // components
 import {
-    Avatar,
     AmountText,
     AmountInput,
     Header,
@@ -36,6 +34,7 @@ import {
     InfoMessage,
     LoadingIndicator,
     HorizontalLine,
+    TokenAvatar,
 } from '@components/General';
 
 import { AmountValueType } from '@components/General/AmountInput';
@@ -543,14 +542,10 @@ class ExchangeView extends Component<Props, State> {
                         <View style={AppStyles.row}>
                             <View style={[AppStyles.row, AppStyles.flex1]}>
                                 <View style={[styles.currencyImageContainer]}>
-                                    <Avatar
+                                    <TokenAvatar
+                                        token={direction === MarketDirection.SELL ? 'XRP' : trustLine}
                                         border
                                         size={37}
-                                        source={
-                                            direction === MarketDirection.SELL
-                                                ? Images.IconXrpSquare
-                                                : { uri: trustLine.counterParty.avatar }
-                                        }
                                     />
                                 </View>
 
@@ -616,14 +611,10 @@ class ExchangeView extends Component<Props, State> {
                         <View style={[AppStyles.row]}>
                             <View style={[AppStyles.row, AppStyles.flex1]}>
                                 <View style={[styles.currencyImageContainer]}>
-                                    <Avatar
+                                    <TokenAvatar
+                                        token={direction === MarketDirection.BUY ? 'XRP' : trustLine}
                                         border
                                         size={37}
-                                        source={
-                                            direction === MarketDirection.BUY
-                                                ? Images.IconXrpSquare
-                                                : { uri: trustLine.counterParty.avatar }
-                                        }
                                     />
                                 </View>
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
