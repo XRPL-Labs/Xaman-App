@@ -8,7 +8,7 @@ const HexEncoding = {
         return hex ? Buffer.from(hex, 'hex').toString('utf8') : undefined;
     },
 
-    toHex: (text: string | number[]): string | undefined => {
+    toHex: (text: string | number[] | Buffer): string | undefined => {
         return text ? Buffer.from(text).toString('hex') : undefined;
     },
 

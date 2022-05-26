@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js';
-import { get, differenceBy, set, isUndefined } from 'lodash';
+import { get, set, isUndefined } from 'lodash';
 
 import { HexEncoding } from '@common/utils/string';
+import { EncodeNFTokenID } from '@common/utils/codec';
 
 import BaseTransaction from './base';
 
@@ -52,19 +53,32 @@ class NFTokenMint extends BaseTransaction {
             return tokenID;
         }
 
-        // if not look at the metadata for token id
-        const affectedNodes = get(this.meta, 'AffectedNodes', []);
+        // Fetch minted token sequence
+        let tokenSequence;
+        let nextTokenSequence;
 
-        affectedNodes.map((node: any) => {
-            if (get(node, 'CreatedNode.LedgerEntryType') === 'NFTokenPage') {
-                tokenID = get(node, 'CreatedNode.NewFields.NFTokens[0].NFToken.NFTokenID');
-            } else if (get(node, 'ModifiedNode.LedgerEntryType') === 'NFTokenPage') {
-                const nextTokenPage = get(node, 'ModifiedNode.FinalFields.NFTokens');
-                const prevTokenPage = get(node, 'ModifiedNode.PreviousFields.NFTokens');
-                tokenID = get(differenceBy(nextTokenPage, prevTokenPage, 'NFToken.NFTokenID'), '[0].NFToken.NFTokenID');
+        this.meta.AffectedNodes.forEach((node: any) => {
+            if (node.ModifiedNode && node.ModifiedNode.LedgerEntryType === 'AccountRoot') {
+                const { PreviousFields, FinalFields } = node.ModifiedNode;
+                if (PreviousFields && FinalFields && FinalFields.Account === this.Account.address) {
+                    tokenSequence = PreviousFields.MintedNFTokens;
+                    nextTokenSequence = FinalFields.MintedNFTokens;
+                }
             }
-            return true;
         });
+
+        // First minted token, set token sequence to zero
+        if (typeof tokenSequence === 'undefined' && nextTokenSequence === 1) {
+            tokenSequence = 0;
+        }
+
+        // Unable to find TokenSequence
+        if (typeof tokenSequence === 'undefined') {
+            return '';
+        }
+
+        const intFlags = get(this, ['tx', 'Flags'], undefined);
+        tokenID = EncodeNFTokenID(this.Account.address, tokenSequence, intFlags, this.TransferFee, this.NFTokenTaxon);
 
         // store the token id
         this.NFTokenID = tokenID;
