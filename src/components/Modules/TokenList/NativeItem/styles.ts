@@ -14,14 +14,7 @@ export default StyleService.create({
     currencyItemLabel: {
         fontSize: AppFonts.h5.size,
         fontFamily: AppFonts.base.familyMonoBold,
-        color: '$textPrimary',
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-    },
-    currencyItemLabelSmall: {
-        fontSize: AppFonts.h5.size,
-        fontFamily: AppFonts.base.familyMonoBold,
-        color: '$textPrimary',
+        color: StyleService.isDarkMode() ? '$white' : '$blue',
         alignItems: 'flex-start',
         justifyContent: 'center',
         marginRight: 10,
@@ -29,7 +22,7 @@ export default StyleService.create({
     balanceText: {
         fontSize: AppFonts.h5.size,
         fontFamily: AppFonts.base.familyMonoBold,
-        color: '$blue',
+        color: StyleService.isDarkMode() ? '$white' : '$blue',
         alignItems: 'flex-start',
         justifyContent: 'center',
         marginRight: 5,
@@ -42,7 +35,7 @@ export default StyleService.create({
         borderColor: '$blue',
     },
     currencyAvatar: {
-        tintColor: '$blue',
+        tintColor: StyleService.isDarkMode() ? '$white' : '$blue',
     },
     currencyAvatarContainer: {
         justifyContent: 'center',

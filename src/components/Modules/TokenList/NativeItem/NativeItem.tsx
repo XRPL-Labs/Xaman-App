@@ -51,7 +51,7 @@ class NativeItem extends PureComponent<Props> {
                     </View>
                 )}
                 value={availableBalance}
-                style={[styles.balanceText]}
+                style={styles.balanceText}
                 discreet={discreetMode}
                 discreetStyle={AppStyles.colorGrey}
             />
@@ -64,7 +64,7 @@ class NativeItem extends PureComponent<Props> {
                 <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[styles.brandAvatarContainer]}>{this.getAvatar()}</View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
-                        <Text numberOfLines={1} style={[styles.currencyItemLabelSmall]}>
+                        <Text numberOfLines={1} style={styles.currencyItemLabel}>
                             XRP
                         </Text>
                     </View>

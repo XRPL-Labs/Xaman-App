@@ -20,8 +20,10 @@ export default StyleService.create({
         backgroundColor: '$background',
     },
     tabContainer: {
-        position: 'relative',
         flex: 1,
+        height: Sizes.screen.height,
+        width: Sizes.screen.width,
+        position: 'relative',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
