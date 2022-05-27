@@ -77,6 +77,9 @@ class ReviewStep extends Component<Props, State> {
 
         // if no account for signing is available then just return
         if (isEmpty(availableAccounts)) {
+            this.setState({
+                accounts: [],
+            });
             return;
         }
 
@@ -117,6 +120,9 @@ class ReviewStep extends Component<Props, State> {
         // after removing the hidden accounts
         // return if empty
         if (isEmpty(availableAccounts)) {
+            this.setState({
+                accounts: [],
+            });
             return;
         }
 
@@ -192,55 +198,62 @@ class ReviewStep extends Component<Props, State> {
         const { onClose } = this.context;
 
         return (
-            <View style={styles.blurView}>
-                <View style={styles.absolute}>
-                    <View style={[styles.headerContainer]}>
-                        <View style={[AppStyles.row]}>
-                            <View style={[AppStyles.flex1, AppStyles.leftAligned]}>
-                                <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>
-                                    {Localize.t('global.reviewTransaction')}
-                                </Text>
-                            </View>
-                            <View style={[AppStyles.rightAligned]}>
-                                <Button
-                                    contrast
-                                    testID="close-button"
-                                    numberOfLines={1}
-                                    roundedSmall
-                                    label={Localize.t('global.close')}
-                                    onPress={onClose}
-                                />
+            <ImageBackground
+                testID="review-transaction-modal"
+                source={StyleService.getImage('BackgroundPattern')}
+                imageStyle={styles.xummAppBackground}
+                style={[styles.container]}
+            >
+                <View style={styles.blurView}>
+                    <View style={styles.absolute}>
+                        <View style={[styles.headerContainer]}>
+                            <View style={[AppStyles.row]}>
+                                <View style={[AppStyles.flex1, AppStyles.leftAligned]}>
+                                    <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>
+                                        {Localize.t('global.reviewTransaction')}
+                                    </Text>
+                                </View>
+                                <View style={[AppStyles.rightAligned]}>
+                                    <Button
+                                        contrast
+                                        testID="close-button"
+                                        numberOfLines={1}
+                                        roundedSmall
+                                        label={Localize.t('global.close')}
+                                        onPress={onClose}
+                                    />
+                                </View>
                             </View>
                         </View>
-                    </View>
-                    <View
-                        style={[
-                            AppStyles.flex1,
-                            AppStyles.centerContent,
-                            AppStyles.centerAligned,
-                            AppStyles.paddingSml,
-                        ]}
-                    >
-                        <Text style={AppStyles.h5}>{Localize.t('global.noAccountConfigured')}</Text>
-                        <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                            {Localize.t('global.pleaseAddAccountToSignTheTransaction')}
-                        </Text>
-                        <Spacer size={20} />
-                        <Button
-                            testID="add-account-button"
-                            label={Localize.t('home.addAccount')}
-                            icon="IconPlus"
-                            iconStyle={[AppStyles.imgColorWhite]}
-                            rounded
-                            onPress={async () => {
-                                await Navigator.dismissModal();
-                                Navigator.push(AppScreens.Account.Add);
-                            }}
-                        />
-                        <Spacer size={40} />
+                        <View
+                            style={[
+                                AppStyles.flex1,
+                                AppStyles.centerContent,
+                                AppStyles.centerAligned,
+                                AppStyles.paddingSml,
+                            ]}
+                        >
+                            <Text style={AppStyles.h5}>{Localize.t('global.noAccountConfigured')}</Text>
+                            <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
+                                {Localize.t('global.pleaseAddAccountToSignTheTransaction')}
+                            </Text>
+                            <Spacer size={20} />
+                            <Button
+                                testID="add-account-button"
+                                label={Localize.t('home.addAccount')}
+                                icon="IconPlus"
+                                iconStyle={[AppStyles.imgColorWhite]}
+                                rounded
+                                onPress={async () => {
+                                    await Navigator.dismissModal();
+                                    Navigator.push(AppScreens.Account.Add);
+                                }}
+                            />
+                            <Spacer size={40} />
+                        </View>
                     </View>
                 </View>
-            </View>
+            </ImageBackground>
         );
     };
 
@@ -250,15 +263,23 @@ class ReviewStep extends Component<Props, State> {
         const { payload, source, isValidating, isPreparing, setSource, onAccept, onClose, getTransactionLabel } =
             this.context;
 
+        // no account is available for signing
+        if (Array.isArray(accounts) && accounts.length === 0) {
+            return this.renderEmptyOverlay();
+        }
+
+        // waiting for accounts to be initiated
+        if (typeof accounts === 'undefined' || !source) {
+            return null;
+        }
+
         return (
             <ImageBackground
                 testID="review-transaction-modal"
                 source={StyleService.getImage('BackgroundPattern')}
                 imageStyle={styles.xummAppBackground}
-                style={[styles.container]}
+                style={styles.container}
             >
-                {/* render overlay if there is no account */}
-                {isEmpty(accounts) && this.renderEmptyOverlay()}
                 {/* header */}
                 <View style={[styles.headerContainer]}>
                     <View style={[AppStyles.row]}>
