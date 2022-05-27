@@ -44,8 +44,14 @@ const getDefaultOptions = () => {
             titleDisplayMode: 'alwaysShow' as any,
         },
         animations: {
+            push: {
+                waitForRender: true,
+            },
             pop: {
                 enabled: Platform.OS === 'ios',
+            },
+            setStackRoot: {
+                waitForRender: true,
             },
         },
         popGesture: true,
@@ -73,12 +79,12 @@ const getTabBarIcons = () => {
         [AppScreens.TabBar.Pro]: {
             icon: StyleService.getImage('IconTabBarPro'),
             iconSelected: StyleService.getImage('IconTabBarProSelected'),
-            scale: GetBottomTabScale(),
+            scale: GetBottomTabScale(0.9),
         },
         [AppScreens.TabBar.Settings]: {
             icon: StyleService.getImage('IconTabBarSettings'),
             iconSelected: StyleService.getImage('IconTabBarSettingsSelected'),
-            scale: GetBottomTabScale(),
+            scale: GetBottomTabScale(0.9),
         },
     };
 };
