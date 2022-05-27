@@ -23,8 +23,8 @@ import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
 import Localize from '@locale';
 
 // components
-import { TouchableDebounce, Button, RaisedButton, InfoMessage, Spacer, Icon } from '@components/General';
-import { TokenList } from '@components/Modules';
+import { TouchableDebounce, Button, RaisedButton, InfoMessage, Spacer, Icon, Badge } from '@components/General';
+import { ProBadge, TokenList } from '@components/Modules';
 
 // style
 import { AppStyles, AppFonts } from '@theme';
@@ -35,6 +35,7 @@ import styles from './styles';
 export interface Props {}
 
 export interface State {
+    accountsCount: number;
     account: AccountSchema;
     coreSettings: CoreSchema;
     isSpendable: boolean;
@@ -53,6 +54,7 @@ class HomeView extends Component<Props, State> {
         const coreSettings = CoreRepository.getSettings();
 
         this.state = {
+            accountsCount: undefined,
             account: undefined,
             isSpendable: false,
             coreSettings,
@@ -63,11 +65,9 @@ class HomeView extends Component<Props, State> {
     componentDidMount() {
         // update UI on accounts update
         AccountRepository.on('accountUpdate', this.updateDefaultAccount);
-
         // update spendable accounts on account add/remove
         AccountRepository.on('accountCreate', this.getDefaultAccount);
         AccountRepository.on('accountRemove', this.getDefaultAccount);
-
         // update discreetMode and developerMode on change
         CoreRepository.on('updateSettings', this.onCoreSettingsUpdate);
 
@@ -127,7 +127,14 @@ class HomeView extends Component<Props, State> {
         }
     };
 
-    updateDefaultAccount = (updatedAccount: AccountSchema) => {
+    updateDefaultAccount = (updatedAccount: AccountSchema, changes: Partial<AccountSchema>) => {
+        // update account visible count
+        if (updatedAccount?.isValid() && changes?.hidden) {
+            this.setState({
+                accountsCount: AccountRepository.getVisibleAccountCount(),
+            });
+        }
+
         if (updatedAccount?.isValid() && updatedAccount.default) {
             // update the UI
             this.setState(
@@ -144,6 +151,7 @@ class HomeView extends Component<Props, State> {
         this.setState(
             {
                 account: AccountRepository.getDefaultAccount(),
+                accountsCount: AccountRepository.getVisibleAccountCount(),
             },
             // when account balance changed update spendable accounts
             this.updateSpendableStatus,
@@ -319,26 +327,47 @@ class HomeView extends Component<Props, State> {
         }
     };
 
+    onSwitchButtonPress = () => {
+        const { accountsCount } = this.state;
+
+        // if account count is zero or 1 then show add account
+        if (accountsCount === 1) {
+            Navigator.push(AppScreens.Account.Add);
+            return;
+        }
+
+        Navigator.showOverlay(AppScreens.Overlay.SwitchAccount);
+    };
+
     renderHeader = () => {
-        const { account } = this.state;
+        const { account, accountsCount } = this.state;
 
         return (
             <Fragment key="header">
-                <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                <View style={[AppStyles.flex1, AppStyles.row, AppStyles.flexStart]}>
                     <Image style={[styles.logo]} source={StyleService.getImage('XummLogo')} />
+                    <ProBadge />
                 </View>
                 {account?.isValid() && (
                     <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
                         <Button
-                            onPress={() => {
-                                Navigator.showOverlay(AppScreens.Overlay.SwitchAccount);
-                            }}
                             light
                             roundedMini
+                            onPress={this.onSwitchButtonPress}
                             style={styles.switchAccountButton}
                             iconSize={12}
-                            icon="IconSwitchAccount"
-                            label={Localize.t('account.switchAccount')}
+                            icon={accountsCount > 1 ? 'IconSwitchAccount' : 'IconPlus'}
+                            label={accountsCount > 1 ? Localize.t('global.accounts') : Localize.t('home.addAccount')}
+                            extraComponent={
+                                accountsCount > 1 && (
+                                    <Badge
+                                        containerStyle={styles.accountCountBadgeContainer}
+                                        labelStyle={styles.accountCountBadgeLabel}
+                                        label={`${accountsCount > 9 ? '9+' : accountsCount}`}
+                                        type="count"
+                                    />
+                                )
+                            }
                         />
                     </View>
                 )}

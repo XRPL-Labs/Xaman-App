@@ -97,6 +97,13 @@ class AccountRepository extends BaseRepository {
     };
 
     /**
+     * get all accounts count
+     */
+    getVisibleAccountCount = (): number => {
+        return this.query({ hidden: false }).length;
+    };
+
+    /**
      * get list of accounts with full access
      */
     getFullAccessAccounts = (): Array<AccountSchema> => {

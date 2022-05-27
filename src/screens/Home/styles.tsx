@@ -146,12 +146,16 @@ const styles = StyleService.create({
         alignSelf: 'flex-end',
         marginRight: -10,
     },
-    rateLoader: {
-        paddingVertical: 5,
+    accountCountBadgeContainer: {
+        height: AppSizes.scale(17),
+        width: AppSizes.scale(17),
+        marginLeft: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: AppSizes.scale(17) / 2,
     },
-    xrpIcon: {
-        paddingRight: 40,
-        tintColor: '$textPrimary',
+    accountCountBadgeLabel: {
+        fontFamily: AppFonts.base.familyExtraBold,
     },
 });
 

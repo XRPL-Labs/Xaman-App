@@ -40,6 +40,7 @@ interface Props {
     icon?: Extract<keyof typeof Images, string>;
     iconPosition?: 'right' | 'left';
     iconSize?: number;
+    extraComponent?: React.ReactNode;
     hitSlop?: any;
 }
 
@@ -73,6 +74,7 @@ export default class Button extends Component<Props> {
             iconStyle,
             iconSize,
             isDisabled,
+            extraComponent,
         } = this.props;
 
         return (
@@ -122,6 +124,7 @@ export default class Button extends Component<Props> {
                         ]}
                     />
                 )}
+                {extraComponent && extraComponent}
             </View>
         );
     }

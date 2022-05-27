@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 
-import { Text, ViewStyle } from 'react-native';
+import { Text, TextStyle, ViewStyle } from 'react-native';
 
 import { TouchableDebounce } from '@components/General/TouchableDebounce';
 
@@ -21,10 +21,12 @@ type BadgeType =
     | 'accounts'
     | 'success'
     | 'open'
-    | 'planned';
+    | 'planned'
+    | 'count';
 
 interface Props {
     containerStyle?: ViewStyle | ViewStyle[];
+    labelStyle?: TextStyle | TextStyle[];
     testID?: string;
     label?: string;
     color?: string;
@@ -44,6 +46,7 @@ const COLORS = {
     success: AppColors.green,
     planned: AppColors.blue,
     open: AppColors.grey,
+    count: AppColors.grey,
 };
 
 const SIZES = {
@@ -67,9 +70,9 @@ export default class Badge extends PureComponent<Props> {
     };
 
     renderInnerContent = () => {
-        const { label, type, size } = this.props;
+        const { label, labelStyle, type, size } = this.props;
 
-        const style = [styles.label, { fontSize: SIZES[size] }];
+        const style = [styles.label, { fontSize: SIZES[size] }, labelStyle];
 
         if (label) {
             return <Text style={style}>{label}</Text>;

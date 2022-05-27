@@ -5,6 +5,12 @@ import { ProfileSchema } from '@store/schemas/latest';
 
 import BaseRepository from './base';
 
+// events
+declare interface ProfileRepository {
+    on(event: 'profileUpdate', listener: (changes: Partial<ProfileSchema>) => void): this;
+    on(event: string, listener: Function): this;
+}
+
 class ProfileRepository extends BaseRepository {
     realm: Realm;
     schema: ObjectSchema;
@@ -30,6 +36,9 @@ class ProfileRepository extends BaseRepository {
         } else {
             this.create(object);
         }
+
+        // send the event
+        this.emit('profileUpdate', object);
     };
 
     getProfile = (): ProfileSchema => {
