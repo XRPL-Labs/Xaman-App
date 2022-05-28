@@ -91,7 +91,10 @@ class TokenList extends Component<Props, State> {
         // check if prev account is not valid anymore
         if (!prevState.account.isValid() || !isEqual(nextProps.account, prevState.account)) {
             // check if account switched then clear filter and reordering state
-            let filtersState = {};
+            let filtersState = {
+                filters: prevState.filters,
+                reorderEnabled: prevState.reorderEnabled,
+            };
             if (
                 (prevState.account.isValid() && !isEqual(nextProps.account.address, prevState.account.address)) ||
                 !prevState.account.isValid()
@@ -102,7 +105,7 @@ class TokenList extends Component<Props, State> {
                 };
             }
 
-            const { filters } = prevState;
+            const { filters } = filtersState;
 
             // update tokens and dataSource
             const tokens = nextProps.account.lines.sorted([['order', false]]);

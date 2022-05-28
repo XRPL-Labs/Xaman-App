@@ -61,6 +61,17 @@ class ListFilter extends Component<Props, State> {
         );
     }
 
+    componentDidUpdate(prevProps: Props, prevState: State) {
+        const { filterText } = this.state;
+
+        // clear search text when filter text cleared
+        if (prevState.filterText && !filterText) {
+            if (this.searchInputRef.current) {
+                this.searchInputRef.current.clearText();
+            }
+        }
+    }
+
     static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
         if (prevState.ownUpdate) {
             return {
