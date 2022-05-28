@@ -1105,6 +1105,7 @@ exports[`Storyshots Badge Accounts 1`] = `
               Object {
                 "fontSize": 18,
               },
+              undefined,
             ]
           }
         >
@@ -1154,6 +1155,7 @@ exports[`Storyshots Badge Accounts 1`] = `
               Object {
                 "fontSize": 25.714285714285715,
               },
+              undefined,
             ]
           }
         >
@@ -1203,6 +1205,7 @@ exports[`Storyshots Badge Accounts 1`] = `
               Object {
                 "fontSize": 32.14285714285714,
               },
+              undefined,
             ]
           }
         >
@@ -1278,6 +1281,7 @@ exports[`Storyshots Badge Bithomp 1`] = `
               Object {
                 "fontSize": 18,
               },
+              undefined,
             ]
           }
         >
@@ -1327,6 +1331,7 @@ exports[`Storyshots Badge Bithomp 1`] = `
               Object {
                 "fontSize": 25.714285714285715,
               },
+              undefined,
             ]
           }
         >
@@ -1376,6 +1381,7 @@ exports[`Storyshots Badge Bithomp 1`] = `
               Object {
                 "fontSize": 32.14285714285714,
               },
+              undefined,
             ]
           }
         >
@@ -1451,6 +1457,7 @@ exports[`Storyshots Badge Contacts 1`] = `
               Object {
                 "fontSize": 18,
               },
+              undefined,
             ]
           }
         >
@@ -1500,6 +1507,7 @@ exports[`Storyshots Badge Contacts 1`] = `
               Object {
                 "fontSize": 25.714285714285715,
               },
+              undefined,
             ]
           }
         >
@@ -1549,6 +1557,7 @@ exports[`Storyshots Badge Contacts 1`] = `
               Object {
                 "fontSize": 32.14285714285714,
               },
+              undefined,
             ]
           }
         >
@@ -1624,6 +1633,7 @@ exports[`Storyshots Badge FioProtocol 1`] = `
               Object {
                 "fontSize": 18,
               },
+              undefined,
             ]
           }
         >
@@ -1673,6 +1683,7 @@ exports[`Storyshots Badge FioProtocol 1`] = `
               Object {
                 "fontSize": 25.714285714285715,
               },
+              undefined,
             ]
           }
         >
@@ -1722,6 +1733,7 @@ exports[`Storyshots Badge FioProtocol 1`] = `
               Object {
                 "fontSize": 32.14285714285714,
               },
+              undefined,
             ]
           }
         >
@@ -1797,6 +1809,7 @@ exports[`Storyshots Badge Open 1`] = `
               Object {
                 "fontSize": 18,
               },
+              undefined,
             ]
           }
         >
@@ -1847,6 +1860,7 @@ exports[`Storyshots Badge Open 1`] = `
               Object {
                 "fontSize": 25.714285714285715,
               },
+              undefined,
             ]
           }
         >
@@ -1897,6 +1911,7 @@ exports[`Storyshots Badge Open 1`] = `
               Object {
                 "fontSize": 32.14285714285714,
               },
+              undefined,
             ]
           }
         >
@@ -1973,6 +1988,7 @@ exports[`Storyshots Badge PayId 1`] = `
               Object {
                 "fontSize": 18,
               },
+              undefined,
             ]
           }
         >
@@ -2022,6 +2038,7 @@ exports[`Storyshots Badge PayId 1`] = `
               Object {
                 "fontSize": 25.714285714285715,
               },
+              undefined,
             ]
           }
         >
@@ -2071,6 +2088,7 @@ exports[`Storyshots Badge PayId 1`] = `
               Object {
                 "fontSize": 32.14285714285714,
               },
+              undefined,
             ]
           }
         >
@@ -2146,6 +2164,7 @@ exports[`Storyshots Badge Planned 1`] = `
               Object {
                 "fontSize": 18,
               },
+              undefined,
             ]
           }
         >
@@ -2195,6 +2214,7 @@ exports[`Storyshots Badge Planned 1`] = `
               Object {
                 "fontSize": 25.714285714285715,
               },
+              undefined,
             ]
           }
         >
@@ -2244,6 +2264,7 @@ exports[`Storyshots Badge Planned 1`] = `
               Object {
                 "fontSize": 32.14285714285714,
               },
+              undefined,
             ]
           }
         >
@@ -2319,6 +2340,7 @@ exports[`Storyshots Badge Success 1`] = `
               Object {
                 "fontSize": 18,
               },
+              undefined,
             ]
           }
         >
@@ -2368,6 +2390,7 @@ exports[`Storyshots Badge Success 1`] = `
               Object {
                 "fontSize": 25.714285714285715,
               },
+              undefined,
             ]
           }
         >
@@ -2417,6 +2440,7 @@ exports[`Storyshots Badge Success 1`] = `
               Object {
                 "fontSize": 32.14285714285714,
               },
+              undefined,
             ]
           }
         >
@@ -2492,6 +2516,7 @@ exports[`Storyshots Badge XRPLNS 1`] = `
               Object {
                 "fontSize": 18,
               },
+              undefined,
             ]
           }
         >
@@ -2541,6 +2566,7 @@ exports[`Storyshots Badge XRPLNS 1`] = `
               Object {
                 "fontSize": 25.714285714285715,
               },
+              undefined,
             ]
           }
         >
@@ -2590,6 +2616,7 @@ exports[`Storyshots Badge XRPLNS 1`] = `
               Object {
                 "fontSize": 32.14285714285714,
               },
+              undefined,
             ]
           }
         >
@@ -2665,6 +2692,7 @@ exports[`Storyshots Badge XRPScan 1`] = `
               Object {
                 "fontSize": 18,
               },
+              undefined,
             ]
           }
         >
@@ -2714,6 +2742,7 @@ exports[`Storyshots Badge XRPScan 1`] = `
               Object {
                 "fontSize": 25.714285714285715,
               },
+              undefined,
             ]
           }
         >
@@ -2763,6 +2792,7 @@ exports[`Storyshots Badge XRPScan 1`] = `
               Object {
                 "fontSize": 32.14285714285714,
               },
+              undefined,
             ]
           }
         >
