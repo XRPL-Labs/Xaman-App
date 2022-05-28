@@ -44,14 +44,8 @@ const getDefaultOptions = () => {
             titleDisplayMode: 'alwaysShow' as any,
         },
         animations: {
-            push: {
-                waitForRender: true,
-            },
             pop: {
                 enabled: Platform.OS === 'ios',
-            },
-            setStackRoot: {
-                waitForRender: true,
             },
         },
         popGesture: true,
@@ -121,6 +115,9 @@ const Navigator = {
                         },
                     ],
                     options: {
+                        topBar: {
+                            visible: false,
+                        },
                         bottomTab: {
                             selectTabOnPress: tab !== 'Actions',
                             text: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : '',

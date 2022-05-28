@@ -5,7 +5,7 @@ import Fuse from 'fuse.js';
 import moment from 'moment-timezone';
 import { filter, flatMap, get, groupBy, isEmpty, isEqual, isUndefined, map, orderBy, uniqBy, without } from 'lodash';
 import React, { Component } from 'react';
-import { Image, ImageBackground, InteractionManager, SafeAreaView, Text } from 'react-native';
+import { Image, ImageBackground, InteractionManager, View, Text } from 'react-native';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -688,7 +688,7 @@ class EventsView extends Component<Props, State> {
 
     renderEmptyAccount = () => {
         return (
-            <SafeAreaView testID="events-tab-empty-view" style={[AppStyles.tabContainer]}>
+            <View testID="events-tab-empty-view" style={AppStyles.tabContainer}>
                 {/* Header */}
                 <Header
                     placement="left"
@@ -716,7 +716,7 @@ class EventsView extends Component<Props, State> {
                         }}
                     />
                 </ImageBackground>
-            </SafeAreaView>
+            </View>
         );
     };
 
@@ -740,7 +740,7 @@ class EventsView extends Component<Props, State> {
         }
 
         return (
-            <SafeAreaView testID="events-tab-view" style={[AppStyles.tabContainer, styles.container]}>
+            <View testID="events-tab-view" style={AppStyles.tabContainer}>
                 <Header
                     containerStyle={AppStyles.headerContainer}
                     leftComponent={{
@@ -787,7 +787,7 @@ class EventsView extends Component<Props, State> {
                     onRefresh={this.updateDataSource}
                     timestamp={timestamp}
                 />
-            </SafeAreaView>
+            </View>
         );
     }
 }

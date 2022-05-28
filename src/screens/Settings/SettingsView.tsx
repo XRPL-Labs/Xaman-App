@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -79,7 +79,7 @@ class SettingsView extends Component<Props, State> {
 
     render() {
         return (
-            <SafeAreaView testID="settings-tab-screen" style={[AppStyles.tabContainer]}>
+            <View testID="settings-tab-screen" style={AppStyles.tabContainer}>
                 <Header
                     placement="left"
                     containerStyle={AppStyles.headerContainer}
@@ -147,7 +147,7 @@ class SettingsView extends Component<Props, State> {
                         )}
                     </ScrollView>
                 </View>
-            </SafeAreaView>
+            </View>
         );
     }
 }

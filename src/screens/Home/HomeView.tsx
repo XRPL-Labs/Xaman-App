@@ -5,7 +5,7 @@
 import { find, has } from 'lodash';
 
 import React, { Component, Fragment } from 'react';
-import { View, SafeAreaView, Text, Image, ImageBackground, InteractionManager, Share, Alert } from 'react-native';
+import { View, Text, Image, ImageBackground, InteractionManager, Share, Alert } from 'react-native';
 
 import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
@@ -507,7 +507,7 @@ class HomeView extends Component<Props, State> {
 
     renderEmpty = () => {
         return (
-            <SafeAreaView testID="home-tab-empty-view" style={[AppStyles.tabContainer]}>
+            <View testID="home-tab-empty-view" style={AppStyles.tabContainer}>
                 <View style={[styles.headerContainer]}>{this.renderHeader()}</View>
 
                 <ImageBackground
@@ -528,7 +528,7 @@ class HomeView extends Component<Props, State> {
                         }}
                     />
                 </ImageBackground>
-            </SafeAreaView>
+            </View>
         );
     };
 
@@ -567,17 +567,17 @@ class HomeView extends Component<Props, State> {
         }
 
         return (
-            <SafeAreaView testID="home-tab-view" style={[AppStyles.tabContainer, AppStyles.centerAligned]}>
+            <View testID="home-tab-view" style={AppStyles.tabContainer}>
                 {/* Header */}
-                <View style={[styles.headerContainer]}>{this.renderHeader()}</View>
+                <View style={styles.headerContainer}>{this.renderHeader()}</View>
 
                 {/* Content */}
-                <View style={[AppStyles.contentContainer]}>
+                <View style={AppStyles.contentContainer}>
                     {this.renderAccountDetails()}
                     {this.renderButtons()}
                     {this.renderAssets()}
                 </View>
-            </SafeAreaView>
+            </View>
         );
     }
 }

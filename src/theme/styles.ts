@@ -21,14 +21,13 @@ export default StyleService.create({
     },
     tabContainer: {
         flex: 1,
-        height: Sizes.screen.height,
-        width: Sizes.screen.width,
         position: 'relative',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         alignContent: 'stretch',
         marginBottom: Sizes.tabbarHeight,
+        paddingTop: Sizes.bottomTabsSafeAreaInset,
         backgroundColor: '$background',
     },
     headerContainer: {

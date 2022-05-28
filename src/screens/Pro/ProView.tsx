@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, Text, ImageBackground, Image } from 'react-native';
+import { View, Text, ImageBackground, Image } from 'react-native';
 
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
@@ -58,7 +58,7 @@ class ProView extends Component<Props, State> {
 
     render() {
         return (
-            <SafeAreaView testID="profile-tab-view" style={[AppStyles.tabContainer]}>
+            <View testID="profile-tab-view" style={AppStyles.tabContainer}>
                 <Header
                     placement="left"
                     containerStyle={AppStyles.headerContainer}
@@ -88,7 +88,7 @@ class ProView extends Component<Props, State> {
                         rounded
                     />
                 </ImageBackground>
-            </SafeAreaView>
+            </View>
         );
     }
 }
