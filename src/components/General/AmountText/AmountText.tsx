@@ -6,6 +6,7 @@
  *
  */
 
+import { isEqual } from 'lodash';
 import React, { Component } from 'react';
 import { Text, Pressable, Alert, TextStyle, ViewStyle, View } from 'react-native';
 import BigNumber from 'bignumber.js';
@@ -38,6 +39,7 @@ interface State {
     currency: string;
     truncated: 'LOW' | 'HIGH';
     showOriginalValue: boolean;
+    localSettings: any;
 }
 
 /* Component ==================================================================== */
@@ -51,31 +53,36 @@ class AmountText extends Component<Props, State> {
             currency: '',
             truncated: undefined,
             showOriginalValue: false,
+            localSettings: Localize.getSettings(),
         };
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        const { value, currency, discreet } = this.props;
-        const { showOriginalValue } = this.state;
+        const { value: PropValue, currency, discreet } = this.props;
+        const { showOriginalValue, value } = this.state;
 
-        if (
-            nextProps.value !== value ||
+        return (
+            nextProps.value !== PropValue ||
+            nextState.value !== value ||
             nextProps.currency !== currency ||
             nextState.showOriginalValue !== showOriginalValue ||
             nextProps.discreet !== discreet
-        ) {
-            return true;
-        }
-
-        return false;
+        );
     }
 
     static getDerivedStateFromProps(nextProps: Props, prevState: State) {
         const { immutable, currency } = nextProps;
+        const { localSettings } = prevState;
         let { value } = nextProps;
 
+        const newLocalSettings = Localize.getSettings();
+
         // no value changed
-        if (prevState.originalValue === String(value) && prevState.currency === currency) {
+        if (
+            prevState.originalValue === String(value) &&
+            prevState.currency === currency &&
+            isEqual(newLocalSettings, localSettings)
+        ) {
             return null;
         }
 
@@ -96,6 +103,7 @@ class AmountText extends Component<Props, State> {
                 originalValue: String(value),
                 value: String(value),
                 currency: normalizedCurrency,
+                localSettings: newLocalSettings,
             };
         }
 
@@ -108,6 +116,7 @@ class AmountText extends Component<Props, State> {
                 originalValue: String(value),
                 value: NFT,
                 currency: normalizedCurrency,
+                localSettings: newLocalSettings,
             };
         }
 
@@ -118,6 +127,7 @@ class AmountText extends Component<Props, State> {
                 originalValue: String(value),
                 value: Localize.formatNumber(value, 0, false),
                 currency: normalizedCurrency,
+                localSettings: newLocalSettings,
             };
         }
 
@@ -149,6 +159,7 @@ class AmountText extends Component<Props, State> {
                 value: newValue,
                 currency: normalizedCurrency,
                 truncated,
+                localSettings: newLocalSettings,
             };
         }
 

@@ -90,6 +90,10 @@ class Localize {
         this.settings = settings;
     };
 
+    getSettings = (): any => {
+        return this.settings;
+    };
+
     setLocaleBundle = (locale: string, translations: any) => {
         if (!locale || !translations) return;
 

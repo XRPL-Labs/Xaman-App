@@ -21,6 +21,7 @@ import { SortableFlatList } from '@components/General';
 
 /* Types ==================================================================== */
 interface Props {
+    timestamp?: number;
     testID?: string;
     style: ViewStyle | ViewStyle[];
     account: AccountSchema;
@@ -114,6 +115,14 @@ class TokenList extends Component<Props, State> {
                 ...filtersState,
             };
         }
+
+        // force re-render by parents
+        if (nextProps.timestamp !== prevState.timestamp) {
+            return {
+                timestamp: nextProps.timestamp,
+            };
+        }
+
         return null;
     }
 
@@ -298,7 +307,7 @@ class TokenList extends Component<Props, State> {
 
     render() {
         const { account, testID, style, readonly, discreetMode } = this.props;
-        const { dataSource, reorderEnabled, filters } = this.state;
+        const { dataSource, reorderEnabled, filters, timestamp } = this.state;
 
         return (
             <View testID={testID} style={style}>
@@ -315,7 +324,7 @@ class TokenList extends Component<Props, State> {
                     onFilterChange={this.onFilterChange}
                     onReorderPress={this.toggleReordering}
                 />
-                <NativeItem account={account} discreetMode={discreetMode} />
+                <NativeItem timestamp={timestamp} account={account} discreetMode={discreetMode} />
                 <SortableFlatList
                     ref={this.dragSortableRef}
                     itemHeight={TokenItem.Height}

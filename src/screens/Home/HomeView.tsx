@@ -32,7 +32,9 @@ import { ChainColors } from '@theme/colors';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {}
+export interface Props {
+    timestamp: number;
+}
 
 export interface State {
     accountsCount: number;
@@ -376,6 +378,7 @@ class HomeView extends Component<Props, State> {
     };
 
     renderAssets = () => {
+        const { timestamp } = this.props;
         const { account, discreetMode, isSpendable } = this.state;
 
         // accounts is not activated
@@ -444,6 +447,7 @@ class HomeView extends Component<Props, State> {
 
         return (
             <TokenList
+                timestamp={timestamp}
                 testID="token-list-container"
                 style={styles.tokenListContainer}
                 account={account}
