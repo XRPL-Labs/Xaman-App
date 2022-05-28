@@ -550,9 +550,9 @@
     "thisTransactionClearTicket": "This transaction clears (consumes & removes) ticket #%{ticketSequence}"
   },
   "pro": {
-    "proBeta": "Pro beta",
-    "openProBeta": "Open Pro beta",
-    "xummProBeta": "Xumm Pro beta",
+    "proBeta": "Pro Beta",
+    "openProBeta": "Open Pro Beta",
+    "xummProBeta": "XUMM Pro Beta",
     "xummProBetaDescription": "Make full use of the app and give sending and receiving a more personal touch!"
   },
   "settings": {
