@@ -75,33 +75,55 @@ export default class Badge extends PureComponent<Props> {
         const style = [styles.label, { fontSize: SIZES[size] }, labelStyle];
 
         if (label) {
-            return <Text style={style}>{label}</Text>;
+            return (
+                <Text adjustsFontSizeToFit numberOfLines={1} style={style}>
+                    {label}
+                </Text>
+            );
         }
+
+        let content = '';
 
         switch (type) {
             case 'xrplns':
-                return <Text style={style}>XRPLNS</Text>;
+                content = 'XRPLNS';
+                break;
             case 'bithomp':
-                return <Text style={style}>Bithomp</Text>;
+                content = 'Bithomp';
+                break;
             case 'xrpscan':
-                return <Text style={style}>XRPScan</Text>;
+                content = 'XRPScan';
+                break;
             case 'payid':
-                return <Text style={style}>PayString</Text>;
+                content = 'PayString';
+                break;
             case 'fioprotocol':
-                return <Text style={style}>FIO</Text>;
+                content = 'FIO';
+                break;
             case 'accounts':
-                return <Text style={style}>Myself</Text>;
+                content = 'Myself';
+                break;
             case 'contacts':
-                return <Text style={style}>{Localize.t('global.contact')}</Text>;
+                content = Localize.t('global.contact');
+                break;
             case 'success':
-                return <Text style={style}>{Localize.t('global.success')}</Text>;
+                content = Localize.t('global.success');
+                break;
             case 'open':
-                return <Text style={style}>{Localize.t('events.eventTypeOpen')} </Text>;
+                content = Localize.t('events.eventTypeOpen');
+                break;
             case 'planned':
-                return <Text style={style}>{Localize.t('events.eventTypePlanned')}</Text>;
+                content = Localize.t('events.eventTypePlanned');
+                break;
             default:
                 return null;
         }
+
+        return (
+            <Text adjustsFontSizeToFit numberOfLines={1} style={style}>
+                {content}
+            </Text>
+        );
     };
 
     render() {

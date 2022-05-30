@@ -822,8 +822,8 @@ exports[`Storyshots Avatar With Border 1`] = `
             "borderWidth": 1,
           },
           Object {
-            "height": 86.71428571428571,
-            "width": 86.71428571428571,
+            "height": 87.0142857142857,
+            "width": 87.0142857142857,
           },
           undefined,
         ]
@@ -1095,6 +1095,8 @@ exports[`Storyshots Badge Accounts 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1145,6 +1147,8 @@ exports[`Storyshots Badge Accounts 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1195,6 +1199,8 @@ exports[`Storyshots Badge Accounts 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1271,6 +1277,8 @@ exports[`Storyshots Badge Bithomp 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1321,6 +1329,8 @@ exports[`Storyshots Badge Bithomp 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1371,6 +1381,8 @@ exports[`Storyshots Badge Bithomp 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1447,6 +1459,8 @@ exports[`Storyshots Badge Contacts 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1497,6 +1511,8 @@ exports[`Storyshots Badge Contacts 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1547,6 +1563,8 @@ exports[`Storyshots Badge Contacts 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1623,6 +1641,8 @@ exports[`Storyshots Badge FioProtocol 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1673,6 +1693,8 @@ exports[`Storyshots Badge FioProtocol 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1723,6 +1745,8 @@ exports[`Storyshots Badge FioProtocol 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1799,6 +1823,8 @@ exports[`Storyshots Badge Open 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1814,7 +1840,6 @@ exports[`Storyshots Badge Open 1`] = `
           }
         >
           Open
-           
         </Text>
       </View>
     </View>
@@ -1850,6 +1875,8 @@ exports[`Storyshots Badge Open 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1865,7 +1892,6 @@ exports[`Storyshots Badge Open 1`] = `
           }
         >
           Open
-           
         </Text>
       </View>
     </View>
@@ -1901,6 +1927,8 @@ exports[`Storyshots Badge Open 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -1916,7 +1944,6 @@ exports[`Storyshots Badge Open 1`] = `
           }
         >
           Open
-           
         </Text>
       </View>
     </View>
@@ -1978,6 +2005,8 @@ exports[`Storyshots Badge PayId 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -2028,6 +2057,8 @@ exports[`Storyshots Badge PayId 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -2078,6 +2109,8 @@ exports[`Storyshots Badge PayId 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -2154,6 +2187,8 @@ exports[`Storyshots Badge Planned 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -2204,6 +2239,8 @@ exports[`Storyshots Badge Planned 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -2254,6 +2291,8 @@ exports[`Storyshots Badge Planned 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -2330,6 +2369,8 @@ exports[`Storyshots Badge Success 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -2380,6 +2421,8 @@ exports[`Storyshots Badge Success 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -2430,6 +2473,8 @@ exports[`Storyshots Badge Success 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -2506,6 +2551,8 @@ exports[`Storyshots Badge XRPLNS 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -2556,6 +2603,8 @@ exports[`Storyshots Badge XRPLNS 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -2606,6 +2655,8 @@ exports[`Storyshots Badge XRPLNS 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -2682,6 +2733,8 @@ exports[`Storyshots Badge XRPScan 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -2732,6 +2785,8 @@ exports[`Storyshots Badge XRPScan 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -2782,6 +2837,8 @@ exports[`Storyshots Badge XRPScan 1`] = `
         }
       >
         <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
           style={
             Array [
               Object {
@@ -4979,8 +5036,8 @@ exports[`Storyshots RecipientElement Selected 1`] = `
               "borderWidth": 1,
             },
             Object {
-              "height": 86.71428571428571,
-              "width": 86.71428571428571,
+              "height": 87.0142857142857,
+              "width": 87.0142857142857,
             },
             undefined,
           ]
@@ -5115,8 +5172,8 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
               "borderWidth": 1,
             },
             Object {
-              "height": 86.71428571428571,
-              "width": 86.71428571428571,
+              "height": 87.0142857142857,
+              "width": 87.0142857142857,
             },
             undefined,
           ]
@@ -5247,8 +5304,8 @@ exports[`Storyshots RecipientElement default 1`] = `
               "borderWidth": 1,
             },
             Object {
-              "height": 86.71428571428571,
-              "width": 86.71428571428571,
+              "height": 87.0142857142857,
+              "width": 87.0142857142857,
             },
             undefined,
           ]

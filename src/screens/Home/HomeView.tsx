@@ -131,7 +131,7 @@ class HomeView extends Component<Props, State> {
 
     updateDefaultAccount = (updatedAccount: AccountSchema, changes: Partial<AccountSchema>) => {
         // update account visible count
-        if (updatedAccount?.isValid() && changes?.hidden) {
+        if (updatedAccount?.isValid() && has(changes, 'hidden')) {
             this.setState({
                 accountsCount: AccountRepository.getVisibleAccountCount(),
             });
