@@ -91,7 +91,7 @@ class LockModal extends Component<Props, State> {
 
         // if any biometric method available start the biometric authentication
         if (isBiometricAvailable) {
-            this.requestBiometricAuthenticate();
+            this.requestBiometricAuthenticate(true);
         }
     };
 
@@ -130,7 +130,7 @@ class LockModal extends Component<Props, State> {
             });
     };
 
-    requestBiometricAuthenticate = () => {
+    requestBiometricAuthenticate = (system?: boolean) => {
         AuthenticationService.authenticateBiometrics(Localize.t('global.unlock'))
             .then(this.onUnlock)
             .catch((error) => {
@@ -147,7 +147,7 @@ class LockModal extends Component<Props, State> {
                     errorMessage = Localize.t('global.invalidBiometryAuth');
                 }
 
-                if (errorMessage) {
+                if (errorMessage && !system) {
                     Prompt(Localize.t('global.error'), errorMessage);
                 }
             });

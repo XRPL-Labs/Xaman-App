@@ -125,7 +125,7 @@ class PasscodeMethod extends Component<Props, State> {
         const { isBiometricAvailable } = this.state;
 
         if (isBiometricAvailable) {
-            this.requestBiometricAuthenticate();
+            this.requestBiometricAuthenticate(true);
         } else if (this.securePinInput.current) {
             // focus the input
             this.securePinInput.current.focus();
@@ -145,7 +145,7 @@ class PasscodeMethod extends Component<Props, State> {
         sign(AuthMethods.PIN, { encryptionKey: encryptedPasscode });
     };
 
-    requestBiometricAuthenticate = () => {
+    requestBiometricAuthenticate = (system?: boolean) => {
         AuthenticationService.authenticateBiometrics(Localize.t('global.signingTheTransaction'))
             .then(this.onSuccessBiometricAuthenticate)
             .catch((error: any) => {
@@ -164,7 +164,7 @@ class PasscodeMethod extends Component<Props, State> {
                     errorMessage = Localize.t('global.invalidBiometryAuth');
                 }
 
-                if (errorMessage) {
+                if (errorMessage && !system) {
                     Prompt(Localize.t('global.error'), errorMessage);
                 }
             });
