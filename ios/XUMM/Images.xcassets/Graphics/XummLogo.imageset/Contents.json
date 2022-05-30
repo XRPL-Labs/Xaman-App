@@ -1,15 +1,17 @@
 {
   "images" : [
     {
+      "filename" : "xumm_logo@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "xumm_logo@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "xumm-logo@3x.png",
+      "filename" : "xumm_logo@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
