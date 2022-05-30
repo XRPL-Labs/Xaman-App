@@ -36,7 +36,6 @@ interface State {
     dataSource: TrustLineSchema[];
     filters: FiltersType;
     reorderEnabled: boolean;
-    timestamp: number;
 }
 
 /* Component ==================================================================== */
@@ -54,7 +53,6 @@ class TokenList extends Component<Props, State> {
             dataSource: tokens,
             filters: undefined,
             reorderEnabled: false,
-            timestamp: +new Date(),
         };
 
         this.dragSortableRef = React.createRef();
@@ -72,16 +70,16 @@ class TokenList extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
-        const { discreetMode, readonly } = this.props;
-        const { account, reorderEnabled, dataSource, timestamp, filters } = this.state;
+        const { discreetMode, readonly, timestamp } = this.props;
+        const { account, reorderEnabled, dataSource, filters } = this.state;
 
         return (
+            !isEqual(nextProps.timestamp, timestamp) ||
             !isEqual(nextProps.readonly, readonly) ||
             !isEqual(nextProps.discreetMode, discreetMode) ||
             !isEqual(nextProps.account, account) ||
             !isEqual(nextState.reorderEnabled, reorderEnabled) ||
             !isEqual(nextState.filters, filters) ||
-            !isEqual(nextState.timestamp, timestamp) ||
             !isEqual(map(nextState.dataSource, 'id').join(), map(dataSource, 'id').join())
         );
     }
@@ -116,13 +114,6 @@ class TokenList extends Component<Props, State> {
                 tokens,
                 dataSource,
                 ...filtersState,
-            };
-        }
-
-        // force re-render by parents
-        if (nextProps.timestamp !== prevState.timestamp) {
-            return {
-                timestamp: nextProps.timestamp,
             };
         }
 
@@ -170,9 +161,7 @@ class TokenList extends Component<Props, State> {
     onTrustLineUpdate = (updatedToken: TrustLineSchema, changes: Partial<TrustLineSchema>) => {
         // update the token in the list if token favorite changed
         if (has(changes, 'favorite')) {
-            this.setState({
-                timestamp: +new Date(),
-            });
+            this.forceUpdate();
         }
     };
 
@@ -309,8 +298,8 @@ class TokenList extends Component<Props, State> {
     };
 
     render() {
-        const { account, testID, style, readonly, discreetMode } = this.props;
-        const { dataSource, reorderEnabled, filters, timestamp } = this.state;
+        const { timestamp, account, testID, style, readonly, discreetMode } = this.props;
+        const { dataSource, reorderEnabled, filters } = this.state;
 
         return (
             <View testID={testID} style={style}>
