@@ -363,7 +363,7 @@ class HomeView extends Component<Props, State> {
                                     <Badge
                                         containerStyle={styles.accountCountBadgeContainer}
                                         labelStyle={styles.accountCountBadgeLabel}
-                                        label={`${accountsCount > 9 ? '9+' : accountsCount}`}
+                                        label={`${accountsCount}`}
                                         type="count"
                                     />
                                 )
