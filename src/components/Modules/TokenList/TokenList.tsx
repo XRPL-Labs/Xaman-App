@@ -1,4 +1,4 @@
-import { map, toLower, filter, sortBy, isEqual, has } from 'lodash';
+import { map, toLower, filter, sortBy, isEqual, has, findIndex } from 'lodash';
 import React, { Component } from 'react';
 import { View, ViewStyle } from 'react-native';
 
@@ -103,11 +103,17 @@ class TokenList extends Component<Props, State> {
                 };
             }
 
+            // apply any filter if present
             const { filters } = filtersState;
 
             // update tokens and dataSource
             const tokens = nextProps.account.lines.sorted([['order', false]]);
-            const dataSource = filters ? TokenList.getFilteredList(tokens, filters) : tokens;
+            let dataSource = filters ? TokenList.getFilteredList(tokens, filters) : tokens;
+
+            // if reorder already enabled, keep the sorting in the dataSource and update the list
+            if (prevState.reorderEnabled) {
+                dataSource = sortBy(dataSource, (o) => findIndex(prevState.dataSource, { id: o.id }));
+            }
 
             return {
                 account: nextProps.account,
