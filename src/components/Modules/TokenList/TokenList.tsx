@@ -104,14 +104,14 @@ class TokenList extends Component<Props, State> {
             }
 
             // apply any filter if present
-            const { filters } = filtersState;
+            const { filters, reorderEnabled } = filtersState;
 
             // update tokens and dataSource
             const tokens = nextProps.account.lines.sorted([['order', false]]);
             let dataSource = filters ? TokenList.getFilteredList(tokens, filters) : tokens;
 
             // if reorder already enabled, keep the sorting in the dataSource and update the list
-            if (prevState.reorderEnabled) {
+            if (reorderEnabled) {
                 dataSource = sortBy(dataSource, (o) => findIndex(prevState.dataSource, { id: o.id }));
             }
 
