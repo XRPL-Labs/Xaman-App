@@ -23,7 +23,7 @@ class NFTokenAcceptOffer extends BaseTransaction {
             this.TransactionType = NFTokenAcceptOffer.Type;
         }
 
-        this.fields = this.fields.concat(['Amount', 'NFTokenSellOffer', 'NFTokenBuyOffer', 'NFTokenBrokerFee']);
+        this.fields = this.fields.concat(['NFTokenSellOffer', 'NFTokenBuyOffer', 'NFTokenBrokerFee']);
     }
 
     set Offer(offer: NFTokenCreateOffer) {
@@ -49,27 +49,6 @@ class NFTokenAcceptOffer extends BaseTransaction {
             this.Offer = new NFTokenCreateOffer(offer);
         }
         return offer;
-    }
-
-    get Amount(): AmountType {
-        let amount = undefined as AmountType;
-
-        amount = get(this, ['tx', 'Amount']);
-
-        if (isUndefined(amount)) return undefined;
-
-        if (typeof amount === 'string') {
-            return {
-                currency: 'XRP',
-                value: new Amount(amount).dropsToXrp(),
-            };
-        }
-
-        return {
-            currency: amount.currency,
-            value: amount.value && new Amount(amount.value, false).toString(),
-            issuer: amount.issuer,
-        };
     }
 
     get NFTokenSellOffer(): string {
