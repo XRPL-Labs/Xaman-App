@@ -174,9 +174,7 @@ class HomeView extends Component<Props, State> {
             // show the header
             Navigator.mergeOptions(componentId, {
                 topBar: {
-                    hideOnScroll: true,
                     visible: true,
-                    animate: true,
                     background: {
                         color: ChainColors[chain],
                     },
