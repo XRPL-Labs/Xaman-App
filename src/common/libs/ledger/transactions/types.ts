@@ -1,5 +1,4 @@
 import {
-    BaseTransaction,
     Payment,
     TrustSet,
     OfferCreate,
@@ -10,20 +9,47 @@ import {
     EscrowFinish,
     SetRegularKey,
     SignerListSet,
+    AccountDelete,
+    CheckCash,
+    CheckCancel,
+    CheckCreate,
+    DepositPreauth,
+    TicketCreate,
+    PaymentChannelClaim,
+    PaymentChannelCreate,
+    PaymentChannelFund,
+    NFTokenAcceptOffer,
+    NFTokenBurn,
+    NFTokenCancelOffer,
+    NFTokenCreateOffer,
+    NFTokenMint,
 } from '.';
 
 /**
  * Parsed Transactions type
  */
-export type TransactionsType =
-    | BaseTransaction
+export type Transactions =
     | Payment
     | TrustSet
+    | AccountDelete
+    | AccountSet
     | OfferCreate
     | OfferCancel
-    | AccountSet
-    | EscrowCancel
     | EscrowCreate
+    | EscrowCancel
     | EscrowFinish
     | SetRegularKey
-    | SignerListSet;
+    | SignerListSet
+    | DepositPreauth
+    | CheckCreate
+    | CheckCash
+    | CheckCancel
+    | TicketCreate
+    | PaymentChannelCreate
+    | PaymentChannelClaim
+    | PaymentChannelFund
+    | NFTokenMint
+    | NFTokenBurn
+    | NFTokenCreateOffer
+    | NFTokenAcceptOffer
+    | NFTokenCancelOffer;

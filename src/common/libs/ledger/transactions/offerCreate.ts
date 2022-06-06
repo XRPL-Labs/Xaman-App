@@ -1,6 +1,7 @@
 /* eslint-disable no-lonely-if */
-import BigNumber from 'bignumber.js';
-import { get, set, find, isUndefined } from 'lodash';
+import { get, isUndefined, set } from 'lodash';
+
+import { EncodeLedgerIndex } from '@common/utils/codec';
 
 import BaseTransaction from './base';
 import Amount from '../parser/common/amount';
@@ -8,40 +9,29 @@ import LedgerDate from '../parser/common/date';
 import Meta from '../parser/meta';
 
 /* Types ==================================================================== */
-import { AmountType } from '../parser/types';
-import { LedgerTransactionType } from '../types';
+import { AmountType, OfferStatus } from '../parser/types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class OfferCreate extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.OfferCreate as const;
+    public readonly Type = OfferCreate.Type;
 
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    private offerStatus: OfferStatus;
+
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
+
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'OfferCreate';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = OfferCreate.Type;
         }
 
+        // concat keys
         this.fields = this.fields.concat(['TakerPays', 'TakerGets', 'OfferSequence', 'Expiration']);
-    }
 
-    get TakerPays(): AmountType {
-        const pays = get(this, ['tx', 'TakerPays']);
-
-        if (isUndefined(pays)) return undefined;
-
-        if (typeof pays === 'string') {
-            return {
-                currency: 'XRP',
-                value: new Amount(pays).dropsToXrp(),
-            };
-        }
-
-        return {
-            currency: pays.currency,
-            value: new Amount(pays.value, false).toString(),
-            issuer: pays.issuer,
-        };
+        // memorize offer status
+        this.offerStatus = undefined;
     }
 
     get TakerGets(): AmountType {
@@ -74,6 +64,25 @@ class OfferCreate extends BaseTransaction {
             value: new Amount(gets.value, false).toString(),
             issuer: gets.issuer,
         });
+    }
+
+    get TakerPays(): AmountType {
+        const pays = get(this, ['tx', 'TakerPays']);
+
+        if (isUndefined(pays)) return undefined;
+
+        if (typeof pays === 'string') {
+            return {
+                currency: 'XRP',
+                value: new Amount(pays).dropsToXrp(),
+            };
+        }
+
+        return {
+            currency: pays.currency,
+            value: new Amount(pays.value, false).toString(),
+            issuer: pays.issuer,
+        };
     }
 
     set TakerPays(pays: AmountType) {
@@ -121,48 +130,21 @@ class OfferCreate extends BaseTransaction {
         set(this, 'tx.Expiration', ledgerDate.toLedgerTime());
     }
 
-    get Executed(): boolean {
-        // check for order object
-        let foundOrderObject = false;
-
-        // this will ensure that order is executed
-        const affectedNodes = get(this.meta, 'AffectedNodes', []);
-
-        // partially filled || filled
-        affectedNodes.map((node: any) => {
-            if (node.ModifiedNode?.LedgerEntryType === 'Offer' || node.DeletedNode?.LedgerEntryType === 'Offer') {
-                foundOrderObject = true;
-                return true;
-            }
-            return false;
-        });
-
-        return foundOrderObject;
-    }
-
     TakerGot(owner?: string): AmountType {
         if (!owner) {
             owner = this.Account.address;
         }
 
-        const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
+        const balanceChanges = this.BalanceChange(owner);
 
-        // @ts-ignore
-        const takerGot = find(balanceChanges, (o) => o.action === 'DEC');
-
-        if (!takerGot) {
+        if (!balanceChanges?.sent) {
             return {
                 ...this.TakerGets,
                 value: '0',
             };
         }
 
-        //  remove fee from end result if xrp
-        if (takerGot.currency === 'XRP' && owner === this.Account.address) {
-            set(takerGot, 'value', new BigNumber(takerGot.value).minus(this.Fee).decimalPlaces(8).toString(10));
-        }
-
-        return takerGot;
+        return balanceChanges.sent;
     }
 
     TakerPaid(owner?: string): AmountType {
@@ -170,23 +152,42 @@ class OfferCreate extends BaseTransaction {
             owner = this.Account.address;
         }
 
-        const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
+        const balanceChanges = this.BalanceChange(owner);
 
-        const takerPaid = find(balanceChanges, (o) => o.action === 'INC');
-
-        if (!takerPaid) {
+        if (!balanceChanges?.received) {
             return {
                 ...this.TakerPays,
                 value: '0',
             };
         }
 
-        //  remove fee from end result if xrp and own offer tx
-        if (takerPaid.currency === 'XRP' && owner === this.Account.address) {
-            set(takerPaid, 'value', new BigNumber(takerPaid.value).minus(this.Fee).decimalPlaces(8).toString(10));
+        return balanceChanges.received;
+    }
+
+    GetOfferStatus(owner?: string): OfferStatus {
+        // if already calculated return the value
+        if (this.offerStatus) {
+            return this.offerStatus;
         }
 
-        return takerPaid;
+        // offer effected by another offer we assume it's partially filled
+        if (owner !== this.Account.address) {
+            this.offerStatus = OfferStatus.PARTIALLY_FILLED;
+            return this.offerStatus;
+        }
+
+        const offerLedgerIndex = EncodeLedgerIndex(owner, this.Sequence);
+
+        // unable to calculate offer ledger index
+        // NOTE: this should not happen
+        if (!offerLedgerIndex) {
+            this.offerStatus = OfferStatus.UNKNOWN;
+            return this.offerStatus;
+        }
+
+        this.offerStatus = new Meta(this.meta).parseOfferStatusChange(owner, offerLedgerIndex);
+
+        return this.offerStatus;
     }
 }
 

@@ -11,7 +11,7 @@ DeviceInfo.getVersion = () => '0.5.1';
 // @ts-ignore
 DeviceInfo.getBuildNumber = () => 1;
 // @ts-ignore
-DeviceInfo.getUniqueID = () => 'e988b7a9-f685-4674-87bc-0ad52a52faa5';
+DeviceInfo.getUniqueId = () => 'e988b7a9-f685-4674-87bc-0ad52a52faa5';
 // @ts-ignore
 DeviceInfo.getDeviceLocale = () => 'en_US';
 // @ts-ignore

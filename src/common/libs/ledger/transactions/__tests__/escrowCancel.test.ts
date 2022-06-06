@@ -3,17 +3,18 @@
 
 import EscrowCancel from '../escrowCancel';
 
-import txTemplates from './templates/EscrowCancelTx.json';
+import escrowCancelTemplate from './templates/EscrowCancelTx.json';
 
 describe('EscrowCancel tx', () => {
     it('Should set tx type if not set', () => {
-        const escrowCancel = new EscrowCancel();
-        expect(escrowCancel.Type).toBe('EscrowCancel');
+        const instance = new EscrowCancel();
+        expect(instance.TransactionType).toBe('EscrowCancel');
+        expect(instance.Type).toBe('EscrowCancel');
     });
 
     it('Should return right parsed values', () => {
-        // @ts-ignore
-        const instance = new EscrowCancel(txTemplates);
+        const { tx, meta } = escrowCancelTemplate;
+        const instance = new EscrowCancel(tx, meta);
 
         expect(instance.Owner).toBe('rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn');
 

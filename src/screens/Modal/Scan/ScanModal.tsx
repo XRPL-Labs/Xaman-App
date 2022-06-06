@@ -23,7 +23,9 @@ import { AppScreens } from '@common/constants';
 import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
+
 import { NormalizeDestination } from '@common/utils/codec';
+import { StringTypeCheck } from '@common/utils/string';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
 
@@ -245,6 +247,11 @@ class ScanView extends Component<Props, State> {
     };
 
     handlePayloadReference = async (uuid: string) => {
+        // double check if uuid is valid string
+        if (!StringTypeCheck.isValidUUID(uuid)) {
+            return;
+        }
+
         this.setState({
             isLoading: true,
         });
@@ -352,7 +359,7 @@ class ScanView extends Component<Props, State> {
             }
 
             // if amount present as XRP pass the amount
-            if (!destination.currency && new RegExp(/^(?![0.]+$)\d+(\.\d{1,8})?$/gm).test(destination.amount)) {
+            if (!destination.currency && StringTypeCheck.isValidAmount(destination.amount)) {
                 amount = destination.amount;
             }
 

@@ -256,6 +256,7 @@ class RecipientStep extends Component<Props, State> {
 
         if (searchText && searchText.length > 0) {
             // check if it's a xrp address
+            // eslint-disable-next-line prefer-regex-literals
             const possibleAccountAddress = new RegExp(
                 /[rX][rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{23,50}/,
             );
@@ -525,7 +526,10 @@ class RecipientStep extends Component<Props, State> {
             // ignore if the recipient is the issuer
             // IMMEDIATE REJECT
             if (typeof currency !== 'string' && currency.currency.issuer !== destination.address) {
-                const destinationLine = await LedgerService.getAccountLine(destination.address, currency.currency);
+                const destinationLine = await LedgerService.getFilteredAccountLine(
+                    destination.address,
+                    currency.currency,
+                );
 
                 // recipient does not have the proper trustline
                 if (
@@ -657,15 +661,19 @@ class RecipientStep extends Component<Props, State> {
     };
 
     goNext = async () => {
-        const { goNext, setFee, setAvailableFees, setIssuerFee, currency } = this.context;
+        const { goNext, setFee, setAvailableFees, setIssuerFee, source, destination, currency } = this.context;
 
         try {
             this.setState({
                 isLoading: true,
             });
 
-            // sending IOU
-            if (typeof currency !== 'string') {
+            // sending IOU && SENDER AND DESTINATION is not issuer, get issuer fee
+            if (
+                typeof currency !== 'string' &&
+                source.address !== currency.currency.issuer &&
+                destination.address !== currency.currency.issuer
+            ) {
                 // fetching/applying issuer fee from network
                 const issuerFee = await LedgerService.getAccountTransferRate(currency.currency.issuer);
                 if (issuerFee) {

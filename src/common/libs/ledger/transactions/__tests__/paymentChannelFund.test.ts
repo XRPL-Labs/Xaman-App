@@ -3,21 +3,21 @@
 
 import PaymentChannelFund from '../paymentChannelFund';
 
-import txTemplates from './templates/PaymentChannelFund.json';
+import paymentChannelFundTemplates from './templates/PaymentChannelFundTx.json';
 
 describe('PaymentChannelFund tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new PaymentChannelFund();
+        expect(instance.TransactionType).toBe('PaymentChannelFund');
         expect(instance.Type).toBe('PaymentChannelFund');
     });
 
     it('Should return right parsed values', () => {
-        // @ts-ignore
-        const instance = new PaymentChannelFund(txTemplates);
+        const { tx, meta } = paymentChannelFundTemplates;
+        const instance = new PaymentChannelFund(tx, meta);
 
         expect(instance.Account).toEqual({
             address: 'rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn',
-            name: undefined,
             tag: undefined,
         });
         expect(instance.Type).toBe('PaymentChannelFund');

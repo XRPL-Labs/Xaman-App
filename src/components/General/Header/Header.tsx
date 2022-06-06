@@ -3,13 +3,14 @@ import { Platform, Text, TextStyle, View, ViewStyle, ImageStyle } from 'react-na
 
 import { Images } from '@common/helpers/images';
 
-import { TouchableDebounce, Icon } from '@components/General';
+import { TouchableDebounce } from '@components/General/TouchableDebounce';
+import { Icon } from '@components/General/Icon';
 
 import { AppStyles, AppSizes } from '@theme';
 
 import styles from './styles';
-/* Types ==================================================================== */
 
+/* Types ==================================================================== */
 type placementType = 'left' | 'right' | 'center';
 
 interface ChildrenProps {

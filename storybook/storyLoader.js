@@ -10,6 +10,7 @@ function loadStories() {
     require('../src/components/General/__stories__/InfoMessage.stories');
     require('../src/components/General/__stories__/SegmentButton.stories');
     require('../src/components/Modules/__stories__/RecipientElement.stories');
+    require('../src/components/Modules/__stories__/XAppList.stories');
 }
 
 const stories = [
@@ -19,6 +20,7 @@ const stories = [
     '../src/components/General/__stories__/InfoMessage.stories',
     '../src/components/General/__stories__/SegmentButton.stories',
     '../src/components/Modules/__stories__/RecipientElement.stories',
+    '../src/components/Modules/__stories__/XAppList.stories',
 ];
 
 module.exports = {

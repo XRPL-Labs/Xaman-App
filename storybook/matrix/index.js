@@ -39,7 +39,7 @@ const createElement = (Component, props) => {
 };
 
 export default function withPropsCombinations(component, possibleValuesByPropName) {
-    return () => {
+    return function () {
         const propsCombinations = combinations(possibleValuesByPropName);
 
         return (

@@ -19,6 +19,8 @@ import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { Destination } from '@common/libs/ledger/parser/types';
 import { AccountInfoType } from '@common/helpers/resolver';
 
+import { StringTypeCheck } from '@common/utils/string';
+
 import { AppScreens } from '@common/constants';
 
 import { AccountSchema, CoreSchema } from '@store/schemas/latest';
@@ -139,15 +141,11 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     handleSignRequest = async (data: any) => {
-        if (!has(data, 'uuid')) {
-            return;
-        }
+        // get payload uuid from data
+        const uuid = get(data, 'uuid', undefined);
 
-        const uuid = get(data, 'uuid');
-
-        // validate passed data is uuid
-        const uuidRegExp = new RegExp('^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$', 'i');
-        if (typeof uuid !== 'string' || !uuidRegExp.test(uuid)) {
+        // validate the uuid is valid uuidv4
+        if (!StringTypeCheck.isValidUUID(uuid)) {
             return;
         }
 
@@ -262,15 +260,12 @@ class XAppBrowserModal extends Component<Props, State> {
     openBrowserLink = (data: any) => {
         const { title } = this.state;
 
-        const { url } = data;
-
-        if (!url) return;
-
-        // eslint-disable-next-line no-control-regex
-        const urlRegex = new RegExp('^https://[a-zA-Z0-9][a-zA-Z0-9-.]+[a-zA-Z0-9].[a-zA-Z]{1,}[?/]{0,3}[^\r\n\t]+');
+        const url = get(data, 'url', undefined);
 
         // url should be only https and contains only a domain url
-        if (!urlRegex.test(url)) return;
+        if (!StringTypeCheck.isValidURL(url)) {
+            return;
+        }
 
         Prompt(
             Localize.t('global.notice'),
@@ -296,7 +291,9 @@ class XAppBrowserModal extends Component<Props, State> {
         const address = get(data, 'account');
 
         // validate inputs
-        if (!AccountLibUtils.isValidAddress(address) || !new RegExp('^[A-F0-9]{64}$', 'i').test(hash)) return;
+        if (!AccountLibUtils.isValidAddress(address) || !StringTypeCheck.isValidHash(hash)) {
+            return;
+        }
 
         // check if account exist in xumm
         const account = AccountRepository.findOne({ address });

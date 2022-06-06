@@ -5,10 +5,8 @@ import * as AccountLib from 'xrpl-accountlib';
 
 import LedgerService from '@services/LedgerService';
 
-import { AccountSchema } from '@store/schemas/latest';
-
+import { ErrorMessages } from '@common/constants';
 import { NormalizeCurrencyCode, NormalizeAmount } from '@common/utils/amount';
-import { CalculateAvailableBalance } from '@common/utils/balance';
 
 import Localize from '@locale';
 
@@ -18,18 +16,19 @@ import Amount from '../parser/common/amount';
 
 /* Types ==================================================================== */
 import { LedgerAmount, Destination, AmountType } from '../parser/types';
-import { LedgerTransactionType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class Payment extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.Payment as const;
+    public readonly Type = Payment.Type;
 
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
 
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'Payment';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = Payment.Type;
         }
 
         this.fields = this.fields.concat([
@@ -46,12 +45,10 @@ class Payment extends BaseTransaction {
     get Destination(): Destination {
         const destination = get(this, ['tx', 'Destination'], undefined);
         const destinationTag = get(this, ['tx', 'DestinationTag'], undefined);
-        const destinationName = get(this, ['tx', 'DestinationName'], undefined);
 
         if (isUndefined(destination)) return undefined;
 
         return {
-            name: destinationName,
             address: destination,
             tag: destinationTag,
         };
@@ -77,10 +74,6 @@ class Payment extends BaseTransaction {
             } else {
                 set(this, 'tx.DestinationTag', undefined);
             }
-        }
-
-        if (has(destination, 'name')) {
-            set(this, 'tx.DestinationName', destination.name);
         }
     }
 
@@ -253,18 +246,20 @@ class Payment extends BaseTransaction {
         return get(this, 'tx.Paths', undefined);
     }
 
-    validate = (source: AccountSchema, multiSign?: boolean) => {
-        /* eslint-disable-next-line */
-        return new Promise<void>(async (resolve, reject) => {
+    validate = (): Promise<void> => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
             try {
-                // ignore validation if multiSign and payload including Path
-                if (multiSign || this.Paths) {
-                    return resolve();
+                // ignore validation if transaction including Path
+                if (this.Paths) {
+                    resolve();
+                    return;
                 }
 
                 // check if amount is present
                 if (!this.Amount || !this.Amount?.value || this.Amount?.value === '0') {
-                    return reject(new Error(Localize.t('send.pleaseEnterAmount')));
+                    reject(new Error(Localize.t('send.pleaseEnterAmount')));
+                    return;
                 }
 
                 let XRPAmount = undefined as AmountType;
@@ -278,16 +273,24 @@ class Payment extends BaseTransaction {
 
                 if (XRPAmount) {
                     // ===== check balance =====
-                    const availableBalance = CalculateAvailableBalance(source);
-                    if (Number(XRPAmount.value) > Number(availableBalance)) {
-                        return reject(
-                            new Error(
-                                Localize.t('send.insufficientBalanceSpendableBalance', {
-                                    spendable: Localize.formatNumber(availableBalance),
-                                    currency: 'XRP',
-                                }),
-                            ),
-                        );
+                    try {
+                        // fetch fresh account balance from ledger
+                        const availableBalance = await LedgerService.getAccountAvailableBalance(this.Account.address);
+
+                        if (Number(XRPAmount.value) > Number(availableBalance)) {
+                            reject(
+                                new Error(
+                                    Localize.t('send.insufficientBalanceSpendableBalance', {
+                                        spendable: Localize.formatNumber(availableBalance),
+                                        currency: 'XRP',
+                                    }),
+                                ),
+                            );
+                            return;
+                        }
+                    } catch (e) {
+                        reject(Localize.t('account.unableGetAccountInfo'));
+                        return;
                     }
                 }
 
@@ -301,57 +304,64 @@ class Payment extends BaseTransaction {
                 }
 
                 if (IOUAmount) {
-                    // ===== check if recipient have same trustline for receiving IOU =====
+                    // ===== check if recipient have same TrustLine for receiving IOU =====
                     // ignore if sending to the issuer
-                    const destinationLine = await LedgerService.getAccountLine(this.Destination.address, IOUAmount);
-
-                    if (
-                        (!destinationLine ||
-                            (Number(destinationLine.limit) === 0 && Number(destinationLine.balance) === 0)) &&
-                        IOUAmount.issuer !== this.Destination.address
-                    ) {
-                        return reject(new Error(Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine')));
+                    if (IOUAmount.issuer !== this.Destination.address) {
+                        const destinationLine = await LedgerService.getFilteredAccountLine(
+                            this.Destination.address,
+                            IOUAmount,
+                        );
+                        if (
+                            !destinationLine ||
+                            (Number(destinationLine.limit) === 0 && Number(destinationLine.balance) === 0)
+                        ) {
+                            reject(new Error(Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine')));
+                            return;
+                        }
                     }
 
                     // ===== check balances =====
                     // sender is not issuer
-                    if (IOUAmount.issuer !== source.address) {
+                    if (IOUAmount.issuer !== this.Account.address) {
                         // check IOU balance
-                        const line = source.lines.find(
-                            (e: any) =>
-                                // eslint-disable-next-line implicit-arrow-linebreak
-                                e.currency.issuer === IOUAmount.issuer && e.currency.currency === IOUAmount.currency,
-                        );
+                        const sourceLine = await LedgerService.getFilteredAccountLine(this.Account.address, IOUAmount);
 
                         // TODO: show proper error message
-                        if (!line) return resolve();
+                        if (!sourceLine) {
+                            resolve();
+                            return;
+                        }
 
-                        if (Number(IOUAmount.value) > Number(line.balance)) {
-                            return reject(
+                        if (Number(IOUAmount.value) > Number(sourceLine.balance)) {
+                            reject(
                                 new Error(
                                     Localize.t('send.insufficientBalanceSpendableBalance', {
-                                        spendable: Localize.formatNumber(NormalizeAmount(line.balance)),
-                                        currency: NormalizeCurrencyCode(line.currency.currency),
+                                        spendable: Localize.formatNumber(NormalizeAmount(sourceLine.balance)),
+                                        currency: NormalizeCurrencyCode(sourceLine.currency),
                                     }),
                                 ),
                             );
+                            return;
                         }
                     } else {
                         // sender is the issuer
-                        // check for exceed the trustline Limit on obligations
-                        const sourceLine = await LedgerService.getAccountLine(source.address, {
+                        // check for exceed the TrustLine Limit on obligations
+                        const sourceLine = await LedgerService.getFilteredAccountLine(this.Account.address, {
                             issuer: this.Destination.address,
                             currency: IOUAmount.currency,
                         });
 
                         // TODO: show proper error message
-                        if (!sourceLine) return resolve();
+                        if (!sourceLine) {
+                            resolve();
+                            return;
+                        }
 
                         if (
                             Number(IOUAmount.value) + Math.abs(Number(sourceLine.balance)) >
                             Number(sourceLine.limit_peer)
                         ) {
-                            return reject(
+                            reject(
                                 new Error(
                                     Localize.t('send.trustLineLimitExceeded', {
                                         balance: Localize.formatNumber(
@@ -371,17 +381,13 @@ class Payment extends BaseTransaction {
                                     }),
                                 ),
                             );
+                            return;
                         }
                     }
                 }
-                return resolve();
+                resolve();
             } catch (e) {
-                return reject(
-                    new Error(
-                        // eslint-disable-next-line max-len
-                        'An unexpected error occurred while validating the transaction.\n\nPlease try again later, if the problem continues, contact XUMM support.',
-                    ),
-                );
+                reject(new Error(ErrorMessages.unexpectedValidationError));
             }
         });
     };

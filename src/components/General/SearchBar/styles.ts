@@ -1,26 +1,25 @@
 import StyleService from '@services/StyleService';
 
-import { AppSizes, AppFonts } from '@theme';
+import { AppFonts } from '@theme';
 /* Styles ==================================================================== */
 export default StyleService.create({
     searchContainer: {
         flexDirection: 'row',
-        height: AppSizes.heightPercentageToDP(5.5),
-        marginHorizontal: 10,
-        borderRadius: 15,
         backgroundColor: '$tint',
+    },
+    searchContainerBorder: {
+        borderWidth: 1.5,
+        borderColor: '$lightBlue',
     },
     searchIcon: {
         flexDirection: 'column',
-        width: 50,
         alignSelf: 'center',
         alignItems: 'center',
         position: 'absolute',
-        left: 0,
+        left: 15,
         tintColor: '$textPrimary',
     },
     searchInput: {
-        flex: 1,
         height: '100%',
         paddingLeft: 50,
         paddingRight: 50,
@@ -28,6 +27,10 @@ export default StyleService.create({
         fontSize: AppFonts.p.size,
         fontWeight: '600',
         color: '$textPrimary',
+        paddingVertical: 0,
+    },
+    searchInputFull: {
+        paddingRight: 10,
     },
     searchClear: {
         height: '100%',

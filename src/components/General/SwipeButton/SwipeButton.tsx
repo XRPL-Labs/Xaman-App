@@ -11,7 +11,7 @@ import {
     ViewStyle,
 } from 'react-native';
 
-import { LoadingIndicator } from '@components/General';
+import { LoadingIndicator } from '@components/General/LoadingIndicator';
 
 import { AppSizes } from '@theme';
 
@@ -145,7 +145,7 @@ class SwipeButton extends Component<Props, State> {
     };
 
     onPanResponderMove = (event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
-        const newWidth = this.defaultContainerWidth + 1 * gestureState.dx;
+        const newWidth = this.defaultContainerWidth + gestureState.dx;
 
         if (newWidth < this.defaultContainerWidth) {
             // Reached starting position

@@ -142,11 +142,11 @@ class NFTokenCreateOfferTemplate extends Component<Props, State> {
                     </>
                 )}
 
-                {transaction.TokenID && (
+                {transaction.NFTokenID && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.tokenID')}</Text>
                         <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{transaction.TokenID}</Text>
+                            <Text style={[styles.value]}>{transaction.NFTokenID}</Text>
                         </View>
                     </>
                 )}

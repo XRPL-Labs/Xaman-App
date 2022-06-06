@@ -147,10 +147,13 @@ class SendView extends Component<Props, State> {
     };
 
     changeStep = (step: Steps) => {
+        // @ts-ignore
+        const { componentId } = this.props;
+
         // disable pop gesture in summary step for preventing closing the screen
         // while swiping the submit button
         if (step === Steps.Summary) {
-            Navigator.mergeOptions({
+            Navigator.mergeOptions(componentId, {
                 popGesture: false,
             });
         }
@@ -207,8 +210,12 @@ class SendView extends Component<Props, State> {
             if (typeof currency === 'string') {
                 payment.Amount = amount;
             } else {
-                // if issuer has transfer fee and sender is not issuer add partial payment flag
-                if (issuerFee || currency.currency.issuer === source.address) {
+                // if issuer has transfer fee and sender/destination is not issuer, add partial payment flag
+                if (
+                    issuerFee &&
+                    source.address !== currency.currency.issuer &&
+                    destination.address !== currency.currency.issuer
+                ) {
                     payment.Flags = [txFlags.Payment.PartialPayment];
                 }
 
@@ -235,7 +242,7 @@ class SendView extends Component<Props, State> {
             };
 
             // validate payment for all possible mistakes
-            await payment.validate(source);
+            await payment.validate();
 
             // sign the transaction
             await payment.sign(source).then(this.submit);

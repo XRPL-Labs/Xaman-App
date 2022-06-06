@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { isEmpty, isEqual, has, get } from 'lodash';
+import { isEmpty, isEqual, get } from 'lodash';
 import React, { Component } from 'react';
 import { View, Alert, Text, TouchableOpacity, InteractionManager } from 'react-native';
 
@@ -111,15 +111,19 @@ class PaymentTemplate extends Component<Props, State> {
 
     fetchIssuerFee = () => {
         const { transaction } = this.props;
+        const { account } = this.state;
 
-        if (!transaction.Amount?.issuer && !transaction.SendMax?.issuer) {
+        const issuer = transaction.SendMax?.issuer || transaction.Amount?.issuer;
+
+        // ignore if not sending IOU or sender is issuer or Destination is issuer
+        if (!issuer || account === issuer || transaction.Destination?.address === issuer) {
             return;
         }
 
         this.setState({ isLoadingIssuerFee: true, shouldShowIssuerFee: true });
 
         // get transfer rate from issuer account
-        LedgerService.getAccountTransferRate(transaction.Amount?.issuer || transaction.SendMax?.issuer)
+        LedgerService.getAccountTransferRate(issuer)
             .then((issuerFee) => {
                 if (issuerFee) {
                     this.setState({
@@ -179,12 +183,15 @@ class PaymentTemplate extends Component<Props, State> {
 
         try {
             // get source trust lines
-            const sourceLine = await LedgerService.getAccountLine(transaction.Account.address, transaction.Amount);
+            const sourceLine = await LedgerService.getFilteredAccountLine(
+                transaction.Account.address,
+                transaction.Amount,
+            );
 
             // if this condition applies we try to pay the requested amount with XRP
-            // the source account doesn't the trustline or proper trustline
-            // the source account balance doesn't cover the entire requested amount
-            // the sender is not issuer
+            // 1) the source account doesn't have the trustline or proper trustline
+            // 2) the source account balance doesn't cover the entire requested amount
+            // 3) the sender is not issuer
             const shouldPayWithXRP =
                 (!sourceLine ||
                     (Number(sourceLine.limit) === 0 && Number(sourceLine.balance) === 0) ||
@@ -239,10 +246,13 @@ class PaymentTemplate extends Component<Props, State> {
                 // check for transfer fee
                 // if issuer have transfer fee add PartialPayment if not present
                 // TODO: this is developer responsibility to add this flag in the first place
-                const issuerInfo = await LedgerService.getAccountInfo(transaction.Amount.issuer);
+                const issuerFee = await LedgerService.getAccountTransferRate(transaction.Amount.issuer);
 
+                // if issuer have fee and Source/Destination is not issuer set Partial Payment flag
                 if (
-                    (has(issuerInfo, ['account_data', 'TransferRate']) || account === transaction.Amount.issuer) &&
+                    issuerFee &&
+                    transaction.Account.address !== transaction.Amount.issuer &&
+                    transaction.Destination.address !== transaction.Amount.issuer &&
                     get(transaction.Flags, 'PartialPayment', false) === false
                 ) {
                     transaction.Flags = [txFlags.Payment.PartialPayment];
@@ -250,7 +260,7 @@ class PaymentTemplate extends Component<Props, State> {
                     forceRender();
                 }
 
-                // if we already set the send max remove it
+                // if we already set the SendMax remove it
                 if (transaction.SendMax) {
                     transaction.SendMax = undefined;
                 }

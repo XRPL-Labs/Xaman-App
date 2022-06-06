@@ -25,6 +25,14 @@
     "globals": {
       "__DEV__": false
     },
+    "overrides": [
+      {
+        "files": ["*.stories.tsx"],
+        "rules": {
+          "import/no-relative-packages": "off"
+        }
+      }
+    ],
     "settings": {
       "import/resolver": {
         "typescript": {}
@@ -52,7 +60,7 @@
       "semi": ["error", "always"],
       "curly": [2, "multi-line"],
       "comma-dangle": [2, "always-multiline"],
-      "class-methods-use-this": ["error", { "exceptMethods": ["startApp", "componentDidMount", "componentWillUnmount", "render"] }],
+      "class-methods-use-this": ["error", {"enforceForClassFields": false, "exceptMethods": ["startApp", "componentDidMount", "componentWillUnmount", "render"] }],
       "global-require": 0,
       "quote-props": 0,
       "lines-between-class-members": "off",
@@ -109,7 +117,9 @@
       "react/default-props-match-prop-types": 0,
       "react/jsx-indent-props": 0,
       "react/jsx-one-expression-per-line": 0,
+      "react/jsx-no-constructed-context-values": 1,
       "react/static-property-placement": 0,
+      "react/function-component-definition": [2, { "namedComponents": "arrow-function" }],
       "import/prefer-default-export": 0,
       "import/no-unresolved": "error",
       "import/extensions": ["error", "never", { "json": "always" }],
@@ -121,6 +131,7 @@
       "jest/no-disabled-tests": 1,
       "jest/no-focused-tests": 2,
       "jest/no-identical-title": 2,
+      "react/no-unused-class-component-methods": 0,
       "spellcheck/spell-checker": [1, {
         "comments": true,
         "strings": true,
@@ -140,7 +151,7 @@
           "txblob", "tos", "gif", "ic", "asf", "ok", "Sig", "haptic", "Signable", "Unauthorize", "Preauth", "payid", "Biometrics", "Towo", "tz", "xrpscan",
           "xrplorer", "bithomp", "xpring", "xrplns", "Pincode", "Txn", "iap", "Realtime", "datastore", "decrypted", "Tangem", "Sdk", "Secp256k1", "blockchain",
           "Escrowed", "xapp", "Veriff", "Codec", "xapps", "Pressable", "nft", "ott", "Luminance", "HexToRgbA", "Misconfiguration", "kyc", "debounce", "debounced",
-          "nfc", "lsf", "nfts", "Taxon", "fioprotocol", "iou"
+          "nfc", "lsf", "nfts", "Taxon", "fioprotocol", "iou", "dy", "vy", "pb", "nf", "origintype"
         ],
         "skipIfMatch": [
           "http://[^s]*",

@@ -87,7 +87,6 @@ class Account extends Realm.Object {
         const newObjects = newRealm.objects('Account') as Account[];
 
         for (let i = 0; i < newObjects.length; i++) {
-            // set empty destination tag
             newObjects[i].type = AccountTypes.Regular;
         }
     }

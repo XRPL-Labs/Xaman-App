@@ -1,22 +1,25 @@
 import React, { Component } from 'react';
-import { View, Text, Image } from 'react-native';
+import { Image, InteractionManager, Text, View } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
 
-import { TransactionsType } from '@common/libs/ledger/transactions/types';
+import { TransactionTypes } from '@common/libs/ledger/types';
+import { Transactions } from '@common/libs/ledger/transactions/types';
+import { OfferStatus } from '@common/libs/ledger/parser/types';
+
 import { AccountSchema } from '@store/schemas/latest';
 
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
 import { Images } from '@common/helpers/images';
 
-import { NormalizeCurrencyCode, NormalizeAmount } from '@common/utils/amount';
+import { NormalizeAmount, NormalizeCurrencyCode } from '@common/utils/amount';
 import { Truncate } from '@common/utils/string';
 
 import { AppScreens } from '@common/constants';
 
 import Localize from '@locale';
 
-import { TouchableDebounce, Icon, Avatar, AmountText } from '@components/General';
+import { AmountText, Avatar, Icon, TouchableDebounce } from '@components/General';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -24,7 +27,7 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     account: AccountSchema;
-    item: TransactionsType;
+    item: Transactions;
     timestamp?: number;
 }
 
@@ -33,7 +36,6 @@ export interface State {
     address: string;
     kycApproved: boolean;
     tag: number;
-    key: string;
 }
 
 /* Component ==================================================================== */
@@ -43,14 +45,11 @@ class TransactionTemplate extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const recipientDetails = this.getRecipientDetails();
-
         this.state = {
-            name: recipientDetails.name,
-            address: recipientDetails.address,
+            name: undefined,
+            address: undefined,
+            tag: undefined,
             kycApproved: false,
-            tag: recipientDetails.tag,
-            key: recipientDetails.key,
         };
     }
 
@@ -60,18 +59,11 @@ class TransactionTemplate extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { name, key } = this.state;
-        const { item } = this.props;
-
+        // track mounted
         this.mounted = true;
 
-        if (!name) {
-            this.lookUpRecipientName();
-        } else if (key) {
-            item[key] = {
-                name,
-            };
-        }
+        // fetch recipient details
+        InteractionManager.runAfterInteractions(this.fetchRecipientDetails);
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -79,112 +71,67 @@ class TransactionTemplate extends Component<Props, State> {
 
         // force the lookup if timestamp changed
         if (timestamp !== prevProps.timestamp) {
-            this.lookUpRecipientName();
+            this.fetchRecipientDetails();
         }
     }
 
     componentWillUnmount() {
+        // track mounted
         this.mounted = false;
     }
 
-    getRecipientDetails = () => {
+    fetchRecipientDetails = () => {
         const { item, account } = this.props;
 
-        let address;
-        let tag;
-        let key;
+        let address = '';
+        let tag = undefined as number;
 
         switch (item.Type) {
-            case 'Payment':
+            case TransactionTypes.Payment:
                 if (item.Account?.address !== account.address) {
                     address = item.Account.address;
-                    key = 'Account';
                 } else {
                     address = item.Destination.address;
                     tag = item.Destination.tag;
-                    key = 'Destination';
                 }
                 break;
-            case 'AccountDelete':
-                address = item.Account.address;
-                key = 'Account';
-                break;
-            case 'CheckCreate':
+
+            case TransactionTypes.CheckCreate:
                 if (item.Account?.address !== account.address) {
                     address = item.Account.address;
-                    key = 'Account';
                 } else {
                     address = item.Destination.address;
                     tag = item.Destination.tag;
-                    key = 'Destination';
                 }
                 break;
-            case 'CheckCash':
-                address = item.Account.address;
-                key = 'Account';
-                break;
-            case 'CheckCancel':
-                address = item.Account.address;
-                key = 'Account';
-                break;
-            case 'TrustSet':
+            case TransactionTypes.TrustSet:
                 address = item.Issuer;
                 break;
-            case 'EscrowCreate':
+            case TransactionTypes.EscrowCreate:
                 address = item.Destination.address;
                 tag = item.Destination.tag;
-                key = 'Destination';
                 break;
-            case 'EscrowCancel':
+            case TransactionTypes.EscrowCancel:
                 address = item.Owner;
                 break;
-            case 'EscrowFinish':
+            case TransactionTypes.EscrowFinish:
                 address = item.Destination.address;
                 tag = item.Destination.tag;
-                key = 'Destination';
                 break;
-            case 'DepositPreauth':
+            case TransactionTypes.DepositPreauth:
                 address = item.Authorize || item.Unauthorize;
                 break;
-            case 'TicketCreate':
-                address = item.Account.address;
-                key = 'Account';
-                break;
-            case 'PaymentChannelCreate':
+
+            case TransactionTypes.PaymentChannelCreate:
                 if (item.Account?.address !== account.address) {
                     address = item.Account.address;
-                    key = 'Account';
                 } else {
                     address = item.Destination.address;
                     tag = item.Destination.tag;
-                    key = 'Destination';
                 }
                 break;
-            case 'PaymentChannelFund':
-                address = item.Account.address;
-                key = 'Account';
-                break;
-            case 'PaymentChannelClaim':
-                address = item.Account.address;
-                key = 'Account';
-                break;
-            case 'NFTokenMint':
-                address = item.Account.address;
-                key = 'Account';
-                break;
-            case 'NFTokenBurn':
-                address = item.Account.address;
-                key = 'Account';
-                break;
-            case 'NFTokenCreateOffer':
-                address = item.Account.address;
-                key = 'Account';
-                break;
-            case 'NFTokenCancelOffer':
-                address = item.Account.address;
-                key = 'Account';
-                break;
-            case 'NFTokenAcceptOffer':
+
+            case TransactionTypes.NFTokenAcceptOffer:
                 if (item.Account?.address === account.address) {
                     if (item.Offer) {
                         address = item.Offer.Owner;
@@ -193,55 +140,48 @@ class TransactionTemplate extends Component<Props, State> {
                     address = item.Account.address;
                 }
                 break;
+            case TransactionTypes.AccountDelete:
+            case TransactionTypes.AccountSet:
+            case TransactionTypes.SignerListSet:
+            case TransactionTypes.SetRegularKey:
+            case TransactionTypes.OfferCancel:
+            case TransactionTypes.OfferCreate:
+            case TransactionTypes.CheckCash:
+            case TransactionTypes.CheckCancel:
+            case TransactionTypes.TicketCreate:
+            case TransactionTypes.PaymentChannelFund:
+            case TransactionTypes.PaymentChannelClaim:
+            case TransactionTypes.NFTokenMint:
+            case TransactionTypes.NFTokenBurn:
+            case TransactionTypes.NFTokenCreateOffer:
+            case TransactionTypes.NFTokenCancelOffer:
+                address = item.Account.address;
+                break;
             default:
                 break;
         }
-
-        // this this transactions are belong to account
-        if (
-            item.Type === 'AccountSet' ||
-            item.Type === 'SignerListSet' ||
-            item.Type === 'SetRegularKey' ||
-            item.Type === 'OfferCancel' ||
-            item.Type === 'OfferCreate'
-        ) {
-            return {
-                address,
-                tag,
-                name: account.label,
-                key: 'Account',
-            };
-        }
-
-        return {
-            address,
-            tag,
-            name: undefined,
-            key,
-        };
-    };
-
-    lookUpRecipientName = () => {
-        const { address, tag, key } = this.state;
-        const { item } = this.props;
 
         getAccountName(address, tag)
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     if (this.mounted) {
-                        if (key) {
-                            item[key] = {
-                                name: res.name,
-                            };
-                        }
                         this.setState({
+                            address,
+                            tag,
                             name: res.name,
                             kycApproved: res.kycApproved,
                         });
                     }
                 }
             })
-            .catch(() => {});
+            .catch(() => {
+                if (this.mounted) {
+                    this.setState({
+                        address,
+                        tag,
+                    });
+                }
+            });
     };
 
     onPress = () => {
@@ -268,8 +208,8 @@ class TransactionTemplate extends Component<Props, State> {
         let iconColor;
 
         switch (item.Type) {
-            case 'OfferCreate':
-            case 'Payment':
+            case TransactionTypes.OfferCreate:
+            case TransactionTypes.Payment:
                 iconName = 'IconSwitchAccount';
                 break;
             default:
@@ -288,8 +228,8 @@ class TransactionTemplate extends Component<Props, State> {
         const { name, address } = this.state;
         const { item, account } = this.props;
 
-        if (item.Type === 'OfferCreate') {
-            if (item.Executed) {
+        if (item.Type === TransactionTypes.OfferCreate) {
+            if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(item.GetOfferStatus(account.address)) > -1) {
                 const takerGot = item.TakerGot(account.address);
                 const takerPaid = item.TakerPaid(account.address);
 
@@ -302,7 +242,7 @@ class TransactionTemplate extends Component<Props, State> {
             )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
         }
 
-        if (item.Type === 'Payment') {
+        if (item.Type === TransactionTypes.Payment) {
             if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
                 const balanceChanges = item.BalanceChange(account.address);
 
@@ -317,14 +257,14 @@ class TransactionTemplate extends Component<Props, State> {
         if (name) return name;
         if (address) return Truncate(address, 16);
 
-        return Localize.t('global.unknown');
+        return Localize.t('global.loading');
     };
 
     getDescription = () => {
         const { item, account } = this.props;
 
         switch (item.Type) {
-            case 'Payment':
+            case TransactionTypes.Payment:
                 if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
                     const balanceChanges = item.BalanceChange(account.address);
                     if (balanceChanges?.sent && balanceChanges?.received) {
@@ -336,9 +276,12 @@ class TransactionTemplate extends Component<Props, State> {
                     return Localize.t('events.paymentReceived');
                 }
                 return Localize.t('events.paymentSent');
-            case 'TrustSet': {
-                // incoming trustline
+            case TransactionTypes.TrustSet: {
+                // incoming TrustLine
                 if (item.Account.address !== account.address) {
+                    if (item.Limit === 0) {
+                        return Localize.t('events.incomingTrustLineRemoved');
+                    }
                     return Localize.t('events.incomingTrustLineAdded');
                 }
                 const ownerCountChange = item.OwnerCountChange(account.address);
@@ -350,61 +293,67 @@ class TransactionTemplate extends Component<Props, State> {
                 }
                 return Localize.t('events.updatedATrustLine');
             }
-            case 'EscrowCreate':
+            case TransactionTypes.EscrowCreate:
                 return Localize.t('events.createEscrow');
-            case 'EscrowFinish':
+            case TransactionTypes.EscrowFinish:
                 return Localize.t('events.finishEscrow');
-            case 'EscrowCancel':
+            case TransactionTypes.EscrowCancel:
                 return Localize.t('events.cancelEscrow');
-            case 'AccountSet':
+            case TransactionTypes.AccountSet:
+                if (item.isNoOperation() && item.isCancelTicket()) {
+                    return Localize.t('events.cancelTicket');
+                }
                 return Localize.t('events.accountSettings');
-            case 'SignerListSet':
+            case TransactionTypes.SignerListSet:
                 return Localize.t('events.setSignerList');
-            case 'OfferCreate':
-                if (item.Executed) {
+            case TransactionTypes.OfferCreate:
+                if (
+                    [OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(item.GetOfferStatus(account.address)) >
+                    -1
+                ) {
                     return Localize.t('events.exchangedAssets');
                 }
                 return Localize.t('events.createOffer');
-            case 'OfferCancel':
+            case TransactionTypes.OfferCancel:
                 return Localize.t('events.cancelOffer');
-            case 'AccountDelete':
+            case TransactionTypes.AccountDelete:
                 return Localize.t('events.deleteAccount');
-            case 'SetRegularKey':
+            case TransactionTypes.SetRegularKey:
                 if (item.RegularKey) {
                     return Localize.t('events.setRegularKey');
                 }
                 return Localize.t('events.removeRegularKey');
-            case 'DepositPreauth':
+            case TransactionTypes.DepositPreauth:
                 if (item.Authorize) {
                     return Localize.t('events.authorizeDeposit');
                 }
                 return Localize.t('events.unauthorizeDeposit');
-            case 'CheckCreate':
+            case TransactionTypes.CheckCreate:
                 return Localize.t('events.createCheck');
-            case 'CheckCash':
+            case TransactionTypes.CheckCash:
                 return Localize.t('events.cashCheck');
-            case 'CheckCancel':
+            case TransactionTypes.CheckCancel:
                 return Localize.t('events.cancelCheck');
-            case 'TicketCreate':
+            case TransactionTypes.TicketCreate:
                 return Localize.t('events.createTicket');
-            case 'PaymentChannelCreate':
+            case TransactionTypes.PaymentChannelCreate:
                 return Localize.t('events.createPaymentChannel');
-            case 'PaymentChannelClaim':
+            case TransactionTypes.PaymentChannelClaim:
                 return Localize.t('events.claimPaymentChannel');
-            case 'PaymentChannelFund':
+            case TransactionTypes.PaymentChannelFund:
                 return Localize.t('events.fundPaymentChannel');
-            case 'NFTokenMint':
+            case TransactionTypes.NFTokenMint:
                 return Localize.t('events.mintNFT');
-            case 'NFTokenBurn':
+            case TransactionTypes.NFTokenBurn:
                 return Localize.t('events.burnNFT');
-            case 'NFTokenCreateOffer':
+            case TransactionTypes.NFTokenCreateOffer:
                 return Localize.t('events.createNFTOffer');
-            case 'NFTokenCancelOffer':
+            case TransactionTypes.NFTokenCancelOffer:
                 return Localize.t('events.cancelNFTOffer');
-            case 'NFTokenAcceptOffer':
+            case TransactionTypes.NFTokenAcceptOffer:
                 return Localize.t('events.acceptNFTOffer');
             default:
-                return item.Type;
+                return 'Unsupported transaction';
         }
     };
 
@@ -450,7 +399,7 @@ class TransactionTemplate extends Component<Props, State> {
 
         let incoming = item.Account?.address !== account.address;
 
-        if (item.Type === 'Payment') {
+        if (item.Type === TransactionTypes.Payment) {
             const balanceChanges = item.BalanceChange(account.address);
             const amount = item.DeliveredAmount || item.Amount;
 
@@ -509,7 +458,7 @@ class TransactionTemplate extends Component<Props, State> {
             );
         }
 
-        if (item.Type === 'AccountDelete') {
+        if (item.Type === TransactionTypes.AccountDelete) {
             return (
                 <AmountText
                     value={item.Amount.value}
@@ -523,7 +472,7 @@ class TransactionTemplate extends Component<Props, State> {
             );
         }
 
-        if (item.Type === 'EscrowCreate') {
+        if (item.Type === TransactionTypes.EscrowCreate) {
             return (
                 <AmountText
                     value={item.Amount.value}
@@ -537,7 +486,7 @@ class TransactionTemplate extends Component<Props, State> {
             );
         }
 
-        if (item.Type === 'EscrowFinish') {
+        if (item.Type === TransactionTypes.EscrowFinish) {
             return (
                 <AmountText
                     value={item.Amount.value}
@@ -551,7 +500,7 @@ class TransactionTemplate extends Component<Props, State> {
             );
         }
 
-        if (item.Type === 'CheckCreate') {
+        if (item.Type === TransactionTypes.CheckCreate) {
             return (
                 <AmountText
                     value={item.SendMax.value}
@@ -564,7 +513,7 @@ class TransactionTemplate extends Component<Props, State> {
             );
         }
 
-        if (item.Type === 'CheckCash') {
+        if (item.Type === TransactionTypes.CheckCash) {
             const amount = item.Amount || item.DeliverMin;
             incoming = item.Account.address === account.address;
             return (
@@ -580,8 +529,8 @@ class TransactionTemplate extends Component<Props, State> {
             );
         }
 
-        if (item.Type === 'OfferCreate') {
-            if (item.Executed) {
+        if (item.Type === TransactionTypes.OfferCreate) {
+            if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(item.GetOfferStatus(account.address)) > -1) {
                 const takerPaid = item.TakerPaid(account.address);
 
                 return (
@@ -627,7 +576,7 @@ class TransactionTemplate extends Component<Props, State> {
             }
         }
 
-        if (item.Type === 'NFTokenAcceptOffer') {
+        if (item.Type === TransactionTypes.NFTokenAcceptOffer) {
             const balanceChanges = item.BalanceChange(account.address);
             if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
                 const amount = balanceChanges?.received || balanceChanges?.sent;

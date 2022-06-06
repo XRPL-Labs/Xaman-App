@@ -4,29 +4,31 @@
  */
 import BigNumber from 'bignumber.js';
 import moment from 'moment-timezone';
-import { has, find, map, isEmpty, assign, startsWith } from 'lodash';
+import { has, map, isEmpty, assign, startsWith } from 'lodash';
 
 import { CoreSchema } from '@store/schemas/latest';
 import CoreRepository from '@store/repositories/core';
 
-import { Amount } from '@common/libs/ledger/parser/common';
-
 import {
     LedgerMarker,
-    LedgerTrustline,
     SubmitResultType,
     VerifyResultType,
     AccountTxResponse,
-    AccountLinesResponse,
     GatewayBalancesResponse,
     AccountInfoResponse,
     AccountObjectsResponse,
     FeeResponse,
+    LedgerTrustline,
+    LedgerEntryResponse,
+    RippleStateLedgerEntry,
+    LedgerEntriesTypes,
 } from '@common/libs/ledger/types';
 
-import { LedgerEntriesTypes } from '@common/libs/ledger/objects/types';
-
 import { Issuer } from '@common/libs/ledger/parser/types';
+import { Amount } from '@common/libs/ledger/parser/common';
+import { RippleStateToTrustLine } from '@common/libs/ledger/parser/entry';
+
+import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
 
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
@@ -60,9 +62,9 @@ class LedgerService {
                 // on socket service connect set ledger listener if not set
                 SocketService.on('connect', this.setLedgerListener);
 
-                return resolve();
+                resolve();
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
     };
@@ -98,14 +100,17 @@ class LedgerService {
     };
 
     /**
-     * Get ledger info
+     * Get ledger entry
      */
-    getLedgerEntry = (index: string): Promise<any> => {
-        return SocketService.send({
+    getLedgerEntry = (options?: any): Promise<any> => {
+        const request = {
             command: 'ledger_entry',
-            index,
             ledger_index: 'validated',
-        });
+        };
+        if (typeof options === 'object') {
+            Object.assign(request, options);
+        }
+        return SocketService.send(request);
     };
 
     /**
@@ -153,63 +158,6 @@ class LedgerService {
             Object.assign(request, options);
         }
         return SocketService.send(request);
-    };
-
-    /**
-     * Get account trust lines
-     */
-    getAccountLines = (account: string, options?: any): Promise<AccountLinesResponse> => {
-        const request = {
-            command: 'account_lines',
-            account,
-        };
-        if (typeof options === 'object') {
-            Object.assign(request, options);
-        }
-        return SocketService.send(request);
-    };
-
-    /**
-     * Get account line base on provided peer
-     * Note: should look for marker as it can be not in first page
-     */
-    getAccountLine = (
-        account: string,
-        peer: Issuer,
-        marker?: string,
-        combined = [] as LedgerTrustline[],
-    ): Promise<LedgerTrustline> => {
-        return this.getAccountLines(account, { peer: peer.issuer, marker })
-            .then((resp) => {
-                const { lines, marker: _marker } = resp;
-                if (_marker && _marker !== marker) {
-                    return this.getAccountLine(account, peer, _marker, lines.concat(combined));
-                }
-                return find(lines.concat(combined), { account: peer.issuer, currency: peer.currency });
-            })
-            .catch(() => {
-                return undefined;
-            });
-    };
-
-    /**
-     * Get account transfer rate on percent format
-     */
-    getAccountTransferRate = (account: string): Promise<number> => {
-        return new Promise((resolve, reject) => {
-            return this.getAccountInfo(account)
-                .then((issuerAccountInfo: any) => {
-                    if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
-                        const { TransferRate } = issuerAccountInfo.account_data;
-                        const transferFee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
-                        return resolve(transferFee);
-                    }
-                    return resolve(0);
-                })
-                .catch(() => {
-                    return reject(new Error('Unable to fetch account transfer rate!'));
-                });
-        });
     };
 
     /**
@@ -280,58 +228,6 @@ class LedgerService {
     };
 
     /**
-     * get obligations for account
-     */
-    getAccountObligations = (account: string) => {
-        return new Promise((resolve) => {
-            this.getGatewayBalances(account)
-                .then((accountObligations: any) => {
-                    const obligationsLines = [] as any[];
-
-                    const { obligations } = accountObligations;
-
-                    if (isEmpty(obligations)) return resolve([]);
-
-                    map(obligations, (b, c) => {
-                        // add to trustLines list
-                        obligationsLines.push({
-                            account,
-                            currency: c,
-                            balance: new Amount(-b, false).toNumber(),
-                            limit: 0,
-                            limit_peer: 0,
-                            transfer_rate: 0,
-                            obligation: true,
-                        });
-                    });
-
-                    return resolve(obligationsLines);
-                })
-                .catch(() => {
-                    return resolve([]);
-                });
-        });
-    };
-
-    /**
-     * Get account blocker objects
-     * Note: should look for marker as it can be not in first page
-     */
-    getAccountBlockerObjects = (
-        account: string,
-        marker?: string,
-        combined = [] as LedgerEntriesTypes[],
-    ): Promise<LedgerEntriesTypes[]> => {
-        return this.getAccountObjects(account, { deletion_blockers_only: true, marker }).then((resp) => {
-            const { account_objects, marker: _marker } = resp;
-            if (_marker && _marker !== marker) {
-                return this.getAccountBlockerObjects(account, _marker, account_objects.concat(combined));
-            }
-            return account_objects.concat(combined);
-        });
-    };
-
-    /**
      * Get available fees on network base on the load
      * NOTE: values are in drop
      */
@@ -395,7 +291,7 @@ class LedgerService {
                     new BigNumber(100000),
                 ).toNumber();
 
-                return resolve({
+                resolve({
                     availableFees: [
                         {
                             type: 'low',
@@ -416,8 +312,210 @@ class LedgerService {
                 });
             } catch (e) {
                 this.logger.warn('Unable to calculate available network fees:', e);
-                return reject(new Error('Unable to calculate available network fees!'));
+                reject(new Error('Unable to calculate available network fees!'));
             }
+        });
+    };
+
+    /**
+     * Get account obligation lines
+     */
+    getAccountObligations = (account: string): Promise<LedgerTrustline[]> => {
+        return new Promise((resolve) => {
+            this.getGatewayBalances(account)
+                .then((accountObligations: any) => {
+                    const { obligations } = accountObligations;
+
+                    if (isEmpty(obligations)) return resolve([]);
+
+                    const obligationsLines = [] as LedgerTrustline[];
+
+                    map(obligations, (b, c) => {
+                        obligationsLines.push({
+                            account,
+                            currency: c,
+                            balance: new Amount(-b, false).toString(false),
+                            limit: '0',
+                            limit_peer: '0',
+                            quality_in: 0,
+                            quality_out: 0,
+                            obligation: true,
+                        });
+                    });
+
+                    return resolve(obligationsLines);
+                })
+                .catch(() => {
+                    return resolve([]);
+                });
+        });
+    };
+
+    /**
+     * Get account transfer rate on percent format
+     */
+    getAccountTransferRate = (account: string): Promise<number> => {
+        return new Promise((resolve, reject) => {
+            this.getAccountInfo(account)
+                .then((issuerAccountInfo: any) => {
+                    if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
+                        const { TransferRate } = issuerAccountInfo.account_data;
+                        const transferFee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
+                        resolve(transferFee);
+                        return;
+                    }
+                    resolve(0);
+                })
+                .catch(() => {
+                    reject(new Error('Unable to fetch account transfer rate!'));
+                });
+        });
+    };
+
+    /**
+     * Get account available XRP balance
+     */
+    getAccountAvailableBalance = (account: string): Promise<number> => {
+        return new Promise((resolve, reject) => {
+            this.getAccountInfo(account)
+                .then((accountInfo) => {
+                    if (
+                        !has(accountInfo, 'error') &&
+                        has(accountInfo, ['account_data', 'Balance']) &&
+                        has(accountInfo, ['account_data', 'OwnerCount'])
+                    ) {
+                        const { Balance, OwnerCount } = accountInfo.account_data;
+                        const { BaseReserve, OwnerReserve } = this.getNetworkReserve();
+
+                        const balance = new BigNumber(Balance);
+
+                        if (balance.isZero()) {
+                            resolve(0);
+                            return;
+                        }
+
+                        const availableBalance = balance
+                            .dividedBy(1000000.0)
+                            .minus(BaseReserve)
+                            .minus(Number(OwnerCount) * OwnerReserve)
+                            .decimalPlaces(8)
+                            .toNumber();
+
+                        if (availableBalance < 0) {
+                            resolve(0);
+                        }
+
+                        resolve(availableBalance);
+                    } else {
+                        reject(new Error('Unable to fetch account balance'));
+                    }
+                })
+                .catch(() => {
+                    reject(new Error('Unable to fetch account balance'));
+                });
+        });
+    };
+
+    /**
+     * Get account last sequence
+     */
+    getAccountSequence = (account: string): Promise<number> => {
+        return new Promise((resolve, reject) => {
+            this.getAccountInfo(account)
+                .then((accountInfo) => {
+                    if (!has(accountInfo, 'error') && has(accountInfo, ['account_data', 'Sequence'])) {
+                        const { account_data } = accountInfo;
+                        resolve(Number(account_data.Sequence));
+                    } else {
+                        reject(new Error('Unable to fetch account sequence'));
+                    }
+                })
+                .catch(() => {
+                    reject(new Error('Unable to fetch account sequence'));
+                });
+        });
+    };
+
+    /**
+     * Get account blocker objects
+     * Note: should look for marker as it can be not in first page
+     */
+    getAccountBlockerObjects = (
+        account: string,
+        marker?: string,
+        combined = [] as LedgerEntriesTypes[],
+    ): Promise<LedgerEntriesTypes[]> => {
+        return this.getAccountObjects(account, { deletion_blockers_only: true, marker }).then((resp) => {
+            const { account_objects, marker: _marker } = resp;
+            if (_marker && _marker !== marker) {
+                return this.getAccountBlockerObjects(account, _marker, account_objects.concat(combined));
+            }
+            return account_objects.concat(combined);
+        });
+    };
+
+    /**
+     * Get account line base on provided peer
+     */
+    getFilteredAccountLine = (account: string, peer: Issuer): Promise<LedgerTrustline> => {
+        return this.getLedgerEntry({
+            ripple_state: { accounts: [account, peer.issuer], currency: peer.currency },
+        })
+            .then((resp: LedgerEntryResponse) => {
+                const { node } = resp as {
+                    node: RippleStateLedgerEntry;
+                };
+
+                // return undefined if in default state or no ripple state found
+                if (
+                    !node ||
+                    !(
+                        node.Flags &
+                        LedgerObjectFlags.RippleState[
+                            node.HighLimit.issuer === account ? 'lsfHighReserve' : 'lsfLowReserve'
+                        ]
+                    )
+                ) {
+                    return undefined;
+                }
+
+                return RippleStateToTrustLine(node, account);
+            })
+            .catch(() => {
+                return undefined;
+            });
+    };
+
+    /**
+     * returns all outgoing account lines
+     * NOTE: we use account_objects to get account lines as it's more accurate and efficient
+     */
+    getFilteredAccountLines = async (
+        account: string,
+        marker?: string,
+        combined = [] as LedgerTrustline[],
+    ): Promise<LedgerTrustline[]> => {
+        return this.getAccountObjects(account, { marker, type: 'state' }).then((resp) => {
+            const { account_objects, marker: _marker } = resp as {
+                account_objects: RippleStateLedgerEntry[];
+                marker?: string;
+            };
+            // filter lines that are not in default state
+            const notInDefaultState = account_objects.filter((node) => {
+                return (
+                    node.Flags &
+                    LedgerObjectFlags.RippleState[
+                        node.HighLimit.issuer === account ? 'lsfHighReserve' : 'lsfLowReserve'
+                    ]
+                );
+            });
+            // convert RippleState entry to Ledger trustline format
+            const accountLinesFormatted = notInDefaultState.map((node) => RippleStateToTrustLine(node, account));
+
+            if (_marker && _marker !== marker) {
+                return this.getFilteredAccountLines(account, _marker, accountLinesFormatted.concat(combined));
+            }
+            return accountLinesFormatted.concat(combined);
         });
     };
 

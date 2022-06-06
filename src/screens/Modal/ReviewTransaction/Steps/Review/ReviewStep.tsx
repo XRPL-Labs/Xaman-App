@@ -2,9 +2,9 @@
  * Review Step
  */
 
-import { isEmpty, get, find, filter } from 'lodash';
+import { filter, find, first, get, isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { ImageBackground, View, Text } from 'react-native';
+import { View, ImageBackground, Text } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -16,7 +16,7 @@ import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
 // components
-import { Button, SwipeButton, Spacer, KeyboardAwareScrollView, Avatar } from '@components/General';
+import { Avatar, Button, KeyboardAwareScrollView, Spacer, SwipeButton } from '@components/General';
 import { AccountPicker } from '@components/Modules';
 
 import Localize from '@locale';
@@ -30,6 +30,7 @@ import styles from './styles';
 import * as Templates from './Templates';
 
 import { StepsContext } from '../../Context';
+
 /* types ==================================================================== */
 export interface Props {}
 
@@ -60,65 +61,87 @@ class ReviewStep extends Component<Props, State> {
     setAccounts = () => {
         const { transaction, payload, setSource, setError } = this.context;
 
-        // get available account base on transaction type
-
+        // get available accounts for signing
         let availableAccounts = [] as AccountSchema[];
 
-        // only accounts with full access
         if (payload.isMultiSign()) {
+            // only accounts with full access
             availableAccounts = AccountRepository.getFullAccessAccounts();
-        } else if (payload.payload.tx_type === 'SignIn') {
+        } else if (payload.isSignIn()) {
+            // account's that can sign the transaction
             availableAccounts = AccountRepository.getSignableAccounts();
         } else {
+            // account's that can sign the transaction and also activated
             availableAccounts = AccountRepository.getSpendableAccounts(true);
         }
 
         // if no account for signing is available then just return
         if (isEmpty(availableAccounts)) {
+            this.setState({
+                accounts: [],
+            });
             return;
         }
 
         // choose preferred account for sign
         let preferredAccount = undefined as AccountSchema;
+        let source = undefined as AccountSchema;
 
-        // if any account set from payload
+        // check for enforced signer accounts
+        const forcedSigners = payload.getSigners();
+
+        if (forcedSigners) {
+            // filter available accounts base on forced signers
+            availableAccounts = filter(availableAccounts, (account) => forcedSigners.includes(account.address));
+
+            // no available account for signing base on forced signers
+            if (isEmpty(availableAccounts)) {
+                setError(
+                    Localize.t('payload.forcedSignersAccountsDoesNotExist', { accounts: forcedSigners.join('\n') }),
+                );
+                return;
+            }
+        }
+
+        // if any account set from payload, set as preferred account
         if (transaction.Account) {
             preferredAccount = find(availableAccounts, { address: transaction.Account.address });
-
-            // if CheckCash check if account is imported in the xumm
-            if (transaction.Type === 'CheckCash') {
-                // cannot sign this tx as account is not imported in the XUMM
-                if (!preferredAccount) {
-                    setError(Localize.t('payload.checkCanOnlyCashByCheckDestination'));
-                    return;
-                }
-                // override available Accounts
-                availableAccounts = [preferredAccount];
-            }
         }
 
-        // if the preferred account is not set in the payload
+        // remove hidden accounts but keep preferred account even if hidden
+        // ignore for forced signers
+        if (!forcedSigners) {
+            availableAccounts = filter(
+                availableAccounts,
+                (account) => !account.hidden || account.address === preferredAccount?.address,
+            );
+        }
+
+        // after removing the hidden accounts
+        // return if empty
+        if (isEmpty(availableAccounts)) {
+            this.setState({
+                accounts: [],
+            });
+            return;
+        }
+
+        // if there is no preferred account base on transaction.Account
         // choose default || first available account
-        if (!preferredAccount) {
-            preferredAccount = find(availableAccounts, { default: true }) || availableAccounts[0];
+        // this will guarantee source to be set
+        if (preferredAccount) {
+            source = preferredAccount;
+        } else {
+            source = find(availableAccounts, { default: true }) || first(availableAccounts);
         }
 
-        // set the preffered account to the tx
-        if (preferredAccount && !transaction.Account) {
-            // ignore if it's multisign
-            if (!payload.isMultiSign()) {
-                transaction.Account = { address: preferredAccount.address };
-            }
-        }
+        // set the source
+        setSource(source);
 
-        // remove hidden accounts but keep preffered account even if hidden
-        availableAccounts = filter(availableAccounts, (a) => !a.hidden || a.address === preferredAccount.address);
-
+        // set available accounts
         this.setState({
             accounts: availableAccounts,
         });
-
-        setSource(preferredAccount);
     };
 
     toggleCanScroll = () => {
@@ -147,20 +170,21 @@ class ReviewStep extends Component<Props, State> {
     };
 
     renderDetails = () => {
-        const { payload, transaction } = this.context;
-
-        const Template = get(Templates, payload.payload.tx_type, View);
-        const Global = get(Templates, 'Global');
+        const { payload, transaction, source } = this.context;
 
         // if tx is SignIn ignore to show details
-        if (payload.payload.tx_type === 'SignIn') {
+        if (payload.isSignIn()) {
             return null;
         }
+
+        const Template = get(Templates, payload.getTransactionType(), View);
+        const Global = get(Templates, 'Global');
 
         // render transaction details and global variables
         return (
             <>
                 <Template
+                    source={source}
                     transaction={transaction}
                     canOverride={!payload.isMultiSign()}
                     forceRender={this.forceRender}
@@ -170,76 +194,66 @@ class ReviewStep extends Component<Props, State> {
         );
     };
 
-    renderAccountItem = (account: AccountSchema, selected: boolean) => {
-        return (
-            <View>
-                <Text style={[AppStyles.pbold, selected ? AppStyles.colorBlue : AppStyles.colorBlack]}>
-                    {account.label}
-                </Text>
-                <Text
-                    adjustsFontSizeToFit
-                    numberOfLines={1}
-                    style={[AppStyles.monoSubText, selected ? AppStyles.colorBlue : AppStyles.colorBlack]}
-                >
-                    {account.address}
-                </Text>
-            </View>
-        );
-    };
-
     renderEmptyOverlay = () => {
         const { onClose } = this.context;
 
         return (
-            <View style={styles.blurView}>
-                <View style={styles.absolute}>
-                    <View style={[styles.headerContainer]}>
-                        <View style={[AppStyles.row]}>
-                            <View style={[AppStyles.flex1, AppStyles.leftAligned]}>
-                                <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>
-                                    {Localize.t('global.reviewTransaction')}
-                                </Text>
-                            </View>
-                            <View style={[AppStyles.rightAligned]}>
-                                <Button
-                                    contrast
-                                    testID="close-button"
-                                    numberOfLines={1}
-                                    roundedSmall
-                                    label={Localize.t('global.close')}
-                                    onPress={onClose}
-                                />
+            <ImageBackground
+                testID="review-transaction-modal"
+                source={StyleService.getImage('BackgroundPattern')}
+                imageStyle={styles.xummAppBackground}
+                style={[styles.container]}
+            >
+                <View style={styles.blurView}>
+                    <View style={styles.absolute}>
+                        <View style={[styles.headerContainer]}>
+                            <View style={[AppStyles.row]}>
+                                <View style={[AppStyles.flex1, AppStyles.leftAligned]}>
+                                    <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>
+                                        {Localize.t('global.reviewTransaction')}
+                                    </Text>
+                                </View>
+                                <View style={[AppStyles.rightAligned]}>
+                                    <Button
+                                        contrast
+                                        testID="close-button"
+                                        numberOfLines={1}
+                                        roundedSmall
+                                        label={Localize.t('global.close')}
+                                        onPress={onClose}
+                                    />
+                                </View>
                             </View>
                         </View>
-                    </View>
-                    <View
-                        style={[
-                            AppStyles.flex1,
-                            AppStyles.centerContent,
-                            AppStyles.centerAligned,
-                            AppStyles.paddingSml,
-                        ]}
-                    >
-                        <Text style={AppStyles.h5}>{Localize.t('global.noAccountConfigured')}</Text>
-                        <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                            {Localize.t('global.pleaseAddAccountToSignTheTransaction')}
-                        </Text>
-                        <Spacer size={20} />
-                        <Button
-                            testID="add-account-button"
-                            label={Localize.t('home.addAccount')}
-                            icon="IconPlus"
-                            iconStyle={[AppStyles.imgColorWhite]}
-                            rounded
-                            onPress={async () => {
-                                await Navigator.dismissModal();
-                                Navigator.push(AppScreens.Account.Add);
-                            }}
-                        />
-                        <Spacer size={40} />
+                        <View
+                            style={[
+                                AppStyles.flex1,
+                                AppStyles.centerContent,
+                                AppStyles.centerAligned,
+                                AppStyles.paddingSml,
+                            ]}
+                        >
+                            <Text style={AppStyles.h5}>{Localize.t('global.noAccountConfigured')}</Text>
+                            <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
+                                {Localize.t('global.pleaseAddAccountToSignTheTransaction')}
+                            </Text>
+                            <Spacer size={20} />
+                            <Button
+                                testID="add-account-button"
+                                label={Localize.t('home.addAccount')}
+                                icon="IconPlus"
+                                iconStyle={[AppStyles.imgColorWhite]}
+                                rounded
+                                onPress={async () => {
+                                    await Navigator.dismissModal();
+                                    Navigator.push(AppScreens.Account.Add);
+                                }}
+                            />
+                            <Spacer size={40} />
+                        </View>
                     </View>
                 </View>
-            </View>
+            </ImageBackground>
         );
     };
 
@@ -249,15 +263,23 @@ class ReviewStep extends Component<Props, State> {
         const { payload, source, isValidating, isPreparing, setSource, onAccept, onClose, getTransactionLabel } =
             this.context;
 
+        // no account is available for signing
+        if (Array.isArray(accounts) && accounts.length === 0) {
+            return this.renderEmptyOverlay();
+        }
+
+        // waiting for accounts to be initiated
+        if (typeof accounts === 'undefined' || !source) {
+            return null;
+        }
+
         return (
             <ImageBackground
                 testID="review-transaction-modal"
                 source={StyleService.getImage('BackgroundPattern')}
                 imageStyle={styles.xummAppBackground}
-                style={[styles.container]}
+                style={styles.container}
             >
-                {/* render overlay if there is no account */}
-                {isEmpty(accounts) && this.renderEmptyOverlay()}
                 {/* header */}
                 <View style={[styles.headerContainer]}>
                     <View style={[AppStyles.row]}>
@@ -287,14 +309,14 @@ class ReviewStep extends Component<Props, State> {
                     <View style={[AppStyles.centerContent]}>
                         <View style={[AppStyles.row, AppStyles.paddingSml]}>
                             <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
-                                <Avatar size={60} border source={{ uri: payload.application.icon_url }} />
+                                <Avatar size={60} border source={{ uri: payload.getApplicationIcon() }} />
 
-                                <Text style={[styles.appTitle]}>{payload.application.name}</Text>
+                                <Text style={[styles.appTitle]}>{payload.getApplicationName()}</Text>
 
-                                {!!payload.meta.custom_instruction && (
+                                {!!payload.getCustomInstruction() && (
                                     <>
                                         <Text style={[styles.descriptionLabel]}>{Localize.t('global.details')}</Text>
-                                        <Text style={[styles.instructionText]}>{payload.meta.custom_instruction}</Text>
+                                        <Text style={[styles.instructionText]}>{payload.getCustomInstruction()}</Text>
                                     </>
                                 )}
 
@@ -310,7 +332,7 @@ class ReviewStep extends Component<Props, State> {
                         <View style={[AppStyles.paddingHorizontalSml]}>
                             <View style={styles.rowLabel}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
-                                    {payload.payload.tx_type === 'SignIn' || payload.meta.multisign
+                                    {payload.isSignIn() || payload.isMultiSign()
                                         ? Localize.t('global.signAs')
                                         : Localize.t('global.signWith')}
                                 </Text>

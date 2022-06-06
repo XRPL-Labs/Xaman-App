@@ -3,18 +3,19 @@
  */
 import { filter, isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, Alert, Keyboard } from 'react-native';
+import { View, Text, Alert, Keyboard, Platform, Share } from 'react-native';
 
 import { StringType } from 'xumm-string-decode';
 import * as AccountLib from 'xrpl-accountlib';
-import { Decode } from 'xrpl-tagged-address-codec';
+import { xAddressToClassicAddress } from 'ripple-address-codec';
+
+import { StyleService } from '@services';
 
 import { NormalizeDestination } from '@common/utils/codec';
 import { getAccountName, getPayIdInfo } from '@common/helpers/resolver';
-import { Toast, Prompt } from '@common/helpers/interface';
+import { Toast, Prompt, ActionSheet } from '@common/helpers/interface';
 
 import { Navigator } from '@common/helpers/navigator';
-
 import { AppScreens } from '@common/constants';
 
 import { ContactRepository } from '@store/repositories';
@@ -197,10 +198,10 @@ class EditContactView extends Component<Props, State> {
         // decode if it's x address
         if (address && address.startsWith('X')) {
             try {
-                const decoded = Decode(address);
+                const decoded = xAddressToClassicAddress(address);
                 if (decoded) {
                     this.setState({
-                        address: decoded.account,
+                        address: decoded.classicAddress,
                         tag: decoded.tag && decoded.tag.toString(),
                         xAddress: address,
                     });
@@ -213,6 +214,40 @@ class EditContactView extends Component<Props, State> {
                 address,
             });
         }
+    };
+
+    shareContactAddress = () => {
+        const { name, address, tag } = this.state;
+
+        Share.share({
+            title: name,
+            message: tag ? `${address}:${tag}` : `${address}`,
+            url: undefined,
+        }).catch(() => {});
+    };
+
+    showActionMenu = () => {
+        const buttons = [Localize.t('global.share'), Localize.t('global.remove')];
+        if (Platform.OS === 'ios') {
+            buttons.push(Localize.t('global.cancel'));
+        }
+
+        ActionSheet(
+            {
+                options: buttons,
+                destructiveButtonIndex: 1,
+                cancelButtonIndex: 2,
+            },
+            (buttonIndex: number) => {
+                if (buttonIndex === 0) {
+                    this.shareContactAddress();
+                }
+                if (buttonIndex === 1) {
+                    this.deleteContact();
+                }
+            },
+            StyleService.isDarkMode() ? 'dark' : 'light',
+        );
     };
 
     render() {
@@ -232,7 +267,7 @@ class EditContactView extends Component<Props, State> {
                         },
                     }}
                     centerComponent={{ text: Localize.t('settings.editContact') }}
-                    rightComponent={{ iconSize: 25, icon: 'IconTrash', onPress: this.deleteContact }}
+                    rightComponent={{ icon: 'IconMoreHorizontal', onPress: this.showActionMenu }}
                 />
 
                 <KeyboardAwareScrollView style={[AppStyles.flex1, AppStyles.paddingSml]}>

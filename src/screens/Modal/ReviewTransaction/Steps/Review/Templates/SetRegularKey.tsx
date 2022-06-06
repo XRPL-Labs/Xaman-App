@@ -2,7 +2,7 @@ import isEmpty from 'lodash/isEmpty';
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
-import { EscrowFinish } from '@common/libs/ledger/transactions';
+import { SetRegularKey } from '@common/libs/ledger/transactions';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { RecipientElement } from '@components/Modules';
@@ -14,7 +14,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    transaction: EscrowFinish;
+    transaction: SetRegularKey;
 }
 
 export interface State {

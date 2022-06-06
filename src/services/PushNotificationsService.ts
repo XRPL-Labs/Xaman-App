@@ -20,6 +20,8 @@ import { Payload, PayloadOrigin } from '@common/libs/payload';
 import LoggerService from '@services/LoggerService';
 import NavigationService, { ComponentTypes } from '@services/NavigationService';
 
+import { StringTypeCheck } from '@common/utils/string';
+
 import Localize from '@locale';
 
 /* Constants  ==================================================================== */
@@ -53,20 +55,20 @@ class PushNotificationsService extends EventEmitter {
     initialize = () => {
         return new Promise<void>((resolve, reject) => {
             try {
-                return this.checkPermission()
+                this.checkPermission()
                     .then((hasPermission: boolean) => {
                         if (hasPermission) {
                             this.onPermissionGranted();
                         } else {
                             this.logger.warn('Push don"t have the right permission or unable to get FCM token');
                         }
-                        return resolve();
+                        resolve();
                     })
                     .catch((e) => {
-                        return reject(e);
+                        reject(e);
                     });
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
     };
@@ -212,7 +214,10 @@ class PushNotificationsService extends EventEmitter {
     handleSingRequest = async (notification: any) => {
         const payloadUUID = get(notification, ['data', 'payload']);
 
-        if (!payloadUUID) return;
+        // validate if valid payload UUID
+        if (!StringTypeCheck.isValidUUID(payloadUUID)) {
+            return;
+        }
 
         await Payload.from(payloadUUID, PayloadOrigin.PUSH_NOTIFICATION)
             .then((payload) => {
@@ -271,7 +276,9 @@ class PushNotificationsService extends EventEmitter {
         const address = get(notification, ['data', 'account']);
 
         // validate inputs
-        if (!utils.isValidAddress(address) || !new RegExp('^[A-F0-9]{64}$', 'i').test(hash)) return;
+        if (!utils.isValidAddress(address) || !StringTypeCheck.isValidHash(hash)) {
+            return;
+        }
 
         // check if account exist in xumm
         const account = AccountRepository.findOne({ address });

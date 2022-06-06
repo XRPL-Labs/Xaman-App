@@ -115,10 +115,10 @@ class RequestTemplate extends Component<Props, State> {
         return (
             <TouchableDebounce onPress={this.onPress} activeOpacity={0.6} style={styles.container}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                    <Avatar border source={{ uri: item.application.icon_url }} />
+                    <Avatar border source={{ uri: item.getApplicationIcon() }} />
                 </View>
                 <View style={[AppStyles.flex5, AppStyles.centerContent]}>
-                    <Text style={[styles.label]}>{item.application.name}</Text>
+                    <Text style={[styles.label]}>{item.getApplicationName()}</Text>
                     <Text style={[styles.description]}>{this.getDescription()}</Text>
                 </View>
             </TouchableDebounce>

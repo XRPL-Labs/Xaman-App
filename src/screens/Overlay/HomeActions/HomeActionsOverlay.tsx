@@ -16,7 +16,8 @@ import { BackendService, StyleService } from '@services';
 import { AppScreens } from '@common/constants';
 
 // components
-import { TouchableDebounce, Button, Spacer, LoadingIndicator, ActionPanel } from '@components/General';
+import { Button, ActionPanel } from '@components/General';
+import { XAppList } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -29,15 +30,16 @@ export interface Props {}
 
 export interface State {
     account: AccountSchema;
-    isLoading: boolean;
     apps: any;
+    featured: any;
 }
 
 /* Component ==================================================================== */
 class HomeActionsOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.HomeActions;
 
-    private actionPanel: ActionPanel;
+    private actionPanel: React.RefObject<ActionPanel>;
+    private mounted: boolean;
 
     static options() {
         return {
@@ -56,29 +58,44 @@ class HomeActionsOverlay extends Component<Props, State> {
 
         this.state = {
             account: AccountRepository.getDefaultAccount(),
-            isLoading: true,
-            apps: [],
+            apps: undefined,
+            featured: undefined,
         };
+
+        this.actionPanel = React.createRef();
     }
 
     componentDidMount() {
+        // keep track of component mounted statue
+        this.mounted = true;
+
+        // fetch the apps short list
         InteractionManager.runAfterInteractions(this.fetchApps);
+    }
+
+    componentWillUnmount() {
+        // keep track of component mounted statue
+        this.mounted = false;
     }
 
     fetchApps = () => {
         BackendService.getXAppShortList().then((resp: any) => {
-            const { apps } = resp;
+            const { apps, featured } = resp;
+
+            if (!this.mounted) {
+                return;
+            }
 
             this.setState({
                 apps,
-                isLoading: false,
+                featured,
             });
         });
     };
 
     onScanButtonPress = () => {
-        if (this.actionPanel) {
-            this.actionPanel.slideDown();
+        if (this.actionPanel.current) {
+            this.actionPanel.current.slideDown();
         }
 
         setTimeout(() => {
@@ -99,10 +116,8 @@ class HomeActionsOverlay extends Component<Props, State> {
         this.openXApp(moreIdentifier, 'XApps');
     };
 
-    onAppPress = (index: number) => {
-        const { apps } = this.state;
-
-        const { identifier, title } = apps[index];
+    onAppPress = (app: any) => {
+        const { identifier, title } = app;
 
         this.openXApp(identifier, title);
     };
@@ -110,8 +125,8 @@ class HomeActionsOverlay extends Component<Props, State> {
     openXApp = (identifier: string, title: string) => {
         const { account } = this.state;
 
-        if (this.actionPanel) {
-            this.actionPanel.slideDown();
+        if (this.actionPanel.current) {
+            this.actionPanel.current.slideDown();
         }
 
         setTimeout(() => {
@@ -131,16 +146,14 @@ class HomeActionsOverlay extends Component<Props, State> {
     };
 
     render() {
-        const { apps, isLoading } = this.state;
+        const { apps, featured } = this.state;
 
         return (
             <ActionPanel
-                height={AppSizes.moderateScale(380)}
+                height={AppSizes.moderateScale(470)}
                 onSlideDown={Navigator.dismissOverlay}
                 extraBottomInset
-                ref={(r) => {
-                    this.actionPanel = r;
-                }}
+                ref={this.actionPanel}
             >
                 <View style={[AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                     <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
@@ -171,32 +184,10 @@ class HomeActionsOverlay extends Component<Props, State> {
                     </View>
                 </View>
 
-                {isLoading ? (
-                    <LoadingIndicator style={styles.activityIndicator} />
-                ) : (
-                    <View style={[AppStyles.row, AppStyles.paddingVertical]}>
-                        {apps.map((app: any, index: number) => {
-                            return (
-                                <TouchableDebounce
-                                    activeOpacity={0.8}
-                                    style={[AppStyles.flex1, AppStyles.centerAligned]}
-                                    onPress={() => {
-                                        this.onAppPress(index);
-                                    }}
-                                    key={index}
-                                >
-                                    <Image source={{ uri: app.icon }} style={styles.appIcon} />
-                                    <Spacer size={5} />
-                                    <Text numberOfLines={2} style={styles.appTitle}>
-                                        {app.title}
-                                    </Text>
-                                </TouchableDebounce>
-                            );
-                        })}
-                    </View>
-                )}
+                <XAppList apps={apps} onAppPress={this.onAppPress} containerStyle={[styles.rowListContainer]} />
+                <XAppList apps={featured} onAppPress={this.onAppPress} containerStyle={[styles.rowListContainer]} />
 
-                <View style={[AppStyles.row]}>
+                <View style={styles.actionButtonContainer}>
                     <Button
                         contrast
                         numberOfLines={1}

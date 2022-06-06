@@ -2,7 +2,7 @@
  * DeepLink service
  * handle app deep linking
  */
-import { Linking, Alert } from 'react-native';
+import { Linking, Alert, EmitterSubscription } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
@@ -13,12 +13,15 @@ import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
+
 import { NormalizeDestination } from '@common/utils/codec';
+import { StringTypeCheck } from '@common/utils/string';
 
 import Localize from '@locale';
 /* Service  ==================================================================== */
 class LinkingService {
     private initialURL: string;
+    private eventListener: EmitterSubscription;
 
     constructor() {
         this.initialURL = null;
@@ -27,17 +30,33 @@ class LinkingService {
     initialize = () => {
         return new Promise<void>((resolve, reject) => {
             try {
-                NavigationService.on('setRoot', async (root: string) => {
-                    if (root === RootType.DefaultRoot) {
-                        // Listen for deep link as the app is open
-                        Linking.addEventListener('url', this.handleDeepLink);
-                    }
-                });
-                return resolve();
+                // listen for root changes
+                NavigationService.on('setRoot', this.onRootChange);
+                // resolve
+                resolve();
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
+    };
+
+    onRootChange = (root: RootType) => {
+        if (root === RootType.DefaultRoot) {
+            // Listen for deep link as the app is open
+            this.addDeepLinkListeners();
+        } else {
+            this.removeDeepLinkListeners();
+        }
+    };
+
+    addDeepLinkListeners = () => {
+        this.eventListener = Linking.addEventListener('url', this.handleDeepLink);
+    };
+
+    removeDeepLinkListeners = () => {
+        if (this.eventListener) {
+            this.eventListener.remove();
+        }
     };
 
     checkInitialDeepLink = () => {
@@ -79,6 +98,11 @@ class LinkingService {
 
     handlePayloadReference = async (uuid: string) => {
         try {
+            // check if uuid is valid uuidv4 string
+            if (!StringTypeCheck.isValidUUID(uuid)) {
+                return;
+            }
+
             // fetch the payload
             const payload = await Payload.from(uuid, PayloadOrigin.DEEP_LINK);
 
@@ -138,8 +162,8 @@ class LinkingService {
 
         const { to, tag } = NormalizeDestination(destination);
 
-        // if amount present as XRP pass the amount
-        if (!destination.currency && new RegExp(/^(?![0.]+$)\d+(\.\d{1,15})?$/gm).test(destination.amount)) {
+        // if amount present as XRP and valid amount
+        if (!destination.currency && StringTypeCheck.isValidAmount(destination.amount)) {
             amount = destination.amount;
         }
 
@@ -240,14 +264,6 @@ class LinkingService {
 
     handle = (url: string) => {
         const detected = new StringTypeDetector(url);
-
-        // normalize detected type
-        let detectedType = detected.getType();
-
-        if (detectedType === StringType.PayId) {
-            detectedType = StringType.XrplDestination;
-        }
-
         const parsed = new StringDecoder(detected).getAny();
 
         // the screen will handle the content

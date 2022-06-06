@@ -17,7 +17,7 @@ import BaseRepository from './base';
 // events
 declare interface AccountRepository {
     on(event: 'changeDefaultAccount', listener: (defaultAccount: AccountSchema) => void): this;
-    on(event: 'accountUpdate', listener: (account: AccountSchema) => void): this;
+    on(event: 'accountUpdate', listener: (account: AccountSchema, changes: Partial<AccountSchema>) => void): this;
     on(event: 'accountCreate', listener: (account: AccountSchema) => void): this;
     on(event: 'accountRemove', listener: () => void): this;
     on(event: string, listener: Function): this;
@@ -73,7 +73,7 @@ class AccountRepository extends BaseRepository {
         }
 
         return this.create(object, true).then((updatedAccount: AccountSchema) => {
-            this.emit('accountUpdate', updatedAccount);
+            this.emit('accountUpdate', updatedAccount, object);
             return updatedAccount;
         });
     };
@@ -94,6 +94,13 @@ class AccountRepository extends BaseRepository {
             return this.query(filters);
         }
         return this.findAll();
+    };
+
+    /**
+     * get all accounts count
+     */
+    getVisibleAccountCount = (): number => {
+        return this.query({ hidden: false }).length;
     };
 
     /**
@@ -300,7 +307,7 @@ class AccountRepository extends BaseRepository {
 
     /**
      * Remove account
-     * WARNING: this will be permanently and cannot be undo
+     * WARNING: this will be permanently and irreversible
      */
     purge = async (account: AccountSchema): Promise<boolean> => {
         const isDefault = account.default;
@@ -336,7 +343,7 @@ class AccountRepository extends BaseRepository {
 
     /**
      * Purge All accounts
-     * WARNING: this will be permanently and cannot be undo
+     * WARNING: this will be permanently and irreversible
      */
     purgePrivateKeys = (): boolean => {
         // clear the vault

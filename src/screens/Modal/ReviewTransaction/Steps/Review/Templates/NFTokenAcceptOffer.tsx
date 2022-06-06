@@ -30,34 +30,34 @@ class NFTokenAcceptOfferTemplate extends Component<Props, State> {
 
         return (
             <>
-                {transaction.Amount && (
-                    <>
-                        <Text style={[styles.label]}>{Localize.t('global.amount')}</Text>
-                        <View style={[styles.contentBox]}>
-                            <AmountText
-                                value={transaction.Amount.value}
-                                currency={transaction.Amount.currency}
-                                style={styles.amount}
-                                immutable
-                            />
-                        </View>
-                    </>
-                )}
-
-                {transaction.SellOffer && (
+                {transaction.NFTokenSellOffer && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.sellOffer')}</Text>
                         <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{transaction.SellOffer}</Text>
+                            <Text style={[styles.value]}>{transaction.NFTokenSellOffer}</Text>
                         </View>
                     </>
                 )}
 
-                {transaction.BuyOffer && (
+                {transaction.NFTokenBuyOffer && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.buyOffer')}</Text>
                         <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{transaction.BuyOffer}</Text>
+                            <Text style={[styles.value]}>{transaction.NFTokenBuyOffer}</Text>
+                        </View>
+                    </>
+                )}
+
+                {transaction.NFTokenBrokerFee && (
+                    <>
+                        <Text style={[styles.label]}>{Localize.t('global.brokerFee')}</Text>
+                        <View style={[styles.contentBox]}>
+                            <AmountText
+                                value={transaction.NFTokenBrokerFee.value}
+                                currency={transaction.NFTokenBrokerFee.currency}
+                                style={styles.amount}
+                                immutable
+                            />
                         </View>
                     </>
                 )}

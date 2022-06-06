@@ -93,7 +93,7 @@ class LoggerService {
 
         // eslint-disable-next-line
         const log = (level: levels) => {
-            return (message = '', data: any) => {
+            return (message: string, data: any) => {
                 if (data instanceof Error) {
                     data = this.normalizeError(data);
                 }

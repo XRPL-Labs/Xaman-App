@@ -1,7 +1,7 @@
 /* eslint-disable  spellcheck/spell-checker */
 /* eslint-disable  max-len */
 
-import { AppConfig } from '../common/constants';
+import { AppConfig } from '@common/constants';
 
 const setInternetCredentials = jest.fn(() => Promise.resolve());
 

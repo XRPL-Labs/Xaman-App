@@ -8,10 +8,12 @@ import LedgerDate from '../parser/common/date';
 
 /* Types ==================================================================== */
 import { AmountType, Destination } from '../parser/types';
+import { LedgerObjectTypes } from '../types';
 
 /* Class ==================================================================== */
 class Escrow extends BaseLedgerObject {
-    [key: string]: any;
+    public static Type = LedgerObjectTypes.Escrow as const;
+    public readonly Type = Escrow.Type;
 
     constructor(object?: any) {
         super(object);

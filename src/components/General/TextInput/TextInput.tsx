@@ -15,7 +15,9 @@ import { AppScreens } from '@common/constants';
 
 import StyleService from '@services/StyleService';
 
-import { TouchableDebounce, Icon, LoadingIndicator } from '@components/General';
+import { TouchableDebounce } from '@components/General/TouchableDebounce';
+import { Icon } from '@components/General/Icon';
+import { LoadingIndicator } from '@components/General/LoadingIndicator';
 
 import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';

@@ -1,25 +1,28 @@
 import BigNumber from 'bignumber.js';
-import { get, differenceBy, set, isUndefined } from 'lodash';
+import { get, set, isUndefined } from 'lodash';
 
 import { HexEncoding } from '@common/utils/string';
+import { EncodeNFTokenID } from '@common/utils/codec';
 
 import BaseTransaction from './base';
 
 /* Types ==================================================================== */
-import { LedgerTransactionType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class NFTokenMint extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.NFTokenMint as const;
+    public readonly Type = NFTokenMint.Type;
 
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
+
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'NFTokenMint';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = NFTokenMint.Type;
         }
 
-        this.fields = this.fields.concat(['Issuer', 'URI', 'TokenTaxon', 'TransferFee']);
+        this.fields = this.fields.concat(['Issuer', 'URI', 'NFTokenTaxon', 'TransferFee']);
     }
 
     get Issuer(): string {
@@ -34,39 +37,51 @@ class NFTokenMint extends BaseTransaction {
         return HexEncoding.toString(uri);
     }
 
-    get TokenTaxon(): number {
-        return get(this, ['tx', 'TokenTaxon']);
+    get NFTokenTaxon(): number {
+        return get(this, ['tx', 'NFTokenTaxon']);
     }
 
-    set TokenID(id: string) {
-        set(this, 'tokenID', id);
+    set NFTokenID(id: string) {
+        set(this, 'nfTokenID', id);
     }
 
-    get TokenID(): string {
-        let tokenID = get(this, 'tokenID', undefined);
+    get NFTokenID(): string {
+        let tokenID = get(this, 'nfTokenID', undefined);
 
         // if we already set the token id return
         if (tokenID) {
             return tokenID;
         }
 
-        // if not look at the meta data for token id
-        const affectedNodes = get(this.meta, 'AffectedNodes', []);
-        affectedNodes.map((node: any) => {
-            if (get(node, 'CreatedNode.LedgerEntryType') === 'NFTokenPage') {
-                tokenID = get(node, 'CreatedNode.NewFields.NonFungibleTokens[0].NonFungibleToken.TokenID');
-            } else if (get(node, 'ModifiedNode.LedgerEntryType') === 'NFTokenPage') {
-                const nextTokenPage = get(node, 'ModifiedNode.FinalFields.NonFungibleTokens');
-                const prevTokenPage = get(node, 'ModifiedNode.PreviousFields.NonFungibleTokens');
-                tokenID = get(
-                    differenceBy(nextTokenPage, prevTokenPage, 'NonFungibleToken.TokenID'),
-                    '[0].NonFungibleToken.TokenID',
-                );
+        // Fetch minted token sequence
+        let tokenSequence;
+        let nextTokenSequence;
+
+        this.meta.AffectedNodes.forEach((node: any) => {
+            if (node.ModifiedNode && node.ModifiedNode.LedgerEntryType === 'AccountRoot') {
+                const { PreviousFields, FinalFields } = node.ModifiedNode;
+                if (PreviousFields && FinalFields && FinalFields.Account === this.Account.address) {
+                    tokenSequence = PreviousFields.MintedNFTokens;
+                    nextTokenSequence = FinalFields.MintedNFTokens;
+                }
             }
-            return true;
         });
 
-        this.TokenID = tokenID;
+        // First minted token, set token sequence to zero
+        if (typeof tokenSequence === 'undefined' && nextTokenSequence === 1) {
+            tokenSequence = 0;
+        }
+
+        // Unable to find TokenSequence
+        if (typeof tokenSequence === 'undefined') {
+            return '';
+        }
+
+        const intFlags = get(this, ['tx', 'Flags'], undefined);
+        tokenID = EncodeNFTokenID(this.Account.address, tokenSequence, intFlags, this.TransferFee, this.NFTokenTaxon);
+
+        // store the token id
+        this.NFTokenID = tokenID;
 
         return tokenID;
     }
@@ -76,7 +91,7 @@ class NFTokenMint extends BaseTransaction {
 
         if (isUndefined(transferFee)) return undefined;
 
-        return new BigNumber(transferFee).dividedBy(100).toNumber();
+        return new BigNumber(transferFee).dividedBy(1000).toNumber();
     }
 }
 

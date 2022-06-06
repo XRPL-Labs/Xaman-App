@@ -2,31 +2,36 @@
 
 exports[`[SearchBar] renders correctly 1`] = `
 <View
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
   style={
-    Array [
-      Object {
-        "backgroundColor": "#F3F6FA",
-        "borderRadius": 15,
-        "flexDirection": "row",
-        "height": 73.5,
-        "marginHorizontal": 10,
-      },
-      undefined,
-    ]
+    Object {
+      "backgroundColor": "#F3F6FA",
+      "borderRadius": 18.375,
+      "flexDirection": "row",
+      "height": 73.5,
+      "opacity": 1,
+    }
   }
 >
   <View
     collapsable={false}
-    nativeID="animatedComponent"
     style={
       Object {
         "alignItems": "center",
         "alignSelf": "center",
         "flexDirection": "column",
-        "left": 0,
+        "left": 15,
         "position": "absolute",
         "tintColor": "#000000",
-        "width": 50,
       }
     }
   >
@@ -60,32 +65,227 @@ exports[`[SearchBar] renders correctly 1`] = `
     <TextInput
       autoCapitalize="none"
       autoCorrect={false}
+      onBlur={[Function]}
       onChangeText={[Function]}
+      onFocus={[Function]}
       placeholder="Please type ..."
       placeholderTextColor="#606885"
       style={
         Array [
           Object {
             "color": "#000000",
-            "flex": 1,
             "fontFamily": "UbuntuMono-Bold",
             "fontSize": 34.285714285714285,
             "fontWeight": "600",
             "height": "100%",
             "paddingLeft": 50,
             "paddingRight": 50,
+            "paddingVertical": 0,
+          },
+          Object {
+            "height": 73.5,
           },
           undefined,
         ]
       }
+      underlineColorAndroid="transparent"
       value=""
+    />
+  </View>
+</View>
+`;
+
+exports[`[SearchBar] should clear text 1`] = `
+<View
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Object {
+      "backgroundColor": "#F3F6FA",
+      "borderRadius": 18.375,
+      "flexDirection": "row",
+      "height": 73.5,
+      "opacity": 1,
+    }
+  }
+>
+  <View
+    collapsable={false}
+    style={
+      Object {
+        "alignItems": "center",
+        "alignSelf": "center",
+        "flexDirection": "column",
+        "left": 15,
+        "position": "absolute",
+        "tintColor": "#000000",
+      }
+    }
+  >
+    <Image
+      resizeMode="contain"
+      source={
+        Object {
+          "uri": "IconSearch",
+        }
+      }
+      style={
+        Array [
+          Object {
+            "height": 31.428571428571427,
+            "width": 31.428571428571427,
+          },
+          Object {
+            "tintColor": "#000000",
+          },
+        ]
+      }
+    />
+  </View>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <TextInput
+      autoCapitalize="none"
+      autoCorrect={false}
+      onBlur={[Function]}
+      onChangeText={[Function]}
+      onFocus={[Function]}
+      placeholder="Please type ..."
+      placeholderTextColor="#606885"
+      style={
+        Array [
+          Object {
+            "color": "#000000",
+            "fontFamily": "UbuntuMono-Bold",
+            "fontSize": 34.285714285714285,
+            "fontWeight": "600",
+            "height": "100%",
+            "paddingLeft": 50,
+            "paddingRight": 50,
+            "paddingVertical": 0,
+          },
+          Object {
+            "height": 73.5,
+          },
+          undefined,
+        ]
+      }
+      underlineColorAndroid="transparent"
+      value=""
+    />
+  </View>
+</View>
+`;
+
+exports[`[SearchBar] should show clear button on text enter 1`] = `
+<View
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Object {
+      "backgroundColor": "#F3F6FA",
+      "borderRadius": 18.375,
+      "flexDirection": "row",
+      "height": 73.5,
+      "opacity": 1,
+    }
+  }
+>
+  <View
+    collapsable={false}
+    style={
+      Object {
+        "alignItems": "center",
+        "alignSelf": "center",
+        "flexDirection": "column",
+        "left": 15,
+        "position": "absolute",
+        "tintColor": "#000000",
+      }
+    }
+  >
+    <Image
+      resizeMode="contain"
+      source={
+        Object {
+          "uri": "IconSearch",
+        }
+      }
+      style={
+        Array [
+          Object {
+            "height": 31.428571428571427,
+            "width": 31.428571428571427,
+          },
+          Object {
+            "tintColor": "#000000",
+          },
+        ]
+      }
+    />
+  </View>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <TextInput
+      autoCapitalize="none"
+      autoCorrect={false}
+      onBlur={[Function]}
+      onChangeText={[Function]}
+      onFocus={[Function]}
+      placeholder="Please type ..."
+      placeholderTextColor="#606885"
+      style={
+        Array [
+          Object {
+            "color": "#000000",
+            "fontFamily": "UbuntuMono-Bold",
+            "fontSize": 34.285714285714285,
+            "fontWeight": "600",
+            "height": "100%",
+            "paddingLeft": 50,
+            "paddingRight": 50,
+            "paddingVertical": 0,
+          },
+          Object {
+            "height": 73.5,
+          },
+          undefined,
+        ]
+      }
+      underlineColorAndroid="transparent"
+      value="searched text"
     />
   </View>
   <View
     accessible={true}
     collapsable={false}
     focusable={true}
-    nativeID="animatedComponent"
     onClick={[Function]}
     onResponderGrant={[Function]}
     onResponderMove={[Function]}
@@ -108,279 +308,6 @@ exports[`[SearchBar] renders correctly 1`] = `
   >
     <View
       collapsable={false}
-      nativeID="animatedComponent"
-      style={
-        Object {
-          "alignSelf": "center",
-          "opacity": 0,
-        }
-      }
-    >
-      <Image
-        resizeMode="contain"
-        source={
-          Object {
-            "uri": "IconX",
-          }
-        }
-        style={
-          Array [
-            Object {
-              "height": 31.428571428571427,
-              "width": 31.428571428571427,
-            },
-            Object {
-              "tintColor": "#000000",
-            },
-          ]
-        }
-      />
-    </View>
-  </View>
-</View>
-`;
-
-exports[`[SearchBar] should clear text 1`] = `
-<View
-  style={
-    Array [
-      Object {
-        "backgroundColor": "#F3F6FA",
-        "borderRadius": 15,
-        "flexDirection": "row",
-        "height": 73.5,
-        "marginHorizontal": 10,
-      },
-      undefined,
-    ]
-  }
->
-  <View
-    collapsable={false}
-    nativeID="animatedComponent"
-    style={
-      Object {
-        "alignItems": "center",
-        "alignSelf": "center",
-        "flexDirection": "column",
-        "left": 0,
-        "position": "absolute",
-        "tintColor": "#000000",
-        "width": 50,
-      }
-    }
-  >
-    <Image
-      resizeMode="contain"
-      source={
-        Object {
-          "uri": "IconSearch",
-        }
-      }
-      style={
-        Array [
-          Object {
-            "height": 31.428571428571427,
-            "width": 31.428571428571427,
-          },
-          Object {
-            "tintColor": "#000000",
-          },
-        ]
-      }
-    />
-  </View>
-  <View
-    style={
-      Object {
-        "flex": 1,
-      }
-    }
-  >
-    <TextInput
-      autoCapitalize="none"
-      autoCorrect={false}
-      onChangeText={[Function]}
-      placeholder="Please type ..."
-      placeholderTextColor="#606885"
-      style={
-        Array [
-          Object {
-            "color": "#000000",
-            "flex": 1,
-            "fontFamily": "UbuntuMono-Bold",
-            "fontSize": 34.285714285714285,
-            "fontWeight": "600",
-            "height": "100%",
-            "paddingLeft": 50,
-            "paddingRight": 50,
-          },
-          undefined,
-        ]
-      }
-      value=""
-    />
-  </View>
-  <View
-    accessible={true}
-    collapsable={false}
-    focusable={true}
-    nativeID="animatedComponent"
-    onClick={[Function]}
-    onResponderGrant={[Function]}
-    onResponderMove={[Function]}
-    onResponderRelease={[Function]}
-    onResponderTerminate={[Function]}
-    onResponderTerminationRequest={[Function]}
-    onStartShouldSetResponder={[Function]}
-    style={
-      Object {
-        "flexDirection": "row",
-        "height": "100%",
-        "justifyContent": "center",
-        "opacity": 1,
-        "position": "absolute",
-        "right": 0,
-        "tintColor": "#000000",
-        "width": 50,
-      }
-    }
-  >
-    <View
-      style={
-        Object {
-          "alignSelf": "center",
-          "opacity": 0,
-        }
-      }
-    >
-      <Image
-        resizeMode="contain"
-        source={
-          Object {
-            "uri": "IconX",
-          }
-        }
-        style={
-          Array [
-            Object {
-              "height": 31.428571428571427,
-              "width": 31.428571428571427,
-            },
-            Object {
-              "tintColor": "#000000",
-            },
-          ]
-        }
-      />
-    </View>
-  </View>
-</View>
-`;
-
-exports[`[SearchBar] should show clear button on text enter 1`] = `
-<View
-  style={
-    Array [
-      Object {
-        "backgroundColor": "#F3F6FA",
-        "borderRadius": 15,
-        "flexDirection": "row",
-        "height": 73.5,
-        "marginHorizontal": 10,
-      },
-      undefined,
-    ]
-  }
->
-  <View
-    style={
-      Object {
-        "alignItems": "center",
-        "alignSelf": "center",
-        "flexDirection": "column",
-        "left": 0,
-        "position": "absolute",
-        "tintColor": "#000000",
-        "width": 50,
-      }
-    }
-  >
-    <Image
-      resizeMode="contain"
-      source={
-        Object {
-          "uri": "IconSearch",
-        }
-      }
-      style={
-        Array [
-          Object {
-            "height": 31.428571428571427,
-            "width": 31.428571428571427,
-          },
-          Object {
-            "tintColor": "#000000",
-          },
-        ]
-      }
-    />
-  </View>
-  <View
-    style={
-      Object {
-        "flex": 1,
-      }
-    }
-  >
-    <TextInput
-      autoCapitalize="none"
-      autoCorrect={false}
-      onChangeText={[Function]}
-      placeholder="Please type ..."
-      placeholderTextColor="#606885"
-      style={
-        Array [
-          Object {
-            "color": "#000000",
-            "flex": 1,
-            "fontFamily": "UbuntuMono-Bold",
-            "fontSize": 34.285714285714285,
-            "fontWeight": "600",
-            "height": "100%",
-            "paddingLeft": 50,
-            "paddingRight": 50,
-          },
-          undefined,
-        ]
-      }
-      value="searched text"
-    />
-  </View>
-  <View
-    accessible={true}
-    focusable={true}
-    onClick={[Function]}
-    onResponderGrant={[Function]}
-    onResponderMove={[Function]}
-    onResponderRelease={[Function]}
-    onResponderTerminate={[Function]}
-    onResponderTerminationRequest={[Function]}
-    onStartShouldSetResponder={[Function]}
-    style={
-      Object {
-        "flexDirection": "row",
-        "height": "100%",
-        "justifyContent": "center",
-        "opacity": 1,
-        "position": "absolute",
-        "right": 0,
-        "tintColor": "#000000",
-        "width": 50,
-      }
-    }
-  >
-    <View
       style={
         Object {
           "alignSelf": "center",

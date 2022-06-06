@@ -5,10 +5,14 @@ import { isEqual } from 'lodash';
 import { View, Text, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 
 import { Images } from '@common/helpers/images';
-import { TouchableDebounce, Icon, LoadingIndicator } from '@components/General';
+
+import { TouchableDebounce } from '@components/General/TouchableDebounce';
+import { Icon } from '@components/General/Icon';
+import { LoadingIndicator } from '@components/General/LoadingIndicator';
 
 import styles from './styles';
 
+/* Types ==================================================================== */
 interface Props {
     style?: ViewStyle | ViewStyle[];
     textStyle?: TextStyle | TextStyle[];
@@ -17,10 +21,9 @@ interface Props {
     secondary?: boolean;
     light?: boolean;
     contrast?: boolean;
-    outline?: boolean;
-    clear?: boolean;
     rounded?: boolean;
     roundedSmall?: boolean;
+    roundedMini?: boolean;
     roundedSmallBlock?: boolean;
     accessibilityLabel?: string;
     testID?: string;
@@ -37,9 +40,11 @@ interface Props {
     icon?: Extract<keyof typeof Images, string>;
     iconPosition?: 'right' | 'left';
     iconSize?: number;
+    extraComponent?: React.ReactNode;
     hitSlop?: any;
 }
 
+/* Component ==================================================================== */
 export default class Button extends Component<Props> {
     static defaultProps = {
         iconPosition: 'left',
@@ -61,6 +66,7 @@ export default class Button extends Component<Props> {
             rounded,
             roundedSmall,
             roundedSmallBlock,
+            roundedMini,
             allowFontScaling,
             adjustsFontSizeToFit,
             numberOfLines,
@@ -68,6 +74,7 @@ export default class Button extends Component<Props> {
             iconStyle,
             iconSize,
             isDisabled,
+            extraComponent,
         } = this.props;
 
         return (
@@ -93,6 +100,7 @@ export default class Button extends Component<Props> {
                             contrast && styles.textButtonContrast,
                             rounded && styles.textButtonRounded,
                             roundedSmall && styles.textButtonRoundedSmall,
+                            roundedMini && styles.textButtonRoundedMini,
                             roundedSmallBlock && styles.textButtonRoundedSmallBlock,
                             isDisabled && styles.textButtonDisabled,
                             textStyle,
@@ -116,6 +124,7 @@ export default class Button extends Component<Props> {
                         ]}
                     />
                 )}
+                {extraComponent && extraComponent}
             </View>
         );
     }
@@ -166,6 +175,7 @@ export default class Button extends Component<Props> {
             rounded,
             roundedSmall,
             roundedSmallBlock,
+            roundedMini,
             disabledStyle,
             accessibilityLabel,
             activeOpacity,
@@ -181,6 +191,10 @@ export default class Button extends Component<Props> {
                         styles.button,
                         secondary && styles.buttonSecondary,
                         light && styles.buttonLight,
+                        rounded && styles.buttonRounded,
+                        roundedSmall && styles.buttonRoundedSmall,
+                        roundedSmallBlock && styles.buttonRoundedSmallBlock,
+                        roundedMini && styles.buttonRoundedMini,
                         disabledStyle || styles.buttonDisabled,
                         style,
                     ]}
@@ -210,6 +224,7 @@ export default class Button extends Component<Props> {
                     rounded && styles.buttonRounded,
                     roundedSmall && styles.buttonRoundedSmall,
                     roundedSmallBlock && styles.buttonRoundedSmallBlock,
+                    roundedMini && styles.buttonRoundedMini,
                     isDisabled && (disabledStyle || styles.buttonDisabled),
                     style,
                 ]}

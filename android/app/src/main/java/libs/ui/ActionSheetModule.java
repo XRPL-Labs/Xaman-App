@@ -6,10 +6,13 @@ package libs.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
+import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -24,70 +27,111 @@ import java.util.ArrayList;
 
 import com.xrpllabs.xumm.R;
 
+@ReactModule(name = PromptModule.NAME)
 public class ActionSheetModule extends ReactContextBaseJavaModule {
-  WritableMap response;
+    /* package */ static final String NAME = "ActionSheetAndroid";
 
-  public ActionSheetModule(ReactApplicationContext reactContext) {
-    super(reactContext);
-  }
+    /* package */ static final String KEY_OPTIONS = "options";
+    /* package */ static final String KEY_DESTRUCTIVE_BUTTON_INDEX = "destructiveButtonIndex";
+    /* package */ static final String KEY_USERINTERFACE_STYLE = "userInterfaceStyle";
 
-  @Override
-  public String getName() {
-    return "ActionSheetAndroid";
-  }
+    /* package */ static final String THEME_LIGHT = "light";
 
-  @ReactMethod
-  public void showActionSheetWithOptions(final ReadableMap options, final Callback callback) {
-    Activity currentActivity = getCurrentActivity();
 
-    if (currentActivity == null) {
-      response = Arguments.createMap();
-      response.putString("error", "can't find current Activity");
-      callback.invoke(response);
-      return;
+    public ActionSheetModule(ReactApplicationContext reactContext) {
+        super(reactContext);
     }
 
-    final List<String> titles = new ArrayList<String>();
-
-    if (options.hasKey("options")) {
-      ReadableArray customButtons = options.getArray("options");
-      for (int i = 0; i < customButtons.size(); i++) {
-        int currentIndex = titles.size();
-        titles.add(currentIndex, customButtons.getString(i));
-      }
+    @Override
+    public String getName() {
+        return NAME;
     }
 
-    ArrayAdapter<String> adapter = new ArrayAdapter<String>(currentActivity,
-            R.layout.dialog_item, titles);
-    AlertDialog.Builder builder = new AlertDialog.Builder(currentActivity, R.style.DialogStyle);
-    if (options.hasKey("title") && options.getString("title") != null && !options.getString("title").isEmpty()) {
-      builder.setTitle(options.getString("title"));
+
+    @ReactMethod
+    public void showActionSheetWithOptions(final ReadableMap args, final Callback callback) {
+        Activity currentActivity = getCurrentActivity();
+
+        if (currentActivity == null) {
+            WritableMap response = Arguments.createMap();
+            response.putString("error", "can't find current Activity");
+            callback.invoke(response);
+            return;
+        }
+
+        final List<String> titles = new ArrayList<String>();
+
+        if (args.hasKey(KEY_OPTIONS)) {
+            ReadableArray customButtons = args.getArray(KEY_OPTIONS);
+            for (int i = 0; i < customButtons.size(); i++) {
+                int currentIndex = titles.size();
+                titles.add(currentIndex, customButtons.getString(i));
+            }
+        }
+
+        int destructiveButtonIndex = -1;
+        if (args.hasKey(KEY_DESTRUCTIVE_BUTTON_INDEX)) {
+            destructiveButtonIndex = args.getInt(KEY_DESTRUCTIVE_BUTTON_INDEX);
+        }
+        int finalDestructiveButtonIndex = destructiveButtonIndex;
+
+
+        String userInterfaceStyle = THEME_LIGHT;
+        if (args.hasKey(KEY_USERINTERFACE_STYLE) &&
+                args.getString(KEY_USERINTERFACE_STYLE) != null &&
+                !args.getString(KEY_USERINTERFACE_STYLE).isEmpty()
+        ) {
+            userInterfaceStyle = args.getString(KEY_USERINTERFACE_STYLE);
+        }
+        String finalUserInterfaceStyle = userInterfaceStyle;
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(currentActivity, R.layout.dialog_item, titles) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                TextView textView = (TextView) super.getView(position, convertView, parent);
+                if (position == finalDestructiveButtonIndex) {
+                    textView.setTextColor(Color.rgb(228,83,68));
+                } else {
+                    if (finalUserInterfaceStyle.equals(THEME_LIGHT)) {
+                        textView.setTextColor(Color.BLACK);
+                    } else {
+                        textView.setTextColor(Color.WHITE);
+                    }
+                }
+                return textView;
+            }
+        };
+
+        int dialogStyle;
+        if(finalUserInterfaceStyle.equals(THEME_LIGHT)){
+            dialogStyle = R.style.DialogStyle;
+        }else{
+            dialogStyle = R.style.DialogStyleDark;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(currentActivity, dialogStyle);
+
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int index) {
+                callback.invoke(index);
+            }
+        });
+
+        final AlertDialog dialog = builder.create();
+
+        /**
+         * override onCancel method to callback cancel in case of a touch outside of
+         * the dialog or the BACK key pressed
+         */
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
+                callback.invoke();
+            }
+        });
+
+        // show dialog
+        dialog.show();
     }
-
-    /* @TODO message currently disable the options
-    if (options.hasKey("message") && options.getString("message") != null && !options.getString("message").isEmpty()) {
-      builder.setMessage(options.getString("message"));
-    }
-    */
-
-    builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-      public void onClick(DialogInterface dialog, int index) {
-        callback.invoke(index);
-      }
-    });
-
-    final AlertDialog dialog = builder.create();
-    /**
-     * override onCancel method to callback cancel in case of a touch outside of
-     * the dialog or the BACK key pressed
-     */
-    dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-      @Override
-      public void onCancel(DialogInterface dialog) {
-        dialog.dismiss();
-        callback.invoke();
-      }
-    });
-    dialog.show();
-  }
 }

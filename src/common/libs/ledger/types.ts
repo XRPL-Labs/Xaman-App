@@ -1,5 +1,43 @@
-import { LedgerEntriesTypes } from './objects/types';
-import { Memo } from './parser/types';
+import { AmountType } from './parser/types';
+
+export enum TransactionTypes {
+    Payment = 'Payment',
+    TrustSet = 'TrustSet',
+    AccountDelete = 'AccountDelete',
+    AccountSet = 'AccountSet',
+    OfferCreate = 'OfferCreate',
+    OfferCancel = 'OfferCancel',
+    EscrowCreate = 'EscrowCreate',
+    EscrowCancel = 'EscrowCancel',
+    EscrowFinish = 'EscrowFinish',
+    SetRegularKey = 'SetRegularKey',
+    SignerListSet = 'SignerListSet',
+    DepositPreauth = 'DepositPreauth',
+    CheckCreate = 'CheckCreate',
+    CheckCash = 'CheckCash',
+    CheckCancel = 'CheckCancel',
+    TicketCreate = 'TicketCreate',
+    PaymentChannelCreate = 'PaymentChannelCreate',
+    PaymentChannelClaim = 'PaymentChannelClaim',
+    PaymentChannelFund = 'PaymentChannelFund',
+    NFTokenMint = 'NFTokenMint',
+    NFTokenBurn = 'NFTokenBurn',
+    NFTokenCreateOffer = 'NFTokenCreateOffer',
+    NFTokenAcceptOffer = 'NFTokenAcceptOffer',
+    NFTokenCancelOffer = 'NFTokenCancelOffer',
+}
+
+export enum PseudoTransactionTypes {
+    SignIn = 'SignIn',
+}
+
+export enum LedgerObjectTypes {
+    Check = 'Check',
+    Escrow = 'Escrow',
+    NFTokenOffer = 'NFTokenOffer',
+    Offer = 'Offer',
+    Ticket = 'Ticket',
+}
 
 /**
  * TX Json Transaction Type
@@ -7,11 +45,11 @@ import { Memo } from './parser/types';
 export type TransactionJSONType = {
     Account?: string;
     TransactionType?: string;
-    Memos?: { Memo: Memo }[];
+    Memos?: { Memo: { MemoType?: string; MemoData?: string; MemoFormat?: string } }[];
     Flags?: number;
     Fulfillment?: string;
     LastLedgerSequence?: number;
-    [Field: string]: string | number | Array<any> | undefined | object;
+    [Field: string]: string | number | Array<any> | undefined | object | boolean;
 };
 
 /**
@@ -24,7 +62,6 @@ export interface LedgerTransactionType {
     ledger_hash?: string;
     ledger_index?: number;
     status?: string;
-    transaction?: TransactionJSONType;
     tx?: TransactionJSONType;
     meta?: any;
     [key: string]: any;
@@ -156,6 +193,7 @@ export interface AccountInfoResponse {
     ledger_current_index?: number;
     ledger_index?: number;
     validated?: boolean;
+    error?: string;
 }
 
 /**
@@ -170,6 +208,7 @@ export interface AccountObjectsResponse {
     limit?: number;
     marker?: string;
     validated?: boolean;
+    error?: string;
 }
 
 /**
@@ -184,4 +223,103 @@ export interface FeeResponse {
     current_queue_size: string;
     max_queue_size: string;
     drops: FeeResponseDrops;
+}
+
+/**
+ * Ledger ledger_entry command response
+ */
+export interface LedgerEntryResponse {
+    index: string;
+    ledger_current_index: number;
+    node?: LedgerEntriesTypes;
+    validated?: boolean;
+}
+
+export type LedgerEntriesTypes =
+    | OfferLedgerEntry
+    | EscrowLedgerEntry
+    | CheckLedgerEntry
+    | RippleStateLedgerEntry
+    | NFTokenOfferLedgerEntry;
+
+/**
+ * Ledger objects Entries
+ */
+export interface OfferLedgerEntry {
+    LedgerEntryType: 'Offer';
+    Flags: number;
+    Account: string;
+    Sequence: number;
+    TakerPays: AmountType;
+    TakerGets: AmountType;
+    BookDirectory: string;
+    BookNode: string;
+    OwnerNode: string;
+    PreviousTxnID: string;
+    PreviousTxnLgrSeq: number;
+    Expiration?: number;
+}
+
+export interface EscrowLedgerEntry {
+    LedgerEntryType: 'Escrow';
+    Account: string;
+    Destination: string;
+    Amount: string;
+    Condition?: string;
+    CancelAfter?: number;
+    FinishAfter?: number;
+    Flags: number;
+    SourceTag?: number;
+    DestinationTag?: number;
+    OwnerNode: string;
+    DestinationNode?: string;
+    PreviousTxnID: string;
+    PreviousTxnLgrSeq: number;
+}
+
+export interface CheckLedgerEntry {
+    LedgerEntryType: 'Check';
+    Account: string;
+    Destination: string;
+    Flags: 0;
+    OwnerNode: string;
+    PreviousTxnID: string;
+    PreviousTxnLgrSeq: number;
+    SendMax: string | object;
+    Sequence: number;
+    DestinationNode: string;
+    DestinationTag: number;
+    Expiration: number;
+    InvoiceID: string;
+    SourceTag: number;
+}
+
+export interface RippleStateLedgerEntry {
+    LedgerEntryType: 'RippleState';
+    Flags: number;
+    Balance: AmountType;
+    LowLimit: AmountType;
+    HighLimit: AmountType;
+    PreviousTxnID: string;
+    PreviousTxnLgrSeq: number;
+    LowNode?: string;
+    HighNode?: string;
+    LowQualityIn?: number;
+    LowQualityOut?: number;
+    HighQualityIn?: number;
+    HighQualityOut?: number;
+}
+
+export interface NFTokenOfferLedgerEntry {
+    LedgerEntryType: 'NFTokenOffer';
+    Owner: string;
+    Destination: string;
+    Amount: AmountType;
+    NFTokenID: string;
+    Expiration?: number;
+    Flags: number;
+    OwnerNode: string;
+    NFTokenOfferNode: string;
+    PreviousTxnID: string;
+    PreviousTxnLgrSeq: number;
 }

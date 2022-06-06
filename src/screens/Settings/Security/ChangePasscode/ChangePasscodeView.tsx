@@ -129,7 +129,7 @@ class ChangePasscodeView extends Component<Props, State> {
     };
 
     checkOldPasscode = (oldPasscode: string) => {
-        AuthenticationService.checkPasscode(oldPasscode)
+        AuthenticationService.authenticatePasscode(oldPasscode)
             .then(() => {
                 this.changeStep(Steps.ENTER_NEW_PASSCODE);
             })

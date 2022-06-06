@@ -44,7 +44,7 @@ exports[`[TextInput] renders correctly 1`] = `
       style={
         Array [
           Object {
-            "color": "#3052FF",
+            "color": "#0030CF",
             "flex": 1,
             "fontFamily": "UbuntuMono-Bold",
             "fontSize": 32.14285714285714,

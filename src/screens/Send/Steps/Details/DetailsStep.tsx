@@ -13,14 +13,13 @@ import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import { BackendService } from '@services';
 
-import { Images } from '@common/helpers/images';
 import { Prompt, Toast } from '@common/helpers/interface';
 
 import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 // components
-import { Avatar, Button, KeyboardAwareScrollView, AmountInput, AmountText, Footer } from '@components/General';
+import { Button, KeyboardAwareScrollView, AmountInput, AmountText, Footer, TokenAvatar } from '@components/General';
 import { AmountValueType } from '@components/General/AmountInput';
 import { AccountPicker, CurrencyPicker } from '@components/Modules';
 
@@ -280,7 +279,7 @@ class DetailsStep extends Component<Props, State> {
                 <View>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
                         <View style={[styles.currencyImageContainer]}>
-                            <Avatar border size={35} source={Images.IconXrpNew} />
+                            <TokenAvatar token="XRP" border size={35} />
                         </View>
                         <View style={[AppStyles.column, AppStyles.centerContent]}>
                             <Text style={[styles.currencyItemLabel, selected && styles.currencyItemLabelSelected]}>
@@ -302,7 +301,7 @@ class DetailsStep extends Component<Props, State> {
             <View>
                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
                     <View style={[styles.currencyImageContainer]}>
-                        <Avatar border size={35} source={{ uri: item.counterParty.avatar }} />
+                        <TokenAvatar token={item} border size={35} />
                     </View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
                         <Text style={[styles.currencyItemLabel, selected && styles.currencyItemLabelSelected]}>
@@ -357,7 +356,13 @@ class DetailsStep extends Component<Props, State> {
                             onSelect={this.onCurrencyChange}
                             currencies={
                                 source
-                                    ? ['XRP', ...filter(source.lines, (l) => l.balance > 0 || l.obligation === true)]
+                                    ? [
+                                          'XRP',
+                                          ...filter(
+                                              source.lines.sorted([['order', false]]),
+                                              (l) => l.balance > 0 || l.obligation === true,
+                                          ),
+                                      ]
                                     : []
                             }
                             selectedItem={currency}
@@ -393,7 +398,7 @@ class DetailsStep extends Component<Props, State> {
                                     valueType={typeof currency === 'string' ? AmountValueType.XRP : AmountValueType.IOU}
                                     fractional={!sendingNFT}
                                     onChange={this.onAmountChange}
-                                    style={[styles.amountInput]}
+                                    style={styles.amountInput}
                                     placeholderTextColor={AppColors.grey}
                                     returnKeyType="done"
                                 />
@@ -424,7 +429,7 @@ class DetailsStep extends Component<Props, State> {
                                         valueType={AmountValueType.IOU}
                                         onChange={this.onRateAmountChange}
                                         editable={!!currencyRate}
-                                        style={[styles.amountRateInput]}
+                                        style={styles.amountRateInput}
                                         placeholderTextColor={AppColors.grey}
                                         returnKeyType="done"
                                     />

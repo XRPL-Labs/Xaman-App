@@ -2,7 +2,7 @@
 import { storiesOf } from '@storybook/react-native';
 
 import withPropsCombinations from '../../../../storybook/matrix';
-import { withLocale } from '../../../../storybook/decoration';
+import { withContainer } from '../../../../storybook/decoration';
 
 import { InfoMessage } from '../InfoMessage';
 
@@ -10,7 +10,7 @@ const TYPES = ['info', 'warning', 'error', 'success', 'neutral'];
 const label = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry';
 
 storiesOf('InfoMessage', module)
-    .addDecorator(withLocale)
+    .addDecorator(withContainer)
     .add(
         'All',
         withPropsCombinations(InfoMessage, {

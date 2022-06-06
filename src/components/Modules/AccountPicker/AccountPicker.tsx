@@ -93,12 +93,12 @@ class AccountPicker extends Component<Props, State> {
 
         const { expanded } = this.state;
 
-        if (!accounts || accounts.length === 0) {
+        if (!accounts || accounts.length === 0 || !selectedItem) {
             return (
-                <View style={[containerStyle]}>
+                <View style={[styles.pickerContainer, containerStyle]}>
                     {/* eslint-disable-next-line */}
-                    <View style={[AppStyles.row, { paddingLeft: 10 }]}>
-                        <Text style={[AppStyles.p, AppStyles.strong]}>No Item available</Text>
+                    <View style={AppStyles.row}>
+                        <Text style={[AppStyles.p, AppStyles.strong]}>No item available</Text>
                     </View>
                 </View>
             );

@@ -6,17 +6,19 @@ import LedgerDate from '../parser/common/date';
 
 /* Types ==================================================================== */
 import { AmountType } from '../parser/types';
-import { LedgerTransactionType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class PaymentChannelFund extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.PaymentChannelFund as const;
+    public readonly Type = PaymentChannelFund.Type;
 
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
+
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'PaymentChannelFund';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = PaymentChannelFund.Type;
         }
 
         this.fields = this.fields.concat(['Channel', 'Amount', 'Expiration']);

@@ -8,13 +8,15 @@ import React, { Component } from 'react';
 import { View, Animated, Text, Image, Alert, InteractionManager } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
+import { TrustLineRepository } from '@store/repositories';
 import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 
 import { Payload } from '@common/libs/payload';
 
 import { TrustSet, Payment } from '@common/libs/ledger/transactions';
-import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
+
 import Flag from '@common/libs/ledger/parser/common/flag';
+import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 
@@ -26,7 +28,16 @@ import { AppScreens } from '@common/constants';
 import LedgerService from '@services/LedgerService';
 
 // components
-import { Button, Spacer, RaisedButton, AmountText, InfoMessage, Avatar } from '@components/General';
+import {
+    Button,
+    Icon,
+    Spacer,
+    RaisedButton,
+    AmountText,
+    InfoMessage,
+    TouchableDebounce,
+    TokenAvatar,
+} from '@components/General';
 
 import Localize from '@locale';
 
@@ -41,6 +52,7 @@ export interface Props {
 }
 
 export interface State {
+    isFavorite: boolean;
     isRemoving: boolean;
     isLoading: boolean;
     isReviewScreenVisible: boolean;
@@ -66,6 +78,7 @@ class CurrencySettingsModal extends Component<Props, State> {
         super(props);
 
         this.state = {
+            isFavorite: props.trustLine.favorite,
             isRemoving: false,
             isLoading: false,
             isReviewScreenVisible: false,
@@ -91,7 +104,7 @@ class CurrencySettingsModal extends Component<Props, State> {
             Animated.timing(this.animatedOpacity, {
                 toValue: 1,
                 duration: 200,
-                useNativeDriver: true,
+                useNativeDriver: false,
             }),
         ]).start();
 
@@ -113,7 +126,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                 Animated.timing(this.animatedOpacity, {
                     toValue: 0,
                     duration: 200,
-                    useNativeDriver: true,
+                    useNativeDriver: false,
                 }),
             ]).start(async () => {
                 await Navigator.dismissOverlay();
@@ -129,8 +142,8 @@ class CurrencySettingsModal extends Component<Props, State> {
         if (trustLine.obligation || trustLine.isNFT) return Promise.resolve();
 
         return new Promise((resolve) => {
-            return LedgerService.getAccountLine(account.address, trustLine.currency)
-                .then((line: any) => {
+            LedgerService.getFilteredAccountLine(account.address, trustLine.currency)
+                .then((line) => {
                     if (line) {
                         const balance = new BigNumber(line.balance);
 
@@ -148,7 +161,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                     }
                 })
                 .catch(() => {
-                    return resolve();
+                    resolve();
                 });
         });
     };
@@ -162,34 +175,25 @@ class CurrencySettingsModal extends Component<Props, State> {
                 isRemoving: true,
             });
 
-            const payment = new Payment();
+            const payment = new Payment({
+                Account: account.address,
+                Destination: trustLine.currency.issuer,
+                DestinationTag: 0,
+                Amount: {
+                    currency: trustLine.currency.currency,
+                    issuer: trustLine.currency.issuer,
+                    value: String(latestLineBalance),
+                },
+            });
 
-            payment.Destination = {
-                address: trustLine.currency.issuer,
-                tag: 0,
-            };
-
-            payment.Account = {
-                address: account.address,
-            };
-
-            // @ts-ignore
-            payment.Amount = {
-                currency: trustLine.currency.currency,
-                issuer: trustLine.currency.issuer,
-                // @ts-ignore
-                value: latestLineBalance,
-            };
-
-            // check for transfer fee
-            // add PartialPayment flag
-            const issuerAccountInfo = await LedgerService.getAccountInfo(payment.Amount.issuer);
+            // add PartialPayment flag if issuer have transferFee
+            const issuerAccountInfo = await LedgerService.getAccountInfo(trustLine.currency.issuer);
             // eslint-disable-next-line max-len
-            if (has(issuerAccountInfo, ['account_data', 'TransferRate']) || account.address === payment.Amount.issuer) {
+            if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
                 payment.Flags = [txFlags.Payment.PartialPayment];
             }
 
-            const payload = await Payload.build(payment.Json);
+            const payload = Payload.build(payment.Json);
 
             Animated.parallel([
                 Animated.timing(this.animatedColor, {
@@ -200,21 +204,24 @@ class CurrencySettingsModal extends Component<Props, State> {
                 Animated.timing(this.animatedOpacity, {
                     toValue: 0,
                     duration: 200,
-                    useNativeDriver: true,
+                    useNativeDriver: false,
                 }),
             ]).start(() => {
-                this.setState({
-                    isReviewScreenVisible: true,
-                });
-
-                Navigator.showModal(
-                    AppScreens.Modal.ReviewTransaction,
+                this.setState(
                     {
-                        payload,
-                        onResolve: this.onClearDustResolve,
-                        onClose: this.onReviewScreenClose,
+                        isReviewScreenVisible: true,
                     },
-                    { modalPresentationStyle: 'fullScreen' },
+                    () => {
+                        Navigator.showModal(
+                            AppScreens.Modal.ReviewTransaction,
+                            {
+                                payload,
+                                onResolve: this.onClearDustResolve,
+                                onClose: this.onReviewScreenClose,
+                            },
+                            { modalPresentationStyle: 'fullScreen' },
+                        );
+                    },
                 );
             });
         } catch (e) {
@@ -294,19 +301,17 @@ class CurrencySettingsModal extends Component<Props, State> {
                 transactionFlags |= 131072; // tfClearNoRipple
             }
 
-            const clearTrustline = new TrustSet({
-                transaction: {
-                    Account: account.address,
-                    LimitAmount: {
-                        currency: trustLine.currency.currency,
-                        issuer: trustLine.currency.issuer,
-                        value: 0,
-                    },
-                    Flags: transactionFlags,
+            const trustSet = new TrustSet({
+                Account: account.address,
+                LimitAmount: {
+                    currency: trustLine.currency.currency,
+                    issuer: trustLine.currency.issuer,
+                    value: 0,
                 },
+                Flags: transactionFlags,
             });
 
-            const payload = await Payload.build(clearTrustline.Json);
+            const payload = Payload.build(trustSet.Json);
 
             Animated.parallel([
                 Animated.timing(this.animatedColor, {
@@ -317,21 +322,24 @@ class CurrencySettingsModal extends Component<Props, State> {
                 Animated.timing(this.animatedOpacity, {
                     toValue: 0,
                     duration: 200,
-                    useNativeDriver: true,
+                    useNativeDriver: false,
                 }),
             ]).start(() => {
-                this.setState({
-                    isReviewScreenVisible: true,
-                });
-
-                Navigator.showModal(
-                    AppScreens.Modal.ReviewTransaction,
+                this.setState(
                     {
-                        payload,
-                        onResolve: this.onRemoveLineResolve,
-                        onClose: this.onReviewScreenClose,
+                        isReviewScreenVisible: true,
                     },
-                    { modalPresentationStyle: 'overCurrentContext' },
+                    () => {
+                        Navigator.showModal(
+                            AppScreens.Modal.ReviewTransaction,
+                            {
+                                payload,
+                                onResolve: this.onRemoveLineResolve,
+                                onClose: this.onReviewScreenClose,
+                            },
+                            { modalPresentationStyle: 'overCurrentContext' },
+                        );
+                    },
                 );
             });
         } catch (e: any) {
@@ -359,7 +367,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                     Animated.timing(this.animatedOpacity, {
                         toValue: 1,
                         duration: 200,
-                        useNativeDriver: true,
+                        useNativeDriver: false,
                     }),
                 ]).start();
             },
@@ -382,7 +390,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                     Animated.timing(this.animatedOpacity, {
                         toValue: 1,
                         duration: 200,
-                        useNativeDriver: true,
+                        useNativeDriver: false,
                     }),
                 ]).start();
             },
@@ -403,10 +411,6 @@ class CurrencySettingsModal extends Component<Props, State> {
     };
 
     onRemovePress = async () => {
-        this.setState({
-            isRemoving: true,
-        });
-
         Prompt(
             Localize.t('global.warning'),
             Localize.t('account.removeTrustLineWarning'),
@@ -414,7 +418,6 @@ class CurrencySettingsModal extends Component<Props, State> {
                 { text: Localize.t('global.cancel') },
                 {
                     text: Localize.t('global.doIt'),
-
                     onPress: this.removeTrustLine,
                     style: 'destructive',
                 },
@@ -439,11 +442,24 @@ class CurrencySettingsModal extends Component<Props, State> {
         });
     };
 
+    onFavoritePress = () => {
+        const { trustLine } = this.props;
+
+        this.setState({
+            isFavorite: !trustLine.favorite,
+        });
+
+        // update the store
+        TrustLineRepository.update({
+            id: trustLine.id,
+            favorite: !trustLine.favorite,
+        });
+    };
+
     disableRippling = async () => {
         const { account, trustLine } = this.props;
 
-        const payload = await Payload.build({
-            TransactionType: 'TrustSet',
+        const trustSet = new TrustSet({
             Account: account.address,
             LimitAmount: {
                 currency: trustLine.currency.currency,
@@ -452,6 +468,8 @@ class CurrencySettingsModal extends Component<Props, State> {
             },
             Flags: 131072, // tfSetNoRipple
         });
+
+        const payload = Payload.build(trustSet.Json);
 
         await this.dismiss();
 
@@ -489,8 +507,7 @@ class CurrencySettingsModal extends Component<Props, State> {
             });
         }
 
-        const payload = await Payload.build({
-            TransactionType: 'TrustSet',
+        const trustSet = new TrustSet({
             Account: account.address,
             LimitAmount: {
                 currency: trustLine.currency.currency,
@@ -499,6 +516,8 @@ class CurrencySettingsModal extends Component<Props, State> {
             },
             Flags: 131072, // tfSetNoRipple
         });
+
+        const payload = Payload.build(trustSet.Json);
 
         await this.dismiss();
 
@@ -580,7 +599,7 @@ class CurrencySettingsModal extends Component<Props, State> {
 
     render() {
         const { trustLine } = this.props;
-        const { isReviewScreenVisible, isRemoving, isLoading, canRemove } = this.state;
+        const { isFavorite, isReviewScreenVisible, isRemoving, isLoading, canRemove } = this.state;
 
         if (isReviewScreenVisible) {
             return null;
@@ -593,23 +612,31 @@ class CurrencySettingsModal extends Component<Props, State> {
 
         return (
             <Animated.View
+                needsOffscreenAlphaCompositing
                 testID="currency-settings-overlay"
-                style={[styles.container, { backgroundColor: interpolateColor }]}
+                style={[styles.container, { opacity: this.animatedOpacity, backgroundColor: interpolateColor }]}
             >
-                <Animated.View style={[styles.visibleContent, { opacity: this.animatedOpacity }]}>
+                <Animated.View style={[styles.visibleContent]}>
                     <View style={styles.headerContainer}>
-                        <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                            <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.asset')}</Text>
-                        </View>
+                        <TouchableDebounce style={styles.favoriteContainer} onPress={this.onFavoritePress}>
+                            <Icon
+                                size={20}
+                                name="IconStarFull"
+                                style={[styles.favoriteIcon, isFavorite && styles.favoriteIconActive]}
+                            />
+                            <Text style={[styles.favoriteText, isFavorite && styles.favoriteTextActive]}>
+                                {isFavorite ? Localize.t('global.favorite') : Localize.t('global.addToFavorites')}
+                            </Text>
+                        </TouchableDebounce>
                         <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
-                            <Button label={Localize.t('global.cancel')} roundedSmall secondary onPress={this.dismiss} />
+                            <Button label={Localize.t('global.close')} roundedSmall light onPress={this.dismiss} />
                         </View>
                     </View>
                     <View style={styles.contentContainer}>
                         <View style={[styles.currencyItem]}>
                             <View style={[AppStyles.row, AppStyles.centerAligned]}>
                                 <View style={[styles.brandAvatarContainer]}>
-                                    <Avatar border size={35} source={{ uri: trustLine.counterParty.avatar }} />
+                                    <TokenAvatar token={trustLine} border size={35} />
                                 </View>
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
                                     <Text style={[styles.currencyItemLabelSmall]}>
@@ -652,11 +679,10 @@ class CurrencySettingsModal extends Component<Props, State> {
                             </>
                         )}
 
-                        <Spacer />
                         <View style={[styles.buttonRow]}>
                             <RaisedButton
                                 isDisabled={!this.canSend()}
-                                style={styles.sendButton}
+                                containerStyle={styles.sendButton}
                                 icon="IconCornerLeftUp"
                                 iconSize={20}
                                 iconStyle={[styles.sendButtonIcon]}
@@ -666,11 +692,10 @@ class CurrencySettingsModal extends Component<Props, State> {
                             />
                             {trustLine.isNFT ? (
                                 <RaisedButton
-                                    style={styles.infoButton}
+                                    containerStyle={styles.infoButton}
                                     icon="IconInfo"
                                     iconSize={20}
                                     iconStyle={[styles.infoButtonIcon]}
-                                    iconPosition="right"
                                     label={Localize.t('global.about')}
                                     textStyle={[styles.infoButtonText]}
                                     onPress={this.showNFTInfo}
@@ -678,11 +703,10 @@ class CurrencySettingsModal extends Component<Props, State> {
                             ) : (
                                 <RaisedButton
                                     isDisabled={!this.canExchange()}
-                                    style={styles.exchangeButton}
-                                    icon="IconCornerRightUp"
+                                    containerStyle={styles.exchangeButton}
+                                    icon="IconSwitchAccount"
                                     iconSize={20}
                                     iconStyle={[styles.exchangeButtonIcon]}
-                                    iconPosition="right"
                                     label={Localize.t('global.exchange')}
                                     textStyle={[styles.exchangeButtonText]}
                                     onPress={this.onExchangePress}
@@ -690,20 +714,20 @@ class CurrencySettingsModal extends Component<Props, State> {
                             )}
                         </View>
 
-                        <Spacer size={20} />
-
-                        <RaisedButton
-                            testID="line-remove-button"
-                            loadingIndicatorStyle="dark"
-                            isLoading={isRemoving}
-                            isDisabled={!canRemove}
-                            icon="IconTrash"
-                            iconSize={20}
-                            iconStyle={[styles.removeButtonIcon]}
-                            label={Localize.t('global.remove')}
-                            textStyle={[styles.removeButtonText]}
-                            onPress={this.onRemovePress}
-                        />
+                        <View style={styles.removeButtonContainer}>
+                            <RaisedButton
+                                testID="line-remove-button"
+                                loadingIndicatorStyle="dark"
+                                isLoading={isRemoving}
+                                isDisabled={!canRemove}
+                                icon="IconTrash"
+                                iconSize={20}
+                                iconStyle={[styles.removeButtonIcon]}
+                                label={Localize.t('global.remove')}
+                                textStyle={[styles.removeButtonText]}
+                                onPress={this.onRemovePress}
+                            />
+                        </View>
                     </View>
                 </Animated.View>
             </Animated.View>

@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 /**
  * AmountInput
  *
@@ -41,8 +40,6 @@ const MAX_IOU_PRECISION = 16;
 
 /* Component ==================================================================== */
 class AmountInput extends PureComponent<Props, State> {
-    private instance: TextInput;
-
     static defaultProps = {
         fractional: true,
         valueType: AmountValueType.XRP,
@@ -59,20 +56,23 @@ class AmountInput extends PureComponent<Props, State> {
 
     public getValue = (): string => {
         const { value } = this.state;
-
         return value;
     };
 
-    static getDerivedStateFromProps(nextProps: Props) {
-        const formatted = nextProps.value
-            ? AmountInput.format(nextProps.value, nextProps.valueType, nextProps.fractional)
-            : '';
-        const value = nextProps.value ? AmountInput.normalize(nextProps.value) : '';
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
+        if (nextProps.value !== prevState.value) {
+            const formatted = nextProps.value
+                ? AmountInput.format(nextProps.value, nextProps.valueType, nextProps.fractional)
+                : '';
+            const value = nextProps.value ? AmountInput.normalize(nextProps.value) : '';
 
-        return {
-            formatted,
-            value,
-        };
+            return {
+                formatted,
+                value,
+            };
+        }
+
+        return null;
     }
 
     static normalize = (value: string): string => {
@@ -97,8 +97,12 @@ class AmountInput extends PureComponent<Props, State> {
         }
 
         let formatted = value;
+        let separator = Localize.settings?.separator;
 
-        const separator = Localize.settings?.separator || '.';
+        // in some cases the separator is a special character, if so use default separator
+        if (!separator || [',', '.'].indexOf(separator) === -1) {
+            separator = '.';
+        }
 
         if (separator === ',') {
             formatted = formatted.replace('.', ',');
@@ -113,8 +117,8 @@ class AmountInput extends PureComponent<Props, State> {
         }
 
         if (!fractional) {
-            // filter only digits are allowed for non fractional values
-            return formatted.replace(new RegExp('[^0-9]', 'g'), '');
+            // filter only digits are allowed for non-fractional values
+            return formatted.replace(/[^0-9]/g, '');
         }
 
         // FRACTIONAL values
@@ -193,5 +197,6 @@ class AmountInput extends PureComponent<Props, State> {
 
 /* Export Component ==================================================================== */
 export const RefForwardingAmountInput = React.forwardRef<TextInput, Props>((props, ref) => {
+    // eslint-disable-next-line react/jsx-props-no-spreading
     return <AmountInput {...props} forwardedRef={ref} />;
 }) as any;

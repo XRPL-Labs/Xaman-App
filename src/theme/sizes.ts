@@ -22,6 +22,12 @@ const tabbarHeight = Platform.select({
     default: 0,
 });
 
+const bottomTabsSafeAreaInset = Platform.select({
+    ios: topInset,
+    android: 0,
+    default: 0,
+});
+
 // status bar size
 const statusBarHeight = topInset;
 
@@ -62,6 +68,8 @@ const Sizes = {
     bottomInset,
     topInset,
     bottomStableInset,
+
+    bottomTabsSafeAreaInset,
 
     padding: 30,
     paddingSml: 20,

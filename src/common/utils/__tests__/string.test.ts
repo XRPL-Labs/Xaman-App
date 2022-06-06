@@ -1,5 +1,5 @@
 /* eslint-disable spellcheck/spell-checker */
-import { Truncate, HexEncoding } from '../string';
+import { Truncate, HexEncoding, Capitalize, StringTypeCheck } from '../string';
 
 describe('Utils.String', () => {
     // truncate
@@ -40,6 +40,89 @@ describe('Utils.String', () => {
         it('should return the hex if not valid UTF-8', () => {
             const string = HexEncoding.toUTF8(testinvalidHex);
             expect(string).toStrictEqual(testinvalidHex);
+        });
+    });
+
+    describe('Capitalize', () => {
+        it('should capitalize the first letter', () => {
+            expect(Capitalize('test')).toStrictEqual('Test');
+        });
+    });
+
+    describe('StringTypeCheck', () => {
+        it('should check if string is valid UUIDv4', () => {
+            // @ts-ignore
+            expect(StringTypeCheck.isValidUUID({ someting: true })).toBe(false);
+            expect(StringTypeCheck.isValidUUID(undefined)).toBe(false);
+            expect(StringTypeCheck.isValidUUID('test-test-test-test-test')).toBe(false);
+            expect(StringTypeCheck.isValidUUID('')).toBe(false);
+            expect(StringTypeCheck.isValidUUID('f5569322-989a-11ec-b909-0242ac120002')).toBe(false);
+            expect(StringTypeCheck.isValidUUID('8036a695-3b59-4592-ae3b-e465919192cc')).toBe(true);
+            expect(StringTypeCheck.isValidUUID('8036A695-3B59-4592-AE3B-E465919192CC')).toBe(true);
+        });
+
+        it('should check if string is valid URL', () => {
+            const validUrls = [
+                'https://example.com',
+                'https://example.com/blah',
+                'https://wwww.example.com/test/?page=2',
+            ];
+
+            const invalidUrls = [
+                'www.example.com',
+                'www.example.com/blah',
+                'http://www.example.com/blah',
+                'http://127.0.0.1',
+                'http://127.0.0.1/wow',
+                'ftp://example.com',
+                'ftp://127.0.0.1',
+            ];
+
+            // @ts-ignore
+            expect(StringTypeCheck.isValidURL({ someting: true })).toBe(false);
+            expect(StringTypeCheck.isValidURL(undefined)).toBe(false);
+            expect(StringTypeCheck.isValidURL('')).toBe(false);
+
+            for (let i = 0; i < validUrls.length; i++) {
+                expect(StringTypeCheck.isValidURL(validUrls[i])).toBe(true);
+            }
+
+            for (let i = 0; i < invalidUrls.length; i++) {
+                expect(StringTypeCheck.isValidURL(invalidUrls[i])).toBe(false);
+            }
+        });
+
+        it('should check if string is valid amount', () => {
+            const validAmounts = ['1337', '0.1', '0.123456789123456'];
+            const invalidAmounts = ['0', '0.', '0.1234567891234567', '0.1c', 'not a number'];
+
+            // @ts-ignore
+            expect(StringTypeCheck.isValidAmount({ someting: true })).toBe(false);
+            expect(StringTypeCheck.isValidAmount(undefined)).toBe(false);
+            expect(StringTypeCheck.isValidAmount('')).toBe(false);
+
+            for (let i = 0; i < validAmounts.length; i++) {
+                expect(StringTypeCheck.isValidAmount(validAmounts[i])).toBe(true);
+            }
+
+            for (let i = 0; i < invalidAmounts.length; i++) {
+                expect(StringTypeCheck.isValidAmount(invalidAmounts[i])).toBe(false);
+            }
+        });
+
+        it('should check if string is valid transaction hash', () => {
+            // @ts-ignore
+            expect(StringTypeCheck.isValidHash({ someting: true })).toBe(false);
+            expect(StringTypeCheck.isValidHash(undefined)).toBe(false);
+            expect(
+                StringTypeCheck.isValidHash('1CE80FF3298223CDF8BE80BF007A857F24C09843FCA24359DFA3E035D5C021889'),
+            ).toBe(false);
+            expect(StringTypeCheck.isValidHash('1CE80FF3298223CDF8BE80BF007A857F24C09843FCA24359DFA3E035D5C02')).toBe(
+                false,
+            );
+            expect(
+                StringTypeCheck.isValidHash('1CE80FF3298223CDF8BE80BF007A857F24C09843FCA24359DFA3E035D5C02188'),
+            ).toBe(true);
         });
     });
 });

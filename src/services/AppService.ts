@@ -68,9 +68,9 @@ class AppService extends EventEmitter {
                 await this.setNetInfoListener();
                 await this.setAppStateListener();
 
-                return resolve();
+                resolve();
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
     };
@@ -118,7 +118,8 @@ class AppService extends EventEmitter {
                             [
                                 {
                                     text: Localize.t('global.notNow'),
-                                    onPress: () => Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`),
+                                    onPress: () =>
+                                        Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`),
                                     style: 'destructive',
                                 },
                                 {
@@ -161,7 +162,7 @@ class AppService extends EventEmitter {
                     this.setNetState(state.isConnected);
                 })
                 .finally(() => {
-                    return resolve();
+                    resolve();
                 });
 
             NetInfo.addEventListener((state) => {
@@ -246,7 +247,7 @@ class AppService extends EventEmitter {
     setAppStateListener() {
         return new Promise<void>((resolve) => {
             AppState.addEventListener('change', this.handleAppStateChange);
-            return resolve();
+            resolve();
         });
     }
 }

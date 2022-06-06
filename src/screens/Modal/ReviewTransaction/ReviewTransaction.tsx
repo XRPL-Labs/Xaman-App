@@ -3,43 +3,38 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, Alert, Linking, BackHandler, Keyboard, NativeEventSubscription } from 'react-native';
+import { Alert, BackHandler, Keyboard, Linking, NativeEventSubscription, Text, View } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
-import { VibrateHapticFeedback } from '@common/helpers/interface';
-import { Navigator } from '@common/helpers/navigator';
-
-// services
-import { PushNotificationsService, AccountService, LedgerService, StyleService } from '@services';
+import { LedgerService, PushNotificationsService, StyleService } from '@services';
 
 import { CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
-// transaction parser
-import transactionFactory from '@common/libs/ledger/parser/transaction';
-
-// components
-import { Button, Icon, Spacer } from '@components/General';
-
+import { TransactionTypes } from '@common/libs/ledger/types';
 import { PayloadOrigin } from '@common/libs/payload';
 
-// localize
+import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
+import { Navigator } from '@common/helpers/navigator';
+import { getAccountInfo } from '@common/helpers/resolver';
+
+import { Button, Icon, InfoMessage, Spacer } from '@components/General';
+
 import Localize from '@locale';
 
-// style
 import { AppStyles } from '@theme';
 
-import { ReviewStep, SubmittingStep, ResultStep } from './Steps';
-// context
+import { ResultStep, ReviewStep, SubmittingStep } from './Steps';
 import { StepsContext } from './Context';
+import { Props, State, Steps } from './types';
 
-import { Steps, Props, State } from './types';
 /* Component ==================================================================== */
 class ReviewTransactionModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.ReviewTransaction;
 
     private backHandler: NativeEventSubscription;
+    private mounted: boolean;
 
     static options() {
         return {
@@ -54,7 +49,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         this.state = {
             payload: props.payload,
-            transaction: transactionFactory(props.payload.TxJson),
+            transaction: undefined,
             source: undefined,
             currentStep: Steps.Review,
             submitResult: undefined,
@@ -62,130 +57,157 @@ class ReviewTransactionModal extends Component<Props, State> {
             isValidating: false,
             isValidPayload: true,
             hasError: false,
-            errorMessage: '',
+            softErrorMessage: '',
+            hardErrorMessage: '',
             coreSettings: CoreRepository.getSettings(),
         };
     }
 
+    static getDerivedStateFromError(error: any) {
+        // Update state so the next render will show the fallback UI.
+        return { hasError: true, hardErrorMessage: error.message };
+    }
+
     componentDidMount() {
+        const { payload } = this.state;
+
+        // track if component is mounted
+        this.mounted = true;
+
         // back handler listener on android
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress);
 
-        // update the accounts details before process the review
-        AccountService.updateAccountsDetails();
+        // set transaction
+        try {
+            this.setState({
+                transaction: payload.getTransaction(),
+            });
+        } catch (e: any) {
+            this.setError(e?.message);
+        }
     }
 
     componentWillUnmount() {
-        const { isPreparing, transaction } = this.state;
+        const { transaction } = this.state;
 
+        // track if component is mounted
+        this.mounted = false;
+
+        // unsubscribe from back handler
         if (this.backHandler) {
             this.backHandler.remove();
         }
 
-        // abort the transaction if we are preparing and leaving the review screen
-        if (isPreparing && transaction) {
+        // abort the transaction if we are leaving the review screen
+        if (transaction) {
             transaction.abort();
         }
     }
 
-    componentDidCatch() {
-        this.setState({ hasError: true });
-    }
-
     onHardwareBackPress = () => {
-        const { currentStep } = this.state;
+        const { currentStep, hasError } = this.state;
 
         if (currentStep === Steps.Review) {
-            this.onClose();
+            if (hasError) {
+                this.onDecline();
+            } else {
+                this.onClose();
+            }
         }
 
         return true;
     };
 
     getTransactionLabel = () => {
-        const { payload, transaction } = this.state;
+        const { transaction } = this.state;
+
+        // pseudo transaction
+        if (transaction.isPseudoTransaction()) {
+            return Localize.t('global.signIn');
+        }
 
         let type = '';
 
-        switch (payload.payload.tx_type) {
-            case 'AccountSet':
-                type = Localize.t('events.updateAccountSettings');
+        switch (transaction.Type) {
+            case TransactionTypes.AccountSet:
+                if (transaction.isNoOperation() && transaction.isCancelTicket()) {
+                    type = Localize.t('events.cancelTicket');
+                } else {
+                    type = Localize.t('events.updateAccountSettings');
+                }
                 break;
-            case 'AccountDelete':
+            case TransactionTypes.AccountDelete:
                 type = Localize.t('events.deleteAccount');
                 break;
-            case 'EscrowFinish':
+            case TransactionTypes.EscrowFinish:
                 type = Localize.t('events.finishEscrow');
                 break;
-            case 'EscrowCancel':
+            case TransactionTypes.EscrowCancel:
                 type = Localize.t('events.cancelEscrow');
                 break;
-            case 'EscrowCreate':
+            case TransactionTypes.EscrowCreate:
                 type = Localize.t('events.createEscrow');
                 break;
-            case 'SetRegularKey':
+            case TransactionTypes.SetRegularKey:
                 type = Localize.t('events.setARegularKey');
                 break;
-            case 'SignerListSet':
+            case TransactionTypes.SignerListSet:
                 type = Localize.t('events.setSignerList');
                 break;
-            case 'TrustSet':
+            case TransactionTypes.TrustSet:
                 type = Localize.t('events.updateAccountAssets');
                 break;
-            case 'OfferCreate':
+            case TransactionTypes.OfferCreate:
                 type = Localize.t('events.createOffer');
                 break;
-            case 'OfferCancel':
+            case TransactionTypes.OfferCancel:
                 type = Localize.t('events.cancelOffer');
                 break;
-            case 'DepositPreauth':
+            case TransactionTypes.DepositPreauth:
                 if (transaction.Authorize) {
                     type = Localize.t('events.authorizeDeposit');
                 } else {
                     type = Localize.t('events.unauthorizeDeposit');
                 }
                 break;
-            case 'CheckCreate':
+            case TransactionTypes.CheckCreate:
                 type = Localize.t('events.createCheck');
                 break;
-            case 'CheckCash':
+            case TransactionTypes.CheckCash:
                 type = Localize.t('events.cashCheck');
                 break;
-            case 'CheckCancel':
+            case TransactionTypes.CheckCancel:
                 type = Localize.t('events.cancelCheck');
                 break;
-            case 'TicketCreate':
+            case TransactionTypes.TicketCreate:
                 type = Localize.t('events.createTicket');
                 break;
-            case 'PaymentChannelCreate':
+            case TransactionTypes.PaymentChannelCreate:
                 type = Localize.t('events.createPaymentChannel');
                 break;
-            case 'PaymentChannelFund':
+            case TransactionTypes.PaymentChannelFund:
                 type = Localize.t('events.fundPaymentChannel');
                 break;
-            case 'PaymentChannelClaim':
+            case TransactionTypes.PaymentChannelClaim:
                 type = Localize.t('events.claimPaymentChannel');
                 break;
-            case 'NFTokenMint':
+            case TransactionTypes.NFTokenMint:
                 type = Localize.t('events.mintNFT');
                 break;
-            case 'NFTokenBurn':
+            case TransactionTypes.NFTokenBurn:
                 type = Localize.t('events.burnNFT');
                 break;
-            case 'NFTokenCreateOffer':
+            case TransactionTypes.NFTokenCreateOffer:
                 type = Localize.t('events.createNFTOffer');
                 break;
-            case 'NFTokenCancelOffer':
+            case TransactionTypes.NFTokenCancelOffer:
                 type = Localize.t('events.cancelNFTOffer');
                 break;
-            case 'NFTokenAcceptOffer':
+            case TransactionTypes.NFTokenAcceptOffer:
                 type = Localize.t('events.acceptNFTOffer');
                 break;
-            case 'SignIn':
-                type = Localize.t('global.signIn');
-                break;
             default:
-                type = payload.payload.tx_type;
+                type = transaction.Type;
                 break;
         }
 
@@ -196,6 +218,11 @@ class ReviewTransactionModal extends Component<Props, State> {
         const { source, transaction } = this.state;
         const { payload } = this.props;
 
+        // if not mounted return
+        if (!this.mounted) {
+            return;
+        }
+
         this.setState({
             isPreparing: true,
         });
@@ -204,26 +231,30 @@ class ReviewTransactionModal extends Component<Props, State> {
             .sign(source, payload.isMultiSign())
             .then(this.submit)
             .catch((e) => {
-                if (e) {
-                    if (typeof e.toString === 'function') {
-                        Alert.alert(Localize.t('global.error'), e.toString());
-                    } else {
-                        Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+                if (this.mounted) {
+                    if (e) {
+                        if (typeof e.toString === 'function') {
+                            Alert.alert(Localize.t('global.error'), e.toString());
+                        } else {
+                            Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+                        }
                     }
-                }
 
-                this.setState({
-                    currentStep: Steps.Review,
-                    isPreparing: false,
-                });
+                    this.setState({
+                        currentStep: Steps.Review,
+                        isPreparing: false,
+                    });
+                }
             });
     };
 
     onDecline = () => {
         const { onDecline, payload } = this.props;
 
+        const { hasError, hardErrorMessage, softErrorMessage } = this.state;
+
         // reject the payload
-        payload.reject();
+        payload.reject(hasError ? 'XUMM' : 'USER', hardErrorMessage || softErrorMessage);
 
         // emit sign requests update
         setTimeout(() => {
@@ -289,45 +320,56 @@ class ReviewTransactionModal extends Component<Props, State> {
                     await payload.validate();
                 }
             } catch (e: any) {
-                Navigator.showAlertModal({
-                    type: 'error',
-                    text: e.message,
-                    buttons: [
-                        {
-                            text: Localize.t('global.ok'),
-                            type: 'dismiss',
-                        },
-                    ],
-                });
+                if (this.mounted) {
+                    Navigator.showAlertModal({
+                        type: 'error',
+                        text: e.message,
+                        buttons: [
+                            {
+                                text: Localize.t('global.ok'),
+                                type: 'dismiss',
+                            },
+                        ],
+                    });
 
-                this.setState({
-                    isValidPayload: false,
-                });
+                    this.setState({
+                        isValidPayload: false,
+                    });
+                }
 
                 return;
             }
 
             try {
                 // if any validation set to the transaction run and check
-                if (typeof transaction.validate === 'function') {
-                    await transaction.validate(source, payload.isMultiSign());
+                // ignore if multiSign
+                if (typeof transaction.validate === 'function' && !payload.isMultiSign()) {
+                    await transaction.validate();
                 }
             } catch (e: any) {
-                Navigator.showAlertModal({
-                    type: 'error',
-                    text: e.message,
-                    buttons: [
-                        {
-                            text: Localize.t('global.ok'),
-                            type: 'dismiss',
-                        },
-                    ],
-                });
+                if (this.mounted) {
+                    Navigator.showAlertModal({
+                        type: 'error',
+                        text: e.message,
+                        buttons: [
+                            {
+                                text: Localize.t('global.ok'),
+                                type: 'dismiss',
+                            },
+                        ],
+                    });
+                }
+                return;
+            }
+
+            // user may close the page at this point
+            // we need to return if component is not mounted
+            if (!this.mounted) {
                 return;
             }
 
             // account is not activated and want to sign a tx
-            if (payload.payload.tx_type !== 'SignIn' && !payload.isMultiSign() && source.balance === 0) {
+            if (!payload.isSignIn() && !payload.isMultiSign() && source.balance === 0) {
                 Navigator.showAlertModal({
                     type: 'error',
                     text: Localize.t('account.selectedAccountIsNotActivatedPleaseChooseAnotherOne'),
@@ -342,7 +384,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             }
 
             // check for account delete and alert user
-            if (transaction.Type === 'AccountDelete') {
+            if (transaction.Type === TransactionTypes.AccountDelete) {
                 Navigator.showAlertModal({
                     type: 'error',
                     title: Localize.t('global.danger'),
@@ -366,7 +408,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             }
 
             // show alert if user adding a new trustline
-            if (transaction.Type === 'TrustSet') {
+            if (transaction.Type === TransactionTypes.TrustSet) {
                 // check if user is adding the trustline
                 if (
                     !source.hasCurrency({
@@ -399,7 +441,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             }
 
             // show alert if user trading not vetted tokens
-            if (transaction.Type === 'OfferCreate') {
+            if (transaction.Type === TransactionTypes.OfferCreate) {
                 let shouldShowAlert = false;
 
                 const takerPays = transaction.TakerPays;
@@ -438,7 +480,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             }
 
             // check for asfDisableMaster
-            if (transaction.Type === 'AccountSet' && transaction.SetFlag === 'asfDisableMaster') {
+            if (transaction.Type === TransactionTypes.AccountSet && transaction.SetFlag === 'asfDisableMaster') {
                 Navigator.showAlertModal({
                     type: 'warning',
                     text: Localize.t('account.disableMasterKeyWarning'),
@@ -458,41 +500,102 @@ class ReviewTransactionModal extends Component<Props, State> {
                 return;
             }
 
-            // if everything is fine prepare the transacgtion for signing
+            if (transaction.Type === TransactionTypes.Payment) {
+                try {
+                    const destinationInfo = await getAccountInfo(transaction.Destination.address);
+
+                    // if sending to a blackHoled account
+                    if (destinationInfo.blackHole) {
+                        Navigator.showAlertModal({
+                            type: 'warning',
+                            text: Localize.t('payload.paymentToBlackHoledAccountWarning'),
+                            buttons: [
+                                {
+                                    text: Localize.t('global.cancel'),
+                                    light: false,
+                                },
+                                {
+                                    text: Localize.t('global.doIt'),
+                                    onPress: this.prepareAndSignTransaction,
+                                    type: 'dismiss',
+                                    light: true,
+                                },
+                            ],
+                        });
+                        return;
+                    }
+
+                    // if sending XRP and destination
+                    if (
+                        (transaction.DeliverMin?.currency === 'XRP' || transaction.Amount.currency === 'XRP') &&
+                        destinationInfo.disallowIncomingXRP
+                    ) {
+                        Navigator.showAlertModal({
+                            type: 'warning',
+                            text: Localize.t('payload.paymentToDisallowedXRPWarning'),
+                            buttons: [
+                                {
+                                    text: Localize.t('global.cancel'),
+                                    light: false,
+                                },
+                                {
+                                    text: Localize.t('global.continue'),
+                                    onPress: this.prepareAndSignTransaction,
+                                    type: 'dismiss',
+                                    light: true,
+                                },
+                            ],
+                        });
+                        return;
+                    }
+                } catch {
+                    Toast(Localize.t('send.unableGetRecipientAccountInfoPleaseTryAgain'));
+                    return;
+                }
+            }
+
+            // if everything is fine prepare the transaction for signing
             this.prepareAndSignTransaction();
         } finally {
-            this.setState({
-                isValidating: false,
-            });
+            if (this.mounted) {
+                this.setState({
+                    isValidating: false,
+                });
+            }
         }
     };
 
     setError = (message: string) => {
         this.setState({
             hasError: true,
-            errorMessage: message,
+            softErrorMessage: message,
         });
     };
 
-    setSource = (item: AccountSchema) => {
+    setSource = (account: AccountSchema) => {
         const { payload } = this.props;
         const { transaction } = this.state;
 
-        // set the source account to payload
-        // ignore if it's multisign
+        // set the source account to transaction
+        // ignore if the payload is multiSign
         if (!payload.isMultiSign()) {
-            transaction.Account = { address: item.address };
+            transaction.Account = { address: account.address };
         }
 
         // change state
         this.setState({
-            source: item,
+            source: account,
         });
     };
 
     submit = async () => {
         const { payload } = this.props;
         const { transaction, coreSettings } = this.state;
+
+        // if not mounted return
+        if (!this.mounted) {
+            return;
+        }
 
         // in this phase transaction is already signed
         // check if we need to submit or not and patch the payload
@@ -567,13 +670,15 @@ class ReviewTransactionModal extends Component<Props, State> {
                 currentStep: Steps.Result,
             });
         } catch (e) {
-            this.setState({
-                currentStep: Steps.Review,
-            });
-            if (typeof e.toString === 'function') {
-                Alert.alert(Localize.t('global.error'), e.toString());
-            } else {
-                Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+            if (this.mounted) {
+                this.setState({
+                    currentStep: Steps.Review,
+                });
+                if (typeof e.toString === 'function') {
+                    Alert.alert(Localize.t('global.error'), e.toString());
+                } else {
+                    Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+                }
             }
         }
     };
@@ -582,10 +687,10 @@ class ReviewTransactionModal extends Component<Props, State> {
         const { onResolve, payload } = this.props;
         const { transaction } = this.state;
 
-        const { return_url_app } = payload.meta;
+        const returnURL = payload.getReturnURL();
 
-        if (return_url_app) {
-            Linking.openURL(return_url_app).catch(() => {
+        if (returnURL) {
+            Linking.openURL(returnURL).catch(() => {
                 Alert.alert(Localize.t('global.error'), Localize.t('global.unableOpenReturnURL'));
             });
         }
@@ -597,7 +702,8 @@ class ReviewTransactionModal extends Component<Props, State> {
     };
 
     renderError = () => {
-        const { errorMessage } = this.state;
+        const { softErrorMessage } = this.state;
+
         return (
             <View
                 testID="review-error-view"
@@ -607,30 +713,31 @@ class ReviewTransactionModal extends Component<Props, State> {
                     { backgroundColor: StyleService.value('$lightBlue') },
                 ]}
             >
-                <Icon name="IconInfo" style={{ tintColor: StyleService.value('$contrast') }} size={70} />
-                <Spacer size={20} />
-                <Text style={AppStyles.h5}>{Localize.t('global.error')}</Text>
-                <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                    {errorMessage || Localize.t('payload.unexpectedPayloadErrorOccurred')}
+                <Icon name="IconInfo" style={{ tintColor: StyleService.value('$orange') }} size={70} />
+                <Text style={[AppStyles.h5, { color: StyleService.value('$orange') }]}>
+                    {Localize.t('global.error')}
                 </Text>
-                <Spacer size={40} />
-                <Button
-                    testID="back-button"
-                    label={Localize.t('global.back')}
-                    onPress={() => {
-                        this.onDecline();
-                    }}
+                <Spacer size={20} />
+                <InfoMessage
+                    type="neutral"
+                    labelStyle={[AppStyles.p, AppStyles.bold]}
+                    label={softErrorMessage || Localize.t('payload.unexpectedPayloadErrorOccurred')}
                 />
+                <Spacer size={40} />
+                <Button testID="back-button" label={Localize.t('global.back')} onPress={this.onDecline} />
             </View>
         );
     };
 
     render() {
-        const { currentStep, hasError } = this.state;
+        const { transaction, currentStep, hasError } = this.state;
 
         // don't render if any error happened
         // this can happen if there is a missing field in the payload
         if (hasError) return this.renderError();
+
+        // wait for transaction to be set
+        if (!transaction) return null;
 
         let Step = null;
 
@@ -653,6 +760,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             <StepsContext.Provider
                 value={{
                     ...this.state,
+                    setError: this.setError,
                     setSource: this.setSource,
                     onClose: this.onClose,
                     onAccept: this.onAccept,

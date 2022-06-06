@@ -1,5 +1,5 @@
 import Realm, { ObjectSchema } from 'realm';
-import { assign, has } from 'lodash';
+import { has } from 'lodash';
 
 import { CurrencySchema } from '@store/schemas/latest';
 import { Issuer } from '@common/libs/ledger/parser/types';
@@ -18,7 +18,7 @@ class CurrencyRepository extends BaseRepository {
     include = (data: any): Promise<any> => {
         // assign id if not applied
         if (!has(data, 'id')) {
-            assign(data, { id: `${data.issuer}.${data.currency}` });
+            throw new Error('Update require primary key (id) to be set');
         }
         return this.upsert(data);
     };
@@ -26,7 +26,7 @@ class CurrencyRepository extends BaseRepository {
     update = (object: CurrencySchema): void => {
         // the primary key should be in the object
         if (!has(object, 'id')) {
-            throw new Error('Update require primary key to be set');
+            throw new Error('Update require primary key (id) to be set');
         }
         this.create(object, true);
     };

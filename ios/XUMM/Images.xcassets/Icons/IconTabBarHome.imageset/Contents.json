@@ -1,23 +1,23 @@
 {
   "images" : [
     {
+      "filename" : "IconTabBarHome.png",
       "idiom" : "universal",
-      "filename" : "icon_tabbar_home@1x.png",
       "scale" : "1x"
     },
     {
+      "filename" : "IconTabBarHome@2x.png",
       "idiom" : "universal",
-      "filename" : "icon_tabbar_home@2x.png",
       "scale" : "2x"
     },
     {
+      "filename" : "IconTabBarHome@3x.png",
       "idiom" : "universal",
-      "filename" : "icon_tabbar_home@3x.png",
       "scale" : "3x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }

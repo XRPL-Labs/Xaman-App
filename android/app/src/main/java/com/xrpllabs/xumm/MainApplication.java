@@ -7,7 +7,7 @@ import com.facebook.react.modules.network.OkHttpClientProvider;
 
 // Local Libs
 import libs.crypto.modules.CryptoPackage;
-
+import libs.authentication.Biometric.BiometricPackage;
 import libs.ui.KeyboardPackage;
 import libs.ui.ActionSheetPackage;
 import libs.ui.PromptPackage;
@@ -61,6 +61,7 @@ public class MainApplication extends NavigationApplication {
                     packages.add(new AppUpdatePackage());
                     packages.add(new InAppPurchasePackage());
                     packages.add(new DimensionPackage());
+                    packages.add(new BiometricPackage());
                     return packages;
                 }
             };

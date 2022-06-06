@@ -5,11 +5,11 @@
 import { find, has } from 'lodash';
 
 import React, { Component, Fragment } from 'react';
-import { View, SafeAreaView, Text, Image, ImageBackground, InteractionManager, Share, Alert } from 'react-native';
+import { View, Text, Image, ImageBackground, InteractionManager, Share, Alert } from 'react-native';
 
 import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
-import { AccountService, SocketService, BackendService, StyleService, LedgerService } from '@services';
+import { AccountService, SocketService, StyleService, LedgerService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
@@ -18,23 +18,13 @@ import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/lates
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
-import { VibrateHapticFeedback, Prompt, Toast } from '@common/helpers/interface';
-
-import { CalculateAvailableBalance } from '@common/utils/balance';
+import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
 
 import Localize from '@locale';
 
 // components
-import {
-    TouchableDebounce,
-    Button,
-    RaisedButton,
-    InfoMessage,
-    Spacer,
-    Icon,
-    LoadingIndicator,
-} from '@components/General';
-import { TrustLineList } from '@components/Modules';
+import { TouchableDebounce, Button, RaisedButton, InfoMessage, Spacer, Icon, Badge } from '@components/General';
+import { ProBadge, TokenList } from '@components/Modules';
 
 // style
 import { AppStyles, AppFonts } from '@theme';
@@ -42,17 +32,16 @@ import { ChainColors } from '@theme/colors';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {}
+export interface Props {
+    timestamp: number;
+}
 
 export interface State {
+    accountsCount: number;
     account: AccountSchema;
     coreSettings: CoreSchema;
     isSpendable: boolean;
     discreetMode: boolean;
-    isLoadingRate: boolean;
-    showRate: boolean;
-    currency: string;
-    currencyRate: any;
 }
 
 /* Component ==================================================================== */
@@ -67,25 +56,21 @@ class HomeView extends Component<Props, State> {
         const coreSettings = CoreRepository.getSettings();
 
         this.state = {
+            accountsCount: undefined,
             account: undefined,
             isSpendable: false,
             coreSettings,
-            currency: coreSettings.currency,
             discreetMode: coreSettings.discreetMode,
-            isLoadingRate: false,
-            showRate: false,
-            currencyRate: undefined,
         };
     }
 
     componentDidMount() {
         // update UI on accounts update
         AccountRepository.on('accountUpdate', this.updateDefaultAccount);
-
         // update spendable accounts on account add/remove
         AccountRepository.on('accountCreate', this.getDefaultAccount);
         AccountRepository.on('accountRemove', this.getDefaultAccount);
-
+        // update discreetMode and developerMode on change
         CoreRepository.on('updateSettings', this.onCoreSettingsUpdate);
 
         // listen for screen appear event
@@ -116,44 +101,42 @@ class HomeView extends Component<Props, State> {
         const { account } = this.state;
 
         InteractionManager.runAfterInteractions(() => {
+            // Update account details when component didAppear and Socket is connected
             if (account?.isValid() && SocketService.isConnected()) {
-                // update account details
+                // only update current account details
                 AccountService.updateAccountsDetails([account.address]);
             }
         });
     }
 
+    /*
+        Handle events when something in CoreSettings has been changed
+        Monitoring `discreetMode`, `developerMode`, `defaultNode` changes
+     */
     onCoreSettingsUpdate = (coreSettings: CoreSchema, changes: Partial<CoreSchema>) => {
-        const { discreetMode, currency, showRate } = this.state;
+        const { discreetMode } = this.state;
 
-        // discreetMode changed
+        // default discreetMode has changed
         if (has(changes, 'discreetMode') && discreetMode !== changes.discreetMode) {
             this.setState({
                 discreetMode: coreSettings.discreetMode,
             });
         }
 
-        // currency changed
-        if (has(changes, 'currency') && currency !== changes.currency) {
-            this.setState(
-                {
-                    currency: coreSettings.currency,
-                },
-                () => {
-                    // turn to XRP
-                    if (showRate) {
-                        this.toggleBalance();
-                    }
-                },
-            );
-        }
-
+        // developer mode or default node has been changed
         if (has(changes, 'developerMode') || has(changes, 'defaultNode')) {
             this.setNodeChainHeader(coreSettings);
         }
     };
 
-    updateDefaultAccount = (updatedAccount: AccountSchema) => {
+    updateDefaultAccount = (updatedAccount: AccountSchema, changes: Partial<AccountSchema>) => {
+        // update account visible count
+        if (updatedAccount?.isValid() && has(changes, 'hidden')) {
+            this.setState({
+                accountsCount: AccountRepository.getVisibleAccountCount(),
+            });
+        }
+
         if (updatedAccount?.isValid() && updatedAccount.default) {
             // update the UI
             this.setState(
@@ -170,6 +153,7 @@ class HomeView extends Component<Props, State> {
         this.setState(
             {
                 account: AccountRepository.getDefaultAccount(),
+                accountsCount: AccountRepository.getVisibleAccountCount(),
             },
             // when account balance changed update spendable accounts
             this.updateSpendableStatus,
@@ -188,34 +172,26 @@ class HomeView extends Component<Props, State> {
             const chain = CoreRepository.getChainFromNode(currentSettings.defaultNode);
 
             // show the header
-            Navigator.mergeOptions(
-                {
-                    topBar: {
-                        hideOnScroll: true,
-                        visible: true,
-                        animate: true,
-                        background: {
-                            color: ChainColors[chain],
-                        },
-                        title: {
-                            text: chain.toUpperCase(),
-                            color: 'white',
-                            fontFamily: AppFonts.base.familyExtraBold,
-                            fontSize: AppFonts.h5.size,
-                        },
+            Navigator.mergeOptions(componentId, {
+                topBar: {
+                    visible: true,
+                    background: {
+                        color: ChainColors[chain],
+                    },
+                    title: {
+                        text: chain.toUpperCase(),
+                        color: 'white',
+                        fontFamily: AppFonts.base.familyExtraBold,
+                        fontSize: AppFonts.h5.size,
                     },
                 },
-                componentId,
-            );
+            });
         } else {
-            Navigator.mergeOptions(
-                {
-                    topBar: {
-                        visible: false,
-                    },
+            Navigator.mergeOptions(componentId, {
+                topBar: {
+                    visible: false,
                 },
-                componentId,
-            );
+            });
         }
     };
 
@@ -229,17 +205,6 @@ class HomeView extends Component<Props, State> {
                 isSpendable: !!find(spendableAccounts, { address: account.address }),
             });
         }
-    };
-
-    showBalanceExplain = () => {
-        const { account } = this.state;
-
-        // don't show the explain screen when account is not activated
-        if (account.balance === 0) {
-            return;
-        }
-
-        Navigator.showOverlay(AppScreens.Overlay.ExplainBalance, { account });
     };
 
     openActiveAccountDescription = () => {
@@ -348,51 +313,7 @@ class HomeView extends Component<Props, State> {
         }).catch(() => {});
     };
 
-    toggleBalance = () => {
-        const { showRate, currency } = this.state;
-
-        if (!showRate) {
-            this.setState({
-                isLoadingRate: true,
-                showRate: true,
-            });
-
-            BackendService.getCurrencyRate(currency)
-                .then((r) => {
-                    this.setState({
-                        currencyRate: r,
-                        isLoadingRate: false,
-                    });
-                })
-                .catch(() => {
-                    Toast(Localize.t('global.unableToFetchCurrencyRate'));
-
-                    this.setState({
-                        isLoadingRate: false,
-                        showRate: false,
-                    });
-                });
-        } else {
-            this.setState({
-                showRate: false,
-            });
-        }
-    };
-
-    onBalancePress = () => {
-        const { account } = this.state;
-
-        // if account is negative show balance explain
-        const availableBalance = CalculateAvailableBalance(account, true);
-
-        if (availableBalance < 0) {
-            this.showBalanceExplain();
-        } else {
-            this.toggleBalance();
-        }
-    };
-
-    onTrustLinePress = (line: TrustLineSchema) => {
+    onTokenPress = (line: TrustLineSchema) => {
         const { isSpendable } = this.state;
 
         if (!line) {
@@ -406,26 +327,47 @@ class HomeView extends Component<Props, State> {
         }
     };
 
+    onSwitchButtonPress = () => {
+        const { accountsCount } = this.state;
+
+        // if account count is zero or 1 then show add account
+        if (accountsCount === 1) {
+            Navigator.push(AppScreens.Account.Add);
+            return;
+        }
+
+        Navigator.showOverlay(AppScreens.Overlay.SwitchAccount);
+    };
+
     renderHeader = () => {
-        const { account } = this.state;
+        const { account, accountsCount } = this.state;
 
         return (
             <Fragment key="header">
-                <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                <View style={[AppStyles.flex1, AppStyles.row, AppStyles.flexStart]}>
                     <Image style={[styles.logo]} source={StyleService.getImage('XummLogo')} />
+                    <ProBadge />
                 </View>
                 {account?.isValid() && (
-                    <View style={[AppStyles.flex1]}>
+                    <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
                         <Button
-                            onPress={() => {
-                                Navigator.showOverlay(AppScreens.Overlay.SwitchAccount);
-                            }}
                             light
-                            roundedSmall
+                            roundedMini
+                            onPress={this.onSwitchButtonPress}
                             style={styles.switchAccountButton}
-                            iconSize={14}
-                            icon="IconSwitchAccount"
-                            label={Localize.t('account.switchAccount')}
+                            iconSize={12}
+                            icon={accountsCount > 1 ? 'IconSwitchAccount' : 'IconPlus'}
+                            label={accountsCount > 1 ? Localize.t('global.accounts') : Localize.t('home.addAccount')}
+                            extraComponent={
+                                accountsCount > 1 && (
+                                    <Badge
+                                        containerStyle={styles.accountCountBadgeContainer}
+                                        labelStyle={styles.accountCountBadgeLabel}
+                                        label={`${accountsCount}`}
+                                        type="count"
+                                    />
+                                )
+                            }
                         />
                     </View>
                 )}
@@ -434,6 +376,7 @@ class HomeView extends Component<Props, State> {
     };
 
     renderAssets = () => {
+        const { timestamp } = this.props;
         const { account, discreetMode, isSpendable } = this.state;
 
         // accounts is not activated
@@ -445,7 +388,7 @@ class HomeView extends Component<Props, State> {
                 const keysForAccounts = AccountRepository.findBy('regularKey', account.address);
 
                 return (
-                    <View style={[AppStyles.flex6]}>
+                    <View style={[AppStyles.flex6, AppStyles.paddingHorizontalSml]}>
                         <InfoMessage icon="IconKey" type="info" label={Localize.t('account.regularKeyFor')} />
                         <Spacer />
                         {keysForAccounts.map((a, index) => {
@@ -475,7 +418,10 @@ class HomeView extends Component<Props, State> {
             }
 
             return (
-                <View style={[AppStyles.flex6]} testID="not-activated-account-container">
+                <View
+                    style={[AppStyles.flex6, AppStyles.paddingHorizontalSml]}
+                    testID="not-activated-account-container"
+                >
                     <InfoMessage type="error" label={Localize.t('account.yourAccountIsNotActivated')} />
                     <TouchableDebounce
                         style={[AppStyles.row, AppStyles.centerContent, AppStyles.marginTopSml]}
@@ -498,13 +444,14 @@ class HomeView extends Component<Props, State> {
         }
 
         return (
-            <TrustLineList
-                testID="trustLine-list-container"
-                style={[styles.trustLineListContainer]}
+            <TokenList
+                timestamp={timestamp}
+                testID="token-list-container"
+                style={styles.tokenListContainer}
                 account={account}
-                onLinePress={this.onTrustLinePress}
+                onTokenPress={this.onTokenPress}
                 discreetMode={discreetMode}
-                showAddButton={isSpendable}
+                readonly={!isSpendable}
             />
         );
     };
@@ -514,29 +461,28 @@ class HomeView extends Component<Props, State> {
 
         if (isSpendable) {
             return (
-                <View style={[styles.buttonRow, styles.buttonRowHalf]}>
+                <View style={[styles.buttonRow]}>
                     <RaisedButton
+                        small
                         testID="send-button"
-                        style={[styles.sendButton]}
+                        containerStyle={styles.sendButtonContainer}
                         icon="IconCornerLeftUp"
-                        iconSize={25}
+                        iconSize={18}
                         iconStyle={[styles.sendButtonIcon]}
                         label={Localize.t('global.send')}
-                        textStyle={[styles.sendButtonText]}
+                        textStyle={styles.sendButtonText}
                         onPress={this.pushSendScreen}
-                        activeOpacity={0}
                     />
                     <RaisedButton
+                        small
                         testID="request-button"
-                        style={[styles.requestButton]}
+                        containerStyle={styles.requestButtonContainer}
                         icon="IconCornerRightDown"
-                        iconSize={25}
-                        iconStyle={[styles.requestButtonIcon]}
-                        iconPosition="right"
+                        iconSize={18}
+                        iconStyle={styles.requestButtonIcon}
                         label={Localize.t('global.request')}
-                        textStyle={[styles.requestButtonText]}
+                        textStyle={styles.requestButtonText}
                         onPress={this.onShowAccountQRPress}
-                        activeOpacity={0}
                     />
                 </View>
             );
@@ -545,13 +491,13 @@ class HomeView extends Component<Props, State> {
         return (
             <View style={[styles.buttonRow]}>
                 <RaisedButton
-                    testID="qr-button"
+                    small
+                    testID="show-account-qr-button"
                     icon="IconQR"
                     iconSize={20}
                     label={Localize.t('account.showAccountQR')}
                     textStyle={[styles.QRButtonText]}
                     onPress={this.onShowAccountQRPress}
-                    activeOpacity={0}
                 />
             </View>
         );
@@ -559,8 +505,8 @@ class HomeView extends Component<Props, State> {
 
     renderEmpty = () => {
         return (
-            <SafeAreaView testID="home-tab-empty-view" style={[AppStyles.tabContainer]}>
-                <View style={[AppStyles.headerContainer]}>{this.renderHeader()}</View>
+            <View testID="home-tab-empty-view" style={AppStyles.tabContainer}>
+                <View style={[styles.headerContainer]}>{this.renderHeader()}</View>
 
                 <ImageBackground
                     source={StyleService.getImage('BackgroundShapes')}
@@ -580,71 +526,7 @@ class HomeView extends Component<Props, State> {
                         }}
                     />
                 </ImageBackground>
-            </SafeAreaView>
-        );
-    };
-
-    renderBalance = () => {
-        const { showRate, isLoadingRate, account, discreetMode, currencyRate } = this.state;
-
-        // account is not activated
-        if (account.balance === 0) return null;
-
-        let balance = '0';
-
-        if (!isLoadingRate) {
-            const availableBalance = CalculateAvailableBalance(account, true);
-            if (showRate) {
-                balance = `${currencyRate.symbol} ${Localize.formatNumber(
-                    Number(availableBalance) * Number(currencyRate.lastRate),
-                )}`;
-            } else {
-                balance = Localize.formatNumber(availableBalance);
-            }
-        }
-
-        return (
-            <>
-                <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                    <Text numberOfLines={1} style={[AppStyles.flex1, styles.balanceLabel]}>
-                        {Localize.t('home.balance')}
-                    </Text>
-
-                    <TouchableDebounce style={AppStyles.paddingRightSml} onPress={this.toggleDiscreetMode}>
-                        <Text style={[styles.cardSmallLabel]}>
-                            <Icon
-                                style={[AppStyles.imgColorGrey]}
-                                size={12}
-                                name={discreetMode ? 'IconEyeOff' : 'IconEye'}
-                            />
-                            {'  '}
-                            {discreetMode ? Localize.t('home.showBalance') : Localize.t('home.hideBalance')}
-                        </Text>
-                    </TouchableDebounce>
-
-                    <TouchableDebounce onPress={this.showBalanceExplain}>
-                        <Text style={[styles.cardSmallLabel]}>
-                            <Icon style={[AppStyles.imgColorGrey]} size={12} name="IconInfo" />
-                            {'  '}
-                            {Localize.t('home.explainBalance')}
-                        </Text>
-                    </TouchableDebounce>
-                </View>
-                <TouchableDebounce activeOpacity={0.7} style={[styles.balanceContainer]} onPress={this.onBalancePress}>
-                    {!discreetMode && !showRate && <Icon name="IconXrp" size={16} style={styles.xrpIcon} />}
-
-                    {isLoadingRate ? (
-                        <LoadingIndicator style={styles.rateLoader} />
-                    ) : (
-                        <Text
-                            testID="account-balance-label"
-                            style={[styles.balanceText, discreetMode && AppStyles.colorGrey]}
-                        >
-                            {discreetMode ? '••••••••' : balance}
-                        </Text>
-                    )}
-                </TouchableDebounce>
-            </>
+            </View>
         );
     };
 
@@ -652,9 +534,9 @@ class HomeView extends Component<Props, State> {
         const { account, discreetMode } = this.state;
 
         return (
-            <View style={[AppStyles.row, AppStyles.paddingBottomSml]}>
+            <View style={[AppStyles.row, AppStyles.paddingHorizontalSml]}>
                 <View style={[AppStyles.flex1]}>
-                    <Text style={[AppStyles.h5]} numberOfLines={1}>
+                    <Text style={[styles.accountLabelText]} numberOfLines={1}>
                         {account.label}
                     </Text>
                     <TouchableDebounce onPress={this.onShowAccountQRPress} activeOpacity={0.8}>
@@ -662,14 +544,14 @@ class HomeView extends Component<Props, State> {
                             testID="account-address-text"
                             adjustsFontSizeToFit
                             numberOfLines={1}
-                            style={[styles.cardAddressText, discreetMode && AppStyles.colorGrey]}
+                            style={[styles.accountAddressText, discreetMode && AppStyles.colorGrey]}
                         >
                             {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
                         </Text>
                     </TouchableDebounce>
                 </View>
-                <TouchableDebounce hitSlop={{ left: 25, right: 25 }} onPress={this.onShowAccountQRPress}>
-                    <Icon style={[styles.iconShare]} size={16} name="IconShare" />
+                <TouchableDebounce hitSlop={{ left: 25, right: 25 }} onPress={this.toggleDiscreetMode}>
+                    <Icon style={[styles.iconEye]} size={18} name={discreetMode ? 'IconEyeOff' : 'IconEye'} />
                 </TouchableDebounce>
             </View>
         );
@@ -683,20 +565,17 @@ class HomeView extends Component<Props, State> {
         }
 
         return (
-            <SafeAreaView testID="home-tab-view" style={[AppStyles.tabContainer, AppStyles.centerAligned]}>
+            <View testID="home-tab-view" style={AppStyles.tabContainer}>
                 {/* Header */}
-                <View style={[AppStyles.headerContainer]}>{this.renderHeader()}</View>
+                <View style={styles.headerContainer}>{this.renderHeader()}</View>
 
                 {/* Content */}
-                <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontalSml]}>
-                    <View style={[styles.accountCard]}>
-                        {this.renderAccountDetails()}
-                        {this.renderBalance()}
-                        {this.renderButtons()}
-                    </View>
+                <View style={AppStyles.contentContainer}>
+                    {this.renderAccountDetails()}
+                    {this.renderButtons()}
                     {this.renderAssets()}
                 </View>
-            </SafeAreaView>
+            </View>
         );
     }
 }

@@ -1,21 +1,23 @@
-import { has, get, set, isUndefined, findKey } from 'lodash';
+import { get, set, isUndefined, findKey } from 'lodash';
 
 import BaseTransaction from './base';
 import Amount from '../parser/common/amount';
 
 /* Types ==================================================================== */
-import { LedgerTransactionType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 import { Destination, AmountType } from '../parser/types';
 
 /* Class ==================================================================== */
 class EscrowFinish extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.EscrowFinish as const;
+    public readonly Type = EscrowFinish.Type;
 
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
+
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'EscrowFinish';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = EscrowFinish.Type;
         }
 
         this.fields = this.fields.concat(['Owner', 'OfferSequence', 'Condition', 'Fulfillment']);
@@ -51,19 +53,13 @@ class EscrowFinish extends BaseTransaction {
             return {
                 address: finalFields.Destination,
                 tag: finalFields.DestinationTag,
-                name: get(this, ['tx', 'DestinationName']),
             };
         }
 
         return {
             address: '',
+            tag: undefined,
         };
-    }
-
-    set Destination(destination: Destination) {
-        if (has(destination, 'name')) {
-            set(this, 'tx.DestinationName', destination.name);
-        }
     }
 
     set Owner(owner: string) {

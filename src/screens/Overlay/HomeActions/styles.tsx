@@ -4,22 +4,12 @@ import { AppSizes, AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    container: {
-        // height: Sizes.screen.heightHalf + 100,
-        backgroundColor: '$background',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        borderColor: '$tint',
-        borderWidth: 1,
-        shadowColor: '$black',
-        shadowOffset: { width: 0, height: 0 },
-        shadowRadius: 5,
-        shadowOpacity: 0.3,
-        paddingHorizontal: 25,
-        paddingVertical: 15,
+    rowListContainer: {
+        paddingTop: AppSizes.padding,
     },
-    actionButtonBlack: {
-        backgroundColor: '$contrast',
+    actionButtonContainer: {
+        flexDirection: 'row',
+        paddingTop: AppSizes.padding,
     },
     appIcon: {
         width: AppSizes.scale(60),
@@ -33,7 +23,7 @@ const styles = StyleService.create({
         color: '$textPrimary',
     },
     activityIndicator: {
-        height: AppSizes.scale(130),
+        height: AppSizes.scale(240),
     },
     xAppsIcon: {
         resizeMode: 'contain',

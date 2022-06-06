@@ -7,7 +7,8 @@
 import React, { PureComponent } from 'react';
 import { View, Text } from 'react-native';
 
-import { TouchableDebounce, Icon } from '@components/General';
+import { TouchableDebounce } from '@components/General/TouchableDebounce';
+import { Icon } from '@components/General/Icon';
 
 import { AppStyles } from '@theme';
 import styles from './styles';

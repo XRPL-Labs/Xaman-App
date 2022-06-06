@@ -3,15 +3,14 @@
 import { storiesOf } from '@storybook/react-native';
 
 import withPropsCombinations from '../../../../storybook/matrix';
-import { withBackground, withLocale } from '../../../../storybook/decoration';
+import { withContainer } from '../../../../storybook/decoration';
 
 import { Badge } from '../Badge';
 
 const SIZES = ['small', 'medium', 'large'] as const;
 
 storiesOf('Badge', module)
-    .addDecorator(withLocale)
-    .addDecorator(withBackground)
+    .addDecorator(withContainer)
     .add(
         'Bithomp',
         withPropsCombinations(Badge, {
@@ -41,9 +40,44 @@ storiesOf('Badge', module)
         }),
     )
     .add(
+        'FioProtocol',
+        withPropsCombinations(Badge, {
+            size: SIZES,
+            type: ['fioprotocol'],
+        }),
+    )
+    .add(
+        'Contacts',
+        withPropsCombinations(Badge, {
+            size: SIZES,
+            type: ['contacts'],
+        }),
+    )
+    .add(
+        'Accounts',
+        withPropsCombinations(Badge, {
+            size: SIZES,
+            type: ['accounts'],
+        }),
+    )
+    .add(
         'Success',
         withPropsCombinations(Badge, {
             size: SIZES,
             type: ['success'],
+        }),
+    )
+    .add(
+        'Open',
+        withPropsCombinations(Badge, {
+            size: SIZES,
+            type: ['open'],
+        }),
+    )
+    .add(
+        'Planned',
+        withPropsCombinations(Badge, {
+            size: SIZES,
+            type: ['planned'],
         }),
     );

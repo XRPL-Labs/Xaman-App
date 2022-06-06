@@ -2,6 +2,8 @@ import isUndefined from 'lodash/isUndefined';
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
+import { InfoMessage } from '@components/General';
+
 import { AccountSet } from '@common/libs/ledger/transactions';
 
 import Localize from '@locale';
@@ -28,29 +30,36 @@ class AccountSetTemplate extends Component<Props, State> {
         return <Text style={[styles.value]}>{transaction.SetFlag}</Text>;
     };
 
+    renderNoOperation = () => {
+        const { transaction } = this.props;
+
+        let message = Localize.t('events.thisTransactionDoesNotEffectAnyAccountSettings');
+
+        // cancel ticket
+        if (transaction.isCancelTicket()) {
+            message = Localize.t('events.thisTransactionClearTicket', {
+                ticketSequence: transaction.TicketSequence,
+            });
+        }
+
+        return (
+            <View style={styles.signersContainer}>
+                <InfoMessage type="info" label={message} />
+            </View>
+        );
+    };
+
     render() {
         const { transaction } = this.props;
 
-        if (
-            isUndefined(transaction.SetFlag) &&
-            isUndefined(transaction.ClearFlag) &&
-            isUndefined(transaction.Domain) &&
-            isUndefined(transaction.EmailHash) &&
-            isUndefined(transaction.MessageKey) &&
-            isUndefined(transaction.TransferRate)
-        ) {
-            return (
-                <View key="details" style={[AppStyles.flex1, AppStyles.centerContent]}>
-                    <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
-                        {Localize.t('global.noInformationToShow')}
-                    </Text>
-                </View>
-            );
+        // this is a no-op transaction
+        if (transaction.isNoOperation()) {
+            return this.renderNoOperation();
         }
 
         return (
             <>
-                {transaction.Domain !== undefined && (
+                {!isUndefined(transaction.Domain) && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.domain')}</Text>
                         <View style={[styles.contentBox]}>
@@ -60,7 +69,7 @@ class AccountSetTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
-                {transaction.EmailHash !== undefined && (
+                {!isUndefined(transaction.EmailHash) && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.emailHash')}</Text>
                         <View style={[styles.contentBox]}>
@@ -70,7 +79,7 @@ class AccountSetTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
-                {transaction.MessageKey !== undefined && (
+                {!isUndefined(transaction.MessageKey) && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.messageKey')}</Text>
                         <View style={[styles.contentBox]}>
@@ -80,17 +89,17 @@ class AccountSetTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
-                {transaction.MintAccount !== undefined && (
+                {!isUndefined(transaction.NFTokenMinter) && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.mintAccount')}</Text>
                         <View style={[styles.contentBox]}>
                             <Text selectable style={[styles.valueSubtext]}>
-                                {transaction.MintAccount || Localize.t('global.empty')}
+                                {transaction.NFTokenMinter || Localize.t('global.empty')}
                             </Text>
                         </View>
                     </>
                 )}
-                {transaction.TransferRate !== undefined && (
+                {!isUndefined(transaction.TransferRate) && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.transferRate')}</Text>
                         <View style={[styles.contentBox]}>
@@ -100,7 +109,7 @@ class AccountSetTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
-                {transaction.TickSize !== undefined && (
+                {!isUndefined(transaction.TickSize) && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.tickSize')}</Text>
                         <View style={[styles.contentBox]}>

@@ -131,7 +131,7 @@ class AccountSettingsView extends Component<Props, State> {
 
     onAccountDowngradeRequest = () => {
         Navigator.showOverlay(AppScreens.Overlay.Auth, {
-            biometricAvailable: false,
+            canAuthorizeBiometrics: false,
             onSuccess: this.downgradeAccountAccessLevel,
         });
     };
@@ -205,7 +205,7 @@ class AccountSettingsView extends Component<Props, State> {
         // if full access auth before remove
         if (account.accessLevel === AccessLevels.Full) {
             Navigator.showOverlay(AppScreens.Overlay.Auth, {
-                biometricAvailable: false,
+                canAuthorizeBiometrics: false,
                 onSuccess: this.removeAccount,
             });
         } else {
@@ -322,7 +322,7 @@ class AccountSettingsView extends Component<Props, State> {
                                 </View>
 
                                 <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                                    <Text testID='account-access-level-value' style={[styles.value]} >
+                                    <Text testID="account-access-level-value" style={[styles.value]}>
                                         {account.accessLevel === AccessLevels.Full
                                             ? Localize.t('account.fullAccess')
                                             : Localize.t('account.readOnly')}

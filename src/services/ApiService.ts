@@ -22,16 +22,16 @@ type Methods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 
 /* Service  ==================================================================== */
 class ApiService {
-    apiUrl: string;
-    endpoints: Map<string, string>;
-    idempotencyInt: number;
-    userAgent: string;
-    debug: boolean;
-    requestCounter: number;
-    accessToken: string;
-    uniqueDeviceIdentifier: string;
-    logger: any;
-    increaseIdempotency: () => void;
+    private readonly apiUrl: string;
+    private readonly userAgent: string;
+    private readonly timeoutSec: number;
+    private endpoints: Map<string, string>;
+    private idempotencyInt: number;
+    private debug: boolean;
+    private requestCounter: number;
+    private accessToken: string;
+    private uniqueDeviceIdentifier: string;
+    private logger: any;
     [index: string]: any;
 
     constructor() {
@@ -43,6 +43,8 @@ class ApiService {
         // Enable debug output when in Debug mode
         this.debug = AppConfig.DEV;
 
+        // After 100 seconds, let's call it a day!
+        this.timeoutSec = 100 * 1000;
         // Number each API request (used for debugging)
         this.requestCounter = 0;
 
@@ -87,9 +89,9 @@ class ApiService {
 
                 this.uniqueDeviceIdentifier = GetDeviceUniqueId();
 
-                return resolve();
+                resolve();
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
     }
@@ -132,7 +134,7 @@ class ApiService {
      *   {foo: 'hi there', bar: { blah: 123, blah: [1, 2, 3] }}
      *   foo=hi there&bar[blah]=123&bar[blah][0]=1&bar[blah][1]=2&bar[blah][2]=3
      */
-    serialize(obj: Object, prefix: string) {
+    serialize = (obj: Object, prefix: string): string => {
         const str: Array<string> = [];
 
         Object.keys(obj).forEach((p) => {
@@ -148,7 +150,49 @@ class ApiService {
         });
 
         return str.join('&');
-    }
+    };
+
+    /*
+    Safely parse response to json
+    */
+    safeParse = (text: string): object => {
+        const obj = JSON.parse(text);
+
+        if (!obj || typeof obj !== 'object') {
+            throw ErrorMessages.invalidJson;
+        }
+
+        const suspectRx =
+            // eslint-disable-next-line max-len
+            /"(?:_|\\u005[Ff])(?:_|\\u005[Ff])(?:p|\\u0070)(?:r|\\u0072)(?:o|\\u006[Ff])(?:t|\\u0074)(?:o|\\u006[Ff])(?:_|\\u005[Ff])(?:_|\\u005[Ff])"\s*:/;
+
+        if (text.match(suspectRx)) {
+            throw new TypeError('Object contains forbidden prototype property');
+        }
+
+        let next = [obj];
+
+        while (next.length) {
+            const nodes = next;
+            next = [];
+
+            for (const node of nodes) {
+                if (Object.prototype.hasOwnProperty.call(node, '__proto__')) {
+                    throw new TypeError('Object contains forbidden prototype property');
+                }
+
+                // eslint-disable-next-line guard-for-in
+                for (const key in node) {
+                    const value = node[key];
+                    if (value && typeof value === 'object') {
+                        next.push(node[key]);
+                    }
+                }
+            }
+        }
+
+        return obj;
+    };
 
     /**
      * Sends requests to the API
@@ -159,11 +203,11 @@ class ApiService {
             this.requestCounter += 1;
 
             // After x seconds, let's call it a day!
-            const timeoutAfter = 100;
-            const apiTimedOut = setTimeout(() => reject(ErrorMessages.timeout), timeoutAfter * 1000);
+            const apiTimedOut = setTimeout(() => reject(ErrorMessages.timeout), this.timeoutSec);
 
             if (!method || !endpoint) {
-                return reject(new Error('Missing params (ApiService.fetcher).'));
+                reject(new Error('Missing params (ApiService.fetcher).'));
+                return;
             }
 
             // Build request
@@ -178,8 +222,7 @@ class ApiService {
 
             if (this.accessToken) {
                 // Add Authorization Token
-                // @ts-ignore
-                req.headers.Authorization = await this.generateAuthToken();
+                Object.assign(req.headers, { Authorization: await this.generateAuthToken() });
             }
 
             if (header) {
@@ -214,13 +257,8 @@ class ApiService {
                     // String or Number - eg. /recipes/23
                 } else if (typeof params === 'string' || typeof params === 'number') {
                     urlParams = `/${params}`;
-
-                    // Something else? Just log an error
                 } else {
-                    this.logger.warn(
-                        'You provided params, but it wasn\'t an object!',
-                        this.apiUrl + endpoint + urlParams,
-                    );
+                    this.logger.warn('params are not an object!', this.apiUrl + endpoint + urlParams);
                 }
             }
 
@@ -236,7 +274,7 @@ class ApiService {
             const thisUrl = this.apiUrl + endpoint + urlParams;
 
             // Make the request
-            return fetch(thisUrl, req)
+            fetch(thisUrl, req)
                 .then(async (rawRes) => {
                     // API got back to us, clear the timeout
                     clearTimeout(apiTimedOut);
@@ -244,7 +282,8 @@ class ApiService {
                     let jsonRes = {};
 
                     try {
-                        jsonRes = await rawRes.json();
+                        const textRes = await rawRes.text();
+                        jsonRes = this.safeParse(textRes);
                     } catch (error) {
                         throw ErrorMessages.invalidJson;
                     }
@@ -259,13 +298,13 @@ class ApiService {
                 })
                 .then((res) => {
                     // TODO: inspect X-Call-Ref id
-                    return resolve(res);
+                    resolve(res);
                 })
                 .catch((err) => {
                     // API got back to us, clear the timeout
                     clearTimeout(apiTimedOut);
-
-                    return reject(err);
+                    // reject
+                    reject(err);
                 });
         });
     }

@@ -5,12 +5,10 @@ import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import Localize from '@locale';
 
-import { Images } from '@common/helpers/images';
-
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
-import { Avatar, AmountText } from '@components/General';
+import { AmountText, TokenAvatar } from '@components/General';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -30,7 +28,7 @@ class CurrencyItem extends Component<Props> {
         return (
             <View style={[AppStyles.row, AppStyles.centerAligned]}>
                 <View style={[styles.currencyImageContainer]}>
-                    <Avatar border size={35} source={Images.IconXrpNew} />
+                    <TokenAvatar token="XRP" border size={35} />
                 </View>
                 <View style={[AppStyles.column, AppStyles.centerContent]}>
                     <Text style={[styles.currencyItemLabel, selected && AppStyles.colorBlue]}>XRP</Text>
@@ -48,7 +46,7 @@ class CurrencyItem extends Component<Props> {
         return (
             <View style={[AppStyles.row, AppStyles.centerAligned]}>
                 <View style={[styles.currencyImageContainer]}>
-                    <Avatar border size={35} source={{ uri: item.counterParty.avatar }} />
+                    <TokenAvatar token={item} border size={35} />
                 </View>
                 <View style={[AppStyles.column, AppStyles.centerContent]}>
                     <Text style={[styles.currencyItemLabel, selected && styles.currencyItemLabelSelected]}>

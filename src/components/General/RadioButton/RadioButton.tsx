@@ -7,7 +7,7 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
-import { TouchableDebounce } from '@components/General';
+import { TouchableDebounce } from '@components/General/TouchableDebounce';
 
 import { AppStyles } from '@theme';
 import styles from './styles';

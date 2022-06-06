@@ -8,20 +8,22 @@ import NFTokenCreateOffer from './nfTokenCreateOffer';
 
 /* Types ==================================================================== */
 import { AmountType } from '../parser/types';
-import { LedgerTransactionType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class NFTokenAcceptOffer extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.NFTokenAcceptOffer as const;
+    public readonly Type = NFTokenAcceptOffer.Type;
 
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
+
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'NFTokenAcceptOffer';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = NFTokenAcceptOffer.Type;
         }
 
-        this.fields = this.fields.concat(['Amount', 'SellOffer', 'BuyOffer']);
+        this.fields = this.fields.concat(['NFTokenSellOffer', 'NFTokenBuyOffer', 'NFTokenBrokerFee']);
     }
 
     set Offer(offer: NFTokenCreateOffer) {
@@ -36,7 +38,7 @@ class NFTokenAcceptOffer extends BaseTransaction {
             return offer;
         }
 
-        // if not look at the meta data for token id
+        // if not look at the metadata for token id
         const affectedNodes = get(this.meta, 'AffectedNodes', []);
         offer = get(
             find(affectedNodes, (node) => node.DeletedNode?.LedgerEntryType === 'NFTokenOffer'),
@@ -49,33 +51,33 @@ class NFTokenAcceptOffer extends BaseTransaction {
         return offer;
     }
 
-    get Amount(): AmountType {
-        let amount = undefined as AmountType;
+    get NFTokenSellOffer(): string {
+        return get(this, ['tx', 'NFTokenSellOffer']);
+    }
 
-        amount = get(this, ['tx', 'Amount']);
+    get NFTokenBuyOffer(): string {
+        return get(this, ['tx', 'NFTokenBuyOffer']);
+    }
 
-        if (isUndefined(amount)) return undefined;
+    get NFTokenBrokerFee(): AmountType {
+        let brokerFee = undefined as AmountType;
 
-        if (typeof amount === 'string') {
+        brokerFee = get(this, ['tx', 'NFTokenBrokerFee']);
+
+        if (isUndefined(brokerFee)) return undefined;
+
+        if (typeof brokerFee === 'string') {
             return {
                 currency: 'XRP',
-                value: new Amount(amount).dropsToXrp(),
+                value: new Amount(brokerFee).dropsToXrp(),
             };
         }
 
         return {
-            currency: amount.currency,
-            value: amount.value && new Amount(amount.value, false).toString(),
-            issuer: amount.issuer,
+            currency: brokerFee.currency,
+            value: brokerFee.value && new Amount(brokerFee.value, false).toString(),
+            issuer: brokerFee.issuer,
         };
-    }
-
-    get SellOffer(): string {
-        return get(this, ['tx', 'SellOffer']);
-    }
-
-    get BuyOffer(): string {
-        return get(this, ['tx', 'BuyOffer']);
     }
 }
 

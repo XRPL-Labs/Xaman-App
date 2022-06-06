@@ -3,18 +3,20 @@ import { get, isUndefined, flatMap } from 'lodash';
 import BaseTransaction from './base';
 
 /* Types ==================================================================== */
-import { LedgerTransactionType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 import { SignerEntry } from '../parser/types';
 
 /* Class ==================================================================== */
 class SignerListSet extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.SignerListSet as const;
+    public readonly Type = SignerListSet.Type;
 
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
+
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'SignerListSet';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = SignerListSet.Type;
         }
 
         this.fields = this.fields.concat(['SignerQuorum', 'SignerEntries']);

@@ -1,4 +1,4 @@
-import { has, set, get, isUndefined } from 'lodash';
+import { get, isUndefined } from 'lodash';
 
 import BaseTransaction from './base';
 
@@ -7,20 +7,22 @@ import LedgerDate from '../parser/common/date';
 
 /* Types ==================================================================== */
 import { Destination, AmountType } from '../parser/types';
-import { LedgerTransactionType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class NFTokenCreateOffer extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.NFTokenCreateOffer as const;
+    public readonly Type = NFTokenCreateOffer.Type;
 
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
+
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'NFTokenCreateOffer';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = NFTokenCreateOffer.Type;
         }
 
-        this.fields = this.fields.concat(['Amount', 'Destination', 'Expiration', 'Owner', 'TokenID']);
+        this.fields = this.fields.concat(['Amount', 'Destination', 'Expiration', 'Owner', 'NFTokenID']);
     }
 
     // @ts-ignore
@@ -47,22 +49,12 @@ class NFTokenCreateOffer extends BaseTransaction {
 
     get Destination(): Destination {
         const destination = get(this, ['tx', 'Destination'], undefined);
-        const destinationTag = get(this, ['tx', 'DestinationTag'], undefined);
-        const destinationName = get(this, ['tx', 'DestinationName'], undefined);
 
         if (isUndefined(destination)) return undefined;
 
         return {
-            name: destinationName,
             address: destination,
-            tag: destinationTag,
         };
-    }
-
-    set Destination(destination: Destination) {
-        if (has(destination, 'name')) {
-            set(this, 'object.DestinationName', destination.name);
-        }
     }
 
     get Expiration(): string {
@@ -76,8 +68,8 @@ class NFTokenCreateOffer extends BaseTransaction {
         return get(this, ['tx', 'Owner']);
     }
 
-    get TokenID(): string {
-        return get(this, ['tx', 'TokenID']);
+    get NFTokenID(): string {
+        return get(this, ['tx', 'NFTokenID']);
     }
 }
 

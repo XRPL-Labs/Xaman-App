@@ -78,9 +78,9 @@ exports[`[InfoMessage] renders correctly Info 1`] = `
       },
       undefined,
       Object {
-        "backgroundColor": "rgba(48,82,255,0.06)",
-        "borderColor": "#3052FF",
-        "tintColor": "#3052FF",
+        "backgroundColor": "rgba(0,48,207,0.06)",
+        "borderColor": "#0030CF",
+        "tintColor": "#0030CF",
       },
     ]
   }
@@ -114,7 +114,7 @@ exports[`[InfoMessage] renders correctly Info 1`] = `
                 "textAlign": "center",
               },
               Object {
-                "color": "#3052FF",
+                "color": "#0030CF",
               },
               Object {
                 "textAlign": "center",
@@ -305,9 +305,9 @@ exports[`[InfoMessage] should render with icon Info 1`] = `
       },
       undefined,
       Object {
-        "backgroundColor": "rgba(48,82,255,0.06)",
-        "borderColor": "#3052FF",
-        "tintColor": "#3052FF",
+        "backgroundColor": "rgba(0,48,207,0.06)",
+        "borderColor": "#0030CF",
+        "tintColor": "#0030CF",
       },
     ]
   }
@@ -346,7 +346,7 @@ exports[`[InfoMessage] should render with icon Info 1`] = `
             },
             Array [
               Object {
-                "tintColor": "#3052FF",
+                "tintColor": "#0030CF",
               },
             ],
           ]
@@ -373,7 +373,7 @@ exports[`[InfoMessage] should render with icon Info 1`] = `
                 "textAlign": "center",
               },
               Object {
-                "color": "#3052FF",
+                "color": "#0030CF",
               },
               Object {
                 "textAlign": "left",

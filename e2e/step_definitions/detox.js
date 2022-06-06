@@ -12,6 +12,7 @@ Then('I wait {int} sec for button {string} to be enabled', async (timeoutSec, bu
     let sec_passed = 0;
     let enabled = false;
     while (sec_passed < timeoutSec) {
+        // eslint-disable-next-line no-promise-executor-return
         await new Promise((resolve) => setTimeout(resolve, 1000));
         const attributes = await element(by.id(buttonId)).getAttributes();
         if (attributes.enabled) {

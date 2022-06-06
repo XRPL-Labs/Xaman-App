@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "IconTabBarEventsLight.png",
+      "filename" : "IconTabBarEventsSelectedLight.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "IconTabBarEventsLight@2x.png",
+      "filename" : "IconTabBarEventsSelectedLight@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "IconTabBarEventsLight@3x.png",
+      "filename" : "IconTabBarEventsSelectedLight@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

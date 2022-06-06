@@ -3,21 +3,34 @@
  */
 import BigNumber from 'bignumber.js';
 
+/* Types ==================================================================== */
+type LocalizeSettings = {
+    /* Character used for decimal separator */
+    separator: string;
+    /* Character used for thousands separator */
+    delimiter: string;
+    /* device language code */
+    languageCode: string;
+    /* device locale */
+    locale: string;
+};
+
+/* Class ==================================================================== */
 class Localize {
     instance: any;
     moment: any;
     meta: any;
-    settings: any;
+    settings: LocalizeSettings;
 
     constructor() {
         this.instance = require('i18n-js');
         this.moment = require('moment-timezone');
         this.meta = require('./meta.json');
-        this.settings = undefined;
 
         // set default values
         this.instance.fallbacks = true;
         this.instance.defaultLocale = 'en';
+        this.settings = undefined;
     }
 
     getLocales = () => {
@@ -75,6 +88,10 @@ class Localize {
 
     setSettings = (settings: any) => {
         this.settings = settings;
+    };
+
+    getSettings = (): any => {
+        return this.settings;
     };
 
     setLocaleBundle = (locale: string, translations: any) => {

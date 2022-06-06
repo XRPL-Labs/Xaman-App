@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
-import { OfferCancel } from '@common/libs/ledger/transactions';
+import { TicketCreate } from '@common/libs/ledger/transactions';
 
 import Localize from '@locale';
 
@@ -9,7 +9,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    transaction: OfferCancel;
+    transaction: TicketCreate;
 }
 
 export interface State {}

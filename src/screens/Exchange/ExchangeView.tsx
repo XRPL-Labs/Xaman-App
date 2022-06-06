@@ -7,7 +7,6 @@ import { Animated, View, ScrollView, Text, Keyboard, InteractionManager } from '
 
 import { Result as LiquidityResult } from 'xrpl-orderbook-reader';
 
-import { Images } from '@common/helpers/images';
 import { Prompt, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -17,6 +16,7 @@ import { Payload } from '@common/libs/payload';
 
 import LedgerExchange, { MarketDirection } from '@common/libs/ledger/exchange';
 import { OfferCreate } from '@common/libs/ledger/transactions';
+import { OfferStatus } from '@common/libs/ledger/parser/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
@@ -26,7 +26,6 @@ import { AppScreens } from '@common/constants';
 
 // components
 import {
-    Avatar,
     AmountText,
     AmountInput,
     Header,
@@ -35,6 +34,7 @@ import {
     InfoMessage,
     LoadingIndicator,
     HorizontalLine,
+    TokenAvatar,
 } from '@components/General';
 
 import { AmountValueType } from '@components/General/AmountInput';
@@ -316,8 +316,12 @@ class ExchangeView extends Component<Props, State> {
 
         const pair = { issuer: trustLine.currency.issuer, currency: trustLine.currency.currency };
 
-        const offer = new OfferCreate();
+        // create offerCreate transaction
+        const offer = new OfferCreate({
+            Account: account.address,
+        });
 
+        // set offer values
         if (direction === MarketDirection.SELL) {
             offer.TakerGets = { currency: 'XRP', value: amount };
             offer.TakerPays = { value: minimumOutcome, ...pair };
@@ -329,10 +333,8 @@ class ExchangeView extends Component<Props, State> {
         // ImmediateOrCancel & Sell flag
         offer.Flags = [txFlags.OfferCreate.ImmediateOrCancel, txFlags.OfferCreate.Sell];
 
-        // set source account
-        offer.Account = { address: account.address };
-
-        const payload = await Payload.build(offer.Json);
+        // generate payload
+        const payload = Payload.build(offer.Json);
 
         Navigator.showModal(
             AppScreens.Modal.ReviewTransaction,
@@ -362,13 +364,13 @@ class ExchangeView extends Component<Props, State> {
             this.showResultAlert(
                 Localize.t('global.error'),
                 Localize.t('exchange.errorDuringExchange', {
-                    error: offer.TransactionResult.message || 'UNKNOW ERROR',
+                    error: offer.TransactionResult.message || 'UNKNOWN ERROR',
                 }),
             );
             return;
         }
 
-        if (offer.Executed) {
+        if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(offer.GetOfferStatus(account.address)) > -1) {
             // calculate delivered amounts
             const takerGot = offer.TakerGot(account.address);
             const takerPaid = offer.TakerPaid(account.address);
@@ -540,14 +542,10 @@ class ExchangeView extends Component<Props, State> {
                         <View style={AppStyles.row}>
                             <View style={[AppStyles.row, AppStyles.flex1]}>
                                 <View style={[styles.currencyImageContainer]}>
-                                    <Avatar
+                                    <TokenAvatar
+                                        token={direction === MarketDirection.SELL ? 'XRP' : trustLine}
                                         border
                                         size={37}
-                                        source={
-                                            direction === MarketDirection.SELL
-                                                ? Images.IconXrpNew
-                                                : { uri: trustLine.counterParty.avatar }
-                                        }
                                     />
                                 </View>
 
@@ -613,14 +611,10 @@ class ExchangeView extends Component<Props, State> {
                         <View style={[AppStyles.row]}>
                             <View style={[AppStyles.row, AppStyles.flex1]}>
                                 <View style={[styles.currencyImageContainer]}>
-                                    <Avatar
+                                    <TokenAvatar
+                                        token={direction === MarketDirection.BUY ? 'XRP' : trustLine}
                                         border
                                         size={37}
-                                        source={
-                                            direction === MarketDirection.BUY
-                                                ? Images.IconXrpNew
-                                                : { uri: trustLine.counterParty.avatar }
-                                        }
                                     />
                                 </View>
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>

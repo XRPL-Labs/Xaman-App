@@ -3,24 +3,26 @@ import { get, isUndefined } from 'lodash';
 import BaseTransaction from './base';
 
 /* Types ==================================================================== */
-import { LedgerTransactionType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class NFTokenCancelOffer extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.NFTokenCancelOffer as const;
+    public readonly Type = NFTokenCancelOffer.Type;
 
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
+
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'NFTokenCancelOffer';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = NFTokenCancelOffer.Type;
         }
 
-        this.fields = this.fields.concat(['TokenOffers']);
+        this.fields = this.fields.concat(['NFTokenOffers']);
     }
 
-    get TokenOffers(): Array<string> {
-        return get(this, ['tx', 'TokenOffers']);
+    get NFTokenOffers(): Array<string> {
+        return get(this, ['tx', 'NFTokenOffers']);
     }
 }
 

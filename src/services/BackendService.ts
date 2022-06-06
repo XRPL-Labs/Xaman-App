@@ -1,6 +1,6 @@
 /**
  * Backend service
- * Interact with xumm backend
+ * Interact with XUMM backend
  */
 
 import { map, isEmpty, flatMap, get, reduce } from 'lodash';
@@ -35,43 +35,50 @@ import Localize from '@locale';
 /* Service  ==================================================================== */
 class BackendService {
     private logger: any;
-    private currencyRate: any;
+    private latestCurrencyRate: any;
 
     constructor() {
         this.logger = LoggerService.createLogger('Backend');
 
-        this.currencyRate = undefined;
+        this.latestCurrencyRate = undefined;
     }
 
     initialize = () => {
         return new Promise<void>((resolve, reject) => {
             try {
                 // sync the details after moving to default stack
-                NavigationService.on('setRoot', (root: string) => {
-                    if (root === RootType.DefaultRoot) {
-                        this.sync();
-                    }
-                });
+                NavigationService.on('setRoot', this.onRootChange);
 
-                return resolve();
+                // resolve
+                resolve();
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
     };
 
     /*
-    Start syncing with all stuff with backend
+    On navigation root changed
+     */
+    onRootChange = (root: RootType) => {
+        if (root === RootType.DefaultRoot) {
+            this.sync();
+        }
+    };
+
+    /*
+    Start syncing with backend
+    NOTE: This includes Curated IOUs
     */
-    sync = async () => {
+    sync = () => {
         this.logger.debug('Start Syncing with backend');
-        await this.syncCuratedIous();
+        this.syncCuratedIOUs();
     };
 
     /*
     Update IOUs from backend
     */
-    syncCuratedIous = async () => {
+    syncCuratedIOUs = () => {
         ApiService.curatedIOUs
             .get()
             .then(async (res: any) => {
@@ -85,6 +92,7 @@ class BackendService {
                         await Promise.all(
                             map(value.currencies, async (c) => {
                                 const currency = await CurrencyRepository.include({
+                                    id: `${c.issuer}.${c.currency}`,
                                     issuer: c.issuer,
                                     currency: c.currency,
                                     name: c.name,
@@ -96,7 +104,7 @@ class BackendService {
                             }),
                         );
 
-                        CounterPartyRepository.upsert({
+                        await CounterPartyRepository.upsert({
                             id: value.id,
                             name: value.name,
                             domain: value.domain,
@@ -111,7 +119,7 @@ class BackendService {
                     Promise.resolve([]),
                 );
 
-                // delete removed parties from local database
+                // delete removed parties from data store
                 const counterParties = CounterPartyRepository.findAll();
                 const removedParties = counterParties.filter((c: any) => {
                     return !updatedParties.includes(c.id);
@@ -122,7 +130,7 @@ class BackendService {
                 }
             })
             .catch((error: string) => {
-                this.logger.error('Fetch Curated Ious Error: ', error);
+                this.logger.error('Update Curated IOUs Error: ', error);
             });
     };
 
@@ -202,66 +210,60 @@ class BackendService {
     /*
     Ping with the backend and update the profile
     */
-    ping = () => {
-        /* eslint-disable-next-line */
-        return new Promise<void>(async (resolve, reject) => {
-            return ApiService.ping
-                .post(null, {
-                    appVersion: GetAppReadableVersion(),
-                    appLanguage: Localize.getCurrentLocale(),
-                    appCurrency: CoreRepository.getAppCurrency(),
-                    devicePushToken: await PushNotificationsService.getToken(),
-                })
-                .then((res: any) => {
-                    const { auth, badge, env, tosAndPrivacyPolicyVersion } = res;
+    ping = async () => {
+        return ApiService.ping
+            .post(null, {
+                appVersion: GetAppReadableVersion(),
+                appLanguage: Localize.getCurrentLocale(),
+                appCurrency: CoreRepository.getAppCurrency(),
+                devicePushToken: await PushNotificationsService.getToken(),
+            })
+            .then((res: any) => {
+                const { auth, badge, env, tosAndPrivacyPolicyVersion } = res;
 
-                    if (auth) {
-                        const { user, device } = auth;
-                        const { hasPro } = env;
+                if (auth) {
+                    const { user, device } = auth;
+                    const { hasPro } = env;
 
-                        // update the profile
-                        ProfileRepository.saveProfile({
-                            username: user.name,
-                            slug: user.slug,
-                            uuid: user.uuidv4,
-                            deviceUUID: device.uuidv4,
-                            lastSync: new Date(),
-                            hasPro,
-                        });
+                    // update the profile
+                    ProfileRepository.saveProfile({
+                        username: user.name,
+                        slug: user.slug,
+                        uuid: user.uuidv4,
+                        deviceUUID: device.uuidv4,
+                        lastSync: new Date(),
+                        hasPro,
+                    });
 
-                        // check for tos version
-                        const profile = ProfileRepository.getProfile();
+                    // check for tos version
+                    const profile = ProfileRepository.getProfile();
 
-                        if (profile.signedTOSVersion < Number(tosAndPrivacyPolicyVersion)) {
-                            // show the modal to check new policy and confirm new agreement
-                            Navigator.showModal(
-                                AppScreens.Settings.TermOfUse,
-                                { asModal: true },
-                                {
-                                    modalPresentationStyle: 'fullScreen',
-                                    modal: {
-                                        swipeToDismiss: false,
-                                    },
+                    if (profile.signedTOSVersion < Number(tosAndPrivacyPolicyVersion)) {
+                        // show the modal to check new policy and confirm new agreement
+                        Navigator.showModal(
+                            AppScreens.Settings.TermOfUse,
+                            { asModal: true },
+                            {
+                                modalPresentationStyle: 'fullScreen',
+                                modal: {
+                                    swipeToDismiss: false,
                                 },
-                            );
-                        }
+                            },
+                        );
                     }
+                }
 
-                    if (badge) {
-                        PushNotificationsService.updateBadge(badge);
-                    }
-
-                    return resolve();
-                })
-                .catch((e: any) => {
-                    this.logger.error('Ping Backend Error: ', e);
-                    return resolve();
-                });
-        });
+                if (badge) {
+                    PushNotificationsService.updateBadge(badge);
+                }
+            })
+            .catch((e: any) => {
+                this.logger.error('Ping Backend Error: ', e);
+            });
     };
 
     /*
-    Get details for an xrp address
+    Get details for an XRP address
     */
     getAddressInfo = (address: string) => {
         return ApiService.addressInfo.get(address, null, { 'X-XummNet': SocketService.chain });
@@ -282,7 +284,7 @@ class BackendService {
     };
 
     getXAppShortList = () => {
-        return ApiService.xAppsShortList.get();
+        return ApiService.xAppsShortList.get({ featured: true });
     };
 
     getXAppLaunchToken = (xAppId: string, data: any) => {
@@ -309,30 +311,31 @@ class BackendService {
     getCurrencyRate = (currency: string) => {
         return new Promise((resolve, reject) => {
             // prevent unnecessary requests
-            if (this.currencyRate && this.currencyRate.code === currency) {
-                const passedSeconds = moment().diff(moment.unix(this.currencyRate.lastSync), 'second');
+            if (this.latestCurrencyRate && this.latestCurrencyRate.code === currency) {
+                // calculate passed seconds from the latest sync
+                const passedSeconds = moment().diff(moment.unix(this.latestCurrencyRate.lastSync), 'second');
 
-                // cache currency rate for 60 seconds
+                // if the latest rate fetch is already less than 60 second return cached value
                 if (passedSeconds <= 60) {
-                    resolve(this.currencyRate);
+                    resolve(this.latestCurrencyRate);
                     return;
                 }
             }
 
-            // update the rate from backend
+            // fetch/update the rate from backend
             ApiService.rates
                 .get({ currency })
-                .then((r: any) => {
-                    const rate = get(r, 'XRP');
-                    const symbol = get(r, '__meta.currency.symbol');
+                .then((response: any) => {
+                    const rate = get(response, 'XRP');
+                    const symbol = get(response, '__meta.currency.symbol');
 
-                    this.currencyRate = {
+                    this.latestCurrencyRate = {
                         code: currency,
                         symbol,
                         lastRate: rate,
                         lastSync: moment().unix(),
                     };
-                    resolve(this.currencyRate);
+                    resolve(this.latestCurrencyRate);
                 })
                 .catch(reject);
         });

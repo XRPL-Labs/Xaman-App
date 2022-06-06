@@ -3,9 +3,9 @@
  */
 import Fuse from 'fuse.js';
 import moment from 'moment-timezone';
-import { isEmpty, flatMap, isUndefined, isEqual, filter, get, uniqBy, groupBy, map, without, orderBy } from 'lodash';
+import { filter, flatMap, get, groupBy, isEmpty, isEqual, isUndefined, map, orderBy, uniqBy, without } from 'lodash';
 import React, { Component } from 'react';
-import { SafeAreaView, Text, InteractionManager, ImageBackground, Image } from 'react-native';
+import { Image, ImageBackground, InteractionManager, View, Text } from 'react-native';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -16,22 +16,20 @@ import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 // Parses
-import transactionFactory from '@common/libs/ledger/parser/transaction';
-import ledgerObjectFactory from '@common/libs/ledger/parser/object';
-import { LedgerEntriesTypes } from '@common/libs/ledger/objects/types';
-
-import { LedgerMarker } from '@common/libs/ledger/types';
-import { TransactionsType } from '@common/libs/ledger/transactions/types';
+import { LedgerObjectFactory, TransactionFactory } from '@common/libs/ledger/factory';
+import { LedgerEntriesTypes, LedgerMarker, LedgerObjectTypes, TransactionTypes } from '@common/libs/ledger/types';
+import { Transactions } from '@common/libs/ledger/transactions/types';
+import { LedgerObjects } from '@common/libs/ledger/objects/types';
 import { Payload } from '@common/libs/payload';
 
 // types
 import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterView';
 
 // Services
-import { LedgerService, AccountService, BackendService, PushNotificationsService, StyleService } from '@services';
+import { AccountService, BackendService, LedgerService, PushNotificationsService, StyleService } from '@services';
 
 // Components
-import { SearchBar, Button, SegmentButton, Header } from '@components/General';
+import { Button, Header, SearchBar, SegmentButton } from '@components/General';
 import { EventsFilterChip, EventsList } from '@components/Modules';
 
 // Locale
@@ -55,10 +53,16 @@ export interface State {
     sectionIndex: number;
     lastMarker: LedgerMarker;
     account: AccountSchema;
-    transactions: Array<TransactionsType>;
-    plannedTransactions: Array<any>;
+    transactions: Array<Transactions>;
+    plannedTransactions: Array<LedgerObjects>;
     pendingRequests: Array<Payload>;
-    dataSource: Array<any>;
+    dataSource: Array<Transactions | LedgerObjects | Payload>;
+}
+
+enum DataSourceType {
+    PLANNED_TRANSACTIONS = 'PLANNED_TRANSACTIONS',
+    TRANSACTIONS = 'TRANSACTIONS',
+    PENDING_REQUESTS = 'PENDING_REQUESTS',
 }
 
 /* Component ==================================================================== */
@@ -107,34 +111,33 @@ class EventsView extends Component<Props, State> {
         );
     }
 
-    componentDidMount = () => {
+    componentDidMount() {
         const { account } = this.state;
 
         // add listener for default account change
         AccountRepository.on('changeDefaultAccount', this.onDefaultAccountChange);
-
         // update list on transaction received
         AccountService.on('transaction', this.onTransactionReceived);
-
         // update list on sign request received
-        PushNotificationsService.on('signRequestUpdate', this.updateDataSource);
+        PushNotificationsService.on('signRequestUpdate', this.onSignRequestReceived);
 
         // update data source after component mount
         InteractionManager.runAfterInteractions(() => {
             if (account?.isValid()) {
-                this.updateDataSource(true);
+                this.updateDataSource();
             }
         });
-    };
+    }
 
-    componentWillUnmount = () => {
+    componentWillUnmount() {
         // remove listeners
         AccountRepository.off('changeDefaultAccount', this.onDefaultAccountChange);
         AccountService.off('transaction', this.onTransactionReceived);
-        PushNotificationsService.off('signRequestUpdate', this.updateDataSource);
-    };
+        PushNotificationsService.off('signRequestUpdate', this.onSignRequestReceived);
+    }
 
     onDefaultAccountChange = (account: AccountSchema) => {
+        // reset everything and load transaction
         this.setState(
             {
                 account,
@@ -142,21 +145,47 @@ class EventsView extends Component<Props, State> {
                 transactions: [],
                 plannedTransactions: [],
                 lastMarker: undefined,
+                canLoadMore: true,
             },
-            () => {
-                this.updateDataSource(true);
-            },
+            this.updateDataSource,
         );
+    };
+
+    onSignRequestReceived = () => {
+        const { account, sectionIndex } = this.state;
+
+        if (account?.isValid() && (sectionIndex === 0 || sectionIndex === 2)) {
+            this.updateDataSource([DataSourceType.PENDING_REQUESTS]);
+        }
     };
 
     onTransactionReceived = (transaction: any, effectedAccounts: Array<string>) => {
         const { account } = this.state;
 
-        if (account.isValid()) {
-            if (effectedAccounts.indexOf(account.address) !== -1) {
-                this.updateDataSource();
+        if (account?.isValid()) {
+            if (effectedAccounts.includes(account.address)) {
+                this.updateDataSource([DataSourceType.TRANSACTIONS, DataSourceType.PLANNED_TRANSACTIONS]);
             }
         }
+    };
+
+    fetchPlannedObjects = (
+        account: string,
+        type: string,
+        marker?: string,
+        combined = [] as LedgerEntriesTypes[],
+    ): Promise<LedgerEntriesTypes[]> => {
+        return LedgerService.getAccountObjects(account, { type, marker }).then((resp) => {
+            const { error, account_objects, marker: _marker } = resp;
+            // account is not found
+            if (error && error === 'actNotFound') {
+                return [];
+            }
+            if (_marker && _marker !== marker) {
+                return this.fetchPlannedObjects(account, type, _marker, account_objects.concat(combined));
+            }
+            return account_objects.concat(combined);
+        });
     };
 
     loadPlannedTransactions = () => {
@@ -166,20 +195,20 @@ class EventsView extends Component<Props, State> {
         return new Promise(async (resolve) => {
             // return if no account exist
             if (!account) {
-                return resolve([]);
+                resolve([]);
+                return;
             }
 
             // account objects we are interested in
-            const objectTypes = ['check', 'escrow', 'offer'];
+            const objectTypes = ['check', 'escrow', 'offer', 'ticket'];
             let objects = [] as LedgerEntriesTypes[];
 
-            return objectTypes
+            objectTypes
                 .reduce((accumulator, type) => {
                     return accumulator.then(() => {
-                        return LedgerService.getAccountObjects(account.address, { type }).then((res: any) => {
-                            const { account_objects } = res;
-                            if (account_objects) {
-                                objects = [...objects, ...account_objects];
+                        return this.fetchPlannedObjects(account.address, type).then((res) => {
+                            if (res) {
+                                objects = [...objects, ...res];
                             } else {
                                 objects = [...objects];
                             }
@@ -187,45 +216,46 @@ class EventsView extends Component<Props, State> {
                     });
                 }, Promise.resolve())
                 .then(() => {
-                    const parsedList = flatMap(objects, ledgerObjectFactory);
+                    const parsedList = flatMap(objects, LedgerObjectFactory.fromLedger);
                     const filtered = without(parsedList, null);
 
                     this.setState({ plannedTransactions: filtered }, () => {
-                        return resolve(filtered);
+                        resolve(filtered);
                     });
                 })
                 .catch(() => {
                     Toast(Localize.t('events.canNotFetchTransactions'));
-                    return resolve([]);
+                    resolve([]);
                 });
         });
     };
 
     loadPendingRequests = () => {
         return new Promise((resolve) => {
-            return BackendService.getPendingPayloads()
+            BackendService.getPendingPayloads()
                 .then((payloads) => {
                     this.setState({ pendingRequests: payloads }, () => {
-                        return resolve(payloads);
+                        resolve(payloads);
                     });
                 })
                 .catch(() => {
                     Toast(Localize.t('events.canNotFetchSignRequests'));
-                    return resolve([]);
+                    resolve([]);
                 });
         });
     };
 
-    loadTransactions = (loadMore?: boolean): Promise<TransactionsType[]> => {
+    loadTransactions = (loadMore?: boolean): Promise<Transactions[]> => {
         const { transactions, account, lastMarker } = this.state;
 
         return new Promise((resolve) => {
             // return if no account exist
             if (!account) {
-                return resolve([]);
+                resolve([]);
+                return;
             }
 
-            return LedgerService.getTransactions(account.address, loadMore && lastMarker, 50)
+            LedgerService.getTransactions(account.address, loadMore && lastMarker, 50)
                 .then((resp) => {
                     const { transactions: txResp, marker } = resp;
                     let canLoadMore = true;
@@ -236,7 +266,7 @@ class EventsView extends Component<Props, State> {
                         canLoadMore = false;
                     }
 
-                    let parsedList = filter(flatMap(txResp, transactionFactory), (t) => {
+                    let parsedList = filter(flatMap(txResp, TransactionFactory.fromLedger), (t) => {
                         return t.TransactionResult.success;
                     });
 
@@ -245,12 +275,12 @@ class EventsView extends Component<Props, State> {
                     }
 
                     this.setState({ transactions: parsedList, lastMarker: marker, canLoadMore }, () => {
-                        return resolve(parsedList);
+                        resolve(parsedList);
                     });
                 })
                 .catch(() => {
                     Toast(Localize.t('events.canNotFetchTransactions'));
-                    return resolve([]);
+                    resolve([]);
                 });
         });
     };
@@ -285,11 +315,13 @@ class EventsView extends Component<Props, State> {
 
         if (sectionIndex === 1) {
             const open = orderBy(
-                filter(plannedTransactions, (p) => p.Type === 'Offer' || p.Type === 'Check'),
+                filter(plannedTransactions, (p) =>
+                    [LedgerObjectTypes.Offer, LedgerObjectTypes.Check, LedgerObjectTypes.Ticket].includes(p.Type),
+                ),
                 ['Date'],
             );
 
-            const planned = orderBy(filter(plannedTransactions, { Type: 'Escrow' }), ['Date']);
+            const planned = orderBy(filter(plannedTransactions, { Type: LedgerObjectTypes.Escrow }), ['Date']);
             const dataSource = [];
 
             if (!isEmpty(open)) {
@@ -332,28 +364,45 @@ class EventsView extends Component<Props, State> {
         return orderBy(dataSource, ['title'], ['desc']);
     };
 
-    updateDataSource = async (background = false) => {
+    updateDataSource = async (include?: DataSourceType[]) => {
         const { filters, searchText, sectionIndex } = this.state;
 
-        if (!background) {
-            this.setState({ isLoading: true });
+        this.setState({ isLoading: true });
+
+        let sourceTypes = [] as DataSourceType[];
+
+        switch (sectionIndex) {
+            case 0:
+                sourceTypes = [DataSourceType.TRANSACTIONS, DataSourceType.PENDING_REQUESTS];
+                break;
+
+            case 1:
+                sourceTypes = [DataSourceType.PLANNED_TRANSACTIONS];
+                break;
+            case 2:
+                sourceTypes = [DataSourceType.PENDING_REQUESTS];
+                break;
+            default:
+                break;
         }
 
-        if (sectionIndex === 1) {
-            await this.loadPlannedTransactions();
-        } else if (sectionIndex === 2) {
-            await this.loadPendingRequests();
-        } else {
-            // update all sources
-            await this.loadPendingRequests();
-            await this.loadTransactions();
+        // only update the included source if it can be updated
+        if (include) {
+            sourceTypes = sourceTypes.filter((source) => include.includes(source));
         }
 
-        const { isLoading } = this.state;
-
-        if (isLoading) {
-            this.setState({ isLoading: false });
+        // update data sources
+        for (const source of sourceTypes) {
+            if (source === DataSourceType.PENDING_REQUESTS) {
+                await this.loadPendingRequests();
+            } else if (source === DataSourceType.TRANSACTIONS) {
+                await this.loadTransactions();
+            } else if (source === DataSourceType.PLANNED_TRANSACTIONS) {
+                await this.loadPlannedTransactions();
+            }
         }
+
+        this.setState({ isLoading: false });
 
         // apply any new search ad filter to the new sources
         if (searchText) {
@@ -394,12 +443,73 @@ class EventsView extends Component<Props, State> {
             return;
         }
 
-        let newTransactions = [];
+        let newTransactions;
 
         if (sectionIndex === 0) {
             newTransactions = transactions;
         } else {
             newTransactions = plannedTransactions;
+        }
+
+        if (filters.TransactionType) {
+            let includeTypes = [] as string[];
+            switch (filters.TransactionType) {
+                case 'Payment':
+                    includeTypes = [TransactionTypes.Payment];
+                    break;
+                case 'TrustSet':
+                    includeTypes = [TransactionTypes.TrustSet];
+                    break;
+                case 'Escrow':
+                    includeTypes = [
+                        TransactionTypes.EscrowCancel,
+                        TransactionTypes.EscrowCreate,
+                        TransactionTypes.EscrowFinish,
+                        LedgerObjectTypes.Escrow,
+                    ];
+                    break;
+                case 'Offer':
+                    includeTypes = [
+                        TransactionTypes.OfferCancel,
+                        TransactionTypes.OfferCreate,
+                        LedgerObjectTypes.Offer,
+                        LedgerObjectTypes.NFTokenOffer,
+                    ];
+                    break;
+                case 'Check':
+                    includeTypes = [
+                        TransactionTypes.CheckCancel,
+                        TransactionTypes.CheckCreate,
+                        TransactionTypes.CheckCash,
+                        LedgerObjectTypes.Check,
+                    ];
+                    break;
+                case 'Other':
+                    includeTypes = [
+                        TransactionTypes.AccountSet,
+                        TransactionTypes.PaymentChannelClaim,
+                        TransactionTypes.PaymentChannelCreate,
+                        TransactionTypes.PaymentChannelFund,
+                        TransactionTypes.SetRegularKey,
+                        TransactionTypes.SignerListSet,
+                        TransactionTypes.TicketCreate,
+                        TransactionTypes.DepositPreauth,
+                        TransactionTypes.AccountDelete,
+                        TransactionTypes.NFTokenAcceptOffer,
+                        TransactionTypes.NFTokenBurn,
+                        TransactionTypes.NFTokenCancelOffer,
+                        TransactionTypes.NFTokenCreateOffer,
+                        TransactionTypes.NFTokenMint,
+                        LedgerObjectTypes.Ticket,
+                    ];
+                    break;
+                default:
+                    break;
+            }
+
+            newTransactions = filter(newTransactions, (t) => {
+                return includeTypes.includes(get(t, 'Type'));
+            });
         }
 
         if (filters.Amount && filters.AmountIndicator) {
@@ -408,13 +518,17 @@ class EventsView extends Component<Props, State> {
                     return (
                         parseFloat(get(t, 'Amount.value')) >= parseFloat(filters.Amount) ||
                         parseFloat(get(t, 'DeliverMin.value')) >= parseFloat(filters.Amount) ||
-                        parseFloat(get(t, 'SendMax.value')) >= parseFloat(filters.Amount)
+                        parseFloat(get(t, 'SendMax.value')) >= parseFloat(filters.Amount) ||
+                        parseFloat(get(t, 'TakerGets.value')) >= parseFloat(filters.Amount) ||
+                        parseFloat(get(t, 'TakerPays.value')) >= parseFloat(filters.Amount)
                     );
                 }
                 return (
                     parseFloat(get(t, 'Amount.value')) <= parseFloat(filters.Amount) ||
                     parseFloat(get(t, 'DeliverMin.value')) <= parseFloat(filters.Amount) ||
-                    parseFloat(get(t, 'SendMax.value')) <= parseFloat(filters.Amount)
+                    parseFloat(get(t, 'SendMax.value')) <= parseFloat(filters.Amount) ||
+                    parseFloat(get(t, 'TakerGets.value')) <= parseFloat(filters.Amount) ||
+                    parseFloat(get(t, 'TakerPays.value')) <= parseFloat(filters.Amount)
                 );
             });
         }
@@ -424,7 +538,9 @@ class EventsView extends Component<Props, State> {
                 return (
                     get(t, 'Amount.currency') === filters.Currency ||
                     get(t, 'DeliverMin.currency') === filters.Currency ||
-                    get(t, 'SendMax.currency') === filters.Currency
+                    get(t, 'SendMax.currency') === filters.Currency ||
+                    get(t, 'TakerGets.currency') === filters.Currency ||
+                    get(t, 'TakerPays.currency') === filters.Currency
                 );
             });
         }
@@ -438,54 +554,13 @@ class EventsView extends Component<Props, State> {
             });
         }
 
-        if (filters.TransactionType) {
-            const includeTypes = [] as string[];
-            switch (filters.TransactionType) {
-                case 'Payment':
-                    includeTypes.push('Payment');
-                    break;
-                case 'TrustSet':
-                    includeTypes.push('TrustSet');
-                    break;
-                case 'Escrow':
-                    includeTypes.push(...['EscrowCancel', 'EscrowCreate', 'EscrowFinish', 'Escrow']);
-                    break;
-                case 'Offer':
-                    includeTypes.push(...['OfferCancel', 'OfferCreate', 'Offer']);
-                    break;
-                case 'Check':
-                    includeTypes.push(...['CheckCancel', 'CheckCreate', 'CheckCash', 'Check']);
-                    break;
-                case 'Other':
-                    includeTypes.push(
-                        ...[
-                            'AccountSet',
-                            'PaymentChannelClaim',
-                            'PaymentChannelCreate',
-                            'PaymentChannelFund',
-                            'SetRegularKey',
-                            'SignerListSet',
-                        ],
-                    );
-                    break;
-                default:
-                    break;
-            }
-
-            newTransactions = filter(newTransactions, (t) => {
-                return includeTypes.indexOf(get(t, 'Type')) !== -1;
-            });
-        }
-
         if (sectionIndex === 0) {
             if (isEmpty(newTransactions) && canLoadMore) {
                 this.setState(
                     {
                         filters,
                     },
-                    () => {
-                        this.loadMore();
-                    },
+                    this.loadMore,
                 );
             } else {
                 this.setState({
@@ -573,9 +648,7 @@ class EventsView extends Component<Props, State> {
                     searchText: text,
                     filters: undefined,
                 },
-                () => {
-                    this.loadMore();
-                },
+                this.loadMore,
             );
         } else {
             this.setState({
@@ -598,19 +671,24 @@ class EventsView extends Component<Props, State> {
     };
 
     onSectionChange = (index: number) => {
+        const { sectionIndex } = this.state;
+
+        if (index === sectionIndex) {
+            return;
+        }
+
         this.setState(
             {
                 sectionIndex: index,
+                dataSource: [],
             },
-            () => {
-                this.updateDataSource();
-            },
+            this.updateDataSource,
         );
     };
 
     renderEmptyAccount = () => {
         return (
-            <SafeAreaView testID="events-tab-empty-view" style={[AppStyles.tabContainer]}>
+            <View testID="events-tab-empty-view" style={AppStyles.tabContainer}>
                 {/* Header */}
                 <Header
                     placement="left"
@@ -638,7 +716,7 @@ class EventsView extends Component<Props, State> {
                         }}
                     />
                 </ImageBackground>
-            </SafeAreaView>
+            </View>
         );
     };
 
@@ -654,7 +732,7 @@ class EventsView extends Component<Props, State> {
     };
 
     render() {
-        const { dataSource, isLoading, isLoadingMore, filters, account } = this.state;
+        const { dataSource, isLoading, isLoadingMore, filters, account, sectionIndex } = this.state;
         const { timestamp } = this.props;
 
         if (!account) {
@@ -662,8 +740,7 @@ class EventsView extends Component<Props, State> {
         }
 
         return (
-            <SafeAreaView testID="events-tab-view" style={[AppStyles.tabContainer, styles.container]}>
-                {/* Header */}
+            <View testID="events-tab-view" style={AppStyles.tabContainer}>
                 <Header
                     containerStyle={AppStyles.headerContainer}
                     leftComponent={{
@@ -685,14 +762,13 @@ class EventsView extends Component<Props, State> {
                         render: (): any => null,
                     }}
                 />
-
                 <SearchBar
                     containerStyle={AppStyles.marginHorizontalSml}
                     onChangeText={this.applySearch}
                     placeholder={Localize.t('global.search')}
                 />
-
                 <SegmentButton
+                    selectedIndex={sectionIndex}
                     containerStyle={AppStyles.paddingHorizontalSml}
                     buttons={[
                         Localize.t('events.eventTypeAll'),
@@ -701,7 +777,6 @@ class EventsView extends Component<Props, State> {
                     ]}
                     onPress={this.onSectionChange}
                 />
-
                 <EventsList
                     account={account}
                     headerComponent={this.renderListHeader}
@@ -712,7 +787,7 @@ class EventsView extends Component<Props, State> {
                     onRefresh={this.updateDataSource}
                     timestamp={timestamp}
                 />
-            </SafeAreaView>
+            </View>
         );
     }
 }

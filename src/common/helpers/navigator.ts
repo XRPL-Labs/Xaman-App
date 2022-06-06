@@ -24,6 +24,9 @@ const getDefaultOptions = () => {
         topBar: {
             visible: false,
         },
+        navigationBar: {
+            backgroundColor: '$tint',
+        },
         statusBar: {
             style: Platform.select({
                 android: 'default',
@@ -67,15 +70,15 @@ const getTabBarIcons = () => {
             iconSelected: StyleService.getImage('IconTabBarActions'),
             scale: GetBottomTabScale(0.65),
         },
-        [AppScreens.TabBar.Profile]: {
-            icon: StyleService.getImage('IconTabBarProfile'),
-            iconSelected: StyleService.getImage('IconTabBarProfileSelected'),
-            scale: GetBottomTabScale(),
+        [AppScreens.TabBar.Pro]: {
+            icon: StyleService.getImage('IconTabBarPro'),
+            iconSelected: StyleService.getImage('IconTabBarProSelected'),
+            scale: GetBottomTabScale(0.9),
         },
         [AppScreens.TabBar.Settings]: {
             icon: StyleService.getImage('IconTabBarSettings'),
             iconSelected: StyleService.getImage('IconTabBarSettingsSelected'),
-            scale: GetBottomTabScale(),
+            scale: GetBottomTabScale(0.9),
         },
     };
 };
@@ -112,6 +115,9 @@ const Navigator = {
                         },
                     ],
                     options: {
+                        topBar: {
+                            visible: false,
+                        },
                         bottomTab: {
                             selectTabOnPress: tab !== 'Actions',
                             text: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
@@ -303,12 +309,12 @@ const Navigator = {
         Navigator.showOverlay(AppScreens.Overlay.Alert, props);
     },
 
-    mergeOptions(options = {}, componentId?: string) {
+    mergeOptions(componentId?: string, options = {}) {
         const currentScreen = componentId || NavigationService.getCurrentScreen();
         Navigation.mergeOptions(currentScreen, options);
     },
 
-    updateProps(props = {}, componentId?: string) {
+    updateProps(componentId?: string, props = {}) {
         const currentScreen = componentId || NavigationService.getCurrentScreen();
         Navigation.updateProps(currentScreen, props);
     },

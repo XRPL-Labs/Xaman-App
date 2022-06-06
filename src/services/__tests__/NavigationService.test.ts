@@ -1,6 +1,7 @@
 import { NativeModules } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import AppScreens from '../../common/constants/screens';
+
+import AppScreens from '@common/constants/screens';
 
 import NavigationService, { RootType, ComponentTypes } from '../NavigationService';
 
@@ -29,7 +30,7 @@ describe('NavigationService', () => {
         expect(navigationService.isRootComponent(AppScreens.Onboarding)).toBe(true);
         expect(navigationService.isRootComponent(AppScreens.TabBar.Home)).toBe(true);
         expect(navigationService.isRootComponent(AppScreens.TabBar.Events)).toBe(true);
-        expect(navigationService.isRootComponent(AppScreens.TabBar.Profile)).toBe(true);
+        expect(navigationService.isRootComponent(AppScreens.TabBar.Pro)).toBe(true);
         expect(navigationService.isRootComponent(AppScreens.TabBar.Settings)).toBe(true);
         expect(navigationService.isRootComponent(AppScreens.Settings.General)).toBe(false);
     });

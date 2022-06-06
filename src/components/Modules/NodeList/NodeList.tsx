@@ -56,7 +56,8 @@ class NodeList extends PureComponent<Props> {
                 sections={dataSource}
                 renderItem={this.renderItem}
                 renderSectionHeader={this.renderSectionHeader}
-                maxToRenderPerBatch={100}
+                initialNumToRender={50}
+                maxToRenderPerBatch={50}
                 keyExtractor={(item, index) => item.url + index}
             />
         );

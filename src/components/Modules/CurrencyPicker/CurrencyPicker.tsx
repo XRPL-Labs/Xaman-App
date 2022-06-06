@@ -1,5 +1,3 @@
-// import { isEqual, findIndex } from 'lodash';
-
 import React, { Component } from 'react';
 import { View, Text, ViewStyle } from 'react-native';
 

@@ -9,6 +9,7 @@
 #import <ReactNativeNavigation/ReactNativeNavigation.h>
 
 #import "Libs/Notification/LocalNotification.h"
+#import "Libs/Authentication/Biometric/BiometricModule.h"
 
 @implementation AppDelegate
 
@@ -33,8 +34,9 @@
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   [ReactNativeNavigation bootstrapWithBridge:bridge];
   
-  // bootstrap local notification
+  // bootstrap local notification and Biometric module
   [LocalNotificationModule initialise];
+  [BiometricModule initialise];
   
   // init firebase app
   if ([FIRApp defaultApp] == nil) {
@@ -60,6 +62,14 @@
 
 // hide snapshot in task switcher
 - (void)applicationWillResignActive:(UIApplication *)application {
+  
+  
+  // ignore if user is authenticating with biometric
+  if([BiometricModule isUserAuthenticating]){
+    return;
+  }
+
+  
   NSPredicate *isKeyWindow = [NSPredicate predicateWithFormat:@"isKeyWindow == YES"];
   UIWindow *topWindow = [[[UIApplication sharedApplication] windows] filteredArrayUsingPredicate:isKeyWindow].firstObject;
   

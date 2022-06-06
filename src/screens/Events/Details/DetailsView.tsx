@@ -1,21 +1,21 @@
 /**
  * Transaction Details screen
  */
-import { find, isEmpty, isUndefined, get } from 'lodash';
+import { find, get, isEmpty } from 'lodash';
 import moment from 'moment-timezone';
 import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import React, { Component, Fragment } from 'react';
 import {
-    View,
-    Text,
-    ScrollView,
-    Platform,
-    Linking,
     Alert,
-    InteractionManager,
-    Share,
     ImageBackground,
+    InteractionManager,
+    Linking,
+    Platform,
+    ScrollView,
+    Share,
+    Text,
+    View,
 } from 'react-native';
 
 import { BackendService, LedgerService, StyleService } from '@services';
@@ -24,31 +24,36 @@ import { AccountSchema } from '@store/schemas/latest';
 import AccountRepository from '@store/repositories/account';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
-import { TransactionsType } from '@common/libs/ledger/transactions/types';
-import transactionFactory from '@common/libs/ledger/parser/transaction';
+
+import { LedgerObjectTypes, TransactionTypes } from '@common/libs/ledger/types';
+import { Transactions } from '@common/libs/ledger/transactions/types';
+import { LedgerObjects } from '@common/libs/ledger/objects/types';
+
+import { OfferStatus } from '@common/libs/ledger/parser/types';
+import { TransactionFactory } from '@common/libs/ledger/factory';
+import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 import { AppScreens } from '@common/constants';
 
 import { ActionSheet, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+import { GetTransactionLink } from '@common/utils/explorer';
 
-import { getAccountName, AccountNameType } from '@common/helpers/resolver';
+import { AccountNameType, getAccountName } from '@common/helpers/resolver';
 
 import {
-    TouchableDebounce,
-    Header,
-    Button,
-    Badge,
-    Spacer,
-    Icon,
-    ReadMore,
     AmountText,
+    Badge,
+    Button,
+    Header,
+    Icon,
     LoadingIndicator,
+    ReadMore,
+    Spacer,
+    TouchableDebounce,
 } from '@components/General';
 import { RecipientElement } from '@components/Modules';
-
-import { GetTransactionLink } from '@common/utils/explorer';
 
 import Localize from '@locale';
 
@@ -58,14 +63,14 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    tx?: TransactionsType;
+    tx?: Transactions | LedgerObjects;
     hash?: string;
     account: AccountSchema;
     asModal?: boolean;
 }
 
 export interface State {
-    tx: TransactionsType;
+    tx: Transactions | LedgerObjects;
     partiesDetails: AccountNameType;
     spendableAccounts: AccountSchema[];
     balanceChanges: any;
@@ -136,9 +141,7 @@ class TransactionDetailsView extends Component<Props, State> {
         if (this.forceFetchDetails) {
             this.forceFetchDetails = false;
 
-            InteractionManager.runAfterInteractions(() => {
-                this.setPartiesDetails();
-            });
+            InteractionManager.runAfterInteractions(this.setPartiesDetails);
         }
     }
 
@@ -167,6 +170,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     throw new Error('Not found');
                 }
 
+                // separate transaction meta
                 const { meta } = resp;
 
                 // cleanup
@@ -177,7 +181,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 delete resp.__command;
                 delete resp.inLedger;
 
-                const tx = transactionFactory({ tx: resp, meta });
+                const tx = TransactionFactory.fromLedger({ tx: resp, meta });
 
                 this.setState(
                     {
@@ -205,12 +209,13 @@ class TransactionDetailsView extends Component<Props, State> {
         const { account } = this.props;
 
         if (
+            tx.ClassName === 'Transaction' &&
             [
-                'Payment',
-                'PaymentChannelClaim',
-                'PaymentChannelCreate',
-                'PaymentChannelFund',
-                'NFTokenAcceptOffer',
+                TransactionTypes.Payment,
+                TransactionTypes.PaymentChannelClaim,
+                TransactionTypes.PaymentChannelCreate,
+                TransactionTypes.PaymentChannelFund,
+                TransactionTypes.NFTokenAcceptOffer,
             ].includes(tx.Type)
         ) {
             this.setState({
@@ -244,7 +249,7 @@ class TransactionDetailsView extends Component<Props, State> {
         let tag;
 
         switch (tx.Type) {
-            case 'Payment':
+            case TransactionTypes.Payment:
                 if (incomingTx) {
                     address = tx.Account.address;
                 } else {
@@ -252,7 +257,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     tag = tx.Destination.tag;
                 }
                 break;
-            case 'AccountDelete':
+            case TransactionTypes.AccountDelete:
                 if (incomingTx) {
                     address = tx.Account.address;
                 } else {
@@ -260,7 +265,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     tag = tx.Destination.tag;
                 }
                 break;
-            case 'TrustSet':
+            case TransactionTypes.TrustSet:
                 // incoming trustline
                 if (tx.Issuer === account.address) {
                     address = tx.Account.address;
@@ -268,8 +273,8 @@ class TransactionDetailsView extends Component<Props, State> {
                     address = tx.Issuer;
                 }
                 break;
-            case 'EscrowCreate':
-            case 'Escrow':
+            case TransactionTypes.EscrowCreate:
+            case LedgerObjectTypes.Escrow:
                 if (incomingTx) {
                     address = tx.Account.address;
                 } else {
@@ -277,7 +282,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     tag = tx.Destination.tag;
                 }
                 break;
-            case 'EscrowFinish':
+            case TransactionTypes.EscrowFinish:
                 if (incomingTx) {
                     address = tx.Account.address;
                 } else {
@@ -285,19 +290,19 @@ class TransactionDetailsView extends Component<Props, State> {
                     tag = tx.Destination.tag;
                 }
                 break;
-            case 'DepositPreauth':
+            case TransactionTypes.DepositPreauth:
                 address = tx.Authorize || tx.Unauthorize;
                 break;
-            case 'AccountSet':
+            case TransactionTypes.AccountSet:
                 if (tx.Account.address !== account.address) {
                     address = tx.Account.address;
                 }
                 break;
-            case 'SetRegularKey':
+            case TransactionTypes.SetRegularKey:
                 address = tx.RegularKey;
                 break;
-            case 'CheckCreate':
-            case 'Check':
+            case TransactionTypes.CheckCreate:
+            case LedgerObjectTypes.Check:
                 if (incomingTx) {
                     address = tx.Account.address;
                 } else {
@@ -305,24 +310,24 @@ class TransactionDetailsView extends Component<Props, State> {
                     tag = tx.Destination.tag;
                 }
                 break;
-            case 'CheckCash':
+            case TransactionTypes.CheckCash:
                 if (!incomingTx && tx.Check) {
                     address = tx.Check.Account.address;
                 } else {
                     address = tx.Account.address;
                 }
                 break;
-            case 'CheckCancel':
+            case TransactionTypes.CheckCancel:
                 if (incomingTx) {
                     address = tx.Account.address;
                 }
                 break;
-            case 'OfferCreate':
+            case TransactionTypes.OfferCreate:
                 if (incomingTx) {
                     address = tx.Account.address;
                 }
                 break;
-            case 'PaymentChannelCreate':
+            case TransactionTypes.PaymentChannelCreate:
                 if (incomingTx) {
                     address = tx.Account.address;
                 } else {
@@ -330,28 +335,28 @@ class TransactionDetailsView extends Component<Props, State> {
                     tag = tx.Destination.tag;
                 }
                 break;
-            case 'PaymentChannelFund':
-            case 'PaymentChannelClaim':
+            case TransactionTypes.PaymentChannelFund:
+            case TransactionTypes.PaymentChannelClaim:
                 if (incomingTx) {
                     address = tx.Account.address;
                 }
                 break;
-            case 'NFTokenMint':
+            case TransactionTypes.NFTokenMint:
                 if (tx.Issuer) {
                     address = tx.Issuer;
                 }
                 break;
-            case 'NFTokenBurn':
+            case TransactionTypes.NFTokenBurn:
                 if (incomingTx) {
                     address = tx.Account.address;
                 }
                 break;
-            case 'NFTokenCreateOffer':
+            case TransactionTypes.NFTokenCreateOffer:
                 if (tx.Destination) {
                     address = tx.Destination.address;
                 }
                 break;
-            case 'NFTokenAcceptOffer':
+            case TransactionTypes.NFTokenAcceptOffer:
                 if (incomingTx) {
                     address = tx.Account.address;
                 } else if (tx.Offer) {
@@ -362,7 +367,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
         }
 
-        // no parties details
+        // no parties detail
         if (!address) return;
 
         getAccountName(address, tag)
@@ -378,7 +383,8 @@ class TransactionDetailsView extends Component<Props, State> {
 
     getTransactionLink = () => {
         const { tx } = this.state;
-        return GetTransactionLink(tx.Hash || tx.PreviousTxnID);
+        const hash = tx.ClassName === 'Transaction' ? tx.Hash : tx.PreviousTxnID;
+        return GetTransactionLink(hash);
     };
 
     shareTxLink = () => {
@@ -432,25 +438,10 @@ class TransactionDetailsView extends Component<Props, State> {
         );
     };
 
-    showRecipientMenu = () => {
-        const { partiesDetails, incomingTx, tx } = this.state;
-
-        let recipient = undefined as any;
-
-        if (incomingTx) {
-            recipient = {
-                address: tx.Account.address,
-                tag: tx.Account.tag,
-                ...partiesDetails,
-            };
-        } else {
-            recipient = {
-                address: tx.Destination?.address,
-                tag: tx.Destination?.tag,
-                ...partiesDetails,
-            };
+    showRecipientMenu = (recipient: any) => {
+        if (!recipient) {
+            return;
         }
-
         Navigator.showOverlay(AppScreens.Overlay.RecipientMenu, { recipient });
     };
 
@@ -459,7 +450,7 @@ class TransactionDetailsView extends Component<Props, State> {
         const { balanceChanges, tx } = this.state;
 
         switch (tx.Type) {
-            case 'Payment':
+            case TransactionTypes.Payment:
                 if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
                     if (balanceChanges?.sent || balanceChanges?.received) {
                         return Localize.t('events.exchangedAssets');
@@ -467,9 +458,12 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 return Localize.t('global.payment');
 
-            case 'TrustSet': {
-                // incoming trustline
+            case TransactionTypes.TrustSet: {
+                // incoming TrustLine
                 if (tx.Account.address !== account.address) {
+                    if (tx.Limit === 0) {
+                        return Localize.t('events.incomingTrustLineRemoved');
+                    }
                     return Localize.t('events.incomingTrustLineAdded');
                 }
                 const ownerCountChange = tx.OwnerCountChange(account.address);
@@ -481,65 +475,70 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 return Localize.t('events.updatedATrustLine');
             }
-            case 'EscrowCreate':
+            case TransactionTypes.EscrowCreate:
                 return Localize.t('events.createEscrow');
-            case 'EscrowFinish':
+            case TransactionTypes.EscrowFinish:
                 return Localize.t('events.finishEscrow');
-            case 'EscrowCancel':
+            case TransactionTypes.EscrowCancel:
                 return Localize.t('events.cancelEscrow');
-            case 'AccountSet':
+            case TransactionTypes.AccountSet:
+                if (tx.isNoOperation() && tx.isCancelTicket()) {
+                    return Localize.t('events.cancelTicket');
+                }
                 return Localize.t('events.accountSettings');
-            case 'SignerListSet':
+            case TransactionTypes.SignerListSet:
                 return Localize.t('events.setSignerList');
-            case 'OfferCreate':
-                if (tx.Executed) {
+            case TransactionTypes.OfferCreate:
+                if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].includes(tx.GetOfferStatus(account.address))) {
                     return Localize.t('events.exchangedAssets');
                 }
                 return Localize.t('events.createOffer');
-            case 'OfferCancel':
+            case TransactionTypes.OfferCancel:
                 return Localize.t('events.cancelOffer');
-            case 'AccountDelete':
+            case TransactionTypes.AccountDelete:
                 return Localize.t('events.deleteAccount');
-            case 'SetRegularKey':
+            case TransactionTypes.SetRegularKey:
                 if (tx.RegularKey) {
                     return Localize.t('events.setRegularKey');
                 }
                 return Localize.t('events.removeRegularKey');
-            case 'DepositPreauth':
+            case TransactionTypes.DepositPreauth:
                 if (tx.Authorize) {
                     return Localize.t('events.authorizeDeposit');
                 }
                 return Localize.t('events.unauthorizeDeposit');
-            case 'CheckCreate':
+            case TransactionTypes.CheckCreate:
                 return Localize.t('events.createCheck');
-            case 'CheckCash':
+            case TransactionTypes.CheckCash:
                 return Localize.t('events.cashCheck');
-            case 'CheckCancel':
+            case TransactionTypes.CheckCancel:
                 return Localize.t('events.cancelCheck');
-            case 'Offer':
-                return Localize.t('global.offer');
-            case 'Escrow':
-                return Localize.t('global.escrow');
-            case 'Check':
-                return Localize.t('global.check');
-            case 'TicketCreate':
+            case TransactionTypes.TicketCreate:
                 return Localize.t('events.createTicket');
-            case 'PaymentChannelCreate':
+            case TransactionTypes.PaymentChannelCreate:
                 return Localize.t('events.createPaymentChannel');
-            case 'PaymentChannelClaim':
+            case TransactionTypes.PaymentChannelClaim:
                 return Localize.t('events.claimPaymentChannel');
-            case 'PaymentChannelFund':
+            case TransactionTypes.PaymentChannelFund:
                 return Localize.t('events.fundPaymentChannel');
-            case 'NFTokenMint':
+            case TransactionTypes.NFTokenMint:
                 return Localize.t('events.mintNFT');
-            case 'NFTokenBurn':
+            case TransactionTypes.NFTokenBurn:
                 return Localize.t('events.burnNFT');
-            case 'NFTokenCreateOffer':
+            case TransactionTypes.NFTokenCreateOffer:
                 return Localize.t('events.createNFTOffer');
-            case 'NFTokenCancelOffer':
+            case TransactionTypes.NFTokenCancelOffer:
                 return Localize.t('events.cancelNFTOffer');
-            case 'NFTokenAcceptOffer':
+            case TransactionTypes.NFTokenAcceptOffer:
                 return Localize.t('events.acceptNFTOffer');
+            case LedgerObjectTypes.Offer:
+                return Localize.t('global.offer');
+            case LedgerObjectTypes.Escrow:
+                return Localize.t('global.escrow');
+            case LedgerObjectTypes.Check:
+                return Localize.t('global.check');
+            case LedgerObjectTypes.Ticket:
+                return Localize.t('global.ticket');
             default:
                 return tx.Type;
         }
@@ -555,7 +554,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         // open the XApp
-        if (type === 'OpenXapp') {
+        if (type === 'OpenXapp' && tx.ClassName === 'Transaction') {
             Navigator.showModal(
                 AppScreens.Modal.XAppBrowser,
                 {
@@ -572,7 +571,12 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         // handle return or new payment process
-        if (type === 'Payment') {
+        if (type === 'Payment' && tx.Type === TransactionTypes.Payment) {
+            // remove return feature
+            if (incomingTx) {
+                return;
+            }
+
             // create new payment
             const params = {
                 scanResult: {
@@ -594,23 +598,23 @@ class TransactionDetailsView extends Component<Props, State> {
                         l.balance > 0,
                 );
             }
+
+            // if no currency found just return
             if (!currency) {
                 return;
             }
+
+            // assign currency to the params
             Object.assign(params, { currency });
 
-            // if return payment prefill the amount
-            if (incomingTx) {
-                Object.assign(params, { amount: tx.DeliveredAmount.value });
-            }
-
+            // got to Payment screen
             Navigator.push(AppScreens.Transaction.Payment, params);
             return;
         }
 
         // when the Escrow is eligible for release, we'll leave out the button if an escrow has a condition,
         // in which case we will show a message and return
-        if (type === 'EscrowFinish' && tx.Condition) {
+        if (type === 'EscrowFinish' && tx.Type === TransactionTypes.EscrowFinish && tx.Condition) {
             Navigator.showAlertModal({
                 type: 'warning',
                 text: Localize.t('events.pleaseReleaseThisEscrowUsingTheToolUsedToCreateTheEscrow'),
@@ -625,7 +629,7 @@ class TransactionDetailsView extends Component<Props, State> {
             return;
         }
 
-        let transaction = { Account: account.address };
+        let transaction = {};
 
         switch (type) {
             case 'OfferCancel':
@@ -635,16 +639,20 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
                 break;
             case 'CheckCancel':
-                Object.assign(transaction, {
-                    TransactionType: 'CheckCancel',
-                    CheckID: tx.Index,
-                });
+                if (tx.Type === LedgerObjectTypes.Check) {
+                    Object.assign(transaction, {
+                        TransactionType: 'CheckCancel',
+                        CheckID: tx.Index,
+                    });
+                }
                 break;
             case 'CheckCash':
-                Object.assign(transaction, {
-                    TransactionType: 'CheckCash',
-                    CheckID: tx.Index,
-                });
+                if (tx.Type === LedgerObjectTypes.Check) {
+                    Object.assign(transaction, {
+                        TransactionType: 'CheckCash',
+                        CheckID: tx.Index,
+                    });
+                }
                 break;
             case 'EscrowCancel':
                 Object.assign(transaction, {
@@ -660,12 +668,25 @@ class TransactionDetailsView extends Component<Props, State> {
                     PreviousTxnID: tx.PreviousTxnID,
                 });
                 break;
+            case 'CancelTicket':
+                if (tx.Type === LedgerObjectTypes.Ticket) {
+                    Object.assign(transaction, {
+                        TransactionType: 'AccountSet',
+                        Sequence: 0,
+                        TicketSequence: tx.TicketSequence,
+                    });
+                }
+                break;
             default:
                 transaction = undefined;
                 break;
         }
 
-        if (transaction) {
+        if (!isEmpty(transaction)) {
+            // assign current account for crafted transaction
+            Object.assign(transaction, { Account: account.address });
+
+            // generate payload
             const payload = await Payload.build(transaction);
 
             Navigator.showModal(
@@ -699,7 +720,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         return (
-            <>
+            <View style={styles.detailContainer}>
                 <Text style={[styles.labelText]}>{Localize.t('global.status')}</Text>
                 <Text style={[styles.contentText]}>
                     {Localize.t('events.thisTransactionWasSuccessful')} {Localize.t('events.andValidatedInLedger')}
@@ -707,14 +728,16 @@ class TransactionDetailsView extends Component<Props, State> {
                     {Localize.t('events.onDate')}
                     <Text style={AppStyles.monoBold}> {moment(tx.Date).format('LLLL')}</Text>
                 </Text>
-            </>
+            </View>
         );
     };
 
-    renderOfferCreate = () => {
-        const { tx } = this.state;
-
-        let content;
+    renderOfferCreate = (
+        tx:
+            | Extract<Transactions, { Type: TransactionTypes.OfferCreate }>
+            | Extract<LedgerObjects, { Type: LedgerObjectTypes.Offer }>,
+    ): string => {
+        let content = '';
 
         const takerGetsNFT = XRPLValueToNFT(tx.TakerGets.value);
         const takerPaysNFT = XRPLValueToNFT(tx.TakerPays.value);
@@ -761,18 +784,18 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
-    renderOfferCancel = () => {
-        const { tx } = this.state;
-
+    renderOfferCancel = (tx: Extract<Transactions, { Type: TransactionTypes.OfferCancel }>): string => {
         return Localize.t('events.theTransactionWillCancelOffer', {
             address: tx.Account.address,
             offerSequence: tx.OfferSequence,
         });
     };
 
-    renderEscrowCreate = () => {
-        const { tx } = this.state;
-
+    renderEscrowCreate = (
+        tx:
+            | Extract<Transactions, { Type: TransactionTypes.EscrowCreate }>
+            | Extract<LedgerObjects, { Type: LedgerObjectTypes.Escrow }>,
+    ): string => {
         let content = Localize.t('events.theEscrowIsFromTo', {
             account: tx.Account.address,
             destination: tx.Destination.address,
@@ -797,9 +820,7 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
-    renderEscrowFinish = () => {
-        const { tx } = this.state;
-
+    renderEscrowFinish = (tx: Extract<Transactions, { Type: TransactionTypes.EscrowFinish }>): string => {
         let content = Localize.t('events.escrowFinishTransactionExplain', {
             address: tx.Account.address,
             amount: tx.Amount.value,
@@ -817,9 +838,7 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
-    renderPayment = () => {
-        const { tx } = this.state;
-
+    renderPayment = (tx: Extract<Transactions, { Type: TransactionTypes.Payment }>): string => {
         let content = '';
         if (tx.Account.tag) {
             content += Localize.t('events.thePaymentHasASourceTag', { tag: tx.Account.tag });
@@ -845,9 +864,7 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
-    renderAccountDelete = () => {
-        const { tx } = this.state;
-
+    renderAccountDelete = (tx: Extract<Transactions, { Type: TransactionTypes.AccountDelete }>): string => {
         let content = Localize.t('events.itDeletedAccount', { address: tx.Account.address });
 
         content += '\n\n';
@@ -869,9 +886,11 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
-    renderCheckCreate = () => {
-        const { tx } = this.state;
-
+    renderCheckCreate = (
+        tx:
+            | Extract<Transactions, { Type: TransactionTypes.CheckCreate }>
+            | Extract<LedgerObjects, { Type: LedgerObjectTypes.Check }>,
+    ): string => {
         let content = Localize.t('events.theCheckIsFromTo', {
             address: tx.Account.address,
             destination: tx.Destination.address,
@@ -895,30 +914,22 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
-    renderCheckCash = () => {
-        const { tx } = this.state;
-
+    renderCheckCash = (tx: Extract<Transactions, { Type: TransactionTypes.CheckCash }>): string => {
         const amount = tx.Amount || tx.DeliverMin;
 
-        const content = Localize.t('events.itWasInstructedToDeliverByCashingCheck', {
+        return Localize.t('events.itWasInstructedToDeliverByCashingCheck', {
             address: tx.Check?.Destination.address || 'address',
             amount: amount.value,
             currency: NormalizeCurrencyCode(amount.currency),
             checkId: tx.CheckID,
         });
-
-        return content;
     };
 
-    renderCheckCancel = () => {
-        const { tx } = this.state;
-
+    renderCheckCancel = (tx: Extract<Transactions, { Type: TransactionTypes.CheckCancel }>): string => {
         return Localize.t('events.theTransactionWillCancelCheckWithId', { checkId: tx.CheckID });
     };
 
-    renderDepositPreauth = () => {
-        const { tx } = this.state;
-
+    renderDepositPreauth = (tx: Extract<Transactions, { Type: TransactionTypes.DepositPreauth }>): string => {
         if (tx.Authorize) {
             return Localize.t('events.itAuthorizesSendingPaymentsToThisAccount', { address: tx.Authorize });
         }
@@ -926,15 +937,15 @@ class TransactionDetailsView extends Component<Props, State> {
         return Localize.t('events.itRemovesAuthorizesSendingPaymentsToThisAccount', { address: tx.Unauthorize });
     };
 
-    renderTicketCreate = () => {
-        const { tx } = this.state;
-
-        return Localize.t('events.itCreatesTicketForThisAccount', { ticketCount: tx.TicketCount });
+    renderTicketCreate = (tx: Extract<Transactions, { Type: TransactionTypes.TicketCreate }>): string => {
+        let content = Localize.t('events.itCreatesTicketForThisAccount', { ticketCount: tx.TicketCount });
+        content += '\n\n';
+        content += Localize.t('events.createdTicketsSequence', { ticketsSequence: tx.TicketsSequence.join(', ') });
+        return content;
     };
 
-    renderTrustSet = () => {
+    renderTrustSet = (tx: Extract<Transactions, { Type: TransactionTypes.TrustSet }>) => {
         const { account } = this.props;
-        const { tx } = this.state;
 
         const ownerCountChange = tx.OwnerCountChange(account.address);
 
@@ -953,35 +964,27 @@ class TransactionDetailsView extends Component<Props, State> {
         });
     };
 
-    renderSetRegularKey = () => {
-        const { tx } = this.state;
-
+    renderSetRegularKey = (tx: Extract<Transactions, { Type: TransactionTypes.SetRegularKey }>): string => {
         let content = Localize.t('events.thisIsAnSetRegularKeyTransaction');
-
         content += '\n';
-
         if (tx.RegularKey) {
             content += Localize.t('events.itSetsAccountRegularKeyTo', { regularKey: tx.RegularKey });
         } else {
             content += Localize.t('events.itRemovesTheAccountRegularKey');
         }
-
         return content;
     };
 
-    renderAccountSet = () => {
-        const { tx } = this.state;
-
+    renderAccountSet = (tx: Extract<Transactions, { Type: TransactionTypes.AccountSet }>): string => {
         let content = Localize.t('events.thisIsAnAccountSetTransaction');
 
-        if (
-            isUndefined(tx.SetFlag) &&
-            isUndefined(tx.ClearFlag) &&
-            isUndefined(tx.Domain) &&
-            isUndefined(tx.EmailHash) &&
-            isUndefined(tx.MessageKey) &&
-            isUndefined(tx.TransferRate)
-        ) {
+        if (tx.isNoOperation()) {
+            content += '\n';
+            if (tx.isCancelTicket()) {
+                content += Localize.t('events.thisTransactionClearTicket', { ticketSequence: tx.TicketSequence });
+            } else {
+                content += Localize.t('events.thisTransactionDoesNotEffectAnyAccountSettings');
+            }
             return content;
         }
 
@@ -1021,6 +1024,15 @@ class TransactionDetailsView extends Component<Props, State> {
             }
         }
 
+        if (tx.NFTokenMinter !== undefined) {
+            content += '\n';
+            if (tx.NFTokenMinter === '') {
+                content += Localize.t('events.itRemovesTheAccountMinter');
+            } else {
+                content += Localize.t('events.itSetsAccountMinterTo', { minter: tx.NFTokenMinter });
+            }
+        }
+
         if (tx.SetFlag !== undefined) {
             content += '\n';
             content += Localize.t('events.itSetsTheAccountFlag', { flag: tx.SetFlag });
@@ -1034,9 +1046,9 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
-    renderPaymentChannelCreate = () => {
-        const { tx } = this.state;
-
+    renderPaymentChannelCreate = (
+        tx: Extract<Transactions, { Type: TransactionTypes.PaymentChannelCreate }>,
+    ): string => {
         let content = '';
 
         content += Localize.t('events.accountWillCreateAPaymentChannelTo', {
@@ -1072,9 +1084,7 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
-    renderPaymentChannelFund = () => {
-        const { tx } = this.state;
-
+    renderPaymentChannelFund = (tx: Extract<Transactions, { Type: TransactionTypes.PaymentChannelFund }>): string => {
         let content = '';
 
         content += Localize.t('events.itWillUpdateThePaymentChannel', { channel: tx.Channel });
@@ -1084,9 +1094,7 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
-    renderPaymentChannelClaim = () => {
-        const { tx } = this.state;
-
+    renderPaymentChannelClaim = (tx: Extract<Transactions, { Type: TransactionTypes.PaymentChannelClaim }>): string => {
         let content = '';
 
         content += Localize.t('events.itWillUpdateThePaymentChannel', { channel: tx.Channel });
@@ -1104,52 +1112,42 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
-    renderNFTokenMint = () => {
-        const { tx } = this.state;
-
+    renderNFTokenMint = (tx: Extract<Transactions, { Type: TransactionTypes.NFTokenMint }>): string => {
         let content = '';
 
-        content += Localize.t('events.theTokenIdIs', { tokenID: tx.TokenID });
+        content += Localize.t('events.theTokenIdIs', { tokenID: tx.NFTokenID });
 
         if (tx.TransferFee) {
             content += '\n';
             content += Localize.t('events.theTokenHasATransferFee', { transferFee: tx.TransferFee });
         }
 
-        if (tx.TokenTaxon) {
+        if (tx.NFTokenTaxon) {
             content += '\n';
-            content += Localize.t('events.theTokenTaxonForThisTokenIs', { taxon: tx.TokenTaxon });
+            content += Localize.t('events.theTokenTaxonForThisTokenIs', { taxon: tx.NFTokenTaxon });
         }
 
         return content;
     };
 
-    renderNFTokenBurn = () => {
-        const { tx } = this.state;
-
-        let content = '';
-
-        content += Localize.t('events.nftokenBurnExplain', { tokenID: tx.TokenID });
-
-        return content;
+    renderNFTokenBurn = (tx: Extract<Transactions, { Type: TransactionTypes.NFTokenBurn }>): string => {
+        return Localize.t('events.nftokenBurnExplain', { tokenID: tx.NFTokenID });
     };
 
-    renderNFTokenCreateOffer = () => {
-        const { tx } = this.state;
-
+    renderNFTokenCreateOffer = (tx: Extract<Transactions, { Type: TransactionTypes.NFTokenCreateOffer }>): string => {
         let content = '';
 
         if (tx.Flags.SellToken) {
             content += Localize.t('events.nftOfferSellExplain', {
                 address: tx.Account.address,
-                tokenID: tx.TokenID,
+                tokenID: tx.NFTokenID,
                 amount: tx.Amount.value,
                 currency: NormalizeCurrencyCode(tx.Amount.currency),
             });
         } else {
             content += Localize.t('events.nftOfferBuyExplain', {
                 address: tx.Account.address,
-                tokenID: tx.TokenID,
+                tokenID: tx.NFTokenID,
                 amount: tx.Amount.value,
                 currency: NormalizeCurrencyCode(tx.Amount.currency),
             });
@@ -1168,37 +1166,33 @@ class TransactionDetailsView extends Component<Props, State> {
         if (tx.Expiration) {
             content += '\n';
             content += Localize.t('events.theOfferExpiresAtUnlessCanceledOrAccepted', {
-                expiration: moment(tx.CancelAfter).format('LLLL'),
+                expiration: moment(tx.Expiration).format('LLLL'),
             });
         }
 
         return content;
     };
 
-    renderNFTokenCancelOffer = () => {
-        const { tx } = this.state;
-
+    renderNFTokenCancelOffer = (tx: Extract<Transactions, { Type: TransactionTypes.NFTokenCancelOffer }>): string => {
         let content = '';
 
         content += Localize.t('events.theTransactionWillCancelNftOffer', { address: tx.Account.address });
         content += '\n';
 
-        tx.TokenOffers?.forEach((id: string) => {
+        tx.NFTokenOffers?.forEach((id: string) => {
             content += `${id}\n`;
         });
 
         return content;
     };
 
-    renderNFTokenAcceptOffer = () => {
-        const { tx } = this.state;
-
-        const offerID = tx.BuyOffer || tx.SellOffer;
+    renderNFTokenAcceptOffer = (tx: Extract<Transactions, { Type: TransactionTypes.NFTokenAcceptOffer }>): string => {
+        const offerID = tx.NFTokenBuyOffer || tx.NFTokenSellOffer;
 
         // this should never happen
-        // but as we are in beta we should to check this
+        // but as we are in beta we should check
         if (!tx.Offer) {
-            return 'No Description!';
+            return 'Unable to fetch the offer for this transaction!';
         }
 
         let content = '';
@@ -1207,7 +1201,7 @@ class TransactionDetailsView extends Component<Props, State> {
             content += Localize.t('events.nftAcceptOfferBuyExplanation', {
                 address: tx.Account.address,
                 offerID,
-                tokenID: tx.Offer.TokenID,
+                tokenID: tx.Offer.NFTokenID,
                 amount: tx.Offer.Amount.value,
                 currency: NormalizeCurrencyCode(tx.Offer.Amount.currency),
             });
@@ -1215,13 +1209,25 @@ class TransactionDetailsView extends Component<Props, State> {
             content += Localize.t('events.nftAcceptOfferSellExplanation', {
                 address: tx.Account.address,
                 offerID,
-                tokenID: tx.Offer.TokenID,
+                tokenID: tx.Offer.NFTokenID,
                 amount: tx.Offer.Amount.value,
                 currency: NormalizeCurrencyCode(tx.Offer.Amount.currency),
             });
         }
 
+        if (tx.NFTokenBrokerFee) {
+            content += '\n';
+            content += Localize.t('events.nftAcceptOfferBrokerFee', {
+                brokerFee: tx.NFTokenBrokerFee.value,
+                currency: NormalizeCurrencyCode(tx.NFTokenBrokerFee.currency),
+            });
+        }
+
         return content;
+    };
+
+    renderTicketObject = (tx: Extract<LedgerObjects, { Type: LedgerObjectTypes.Ticket }>): string => {
+        return `${Localize.t('global.ticketSequence')} #${tx.TicketSequence}`;
     };
 
     renderDescription = () => {
@@ -1230,86 +1236,89 @@ class TransactionDetailsView extends Component<Props, State> {
         let content = '';
 
         switch (tx.Type) {
-            case 'OfferCreate':
-            case 'Offer':
-                content += this.renderOfferCreate();
+            case TransactionTypes.OfferCreate:
+            case LedgerObjectTypes.Offer:
+                content += this.renderOfferCreate(tx);
                 break;
-            case 'OfferCancel':
-                content += this.renderOfferCancel();
+            case TransactionTypes.OfferCancel:
+                content += this.renderOfferCancel(tx);
                 break;
-            case 'Payment':
-                content += this.renderPayment();
+            case TransactionTypes.Payment:
+                content += this.renderPayment(tx);
                 break;
-            case 'EscrowCreate':
-            case 'Escrow':
-                content += this.renderEscrowCreate();
+            case TransactionTypes.EscrowCreate:
+            case LedgerObjectTypes.Escrow:
+                content += this.renderEscrowCreate(tx);
                 break;
-            case 'EscrowFinish':
-                content += this.renderEscrowFinish();
+            case TransactionTypes.EscrowFinish:
+                content += this.renderEscrowFinish(tx);
                 break;
-            case 'TrustSet':
-                content += this.renderTrustSet();
+            case TransactionTypes.TrustSet:
+                content += this.renderTrustSet(tx);
                 break;
-            case 'CheckCreate':
-            case 'Check':
-                content += this.renderCheckCreate();
+            case TransactionTypes.CheckCreate:
+            case LedgerObjectTypes.Check:
+                content += this.renderCheckCreate(tx);
                 break;
-            case 'CheckCash':
-                content += this.renderCheckCash();
+            case TransactionTypes.CheckCash:
+                content += this.renderCheckCash(tx);
                 break;
-            case 'CheckCancel':
-                content += this.renderCheckCancel();
+            case TransactionTypes.CheckCancel:
+                content += this.renderCheckCancel(tx);
                 break;
-            case 'AccountDelete':
-                content += this.renderAccountDelete();
+            case TransactionTypes.AccountDelete:
+                content += this.renderAccountDelete(tx);
                 break;
-            case 'DepositPreauth':
-                content += this.renderDepositPreauth();
+            case TransactionTypes.DepositPreauth:
+                content += this.renderDepositPreauth(tx);
                 break;
-            case 'AccountSet':
-                content += this.renderAccountSet();
+            case TransactionTypes.AccountSet:
+                content += this.renderAccountSet(tx);
                 break;
-            case 'SetRegularKey':
-                content += this.renderSetRegularKey();
+            case TransactionTypes.SetRegularKey:
+                content += this.renderSetRegularKey(tx);
                 break;
-            case 'TicketCreate':
-                content += this.renderTicketCreate();
+            case TransactionTypes.TicketCreate:
+                content += this.renderTicketCreate(tx);
                 break;
-            case 'PaymentChannelCreate':
-                content += this.renderPaymentChannelCreate();
+            case TransactionTypes.PaymentChannelCreate:
+                content += this.renderPaymentChannelCreate(tx);
                 break;
-            case 'PaymentChannelFund':
-                content += this.renderPaymentChannelFund();
+            case TransactionTypes.PaymentChannelFund:
+                content += this.renderPaymentChannelFund(tx);
                 break;
-            case 'PaymentChannelClaim':
-                content += this.renderPaymentChannelClaim();
+            case TransactionTypes.PaymentChannelClaim:
+                content += this.renderPaymentChannelClaim(tx);
                 break;
-            case 'NFTokenMint':
-                content += this.renderNFTokenMint();
+            case TransactionTypes.NFTokenMint:
+                content += this.renderNFTokenMint(tx);
                 break;
-            case 'NFTokenBurn':
-                content += this.renderNFTokenBurn();
+            case TransactionTypes.NFTokenBurn:
+                content += this.renderNFTokenBurn(tx);
                 break;
-            case 'NFTokenCreateOffer':
-                content += this.renderNFTokenCreateOffer();
+            case TransactionTypes.NFTokenCreateOffer:
+                content += this.renderNFTokenCreateOffer(tx);
                 break;
-            case 'NFTokenCancelOffer':
-                content += this.renderNFTokenCancelOffer();
+            case TransactionTypes.NFTokenCancelOffer:
+                content += this.renderNFTokenCancelOffer(tx);
                 break;
-            case 'NFTokenAcceptOffer':
-                content += this.renderNFTokenAcceptOffer();
+            case TransactionTypes.NFTokenAcceptOffer:
+                content += this.renderNFTokenAcceptOffer(tx);
+                break;
+            case LedgerObjectTypes.Ticket:
+                content += this.renderTicketObject(tx);
                 break;
             default:
                 content += `This is a ${tx.Type} transaction`;
         }
 
         return (
-            <>
+            <View style={styles.detailContainer}>
                 <Text style={[styles.labelText]}>{Localize.t('global.description')}</Text>
                 <Text selectable style={[styles.contentText]}>
                     {content}
                 </Text>
-            </>
+            </View>
         );
     };
 
@@ -1317,8 +1326,8 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx } = this.state;
         const { showMemo, scamAlert } = this.state;
 
-        // if no memo or the transaction contain xApp memo return null
-        if (!tx.Memos) return null;
+        // if ledger object or no Memo return null
+        if (tx.ClassName !== 'Transaction' || !tx.Memos) return null;
 
         // check for xapp memo
         if (!scamAlert) {
@@ -1406,10 +1415,10 @@ class TransactionDetailsView extends Component<Props, State> {
                     <Text style={[AppStyles.baseText, AppStyles.textCenterAligned]}>
                         {changes.action === 'INC'
                             ? Localize.t('events.thisTransactionIncreaseAccountReserve', {
-                                  ownerReserve: LedgerService.getNetworkReserve().OwnerReserve,
+                                  ownerReserve: Number(changes.value) * LedgerService.getNetworkReserve().OwnerReserve,
                               })
                             : Localize.t('events.thisTransactionDecreaseAccountReserve', {
-                                  ownerReserve: LedgerService.getNetworkReserve().OwnerReserve,
+                                  ownerReserve: Number(changes.value) * LedgerService.getNetworkReserve().OwnerReserve,
                               })}
                     </Text>
                 </View>
@@ -1428,12 +1437,42 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         return (
-            <>
+            <View style={styles.detailContainer}>
                 <Text style={[styles.labelText]}>{Localize.t('events.transactionCost')}</Text>
                 <Text style={[styles.contentText]}>
                     {Localize.t('events.sendingThisTransactionConsumed', { fee: tx.Fee })}
                 </Text>
-            </>
+            </View>
+        );
+    };
+
+    renderFlags = () => {
+        const { tx } = this.state;
+
+        if (!tx.Flags) {
+            return null;
+        }
+
+        const flags = [];
+        for (const [key, value] of Object.entries(tx.Flags)) {
+            if (!(key in txFlags.Universal) && value) {
+                flags.push(
+                    <Text key={key} style={styles.contentText}>
+                        {key}
+                    </Text>,
+                );
+            }
+        }
+
+        if (isEmpty(flags)) {
+            return null;
+        }
+
+        return (
+            <View style={styles.detailContainer}>
+                <Text style={[styles.labelText]}>{Localize.t('global.flags')}</Text>
+                {flags}
+            </View>
         );
     };
 
@@ -1442,34 +1481,53 @@ class TransactionDetailsView extends Component<Props, State> {
 
         if (tx.ClassName === 'LedgerObject') {
             return (
-                <>
+                <View style={styles.detailContainer}>
                     <Text style={[styles.labelText]}>{Localize.t('events.ledgerIndex')}</Text>
                     <Text selectable style={[styles.hashText]}>
                         {tx.Index}
                     </Text>
-                </>
+                </View>
             );
         }
+
         return (
-            <>
+            <View style={styles.detailContainer}>
                 <Text style={[styles.labelText]}>{Localize.t('events.transactionId')}</Text>
                 <Text selectable style={[styles.hashText]}>
                     {tx.Hash}
                 </Text>
-            </>
+            </View>
         );
     };
 
     renderHeader = () => {
         const { tx } = this.state;
 
+        let badgeType: any;
+
+        if (tx.ClassName === 'LedgerObject') {
+            if ([LedgerObjectTypes.Offer, LedgerObjectTypes.Check, LedgerObjectTypes.Ticket].includes(tx.Type)) {
+                badgeType = 'open';
+            } else {
+                badgeType = 'planned';
+            }
+        } else {
+            badgeType = 'success';
+        }
+
+        let date;
+
+        if (tx.Type !== LedgerObjectTypes.Ticket) {
+            date = moment(tx.Date).format('LLLL');
+        }
+
         return (
             <View style={styles.headerContainer}>
                 <Text style={AppStyles.h5}>{this.getLabel()}</Text>
                 <Spacer />
-                <Badge size="medium" type={tx.ClassName === 'Transaction' ? 'success' : 'planned'} />
+                <Badge size="medium" type={badgeType} />
                 <Spacer />
-                <Text style={[styles.dateText]}>{moment(tx.Date).format('LLLL')}</Text>
+                {date && <Text style={[styles.dateText]}>{date}</Text>}
             </View>
         );
     };
@@ -1489,7 +1547,7 @@ class TransactionDetailsView extends Component<Props, State> {
         };
 
         switch (tx.Type) {
-            case 'Payment': {
+            case TransactionTypes.Payment: {
                 const amount = tx.DeliveredAmount || tx.Amount;
 
                 if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
@@ -1534,7 +1592,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
                 break;
             }
-            case 'AccountDelete': {
+            case TransactionTypes.AccountDelete: {
                 Object.assign(props, {
                     color: incomingTx ? styles.incomingColor : styles.outgoingColor,
                     prefix: incomingTx ? '' : '-',
@@ -1543,8 +1601,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
                 break;
             }
-            case 'EscrowCreate':
-            case 'Escrow':
+            case TransactionTypes.EscrowCreate:
+            case LedgerObjectTypes.Escrow:
                 Object.assign(props, {
                     color: incomingTx ? styles.orangeColor : styles.outgoingColor,
                     prefix: '-',
@@ -1552,7 +1610,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     currency: tx.Amount.currency,
                 });
                 break;
-            case 'EscrowFinish':
+            case TransactionTypes.EscrowFinish:
                 Object.assign(props, {
                     color: tx.Destination.address === account.address ? styles.incomingColor : styles.naturalColor,
                     icon: 'IconCornerRightDown',
@@ -1560,15 +1618,15 @@ class TransactionDetailsView extends Component<Props, State> {
                     currency: tx.Amount.currency,
                 });
                 break;
-            case 'CheckCreate':
-            case 'Check':
+            case TransactionTypes.CheckCreate:
+            case LedgerObjectTypes.Check:
                 Object.assign(props, {
                     color: styles.naturalColor,
                     value: tx.SendMax.value,
                     currency: tx.SendMax.currency,
                 });
                 break;
-            case 'CheckCash': {
+            case TransactionTypes.CheckCash: {
                 const amount = tx.Amount || tx.DeliverMin;
                 const incoming = tx.Account.address === account.address;
 
@@ -1581,9 +1639,10 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
                 break;
             }
-            case 'OfferCreate':
-            case 'Offer': {
-                if (tx.Executed) {
+            case TransactionTypes.OfferCreate:
+                if (
+                    [OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(tx.GetOfferStatus(account.address)) > -1
+                ) {
                     const takerPaid = tx.TakerPaid(account.address);
                     Object.assign(props, {
                         color: styles.incomingColor,
@@ -1601,10 +1660,18 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
 
                 break;
-            }
-            case 'PaymentChannelClaim':
-            case 'PaymentChannelFund':
-            case 'PaymentChannelCreate': {
+            case LedgerObjectTypes.Offer:
+                Object.assign(props, {
+                    color: styles.naturalColor,
+                    icon: 'IconCornerRightDown',
+                    value: tx.TakerPays.value,
+                    currency: tx.TakerPays.currency,
+                });
+
+                break;
+            case TransactionTypes.PaymentChannelClaim:
+            case TransactionTypes.PaymentChannelFund:
+            case TransactionTypes.PaymentChannelCreate: {
                 if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
                     const incoming = !!balanceChanges.received;
                     const amount = balanceChanges?.received || balanceChanges?.sent;
@@ -1621,7 +1688,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             }
-            case 'NFTokenCreateOffer': {
+            case TransactionTypes.NFTokenCreateOffer: {
                 Object.assign(props, {
                     color: styles.naturalColor,
                     icon: tx.Flags.SellToken ? 'IconCornerRightDown' : 'IconCornerRightUp',
@@ -1630,7 +1697,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
                 break;
             }
-            case 'NFTokenAcceptOffer': {
+            case TransactionTypes.NFTokenAcceptOffer: {
                 if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
                     const incoming = !!balanceChanges.received;
                     const amount = balanceChanges?.received || balanceChanges?.sent;
@@ -1657,10 +1724,13 @@ class TransactionDetailsView extends Component<Props, State> {
             return null;
         }
 
-        if (tx.Type === 'OfferCreate' || tx.Type === 'Offer') {
+        if (tx.Type === TransactionTypes.OfferCreate || tx.Type === LedgerObjectTypes.Offer) {
             let takerGets;
 
-            if (tx.Executed) {
+            if (
+                tx.Type === TransactionTypes.OfferCreate &&
+                [OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].includes(tx.GetOfferStatus(account.address))
+            ) {
                 takerGets = tx.TakerGot(account.address);
             } else {
                 takerGets = tx.TakerGets;
@@ -1696,7 +1766,7 @@ class TransactionDetailsView extends Component<Props, State> {
             );
         }
 
-        if (tx.Type === 'Payment') {
+        if (tx.Type === TransactionTypes.Payment) {
             // rippling
             if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
                 if (balanceChanges?.sent) {
@@ -1731,8 +1801,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
             }
 
-            // path paid with different currency
-            if (tx.Paths && tx.SendMax && tx.SendMax.currency !== tx.Amount.currency) {
+            // cross currency
+            if (tx.SendMax && tx.SendMax.currency !== tx.Amount.currency) {
                 if (balanceChanges?.sent) {
                     return (
                         <View style={styles.amountHeaderContainer}>
@@ -1786,9 +1856,9 @@ class TransactionDetailsView extends Component<Props, State> {
 
     renderActionButtons = () => {
         const { account } = this.props;
-        const { tx, incomingTx, spendableAccounts } = this.state;
+        const { tx, spendableAccounts } = this.state;
 
-        // just return is the account is not an spendable account
+        // just return as the account is not a spendable account
         if (!find(spendableAccounts, { address: account.address })) {
             return null;
         }
@@ -1796,9 +1866,10 @@ class TransactionDetailsView extends Component<Props, State> {
         const actionButtons = [];
 
         switch (tx.Type) {
-            case 'Payment':
-                if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) > -1 && tx.DeliveredAmount) {
-                    // check if we can return the payment
+            case TransactionTypes.Payment:
+                // only new payment
+                if (tx.Account.address === account.address && tx.DeliveredAmount) {
+                    // check if we can make new payment base on sent currency
                     if (tx.DeliveredAmount.currency !== 'XRP') {
                         const trustLine = account.lines.find(
                             (l: any) =>
@@ -1806,28 +1877,26 @@ class TransactionDetailsView extends Component<Props, State> {
                                 l.currency.issuer === tx.DeliveredAmount.issuer &&
                                 l.balance > 0,
                         );
-                        // do not show the button if user does not have the proper trustline
+                        // do not show the button if user does not have the TrustLine
                         if (!trustLine) {
                             break;
                         }
                     }
-
-                    const label = incomingTx ? Localize.t('events.returnPayment') : Localize.t('events.newPayment');
                     actionButtons.push({
-                        label,
+                        label: Localize.t('events.newPayment'),
                         type: 'Payment',
                         secondary: false,
                     });
                 }
                 break;
-            case 'Offer':
+            case LedgerObjectTypes.Offer:
                 actionButtons.push({
                     label: Localize.t('events.cancelOffer'),
                     type: 'OfferCancel',
                     secondary: true,
                 });
                 break;
-            case 'Escrow':
+            case LedgerObjectTypes.Escrow:
                 if (tx.isExpired) {
                     actionButtons.push({
                         label: Localize.t('events.cancelEscrow'),
@@ -1845,7 +1914,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
 
                 break;
-            case 'Check':
+            case LedgerObjectTypes.Check:
                 if (tx.Destination.address === account.address && !tx.isExpired) {
                     actionButtons.push({
                         label: Localize.t('events.cashCheck'),
@@ -1860,7 +1929,13 @@ class TransactionDetailsView extends Component<Props, State> {
                         secondary: true,
                     });
                 }
-
+                break;
+            case LedgerObjectTypes.Ticket:
+                actionButtons.push({
+                    label: Localize.t('events.cancelTicket'),
+                    type: 'CancelTicket',
+                    secondary: true,
+                });
                 break;
             default:
                 break;
@@ -1896,6 +1971,7 @@ class TransactionDetailsView extends Component<Props, State> {
             address: tx.Account.address,
         } as any;
         let to = {
+            // @ts-ignore
             address: tx.Destination?.address,
         } as any;
 
@@ -1920,7 +1996,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         // incoming trustline
-        if (tx.Type === 'TrustSet' && tx.Issuer === account.address) {
+        if (tx.Type === TransactionTypes.TrustSet && tx.Issuer === account.address) {
             from = { address: tx.Account.address, ...partiesDetails };
             to = {
                 address: account.address,
@@ -1930,7 +2006,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         // incoming CheckCash
-        if (tx.Type === 'CheckCash') {
+        if (tx.Type === TransactionTypes.CheckCash) {
             if (incomingTx) {
                 to = { address: tx.Account.address, ...partiesDetails };
                 from = {
@@ -1949,7 +2025,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         // Accepted NFT offer
-        if (tx.Type === 'NFTokenAcceptOffer') {
+        if (tx.Type === TransactionTypes.NFTokenAcceptOffer) {
             const offerer = tx.Offer.Owner;
             const accepter = tx.Account.address;
             const isSellOffer = tx.Offer?.Flags.SellToken;
@@ -1979,7 +2055,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         // 3rd party consuming own offer
-        if (tx.Type === 'Payment') {
+        if (tx.Type === TransactionTypes.Payment) {
             if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
                 if (balanceChanges?.sent || balanceChanges?.received) {
                     from = { address: tx.Account.address };
@@ -1995,7 +2071,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         // ignore async third party offer executed
-        if (tx.Type === 'OfferCreate' && to.address !== account.address) {
+        if (tx.Type === TransactionTypes.OfferCreate && to.address !== account.address) {
             return null;
         }
 
@@ -2014,7 +2090,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 <RecipientElement
                     recipient={from}
                     showMoreButton={from.source !== 'accounts'}
-                    onMorePress={from.source !== 'accounts' && this.showRecipientMenu}
+                    onMorePress={this.showRecipientMenu}
                 />
                 {!!through && (
                     <>
@@ -2022,7 +2098,8 @@ class TransactionDetailsView extends Component<Props, State> {
                         <Text style={[styles.labelText]}>{Localize.t('events.throughOfferBy')}</Text>
                         <RecipientElement
                             recipient={through}
-                            onMorePress={to.source !== 'accounts' && this.showRecipientMenu}
+                            showMoreButton={through.source !== 'accounts'}
+                            onMorePress={this.showRecipientMenu}
                         />
                     </>
                 )}
@@ -2031,7 +2108,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 <RecipientElement
                     recipient={to}
                     showMoreButton={to.source !== 'accounts'}
-                    onMorePress={to.source !== 'accounts' && this.showRecipientMenu}
+                    onMorePress={this.showRecipientMenu}
                 />
             </View>
         );
@@ -2093,15 +2170,11 @@ class TransactionDetailsView extends Component<Props, State> {
                             {this.renderActionButtons()}
                             <View style={styles.detailsContainer}>
                                 {this.renderTransactionId()}
-                                <Spacer size={30} />
                                 {this.renderDescription()}
-                                <Spacer size={30} />
+                                {this.renderFlags()}
                                 {this.renderFee()}
-                                <Spacer size={30} />
                                 {this.renderStatus()}
                             </View>
-
-                            {/* renderFlags(tx); */}
                         </ScrollView>
                     </>
                 )}

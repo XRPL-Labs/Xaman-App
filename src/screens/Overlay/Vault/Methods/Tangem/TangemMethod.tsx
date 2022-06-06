@@ -72,19 +72,25 @@ class TangemMethod extends Component<Props, State> {
                 (alternativeSigner.encryptionLevel !== EncryptionLevels.Physical &&
                     alternativeSigner.type !== AccountTypes.Tangem)
             ) {
-                this.setState({
-                    preferredAccount: signer,
-                });
-
-                return resolve(true);
+                this.setState(
+                    {
+                        preferredAccount: signer,
+                    },
+                    () => {
+                        resolve(true);
+                    },
+                );
+            } else {
+                this.setState(
+                    {
+                        preferredAccount: signer,
+                        alternativeAccount: alternativeSigner,
+                    },
+                    () => {
+                        resolve(false);
+                    },
+                );
             }
-
-            this.setState({
-                preferredAccount: signer,
-                alternativeAccount: alternativeSigner,
-            });
-
-            return resolve(false);
         });
     };
 

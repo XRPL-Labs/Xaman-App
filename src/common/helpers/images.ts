@@ -46,14 +46,17 @@ export const Images = {
     ImageCoinWallet: buildImageSource('ImageCoinWallet', 'image_coin_wallet'),
     ImageCoinWalletLight: buildImageSource('ImageCoinWalletLight', 'image_coin_wallet_light'),
     ImageUnknownTrustLine: buildImageSource('ImageUnknownTrustLine', 'image_unknown_trustline'),
+    ImageUnknownTrustLineLight: buildImageSource('ImageUnknownTrustLineLight', 'image_unknown_trustline_light'),
     ImageUnknownNFT: buildImageSource('ImageUnknownNFT', 'image_unknown_nft'),
     ImageTriangle: buildImageSource('ImageTriangle', 'image_triangle'),
     ImageSuccessCheckMark: buildImageSource('ImageSuccessCheckMark', 'image_success_check_mark'),
+    ImageProfilePro: buildImageSource('ImageProfilePro', 'image_profile_pro'),
     // Xumm
     XummLogo: buildImageSource('XummLogo', 'xumm_logo'),
     XummLogoLight: buildImageSource('XummLogoLight', 'xumm_logo_light'),
     XummIcon: buildImageSource('XummIcon', 'xumm_icon'),
     XummIconLight: buildImageSource('XummIconLight', 'xumm_icon_light'),
+    XummIconWhite: buildImageSource('XummIconWhite', 'xumm_icon_white'),
     SideGradient: buildImageSource('SideGradient', 'side_gradient'),
     // Icons
     IconTabBarScan: buildImageSource('IconTabBarScan', 'icon_tabbar_scan'),
@@ -66,12 +69,10 @@ export const Images = {
         'IconTabBarEventsSelectedLight',
         'icon_tabbar_events_selected_light',
     ),
-    IconTabBarProfile: buildImageSource('IconTabBarProfile', 'icon_tabbar_profile'),
-    IconTabBarProfileSelected: buildImageSource('IconTabBarProfileSelected', 'icon_tabbar_profile_selected'),
-    IconTabBarProfileSelectedLight: buildImageSource(
-        'IconTabBarProfileSelectedLight',
-        'icon_tabbar_profile_selected_light',
-    ),
+    IconTabBarPro: buildImageSource('IconTabBarPro', 'icon_tabbar_pro'),
+    IconTabBarProSelected: buildImageSource('IconTabBarProSelected', 'icon_tabbar_pro_selected'),
+    IconTabBarProSelectedLight: buildImageSource('IconTabBarProSelectedLight', 'icon_tabbar_pro_selected_light'),
+
     IconTabBarSettings: buildImageSource('IconTabBarSettings', 'icon_tabbar_settings'),
     IconTabBarSettingsSelected: buildImageSource('IconTabBarSettingsSelected', 'icon_tabbar_settings_selected'),
     IconTabBarSettingsSelectedLight: buildImageSource(
@@ -112,7 +113,7 @@ export const Images = {
     IconSlider: buildImageSource('IconSlider', 'icon_sliders'),
     IconActivity: buildImageSource('IconActivity', 'icon_activity'),
     IconXrp: buildImageSource('IconXrp', 'icon_xrp'),
-    IconXrpNew: buildImageSource('IconXrpNew', 'icon_xrp_new'),
+    IconXrpSquare: buildImageSource('IconXrpSquare', 'icon_xrp_square'),
     IconShare: buildImageSource('IconShare', 'icon_share'),
     IconCheck: buildImageSource('IconCheck', 'icon_check'),
     IconInfo: buildImageSource('IconInfo', 'icon_info'),
@@ -143,4 +144,9 @@ export const Images = {
     IconXAppsLight: buildImageSource('IconXAppsLight', 'icon_xapps_light'),
     IconXApp: buildImageSource('IconXApp', 'icon_xapp'),
     IconAlertTriangle: buildImageSource('IconAlertTriangle', 'icon_alert_triangle'),
+    IconSortTop: buildImageSource('IconSortTop', 'icon_sort_top'),
+    IconStarFull: buildImageSource('IconStarFull', 'icon_star_full'),
+    IconHideZero: buildImageSource('IconHideZero', 'icon_hide_zero'),
+    IconShowZero: buildImageSource('IconShowZero', 'icon_show_zero'),
+    IconPro: buildImageSource('IconPro', 'icon_pro'),
 };

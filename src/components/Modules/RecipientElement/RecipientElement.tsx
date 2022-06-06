@@ -30,8 +30,8 @@ interface Props {
     showSource?: boolean;
     extraInfoLabel?: string;
     extraInfoValue?: string;
-    onPress?: () => void;
-    onMorePress?: () => void;
+    onPress?: (recipient: RecipientType) => void;
+    onMorePress?: (recipient: RecipientType) => void;
 }
 
 /* Component ==================================================================== */
@@ -54,18 +54,18 @@ class RecipientElement extends Component<Props> {
     }
 
     onPress = () => {
-        const { onPress } = this.props;
+        const { recipient, onPress } = this.props;
 
         if (typeof onPress === 'function') {
-            onPress();
+            onPress(recipient);
         }
     };
 
     onMorePress = () => {
-        const { onMorePress } = this.props;
+        const { recipient, onMorePress } = this.props;
 
         if (typeof onMorePress === 'function') {
-            onMorePress();
+            onMorePress(recipient);
         }
     };
 

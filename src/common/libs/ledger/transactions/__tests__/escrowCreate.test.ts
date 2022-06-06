@@ -3,22 +3,22 @@
 
 import EscrowCreate from '../escrowCreate';
 
-import txTemplates from './templates/EscrowCreateTx.json';
+import escrowCreateTemplate from './templates/EscrowCreateTx.json';
 
 describe('EscrowCreate tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new EscrowCreate();
+        expect(instance.TransactionType).toBe('EscrowCreate');
         expect(instance.Type).toBe('EscrowCreate');
     });
 
     it('Should return right parsed values', () => {
-        // @ts-ignore
-        const instance = new EscrowCreate(txTemplates);
+        const { tx, meta } = escrowCreateTemplate;
+        const instance = new EscrowCreate(tx, meta);
 
         expect(instance.Destination).toStrictEqual({
             tag: 23480,
             address: 'rsA2LpzuawewSBQXkiju3YQTMzW13pAAdW',
-            name: undefined,
         });
         expect(instance.Amount).toStrictEqual({
             currency: 'XRP',

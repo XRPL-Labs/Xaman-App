@@ -1,11 +1,9 @@
 /**
- * Vault / Passcode Method
+ * Vault / Passcode/Biometric Method
  */
 
 import React, { Component } from 'react';
 import { Alert, View, Text, Animated, LayoutAnimation, KeyboardEvent, InteractionManager } from 'react-native';
-
-import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import { SecurePinInput, Button } from '@components/General';
 
@@ -13,6 +11,8 @@ import { AuthenticationService } from '@services';
 
 import { Prompt } from '@common/helpers/interface';
 import Keyboard from '@common/helpers/keyboard';
+
+import { BiometricErrors } from '@common/libs/biometric';
 
 import { BiometryType } from '@store/types';
 
@@ -39,9 +39,9 @@ class PasscodeMethod extends Component<Props, State> {
     context: React.ContextType<typeof MethodsContext>;
 
     private contentView: View;
-    private securePinInput: SecurePinInput;
     private animatedColor: Animated.Value;
     private mounted: boolean;
+    private securePinInput: React.RefObject<SecurePinInput>;
 
     constructor(props: Props, context: React.ContextType<typeof MethodsContext>) {
         super(props);
@@ -56,6 +56,7 @@ class PasscodeMethod extends Component<Props, State> {
         };
 
         this.animatedColor = new Animated.Value(0);
+        this.securePinInput = React.createRef();
     }
 
     componentDidMount() {
@@ -108,22 +109,15 @@ class PasscodeMethod extends Component<Props, State> {
     };
 
     setBiometricStatus = () => {
-        const { coreSettings } = this.context;
-
-        // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async (resolve) => {
-            return FingerprintScanner.isSensorAvailable()
-                .then(() => {
-                    if (coreSettings.biometricMethod !== BiometryType.None) {
-                        this.setState({
-                            isBiometricAvailable: true,
-                        });
-                    }
-                    return resolve(false);
-                })
-                .catch(() => {
-                    return resolve(false);
-                });
+        return new Promise((resolve) => {
+            AuthenticationService.isBiometricAvailable().then((status) => {
+                this.setState(
+                    {
+                        isBiometricAvailable: status,
+                    },
+                    () => resolve(null),
+                );
+            });
         });
     };
 
@@ -132,9 +126,9 @@ class PasscodeMethod extends Component<Props, State> {
 
         if (isBiometricAvailable) {
             this.requestBiometricAuthenticate(true);
-        } else if (this.securePinInput) {
+        } else if (this.securePinInput.current) {
             // focus the input
-            this.securePinInput.focus();
+            this.securePinInput.current.focus();
         }
     };
 
@@ -151,33 +145,40 @@ class PasscodeMethod extends Component<Props, State> {
         sign(AuthMethods.PIN, { encryptionKey: encryptedPasscode });
     };
 
-    requestBiometricAuthenticate = (system: boolean = false) => {
-        FingerprintScanner.authenticate({
-            description: Localize.t('global.signingTheTransaction'),
-            fallbackEnabled: true,
-            // @ts-ignore
-            fallbackTitle: Localize.t('global.enterPasscode'),
-        })
+    requestBiometricAuthenticate = (system?: boolean) => {
+        AuthenticationService.authenticateBiometrics(Localize.t('global.signingTheTransaction'))
             .then(this.onSuccessBiometricAuthenticate)
             .catch((error: any) => {
-                if (system) return;
-                if (error.name !== 'UserCancel') {
-                    Prompt(Localize.t('global.error'), Localize.t('global.invalidBiometryAuth'), [], {
-                        type: 'default',
-                    });
+                let errorMessage;
+                // biometric's has been changed
+                if (error.name === BiometricErrors.ERROR_BIOMETRIC_HAS_BEEN_CHANGED) {
+                    errorMessage = Localize.t('global.biometricChangeError');
+                    // disable biometrics and start authentication again
+                    this.setState(
+                        {
+                            isBiometricAvailable: false,
+                        },
+                        this.startAuthentication,
+                    );
+                } else if (error.name !== BiometricErrors.ERROR_USER_CANCEL) {
+                    errorMessage = Localize.t('global.invalidBiometryAuth');
                 }
-            })
-            .finally(FingerprintScanner.release);
+
+                if (errorMessage && !system) {
+                    Prompt(Localize.t('global.error'), errorMessage);
+                }
+            });
     };
 
     onPasscodeEntered = (passcode: string) => {
         const { onInvalidAuth } = this.context;
 
-        AuthenticationService.checkPasscode(passcode)
+        AuthenticationService.authenticatePasscode(passcode)
             .then(this.onSuccessPasscodeAuthenticate)
             .catch((e) => {
-                this.securePinInput.clearInput();
-
+                if (this.securePinInput.current) {
+                    this.securePinInput.current.clearInput();
+                }
                 if (e?.message === Localize.t('global.invalidPasscode')) {
                     onInvalidAuth(AuthMethods.PIN);
                 } else {
@@ -236,9 +237,7 @@ class PasscodeMethod extends Component<Props, State> {
                             </Text>
 
                             <SecurePinInput
-                                ref={(r) => {
-                                    this.securePinInput = r;
-                                }}
+                                ref={this.securePinInput}
                                 onInputFinish={this.onPasscodeEntered}
                                 length={6}
                                 enableHapticFeedback={hapticFeedback}

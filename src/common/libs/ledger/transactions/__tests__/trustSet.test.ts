@@ -3,17 +3,19 @@
 
 import TrustSet from '../trustSet';
 
-import txTemplates from './templates/trustSetTx.json';
+import trustSetTemplate from './templates/TrustSetTx.json';
 
 describe('TrustSet tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new TrustSet();
+        expect(instance.TransactionType).toBe('TrustSet');
         expect(instance.Type).toBe('TrustSet');
     });
 
     it('Should return right parsed values', () => {
         // @ts-ignore
-        const instance = new TrustSet(txTemplates);
+        const { tx, meta } = trustSetTemplate;
+        const instance = new TrustSet(tx, meta);
 
         expect(instance.Currency).toBe('USD');
         expect(instance.Issuer).toBe('rsP3mgGb2tcYUrxiLFiHJiQXhsziegtwBc');

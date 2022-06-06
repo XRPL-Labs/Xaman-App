@@ -1,6 +1,67 @@
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
-import { Decode } from 'xrpl-tagged-address-codec';
+import { xAddressToClassicAddress, decodeAccountID } from 'ripple-address-codec';
 import { XrplDestination } from 'xumm-string-decode';
+
+import { HexEncoding } from '@common/utils/string';
+
+/**
+ * Calculate Ledger index hex
+ * @param account string
+ * @param sequence number
+ * @returns encoded offer index in hex
+ */
+const EncodeLedgerIndex = (account: string, sequence: number) => {
+    let sequenceHex = sequence.toString(16);
+    if (sequenceHex.length > 8) return false;
+    sequenceHex = '0'.repeat(8 - sequenceHex.length) + sequenceHex;
+    const payloadHex = `006F${decodeAccountID(account).toString('hex')}${sequenceHex}`;
+    return HexEncoding.toHex(AccountLibUtils.hash(payloadHex)).toUpperCase();
+};
+
+/**
+ * Calculate NFT token ID
+ * @param account string
+ * @param tokenSequence number
+ * @param flags number
+ * @param transferFee number
+ * @param tokenTaxon number
+ * @returns encoded offer index in hex
+ */
+const EncodeNFTokenID = (
+    account: string,
+    tokenSequence: number,
+    flags: number,
+    transferFee: number,
+    tokenTaxon: number,
+): string => {
+    const issuer = decodeAccountID(account);
+    const cipheredTaxon = tokenTaxon ^ (384160001 * tokenSequence + 2459);
+
+    const tokenID = Buffer.concat([
+        Buffer.from([(flags >> 8) & 0xff, flags & 0xff]),
+        Buffer.from([(transferFee >> 8) & 0xff, transferFee & 0xff]),
+        issuer,
+        Buffer.from([
+            (cipheredTaxon >> 24) & 0xff,
+            (cipheredTaxon >> 16) & 0xff,
+            (cipheredTaxon >> 8) & 0xff,
+            cipheredTaxon & 0xff,
+        ]),
+        Buffer.from([
+            (tokenSequence >> 24) & 0xff,
+            (tokenSequence >> 16) & 0xff,
+            (tokenSequence >> 8) & 0xff,
+            tokenSequence & 0xff,
+        ]),
+    ]);
+
+    // should be 32 bytes
+    if (tokenID.length !== 32) {
+        return '';
+    }
+
+    return HexEncoding.toHex(tokenID).toUpperCase();
+};
 
 /**
  * Convert seed/address to another alphabet
@@ -31,8 +92,8 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination & {
         // decode if it's x address
         if (destination.to.startsWith('X')) {
             try {
-                const decoded = Decode(destination.to);
-                to = decoded.account;
+                const decoded = xAddressToClassicAddress(destination.to);
+                to = decoded.classicAddress;
                 tag = Number(decoded.tag);
 
                 xAddress = destination.to;
@@ -55,4 +116,4 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination & {
 };
 
 /* Export ==================================================================== */
-export { ConvertCodecAlphabet, NormalizeDestination };
+export { ConvertCodecAlphabet, NormalizeDestination, EncodeLedgerIndex, EncodeNFTokenID };

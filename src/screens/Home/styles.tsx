@@ -1,29 +1,38 @@
 import StyleService from '@services/StyleService';
 
 import { AppSizes, AppFonts } from '@theme';
+import Sizes from '@theme/sizes';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
+    headerContainer: {
+        backgroundColor: '$transparent',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: Sizes.moderateScale(60),
+        paddingRight: Sizes.padding,
+        paddingLeft: Sizes.paddingSml,
+    },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
     },
-    accountCard: {
+    actionButtonsContainer: {
         backgroundColor: '$tint',
         marginBottom: 20,
         padding: 16,
         borderRadius: 16,
     },
-    balanceLabel: {
-        fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.base.size,
+    accountLabelText: {
+        fontFamily: AppFonts.base.familyExtraBold,
+        fontSize: AppFonts.p.size,
         color: '$textPrimary',
     },
-    cardSmallLabel: {
-        fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.subtext.size * 0.8,
-        color: '$grey',
-        textAlign: 'center',
+    accountAddressText: {
+        fontFamily: AppFonts.base.familyMono,
+        fontSize: AppFonts.small.size,
+        color: '$textSecondary',
     },
     iconSettings: {
         tintColor: '$grey',
@@ -31,11 +40,6 @@ const styles = StyleService.create({
         marginRight: 6,
     },
     iconEye: {
-        tintColor: '$grey',
-        marginTop: 12,
-        marginRight: 3,
-    },
-    iconShare: {
         tintColor: '$grey',
         marginTop: 12,
         marginRight: 3,
@@ -49,11 +53,6 @@ const styles = StyleService.create({
         textAlign: 'left',
         justifyContent: 'center',
     },
-    cardAddressText: {
-        fontFamily: AppFonts.base.familyMono,
-        fontSize: AppFonts.base.size * 0.9,
-        color: '$textSecondary',
-    },
     shareIconContainer: {
         padding: 8,
         borderLeftWidth: 1,
@@ -62,9 +61,9 @@ const styles = StyleService.create({
     shareIcon: {
         tintColor: '$blue',
     },
-    trustLineListContainer: {
+    tokenListContainer: {
         flex: 6,
-        paddingHorizontal: 10,
+        // backgroundColor: '$red',
     },
     balanceContainer: {
         justifyContent: 'center',
@@ -103,34 +102,26 @@ const styles = StyleService.create({
         resizeMode: 'contain',
     },
     buttonRow: {
-        justifyContent: 'space-between',
         flexDirection: 'row',
-        marginTop: 12,
-        marginBottom: 3,
-    },
-    buttonRowHalf: {
-        width: '50%',
+        marginBottom: 20,
+        marginTop: 15,
+        marginHorizontal: AppSizes.paddingSml,
     },
     // SEND BUTTON
-    sendButton: {
-        marginRight: 1.5,
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
-        backgroundColor: StyleService.isDarkMode() ? '$blue' : '$white',
+    sendButtonContainer: {
+        backgroundColor: '$blue',
     },
-    sendButtonIcon: { marginRight: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$blue' },
-    sendButtonText: { color: StyleService.isDarkMode() ? '$white' : '$blue' },
+    sendButtonIcon: { tintColor: '$white' },
+    sendButtonText: { fontSize: AppFonts.base.size, color: '$white' },
 
     // REQUEST BUTTON
-    requestButton: {
-        marginLeft: 1.5,
-        borderTopLeftRadius: 0,
-        borderBottomLeftRadius: 0,
-        backgroundColor: StyleService.isDarkMode() ? '$grey' : '$white',
+    requestButtonContainer: {
+        marginLeft: 15,
+        backgroundColor: '$green',
     },
 
-    requestButtonIcon: { marginLeft: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$green' },
-    requestButtonText: { color: StyleService.isDarkMode() ? '$white' : '$green' },
+    requestButtonIcon: { tintColor: '$white' },
+    requestButtonText: { fontSize: AppFonts.base.size, color: '$white' },
 
     QRButtonText: { fontSize: AppFonts.base.size },
 
@@ -155,12 +146,16 @@ const styles = StyleService.create({
         alignSelf: 'flex-end',
         marginRight: -10,
     },
-    rateLoader: {
-        paddingVertical: 5,
+    accountCountBadgeContainer: {
+        height: AppSizes.scale(17),
+        width: AppSizes.scale(17),
+        marginLeft: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: AppSizes.scale(17) / 2,
     },
-    xrpIcon: {
-        paddingRight: 40,
-        tintColor: '$textPrimary',
+    accountCountBadgeLabel: {
+        fontFamily: AppFonts.base.familyExtraBold,
     },
 });
 

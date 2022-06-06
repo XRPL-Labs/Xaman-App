@@ -3,17 +3,18 @@
 
 import OfferCancel from '../offerCancel';
 
-import txTemplates from './templates/OfferCancelTx.json';
+import offerCancelTemplates from './templates/OfferCancelTx.json';
 
 describe('OfferCancel tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new OfferCancel();
+        expect(instance.TransactionType).toBe('OfferCancel');
         expect(instance.Type).toBe('OfferCancel');
     });
 
     it('Should return right parsed values', () => {
-        // @ts-ignore
-        const instance = new OfferCancel(txTemplates);
+        const { tx, meta } = offerCancelTemplates;
+        const instance = new OfferCancel(tx, meta);
 
         expect(instance.OfferSequence).toBe(6);
     });

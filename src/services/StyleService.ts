@@ -52,9 +52,9 @@ class StyleService {
 
                 this.setTheme(theme);
 
-                return resolve();
+                resolve();
             } catch (e) {
-                return reject(e);
+                reject(e);
             }
         });
     };

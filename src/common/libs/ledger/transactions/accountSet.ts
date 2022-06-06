@@ -10,28 +10,53 @@ import BaseTransaction from './base';
 import Flag from '../parser/common/flag';
 
 /* Types ==================================================================== */
-import { LedgerTransactionType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class AccountSet extends BaseTransaction {
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    public static Type = TransactionTypes.AccountSet as const;
+    public readonly Type = AccountSet.Type;
+
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
 
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'AccountSet';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = AccountSet.Type;
         }
 
         this.fields = this.fields.concat([
+            'SetFlag',
             'ClearFlag',
             'Domain',
             'EmailHash',
             'MessageKey',
-            'SetFlag',
             'TransferRate',
             'TickSize',
-            'MintAccount',
+            'NFTokenMinter',
         ]);
+    }
+
+    public isNoOperation(): boolean {
+        return (
+            isUndefined(this.SetFlag) &&
+            isUndefined(this.ClearFlag) &&
+            isUndefined(this.Domain) &&
+            isUndefined(this.EmailHash) &&
+            isUndefined(this.MessageKey) &&
+            isUndefined(this.TransferRate) &&
+            isUndefined(this.TickSize) &&
+            isUndefined(this.NFTokenMinter)
+        );
+    }
+
+    public isCancelTicket(): boolean {
+        return (
+            !isUndefined(this.TicketSequence) &&
+            this.TicketSequence > 0 &&
+            !isUndefined(this.Sequence) &&
+            this.Sequence === 0
+        );
     }
 
     get SetFlag(): string {
@@ -86,8 +111,8 @@ class AccountSet extends BaseTransaction {
         return get(this, ['tx', 'WalletSize'], undefined);
     }
 
-    get MintAccount(): string {
-        return get(this, ['tx', 'MintAccount'], undefined);
+    get NFTokenMinter(): string {
+        return get(this, ['tx', 'NFTokenMinter'], undefined);
     }
 }
 

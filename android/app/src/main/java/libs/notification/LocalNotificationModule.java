@@ -84,7 +84,7 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule {
                 NotificationManager manager = (NotificationManager) this.context.getSystemService(Context.NOTIFICATION_SERVICE);
 
                 builder.setCategory(NotificationCompat.CATEGORY_CALL);
-                builder.setColor(ContextCompat.getColor(this.context, R.color.pushIcon));
+                builder.setColor(ContextCompat.getColor(this.context, R.color.push_notification));
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     NotificationChannel channel = new NotificationChannel(channelId, "Notification channel", NotificationManager.IMPORTANCE_DEFAULT);

@@ -15,7 +15,7 @@ const screens = {
         Home: 'app.TabBar.Home',
         Events: 'app.TabBar.Events',
         Actions: 'app.TabBar.Actions',
-        Profile: 'app.TabBar.Profile',
+        Pro: 'app.TabBar.Pro',
         Settings: 'app.TabBar.Settings',
     },
     Account: {

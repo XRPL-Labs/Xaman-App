@@ -8,17 +8,19 @@ import LedgerDate from '../parser/common/date';
 
 /* Types ==================================================================== */
 import { AmountType, Destination } from '../parser/types';
-import { LedgerTransactionType } from '../types';
+import { TransactionJSONType, TransactionTypes } from '../types';
 
 /* Class ==================================================================== */
 class EscrowCreate extends BaseTransaction {
-    [key: string]: any;
+    public static Type = TransactionTypes.EscrowCreate as const;
+    public readonly Type = EscrowCreate.Type;
 
-    constructor(tx?: LedgerTransactionType) {
-        super(tx);
+    constructor(tx?: TransactionJSONType, meta?: any) {
+        super(tx, meta);
+
         // set transaction type if not set
-        if (isUndefined(this.Type)) {
-            this.Type = 'EscrowCreate';
+        if (isUndefined(this.TransactionType)) {
+            this.TransactionType = EscrowCreate.Type;
         }
 
         this.fields = this.fields.concat([
@@ -45,12 +47,10 @@ class EscrowCreate extends BaseTransaction {
     get Destination(): Destination {
         const destination = get(this, ['tx', 'Destination'], undefined);
         const destinationTag = get(this, ['tx', 'DestinationTag'], undefined);
-        const destinationName = get(this, ['tx', 'DestinationName'], undefined);
 
         if (isUndefined(destination)) return undefined;
 
         return {
-            name: destinationName,
             address: destination,
             tag: destinationTag,
         };
@@ -73,10 +73,6 @@ class EscrowCreate extends BaseTransaction {
             }
         } else {
             set(this, 'tx.DestinationTag', undefined);
-        }
-
-        if (has(destination, 'name')) {
-            set(this, 'tx.DestinationName', destination.name);
         }
     }
 

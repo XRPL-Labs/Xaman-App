@@ -8,13 +8,14 @@ import Indicator from './PageIndicator';
 
 import styles from './styles';
 
-// eslint-disable-next-line no-restricted-properties
-const floatEpsilon = Math.pow(2, -23);
+/* Constants ==================================================================== */
+const floatEpsilon = 2 ** -23;
 
 function equal(a: number, b: number) {
     return Math.abs(a - b) <= floatEpsilon * Math.max(Math.abs(a), Math.abs(b));
 }
 
+/* Types ==================================================================== */
 interface Props {
     style?: ViewStyle;
     pagingEnabled?: boolean;
@@ -38,6 +39,7 @@ interface State {
     progress: Animated.Value;
 }
 
+/* Component ==================================================================== */
 export default class Slider extends Component<Props, State> {
     progress: number;
     mounted: boolean;

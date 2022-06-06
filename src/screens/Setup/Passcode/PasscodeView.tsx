@@ -5,10 +5,11 @@
 import React, { Component } from 'react';
 
 import { SafeAreaView, View, Text, Image, LayoutAnimation, Alert } from 'react-native';
-import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import { CoreRepository } from '@store/repositories';
 import { BiometryType } from '@store/types';
+
+import { Biometric } from '@common/libs/biometric';
 
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
@@ -167,12 +168,12 @@ class PasscodeSetupView extends Component<Props, State> {
 
     isBiometricSupported = () => {
         return new Promise((resolve) => {
-            return FingerprintScanner.isSensorAvailable()
+            Biometric.isSensorAvailable()
                 .then(() => {
-                    return resolve(true);
+                    resolve(true);
                 })
                 .catch(() => {
-                    return resolve(false);
+                    resolve(false);
                 });
         });
     };
