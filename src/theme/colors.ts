@@ -92,13 +92,13 @@ const ColorsTheme = {
     royal: {
         // THEME Dark
         background: colors.themeRoyal,
-        tint: ColorLuminance(colors.blue, -0.7),
+        tint: ColorLuminance(colors.blue, -0.55),
         contrast: colors.white,
         textContrast: colors.black,
         textPrimary: colors.white,
         textSecondary: colors.silver,
 
-        lightBlue: HexToRgbA(colors.blue, 0.17),
+        lightBlue: HexToRgbA(colors.blue, 0.25),
         lightOrange: HexToRgbA(colors.orange, 0.17),
         lightGreen: HexToRgbA(colors.green, 0.17),
         lightRed: HexToRgbA(colors.red, 0.17),
