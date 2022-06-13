@@ -39,8 +39,9 @@ export interface Props {
 export interface State {
     accountsCount: number;
     account: AccountSchema;
-    coreSettings: CoreSchema;
     isSpendable: boolean;
+    defaultNode: string;
+    developerMode: boolean;
     discreetMode: boolean;
 }
 
@@ -59,7 +60,8 @@ class HomeView extends Component<Props, State> {
             accountsCount: undefined,
             account: undefined,
             isSpendable: false,
-            coreSettings,
+            defaultNode: coreSettings.defaultNode,
+            developerMode: coreSettings.developerMode,
             discreetMode: coreSettings.discreetMode,
         };
     }
@@ -125,7 +127,13 @@ class HomeView extends Component<Props, State> {
 
         // developer mode or default node has been changed
         if (has(changes, 'developerMode') || has(changes, 'defaultNode')) {
-            this.setNodeChainHeader(coreSettings);
+            this.setState(
+                {
+                    developerMode: coreSettings.developerMode,
+                    defaultNode: coreSettings.defaultNode,
+                },
+                this.setNodeChainHeader,
+            );
         }
     };
 
@@ -160,21 +168,19 @@ class HomeView extends Component<Props, State> {
         );
     };
 
-    setNodeChainHeader = (settings?: CoreSchema) => {
-        // @ts-ignore
-        const { componentId } = this.props;
-        const { coreSettings } = this.state;
+    setNodeChainHeader = () => {
+        const { developerMode, defaultNode } = this.state;
 
-        const currentSettings = settings || coreSettings;
-
-        if (currentSettings.developerMode) {
+        // update settings if changed
+        if (developerMode) {
             // get chain from current default node
-            const chain = CoreRepository.getChainFromNode(currentSettings.defaultNode);
+            const chain = CoreRepository.getChainFromNode(defaultNode);
 
             // show the header
-            Navigator.mergeOptions(componentId, {
+            Navigator.mergeOptions(HomeView.screenName, {
                 topBar: {
                     visible: true,
+                    drawBehind: false,
                     background: {
                         color: ChainColors[chain],
                     },
@@ -187,7 +193,7 @@ class HomeView extends Component<Props, State> {
                 },
             });
         } else {
-            Navigator.mergeOptions(componentId, {
+            Navigator.mergeOptions(HomeView.screenName, {
                 topBar: {
                     visible: false,
                 },
@@ -558,17 +564,24 @@ class HomeView extends Component<Props, State> {
     };
 
     render() {
-        const { account } = this.state;
+        const { account, developerMode } = this.state;
 
         if (!account?.isValid()) {
             return this.renderEmpty();
         }
 
         return (
-            <View testID="home-tab-view" style={AppStyles.tabContainer}>
+            <View
+                testID="home-tab-view"
+                style={[
+                    AppStyles.tabContainer,
+                    {
+                        ...(developerMode && { paddingTop: 0 }),
+                    },
+                ]}
+            >
                 {/* Header */}
                 <View style={styles.headerContainer}>{this.renderHeader()}</View>
-
                 {/* Content */}
                 <View style={AppStyles.contentContainer}>
                     {this.renderAccountDetails()}
