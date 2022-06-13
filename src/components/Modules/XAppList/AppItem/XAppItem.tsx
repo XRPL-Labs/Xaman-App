@@ -22,7 +22,7 @@ export interface State {
 
 /* component ==================================================================== */
 class XAppItem extends Component<Props, State> {
-    private animatedFade: Animated.Value;
+    private readonly animatedFade: Animated.Value;
 
     constructor(props: Props) {
         super(props);
