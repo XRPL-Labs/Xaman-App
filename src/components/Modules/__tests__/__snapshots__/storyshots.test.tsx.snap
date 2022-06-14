@@ -5603,7 +5603,6 @@ exports[`Storyshots XAppList default 1`] = `
         Object {
           "alignItems": "center",
           "flex": 1,
-          "justifyContent": "center",
           "opacity": 1,
           "paddingHorizontal": 10,
         }
@@ -5654,7 +5653,6 @@ exports[`Storyshots XAppList default 1`] = `
         Object {
           "alignItems": "center",
           "flex": 1,
-          "justifyContent": "center",
           "opacity": 1,
           "paddingHorizontal": 10,
         }
@@ -5705,7 +5703,6 @@ exports[`Storyshots XAppList default 1`] = `
         Object {
           "alignItems": "center",
           "flex": 1,
-          "justifyContent": "center",
           "opacity": 1,
           "paddingHorizontal": 10,
         }
@@ -5756,7 +5753,6 @@ exports[`Storyshots XAppList default 1`] = `
         Object {
           "alignItems": "center",
           "flex": 1,
-          "justifyContent": "center",
           "opacity": 1,
           "paddingHorizontal": 10,
         }

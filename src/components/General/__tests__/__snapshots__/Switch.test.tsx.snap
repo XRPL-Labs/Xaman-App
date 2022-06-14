@@ -30,9 +30,14 @@ exports[`[Switch] renders correctly 1`] = `
               "height": 31,
               "width": 51,
             },
-            Object {
-              "alignSelf": "center",
-            },
+            Array [
+              Object {
+                "alignSelf": "center",
+              },
+              Object {
+                "opacity": 1,
+              },
+            ],
           ]
         }
         value={true}
@@ -72,9 +77,14 @@ exports[`[Switch] renders with given label 1`] = `
               "height": 31,
               "width": 51,
             },
-            Object {
-              "alignSelf": "center",
-            },
+            Array [
+              Object {
+                "alignSelf": "center",
+              },
+              Object {
+                "opacity": 1,
+              },
+            ],
           ]
         }
         value={true}
