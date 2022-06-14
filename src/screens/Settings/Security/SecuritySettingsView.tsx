@@ -28,6 +28,7 @@ export interface Props {}
 
 export interface State {
     biometricEnabled: boolean;
+    biometricAvailable: boolean;
     isFlagSecure: boolean;
     coreSettings: CoreSchema;
     timeItems: Array<any>;
@@ -51,6 +52,7 @@ class SecuritySettingsView extends Component<Props, State> {
         this.state = {
             coreSettings,
             biometricEnabled: coreSettings.biometricMethod !== BiometryType.None,
+            biometricAvailable: false,
             isFlagSecure: true,
             timeItems: [
                 { value: 0, title: `0 ${Localize.t('global.seconds')}` },
@@ -77,6 +79,15 @@ class SecuritySettingsView extends Component<Props, State> {
                 isFlagSecure: enabled,
             });
         });
+
+        // check if biometric is available in advance
+        Biometric.isSensorAvailable()
+            .then(() => {
+                this.setState({
+                    biometricAvailable: true,
+                });
+            })
+            .catch(() => {});
     }
 
     componentWillUnmount() {
@@ -87,8 +98,8 @@ class SecuritySettingsView extends Component<Props, State> {
         this.setState({ coreSettings });
     };
 
+    // NOTE: this method should only run after success passcode authentication
     enableBiometricAuthentication = async () => {
-        // NOTE: this method should only run after success passcode auth
         try {
             // before enabling the biometrics check if the sensor is available
             await Biometric.isSensorAvailable();
@@ -162,19 +173,33 @@ class SecuritySettingsView extends Component<Props, State> {
         });
     };
 
-    eraseDataChange = (value: boolean) => {
+    onChangePasscodePress = () => {
+        Navigator.push(
+            AppScreens.Settings.ChangePasscode,
+            {},
+            {
+                animations: {
+                    push: {
+                        enabled: false,
+                    },
+                },
+            },
+        );
+    };
+
+    onEraseDataToggle = (value: boolean) => {
         CoreRepository.saveSettings({
             purgeOnBruteForce: value,
         });
     };
 
-    discreetModeChange = (value: boolean) => {
+    onDiscreetModeToggle = (value: boolean) => {
         CoreRepository.saveSettings({
             discreetMode: value,
         });
     };
 
-    toggleFlagSecure = (value: boolean) => {
+    onFlagSecureToggle = (value: boolean) => {
         // apply to the current activity
         FlagSecure(value);
 
@@ -185,7 +210,7 @@ class SecuritySettingsView extends Component<Props, State> {
     };
 
     render() {
-        const { biometricEnabled, coreSettings, isFlagSecure, timeItems } = this.state;
+        const { biometricAvailable, biometricEnabled, coreSettings, isFlagSecure, timeItems } = this.state;
 
         return (
             <View testID="security-settings-screen" style={[styles.container]}>
@@ -193,9 +218,7 @@ class SecuritySettingsView extends Component<Props, State> {
                     leftComponent={{
                         testID: 'back-button',
                         icon: 'IconChevronLeft',
-                        onPress: () => {
-                            Navigator.pop();
-                        },
+                        onPress: Navigator.pop,
                     }}
                     centerComponent={{ text: Localize.t('settings.securitySetting') }}
                 />
@@ -205,19 +228,7 @@ class SecuritySettingsView extends Component<Props, State> {
                     <TouchableDebounce
                         testID="change-passcode-button"
                         style={styles.row}
-                        onPress={() => {
-                            Navigator.push(
-                                AppScreens.Settings.ChangePasscode,
-                                {},
-                                {
-                                    animations: {
-                                        push: {
-                                            enabled: false,
-                                        },
-                                    },
-                                },
-                            );
-                        }}
+                        onPress={this.onChangePasscodePress}
                     >
                         <View style={[AppStyles.flex3]}>
                             <Text numberOfLines={1} style={styles.label}>
@@ -256,9 +267,20 @@ class SecuritySettingsView extends Component<Props, State> {
                             </Text>
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                            <Switch checked={biometricEnabled} onChange={this.onBiometricEnableChange} />
+                            <Switch
+                                isDisabled={!biometricAvailable && !biometricEnabled}
+                                checked={biometricEnabled}
+                                onChange={this.onBiometricEnableChange}
+                            />
                         </View>
                     </View>
+                    {!biometricAvailable && (
+                        <InfoMessage
+                            flat
+                            label={Localize.t('settings.biometricUnavailableDescription')}
+                            type="neutral"
+                        />
+                    )}
 
                     <Text numberOfLines={1} style={styles.descriptionText}>
                         {Localize.t('settings.additionalSecurity')}
@@ -270,7 +292,7 @@ class SecuritySettingsView extends Component<Props, State> {
                             </Text>
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                            <Switch checked={coreSettings.purgeOnBruteForce} onChange={this.eraseDataChange} />
+                            <Switch checked={coreSettings.purgeOnBruteForce} onChange={this.onEraseDataToggle} />
                         </View>
                     </View>
                     <InfoMessage flat label={Localize.t('settings.eraseDataDescription')} type="error" />
@@ -285,7 +307,7 @@ class SecuritySettingsView extends Component<Props, State> {
                             </Text>
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                            <Switch checked={coreSettings.discreetMode} onChange={this.discreetModeChange} />
+                            <Switch checked={coreSettings.discreetMode} onChange={this.onDiscreetModeToggle} />
                         </View>
                     </View>
 
@@ -297,7 +319,7 @@ class SecuritySettingsView extends Component<Props, State> {
                                 </Text>
                             </View>
                             <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                                <Switch checked={isFlagSecure} onChange={this.toggleFlagSecure} />
+                                <Switch checked={isFlagSecure} onChange={this.onFlagSecureToggle} />
                             </View>
                         </View>
                     )}
