@@ -96,8 +96,18 @@ export default class SortableFlatList extends Component<Props, State> {
                 this.isMovePanResponder = false;
                 return false;
             },
-            onMoveShouldSetPanResponder: () => this.isMovePanResponder,
-            onMoveShouldSetPanResponderCapture: () => this.isMovePanResponder,
+            onMoveShouldSetPanResponder: (evt, { dx, dy }) => {
+                if (dx > 0 || dy > 0) {
+                    return this.isMovePanResponder;
+                }
+                return false;
+            },
+            onMoveShouldSetPanResponderCapture: (evt, { dx, dy }) => {
+                if (dx > 0 || dy > 0) {
+                    return this.isMovePanResponder;
+                }
+                return false;
+            },
             onPanResponderMove: this.onPanResponderMove,
             onPanResponderRelease: this.onPanResponderRelease,
             onPanResponderTerminate: this.onPanResponderTerminate,
