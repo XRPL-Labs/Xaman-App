@@ -32,7 +32,7 @@ export default StyleService.create({
     addressText: {
         fontFamily: AppFonts.base.familyMono,
         color: '$grey',
-        fontSize: AppFonts.base.size * 0.8,
+        fontSize: AppFonts.small.size,
     },
     destinationTagContainer: {
         marginTop: 8,

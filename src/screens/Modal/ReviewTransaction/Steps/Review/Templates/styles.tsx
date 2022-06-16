@@ -115,6 +115,13 @@ const styles = StyleService.create({
         fontSize: AppFonts.base.size,
         color: '$textPrimary',
     },
+    objectTemplateContainer: {
+        marginBottom: AppSizes.paddingSml,
+    },
+    objectTemplateChildContainer: {
+        paddingVertical: 10,
+        paddingHorizontal: 5,
+    },
 });
 
 export default styles;
