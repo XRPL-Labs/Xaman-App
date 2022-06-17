@@ -7,7 +7,7 @@ import { Alert, BackHandler, Keyboard, Linking, NativeEventSubscription, Text, V
 
 import { AppScreens } from '@common/constants';
 
-import { LedgerService, PushNotificationsService, StyleService } from '@services';
+import { LedgerService, SocketService, PushNotificationsService, StyleService } from '@services';
 
 import { CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -606,6 +606,10 @@ class ReviewTransactionModal extends Component<Props, State> {
                 tx_id: transaction.Hash,
                 signmethod: transaction.SignMethod,
                 multisigned: payload.isMultiSign() ? transaction.SignerAccount : '',
+                environment: {
+                    nodeuri: SocketService.node,
+                    nodetype: SocketService.chain,
+                },
             };
 
             // check if we need to submit the payload to the XRP Ledger
