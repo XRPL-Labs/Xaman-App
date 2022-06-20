@@ -91,4 +91,5 @@ export type TransactionResult = {
 export type SignerEntry = {
     account: string;
     weight: number;
+    walletLocator?: string;
 };

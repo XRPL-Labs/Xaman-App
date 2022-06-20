@@ -185,6 +185,7 @@
     "signerQuorum": "Signer Quorum",
     "signerEntries": "Signer Entries",
     "weight": "Weight",
+    "walletLocator": "Wallet Locator",
     "tokenTaxon": "Token Taxon",
     "uri": "URI",
     "transferFee": "Transfer fee",

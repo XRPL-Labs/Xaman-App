@@ -122,6 +122,22 @@ const styles = StyleService.create({
         paddingVertical: 10,
         paddingHorizontal: 5,
     },
+    signerEntryRecipientElement: {
+        marginBottom: 0,
+        borderBottomRightRadius: 0,
+        borderBottomLeftRadius: 0,
+    },
+    signerEntryDetailsContainer: {
+        paddingVertical: 10,
+        paddingHorizontal: 8,
+        marginBottom: 10,
+        backgroundColor: '$tint',
+        borderWidth: 2,
+        borderColor: '$tint',
+        borderBottomLeftRadius: 12,
+        borderBottomRightRadius: 12,
+        borderTopColor: '$lightGrey',
+    },
 });
 
 export default styles;
