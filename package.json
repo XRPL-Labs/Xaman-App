@@ -21,7 +21,7 @@
     "@react-native-firebase/app": "14.9.1",
     "@react-native-firebase/crashlytics": "14.9.1",
     "@react-native-firebase/messaging": "14.9.1",
-    "@veriff/react-native-sdk": "2.6.0",
+    "@veriff/react-native-sdk": "2.11.0",
     "bignumber.js": "9.0.2",
     "fuse.js": "6.5.3",
     "i18n-js": "3.8.0",
@@ -104,8 +104,8 @@
         "build": "xcodebuild -workspace ios/XUMM.xcworkspace -scheme XUMM -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build",
         "type": "ios.simulator",
         "device": {
-          "type": "iPhone 12 Pro Max",
-          "os": "iOS 14.5"
+          "type": "iPhone 13 Pro Max",
+          "os": "iOS 15.4"
         }
       },
       "ios.sim.release": {
@@ -113,7 +113,8 @@
         "build": "xcodebuild -workspace ios/XUMM.xcworkspace -scheme XUMM -configuration Release -sdk iphonesimulator -derivedDataPath ios/build",
         "type": "ios.simulator",
         "device": {
-          "type": "iPhone 11 Pro Max"
+          "type": "iPhone 13 Pro Max",
+          "os": "iOS 15.4"
         }
       },
       "android.emu.debug": {

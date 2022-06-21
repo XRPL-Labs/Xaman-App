@@ -4597,10 +4597,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/url-search-params/-/url-search-params-0.1.4.tgz#727e9b4c811beaa6be6d7e4cc0516663c884cfd0"
   integrity sha512-RLwrxCTDNiNev9hpr9rDq8NyeQ8Nn0X1we4Wu7Tlf368I8r+7hBj3uObhifhuLk74egaYaSX5nUsBlWz6kjj+A==
 
-"@veriff/react-native-sdk@2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@veriff/react-native-sdk/-/react-native-sdk-2.6.0.tgz#2c77da3722d81c8c723eb710b2245e57fc233ff7"
-  integrity sha512-PvR4NFkM1XCYrvSKN9Dup71Q/8DpL1Eds1Een4eEmbCbBfnIULvqriWfudKFf2Re7RGQWlxsIfGBTb2YjZQkzw==
+"@veriff/react-native-sdk@2.11.0":
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/@veriff/react-native-sdk/-/react-native-sdk-2.11.0.tgz#f1bd90b67d3f5401b5b27733a83d351de3c0c611"
+  integrity sha512-+qTdFJU7c8R6B/tg1fPRBxXQUHIW/3BrW58DrPmk0JjYdIlibeiPDZrHDI5sb6UIg2RDhmgtoGwly14MlEFrkw==
 
 "@webassemblyjs/ast@1.9.0":
   version "1.9.0"
