@@ -66,7 +66,7 @@ Feature: Upgrade Account
         Given I should see 'submitting-view'
         Given I should wait 20 sec to see 'success-result-view'
         Then I tap 'close-button'
-        Given I should not have 'assets-empty-view'
+        Given I should not have 'tokens-list-empty-view'
 
 
     Scenario: Downgrade and upgrade account from import
