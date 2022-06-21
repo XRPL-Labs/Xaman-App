@@ -102,13 +102,13 @@ class XAppItem extends Component<Props, State> {
                         numberOfLines={1}
                         style={[styles.appTitle, styles.appTitlePlaceholder, { opacity: this.animatedFade }]}
                     >
-                        Something
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </Animated.Text>
                     <Animated.Text
                         numberOfLines={1}
                         style={[styles.appTitle, styles.appTitlePlaceholder, { opacity: this.animatedFade }]}
                     >
-                        Line2
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </Animated.Text>
                 </View>
             );
