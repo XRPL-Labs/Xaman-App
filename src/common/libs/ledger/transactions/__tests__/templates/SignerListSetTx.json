@@ -9,7 +9,8 @@
             {
                 "SignerEntry": {
                     "Account": "rsA2LpzuawewSBQXkiju3YQTMzW13pAAdW",
-                    "SignerWeight": 2
+                    "SignerWeight": 2,
+                    "WalletLocator": "03075F65D8353E3A5DA3193FF976BC17A2D0B9376BE7DA942349B6526E5A2BBF54"
                 }
             },
             {

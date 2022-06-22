@@ -5105,7 +5105,7 @@ exports[`Storyshots RecipientElement Selected 1`] = `
             Object {
               "color": "#606885",
               "fontFamily": "UbuntuMono-Regular",
-              "fontSize": 25.71428571428571,
+              "fontSize": 25.714285714285715,
             },
             Object {
               "color": "#0030CF",
@@ -5239,7 +5239,7 @@ exports[`Storyshots RecipientElement WithSource 1`] = `
             Object {
               "color": "#606885",
               "fontFamily": "UbuntuMono-Regular",
-              "fontSize": 25.71428571428571,
+              "fontSize": 25.714285714285715,
             },
             undefined,
           ]
@@ -5371,7 +5371,7 @@ exports[`Storyshots RecipientElement default 1`] = `
             Object {
               "color": "#606885",
               "fontFamily": "UbuntuMono-Regular",
-              "fontSize": 25.71428571428571,
+              "fontSize": 25.714285714285715,
             },
             undefined,
           ]
