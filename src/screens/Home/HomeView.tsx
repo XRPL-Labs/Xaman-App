@@ -5,7 +5,7 @@
 import { find, has } from 'lodash';
 
 import React, { Component, Fragment } from 'react';
-import { View, Text, Image, ImageBackground, InteractionManager, Share, Alert } from 'react-native';
+import { View, Text, Image, ImageBackground, InteractionManager, Alert } from 'react-native';
 
 import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
@@ -18,7 +18,7 @@ import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/lates
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
-import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
+import { Prompt } from '@common/helpers/interface';
 
 import Localize from '@locale';
 
@@ -305,18 +305,6 @@ class HomeView extends Component<Props, State> {
 
     pushSendScreen = () => {
         Navigator.push(AppScreens.Transaction.Payment);
-    };
-
-    shareAddress = () => {
-        const { account } = this.state;
-
-        VibrateHapticFeedback('impactMedium');
-
-        Share.share({
-            title: Localize.t('home.shareAccount'),
-            message: account.address,
-            url: undefined,
-        }).catch(() => {});
     };
 
     onTokenPress = (line: TrustLineSchema) => {

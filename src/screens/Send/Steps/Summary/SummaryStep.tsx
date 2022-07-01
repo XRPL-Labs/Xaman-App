@@ -57,8 +57,6 @@ export interface State {
 
 /* Component ==================================================================== */
 class SummaryStep extends Component<Props, State> {
-    destinationTagInput: TextInput;
-
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
@@ -107,17 +105,6 @@ class SummaryStep extends Component<Props, State> {
         } else {
             payment.Memos = [];
         }
-    };
-
-    onDestinationTagChange = (text: string) => {
-        const { setDestination, destination } = this.context;
-        const destinationTag = text.replace(/[^0-9]/g, '');
-
-        if (Number(destinationTag) < 2 ** 32) {
-            Object.assign(destination, { tag: destinationTag });
-        }
-
-        setDestination(destination);
     };
 
     showMemoAlert = async () => {
@@ -195,17 +182,6 @@ class SummaryStep extends Component<Props, State> {
                 this.goNext();
             },
         );
-    };
-
-    getCurrencyName = (): string => {
-        const { currency } = this.context;
-
-        // XRP
-        if (typeof currency === 'string') {
-            return 'XRP';
-        }
-
-        return NormalizeCurrencyCode(currency.currency.currency);
     };
 
     goNext = () => {

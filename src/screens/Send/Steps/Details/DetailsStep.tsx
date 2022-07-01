@@ -19,7 +19,7 @@ import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 // components
-import { Button, KeyboardAwareScrollView, AmountInput, AmountText, Footer, TokenAvatar } from '@components/General';
+import { Button, KeyboardAwareScrollView, AmountInput, Footer } from '@components/General';
 import { AmountValueType } from '@components/General/AmountInput';
 import { AccountPicker, CurrencyPicker } from '@components/Modules';
 
@@ -269,60 +269,6 @@ class DetailsStep extends Component<Props, State> {
             return inputHeight + Platform.select({ ios: 10, android: AppSizes.bottomStableInset });
         }
         return 0;
-    };
-
-    renderCurrencyItem = (item: any, selected: boolean) => {
-        const { source } = this.context;
-        // XRP
-        if (typeof item === 'string') {
-            return (
-                <View>
-                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[styles.currencyImageContainer]}>
-                            <TokenAvatar token="XRP" border size={35} />
-                        </View>
-                        <View style={[AppStyles.column, AppStyles.centerContent]}>
-                            <Text style={[styles.currencyItemLabel, selected && styles.currencyItemLabelSelected]}>
-                                XRP
-                            </Text>
-                            <Text
-                                style={[styles.currencyBalance, selected ? AppStyles.colorBlue : AppStyles.colorGrey]}
-                            >
-                                {Localize.t('global.available')}:{' '}
-                                {Localize.formatNumber(CalculateAvailableBalance(source))}
-                            </Text>
-                        </View>
-                    </View>
-                </View>
-            );
-        }
-
-        return (
-            <View>
-                <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                    <View style={[styles.currencyImageContainer]}>
-                        <TokenAvatar token={item} border size={35} />
-                    </View>
-                    <View style={[AppStyles.column, AppStyles.centerContent]}>
-                        <Text style={[styles.currencyItemLabel, selected && styles.currencyItemLabelSelected]}>
-                            {NormalizeCurrencyCode(item.currency.currency)}
-                            {item.currency.name && (
-                                <Text style={[AppStyles.subtext, selected && styles.currencyItemLabelSelected]}>
-                                    {' '}
-                                    - {item.currency.name}
-                                </Text>
-                            )}
-                        </Text>
-
-                        <AmountText
-                            prefix={`${Localize.t('global.balance')}: `}
-                            style={[styles.currencyBalance, selected ? AppStyles.colorBlue : AppStyles.colorGrey]}
-                            value={item.balance}
-                        />
-                    </View>
-                </View>
-            </View>
-        );
     };
 
     render() {
