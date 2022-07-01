@@ -567,7 +567,7 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-XUMM/Pods-XUMM-frameworks.sh",
-				"${PODS_ROOT}/VeriffSDK/Veriff.framework",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/VeriffSDK/Veriff.framework/Veriff",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -585,7 +585,7 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-XUMM-XUMMTests/Pods-XUMM-XUMMTests-frameworks.sh",
-				"${PODS_ROOT}/VeriffSDK/Veriff.framework",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/VeriffSDK/Veriff.framework/Veriff",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
