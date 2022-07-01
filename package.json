@@ -38,10 +38,10 @@
     "react-native-webview": "11.17.2",
     "realm": "10.10.1",
     "ripple-address-codec": "4.2.3",
-    "ripple-binary-codec": "1.4.0",
+    "ripple-binary-codec": "1.4.2",
     "tangem-sdk-react-native": "2.1.0",
     "uuid": "8.3.2",
-    "xrpl-accountlib": "1.5.0",
+    "xrpl-accountlib": "1.5.2",
     "xrpl-client": "1.9.5",
     "xrpl-orderbook-reader": "0.3.3",
     "xumm-string-decode": "0.6.1"
