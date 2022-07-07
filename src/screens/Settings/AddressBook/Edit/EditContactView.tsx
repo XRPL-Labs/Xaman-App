@@ -118,13 +118,13 @@ class EditContactView extends Component<Props, State> {
         }
 
         // check if any contact is already exist with this address and tag
-        const existContacts = ContactRepository.query({ address, destinationTag: tag });
+        const existContacts = ContactRepository.query({ address, destinationTag: tag || '' });
 
         if (!existContacts.isEmpty()) {
             const filtered = filter(existContacts, (c) => c.id !== contact.id);
 
             if (!isEmpty(filtered)) {
-                Alert.alert(Localize.t('settings.contactAlreadyExist'));
+                Alert.alert(Localize.t('global.error'), Localize.t('settings.contactAlreadyExist'));
                 return;
             }
         }
@@ -255,16 +255,14 @@ class EditContactView extends Component<Props, State> {
         return (
             <View
                 testID="address-book-edit"
-                onResponderRelease={() => Keyboard.dismiss()}
+                onResponderRelease={Keyboard.dismiss}
                 onStartShouldSetResponder={() => true}
-                style={[AppStyles.container]}
+                style={AppStyles.container}
             >
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: () => {
-                            Navigator.pop();
-                        },
+                        onPress: Navigator.pop,
                     }}
                     centerComponent={{ text: Localize.t('settings.editContact') }}
                     rightComponent={{ icon: 'IconMoreHorizontal', onPress: this.showActionMenu }}
@@ -321,7 +319,7 @@ class EditContactView extends Component<Props, State> {
                 </KeyboardAwareScrollView>
 
                 <Footer safeArea>
-                    <Button label={Localize.t('global.save')} onPress={this.saveContact} />
+                    <Button label={Localize.t('global.save')} onPress={this.onSavePress} />
                 </Footer>
             </View>
         );

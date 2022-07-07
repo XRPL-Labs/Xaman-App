@@ -285,7 +285,9 @@ class ReviewStep extends Component<Props, State> {
                     <View style={[AppStyles.row]}>
                         <View style={[AppStyles.flex1, AppStyles.leftAligned, AppStyles.paddingRightSml]}>
                             <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>
-                                {Localize.t('global.reviewTransaction')}
+                                {payload.isSignIn()
+                                    ? Localize.t('global.signIn')
+                                    : Localize.t('global.reviewTransaction')}
                             </Text>
                         </View>
                         <View style={[AppStyles.rightAligned]}>
@@ -320,10 +322,14 @@ class ReviewStep extends Component<Props, State> {
                                     </>
                                 )}
 
-                                <Text style={[styles.descriptionLabel]}>{Localize.t('global.type')}</Text>
-                                <Text style={[styles.instructionText, AppStyles.colorBlue, AppStyles.bold]}>
-                                    {getTransactionLabel()}
-                                </Text>
+                                {!payload.isSignIn() && (
+                                    <>
+                                        <Text style={[styles.descriptionLabel]}>{Localize.t('global.type')}</Text>
+                                        <Text style={[styles.instructionText, AppStyles.colorBlue, AppStyles.bold]}>
+                                            {getTransactionLabel()}
+                                        </Text>
+                                    </>
+                                )}
                             </View>
                         </View>
                     </View>

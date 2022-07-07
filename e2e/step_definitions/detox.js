@@ -22,6 +22,9 @@ Then('I wait {int} sec for button {string} to be enabled', async (timeoutSec, bu
         sec_passed += 1;
     }
 
+    // eslint-disable-next-line no-promise-executor-return
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     if (!enabled) {
         throw new Error(`button with id ${buttonId} is not enabled after ${timeoutSec} seconds!`);
     }
@@ -36,7 +39,7 @@ Given('I should have {string}', async (screenId) => {
 });
 
 Given('I should not have {string}', async (screenId) => {
-    await expect(element(by.id(screenId))).toNotExist();
+    await expect(element(by.id(screenId))).not.toExist();
 });
 
 Given('I should see {string}', async (elementId) => {

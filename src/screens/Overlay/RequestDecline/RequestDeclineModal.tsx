@@ -29,7 +29,13 @@ export interface State {}
 class RequestDeclineOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.RequestDecline;
 
-    private actionPanel: ActionPanel;
+    private readonly actionPanel: React.RefObject<ActionPanel>;
+
+    constructor(props: Props) {
+        super(props);
+
+        this.actionPanel = React.createRef();
+    }
 
     static options() {
         return {
@@ -70,9 +76,7 @@ class RequestDeclineOverlay extends Component<Props, State> {
                 height={AppSizes.moderateScale(380)}
                 onSlideDown={Navigator.dismissOverlay}
                 extraBottomInset
-                ref={(r) => {
-                    this.actionPanel = r;
-                }}
+                ref={this.actionPanel}
             >
                 <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingVerticalSml]}>
                     <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>

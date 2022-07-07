@@ -4110,10 +4110,12 @@
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.5.tgz#b14efa8852b7768d898906613c23f688713e02cd"
   integrity sha512-Q1y515GcOdTHgagaVFhHnIFQ38ygs/kmxdNpvpou+raI9UO3YZcHDngBSYKQklcKlvA7iuQlmIKbzvmxcOE9CQ==
 
-"@types/detox@17.14.3":
-  version "17.14.3"
-  resolved "https://registry.yarnpkg.com/@types/detox/-/detox-17.14.3.tgz#a869e561e3bfb10e3ae74d31ad7b977ba4a05421"
-  integrity sha512-TGvlYiol7snFjEk0spDkcfH12CZRAWa1g51bE0GEYa6iLtfYAqHXVc/f5TFhYV17YI5JoxGfwdSv8WDP9fbAIQ==
+"@types/detox@18.1.0":
+  version "18.1.0"
+  resolved "https://registry.yarnpkg.com/@types/detox/-/detox-18.1.0.tgz#5d204f08c8db3a03827f9146b043fc2421327753"
+  integrity sha512-CpR+ziJgDOQhMwTt9fNciZhM9LxqyDRa49DKH0aplcSn26UU2WKSd1Tn1lNBrNCkMD8QNzFg+PYdGRFWrqK3Wg==
+  dependencies:
+    detox "*"
 
 "@types/glob-base@^0.3.0":
   version "0.3.0"
@@ -4597,10 +4599,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/url-search-params/-/url-search-params-0.1.4.tgz#727e9b4c811beaa6be6d7e4cc0516663c884cfd0"
   integrity sha512-RLwrxCTDNiNev9hpr9rDq8NyeQ8Nn0X1we4Wu7Tlf368I8r+7hBj3uObhifhuLk74egaYaSX5nUsBlWz6kjj+A==
 
-"@veriff/react-native-sdk@2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@veriff/react-native-sdk/-/react-native-sdk-2.6.0.tgz#2c77da3722d81c8c723eb710b2245e57fc233ff7"
-  integrity sha512-PvR4NFkM1XCYrvSKN9Dup71Q/8DpL1Eds1Een4eEmbCbBfnIULvqriWfudKFf2Re7RGQWlxsIfGBTb2YjZQkzw==
+"@veriff/react-native-sdk@2.11.0":
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/@veriff/react-native-sdk/-/react-native-sdk-2.11.0.tgz#f1bd90b67d3f5401b5b27733a83d351de3c0c611"
+  integrity sha512-+qTdFJU7c8R6B/tg1fPRBxXQUHIW/3BrW58DrPmk0JjYdIlibeiPDZrHDI5sb6UIg2RDhmgtoGwly14MlEFrkw==
 
 "@webassemblyjs/ast@1.9.0":
   version "1.9.0"
@@ -5825,7 +5827,7 @@ babel-preset-jest@^26.6.2:
 babel-runtime@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
-  integrity sha1-llxwWGaOgrVde/4E/yM3vItWR/4=
+  integrity sha512-ITKNuq2wKlW1fJg9sSW52eepoYgZBggvOAHC0u/CYu/qxQ9EVzThCgR69BnSXLHjy2f7SY5zaQ4yt7H9ZVxY2g==
   dependencies:
     core-js "^2.4.0"
     regenerator-runtime "^0.11.0"
@@ -7633,10 +7635,10 @@ detect-port@^1.3.0:
     address "^1.0.1"
     debug "^2.6.0"
 
-detox@19.5.1:
-  version "19.5.1"
-  resolved "https://registry.yarnpkg.com/detox/-/detox-19.5.1.tgz#fe13ebc327c4e0793add8ac7f9951c44dbbec2e0"
-  integrity sha512-wOWXRJffpxy1i+QtJAeb5pbo9Wli/L+tHaEcglFVDsTJ0ekjHAfgemY7XXWnaGWkphb0WDvhwfPaaO3o9TpCwg==
+detox@*, detox@19.7.1:
+  version "19.7.1"
+  resolved "https://registry.yarnpkg.com/detox/-/detox-19.7.1.tgz#1c4dfebbb024426118dfae97a0189a25021479fa"
+  integrity sha512-V0XwiaFX1LvIjLl+G4tzMZ0M4YqenQXAdTsw9kO2dVo6NC9RuYqOIsmT9M3CRN9PF22TKJ8pFdA6onYhH/zkiQ==
   dependencies:
     ajv "^8.6.3"
     bunyan "^1.8.12"
@@ -7662,6 +7664,7 @@ detox@19.5.1:
     which "^1.3.1"
     ws "^7.0.0"
     yargs "^16.0.3"
+    yargs-parser "^20.2.2"
     yargs-unparser "^2.0.0"
 
 diff-sequences@^26.6.2:
@@ -14829,7 +14832,7 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-ripple-address-codec@4.2.3, ripple-address-codec@^4.2.3:
+ripple-address-codec@4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/ripple-address-codec/-/ripple-address-codec-4.2.3.tgz#516675715cd43b71d2fd76c59bd92d0f623c152d"
   integrity sha512-9Nd0hQmKoJEhSTzYR9kYjKmSWlH6HaVosNVAM7mIIVlzcNlQCPfKXj7CfvXcRiHl3C6XUZj7RFLqzVaPjq2ufA==
@@ -14853,17 +14856,25 @@ ripple-address-codec@^4.0.0, ripple-address-codec@^4.1.0, ripple-address-codec@^
     base-x "3.0.8"
     create-hash "^1.1.2"
 
-ripple-binary-codec@1.4.0, ripple-binary-codec@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/ripple-binary-codec/-/ripple-binary-codec-1.4.0.tgz#bd00d5f5d1aacc92bf6b700f4f7e2c935e25190a"
-  integrity sha512-pkGWkYtRuEUHEqhb0WqiQ9eE2w1EPeybt1MsnrAN6B3jx9uUfEcsnXQZYvt4f0uxtudrz7XVduqmx0y67DRKQA==
+ripple-address-codec@^4.2.4:
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/ripple-address-codec/-/ripple-address-codec-4.2.4.tgz#a56c2168c8bb81269ea4d15ed96d6824c5a866f8"
+  integrity sha512-roAOjKz94+FboTItey1XRh5qynwt4xvfBLvbbcx+FiR94Yw2x3LrKLF2GVCMCSAh5I6PkcpADg6AbYsUbGN3nA==
+  dependencies:
+    base-x "3.0.9"
+    create-hash "^1.1.2"
+
+ripple-binary-codec@1.4.2, ripple-binary-codec@^1.1.0, ripple-binary-codec@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/ripple-binary-codec/-/ripple-binary-codec-1.4.2.tgz#cdc35353e4bc7c3a704719247c82b4c4d0b57dd3"
+  integrity sha512-EDKIyZMa/6Ay/oNgCwjD9b9CJv0zmBreeHVQeG4BYwy+9GPnIQjNeT5e/aB6OjAnhcmpgbPeBmzwmNVwzxlt0w==
   dependencies:
     assert "^2.0.0"
     big-integer "^1.6.48"
     buffer "5.6.0"
     create-hash "^1.2.0"
     decimal.js "^10.2.0"
-    ripple-address-codec "^4.2.3"
+    ripple-address-codec "^4.2.4"
 
 ripple-binary-codec@^0.2.4:
   version "0.2.7"
@@ -14877,18 +14888,6 @@ ripple-binary-codec@^0.2.4:
     inherits "^2.0.4"
     lodash "^4.17.15"
     ripple-address-codec "^4.1.0"
-
-ripple-binary-codec@^1.1.0:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/ripple-binary-codec/-/ripple-binary-codec-1.1.1.tgz#015920faa11f09dde6f6715717e1feb1adef6f6d"
-  integrity sha512-oqmGIahQynGodn3mizqxm8vbbpuz6+N+w4tp/lVml+R8/Qd93xs81irmRXQmtQV+Dm5Gu1Z1FR3mGUvr1QEz0Q==
-  dependencies:
-    assert "^2.0.0"
-    big-integer "^1.6.48"
-    buffer "5.6.0"
-    create-hash "^1.2.0"
-    decimal.js "^10.2.0"
-    ripple-address-codec "^4.1.1"
 
 ripple-bs58@^4.0.0:
   version "4.0.1"
@@ -17506,10 +17505,10 @@ xregexp@^4.2.4:
   dependencies:
     "@babel/runtime-corejs3" "^7.12.1"
 
-xrpl-accountlib@1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/xrpl-accountlib/-/xrpl-accountlib-1.5.0.tgz#35cc2644d580fac5276ff16cc1a34f798443a91a"
-  integrity sha512-vBJNNIPeB6ZvplygeYxXIsqEHEvsvEVBzNwjgqJxffordt7+trdnYW2VMTiZNBq7Kcsi548/YYz87vo7z0pEBQ==
+xrpl-accountlib@1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/xrpl-accountlib/-/xrpl-accountlib-1.5.2.tgz#8f16abe449fd60ba9ed75597f6ce3f0c45dfff43"
+  integrity sha512-lieY2/5G9DySqdtgQ0AD/aMMG5Sy/MLAmbIsmsCaF06scM5DpR8s4SsEzgHni7dOG68Wjnb2Uz6tf5aV+l4/Kg==
   dependencies:
     assert "^2.0.0"
     bip32 "^2.0.5"
@@ -17518,13 +17517,13 @@ xrpl-accountlib@1.5.0:
     elliptic "6.5.4"
     hash.js "^1.1.7"
     ripple-address-codec "^4.1.0"
-    ripple-binary-codec "^1.4.0"
+    ripple-binary-codec "^1.4.2"
     ripple-hashes "^0.3.4"
     ripple-keypairs "^1.0.3"
     ripple-lib "^1.6.4"
     ripple-secret-codec "^1.0.2"
     xrpl-secret-numbers "^0.3.3"
-    xrpl-sign-keypairs "^2.1.0"
+    xrpl-sign-keypairs "^2.1.1"
 
 xrpl-client@1.9.5:
   version "1.9.5"
@@ -17553,13 +17552,13 @@ xrpl-secret-numbers@^0.3.3:
     brorand "^1.1.0"
     ripple-keypairs "^1.0.3"
 
-xrpl-sign-keypairs@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/xrpl-sign-keypairs/-/xrpl-sign-keypairs-2.1.0.tgz#4638c5bbf43251fc893464a25ec212d1fc328320"
-  integrity sha512-FphnMHPSZQ8Q26nQWpcjxIveGFFGqdeWAmF17sFCAGHuuCB/eN5TAm2TzbUCnUneEUg0Xj6ONE+wkn/tXfH80A==
+xrpl-sign-keypairs@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/xrpl-sign-keypairs/-/xrpl-sign-keypairs-2.1.1.tgz#2f7f2855799c5d4ba091007963825eef1db21a4e"
+  integrity sha512-rKQmUCx+x7gjjJ5zv/Z7bOYR+8I36JwUCFlpuD9UzYD4w2msGQDG0rmxVENyZSfThDBVQ1kEArVn6SMDMe9LUQ==
   dependencies:
     big-integer latest
-    ripple-binary-codec "^1.4.0"
+    ripple-binary-codec "^1.4.2"
     ripple-bs58check latest
     ripple-hashes latest
     ripple-keypairs latest

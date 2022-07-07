@@ -1,6 +1,6 @@
 {
   "name": "xumm",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "private": false,
   "license": "SEE LICENSE IN <LICENSE>",
   "scripts": {
@@ -21,7 +21,7 @@
     "@react-native-firebase/app": "14.9.1",
     "@react-native-firebase/crashlytics": "14.9.1",
     "@react-native-firebase/messaging": "14.9.1",
-    "@veriff/react-native-sdk": "2.6.0",
+    "@veriff/react-native-sdk": "2.11.0",
     "bignumber.js": "9.0.2",
     "fuse.js": "6.5.3",
     "i18n-js": "3.8.0",
@@ -38,10 +38,10 @@
     "react-native-webview": "11.17.2",
     "realm": "10.10.1",
     "ripple-address-codec": "4.2.3",
-    "ripple-binary-codec": "1.4.0",
+    "ripple-binary-codec": "1.4.2",
     "tangem-sdk-react-native": "2.1.0",
     "uuid": "8.3.2",
-    "xrpl-accountlib": "1.5.0",
+    "xrpl-accountlib": "1.5.2",
     "xrpl-client": "1.9.5",
     "xrpl-orderbook-reader": "0.3.3",
     "xumm-string-decode": "0.6.1"
@@ -57,7 +57,7 @@
     "@storybook/addons": "6.3.8",
     "@storybook/react-native": "5.3.25",
     "@storybook/react-native-server": "5.3.23",
-    "@types/detox": "17.14.3",
+    "@types/detox": "18.1.0",
     "@types/i18n-js": "3.8.2",
     "@types/jest": "27.4.1",
     "@types/lodash": "4.14.179",
@@ -73,7 +73,7 @@
     "babel-plugin-transform-remove-console": "6.9.4",
     "coveralls": "3.1.1",
     "cucumber": "6.0.5",
-    "detox": "19.5.1",
+    "detox": "19.7.1",
     "eslint": "8.10.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-airbnb-base": "15.0.0",
@@ -104,8 +104,8 @@
         "build": "xcodebuild -workspace ios/XUMM.xcworkspace -scheme XUMM -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build",
         "type": "ios.simulator",
         "device": {
-          "type": "iPhone 12 Pro Max",
-          "os": "iOS 14.5"
+          "type": "iPhone 13 Pro Max",
+          "os": "iOS 15.4"
         }
       },
       "ios.sim.release": {
@@ -113,7 +113,8 @@
         "build": "xcodebuild -workspace ios/XUMM.xcworkspace -scheme XUMM -configuration Release -sdk iphonesimulator -derivedDataPath ios/build",
         "type": "ios.simulator",
         "device": {
-          "type": "iPhone 11 Pro Max"
+          "type": "iPhone 13 Pro Max",
+          "os": "iOS 15.4"
         }
       },
       "android.emu.debug": {

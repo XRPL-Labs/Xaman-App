@@ -7,7 +7,6 @@ const styles = StyleService.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
         paddingHorizontal: AppSizes.paddingExtraSml,
     },
     appTitle: {

@@ -221,7 +221,7 @@ class AmountText extends Component<Props, State> {
     };
 
     renderValue = () => {
-        const { prefix, style, discreet, discreetStyle, valueContainerStyle, numberOfLines } = this.props;
+        const { testID, prefix, style, discreet, discreetStyle, valueContainerStyle, numberOfLines } = this.props;
         const { value, originalValue, showOriginalValue } = this.state;
 
         let showValue = '';
@@ -235,7 +235,7 @@ class AmountText extends Component<Props, State> {
         return (
             <View style={[styles.container, valueContainerStyle]}>
                 {typeof prefix === 'function' && prefix()}
-                <Text numberOfLines={numberOfLines || 1} style={[style, discreet && discreetStyle]}>
+                <Text testID={testID} numberOfLines={numberOfLines || 1} style={[style, discreet && discreetStyle]}>
                     {typeof prefix === 'string' && prefix}
                     {`${showValue}`}
                 </Text>

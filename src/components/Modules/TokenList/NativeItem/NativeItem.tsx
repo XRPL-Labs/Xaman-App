@@ -41,6 +41,7 @@ class NativeItem extends PureComponent<Props> {
 
         return (
             <AmountText
+                testID="account-native-balance"
                 // eslint-disable-next-line react/no-unstable-nested-components
                 prefix={() => (
                     <View style={styles.currencyAvatarContainer}>

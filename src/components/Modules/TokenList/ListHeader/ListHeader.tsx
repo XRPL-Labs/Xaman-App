@@ -67,7 +67,7 @@ class ListHeader extends PureComponent<Props> {
                     secondary
                     roundedMini
                     numberOfLines={1}
-                    testID="add-asset-button"
+                    testID="add-token-button"
                     label={Localize.t('home.addAsset')}
                     onPress={this.onAddPress}
                     icon="IconPlus"

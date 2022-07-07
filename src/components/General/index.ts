@@ -36,3 +36,4 @@ export * from './LoadingIndicator';
 export * from './KeyboardAwareScrollView';
 export * from './ActionPanel';
 export * from './TokenAvatar';
+export * from './ExpandableView';

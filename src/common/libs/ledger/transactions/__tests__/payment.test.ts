@@ -136,13 +136,25 @@ describe('Payment tx', () => {
         }
 
         // should reject if sending XRP and insufficient balance
-        const spy = jest
+        const spyAvailableBalance = jest
             .spyOn(LedgerService, 'getAccountAvailableBalance')
             .mockImplementation(() => Promise.resolve(10));
 
+        const spyGetFilteredAccountLine = jest.spyOn(LedgerService, 'getFilteredAccountLine').mockImplementation(() =>
+            Promise.resolve({
+                limit: '10000',
+                balance: '10',
+                account: 'r...',
+                currency: 'USD',
+                limit_peer: '0',
+                quality_in: 0,
+                quality_out: 0,
+            }),
+        );
+
         const paymentsWithXRPPayments = [
-            { Account, Amount: '20000000' },
-            { Account, Amount: { currency: 'USD', value: '1' }, SendMax: '20000000' },
+            { Account, Destination, Amount: '20000000' },
+            { Account, Destination, Amount: { currency: 'USD', value: '1' }, SendMax: '20000000' },
         ];
 
         for (const payment of paymentsWithXRPPayments) {
@@ -150,7 +162,9 @@ describe('Payment tx', () => {
                 new Error('[missing "en.send.insufficientBalanceSpendableBalance" translation]'),
             );
         }
-        spy.mockRestore();
+
+        spyGetFilteredAccountLine.mockRestore();
+        spyAvailableBalance.mockRestore();
 
         // should reject if sending IOU and insufficient balance
         const spy2 = jest.spyOn(LedgerService, 'getFilteredAccountLine').mockImplementation(() =>
@@ -178,7 +192,6 @@ describe('Payment tx', () => {
         spy2.mockRestore();
 
         // should reject if sending IOU and destination doesn't have proper TrustLine
-
         const destinationLineConditions = [
             undefined,
             {
@@ -197,7 +210,11 @@ describe('Payment tx', () => {
                 .spyOn(LedgerService, 'getFilteredAccountLine')
                 .mockImplementation(() => Promise.resolve(condition));
             await expect(
-                new Payment({ Account, Destination, Amount: { currency: 'USD', value: '20' } }).validate(),
+                new Payment({
+                    Account,
+                    Destination,
+                    Amount: { currency: 'USD', value: '20', issuer: 'r...' },
+                }).validate(),
             ).rejects.toThrow(
                 new Error('[missing "en.send.unableToSendPaymentRecipientDoesNotHaveTrustLine" translation]'),
             );

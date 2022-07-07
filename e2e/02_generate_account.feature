@@ -34,8 +34,8 @@ Feature: Generate Account
     Scenario: Activate Account
         Given I should see 'not-activated-account-container'
         Then I activate the account
-        Then I should wait 20 sec to see 'assets-empty-view'
-        Given I should see '90' in 'account-balance-label'
+        Then I should wait 20 sec to see 'tokens-list-empty-view'
+        Given I should see '90' in 'account-native-balance'
 
     Scenario: Test signing by adding a asset
         Then I tap 'add-token-button'
@@ -52,7 +52,7 @@ Feature: Generate Account
         Given I should see 'submitting-view'
         Given I should wait 20 sec to see 'success-result-view'
         Then I tap 'close-button'
-        Given I should not have 'assets-empty-view'
+        Given I should not have 'tokens-list-empty-view'
 
 
     Scenario: Generate account with passphrase as security
@@ -95,8 +95,8 @@ Feature: Generate Account
     Scenario: Activate Account
         Given I should see 'not-activated-account-container'
         Then I activate the account
-        Then I should wait 20 sec to see 'assets-empty-view'
-        Given I should see '90' in 'account-balance-label'
+        Then I should wait 20 sec to see 'tokens-list-empty-view'
+        Given I should see '90' in 'account-native-balance'
 
     Scenario: Test signing by adding a asset
         Then I tap 'add-token-button'
@@ -114,7 +114,7 @@ Feature: Generate Account
         Given I should see 'submitting-view'
         Given I should wait 20 sec to see 'success-result-view'
         Then I tap 'close-button'
-        Given I should not have 'assets-empty-view'
+        Given I should not have 'tokens-list-empty-view'
 
     Scenario: Change Passphrase
         Then I tap 'tab-Settings'

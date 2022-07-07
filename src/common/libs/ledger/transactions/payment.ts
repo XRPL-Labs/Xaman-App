@@ -262,6 +262,23 @@ class Payment extends BaseTransaction {
                     return;
                 }
 
+                // ===== check if recipient have proper TrustLine when delivering IOU =====
+                // Note: ignore if sending to the issuer
+                if (this.Amount.currency !== 'XRP' && this.Amount.issuer !== this.Destination.address) {
+                    const destinationLine = await LedgerService.getFilteredAccountLine(
+                        this.Destination.address,
+                        this.Amount,
+                    );
+
+                    if (
+                        !destinationLine ||
+                        (Number(destinationLine.limit) === 0 && Number(destinationLine.balance) === 0)
+                    ) {
+                        reject(new Error(Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine')));
+                        return;
+                    }
+                }
+
                 let XRPAmount = undefined as AmountType;
 
                 // SendMax have higher priority
@@ -304,22 +321,6 @@ class Payment extends BaseTransaction {
                 }
 
                 if (IOUAmount) {
-                    // ===== check if recipient have same TrustLine for receiving IOU =====
-                    // ignore if sending to the issuer
-                    if (IOUAmount.issuer !== this.Destination.address) {
-                        const destinationLine = await LedgerService.getFilteredAccountLine(
-                            this.Destination.address,
-                            IOUAmount,
-                        );
-                        if (
-                            !destinationLine ||
-                            (Number(destinationLine.limit) === 0 && Number(destinationLine.balance) === 0)
-                        ) {
-                            reject(new Error(Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine')));
-                            return;
-                        }
-                    }
-
                     // ===== check balances =====
                     // sender is not issuer
                     if (IOUAmount.issuer !== this.Account.address) {
@@ -385,8 +386,10 @@ class Payment extends BaseTransaction {
                         }
                     }
                 }
+
                 resolve();
             } catch (e) {
+                console.warn(e);
                 reject(new Error(ErrorMessages.unexpectedValidationError));
             }
         });

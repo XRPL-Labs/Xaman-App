@@ -56,7 +56,6 @@ NSString *const ENCRYPTION_SUCCESS = @"ENCRYPTION_SUCCESS";
   @{
     (id)kSecClass: (id)kSecClassKey,
     (id)kSecAttrKeyType: (id)kSecAttrKeyTypeECSECPrimeRandom,
-    (id)kSecAttrTokenID: (id)kSecAttrTokenIDSecureEnclave,
     (id)kSecAttrApplicationTag: KEY_ALIAS,
   };
   

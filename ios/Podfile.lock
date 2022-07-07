@@ -70,9 +70,9 @@ PODS:
     - GoogleUtilities/Network (~> 7.7)
     - "GoogleUtilities/NSData+zlib (~> 7.7)"
     - nanopb (~> 2.30908.0)
-  - GoogleDataTransport (9.1.2):
-    - GoogleUtilities/Environment (~> 7.2)
-    - nanopb (~> 2.30908.0)
+  - GoogleDataTransport (9.1.4):
+    - GoogleUtilities/Environment (~> 7.7)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
   - GoogleUtilities/AppDelegateSwizzler (7.7.0):
     - GoogleUtilities/Environment
@@ -96,12 +96,13 @@ PODS:
   - HMSegmentedControl (1.5.6)
   - Interactable (2.0.1):
     - React
+  - lottie-ios (3.3.0)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
-  - PromisesObjC (2.1.0)
+  - PromisesObjC (2.1.1)
   - RCT-Folly (2021.06.28.00-v2):
     - boost
     - DoubleConversion
@@ -312,9 +313,10 @@ PODS:
     - React-Core
   - react-native-netinfo (8.0.0):
     - React-Core
-  - react-native-sdk (2.6.0):
+  - react-native-sdk (2.11.0):
+    - lottie-ios
     - React
-    - VeriffSDK (>= 4.18.0)
+    - VeriffSDK (>= 4.34.0)
   - react-native-webview (11.17.2):
     - React-Core
   - React-perflogger (0.67.3)
@@ -421,7 +423,7 @@ PODS:
     - React
     - TangemSdk (= 3.2.0)
   - TangemSdk (3.2.0)
-  - VeriffSDK (4.34.0)
+  - VeriffSDK (4.38.0)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -489,6 +491,7 @@ SPEC REPOS:
     - GoogleDataTransport
     - GoogleUtilities
     - HMSegmentedControl
+    - lottie-ios
     - nanopb
     - PromisesObjC
     - TangemSdk
@@ -604,12 +607,13 @@ SPEC CHECKSUMS:
   GCDWebServer: 2c156a56c8226e2d5c0c3f208a3621ccffbe3ce4
   glog: 85ecdd10ee8d8ec362ef519a6a45ff9aa27b2e85
   GoogleAppMeasurement: 4c19f031220c72464d460c9daa1fb5d1acce958e
-  GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
+  GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   HMSegmentedControl: 34c1f54d822d8308e7b24f5d901ec674dfa31352
   Interactable: 411887c89fa16ac41f8e7898aca06dcad55e5f22
+  lottie-ios: 6ac74dcc09904798f59b18cb3075c089d76be9ae
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
-  PromisesObjC: 99b6f43f9e1044bd87a95a60beff28c2c44ddb72
+  PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   RCT-Folly: 803a9cfd78114b2ec0f140cfa6fa2a6bafb2d685
   RCTRequired: 3c77b683474faf23920fbefc71c4e13af21470c0
   RCTTypeSafety: 720b1841260dac692444c2822b27403178da8b28
@@ -625,7 +629,7 @@ SPEC CHECKSUMS:
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-netinfo: ba4ea50d836c60580c59079233c400753fe5bcb6
-  react-native-sdk: e3d44737e7563b18587c5e3092dfa0f5160a5507
+  react-native-sdk: e1c2a484be8e7f35b1c7639e7fa25f72b0ac2a4b
   react-native-webview: 380c1a03ec94b7ed764dac8db1e7c9952d08c93a
   React-perflogger: 93d3f142d6d9a46e635f09ba0518027215a41098
   React-RCTActionSheet: 87327c3722203cc79cf79d02fb83e7332aeedd18
@@ -650,7 +654,7 @@ SPEC CHECKSUMS:
   RNKeychain: 840f8e6f13be0576202aefcdffd26a4f54bfe7b5
   RNTangemSdk: 7d6fb7cf04a8b12ed7b02405029cd3b7fcd8be6b
   TangemSdk: 2fffafcc3b4594bab564520f527542eeb15657f5
-  VeriffSDK: 4a06b68f9f31533794372eb12655e5bd677ad529
+  VeriffSDK: 52a96edaa2026babd75332cd50dc8fa596d8e4f6
   Yoga: 90dcd029e45d8a7c1ff059e8b3c6612ff409061a
 
 PODFILE CHECKSUM: e302c8ad52c95a2c86d6da748305832a7cd28ac9

@@ -3,10 +3,13 @@
 import { isEmpty } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, InteractionManager } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
 
+import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
+
+import Flag from '@common/libs/ledger/parser/common/flag';
 import { TrustSet } from '@common/libs/ledger/transactions';
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
@@ -23,6 +26,7 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     transaction: TrustSet;
+    source: AccountSchema;
 }
 
 export interface State {
@@ -30,6 +34,7 @@ export interface State {
     isLoadingIssuerFee: boolean;
     issuerDetails: AccountNameType;
     issuerFee: number;
+    isSetDefaultState: boolean;
 }
 
 /* Component ==================================================================== */
@@ -42,12 +47,68 @@ class TrustSetTemplate extends Component<Props, State> {
             isLoadingIssuerFee: true,
             issuerDetails: undefined,
             issuerFee: 0,
+            isSetDefaultState: false,
         };
     }
 
     componentDidMount() {
-        const { transaction } = this.props;
+        InteractionManager.runAfterInteractions(() => {
+            this.setTokenDefaultState();
+            this.setIssuerTransferFee();
+            this.setIssuerDetails();
+        });
+    }
 
+    setTokenDefaultState = () => {
+        const { transaction, source } = this.props;
+
+        // check if trustLine is setting to the default state
+        // parse account flags
+        const accountFlags = new Flag('Account', source.flags).parse();
+        const line = source.lines.find(
+            (token: TrustLineSchema) =>
+                token.currency.issuer === transaction.Issuer && token.currency.currency === transaction.Currency,
+        );
+
+        if (!line) {
+            return;
+        }
+
+        if (
+            ((accountFlags.defaultRipple && transaction.Flags?.ClearNoRipple) ||
+                (!accountFlags.defaultRipple && transaction.Flags?.SetNoRipple)) &&
+            (!line.freeze || (line.freeze && transaction.Flags?.ClearFreeze)) &&
+            transaction.Limit === 0
+        ) {
+            this.setState({
+                isSetDefaultState: true,
+            });
+        }
+    };
+
+    setIssuerDetails = () => {
+        const { transaction } = this.props;
+        // set issuer details
+        getAccountName(transaction.Issuer)
+            .then((res: any) => {
+                if (!isEmpty(res)) {
+                    this.setState({
+                        issuerDetails: res,
+                    });
+                }
+            })
+            .catch(() => {
+                // ignore
+            })
+            .finally(() => {
+                this.setState({
+                    isLoadingIssuerDetails: false,
+                });
+            });
+    };
+
+    setIssuerTransferFee = () => {
+        const { transaction } = this.props;
         // get transfer rate from issuer account
         LedgerService.getAccountTransferRate(transaction.Issuer)
             .then((issuerFee) => {
@@ -65,28 +126,11 @@ class TrustSetTemplate extends Component<Props, State> {
                     isLoadingIssuerFee: false,
                 });
             });
-
-        getAccountName(transaction.Issuer)
-            .then((res: any) => {
-                if (!isEmpty(res)) {
-                    this.setState({
-                        issuerDetails: res,
-                    });
-                }
-            })
-            .catch(() => {
-                // ignore
-            })
-            .finally(() => {
-                this.setState({
-                    isLoadingIssuerDetails: false,
-                });
-            });
-    }
+    };
 
     render() {
         const { transaction } = this.props;
-        const { isLoadingIssuerDetails, issuerDetails, isLoadingIssuerFee, issuerFee } = this.state;
+        const { isLoadingIssuerDetails, issuerDetails, isLoadingIssuerFee, issuerFee, isSetDefaultState } = this.state;
 
         return (
             <>
@@ -115,10 +159,10 @@ class TrustSetTemplate extends Component<Props, State> {
 
                 <Text style={[styles.label]}>{Localize.t('global.balanceLimit')}</Text>
                 <View style={[styles.contentBox]}>
-                    {transaction.Limit ? (
-                        <AmountText style={[styles.value]} value={transaction.Limit} immutable />
-                    ) : (
+                    {isSetDefaultState ? (
                         <Text style={[styles.value, AppStyles.colorRed]}>{Localize.t('asset.removeAsset')}</Text>
+                    ) : (
+                        <AmountText style={[styles.value]} value={transaction.Limit} immutable />
                     )}
                 </View>
             </>

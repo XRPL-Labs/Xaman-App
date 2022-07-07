@@ -90,12 +90,20 @@ class SignerListSetTemplate extends Component<Props, State> {
 
         return signers.map((signer) => {
             return (
-                <RecipientElement
-                    key={signer.account}
-                    recipient={signer}
-                    extraInfoLabel={Localize.t('global.weight')}
-                    extraInfoValue={signer.weight}
-                />
+                <View key={signer.account}>
+                    <RecipientElement containerStyle={styles.signerEntryRecipientElement} recipient={signer} />
+                    <View style={styles.signerEntryDetailsContainer}>
+                        <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
+                            {Localize.t('global.weight')}: <Text style={AppStyles.colorBlue}>{signer.weight}</Text>
+                        </Text>
+                        {signer.walletLocator && (
+                            <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
+                                {Localize.t('global.walletLocator')}:{' '}
+                                <Text style={AppStyles.colorBlue}>{signer.walletLocator}</Text>
+                            </Text>
+                        )}
+                    </View>
+                </View>
             );
         });
     };
@@ -115,7 +123,7 @@ class SignerListSetTemplate extends Component<Props, State> {
 
                 <Text style={[styles.label]}>{Localize.t('global.signerQuorum')}</Text>
                 <View style={[styles.contentBox]}>
-                    <Text style={styles.value}>{transaction.SignerQuorum || 'NOT PRESENT'}</Text>
+                    <Text style={styles.value}>{transaction.SignerQuorum}</Text>
                 </View>
             </>
         );
