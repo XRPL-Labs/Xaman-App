@@ -12,7 +12,7 @@ import Localize from '@locale';
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
-import { GetAppVersionCode } from '@common/helpers/device';
+import { GetAppVersionCode } from '@common/helpers/app';
 
 import Preferences from '@common/libs/preferences';
 import { VersionDiff } from '@common/utils/version';
@@ -20,9 +20,9 @@ import { VersionDiff } from '@common/utils/version';
 import LoggerService from '@services/LoggerService';
 
 /* Constants  ==================================================================== */
-const { UtilsModule, AppUpdateModule } = NativeModules;
+const { AppUtilsModule, AppUpdateModule } = NativeModules;
 
-const Emitter = new NativeEventEmitter(UtilsModule);
+const Emitter = new NativeEventEmitter(AppUtilsModule);
 
 /* Types  ==================================================================== */
 export enum NetStateStatus {
@@ -194,7 +194,7 @@ class AppService extends EventEmitter {
         }
 
         // start timeout timer
-        UtilsModule.timeoutEvent('timeout_event', 15000);
+        AppUtilsModule.timeoutEvent('timeout_event', 15000);
 
         // add event listener for timer
         this.inactivityTimeout = Emitter.addListener('Utils.timeout', this.onInactivityTimeout);

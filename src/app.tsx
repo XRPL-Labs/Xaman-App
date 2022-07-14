@@ -16,17 +16,22 @@ import { ErrorMessages } from '@common/constants';
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import {
-    GetAppReadableVersion,
     GetDeviceTimeZone,
     GetDeviceLocaleSettings,
-    GetDeviceName,
-    GetSystemVersion,
-    FlagSecure,
+    GetDeviceBrand,
+    GetDeviceOSVersion,
     IsDeviceJailBroken,
     IsDeviceRooted,
+} from '@common/helpers/device';
+
+import {
+    SetFlagSecure,
     ExitApp,
     RestartBundle,
-} from '@common/helpers/device';
+    GetAppVersionCode,
+    GetAppBuildNumber,
+    IsDebugBuild,
+} from '@common/helpers/app';
 
 // Storage
 import { CoreRepository } from '@store/repositories';
@@ -56,8 +61,10 @@ class Application {
         // Listen for app launched event
         Navigation.events().registerAppLaunchedListener(() => {
             // start the app
-            this.logger.debug(`XUMM version ${GetAppReadableVersion()}`);
-            this.logger.debug(`Device ${GetDeviceName()} - OS Version ${GetSystemVersion()}`);
+            this.logger.debug(
+                `XUMM version ${GetAppVersionCode()}_${GetAppBuildNumber()}_${IsDebugBuild() ? 'D' : 'R'}`,
+            );
+            this.logger.debug(`Device ${GetDeviceBrand()} - OS Version ${GetDeviceOSVersion()}`);
 
             // tasks need to run before booting the app
             let tasks = [];
@@ -276,7 +283,7 @@ class Application {
                         }
 
                         // set secure flag for the app by default
-                        FlagSecure(true);
+                        SetFlagSecure(true);
 
                         // enable layout animation
                         if (UIManager.setLayoutAnimationEnabledExperimental) {

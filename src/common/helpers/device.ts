@@ -1,17 +1,6 @@
-import DeviceInfo from 'react-native-device-info';
-
 import { Platform, PixelRatio, NativeModules } from 'react-native';
 
-const { UtilsModule, DimensionModule } = NativeModules;
-
-/**
- * Check if device have notch
- * @returns boolean
- */
-
-const hasNotch = (): boolean => {
-    return DeviceInfo.hasNotch();
-};
+const { DeviceUtilsModule, UniqueIdProviderModule } = NativeModules;
 
 /**
  * IOS: Get bottom tab scale base on pixel ratio
@@ -45,29 +34,20 @@ const GetBottomTabScale = (factor?: number): number => {
  * @returns {top: 0, bottom: 0}
  */
 const GetLayoutInsets = (): { top: number; bottom: number } => {
-    return DimensionModule.layoutInsets;
+    return DeviceUtilsModule.layoutInsets;
 };
 
 /**
- * Android: Check if flagSecure is set on current activity
- * @returns Promise<boolean>
+ * Check if device have notch
+ * @returns boolean
  */
-const IsFlagSecure = (): Promise<boolean> => {
-    if (Platform.OS !== 'android') {
-        return Promise.resolve(false);
+const HasNotch = (): boolean => {
+    // TODO: check for android devices
+    if (Platform.OS === 'ios') {
+        const { top, bottom } = GetLayoutInsets();
+        return top > 0 || bottom > 0;
     }
-    return UtilsModule.isFlagSecure();
-};
-
-/**
- * Android: turn on/off flagSecure flag on current activity
- */
-const FlagSecure = (enable: boolean): void => {
-    if (Platform.OS !== 'android') {
-        return;
-    }
-
-    UtilsModule.flagSecure(enable);
+    return false;
 };
 
 /**
@@ -78,7 +58,7 @@ const IsDeviceJailBroken = (): Promise<boolean> => {
     if (Platform.OS !== 'ios') {
         return Promise.resolve(false);
     }
-    return UtilsModule.isJailBroken();
+    return DeviceUtilsModule.isJailBroken();
 };
 
 /**
@@ -89,7 +69,7 @@ const IsDeviceRooted = (): Promise<boolean> => {
     if (Platform.OS !== 'android') {
         return Promise.resolve(false);
     }
-    return UtilsModule.isRooted();
+    return DeviceUtilsModule.isRooted();
 };
 
 /**
@@ -97,7 +77,7 @@ const IsDeviceRooted = (): Promise<boolean> => {
  * @returns Promise<string>
  */
 const GetDeviceTimeZone = (): Promise<string> => {
-    return UtilsModule.getTimeZone();
+    return DeviceUtilsModule.getTimeZone();
 };
 
 /**
@@ -106,14 +86,31 @@ const GetDeviceTimeZone = (): Promise<string> => {
  */
 const GetDeviceLocaleSettings = (): Promise<any> => {
     return new Promise((resolve) => {
-        UtilsModule.getLocalSetting()
+        DeviceUtilsModule.getLocalSetting()
             .then((settings: any) => {
                 resolve(settings);
             })
             .catch(() => {
+                // if failed to fetch the local settings default to EN
                 resolve({ delimiter: ',', languageCode: 'en', locale: 'en_US', separator: '.' });
             });
     });
+};
+
+/**
+ * Gets the device brand name
+ * @returns string
+ */
+const GetDeviceBrand = (): string => {
+    return `${DeviceUtilsModule.brand} ${DeviceUtilsModule.model}`;
+};
+
+/**
+ * Gets the device OS version.
+ * @returns string
+ */
+const GetDeviceOSVersion = (): string => {
+    return `${DeviceUtilsModule.osVersion}`;
 };
 
 /**
@@ -122,42 +119,14 @@ const GetDeviceLocaleSettings = (): Promise<any> => {
  */
 const GetElapsedRealtime = (): Promise<number> => {
     return new Promise((resolve) => {
-        UtilsModule.getElapsedRealtime().then((ts: string) => {
-            return resolve(Number(ts));
-        });
+        DeviceUtilsModule.getElapsedRealtime()
+            .then((ts: string) => {
+                return resolve(Number(ts));
+            })
+            .catch(() => {
+                throw new Error('Unable to fetch elapsed real time!');
+            });
     });
-};
-
-/**
- * Get app readable version
- * @returns string
- */
-const GetAppReadableVersion = (): string => {
-    return DeviceInfo.getReadableVersion();
-};
-
-/**
- * Gets the device ID.
- * @returns string
- */
-const GetDeviceId = (): string => {
-    return DeviceInfo.getDeviceId();
-};
-
-/**
- * Gets the device name
- * @returns string
- */
-const GetDeviceName = (): string => {
-    return DeviceInfo.getDeviceNameSync();
-};
-
-/**
- * Gets the device OS version.
- * @returns string
- */
-const GetSystemVersion = (): string => {
-    return DeviceInfo.getSystemVersion();
 };
 
 /**
@@ -165,49 +134,20 @@ const GetSystemVersion = (): string => {
  * @returns string
  */
 const GetDeviceUniqueId = (): string => {
-    return DeviceInfo.getUniqueId();
-};
-
-/**
- * Get app version code
- * @returns string
- */
-const GetAppVersionCode = (): string => {
-    return DeviceInfo.getVersion();
-};
-
-/**
- * Restart react native bundle
- */
-const RestartBundle = (): void => {
-    UtilsModule.restartBundle();
-};
-
-/**
- * hard close the app process
- */
-const ExitApp = (): void => {
-    UtilsModule.exitApp();
+    return UniqueIdProviderModule.getDeviceUniqueId();
 };
 
 /* Export ==================================================================== */
 export {
-    hasNotch,
+    HasNotch,
     GetBottomTabScale,
     GetLayoutInsets,
-    IsFlagSecure,
-    FlagSecure,
     IsDeviceJailBroken,
     IsDeviceRooted,
     GetDeviceTimeZone,
     GetDeviceLocaleSettings,
     GetElapsedRealtime,
-    GetAppReadableVersion,
-    GetDeviceId,
-    GetDeviceName,
-    GetSystemVersion,
+    GetDeviceBrand,
+    GetDeviceOSVersion,
     GetDeviceUniqueId,
-    GetAppVersionCode,
-    RestartBundle,
-    ExitApp,
 };

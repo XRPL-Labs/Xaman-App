@@ -8,7 +8,8 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
-import { GetDeviceLocaleSettings, RestartBundle } from '@common/helpers/device';
+import { GetDeviceLocaleSettings } from '@common/helpers/device';
+import { RestartBundle } from '@common/helpers/app';
 import { Prompt } from '@common/helpers/interface';
 
 import { AppScreens } from '@common/constants';

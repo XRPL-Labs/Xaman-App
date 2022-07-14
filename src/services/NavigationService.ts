@@ -19,7 +19,7 @@ import {
 } from 'react-native-navigation';
 
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
-import { ExitApp } from '@common/helpers/device';
+import { ExitApp } from '@common/helpers/app';
 
 import { AppScreens } from '@common/constants';
 

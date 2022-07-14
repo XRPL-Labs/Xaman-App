@@ -1,7 +1,6 @@
-import DeviceInfo from 'react-native-device-info';
-
 import Preferences from '@common/libs/preferences';
 import { Navigator } from '@common/helpers/navigator';
+import * as AppHelpers from '@common/helpers/app';
 
 import AppService, { NetStateStatus, AppStateStatus } from '../AppService';
 
@@ -56,7 +55,7 @@ describe('AppService', () => {
         const spyUpdateVersionCode = jest.spyOn(Preferences, 'set');
 
         // mock current app version
-        const spy1 = jest.spyOn(DeviceInfo, 'getVersion').mockImplementation(() => '0.5.1');
+        const spy1 = jest.spyOn(AppHelpers, 'GetAppVersionCode').mockImplementation(() => '0.5.1');
         const spy2 = jest.spyOn(Preferences, 'get').mockImplementation(async () => '0.4.9');
 
         await appService.checkShowChangeLog();

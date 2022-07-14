@@ -8,7 +8,7 @@ import React, { PureComponent, ReactNode } from 'react';
 
 import { View, ViewStyle } from 'react-native';
 
-import { hasNotch } from '@common/helpers/device';
+import { HasNotch } from '@common/helpers/device';
 
 import { AppSizes } from '@theme';
 import styles from './styles';
@@ -59,7 +59,7 @@ class Footer extends PureComponent<Props, State> {
             <View
                 style={[
                     styles.container,
-                    { paddingBottom: safeArea && (hasNotch() ? 34 : 10) + AppSizes.paddingExtraSml },
+                    { paddingBottom: safeArea && (HasNotch() ? 34 : 10) + AppSizes.paddingExtraSml },
                     style,
                 ]}
             >

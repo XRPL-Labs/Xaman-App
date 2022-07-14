@@ -1,4 +1,4 @@
-package libs.authentication.Biometric;
+package libs.security.authentication.Biometric;
 
 import android.app.KeyguardManager;
 import android.content.Context;

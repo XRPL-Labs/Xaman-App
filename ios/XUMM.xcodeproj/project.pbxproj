@@ -16,7 +16,6 @@
 		A248635D28229379004633C9 /* BiometricModule.m in Sources */ = {isa = PBXBuildFile; fileRef = A248635C28229379004633C9 /* BiometricModule.m */; };
 		A2805CE224D1982400B5552E /* LocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = A2805CE124D1982400B5552E /* LocalNotification.m */; };
 		A28BA8A6282409B600109CC8 /* SecurityProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = A28BA8A5282409B600109CC8 /* SecurityProvider.m */; };
-		A2AD77DA26AAB23B00733D6E /* Dimension.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AD77D926A9B8AF00733D6E /* Dimension.m */; };
 		A2AFF12E243E79C30007005E /* Proxima Nova Alt Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */; };
 		A2AFF12F243E79C30007005E /* UbuntuMono-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10B243E79C30007005E /* UbuntuMono-BoldItalic.ttf */; };
 		A2AFF130243E79C30007005E /* UbuntuMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10C243E79C30007005E /* UbuntuMono-Bold.ttf */; };
@@ -38,12 +37,15 @@
 		A2AFF140243E79C30007005E /* NSString+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF125243E79C30007005E /* NSString+Utils.m */; };
 		A2AFF141243E79C30007005E /* UIView+Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF127243E79C30007005E /* UIView+Toast.m */; };
 		A2AFF142243E79C30007005E /* Crypto.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF12A243E79C30007005E /* Crypto.m */; };
-		A2AFF143243E79C30007005E /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF12D243E79C30007005E /* Utils.m */; };
+		A2AFF143243E79C30007005E /* DeviceUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF12D243E79C30007005E /* DeviceUtils.m */; };
 		A2B145CB243E935F00E952B6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A2B145CA243E935F00E952B6 /* LaunchScreen.storyboard */; };
 		A2B9D13E2449BAA400259841 /* SharedPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = A2B9D13D2449B83C00259841 /* SharedPreferences.m */; };
+		A2D856C02880166A003717BC /* AppUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = A2D856BF2880166A003717BC /* AppUtils.m */; };
+		A2D856C428802622003717BC /* HapticFeedback.m in Sources */ = {isa = PBXBuildFile; fileRef = A2D856C328802622003717BC /* HapticFeedback.m */; };
 		A2ED1312252DC717002AFC09 /* InAppPurchase.m in Sources */ = {isa = PBXBuildFile; fileRef = A2ED1311252DC717002AFC09 /* InAppPurchase.m */; };
 		A2ED131C252F113A002AFC09 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2ED131B252F113A002AFC09 /* StoreKit.framework */; };
 		A2ED132625387157002AFC09 /* CryptoUnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A2ED132525387157002AFC09 /* CryptoUnitTests.m */; };
+		A2F4F39528802A4600444302 /* UniqueIdProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F4F39428802A4600444302 /* UniqueIdProvider.m */; };
 		C096D066406B75EC28EBB7AC /* libPods-XUMM-XUMMTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 268168C891FE6DDF2E5BDE2F /* libPods-XUMM-XUMMTests.a */; };
 /* End PBXBuildFile section */
 
@@ -81,8 +83,6 @@
 		A2805CE324D1984700B5552E /* LocalNotification.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocalNotification.h; sourceTree = "<group>"; };
 		A28BA8A5282409B600109CC8 /* SecurityProvider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SecurityProvider.m; sourceTree = "<group>"; };
 		A28BA8A728240A4500109CC8 /* SecurityProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SecurityProvider.h; sourceTree = "<group>"; };
-		A2AD77D826A9B85400733D6E /* Dimension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Dimension.h; sourceTree = "<group>"; };
-		A2AD77D926A9B8AF00733D6E /* Dimension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Dimension.m; sourceTree = "<group>"; };
 		A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Alt Thin.otf"; sourceTree = "<group>"; };
 		A2AFF10B243E79C30007005E /* UbuntuMono-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-BoldItalic.ttf"; sourceTree = "<group>"; };
 		A2AFF10C243E79C30007005E /* UbuntuMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-Bold.ttf"; sourceTree = "<group>"; };
@@ -112,16 +112,22 @@
 		A2AFF127243E79C30007005E /* UIView+Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Toast.m"; sourceTree = "<group>"; };
 		A2AFF129243E79C30007005E /* Crypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Crypto.h; sourceTree = "<group>"; };
 		A2AFF12A243E79C30007005E /* Crypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Crypto.m; sourceTree = "<group>"; };
-		A2AFF12C243E79C30007005E /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
-		A2AFF12D243E79C30007005E /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
+		A2AFF12C243E79C30007005E /* DeviceUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceUtils.h; sourceTree = "<group>"; };
+		A2AFF12D243E79C30007005E /* DeviceUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceUtils.m; sourceTree = "<group>"; };
 		A2B145CA243E935F00E952B6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A2B145CC243F734600E952B6 /* XUMM.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = XUMM.entitlements; path = XUMM/XUMM.entitlements; sourceTree = "<group>"; };
 		A2B9D13C2449B83900259841 /* SharedPreferences.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedPreferences.h; sourceTree = "<group>"; };
 		A2B9D13D2449B83C00259841 /* SharedPreferences.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedPreferences.m; sourceTree = "<group>"; };
+		A2D856BE28801643003717BC /* AppUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppUtils.h; sourceTree = "<group>"; };
+		A2D856BF2880166A003717BC /* AppUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppUtils.m; sourceTree = "<group>"; };
+		A2D856C228802614003717BC /* HapticFeedback.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HapticFeedback.h; sourceTree = "<group>"; };
+		A2D856C328802622003717BC /* HapticFeedback.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HapticFeedback.m; sourceTree = "<group>"; };
 		A2ED1310252DC6FE002AFC09 /* InAppPurchase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InAppPurchase.h; sourceTree = "<group>"; };
 		A2ED1311252DC717002AFC09 /* InAppPurchase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InAppPurchase.m; sourceTree = "<group>"; };
 		A2ED131B252F113A002AFC09 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A2ED132525387157002AFC09 /* CryptoUnitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CryptoUnitTests.m; sourceTree = "<group>"; };
+		A2F4F39328802A3700444302 /* UniqueIdProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UniqueIdProvider.h; sourceTree = "<group>"; };
+		A2F4F39428802A4600444302 /* UniqueIdProvider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UniqueIdProvider.m; sourceTree = "<group>"; };
 		DBC6D01CA512AB17F704C7E6 /* libPods-XUMM.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-XUMM.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
@@ -280,7 +286,7 @@
 		A2AFF117243E79C30007005E /* Libs */ = {
 			isa = PBXGroup;
 			children = (
-				A248635B28229347004633C9 /* Authentication */,
+				A2F4F390288029BD00444302 /* Security */,
 				A266857724EEAD42000430B7 /* Notification */,
 				A2B9D13B2449B81800259841 /* Common */,
 				A2AFF118243E79C30007005E /* UI */,
@@ -303,8 +309,8 @@
 				A2AFF11F243E79C30007005E /* Toast.h */,
 				A2AFF120243E79C30007005E /* QRCodeGenerator */,
 				A2AFF127243E79C30007005E /* UIView+Toast.m */,
-				A2AD77D826A9B85400733D6E /* Dimension.h */,
-				A2AD77D926A9B8AF00733D6E /* Dimension.m */,
+				A2D856C228802614003717BC /* HapticFeedback.h */,
+				A2D856C328802622003717BC /* HapticFeedback.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -334,8 +340,10 @@
 		A2AFF12B243E79C30007005E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				A2AFF12C243E79C30007005E /* Utils.h */,
-				A2AFF12D243E79C30007005E /* Utils.m */,
+				A2AFF12C243E79C30007005E /* DeviceUtils.h */,
+				A2AFF12D243E79C30007005E /* DeviceUtils.m */,
+				A2D856BE28801643003717BC /* AppUtils.h */,
+				A2D856BF2880166A003717BC /* AppUtils.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -351,6 +359,24 @@
 				A2B9D13C2449B83900259841 /* SharedPreferences.h */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		A2F4F390288029BD00444302 /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				A2F4F391288029DE00444302 /* Providers */,
+				A248635B28229347004633C9 /* Authentication */,
+			);
+			path = Security;
+			sourceTree = "<group>";
+		};
+		A2F4F391288029DE00444302 /* Providers */ = {
+			isa = PBXGroup;
+			children = (
+				A2F4F39328802A3700444302 /* UniqueIdProvider.h */,
+				A2F4F39428802A4600444302 /* UniqueIdProvider.m */,
+			);
+			path = Providers;
 			sourceTree = "<group>";
 		};
 		ED14F17356ED5A81E9920E69 /* Pods */ = {
@@ -678,12 +704,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				A248635D28229379004633C9 /* BiometricModule.m in Sources */,
-				A2AD77DA26AAB23B00733D6E /* Dimension.m in Sources */,
 				A2B9D13E2449BAA400259841 /* SharedPreferences.m in Sources */,
 				A20C14202524C8A000686A2A /* AppUpdate.m in Sources */,
 				A2AFF142243E79C30007005E /* Crypto.m in Sources */,
 				A2ED1312252DC717002AFC09 /* InAppPurchase.m in Sources */,
-				A2AFF143243E79C30007005E /* Utils.m in Sources */,
+				A2AFF143243E79C30007005E /* DeviceUtils.m in Sources */,
+				A2D856C02880166A003717BC /* AppUtils.m in Sources */,
 				A28BA8A6282409B600109CC8 /* SecurityProvider.m in Sources */,
 				A20B9293256FCE670066FECA /* Empty.swift in Sources */,
 				A2AFF141243E79C30007005E /* UIView+Toast.m in Sources */,
@@ -694,6 +720,8 @@
 				A2AFF13B243E79C30007005E /* QRCode.m in Sources */,
 				A2AFF13F243E79C30007005E /* CIColor+QRCode.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				A2D856C428802622003717BC /* HapticFeedback.m in Sources */,
+				A2F4F39528802A4600444302 /* UniqueIdProvider.m in Sources */,
 				A2AFF13E243E79C30007005E /* QRCodeGenerator.m in Sources */,
 				A2AFF140243E79C30007005E /* NSString+Utils.m in Sources */,
 			);
@@ -765,6 +793,7 @@
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = LK5BBJNJZ6;
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
@@ -796,6 +825,7 @@
 				CODE_SIGN_ENTITLEMENTS = XUMM/XUMM.entitlements;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = LK5BBJNJZ6;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = XUMM/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

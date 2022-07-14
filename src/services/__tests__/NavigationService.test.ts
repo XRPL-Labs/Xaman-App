@@ -234,8 +234,8 @@ describe('NavigationService', () => {
         expect(navigationService.handleAndroidBackButton()).toBe(false);
 
         // should exit the app if no modal or overlay and in root
-        const { UtilsModule } = NativeModules;
-        const exitSpy = jest.spyOn(UtilsModule, 'exitApp');
+        const { AppUtilsModule } = NativeModules;
+        const exitSpy = jest.spyOn(AppUtilsModule, 'exitApp');
 
         navigationService.overlays = [];
         navigationService.modals = [];

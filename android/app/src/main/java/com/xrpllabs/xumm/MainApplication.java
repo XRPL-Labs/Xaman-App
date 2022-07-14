@@ -7,18 +7,19 @@ import com.facebook.react.modules.network.OkHttpClientProvider;
 
 // Local Libs
 import libs.crypto.modules.CryptoPackage;
-import libs.authentication.Biometric.BiometricPackage;
+import libs.security.SecurityPackage;
 import libs.ui.KeyboardPackage;
 import libs.ui.ActionSheetPackage;
 import libs.ui.PromptPackage;
 import libs.ui.QRCodePackage;
-import libs.ui.DimensionPackage;
+import libs.ui.HapticFeedbackPackage;
 import libs.notification.LocalNotificationPackage;
 import libs.common.SharedPreferencesPackage;
 import libs.common.AppUpdatePackage;
 import libs.common.InAppPurchasePackage;
 import libs.common.HTTPClientFactory;
-import libs.utils.UtilsPackage;
+import libs.utils.AppUtilsPackage;
+import libs.utils.DeviceUtilsPackage;
 
 // External Dependencies
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -50,7 +51,8 @@ public class MainApplication extends NavigationApplication {
                 protected List<ReactPackage> getPackages() {
                     List<ReactPackage> packages = new PackageList(this).getPackages();
                     // Local Libs
-                    packages.add(new UtilsPackage());
+                    packages.add(new AppUtilsPackage());
+                    packages.add(new DeviceUtilsPackage());
                     packages.add(new KeyboardPackage());
                     packages.add(new CryptoPackage());
                     packages.add(new ActionSheetPackage());
@@ -60,8 +62,8 @@ public class MainApplication extends NavigationApplication {
                     packages.add(new LocalNotificationPackage());
                     packages.add(new AppUpdatePackage());
                     packages.add(new InAppPurchasePackage());
-                    packages.add(new DimensionPackage());
-                    packages.add(new BiometricPackage());
+                    packages.add(new HapticFeedbackPackage());
+                    packages.add(new SecurityPackage());
                     return packages;
                 }
             };

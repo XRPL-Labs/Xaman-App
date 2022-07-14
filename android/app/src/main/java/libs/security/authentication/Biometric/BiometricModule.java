@@ -1,4 +1,4 @@
-package libs.authentication.Biometric;
+package libs.security.authentication.Biometric;
 
 import androidx.annotation.NonNull;
 

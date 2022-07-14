@@ -12,7 +12,7 @@ import { StringType } from 'xumm-string-decode';
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
 
 import { Navigator } from '@common/helpers/navigator';
-import { GetAppVersionCode } from '@common/helpers/device';
+import { GetAppVersionCode } from '@common/helpers/app';
 import { Prompt } from '@common/helpers/interface';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';

@@ -1,4 +1,4 @@
-package libs.authentication.Biometric;
+package libs.security;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
@@ -10,11 +10,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import libs.security.authentication.Biometric.BiometricModule;
+import libs.security.providers.UniqueIdProviderModule;
 
-public class BiometricPackage implements ReactPackage {
+
+public class SecurityPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        return Arrays.<NativeModule>asList(new BiometricModule(reactContext));
+        return Arrays.<NativeModule>asList(new BiometricModule(reactContext), new UniqueIdProviderModule(reactContext));
     }
 
     // Deprecated from RN 0.47.0

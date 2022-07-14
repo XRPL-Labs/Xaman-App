@@ -6,7 +6,7 @@ import { View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { Navigator } from '@common/helpers/navigator';
-import { hasNotch } from '@common/helpers/device';
+import { HasNotch } from '@common/helpers/device';
 
 import { AppScreens, AppConfig } from '@common/constants';
 
@@ -43,7 +43,7 @@ class CreditsView extends Component<Props, State> {
         super(props);
 
         this.state = {
-            paddingBottom: hasNotch() ? 20 : 0,
+            paddingBottom: HasNotch() ? 20 : 0,
             coreSettings: CoreRepository.getSettings(),
         };
     }

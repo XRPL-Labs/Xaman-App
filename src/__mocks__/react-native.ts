@@ -66,9 +66,37 @@ ReactNative.NativeModules.Toast = {
     showWithGravity: jest.fn((message: string, duration: any, gravity: number) => true),
 };
 
-ReactNative.NativeModules.DimensionModule = {
+ReactNative.NativeModules.DeviceUtilsModule = {
     layoutInsets: { top: 0, bottom: 0 },
-    getLayoutInsets: jest.fn(() => Promise.resolve({ top: 0, bottom: 0 })),
+    brand: 'Apple',
+    model: 'iPhone13,4',
+    osVersion: '15,5',
+    getElapsedRealtime: jest.fn(() => Promise.resolve(0)),
+    isJailBroken: jest.fn(() => Promise.resolve(false)),
+    isRooted: jest.fn(() => Promise.resolve(false)),
+    getTimeZone: jest.fn(() => Promise.resolve('Europe/Amsterdam')),
+    getLocalSetting: jest.fn(() =>
+        Promise.resolve({ delimiter: ',', languageCode: 'en', locale: 'en_US', separator: '.' }),
+    ),
+};
+
+ReactNative.NativeModules.AppUtilsModule = {
+    appVersion: '0.0.1',
+    buildNumber: '1',
+    isDebug: false,
+    isFlagSecure: jest.fn(() => Promise.resolve(false)),
+    setFlagSecure: jest.fn((value) => {}),
+    restartBundle: jest.fn(() => {}),
+    exitApp: jest.fn(() => {}),
+    timeoutEvent: jest.fn((key, delay) => {}),
+};
+
+ReactNative.NativeModules.UniqueIdProviderModule = {
+    getDeviceUniqueId: jest.fn(() => 'e988b7a9-f685-4674-87bc-0ad52a52faa5'),
+};
+
+ReactNative.NativeModules.HapticFeedbackModule = {
+    trigger: jest.fn((type) => {}),
 };
 
 module.exports = ReactNative;

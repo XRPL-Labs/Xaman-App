@@ -11,7 +11,8 @@ import { Platform } from 'react-native';
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
-import { GetAppReadableVersion, GetDeviceUniqueId } from '@common/helpers/device';
+import { GetDeviceUniqueId } from '@common/helpers/device';
+import { GetAppReadableVersion } from '@common/helpers/app';
 
 import { CurrencySchema } from '@store/schemas/latest';
 

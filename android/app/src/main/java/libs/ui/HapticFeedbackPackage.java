@@ -11,10 +11,10 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class DimensionPackage implements ReactPackage {
+public class HapticFeedbackPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        return Arrays.<NativeModule>asList(new DimensionModule(reactContext));
+        return Arrays.<NativeModule>asList(new HapticFeedbackModule(reactContext));
     }
 
     // Deprecated from RN 0.47.0

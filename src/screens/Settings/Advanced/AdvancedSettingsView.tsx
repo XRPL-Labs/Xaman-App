@@ -14,7 +14,7 @@ import { CoreSchema, ProfileSchema } from '@store/schemas/latest';
 import { AppScreens, AppConfig } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
-import { GetAppVersionCode, GetAppReadableVersion } from '@common/helpers/device';
+import { GetAppVersionCode, GetAppReadableVersion } from '@common/helpers/app';
 
 import { TouchableDebounce, Header, Icon, Switch } from '@components/General';
 

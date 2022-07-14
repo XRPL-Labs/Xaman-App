@@ -6,6 +6,6 @@
 #import <React/RCTReloadCommand.h>
 
 
-@interface UtilsModule : RCTEventEmitter <RCTBridgeModule>
+@interface AppUtilsModule : RCTEventEmitter <RCTBridgeModule>
 
 @end
