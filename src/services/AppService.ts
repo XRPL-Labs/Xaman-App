@@ -93,14 +93,14 @@ class AppService extends EventEmitter {
     // check if update available for the app
     checkAppUpdate = async () => {
         AppUpdateModule.checkUpdate()
-            .then(async (newVersion: number) => {
+            .then(async (versionCode: number) => {
                 // no new version is available
-                if (!newVersion) return;
+                if (!versionCode) return;
 
                 const ignoredVersionCode = await Preferences.get(Preferences.keys.UPDATE_IGNORE_VERSION_CODE);
 
                 // user already ignored this update
-                if (ignoredVersionCode && `${newVersion}` === `${ignoredVersionCode}`) {
+                if (ignoredVersionCode && `${versionCode}` === `${ignoredVersionCode}`) {
                     return;
                 }
 
@@ -109,18 +109,18 @@ class AppService extends EventEmitter {
                     AppUpdateModule.startUpdate().catch((e: any) => {
                         // user canceled this update
                         if (e.code === 'E_UPDATE_CANCELLED') {
-                            Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${newVersion}`);
+                            Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`);
                         }
                     });
                 } else {
                     Alert.alert(
                         Localize.t('global.newVersion'),
-                        Localize.t('global.versionNumberIsAvailableOnTheAppStore', { newVersion }),
+                        Localize.t('global.versionNumberIsAvailableOnTheAppStore', { versionCode }),
                         [
                             {
                                 text: Localize.t('global.notNow'),
                                 onPress: () =>
-                                    Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${newVersion}`),
+                                    Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`),
                                 style: 'destructive',
                             },
                             {

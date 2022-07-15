@@ -19,14 +19,23 @@ RCT_EXPORT_METHOD(checkUpdate: (RCTPromiseResolveBlock)resolve rejecter:(RCTProm
     
     if ([lookup[@"resultCount"] integerValue] == 1){
       NSString *appStoreVersion = [[lookup objectForKey:@"results"][0] objectForKey:@"version"];
+      NSString *minimumSupportedOSVersion = [[lookup objectForKey:@"results"][0] objectForKey:@"minimumOsVersion"];
       NSString *currentVersion = infoDictionary[@"CFBundleShortVersionString"];
       
-      if(appStoreVersion != nil){
-        NSInteger appStoreVersionNum = [appStoreVersion stringByReplacingOccurrencesOfString:@"." withString:@""].integerValue;
-        NSInteger currentVersionNum = [currentVersion stringByReplacingOccurrencesOfString:@"." withString:@""].integerValue;
+      if(appStoreVersion != nil && minimumSupportedOSVersion != nil){
+        NSString *systemVersion = [UIDevice currentDevice].systemVersion;
         
-        // need the update resolve the need version number
-        if (appStoreVersionNum > currentVersionNum){
+        // check if minimum OS version is supported in this device
+        BOOL osVersionSupported = ([systemVersion compare:minimumSupportedOSVersion options:NSNumericSearch] != NSOrderedAscending);
+        if (!osVersionSupported)
+        {
+          return resolve(@NO);
+        }
+        
+        // if update vailable resolve the new version
+        BOOL isUpdateAvailable = [appStoreVersion compare:currentVersion options:NSNumericSearch] == NSOrderedDescending;
+        if (isUpdateAvailable){
+          // new update is available
           return resolve(appStoreVersion);
         }
       }
