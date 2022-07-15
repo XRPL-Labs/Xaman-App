@@ -1,4 +1,4 @@
-package libs.ui;
+package libs.common;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
@@ -10,19 +10,23 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class PromptPackage implements ReactPackage {
+public class CommonPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        return Arrays.<NativeModule>asList(new PromptModule(reactContext));
+        return Arrays.<NativeModule>asList(
+                new AppUpdateModule(reactContext),
+                new InAppPurchaseModule(reactContext),
+                new SharedPreferencesModule(reactContext)
+        );
+    }
+
+    // Deprecated from RN 0.47.0
+    public List<Class<? extends JavaScriptModule>> createJSModules() {
+        return Collections.emptyList();
     }
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         return Collections.emptyList();
     }
-
-    public List<Class<? extends JavaScriptModule>> createJSModules() {
-        return Collections.emptyList();
-    }
 }
-

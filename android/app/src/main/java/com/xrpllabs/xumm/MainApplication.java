@@ -8,18 +8,11 @@ import com.facebook.react.modules.network.OkHttpClientProvider;
 // Local Libs
 import libs.crypto.modules.CryptoPackage;
 import libs.security.SecurityPackage;
-import libs.ui.KeyboardPackage;
-import libs.ui.ActionSheetPackage;
-import libs.ui.PromptPackage;
-import libs.ui.QRCodePackage;
-import libs.ui.HapticFeedbackPackage;
+import libs.ui.UIPackage;
 import libs.notification.LocalNotificationPackage;
-import libs.common.SharedPreferencesPackage;
-import libs.common.AppUpdatePackage;
-import libs.common.InAppPurchasePackage;
+import libs.common.CommonPackage;
 import libs.common.HTTPClientFactory;
-import libs.utils.AppUtilsPackage;
-import libs.utils.DeviceUtilsPackage;
+import libs.utils.UtilsPackage;
 
 // External Dependencies
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -51,18 +44,11 @@ public class MainApplication extends NavigationApplication {
                 protected List<ReactPackage> getPackages() {
                     List<ReactPackage> packages = new PackageList(this).getPackages();
                     // Local Libs
-                    packages.add(new AppUtilsPackage());
-                    packages.add(new DeviceUtilsPackage());
-                    packages.add(new KeyboardPackage());
+                    packages.add(new UtilsPackage());
                     packages.add(new CryptoPackage());
-                    packages.add(new ActionSheetPackage());
-                    packages.add(new PromptPackage());
-                    packages.add(new QRCodePackage());
-                    packages.add(new SharedPreferencesPackage());
+                    packages.add(new UIPackage());
                     packages.add(new LocalNotificationPackage());
-                    packages.add(new AppUpdatePackage());
-                    packages.add(new InAppPurchasePackage());
-                    packages.add(new HapticFeedbackPackage());
+                    packages.add(new CommonPackage());
                     packages.add(new SecurityPackage());
                     return packages;
                 }

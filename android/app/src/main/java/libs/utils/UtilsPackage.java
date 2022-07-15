@@ -1,4 +1,4 @@
-package libs.ui;
+package libs.utils;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
@@ -11,10 +11,13 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class KeyboardPackage implements ReactPackage {
+public class UtilsPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        return Arrays.<NativeModule>asList(new KeyboardModule(reactContext));
+        return Arrays.<NativeModule>asList(
+                new AppUtilsModule(reactContext),
+                new DeviceUtilsModule(reactContext)
+        );
     }
 
     // Deprecated from RN 0.47.0

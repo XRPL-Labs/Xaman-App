@@ -17,7 +17,10 @@ import libs.security.providers.UniqueIdProviderModule;
 public class SecurityPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        return Arrays.<NativeModule>asList(new BiometricModule(reactContext), new UniqueIdProviderModule(reactContext));
+        return Arrays.<NativeModule>asList(
+                new BiometricModule(reactContext),
+                new UniqueIdProviderModule(reactContext)
+        );
     }
 
     // Deprecated from RN 0.47.0
