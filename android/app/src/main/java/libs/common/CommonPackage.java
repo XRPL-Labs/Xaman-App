@@ -16,7 +16,8 @@ public class CommonPackage implements ReactPackage {
         return Arrays.<NativeModule>asList(
                 new AppUpdateModule(reactContext),
                 new InAppPurchaseModule(reactContext),
-                new SharedPreferencesModule(reactContext)
+                new SharedPreferencesModule(reactContext),
+                new ClipboardModule(reactContext)
         );
     }
 

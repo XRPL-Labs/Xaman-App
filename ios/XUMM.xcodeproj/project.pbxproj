@@ -46,6 +46,7 @@
 		A2ED131C252F113A002AFC09 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2ED131B252F113A002AFC09 /* StoreKit.framework */; };
 		A2ED132625387157002AFC09 /* CryptoUnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A2ED132525387157002AFC09 /* CryptoUnitTests.m */; };
 		A2F4F39528802A4600444302 /* UniqueIdProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F4F39428802A4600444302 /* UniqueIdProvider.m */; };
+		A2F4F398288168CB00444302 /* Clipboard.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F4F397288168CB00444302 /* Clipboard.m */; };
 		C096D066406B75EC28EBB7AC /* libPods-XUMM-XUMMTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 268168C891FE6DDF2E5BDE2F /* libPods-XUMM-XUMMTests.a */; };
 /* End PBXBuildFile section */
 
@@ -128,6 +129,8 @@
 		A2ED132525387157002AFC09 /* CryptoUnitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CryptoUnitTests.m; sourceTree = "<group>"; };
 		A2F4F39328802A3700444302 /* UniqueIdProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UniqueIdProvider.h; sourceTree = "<group>"; };
 		A2F4F39428802A4600444302 /* UniqueIdProvider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UniqueIdProvider.m; sourceTree = "<group>"; };
+		A2F4F396288168BC00444302 /* Clipboard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Clipboard.h; sourceTree = "<group>"; };
+		A2F4F397288168CB00444302 /* Clipboard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Clipboard.m; sourceTree = "<group>"; };
 		DBC6D01CA512AB17F704C7E6 /* libPods-XUMM.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-XUMM.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
@@ -357,6 +360,8 @@
 				A20C141F2524C8A000686A2A /* AppUpdate.m */,
 				A2B9D13D2449B83C00259841 /* SharedPreferences.m */,
 				A2B9D13C2449B83900259841 /* SharedPreferences.h */,
+				A2F4F396288168BC00444302 /* Clipboard.h */,
+				A2F4F397288168CB00444302 /* Clipboard.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -721,6 +726,7 @@
 				A2AFF13F243E79C30007005E /* CIColor+QRCode.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				A2D856C428802622003717BC /* HapticFeedback.m in Sources */,
+				A2F4F398288168CB00444302 /* Clipboard.m in Sources */,
 				A2F4F39528802A4600444302 /* UniqueIdProvider.m in Sources */,
 				A2AFF13E243E79C30007005E /* QRCodeGenerator.m in Sources */,
 				A2AFF140243E79C30007005E /* NSString+Utils.m in Sources */,

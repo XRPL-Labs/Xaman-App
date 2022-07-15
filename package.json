@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@react-native-community/blur": "3.6.0",
-    "@react-native-community/clipboard": "1.5.1",
     "@react-native-community/netinfo": "8.0.0",
     "@react-native-firebase/analytics": "14.9.1",
     "@react-native-firebase/app": "14.9.1",

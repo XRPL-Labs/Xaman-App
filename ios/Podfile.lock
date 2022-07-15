@@ -398,8 +398,6 @@ PODS:
   - RealmJS (10.10.1):
     - GCDWebServer
     - React
-  - RNCClipboard (1.5.1):
-    - React-Core
   - RNFBAnalytics (14.9.1):
     - Firebase/AnalyticsWithoutAdIdSupport (= 8.15.0)
     - React-Core
@@ -464,7 +462,6 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeNavigation (from `../node_modules/react-native-navigation`)
   - RealmJS (from `../node_modules/realm`)
-  - "RNCClipboard (from `../node_modules/@react-native-community/clipboard`)"
   - "RNFBAnalytics (from `../node_modules/@react-native-firebase/analytics`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBCrashlytics (from `../node_modules/@react-native-firebase/crashlytics`)"
@@ -569,8 +566,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-navigation"
   RealmJS:
     :path: "../node_modules/realm"
-  RNCClipboard:
-    :path: "../node_modules/@react-native-community/clipboard"
   RNFBAnalytics:
     :path: "../node_modules/@react-native-firebase/analytics"
   RNFBApp:
@@ -640,7 +635,6 @@ SPEC CHECKSUMS:
   ReactCommon: 650e33cde4fb7d36781cd3143f5276da0abb2f96
   ReactNativeNavigation: 6e747bdf88f138088a105285274170b3fc0404ed
   RealmJS: 2925b36a86fc179b0b58ad48386e43eb95188e9a
-  RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
   RNFBAnalytics: fae7572493095e19d22498650c97507f988e627d
   RNFBApp: fd23737680ed2bdde41ca27d8bfb171b6d668c6b
   RNFBCrashlytics: f2fdce92e0f561ed2b5a6ce5f86e43404ff67a18

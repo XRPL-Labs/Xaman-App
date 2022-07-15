@@ -5,13 +5,12 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, ScrollView } from 'react-native';
 
-import Clipboard from '@react-native-community/clipboard';
-
 import { AccountRepository } from '@store/repositories';
 import { AccountTypes } from '@store/types';
 
 import { ConvertCodecAlphabet } from '@common/utils/codec';
 import { Toast, Prompt } from '@common/helpers/interface';
+import { Clipboard } from '@common/helpers/clipboard';
 
 // components
 import { Button, Footer, Icon, Spacer } from '@components/General';

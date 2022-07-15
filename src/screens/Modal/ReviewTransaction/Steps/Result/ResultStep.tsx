@@ -5,10 +5,9 @@
 import React, { Component, Fragment } from 'react';
 import { SafeAreaView, View, Text, Image } from 'react-native';
 
-import Clipboard from '@react-native-community/clipboard';
-
 import { Images } from '@common/helpers/images';
 import { Toast } from '@common/helpers/interface';
+import { Clipboard } from '@common/helpers/clipboard';
 
 // components
 import { Button, Footer, Spacer } from '@components/General';

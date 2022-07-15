@@ -5,11 +5,10 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Image, TouchableWithoutFeedback, LayoutAnimation } from 'react-native';
 
-import Clipboard from '@react-native-community/clipboard';
-
 import { Images } from '@common/helpers/images';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+import { Clipboard } from '@common/helpers/clipboard';
 
 import { ContactRepository, AccountRepository } from '@store/repositories';
 
