@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { View, Text, BackHandler, NativeEventSubscription } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import { HasNotch } from '@common/helpers/device';
+import { HasBottomNotch } from '@common/helpers/device';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens, AppConfig } from '@common/constants';
@@ -124,7 +124,7 @@ class TermOfUseView extends Component<Props, State> {
         const { asModal } = this.props;
         const { isTOSLoaded, shouldShowAgreement } = this.state;
 
-        const paddingBottom = HasNotch() && !shouldShowAgreement ? 20 : 0;
+        const paddingBottom = HasBottomNotch() && !shouldShowAgreement ? 20 : 0;
 
         return (
             <View testID="term-of-use-view" style={[styles.container]}>

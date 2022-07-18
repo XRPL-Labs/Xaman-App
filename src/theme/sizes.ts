@@ -4,7 +4,7 @@
 
 import { Dimensions, Platform, PixelRatio } from 'react-native';
 
-import { HasNotch, GetLayoutInsets } from '@common/helpers/device';
+import { GetLayoutInsets } from '@common/helpers/device';
 
 const { height: screenHeight } = Dimensions.get('screen');
 const { width, height } = Dimensions.get('window');
@@ -17,14 +17,8 @@ const guidelineBaseHeight = 680;
 
 // bottomTabs height
 const tabbarHeight = Platform.select({
-    ios: HasNotch() ? 95 : 50,
+    ios: bottomInset + 50,
     android: 60,
-    default: 0,
-});
-
-const bottomTabsSafeAreaInset = Platform.select({
-    ios: topInset,
-    android: 0,
     default: 0,
 });
 
@@ -33,15 +27,19 @@ const statusBarHeight = topInset;
 
 // in some android devices the screen goes under navigation bar
 // this help's us to add extra padding if necessary
-let bottomStableInset = 0;
-
+let safeAreaBottomInset = 0;
 if (Platform.OS === 'android') {
-    bottomStableInset = Math.floor(topInset + bottomInset - Math.floor(screenHeight - height));
-    if (bottomStableInset < 0) {
-        bottomStableInset = 0;
+    safeAreaBottomInset = Math.floor(topInset + bottomInset - Math.floor(screenHeight - height));
+    if (safeAreaBottomInset < 0) {
+        safeAreaBottomInset = 0;
     }
 } else if (Platform.OS === 'ios') {
-    bottomStableInset = bottomInset;
+    safeAreaBottomInset = bottomInset;
+}
+
+let safeAreaTopInset = 0;
+if (Platform.OS === 'ios') {
+    safeAreaTopInset = topInset;
 }
 
 const Sizes = {
@@ -67,9 +65,9 @@ const Sizes = {
 
     bottomInset,
     topInset,
-    bottomStableInset,
 
-    bottomTabsSafeAreaInset,
+    safeAreaBottomInset,
+    safeAreaTopInset,
 
     padding: 30,
     paddingSml: 20,

@@ -38,14 +38,26 @@ const GetLayoutInsets = (): { top: number; bottom: number } => {
 };
 
 /**
- * Check if device have notch
+ * Check if device have bottom notch
  * @returns boolean
  */
-const HasNotch = (): boolean => {
+const HasBottomNotch = (): boolean => {
+    if (Platform.OS === 'ios') {
+        const { bottom } = GetLayoutInsets();
+        return bottom > 0;
+    }
+    return false;
+};
+
+/**
+ * Check if device have bottom notch
+ * @returns boolean
+ */
+const HasTopNotch = (): boolean => {
     // TODO: check for android devices
     if (Platform.OS === 'ios') {
-        const { top, bottom } = GetLayoutInsets();
-        return top > 0 || bottom > 0;
+        const { top } = GetLayoutInsets();
+        return top > 20;
     }
     return false;
 };
@@ -139,7 +151,8 @@ const GetDeviceUniqueId = (): string => {
 
 /* Export ==================================================================== */
 export {
-    HasNotch,
+    HasBottomNotch,
+    HasTopNotch,
     GetBottomTabScale,
     GetLayoutInsets,
     IsDeviceJailBroken,

@@ -34,7 +34,7 @@ const styles = StyleService.create({
         color: '$textPrimary',
     },
     footer: {
-        paddingBottom: AppSizes.bottomStableInset,
+        paddingBottom: AppSizes.safeAreaBottomInset,
     },
 });
 

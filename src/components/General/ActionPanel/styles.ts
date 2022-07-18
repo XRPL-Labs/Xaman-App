@@ -14,7 +14,7 @@ const styles = StyleService.create({
         shadowRadius: 5,
         shadowOpacity: 0.3,
         padding: 15,
-        paddingBottom: AppSizes.bottomStableInset,
+        paddingBottom: AppSizes.safeAreaBottomInset,
     },
     shadowContent: {
         position: 'absolute',

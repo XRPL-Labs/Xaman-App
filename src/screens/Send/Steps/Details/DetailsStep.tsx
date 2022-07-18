@@ -266,7 +266,7 @@ class DetailsStep extends Component<Props, State> {
         const { currency } = this.context;
 
         if (input === this.amountInput.current && typeof currency === 'string') {
-            return inputHeight + Platform.select({ ios: 10, android: AppSizes.bottomStableInset });
+            return inputHeight + Platform.select({ ios: 10, android: AppSizes.safeAreaBottomInset });
         }
         return 0;
     };

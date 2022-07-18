@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { HasNotch } from '@common/helpers/device';
+import { HasBottomNotch } from '@common/helpers/device';
 
 const styles = StyleSheet.create({
     rtl: {
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollView: {
-        marginBottom: HasNotch() ? 75 : 45,
+        marginBottom: HasBottomNotch() ? 75 : 45,
     },
     bottom: {
         position: 'absolute',

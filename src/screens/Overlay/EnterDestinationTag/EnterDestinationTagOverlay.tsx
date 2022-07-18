@@ -101,7 +101,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                 let offset = KeyboardHeight - bottomView;
 
                 if (Platform.OS === 'android') {
-                    offset += AppSizes.bottomStableInset;
+                    offset += AppSizes.safeAreaBottomInset;
                 }
 
                 if (offset >= 0) {
