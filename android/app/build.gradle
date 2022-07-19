@@ -232,13 +232,15 @@ dependencies {
         implementation jscFlavor
     }
 
-    // Firebase
+    // firebase
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'me.leolin:ShortcutBadger:1.1.22@aar'
-    // Biometric authentication
+    // biometric authentication
     implementation "androidx.biometric:biometric:1.1.0"
-    // qrcode generate dependencies
+    // qrcode generate
     implementation 'com.github.kenglxn.QRGen:android:2.6.0'
+    // blur view
+    implementation 'com.github.Dimezis:BlurView:version-2.0.0'
     // in app purchase
     implementation 'com.android.billingclient:billing:3.0.0'
     // Other

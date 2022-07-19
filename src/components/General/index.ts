@@ -37,3 +37,4 @@ export * from './KeyboardAwareScrollView';
 export * from './ActionPanel';
 export * from './TokenAvatar';
 export * from './ExpandableView';
+export * from './BlurView';

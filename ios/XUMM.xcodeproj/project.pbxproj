@@ -16,6 +16,9 @@
 		A248635D28229379004633C9 /* BiometricModule.m in Sources */ = {isa = PBXBuildFile; fileRef = A248635C28229379004633C9 /* BiometricModule.m */; };
 		A2805CE224D1982400B5552E /* LocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = A2805CE124D1982400B5552E /* LocalNotification.m */; };
 		A28BA8A6282409B600109CC8 /* SecurityProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = A28BA8A5282409B600109CC8 /* SecurityProvider.m */; };
+		A2A9F31428858F45009AE778 /* BlurViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2A9F31328858F45009AE778 /* BlurViewManager.m */; };
+		A2A9F3182885965C009AE778 /* UIView+Blur.m in Sources */ = {isa = PBXBuildFile; fileRef = A2A9F3172885965C009AE778 /* UIView+Blur.m */; };
+		A2A9F31E28859AF4009AE778 /* BlurEffectWithAmount.m in Sources */ = {isa = PBXBuildFile; fileRef = A2A9F31D28859AF4009AE778 /* BlurEffectWithAmount.m */; };
 		A2AFF12E243E79C30007005E /* Proxima Nova Alt Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */; };
 		A2AFF12F243E79C30007005E /* UbuntuMono-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10B243E79C30007005E /* UbuntuMono-BoldItalic.ttf */; };
 		A2AFF130243E79C30007005E /* UbuntuMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10C243E79C30007005E /* UbuntuMono-Bold.ttf */; };
@@ -84,6 +87,12 @@
 		A2805CE324D1984700B5552E /* LocalNotification.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocalNotification.h; sourceTree = "<group>"; };
 		A28BA8A5282409B600109CC8 /* SecurityProvider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SecurityProvider.m; sourceTree = "<group>"; };
 		A28BA8A728240A4500109CC8 /* SecurityProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SecurityProvider.h; sourceTree = "<group>"; };
+		A2A9F31328858F45009AE778 /* BlurViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BlurViewManager.m; sourceTree = "<group>"; };
+		A2A9F31528858FA0009AE778 /* BlurViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BlurViewManager.h; sourceTree = "<group>"; };
+		A2A9F31628859650009AE778 /* UIView+Blur.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+Blur.h"; sourceTree = "<group>"; };
+		A2A9F3172885965C009AE778 /* UIView+Blur.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+Blur.m"; sourceTree = "<group>"; };
+		A2A9F31D28859AF4009AE778 /* BlurEffectWithAmount.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BlurEffectWithAmount.m; sourceTree = "<group>"; };
+		A2A9F31F28859B0B009AE778 /* BlurEffectWithAmount.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BlurEffectWithAmount.h; sourceTree = "<group>"; };
 		A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Alt Thin.otf"; sourceTree = "<group>"; };
 		A2AFF10B243E79C30007005E /* UbuntuMono-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-BoldItalic.ttf"; sourceTree = "<group>"; };
 		A2AFF10C243E79C30007005E /* UbuntuMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-Bold.ttf"; sourceTree = "<group>"; };
@@ -266,6 +275,51 @@
 			path = Biometric;
 			sourceTree = "<group>";
 		};
+		A2A9F31928859A3F009AE778 /* QRCodeView */ = {
+			isa = PBXGroup;
+			children = (
+				A2AFF11E243E79C30007005E /* UIView+QRCode.h */,
+				A2AFF119243E79C30007005E /* QRCode.m */,
+				A2AFF11A243E79C30007005E /* UIView+QRCode.m */,
+				A2AFF11D243E79C30007005E /* QRCode.h */,
+				A2AFF120243E79C30007005E /* QRCodeGenerator */,
+			);
+			path = QRCodeView;
+			sourceTree = "<group>";
+		};
+		A2A9F31A28859A6B009AE778 /* ToastView */ = {
+			isa = PBXGroup;
+			children = (
+				A2AFF11B243E79C30007005E /* UIView+Toast.h */,
+				A2AFF11C243E79C30007005E /* Toast.m */,
+				A2AFF11F243E79C30007005E /* Toast.h */,
+				A2AFF127243E79C30007005E /* UIView+Toast.m */,
+			);
+			path = ToastView;
+			sourceTree = "<group>";
+		};
+		A2A9F31B28859A98009AE778 /* BlurView */ = {
+			isa = PBXGroup;
+			children = (
+				A2A9F31328858F45009AE778 /* BlurViewManager.m */,
+				A2A9F31528858FA0009AE778 /* BlurViewManager.h */,
+				A2A9F31628859650009AE778 /* UIView+Blur.h */,
+				A2A9F3172885965C009AE778 /* UIView+Blur.m */,
+				A2A9F31D28859AF4009AE778 /* BlurEffectWithAmount.m */,
+				A2A9F31F28859B0B009AE778 /* BlurEffectWithAmount.h */,
+			);
+			path = BlurView;
+			sourceTree = "<group>";
+		};
+		A2A9F31C28859AB0009AE778 /* HapticFeedback */ = {
+			isa = PBXGroup;
+			children = (
+				A2D856C228802614003717BC /* HapticFeedback.h */,
+				A2D856C328802622003717BC /* HapticFeedback.m */,
+			);
+			path = HapticFeedback;
+			sourceTree = "<group>";
+		};
 		A2AFF109243E79C30007005E /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -303,17 +357,10 @@
 		A2AFF118243E79C30007005E /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				A2AFF119243E79C30007005E /* QRCode.m */,
-				A2AFF11A243E79C30007005E /* UIView+QRCode.m */,
-				A2AFF11B243E79C30007005E /* UIView+Toast.h */,
-				A2AFF11C243E79C30007005E /* Toast.m */,
-				A2AFF11D243E79C30007005E /* QRCode.h */,
-				A2AFF11E243E79C30007005E /* UIView+QRCode.h */,
-				A2AFF11F243E79C30007005E /* Toast.h */,
-				A2AFF120243E79C30007005E /* QRCodeGenerator */,
-				A2AFF127243E79C30007005E /* UIView+Toast.m */,
-				A2D856C228802614003717BC /* HapticFeedback.h */,
-				A2D856C328802622003717BC /* HapticFeedback.m */,
+				A2A9F31C28859AB0009AE778 /* HapticFeedback */,
+				A2A9F31B28859A98009AE778 /* BlurView */,
+				A2A9F31A28859A6B009AE778 /* ToastView */,
+				A2A9F31928859A3F009AE778 /* QRCodeView */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -709,6 +756,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A248635D28229379004633C9 /* BiometricModule.m in Sources */,
+				A2A9F31428858F45009AE778 /* BlurViewManager.m in Sources */,
 				A2B9D13E2449BAA400259841 /* SharedPreferences.m in Sources */,
 				A20C14202524C8A000686A2A /* AppUpdate.m in Sources */,
 				A2AFF142243E79C30007005E /* Crypto.m in Sources */,
@@ -716,6 +764,7 @@
 				A2AFF143243E79C30007005E /* DeviceUtils.m in Sources */,
 				A2D856C02880166A003717BC /* AppUtils.m in Sources */,
 				A28BA8A6282409B600109CC8 /* SecurityProvider.m in Sources */,
+				A2A9F3182885965C009AE778 /* UIView+Blur.m in Sources */,
 				A20B9293256FCE670066FECA /* Empty.swift in Sources */,
 				A2AFF141243E79C30007005E /* UIView+Toast.m in Sources */,
 				A2AFF13D243E79C30007005E /* Toast.m in Sources */,
@@ -726,6 +775,7 @@
 				A2AFF13F243E79C30007005E /* CIColor+QRCode.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				A2D856C428802622003717BC /* HapticFeedback.m in Sources */,
+				A2A9F31E28859AF4009AE778 /* BlurEffectWithAmount.m in Sources */,
 				A2F4F398288168CB00444302 /* Clipboard.m in Sources */,
 				A2F4F39528802A4600444302 /* UniqueIdProvider.m in Sources */,
 				A2AFF13E243E79C30007005E /* QRCodeGenerator.m in Sources */,
