@@ -3,6 +3,7 @@ package libs.common;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.List;
@@ -27,8 +28,9 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.android.billingclient.api.SkuDetailsResponseListener;
+import com.facebook.react.module.annotations.ReactModule;
 
-
+@ReactModule(name = InAppPurchaseModule.NAME)
 public class InAppPurchaseModule extends ReactContextBaseJavaModule implements PurchasesUpdatedListener {
 
     private static final String TAG = "InAppPurchaseModule";
@@ -53,20 +55,20 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
 
     InAppPurchaseModule(ReactApplicationContext context) {
         super(context);
-
         reactContext = context;
 
         mBillingClient = BillingClient.newBuilder(context)
                 .enablePendingPurchases()
                 .setListener(this)
                 .build();
-
-
     }
 
+    public static final String NAME = "InAppPurchaseModule";
+
+    @NonNull
     @Override
     public String getName() {
-        return "InAppPurchaseModule";
+        return NAME;
     }
 
 
@@ -213,7 +215,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     public void acknowledgePurchase(Purchase purchase) {
         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
             resolveForKey("PURCHASE_PROMISE", purchase.getPurchaseToken());
-            if(!purchase.isAcknowledged()){
+            if (!purchase.isAcknowledged()) {
                 AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
                         .setPurchaseToken(purchase.getPurchaseToken())
                         .build();

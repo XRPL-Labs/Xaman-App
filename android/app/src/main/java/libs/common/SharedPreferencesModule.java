@@ -3,25 +3,28 @@ package libs.common;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.module.annotations.ReactModule;
 
-
+@ReactModule(name = SharedPreferencesModule.NAME)
 public class SharedPreferencesModule extends ReactContextBaseJavaModule {
-    private String preferencesName = "xumm";
-
-    private final ReactApplicationContext reactContext;
+    private final String PREFERENCES_NAME = "xumm";
 
     public SharedPreferencesModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        this.reactContext = reactContext;
     }
 
+    public static final String NAME = "SharedPreferencesModule";
+
+    @NonNull
     @Override
     public String getName() {
-        return "SharedPreferencesModule";
+        return NAME;
     }
 
     @ReactMethod
@@ -43,8 +46,9 @@ public class SharedPreferencesModule extends ReactContextBaseJavaModule {
 
 
     private SharedPreferences getPreferences() {
-        return getReactApplicationContext().getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
+        return getReactApplicationContext().getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
+
     private SharedPreferences.Editor getEditor() {
         return getPreferences().edit();
     }

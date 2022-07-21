@@ -9,16 +9,19 @@ import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.HashMap;
 import java.util.Map;
 
-
+@ReactModule(name = AppUtilsModule.NAME)
 public class AppUtilsModule extends ReactContextBaseJavaModule {
     protected final ReactApplicationContext reactContext;
 
@@ -27,9 +30,12 @@ public class AppUtilsModule extends ReactContextBaseJavaModule {
         this.reactContext = reactContext;
     }
 
+    static final String NAME = "AppUtilsModule";
+
+    @NonNull
     @Override
     public String getName() {
-        return "AppUtilsModule";
+        return NAME;
     }
 
 

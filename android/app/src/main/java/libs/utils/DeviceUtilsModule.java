@@ -1,11 +1,11 @@
 package libs.utils;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Build;
-import android.os.Vibrator;
 import android.view.View;
 import android.view.WindowInsets;
+
+import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -13,6 +13,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.uimanager.PixelUtil;
 
 import java.io.BufferedReader;
@@ -25,6 +26,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+@ReactModule(name = DeviceUtilsModule.NAME)
 public class DeviceUtilsModule extends ReactContextBaseJavaModule {
 
     protected final ReactApplicationContext reactContext;
@@ -34,9 +36,12 @@ public class DeviceUtilsModule extends ReactContextBaseJavaModule {
         this.reactContext = reactContext;
     }
 
+    static final String NAME = "DeviceUtilsModule";
+
+    @NonNull
     @Override
     public String getName() {
-        return "DeviceUtilsModule";
+        return NAME;
     }
 
     /**

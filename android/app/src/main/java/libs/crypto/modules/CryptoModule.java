@@ -17,17 +17,21 @@ import javax.crypto.Mac;
 
 import android.util.Base64;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.module.annotations.ReactModule;
 
 import libs.crypto.encoder.Hex;
 
-public class CryptoModule extends ReactContextBaseJavaModule {
 
+@ReactModule(name = CryptoModule.NAME)
+public class CryptoModule extends ReactContextBaseJavaModule {
     private static final String CIPHER_ALGORITHM = "AES/CBC/PKCS7Padding";
     public static final String HMAC_SHA_256 = "HmacSHA256";
     private static final String KEY_ALGORITHM = "AES";
@@ -36,9 +40,12 @@ public class CryptoModule extends ReactContextBaseJavaModule {
         super(reactContext);
     }
 
+    static final String NAME = "CryptoModule";
+
+    @NonNull
     @Override
     public String getName() {
-        return "CryptoModule";
+        return NAME;
     }
 
     @ReactMethod
@@ -137,7 +144,7 @@ public class CryptoModule extends ReactContextBaseJavaModule {
     public static String bytesToHex(byte[] bytes) {
         final char[] hexArray = "0123456789abcdef".toCharArray();
         char[] hexChars = new char[bytes.length * 2];
-        for ( int j = 0; j < bytes.length; j++ ) {
+        for (int j = 0; j < bytes.length; j++) {
             int v = bytes[j] & 0xFF;
             hexChars[j * 2] = hexArray[v >>> 4];
             hexChars[j * 2 + 1] = hexArray[v & 0x0F];
@@ -145,7 +152,7 @@ public class CryptoModule extends ReactContextBaseJavaModule {
         return new String(hexChars);
     }
 
-    private static String hmac256(String text, String key) throws NoSuchAlgorithmException, InvalidKeyException  {
+    private static String hmac256(String text, String key) throws NoSuchAlgorithmException, InvalidKeyException {
         byte[] contentData = text.getBytes(StandardCharsets.UTF_8);
         byte[] akHexData = Hex.decodeHex(key);
         Mac sha256_HMAC = Mac.getInstance(HMAC_SHA_256);
@@ -154,7 +161,7 @@ public class CryptoModule extends ReactContextBaseJavaModule {
         return bytesToHex(sha256_HMAC.doFinal(contentData));
     }
 
-    final static IvParameterSpec emptyIvSpec = new IvParameterSpec(new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
+    final static IvParameterSpec emptyIvSpec = new IvParameterSpec(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
 
     private static WritableMap encrypt(String data, String key) throws Exception {
         if (data == null || data.length() == 0) {
@@ -182,7 +189,7 @@ public class CryptoModule extends ReactContextBaseJavaModule {
     }
 
     private static String decrypt(String cipherText, String key, String hexIv) throws Exception {
-        if(cipherText == null || cipherText.length() == 0) {
+        if (cipherText == null || cipherText.length() == 0) {
             return null;
         }
         // encrypt key
@@ -204,5 +211,5 @@ public class CryptoModule extends ReactContextBaseJavaModule {
         return bytesToHex(key);
     }
 
-    
+
 }

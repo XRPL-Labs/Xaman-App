@@ -2,21 +2,21 @@ package libs.ui;
 
 import android.app.Activity;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.DisplayMetricsHolder;
 
 
-
+@ReactModule(name = KeyboardModule.NAME)
 public class KeyboardModule extends ReactContextBaseJavaModule {
-    private static final String TAG = "KeyboardModule";
-    private static ReactApplicationContext reactContext;
-
     private static final String KEYBOARD_DID_SHOW_EVENT = "KeyboardShow";
     private static final String KEYBOARD_DID_HIDE_EVENT = "KeyboardHide";
 
@@ -25,9 +25,16 @@ public class KeyboardModule extends ReactContextBaseJavaModule {
 
     KeyboardModule(ReactApplicationContext context) {
         super(context);
-        reactContext = context;
 
         DisplayMetricsHolder.initDisplayMetricsIfNotInitialized(context);
+    }
+
+    public static final String NAME = "KeyboardModule";
+
+    @NonNull
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     void emit(int height) {
@@ -101,13 +108,5 @@ public class KeyboardModule extends ReactContextBaseJavaModule {
                     .emit(event, payload);
         }
     }
-
-
-    @Override
-    public String getName() {
-        return "KeyboardModule";
-    }
-
-
 }
 

@@ -14,12 +14,11 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.bridge.UiThreadUtil;
 
-
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 
-@ReactModule(name = "BiometricModule")
+@ReactModule(name = BiometricModule.NAME)
 public class BiometricModule extends ReactContextBaseJavaModule {
     // constants
     public static final String TYPE_BIOMETRICS = "Biometrics";
@@ -42,14 +41,18 @@ public class BiometricModule extends ReactContextBaseJavaModule {
         mReactContext = reactContext;
     }
 
+    static final String NAME = "BiometricModule";
+
+    @NonNull
     @Override
     public String getName() {
-        return "BiometricModule";
+        return NAME;
     }
 
-    public static void initialise(){
+
+    public static void initialise() {
         // generate key if no key is exist
-        if(!SecurityProvider.isKeyReady()){
+        if (!SecurityProvider.isKeyReady()) {
             SecurityProvider.generateKey();
         }
     }
@@ -140,7 +143,7 @@ public class BiometricModule extends ReactContextBaseJavaModule {
 
             // everything seems fine
             return null;
-        }else{
+        } else {
             if (authResult == BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE) {
                 return ERROR_NOT_SUPPORTED;
             } else if (authResult == BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED) {
@@ -158,7 +161,7 @@ public class BiometricModule extends ReactContextBaseJavaModule {
         String error = getSensorErrors();
 
         // there is an error
-        if(error != null) {
+        if (error != null) {
             promise.reject(error, "");
             return;
         }
@@ -167,7 +170,7 @@ public class BiometricModule extends ReactContextBaseJavaModule {
         // we can do this before authentication but for consonant with iOS we check after auth
         if (SecurityProvider.checkDeviceBiometricChanged()) {
             promise.reject(ERROR_BIOMETRIC_HAS_BEEN_CHANGED, TYPE_BIOMETRICS);
-            return ;
+            return;
         }
 
         // start authentication process
@@ -179,9 +182,9 @@ public class BiometricModule extends ReactContextBaseJavaModule {
         String error = getSensorErrors();
 
         // there is error
-        if(error != null) {
+        if (error != null) {
             promise.reject(error, "");
-        }else{
+        } else {
             // can authorize
             promise.resolve(TYPE_BIOMETRICS);
         }
@@ -196,7 +199,7 @@ public class BiometricModule extends ReactContextBaseJavaModule {
         SecurityProvider.generateKey();
 
         // check if new key is ready
-        if(SecurityProvider.isKeyReady()){
+        if (SecurityProvider.isKeyReady()) {
             promise.resolve(true);
             return;
         }

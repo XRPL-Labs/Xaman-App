@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
@@ -27,26 +29,24 @@ import java.util.ArrayList;
 
 import com.xrpllabs.xumm.R;
 
-@ReactModule(name = PromptModule.NAME)
+@ReactModule(name = ActionSheetModule.NAME)
 public class ActionSheetModule extends ReactContextBaseJavaModule {
-    /* package */ static final String NAME = "ActionSheetAndroid";
-
-    /* package */ static final String KEY_OPTIONS = "options";
-    /* package */ static final String KEY_DESTRUCTIVE_BUTTON_INDEX = "destructiveButtonIndex";
-    /* package */ static final String KEY_USERINTERFACE_STYLE = "userInterfaceStyle";
-
-    /* package */ static final String THEME_LIGHT = "light";
-
+    static final String KEY_OPTIONS = "options";
+    static final String KEY_DESTRUCTIVE_BUTTON_INDEX = "destructiveButtonIndex";
+    static final String KEY_USERINTERFACE_STYLE = "userInterfaceStyle";
+    static final String THEME_LIGHT = "light";
 
     public ActionSheetModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
 
+    static final String NAME = "ActionSheetAndroid";
+
+    @NonNull
     @Override
     public String getName() {
         return NAME;
     }
-
 
     @ReactMethod
     public void showActionSheetWithOptions(final ReadableMap args, final Callback callback) {
@@ -90,7 +90,7 @@ public class ActionSheetModule extends ReactContextBaseJavaModule {
             public View getView(int position, View convertView, ViewGroup parent) {
                 TextView textView = (TextView) super.getView(position, convertView, parent);
                 if (position == finalDestructiveButtonIndex) {
-                    textView.setTextColor(Color.rgb(228,83,68));
+                    textView.setTextColor(Color.rgb(228, 83, 68));
                 } else {
                     if (finalUserInterfaceStyle.equals(THEME_LIGHT)) {
                         textView.setTextColor(Color.BLACK);
@@ -103,9 +103,9 @@ public class ActionSheetModule extends ReactContextBaseJavaModule {
         };
 
         int dialogStyle;
-        if(finalUserInterfaceStyle.equals(THEME_LIGHT)){
+        if (finalUserInterfaceStyle.equals(THEME_LIGHT)) {
             dialogStyle = R.style.DialogStyle;
-        }else{
+        } else {
             dialogStyle = R.style.DialogStyleDark;
         }
 

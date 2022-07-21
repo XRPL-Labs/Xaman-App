@@ -9,20 +9,24 @@ import com.facebook.react.module.annotations.ReactModule;
 
 import static android.provider.Settings.Secure.getString;
 
-@ReactModule(name = "UniqueIdProviderModule")
+import androidx.annotation.NonNull;
+
+@ReactModule(name = UniqueIdProviderModule.NAME)
 public class UniqueIdProviderModule extends ReactContextBaseJavaModule {
-    private final ReactApplicationContext mReactContext;
     private String android_id;
 
     public UniqueIdProviderModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        mReactContext = reactContext;
+
         android_id = null;
     }
 
+    static final String NAME = "UniqueIdProviderModule";
+
+    @NonNull
     @Override
     public String getName() {
-        return "UniqueIdProviderModule";
+        return NAME;
     }
 
     @ReactMethod(isBlockingSynchronousMethod = true)

@@ -26,25 +26,22 @@ import javax.annotation.Nullable;
 @ReactModule(name = PromptModule.NAME)
 public class PromptModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
-    /* package */ static final String FRAGMENT_TAG = "react.prompt.PromptModule";
+    static final String FRAGMENT_TAG = "react.prompt.PromptModule";
+    static final String ACTION_BUTTON_CLICKED = "buttonClicked";
+    static final String ACTION_DISMISSED = "dismissed";
+    static final String KEY_TITLE = "title";
+    static final String KEY_MESSAGE = "message";
+    static final String KEY_BUTTON_POSITIVE = "buttonPositive";
+    static final String KEY_BUTTON_NEGATIVE = "buttonNegative";
+    static final String KEY_BUTTON_NEUTRAL = "buttonNeutral";
+    static final String KEY_ITEMS = "items";
+    static final String KEY_CANCELABLE = "cancelable";
+    static final String KEY_TYPE = "type";
+    static final String KEY_STYLE = "style";
+    static final String KEY_DEFAULT_VALUE = "defaultValue";
+    static final String KEY_PLACEHOLDER = "placeholder";
 
-    /* package */ static final String NAME = "PromptAndroid";
-
-    /* package */ static final String ACTION_BUTTON_CLICKED = "buttonClicked";
-    /* package */ static final String ACTION_DISMISSED = "dismissed";
-    /* package */ static final String KEY_TITLE = "title";
-    /* package */ static final String KEY_MESSAGE = "message";
-    /* package */ static final String KEY_BUTTON_POSITIVE = "buttonPositive";
-    /* package */ static final String KEY_BUTTON_NEGATIVE = "buttonNegative";
-    /* package */ static final String KEY_BUTTON_NEUTRAL = "buttonNeutral";
-    /* package */ static final String KEY_ITEMS = "items";
-    /* package */ static final String KEY_CANCELABLE = "cancelable";
-    /* package */ static final String KEY_TYPE = "type";
-    /* package */ static final String KEY_STYLE = "style";
-    /* package */ static final String KEY_DEFAULT_VALUE = "defaultValue";
-    /* package */ static final String KEY_PLACEHOLDER = "placeholder";
-
-    /* package */ static final Map<String, Object> CONSTANTS = MapBuilder.<String, Object>of(
+    static final Map<String, Object> CONSTANTS = MapBuilder.<String, Object>of(
             ACTION_BUTTON_CLICKED, ACTION_BUTTON_CLICKED,
             ACTION_DISMISSED, ACTION_DISMISSED,
             KEY_BUTTON_POSITIVE, DialogInterface.BUTTON_POSITIVE,
@@ -56,6 +53,8 @@ public class PromptModule extends ReactContextBaseJavaModule implements Lifecycl
     public PromptModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
+
+    static final String NAME = "PromptAndroid";
 
     @Override
     public String getName() {

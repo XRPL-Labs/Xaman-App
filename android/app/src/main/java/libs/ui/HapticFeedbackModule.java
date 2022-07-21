@@ -3,11 +3,15 @@ package libs.ui;
 import android.content.Context;
 import android.os.Vibrator;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.module.annotations.ReactModule;
 
 
+@ReactModule(name = HapticFeedbackModule.NAME)
 public class HapticFeedbackModule extends ReactContextBaseJavaModule {
     private static ReactApplicationContext reactContext;
 
@@ -16,12 +20,15 @@ public class HapticFeedbackModule extends ReactContextBaseJavaModule {
         reactContext = context;
     }
 
+    static final String NAME = "HapticFeedbackModule";
+
+    @NonNull
     @Override
     public String getName() {
-        return "HapticFeedbackModule";
+        return NAME;
     }
 
-    // From:
+    // Licence From:
     // https://github.com/junina-de/react-native-haptic-feedback
     @ReactMethod
     public void trigger(String type) {
