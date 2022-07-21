@@ -38,9 +38,8 @@ class BlurViewModule extends ViewGroupManager<BlurView> {
         ViewGroup rootView = decorView.findViewById(android.R.id.content);
         Drawable windowBackground = decorView.getBackground();
 
-        blurView.setupWith(rootView)
+        blurView.setupWith(rootView, new RenderScriptBlur(ctx))
                 .setFrameClearDrawable(windowBackground)
-                .setBlurAlgorithm(new RenderScriptBlur(ctx))
                 .setBlurRadius(defaultBlurAmount)
                 .setBlurAutoUpdate(true);
         return blurView;

@@ -240,7 +240,7 @@ dependencies {
     // qrcode generate
     implementation 'com.github.kenglxn.QRGen:android:2.6.0'
     // blur view
-    implementation 'com.github.Dimezis:BlurView:version-2.0.0'
+    implementation 'com.github.Dimezis:BlurView:version-2.0.2'
     // in app purchase
     implementation 'com.android.billingclient:billing:3.0.0'
     // Other
