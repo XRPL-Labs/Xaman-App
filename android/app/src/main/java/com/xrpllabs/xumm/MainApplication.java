@@ -6,7 +6,6 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.modules.network.OkHttpClientProvider;
 
 // Local Libs
-import libs.crypto.modules.CryptoPackage;
 import libs.security.SecurityPackage;
 import libs.ui.UIPackage;
 import libs.notification.LocalNotificationPackage;
@@ -45,7 +44,6 @@ public class MainApplication extends NavigationApplication {
                     List<ReactPackage> packages = new PackageList(this).getPackages();
                     // Local Libs
                     packages.add(new UtilsPackage());
-                    packages.add(new CryptoPackage());
                     packages.add(new UIPackage());
                     packages.add(new LocalNotificationPackage());
                     packages.add(new CommonPackage());

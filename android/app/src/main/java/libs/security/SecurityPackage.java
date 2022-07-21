@@ -10,14 +10,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import libs.security.crypto.CryptoModule;
 import libs.security.authentication.Biometric.BiometricModule;
 import libs.security.providers.UniqueIdProviderModule;
-
 
 public class SecurityPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         return Arrays.<NativeModule>asList(
+                new CryptoModule(reactContext),
                 new BiometricModule(reactContext),
                 new UniqueIdProviderModule(reactContext)
         );

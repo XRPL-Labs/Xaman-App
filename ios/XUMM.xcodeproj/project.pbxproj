@@ -347,7 +347,6 @@
 				A266857724EEAD42000430B7 /* Notification */,
 				A2B9D13B2449B81800259841 /* Common */,
 				A2AFF118243E79C30007005E /* UI */,
-				A2AFF128243E79C30007005E /* Crypto */,
 				A2AFF12B243E79C30007005E /* Utils */,
 			);
 			name = Libs;
@@ -416,6 +415,7 @@
 		A2F4F390288029BD00444302 /* Security */ = {
 			isa = PBXGroup;
 			children = (
+				A2AFF128243E79C30007005E /* Crypto */,
 				A2F4F391288029DE00444302 /* Providers */,
 				A248635B28229347004633C9 /* Authentication */,
 			);

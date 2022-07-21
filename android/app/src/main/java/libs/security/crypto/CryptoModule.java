@@ -1,4 +1,4 @@
-package libs.crypto.modules;
+package libs.security.crypto;
 
 import java.security.SecureRandom;
 import java.util.UUID;
@@ -27,7 +27,7 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.module.annotations.ReactModule;
 
-import libs.crypto.encoder.Hex;
+import libs.security.crypto.encoder.Hex;
 
 
 @ReactModule(name = CryptoModule.NAME)

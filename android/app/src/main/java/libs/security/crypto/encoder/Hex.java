@@ -1,4 +1,4 @@
-package libs.crypto.encoder;
+package libs.security.crypto.encoder;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;

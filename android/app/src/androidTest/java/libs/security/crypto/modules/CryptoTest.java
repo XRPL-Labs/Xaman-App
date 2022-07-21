@@ -1,4 +1,4 @@
-package libs.crypto.modules;
+package libs.security.crypto.modules;
 
 import android.util.Log;
 
@@ -8,6 +8,8 @@ import java.lang.reflect.Method;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import libs.security.crypto.CryptoModule;
 
 public class CryptoTest {
 
