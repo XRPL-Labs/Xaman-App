@@ -7,7 +7,6 @@ import moment from 'moment-timezone';
 import React, { Component } from 'react';
 import { View, Text, BackHandler, Alert, InteractionManager, Linking, NativeEventSubscription } from 'react-native';
 import VeriffSdk from '@veriff/react-native-sdk';
-import { WebView } from 'react-native-webview';
 import { StringType } from 'xumm-string-decode';
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
 
@@ -29,7 +28,7 @@ import { AccessLevels, NodeChain } from '@store/types';
 
 import { SocketService, BackendService, PushNotificationsService, NavigationService } from '@services';
 
-import { Button, Spacer, LoadingIndicator } from '@components/General';
+import { WebView, Button, Spacer, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
@@ -74,9 +73,9 @@ export enum XAppMethods {
 class XAppBrowserModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.XAppBrowser;
 
-    private webView: WebView;
     private backHandler: NativeEventSubscription;
     private lastMessageReceived: number;
+    private readonly webView: React.RefObject<WebView>;
 
     static options() {
         return {
@@ -97,6 +96,8 @@ class XAppBrowserModal extends Component<Props, State> {
             coreSettings: CoreRepository.getSettings(),
             appVersionCode: GetAppVersionCode(),
         };
+
+        this.webView = React.createRef();
 
         this.backHandler = undefined;
 
@@ -134,8 +135,8 @@ class XAppBrowserModal extends Component<Props, State> {
 
     sendEvent = (event: any) => {
         setTimeout(() => {
-            if (this.webView) {
-                this.webView.postMessage(JSON.stringify(event));
+            if (this.webView.current) {
+                this.webView.current.postMessage(JSON.stringify(event));
             }
         }, 250);
     };
@@ -513,17 +514,13 @@ class XAppBrowserModal extends Component<Props, State> {
     renderXApp = () => {
         return (
             <WebView
-                ref={(r) => {
-                    this.webView = r;
-                }}
+                ref={this.webView}
                 containerStyle={styles.webViewContainer}
                 startInLoadingState
                 renderLoading={this.renderLoading}
                 source={{ uri: this.getUrl() }}
                 onMessage={this.onMessage}
                 userAgent={this.getUserAgent()}
-                androidHardwareAccelerationDisabled={false}
-                cacheMode="LOAD_NO_CACHE"
             />
         );
     };

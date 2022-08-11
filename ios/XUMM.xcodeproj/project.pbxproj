@@ -19,6 +19,9 @@
 		A2A9F31428858F45009AE778 /* BlurViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2A9F31328858F45009AE778 /* BlurViewManager.m */; };
 		A2A9F3182885965C009AE778 /* UIView+Blur.m in Sources */ = {isa = PBXBuildFile; fileRef = A2A9F3172885965C009AE778 /* UIView+Blur.m */; };
 		A2A9F31E28859AF4009AE778 /* BlurEffectWithAmount.m in Sources */ = {isa = PBXBuildFile; fileRef = A2A9F31D28859AF4009AE778 /* BlurEffectWithAmount.m */; };
+		A2A9F32728A12C4C009AE778 /* RNCWKProcessPoolManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2A9F32128A12C4C009AE778 /* RNCWKProcessPoolManager.m */; };
+		A2A9F32828A12C4C009AE778 /* RNCWebViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2A9F32328A12C4C009AE778 /* RNCWebViewManager.m */; };
+		A2A9F32928A12C4C009AE778 /* RNCWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = A2A9F32428A12C4C009AE778 /* RNCWebView.m */; };
 		A2AFF12E243E79C30007005E /* Proxima Nova Alt Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */; };
 		A2AFF12F243E79C30007005E /* UbuntuMono-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10B243E79C30007005E /* UbuntuMono-BoldItalic.ttf */; };
 		A2AFF130243E79C30007005E /* UbuntuMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10C243E79C30007005E /* UbuntuMono-Bold.ttf */; };
@@ -93,6 +96,12 @@
 		A2A9F3172885965C009AE778 /* UIView+Blur.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+Blur.m"; sourceTree = "<group>"; };
 		A2A9F31D28859AF4009AE778 /* BlurEffectWithAmount.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BlurEffectWithAmount.m; sourceTree = "<group>"; };
 		A2A9F31F28859B0B009AE778 /* BlurEffectWithAmount.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BlurEffectWithAmount.h; sourceTree = "<group>"; };
+		A2A9F32128A12C4C009AE778 /* RNCWKProcessPoolManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCWKProcessPoolManager.m; sourceTree = "<group>"; };
+		A2A9F32228A12C4C009AE778 /* RNCWebViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCWebViewManager.h; sourceTree = "<group>"; };
+		A2A9F32328A12C4C009AE778 /* RNCWebViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCWebViewManager.m; sourceTree = "<group>"; };
+		A2A9F32428A12C4C009AE778 /* RNCWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCWebView.m; sourceTree = "<group>"; };
+		A2A9F32528A12C4C009AE778 /* RNCWKProcessPoolManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCWKProcessPoolManager.h; sourceTree = "<group>"; };
+		A2A9F32628A12C4C009AE778 /* RNCWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCWebView.h; sourceTree = "<group>"; };
 		A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Alt Thin.otf"; sourceTree = "<group>"; };
 		A2AFF10B243E79C30007005E /* UbuntuMono-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-BoldItalic.ttf"; sourceTree = "<group>"; };
 		A2AFF10C243E79C30007005E /* UbuntuMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-Bold.ttf"; sourceTree = "<group>"; };
@@ -320,6 +329,19 @@
 			path = HapticFeedback;
 			sourceTree = "<group>";
 		};
+		A2A9F32028A12C03009AE778 /* Webview */ = {
+			isa = PBXGroup;
+			children = (
+				A2A9F32628A12C4C009AE778 /* RNCWebView.h */,
+				A2A9F32428A12C4C009AE778 /* RNCWebView.m */,
+				A2A9F32228A12C4C009AE778 /* RNCWebViewManager.h */,
+				A2A9F32328A12C4C009AE778 /* RNCWebViewManager.m */,
+				A2A9F32528A12C4C009AE778 /* RNCWKProcessPoolManager.h */,
+				A2A9F32128A12C4C009AE778 /* RNCWKProcessPoolManager.m */,
+			);
+			path = Webview;
+			sourceTree = "<group>";
+		};
 		A2AFF109243E79C30007005E /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -343,6 +365,7 @@
 		A2AFF117243E79C30007005E /* Libs */ = {
 			isa = PBXGroup;
 			children = (
+				A2A9F32028A12C03009AE778 /* Webview */,
 				A2F4F390288029BD00444302 /* Security */,
 				A266857724EEAD42000430B7 /* Notification */,
 				A2B9D13B2449B81800259841 /* Common */,
@@ -772,14 +795,17 @@
 				A2805CE224D1982400B5552E /* LocalNotification.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				A2AFF13B243E79C30007005E /* QRCode.m in Sources */,
+				A2A9F32728A12C4C009AE778 /* RNCWKProcessPoolManager.m in Sources */,
 				A2AFF13F243E79C30007005E /* CIColor+QRCode.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				A2D856C428802622003717BC /* HapticFeedback.m in Sources */,
 				A2A9F31E28859AF4009AE778 /* BlurEffectWithAmount.m in Sources */,
 				A2F4F398288168CB00444302 /* Clipboard.m in Sources */,
 				A2F4F39528802A4600444302 /* UniqueIdProvider.m in Sources */,
+				A2A9F32828A12C4C009AE778 /* RNCWebViewManager.m in Sources */,
 				A2AFF13E243E79C30007005E /* QRCodeGenerator.m in Sources */,
 				A2AFF140243E79C30007005E /* NSString+Utils.m in Sources */,
+				A2A9F32928A12C4C009AE778 /* RNCWebView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,11 +7,12 @@ import com.facebook.react.modules.network.OkHttpClientProvider;
 
 // Local Libs
 import libs.security.SecurityPackage;
-import libs.ui.UIPackage;
 import libs.notification.LocalNotificationPackage;
 import libs.common.CommonPackage;
 import libs.common.HTTPClientFactory;
+import libs.webview.WebViewPackage;
 import libs.utils.UtilsPackage;
+import libs.ui.UIPackage;
 
 // External Dependencies
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -48,6 +49,7 @@ public class MainApplication extends NavigationApplication {
                     packages.add(new LocalNotificationPackage());
                     packages.add(new CommonPackage());
                     packages.add(new SecurityPackage());
+                    packages.add(new WebViewPackage());
                     return packages;
                 }
             };

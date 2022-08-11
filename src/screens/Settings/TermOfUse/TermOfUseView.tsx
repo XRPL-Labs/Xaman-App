@@ -4,7 +4,6 @@
 import { isNumber } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, BackHandler, NativeEventSubscription } from 'react-native';
-import { WebView } from 'react-native-webview';
 
 import { HasBottomNotch } from '@common/helpers/device';
 import { Navigator } from '@common/helpers/navigator';
@@ -14,7 +13,7 @@ import { AppScreens, AppConfig } from '@common/constants';
 import { ProfileRepository, CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 
-import { Header, Footer, Spacer, Button, LoadingIndicator } from '@components/General';
+import { WebView, Header, Footer, Spacer, Button, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
@@ -155,7 +154,6 @@ class TermOfUseView extends Component<Props, State> {
                     }}
                     renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                     source={{ uri: this.getURI(), headers: this.getHeaders() }}
-                    androidHardwareAccelerationDisabled={false}
                 />
 
                 {shouldShowAgreement && (
