@@ -26,7 +26,7 @@ export default {
         proxy: 'wss://custom-node.xrpl-labs.com',
         main: ['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'],
         test: ['wss://testnet.xrpl-labs.com', 'wss://s.altnet.rippletest.net:51233'],
-        dev: ['wss://s.devnet.rippletest.net:51233'],
+        dev: ['wss://s.devnet.rippletest.net:51233', 'wss://xls20-sandbox.rippletest.net:51233'],
         deprecated: ['wss://xrpl.ws'],
     },
 
