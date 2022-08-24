@@ -39,6 +39,7 @@ export interface MetaType {
     return_url_web?: string;
     custom_instruction?: string;
     signers?: string[];
+    pathfinding?: boolean;
 }
 
 export interface PayloadReferenceType {

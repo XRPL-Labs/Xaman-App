@@ -1,4 +1,4 @@
-import { AmountType } from './parser/types';
+import { AmountType, LedgerAmount } from './parser/types';
 
 export enum TransactionTypes {
     Payment = 'Payment',
@@ -322,4 +322,32 @@ export interface NFTokenOfferLedgerEntry {
     NFTokenOfferNode: string;
     PreviousTxnID: string;
     PreviousTxnLgrSeq: number;
+}
+
+interface PathStep {
+    account?: string;
+    currency?: string;
+    issuer?: string;
+}
+
+export type Path = PathStep[];
+
+export interface PathOption {
+    paths_computed: Path[];
+    source_amount: LedgerAmount;
+}
+
+export interface RipplePathFindResponse {
+    error?: string;
+    result: {
+        id?: number | string;
+        alternatives: PathOption[];
+        destination_account: string;
+        destination_currencies: string[];
+        destination_amount: LedgerAmount;
+        full_reply?: boolean;
+        ledger_current_index?: number;
+        source_account: string;
+        validated: boolean;
+    };
 }

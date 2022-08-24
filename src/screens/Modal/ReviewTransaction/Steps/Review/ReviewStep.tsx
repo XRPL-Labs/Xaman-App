@@ -184,6 +184,7 @@ class ReviewStep extends Component<Props, State> {
         return (
             <>
                 <Template
+                    isPathFinding={payload.isPathFinding()}
                     source={source}
                     transaction={transaction}
                     canOverride={!payload.isMultiSign()}

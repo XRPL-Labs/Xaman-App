@@ -10,13 +10,14 @@ import { CoreRepository } from '@store/repositories';
 import LedgerExchange, { MarketDirection } from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
+import { PathOption } from '@common/libs/ledger/types';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { AmountInput, AmountText, Button, InfoMessage, Spacer } from '@components/General';
 import { AmountValueType } from '@components/General/AmountInput';
-import { RecipientElement } from '@components/Modules';
+import { RecipientElement, PathFindingPicker } from '@components/Modules';
 
 import { Toast } from '@common/helpers/interface';
 
@@ -27,6 +28,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
+    isPathFinding: boolean;
     transaction: Payment;
     canOverride: boolean;
     forceRender: () => void;
@@ -48,6 +50,7 @@ export interface State {
     shouldShowIssuerFee: boolean;
     isLoadingIssuerFee: boolean;
     issuerFee: number;
+    selectedPath: PathOption;
 }
 
 /* Component ==================================================================== */
@@ -67,7 +70,8 @@ class PaymentTemplate extends Component<Props, State> {
             currencyName: transaction.Amount?.currency ? NormalizeCurrencyCode(transaction.Amount.currency) : 'XRP',
             destinationDetails: undefined,
             isPartialPayment: false,
-            shouldCheckForConversation: !transaction.SendMax && props.canOverride,
+            // shouldCheckForConversation: !transaction.SendMax && props.canOverride,
+            shouldCheckForConversation: !transaction.SendMax && props.canOverride && !props.isPathFinding,
             exchangeRate: undefined,
             xrpRoundedUp: undefined,
             currencyRate: undefined,
@@ -75,6 +79,7 @@ class PaymentTemplate extends Component<Props, State> {
             shouldShowIssuerFee: false,
             isLoadingIssuerFee: false,
             issuerFee: 0,
+            selectedPath: undefined,
         };
 
         this.amountInput = React.createRef();
@@ -319,6 +324,22 @@ class PaymentTemplate extends Component<Props, State> {
         }
     };
 
+    onPathSelect = (path: PathOption) => {
+        const { transaction } = this.props;
+
+        if (path) {
+            transaction.SendMax = path.source_amount;
+            transaction.Paths = path.paths_computed;
+        } else {
+            transaction.SendMax = undefined;
+            transaction.Paths = undefined;
+        }
+
+        this.setState({
+            selectedPath: path,
+        });
+    };
+
     renderAmountRate = () => {
         const { amount, isLoadingRate, currencyRate } = this.state;
 
@@ -348,8 +369,9 @@ class PaymentTemplate extends Component<Props, State> {
     };
 
     render() {
-        const { transaction } = this.props;
+        const { transaction, isPathFinding } = this.props;
         const {
+            account,
             isLoading,
             isPartialPayment,
             exchangeRate,
@@ -361,6 +383,7 @@ class PaymentTemplate extends Component<Props, State> {
             shouldShowIssuerFee,
             isLoadingIssuerFee,
             issuerFee,
+            selectedPath,
         } = this.state;
 
         return (
@@ -455,7 +478,7 @@ class PaymentTemplate extends Component<Props, State> {
                     {this.renderAmountRate()}
                 </View>
 
-                {transaction.SendMax && !isPartialPayment && (
+                {transaction.SendMax && !isPartialPayment && !selectedPath && (
                     <>
                         <Text style={[styles.label]}>{Localize.t('global.sendMax')}</Text>
                         <View style={[styles.contentBox]}>
@@ -498,6 +521,18 @@ class PaymentTemplate extends Component<Props, State> {
                         <View style={[styles.contentBox]}>
                             <Text style={styles.value}>{transaction.InvoiceID}</Text>
                         </View>
+                    </>
+                )}
+
+                {isPathFinding && (
+                    <>
+                        <Text style={[styles.label]}>Pay with</Text>
+                        <PathFindingPicker
+                            source={account}
+                            destination={transaction.Destination.address}
+                            amount={transaction.Amount}
+                            onSelect={this.onPathSelect}
+                        />
                     </>
                 )}
             </>

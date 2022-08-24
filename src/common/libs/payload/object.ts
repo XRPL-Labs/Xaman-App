@@ -285,6 +285,10 @@ export class Payload {
         return this.getTransactionType() === PseudoTransactionTypes.SignIn;
     };
 
+    isPathFinding = (): boolean => {
+        return !!this.meta.pathfinding;
+    };
+
     /**
      * Get transaction
      */

@@ -246,6 +246,10 @@ class Payment extends BaseTransaction {
         return get(this, 'tx.Paths', undefined);
     }
 
+    set Paths(path: Array<any>) {
+        set(this, 'tx.Paths', path);
+    }
+
     validate = (): Promise<void> => {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
