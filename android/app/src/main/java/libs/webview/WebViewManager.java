@@ -1,7 +1,6 @@
 package libs.webview;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -49,8 +48,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
-import androidx.webkit.WebSettingsCompat;
-import androidx.webkit.WebViewFeature;
 
 import com.facebook.common.logging.FLog;
 
@@ -494,12 +491,12 @@ public class WebViewManager extends SimpleViewManager<WebView> {
         public void onPageStarted(WebView webView, String url, Bitmap favicon) {
             super.onPageStarted(webView, url, favicon);
 
+            mLastLoadFailed = false;
+
             WebChromeClient webChromeClient = ((RNCWebView) webView).getWebChromeClient();
             if (webChromeClient instanceof RNCWebChromeClient) {
                 ((RNCWebChromeClient) webChromeClient).blockJsDuringLoading = true;
             }
-
-            mLastLoadFailed = true;
 
             ((RNCWebView) webView).dispatchEvent(
                     webView,
