@@ -38,7 +38,7 @@ export default StyleService.create({
     currencyBalance: {
         fontSize: AppFonts.p.size,
         fontFamily: AppFonts.base.familyMonoBold,
-        color: 'textPrimary',
+        color: '$textPrimary',
     },
     dot: {
         height: 26,

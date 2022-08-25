@@ -1,4 +1,4 @@
-import { isEqual } from 'lodash';
+import { isEqual, find, flatMap } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
@@ -68,16 +68,32 @@ class PathFindingItem extends Component<Props> {
     };
 
     renderIOU = (item: PathOption) => {
-        const { selected } = this.props;
+        const { selected, amount } = this.props;
         const { source_amount, paths_computed } = item;
 
-        // check for vetted currency details
-        const currency = CurrencyRepository.findOne({
-            issuer: paths_computed[0][0].account,
-            currency: source_amount.currency,
-        });
-
         let counterParty;
+        let currency;
+        let issuer;
+
+        if (Array.isArray(paths_computed) && paths_computed.length === 0 && typeof amount === 'object') {
+            issuer = amount.issuer;
+        } else {
+            issuer = find(flatMap(paths_computed), (o) => {
+                return o.type === 1;
+            });
+
+            if (issuer) {
+                issuer = issuer.account;
+            }
+        }
+
+        if (issuer) {
+            // check for vetted currency details
+            currency = CurrencyRepository.findOne({
+                issuer,
+                currency: source_amount.currency,
+            });
+        }
 
         if (currency) {
             const c = currency.linkingObjects('CounterParty', 'currencies');
@@ -132,10 +148,13 @@ class PathFindingItem extends Component<Props> {
         // XRP
         if (typeof source_amount === 'string') {
             return this.renderXRP(item);
+        } else if (typeof source_amount === 'object') {
+            return this.renderIOU(item);
+        } else {
+            console.log(item);
         }
-        // IOU
-        // @ts-ignore
-        return this.renderIOU(item);
+
+        return null;
     }
 }
 

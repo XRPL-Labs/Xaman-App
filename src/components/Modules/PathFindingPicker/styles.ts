@@ -1,4 +1,5 @@
 import StyleService from '@services/StyleService';
+import { AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
 export default StyleService.create({

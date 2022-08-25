@@ -139,13 +139,16 @@ class PathFindingPicker extends Component<Props, State> {
     };
 
     renderItem = (item: PathOption): React.ReactElement => {
+        const { amount } = this.props;
         const { selectedItem } = this.state;
 
         const { source_amount } = item;
         const key = typeof source_amount === 'string' ? 'XRP' : `${source_amount.issuer}:${source_amount.currency}`;
         const selected = isEqual(item, selectedItem);
 
-        return <PathFindingItem key={key} onPress={this.onItemSelect} item={item} selected={selected} />;
+        return (
+            <PathFindingItem amount={amount} key={key} onPress={this.onItemSelect} item={item} selected={selected} />
+        );
     };
 
     render() {
