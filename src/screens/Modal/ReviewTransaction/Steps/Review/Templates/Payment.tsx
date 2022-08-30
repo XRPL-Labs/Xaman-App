@@ -329,7 +329,11 @@ class PaymentTemplate extends Component<Props, State> {
 
         if (path) {
             transaction.SendMax = path.source_amount;
-            transaction.Paths = path.paths_computed;
+            if (path.paths_computed.length === 0) {
+                transaction.Paths = undefined;
+            } else {
+                transaction.Paths = path.paths_computed;
+            }
         } else {
             transaction.SendMax = undefined;
             transaction.Paths = undefined;
