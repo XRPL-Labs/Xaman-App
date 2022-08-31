@@ -22,7 +22,7 @@ type PaymentOptions = {
 };
 
 /* Constants ==================================================================== */
-const RESOLVE_AFTER_SECS = 5000; // seconds before returning the data
+const RESOLVE_AFTER_SECS = 20000; // seconds before returning the data
 const EXPIRE_AFTER_SECS = 60000; // seconds to expire the options
 
 /* Class ==================================================================== */
@@ -34,6 +34,7 @@ class LedgerPathFinding extends EventEmitter {
     private paymentOptions: PaymentOptions;
     private resolveTimeout: NodeJS.Timeout;
     private expireTimeout: NodeJS.Timeout;
+    private resolver: (value: PathOption[] | PromiseLike<PathOption[]>) => void;
 
     constructor(amount: LedgerAmount, source: string, destination: string) {
         super();
@@ -49,8 +50,8 @@ class LedgerPathFinding extends EventEmitter {
         this.paymentOptions = {};
     }
 
-    private handlePathFindEvent = (result: { alternatives: PathOption[]; id: string }) => {
-        const { alternatives, id } = result;
+    private handlePathFindEvent = (result: { alternatives: PathOption[]; id: string; full_reply?: boolean }) => {
+        const { alternatives, full_reply, id } = result;
 
         // check if the data is coming for this request
         if (id !== this.requestId) {
@@ -58,7 +59,7 @@ class LedgerPathFinding extends EventEmitter {
         }
 
         // parse the options
-        this.handlePathOptions(alternatives);
+        this.handlePathOptions(alternatives, full_reply);
     };
 
     private subscribePathFind = () => {
@@ -71,7 +72,7 @@ class LedgerPathFinding extends EventEmitter {
         SocketService.offEvent('path', this.handlePathFindEvent);
     };
 
-    private handlePathOptions = (options: PathOption[]) => {
+    private handlePathOptions = (options: PathOption[], shouldResolve?: boolean) => {
         options.forEach((option) => {
             const { source_amount } = option;
 
@@ -81,6 +82,10 @@ class LedgerPathFinding extends EventEmitter {
                 this.paymentOptions[`${source_amount.issuer}:${source_amount.currency}`] = option;
             }
         });
+
+        if (shouldResolve) {
+            this.onRequestResolve();
+        }
     };
 
     onRequestExpire = () => {
@@ -92,6 +97,15 @@ class LedgerPathFinding extends EventEmitter {
     };
 
     onRequestResolve = () => {
+        // already resolved
+        if (!this.resolver) {
+            return;
+        }
+
+        // resolve
+        this.resolver(flatMap(this.paymentOptions));
+        this.resolver = undefined;
+
         // cancel path finding request and unsubscribe from events
         this.cancel();
         // set the timeout for expiry
@@ -101,7 +115,7 @@ class LedgerPathFinding extends EventEmitter {
         this.expireTimeout = setTimeout(this.onRequestExpire, EXPIRE_AFTER_SECS);
     };
 
-    waitForResult = (resolver: (value: PathOption[] | PromiseLike<PathOption[]>) => void) => {
+    startResolveTimeout = () => {
         // clear timeouts if any exist
         if (this.resolveTimeout) {
             clearTimeout(this.resolveTimeout);
@@ -109,7 +123,6 @@ class LedgerPathFinding extends EventEmitter {
 
         // wait for seconds for the events to catch up
         this.resolveTimeout = setTimeout(() => {
-            resolver(flatMap(this.paymentOptions));
             this.onRequestResolve();
         }, RESOLVE_AFTER_SECS);
     };
@@ -139,8 +152,10 @@ class LedgerPathFinding extends EventEmitter {
                     // subscribe to changes
                     this.subscribePathFind();
 
+                    this.resolver = resolve;
+
                     // wait for result from event and resolve after couple of seconds
-                    this.waitForResult(resolve);
+                    this.startResolveTimeout();
                 })
                 .catch((e: any) => {
                     reject(e);
