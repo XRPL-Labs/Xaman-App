@@ -50,11 +50,6 @@ RCT_EXPORT_METHOD(createVault:(NSString *)vaultName
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
   
-  
-  
-  NSError *errorw;
-  BOOL result2 = [Keychain deleteItem:vaultName error:&errorw];
-  
   // check if the vault already exist, we don't want to overwrite the existing vault
   // get the item from storage
   NSError *error;
