@@ -5,147 +5,129 @@
  *
  */
 
-import * as Keychain from 'react-native-keychain';
-
-import { AES, randomKey } from '@common/libs/crypto';
+import { NativeModules } from 'react-native';
 import { HexEncoding } from '@common/utils/string';
 
 import LoggerService from '@services/LoggerService';
 
-/* Types ==================================================================== */
-export interface VaultEntry {
-    iv: string;
-    cipher: string;
-}
+/* Module ==================================================================== */
+const { VaultManagerModule } = NativeModules;
 
 /* Logger ==================================================================== */
 const logger = LoggerService.createLogger('Vault');
 
-const options = {
-    accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
-    // NOTE: Items with this attribute do not migrate to a new device.
-};
-
 /* Lib ==================================================================== */
 const Vault = {
     /**
-     * Generate Secret Vault for storing the seed/secrets
+     * Generate/Store Vault
      */
     create: async (name: string, entry: string, key: string): Promise<boolean> => {
-        const { iv, cipher } = await AES.encrypt(entry, key);
-        return Vault.save(name, { iv, cipher });
+        return VaultManagerModule.createVault(name, entry, key);
     },
 
     /**
-     *  Store Secret Box in keychain under hashed key
-     */
-    save: async (name: string, entry: VaultEntry): Promise<boolean> => {
-        return Keychain.setInternetCredentials(name, entry.iv, entry.cipher, options)
-            .then((): boolean => true)
-            .catch((): boolean => false);
-    },
-
-    /**
-     *  Retrieve Vault & Nonce from keychain
-     */
-    retrieve: async (name: string): Promise<VaultEntry> => {
-        return Keychain.getInternetCredentials(name)
-            .then(
-                (data): VaultEntry => {
-                    if (!data) {
-                        return { iv: '', cipher: '' };
-                    }
-                    return {
-                        iv: data.username,
-                        cipher: data.password,
-                    };
-                },
-            )
-            .catch(
-                (error: string): VaultEntry => {
-                    logger.error('Keychain could not be accessed! Maybe no value set?', error);
-                    return { iv: '', cipher: '' };
-                },
-            );
-    },
-
-    /**
-     *  Use key to open specific Vault
+     *  Open Vault using provided key
      */
     open: async (name: string, key: string): Promise<string> => {
-        try {
-            const { iv, cipher } = await Vault.retrieve(name);
-
-            if (iv && cipher) {
-                const entry = await AES.decrypt(cipher, key, iv);
-                if (!entry) {
-                    return '';
-                }
-                return entry;
-            }
-            return '';
-        } catch {
-            return '';
-        }
+        return new Promise((resolve, reject) => {
+            VaultManagerModule.openVault(name, key)
+                .then((clearText: string) => {
+                    // this should never happen
+                    if (!clearText) {
+                        reject(new Error('Vault open clear text is not defined!'));
+                        return;
+                    }
+                    resolve(clearText);
+                })
+                .catch((error: any) => {
+                    logger.error('Vault open error', error);
+                    resolve(undefined);
+                });
+        });
     },
 
     /**
      *  Check key exist in vault
      */
     exist: async (name: string): Promise<boolean> => {
-        try {
-            const { iv, cipher } = await Vault.retrieve(name);
-
-            return !!iv && !!cipher;
-        } catch {
-            return false;
-        }
+        return VaultManagerModule.vaultExist(name);
     },
 
     /**
      *  get storage encryption key from vault
+     *  NOTE: this method will generate/store new encryption key if not exist
      */
-    getStorageEncryptionKey: async (keyName: string): Promise<Buffer> => {
-        return Keychain.getInternetCredentials(keyName).then((data: any) => {
-            if (!data) {
-                return randomKey(64).then((key: string) => {
-                    return Keychain.setInternetCredentials(keyName, 'empty', key, options).then(() => {
-                        return HexEncoding.toBinary(key);
-                    });
+    getStorageEncryptionKey: (keyName: string): Promise<Buffer> => {
+        return new Promise((resolve, reject) => {
+            VaultManagerModule.getStorageEncryptionKey(keyName)
+                .then((key: any) => {
+                    if (!key || key.length !== 128) {
+                        reject(new Error('Encryption key size is wrong or not present!'));
+                        return;
+                    }
+                    // encryption key presents as hex string, convert to buffer
+                    const keyBytes = HexEncoding.toBinary(key);
+                    // check if we got the right bytes
+                    if (!keyBytes || keyBytes.length !== 64) {
+                        reject(new Error('Encryption key size is wrong!'));
+                        return;
+                    }
+
+                    resolve(keyBytes);
+                })
+                .catch((e: any) => {
+                    reject(e);
                 });
-            }
-            return HexEncoding.toBinary(data.password);
         });
     },
 
     /**
+     *  check if vault needs migration
+     */
+    isMigrationRequired: (keyName: string): Promise<Number> => {
+        return VaultManagerModule.isMigrationRequired(keyName);
+    },
+
+    /**
      *  reKey the vault content
+     *  TODO: this need to change to a more reliable way
      */
     reKey: async (name: string, oldKey: string, newKey: string): Promise<boolean> => {
         try {
-            if (!name) return false;
+            // open the vault and fetch clear text
+            const clearText = await Vault.open(name, oldKey);
 
-            const entry = await Vault.open(name, oldKey);
-
-            if (!entry) {
+            if (!clearText) {
                 return false;
             }
 
-            return Vault.create(name, entry, newKey);
-        } catch (e) {
-            logger.error(`Unable reKey account ${name}`, e);
+            // remove the old vault
+            const purgeResult = await Vault.purge(name);
+
+            if (!purgeResult) {
+                return false;
+            }
+
+            // create the new vault
+            return await Vault.create(name, clearText, newKey);
+        } catch (error: any) {
+            logger.error('Vault reKey error', error);
             return false;
         }
     },
 
     // Delete Vault & PrivateKey from keychain
-    purge: async (name: string): Promise<void> => {
-        try {
-            if (!name) return;
-            await Keychain.resetInternetCredentials(name);
-        } catch (e) {
-            logger.error(`Unable purge account ${name}`, e);
-        }
+    purge: (name: string): Promise<boolean> => {
+        return new Promise((resolve) => {
+            VaultManagerModule.purgeVault(name)
+                .then((result: boolean) => {
+                    resolve(result);
+                })
+                .catch((error: any) => {
+                    logger.error('Vault purge error', error);
+                    resolve(false);
+                });
+        });
     },
 };
 

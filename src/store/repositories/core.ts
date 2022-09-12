@@ -5,6 +5,7 @@ import Realm, { ObjectSchema, Results } from 'realm';
 import { AppConfig } from '@common/constants';
 import { GetDeviceUniqueId } from '@common/helpers/device';
 import { SHA512, HMAC256 } from '@common/libs/crypto';
+import { UUIDEncoding } from '@common/utils/string';
 
 import { CoreSchema } from '@store/schemas/latest';
 import { NodeChain } from '@store/types';
@@ -131,6 +132,11 @@ class CoreRepository extends BaseRepository {
                     // in android, it's 64-bit hex, in some devices it can be 15 length
                     deviceUniqueId = '0'.repeat(16 - deviceUniqueId.length) + deviceUniqueId;
                 }
+            }
+
+            // we need to normalize the UUID value to hex before passing to HMAC256 function
+            if (Platform.OS === 'ios') {
+                deviceUniqueId = UUIDEncoding.toHex(deviceUniqueId);
             }
 
             // hash the passcode

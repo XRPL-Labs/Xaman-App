@@ -409,8 +409,6 @@ PODS:
     - Firebase/Messaging (= 8.15.0)
     - React-Core
     - RNFBApp
-  - RNKeychain (4.0.5):
-    - React
   - RNTangemSdk (2.1.0):
     - React
     - TangemSdk (= 3.2.0)
@@ -460,7 +458,6 @@ DEPENDENCIES:
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBCrashlytics (from `../node_modules/@react-native-firebase/crashlytics`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
-  - RNKeychain (from `../node_modules/react-native-keychain`)
   - RNTangemSdk (from `../node_modules/tangem-sdk-react-native`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -564,8 +561,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/crashlytics"
   RNFBMessaging:
     :path: "../node_modules/@react-native-firebase/messaging"
-  RNKeychain:
-    :path: "../node_modules/react-native-keychain"
   RNTangemSdk:
     :path: "../node_modules/tangem-sdk-react-native"
   Yoga:
@@ -627,7 +622,6 @@ SPEC CHECKSUMS:
   RNFBApp: fd23737680ed2bdde41ca27d8bfb171b6d668c6b
   RNFBCrashlytics: f2fdce92e0f561ed2b5a6ce5f86e43404ff67a18
   RNFBMessaging: cd273b4dcacf98c83a25ce1711c8c85511573990
-  RNKeychain: 840f8e6f13be0576202aefcdffd26a4f54bfe7b5
   RNTangemSdk: 7d6fb7cf04a8b12ed7b02405029cd3b7fcd8be6b
   TangemSdk: 2fffafcc3b4594bab564520f527542eeb15657f5
   VeriffSDK: 52a96edaa2026babd75332cd50dc8fa596d8e4f6

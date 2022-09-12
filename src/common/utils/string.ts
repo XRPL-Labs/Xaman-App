@@ -1,3 +1,31 @@
+/* UUID Encoding  ==================================================================== */
+const UUIDEncoding = {
+    toHex: (uuid: string): string => {
+        if (uuid.length % 2 !== 0) {
+            throw new Error('Must have an even number to convert to bytes');
+        }
+        const numBytes = uuid.length / 2;
+        const byteArray = new Uint8Array(numBytes);
+        for (let i = 0; i < numBytes; i++) {
+            let byte;
+            const byteChar = uuid.substr(i * 2, 2);
+
+            if (byteChar[0] === '-') {
+                byte = (parseInt(`0${byteChar[1]}`, 16) * -1) & 0xff;
+            } else if (byteChar[1] === '-') {
+                byte = parseInt(byteChar[0], 16);
+            } else {
+                byte = parseInt(byteChar, 16);
+            }
+            byteArray[i] = byte;
+        }
+
+        return Array.from(byteArray, (byte) => {
+            return `0${(byte & 0xff).toString(16)}`.slice(-2);
+        }).join('');
+    },
+};
+
 /* Hex Encoding  ==================================================================== */
 const HexEncoding = {
     toBinary: (hex: string): Buffer => {
@@ -107,4 +135,4 @@ const StringTypeCheck = {
 };
 
 /* Export ==================================================================== */
-export { HexEncoding, Truncate, Capitalize, StringTypeCheck };
+export { HexEncoding, UUIDEncoding, Truncate, Capitalize, StringTypeCheck };

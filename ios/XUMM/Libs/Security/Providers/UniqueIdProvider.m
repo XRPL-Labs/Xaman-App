@@ -9,6 +9,8 @@
 
 #define UNIQUE_UUID_KEY @"deviceUID"
 
+#pragma mark - Public methods
+
 RCT_EXPORT_MODULE();
 
 - (dispatch_queue_t)methodQueue
@@ -23,6 +25,20 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(getDeviceUniqueId) {
   return [self getUniqueId];
+}
+
+
++ (NSString *)getDeviceUniqueId {
+  return [[UniqueIdProviderModule sharedInstance] getUniqueId];
+}
+
++ (UniqueIdProviderModule *)sharedInstance {
+    static UniqueIdProviderModule* instance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        instance = [[UniqueIdProviderModule alloc] init];
+    });
+    return instance;
 }
 
 #pragma mark - Instance methods

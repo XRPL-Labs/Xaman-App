@@ -1,7 +1,7 @@
 /* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 
-import { randomKey, HMAC256, SHA1, SHA256, SHA512, AES } from '../crypto';
+import { randomKey, HMAC256, SHA1, SHA256, SHA512 } from '../crypto';
 
 describe('Crypto', () => {
     it('randomKey', async () => {
@@ -30,21 +30,5 @@ describe('Crypto', () => {
     it('HMAC256', async () => {
         const result = await HMAC256('thisisatest', 'b1ebcf12f5ff0a48b8f76604156a8d52e748');
         expect(result).toBe('2c5808c4833446895070b2946e6db446fc337a916730b63f46213684e38b4415');
-    });
-
-    it('Encrypt/Decrypt', async () => {
-        const entry = 'somemessage';
-        const key = 'somekey';
-
-        // Encrypt
-        const result = await AES.encrypt(entry, key);
-
-        expect(result).toBeDefined();
-        expect(result.cipher).toBeDefined();
-        expect(result.iv).toBeDefined();
-
-        // DECRYPT
-        const decrypted = await AES.decrypt(result.cipher, key, result.iv);
-        expect(decrypted).toBe(entry);
     });
 });

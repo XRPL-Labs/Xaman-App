@@ -13,6 +13,11 @@
 		2BE88BCE5EF176CAF34FA947 /* libPods-XUMM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBC6D01CA512AB17F704C7E6 /* libPods-XUMM.a */; };
 		A20B9293256FCE670066FECA /* Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20B9292256FCE670066FECA /* Empty.swift */; };
 		A20C14202524C8A000686A2A /* AppUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = A20C141F2524C8A000686A2A /* AppUpdate.m */; };
+		A22A151328BF7F9F001A632E /* V1+AesCbc.m in Sources */ = {isa = PBXBuildFile; fileRef = A22A151128BF7F9F001A632E /* V1+AesCbc.m */; };
+		A22A151728C0AAAF001A632E /* Keychain.m in Sources */ = {isa = PBXBuildFile; fileRef = A22A151528C0AAAF001A632E /* Keychain.m */; };
+		A22A151A28C0BECA001A632E /* Cipher.m in Sources */ = {isa = PBXBuildFile; fileRef = A22A151928C0BECA001A632E /* Cipher.m */; };
+		A22A151E28C20014001A632E /* V2+AesGcm.m in Sources */ = {isa = PBXBuildFile; fileRef = A22A151D28C20014001A632E /* V2+AesGcm.m */; };
+		A22A152028C61E97001A632E /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = A22A151F28C61E97001A632E /* Crypto.swift */; };
 		A248635D28229379004633C9 /* BiometricModule.m in Sources */ = {isa = PBXBuildFile; fileRef = A248635C28229379004633C9 /* BiometricModule.m */; };
 		A2805CE224D1982400B5552E /* LocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = A2805CE124D1982400B5552E /* LocalNotification.m */; };
 		A28BA8A6282409B600109CC8 /* SecurityProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = A28BA8A5282409B600109CC8 /* SecurityProvider.m */; };
@@ -22,6 +27,7 @@
 		A2A9F32728A12C4C009AE778 /* RNCWKProcessPoolManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2A9F32128A12C4C009AE778 /* RNCWKProcessPoolManager.m */; };
 		A2A9F32828A12C4C009AE778 /* RNCWebViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2A9F32328A12C4C009AE778 /* RNCWebViewManager.m */; };
 		A2A9F32928A12C4C009AE778 /* RNCWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = A2A9F32428A12C4C009AE778 /* RNCWebView.m */; };
+		A2A9F32D28AA460D009AE778 /* VaultManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2A9F32B28AA460D009AE778 /* VaultManager.m */; };
 		A2AFF12E243E79C30007005E /* Proxima Nova Alt Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */; };
 		A2AFF12F243E79C30007005E /* UbuntuMono-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10B243E79C30007005E /* UbuntuMono-BoldItalic.ttf */; };
 		A2AFF130243E79C30007005E /* UbuntuMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2AFF10C243E79C30007005E /* UbuntuMono-Bold.ttf */; };
@@ -84,6 +90,15 @@
 		A20B9292256FCE670066FECA /* Empty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Empty.swift; sourceTree = "<group>"; };
 		A20C141E2524C8A000686A2A /* AppUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppUpdate.h; sourceTree = "<group>"; };
 		A20C141F2524C8A000686A2A /* AppUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppUpdate.m; sourceTree = "<group>"; };
+		A22A151128BF7F9F001A632E /* V1+AesCbc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "V1+AesCbc.m"; sourceTree = "<group>"; };
+		A22A151228BF7F9F001A632E /* V1+AesCbc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "V1+AesCbc.h"; sourceTree = "<group>"; };
+		A22A151528C0AAAF001A632E /* Keychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Keychain.m; sourceTree = "<group>"; };
+		A22A151628C0AAAF001A632E /* Keychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keychain.h; sourceTree = "<group>"; };
+		A22A151828C0BEB9001A632E /* Cipher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cipher.h; sourceTree = "<group>"; };
+		A22A151928C0BECA001A632E /* Cipher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Cipher.m; sourceTree = "<group>"; };
+		A22A151C28C20014001A632E /* V2+AesGcm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "V2+AesGcm.h"; sourceTree = "<group>"; };
+		A22A151D28C20014001A632E /* V2+AesGcm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "V2+AesGcm.m"; sourceTree = "<group>"; };
+		A22A151F28C61E97001A632E /* Crypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Crypto.swift; sourceTree = "<group>"; };
 		A248635C28229379004633C9 /* BiometricModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BiometricModule.m; sourceTree = "<group>"; };
 		A248635E2822939E004633C9 /* BiometricModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BiometricModule.h; sourceTree = "<group>"; };
 		A2805CE124D1982400B5552E /* LocalNotification.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocalNotification.m; sourceTree = "<group>"; };
@@ -102,6 +117,8 @@
 		A2A9F32428A12C4C009AE778 /* RNCWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCWebView.m; sourceTree = "<group>"; };
 		A2A9F32528A12C4C009AE778 /* RNCWKProcessPoolManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCWKProcessPoolManager.h; sourceTree = "<group>"; };
 		A2A9F32628A12C4C009AE778 /* RNCWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCWebView.h; sourceTree = "<group>"; };
+		A2A9F32B28AA460D009AE778 /* VaultManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VaultManager.m; sourceTree = "<group>"; };
+		A2A9F32C28AA460D009AE778 /* VaultManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VaultManager.h; sourceTree = "<group>"; };
 		A2AFF10A243E79C30007005E /* Proxima Nova Alt Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Alt Thin.otf"; sourceTree = "<group>"; };
 		A2AFF10B243E79C30007005E /* UbuntuMono-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-BoldItalic.ttf"; sourceTree = "<group>"; };
 		A2AFF10C243E79C30007005E /* UbuntuMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "UbuntuMono-Bold.ttf"; sourceTree = "<group>"; };
@@ -256,6 +273,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		A22A151428BF8927001A632E /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				A22A151628C0AAAF001A632E /* Keychain.h */,
+				A22A151528C0AAAF001A632E /* Keychain.m */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
 		A248635B28229347004633C9 /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
@@ -342,6 +368,30 @@
 			path = Webview;
 			sourceTree = "<group>";
 		};
+		A2A9F32A28A53626009AE778 /* Vault */ = {
+			isa = PBXGroup;
+			children = (
+				A22A151428BF8927001A632E /* Storage */,
+				A2A9F32E28AD15DE009AE778 /* Cipher */,
+				A2A9F32C28AA460D009AE778 /* VaultManager.h */,
+				A2A9F32B28AA460D009AE778 /* VaultManager.m */,
+			);
+			path = Vault;
+			sourceTree = "<group>";
+		};
+		A2A9F32E28AD15DE009AE778 /* Cipher */ = {
+			isa = PBXGroup;
+			children = (
+				A22A151C28C20014001A632E /* V2+AesGcm.h */,
+				A22A151D28C20014001A632E /* V2+AesGcm.m */,
+				A22A151228BF7F9F001A632E /* V1+AesCbc.h */,
+				A22A151128BF7F9F001A632E /* V1+AesCbc.m */,
+				A22A151828C0BEB9001A632E /* Cipher.h */,
+				A22A151928C0BECA001A632E /* Cipher.m */,
+			);
+			path = Cipher;
+			sourceTree = "<group>";
+		};
 		A2AFF109243E79C30007005E /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -405,6 +455,7 @@
 			children = (
 				A2AFF129243E79C30007005E /* Crypto.h */,
 				A2AFF12A243E79C30007005E /* Crypto.m */,
+				A22A151F28C61E97001A632E /* Crypto.swift */,
 			);
 			path = Crypto;
 			sourceTree = "<group>";
@@ -438,6 +489,7 @@
 		A2F4F390288029BD00444302 /* Security */ = {
 			isa = PBXGroup;
 			children = (
+				A2A9F32A28A53626009AE778 /* Vault */,
 				A2AFF128243E79C30007005E /* Crypto */,
 				A2F4F391288029DE00444302 /* Providers */,
 				A248635B28229347004633C9 /* Authentication */,
@@ -782,11 +834,15 @@
 				A2A9F31428858F45009AE778 /* BlurViewManager.m in Sources */,
 				A2B9D13E2449BAA400259841 /* SharedPreferences.m in Sources */,
 				A20C14202524C8A000686A2A /* AppUpdate.m in Sources */,
+				A22A152028C61E97001A632E /* Crypto.swift in Sources */,
 				A2AFF142243E79C30007005E /* Crypto.m in Sources */,
+				A2A9F32D28AA460D009AE778 /* VaultManager.m in Sources */,
 				A2ED1312252DC717002AFC09 /* InAppPurchase.m in Sources */,
+				A22A151728C0AAAF001A632E /* Keychain.m in Sources */,
 				A2AFF143243E79C30007005E /* DeviceUtils.m in Sources */,
 				A2D856C02880166A003717BC /* AppUtils.m in Sources */,
 				A28BA8A6282409B600109CC8 /* SecurityProvider.m in Sources */,
+				A22A151328BF7F9F001A632E /* V1+AesCbc.m in Sources */,
 				A2A9F3182885965C009AE778 /* UIView+Blur.m in Sources */,
 				A20B9293256FCE670066FECA /* Empty.swift in Sources */,
 				A2AFF141243E79C30007005E /* UIView+Toast.m in Sources */,
@@ -800,11 +856,13 @@
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				A2D856C428802622003717BC /* HapticFeedback.m in Sources */,
 				A2A9F31E28859AF4009AE778 /* BlurEffectWithAmount.m in Sources */,
+				A22A151E28C20014001A632E /* V2+AesGcm.m in Sources */,
 				A2F4F398288168CB00444302 /* Clipboard.m in Sources */,
 				A2F4F39528802A4600444302 /* UniqueIdProvider.m in Sources */,
 				A2A9F32828A12C4C009AE778 /* RNCWebViewManager.m in Sources */,
 				A2AFF13E243E79C30007005E /* QRCodeGenerator.m in Sources */,
 				A2AFF140243E79C30007005E /* NSString+Utils.m in Sources */,
+				A22A151A28C0BECA001A632E /* Cipher.m in Sources */,
 				A2A9F32928A12C4C009AE778 /* RNCWebView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

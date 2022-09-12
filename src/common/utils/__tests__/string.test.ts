@@ -1,5 +1,5 @@
 /* eslint-disable spellcheck/spell-checker */
-import { Truncate, HexEncoding, Capitalize, StringTypeCheck } from '../string';
+import { Truncate, HexEncoding, Capitalize, StringTypeCheck, UUIDEncoding } from '../string';
 
 describe('Utils.String', () => {
     // truncate
@@ -18,6 +18,14 @@ describe('Utils.String', () => {
         it('should return full text', () => {
             const resultText = Truncate(longText, 22);
             expect(resultText).toEqual(longText);
+        });
+    });
+
+    describe('UUIDEncoding', () => {
+        it('should turn uuid to hex in right format', () => {
+            expect(UUIDEncoding.toHex('068196C5-E4D9-4445-B6A8-E1703B519B97')).toStrictEqual(
+                '068196c5f24d094445f56a08e1703b519b97',
+            );
         });
     });
 
