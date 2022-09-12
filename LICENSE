@@ -1,13 +1,13 @@
 CUSTOM (dual) License (!)
 
-Copyright (c) 2019 XRPL Labs OU
+Copyright (c) 2019 The Integrators B.V. (XRPL Labs)
 
-> If in doubt about / questions regarding XUMM licenses: please contact XRPL Labs: w@xrpl-labs.com
+> If in doubt about / questions regarding Xumm licenses: please contact XRPL Labs: w@xrpl-labs.com
 
 # For public / commercial / beta use
 ### Eg. XRPL forks, public projects, etc.
 
-Permission required by XRPL Labs OU (EE) / The Integrators BV (NL). 
+Permission required by XRPL Labs (The Integrators BV (NL)). 
 Please contact w@xrpl-labs.com with a project description. A license may be granted
 (free of charge or paid) depending on the project & target audience.
 
@@ -15,11 +15,9 @@ Please contact w@xrpl-labs.com with a project description. A license may be gran
 ### Eg. Educational, research (non commercial, non public)
 
 Permission is hereby granted to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+of this software and associated documentation files (the "Software"),
+including the rights to use, modify, merge and publish for personal AND
+non commercial use.
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
