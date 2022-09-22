@@ -60,6 +60,7 @@ RCT_EXPORT_METHOD(createVault:(NSString *)vaultName
     return rejectWithError(reject, error);
   }
   
+  // vault already exist, just reject
   if(exist){
     NSError *error = [NSError errorWithDomain:@"VAULT_ALREADY_EXIST" code:-1 userInfo:@{
       NSLocalizedDescriptionKey:@"Vault already exist, cannot overwrite current vault!"
@@ -67,7 +68,7 @@ RCT_EXPORT_METHOD(createVault:(NSString *)vaultName
     return rejectWithError(reject, error);
   }
   
-  // try to encrypt the data with provied key
+  // try to encrypt the data with provided key
   NSDictionary *cipherResult = [Cipher encrypt:data key:key error:&error];
 
   // error while encrypting the data
@@ -101,7 +102,7 @@ RCT_EXPORT_METHOD(vaultExist:(NSString *)vaultName
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-  // check item exist in the keychian
+  // check item exist in the keychain
   NSError *error;
   BOOL result = [Keychain itemExist:vaultName error:&error];
   
@@ -200,7 +201,7 @@ RCT_EXPORT_METHOD(getStorageEncryptionKey:(NSString *)keyName
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-  // try to retrive the key
+  // try to retrieve the key
   NSError *error;
   NSDictionary *item = [Keychain getItem:keyName error:&error];
     
@@ -225,7 +226,6 @@ RCT_EXPORT_METHOD(getStorageEncryptionKey:(NSString *)keyName
   NSString  *encryptionKey = [Crypto DataToHexWithData:encryptionKeyData];
   
   // store new encryption key in the keychain
-  // store vault in the keychain
   BOOL result = [Keychain setItem:keyName account:@"" data:encryptionKey error:&error];
   
   if(error != nil || !result){

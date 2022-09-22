@@ -20,7 +20,7 @@
   NSError *error;
   // sha256 encryption key
   NSData *hashedKeyData = [Crypto SHA256HashWithData:[key dataUsingEncoding:NSUTF8StringEncoding]];
-  // cipher data is base64 encoded while encrypting
+  // cipher data is base64 encoded while encrypting in v1 encryption
   NSData *ciperData = [[NSData alloc] initWithBase64EncodedString:cipher options:0];
   
   CipherCheckCondition(ciperData != nil, @"Base64Encode ciperData is nil");

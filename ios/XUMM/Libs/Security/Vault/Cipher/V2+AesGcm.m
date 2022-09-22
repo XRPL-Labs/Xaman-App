@@ -24,7 +24,7 @@
   
   NSData *uniqueDeviceId = [[UniqueIdProviderModule getDeviceUniqueId] dataUsingEncoding:NSUTF8StringEncoding];
   
-  CipherCheckCondition(uniqueDeviceId != nil, @"UniqueIdProviderModule is nil");
+  CipherCheckCondition(uniqueDeviceId != nil, @"uniqueDeviceId is nil");
   
   NSData *preKeySalt = [Crypto RandomBytesWithLength:32 error:&error];
   
@@ -67,12 +67,7 @@
 }
 
 + (NSString *) decrypt: (NSString *)cipher key: (NSString *)key derivedKeys:(struct DerivedKeys)derivedKeys {
-  
-  
-  // derive encryption key base on provided key
   NSError *error;
-  
-  
   NSData *passcodeHash = [Crypto PBKDF2WithPassword:[key dataUsingEncoding:NSUTF8StringEncoding] salt:[Crypto HexToDataWithHexString:derivedKeys.passcode_salt]  error:&error];
   
   
