@@ -1,15 +1,20 @@
 package com.xrpllabs.xumm;
 
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.reactnativenavigation.NavigationActivity;
 
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 
 import androidx.annotation.Nullable;
 import com.reactnativenavigation.react.CommandListenerAdapter;
 
 import libs.security.authentication.Biometric.BiometricModule;
+import libs.security.vault.exceptions.CryptoFailedException;
+import libs.security.vault.storage.Keychain;
 
 import java.util.Locale;
 
@@ -24,6 +29,19 @@ public class MainActivity extends NavigationActivity {
             finish();
             return;
         }
+
+
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                ReactApplicationContext reactContext = (ReactApplicationContext)((MainApplication)getApplication()).getReactNativeHost().getReactInstanceManager().getCurrentReactContext();
+//                Keychain keychain = new Keychain(reactContext);
+//
+//
+//
+//                keychain.getItem("xumm-realm-key");
+//            }
+//        }, 1000);
 
         // initialise required modules
         BiometricModule.initialise();
