@@ -1,17 +1,20 @@
 package libs.security.providers;
 
-import static android.provider.Settings.Secure.getString;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.provider.Settings;
+import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 
 import libs.security.crypto.Crypto;
 
 public class UniqueIdProvider {
-    private String androidId;
+    private static final String UNIQUE_DEVICE_ID_KEY = "device_unique_id";
+    private static final String UNIQUE_ID_KEY = "unique_id";
+
     private Context reactContext;
 
     public synchronized UniqueIdProvider init(final ReactApplicationContext context) {
@@ -32,6 +35,27 @@ public class UniqueIdProvider {
         static final UniqueIdProvider instance = new UniqueIdProvider();
     }
 
+
+    @SuppressLint("HardwareIds")
+    private static String getAndroidId(Context context) {
+        return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+    }
+
+
+    private static void saveDeviceUniqueId(Context context, String unique_id) {
+        context.getSharedPreferences(UNIQUE_DEVICE_ID_KEY, Context.MODE_PRIVATE)
+                .edit()
+                .putString(UNIQUE_ID_KEY, unique_id)
+                .apply();
+    }
+
+    @Nullable
+    private static String loadDeviceUniqueId(Context context) {
+        return context.getSharedPreferences(UNIQUE_DEVICE_ID_KEY, Context.MODE_PRIVATE)
+                .getString(UNIQUE_ID_KEY, null);
+    }
+
+    @Nullable
     public synchronized byte[] getDeviceUniqueIdBytes() {
         String deviceUniqueId = getDeviceUniqueId();
 
@@ -51,23 +75,29 @@ public class UniqueIdProvider {
     }
 
     @SuppressLint("HardwareIds")
+    @Nullable
     public synchronized String getDeviceUniqueId() {
         // check if context is already initiated
         if (reactContext == null) {
             throw new RuntimeException("Context is required");
         }
 
-        // if value already exist then return
-        if (androidId != null) {
-            return androidId;
+        // look for device unique id in the SharedPreferences
+        String unique_id = loadDeviceUniqueId(reactContext);
+
+        // if empty then get the unique id from Settings.Secure.ANDROID_ID and save
+        if (TextUtils.isEmpty(unique_id)) {
+            unique_id = getAndroidId(reactContext);
+
+            // check we got the right values
+            if (unique_id == null || unique_id.equalsIgnoreCase("android_id")) {
+                return null;
+            }
+
+            // store the android_id in SharedPreferences
+            saveDeviceUniqueId(reactContext, unique_id);
         }
 
-        androidId = getString(reactContext.getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        // check the value
-        if (androidId == null || androidId.equalsIgnoreCase("android_id")) {
-            return null;
-        }
-        return androidId;
+       return unique_id;
     }
 }
