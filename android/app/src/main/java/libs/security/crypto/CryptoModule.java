@@ -28,7 +28,10 @@ public class CryptoModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void hmac256(String input, String key, Promise promise) {
         try {
-            byte[] data = Crypto.HMAC256(input.getBytes(StandardCharsets.UTF_8), Crypto.HexToBytes(key));
+            byte[] data = Crypto.HMAC256(
+                    input.getBytes(StandardCharsets.UTF_8),
+                    Crypto.HexToBytes(key)
+            );
             promise.resolve(Crypto.BytesToHex(data));
         } catch (Exception e) {
             promise.reject("-1", e.getMessage());
@@ -38,7 +41,9 @@ public class CryptoModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void sha1(String input, Promise promise) {
         try {
-            byte[] data = Crypto.SHA1Hash(input.getBytes(StandardCharsets.UTF_8));
+            byte[] data = Crypto.SHA1Hash(
+                    input.getBytes(StandardCharsets.UTF_8)
+            );
             promise.resolve(Crypto.BytesToHex(data));
         } catch (Exception e) {
             promise.reject("-1", e.getMessage());
@@ -48,7 +53,9 @@ public class CryptoModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void sha256(String input, Promise promise) {
         try {
-            byte[] data = Crypto.SHA256Hash(input.getBytes(StandardCharsets.UTF_8));
+            byte[] data = Crypto.SHA256Hash(
+                    input.getBytes(StandardCharsets.UTF_8)
+            );
             promise.resolve(Crypto.BytesToHex(data));
         } catch (Exception e) {
             promise.reject("-1", e.getMessage());
@@ -59,7 +66,9 @@ public class CryptoModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void sha512(String input, Promise promise) {
         try {
-            byte[] data = Crypto.SHA512Hash(input.getBytes(StandardCharsets.UTF_8));
+            byte[] data = Crypto.SHA512Hash(
+                    input.getBytes(StandardCharsets.UTF_8)
+            );
             promise.resolve(Crypto.BytesToHex(data));
         } catch (Exception e) {
             promise.reject("-1", e.getMessage());

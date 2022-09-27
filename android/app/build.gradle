@@ -232,7 +232,7 @@ dependencies {
     }
 
     // firebase
-    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-messaging:+'
     implementation 'me.leolin:ShortcutBadger:1.1.22@aar'
     // biometric authentication
     implementation "androidx.biometric:biometric:1.1.0"
@@ -250,10 +250,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     // e2e dependencies
     // only for running tests
-    androidTestImplementation('com.wix:detox')
-    androidTestImplementation 'junit:junit:4.12'
-
-
+    androidTestImplementation('com.wix:detox:+')
 }
 
 // Run this once to be able to run the application with BUCK
