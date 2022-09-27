@@ -91,11 +91,14 @@ public class Crypto {
         return HmacSha256.doFinal(data);
     }
 
-
     @NonNull
-    public static byte[] PBKDF2(@NonNull final char[] password, @NonNull final byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
-        PBEKeySpec keySpec = new PBEKeySpec(password, salt, 120000, 32 * 8);
+    public static byte[] PBKDF2(@NonNull final char[] password, @NonNull final byte[] salt, @NonNull final int iteration) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        // constants
+        final String HMAC_HASH_ALGO = "PBKDF2WithHmacSHA512";
+        final int KEY_LENGTH = 32 * 8; // 256 bits = 32 bytes
+
+        SecretKeyFactory factory = SecretKeyFactory.getInstance(HMAC_HASH_ALGO);
+        PBEKeySpec keySpec = new PBEKeySpec(password, salt, iteration, KEY_LENGTH);
         SecretKey hash = factory.generateSecret(keySpec);
         return hash.getEncoded();
     }

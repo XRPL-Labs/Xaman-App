@@ -86,7 +86,11 @@ public extension SymmetricKey {
     return Data(signature);
   }
   
-  @objc static func PBKDF2(password: Data, salt: Data) throws -> Data {
+  @objc static func PBKDF2(password: Data, salt: Data, iteration: Int) throws -> Data {
+    // constants
+    let HMAC_HASH_ALGO = kCCPRFHmacAlgSHA512;
+    let KEY_LENGTH = kCCKeySizeAES256 // 256 bits = 32 bytes;
+
     var bytes = [UInt8](repeating: 0, count: kCCKeySizeAES256)
     try password.withUnsafeBytes { passwordBytes in
       try salt.withUnsafeBytes { saltBytes in
@@ -95,10 +99,10 @@ public extension SymmetricKey {
                                           passwordBytes.count,
                                           saltBytes.baseAddress?.assumingMemoryBound(to: UInt8.self),
                                           saltBytes.count,
-                                          CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA512),
-                                          UInt32(120000),
+                                          CCPseudoRandomAlgorithm(HMAC_HASH_ALGO),
+                                          UInt32(iteration),
                                           &bytes,
-                                          kCCKeySizeAES256)
+                                          KEY_LENGTH)
         guard status == kCCSuccess else { throw CryptError(message: "PBKDF2 Failed", status: status) }
       }
     }

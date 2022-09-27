@@ -22,15 +22,21 @@ public class CipherV2AesGcm {
     public static Map<String, Object> encrypt(@NonNull final String input, @NonNull final String key) throws CryptoFailedException {
         try {
             final byte[] passcodeSalt = Crypto.RandomBytes(32);
-            final byte[] passcodeHash = Crypto.PBKDF2(key.toCharArray(), passcodeSalt);
+
+            // NOTE: using "91337" as iteration count is a conscious choice to save performance.
+            final byte[] passcodeHash = Crypto.PBKDF2(key.toCharArray(), passcodeSalt, 91337);
+
+            // get device unique id for using in preKey and AAD
             final byte[] uniqueDeviceId = UniqueIdProvider.sharedInstance().getDeviceUniqueIdBytes();
 
             if (uniqueDeviceId == null) {
-                throw new CryptoFailedException("uniqueDeviceId is nil", null);
+                throw new CryptoFailedException("uniqueDeviceId is null!", null);
             }
 
+            // generate preKeySalt random 32 bytes
             final byte[] preKeySalt = Crypto.RandomBytes(32);
 
+            // preKey = preKeySalt + passcodeHash + uniqueDeviceId
             ByteArrayOutputStream preKeyStream = new ByteArrayOutputStream();
             preKeyStream.write(preKeySalt);
             preKeyStream.write(passcodeHash);
@@ -39,9 +45,16 @@ public class CipherV2AesGcm {
             // as PBKDF2 password only accepts chart[] we need to turn preKey byte to hex char[]
             char[] preKey = Crypto.BytesToHex(preKeyStream.toByteArray()).toCharArray();
 
+            // generate encrKeySalt random 32 bytes
             final byte[] encrKeySalt = Crypto.RandomBytes(32);
-            final byte[] encrKey = Crypto.PBKDF2(preKey, encrKeySalt);
+
+            // NOTE: using "33" as iteration count is a conscious choice to save performance.
+            final byte[] encrKey = Crypto.PBKDF2(preKey, encrKeySalt, 33);
+
+            // random iv 32 bytes
             final byte[] iv = Crypto.RandomBytes(32);
+
+            // encrypt using AES GCM
             final byte[] encryptedBytes = Crypto.AESEncrypt(
                     Crypto.AESAlgo.GCM,
                     input.getBytes(StandardCharsets.UTF_8),
@@ -74,9 +87,21 @@ public class CipherV2AesGcm {
     public static String decrypt(@NonNull final String cipher, @NonNull final String key, @NonNull final Cipher.DerivedKeys derivedKeys) throws CryptoFailedException {
         try {
 
-            final byte[] passcodeHash = Crypto.PBKDF2(key.toCharArray(), Crypto.HexToBytes(derivedKeys.passcode_salt));
+            // NOTE: using "91337" as iteration count is a conscious choice to save performance.
+            final byte[] passcodeHash = Crypto.PBKDF2(
+                    key.toCharArray(),
+                    Crypto.HexToBytes(derivedKeys.passcode_salt),
+                    91337
+            );
+
+            // get device unique id for using in preKey and AAD
             final byte[] uniqueDeviceId = UniqueIdProvider.sharedInstance().getDeviceUniqueIdBytes();
 
+            if (uniqueDeviceId == null) {
+                throw new CryptoFailedException("uniqueDeviceId is null!", null);
+            }
+
+            // preKey = preKeySalt + passcodeHash + uniqueDeviceId
             ByteArrayOutputStream preKeyStream = new ByteArrayOutputStream();
             preKeyStream.write(Crypto.HexToBytes(derivedKeys.pre_key_salt));
             preKeyStream.write(passcodeHash);
@@ -85,8 +110,15 @@ public class CipherV2AesGcm {
             // as PBKDF2 password only accepts chart[] we need to turn preKey byte to hex char[]
             char[] preKey = Crypto.BytesToHex(preKeyStream.toByteArray()).toCharArray();
 
-            final byte[] encrKey = Crypto.PBKDF2(preKey, Crypto.HexToBytes(derivedKeys.encr_key_salt));
+            // NOTE: using "33" as iteration count is a conscious choice to save performance.
+            final byte[] encrKey = Crypto.PBKDF2(
+                    preKey,
+                    Crypto.HexToBytes(derivedKeys.encr_key_salt),
+                    33
+            );
 
+
+            // decrypt using AES GCM
             final byte[] decryptedBytes = Crypto.AESDecrypt(
                     Crypto.AESAlgo.GCM,
                     Crypto.HexToBytes(cipher),
