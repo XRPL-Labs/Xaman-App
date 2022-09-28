@@ -34,9 +34,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.crypto.NoSuchPaddingException;
 
-/**
- * Fingerprint biometry protected storage.
- */
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class CipherStorageKeystoreRsaEcb extends CipherStorageBase {
     //region Constants

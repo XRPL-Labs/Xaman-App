@@ -1,5 +1,7 @@
 package libs.security.vault.storage;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.StringDef;
 
@@ -14,9 +16,12 @@ import libs.security.vault.storage.cipherStorage.CipherStorageKeystoreRsaEcb;
 import libs.security.vault.exceptions.CryptoFailedException;
 import libs.security.vault.exceptions.KeyStoreAccessException;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class Keychain {
     /**
@@ -118,6 +123,18 @@ public class Keychain {
     public boolean itemExist(@NonNull final String alias) {
         final ResultSet resultSet = prefsStorage.getEncryptedEntry(alias);
         return resultSet != null;
+    }
+
+    /*
+      Note: this will clear the entire keychain storage, including the generated keys
+     */
+    public void clear() throws KeyStoreAccessException {
+        final Set<String> entries = prefsStorage.getAllEntries();
+
+        for (String entry : entries) {
+            Log.d("Keychain", entry);
+            deleteItem(entry);
+        }
     }
 
     private void addCipherStorageToMap(@NonNull final CipherStorage cipherStorage) {

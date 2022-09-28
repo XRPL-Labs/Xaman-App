@@ -7,6 +7,8 @@ package libs.security.vault.storage.cipherStorage;
 
 import androidx.annotation.NonNull;
 
+import java.util.Set;
+
 import libs.security.vault.exceptions.CryptoFailedException;
 import libs.security.vault.exceptions.KeyStoreAccessException;
 
@@ -69,12 +71,13 @@ public interface CipherStorage {
   /** Remove key (by alias) from storage. */
   void removeKey(@NonNull final String alias) throws KeyStoreAccessException;
 
+  /**
+   * Return all keys present in this storage.
+   * @return key aliases
+   */
+  Set<String> getAllKeys() throws KeyStoreAccessException;
 
-  //endregion
-
-  //region Configuration
 
   /** Storage name. */
   String getCipherStorageName();
-  //endregion
 }

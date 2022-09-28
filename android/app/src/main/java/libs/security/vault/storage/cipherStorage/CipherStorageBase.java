@@ -7,7 +7,6 @@ package libs.security.vault.storage.cipherStorage;
 
 import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -25,9 +24,14 @@ import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.ProviderException;
 import java.security.UnrecoverableKeyException;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -72,6 +76,19 @@ abstract public class CipherStorageBase implements CipherStorage {
       }
     } catch (GeneralSecurityException ignored) {
       /* only one exception can be raised by code: 'KeyStore is not loaded' */
+    }
+  }
+
+
+  @Override
+  public Set<String> getAllKeys() throws KeyStoreAccessException {
+    final KeyStore ks = getKeyStoreAndLoad();
+    try {
+      Enumeration<String> aliases = ks.aliases();
+      return new HashSet<>(Collections.list(aliases));
+
+    } catch (KeyStoreException e) {
+      throw new KeyStoreAccessException("Error accessing aliases in keystore " + ks, e);
     }
   }
 
@@ -280,7 +297,7 @@ abstract public class CipherStorageBase implements CipherStorage {
 
           isStrongboxAvailable.set(true);
         } catch (GeneralSecurityException | ProviderException ex) {
-          Log.w(LOG_TAG, "StrongBox security storage is not available.", ex);
+          Log.w(LOG_TAG, "StrongBox security storage is not available.");
         }
       }
     }
@@ -324,13 +341,6 @@ abstract public class CipherStorageBase implements CipherStorage {
   //endregion
 
   //region Static methods
-
-  /** Convert provided service name to safe not-null/not-empty value. */
-  @NonNull
-  public static String getDefaultAliasIfEmpty(@Nullable final String service, @NonNull final String fallback) {
-    //noinspection ConstantConditions
-    return TextUtils.isEmpty(service) ? fallback : service;
-  }
 
   /**
    * Copy input stream to output.

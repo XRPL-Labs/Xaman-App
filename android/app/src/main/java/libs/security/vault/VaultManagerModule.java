@@ -129,6 +129,16 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void purgeAll(Promise promise) {
+        try {
+            keychain.clear();
+            promise.resolve(true);
+        } catch (Exception e) {
+            rejectWithError(promise, e);
+        }
+    }
+
+    @ReactMethod
     public void isMigrationRequired(String vaultName, Promise promise) {
         try {
             // get the item from storage
