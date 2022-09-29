@@ -12,6 +12,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2BE88BCE5EF176CAF34FA947 /* libPods-XUMM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBC6D01CA512AB17F704C7E6 /* libPods-XUMM.a */; };
 		A2021F6A28E591F300506772 /* CryptoTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2021F6928E591F300506772 /* CryptoTest.swift */; };
+		A2021F7528E5C53000506772 /* CipherTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A2021F7428E5C53000506772 /* CipherTest.m */; };
 		A20B9293256FCE670066FECA /* Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20B9292256FCE670066FECA /* Empty.swift */; };
 		A20C14202524C8A000686A2A /* AppUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = A20C141F2524C8A000686A2A /* AppUpdate.m */; };
 		A22A151328BF7F9F001A632E /* V1+AesCbc.m in Sources */ = {isa = PBXBuildFile; fileRef = A22A151128BF7F9F001A632E /* V1+AesCbc.m */; };
@@ -88,6 +89,7 @@
 		7805CB7967F0C6B5B5DCD2B4 /* Pods-XUMM-XUMMTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XUMM-XUMMTests.release.xcconfig"; path = "Target Support Files/Pods-XUMM-XUMMTests/Pods-XUMM-XUMMTests.release.xcconfig"; sourceTree = "<group>"; };
 		A2021F6828E591F300506772 /* XUMMTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XUMMTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		A2021F6928E591F300506772 /* CryptoTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoTest.swift; sourceTree = "<group>"; };
+		A2021F7428E5C53000506772 /* CipherTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CipherTest.m; sourceTree = "<group>"; };
 		A20B9291256FCE670066FECA /* XUMM-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XUMM-Bridging-Header.h"; sourceTree = "<group>"; };
 		A20B9292256FCE670066FECA /* Empty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Empty.swift; sourceTree = "<group>"; };
 		A20C141E2524C8A000686A2A /* AppUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppUpdate.h; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 				00E356F01AD99517003FC87E /* Supporting Files */,
 				A2021F6928E591F300506772 /* CryptoTest.swift */,
 				A2021F6828E591F300506772 /* XUMMTests-Bridging-Header.h */,
+				A2021F7428E5C53000506772 /* CipherTest.m */,
 			);
 			path = XUMMTests;
 			sourceTree = "<group>";
@@ -825,6 +828,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A2021F7528E5C53000506772 /* CipherTest.m in Sources */,
 				A2021F6A28E591F300506772 /* CryptoTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -27,13 +27,13 @@ public class CipherTest {
 
     @Test
     public void DerivedKeysTest() throws JSONException {
-        final String derivedKeysStringV1 = "fc28f32f53a53005be309392dc751ce2149019191ce30e44fb5b655cf073a38e";
+        final String derivedKeysStringV1 = "281dbfaeacea835d338ef73a840203a9";
         final String derivedKeysStringV2 = "{\"version\":2,\"iv\":\"fc28f32f53a53005be309392dc751ce2149019191ce30e44fb5b655cf073a38e\",\"passcode_salt\":\"c1da8b63ffc2bdf7b269ec4dc858b624ffb06577cde774632ef4e413f405eb8b\",\"pre_key_salt\":\"8c7133f8fd75e8148797f8c86da1bf753b16c4c56b43f978ea985bfb50672139\",\"encr_key_salt\":\"412f3a1637b115c50df3a908cab566b2859a6382b2eba40903a399509d844753\"}";
         // should serialize derived key from v1 and v2
         // v1
         Cipher.DerivedKeys derivedKeysV1 = Cipher.getDerivedKeys(derivedKeysStringV1);
         Assert.assertEquals(1, derivedKeysV1.version);
-        Assert.assertEquals("fc28f32f53a53005be309392dc751ce2149019191ce30e44fb5b655cf073a38e", derivedKeysV1.iv);
+        Assert.assertEquals(derivedKeysStringV1, derivedKeysV1.iv);
         // v2
         Cipher.DerivedKeys derivedKeysV2 = Cipher.getDerivedKeys(derivedKeysStringV2);
         Assert.assertEquals(2, derivedKeysV2.version);
@@ -80,8 +80,8 @@ public class CipherTest {
 
         // try to encrypt/decrypt with long key
         Map<String, Object> cipherResultLong = Cipher.encrypt(clearText, clearKeyLong);
-        String decryptResult2 = Cipher.decrypt((String) cipherResultLong.get("cipher"), clearKeyLong, ((Cipher.DerivedKeys) cipherResultLong.get("derived_keys")).toJSONString());
-        Assert.assertEquals(clearText, decryptResult2);
+        String decryptResultLongKey = Cipher.decrypt((String) cipherResultLong.get("cipher"), clearKeyLong, ((Cipher.DerivedKeys) cipherResultLong.get("derived_keys")).toJSONString());
+        Assert.assertEquals(clearText, decryptResultLongKey);
     }
 
     @Test
@@ -94,7 +94,4 @@ public class CipherTest {
         String decryptResult = Cipher.decrypt(V1_Cipher, clearKey, V1_IV);
         Assert.assertEquals(clearText, decryptResult);
     }
-
-
-
 }
