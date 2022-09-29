@@ -132,7 +132,7 @@ public extension SymmetricKey {
   @objc static func AESEncrypt(algo: AESAlgo, data: Data,using key: Data, iv: Data, aad: Data) throws -> Data {
     switch (algo){
     case AESAlgo.CBC:
-      throw CryptError(message: "AES-CBC deprecated and should not be used! ", status: -1)
+      throw CryptError(message: "AES-CBC deprecated and should not be used!", status: -1)
     case AESAlgo.GCM:
       return try AESGCM.encrypt(data, using: SymmetricKey(data: key), iv: iv, aad: aad)
     }
