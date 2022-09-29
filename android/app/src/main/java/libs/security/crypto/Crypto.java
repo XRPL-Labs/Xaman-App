@@ -23,6 +23,24 @@ public class Crypto {
     }
 
     @NonNull
+    public static String BytesToHex(@NonNull final byte[] data) {
+        final char[] HEX_DIGITS = {
+                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+        };
+
+        int l = data.length;
+        char[] out = new char[l << 1];
+
+        // two characters form the hex value.
+        for (int i = 0, j = 0; i < l; i++) {
+            out[j++] = HEX_DIGITS[(0xF0 & data[i]) >>> 4];
+            out[j++] = HEX_DIGITS[0x0F & data[i]];
+        }
+
+        return new String(out);
+    }
+
+    @NonNull
     public static byte[] HexToBytes(@NonNull final String hexString) throws RuntimeException {
         char[] chars = hexString.toCharArray();
         int len = chars.length;
@@ -41,24 +59,6 @@ public class Crypto {
         }
 
         return out;
-    }
-
-    @NonNull
-    public static String BytesToHex(@NonNull final byte[] data) {
-        final char[] HEX_DIGITS = {
-                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
-        };
-
-        int l = data.length;
-        char[] out = new char[l << 1];
-
-        // two characters form the hex value.
-        for (int i = 0, j = 0; i < l; i++) {
-            out[j++] = HEX_DIGITS[(0xF0 & data[i]) >>> 4];
-            out[j++] = HEX_DIGITS[0x0F & data[i]];
-        }
-
-        return new String(out);
     }
 
     @NonNull
@@ -117,7 +117,7 @@ public class Crypto {
             @NonNull final byte[] data,
             @NonNull final byte[] key,
             @NonNull final byte[] iv,
-            @NonNull final byte[] aad
+            final byte[] aad
     ) throws Exception {
         switch (algo) {
             case CBC:
@@ -134,7 +134,7 @@ public class Crypto {
             @NonNull final byte[] data,
             @NonNull final byte[] key,
             @NonNull final byte[] iv,
-            final byte[] aad
+            @NonNull final byte[] aad
     ) throws Exception {
         switch (algo) {
             case CBC:
