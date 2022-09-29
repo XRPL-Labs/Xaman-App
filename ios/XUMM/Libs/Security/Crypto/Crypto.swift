@@ -191,12 +191,14 @@ public extension SymmetricKey {
     }
     
     public static func decrypt(_ data: Data, using key: SymmetricKey, iv: Data, aad: Data ) throws -> Data {
+      // GCM tag size
+      let TAG_LENGTH = 16 // 128 bits
       // double check for aad to be present
       guard aad != nil else { throw CryptError(message: "AAD data is required!", status: -1) }
       let sealedBox = try AES.GCM.SealedBox(
         nonce: try AES.GCM.Nonce(data: iv),
-        ciphertext: data.dropLast(16),
-        tag: data.suffix(16)
+        ciphertext: data.dropLast(TAG_LENGTH),
+        tag: data.suffix(TAG_LENGTH)
       )
       let decrypted = try AES.GCM.open(sealedBox, using: key, authenticating: aad)
       return decrypted
