@@ -122,4 +122,17 @@
   };
 }
 
++ (void)clear
+{
+  NSArray *secItemClasses = @[(__bridge id)kSecClassInternetPassword,
+                                 (__bridge id)kSecAttrGeneric,
+                                 (__bridge id)kSecAttrAccount,
+                                 (__bridge id)kSecClassKey,
+                                 (__bridge id)kSecAttrService];
+     for (id secItemClass in secItemClasses) {
+         NSDictionary *spec = @{(__bridge id)kSecClass: secItemClass};
+         SecItemDelete((__bridge CFDictionaryRef)spec);
+     }
+}
+
 @end

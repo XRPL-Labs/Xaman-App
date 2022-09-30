@@ -12,6 +12,9 @@
 @end
 
 @implementation CipherTest
++ (void)setUp {}
+
++ (void)tearDown {}
 
 - (void)testDerivedKeys {
   NSString *derivedKeysStringV1 = @"281dbfaeacea835d338ef73a840203a9";
