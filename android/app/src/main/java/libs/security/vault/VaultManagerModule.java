@@ -17,7 +17,6 @@ import libs.security.crypto.Crypto;
 import libs.security.vault.cipher.Cipher;
 import libs.security.vault.storage.Keychain;
 
-
 @ReactModule(name = libs.security.vault.VaultManagerModule.NAME)
 public class VaultManagerModule extends ReactContextBaseJavaModule {
     static final String NAME = "VaultManagerModule";
@@ -46,6 +45,11 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
         promise.reject("-1", error.toString());
     }
 
+
+    /*
+     Create a new encrypted vault with given name/data and encrypt with provided key
+     NOTE: existing vault cannot be overwritten
+    */
     @ReactMethod
     public void createVault(String vaultName, String data, String key, Promise promise) {
         try {
@@ -81,17 +85,9 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
     }
 
 
-    @ReactMethod
-    public void vaultExist(String vaultName, Promise promise) {
-        try {
-            boolean exist = keychain.itemExist(vaultName);
-            promise.resolve(exist);
-        } catch (Exception e) {
-            rejectWithError(promise, e);
-        }
-    }
-
-
+    /*
+     Open the encrypted vault with provided key and return the clear data
+    */
     @ReactMethod
     public void openVault(String vaultName, String key, Promise promise) {
         try {
@@ -118,6 +114,23 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
         }
     }
 
+    /*
+     Check vault is already exist with given name
+    */
+    @ReactMethod
+    public void vaultExist(String vaultName, Promise promise) {
+        try {
+            boolean exist = keychain.itemExist(vaultName);
+            promise.resolve(exist);
+        } catch (Exception e) {
+            rejectWithError(promise, e);
+        }
+    }
+
+    /*
+     Purge a vault with given name
+     NOTE: this action cannot be undo and is permanent
+    */
     @ReactMethod
     public void purgeVault(String vaultName, Promise promise) {
         try {
@@ -128,6 +141,10 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
         }
     }
 
+    /*
+     Purge ALL vaults in the keychain
+     NOTE: this action cannot be undo and is permanent, used with caution
+    */
     @ReactMethod
     public void purgeAll(Promise promise) {
         try {
@@ -138,6 +155,9 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
         }
     }
 
+    /*
+     Check a vault is encrypted with the latest Cipher or it needs a migrations
+    */
     @ReactMethod
     public void isMigrationRequired(String vaultName, Promise promise) {
         try {
@@ -167,6 +187,10 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
     }
 
 
+    /*
+     Get the storage encryption key from keychain
+     NOTE: this method will generate new key and store it in case of missing key
+    */
     @ReactMethod
     public void getStorageEncryptionKey(String keyName, Promise promise) {
         try {

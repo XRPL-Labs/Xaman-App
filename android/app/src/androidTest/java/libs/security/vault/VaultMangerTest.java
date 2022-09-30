@@ -129,8 +129,7 @@ public class VaultMangerTest {
         verify(promiseVaultIsMigrationRequired).resolve(IsMigrationRequiredResults);
 
 
-        // purge vault and check if it's exist
-        // should return true as vault is exist
+        // purge vault
         Promise promiseVaultPurge = mock(Promise.class);
         vaultManager.purgeVault(
                 VAULT_NAME,
@@ -138,7 +137,7 @@ public class VaultMangerTest {
         );
         verify(promiseVaultPurge).resolve(true);
 
-        // should return true as vault is exist
+        // should return false as vault purged
         Promise promiseVaultExistAfterPurge = mock(Promise.class);
         vaultManager.vaultExist(
                 VAULT_NAME,
