@@ -7,14 +7,24 @@
 
 #import "../XUMM/Libs/Security/Vault/Cipher/Cipher.h"
 
+#import "PerformanceLogger.h"
+
 @interface CipherTest : XCTestCase
 
 @end
 
 @implementation CipherTest
-+ (void)setUp {}
+static PerformanceLogger *performanceLogger;
 
-+ (void)tearDown {}
+
++ (void)setUp {
+  // setup performance logger
+  performanceLogger = [[PerformanceLogger alloc] initWithTag:@"CipherTestReport"];
+}
+
++ (void)tearDown {
+  [performanceLogger log];
+}
 
 - (void)testDerivedKeys {
   NSString *derivedKeysStringV1 = @"281dbfaeacea835d338ef73a840203a9";
@@ -42,8 +52,10 @@
   NSString *clearKeyLong = @"jaefmsxpTq11C*V8PMoG1d80k3lje6EO$JW*QP8OK^X3ida&cFffSmp5WMB#olb2*aMhHWojYN90Ung5ZwnU36*awQ3Q&ztJ18jH";
   
   
+  [performanceLogger start:@"CIPHER_ENCRYPT_V2"];
   NSError *error;
   NSDictionary *cipherResult = [Cipher encrypt:clearText key:clearKey error:&error];
+  [performanceLogger end:@"CIPHER_ENCRYPT_V2"];
   
   // should return right values
   XCTAssertNil(error);
@@ -71,19 +83,27 @@
   
   
   // try to decrypt the same values
+  [performanceLogger start:@"CIPHER_DECRYPT_V2"];
   NSString *decryptResult = [Cipher decrypt:cipher key:clearKey derivedKeysString:derivedKeyString error:&error];
+  [performanceLogger end:@"CIPHER_DECRYPT_V2"];
+
   
   XCTAssertNil(error);
   XCTAssertTrue([decryptResult isEqualToString:clearText]);
   
   
   // try to encrypt/decrypt with long key
+  [performanceLogger start:@"CIPHER_ENCRYPT_V2_LONG_KEY"];
   NSDictionary *cipherResultLongKey = [Cipher encrypt:clearText key:clearKeyLong error:&error];
+  [performanceLogger end:@"CIPHER_ENCRYPT_V2_LONG_KEY"];
+
   
   NSData *derivedKeyDataLongKey = [NSJSONSerialization  dataWithJSONObject:[cipherResultLongKey objectForKey:@"derived_keys"] options:0 error:&error];
   XCTAssertNil(error);
   NSString *derivedKeyStringLongKey = [[NSString alloc] initWithData:derivedKeyDataLongKey encoding:NSUTF8StringEncoding];
+  [performanceLogger start:@"CIPHER_DECRYPT_V2_LONG_KEY"];
   NSString *decryptResultLongKey = [Cipher decrypt:[cipherResultLongKey objectForKey:@"cipher"] key:clearKeyLong derivedKeysString:derivedKeyStringLongKey error:&error];
+  [performanceLogger end:@"CIPHER_DECRYPT_V2_LONG_KEY"];
   XCTAssertNil(error);
   XCTAssertTrue([decryptResultLongKey isEqualToString:clearText]);
 }
@@ -96,8 +116,10 @@
   NSString *V1_Cipher = @"Shq6UW2DphA9x/PLxnlCjA==";
   
   NSError *error;
+  [performanceLogger start:@"CIPHER_DECRYPT_V1"];
   NSString *decryptResult = [Cipher decrypt:V1_Cipher key:clearKey derivedKeysString:V1_IV error:&error];
-
+  [performanceLogger end:@"CIPHER_DECRYPT_V1"];
+  
   XCTAssertNil(error);
   XCTAssertTrue([decryptResult isEqualToString:clearText]);
   

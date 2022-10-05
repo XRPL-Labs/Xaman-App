@@ -5,6 +5,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.facebook.react.bridge.ReactApplicationContext;
 
 import org.json.JSONException;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,7 +16,13 @@ import libs.security.providers.UniqueIdProvider;
 import libs.security.vault.cipher.Cipher;
 import libs.security.vault.exceptions.CryptoFailedException;
 
+import extentions.PerformanceLogger;
+
 public class CipherTest {
+    private static final PerformanceLogger performanceLogger = new PerformanceLogger(
+            "CipherTestReport"
+    );
+
     @BeforeClass
     public static void setUp() {
         UniqueIdProvider.sharedInstance().init(
@@ -56,7 +63,9 @@ public class CipherTest {
         final String clearKeyLong = "jaefmsxpTq11C*V8PMoG1d80k3lje6EO$JW*QP8OK^X3ida&cFffSmp5WMB#olb2*aMhHWojYN90Ung5ZwnU36*awQ3Q&ztJ18jH";
 
 
+        performanceLogger.start("CIPHER_ENCRYPT_V2");
         Map<String, Object> cipherResult = Cipher.encrypt(clearText, clearKey);
+        performanceLogger.end("CIPHER_ENCRYPT_V2");
 
         // should return right values
         Assert.assertNotNull("cipherResult is null", cipherResult);
@@ -74,13 +83,20 @@ public class CipherTest {
 
 
         // try to decrypt the same values
+        performanceLogger.start("CIPHER_DECRYPT_V2");
         String decryptResult = Cipher.decrypt(cipher, clearKey, derivedKeys.toJSONString());
+        performanceLogger.end("CIPHER_DECRYPT_V2");
         Assert.assertEquals(clearText, decryptResult);
 
 
         // try to encrypt/decrypt with long key
+        performanceLogger.start("CIPHER_ENCRYPT_V2_LONG_KEY");
         Map<String, Object> cipherResultLong = Cipher.encrypt(clearText, clearKeyLong);
+        performanceLogger.end("CIPHER_ENCRYPT_V2_LONG_KEY");
+
+        performanceLogger.start("CIPHER_DECRYPT_V2_LONG_KEY");
         String decryptResultLongKey = Cipher.decrypt((String) cipherResultLong.get("cipher"), clearKeyLong, ((Cipher.DerivedKeys) cipherResultLong.get("derived_keys")).toJSONString());
+        performanceLogger.end("CIPHER_DECRYPT_V2_LONG_KEY");
         Assert.assertEquals(clearText, decryptResultLongKey);
     }
 
@@ -91,7 +107,14 @@ public class CipherTest {
         final String V1_IV = "281dbfaeacea835d338ef73a840203a9";
         final String V1_Cipher = "Shq6UW2DphA9x/PLxnlCjA==";
 
+        performanceLogger.start("CIPHER_DECRYPT_V1");
         String decryptResult = Cipher.decrypt(V1_Cipher, clearKey, V1_IV);
+        performanceLogger.end("CIPHER_DECRYPT_V1");
         Assert.assertEquals(clearText, decryptResult);
+    }
+
+    @AfterClass
+    public static void afterAll() {
+        performanceLogger.log();
     }
 }
