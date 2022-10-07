@@ -1,5 +1,6 @@
 package libs.security.vault;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -9,6 +10,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Map;
 
@@ -18,6 +20,7 @@ import libs.security.vault.exceptions.CryptoFailedException;
 
 import extentions.PerformanceLogger;
 
+@RunWith(AndroidJUnit4.class)
 public class CipherTest {
     private static final PerformanceLogger performanceLogger = new PerformanceLogger(
             "CipherTestReport"
@@ -61,7 +64,6 @@ public class CipherTest {
         final String clearText = "Hello World";
         final String clearKey = "Secret Key";
         final String clearKeyLong = "jaefmsxpTq11C*V8PMoG1d80k3lje6EO$JW*QP8OK^X3ida&cFffSmp5WMB#olb2*aMhHWojYN90Ung5ZwnU36*awQ3Q&ztJ18jH";
-
 
         performanceLogger.start("CIPHER_ENCRYPT_V2");
         Map<String, Object> cipherResult = Cipher.encrypt(clearText, clearKey);

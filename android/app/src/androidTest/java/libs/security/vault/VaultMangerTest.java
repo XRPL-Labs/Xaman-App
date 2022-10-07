@@ -1,10 +1,9 @@
 package libs.security.vault;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.WritableMap;
 
 import org.junit.After;
@@ -13,19 +12,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import org.junit.runner.RunWith;
 
 import java.util.Map;
 
 import libs.security.providers.UniqueIdProvider;
 import libs.security.vault.cipher.Cipher;
-import libs.security.vault.exceptions.CryptoFailedException;
 import libs.security.vault.storage.Keychain;
 
 import extentions.PerformanceLogger;
 
+@RunWith(AndroidJUnit4.class)
 public class VaultMangerTest {
     static final String VAULT_NAME = "VAULT_TEST";
     static final String VAULT_DATA = "VAULT_TEST_DATA";
@@ -50,7 +47,7 @@ public class VaultMangerTest {
     }
 
     @Before
-    public void beforeEach() {
+    public void beforeEach() throws Exception {
         ReactApplicationContext context = new ReactApplicationContext(
                 InstrumentationRegistry.getInstrumentation().getTargetContext()
         );
@@ -59,7 +56,7 @@ public class VaultMangerTest {
         keychain = new Keychain(context);
 
         // clear vault before every step
-        vaultManager.purgeAll(mock(Promise.class));
+        vaultManager.purgeAll();
     }
 
     @After
@@ -68,139 +65,101 @@ public class VaultMangerTest {
     }
 
     @Test
-    public void VaultTest() {
+    public void VaultTest() throws Exception {
         // should return false as vault is not exist
-
-        Promise promiseVaultNotExist = mock(Promise.class);
         performanceLogger.start("VAULT_EXIST_FALSE");
-        vaultManager.vaultExist(
-                VAULT_NAME,
-                promiseVaultNotExist
-        );
+        Assert.assertFalse(vaultManager.vaultExist(VAULT_NAME));
         performanceLogger.end("VAULT_EXIST_FALSE");
-        verify(promiseVaultNotExist).resolve(false);
 
 
         // should create the vault with the latest cipher and store in the keychain
-        Promise promiseCreate = mock(Promise.class);
         performanceLogger.start("CREATE_VAULT_NEW");
-        vaultManager.createVault(
+        Assert.assertTrue(vaultManager.createVault(
                 VAULT_NAME,
                 VAULT_DATA,
-                VAULT_KEY,
-                promiseCreate
-        );
+                VAULT_KEY
+        ));
         performanceLogger.end("CREATE_VAULT_NEW");
-        verify(promiseCreate).resolve(true);
 
 
         // should return true as vault is exist
-        Promise promiseVaultExist = mock(Promise.class);
         performanceLogger.start("VAULT_EXIST_TRUE");
-        vaultManager.vaultExist(
-                VAULT_NAME,
-                promiseVaultExist
-        );
+        Assert.assertTrue(vaultManager.vaultExist(
+                VAULT_NAME
+        ));
         performanceLogger.end("VAULT_EXIST_TRUE");
-        verify(promiseVaultExist).resolve(true);
 
 
         // try to create the same vault again, which should raise an error
-        Promise promiseCreateExist = mock(Promise.class);
         performanceLogger.start("CREATE_VAULT_EXIST");
-        vaultManager.createVault(
-                VAULT_NAME,
-                VAULT_DATA,
-                VAULT_KEY,
-                promiseCreateExist
-        );
+        try {
+            vaultManager.createVault(
+                    VAULT_NAME,
+                    VAULT_DATA,
+                    VAULT_KEY
+            );
+        } catch (Exception ex) {
+            Assert.assertEquals("VAULT_ALREADY_EXIST", ex.getMessage());
+        }
         performanceLogger.end("CREATE_VAULT_EXIST");
-        verify(promiseCreateExist).reject(
-                "VAULT_ALREADY_EXIST",
-                "Vault already exist, cannot overwrite current vault!"
-        );
 
 
         // verify we can fetch the vault and open with the provided key
-        Promise promiseOpen = mock(Promise.class);
         performanceLogger.start("OPEN_VAULT");
-        vaultManager.openVault(
+        Assert.assertEquals(VAULT_DATA, vaultManager.openVault(
                 VAULT_NAME,
-                VAULT_KEY,
-                promiseOpen
-        );
+                VAULT_KEY
+        ));
         performanceLogger.end("OPEN_VAULT");
-        verify(promiseOpen).resolve(VAULT_DATA);
-
 
         // should return false for migration required as vault has been created with latest cipher
-        Promise promiseVaultIsMigrationRequired = mock(Promise.class);
         performanceLogger.start("IS_MIGRATION_REQUIRED");
-        vaultManager.isMigrationRequired(
-                VAULT_NAME,
-                promiseVaultIsMigrationRequired
+        final WritableMap migrationRequiredResult = vaultManager.isMigrationRequired(
+                VAULT_NAME
         );
         performanceLogger.end("IS_MIGRATION_REQUIRED");
-        final WritableMap IsMigrationRequiredResults = Arguments.createMap();
-        IsMigrationRequiredResults.putString("vault", VAULT_NAME);
-        IsMigrationRequiredResults.putInt("current_cipher_version", Cipher.getLatestCipherVersion());
-        IsMigrationRequiredResults.putInt("latest_cipher_version", Cipher.getLatestCipherVersion());
-        IsMigrationRequiredResults.putBoolean("migration_required", false);
-        verify(promiseVaultIsMigrationRequired).resolve(IsMigrationRequiredResults);
+
+        Assert.assertEquals(VAULT_NAME, migrationRequiredResult.getString("vault"));
+        Assert.assertEquals(Cipher.getLatestCipherVersion(), migrationRequiredResult.getInt("current_cipher_version"));
+        Assert.assertEquals(Cipher.getLatestCipherVersion(), migrationRequiredResult.getInt("latest_cipher_version"));
+        Assert.assertFalse(migrationRequiredResult.getBoolean("migration_required"));
 
 
         // purge vault
-        Promise promiseVaultPurge = mock(Promise.class);
         performanceLogger.start("PURGE_VAULT");
-        vaultManager.purgeVault(
-                VAULT_NAME,
-                promiseVaultPurge
-        );
+        Assert.assertTrue(vaultManager.purgeVault(VAULT_NAME));
         performanceLogger.end("PURGE_VAULT");
-        verify(promiseVaultPurge).resolve(true);
 
         // should return false as vault purged
-        Promise promiseVaultExistAfterPurge = mock(Promise.class);
-        vaultManager.vaultExist(
-                VAULT_NAME,
-                promiseVaultExistAfterPurge
-        );
-        verify(promiseVaultExistAfterPurge).resolve(false);
+        Assert.assertFalse(vaultManager.vaultExist(VAULT_NAME));
     }
 
 
     @Test
-    public void StorageEncryptionKeyTest() throws CryptoFailedException {
+    public void StorageEncryptionKeyTest() throws Exception {
         // check if the key is not exist
         Assert.assertNull(keychain.getItem(STORAGE_ENCRYPTION_KEY));
 
         // should generate new encryption key and store in the keychain
-        Promise promiseGetStorageEncryptionKeyFirst = mock(Promise.class);
         performanceLogger.start("GET_STORAGE_ENCRYPTION_KEY_GENERATE");
-        vaultManager.getStorageEncryptionKey(
-                STORAGE_ENCRYPTION_KEY,
-                promiseGetStorageEncryptionKeyFirst
-        );
+        Assert.assertNotNull(vaultManager.getStorageEncryptionKey(STORAGE_ENCRYPTION_KEY));
         performanceLogger.end("GET_STORAGE_ENCRYPTION_KEY_GENERATE");
 
         // get newly generated encryption from keychain
         Map<String, String> item = keychain.getItem(STORAGE_ENCRYPTION_KEY);
         String storageEncryptionKey = item.get("password");
 
+        // should not be null
+        Assert.assertNotNull(storageEncryptionKey);
         // check newly generated key length be 64 bytes
         Assert.assertEquals(128, storageEncryptionKey.length());
 
-        verify(promiseGetStorageEncryptionKeyFirst).resolve(storageEncryptionKey);
-
         // running the same method again should resolve to same encryption key
-        Promise promiseGetStorageEncryptionKeySecond = mock(Promise.class);
         performanceLogger.start("GET_STORAGE_ENCRYPTION_KEY_FETCH");
-        vaultManager.getStorageEncryptionKey(
-                STORAGE_ENCRYPTION_KEY,
-                promiseGetStorageEncryptionKeySecond
-        );
+        Assert.assertEquals(storageEncryptionKey, vaultManager.getStorageEncryptionKey(
+                STORAGE_ENCRYPTION_KEY
+        ));
         performanceLogger.end("GET_STORAGE_ENCRYPTION_KEY_FETCH");
-        verify(promiseGetStorageEncryptionKeySecond).resolve(storageEncryptionKey);
     }
 
     @AfterClass

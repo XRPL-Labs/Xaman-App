@@ -85,6 +85,8 @@ static PerformanceLogger *performanceLogger;
   NSDictionary *item = [Keychain getItem:STORAGE_ENCRYPTION_KEY error:&error];
   XCTAssertNil(error);
   NSString *storageEncryptionKey = item[@"data"];
+  // should not be null
+  XCTAssertNotNil(storageEncryptionKey);
   // check newly generated key length be 64 bytes
   XCTAssertEqual(128, [storageEncryptionKey length]);
   // running the same method again should resolve to same encryption key

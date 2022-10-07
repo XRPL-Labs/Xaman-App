@@ -35,10 +35,10 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
         return NAME;
     }
 
-    private static void rejectWithError(Promise promise, Exception exception){
-        StringBuilder error =  new StringBuilder();
+    private static void rejectWithError(Promise promise, Exception exception) {
+        StringBuilder error = new StringBuilder();
         error.append(exception.getMessage());
-        if(exception.getCause() != null){
+        if (exception.getCause() != null) {
             error.append(": ");
             error.append(exception.getCause().toString());
         }
@@ -46,109 +46,188 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
     }
 
 
+    //region VaultManager
+
     /*
-     Create a new encrypted vault with given name/data and encrypt with provided key
-     NOTE: existing vault cannot be overwritten
-    */
-    @ReactMethod
-    public void createVault(String vaultName, String data, String key, Promise promise) {
-        try {
-            // check if the vault already exist, we don't want to overwrite the existing vault
-            // get the item from storage
-            boolean exist = keychain.itemExist(vaultName);
+   Create a new encrypted vault with given name/data and encrypt with provided key
+   NOTE: existing vault cannot be overwritten
+  */
+    public boolean createVault(final String vaultName, final String data, final String key)
+            throws Exception {
 
-            // vault already exist, just reject
-            if (exist) {
-                promise.reject(
-                        "VAULT_ALREADY_EXIST",
-                        "Vault already exist, cannot overwrite current vault!"
-                );
-                return;
-            }
+        // check if the vault already exist, we don't want to overwrite the existing vault
+        // get the item from storage
+        boolean exist = keychain.itemExist(vaultName);
 
-            // try to encrypt the data with provided key
-            Map<String, Object> cipherResult = Cipher.encrypt(data, key);
-
-            // convert dict derived keys to string
-            Cipher.DerivedKeys derivedKeys = (Cipher.DerivedKeys) cipherResult.get("derived_keys");
-            String derivedKeyString = derivedKeys.toJSONString();
-
-            String cipher = (String) cipherResult.get("cipher");
-
-            // store vault in the keychain
-            keychain.setItem(vaultName, derivedKeyString, cipher);
-
-            promise.resolve(true);
-        } catch (Exception e) {
-            rejectWithError(promise, e);
+        // vault already exist, just reject
+        if (exist) {
+            throw new Exception("VAULT_ALREADY_EXIST");
         }
+
+        // try to encrypt the data with provided key
+        Map<String, Object> cipherResult = Cipher.encrypt(data, key);
+
+        // convert dict derived keys to string
+        Cipher.DerivedKeys derivedKeys = (Cipher.DerivedKeys) cipherResult.get("derived_keys");
+        String derivedKeyString = derivedKeys.toJSONString();
+
+        String cipher = (String) cipherResult.get("cipher");
+
+        // store vault in the keychain
+        keychain.setItem(vaultName, derivedKeyString, cipher);
+
+        return true;
     }
 
 
     /*
      Open the encrypted vault with provided key and return the clear data
     */
-    @ReactMethod
-    public void openVault(String vaultName, String key, Promise promise) {
-        try {
-            Map<String, String> item = keychain.getItem(vaultName);
+    public String openVault(@NonNull final String vaultName, @NonNull final String key)
+            throws Exception {
 
-            // no item found in the storage for the given name, just reject
-            if (item == null) {
-                promise.reject(
-                        "VAULT_NOT_EXIST",
-                        "Unable to find the vault in the storage!"
-                );
-                return;
-            }
+        Map<String, String> item = keychain.getItem(vaultName);
 
-            String clearText = Cipher.decrypt(
-                    Objects.requireNonNull(item.get("password")),
-                    key,
-                    Objects.requireNonNull(item.get("username"))
-            );
-
-            promise.resolve(clearText);
-        } catch (Exception e) {
-            rejectWithError(promise, e);
+        // no item found in the storage for the given name, just reject
+        if (item == null) {
+            throw new Exception("VAULT_NOT_EXIST");
         }
+
+        return Cipher.decrypt(
+                Objects.requireNonNull(item.get("password")),
+                key,
+                Objects.requireNonNull(item.get("username"))
+        );
     }
 
     /*
-     Check vault is already exist with given name
+    Check vault is already exist with given name
     */
-    @ReactMethod
-    public void vaultExist(String vaultName, Promise promise) {
-        try {
-            boolean exist = keychain.itemExist(vaultName);
-            promise.resolve(exist);
-        } catch (Exception e) {
-            rejectWithError(promise, e);
-        }
+    public boolean vaultExist(@NonNull final String vaultName) {
+        return keychain.itemExist(vaultName);
     }
+
 
     /*
      Purge a vault with given name
      NOTE: this action cannot be undo and is permanent
     */
-    @ReactMethod
-    public void purgeVault(String vaultName, Promise promise) {
-        try {
-            keychain.deleteItem(vaultName);
-            promise.resolve(true);
-        } catch (Exception e) {
-            rejectWithError(promise, e);
-        }
+    public boolean purgeVault(@NonNull final String vaultName) throws Exception {
+        keychain.deleteItem(vaultName);
+        return true;
     }
 
     /*
      Purge ALL vaults in the keychain
      NOTE: this action cannot be undo and is permanent, used with caution
     */
+    public void purgeAll() throws Exception {
+        keychain.clear();
+    }
+
+    /*
+    Check a vault is encrypted with the latest Cipher or it needs a migrations
+    */
+    public WritableMap isMigrationRequired(@NonNull final String vaultName) throws Exception {
+        // get the item from storage
+        Map<String, String> item = keychain.getItem(vaultName);
+
+        // calculate derived keys for this vault
+        Cipher.DerivedKeys derivedKeys = Cipher.getDerivedKeys(
+                Objects.requireNonNull(item.get("username"))
+        );
+
+        int latestCipherVersion = Cipher.getLatestCipherVersion();
+        int currentCipherVersion = derivedKeys.version;
+
+        boolean isMigrationRequired = latestCipherVersion > currentCipherVersion;
+
+        final WritableMap results = Arguments.createMap();
+        results.putString("vault", vaultName);
+        results.putInt("current_cipher_version", currentCipherVersion);
+        results.putInt("latest_cipher_version", latestCipherVersion);
+        results.putBoolean("migration_required", isMigrationRequired);
+
+        return results;
+    }
+
+    /*
+    Get the storage encryption key from keychain
+    NOTE: this method will generate new key and store it in case of missing key
+    */
+    public String getStorageEncryptionKey(@NonNull final String keyName) throws Exception {
+        // try to retrieve the key
+        Map<String, String> item = keychain.getItem(keyName);
+
+        // key already exist in the keychain
+        if (item != null) {
+            return Objects.requireNonNull(item.get("password"));
+        }
+
+        // key not exist
+        // if no key found in the keychain try to generate one and store in the keychain
+        byte[] encryptionKeyBytes = Crypto.RandomBytes(64);
+
+        // convert encryption key to hex
+        String encryptionKey = Crypto.BytesToHex(encryptionKeyBytes);
+
+        // store new encryption key in the keychain
+        keychain.setItem(keyName, "", encryptionKey);
+
+        // return new encryption key
+        return encryptionKey;
+    }
+
+
+    //endregion
+
+
+    //region JS interface
+
+    @ReactMethod
+    public void createVault(String vaultName, String data, String key, Promise promise) {
+        try {
+            boolean result = createVault(vaultName, data, key);
+            promise.resolve(result);
+        } catch (Exception e) {
+            rejectWithError(promise, e);
+        }
+    }
+
+    @ReactMethod
+    public void openVault(String vaultName, String key, Promise promise) {
+        try {
+            String clearText = openVault(vaultName, key);
+            promise.resolve(clearText);
+        } catch (Exception e) {
+            rejectWithError(promise, e);
+        }
+    }
+
+    @ReactMethod
+    public void vaultExist(String vaultName, Promise promise) {
+        try {
+            boolean exist = vaultExist(vaultName);
+            promise.resolve(exist);
+        } catch (Exception e) {
+            rejectWithError(promise, e);
+        }
+    }
+
+    @ReactMethod
+    public void purgeVault(String vaultName, Promise promise) {
+        try {
+            purgeVault(vaultName);
+            promise.resolve(true);
+        } catch (Exception e) {
+            rejectWithError(promise, e);
+        }
+    }
+
     @ReactMethod
     public void purgeAll(Promise promise) {
         try {
-            keychain.clear();
+            purgeAll();
             promise.resolve(true);
         } catch (Exception e) {
             rejectWithError(promise, e);
@@ -161,25 +240,7 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void isMigrationRequired(String vaultName, Promise promise) {
         try {
-            // get the item from storage
-            Map<String, String> item = keychain.getItem(vaultName);
-
-            // calculate derived keys for this vault
-            Cipher.DerivedKeys derivedKeys = Cipher.getDerivedKeys(
-                    Objects.requireNonNull(item.get("username"))
-            );
-
-            int latestCipherVersion = Cipher.getLatestCipherVersion();
-            int currentCipherVersion = derivedKeys.version;
-
-            boolean isMigrationRequired = latestCipherVersion > currentCipherVersion;
-
-            final WritableMap results = Arguments.createMap();
-            results.putString("vault", vaultName);
-            results.putInt("current_cipher_version", currentCipherVersion);
-            results.putInt("latest_cipher_version", latestCipherVersion);
-            results.putBoolean("migration_required", isMigrationRequired);
-
+            final WritableMap results = isMigrationRequired(vaultName);
             promise.resolve(results);
         } catch (Exception e) {
             rejectWithError(promise, e);
@@ -194,29 +255,12 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getStorageEncryptionKey(String keyName, Promise promise) {
         try {
-            // try to retrieve the key
-            Map<String, String> item = keychain.getItem(keyName);
-
-            // key already exist in the keychain
-            if (item != null) {
-                promise.resolve(Objects.requireNonNull(item.get("password")));
-                return;
-            }
-
-            // key not exist
-            // if no key found in the keychain try to generate one and store in the keychain
-            byte[] encryptionKeyBytes = Crypto.RandomBytes(64);
-
-            // convert encryption key to hex
-            String encryptionKey = Crypto.BytesToHex(encryptionKeyBytes);
-
-            // store new encryption key in the keychain
-            keychain.setItem(keyName, "", encryptionKey);
-
-            // return new encryption key
+            String encryptionKey = getStorageEncryptionKey(keyName);
             promise.resolve(encryptionKey);
         } catch (Exception e) {
             rejectWithError(promise, e);
         }
     }
+
+    //endregion
 }
