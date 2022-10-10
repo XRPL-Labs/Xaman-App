@@ -14,11 +14,6 @@ import androidx.annotation.Nullable;
 
 import libs.security.vault.exceptions.KeyStoreAccessException;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
@@ -36,10 +31,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.crypto.Cipher;
-import javax.crypto.CipherInputStream;
-import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
 
 abstract public class CipherStorageBase implements CipherStorage {
   //region Constants
@@ -47,10 +40,6 @@ abstract public class CipherStorageBase implements CipherStorage {
   protected static final String LOG_TAG = CipherStorageBase.class.getSimpleName();
   /** Default key storage type/name. */
   public static final String KEYSTORE_TYPE = "AndroidKeyStore";
-  /** Size of hash calculation buffer. Default: 4Kb. */
-  private static final int BUFFER_SIZE = 4 * 1024;
-  /** Default size of read/write operation buffer. Default: 16Kb. */
-  private static final int BUFFER_READ_WRITE_SIZE = 4 * BUFFER_SIZE;
   /** Default charset encoding. */
   public static final Charset UTF8 = StandardCharsets.UTF_8;
   //endregion
@@ -64,6 +53,7 @@ abstract public class CipherStorageBase implements CipherStorage {
   protected transient Cipher cachedCipher;
   /** Cached instance of the Keystore. */
   protected transient KeyStore cachedKeyStore;
+
 
   /** Remove key with provided name from security storage. */
   @Override
@@ -101,11 +91,6 @@ abstract public class CipherStorageBase implements CipherStorage {
   protected abstract KeyGenParameterSpec.Builder getKeyGenSpecBuilder(@NonNull final String alias)
     throws GeneralSecurityException;
 
-  /** Try to generate key from provided specification. */
-  @NonNull
-  protected abstract Key generateKey(@NonNull final KeyGenParameterSpec spec)
-    throws GeneralSecurityException;
-
   /** Get name of the required encryption algorithm. */
   @NonNull
   protected abstract String getEncryptionAlgorithm();
@@ -129,6 +114,19 @@ abstract public class CipherStorageBase implements CipherStorage {
     }
 
     return cachedCipher;
+  }
+
+  /**
+   * Try to generate key from provided specification.
+   */
+  @NonNull
+  protected Key generateKey(@NonNull final KeyGenParameterSpec spec) throws GeneralSecurityException {
+    final KeyGenerator generator = KeyGenerator.getInstance(getEncryptionAlgorithm(), KEYSTORE_TYPE);
+
+    // initialize key generator
+    generator.init(spec);
+
+    return generator.generateKey();
   }
 
   /** Extract existing key or generate a new one. In case of problems raise exception. */
@@ -205,79 +203,6 @@ abstract public class CipherStorageBase implements CipherStorage {
     return cachedKeyStore;
   }
 
-  /** Default encryption with cipher without initialization vector. */
-  @NonNull
-  public byte[] encryptString(@NonNull final Key key, @NonNull final String value)
-    throws IOException, GeneralSecurityException {
-
-    return encryptString(key, value, Defaults.encrypt);
-  }
-
-  /** Default decryption with cipher without initialization vector. */
-  @NonNull
-  public String decryptBytes(@NonNull final Key key, @NonNull final byte[] bytes)
-    throws IOException, GeneralSecurityException {
-
-    return decryptBytes(key, bytes, Defaults.decrypt);
-  }
-
-  /** Encrypt provided string value. */
-  @NonNull
-  protected byte[] encryptString(@NonNull final Key key, @NonNull final String value,
-                                 @Nullable final EncryptStringHandler handler)
-    throws IOException, GeneralSecurityException {
-
-    final Cipher cipher = getCachedInstance();
-
-    // encrypt the value using a CipherOutputStream
-    try (final ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-
-      // write initialization vector to the beginning of the stream
-      if (null != handler) {
-        handler.initialize(cipher, key, output);
-        output.flush();
-      }
-
-      try (final CipherOutputStream encrypt = new CipherOutputStream(output, cipher)) {
-        encrypt.write(value.getBytes(UTF8));
-      }
-
-      return output.toByteArray();
-    } catch (Throwable fail) {
-      Log.e(LOG_TAG, fail.getMessage(), fail);
-
-      throw fail;
-    }
-  }
-
-  /** Decrypt provided bytes to a string. */
-  @NonNull
-  protected String decryptBytes(@NonNull final Key key, @NonNull final byte[] bytes,
-                                @Nullable final DecryptBytesHandler handler)
-    throws GeneralSecurityException, IOException {
-    final Cipher cipher = getCachedInstance();
-
-    // decrypt the bytes using a CipherInputStream
-    try (ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-         ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-
-      // read the initialization vector from the beginning of the stream
-      if (null != handler) {
-        handler.initialize(cipher, key, in);
-      }
-
-      try (CipherInputStream decrypt = new CipherInputStream(in, cipher)) {
-        copy(decrypt, output);
-      }
-
-      return new String(output.toByteArray(), UTF8);
-    } catch (Throwable fail) {
-      Log.w(LOG_TAG, fail.getMessage(), fail);
-
-      throw fail;
-    }
-  }
-
   /** Get the most secured keystore */
   public void generateKeyAndStoreUnderAlias(@NonNull final String alias)
     throws GeneralSecurityException {
@@ -338,91 +263,5 @@ abstract public class CipherStorageBase implements CipherStorage {
     return generateKey(specification);
   }
 
-  //endregion
-
-  //region Static methods
-
-  /**
-   * Copy input stream to output.
-   *
-   * @param in  instance of input stream.
-   * @param out instance of output stream.
-   * @throws IOException read/write operation failure.
-   */
-  public static void copy(@NonNull final InputStream in, @NonNull final OutputStream out) throws IOException {
-    // Transfer bytes from in to out
-    final byte[] buf = new byte[BUFFER_READ_WRITE_SIZE];
-    int len;
-
-    while ((len = in.read(buf)) > 0) {
-      out.write(buf, 0, len);
-    }
-  }
-  //endregion
-
-  //region Nested declarations
-
-  /** Generic cipher initialization. */
-  public static final class Defaults {
-    public static final EncryptStringHandler encrypt = (cipher, key, output) -> cipher.init(Cipher.ENCRYPT_MODE, key);
-
-    public static final DecryptBytesHandler decrypt = (cipher, key, input) -> cipher.init(Cipher.DECRYPT_MODE, key);
-  }
-
-  /** Initialization vector support. */
-  public static final class IV {
-    /** Encryption/Decryption initialization vector length. */
-    public static final int IV_LENGTH = 16;
-
-    /** Save Initialization vector to output stream. */
-    public static final EncryptStringHandler encrypt = (cipher, key, output) -> {
-      cipher.init(Cipher.ENCRYPT_MODE, key);
-
-      final byte[] iv = cipher.getIV();
-      output.write(iv, 0, iv.length);
-    };
-    /** Read initialization vector from input stream and configure cipher by it. */
-    public static final DecryptBytesHandler decrypt = (cipher, key, input) -> {
-      final IvParameterSpec iv = readIv(input);
-      cipher.init(Cipher.DECRYPT_MODE, key, iv);
-    };
-
-    /** Extract initialization vector from provided bytes array. */
-    @NonNull
-    public static IvParameterSpec readIv(@NonNull final byte[] bytes) throws IOException {
-      final byte[] iv = new byte[IV_LENGTH];
-
-      if (IV_LENGTH >= bytes.length)
-        throw new IOException("Insufficient length of input data for IV extracting.");
-
-      System.arraycopy(bytes, 0, iv, 0, IV_LENGTH);
-
-      return new IvParameterSpec(iv);
-    }
-
-    /** Extract initialization vector from provided input stream. */
-    @NonNull
-    public static IvParameterSpec readIv(@NonNull final InputStream inputStream) throws IOException {
-      final byte[] iv = new byte[IV_LENGTH];
-      final int result = inputStream.read(iv, 0, IV_LENGTH);
-
-      if (result != IV_LENGTH)
-        throw new IOException("Input stream has insufficient data.");
-
-      return new IvParameterSpec(iv);
-    }
-  }
-
-  /** Handler for storing cipher configuration in output stream. */
-  public interface EncryptStringHandler {
-    void initialize(@NonNull final Cipher cipher, @NonNull final Key key, @NonNull final OutputStream output)
-      throws GeneralSecurityException, IOException;
-  }
-
-  /** Handler for configuring cipher by initialization data from input stream. */
-  public interface DecryptBytesHandler {
-    void initialize(@NonNull final Cipher cipher, @NonNull final Key key, @NonNull final InputStream input)
-      throws GeneralSecurityException, IOException;
-  }
   //endregion
 }

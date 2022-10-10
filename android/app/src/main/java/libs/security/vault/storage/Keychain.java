@@ -12,12 +12,10 @@ import libs.security.vault.storage.cipherStorage.CipherStorage;
 import libs.security.vault.storage.cipherStorage.CipherStorage.DecryptionResult;
 import libs.security.vault.storage.cipherStorage.CipherStorage.EncryptionResult;
 import libs.security.vault.storage.cipherStorage.CipherStorageKeystoreAesCbc;
-import libs.security.vault.storage.cipherStorage.CipherStorageKeystoreRsaEcb;
 import libs.security.vault.exceptions.CryptoFailedException;
 import libs.security.vault.exceptions.KeyStoreAccessException;
+import libs.security.vault.storage.cipherStorage.CipherStorageKeystoreAesGcm;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -35,16 +33,16 @@ public class Keychain {
     /**
      * Supported ciphers.
      */
-    @StringDef({KnownCiphers.AES, KnownCiphers.RSA})
+    @StringDef({KnownCiphers.AESCBC, KnownCiphers.AESGCM})
     public @interface KnownCiphers {
         /**
          * AES encryption.
          */
-        String AES = "KeystoreAESCBC";
-        /**
-         * RSA encryption
-         */
-        String RSA = "KeystoreRSAECB";
+
+        // CBC
+        String AESCBC = "KeystoreAESCBC";
+        // GCM
+        String AESGCM = "KeystoreAESGCM";
     }
 
     /**
@@ -68,7 +66,7 @@ public class Keychain {
 
         // add supported cipher storage
         addCipherStorageToMap(new CipherStorageKeystoreAesCbc());
-        addCipherStorageToMap(new CipherStorageKeystoreRsaEcb());
+        addCipherStorageToMap(new CipherStorageKeystoreAesGcm());
     }
 
     public void setItem(@NonNull final String alias,
@@ -157,7 +155,7 @@ public class Keychain {
      */
     @NonNull
     CipherStorage getCipherStorageForEncryption() {
-        return getCipherStorageByName(KnownCiphers.RSA);
+        return getCipherStorageByName(KnownCiphers.AESGCM);
     }
 
     /**
