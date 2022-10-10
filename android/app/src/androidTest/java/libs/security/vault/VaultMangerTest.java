@@ -16,17 +16,19 @@ import org.junit.runner.RunWith;
 
 import java.util.Map;
 
+import extentions.PerformanceLogger;
 import libs.security.providers.UniqueIdProvider;
+import libs.security.vault.VaultManagerModule;
 import libs.security.vault.cipher.Cipher;
 import libs.security.vault.storage.Keychain;
-
-import extentions.PerformanceLogger;
 
 @RunWith(AndroidJUnit4.class)
 public class VaultMangerTest {
     static final String VAULT_NAME = "VAULT_TEST";
+    static final String VAULT_NAME_RECOVERY = VAULT_NAME + VaultManagerModule.RECOVERY_SUFFIX;
     static final String VAULT_DATA = "VAULT_TEST_DATA";
     static final String VAULT_KEY = "VAULT_TEST_KEY";
+    static final String VAULT_NEW_KEY = "VAULT_TEST_NEW_KEY";
     static final String STORAGE_ENCRYPTION_KEY = "STORAGE_ENCRYPTION_KEY";
 
     private VaultManagerModule vaultManager = null;
@@ -103,12 +105,12 @@ public class VaultMangerTest {
         }
         performanceLogger.end("CREATE_VAULT_EXIST");
 
-
         // verify we can fetch the vault and open with the provided key
         performanceLogger.start("OPEN_VAULT");
         Assert.assertEquals(VAULT_DATA, vaultManager.openVault(
                 VAULT_NAME,
-                VAULT_KEY
+                VAULT_KEY,
+                false
         ));
         performanceLogger.end("OPEN_VAULT");
 
@@ -132,6 +134,62 @@ public class VaultMangerTest {
 
         // should return false as vault purged
         Assert.assertFalse(vaultManager.vaultExist(VAULT_NAME));
+    }
+
+
+    @Test
+    public void VaultRecoveryTest() throws Exception {
+        // check if vault && recovery vault is not exist
+        Assert.assertNull(keychain.getItem(VAULT_NAME));
+        Assert.assertNull(keychain.getItem(VAULT_NAME_RECOVERY));
+
+        // create recovery vault
+        vaultManager.createVault(
+                VAULT_NAME_RECOVERY,
+                VAULT_DATA,
+                VAULT_KEY
+        );
+
+        // opening vault with recoverable flag should be able to restore vault
+        performanceLogger.start("OPEN_VAULT_RECOVERED");
+        Assert.assertEquals(VAULT_DATA, vaultManager.openVault(
+                VAULT_NAME,
+                VAULT_KEY,
+                true
+        ));
+        performanceLogger.end("OPEN_VAULT_RECOVERED");
+
+        // check if the actual vault is there
+        Assert.assertNotNull(keychain.getItem(VAULT_NAME));
+        Assert.assertNull(keychain.getItem(VAULT_NAME_RECOVERY));
+    }
+
+    @Test
+    public void VaultReKeyTest() throws Exception {
+        // check if vault is not exist
+        Assert.assertNull(keychain.getItem(VAULT_NAME));
+
+        // create the vault
+        Assert.assertTrue(vaultManager.createVault(
+                VAULT_NAME,
+                VAULT_DATA,
+                VAULT_KEY
+        ));
+
+        // should be able to reKey the vault with new key
+        performanceLogger.start("VAULT_RE_KEY");
+        Assert.assertTrue(
+                vaultManager.reKeyVault(VAULT_NAME, VAULT_KEY, VAULT_NEW_KEY)
+        );
+        performanceLogger.end("VAULT_RE_KEY");
+
+
+        // should be able to open vault with new key
+        Assert.assertEquals(VAULT_DATA, vaultManager.openVault(
+                VAULT_NAME,
+                VAULT_NEW_KEY,
+                false
+        ));
     }
 
 

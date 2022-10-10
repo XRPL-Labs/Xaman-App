@@ -50,7 +50,16 @@ const Vault = {
      *  Check key exist in vault
      */
     exist: async (name: string): Promise<boolean> => {
-        return VaultManagerModule.vaultExist(name);
+        return new Promise((resolve, reject) => {
+            VaultManagerModule.vaultExist(name)
+                .then((result: boolean) => {
+                    resolve(result);
+                })
+                .catch((error: any) => {
+                    logger.error('Vault vaultExist error', error);
+                    reject(error);
+                });
+        });
     },
 
     /**
@@ -75,8 +84,9 @@ const Vault = {
 
                     resolve(keyBytes);
                 })
-                .catch((e: any) => {
-                    reject(e);
+                .catch((error: any) => {
+                    logger.error('Vault getStorageEncryptionKey error', error);
+                    reject(error);
                 });
         });
     },
@@ -84,48 +94,45 @@ const Vault = {
     /**
      *  check if vault needs migration
      */
-    isMigrationRequired: (keyName: string): Promise<Number> => {
-        return VaultManagerModule.isMigrationRequired(keyName);
+    isMigrationRequired: (name: string): Promise<any> => {
+        return new Promise((resolve, reject) => {
+            VaultManagerModule.isMigrationRequired(name)
+                .then((result: any) => {
+                    resolve(result);
+                })
+                .catch((error: any) => {
+                    logger.error('Vault isMigrationRequired error', error);
+                    reject(error);
+                });
+        });
     },
 
     /**
      *  reKey the vault content
-     *  TODO: this need to change to a more reliable way
      */
     reKey: async (name: string, oldKey: string, newKey: string): Promise<boolean> => {
-        try {
-            // open the vault and fetch clear text
-            const clearText = await Vault.open(name, oldKey);
-
-            if (!clearText) {
-                return false;
-            }
-
-            // remove the old vault
-            const purgeResult = await Vault.purge(name);
-
-            if (!purgeResult) {
-                return false;
-            }
-
-            // create the new vault
-            return await Vault.create(name, clearText, newKey);
-        } catch (error: any) {
-            logger.error('Vault reKey error', error);
-            return false;
-        }
+        return new Promise((resolve, reject) => {
+            VaultManagerModule.reKeyVault(name, oldKey, newKey)
+                .then((result: boolean) => {
+                    resolve(result);
+                })
+                .catch((error: any) => {
+                    logger.error('Vault reKey error');
+                    reject(error);
+                });
+        });
     },
 
     // Delete Vault & PrivateKey from keychain
     purge: (name: string): Promise<boolean> => {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             VaultManagerModule.purgeVault(name)
                 .then((result: boolean) => {
                     resolve(result);
                 })
                 .catch((error: any) => {
                     logger.error('Vault purge error', error);
-                    resolve(false);
+                    reject(error);
                 });
         });
     },

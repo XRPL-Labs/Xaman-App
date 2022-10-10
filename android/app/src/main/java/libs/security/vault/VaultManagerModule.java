@@ -1,5 +1,7 @@
 package libs.security.vault;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Arguments;
@@ -19,6 +21,8 @@ import libs.security.vault.storage.Keychain;
 
 @ReactModule(name = libs.security.vault.VaultManagerModule.NAME)
 public class VaultManagerModule extends ReactContextBaseJavaModule {
+    public static final String RECOVERY_SUFFIX = "_RECOVER";
+
     static final String NAME = "VaultManagerModule";
     private final Keychain keychain;
 
@@ -43,6 +47,10 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
             error.append(exception.getCause().toString());
         }
         promise.reject("-1", error.toString());
+    }
+
+    private static String getRecoveryVaultName(@NonNull final String vaultName) {
+        return String.format("%s%s", vaultName, RECOVERY_SUFFIX);
     }
 
 
@@ -73,8 +81,21 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
 
         String cipher = (String) cipherResult.get("cipher");
 
+        if (cipher == null) {
+            throw new Exception("UNABLE_TO_GET_VAULT_CIPHER");
+        }
+
         // store vault in the keychain
         keychain.setItem(vaultName, derivedKeyString, cipher);
+
+        // try to open the vault once before passing the result
+        // with this we make sure we are able to access the data
+//        final String clearText = openVault(vaultName, key, false);
+//
+//        // check if open vault result is equal to stored data
+//        if (!clearText.equals(data)) {
+//            throw new Exception("UNABLE_TO_VERIFY_RESULT");
+//        }
 
         return true;
     }
@@ -83,22 +104,89 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
     /*
      Open the encrypted vault with provided key and return the clear data
     */
-    public String openVault(@NonNull final String vaultName, @NonNull final String key)
+    public String openVault(@NonNull final String vaultName, @NonNull final String key, final boolean recoverable)
             throws Exception {
+        // an indicator that vault is recovered
+        boolean isVaultRecovered = false;
+        final String recoveryVaultName = VaultManagerModule.getRecoveryVaultName(vaultName);
 
+        // try to get vault with provided  name
         Map<String, String> item = keychain.getItem(vaultName);
 
-        // no item found in the storage for the given name, just reject
-        if (item == null) {
+        // if no item found an recoverable, check if recovery vault available
+        if (item == null && recoverable) {
+            // try to fetch recovery vault
+            item = keychain.getItem(recoveryVaultName);
+            // we were able to fetch from recovery vault
+            if (item != null) {
+                isVaultRecovered = true;
+            }
+        }
+
+        // no item found in the storage for the given name, reject
+        if (item == null || item.get("password") == null || item.get("username") == null) {
             throw new Exception("VAULT_NOT_EXIST");
         }
 
-        return Cipher.decrypt(
+        // decrypt the Keychain data
+        final String clearText = Cipher.decrypt(
                 Objects.requireNonNull(item.get("password")),
                 key,
                 Objects.requireNonNull(item.get("username"))
         );
+
+        // check if clear text is not empty
+        if (TextUtils.isEmpty(clearText)) {
+            throw new Exception("VAULT_DATA_IS_NULL");
+        }
+
+        // check if vault is recovered, then try to create the vault under the old name and remove recovery
+        if (isVaultRecovered) {
+            try {
+                // create the vault under the given name
+                createVault(vaultName, clearText, key);
+                // purge recovery vault
+                purgeVault(recoveryVaultName);
+            } catch (Exception e) {
+                // ignore in case of any exception
+            }
+        }
+
+        return clearText;
     }
+
+    /*
+    Re-key current vault with new key
+    NOTE: in case of migration required this will create new vault with latest cipher
+    */
+    public boolean reKeyVault(@NonNull final String vaultName, @NonNull final String oldKey, @NonNull final String newKey)
+            throws Exception {
+        // try to open the vault with provided old key and get clear text
+        final String clearText = openVault(vaultName, oldKey, false);
+
+        // try to create the new vault under a temp name with new key
+        // with this we will make sure we are able to recover the key in case of failure
+        final String recoveryVaultName = VaultManagerModule.getRecoveryVaultName(vaultName);
+
+        // before creating the recovery vault check if it already exist then remove it
+        if(vaultExist(recoveryVaultName)){
+            purgeVault(recoveryVaultName);
+        }
+        // create the recovery vault with the new key
+        createVault(recoveryVaultName, clearText, newKey);
+
+        // after we made sure we can store the data in a safe way, purge old vault
+        purgeVault(vaultName);
+
+        // create the vault again with the new key
+        createVault(vaultName, clearText, newKey);
+
+        // finally remove the created recovery vault
+        purgeVault(recoveryVaultName);
+
+        return true;
+    }
+
 
     /*
     Check vault is already exist with given name
@@ -197,8 +285,18 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void openVault(String vaultName, String key, Promise promise) {
         try {
-            String clearText = openVault(vaultName, key);
+            String clearText = openVault(vaultName, key, true);
             promise.resolve(clearText);
+        } catch (Exception e) {
+            rejectWithError(promise, e);
+        }
+    }
+
+    @ReactMethod
+    public void reKeyVault(String vaultName, String oldKey, String newKey, Promise promise) {
+        try {
+            boolean result = reKeyVault(vaultName, oldKey, newKey);
+            promise.resolve(result);
         } catch (Exception e) {
             rejectWithError(promise, e);
         }
@@ -234,9 +332,6 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
         }
     }
 
-    /*
-     Check a vault is encrypted with the latest Cipher or it needs a migrations
-    */
     @ReactMethod
     public void isMigrationRequired(String vaultName, Promise promise) {
         try {
@@ -247,11 +342,6 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
         }
     }
 
-
-    /*
-     Get the storage encryption key from keychain
-     NOTE: this method will generate new key and store it in case of missing key
-    */
     @ReactMethod
     public void getStorageEncryptionKey(String keyName, Promise promise) {
         try {
