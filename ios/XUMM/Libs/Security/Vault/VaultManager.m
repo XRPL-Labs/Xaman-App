@@ -189,7 +189,7 @@ NSString *getRecoveryVaultName(NSString *vaultName)
   // try to create the new vault under a temp name with new key
   // with this we will make sure we are able to recover the key in case of failure
   NSString *recoveryVaultName = getRecoveryVaultName(vaultName);
-  [VaultManagerModule createVault:recoveryVaultName data:cleartext key:newKey];
+  [VaultManagerModule createVault:recoveryVaultName data:cleartext key:oldKey];
   
   // after we made sure we can store the data in a safe way, purge old vault
   [VaultManagerModule purgeVault:vaultName];

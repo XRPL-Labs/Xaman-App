@@ -90,12 +90,12 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
 
         // try to open the vault once before passing the result
         // with this we make sure we are able to access the data
-//        final String clearText = openVault(vaultName, key, false);
-//
-//        // check if open vault result is equal to stored data
-//        if (!clearText.equals(data)) {
-//            throw new Exception("UNABLE_TO_VERIFY_RESULT");
-//        }
+        final String clearText = openVault(vaultName, key, false);
+
+        // check if open vault result is equal to stored data
+        if (!clearText.equals(data)) {
+            throw new Exception("UNABLE_TO_VERIFY_RESULT");
+        }
 
         return true;
     }
@@ -172,8 +172,9 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
         if(vaultExist(recoveryVaultName)){
             purgeVault(recoveryVaultName);
         }
-        // create the recovery vault with the new key
-        createVault(recoveryVaultName, clearText, newKey);
+
+        // create the recovery vault with the old key
+        createVault(recoveryVaultName, clearText, oldKey);
 
         // after we made sure we can store the data in a safe way, purge old vault
         purgeVault(vaultName);
