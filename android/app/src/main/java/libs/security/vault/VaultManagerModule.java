@@ -164,7 +164,7 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
         // try to open the vault with provided old key and get clear text
         final String clearText = openVault(vaultName, oldKey, false);
 
-        // try to create the new vault under a temp name with new key
+        // try to create the new vault under a temp recovery name with the old key
         // with this we will make sure we are able to recover the key in case of failure
         final String recoveryVaultName = VaultManagerModule.getRecoveryVaultName(vaultName);
 
