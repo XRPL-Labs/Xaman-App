@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
 
 import org.junit.After;
@@ -14,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import extentions.PerformanceLogger;
@@ -190,6 +192,51 @@ public class VaultMangerTest {
                 VAULT_NEW_KEY,
                 false
         ));
+    }
+
+    @Test
+    public void testVaultReKeyBatch() throws Exception {
+
+        ArrayList<String> vaults = new ArrayList<>();
+        vaults.add(String.format("%s%s", VAULT_NAME, "1"));
+        vaults.add(String.format("%s%s", VAULT_NAME, "2"));
+        vaults.add(String.format("%s%s", VAULT_NAME, "3"));
+
+        // check if vaults are not exist
+        for(String vaultName: vaults){
+            Assert.assertNull(keychain.getItem(vaultName));
+        }
+
+        // create the vaults
+        for(String vaultName: vaults){
+            Assert.assertTrue(vaultManager.createVault(
+                    vaultName,
+                    VAULT_DATA,
+                    VAULT_KEY
+            ));
+        }
+
+        // should be able to reKey the batch of vaults
+        performanceLogger.start("VAULT_BATCH_RE_KEY");
+        Assert.assertTrue(
+                vaultManager.reKeyBatchVaults(vaults, VAULT_KEY, VAULT_NEW_KEY)
+        );
+        performanceLogger.end("VAULT_BATCH_RE_KEY");
+
+        // should be able to open vaults with new key
+        for(String vaultName: vaults){
+            Assert.assertEquals(VAULT_DATA, vaultManager.openVault(
+                    vaultName,
+                    VAULT_NEW_KEY,
+                    false
+            ));
+        }
+
+        // the recovery vaults should not be exist
+        for(String vaultName: vaults){
+            String vaultRecoverName = String.format("%s%s", vaultName, "_RECOVER");
+            Assert.assertNull(keychain.getItem(vaultRecoverName));
+        }
     }
 
 

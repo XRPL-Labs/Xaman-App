@@ -13,6 +13,7 @@
 + (BOOL)vaultExist:(NSString *)vaultName;
 + (BOOL)purgeVault:(NSString *)vaultName;
 + (BOOL)reKeyVault:(NSString *)vaultName oldKey:(NSString *)oldKey newKey:(NSString *)newKey;
++ (BOOL)reKeyBatchVaults:(NSArray *)vaultNames oldKey:(NSString *)oldKey newKey:(NSString *)newKey;
 + (NSString *)openVault:(NSString *)vaultName key:(NSString *)key recoverable:(BOOL)recoverable;
 + (NSString *)getStorageEncryptionKey:(NSString *)keyName;
 + (NSDictionary *)isMigrationRequired:(NSString *)vaultName;

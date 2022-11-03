@@ -9,9 +9,12 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.module.annotations.ReactModule;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -168,7 +171,8 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
         // with this we will make sure we are able to recover the key in case of failure
         final String recoveryVaultName = VaultManagerModule.getRecoveryVaultName(vaultName);
 
-        // before creating the recovery vault check if it already exist then remove it
+        // check if a recovery vault is already exist, then remove it
+        // NOTE: removing recovery vault is safe as we could open the main vault
         if(vaultExist(recoveryVaultName)){
             purgeVault(recoveryVaultName);
         }
@@ -184,6 +188,56 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
 
         // finally remove the created recovery vault
         purgeVault(recoveryVaultName);
+
+        return true;
+    }
+
+   /*
+   Re-key batch vaults with new key
+   NOTE: in case of migration required this will create new vault with latest cipher
+   */
+    public boolean reKeyBatchVaults(@NonNull final ArrayList<String> vaultNames, @NonNull final String oldKey, @NonNull final String newKey)
+            throws Exception {
+
+        Map<String, String> vaultsClearText = new HashMap<>();
+
+        // try to open all vaults with provided old key and get clear text
+        for (String vaultName: vaultNames){
+            String clearText = openVault(vaultName, oldKey, false);
+            vaultsClearText.put(vaultName, clearText);
+        }
+
+        // try to create the new vault under a temp recovery name with the old key for all vaults
+        // with this we will make sure we are able to recover the key in case of failure
+        for (String vaultName: vaultNames){
+            // check if a recovery vault is already exist, then remove it
+            // NOTE: removing recovery vault is safe as we could open the main vault
+            if(vaultExist(VaultManagerModule.getRecoveryVaultName(vaultName))){
+                purgeVault(VaultManagerModule.getRecoveryVaultName(vaultName));
+            }
+            createVault(
+                    VaultManagerModule.getRecoveryVaultName(vaultName),
+                    vaultsClearText.get(vaultName),
+                    oldKey
+            );
+        }
+
+        // remove old vault and create one
+        for (String vaultName: vaultNames){
+            // after we made sure we can store the data in a safe way, purge old vault
+            purgeVault(vaultName);
+            // create the vault again with the new key
+            createVault(
+                    vaultName,
+                    vaultsClearText.get(vaultName),
+                    newKey
+            );
+        }
+
+        // finally remove the created recovery vaults
+        for (String vaultName: vaultNames){
+            purgeVault(VaultManagerModule.getRecoveryVaultName(vaultName));
+        }
 
         return true;
     }
@@ -297,6 +351,17 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
     public void reKeyVault(String vaultName, String oldKey, String newKey, Promise promise) {
         try {
             boolean result = reKeyVault(vaultName, oldKey, newKey);
+            promise.resolve(result);
+        } catch (Exception e) {
+            rejectWithError(promise, e);
+        }
+    }
+
+    @ReactMethod
+    public void reKeyBatchVaults(ReadableArray vaultNames, String oldKey, String newKey, Promise promise) {
+        try {
+            ArrayList<String> vaultsNamesList = (ArrayList<String>)(ArrayList<?>)(vaultNames.toArrayList());
+            boolean result = reKeyBatchVaults(vaultsNamesList, oldKey, newKey);
             promise.resolve(result);
         } catch (Exception e) {
             rejectWithError(promise, e);

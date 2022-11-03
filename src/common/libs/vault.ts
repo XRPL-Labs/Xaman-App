@@ -123,6 +123,22 @@ const Vault = {
         });
     },
 
+    /**
+     *  reKey the vault content
+     */
+    reKeyBatch: async (names: string[], oldKey: string, newKey: string): Promise<boolean> => {
+        return new Promise((resolve, reject) => {
+            VaultManagerModule.reKeyBatchVaults(names, oldKey, newKey)
+                .then((result: boolean) => {
+                    resolve(result);
+                })
+                .catch((error: any) => {
+                    logger.error('Vault batch reKey error');
+                    reject(error);
+                });
+        });
+    },
+
     // Delete Vault & PrivateKey from keychain
     purge: (name: string): Promise<boolean> => {
         return new Promise((resolve, reject) => {

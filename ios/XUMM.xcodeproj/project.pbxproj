@@ -910,9 +910,65 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
+				ENABLE_ON_DEMAND_RESOURCES = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/DoubleConversion\"",
+					"\"${PODS_ROOT}/Headers/Public/FBLazyVector\"",
+					"\"${PODS_ROOT}/Headers/Public/FBReactNativeSpec\"",
+					"\"${PODS_ROOT}/Headers/Public/Firebase\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseCore\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseCoreDiagnostics\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseCrashlytics\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseInstallations\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseMessaging\"",
+					"\"${PODS_ROOT}/Headers/Public/GCDWebServer\"",
+					"\"${PODS_ROOT}/Headers/Public/GoogleDataTransport\"",
+					"\"${PODS_ROOT}/Headers/Public/GoogleUtilities\"",
+					"\"${PODS_ROOT}/Headers/Public/HMSegmentedControl\"",
+					"\"${PODS_ROOT}/Headers/Public/Interactable\"",
+					"\"${PODS_ROOT}/Headers/Public/PromisesObjC\"",
+					"\"${PODS_ROOT}/Headers/Public/RCT-Folly\"",
+					"\"${PODS_ROOT}/Headers/Public/RCTRequired\"",
+					"\"${PODS_ROOT}/Headers/Public/RCTTypeSafety\"",
+					"\"${PODS_ROOT}/Headers/Public/RNFBAnalytics\"",
+					"\"${PODS_ROOT}/Headers/Public/RNFBApp\"",
+					"\"${PODS_ROOT}/Headers/Public/RNFBCrashlytics\"",
+					"\"${PODS_ROOT}/Headers/Public/RNFBMessaging\"",
+					"\"${PODS_ROOT}/Headers/Public/RNTangemSdk\"",
+					"\"${PODS_ROOT}/Headers/Public/React-Core\"",
+					"\"${PODS_ROOT}/Headers/Public/React-RCTBlob\"",
+					"\"${PODS_ROOT}/Headers/Public/React-RCTText\"",
+					"\"${PODS_ROOT}/Headers/Public/React-callinvoker\"",
+					"\"${PODS_ROOT}/Headers/Public/React-cxxreact\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsi\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsiexecutor\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsinspector\"",
+					"\"${PODS_ROOT}/Headers/Public/React-logger\"",
+					"\"${PODS_ROOT}/Headers/Public/React-perflogger\"",
+					"\"${PODS_ROOT}/Headers/Public/React-runtimeexecutor\"",
+					"\"${PODS_ROOT}/Headers/Public/ReactCommon\"",
+					"\"${PODS_ROOT}/Headers/Public/ReactNativeNavigation\"",
+					"\"${PODS_ROOT}/Headers/Public/TangemSdk\"",
+					"\"${PODS_ROOT}/Headers/Public/Yoga\"",
+					"\"${PODS_ROOT}/Headers/Public/fmt\"",
+					"\"${PODS_ROOT}/Headers/Public/glog\"",
+					"\"${PODS_ROOT}/Headers/Public/nanopb\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-camera\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-netinfo\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-sdk\"",
+					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/RealmJS/Headers\"",
+					"\"$(PODS_ROOT)/DoubleConversion\"",
+					"$(inherited)",
+					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
+					"\"$(PODS_ROOT)/boost\"",
+					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
+					$CONFIGURATION_TEMP_DIR/XUMM.build/DerivedSources,
 				);
 				INFOPLIST_FILE = XUMMTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -925,6 +981,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "XUMMTests/XUMMTests-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/XUMM.app/XUMM";
@@ -939,6 +996,62 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_ON_DEMAND_RESOURCES = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/DoubleConversion\"",
+					"\"${PODS_ROOT}/Headers/Public/FBLazyVector\"",
+					"\"${PODS_ROOT}/Headers/Public/FBReactNativeSpec\"",
+					"\"${PODS_ROOT}/Headers/Public/Firebase\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseCore\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseCoreDiagnostics\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseCrashlytics\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseInstallations\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseMessaging\"",
+					"\"${PODS_ROOT}/Headers/Public/GCDWebServer\"",
+					"\"${PODS_ROOT}/Headers/Public/GoogleDataTransport\"",
+					"\"${PODS_ROOT}/Headers/Public/GoogleUtilities\"",
+					"\"${PODS_ROOT}/Headers/Public/HMSegmentedControl\"",
+					"\"${PODS_ROOT}/Headers/Public/Interactable\"",
+					"\"${PODS_ROOT}/Headers/Public/PromisesObjC\"",
+					"\"${PODS_ROOT}/Headers/Public/RCT-Folly\"",
+					"\"${PODS_ROOT}/Headers/Public/RCTRequired\"",
+					"\"${PODS_ROOT}/Headers/Public/RCTTypeSafety\"",
+					"\"${PODS_ROOT}/Headers/Public/RNFBAnalytics\"",
+					"\"${PODS_ROOT}/Headers/Public/RNFBApp\"",
+					"\"${PODS_ROOT}/Headers/Public/RNFBCrashlytics\"",
+					"\"${PODS_ROOT}/Headers/Public/RNFBMessaging\"",
+					"\"${PODS_ROOT}/Headers/Public/RNTangemSdk\"",
+					"\"${PODS_ROOT}/Headers/Public/React-Core\"",
+					"\"${PODS_ROOT}/Headers/Public/React-RCTBlob\"",
+					"\"${PODS_ROOT}/Headers/Public/React-RCTText\"",
+					"\"${PODS_ROOT}/Headers/Public/React-callinvoker\"",
+					"\"${PODS_ROOT}/Headers/Public/React-cxxreact\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsi\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsiexecutor\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsinspector\"",
+					"\"${PODS_ROOT}/Headers/Public/React-logger\"",
+					"\"${PODS_ROOT}/Headers/Public/React-perflogger\"",
+					"\"${PODS_ROOT}/Headers/Public/React-runtimeexecutor\"",
+					"\"${PODS_ROOT}/Headers/Public/ReactCommon\"",
+					"\"${PODS_ROOT}/Headers/Public/ReactNativeNavigation\"",
+					"\"${PODS_ROOT}/Headers/Public/TangemSdk\"",
+					"\"${PODS_ROOT}/Headers/Public/Yoga\"",
+					"\"${PODS_ROOT}/Headers/Public/fmt\"",
+					"\"${PODS_ROOT}/Headers/Public/glog\"",
+					"\"${PODS_ROOT}/Headers/Public/nanopb\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-camera\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-netinfo\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-sdk\"",
+					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/RealmJS/Headers\"",
+					"\"$(PODS_ROOT)/DoubleConversion\"",
+					"$(inherited)",
+					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
+					"\"$(PODS_ROOT)/boost\"",
+					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
+					$CONFIGURATION_TEMP_DIR/XUMM.build/DerivedSources,
+				);
 				INFOPLIST_FILE = XUMMTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -950,6 +1063,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "XUMMTests/XUMMTests-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-Swift.h";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/XUMM.app/XUMM";
 			};

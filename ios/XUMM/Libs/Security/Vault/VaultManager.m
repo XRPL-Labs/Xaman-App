@@ -189,6 +189,13 @@ NSString *getRecoveryVaultName(NSString *vaultName)
   // try to create the new vault under a temp recovery name with the old key
   // with this we will make sure we are able to recover the key in case of failure
   NSString *recoveryVaultName = getRecoveryVaultName(vaultName);
+  // check if a recovery vault is already exist, then remove it
+  // NOTE: removing recovery vault is safe as we could open the main vault
+  if([VaultManagerModule vaultExist:recoveryVaultName]){
+    [VaultManagerModule purgeVault:recoveryVaultName];
+  }
+  
+  // create the recovery vault with the old key
   [VaultManagerModule createVault:recoveryVaultName data:cleartext key:oldKey];
   
   // after we made sure we can store the data in a safe way, purge old vault
@@ -199,6 +206,48 @@ NSString *getRecoveryVaultName(NSString *vaultName)
   
   // finally remove the created recovery vault
   [VaultManagerModule purgeVault:recoveryVaultName];
+  
+  return YES;
+}
+
+
+/*
+ Re-key batch vaults with new key
+ NOTE: in case of migration required this will create new vault with latest cipher
+ */
++ (BOOL) reKeyBatchVaults: (NSArray *)vaultNames oldKey:(NSString *)oldKey newKey:(NSString *)newKey
+{
+  NSMutableDictionary *vaultsClearText = [[NSMutableDictionary alloc] init];
+  
+  // try to open all vaults with provided old key and get clear text
+  for (NSString * vaultName in vaultNames){
+    NSString *cleartext = [VaultManagerModule openVault:vaultName key:oldKey recoverable:NO];
+    [vaultsClearText setObject:cleartext forKey:vaultName];
+  }
+          
+  // try to create the new vault under a temp recovery name with the old key for all vaults
+  // with this we will make sure we are able to recover the key in case of failure
+  for (NSString * vaultName in vaultNames){
+    // check if a recovery vault is already exist, then remove it
+    // NOTE: removing recovery vault is safe as we could open the main vault
+    if([VaultManagerModule vaultExist:getRecoveryVaultName(vaultName)]){
+      [VaultManagerModule purgeVault:getRecoveryVaultName(vaultName)];
+    }
+    [VaultManagerModule createVault:getRecoveryVaultName(vaultName) data:[vaultsClearText objectForKey:vaultName] key:oldKey];
+  }
+  
+  // remove old vault and create one
+  for (NSString * vaultName in vaultNames){
+    // after we made sure we can store the data in a safe way, purge old vault
+    [VaultManagerModule purgeVault:vaultName];
+    // create the vault again with the new key
+    [VaultManagerModule createVault:vaultName data:[vaultsClearText objectForKey:vaultName] key:newKey];
+  }
+  
+  // finally remove the created recovery vaults
+  for (NSString * vaultName in vaultNames){
+    [VaultManagerModule purgeVault:getRecoveryVaultName(vaultName)];
+  }
   
   return YES;
 }
@@ -350,6 +399,39 @@ RCT_EXPORT_METHOD(openVault:(NSString *)vaultName
     reject(@"open_vault_failed", @"Failed to open vault", errorFromException(exception));
   }
 }
+
+RCT_EXPORT_METHOD(reKeyVault:(NSString *)vaultName
+                  oldKey:(NSString *)oldKey
+                  newKey:(NSString *)newKey
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    BOOL result = [VaultManagerModule reKeyVault:vaultName oldKey:oldKey newKey:newKey];
+    resolve(@(result));
+  }
+  @catch (NSException *exception) {
+    reject(@"re_key_vault_failed", @"Failed to reKey vault", errorFromException(exception));
+  }
+}
+
+
+RCT_EXPORT_METHOD(reKeyBatchVaults:(NSArray *)vaultNames
+                  oldKey:(NSString *)oldKey
+                  newKey:(NSString *)newKey
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    BOOL result = [VaultManagerModule reKeyBatchVaults:vaultNames oldKey:oldKey newKey:newKey];
+    resolve(@(result));
+  }
+  @catch (NSException *exception) {
+    reject(@"re_key_batch_vaults_failed", @"Failed to reKey batch vaults", errorFromException(exception));
+  }
+}
+
+
 
 RCT_EXPORT_METHOD(vaultExist:(NSString *)vaultName
                   resolver:(RCTPromiseResolveBlock)resolve
