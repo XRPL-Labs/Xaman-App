@@ -43,7 +43,7 @@ interface State {
 /* Component ==================================================================== */
 class ChangePasscodeView extends Component<Props, State> {
     static screenName = AppScreens.Settings.ChangePasscode;
-    pinInput: PinInput;
+    private readonly pinInput: React.RefObject<PinInput>;
 
     static options() {
         return {
@@ -59,16 +59,26 @@ class ChangePasscodeView extends Component<Props, State> {
             currentStep: Steps.ENTER_OLD_PASSCODE,
             stepDescription: Localize.t('settings.enterOldPasscode'),
         };
+
+        this.pinInput = React.createRef();
     }
 
     componentDidMount() {
         InteractionManager.runAfterInteractions(this.focusPinInput);
     }
 
+    cleanPinInput = () => {
+        setTimeout(() => {
+            if (this.pinInput.current) {
+                this.pinInput.current.clean();
+            }
+        }, 100);
+    };
+
     focusPinInput = () => {
         setTimeout(() => {
-            if (this.pinInput) {
-                this.pinInput.focus();
+            if (this.pinInput.current) {
+                this.pinInput.current.focus();
             }
         }, 100);
     };
@@ -95,37 +105,65 @@ class ChangePasscodeView extends Component<Props, State> {
                 stepDescription,
             },
             () => {
-                this.pinInput.clean();
+                this.cleanPinInput();
                 this.focusPinInput();
             },
         );
     };
 
-    changePasscode = () => {
+    changePasscode = async () => {
         const { newPasscode } = this.state;
 
-        const { passcode } = CoreRepository.getSettings();
+        try {
+            // get current passcode
+            const { passcode } = CoreRepository.getSettings();
 
-        // store the new passcode in the store
-        CoreRepository.setPasscode(newPasscode).then(async (newEncPasscode) => {
+            // show critical loading overlay
+            Navigator.showOverlay(AppScreens.Overlay.CriticalLoading);
+
+            // wait for 1,5 seconds to make sure user is paying attention the critical message
+            // eslint-disable-next-line no-promise-executor-return
+            await new Promise((r) => setTimeout(r, 1500));
+
+            // store the new passcode in the store
+            const newEncPasscode = await CoreRepository.setPasscode(newPasscode);
+
             if (!newEncPasscode) {
                 Alert.alert(Localize.t('global.error'), Localize.t('setupPasscode.UnableToStoreThePasscode'));
                 return;
             }
-            // reKey all accounts with new passcode
+
+            // get all accounts with encryption level Passcode
             const accounts = AccountRepository.findBy(
                 'encryptionLevel',
                 EncryptionLevels.Passcode,
             ) as Results<AccountSchema>;
 
-            for (const account of accounts) {
-                await Vault.reKey(account.publicKey, passcode, newEncPasscode);
+            const passcodeVaultNames = accounts.map((account) => account.publicKey);
+
+            let isReKeyFailed = false;
+
+            try {
+                await Vault.reKeyBatch(passcodeVaultNames, passcode, newEncPasscode);
+            } catch (e) {
+                isReKeyFailed = true;
             }
 
+            // in case of vaults reKey failed, rollback the passcode to old one
+            if (isReKeyFailed) {
+                await CoreRepository.setPasscode(passcode);
+            }
+
+            // close critical loading screen
+            await Navigator.dismissOverlay(AppScreens.Overlay.CriticalLoading);
+
             // everything went well
-            Navigator.pop();
+            await Navigator.pop();
+
             Alert.alert(Localize.t('global.success'), Localize.t('settings.passcodeChangedSuccess'));
-        });
+        } catch (e) {
+            Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+        }
     };
 
     checkOldPasscode = (oldPasscode: string) => {
@@ -134,7 +172,7 @@ class ChangePasscodeView extends Component<Props, State> {
                 this.changeStep(Steps.ENTER_NEW_PASSCODE);
             })
             .catch((e) => {
-                this.pinInput.clean();
+                this.cleanPinInput();
                 Alert.alert(Localize.t('global.error'), e.toString(), [{ text: 'OK', onPress: this.focusPinInput }], {
                     cancelable: false,
                 });
@@ -165,7 +203,7 @@ class ChangePasscodeView extends Component<Props, State> {
                     {
                         text: Localize.t('setupPasscode.changePasscode'),
                         onPress: () => {
-                            this.pinInput.clean();
+                            this.cleanPinInput();
                             this.focusPinInput();
                         },
                     },
@@ -180,7 +218,7 @@ class ChangePasscodeView extends Component<Props, State> {
 
         if (newPasscode !== newPasscodeConfirm) {
             this.setState({ currentStep: Steps.ENTER_NEW_PASSCODE });
-            this.pinInput.clean();
+            this.cleanPinInput();
             Alert.alert(
                 Localize.t('global.error'),
                 Localize.t('settings.newOldPasscodeNotMatch'),
@@ -214,13 +252,11 @@ class ChangePasscodeView extends Component<Props, State> {
         const { currentStep, stepDescription } = this.state;
 
         return (
-            <View testID="change-passcode-screen" style={[styles.container]}>
+            <View testID="change-passcode-screen" style={styles.container}>
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: () => {
-                            Navigator.pop();
-                        },
+                        onPress: Navigator.pop,
                     }}
                     centerComponent={{ text: Localize.t('settings.changePasscode') }}
                 />
@@ -229,9 +265,7 @@ class ChangePasscodeView extends Component<Props, State> {
                 </View>
                 <View style={[AppStyles.flex8, AppStyles.paddingSml, AppStyles.centerAligned]}>
                     <PinInput
-                        ref={(r) => {
-                            this.pinInput = r;
-                        }}
+                        ref={this.pinInput}
                         autoFocus={false}
                         codeLength={6}
                         checkStrength={currentStep === Steps.ENTER_NEW_PASSCODE}

@@ -2,17 +2,17 @@
  * Generate Account Screen
  */
 
-import { dropRight, last, isEmpty } from 'lodash';
+import { dropRight, isEmpty, last } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Keyboard, InteractionManager } from 'react-native';
+import { InteractionManager, Keyboard, View } from 'react-native';
 
 import * as AccountLib from 'xrpl-accountlib';
 
 import { getAccountName } from '@common/helpers/resolver';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { EncryptionLevels, AccessLevels } from '@store/types';
+import { AccessLevels, EncryptionLevels } from '@store/types';
 
 import { Navigator } from '@common/helpers/navigator';
 
@@ -27,7 +27,6 @@ import Localize from '@locale';
 // style
 import { AppStyles } from '@theme';
 // import styles from './styles';
-
 // steps
 import Steps from './Steps';
 
@@ -35,7 +34,7 @@ import Steps from './Steps';
 import { StepsContext } from './Context';
 
 /* types ==================================================================== */
-import { GenerateSteps, State, Props } from './types';
+import { GenerateSteps, Props, State } from './types';
 
 /* Component ==================================================================== */
 class AccountGenerateView extends Component<Props, State> {
@@ -105,13 +104,19 @@ class AccountGenerateView extends Component<Props, State> {
         // if passphrase present use it, instead use Passcode to encrypt the private key
         // WARNING: passcode should use just for low balance accounts
         if (account.encryptionLevel === EncryptionLevels.Passphrase) {
+            // check if passphrase is defined
+            if (!passphrase) {
+                throw new Error('Account encryption level set to passphrase but passphrase is undefined!');
+            }
             encryptionKey = passphrase;
-        } else {
+        } else if (account.encryptionLevel === EncryptionLevels.Passcode) {
             encryptionKey = CoreRepository.getSettings().passcode;
+        } else {
+            throw new Error('Account encryption level is not defined');
         }
 
         // add account to store
-        AccountRepository.add(account, generatedAccount.keypair.privateKey, encryptionKey);
+        await AccountRepository.add(account, generatedAccount.keypair.privateKey, encryptionKey);
 
         // update catch for this account
         getAccountName.cache.set(

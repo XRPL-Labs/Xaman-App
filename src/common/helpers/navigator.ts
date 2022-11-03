@@ -233,11 +233,11 @@ const Navigator = {
         return false;
     },
 
-    dismissOverlay() {
+    dismissOverlay(overlay?: string) {
         const currentOverlay = NavigationService.getCurrentOverlay();
 
-        if (currentOverlay) {
-            return Navigation.dismissOverlay(currentOverlay);
+        if (overlay || currentOverlay) {
+            return Navigation.dismissOverlay(overlay || currentOverlay);
         }
 
         return Promise.resolve();

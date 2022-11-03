@@ -60,6 +60,7 @@ const screens = {
         SelectCurrency: 'overlay.SelectCurrency',
         SelectFee: 'overlay.SelectFee',
         HomeActions: 'overlay.HomeActions',
+        CriticalLoading: 'overlay.CriticalLoading',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',
