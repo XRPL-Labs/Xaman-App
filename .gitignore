@@ -20,8 +20,10 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
+ios/.xcode.env.local
 xcshareddata
-ios/Pods/
+/ios/Pods/
+/vendor/bundle/
 GoogleService-Info.plist
 .podinstall
 
@@ -33,6 +35,7 @@ build/
 local.properties
 *.iml
 *.hprof
+.cxx/
 google-services.json
 
 # node.js

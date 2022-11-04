@@ -2,6 +2,7 @@ require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 platform :ios, '13.0'
+install! 'cocoapods', :deterministic_uuids => false
 
 target 'XUMM' do
   config = use_native_modules!
@@ -9,10 +10,15 @@ target 'XUMM' do
   # no-ad-tracking Analytics subspec as we do not use it at all
   $RNFirebaseAnalyticsWithoutAdIdSupport = true
 
+  # Flags change depending on the env values.
+  flags = get_default_flags()
+
   use_react_native!(
     :path => config[:reactNativePath],
     # to enable hermes on iOS, change `false` to `true` and then install pods
-    :hermes_enabled => false
+    :hermes_enabled => true,
+    :fabric_enabled => flags[:fabric_enabled],
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
   target 'XUMMTests' do
