@@ -14,7 +14,7 @@ jobs:
       - name: Node
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 14.x
 
       - run: node --version
 
@@ -28,4 +28,4 @@ jobs:
       - run: yarn --frozen-lockfile
 
       - run: yarn validate
-        if: ${{ always() }} 
+        if: ${{ always() }}
