@@ -29,11 +29,6 @@ class CounterParty extends Realm.Object {
     public updatedAt?: Date;
     public currencies?: CurrencySchema[];
 
-    constructor(obj: Partial<CounterParty>) {
-        super();
-        Object.assign(this, obj);
-    }
-
     public static migration(oldRealm: any, newRealm: any) {
         /*  eslint-disable-next-line */
         console.log('migrating CounterParty model to v4');

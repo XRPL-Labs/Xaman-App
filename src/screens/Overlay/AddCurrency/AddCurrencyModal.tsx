@@ -15,7 +15,7 @@ import { AppScreens } from '@common/constants';
 import { TrustSet } from '@common/libs/ledger/transactions';
 
 import { Payload } from '@common/libs/payload';
-import { CounterPartyRepository } from '@store/repositories';
+import { AccountRepository, CounterPartyRepository } from '@store/repositories';
 import { CounterPartySchema, CurrencySchema, AccountSchema } from '@store/schemas/latest';
 
 // components
@@ -117,7 +117,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
         }
 
         // if trustline is already exist return
-        if (account.hasCurrency(selectedCurrency)) {
+        if (AccountRepository.hasCurrency(account, selectedCurrency)) {
             Alert.alert(Localize.t('global.error'), Localize.t('asset.trustLineIsAlreadyExist'));
             return;
         }

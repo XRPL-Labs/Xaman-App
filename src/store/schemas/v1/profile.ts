@@ -28,11 +28,6 @@ class Profile extends Realm.Object {
     public idempotency: number;
     public registerAt?: Date;
     public lastSync?: Date;
-
-    constructor(obj: Partial<Profile>) {
-        super();
-        Object.assign(this, obj);
-    }
 }
 
 export default Profile;

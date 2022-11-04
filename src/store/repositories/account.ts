@@ -4,7 +4,7 @@ import Realm, { Results, ObjectSchema } from 'realm';
 
 import LedgerService from '@services/LedgerService';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountSchema, CurrencySchema, TrustLineSchema } from '@store/schemas/latest';
 import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
 
 import Localize from '@locale';
@@ -173,6 +173,21 @@ class AccountRepository extends BaseRepository {
     };
 
     /**
+     * check if account has currency
+     */
+    hasCurrency = (account: AccountSchema, currency: Partial<CurrencySchema>): boolean => {
+        let found = false;
+
+        account.lines.forEach((t: TrustLineSchema) => {
+            if (t.currency.issuer === currency.issuer && t.currency.currency === currency.currency) {
+                found = true;
+            }
+        });
+
+        return found;
+    };
+
+    /**
      * get account available balance
      */
     calculateAvailableBalance = (account: AccountSchema): number => {
@@ -243,10 +258,10 @@ class AccountRepository extends BaseRepository {
         return true;
     };
 
-    getNewDefaultAccount = (ignoreAccount?: string) => {
+    getNewDefaultAccount = (ignoreAccount?: string): AccountSchema => {
         let newDefaultAccount;
 
-        let accounts = this.getAccounts().toJSON();
+        let accounts = this.getAccounts().toJSON() as AccountSchema[];
 
         if (accounts.length === 0) return undefined;
 

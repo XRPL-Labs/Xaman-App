@@ -34,11 +34,6 @@ class Core extends Realm.Object {
     public language: string;
     public defaultNode: string;
     public showMemoAlert: boolean;
-
-    constructor(obj: Partial<Core>) {
-        super();
-        Object.assign(this, obj);
-    }
 }
 
 export default Core;

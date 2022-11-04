@@ -111,6 +111,7 @@ class CoreRepository extends BaseRepository {
             if (plain) {
                 return result[0];
             }
+            // @ts-ignore
             return result[0].toJSON();
         }
 

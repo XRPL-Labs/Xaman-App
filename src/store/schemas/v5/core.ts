@@ -45,11 +45,6 @@ class Core extends Realm.Object {
     public useSystemSeparators: boolean;
     public theme: string;
 
-    constructor(obj: Partial<Core>) {
-        super();
-        Object.assign(this, obj);
-    }
-
     public static migration(oldRealm: any, newRealm: any) {
         /*  eslint-disable-next-line */
         console.log('migrating Core model to v5');

@@ -9,7 +9,7 @@ import { AppScreens } from '@common/constants';
 
 import { LedgerService, SocketService, PushNotificationsService, StyleService } from '@services';
 
-import { CoreRepository, CurrencyRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
 import { TransactionTypes } from '@common/libs/ledger/types';
@@ -411,7 +411,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             if (transaction.Type === TransactionTypes.TrustSet) {
                 // check if user is adding the trustline
                 if (
-                    !source.hasCurrency({
+                    !AccountRepository.hasCurrency(source, {
                         issuer: transaction.Issuer,
                         currency: transaction.Currency,
                     })

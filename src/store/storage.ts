@@ -105,7 +105,7 @@ export default class Storage {
                 ...config,
                 schema: values(omit(current.schema, ['migration'])),
                 schemaVersion: current.schemaVersion,
-                migration: current.migration,
+                onMigration: current.migration,
             });
 
             this.logger.warn(`Successfully migrate to v${current.schemaVersion}`);
@@ -190,7 +190,7 @@ export default class Storage {
             return {
                 encryptionKey: key,
                 path: this.path,
-                shouldCompactOnLaunch: this.shouldCompactOnLaunch,
+                shouldCompact: this.shouldCompactOnLaunch,
             };
         });
     };
