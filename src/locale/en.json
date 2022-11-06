@@ -474,7 +474,7 @@
     "sendingThisTransactionConsumed": "Sending this transaction consumed %{fee} XRP.",
     "offerTransactionExplain": "%{address} offered to pay %{takerGetsValue} %{takerGetsCurrency} in order to receive %{takerPaysValue} %{takerPaysCurrency}",
     "theExchangeRateForThisOfferIs": "The exchange rate for this offer is %{rate} %{takerPaysCurrency}/%{takerGetsCurrency}",
-    "theTransactionIsAlsoCancelOffer": "The transaction will also cancel %{address} 's existing offer #%{offerSequence}",
+    "theTransactionIsAlsoCancelOffer": "The transaction will also cancel %{address}'s existing offer #%{offerSequence}",
     "theOfferExpiresAtUnlessCanceledOrConsumed": "The offer expires at %{expiration} unless canceled or consumed before then.",
     "theTransactionWillCancelOffer": "The transaction will cancel %{address}'s offer #%{offerSequence}",
     "theEscrowIsFromTo": "The escrow is from %{account} to %{destination}",
