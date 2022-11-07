@@ -21,7 +21,6 @@ import { SortableFlatList } from '@components/General';
 
 /* Types ==================================================================== */
 interface Props {
-    timestamp?: number;
     testID?: string;
     style: ViewStyle | ViewStyle[];
     account: AccountSchema;
@@ -70,11 +69,10 @@ class TokenList extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
-        const { discreetMode, readonly, timestamp } = this.props;
+        const { discreetMode, readonly } = this.props;
         const { account, reorderEnabled, dataSource, filters } = this.state;
 
         return (
-            !isEqual(nextProps.timestamp, timestamp) ||
             !isEqual(nextProps.readonly, readonly) ||
             !isEqual(nextProps.discreetMode, discreetMode) ||
             !isEqual(nextProps.account, account) ||
@@ -305,7 +303,7 @@ class TokenList extends Component<Props, State> {
     };
 
     render() {
-        const { timestamp, account, testID, style, readonly, discreetMode } = this.props;
+        const { account, testID, style, readonly, discreetMode } = this.props;
         const { dataSource, reorderEnabled, filters } = this.state;
 
         return (
@@ -323,7 +321,7 @@ class TokenList extends Component<Props, State> {
                     onFilterChange={this.onFilterChange}
                     onReorderPress={this.toggleReordering}
                 />
-                <NativeItem timestamp={timestamp} account={account} discreetMode={discreetMode} />
+                <NativeItem account={account} discreetMode={discreetMode} />
                 <SortableFlatList
                     ref={this.dragSortableRef}
                     itemHeight={TokenItem.Height}

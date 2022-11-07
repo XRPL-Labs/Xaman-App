@@ -12,7 +12,6 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
-    timestamp: number;
     account: AccountSchema;
     discreetMode: boolean;
     onPress?: () => void;

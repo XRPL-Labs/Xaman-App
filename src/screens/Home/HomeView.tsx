@@ -439,7 +439,7 @@ class HomeView extends Component<Props, State> {
 
         return (
             <TokenList
-                timestamp={timestamp}
+                key={`TokenList_${timestamp}`}
                 testID="token-list-container"
                 style={styles.tokenListContainer}
                 account={account}
