@@ -1,4 +1,6 @@
-/* UUID Encoding  ==================================================================== */
+/**
+ * UUID encoding
+ */
 const UUIDEncoding = {
     toHex: (uuid: string): string => {
         if (uuid.length % 2 !== 0) {
@@ -26,7 +28,9 @@ const UUIDEncoding = {
     },
 };
 
-/* Hex Encoding  ==================================================================== */
+/**
+ * Hex encoding/decoding
+ */
 const HexEncoding = {
     toBinary: (hex: string): Buffer => {
         return hex ? Buffer.from(hex, 'hex') : undefined;
@@ -134,5 +138,17 @@ const StringTypeCheck = {
     },
 };
 
+/**
+ * Create identifier from string
+ * @param str value in string
+ * @returns identifier version of string
+ */
+const StringIdentifier = (str: String): number => {
+    return str.split('').reduce((a, b) => {
+        a = (a << 5) - a + b.charCodeAt(0);
+        return a & a;
+    }, 0);
+};
+
 /* Export ==================================================================== */
-export { HexEncoding, UUIDEncoding, Truncate, Capitalize, StringTypeCheck };
+export { HexEncoding, UUIDEncoding, Truncate, Capitalize, StringTypeCheck, StringIdentifier };

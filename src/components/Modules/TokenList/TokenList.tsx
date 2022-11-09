@@ -1,10 +1,11 @@
-import { map, toLower, filter, sortBy, isEqual, has, findIndex } from 'lodash';
+import { toLower, filter, sortBy, isEqual, has, findIndex } from 'lodash';
 import React, { Component } from 'react';
 import { View, ViewStyle } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { StringIdentifier } from '@common/utils/string';
 
 import { Navigator } from '@common/helpers/navigator';
 
@@ -30,6 +31,7 @@ interface Props {
 }
 
 interface State {
+    accountStateHash: number;
     account: AccountSchema;
     tokens: TrustLineSchema[];
     dataSource: TrustLineSchema[];
@@ -47,6 +49,7 @@ class TokenList extends Component<Props, State> {
         const tokens = props.account.lines.sorted([['order', false]]);
 
         this.state = {
+            accountStateHash: TokenList.getAccountStateHash(props.account),
             account: props.account,
             tokens,
             dataSource: tokens,
@@ -70,22 +73,35 @@ class TokenList extends Component<Props, State> {
 
     shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
         const { discreetMode, readonly } = this.props;
-        const { account, reorderEnabled, dataSource, filters } = this.state;
+        const { accountStateHash, reorderEnabled, filters } = this.state;
 
         return (
             !isEqual(nextProps.readonly, readonly) ||
             !isEqual(nextProps.discreetMode, discreetMode) ||
-            !isEqual(nextProps.account, account) ||
+            !isEqual(nextState.accountStateHash, accountStateHash) ||
             !isEqual(nextState.reorderEnabled, reorderEnabled) ||
-            !isEqual(nextState.filters, filters) ||
-            !isEqual(map(nextState.dataSource, 'id').join(), map(dataSource, 'id').join())
+            !isEqual(nextState.filters, filters)
         );
     }
 
+    static getAccountStateHash = (account: AccountSchema): number => {
+        const state = JSON.stringify(account.toJSON(), (key, val) => {
+            if (val != null && typeof val === 'object' && ['owners', 'currency'].includes(key)) {
+                return;
+            }
+            // eslint-disable-next-line consistent-return
+            return val;
+        });
+        return StringIdentifier(state);
+    };
+
     static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
+        // calculate account state hash
+        const accountStateHash = TokenList.getAccountStateHash(nextProps.account);
+
         // on switch account or data update replace the dataSource and account
         // check if prev account is not valid anymore
-        if (!prevState.account.isValid() || !isEqual(nextProps.account, prevState.account)) {
+        if (!prevState.account.isValid() || !isEqual(accountStateHash, prevState.accountStateHash)) {
             // check if account switched then clear filter and reordering state
             let filtersState = {
                 filters: prevState.filters,
@@ -114,6 +130,7 @@ class TokenList extends Component<Props, State> {
             }
 
             return {
+                accountStateHash,
                 account: nextProps.account,
                 tokens,
                 dataSource,
