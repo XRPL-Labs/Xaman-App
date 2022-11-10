@@ -139,15 +139,20 @@ const StringTypeCheck = {
 };
 
 /**
- * Create identifier from string
+ * Create identifier crc32 from string
  * @param str value in string
  * @returns identifier version of string
  */
 const StringIdentifier = (str: String): number => {
-    return str.split('').reduce((a, b) => {
-        a = (a << 5) - a + b.charCodeAt(0);
-        return a & a;
-    }, 0);
+    let crc = 0xffffffff;
+    for (let i = 0; i < str.length; i++) {
+        crc ^= str.charCodeAt(i);
+        for (let bit = 0; bit < 8; bit++) {
+            if ((crc & 1) !== 0) crc = (crc >>> 1) ^ 0xedb88320;
+            else crc >>>= 1;
+        }
+    }
+    return ~crc;
 };
 
 /* Export ==================================================================== */
