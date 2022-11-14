@@ -13,6 +13,8 @@ import { Toast } from '@common/helpers/interface';
 import { getAccountName } from '@common/helpers/resolver';
 import { Navigator } from '@common/helpers/navigator';
 
+import Vault from '@common/libs/vault';
+
 import { GetWalletDerivedPublicKey } from '@common/utils/tangem';
 import { AppScreens } from '@common/constants';
 
@@ -134,11 +136,19 @@ class AccountImportView extends Component<Props, State> {
 
     setEncryptionLevel = (encryptionLevel: EncryptionLevels, callback?: any) => {
         const { account } = this.state;
-        this.setState({ account: Object.assign(account, { encryptionLevel }) }, () => {
-            if (typeof callback === 'function') {
-                callback();
-            }
-        });
+        this.setState(
+            {
+                account: Object.assign(account, {
+                    encryptionLevel,
+                    encryptionVersion: EncryptionLevels.None ? undefined : Vault.getLatestCipherVersion(),
+                }),
+            },
+            () => {
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            },
+        );
     };
 
     setLabel = (label: string, callback?: any) => {

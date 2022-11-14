@@ -19,6 +19,13 @@ const logger = LoggerService.createLogger('Vault');
 /* Lib ==================================================================== */
 const Vault = {
     /**
+     * get vault cipher latest version
+     */
+    getLatestCipherVersion: (): number => {
+        return VaultManagerModule.latestCipherVersion;
+    },
+
+    /**
      * Generate/Store Vault
      */
     create: async (name: string, entry: string, key: string): Promise<boolean> => {

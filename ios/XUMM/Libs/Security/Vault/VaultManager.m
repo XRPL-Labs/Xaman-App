@@ -34,6 +34,12 @@ RCT_EXPORT_MODULE();
 }
 
 
+- (NSDictionary *)constantsToExport {
+  return @{
+    @"latestCipherVersion": [Cipher getLatestCipherVersion]    
+  };
+}
+
 #pragma mark - VaultManager
 
 void rejectWithError(RCTPromiseRejectBlock reject, NSError *error)

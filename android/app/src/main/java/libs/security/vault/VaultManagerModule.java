@@ -42,6 +42,14 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
         return NAME;
     }
 
+
+    @Override
+    public Map<String, Object> getConstants() {
+        final Map<String, Object> constants = new HashMap<>();
+        constants.put("latestCipherVersion", Cipher.getLatestCipherVersion());
+        return constants;
+    }
+
     private static void rejectWithError(Promise promise, Exception exception) {
         StringBuilder error = new StringBuilder();
         error.append(exception.getMessage());

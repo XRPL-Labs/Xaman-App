@@ -21,6 +21,8 @@ import { AppScreens } from '@common/constants';
 
 import { Header } from '@components/General';
 
+import Vault from '@common/libs/vault';
+
 // localize
 import Localize from '@locale';
 
@@ -75,6 +77,7 @@ class AccountGenerateView extends Component<Props, State> {
         const account = {
             publicKey: generatedAccount.keypair.publicKey,
             accessLevel: AccessLevels.Full,
+            encryptionVersion: Vault.getLatestCipherVersion(),
             address: generatedAccount.address,
             default: true,
         };
