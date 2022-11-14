@@ -28,6 +28,9 @@ const screens = {
             ChangePassphrase: 'app.Account.ChangePassphrase',
             ChangeTangemSecurityEnforce: 'app.Account.ChangeTangemSecurityEnforce',
         },
+        Migration: {
+            CipherMigration: 'app.Account.Migration.CipherMigration',
+        },
     },
     Modal: {
         ReviewTransaction: 'modal.ReviewTransaction',
@@ -61,6 +64,7 @@ const screens = {
         SelectFee: 'overlay.SelectFee',
         HomeActions: 'overlay.HomeActions',
         CriticalLoading: 'overlay.CriticalLoading',
+        PassphraseAuthentication: 'overlay.PassphraseAuthentication',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',

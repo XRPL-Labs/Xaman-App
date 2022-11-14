@@ -20,6 +20,7 @@ import AccountList from './Account/List';
 import AccountEdit from './Account/Edit';
 import AccountChangePassphrase from './Account/Edit/ChangePassphrase';
 import AccountChangeTangemSecurity from './Account/Edit/ChangeTangemSecurity';
+import AccountCipherMigrationView from './Account/Migration/CipherMigration';
 
 // Modals
 import ReviewTransaction from './Modal/ReviewTransaction';
@@ -53,6 +54,7 @@ import SelectAccount from './Overlay/SelectAccount';
 import SelectCurrency from './Overlay/SelectCurrency';
 import SelectFee from './Overlay/SelectFee';
 import HomeActions from './Overlay/HomeActions';
+import PassphraseAuthentication from './Overlay/PassphraseAuthentication';
 
 // Transaction
 import Send from './Send';
@@ -107,6 +109,7 @@ export {
     AccountChangeTangemSecurity,
     AccountImport,
     AccountGenerate,
+    AccountCipherMigrationView,
     // Modals
     ReviewTransaction,
     Scan,
@@ -138,6 +141,7 @@ export {
     SelectCurrency,
     SelectFee,
     HomeActions,
+    PassphraseAuthentication,
     // transaction
     Send,
     Request,

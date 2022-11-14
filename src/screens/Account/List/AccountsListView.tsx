@@ -6,9 +6,11 @@ import { find } from 'lodash';
 import { Results } from 'realm';
 
 import React, { Component } from 'react';
-import { View, Text, Image, ImageBackground } from 'react-native';
+import { View, Text, Image, ImageBackground, InteractionManager } from 'react-native';
 
 import { Navigation } from 'react-native-navigation';
+
+import Vault from '@common/libs/vault';
 
 import { AppScreens } from '@common/constants';
 
@@ -17,14 +19,14 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
 // store
-import { AccessLevels } from '@store/types';
+import { AccessLevels, EncryptionLevels } from '@store/types';
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
 import StyleService from '@services/StyleService';
 
 // components
-import { Button, Icon, Header, SortableFlatList } from '@components/General';
+import { Button, Icon, Header, SortableFlatList, Spacer } from '@components/General';
 
 import Localize from '@locale';
 // style
@@ -39,6 +41,7 @@ export interface State {
     dataSource: any;
     signableAccount: Array<AccountSchema>;
     reorderEnabled: boolean;
+    isMigrationRequired: boolean;
 }
 
 /* Component ==================================================================== */
@@ -64,11 +67,14 @@ class AccountListView extends Component<Props, State> {
             dataSource: [...accounts],
             signableAccount: AccountRepository.getSignableAccounts(),
             reorderEnabled: false,
+            isMigrationRequired: false,
         };
     }
 
     componentDidMount() {
         this.navigationListener = Navigation.events().bindComponent(this);
+
+        InteractionManager.runAfterInteractions(this.checkMigrationRequired);
     }
 
     componentWillUnmount() {
@@ -86,6 +92,29 @@ class AccountListView extends Component<Props, State> {
             signableAccount: AccountRepository.getSignableAccounts(),
         });
     }
+
+    checkMigrationRequired = async () => {
+        const { accounts } = this.state;
+
+        let isMigrationRequired = false;
+
+        // get latest cipher version from vault module
+        const latestVaultCipherVersion = Vault.getLatestCipherVersion();
+
+        // check if any of the accounts needs encryption migrations
+        for (const account of accounts) {
+            if ([EncryptionLevels.Passcode, EncryptionLevels.Passphrase].includes(account.encryptionLevel)) {
+                if (account.encryptionVersion < latestVaultCipherVersion) {
+                    isMigrationRequired = true;
+                    break;
+                }
+            }
+        }
+
+        this.setState({
+            isMigrationRequired,
+        });
+    };
 
     onItemPress = (account: AccountSchema) => {
         const { reorderEnabled } = this.state;
@@ -208,7 +237,7 @@ class AccountListView extends Component<Props, State> {
     };
 
     render() {
-        const { accounts, dataSource, reorderEnabled } = this.state;
+        const { accounts, dataSource, reorderEnabled, isMigrationRequired } = this.state;
 
         return (
             <View testID="accounts-list-screen" style={[AppStyles.container]}>
@@ -217,9 +246,7 @@ class AccountListView extends Component<Props, State> {
                     leftComponent={{
                         icon: 'IconChevronLeft',
                         testID: 'back-button',
-                        onPress: () => {
-                            Navigator.pop();
-                        },
+                        onPress: Navigator.pop,
                     }}
                     rightComponent={
                         accounts.isEmpty()
@@ -259,8 +286,29 @@ class AccountListView extends Component<Props, State> {
                     </ImageBackground>
                 ) : (
                     <View style={AppStyles.flex1}>
-                        <View style={[styles.rowAddContainer]}>
-                            {reorderEnabled ? (
+                        {isMigrationRequired && !reorderEnabled ? (
+                            <View style={[styles.rowMigrationContainer]}>
+                                <Text style={[AppStyles.subtext, AppStyles.bold]}>
+                                    {Localize.t('account.newEncryptionMethodAvailable')}
+                                </Text>
+                                <Spacer />
+                                <Text style={[AppStyles.subtext]}>
+                                    {Localize.t('account.checkWhichAccountsNeedBetterEncryption')}
+                                </Text>
+                                <Spacer size={20} />
+                                <Button
+                                    testID="add-account-button"
+                                    label={Localize.t('account.goToEncryptionProcess')}
+                                    icon="IconChevronRight"
+                                    iconPosition="right"
+                                    roundedSmall
+                                    onPress={() => {
+                                        Navigator.push(AppScreens.Account.Migration.CipherMigration);
+                                    }}
+                                />
+                            </View>
+                        ) : reorderEnabled ? (
+                            <View style={[styles.rowAddContainer]}>
                                 <View style={[AppStyles.paddingHorizontalSml]}>
                                     <Text
                                         adjustsFontSizeToFit
@@ -270,7 +318,9 @@ class AccountListView extends Component<Props, State> {
                                         {Localize.t('account.tapAndHoldToReorder')}
                                     </Text>
                                 </View>
-                            ) : (
+                            </View>
+                        ) : (
+                            <View style={[styles.rowAddContainer]}>
                                 <Button
                                     testID="add-account-button"
                                     label={Localize.t('home.addAccount')}
@@ -281,8 +331,8 @@ class AccountListView extends Component<Props, State> {
                                         Navigator.push(AppScreens.Account.Add);
                                     }}
                                 />
-                            )}
-                        </View>
+                            </View>
+                        )}
 
                         <SortableFlatList
                             testID="account-list-scroll"
