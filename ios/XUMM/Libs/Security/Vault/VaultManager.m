@@ -36,13 +36,9 @@ RCT_EXPORT_MODULE();
 
 #pragma mark - VaultManager
 
-NSError *errorFromException(NSException *exception)
+void rejectWithError(RCTPromiseRejectBlock reject, NSError *error)
 {
-  return [NSError errorWithDomain:@"VaultManagerModule" code:0 userInfo:
-          @{
-    NSLocalizedDescriptionKey: exception.name,
-    NSLocalizedFailureReasonErrorKey: exception.reason ?: @"",
-  }];
+  return reject([NSString stringWithFormat:@"%li", (long)error.code], error.localizedDescription, nil);
 }
 
 
@@ -144,7 +140,7 @@ NSString *getRecoveryVaultName(NSString *vaultName)
   // no item found in the storage for the given name
   if(!item || !item[@"data"] || !item[@"account"]){
     @throw [NSError errorWithDomain:@"VAULT_NOT_EXIST" code:-1 userInfo:@{
-      NSLocalizedDescriptionKey:@"Unable to fetch the vault in the storage!"
+      NSLocalizedDescriptionKey:@"Vault is not exist in storage or unable to fetch!"
     }];
   }
   
@@ -168,8 +164,8 @@ NSString *getRecoveryVaultName(NSString *vaultName)
       [VaultManagerModule createVault:vaultName data:clearText key:key];
       // purge recovery vault
       [VaultManagerModule purgeVault:recoveryVaultName];
-    } @catch (NSException *exception) {
-      // ignore in case of any exception
+    } @catch (NSError *error) {
+      // ignore in case of any error
     }
   }
   
@@ -224,7 +220,7 @@ NSString *getRecoveryVaultName(NSString *vaultName)
     NSString *cleartext = [VaultManagerModule openVault:vaultName key:oldKey recoverable:NO];
     [vaultsClearText setObject:cleartext forKey:vaultName];
   }
-          
+  
   // try to create the new vault under a temp recovery name with the old key for all vaults
   // with this we will make sure we are able to recover the key in case of failure
   for (NSString * vaultName in vaultNames){
@@ -380,8 +376,9 @@ RCT_EXPORT_METHOD(createVault:(NSString *)vaultName
     BOOL result = [VaultManagerModule createVault:vaultName data:data key:key];
     resolve(@(result));
   }
-  @catch (NSException *exception) {
-    reject(@"create_vault_failed", @"Failed to create vault", errorFromException(exception));
+  
+  @catch (NSError *error) {
+    reject(@"create_vault_failed", @"Failed to create vault", error);
   }
 }
 
@@ -394,10 +391,10 @@ RCT_EXPORT_METHOD(openVault:(NSString *)vaultName
   @try {
     NSString *clearText = [VaultManagerModule openVault:vaultName key:key recoverable:YES];
     resolve(clearText);
+  }@catch (NSError *error) {
+    rejectWithError(reject, error);
   }
-  @catch (NSException *exception) {
-    reject(@"open_vault_failed", @"Failed to open vault", errorFromException(exception));
-  }
+  
 }
 
 RCT_EXPORT_METHOD(reKeyVault:(NSString *)vaultName
@@ -410,8 +407,8 @@ RCT_EXPORT_METHOD(reKeyVault:(NSString *)vaultName
     BOOL result = [VaultManagerModule reKeyVault:vaultName oldKey:oldKey newKey:newKey];
     resolve(@(result));
   }
-  @catch (NSException *exception) {
-    reject(@"re_key_vault_failed", @"Failed to reKey vault", errorFromException(exception));
+  @catch (NSError *error) {
+    rejectWithError(reject, error);
   }
 }
 
@@ -426,8 +423,8 @@ RCT_EXPORT_METHOD(reKeyBatchVaults:(NSArray *)vaultNames
     BOOL result = [VaultManagerModule reKeyBatchVaults:vaultNames oldKey:oldKey newKey:newKey];
     resolve(@(result));
   }
-  @catch (NSException *exception) {
-    reject(@"re_key_batch_vaults_failed", @"Failed to reKey batch vaults", errorFromException(exception));
+  @catch (NSError *error) {
+    rejectWithError(reject, error);
   }
 }
 
@@ -441,8 +438,8 @@ RCT_EXPORT_METHOD(vaultExist:(NSString *)vaultName
     BOOL result = [VaultManagerModule vaultExist:vaultName];
     resolve(@(result));
   }
-  @catch (NSException *exception) {
-    reject(@"vault_exist_failed", @"Failed to check vault exist", errorFromException(exception));
+  @catch (NSError *error) {
+    rejectWithError(reject, error);
   }
 }
 
@@ -454,8 +451,8 @@ RCT_EXPORT_METHOD(purgeVault:(NSString *)vaultName
     BOOL result = [VaultManagerModule purgeVault:vaultName];
     resolve(@(result));
   }
-  @catch (NSException *exception) {
-    reject(@"purge_vault_failed", @"Failed to purge vault", errorFromException(exception));
+  @catch (NSError *error) {
+    rejectWithError(reject, error);
   }
 }
 
@@ -466,8 +463,8 @@ RCT_EXPORT_METHOD(purgeAll:(RCTPromiseResolveBlock)resolve
     [VaultManagerModule purgeAll];
     resolve(@(YES));
   }
-  @catch (NSException *exception) {
-    reject(@"purge_vault_failed", @"Failed to purge vault", errorFromException(exception));
+  @catch (NSError *error) {
+    rejectWithError(reject, error);
   }
 }
 
@@ -479,8 +476,8 @@ RCT_EXPORT_METHOD(isMigrationRequired:(NSString *)vaultName
     NSDictionary *result = [VaultManagerModule isMigrationRequired:vaultName];
     resolve(result);
   }
-  @catch (NSException *exception) {
-    reject(@"is_migration_required_failed", @"Failed to check for the vault migraiton status", errorFromException(exception));
+  @catch (NSError *error) {
+    rejectWithError(reject, error);
   }
 }
 
@@ -492,8 +489,8 @@ RCT_EXPORT_METHOD(getStorageEncryptionKey:(NSString *)keyName
     NSString *result = [VaultManagerModule getStorageEncryptionKey:keyName];
     resolve(result);
   }
-  @catch (NSException *exception) {
-    reject(@"get_storage_encryption_key_failed", @"Failed to fetch/generate storage encryption key", errorFromException(exception));
+  @catch (NSError *error) {
+    rejectWithError(reject, error);
   }
 }
 
