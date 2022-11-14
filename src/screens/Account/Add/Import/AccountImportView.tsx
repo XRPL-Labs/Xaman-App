@@ -140,7 +140,8 @@ class AccountImportView extends Component<Props, State> {
             {
                 account: Object.assign(account, {
                     encryptionLevel,
-                    encryptionVersion: EncryptionLevels.None ? undefined : Vault.getLatestCipherVersion(),
+                    encryptionVersion:
+                        encryptionLevel === EncryptionLevels.None ? undefined : Vault.getLatestCipherVersion(),
                 }),
             },
             () => {
