@@ -239,12 +239,14 @@ class AccountService extends EventEmitter {
      * Watch for any account change in store
      */
     onAccountsChange = () => {
+        // unsubscribe from old list
+        this.unsubscribe();
+
         // reload accounts
         this.loadAccounts();
 
-        // do a soft subscribe
-        // this will unsubscribe the accounts and re-subscribe
-        this.subscribe(true);
+        // subscribe again on new account list
+        this.subscribe();
 
         // update accounts info
         this.updateAccountsDetails();
@@ -267,11 +269,7 @@ class AccountService extends EventEmitter {
     /**
      * Subscribe for streaming
      */
-    subscribe(soft?: boolean) {
-        if (soft) {
-            this.unsubscribe();
-        }
-
+    subscribe() {
         this.logger.debug(`Subscribed to ${this.accounts.length} accounts`, this.accounts);
 
         SocketService.send({
