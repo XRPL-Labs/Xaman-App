@@ -1,13 +1,13 @@
 diff --git a/node_modules/@react-native-firebase/messaging/ios/RNFBMessaging/RNFBMessaging+UNUserNotificationCenter.m b/node_modules/@react-native-firebase/messaging/ios/RNFBMessaging/RNFBMessaging+UNUserNotificationCenter.m
-index 541114d..c578670 100644
+index d5bd81f..ff6b711 100644
 --- a/node_modules/@react-native-firebase/messaging/ios/RNFBMessaging/RNFBMessaging+UNUserNotificationCenter.m
 +++ b/node_modules/@react-native-firebase/messaging/ios/RNFBMessaging/RNFBMessaging+UNUserNotificationCenter.m
-@@ -74,7 +74,7 @@ - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNot
+@@ -136,7 +136,7 @@ - (void)userNotificationCenter:(UNUserNotificationCenter *)center
+       [[RNFBRCTEventEmitter shared] sendEventWithName:@"messaging_message_received"
+                                                  body:notificationDict];
      }
- 
-     // TODO in a later version allow customising completion options in JS code
--    completionHandler(UNNotificationPresentationOptionNone);
-+//    completionHandler(UNNotificationPresentationOptionNone);
+-    completionHandler(presentationOptions);
++//     completionHandler(presentationOptions);
    }
  
    if (_originalDelegate != nil && originalDelegateRespondsTo.willPresentNotification) {

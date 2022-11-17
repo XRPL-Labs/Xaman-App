@@ -71,7 +71,7 @@ export interface LedgerTransactionType {
  * Transaction Signed Type
  */
 export type SignedObjectType = {
-    type?: 'SignedTx' | 'MultiSignedTx';
+    type?: 'SignedTx' | 'MultiSignedTx' | 'SignedPayChanAuth';
     id?: string;
     signedTransaction: string;
     txJson?: Object;
