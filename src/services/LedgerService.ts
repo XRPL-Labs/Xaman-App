@@ -203,6 +203,20 @@ class LedgerService {
     };
 
     /**
+     * Get ledger data
+     */
+    getLedgerData = (marker: string, limit?: number) => {
+        const request = {
+            command: 'ledger_data',
+            limit: limit || 50,
+        };
+        if (marker) {
+            Object.assign(request, { marker });
+        }
+        return SocketService.send(request);
+    };
+
+    /**
      * get server info
      */
     getServerInfo = () => {

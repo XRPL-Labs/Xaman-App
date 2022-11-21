@@ -19,6 +19,16 @@ const EncodeLedgerIndex = (account: string, sequence: number) => {
 };
 
 /**
+ * Decode account id
+ * @param account string
+ * @returns decoded account id
+ */
+const DecodeAccountId = (account: string): string => {
+    const decodedAccount = decodeAccountID(account);
+    return HexEncoding.toHex(decodedAccount).toUpperCase();
+};
+
+/**
  * Calculate NFT token ID
  * @param account string
  * @param tokenSequence number
@@ -116,4 +126,4 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination & {
 };
 
 /* Export ==================================================================== */
-export { ConvertCodecAlphabet, NormalizeDestination, EncodeLedgerIndex, EncodeNFTokenID };
+export { ConvertCodecAlphabet, NormalizeDestination, EncodeLedgerIndex, EncodeNFTokenID, DecodeAccountId };
