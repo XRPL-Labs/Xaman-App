@@ -61,35 +61,48 @@ class ChangePassphraseView extends Component<Props, State> {
         const { account } = this.props;
         const { currentPassphrase, passphrase, passphrase_confirmation } = this.state;
 
-        if (!currentPassphrase) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.currentPasswordShouldNotBeEmpty'));
-            return;
+        try {
+            if (!currentPassphrase) {
+                Alert.alert(Localize.t('global.error'), Localize.t('account.currentPasswordShouldNotBeEmpty'));
+                return;
+            }
+
+            if (!passphrase.isValid) {
+                Alert.alert(Localize.t('global.error'), Localize.t('account.enterValidPassword'));
+                return;
+            }
+
+            if (passphrase.value !== passphrase_confirmation) {
+                Alert.alert(Localize.t('global.error'), Localize.t('account.passwordConfirmNotMatch'));
+                return;
+            }
+
+            // try to open vault with given passphrase
+            const privateKey = await Vault.open(account.publicKey, currentPassphrase);
+
+            if (!privateKey) {
+                Alert.alert(Localize.t('global.error'), Localize.t('account.enteredCurrentPasswordIsInvalid'));
+                return;
+            }
+
+            // show critical loading overlay
+            Navigator.showOverlay(AppScreens.Overlay.CriticalLoading);
+
+            // wait for 1,5 seconds to make sure user is paying attention the critical message
+            // eslint-disable-next-line no-promise-executor-return
+            await new Promise((r) => setTimeout(r, 1500));
+
+            // reKey the account with new passphrase
+            await Vault.reKey(account.publicKey, currentPassphrase, passphrase.value);
+
+            await Navigator.dismissOverlay(AppScreens.Overlay.CriticalLoading);
+
+            await Navigator.pop();
+
+            Alert.alert(Localize.t('global.success'), Localize.t('account.yourAccountPasswordChangedSuccessfully'));
+        } catch {
+            Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
         }
-
-        if (!passphrase.isValid) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.enterValidPassword'));
-            return;
-        }
-
-        if (passphrase.value !== passphrase_confirmation) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.passwordConfirmNotMatch'));
-            return;
-        }
-
-        // try to open vault with given passphrase
-        const privateKey = await Vault.open(account.publicKey, currentPassphrase);
-
-        if (!privateKey) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.enteredCurrentPasswordIsInvalid'));
-            return;
-        }
-
-        // reKey the account with new passphrase
-        await Vault.reKey(account.publicKey, currentPassphrase, passphrase.value);
-
-        Navigator.pop();
-
-        Alert.alert(Localize.t('global.success'), Localize.t('account.yourAccountPasswordChangedSuccessfully'));
     };
 
     onHeaderBackPress = () => {
