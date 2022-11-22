@@ -86,32 +86,42 @@ class CipherMigrationView extends Component<Props, State> {
         });
     };
 
-    migrateAccount = async (account: AccountSchema, key: string) => {
-        // show critical loading overlay
-        Navigator.showOverlay(AppScreens.Overlay.CriticalLoading);
+    onMigrationSuccess = () => {
+        // update the list
+        this.setDataSource();
+    };
 
-        // wait for 1,5 seconds to make sure user is paying attention the critical message
-        // eslint-disable-next-line no-promise-executor-return
-        await new Promise((r) => setTimeout(r, 1500));
+    onMigrationError = () => {
+        Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+    };
 
-        try {
-            // reKey the account with same key
-            await Vault.reKey(account.publicKey, key, key);
+    processMigrateAccount = async (account: AccountSchema, key: string) => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+            try {
+                // reKey the account with same key
+                await Vault.reKey(account.publicKey, key, key);
 
-            // update the account encryption version
-            await AccountRepository.update({
-                address: account.address,
-                encryptionVersion: Vault.getLatestCipherVersion(),
-            });
+                // update the account encryption version
+                await AccountRepository.update({
+                    address: account.address,
+                    encryptionVersion: Vault.getLatestCipherVersion(),
+                });
 
-            // update the list
-            this.setDataSource();
-        } catch (e) {
-            Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
-        }
+                resolve(true);
+            } catch (e) {
+                reject(e);
+            }
+        });
+    };
 
-        // close critical loading
-        await Navigator.dismissOverlay(AppScreens.Overlay.CriticalLoading);
+    onSuccessAuth = (account: AccountSchema, key: string) => {
+        // start the migration
+        Navigator.showOverlay(AppScreens.Overlay.CriticalProcessing, {
+            task: this.processMigrateAccount.bind(null, account, key),
+            onSuccess: this.onMigrationSuccess,
+            onError: this.onMigrationError,
+        });
     };
 
     onMigrationPress = (account: AccountSchema) => {
@@ -122,7 +132,7 @@ class CipherMigrationView extends Component<Props, State> {
             Navigator.showOverlay(AppScreens.Overlay.PassphraseAuthentication, {
                 account,
                 onSuccess: (passphrase: string) => {
-                    this.migrateAccount(account, passphrase);
+                    this.onSuccessAuth(account, passphrase);
                 },
             });
         }
@@ -130,7 +140,7 @@ class CipherMigrationView extends Component<Props, State> {
             Navigator.showOverlay(AppScreens.Overlay.Auth, {
                 canAuthorizeBiometrics: false,
                 onSuccess: () => {
-                    this.migrateAccount(account, coreSettings.passcode);
+                    this.onSuccessAuth(account, coreSettings.passcode);
                 },
             });
         }

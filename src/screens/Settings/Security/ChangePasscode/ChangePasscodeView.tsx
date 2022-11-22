@@ -111,59 +111,69 @@ class ChangePasscodeView extends Component<Props, State> {
         );
     };
 
-    changePasscode = async () => {
+    onChangePasscodeSuccess = async () => {
+        // everything went well
+        await Navigator.pop();
+
+        // show success alert
+        Alert.alert(Localize.t('global.success'), Localize.t('settings.passcodeChangedSuccess'));
+    };
+
+    onChangePasscodeError = () => {
+        Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+    };
+
+    processChangePasscode = () => {
         const { newPasscode } = this.state;
 
-        try {
-            // get current passcode
-            const { passcode } = CoreRepository.getSettings();
-
-            // show critical loading overlay
-            Navigator.showOverlay(AppScreens.Overlay.CriticalLoading);
-
-            // wait for 1,5 seconds to make sure user is paying attention the critical message
-            // eslint-disable-next-line no-promise-executor-return
-            await new Promise((r) => setTimeout(r, 1500));
-
-            // store the new passcode in the store
-            const newEncPasscode = await CoreRepository.setPasscode(newPasscode);
-
-            if (!newEncPasscode) {
-                Alert.alert(Localize.t('global.error'), Localize.t('setupPasscode.UnableToStoreThePasscode'));
-                return;
-            }
-
-            // get all accounts with encryption level Passcode
-            const accounts = AccountRepository.findBy(
-                'encryptionLevel',
-                EncryptionLevels.Passcode,
-            ) as Results<AccountSchema>;
-
-            const passcodeVaultNames = accounts.map((account) => account.publicKey);
-
-            let isReKeyFailed = false;
-
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
             try {
-                await Vault.reKeyBatch(passcodeVaultNames, passcode, newEncPasscode);
+                // get current passcode
+                const { passcode } = CoreRepository.getSettings();
+
+                // store the new passcode in the store
+                const newEncPasscode = await CoreRepository.setPasscode(newPasscode);
+
+                if (!newEncPasscode) {
+                    Alert.alert(Localize.t('global.error'), Localize.t('setupPasscode.UnableToStoreThePasscode'));
+                    return;
+                }
+
+                // get all accounts with encryption level Passcode
+                const accounts = AccountRepository.findBy(
+                    'encryptionLevel',
+                    EncryptionLevels.Passcode,
+                ) as Results<AccountSchema>;
+
+                const passcodeVaultNames = accounts.map((account) => account.publicKey);
+
+                let isReKeyFailed = false;
+
+                try {
+                    await Vault.reKeyBatch(passcodeVaultNames, passcode, newEncPasscode);
+                } catch (e) {
+                    isReKeyFailed = true;
+                }
+
+                // in case of vaults reKey failed, rollback the passcode to old one
+                if (isReKeyFailed) {
+                    await CoreRepository.setPasscode(passcode);
+                }
+
+                resolve(true);
             } catch (e) {
-                isReKeyFailed = true;
+                reject(e);
             }
+        });
+    };
 
-            // in case of vaults reKey failed, rollback the passcode to old one
-            if (isReKeyFailed) {
-                await CoreRepository.setPasscode(passcode);
-            }
-
-            // close critical loading screen
-            await Navigator.dismissOverlay(AppScreens.Overlay.CriticalLoading);
-
-            // everything went well
-            await Navigator.pop();
-
-            Alert.alert(Localize.t('global.success'), Localize.t('settings.passcodeChangedSuccess'));
-        } catch (e) {
-            Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
-        }
+    changePasscode = async () => {
+        Navigator.showOverlay(AppScreens.Overlay.CriticalProcessing, {
+            task: this.processChangePasscode,
+            onSuccess: this.onChangePasscodeSuccess,
+            onError: this.onChangePasscodeError,
+        });
     };
 
     checkOldPasscode = (oldPasscode: string) => {
@@ -217,17 +227,18 @@ class ChangePasscodeView extends Component<Props, State> {
         const { newPasscode } = this.state;
 
         if (newPasscode !== newPasscodeConfirm) {
-            this.setState({ currentStep: Steps.ENTER_NEW_PASSCODE });
-            this.cleanPinInput();
+            this.changeStep(Steps.ENTER_NEW_PASSCODE);
             Alert.alert(
                 Localize.t('global.error'),
                 Localize.t('settings.newOldPasscodeNotMatch'),
                 [{ text: 'OK', onPress: this.focusPinInput }],
                 { cancelable: false },
             );
-        } else {
-            this.changePasscode();
+            return;
         }
+
+        // change passcode if everything looks good
+        this.changePasscode();
     };
 
     onPasscodeEntered = (passcode: string, isStrong?: boolean) => {

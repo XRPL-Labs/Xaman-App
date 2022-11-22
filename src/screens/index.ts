@@ -41,7 +41,7 @@ import Auth from './Overlay/Authenticate';
 import Lock from './Overlay/Lock';
 import CurrencySettings from './Overlay/CurrencySettings';
 import Alert from './Overlay/Alert';
-import CriticalLoading from './Overlay/CriticalLoading';
+import CriticalProcessing from './Overlay/CriticalProcessing';
 import FlaggedDestination from './Overlay/FlaggedDestination';
 import RequestDecline from './Overlay/RequestDecline';
 import EnterDestinationTag from './Overlay/EnterDestinationTag';
@@ -128,7 +128,7 @@ export {
     Lock,
     CurrencySettings,
     Alert,
-    CriticalLoading,
+    CriticalProcessing,
     FlaggedDestination,
     RequestDecline,
     EnterDestinationTag,

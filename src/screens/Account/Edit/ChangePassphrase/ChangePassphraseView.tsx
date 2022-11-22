@@ -57,7 +57,29 @@ class ChangePassphraseView extends Component<Props, State> {
         };
     }
 
-    savePassphrase = async () => {
+    processChangePassphrase = (): Promise<boolean> => {
+        const { account } = this.props;
+        const { currentPassphrase, passphrase } = this.state;
+
+        return new Promise((resolve, reject) => {
+            // reKey the account with new passphrase
+            Vault.reKey(account.publicKey, currentPassphrase, passphrase.value).then(resolve).catch(reject);
+        });
+    };
+
+    onChangePassphraseSuccess = async () => {
+        // close the screen
+        await Navigator.pop();
+
+        // show success message
+        Alert.alert(Localize.t('global.success'), Localize.t('account.yourAccountPasswordChangedSuccessfully'));
+    };
+
+    onChangePassphraseError = () => {
+        Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+    };
+
+    onSavePress = async () => {
         const { account } = this.props;
         const { currentPassphrase, passphrase, passphrase_confirmation } = this.state;
 
@@ -85,21 +107,12 @@ class ChangePassphraseView extends Component<Props, State> {
                 return;
             }
 
-            // show critical loading overlay
-            Navigator.showOverlay(AppScreens.Overlay.CriticalLoading);
-
-            // wait for 1,5 seconds to make sure user is paying attention the critical message
-            // eslint-disable-next-line no-promise-executor-return
-            await new Promise((r) => setTimeout(r, 1500));
-
-            // reKey the account with new passphrase
-            await Vault.reKey(account.publicKey, currentPassphrase, passphrase.value);
-
-            await Navigator.dismissOverlay(AppScreens.Overlay.CriticalLoading);
-
-            await Navigator.pop();
-
-            Alert.alert(Localize.t('global.success'), Localize.t('account.yourAccountPasswordChangedSuccessfully'));
+            // show critical processing overlay
+            Navigator.showOverlay(AppScreens.Overlay.CriticalProcessing, {
+                task: this.processChangePassphrase,
+                onSuccess: this.onChangePassphraseSuccess,
+                onError: this.onChangePassphraseError,
+            });
         } catch {
             Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
         }
@@ -176,7 +189,7 @@ class ChangePassphraseView extends Component<Props, State> {
                         numberOfLines={1}
                         testID="save-button"
                         label={Localize.t('global.save')}
-                        onPress={this.savePassphrase}
+                        onPress={this.onSavePress}
                     />
                 </Footer>
             </View>

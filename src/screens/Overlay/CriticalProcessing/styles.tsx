@@ -8,8 +8,8 @@ import { AppStyles, AppSizes } from '@theme';
 const styles = StyleService.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     visibleContent: {
-        width: AppSizes.screen.width * 0.9,
-        backgroundColor: '$background',
+        width: AppSizes.screen.width * 0.8,
+        backgroundColor: '$contrast',
         borderColor: '$tint',
         borderWidth: 1,
         borderRadius: AppSizes.screen.width * 0.07,
@@ -19,14 +19,34 @@ const styles = StyleService.create({
         shadowOpacity: 0.4,
         ...AppStyles.paddingSml,
     },
+    blurView: {
+        zIndex: 99999,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        width: AppSizes.screen.width,
+        height: AppSizes.screen.height,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     icon: {
         tintColor: '$silver',
     },
     title: {
         ...AppStyles.h5,
+        color: '$tint',
+    },
+    title2: {
+        ...AppStyles.subtext,
+        ...AppStyles.bold,
+        textAlign: 'center',
+        color: '$silver',
     },
     subTitle: {
-        ...AppStyles.p,
+        ...AppStyles.subtext,
+        ...AppStyles.bold,
         textAlign: 'center',
         color: '$red',
     },
