@@ -30,7 +30,7 @@ class Localize {
         this.meta = require('./meta.json');
 
         // set default values
-        this.instance.fallbacks = true;
+        this.instance.enableFallback = true;
         this.instance.defaultLocale = 'en';
         this.settings = undefined;
     }
