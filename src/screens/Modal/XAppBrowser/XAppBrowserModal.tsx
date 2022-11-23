@@ -12,7 +12,6 @@ import { utils as AccountLibUtils } from 'xrpl-accountlib';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetAppVersionCode } from '@common/helpers/app';
-import { Prompt } from '@common/helpers/interface';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { Destination } from '@common/libs/ledger/parser/types';
@@ -268,23 +267,28 @@ class XAppBrowserModal extends Component<Props, State> {
             return;
         }
 
-        Prompt(
-            Localize.t('global.notice'),
-            Localize.t('global.xAppWantsToOpenURLNotice', { xapp: title, url }),
-            [
-                { text: Localize.t('global.cancel') },
+        Navigator.showAlertModal({
+            type: 'warning',
+            title: Localize.t('global.notice'),
+            text: Localize.t('global.xAppWantsToOpenURLNotice', { xapp: title, url }),
+            buttons: [
                 {
-                    text: 'Open',
+                    text: Localize.t('global.cancel'),
+                    onPress: () => {},
+                    type: 'dismiss',
+                    light: true,
+                },
+                {
+                    text: Localize.t('global.continue'),
                     onPress: () => {
                         Linking.openURL(url).catch(() => {
                             Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
                         });
                     },
-                    style: 'destructive',
+                    light: false,
                 },
             ],
-            { type: 'default' },
-        );
+        });
     };
 
     openTxDetails = async (data: any) => {
