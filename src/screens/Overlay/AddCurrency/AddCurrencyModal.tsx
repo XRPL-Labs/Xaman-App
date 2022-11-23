@@ -78,7 +78,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
     }
 
     setDefaults = () => {
-        const counterParties = CounterPartyRepository.query({ shortlist: true }) as any;
+        const counterParties = CounterPartyRepository.query({ shortlist: true }).sorted([['id', false]]) as any;
 
         if (counterParties.isEmpty()) return;
 
