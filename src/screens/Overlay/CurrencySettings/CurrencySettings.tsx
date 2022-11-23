@@ -56,6 +56,7 @@ export interface State {
     isRemoving: boolean;
     isLoading: boolean;
     isReviewScreenVisible: boolean;
+    hasXAppIdentifier: boolean;
     latestLineBalance: number;
     canRemove: boolean;
 }
@@ -79,6 +80,7 @@ class CurrencySettingsModal extends Component<Props, State> {
 
         this.state = {
             isFavorite: props.trustLine.favorite,
+            hasXAppIdentifier: !!props.trustLine.currency.xapp_identifier,
             isRemoving: false,
             isLoading: false,
             isReviewScreenVisible: false,
@@ -442,6 +444,50 @@ class CurrencySettingsModal extends Component<Props, State> {
         });
     };
 
+    onDepositPress = async () => {
+        const { trustLine } = this.props;
+
+        this.dismiss().then(() => {
+            Navigator.showModal(
+                AppScreens.Modal.XAppBrowser,
+                {
+                    identifier: trustLine.currency.xapp_identifier,
+                    params: {
+                        issuer: trustLine.currency.issuer,
+                        asset: trustLine.currency.currency,
+                        action: 'DEPOSIT',
+                    },
+                },
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+                },
+            );
+        });
+    };
+
+    onWithdrawPress = async () => {
+        const { trustLine } = this.props;
+
+        this.dismiss().then(() => {
+            Navigator.showModal(
+                AppScreens.Modal.XAppBrowser,
+                {
+                    identifier: trustLine.currency.xapp_identifier,
+                    params: {
+                        issuer: trustLine.currency.issuer,
+                        asset: trustLine.currency.currency,
+                        action: 'WITHDRAW',
+                    },
+                },
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+                },
+            );
+        });
+    };
+
     onFavoritePress = () => {
         const { trustLine } = this.props;
 
@@ -599,7 +645,7 @@ class CurrencySettingsModal extends Component<Props, State> {
 
     render() {
         const { trustLine } = this.props;
-        const { isFavorite, isReviewScreenVisible, isRemoving, isLoading, canRemove } = this.state;
+        const { isFavorite, isReviewScreenVisible, isRemoving, isLoading, canRemove, hasXAppIdentifier } = this.state;
 
         if (isReviewScreenVisible) {
             return null;
@@ -616,7 +662,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                 testID="currency-settings-overlay"
                 style={[styles.container, { opacity: this.animatedOpacity, backgroundColor: interpolateColor }]}
             >
-                <Animated.View style={[styles.visibleContent]}>
+                <Animated.View style={styles.visibleContent}>
                     <View style={styles.headerContainer}>
                         <TouchableDebounce style={styles.favoriteContainer} onPress={this.onFavoritePress}>
                             <Icon
@@ -633,7 +679,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                         </View>
                     </View>
                     <View style={styles.contentContainer}>
-                        <View style={[styles.currencyItem]}>
+                        <View style={styles.currencyItem}>
                             <View style={[AppStyles.row, AppStyles.centerAligned]}>
                                 <View style={[styles.brandAvatarContainer]}>
                                     <TokenAvatar token={trustLine} border size={35} />
@@ -644,7 +690,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                                             ? trustLine.currency.name
                                             : NormalizeCurrencyCode(trustLine.currency.currency)}
                                     </Text>
-                                    <Text style={[styles.issuerLabel]}>
+                                    <Text style={styles.issuerLabel}>
                                         {trustLine.counterParty.name}{' '}
                                         {trustLine.currency.name
                                             ? NormalizeCurrencyCode(trustLine.currency.currency)
@@ -679,15 +725,15 @@ class CurrencySettingsModal extends Component<Props, State> {
                             </>
                         )}
 
-                        <View style={[styles.buttonRow]}>
+                        <View style={styles.buttonRow}>
                             <RaisedButton
                                 isDisabled={!this.canSend()}
                                 containerStyle={styles.sendButton}
                                 icon="IconCornerLeftUp"
                                 iconSize={20}
-                                iconStyle={[styles.sendButtonIcon]}
+                                iconStyle={styles.sendButtonIcon}
                                 label={Localize.t('global.send')}
-                                textStyle={[styles.sendButtonText]}
+                                textStyle={styles.sendButtonText}
                                 onPress={this.onSendPress}
                             />
                             {trustLine.isNFT ? (
@@ -695,9 +741,10 @@ class CurrencySettingsModal extends Component<Props, State> {
                                     containerStyle={styles.infoButton}
                                     icon="IconInfo"
                                     iconSize={20}
-                                    iconStyle={[styles.infoButtonIcon]}
+                                    iconPosition="right"
+                                    iconStyle={styles.infoButtonIcon}
                                     label={Localize.t('global.about')}
-                                    textStyle={[styles.infoButtonText]}
+                                    textStyle={styles.infoButtonText}
                                     onPress={this.showNFTInfo}
                                 />
                             ) : (
@@ -706,13 +753,38 @@ class CurrencySettingsModal extends Component<Props, State> {
                                     containerStyle={styles.exchangeButton}
                                     icon="IconSwitchAccount"
                                     iconSize={20}
-                                    iconStyle={[styles.exchangeButtonIcon]}
+                                    iconPosition="right"
+                                    iconStyle={styles.exchangeButtonIcon}
                                     label={Localize.t('global.exchange')}
-                                    textStyle={[styles.exchangeButtonText]}
+                                    textStyle={styles.exchangeButtonText}
                                     onPress={this.onExchangePress}
                                 />
                             )}
                         </View>
+
+                        {hasXAppIdentifier && (
+                            <View style={styles.buttonRow}>
+                                <RaisedButton
+                                    containerStyle={styles.depositButton}
+                                    icon="IconPlus"
+                                    iconSize={20}
+                                    iconStyle={styles.depositButtonIcon}
+                                    label={Localize.t('global.deposit')}
+                                    textStyle={styles.depositButtonText}
+                                    onPress={this.onDepositPress}
+                                />
+                                <RaisedButton
+                                    containerStyle={styles.withdrawButton}
+                                    icon="IconSend"
+                                    iconPosition="right"
+                                    iconSize={20}
+                                    iconStyle={styles.withdrawButtonIcon}
+                                    label={Localize.t('global.withdraw')}
+                                    textStyle={styles.withdrawButtonText}
+                                    onPress={this.onWithdrawPress}
+                                />
+                            </View>
+                        )}
 
                         <View style={styles.removeButtonContainer}>
                             <RaisedButton
@@ -722,9 +794,9 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 isDisabled={!canRemove}
                                 icon="IconTrash"
                                 iconSize={20}
-                                iconStyle={[styles.removeButtonIcon]}
+                                iconStyle={styles.removeButtonIcon}
                                 label={Localize.t('global.remove')}
-                                textStyle={[styles.removeButtonText]}
+                                textStyle={styles.removeButtonText}
                                 onPress={this.onRemovePress}
                             />
                         </View>

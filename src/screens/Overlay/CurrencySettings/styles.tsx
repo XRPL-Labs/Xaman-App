@@ -63,8 +63,8 @@ const styles = StyleService.create({
     },
     buttonRow: {
         flexDirection: 'row',
-        marginTop: 12,
-        marginBottom: 3,
+        marginTop: 15,
+        marginBottom: 15,
     },
     sendButton: {
         marginRight: 1.5,
@@ -75,13 +75,27 @@ const styles = StyleService.create({
     sendButtonIcon: { marginRight: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$blue' },
     sendButtonText: { color: StyleService.isDarkMode() ? '$white' : '$blue' },
     exchangeButton: {
-        // marginLeft: 1.5,
         borderTopLeftRadius: 0,
         borderBottomLeftRadius: 0,
         backgroundColor: StyleService.isDarkMode() ? '$grey' : '$white',
     },
     exchangeButtonIcon: { marginLeft: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$black' },
     exchangeButtonText: { color: StyleService.isDarkMode() ? '$white' : '$black' },
+    withdrawButton: {
+        borderTopLeftRadius: 0,
+        borderBottomLeftRadius: 0,
+        backgroundColor: StyleService.isDarkMode() ? '$grey' : '$white',
+    },
+    withdrawButtonIcon: { marginLeft: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$black' },
+    withdrawButtonText: { color: StyleService.isDarkMode() ? '$white' : '$black' },
+    depositButton: {
+        marginRight: 1.5,
+        borderTopRightRadius: 0,
+        borderBottomRightRadius: 0,
+        backgroundColor: StyleService.isDarkMode() ? '$grey' : '$white',
+    },
+    depositButtonIcon: { marginLeft: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$black' },
+    depositButtonText: { color: StyleService.isDarkMode() ? '$white' : '$black' },
 
     infoButton: {
         borderTopLeftRadius: 0,

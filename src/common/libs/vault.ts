@@ -29,7 +29,14 @@ const Vault = {
      * Generate/Store Vault
      */
     create: async (name: string, entry: string, key: string): Promise<boolean> => {
-        return VaultManagerModule.createVault(name, entry, key);
+        return new Promise((resolve, reject) => {
+            VaultManagerModule.createVault(name, entry, key)
+                .then(resolve)
+                .catch((error: any) => {
+                    logger.error('Vault create error', error);
+                    reject(error);
+                });
+        });
     },
 
     /**

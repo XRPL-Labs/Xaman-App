@@ -323,7 +323,9 @@
     "createPaymentRequestLink": "Create Payment Request link",
     "transactionFeeIsNotSet": "Transaction fee is not set, please wait until transaction fee is set and try again!",
     "unableToSetAccountSequence": "Unable to set account Sequence, please check that you are connected to the internet.",
-    "unableToGetLastClosedLedger": "Unable to get last closed ledger, please check you are connected to the internet."
+    "unableToGetLastClosedLedger": "Unable to get last closed ledger, please check you are connected to the internet.",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",
