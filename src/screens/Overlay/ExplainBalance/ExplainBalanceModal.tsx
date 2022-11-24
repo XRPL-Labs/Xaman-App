@@ -113,6 +113,9 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             let endOfPage = false;
 
             forEach(state, (entry: any) => {
+                if (endOfPage) {
+                    return;
+                }
                 const { LedgerEntryType } = entry;
                 if (LedgerEntryType === 'NFTokenPage') {
                     tokenPageCount += 1;
@@ -121,7 +124,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                 }
             });
 
-            if (!endOfPage && _marker && _marker !== marker) {
+            if (!endOfPage && _marker && _marker !== marker && _marker.slice(0, 40) === marker.slice(0, 40)) {
                 return this.loadNFTokenPageCount(account, _marker, tokenPageCount);
             }
             return tokenPageCount;
