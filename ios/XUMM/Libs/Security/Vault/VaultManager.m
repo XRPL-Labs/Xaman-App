@@ -382,9 +382,8 @@ RCT_EXPORT_METHOD(createVault:(NSString *)vaultName
     BOOL result = [VaultManagerModule createVault:vaultName data:data key:key];
     resolve(@(result));
   }
-  
   @catch (NSError *error) {
-    reject(@"create_vault_failed", @"Failed to create vault", error);
+    rejectWithError(reject, error);
   }
 }
 
