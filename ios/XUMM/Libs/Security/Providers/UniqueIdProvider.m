@@ -7,7 +7,7 @@
 
 @implementation UniqueIdProviderModule
 
-#define UNIQUE_UUID_KEY @"deviceUID"
+NSString * const UNIQUE_UUID_KEY = @"deviceUID";
 
 #pragma mark - Public methods
 
