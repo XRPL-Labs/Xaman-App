@@ -77,12 +77,28 @@ const Vault = {
     },
 
     /**
+     * Check if storage encryption key exist in the keychain
+     */
+    isStorageEncryptionKeyExist: (): Promise<boolean> => {
+        return new Promise((resolve, reject) => {
+            VaultManagerModule.isStorageEncryptionKeyExist()
+                .then((result: boolean) => {
+                    resolve(result);
+                })
+                .catch((error: any) => {
+                    logger.error('Vault isStorageEncryptionKeyExist error', error);
+                    reject(error);
+                });
+        });
+    },
+
+    /**
      *  get storage encryption key from vault
      *  NOTE: this method will generate/store new encryption key if not exist
      */
-    getStorageEncryptionKey: (keyName: string): Promise<Buffer> => {
+    getStorageEncryptionKey: (): Promise<Buffer> => {
         return new Promise((resolve, reject) => {
-            VaultManagerModule.getStorageEncryptionKey(keyName)
+            VaultManagerModule.getStorageEncryptionKey()
                 .then((key: any) => {
                     if (!key || key.length !== 128) {
                         reject(new Error('Encryption key size is wrong or not present!'));
@@ -157,6 +173,20 @@ const Vault = {
     purge: (name: string): Promise<boolean> => {
         return new Promise((resolve, reject) => {
             VaultManagerModule.purgeVault(name)
+                .then((result: boolean) => {
+                    resolve(result);
+                })
+                .catch((error: any) => {
+                    logger.error('Vault purge error', error);
+                    reject(error);
+                });
+        });
+    },
+
+    // Purge All vaults in the keychain
+    purgeAll: (): Promise<boolean> => {
+        return new Promise((resolve, reject) => {
+            VaultManagerModule.purgeAll()
                 .then((result: boolean) => {
                     resolve(result);
                 })

@@ -469,7 +469,7 @@ PODS:
     - React-Core
     - React-RCTImage
     - React-RCTText
-  - RealmJS (11.2.0):
+  - RealmJS (11.3.0):
     - React
   - RNFBAnalytics (16.4.4):
     - Firebase/AnalyticsWithoutAdIdSupport (= 10.1.0)
@@ -717,7 +717,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 15437b576139df27635400de0599d9844f1ab817
   ReactCommon: 349be31adeecffc7986a0de875d7fb0dcf4e251c
   ReactNativeNavigation: ea31902caa8bc588a1bc4a3e8e18aea76858947e
-  RealmJS: d0e94d35363a3a9ebd27981d9ac0aa4b63f66c85
+  RealmJS: 951b827ee81c21da54a7edb9dd355cbb9d330204
   RNFBAnalytics: 59f2cb6fc34677370e7fe7df08acaa273cb76c23
   RNFBApp: 18468d88f518831e4d34a77e1c076a80e40929a2
   RNFBCrashlytics: 100e3f19f09564fe49ff6f8d1ae47ec012886ed6
@@ -727,6 +727,6 @@ SPEC CHECKSUMS:
   VeriffSDK: d2e92eea7be4b134eb6907c4562c0d00353134a1
   Yoga: 99caf8d5ab45e9d637ee6e0174ec16fbbb01bcfc
 
-PODFILE CHECKSUM: 7612c4b342478e779ddea4d18d909ef6c3b3b194
+PODFILE CHECKSUM: 26aa8bf3643b7a628b47732cc308b675a0592d47
 
 COCOAPODS: 1.11.2

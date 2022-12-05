@@ -25,6 +25,7 @@ import libs.security.vault.storage.Keychain;
 @ReactModule(name = libs.security.vault.VaultManagerModule.NAME)
 public class VaultManagerModule extends ReactContextBaseJavaModule {
     public static final String RECOVERY_SUFFIX = "_RECOVER";
+    public static final String STORAGE_ENCRYPTION_KEY = "xumm-realm-key";
 
     static final String NAME = "VaultManagerModule";
     private final Keychain keychain;
@@ -302,13 +303,21 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
         return results;
     }
 
+
+    /*
+    Check if storage encryption key exist in the keychain
+    */
+    public boolean isStorageEncryptionKeyExist() {
+        return keychain.itemExist(STORAGE_ENCRYPTION_KEY);
+    }
+
     /*
     Get the storage encryption key from keychain
     NOTE: this method will generate new key and store it in case of missing key
     */
-    public String getStorageEncryptionKey(@NonNull final String keyName) throws Exception {
+    public String getStorageEncryptionKey() throws Exception {
         // try to retrieve the key
-        Map<String, String> item = keychain.getItem(keyName);
+        Map<String, String> item = keychain.getItem(STORAGE_ENCRYPTION_KEY);
 
         // key already exist in the keychain
         if (item != null) {
@@ -323,7 +332,7 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
         String encryptionKey = Crypto.BytesToHex(encryptionKeyBytes);
 
         // store new encryption key in the keychain
-        keychain.setItem(keyName, "", encryptionKey);
+        keychain.setItem(STORAGE_ENCRYPTION_KEY, "", encryptionKey);
 
         // return new encryption key
         return encryptionKey;
@@ -417,9 +426,19 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getStorageEncryptionKey(String keyName, Promise promise) {
+    public void isStorageEncryptionKeyExist(String keyName, Promise promise) {
         try {
-            String encryptionKey = getStorageEncryptionKey(keyName);
+            Boolean result = isStorageEncryptionKeyExist();
+            promise.resolve(result);
+        } catch (Exception e) {
+            rejectWithError(promise, e);
+        }
+    }
+
+    @ReactMethod
+    public void getStorageEncryptionKey(Promise promise) {
+        try {
+            String encryptionKey = getStorageEncryptionKey();
             promise.resolve(encryptionKey);
         } catch (Exception e) {
             rejectWithError(promise, e);

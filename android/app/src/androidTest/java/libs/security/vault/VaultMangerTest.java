@@ -4,7 +4,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
 
 import org.junit.After;
@@ -20,7 +19,6 @@ import java.util.Map;
 
 import extentions.PerformanceLogger;
 import libs.security.providers.UniqueIdProvider;
-import libs.security.vault.VaultManagerModule;
 import libs.security.vault.cipher.Cipher;
 import libs.security.vault.storage.Keychain;
 
@@ -31,7 +29,6 @@ public class VaultMangerTest {
     static final String VAULT_DATA = "VAULT_TEST_DATA";
     static final String VAULT_KEY = "VAULT_TEST_KEY";
     static final String VAULT_NEW_KEY = "VAULT_TEST_NEW_KEY";
-    static final String STORAGE_ENCRYPTION_KEY = "STORAGE_ENCRYPTION_KEY";
 
     private VaultManagerModule vaultManager = null;
     private Keychain keychain = null;
@@ -243,15 +240,19 @@ public class VaultMangerTest {
     @Test
     public void StorageEncryptionKeyTest() throws Exception {
         // check if the key is not exist
-        Assert.assertNull(keychain.getItem(STORAGE_ENCRYPTION_KEY));
+        Assert.assertNull(keychain.getItem(VaultManagerModule.STORAGE_ENCRYPTION_KEY));
+        Assert.assertFalse(vaultManager.isStorageEncryptionKeyExist());
 
         // should generate new encryption key and store in the keychain
         performanceLogger.start("GET_STORAGE_ENCRYPTION_KEY_GENERATE");
-        Assert.assertNotNull(vaultManager.getStorageEncryptionKey(STORAGE_ENCRYPTION_KEY));
+        Assert.assertNotNull(vaultManager.getStorageEncryptionKey());
         performanceLogger.end("GET_STORAGE_ENCRYPTION_KEY_GENERATE");
 
+        // should return true for storage encryption key exist
+        Assert.assertTrue(vaultManager.isStorageEncryptionKeyExist());
+
         // get newly generated encryption from keychain
-        Map<String, String> item = keychain.getItem(STORAGE_ENCRYPTION_KEY);
+        Map<String, String> item = keychain.getItem(VaultManagerModule.STORAGE_ENCRYPTION_KEY);
         String storageEncryptionKey = item.get("password");
 
         // should not be null
@@ -261,9 +262,7 @@ public class VaultMangerTest {
 
         // running the same method again should resolve to same encryption key
         performanceLogger.start("GET_STORAGE_ENCRYPTION_KEY_FETCH");
-        Assert.assertEquals(storageEncryptionKey, vaultManager.getStorageEncryptionKey(
-                STORAGE_ENCRYPTION_KEY
-        ));
+        Assert.assertEquals(storageEncryptionKey, vaultManager.getStorageEncryptionKey());
         performanceLogger.end("GET_STORAGE_ENCRYPTION_KEY_FETCH");
     }
 

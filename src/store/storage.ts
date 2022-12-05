@@ -26,7 +26,6 @@ export default class Storage {
     logger: any;
 
     constructor(path?: string) {
-        this.keyName = AppConfig.storage.keyName;
         this.path = path || AppConfig.storage.path;
         this.compactionThreshold = 30;
         this.db = undefined;
@@ -177,7 +176,7 @@ export default class Storage {
      */
     configure = async (): Promise<Realm.Configuration> => {
         // check if we need to start a clean realm
-        const encryptionKeyExist = await Vault.exist(this.keyName);
+        const encryptionKeyExist = await Vault.isStorageEncryptionKeyExist();
         const dbFileExist = Realm.exists({ path: this.path });
 
         // if the database file exist but we cannot get the encryption key then throw an error
@@ -186,7 +185,7 @@ export default class Storage {
         }
 
         // set encryption key
-        return Vault.getStorageEncryptionKey(this.keyName).then((key: Buffer) => {
+        return Vault.getStorageEncryptionKey().then((key: Buffer) => {
             return {
                 encryptionKey: key,
                 path: this.path,

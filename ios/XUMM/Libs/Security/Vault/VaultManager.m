@@ -15,9 +15,10 @@
 
 #import "XUMM-Swift.h"
 
-#define RECOVERY_SUFFIX @"_RECOVER"
-
 @implementation VaultManagerModule
+
+NSString * const RECOVERY_SUFFIX = @"_RECOVER";
+NSString * const STORAGE_ENCRYPTION_KEY = @"xumm-realm-key";
 
 @synthesize bridge = _bridge;
 
@@ -332,15 +333,30 @@ NSString *getRecoveryVaultName(NSString *vaultName)
   };
 }
 
+
+
+/*
+ Check if storage encryption key exist in the keychain
+ */
++ (BOOL) isStorageEncryptionKeyExist
+{
+  NSError *error;
+  BOOL result = [Keychain itemExist:STORAGE_ENCRYPTION_KEY error:&error];
+
+  if(error != nil) @throw error;
+  
+  return result;
+}
+
 /*
  Get the storage encryption key from keychain
  NOTE: this method will generate new key and store it in case of missing key
  */
-+ (NSString *) getStorageEncryptionKey:(NSString *)keyName
++ (NSString *) getStorageEncryptionKey
 {
   // try to retrieve the key
   NSError *error;
-  NSDictionary *item = [Keychain getItem:keyName error:&error];
+  NSDictionary *item = [Keychain getItem:STORAGE_ENCRYPTION_KEY error:&error];
   
   // unexpected error while fetching the key
   if(error != nil) @throw error;
@@ -361,7 +377,7 @@ NSString *getRecoveryVaultName(NSString *vaultName)
   NSString  *encryptionKey = [Crypto DataToHexWithData:encryptionKeyData];
   
   // store new encryption key in the keychain
-  [Keychain setItem:keyName account:@"" data:encryptionKey error:&error];
+  [Keychain setItem:STORAGE_ENCRYPTION_KEY account:@"" data:encryptionKey error:&error];
   
   // error while storing new encryption key
   if(error != nil) @throw error;
@@ -486,12 +502,23 @@ RCT_EXPORT_METHOD(isMigrationRequired:(NSString *)vaultName
   }
 }
 
-RCT_EXPORT_METHOD(getStorageEncryptionKey:(NSString *)keyName
-                  resolver:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(isStorageEncryptionKeyExist:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
   @try {
-    NSString *result = [VaultManagerModule getStorageEncryptionKey:keyName];
+    BOOL result = [VaultManagerModule isStorageEncryptionKeyExist];
+    resolve(@(result));
+  }
+  @catch (NSError *error) {
+    rejectWithError(reject, error);
+  }
+}
+
+RCT_EXPORT_METHOD(getStorageEncryptionKey:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    NSString *result = [VaultManagerModule getStorageEncryptionKey];
     resolve(result);
   }
   @catch (NSError *error) {

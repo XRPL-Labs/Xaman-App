@@ -21,7 +21,6 @@ static NSString* VAULT_NAME_RECOVERY = @"VAULT_TEST_RECOVER";
 static NSString* VAULT_DATA = @"VAULT_TEST_DATA";
 static NSString* VAULT_KEY = @"VAULT_TEST_KEY";
 static NSString* VAULT_NEW_KEY = @"VAULT_TEST_NEW_KEY";
-static NSString* STORAGE_ENCRYPTION_KEY = @"STORAGE_ENCRYPTION_KEY";
 static PerformanceLogger *performanceLogger;
 
 
@@ -150,10 +149,16 @@ static PerformanceLogger *performanceLogger;
   // check if the key is not exist
   XCTAssertNil([Keychain getItem:STORAGE_ENCRYPTION_KEY error:&error]);
   XCTAssertNil(error);
+  XCTAssertFalse([VaultManagerModule isStorageEncryptionKeyExist]);
+  
   // should generate new encryption key and store in the keychain
   [performanceLogger start:@"GET_STORAGE_ENCRYPTION_KEY_GENERATE"];
-  XCTAssertNotNil([VaultManagerModule getStorageEncryptionKey:STORAGE_ENCRYPTION_KEY]);
+  XCTAssertNotNil([VaultManagerModule getStorageEncryptionKey]);
   [performanceLogger end:@"GET_STORAGE_ENCRYPTION_KEY_GENERATE"];
+  
+  // should return true for storage encryption key exist
+  XCTAssertTrue([VaultManagerModule isStorageEncryptionKeyExist]);
+  
   // get newly generated encryption from keychain
   NSDictionary *item = [Keychain getItem:STORAGE_ENCRYPTION_KEY error:&error];
   XCTAssertNil(error);
@@ -164,7 +169,7 @@ static PerformanceLogger *performanceLogger;
   XCTAssertEqual(128, [storageEncryptionKey length]);
   // running the same method again should resolve to same encryption key
   [performanceLogger start:@"GET_STORAGE_ENCRYPTION_KEY_FETCH"];
-  XCTAssertTrue([storageEncryptionKey isEqualToString:[VaultManagerModule getStorageEncryptionKey:STORAGE_ENCRYPTION_KEY]]);
+  XCTAssertTrue([storageEncryptionKey isEqualToString:[VaultManagerModule getStorageEncryptionKey]]);
   [performanceLogger end:@"GET_STORAGE_ENCRYPTION_KEY_FETCH"];
 }
 
