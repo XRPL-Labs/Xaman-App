@@ -130,7 +130,7 @@ class TangemMethod extends Component<Props, State> {
                 onStartShouldSetResponder={() => true}
                 style={[styles.container, { backgroundColor: interpolateColor }]}
             >
-                <View style={[styles.visibleContent]}>
+                <View style={styles.visibleContent}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
                         <View style={[AppStyles.flex1, AppStyles.paddingLeftSml, AppStyles.paddingRightSml]}>
                             <Text numberOfLines={1} style={[AppStyles.p, AppStyles.bold]}>

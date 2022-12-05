@@ -20,6 +20,9 @@ const styles = StyleService.create({
         elevation: 2,
         ...AppStyles.paddingSml,
     },
+    loadingIndicator: {
+        paddingVertical: AppSizes.padding,
+    },
 });
 
 export default styles;

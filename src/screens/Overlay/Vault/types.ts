@@ -30,6 +30,7 @@ export interface State {
     signer: AccountSchema;
     alternativeSigner: AccountSchema;
     coreSettings: CoreSchema;
+    isSigning: boolean;
 }
 
 export interface ContextProps extends State {
