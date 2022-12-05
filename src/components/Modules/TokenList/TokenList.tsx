@@ -201,14 +201,14 @@ class TokenList extends Component<Props, State> {
         }
     };
 
+    onNativeItemPress = () => {
+        const { account } = this.state;
+        Navigator.showOverlay(AppScreens.Overlay.ExplainBalance, { account });
+    };
+
     onAddButtonPress = () => {
         const { account } = this.state;
         Navigator.showOverlay(AppScreens.Overlay.AddCurrency, { account });
-    };
-
-    onExplainBalanceButtonPress = () => {
-        const { account } = this.state;
-        Navigator.showOverlay(AppScreens.Overlay.ExplainBalance, { account });
     };
 
     toggleReordering = () => {
@@ -330,7 +330,6 @@ class TokenList extends Component<Props, State> {
                     showAddButton={!readonly}
                     onReorderSavePress={this.saveTokensOrder}
                     onAddPress={this.onAddButtonPress}
-                    onExplainPress={this.onExplainBalanceButtonPress}
                 />
                 <ListFilter
                     filters={filters}
@@ -338,7 +337,12 @@ class TokenList extends Component<Props, State> {
                     onFilterChange={this.onFilterChange}
                     onReorderPress={this.toggleReordering}
                 />
-                <NativeItem account={account} discreetMode={discreetMode} />
+                <NativeItem
+                    account={account}
+                    discreetMode={discreetMode}
+                    reorderEnabled={reorderEnabled}
+                    onPress={this.onNativeItemPress}
+                />
                 <SortableFlatList
                     ref={this.dragSortableRef}
                     itemHeight={TokenItem.Height}

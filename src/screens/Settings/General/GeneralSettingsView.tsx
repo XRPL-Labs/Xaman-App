@@ -135,6 +135,12 @@ class GeneralSettingsView extends Component<Props, State> {
         });
     };
 
+    onShowFiatPanelChange = (value: boolean) => {
+        CoreRepository.saveSettings({
+            showFiatPanel: value,
+        });
+    };
+
     getLanguageTitle = (): string => {
         const { coreSettings, locales } = this.state;
 
@@ -246,13 +252,11 @@ class GeneralSettingsView extends Component<Props, State> {
         };
 
         return (
-            <View testID="general-settings-view" style={[styles.container]}>
+            <View testID="general-settings-view" style={styles.container}>
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: () => {
-                            Navigator.pop();
-                        },
+                        onPress: Navigator.pop,
                     }}
                     centerComponent={{ text: Localize.t('settings.generalSettings') }}
                 />
@@ -315,6 +319,17 @@ class GeneralSettingsView extends Component<Props, State> {
                                 checked={coreSettings.useSystemSeparators}
                                 onChange={this.onSystemSeparatorChange}
                             />
+                        </View>
+                    </View>
+
+                    <View style={styles.row}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.showFiatPanel')}
+                            </Text>
+                        </View>
+                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Switch checked={coreSettings.showFiatPanel} onChange={this.onShowFiatPanelChange} />
                         </View>
                     </View>
                 </ScrollView>

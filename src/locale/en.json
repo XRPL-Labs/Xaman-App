@@ -405,7 +405,8 @@
     "iOwnTheKeys": "I own the keys",
     "exchangeAccount": "Exchange Account",
     "exchangeAccountReadonlyExplain": "You cannot deposit directly to your exchange account: you need a destination tag to do so. Please get your destination tag from your exchange, and deposit manually.",
-    "viewMoreXApps": "View more xApps"
+    "viewMoreXApps": "View more xApps",
+    "xrpReserved": "%{reserve} XRP reserved"
   },
   "events": {
     "eventTypeAll": "All",
@@ -597,6 +598,7 @@
     "hapticFeedback": "Haptic feedback",
     "developerMode": "Developer mode",
     "useSystemSeparators": "Use system currency format",
+    "showFiatPanel": "Show fiat panel",
     "enterOldPasscode": "Enter your old passcode",
     "enterNewPasscode": "Enter your new passcode",
     "enterNewPasscodeAgain": "Enter your new passcode again",

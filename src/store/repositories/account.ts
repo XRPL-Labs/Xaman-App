@@ -1,8 +1,5 @@
-import BigNumber from 'bignumber.js';
 import { flatMap, first, has, filter, find } from 'lodash';
 import Realm, { Results, ObjectSchema } from 'realm';
-
-import LedgerService from '@services/LedgerService';
 
 import { AccountSchema, CurrencySchema, TrustLineSchema } from '@store/schemas/latest';
 import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
@@ -185,28 +182,6 @@ class AccountRepository extends BaseRepository {
         });
 
         return found;
-    };
-
-    /**
-     * get account available balance
-     */
-    calculateAvailableBalance = (account: AccountSchema): number => {
-        if (account.balance === 0) {
-            return 0;
-        }
-
-        const { BaseReserve, OwnerReserve } = LedgerService.getNetworkReserve();
-
-        // calculate the spendable amount
-        const spendable = account.balance - BaseReserve - account.ownerCount * OwnerReserve;
-
-        const availableBalance = new BigNumber(spendable).decimalPlaces(8).toNumber();
-
-        if (availableBalance < 0) {
-            return 0;
-        }
-
-        return availableBalance;
     };
 
     /**

@@ -113,10 +113,12 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             let endOfPage = false;
 
             forEach(state, (entry: any) => {
+                const { LedgerEntryType } = entry;
+
                 if (endOfPage) {
                     return;
                 }
-                const { LedgerEntryType } = entry;
+
                 if (LedgerEntryType === 'NFTokenPage') {
                     tokenPageCount += 1;
                 } else {
@@ -250,7 +252,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
         const remainingOwner = account.ownerCount - (accountObjects.length + nfTokenPageCount + account.lines.length);
 
-        if (remainingOwner) {
+        if (remainingOwner > 0) {
             return (
                 <View style={[styles.objectItemCard]}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>

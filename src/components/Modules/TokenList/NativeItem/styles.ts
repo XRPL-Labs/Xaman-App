@@ -5,11 +5,21 @@ import { AppFonts, AppSizes } from '@theme';
 export default StyleService.create({
     currencyItem: {
         justifyContent: 'space-between',
-        flexDirection: 'row',
         backgroundColor: '$lightBlue',
         borderRadius: 15,
         paddingHorizontal: 5,
+        paddingVertical: 5,
         marginHorizontal: AppSizes.paddingSml,
+    },
+    balanceRow: {
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+    },
+    reserveRow: {
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        paddingTop: 10,
+        paddingBottom: 5,
     },
     currencyItemLabel: {
         fontSize: AppFonts.h5.size,
@@ -41,5 +51,21 @@ export default StyleService.create({
         justifyContent: 'center',
         alignItems: 'center',
         paddingRight: 10,
+    },
+    reserveTextLabel: {
+        fontSize: AppFonts.small.size,
+        fontFamily: AppFonts.base.familyMonoBold,
+        color: '$grey',
+    },
+    reserveInfoIconContainer: {
+        marginLeft: 14,
+        marginRight: 10,
+        paddingRight: 14,
+    },
+    fiatAmountText: {
+        fontSize: AppFonts.subtext.size,
+        fontFamily: AppFonts.base.familyMonoBold,
+        color: StyleService.isDarkMode() ? '$white' : '$blue',
+        marginRight: 5,
     },
 });
