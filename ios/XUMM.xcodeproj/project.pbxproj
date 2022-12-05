@@ -973,7 +973,7 @@
 					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
 					"\"$(PODS_ROOT)/boost\"",
 					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
-					$CONFIGURATION_TEMP_DIR/XUMM.build/DerivedSources,
+					"$CONFIGURATION_TEMP_DIR/XUMM.build/DerivedSources",
 				);
 				INFOPLIST_FILE = XUMMTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1055,7 +1055,7 @@
 					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
 					"\"$(PODS_ROOT)/boost\"",
 					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
-					$CONFIGURATION_TEMP_DIR/XUMM.build/DerivedSources,
+					"$CONFIGURATION_TEMP_DIR/XUMM.build/DerivedSources",
 				);
 				INFOPLIST_FILE = XUMMTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
