@@ -426,7 +426,7 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void isStorageEncryptionKeyExist(String keyName, Promise promise) {
+    public void isStorageEncryptionKeyExist(Promise promise) {
         try {
             Boolean result = isStorageEncryptionKeyExist();
             promise.resolve(result);
