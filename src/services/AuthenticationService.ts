@@ -5,12 +5,14 @@ import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetElapsedRealtime } from '@common/helpers/device';
+import { RestartBundle } from '@common/helpers/app';
 
 import { Biometric, BiometricErrors } from '@common/libs/biometric';
+import Vault from '@common/libs/vault';
 
+import DataStorage from '@store/storage';
 import { BiometryType } from '@store/types';
 import CoreRepository from '@store/repositories/core';
-import AccountRepository from '@store/repositories/account';
 
 import AppService, { AppStateStatus } from '@services/AppService';
 import NavigationService, { RootType } from '@services/NavigationService';
@@ -119,19 +121,15 @@ class AuthenticationService {
      * reset the entire app
      * WARNING: this action is irreversible, USED CAREFULLY
      */
-    resetApp = () => {
+    resetApp = async () => {
         // purge all account private keys
-        AccountRepository.purgePrivateKeys();
+        await Vault.clearStorage();
 
-        // clear the storage
-        CoreRepository.purge();
+        // wipe storage
+        DataStorage.wipe();
 
-        // dismiss any modal or overlay
-        Navigator.dismissModal();
-        Navigator.dismissOverlay();
-
-        // go to onboarding
-        Navigator.startOnboarding();
+        // restart bundle, this will navigate user to onBoarding
+        RestartBundle();
     };
 
     /**
@@ -203,12 +201,14 @@ class AuthenticationService {
         if (!ts) {
             ts = await GetElapsedRealtime();
         }
-        // TODO: check for purge on too many failed attempt
+
+        // increase failed attempt
         CoreRepository.saveSettings({
             passcodeFailedAttempts: coreSettings.passcodeFailedAttempts + 1,
             lastPasscodeFailedTimestamp: ts,
         });
 
+        // check for purge on too many attempts
         if (coreSettings.purgeOnBruteForce) {
             // alert user next attempt will wipe the entire app
             if (coreSettings.passcodeFailedAttempts + 1 === 10) {
@@ -229,7 +229,7 @@ class AuthenticationService {
 
             if (coreSettings.passcodeFailedAttempts + 1 > 10) {
                 // wipe/reset the app
-                this.resetApp();
+                await this.resetApp();
             }
         }
     };
