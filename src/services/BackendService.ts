@@ -279,9 +279,9 @@ class BackendService {
     };
 
     /*
-    get account risk on account advisory
+    get account risks on account advisory
     */
-    getAccountRisk = (address: string) => {
+    getAccountAdvisory = (address: string) => {
         return ApiService.accountAdvisory.get(address);
     };
 

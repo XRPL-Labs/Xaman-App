@@ -228,9 +228,9 @@ class TransactionDetailsView extends Component<Props, State> {
         const { incomingTx, tx } = this.state;
 
         if (incomingTx) {
-            BackendService.getAccountRisk(tx.Account.address)
-                .then((accountRisk: any) => {
-                    if (accountRisk && accountRisk.danger !== 'UNKNOWN') {
+            BackendService.getAccountAdvisory(tx.Account.address)
+                .then((accountAdvisory: any) => {
+                    if (accountAdvisory && accountAdvisory.danger !== 'UNKNOWN') {
                         this.setState({
                             scamAlert: true,
                             showMemo: false,
