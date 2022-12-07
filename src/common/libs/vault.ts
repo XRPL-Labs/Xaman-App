@@ -184,14 +184,14 @@ const Vault = {
     },
 
     // Purge All vaults in the keychain
-    purgeAll: (): Promise<boolean> => {
+    clearStorage: (): Promise<boolean> => {
         return new Promise((resolve, reject) => {
-            VaultManagerModule.purgeAll()
+            VaultManagerModule.clearStorage()
                 .then((result: boolean) => {
                     resolve(result);
                 })
                 .catch((error: any) => {
-                    logger.error('Vault purge error', error);
+                    logger.error('Vault clear storage error', error);
                     reject(error);
                 });
         });

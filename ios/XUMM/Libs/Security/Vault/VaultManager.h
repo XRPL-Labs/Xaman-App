@@ -22,5 +22,5 @@ extern NSString * const RECOVERY_SUFFIX;
 + (NSDictionary *)isMigrationRequired:(NSString *)vaultName;
 + (NSString *)getStorageEncryptionKey;
 + (BOOL)isStorageEncryptionKeyExist;
-+ (void)purgeAll;
++ (void)clearStorage;
 @end

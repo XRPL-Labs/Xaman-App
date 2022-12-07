@@ -57,7 +57,7 @@ public class VaultMangerTest {
         keychain = new Keychain(context);
 
         // clear vault before every step
-        vaultManager.purgeAll();
+        vaultManager.clearStorage();
     }
 
     @After

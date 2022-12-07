@@ -273,7 +273,7 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
      Purge ALL vaults in the keychain
      NOTE: this action cannot be undo and is permanent, used with caution
     */
-    public void purgeAll() throws Exception {
+    public void clearStorage() throws Exception {
         keychain.clear();
     }
 
@@ -406,9 +406,9 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void purgeAll(Promise promise) {
+    public void clearStorage(Promise promise) {
         try {
-            purgeAll();
+            clearStorage();
             promise.resolve(true);
         } catch (Exception e) {
             rejectWithError(promise, e);

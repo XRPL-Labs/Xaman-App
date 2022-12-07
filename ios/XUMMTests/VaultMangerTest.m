@@ -29,7 +29,7 @@ static PerformanceLogger *performanceLogger;
   performanceLogger = [[PerformanceLogger alloc] initWithTag:@"VaultMangerTestReport"];
 
   // clear vault before starting the tests
-  [VaultManagerModule purgeAll];
+  [VaultManagerModule clearStorage];
 }
 
 + (void)tearDown {

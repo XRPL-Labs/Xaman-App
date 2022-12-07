@@ -291,7 +291,7 @@ NSString *getRecoveryVaultName(NSString *vaultName)
  Purge ALL vaults in the keychain
  NOTE: this action cannot be undo and is permanent, used with caution
  */
-+ (void) purgeAll
++ (void) clearStorage
 {
   // clear the entire keychain
   [Keychain clear];
@@ -477,11 +477,11 @@ RCT_EXPORT_METHOD(purgeVault:(NSString *)vaultName
   }
 }
 
-RCT_EXPORT_METHOD(purgeAll:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(clearStorage:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
   @try {
-    [VaultManagerModule purgeAll];
+    [VaultManagerModule clearStorage];
     resolve(@(YES));
   }
   @catch (NSError *error) {
