@@ -2,7 +2,7 @@
  * XApp Browser modal
  */
 
-import { has, get, assign, toUpper } from 'lodash';
+import { has, get, assign, toUpper, isEmpty } from 'lodash';
 import moment from 'moment-timezone';
 import React, { Component } from 'react';
 import { View, Text, BackHandler, Alert, InteractionManager, Linking, NativeEventSubscription } from 'react-native';
@@ -50,8 +50,9 @@ export interface State {
     identifier: string;
     account: AccountSchema;
     ott: string;
-    isLoading: boolean;
     error: string;
+    permissions: any;
+    isLoading: boolean;
     coreSettings: CoreSchema;
     appVersionCode: string;
 }
@@ -66,6 +67,10 @@ export enum XAppMethods {
     KycVeriff = 'kycVeriff',
     ScanQr = 'scanQr',
     Close = 'close',
+}
+
+export enum XAppSpecialPermissions {
+    UrlLaunchNoConfirmation = 'URL_LAUNCH_NO_CONFIRMATION',
 }
 
 /* Component ==================================================================== */
@@ -91,6 +96,7 @@ class XAppBrowserModal extends Component<Props, State> {
             account: props.account || AccountRepository.getDefaultAccount(),
             ott: undefined,
             error: undefined,
+            permissions: undefined,
             isLoading: true,
             coreSettings: CoreRepository.getSettings(),
             appVersionCode: GetAppVersionCode(),
@@ -257,13 +263,21 @@ class XAppBrowserModal extends Component<Props, State> {
         );
     };
 
-    openBrowserLink = (data: any) => {
+    openBrowserLink = (data: any, launchDirectly: boolean) => {
         const { title } = this.state;
 
         const url = get(data, 'url', undefined);
 
         // url should be only https and contains only a domain url
         if (!StringTypeCheck.isValidURL(url)) {
+            return;
+        }
+
+        // xApp have the permission to launch the link directly without showing Alert
+        if (launchDirectly) {
+            Linking.openURL(url).catch(() => {
+                Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
+            });
             return;
         }
 
@@ -315,9 +329,24 @@ class XAppBrowserModal extends Component<Props, State> {
         }, delay);
     };
 
-    handleCommand = (parsedData: any) => {
+    handleCommand = (command: XAppMethods, parsedData: any) => {
+        const { permissions } = this.state;
+
+        // when there is no permission available just do not run any command
+        if (!permissions || isEmpty(get(permissions, 'commands'))) {
+            return;
+        }
+
+        // check if the xApp have the permission to run this command
+        const { commands: AllowedCommands, special: SpecialPermissions } = permissions;
+
+        // xApp doesn't have the permission to run this command
+        if (!AllowedCommands.includes(command.toUpperCase())) {
+            return;
+        }
+
         // record the command in active methods
-        switch (get(parsedData, 'command')) {
+        switch (command) {
             case XAppMethods.XAppNavigate:
                 this.navigateTo(parsedData);
                 break;
@@ -337,7 +366,10 @@ class XAppBrowserModal extends Component<Props, State> {
                 this.onClose(parsedData);
                 break;
             case XAppMethods.OpenBrowser:
-                this.openBrowserLink(parsedData);
+                this.openBrowserLink(
+                    parsedData,
+                    SpecialPermissions.includes(XAppSpecialPermissions.UrlLaunchNoConfirmation),
+                );
                 break;
             case XAppMethods.TxDetails:
                 this.openTxDetails(parsedData);
@@ -378,8 +410,8 @@ class XAppBrowserModal extends Component<Props, State> {
 
         // ignore if no command present or the command is not in expected commands or already is the active method
         if (has(parsedData, 'command') && Object.values(XAppMethods).includes(get(parsedData, 'command'))) {
-            // everything seems fine pass the data to the handlers
-            this.handleCommand(parsedData);
+            const { command } = parsedData;
+            this.handleCommand(command, parsedData);
         }
     };
 
@@ -439,17 +471,19 @@ class XAppBrowserModal extends Component<Props, State> {
 
         BackendService.getXAppLaunchToken(identifier, data)
             .then((res: any) => {
-                const { error, ott, xappTitle } = res;
+                const { error, ott, xappTitle, permissions } = res;
 
                 if (error) {
                     this.setState({
                         ott: undefined,
+                        permissions: undefined,
                         error,
                     });
                 } else {
                     this.setState({
                         ott,
                         title: xappTitle || title,
+                        permissions,
                         error: undefined,
                     });
                 }
@@ -457,6 +491,7 @@ class XAppBrowserModal extends Component<Props, State> {
             .catch(() => {
                 this.setState({
                     ott: undefined,
+                    permissions: undefined,
                     error: 'FETCH_OTT_FAILED',
                 });
             })
