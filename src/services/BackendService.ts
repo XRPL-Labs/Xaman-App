@@ -255,7 +255,7 @@ class BackendService {
                     }
                 }
 
-                if (badge) {
+                if (typeof badge !== 'undefined') {
                     PushNotificationsService.updateBadge(badge);
                 }
             })
