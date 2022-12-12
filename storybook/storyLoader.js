@@ -1,8 +1,3 @@
-// Auto-generated file created by react-native-storybook-loader
-// Do not edit.
-//
-// https://github.com/elderfo/react-native-storybook-loader.git
-
 function loadStories() {
     require('../src/components/General/__stories__/AmountText.stories');
     require('../src/components/General/__stories__/Avatar.stories');

@@ -35,7 +35,7 @@ describe('Payload', () => {
         payloadPatchSpy.mockClear();
 
         const payloadRejectSpy = jest.spyOn(ApiService.payload, 'patch');
-        craftedPayload.reject();
+        craftedPayload.reject('USER');
         expect(payloadRejectSpy).toBeCalledTimes(0);
         payloadRejectSpy.mockClear();
     });

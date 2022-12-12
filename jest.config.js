@@ -5,7 +5,7 @@ module.exports = {
     preset: 'react-native',
     timers: 'fake',
     transformIgnorePatterns: [
-        'node_modules/(?!react-native|@react-native|@react-native-community|realm|@react-native-firebase)',
+        'node_modules/(?!react-native|@react-native|@react-native-community|realm|@react-native-firebase|i18n-js)',
     ],
     setupFiles: ['./jest.setup.js'],
     collectCoverage: true,
