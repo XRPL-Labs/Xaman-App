@@ -21,39 +21,43 @@ type PaymentOptions = {
     [key: string]: PathOption;
 };
 
+type RequestPromise = {
+    resolver: (value: PathOption[] | PromiseLike<PathOption[]>) => void;
+    rejecter: (reason?: any) => void;
+};
+
 /* Constants ==================================================================== */
-const RESOLVE_AFTER_SECS = 20000; // seconds before returning the data
+const RESOLVE_AFTER_SECS = 10000; // seconds before returning the data
 const EXPIRE_AFTER_SECS = 60000; // seconds to expire the options
 
 /* Class ==================================================================== */
 class LedgerPathFinding extends EventEmitter {
-    private readonly amount: LedgerAmount;
-    private readonly source: string;
-    private readonly destination: string;
-    private readonly requestId: string;
-    private paymentOptions: PaymentOptions;
     private resolveTimeout: NodeJS.Timeout;
     private expireTimeout: NodeJS.Timeout;
-    private resolver: (value: PathOption[] | PromiseLike<PathOption[]>) => void;
 
-    constructor(amount: LedgerAmount, source: string, destination: string) {
+    private requestId: string;
+    private requestPromise: RequestPromise;
+    private paymentOptions: PaymentOptions;
+
+    constructor() {
         super();
-
-        this.amount = amount;
-        this.source = source;
-        this.destination = destination;
-        this.requestId = uuidv4();
 
         this.resolveTimeout = undefined;
         this.expireTimeout = undefined;
 
+        this.requestId = undefined;
+        this.requestPromise = undefined;
         this.paymentOptions = {};
     }
 
     private handlePathFindEvent = (result: { alternatives: PathOption[]; id: string; full_reply?: boolean }) => {
-        const { alternatives, full_reply, id } = result;
+        const { id, alternatives, full_reply } = result;
 
-        // check if the data is coming for this request
+        if (!alternatives) {
+            return;
+        }
+
+        // check if the data is coming for current request
         if (id !== this.requestId) {
             return;
         }
@@ -62,13 +66,13 @@ class LedgerPathFinding extends EventEmitter {
         this.handlePathOptions(alternatives, full_reply);
     };
 
+    // listen for ledger close events
     private subscribePathFind = () => {
-        // listen for ledger close events
         SocketService.onEvent('path', this.handlePathFindEvent);
     };
 
+    // listen for ledger close events
     private unsubscribePathFind = () => {
-        // listen for ledger close events
         SocketService.offEvent('path', this.handlePathFindEvent);
     };
 
@@ -84,7 +88,7 @@ class LedgerPathFinding extends EventEmitter {
         });
 
         if (shouldResolve) {
-            this.onRequestResolve();
+            this.resolveRequest();
         }
     };
 
@@ -96,18 +100,21 @@ class LedgerPathFinding extends EventEmitter {
         this.emit('expire');
     };
 
-    onRequestResolve = () => {
+    resolveRequest = () => {
         // already resolved
-        if (!this.resolver) {
+        if (!this.requestPromise?.resolver) {
             return;
         }
 
         // resolve
-        this.resolver(flatMap(this.paymentOptions));
-        this.resolver = undefined;
+        this.requestPromise.resolver(flatMap(this.paymentOptions));
+
+        // clear request promise
+        this.requestPromise = undefined;
 
         // cancel path finding request and unsubscribe from events
-        this.cancel();
+        this.close();
+
         // set the timeout for expiry
         if (this.expireTimeout) {
             clearTimeout(this.expireTimeout);
@@ -123,36 +130,50 @@ class LedgerPathFinding extends EventEmitter {
 
         // wait for seconds for the events to catch up
         this.resolveTimeout = setTimeout(() => {
-            this.onRequestResolve();
+            this.resolveRequest();
         }, RESOLVE_AFTER_SECS);
     };
 
-    request = (): Promise<PathOption[]> => {
+    request = (amount: LedgerAmount, source: string, destination: string): Promise<PathOption[]> => {
         return new Promise((resolve, reject) => {
+            // generate request id
+            this.requestId = uuidv4();
+
+            // send socket request
             SocketService.send({
                 id: this.requestId,
                 command: 'path_find',
                 subcommand: 'create',
-                source_account: this.source,
-                destination_account: this.destination,
-                destination_amount: this.amount,
+                source_account: source,
+                destination_account: destination,
+                destination_amount: amount,
             })
                 .then((response: RipplePathFindResponse) => {
-                    const { error, result } = response;
+                    const { id, result, error } = response;
+
+                    // request is canceled
+                    if (id !== this.requestId) {
+                        reject(new Error('CANCELED'));
+                        return;
+                    }
 
                     if (error || !result) {
                         reject(error);
                         return;
                     }
 
+                    this.requestPromise = {
+                        resolver: resolve,
+                        rejecter: reject,
+                    };
+
                     // handle the options from first response
                     const { alternatives } = result;
+
                     this.handlePathOptions(alternatives);
 
                     // subscribe to changes
                     this.subscribePathFind();
-
-                    this.resolver = resolve;
 
                     // wait for result from event and resolve after couple of seconds
                     this.startResolveTimeout();
@@ -163,7 +184,14 @@ class LedgerPathFinding extends EventEmitter {
         });
     };
 
-    cancel = () => {
+    close = () => {
+        // check if we are in middle of resolving the request
+        if (this.requestPromise?.rejecter) {
+            this.requestPromise.rejecter(new Error('CANCELED'));
+        }
+
+        this.requestPromise = undefined;
+
         if (this.resolveTimeout) {
             clearTimeout(this.resolveTimeout);
         }
@@ -172,8 +200,13 @@ class LedgerPathFinding extends EventEmitter {
             clearTimeout(this.expireTimeout);
         }
 
+        // clear path options
+        this.paymentOptions = {};
+
+        // unsubscribe
         this.unsubscribePathFind();
 
+        // close the request
         SocketService.send({
             id: this.requestId,
             command: 'path_find',

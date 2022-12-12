@@ -328,6 +328,7 @@ interface PathStep {
     account?: string;
     currency?: string;
     issuer?: string;
+    type?: number;
 }
 
 export type Path = PathStep[];
@@ -338,6 +339,7 @@ export interface PathOption {
 }
 
 export interface RipplePathFindResponse {
+    id?: any;
     error?: string;
     result: {
         id?: number | string;

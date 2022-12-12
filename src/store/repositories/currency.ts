@@ -1,7 +1,7 @@
 import Realm, { ObjectSchema } from 'realm';
 import { has } from 'lodash';
 
-import { CurrencySchema } from '@store/schemas/latest';
+import { CurrencySchema, CounterPartySchema } from '@store/schemas/latest';
 import { Issuer } from '@common/libs/ledger/parser/types';
 
 import BaseRepository from './base';
@@ -37,6 +37,14 @@ class CurrencyRepository extends BaseRepository {
             return false;
         }
         return !!currency.name;
+    };
+
+    getCounterParty = (currency: CurrencySchema): CounterPartySchema => {
+        const counterParty = currency.linkingObjects('CounterParty', 'currencies');
+        if (!counterParty.isEmpty()) {
+            return counterParty[0] as CounterPartySchema;
+        }
+        return undefined;
     };
 }
 

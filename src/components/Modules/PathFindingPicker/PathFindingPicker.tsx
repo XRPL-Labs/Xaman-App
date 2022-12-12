@@ -11,6 +11,8 @@ import { Amount } from '@common/libs/ledger/parser/common';
 import { PathOption } from '@common/libs/ledger/types';
 import LedgerPathFinding from '@common/libs/ledger/pathFinding';
 
+import Locale from '@locale';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -32,7 +34,7 @@ interface State {
 
 /* Component ==================================================================== */
 class PathFindingPicker extends Component<Props, State> {
-    private pathFinding: LedgerPathFinding;
+    private readonly pathFinding: LedgerPathFinding;
 
     constructor(props: Props) {
         super(props);
@@ -44,38 +46,43 @@ class PathFindingPicker extends Component<Props, State> {
             isExpired: false,
         };
 
-        this.pathFinding = new LedgerPathFinding(
-            props.amount.currency === 'XRP' ? new Amount(props.amount.value).xrpToDrops() : props.amount,
-            props.source,
-            props.destination,
-        );
+        this.pathFinding = new LedgerPathFinding();
     }
 
     componentDidUpdate(prevProps: Readonly<Props>) {
-        const { source, amount, destination } = this.props;
-        if (prevProps.source !== source) {
-            this.pathFinding = new LedgerPathFinding(
-                amount.currency === 'XRP' ? new Amount(amount.value).xrpToDrops() : amount,
-                source,
-                destination,
-            );
-            this.fetchOptions();
+        const { source } = this.props;
+        if (!isEqual(prevProps.source, source)) {
+            this.onSourceChange();
         }
     }
 
     componentWillUnmount() {
         if (this.pathFinding) {
             // cancel any path finding request
-            this.pathFinding.cancel();
+            this.pathFinding.close();
             // disable the expire event
             this.pathFinding.off('expire', this.onOptionsExpire);
         }
     }
 
     componentDidMount() {
+        // listen on options expire
         this.pathFinding.on('expire', this.onOptionsExpire);
+
+        // fetch options
         InteractionManager.runAfterInteractions(this.fetchOptions);
     }
+
+    onSourceChange = () => {
+        // clear selected item
+        this.onItemSelect(undefined);
+
+        // cancel current request
+        this.pathFinding.close();
+
+        // fetch options again
+        this.fetchOptions();
+    };
 
     onOptionsExpire = () => {
         const { paymentOptions } = this.state;
@@ -92,6 +99,7 @@ class PathFindingPicker extends Component<Props, State> {
     };
 
     fetchOptions = () => {
+        const { amount, source, destination } = this.props;
         const { isLoading } = this.state;
 
         if (!isLoading) {
@@ -101,7 +109,7 @@ class PathFindingPicker extends Component<Props, State> {
         }
 
         this.pathFinding
-            .request()
+            .request(amount.currency === 'XRP' ? new Amount(amount.value).xrpToDrops() : amount, source, destination)
             .then((options) => {
                 this.setState({
                     isLoading: false,
@@ -109,11 +117,13 @@ class PathFindingPicker extends Component<Props, State> {
                     paymentOptions: options,
                 });
             })
-            .catch((e) => {
-                this.setState({
-                    isLoading: false,
-                    paymentOptions: undefined,
-                });
+            .catch((error: any) => {
+                if (error.message !== 'CANCELED') {
+                    this.setState({
+                        isLoading: false,
+                        paymentOptions: undefined,
+                    });
+                }
             });
     };
 
@@ -157,10 +167,10 @@ class PathFindingPicker extends Component<Props, State> {
 
         if (isLoading) {
             return (
-                <View style={styles.loadingContainer}>
+                <View style={styles.emptyContainer}>
                     <View style={AppStyles.row}>
-                        <LoadingIndicator style={{ paddingRight: 10 }} />
-                        <Text style={[AppStyles.p, AppStyles.strong]}>Finding payment options</Text>
+                        <LoadingIndicator style={styles.loadingIndicator} />
+                        <Text style={[AppStyles.p, AppStyles.strong]}>{Locale.t('payload.findingPaymentOptions')}</Text>
                     </View>
                 </View>
             );
@@ -169,18 +179,20 @@ class PathFindingPicker extends Component<Props, State> {
         if (isExpired) {
             return (
                 <>
-                    <View style={styles.loadingContainer}>
+                    <View style={styles.emptyContainer}>
                         <View style={AppStyles.row}>
-                            <Icon name="ImageTriangle" style={{ marginRight: 10 }} />
-                            <Text style={[AppStyles.p, AppStyles.strong]}>Payment options expired</Text>
+                            <Icon name="ImageTriangle" style={styles.triangleIconContainer} />
+                            <Text style={[AppStyles.p, AppStyles.strong]}>
+                                {Locale.t('payload.paymentOptionsExpired')}
+                            </Text>
                         </View>
                     </View>
                     <Button
                         rounded
                         secondary
                         onPress={this.fetchOptions}
-                        label="Find new payment options"
-                        style={{ marginBottom: 15 }}
+                        label={Locale.t('payload.findNewPaymentOptions')}
+                        style={styles.newPaymentOptionsButton}
                     />
                 </>
             );
@@ -189,18 +201,20 @@ class PathFindingPicker extends Component<Props, State> {
         if (!paymentOptions || paymentOptions.length === 0) {
             return (
                 <>
-                    <View style={styles.loadingContainer}>
+                    <View style={styles.emptyContainer}>
                         <View style={AppStyles.row}>
-                            <Icon name="ImageTriangle" style={{ marginRight: 10 }} />
-                            <Text style={[AppStyles.p, AppStyles.strong]}>No payment options found</Text>
+                            <Icon name="ImageTriangle" style={styles.triangleIconContainer} />
+                            <Text style={[AppStyles.p, AppStyles.strong]}>
+                                {Locale.t('payload.noPaymentOptionsFound')}
+                            </Text>
                         </View>
                     </View>
                     <Button
                         rounded
                         secondary
                         onPress={this.fetchOptions}
-                        label="Find new payment options"
-                        style={{ marginBottom: 15 }}
+                        label={Locale.t('payload.findNewPaymentOptions')}
+                        style={styles.newPaymentOptionsButton}
                     />
                 </>
             );

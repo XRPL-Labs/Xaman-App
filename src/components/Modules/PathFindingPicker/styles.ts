@@ -1,9 +1,8 @@
 import StyleService from '@services/StyleService';
-import { AppFonts } from '@theme';
 
 /* Styles ==================================================================== */
 export default StyleService.create({
-    loadingContainer: {
+    emptyContainer: {
         borderRadius: 15,
         backgroundColor: '$tint',
         paddingHorizontal: 17,
@@ -12,17 +11,13 @@ export default StyleService.create({
         alignItems: 'center',
         marginBottom: 15,
     },
-    collapseButton: {
-        backgroundColor: '$black',
-        borderRadius: 8,
-        height: 25,
-        width: 40,
-        justifyContent: 'center',
-        alignSelf: 'center',
-        // marginTop: 5,
+    loadingIndicator: {
+        paddingRight: 10,
     },
-    collapseIcon: {
-        alignSelf: 'center',
-        tintColor: '$white',
+    triangleIconContainer: {
+        marginRight: 10,
+    },
+    newPaymentOptionsButton: {
+        marginBottom: 15,
     },
 });

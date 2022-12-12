@@ -949,6 +949,10 @@
     "forcedSignersAccountsDoesNotExist": "This request can only be signed by \n\n%{accounts}\n\nThis accounts are not present with signing access.",
     "tradeEntireTokenWorthWarning": "Warning: the amount of %{currency} is equal to or higher than your %{currency} balance of this asset. If this offer is executed, you will fully liquidate your %{currency} position.",
     "paymentToDisallowedXRPWarning": "The destination account configured their account to disallow incoming XRP (non-token) payments. If you proceed, you will most likely need support from the destination account owner.",
-    "paymentToBlackHoledAccountWarning": "The destination account is 'black holed', meaning all funds sent to the destination account will be inaccessible & unrecoverable. Are you sure you want to continue sending your funds to this destination account?"
+    "paymentToBlackHoledAccountWarning": "The destination account is 'black holed', meaning all funds sent to the destination account will be inaccessible & unrecoverable. Are you sure you want to continue sending your funds to this destination account?",
+    "findingPaymentOptions": "Finding payment options",
+    "paymentOptionsExpired": "Payment options expired",
+    "findNewPaymentOptions": "Find new payment options",
+    "noPaymentOptionsFound": "No payment options found"
   }
 }

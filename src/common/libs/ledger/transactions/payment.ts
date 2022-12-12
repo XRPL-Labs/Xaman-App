@@ -148,6 +148,7 @@ class Payment extends BaseTransaction {
         }
     }
 
+    // @ts-ignore
     get SendMax(): AmountType {
         const sendMax = get(this, ['tx', 'SendMax'], undefined);
 
@@ -169,7 +170,7 @@ class Payment extends BaseTransaction {
         };
     }
 
-    set SendMax(input: AmountType | undefined) {
+    set SendMax(input: LedgerAmount) {
         if (typeof input === 'undefined') {
             set(this, 'tx.SendMax', undefined);
             return;

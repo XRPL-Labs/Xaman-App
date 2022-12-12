@@ -9,13 +9,16 @@ import { CurrencyRepository } from '@store/repositories';
 
 import { AmountText, Avatar, TokenAvatar, TouchableDebounce } from '@components/General';
 import { PathOption } from '@common/libs/ledger/types';
+
 import { Amount } from '@common/libs/ledger/parser/common';
+import { AmountType } from '@common/libs/ledger/parser/types';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
+    amount: AmountType;
     item: PathOption;
     selected?: boolean;
     onPress?: (item: PathOption) => void;
@@ -30,8 +33,11 @@ class PathFindingItem extends Component<Props> {
 
     renderXRP = (item: PathOption) => {
         const { selected } = this.props;
-
         const { source_amount } = item;
+
+        if (typeof source_amount !== 'string') {
+            return null;
+        }
 
         return (
             <TouchableDebounce
@@ -48,7 +54,7 @@ class PathFindingItem extends Component<Props> {
                     <View style={styles.currencyImageContainer}>
                         <TokenAvatar token="XRP" border size={35} />
                     </View>
-                    <View style={{ justifyContent: 'center' }}>
+                    <View style={AppStyles.centerContent}>
                         <Text style={styles.currencyItemLabel}>XRP</Text>
                     </View>
                 </View>
@@ -70,6 +76,10 @@ class PathFindingItem extends Component<Props> {
     renderIOU = (item: PathOption) => {
         const { selected, amount } = this.props;
         const { source_amount, paths_computed } = item;
+
+        if (typeof source_amount !== 'object') {
+            return null;
+        }
 
         let counterParty;
         let currency;
@@ -96,10 +106,7 @@ class PathFindingItem extends Component<Props> {
         }
 
         if (currency) {
-            const c = currency.linkingObjects('CounterParty', 'currencies');
-            if (!c.isEmpty()) {
-                counterParty = c[0];
-            }
+            counterParty = CurrencyRepository.getCounterParty(currency);
         }
 
         return (
@@ -148,10 +155,9 @@ class PathFindingItem extends Component<Props> {
         // XRP
         if (typeof source_amount === 'string') {
             return this.renderXRP(item);
-        } else if (typeof source_amount === 'object') {
+        }
+        if (typeof source_amount === 'object') {
             return this.renderIOU(item);
-        } else {
-            console.log(item);
         }
 
         return null;
