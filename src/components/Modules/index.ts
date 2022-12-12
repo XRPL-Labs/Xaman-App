@@ -10,3 +10,4 @@ export * from './FeeList';
 export * from './XAppList';
 export * from './ProBadge';
 export * from './PathFindingPicker';
+export * from './InactiveAccount';

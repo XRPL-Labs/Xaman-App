@@ -392,6 +392,7 @@
     "whatAreOtherAssets": "What are other (non-XRP) tokens?",
     "otherAssets": "Other tokens",
     "youDonNotHaveOtherAssets": "You have no other (non-XRP) tokens",
+    "activateYourAccount": "Activate your account",
     "howActivateMyAccount": "How can I activate my account?",
     "howActivateMyAccountDesc": "To prevent spam account creation, the XRP Ledger requires at least %{baseReserve} XRP to be deposited into an account to activate it. The %{baseReserve} XRP is not lost: it will remain in your account, but you cannot spend it. To start using your account, make sure a deposit greater than %{baseReserve} XRP is made to your account.",
     "otherAssetsDesc": "The XRP ledger also allows you to hold balances of, and to send and receive, tokens other than XRP. These tokens can be issued by other accounts on the XRP ledger. If you want to be able to send or receive a non-XRP token, you will have to trust the issuer of the non-XRP token.",
