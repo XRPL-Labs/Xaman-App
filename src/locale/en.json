@@ -376,7 +376,7 @@
     "whenYouChangeYourPhoneExplain": "Using XUMM with a new device will require you to re-enter your secret keys for any accounts you have previously created.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "I will keep my secret account keys safe and offline, so I can re-enter them if I get a new device.",
     "questionsAndSupport": "Questions & Support",
-    "questionsAndSupportExplain": "Please don’t hesitate to contact us if you have any further questions. Our FAQ and support channel can be found here: https://support.xumm.app.\r\n\r\nPlease note: This is THE ONLY trustworthy channel for XUMM support.",
+    "questionsAndSupportExplain": "Please don’t hesitate to contact us if you have any further questions.In case of doubt, never proceed and check with our support team first.\r\n\r\nOur FAQ and help center can be found at https://support.xumm.app.\n\nSupport is available in-app, using the \"Xumm Support\" xApp. Please do not trust social media support channels.",
     "IOnlyTrustAnswersFromXUMMSupportTeam": "I will only trust answers from the XUMM support team at https://support.xumm.app ",
     "pleaseReadTheTextAboveCarefully": "Please read the above text carefully"
   },
