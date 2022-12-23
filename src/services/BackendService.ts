@@ -265,6 +265,17 @@ class BackendService {
     };
 
     /*
+    Report added account for security checks
+    */
+    addAccount = (account: string, txblob: string, cid?: string) => {
+        return ApiService.addAccount.post(null, {
+            account,
+            txblob,
+            cid,
+        });
+    };
+
+    /*
     Get details for an XRP address
     */
     getAddressInfo = (address: string) => {

@@ -31,5 +31,6 @@ export default {
         ['rates', '/v1/app/rates/{currency}'],
         ['validEndpoints', '/v1/app/valid-endpoints/{hash}'],
         ['auditTrail', '/v1/app/audit-trail/{destination}'],
+        ['addAccount', '/v1/app/add-account'],
     ]),
 };

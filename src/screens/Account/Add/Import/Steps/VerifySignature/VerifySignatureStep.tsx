@@ -10,8 +10,11 @@ import { encodeForSigning } from 'ripple-binary-codec';
 
 import RNTangemSdk, { Card } from 'tangem-sdk-react-native';
 
+import { SHA256 } from '@common/libs/crypto';
 import { Images } from '@common/helpers/images';
 import { GetWalletDerivedPublicKey, GetSignOptions } from '@common/utils/tangem';
+
+import { ProfileRepository } from '@store/repositories';
 
 // components
 import { Button, Footer, Spacer } from '@components/General';
@@ -25,6 +28,7 @@ import { AppStyles } from '@theme';
 import { StepsContext } from '../../Context';
 
 import styles from './styles';
+
 /* types ==================================================================== */
 export interface Props {}
 
@@ -56,7 +60,7 @@ class VerifySignatureStep extends Component<Props, State> {
     };
 
     signAndVerify = async () => {
-        const { account } = this.context;
+        const { account, setTangemSignature } = this.context;
 
         // get derived address
         // NOTE: as this the address that been shown to the user with get it from account object
@@ -67,11 +71,14 @@ class VerifySignatureStep extends Component<Props, State> {
         // but as we use card data to sign in the other parts we get it from card data
         const publicKey = GetWalletDerivedPublicKey(tangemCard);
 
-        // create dummy transaction
-        const dummyTransaction = { Account: address };
+        // include device UUID and user uuid is signed transaction
+        const { uuid, deviceUUID } = ProfileRepository.getProfile();
 
         // prepare the transaction for signing
-        const preparedTx = AccountLib.rawSigning.prepare(dummyTransaction, publicKey);
+        const preparedTx = AccountLib.rawSigning.prepare(
+            { Account: address, InvoiceID: await SHA256(`${uuid}.${deviceUUID}.${account.address}`) },
+            publicKey,
+        );
 
         // get sign options base on HD wallet support
         const tangemSignOptions = GetSignOptions(tangemCard, preparedTx.hashToSign);
@@ -84,15 +91,17 @@ class VerifySignatureStep extends Component<Props, State> {
         // get signature
         const signature = signatures instanceof Array ? signatures[0] : signatures;
 
-        const { txJson } = AccountLib.rawSigning.complete(preparedTx, signature);
+        const { txJson, signedTransaction } = AccountLib.rawSigning.complete(preparedTx, signature);
 
-        const signatureValid = AccountLib.utils.verifySignature(
-            encodeForSigning(txJson),
-            txJson.TxnSignature,
-            publicKey,
-        );
+        // verify signature
+        const verified = AccountLib.utils.verifySignature(encodeForSigning(txJson), txJson.TxnSignature, publicKey);
 
-        return signatureValid;
+        // set signature if verified
+        if (verified) {
+            setTangemSignature(signedTransaction);
+        }
+
+        return verified;
     };
 
     goNext = async () => {
@@ -120,9 +129,9 @@ class VerifySignatureStep extends Component<Props, State> {
         const { isLoading } = this.context;
 
         return (
-            <SafeAreaView testID="account-import-verify-signature-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-import-verify-signature-view" style={AppStyles.container}>
                 <View style={[AppStyles.centerAligned, AppStyles.marginVerticalSml]}>
-                    <Image style={[styles.headerImage]} source={Images.ImageSecurityFirst} />
+                    <Image style={styles.headerImage} source={Images.ImageSecurityFirst} />
                 </View>
 
                 <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.padding]}>
@@ -150,7 +159,7 @@ class VerifySignatureStep extends Component<Props, State> {
                             onPress={this.goBack}
                         />
                     </View>
-                    <View style={[AppStyles.flex5]}>
+                    <View style={AppStyles.flex5}>
                         <Button
                             testID="next-button"
                             textStyle={AppStyles.strong}

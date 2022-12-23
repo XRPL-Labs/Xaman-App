@@ -44,8 +44,9 @@ export interface State {
     prevSteps: Array<ImportSteps>;
     account: Partial<AccountSchema>;
     importedAccount: XRPL_Account;
-    passphrase?: string;
-    secretType?: SecretTypes;
+    passphrase: string;
+    secretType: SecretTypes;
+    tangemSignature: string;
     upgradeAccount?: AccountSchema;
     alternativeSeedAlphabet?: XrplAltFamilySeedAlphabet;
     importOfflineSecretNumber?: boolean;

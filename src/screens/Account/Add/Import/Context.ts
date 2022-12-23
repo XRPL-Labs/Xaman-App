@@ -14,6 +14,7 @@ interface ContextProps extends State {
     setAccessLevel: (accessLevels: AccessLevels, callback?: any) => void;
     setAccountType: (type: AccountTypes, callback?: any) => void;
     setAdditionalInfo: (info: Object, callback?: any) => void;
+    setTangemSignature: (signature: string, callback?: any) => void;
     setSecretType: (type: SecretTypes, callback?: any) => void;
     goNext: (step?: ImportSteps) => void;
     goBack: () => void;

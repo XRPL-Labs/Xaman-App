@@ -2,27 +2,31 @@
  * Import Account Screen
  */
 
-import { dropRight, last, isEmpty, has, get } from 'lodash';
+import { dropRight, get, has, isEmpty, last } from 'lodash';
 import React, { Component } from 'react';
-import { View, Keyboard, Alert } from 'react-native';
+import { Alert, Keyboard, View } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
-import { utils, XRPL_Account } from 'xrpl-accountlib';
+
+import * as AccountLib from 'xrpl-accountlib';
 
 import { PayloadOrigin } from '@common/libs/payload';
 import { Toast } from '@common/helpers/interface';
 import { getAccountName } from '@common/helpers/resolver';
 import { Navigator } from '@common/helpers/navigator';
 
+import { SHA256 } from '@common/libs/crypto';
+
 import Vault from '@common/libs/vault';
 
-import { GetWalletDerivedPublicKey } from '@common/utils/tangem';
+import { GetCardId, GetWalletDerivedPublicKey } from '@common/utils/tangem';
 import { AppScreens } from '@common/constants';
 
-import { LedgerService } from '@services';
+import backendService from '@services/BackendService';
+import LedgerService from '@services/LedgerService';
 
-import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository, ProfileRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
-import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
+import { AccessLevels, AccountTypes, EncryptionLevels } from '@store/types';
 
 import { Header } from '@components/General';
 
@@ -37,7 +41,7 @@ import Steps from './Steps';
 import { StepsContext } from './Context';
 
 /* types ==================================================================== */
-import { ImportSteps, SecretTypes, Props, State } from './types';
+import { ImportSteps, Props, SecretTypes, State } from './types';
 
 /* Component ==================================================================== */
 class AccountImportView extends Component<Props, State> {
@@ -83,6 +87,7 @@ class AccountImportView extends Component<Props, State> {
             },
             importedAccount: undefined,
             passphrase: undefined,
+            tangemSignature: undefined,
             secretType: SecretTypes.SecretNumbers,
             upgradeAccount: props.upgradeAccount,
             alternativeSeedAlphabet: props.alternativeSeedAlphabet,
@@ -114,10 +119,10 @@ class AccountImportView extends Component<Props, State> {
         const publicKey = GetWalletDerivedPublicKey(tangemCard);
 
         // derive XRPL address from normalized public key
-        const address = utils.deriveAddress(publicKey);
+        const address = AccountLib.utils.deriveAddress(publicKey);
 
         // generate XRPL account
-        const account = new XRPL_Account({ address, keypair: { publicKey, privateKey: undefined } });
+        const account = new AccountLib.XRPL_Account({ address, keypair: { publicKey, privateKey: undefined } });
 
         this.setState({
             importedAccount: account,
@@ -196,6 +201,14 @@ class AccountImportView extends Component<Props, State> {
         });
     };
 
+    setTangemSignature = (signature: string, callback?: any) => {
+        this.setState({ tangemSignature: signature }, () => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    };
+
     setSecretType = (type: SecretTypes, callback?: any) => {
         this.setState({ secretType: type }, () => {
             if (typeof callback === 'function') {
@@ -204,7 +217,7 @@ class AccountImportView extends Component<Props, State> {
         });
     };
 
-    setImportedAccount = (importedAccount: XRPL_Account, callback?: any) => {
+    setImportedAccount = (importedAccount: AccountLib.XRPL_Account, callback?: any) => {
         const { account } = this.state;
 
         this.setState(
@@ -332,20 +345,47 @@ class AccountImportView extends Component<Props, State> {
     };
 
     importAccount = async () => {
-        const { account, importedAccount, passphrase, alternativeSeedAlphabet } = this.state;
+        const { tangemCard } = this.props;
+        const { account, importedAccount, passphrase, alternativeSeedAlphabet, tangemSignature } = this.state;
 
         try {
             let encryptionKey;
             let createdAccount = undefined as AccountSchema;
 
-            if (account.accessLevel === AccessLevels.Full) {
+            // get the signature and add account
+            if (account.type === AccountTypes.Tangem) {
+                backendService.addAccount(account.address, tangemSignature, GetCardId(tangemCard)).catch(() => {
+                    // ignore
+                });
+            } else {
+                // include device UUID is signed transaction
+                const { deviceUUID, uuid } = ProfileRepository.getProfile();
+                const { signedTransaction } = AccountLib.sign(
+                    { Account: account.address, InvoiceID: await SHA256(`${uuid}.${deviceUUID}.${account.address}`) },
+                    importedAccount,
+                );
+
+                backendService.addAccount(account.address, signedTransaction).catch(() => {
+                    // ignore
+                });
+            }
+
+            // import account as full access
+            if (account.accessLevel === AccessLevels.Full && account.type === AccountTypes.Regular) {
                 // if passphrase present use it, instead use Passcode to encrypt the private key
                 // WARNING: passcode should use just for low balance accounts
                 if (account.encryptionLevel === EncryptionLevels.Passphrase) {
+                    // check if passphrase is defined
+                    if (!passphrase) {
+                        throw new Error('Account encryption level set to passphrase but passphrase is undefined!');
+                    }
                     encryptionKey = passphrase;
-                } else {
+                } else if (account.encryptionLevel === EncryptionLevels.Passcode) {
                     encryptionKey = CoreRepository.getSettings().passcode;
+                } else {
+                    throw new Error('Account encryption level is not defined');
                 }
+
                 // import account as full access
                 createdAccount = await AccountRepository.add(
                     account,
@@ -353,7 +393,7 @@ class AccountImportView extends Component<Props, State> {
                     encryptionKey,
                 );
             } else {
-                // import account as readonly
+                // import account as readonly or tangem card
                 createdAccount = await AccountRepository.add(account);
             }
 
@@ -416,6 +456,7 @@ class AccountImportView extends Component<Props, State> {
                     setImportedAccount: this.setImportedAccount,
                     setAccountType: this.setAccountType,
                     setAdditionalInfo: this.setAdditionalInfo,
+                    setTangemSignature: this.setTangemSignature,
                     setSecretType: this.setSecretType,
                 }}
             >
