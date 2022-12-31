@@ -5,7 +5,10 @@ import StyleService from '@services/StyleService';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    container: { flex: 1 },
+    container: { 
+        position:'fixed',
+        flex: 1 
+    },
     webViewContainer: {
         flex: 1,
         backgroundColor: '$background',
