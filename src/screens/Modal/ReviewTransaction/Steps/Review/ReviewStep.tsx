@@ -170,7 +170,7 @@ class ReviewStep extends Component<Props, State> {
     };
 
     renderDetails = () => {
-        const { payload, transaction, source } = this.context;
+        const { payload, transaction, source, setLoading } = this.context;
 
         // if tx is SignIn ignore to show details
         if (payload.isSignIn()) {
@@ -184,13 +184,18 @@ class ReviewStep extends Component<Props, State> {
         return (
             <>
                 <Template
-                    isPathFinding={payload.isPathFinding()}
                     source={source}
                     transaction={transaction}
-                    canOverride={!payload.isMultiSign()}
+                    payload={payload}
                     forceRender={this.forceRender}
+                    setLoading={setLoading}
                 />
-                <Global transaction={transaction} canOverride={!payload.isMultiSign()} forceRender={this.forceRender} />
+                <Global
+                    transaction={transaction}
+                    payload={payload}
+                    forceRender={this.forceRender}
+                    setLoading={setLoading}
+                />
             </>
         );
     };
@@ -203,18 +208,18 @@ class ReviewStep extends Component<Props, State> {
                 testID="review-transaction-modal"
                 source={StyleService.getImage('BackgroundPattern')}
                 imageStyle={styles.xummAppBackground}
-                style={[styles.container]}
+                style={styles.container}
             >
                 <View style={styles.blurView}>
                     <View style={styles.absolute}>
-                        <View style={[styles.headerContainer]}>
+                        <View style={styles.headerContainer}>
                             <View style={[AppStyles.row]}>
                                 <View style={[AppStyles.flex1, AppStyles.leftAligned]}>
                                     <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>
                                         {Localize.t('global.reviewTransaction')}
                                     </Text>
                                 </View>
-                                <View style={[AppStyles.rightAligned]}>
+                                <View style={AppStyles.rightAligned}>
                                     <Button
                                         contrast
                                         testID="close-button"
@@ -243,7 +248,7 @@ class ReviewStep extends Component<Props, State> {
                                 testID="add-account-button"
                                 label={Localize.t('home.addAccount')}
                                 icon="IconPlus"
-                                iconStyle={[AppStyles.imgColorWhite]}
+                                iconStyle={AppStyles.imgColorWhite}
                                 rounded
                                 onPress={async () => {
                                     await Navigator.dismissModal();
@@ -261,8 +266,7 @@ class ReviewStep extends Component<Props, State> {
     render() {
         const { accounts, canScroll } = this.state;
 
-        const { payload, source, isValidating, isPreparing, setSource, onAccept, onClose, getTransactionLabel } =
-            this.context;
+        const { payload, source, isLoading, setSource, onAccept, onClose, getTransactionLabel } = this.context;
 
         // no account is available for signing
         if (Array.isArray(accounts) && accounts.length === 0) {
@@ -282,8 +286,8 @@ class ReviewStep extends Component<Props, State> {
                 style={styles.container}
             >
                 {/* header */}
-                <View style={[styles.headerContainer]}>
-                    <View style={[AppStyles.row]}>
+                <View style={styles.headerContainer}>
+                    <View style={AppStyles.row}>
                         <View style={[AppStyles.flex1, AppStyles.leftAligned, AppStyles.paddingRightSml]}>
                             <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>
                                 {payload.isSignIn()
@@ -291,7 +295,7 @@ class ReviewStep extends Component<Props, State> {
                                     : Localize.t('global.reviewTransaction')}
                             </Text>
                         </View>
-                        <View style={[AppStyles.rightAligned]}>
+                        <View style={AppStyles.rightAligned}>
                             <Button
                                 contrast
                                 testID="close-button"
@@ -314,18 +318,18 @@ class ReviewStep extends Component<Props, State> {
                             <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
                                 <Avatar size={60} border source={{ uri: payload.getApplicationIcon() }} />
 
-                                <Text style={[styles.appTitle]}>{payload.getApplicationName()}</Text>
+                                <Text style={styles.appTitle}>{payload.getApplicationName()}</Text>
 
                                 {!!payload.getCustomInstruction() && (
                                     <>
-                                        <Text style={[styles.descriptionLabel]}>{Localize.t('global.details')}</Text>
-                                        <Text style={[styles.instructionText]}>{payload.getCustomInstruction()}</Text>
+                                        <Text style={styles.descriptionLabel}>{Localize.t('global.details')}</Text>
+                                        <Text style={styles.instructionText}>{payload.getCustomInstruction()}</Text>
                                     </>
                                 )}
 
                                 {!payload.isSignIn() && (
                                     <>
-                                        <Text style={[styles.descriptionLabel]}>{Localize.t('global.type')}</Text>
+                                        <Text style={styles.descriptionLabel}>{Localize.t('global.type')}</Text>
                                         <Text style={[styles.instructionText, AppStyles.colorBlue, AppStyles.bold]}>
                                             {getTransactionLabel()}
                                         </Text>
@@ -335,8 +339,8 @@ class ReviewStep extends Component<Props, State> {
                         </View>
                     </View>
 
-                    <View style={[styles.transactionContent]}>
-                        <View style={[AppStyles.paddingHorizontalSml]}>
+                    <View style={styles.transactionContent}>
+                        <View style={AppStyles.paddingHorizontalSml}>
                             <View style={styles.rowLabel}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                                     {payload.isSignIn() || payload.isMultiSign()
@@ -354,7 +358,7 @@ class ReviewStep extends Component<Props, State> {
                             <SwipeButton
                                 testID="accept-button"
                                 color={this.getSwipeButtonColor()}
-                                isLoading={isValidating || isPreparing}
+                                isLoading={isLoading}
                                 onSwipeSuccess={onAccept}
                                 label={Localize.t('global.slideToAccept')}
                                 accessibilityLabel={Localize.t('global.accept')}

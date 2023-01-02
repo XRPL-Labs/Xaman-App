@@ -7,6 +7,8 @@ import { BackendService, LedgerService, StyleService } from '@services';
 
 import { CoreRepository } from '@store/repositories';
 
+import { Payload } from '@common/libs/payload';
+
 import LedgerExchange, { MarketDirection } from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
@@ -28,9 +30,9 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    isPathFinding: boolean;
+    payload: Payload;
     transaction: Payment;
-    canOverride: boolean;
+    setLoading: (loading: boolean) => void;
     forceRender: () => void;
 }
 
@@ -70,8 +72,8 @@ class PaymentTemplate extends Component<Props, State> {
             currencyName: transaction.Amount?.currency ? NormalizeCurrencyCode(transaction.Amount.currency) : 'XRP',
             destinationDetails: undefined,
             isPartialPayment: false,
-            // shouldCheckForConversation: !transaction.SendMax && props.canOverride,
-            shouldCheckForConversation: !transaction.SendMax && props.canOverride && !props.isPathFinding,
+            shouldCheckForConversation:
+                !transaction.SendMax && !props.payload.isMultiSign() && !props.payload.isPathFinding(),
             exchangeRate: undefined,
             xrpRoundedUp: undefined,
             currencyRate: undefined,
@@ -344,6 +346,20 @@ class PaymentTemplate extends Component<Props, State> {
         });
     };
 
+    onPathLoading = () => {
+        const { setLoading } = this.props;
+
+        // set loading true
+        setLoading(true);
+    };
+
+    onPathLoaded = () => {
+        const { setLoading } = this.props;
+
+        // set loading true
+        setLoading(false);
+    };
+
     renderAmountRate = () => {
         const { amount, isLoadingRate, currencyRate } = this.state;
 
@@ -373,7 +389,7 @@ class PaymentTemplate extends Component<Props, State> {
     };
 
     render() {
-        const { transaction, isPathFinding } = this.props;
+        const { transaction, payload } = this.props;
         const {
             account,
             isLoading,
@@ -416,7 +432,7 @@ class PaymentTemplate extends Component<Props, State> {
                         activeOpacity={1}
                         style={[AppStyles.row]}
                         onPress={() => {
-                            if (editableAmount && this.amountInput) {
+                            if (editableAmount) {
                                 this.amountInput.current?.focus();
                             }
                         }}
@@ -428,18 +444,16 @@ class PaymentTemplate extends Component<Props, State> {
                                         ref={this.amountInput}
                                         valueType={currencyName === 'XRP' ? AmountValueType.XRP : AmountValueType.IOU}
                                         onChange={this.onAmountChange}
-                                        style={[styles.amountInput]}
+                                        style={styles.amountInput}
                                         value={amount}
                                         editable={editableAmount}
                                         placeholderTextColor={StyleService.value('$textSecondary')}
                                     />
-                                    <Text style={[styles.amountInput]}> {currencyName}</Text>
+                                    <Text style={styles.amountInput}> {currencyName}</Text>
                                 </View>
                                 <Button
                                     onPress={() => {
-                                        if (this.amountInput) {
-                                            this.amountInput.current?.focus();
-                                        }
+                                        this.amountInput.current?.focus();
                                     }}
                                     style={styles.editButton}
                                     roundedSmall
@@ -528,7 +542,7 @@ class PaymentTemplate extends Component<Props, State> {
                     </>
                 )}
 
-                {isPathFinding && (
+                {payload.isPathFinding() && (
                     <>
                         <Text style={[styles.label]}>Pay with</Text>
                         <PathFindingPicker
@@ -536,6 +550,8 @@ class PaymentTemplate extends Component<Props, State> {
                             destination={transaction.Destination.address}
                             amount={transaction.Amount}
                             onSelect={this.onPathSelect}
+                            onLoad={this.onPathLoading}
+                            onLoadEnd={this.onPathLoaded}
                         />
                     </>
                 )}

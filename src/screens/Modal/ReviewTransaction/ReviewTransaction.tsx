@@ -53,8 +53,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             source: undefined,
             currentStep: Steps.Review,
             submitResult: undefined,
-            isPreparing: false,
-            isValidating: false,
+            isLoading: false,
             isValidPayload: true,
             hasError: false,
             softErrorMessage: '',
@@ -224,7 +223,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         }
 
         this.setState({
-            isPreparing: true,
+            isLoading: true,
         });
 
         await transaction
@@ -242,7 +241,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
                     this.setState({
                         currentStep: Steps.Review,
-                        isPreparing: false,
+                        isLoading: false,
                     });
                 }
             });
@@ -312,7 +311,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         try {
             // set loading
-            this.setState({ isValidating: true });
+            this.setState({ isLoading: true });
 
             // validate payload by fetching it again
             try {
@@ -559,7 +558,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         } finally {
             if (this.mounted) {
                 this.setState({
-                    isValidating: false,
+                    isLoading: false,
                 });
             }
         }
@@ -585,6 +584,12 @@ class ReviewTransactionModal extends Component<Props, State> {
         // change state
         this.setState({
             source: account,
+        });
+    };
+
+    setLoading = (loading: boolean) => {
+        this.setState({
+            isLoading: loading,
         });
     };
 
@@ -765,6 +770,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 value={{
                     ...this.state,
                     setError: this.setError,
+                    setLoading: this.setLoading,
                     setSource: this.setSource,
                     onClose: this.onClose,
                     onAccept: this.onAccept,

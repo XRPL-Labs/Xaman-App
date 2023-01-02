@@ -21,6 +21,8 @@ interface Props {
     source: string;
     destination: string;
     amount: AmountType;
+    onLoad: () => void;
+    onLoadEnd: () => void;
     onSelect?: (item: PathOption) => void;
     containerStyle?: ViewStyle;
 }
@@ -42,7 +44,7 @@ class PathFindingPicker extends Component<Props, State> {
         this.state = {
             paymentOptions: undefined,
             selectedItem: undefined,
-            isLoading: true,
+            isLoading: false,
             isExpired: false,
         };
 
@@ -51,6 +53,7 @@ class PathFindingPicker extends Component<Props, State> {
 
     componentDidUpdate(prevProps: Readonly<Props>) {
         const { source } = this.props;
+
         if (!isEqual(prevProps.source, source)) {
             this.onSourceChange();
         }
@@ -99,20 +102,29 @@ class PathFindingPicker extends Component<Props, State> {
     };
 
     fetchOptions = () => {
-        const { amount, source, destination } = this.props;
+        const { amount, source, destination, onLoad, onLoadEnd } = this.props;
         const { isLoading } = this.state;
 
-        if (!isLoading) {
-            this.setState({
-                isLoading: true,
-            });
+        if (isLoading) {
+            return;
         }
+
+        this.setState(
+            {
+                isLoading: true,
+            },
+            () => {
+                // callback
+                if (typeof onLoad === 'function') {
+                    onLoad();
+                }
+            },
+        );
 
         this.pathFinding
             .request(amount.currency === 'XRP' ? new Amount(amount.value).xrpToDrops() : amount, source, destination)
             .then((options) => {
                 this.setState({
-                    isLoading: false,
                     isExpired: false,
                     paymentOptions: options,
                 });
@@ -124,6 +136,19 @@ class PathFindingPicker extends Component<Props, State> {
                         paymentOptions: undefined,
                     });
                 }
+            })
+            .finally(() => {
+                this.setState(
+                    {
+                        isLoading: false,
+                    },
+                    () => {
+                        // callback
+                        if (typeof onLoadEnd === 'function') {
+                            onLoadEnd();
+                        }
+                    },
+                );
             });
     };
 

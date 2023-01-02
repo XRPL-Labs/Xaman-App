@@ -11,6 +11,8 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { Capitalize } from '@common/utils/string';
 
+import { Payload } from '@common/libs/payload';
+
 import { TransactionTypes } from '@common/libs/ledger/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import { Amount } from '@common/libs/ledger/parser/common';
@@ -26,15 +28,10 @@ import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface FeeItem {
-    type: string;
-    value: number;
-    suggested?: boolean;
-}
-
 export interface Props {
     transaction: Transactions;
-    canOverride: boolean;
+    payload: Payload;
+    setLoading: (loading: boolean) => void;
     forceRender: () => void;
 }
 
@@ -44,6 +41,12 @@ export interface State {
     signers: AccountNameType[];
     isLoadingFee: boolean;
     isLoadingSigners: boolean;
+}
+
+export interface FeeItem {
+    type: string;
+    value: number;
+    suggested?: boolean;
 }
 
 /* Component ==================================================================== */
@@ -98,11 +101,11 @@ class GlobalTemplate extends Component<Props, State> {
     };
 
     loadTransactionFee = async () => {
-        const { transaction, canOverride } = this.props;
+        const { transaction, payload } = this.props;
 
         try {
-            // set the fee if not set and canOverride the details of transaction
-            const shouldOverrideFee = typeof transaction.Fee === 'undefined' && canOverride;
+            // set the fee if not set and can override the details of transaction
+            const shouldOverrideFee = typeof transaction.Fee === 'undefined' && !payload.isMultiSign();
 
             if (shouldOverrideFee) {
                 // calculate and persist the transaction fees
@@ -225,7 +228,7 @@ class GlobalTemplate extends Component<Props, State> {
         }
 
         // AccountDelete transaction have fixed fee value
-        // NOTE: this may change in future, we may need to let user to select higher fees
+        // NOTE: this may change in the future, we may need to let user select higher fees
         if (transaction.Type === TransactionTypes.AccountDelete) {
             return (
                 <>
