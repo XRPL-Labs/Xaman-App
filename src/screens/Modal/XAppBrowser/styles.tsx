@@ -6,10 +6,10 @@ import StyleService from '@services/StyleService';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     container: { 
-        position:'fixed',
         flex: 1 
     },
     webViewContainer: {
+        position:'fixed',
         flex: 1,
         backgroundColor: '$background',
     },
