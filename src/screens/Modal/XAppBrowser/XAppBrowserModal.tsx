@@ -5,7 +5,16 @@
 import { has, get, assign, toUpper, isEmpty } from 'lodash';
 import moment from 'moment-timezone';
 import React, { Component } from 'react';
-import { View, Text, BackHandler, Alert, InteractionManager, Linking, NativeEventSubscription } from 'react-native';
+import {
+    View,
+    Text,
+    BackHandler,
+    Alert,
+    InteractionManager,
+    Linking,
+    Share,
+    NativeEventSubscription,
+} from 'react-native';
 import VeriffSdk from '@veriff/react-native-sdk';
 import { StringType } from 'xumm-string-decode';
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
@@ -66,6 +75,8 @@ export enum XAppMethods {
     TxDetails = 'txDetails',
     KycVeriff = 'kycVeriff',
     ScanQr = 'scanQr',
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    Share = 'share',
     Close = 'close',
 }
 
@@ -329,6 +340,29 @@ class XAppBrowserModal extends Component<Props, State> {
         }, delay);
     };
 
+    shareContent = (data: any) => {
+        const title = get(data, 'title');
+        const text = get(data, 'text');
+        const url = get(data, 'url');
+
+        // at least one of URL and message is required
+        if (isEmpty(text) && isEmpty(url)) {
+            return;
+        }
+
+        // check if url is a safe url if present
+        if (url && !StringTypeCheck.isValidURL(url)) {
+            return;
+        }
+
+        // show share dialog
+        Share.share({
+            title,
+            message: text,
+            url,
+        }).catch(() => {});
+    };
+
     handleCommand = (command: XAppMethods, parsedData: any) => {
         const { permissions } = this.state;
 
@@ -374,6 +408,9 @@ class XAppBrowserModal extends Component<Props, State> {
             case XAppMethods.TxDetails:
                 this.openTxDetails(parsedData);
                 break;
+            case XAppMethods.Share:
+                this.shareContent(parsedData);
+                break;
             default:
                 break;
         }
@@ -390,12 +427,15 @@ class XAppBrowserModal extends Component<Props, State> {
         // record last message received
         this.lastMessageReceived = moment().unix();
 
+        // check if any data is passed
         if (!event || typeof event !== 'object' || !event?.nativeEvent) {
             return;
         }
+
         // get passed data
         const data = get(event, 'nativeEvent.data');
 
+        // check type of passed data
         if (!data || typeof data !== 'string') {
             return;
         }
@@ -505,11 +545,7 @@ class XAppBrowserModal extends Component<Props, State> {
     getUrl = () => {
         const { identifier, ott, coreSettings } = this.state;
 
-        const uri = `https://xumm.app/detect/xapp:${identifier}?xAppToken=${ott}&xAppStyle=${toUpper(
-            coreSettings.theme,
-        )}`;
-
-        return uri;
+        return `https://xumm.app/detect/xapp:${identifier}?xAppToken=${ott}&xAppStyle=${toUpper(coreSettings.theme)}`;
     };
 
     getUserAgent = () => {
@@ -526,14 +562,7 @@ class XAppBrowserModal extends Component<Props, State> {
         const { error } = this.state;
 
         return (
-            <View
-                style={[
-                    AppStyles.flex1,
-                    AppStyles.centerAligned,
-                    AppStyles.centerContent,
-                    AppStyles.paddingHorizontalSml,
-                ]}
-            >
+            <View style={styles.errorContainer}>
                 <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.unableToLoadXApp')}</Text>
                 <Spacer size={20} />
                 <Text style={[AppStyles.monoSubText]}>{error}</Text>
@@ -582,20 +611,13 @@ class XAppBrowserModal extends Component<Props, State> {
         const { title } = this.state;
 
         return (
-            <View style={[styles.headerContainer]}>
-                <View
-                    style={[
-                        AppStyles.flex1,
-                        AppStyles.paddingLeftSml,
-                        AppStyles.paddingRightSml,
-                        AppStyles.centerContent,
-                    ]}
-                >
+            <View style={styles.headerContainer}>
+                <View style={styles.headerTitle}>
                     <Text numberOfLines={1} style={AppStyles.h5}>
                         {title || 'XAPP'}
                     </Text>
                 </View>
-                <View style={[AppStyles.paddingRightSml, AppStyles.rightAligned, AppStyles.centerContent]}>
+                <View style={styles.headerButton}>
                     <Button
                         contrast
                         testID="close-button"
@@ -611,7 +633,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
     render() {
         return (
-            <View testID="xapp-browser-modal" style={[styles.container]}>
+            <View testID="xapp-browser-modal" style={styles.container}>
                 {this.renderHeader()}
                 {this.renderContent()}
             </View>
