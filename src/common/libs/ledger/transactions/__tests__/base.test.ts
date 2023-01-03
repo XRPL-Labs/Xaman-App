@@ -90,6 +90,8 @@ describe('BaseTransaction tx', () => {
             success: true,
             engineResult: 'tecNO_LINE_INSUF_RESERVE',
             message: 'No such line. Too little reserve to create it.',
+            node: 'wss://xrplcluster.com',
+            nodeType: 'Mainnet',
         };
 
         instance.VerifyResult = {
@@ -110,6 +112,8 @@ describe('BaseTransaction tx', () => {
             success: false,
             engineResult: 'temBAD_FEE',
             message: 'temBAD_FEE description',
+            node: 'wss://xrplcluster.com',
+            nodeType: 'Mainnet',
         };
 
         instance.VerifyResult = {
