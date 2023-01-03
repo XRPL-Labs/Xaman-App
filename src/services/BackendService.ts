@@ -29,6 +29,7 @@ import NavigationService, { RootType } from '@services/NavigationService';
 import ApiService from '@services/ApiService';
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
+import LedgerService from '@services/LedgerService';
 
 // Locale
 import Localize from '@locale';
@@ -50,6 +51,9 @@ class BackendService {
                 // sync the details after moving to default stack
                 NavigationService.on('setRoot', this.onRootChange);
 
+                // listen for ledger transaction submit
+                LedgerService.on('submitTransaction', this.onLedgerTransactionSubmit);
+
                 // resolve
                 resolve();
             } catch (e) {
@@ -60,11 +64,24 @@ class BackendService {
 
     /*
     On navigation root changed
-     */
+    */
     onRootChange = (root: RootType) => {
         if (root === RootType.DefaultRoot) {
             this.sync();
         }
+    };
+
+    /*
+    On Ledger submit transaction
+    */
+    onLedgerTransactionSubmit = ({ hash, node, nodeType }: { hash: string; node: string; nodeType: string }) => {
+        // only if hash is provided
+        if (!hash) {
+            return;
+        }
+        this.addTransaction(hash, node, nodeType).catch((e: any) => {
+            this.logger.error('Add transaction error: ', e);
+        });
     };
 
     /*
@@ -262,6 +279,17 @@ class BackendService {
             .catch((e: any) => {
                 this.logger.error('Ping Backend Error: ', e);
             });
+    };
+
+    /*
+    Report submitted transaction for security checks
+    */
+    addTransaction = (hash: string, node: string, nodeType: string) => {
+        return ApiService.addTransaction.post(null, {
+            hash,
+            node,
+            nodeType,
+        });
     };
 
     /*

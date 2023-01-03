@@ -607,7 +607,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         try {
             // create patch object
             const payloadPatch = {
-                signed_blob: transaction.TxnSignature,
+                signed_blob: transaction.SignedBlob,
                 tx_id: transaction.Hash,
                 signmethod: transaction.SignMethod,
                 multisigned: payload.isMultiSign() ? transaction.SignerAccount : '',

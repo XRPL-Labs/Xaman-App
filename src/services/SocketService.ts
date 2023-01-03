@@ -23,7 +23,6 @@ enum SocketStateStatus {
     Disconnected = 'Disconnected',
 }
 
-// events
 declare interface SocketService {
     on(event: 'connect', listener: () => void): this;
     on(event: string, listener: Function): this;

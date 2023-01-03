@@ -91,7 +91,7 @@ class SubmitModal extends Component<Props, State> {
         if (submitResult.success) {
             this.setState({ step: 'verifying', submitResult });
 
-            const verifyResult = await LedgerService.verifyTransaction(submitResult.transactionId);
+            const verifyResult = await LedgerService.verifyTransaction(submitResult.hash);
 
             this.setState({
                 step: 'result',

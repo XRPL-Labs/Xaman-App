@@ -45,6 +45,7 @@ class BaseTransaction {
     private balanceChanges: Map<string, any>;
     private ownerCountChanges: Map<string, any>;
 
+    public SignedBlob: string;
     public SignMethod: 'PIN' | 'BIOMETRIC' | 'PASSPHRASE' | 'TANGEM' | 'OTHER';
     public SignerAccount: any;
 
@@ -154,7 +155,7 @@ class BaseTransaction {
                     return;
                 }
 
-                if (this.TxnSignature) {
+                if (this.SignedBlob) {
                     reject(new Error('Transaction already signed!'));
                     return;
                 }
@@ -191,14 +192,14 @@ class BaseTransaction {
                         }
 
                         this.Hash = signedObject.id;
-                        this.TxnSignature = signedObject.signedTransaction;
+                        this.SignedBlob = signedObject.signedTransaction;
                         this.SignMethod = signedObject.signMethod || 'OTHER';
 
                         if (Array.isArray(signers) && signers.length > 0) {
                             [this.SignerAccount] = signers;
                         }
 
-                        resolve(this.TxnSignature);
+                        resolve(this.SignedBlob);
                     },
                     onDismissed: () => {
                         reject();
@@ -236,7 +237,7 @@ class BaseTransaction {
     submit = async (): Promise<SubmitResultType> => {
         try {
             // if transaction is not signed exit
-            if (!this.TxnSignature) {
+            if (!this.SignedBlob) {
                 throw new Error('transaction is not signed!');
             }
 
@@ -259,13 +260,7 @@ class BaseTransaction {
             const shouldFailHard = this.TransactionType === TransactionTypes.AccountDelete;
 
             // Submit signed transaction to the XRPL
-            const submitResult = await LedgerService.submitTransaction(this.TxnSignature, shouldFailHard);
-
-            // update transaction hash base on submit result
-            const { transactionId } = submitResult;
-            if (transactionId) {
-                this.Hash = transactionId;
-            }
+            const submitResult = await LedgerService.submitTransaction(this.SignedBlob, this.Hash, shouldFailHard);
 
             // set submit result
             this.SubmitResult = submitResult;
@@ -277,7 +272,9 @@ class BaseTransaction {
                 success: false,
                 engineResult: 'telFAILED',
                 message: e?.message,
-            };
+                node: undefined,
+                nodeType: undefined,
+            } as SubmitResultType;
 
             // set submit result
             this.SubmitResult = result;
@@ -581,8 +578,8 @@ class BaseTransaction {
         return get(this, ['tx', 'hash']);
     }
 
-    set Hash(transactionId: string) {
-        set(this, ['tx', 'hash'], transactionId);
+    set Hash(hash: string) {
+        set(this, ['tx', 'hash'], hash);
     }
 
     get LedgerIndex(): number {

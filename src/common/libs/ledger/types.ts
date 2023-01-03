@@ -84,11 +84,11 @@ export type SignedObjectType = {
  */
 export type SubmitResultType = {
     success: boolean;
-    engineResult?: string;
+    engineResult: string;
     message: string;
-    transactionId?: string;
-    node?: string;
-    nodeType?: string;
+    hash?: string;
+    node: string;
+    nodeType: string;
 };
 
 /**
