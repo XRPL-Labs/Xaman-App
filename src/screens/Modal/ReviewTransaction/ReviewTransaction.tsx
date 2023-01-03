@@ -13,7 +13,7 @@ import { AccountRepository, CoreRepository, CurrencyRepository } from '@store/re
 import { AccountSchema } from '@store/schemas/latest';
 
 import { TransactionTypes } from '@common/libs/ledger/types';
-import { PayloadOrigin } from '@common/libs/payload';
+import { PatchSuccessType, PayloadOrigin } from '@common/libs/payload';
 
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
@@ -615,7 +615,10 @@ class ReviewTransactionModal extends Component<Props, State> {
                     nodeuri: SocketService.node,
                     nodetype: SocketService.chain,
                 },
-            };
+            } as PatchSuccessType;
+
+            // patch the payload, before submitting (if necessary)
+            payload.patch(payloadPatch);
 
             // check if we need to submit the payload to the XRP Ledger
             if (payload.shouldSubmit()) {
@@ -653,8 +656,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                     VibrateHapticFeedback('notificationError');
                 }
 
-                // include submit result in the payload patch
-                Object.assign(payloadPatch, {
+                // patch the payload again with submit result
+                payload.patch({
                     dispatched: {
                         to: submitResult.node,
                         nodetype: submitResult.nodeType,
@@ -666,9 +669,6 @@ class ReviewTransactionModal extends Component<Props, State> {
                     submitResult,
                 });
             }
-
-            // patch the payload
-            payload.patch(payloadPatch);
 
             // emit sign requests update
             setTimeout(() => {

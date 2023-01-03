@@ -14,7 +14,15 @@ import Localize from '@locale';
 
 import { PseudoTransactionTypes, TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
 import { Transactions } from '@common/libs/ledger/transactions/types';
-import { ApplicationType, MetaType, PatchSuccessType, PayloadOrigin, PayloadReferenceType, PayloadType } from './types';
+import {
+    ApplicationType,
+    MetaType,
+    PatchSubmitType,
+    PatchSuccessType,
+    PayloadOrigin,
+    PayloadReferenceType,
+    PayloadType,
+} from './types';
 
 // errors
 import errors from './errors';
@@ -204,7 +212,7 @@ export class Payload {
      * patch the payload to the backend
      * @param patch
      */
-    patch = (patch: PatchSuccessType) => {
+    patch = (patch: PatchSuccessType | PatchSubmitType) => {
         // ignore the method if payload is generated
         if (!this.isGenerated()) {
             // set extra data to the patch
