@@ -142,7 +142,7 @@ class NativeItem extends PureComponent<Props, State> {
         return (
             <View style={styles.balanceRow}>
                 <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
-                    <View style={[styles.brandAvatarContainer]}>{this.getAvatar()}</View>
+                    <View style={styles.brandAvatarContainer}>{this.getAvatar()}</View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
                         <Text numberOfLines={1} style={styles.currencyItemLabel}>
                             XRP
@@ -198,7 +198,7 @@ class NativeItem extends PureComponent<Props, State> {
                     <View style={styles.reserveInfoIconContainer}>
                         <Icon name="IconInfo" size={15} style={AppStyles.imgColorGrey} />
                     </View>
-                    <View style={[AppStyles.column, AppStyles.centerContent]}>
+                    <View style={styles.reserveTextContainer}>
                         <Text numberOfLines={1} style={styles.reserveTextLabel}>
                             {Localize.t('home.xrpReserved', { reserve: totalReserve })}
                         </Text>

@@ -52,15 +52,19 @@ export default StyleService.create({
         alignItems: 'center',
         paddingRight: 10,
     },
+    reserveTextContainer: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        paddingLeft: 10,
+    },
     reserveTextLabel: {
         fontSize: AppFonts.small.size,
         fontFamily: AppFonts.base.familyMonoBold,
         color: '$grey',
     },
     reserveInfoIconContainer: {
-        marginLeft: 14,
-        marginRight: 10,
-        paddingRight: 14,
+        paddingLeft: AppSizes.scale(11),
+        paddingRight: AppSizes.scale(10),
     },
     fiatAmountText: {
         fontSize: AppFonts.subtext.size,
