@@ -281,7 +281,6 @@ RCTAutoInsetsProtocol>
   [prefs setValue:@FALSE forKey:@"javaScriptCanOpenWindowsAutomatically"];
   [prefs setValue:@FALSE forKey:@"allowFileAccessFromFileURLs"];
   [prefs setValue:@FALSE forKey:@"fullScreenEnabled"];
-  [prefs setValue:@FALSE forKey:@"textInteractionEnabled"];
   
   [wkWebViewConfig setValue:@FALSE forKey:@"allowUniversalAccessFromFileURLs"];
   
