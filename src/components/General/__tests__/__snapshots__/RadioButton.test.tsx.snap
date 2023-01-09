@@ -185,7 +185,7 @@ exports[`[RadioButton] renders correctly 1`] = `
             "marginTop": 4,
             "width": 26,
           },
-          null,
+          false,
         ]
       }
     />
