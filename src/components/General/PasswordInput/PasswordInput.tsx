@@ -3,7 +3,6 @@ import { isEqual } from 'lodash';
 import React, { Component, Fragment } from 'react';
 import {
     View,
-    TouchableOpacity,
     TextInput,
     Text,
     ViewStyle,
@@ -14,6 +13,8 @@ import {
 } from 'react-native';
 
 import StyleService from '@services/StyleService';
+
+import { TouchableDebounce } from '@components/General/TouchableDebounce';
 import { Icon } from '@components/General/Icon';
 
 import Localize from '@locale';
@@ -153,7 +154,7 @@ export default class PasswordInput extends Component<Props, State> {
         }
 
         this.setState({
-            hidePassword: Platform.OS !== 'android' ? !hidePassword : hidePassword,
+            hidePassword: !hidePassword,
             keyboardType,
         });
     };
@@ -335,13 +336,13 @@ export default class PasswordInput extends Component<Props, State> {
                     placeholder={placeholder}
                     selectTextOnFocus={selectTextOnFocus}
                 />
-                <TouchableOpacity style={{}} disabled={!editable} onPress={this.toggleSwitch}>
+                <TouchableDebounce disabled={!editable} onPress={this.toggleSwitch}>
                     <Icon
                         size={22}
                         name={hidePassword ? 'IconEye' : 'IconEyeOff'}
                         style={[styles.eyeIcon, !editable ? { tintColor: StyleService.value('$grey') } : null]}
                     />
-                </TouchableOpacity>
+                </TouchableDebounce>
             </View>
         );
     }
