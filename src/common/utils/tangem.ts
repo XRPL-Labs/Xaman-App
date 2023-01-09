@@ -4,6 +4,12 @@ import { utils } from 'xrpl-accountlib';
 
 import { Card, EllipticCurve, OptionsSign } from 'tangem-sdk-react-native';
 
+export enum TangemSecurity {
+    LongTap = 'LongTap',
+    Passcode = 'Passcode',
+    AccessCode = 'AccessCode',
+}
+
 // eslint-disable-next-line quotes
 const DefaultDerivationPaths = "m/44'/144'/0'/0/0";
 
@@ -115,19 +121,35 @@ const GetWalletDerivedPublicKey = (card: Card): string => {
 };
 
 /**
+ * get card enforced security options
+ */
+const GetCardSecurityOptions = (card: any): { [key in TangemSecurity]: boolean } => {
+    return {
+        [TangemSecurity.LongTap]: true,
+        [TangemSecurity.Passcode]: get(card, 'settings.isSettingPasscodeAllowed', false),
+        [TangemSecurity.AccessCode]: get(card, 'settings.isSettingAccessCodeAllowed', false),
+    };
+};
+
+/**
  * get card passcode status
  */
-const GetCardPasscodeStatus = (card: any): boolean => {
-    if (has(card, 'isPasscodeSet')) {
-        return card.isPasscodeSet;
-    }
-    // older version of tangem sdk
-    if (has(card, 'isPin2Default')) {
-        // @ts-ignore
-        return !card.isPin2Default;
+const GetCardEnforcedSecurity = (card: any): TangemSecurity => {
+    // new cards
+    if (get(card, 'isPasscodeSet') === true) {
+        return TangemSecurity.Passcode;
     }
 
-    throw new Error('Unable to get card passcode status base on card data!');
+    if (get(card, 'isAccessCodeSet') === true) {
+        return TangemSecurity.AccessCode;
+    }
+
+    // older version of tangem sdk
+    if (has(card, 'isPin2Default') && !card.isPin2Default) {
+        return TangemSecurity.Passcode;
+    }
+
+    return TangemSecurity.LongTap;
 };
 
 /**
@@ -139,7 +161,6 @@ const GetCardId = (card: any): string => {
     }
     throw new Error('Unable to found cardId in card data!');
 };
-
 
 /**
  * get HD wallet support status
@@ -169,11 +190,11 @@ const GetSignOptions = (card: Card, hashToSign: string): OptionsSign => {
     return options;
 };
 
-
 export {
     GetPreferCurve,
     GetWalletPublicKey,
-    GetCardPasscodeStatus,
+    GetCardSecurityOptions,
+    GetCardEnforcedSecurity,
     GetCardId,
     GetWalletDerivedPublicKey,
     GetHDWalletStatus,

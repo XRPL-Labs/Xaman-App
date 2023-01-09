@@ -9,7 +9,7 @@ import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
 
-import { GetCardPasscodeStatus, GetCardId } from '@common/utils/tangem';
+import { GetCardEnforcedSecurity, GetCardId, TangemSecurity } from '@common/utils/tangem';
 import { AppScreens } from '@common/constants';
 
 import { AccountRepository } from '@store/repositories';
@@ -375,12 +375,19 @@ class AccountSettingsView extends Component<Props, State> {
                                 </View>
 
                                 <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                                    <Text style={[styles.value]}>
-                                        {/*
-                                         // @ts-ignore */}
-                                        {GetCardPasscodeStatus(account.additionalInfo)
-                                            ? Localize.t('global.passcode')
-                                            : Localize.t('global.longTap')}
+                                    <Text style={styles.value}>
+                                        {(() => {
+                                            switch (GetCardEnforcedSecurity(account.additionalInfo)) {
+                                                case TangemSecurity.Passcode:
+                                                    return Localize.t('global.passcode');
+                                                case TangemSecurity.AccessCode:
+                                                    return Localize.t('global.accessCode');
+                                                case TangemSecurity.LongTap:
+                                                    return Localize.t('global.longTap');
+                                                default:
+                                                    return null;
+                                            }
+                                        })()}
                                     </Text>
                                 </View>
                                 <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />

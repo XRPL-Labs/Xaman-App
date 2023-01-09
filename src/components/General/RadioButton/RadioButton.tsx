@@ -4,7 +4,7 @@
     <RadioButton />
  *
  */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { View, Text } from 'react-native';
 
 import { TouchableDebounce } from '@components/General/TouchableDebounce';
@@ -20,29 +20,37 @@ interface Props {
     value: any;
     labelSmall?: string;
     description?: string;
+    disabled?: boolean;
     testID?: string;
 }
 
 /* Component ==================================================================== */
-class RadioButton extends Component<Props> {
+class RadioButton extends PureComponent<Props> {
     onPress = () => {
         const { onPress, value } = this.props;
-        if (onPress) {
+
+        if (typeof onPress === 'function') {
             onPress(value);
         }
     };
 
     render() {
-        const { checked, label, labelSmall, description, testID } = this.props;
+        const { checked, label, labelSmall, description, disabled, testID } = this.props;
         return (
             <TouchableDebounce
                 testID={testID}
                 activeOpacity={0.8}
+                disabled={disabled}
                 onPress={this.onPress}
-                style={[styles.content, checked ? styles.selected : null]}
+                style={[
+                    styles.content,
+                    checked && styles.selected,
+                    checked && disabled && styles.selectedDisabled,
+                    !checked && disabled && styles.disabled,
+                ]}
             >
                 <View style={AppStyles.flex1}>
-                    <View style={[styles.dot, checked ? styles.dotSelected : null]}>
+                    <View style={[styles.dot, checked && styles.dotSelected]}>
                         {checked && <View style={styles.filled} />}
                     </View>
                 </View>
