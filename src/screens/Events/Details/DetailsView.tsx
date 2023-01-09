@@ -1,7 +1,7 @@
 /**
  * Transaction Details screen
  */
-import { find, get, isEmpty } from 'lodash';
+import { find, get, isEmpty, isUndefined } from 'lodash';
 import moment from 'moment-timezone';
 import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
@@ -1446,6 +1446,31 @@ class TransactionDetailsView extends Component<Props, State> {
         );
     };
 
+    renderInvoiceId = () => {
+        const { tx } = this.state;
+
+        // InvoiceID only exist in Payment and CheckCreate transactions and Check objects
+        if (
+            !(
+                tx.Type === TransactionTypes.Payment ||
+                tx.Type === TransactionTypes.CheckCreate ||
+                tx.Type === LedgerObjectTypes.Check
+            ) ||
+            isUndefined(tx.InvoiceID)
+        ) {
+            return null;
+        }
+
+        return (
+            <View style={styles.detailContainer}>
+                <Text style={[styles.labelText]}>{Localize.t('global.invoiceID')}</Text>
+                <Text selectable style={styles.hashText}>
+                    {tx.InvoiceID}
+                </Text>
+            </View>
+        );
+    };
+
     renderFlags = () => {
         const { tx } = this.state;
 
@@ -2172,6 +2197,7 @@ class TransactionDetailsView extends Component<Props, State> {
                                 {this.renderTransactionId()}
                                 {this.renderDescription()}
                                 {this.renderFlags()}
+                                {this.renderInvoiceId()}
                                 {this.renderFee()}
                                 {this.renderStatus()}
                             </View>

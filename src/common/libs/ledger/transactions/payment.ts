@@ -230,13 +230,7 @@ class Payment extends BaseTransaction {
     }
 
     get InvoiceID(): string {
-        const invoiceID = get(this, 'tx.InvoiceID', undefined);
-
-        if (!invoiceID) {
-            return undefined;
-        }
-
-        return invoiceID;
+        return get(this, 'tx.InvoiceID', undefined);
     }
 
     set InvoiceID(invoiceId: string) {
