@@ -63,6 +63,10 @@ class Core extends Realm.Object {
 
         for (let i = 0; i < newObjects.length; i++) {
             newObjects[i].showFiatPanel = true;
+            // replace xrplorer with bithomp as it's been removed
+            if (newObjects[i].defaultExplorer === 'xrplorer') {
+                newObjects[i].defaultExplorer = 'bithomp';
+            }
         }
     }
 }

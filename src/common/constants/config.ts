@@ -75,20 +75,6 @@ export default {
             },
         },
         {
-            value: 'xrplorer',
-            title: 'XRPlorer',
-            tx: {
-                main: 'https://xrplorer.com/transaction/',
-                test: 'https://test.bithomp.com/explorer/',
-                dev: 'https://devnet.xrpl.org/transactions/',
-            },
-            account: {
-                main: 'https://xrplorer.com/account/',
-                test: 'https://test.bithomp.com/explorer/',
-                dev: 'https://devnet.xrpl.org/accounts/',
-            },
-        },
-        {
             value: 'xrpintel',
             title: 'xrpintel',
             tx: {
