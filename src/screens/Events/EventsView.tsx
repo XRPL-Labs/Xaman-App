@@ -5,7 +5,7 @@ import Fuse from 'fuse.js';
 import moment from 'moment-timezone';
 import { filter, flatMap, get, groupBy, isEmpty, isEqual, isUndefined, map, orderBy, uniqBy, without } from 'lodash';
 import React, { Component } from 'react';
-import { Image, ImageBackground, InteractionManager, View, Text } from 'react-native';
+import { Image, ImageBackground, InteractionManager, Text, View } from 'react-native';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -26,7 +26,15 @@ import { Payload } from '@common/libs/payload';
 import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterView';
 
 // Services
-import { AccountService, BackendService, LedgerService, PushNotificationsService, StyleService } from '@services';
+import {
+    AccountService,
+    AppService,
+    BackendService,
+    LedgerService,
+    PushNotificationsService,
+    StyleService,
+} from '@services';
+import { AppStateStatus } from '@services/AppService';
 
 // Components
 import { Button, Header, SearchBar, SegmentButton } from '@components/General';
@@ -120,6 +128,8 @@ class EventsView extends Component<Props, State> {
         AccountService.on('transaction', this.onTransactionReceived);
         // update list on sign request received
         PushNotificationsService.on('signRequestUpdate', this.onSignRequestReceived);
+        // update the payload list when coming from background
+        AppService.on('appStateChange', this.onAppStateChange);
 
         // update data source after component mount
         InteractionManager.runAfterInteractions(() => {
@@ -134,6 +144,7 @@ class EventsView extends Component<Props, State> {
         AccountRepository.off('changeDefaultAccount', this.onDefaultAccountChange);
         AccountService.off('transaction', this.onTransactionReceived);
         PushNotificationsService.off('signRequestUpdate', this.onSignRequestReceived);
+        AppService.off('appStateChange', this.onAppStateChange);
     }
 
     onDefaultAccountChange = (account: AccountSchema) => {
@@ -166,6 +177,15 @@ class EventsView extends Component<Props, State> {
             if (effectedAccounts.includes(account.address)) {
                 this.updateDataSource([DataSourceType.TRANSACTIONS, DataSourceType.PLANNED_TRANSACTIONS]);
             }
+        }
+    };
+
+    onAppStateChange = (status: AppStateStatus, prevStatus: AppStateStatus) => {
+        if (
+            status === AppStateStatus.Active &&
+            [AppStateStatus.Background, AppStateStatus.Inactive].includes(prevStatus)
+        ) {
+            this.onSignRequestReceived();
         }
     };
 
