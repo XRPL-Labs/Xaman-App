@@ -32,12 +32,21 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {}
 
-export interface State {}
-
+export interface State {
+    isLoading: boolean;
+}
 /* Component ==================================================================== */
 class VerifySignatureStep extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
+
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            isLoading: false,
+        };
+    }
 
     componentDidMount(): void {
         RNTangemSdk.startSession({}).catch(() => {
@@ -108,6 +117,10 @@ class VerifySignatureStep extends Component<Props, State> {
         const { goNext } = this.context;
 
         try {
+            this.setState({
+                isLoading: true,
+            });
+
             const verified = await this.signAndVerify();
 
             if (verified) {
@@ -122,11 +135,15 @@ class VerifySignatureStep extends Component<Props, State> {
                 return;
             }
             Alert.alert(Localize.t('global.error'), Localize.t('account.unableToVerifyTheSignature'));
+        } finally {
+            this.setState({
+                isLoading: false,
+            });
         }
     };
 
     render() {
-        const { isLoading } = this.context;
+        const { isLoading } = this.state;
 
         return (
             <SafeAreaView testID="account-import-verify-signature-view" style={AppStyles.container}>
