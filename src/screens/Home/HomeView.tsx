@@ -316,7 +316,7 @@ class HomeView extends Component<Props, State> {
     };
 
     onSwitchButtonPress = () => {
-        const { accountsCount } = this.state;
+        const { accountsCount, discreetMode } = this.state;
 
         // if account count is zero or 1 then show add account
         if (accountsCount === 1) {
@@ -324,7 +324,7 @@ class HomeView extends Component<Props, State> {
             return;
         }
 
-        Navigator.showOverlay(AppScreens.Overlay.SwitchAccount);
+        Navigator.showOverlay(AppScreens.Overlay.SwitchAccount, { discreetMode });
     };
 
     renderHeader = () => {
