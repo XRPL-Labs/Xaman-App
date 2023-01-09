@@ -146,6 +146,10 @@ class PushNotificationsService extends EventEmitter {
         messaging().onNotificationOpenedApp(this.handleNotificationOpen);
     };
 
+    getBadgeCount = (notification: any): number => {
+        return get(notification, ['notification', 'ios', 'badge']);
+    };
+
     getType = (notification: any): NotificationType => {
         const category = get(notification, ['data', 'category']);
         switch (category) {
@@ -161,7 +165,7 @@ class PushNotificationsService extends EventEmitter {
     };
 
     isSignRequest = (notification: any) => {
-        return get(notification, ['data', 'category']) === 'SIGNTX';
+        return this.getType(notification) === NotificationType.SignRequest;
     };
 
     /* If the app was launched by a push notification  */
@@ -176,15 +180,18 @@ class PushNotificationsService extends EventEmitter {
 
     /* Handle notifications within the app when app is running in foreground */
     handleNotification = (message: FirebaseMessagingTypes.RemoteMessage) => {
+        // complete the notification and show the notification if necessary
         const shouldShowNotification = NavigationService.getCurrentModal() !== AppScreens.Modal.ReviewTransaction;
-
         LocalNotificationModule.complete(message.messageId, shouldShowNotification);
 
-        // emit the event so we can update the event list
-        this.emit('signRequestUpdate');
+        // if any sign request exist then emit the event so we update the event list
+        if (this.isSignRequest(message)) {
+            this.emit('signRequestUpdate');
+        }
 
-        // update badge
-        this.updateBadge();
+        // update the badge
+        const badgeCount = this.getBadgeCount(message);
+        this.updateBadge(badgeCount);
     };
 
     routeUser = async (screen: string, passProps: any, options: any, screenType?: ComponentTypes) => {
