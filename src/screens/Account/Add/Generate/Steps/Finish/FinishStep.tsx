@@ -78,8 +78,8 @@ class FinishStep extends Component<Props, State> {
 
                     <Footer>
                         <Button
-                            isLoading={isLoading}
                             testID="finish-button"
+                            isLoading={isLoading}
                             label={Localize.t('account.yeahLetsGo')}
                             onPress={this.onFinishPress}
                         />
