@@ -107,7 +107,7 @@ class TransactionDetailsView extends Component<Props, State> {
             spendableAccounts: AccountRepository.getSpendableAccounts(),
             balanceChanges: undefined,
             incomingTx: props.tx?.Account?.address !== props.account.address,
-            scamAlert: false,
+            scamAlert: true,
             showMemo: true,
             isLoading: !props.tx,
         };
@@ -2176,7 +2176,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         {scamAlert && (
                             <View style={styles.dangerHeader}>
                                 <Text style={[AppStyles.h4, AppStyles.colorWhite]}>
-                                    {Localize.t('global.fraudAlert')}
+                                    {Localize.t('global.alertDanger')}
                                 </Text>
                                 <Text style={[AppStyles.subtext, AppStyles.textCenterAligned, AppStyles.colorWhite]}>
                                     {Localize.t(
