@@ -332,6 +332,18 @@ class Payment extends BaseTransaction {
                             return;
                         }
 
+                        // check if asset is frozen by issuer
+                        if (sourceLine.freeze_peer) {
+                            reject(
+                                new Error(
+                                    Localize.t('send.trustLineIsFrozenByIssuer', {
+                                        currency: NormalizeCurrencyCode(sourceLine.currency),
+                                    }),
+                                ),
+                            );
+                            return;
+                        }
+
                         if (Number(IOUAmount.value) > Number(sourceLine.balance)) {
                             reject(
                                 new Error(

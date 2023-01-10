@@ -809,6 +809,7 @@
     "theMaxAmountYouCanSendIs": "The maximum amount you can send is %{spendable} %{currency} ",
     "theMaxAmountYouCanSendWithFee": "The issuer of %{currency} charges a Transfer Fee. The max. amount you can send (respecting the Transfer Fee) is %{spendable} %{currency}",
     "insufficientBalanceSpendableBalance": "Balance insufficient, spendable balance:  %{spendable} %{currency}",
+    "trustLineIsFrozenByIssuer": "Your Trust Line for the requested asset (%{currency}) has been frozen by the issuer. Please contact the issuer of the asset.",
     "balanceIsNotEnoughForFee": "Your balance is not enough to cover the fee (%{fee})",
     "searchResults": "Search results",
     "noSearchResult": "No search result",
