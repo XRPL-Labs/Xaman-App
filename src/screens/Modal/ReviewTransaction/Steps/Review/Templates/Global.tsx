@@ -18,6 +18,8 @@ import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import { Amount } from '@common/libs/ledger/parser/common';
 import { Transactions } from '@common/libs/ledger/transactions/types';
 
+import { AccountRepository } from '@store/repositories';
+
 // components
 import { Badge, Button, InfoMessage, LoadingIndicator, TouchableDebounce } from '@components/General';
 import { RecipientElement } from '@components/Modules';
@@ -206,9 +208,9 @@ class GlobalTemplate extends Component<Props, State> {
         if (isLoadingFee || !selectedFee) {
             return (
                 <>
-                    <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
+                    <Text style={styles.label}>{Localize.t('global.fee')}</Text>
                     <View style={styles.contentBox}>
-                        <Text style={[styles.value]}>Loading ...</Text>
+                        <Text style={styles.value}>Loading ...</Text>
                     </View>
                 </>
             );
@@ -219,9 +221,9 @@ class GlobalTemplate extends Component<Props, State> {
         if (selectedFee.type === 'unknown') {
             return (
                 <>
-                    <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
+                    <Text style={styles.label}>{Localize.t('global.fee')}</Text>
                     <View style={styles.contentBox}>
-                        <Text style={[styles.feeText]}>{selectedFee.value} XRP</Text>
+                        <Text style={styles.feeText}>{selectedFee.value} XRP</Text>
                     </View>
                 </>
             );
@@ -232,9 +234,9 @@ class GlobalTemplate extends Component<Props, State> {
         if (transaction.Type === TransactionTypes.AccountDelete) {
             return (
                 <>
-                    <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
+                    <Text style={styles.label}>{Localize.t('global.fee')}</Text>
                     <View style={styles.contentBox}>
-                        <Text style={[styles.feeText]}>{this.getNormalizedFee()} XRP</Text>
+                        <Text style={styles.feeText}>{this.getNormalizedFee()} XRP</Text>
                     </View>
                 </>
             );
@@ -242,14 +244,14 @@ class GlobalTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
+                <Text style={styles.label}>{Localize.t('global.fee')}</Text>
                 <TouchableDebounce
                     activeOpacity={0.8}
                     style={[styles.contentBox, AppStyles.row]}
                     onPress={this.showFeeSelectOverlay}
                 >
                     <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
-                        <Text style={[styles.feeText]}>{this.getNormalizedFee()} XRP</Text>
+                        <Text style={styles.feeText}>{this.getNormalizedFee()} XRP</Text>
                         <Badge label={Capitalize(selectedFee.type)} size="medium" color={this.getFeeColor()} />
                     </View>
                     <Button
@@ -269,7 +271,10 @@ class GlobalTemplate extends Component<Props, State> {
         const { transaction } = this.props;
 
         if (transaction.Type === TransactionTypes.AccountDelete) {
-            return <InfoMessage type="error" label={Localize.t('payload.accountDeleteExchangeSupportWarning')} />;
+            // check if destination account is already imported in XUMM and can be signed
+            if (!find(AccountRepository.getSignableAccounts(), (o) => o.address === transaction.Destination?.address)) {
+                return <InfoMessage type="error" label={Localize.t('payload.accountDeleteExchangeSupportWarning')} />;
+            }
         }
 
         return null;
@@ -297,8 +302,8 @@ class GlobalTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.flags')}</Text>
-                <View style={[styles.contentBox]}>{flags}</View>
+                <Text style={styles.label}>{Localize.t('global.flags')}</Text>
+                <View style={styles.contentBox}>{flags}</View>
             </>
         );
     };
@@ -317,7 +322,7 @@ class GlobalTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.signers')}</Text>
+                <Text style={styles.label}>{Localize.t('global.signers')}</Text>
                 <View style={styles.signersContainer}>
                     {signers.map((signer) => {
                         return <RecipientElement key={`${signer.address}`} recipient={signer} />;
@@ -336,8 +341,8 @@ class GlobalTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.sequence')}</Text>
-                <View style={[styles.contentBox]}>
+                <Text style={styles.label}>{Localize.t('global.sequence')}</Text>
+                <View style={styles.contentBox}>
                     <Text style={styles.value}>{transaction.Sequence}</Text>
                 </View>
             </>
@@ -353,8 +358,8 @@ class GlobalTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.ticketSequence')}</Text>
-                <View style={[styles.contentBox]}>
+                <Text style={styles.label}>{Localize.t('global.ticketSequence')}</Text>
+                <View style={styles.contentBox}>
                     <Text style={styles.value}>{transaction.TicketSequence}</Text>
                 </View>
             </>
@@ -370,8 +375,8 @@ class GlobalTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.memo')}</Text>
-                <View style={[styles.contentBox]}>
+                <Text style={styles.label}>{Localize.t('global.memo')}</Text>
+                <View style={styles.contentBox}>
                     {transaction.Memos.map((m: any, index: number) => {
                         let memo = '';
                         memo += m.type ? `${m.type}\n` : '';
