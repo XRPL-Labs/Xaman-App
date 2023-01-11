@@ -388,7 +388,7 @@ PODS:
     - React-Core
   - react-native-netinfo (9.3.6):
     - React-Core
-  - react-native-sdk (2.12.0):
+  - react-native-sdk (2.13.0):
     - lottie-ios
     - React
     - VeriffSDK (>= 4.34.0)
@@ -458,18 +458,18 @@ PODS:
     - React-jsi (= 0.70.6)
     - React-logger (= 0.70.6)
     - React-perflogger (= 0.70.6)
-  - ReactNativeNavigation (7.30.3):
+  - ReactNativeNavigation (7.30.6):
     - HMSegmentedControl
     - React-Core
     - React-RCTImage
     - React-RCTText
-    - ReactNativeNavigation/Core (= 7.30.3)
-  - ReactNativeNavigation/Core (7.30.3):
+    - ReactNativeNavigation/Core (= 7.30.6)
+  - ReactNativeNavigation/Core (7.30.6):
     - HMSegmentedControl
     - React-Core
     - React-RCTImage
     - React-RCTText
-  - RealmJS (11.3.0):
+  - RealmJS (11.3.1):
     - React
   - RNFBAnalytics (16.4.4):
     - Firebase/AnalyticsWithoutAdIdSupport (= 10.1.0)
@@ -703,7 +703,7 @@ SPEC CHECKSUMS:
   React-logger: 1623c216abaa88974afce404dc8f479406bbc3a0
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-netinfo: f80db8cac2151405633324cb645c60af098ee461
-  react-native-sdk: 3e8fe362b92cbe8b5074662ce1ac1646feb0f6c2
+  react-native-sdk: ca0dd8f806e36becda4ebae9ee6749da4f7c1a5a
   React-perflogger: 8c79399b0500a30ee8152d0f9f11beae7fc36595
   React-RCTActionSheet: 7316773acabb374642b926c19aef1c115df5c466
   React-RCTAnimation: 5341e288375451297057391227f691d9b2326c3d
@@ -716,8 +716,8 @@ SPEC CHECKSUMS:
   React-RCTVibration: c75ceef7aa60a33b2d5731ebe5800ddde40cefc4
   React-runtimeexecutor: 15437b576139df27635400de0599d9844f1ab817
   ReactCommon: 349be31adeecffc7986a0de875d7fb0dcf4e251c
-  ReactNativeNavigation: 9e94e0def89e9dc315c28dfe5562e023f45b3006
-  RealmJS: 951b827ee81c21da54a7edb9dd355cbb9d330204
+  ReactNativeNavigation: 44df9a6347dc583deac3a09b171e2e1b4905a9d6
+  RealmJS: 43fc7bfb83229c8a2755cb34f71f769c97b7b581
   RNFBAnalytics: 59f2cb6fc34677370e7fe7df08acaa273cb76c23
   RNFBApp: 18468d88f518831e4d34a77e1c076a80e40929a2
   RNFBCrashlytics: 100e3f19f09564fe49ff6f8d1ae47ec012886ed6
