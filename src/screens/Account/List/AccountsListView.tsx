@@ -298,7 +298,7 @@ class AccountListView extends Component<Props, State> {
                                 <Spacer size={20} />
                                 <Button
                                     testID="add-account-button"
-                                    label={Localize.t('account.goToEncryptionProcess')}
+                                    label={Localize.t('account.updateEncryption')}
                                     icon="IconChevronRight"
                                     iconPosition="right"
                                     roundedSmall

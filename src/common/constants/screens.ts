@@ -39,6 +39,7 @@ const screens = {
         Submit: 'modal.Submit',
         CurrencyPicker: 'modal.CurrencyPickerModal',
         Help: 'modal.Help',
+        MigrationExplain: 'modal.MigrationExplain',
         XAppBrowser: 'modal.XAppBrowser',
         DestinationPicker: 'modal.DestinationPicker',
     },

@@ -10,8 +10,6 @@ const styles = StyleService.create({
     visibleContent: {
         width: AppSizes.screen.width * 0.8,
         backgroundColor: '$contrast',
-        borderColor: '$tint',
-        borderWidth: 1,
         borderRadius: AppSizes.screen.width * 0.07,
         shadowColor: '$light',
         shadowOffset: { width: 0, height: 0 },
@@ -32,7 +30,7 @@ const styles = StyleService.create({
         alignItems: 'center',
     },
     icon: {
-        tintColor: '$silver',
+        tintColor: '$orange',
     },
     title: {
         ...AppStyles.h5,

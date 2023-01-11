@@ -155,11 +155,7 @@ class CriticalProcessing extends Component<Props, State> {
         ];
 
         return (
-            <BlurView
-                style={styles.blurView}
-                blurAmount={Platform.OS === 'ios' ? 5 : 10}
-                blurType={StyleService.isDarkMode() ? 'dark' : 'light'}
-            >
+            <BlurView style={styles.blurView} blurAmount={Platform.OS === 'ios' ? 5 : 10} blurType="dark">
                 <Animated.View
                     testID={testID}
                     style={[styles.visibleContent, { transform, opacity: this.animatedOpacity }]}

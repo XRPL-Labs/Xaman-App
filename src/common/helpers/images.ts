@@ -51,6 +51,7 @@ export const Images = {
     ImageTriangle: buildImageSource('ImageTriangle', 'image_triangle'),
     ImageSuccessCheckMark: buildImageSource('ImageSuccessCheckMark', 'image_success_check_mark'),
     ImageProfilePro: buildImageSource('ImageProfilePro', 'image_profile_pro'),
+    ImageEncryptionMigration: buildImageSource('ImageEncryptionMigration', 'image_encryption_migration'),
     // Xumm
     XummLogo: buildImageSource('XummLogo', 'xumm_logo'),
     XummLogoLight: buildImageSource('XummLogoLight', 'xumm_logo_light'),

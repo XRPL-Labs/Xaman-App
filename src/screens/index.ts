@@ -28,6 +28,7 @@ import Scan from './Modal/Scan';
 import Submit from './Modal/Submit';
 import FilterEvents from './Modal/FilterEvents';
 import Help from './Modal/Help';
+import MigrationExplain from './Modal/MigrationExplain';
 import XAppBrowser from './Modal/XAppBrowser';
 import CurrencyPicker from './Modal/CurrencyPicker';
 import DestinationPicker from './Modal/DestinationPicker';
@@ -116,6 +117,7 @@ export {
     Submit,
     FilterEvents,
     Help,
+    MigrationExplain,
     XAppBrowser,
     CurrencyPicker,
     DestinationPicker,

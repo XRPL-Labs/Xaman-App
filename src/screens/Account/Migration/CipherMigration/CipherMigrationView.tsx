@@ -9,6 +9,7 @@ import { AppScreens } from '@common/constants';
 
 // helpers
 import { Navigator } from '@common/helpers/navigator';
+import Screens from '@common/constants/screens';
 
 import Vault from '@common/libs/vault';
 
@@ -56,8 +57,6 @@ class CipherMigrationView extends Component<Props, State> {
     componentDidMount() {
         InteractionManager.runAfterInteractions(this.setDataSource);
     }
-
-    componentWillUnmount() {}
 
     setDataSource = () => {
         const accounts = AccountRepository.getAccounts();
@@ -146,6 +145,10 @@ class CipherMigrationView extends Component<Props, State> {
         }
     };
 
+    onHelpPress = () => {
+        Navigator.showModal(Screens.Modal.MigrationExplain);
+    };
+
     renderMigrationRequiredItem = (item: AccountSchema) => {
         return (
             <View style={[styles.rowContainer, styles.rowContent]}>
@@ -156,7 +159,7 @@ class CipherMigrationView extends Component<Props, State> {
                     <View>
                         <Button
                             roundedMini
-                            label="Start encryption"
+                            label={Localize.t('account.updateEncryption')}
                             onPress={() => {
                                 this.onMigrationPress(item);
                             }}
@@ -190,7 +193,6 @@ class CipherMigrationView extends Component<Props, State> {
                                 icon="IconCheck"
                                 style={styles.doneButton}
                                 label={Localize.t('global.done')}
-                                onPress={() => {}}
                             />
                         </View>
                     </View>
@@ -226,11 +228,17 @@ class CipherMigrationView extends Component<Props, State> {
         return (
             <View testID="accounts-cipher-migration-list-screen" style={AppStyles.container}>
                 <Header
-                    centerComponent={{ text: 'Encryption' }}
+                    centerComponent={{ text: Localize.t('account.updateEncryption') }}
                     leftComponent={{
                         icon: 'IconChevronLeft',
                         testID: 'back-button',
                         onPress: Navigator.pop,
+                    }}
+                    rightComponent={{
+                        icon: 'IconHelpCircle',
+                        iconSize: 25,
+                        testID: 'help-button',
+                        onPress: this.onHelpPress,
                     }}
                 />
                 <View style={AppStyles.flex1}>
