@@ -107,7 +107,7 @@ class TransactionDetailsView extends Component<Props, State> {
             spendableAccounts: AccountRepository.getSpendableAccounts(),
             balanceChanges: undefined,
             incomingTx: props.tx?.Account?.address !== props.account.address,
-            scamAlert: true,
+            scamAlert: false,
             showMemo: true,
             isLoading: !props.tx,
         };
