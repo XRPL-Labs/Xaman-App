@@ -782,7 +782,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#Disables ATS in debug builds.\nINFOPLIST=\"${TARGET_BUILD_DIR}\"/\"${INFOPLIST_PATH}\"\ncase \"${CONFIGURATION}\" in\n\"Release\"|\"Adhoc\")\n/usr/libexec/PlistBuddy -c \"Delete :NSAppTransportSecurity\" \"${INFOPLIST}\"\n;;\n\"Debug\")\n/usr/libexec/PlistBuddy -c \"Add :NSAppTransportSecurity:NSExceptionDomains:localhost dict\" \"${INFOPLIST}\"\n/usr/libexec/PlistBuddy -c \"Add :NSAppTransportSecurity:NSExceptionDomains:localhost:NSExceptionAllowsInsecureHTTPLoads bool true\" \"${INFOPLIST}\"\n;; \nesac\n";
+			shellScript = "#Disables ATS in debug builds.\nINFOPLIST=\"${TARGET_BUILD_DIR}\"/\"${INFOPLIST_PATH}\"\ncase \"${CONFIGURATION}\" in\n\"Release\"|\"Adhoc\")\n/usr/libexec/PlistBuddy -c \"Delete :NSAppTransportSecurity\" \"${INFOPLIST}\" || true\n;;\n\"Debug\")\n/usr/libexec/PlistBuddy -c \"Add :NSAppTransportSecurity:NSExceptionDomains:localhost dict\" \"${INFOPLIST}\"\n/usr/libexec/PlistBuddy -c \"Add :NSAppTransportSecurity:NSExceptionDomains:localhost:NSExceptionAllowsInsecureHTTPLoads bool true\" \"${INFOPLIST}\"\n;; \nesac\n";
 		};
 		A2BC8E29E005A317362890F9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
