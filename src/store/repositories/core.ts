@@ -72,7 +72,7 @@ class CoreRepository extends BaseRepository {
     };
 
     getDefaultNode = () => {
-        let defaultNode = __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0];
+        let defaultNode = AppConfig.nodes.main[0];
 
         const settings = this.getSettings();
 

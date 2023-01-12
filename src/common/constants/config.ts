@@ -10,9 +10,6 @@ export default {
     creditsURL: 'https://xumm.app/app/webviews/credits/',
     changeLogURL: 'https://xumm.app/app/webviews/update/en/?update=',
 
-    // Build Configuration - Debug or Release?
-    DEV: __DEV__,
-
     // persist storage config
     storage: {
         keyName: 'xumm-realm-key',

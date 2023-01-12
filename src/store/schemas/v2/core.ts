@@ -19,7 +19,7 @@ class Core extends Realm.Object {
             biometricMethod: 'string?', // biometric auth method
             passcodeFallback: { type: 'bool', default: false }, // fallback to passcode in case of biometric fail
             language: { type: 'string', default: AppConfig.defaultLanguage }, // default app language
-            defaultNode: { type: 'string', default: __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0] },
+            defaultNode: { type: 'string', default: AppConfig.nodes.main[0] },
             theme: { type: 'string', default: AppConfig.defaultTheme }, // app theme
             showMemoAlert: { type: 'bool', default: true }, // show memo alert
         },

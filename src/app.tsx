@@ -281,13 +281,13 @@ class Application {
                 //  ====== check for device root or jailBroken ======
                 if (Platform.OS === 'android') {
                     const isRooted = await IsDeviceRooted();
-                    if (isRooted && !__DEV__) {
+                    if (isRooted) {
                         reject(new Error(ErrorMessages.runningOnRootedDevice));
                         return;
                     }
                 } else if (Platform.OS === 'ios') {
                     const isJailBroken = await IsDeviceJailBroken();
-                    if (isJailBroken && !__DEV__) {
+                    if (isJailBroken) {
                         reject(new Error(ErrorMessages.runningOnJailBrokenDevice));
                         return;
                     }

@@ -27,7 +27,6 @@ class ApiService {
     private readonly timeoutSec: number;
     private endpoints: Map<string, string>;
     private idempotencyInt: number;
-    private debug: boolean;
     private requestCounter: number;
     private accessToken: string;
     private uniqueDeviceIdentifier: string;
@@ -39,9 +38,6 @@ class ApiService {
         this.apiUrl = APIConfig.apiUrl;
         this.userAgent = `${AppConfig.appName}`;
         this.endpoints = APIConfig.endpoints;
-
-        // Enable debug output when in Debug mode
-        this.debug = AppConfig.DEV;
 
         // After 100 seconds, let's call it a day!
         this.timeoutSec = 100 * 1000;

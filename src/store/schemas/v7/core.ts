@@ -20,7 +20,7 @@ class Core extends Realm.Object {
             passcodeFallback: { type: 'bool', default: false }, // fallback to passcode in case of biometric fail
             language: { type: 'string', default: AppConfig.defaultLanguage }, // default app language
             currency: { type: 'string', default: AppConfig.defaultCurrency }, // currency
-            defaultNode: { type: 'string', default: __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0] },
+            defaultNode: { type: 'string', default: AppConfig.nodes.main[0] },
             defaultExplorer: { type: 'string', default: AppConfig.explorer[0].value }, // default explorer
             hapticFeedback: { type: 'bool', default: true }, // enable haptic feedback
             discreetMode: { type: 'bool', default: false }, // Discreet Mode
