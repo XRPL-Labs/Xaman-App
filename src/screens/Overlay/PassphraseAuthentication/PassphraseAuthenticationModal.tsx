@@ -133,14 +133,24 @@ class PassphraseAuthenticationModal extends Component<Props, State> {
             this.passwordInputRef.current.blur();
         }
 
-        const privateKey = await Vault.open(account.publicKey, passphrase);
+        // try to fetch the private key from vault with provided passphrase
+        let privateKey = await Vault.open(account.publicKey, passphrase);
 
+        // invalid authentication
         if (!privateKey) {
             this.onInvalidAuthentication();
             return;
         }
 
-        this.onSuccessAuthentication();
+        // clear the private key and passphrase from variable and state
+        privateKey = null;
+
+        this.setState(
+            {
+                passphrase: undefined,
+            },
+            this.onSuccessAuthentication,
+        );
     };
 
     onPassphraseChange = (passphrase: string) => {
@@ -228,6 +238,11 @@ class PassphraseAuthenticationModal extends Component<Props, State> {
     render() {
         const { account } = this.props;
         const { offsetBottom, passphrase } = this.state;
+
+        // if account has been removed then we need to return null otherwise we will get error
+        if (!account.isValid()) {
+            return null;
+        }
 
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],

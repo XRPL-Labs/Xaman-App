@@ -3,7 +3,7 @@
  */
 
 import React, { Component, Fragment } from 'react';
-import { Alert, View, Text, ScrollView } from 'react-native';
+import { Alert, ScrollView, Text, View } from 'react-native';
 
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
@@ -14,9 +14,9 @@ import { AppScreens } from '@common/constants';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
-import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
+import { AccessLevels, AccountTypes, EncryptionLevels } from '@store/types';
 
-import { TouchableDebounce, Header, Spacer, Icon, Button, Switch } from '@components/General';
+import { Button, Header, Icon, Spacer, Switch, TouchableDebounce } from '@components/General';
 
 import Localize from '@locale';
 
@@ -202,14 +202,25 @@ class AccountSettingsView extends Component<Props, State> {
     onAccountRemoveRequest = () => {
         const { account } = this.state;
 
-        // if full access auth before remove
-        if (account.accessLevel === AccessLevels.Full) {
+        // for readonly accounts just remove without any auth
+        if (account.accessLevel === AccessLevels.Readonly) {
+            this.removeAccount();
+            return;
+        }
+
+        // auth with passcode for Physical and accounts with Passcode as encryption level
+        if ([EncryptionLevels.Passcode, EncryptionLevels.Physical].includes(account.encryptionLevel)) {
             Navigator.showOverlay(AppScreens.Overlay.Auth, {
                 canAuthorizeBiometrics: false,
                 onSuccess: this.removeAccount,
             });
-        } else {
-            this.removeAccount();
+
+            // for accounts with passphrase auth with passphrase
+        } else if (account.encryptionLevel === EncryptionLevels.Passphrase) {
+            Navigator.showOverlay(AppScreens.Overlay.PassphraseAuthentication, {
+                account,
+                onSuccess: this.removeAccount,
+            });
         }
     };
 
