@@ -352,22 +352,28 @@ class AccountImportView extends Component<Props, State> {
             let encryptionKey;
             let createdAccount = undefined as AccountSchema;
 
-            // get the signature and add account
-            if (account.type === AccountTypes.Tangem) {
-                backendService.addAccount(account.address, tangemSignature, GetCardId(tangemCard)).catch(() => {
-                    // ignore
-                });
-            } else {
-                // include device UUID is signed transaction
-                const { deviceUUID, uuid } = ProfileRepository.getProfile();
-                const { signedTransaction } = AccountLib.sign(
-                    { Account: account.address, InvoiceID: await SHA256(`${uuid}.${deviceUUID}.${account.address}`) },
-                    importedAccount,
-                );
+            // if account is imported as full access report to the backend for security checks
+            if (account.accessLevel === AccessLevels.Full) {
+                // get the signature and add account
+                if (account.type === AccountTypes.Tangem) {
+                    backendService.addAccount(account.address, tangemSignature, GetCardId(tangemCard)).catch(() => {
+                        // ignore
+                    });
+                } else {
+                    // include device UUID is signed transaction
+                    const { deviceUUID, uuid } = ProfileRepository.getProfile();
+                    const { signedTransaction } = AccountLib.sign(
+                        {
+                            Account: account.address,
+                            InvoiceID: await SHA256(`${uuid}.${deviceUUID}.${account.address}`),
+                        },
+                        importedAccount,
+                    );
 
-                backendService.addAccount(account.address, signedTransaction).catch(() => {
-                    // ignore
-                });
+                    backendService.addAccount(account.address, signedTransaction).catch(() => {
+                        // ignore
+                    });
+                }
             }
 
             // import account as full access
