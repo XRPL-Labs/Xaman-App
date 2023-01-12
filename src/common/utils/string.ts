@@ -136,6 +136,17 @@ const StringTypeCheck = {
         const hashRegExp = new RegExp('^[A-F0-9]{64}$', 'i');
         return hashRegExp.test(input);
     },
+
+    isValidXAppIdentifier: (input: string): boolean => {
+        if (typeof input !== 'string') {
+            return false;
+        }
+
+        // TODO: fix eslint error
+        // eslint-disable-next-line prefer-regex-literals,no-control-regex
+        const identifier = new RegExp('^[A-Fa-z0-9._-]+$', 'i');
+        return identifier.test(input);
+    },
 };
 
 /**

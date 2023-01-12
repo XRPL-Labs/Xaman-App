@@ -459,6 +459,17 @@ class XAppBrowserModal extends Component<Props, State> {
         const { origin, originData, params } = this.props;
         const { identifier, appVersionCode, account, title, coreSettings, isLoading } = this.state;
 
+        // check if identifier have a valid value
+        if (!StringTypeCheck.isValidXAppIdentifier(identifier)) {
+            this.setState({
+                ott: undefined,
+                permissions: undefined,
+                isLoading: false,
+                error: 'Provided xApp identifier is not valid!',
+            });
+            return;
+        }
+
         if (!isLoading) {
             this.setState({
                 isLoading: true,
@@ -513,20 +524,33 @@ class XAppBrowserModal extends Component<Props, State> {
             .then((res: any) => {
                 const { error, ott, xappTitle, permissions } = res;
 
+                // check if the ott is a valid uuid v4
+                if (!StringTypeCheck.isValidUUID(ott)) {
+                    this.setState({
+                        ott: undefined,
+                        permissions: undefined,
+                        error: 'Provided ott is not valid!',
+                    });
+                    return;
+                }
+
+                // an error reported from backend
                 if (error) {
                     this.setState({
                         ott: undefined,
                         permissions: undefined,
                         error,
                     });
-                } else {
-                    this.setState({
-                        ott,
-                        title: xappTitle || title,
-                        permissions,
-                        error: undefined,
-                    });
+                    return;
                 }
+
+                // everything is fine
+                this.setState({
+                    ott,
+                    title: xappTitle || title,
+                    permissions,
+                    error: undefined,
+                });
             })
             .catch(() => {
                 this.setState({
