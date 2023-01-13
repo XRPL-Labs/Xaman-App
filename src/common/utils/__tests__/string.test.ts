@@ -139,7 +139,7 @@ describe('Utils.String', () => {
             expect(StringTypeCheck.isValidXAppIdentifier(undefined)).toBe(false);
             expect(StringTypeCheck.isValidXAppIdentifier('something.@test')).toBe(false);
             expect(StringTypeCheck.isValidXAppIdentifier('somethings_.test/')).toBe(false);
-            expect(StringTypeCheck.isValidXAppIdentifier('xumm.app_test28-identifier')).toBe(true);
+            expect(StringTypeCheck.isValidXAppIdentifier('xumm.app_TEST28-z_identifier')).toBe(true);
         });
     });
 });

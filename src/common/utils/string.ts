@@ -144,7 +144,7 @@ const StringTypeCheck = {
 
         // TODO: fix eslint error
         // eslint-disable-next-line prefer-regex-literals,no-control-regex
-        const identifier = new RegExp('^[A-Fa-z0-9._-]+$', 'i');
+        const identifier = new RegExp('^[A-Z0-9._-]+$', 'i');
         return identifier.test(input);
     },
 };
