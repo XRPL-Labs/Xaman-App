@@ -142,15 +142,11 @@ class PassphraseAuthenticationModal extends Component<Props, State> {
             return;
         }
 
-        // clear the private key and passphrase from variable and state
+        // clear the private key
         privateKey = null;
 
-        this.setState(
-            {
-                passphrase: undefined,
-            },
-            this.onSuccessAuthentication,
-        );
+        // run the success authentication
+        this.onSuccessAuthentication();
     };
 
     onPassphraseChange = (passphrase: string) => {
