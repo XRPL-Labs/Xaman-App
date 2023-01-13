@@ -111,15 +111,6 @@ RCTAutoInsetsProtocol>
   }
   
   
-  [[NSNotificationCenter defaultCenter]addObserver:self
-                                          selector:@selector(appDidBecomeActive)
-                                              name:UIApplicationDidBecomeActiveNotification
-                                            object:nil];
-  
-  [[NSNotificationCenter defaultCenter]addObserver:self
-                                          selector:@selector(appWillResignActive)
-                                              name:UIApplicationWillResignActiveNotification
-                                            object:nil];
   if (@available(iOS 12.0, *)) {
     // Workaround for a keyboard dismissal bug present in iOS 12
     // https://openradar.appspot.com/radar?id=5018321736957952
@@ -942,7 +933,6 @@ RCTAutoInsetsProtocol>
     }
   }];
 }
-
 
 /**
  * Called when the navigation is complete.
