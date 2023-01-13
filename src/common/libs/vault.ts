@@ -147,7 +147,7 @@ const Vault = {
                     resolve(result);
                 })
                 .catch((error: any) => {
-                    logger.error('Vault reKey error');
+                    logger.error('Vault reKey error', error);
                     reject(error);
                 });
         });
@@ -163,7 +163,7 @@ const Vault = {
                     resolve(result);
                 })
                 .catch((error: any) => {
-                    logger.error('Vault batch reKey error');
+                    logger.error('Vault batch reKey error', error);
                     reject(error);
                 });
         });
