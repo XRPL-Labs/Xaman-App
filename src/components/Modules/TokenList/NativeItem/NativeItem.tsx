@@ -172,7 +172,7 @@ class NativeItem extends PureComponent<Props, State> {
     };
 
     renderReserveRate = () => {
-        const { account, reorderEnabled } = this.props;
+        const { account, reorderEnabled, discreetMode } = this.props;
         const { showFiatPanel, currencyRate, isLoadingRate } = this.state;
 
         // show fiat panel
@@ -180,16 +180,22 @@ class NativeItem extends PureComponent<Props, State> {
             return null;
         }
 
-        const totalReserve = CalculateTotalReserve(account);
-
+        let totalReserve = '0';
         let balanceFiat = '0';
 
-        if (currencyRate) {
-            const availableBalance = CalculateAvailableBalance(account, false);
-            balanceFiat = `${currencyRate.symbol} ${Localize.formatNumber(
-                Number(availableBalance) * Number(currencyRate.lastRate),
-                2,
-            )}`;
+        if (discreetMode) {
+            balanceFiat = '••••••••';
+            totalReserve = '••';
+        } else {
+            totalReserve = String(CalculateTotalReserve(account));
+
+            if (currencyRate) {
+                const availableBalance = CalculateAvailableBalance(account, false);
+                balanceFiat = `${currencyRate.symbol} ${Localize.formatNumber(
+                    Number(availableBalance) * Number(currencyRate.lastRate),
+                    2,
+                )}`;
+            }
         }
 
         return (
