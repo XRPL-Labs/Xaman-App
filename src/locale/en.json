@@ -316,7 +316,7 @@
     "moreInfo": "More Info",
     "loading": "Loading",
     "verify": "Verify",
-    "xAppWantsToOpenURLNotice": "'%{xapp}' xApp wants to open this URL.\r\n\r\n%{url}",
+    "xAppWantsToOpenURLNotice": "'%{xapp}' xApp wants to open this URL:\r\n\r\n%{url}",
     "customNodeSuccessfullyAddedToXUMM": "Custom node successfully added to XUMM. Do you want to switch to the added node?",
     "addingCustomNodeWarning": "You are adding a custom node to XUMM, do you want to continue?",
     "unableToLoadCustomEndpointDetails": "Unable to load the endpoint details. Please try again!",
