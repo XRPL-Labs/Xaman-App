@@ -1,5 +1,5 @@
 /**
- * Send Result Screen
+ * Payload Result Screen
  */
 
 import React, { Component, Fragment } from 'react';
@@ -10,8 +10,9 @@ import { Toast } from '@common/helpers/interface';
 import { Clipboard } from '@common/helpers/clipboard';
 
 // components
-import { Button, Footer, Spacer } from '@components/General';
+import { Avatar, Button, Footer, Spacer } from '@components/General';
 import Localize from '@locale';
+
 // style
 import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
@@ -55,11 +56,11 @@ class ResultStep extends Component<Props, State> {
                     </Text>
                 </View>
 
-                <View style={[AppStyles.flex2]}>
+                <View style={AppStyles.flex2}>
                     <Image style={styles.successImage} source={Images.ImageSuccessCheckMark} />
                 </View>
 
-                <Footer style={[]}>
+                <Footer>
                     <Button
                         testID="close-button"
                         style={{ backgroundColor: AppColors.green }}
@@ -131,7 +132,7 @@ class ResultStep extends Component<Props, State> {
     };
 
     renderSigned = () => {
-        const { transaction, onFinish } = this.context;
+        const { transaction, payload, onFinish } = this.context;
         const { closeButtonLabel } = this.state;
 
         return (
@@ -149,28 +150,35 @@ class ResultStep extends Component<Props, State> {
                     </Fragment>
                 </View>
 
-                <View style={[AppStyles.flex3]}>
+                <View style={AppStyles.flex3}>
                     <View style={styles.detailsCard}>
-                        {transaction.Hash && (
-                            <Fragment key="txID">
-                                <Text style={[AppStyles.subtext, AppStyles.bold]}>
-                                    {Localize.t('send.transactionID')}
-                                </Text>
-                                <Spacer />
-                                <Text style={[AppStyles.subtext]}>{transaction.Hash}</Text>
+                        {payload.isSignIn() ? (
+                            <View key="applicationDetails" style={[AppStyles.centerAligned, AppStyles.paddingVertical]}>
+                                <Avatar size={70} border source={{ uri: payload.getApplicationIcon() }} />
+                                <Text style={styles.appTitle}>{payload.getApplicationName()}</Text>
+                            </View>
+                        ) : (
+                            transaction.Hash && (
+                                <Fragment key="txID">
+                                    <Text style={[AppStyles.subtext, AppStyles.bold]}>
+                                        {Localize.t('send.transactionID')}
+                                    </Text>
+                                    <Spacer />
+                                    <Text style={AppStyles.subtext}>{transaction.Hash}</Text>
 
-                                <Spacer size={50} />
-                                <Button
-                                    light
-                                    roundedSmall
-                                    label={Localize.t('global.copy')}
-                                    style={AppStyles.stretchSelf}
-                                    onPress={() => {
-                                        Clipboard.setString(transaction.Hash);
-                                        Toast(Localize.t('send.txIdCopiedToClipboard'));
-                                    }}
-                                />
-                            </Fragment>
+                                    <Spacer size={50} />
+                                    <Button
+                                        light
+                                        roundedSmall
+                                        label={Localize.t('global.copy')}
+                                        style={AppStyles.stretchSelf}
+                                        onPress={() => {
+                                            Clipboard.setString(transaction.Hash);
+                                            Toast(Localize.t('send.txIdCopiedToClipboard'));
+                                        }}
+                                    />
+                                </Fragment>
+                            )
                         )}
                     </View>
                 </View>
@@ -202,7 +210,7 @@ class ResultStep extends Component<Props, State> {
                     </Text>
                 </View>
 
-                <View style={[AppStyles.flex2]}>
+                <View style={AppStyles.flex2}>
                     <View style={styles.detailsCard}>
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
                         <Spacer />
@@ -225,7 +233,7 @@ class ResultStep extends Component<Props, State> {
         }
 
         if (transaction.TransactionResult?.success) {
-            // submitted successfully but cannot verified
+            // submitted successfully but cannot verify
             if (transaction.VerifyResult.success === false) {
                 return this.renderVerificationFailed();
             }
