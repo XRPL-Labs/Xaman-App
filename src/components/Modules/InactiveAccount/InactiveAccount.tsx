@@ -29,18 +29,18 @@ class InactiveAccount extends PureComponent<Props, State> {
     openActivateAccountXApp = () => {
         const { account } = this.props;
 
-        let originData = {};
+        let params = {};
 
         // include card serial number if tangem card
         if (account.type === AccountTypes.Tangem) {
-            originData = { cid: GetCardId(account.additionalInfo) };
+            params = { cid: GetCardId(account.additionalInfo) };
         }
 
         Navigator.showModal(
             AppScreens.Modal.XAppBrowser,
             {
                 account,
-                originData,
+                params,
                 identifier: 'xumm.activateacc',
             },
             {
