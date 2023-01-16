@@ -548,9 +548,9 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx, incomingTx } = this.state;
         const { account, asModal } = this.props;
 
-        // if details page is opened as modal the close it before doing any other action
+        // no action button show be available when opening details as modal
         if (asModal) {
-            await Navigator.dismissModal();
+            return;
         }
 
         // open the XApp
@@ -1315,7 +1315,7 @@ class TransactionDetailsView extends Component<Props, State> {
         return (
             <View style={styles.detailContainer}>
                 <Text style={[styles.labelText]}>{Localize.t('global.description')}</Text>
-                <Text selectable style={[styles.contentText]}>
+                <Text selectable style={styles.contentText}>
                     {content}
                 </Text>
             </View>
@@ -1323,8 +1323,8 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderMemos = () => {
-        const { tx } = this.state;
-        const { showMemo, scamAlert } = this.state;
+        const { asModal } = this.props;
+        const { tx, showMemo, scamAlert } = this.state;
 
         // if ledger object or no Memo return null
         if (tx.ClassName !== 'Transaction' || !tx.Memos) return null;
@@ -1332,7 +1332,7 @@ class TransactionDetailsView extends Component<Props, State> {
         // check for xapp memo
         if (!scamAlert) {
             const xAppIdentifier = tx.getXappIdentifier();
-            if (xAppIdentifier) {
+            if (xAppIdentifier && !asModal) {
                 return (
                     <View style={styles.memoContainer}>
                         <Button
@@ -1880,11 +1880,11 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderActionButtons = () => {
-        const { account } = this.props;
+        const { account, asModal } = this.props;
         const { tx, spendableAccounts } = this.state;
 
-        // just return as the account is not a spendable account
-        if (!find(spendableAccounts, { address: account.address })) {
+        // just return as the account is not a spendable account or details presented as modal
+        if (!find(spendableAccounts, { address: account.address }) || asModal) {
             return null;
         }
 
