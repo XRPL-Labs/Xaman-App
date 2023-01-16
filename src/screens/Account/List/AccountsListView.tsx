@@ -84,6 +84,13 @@ class AccountListView extends Component<Props, State> {
     }
 
     componentDidAppear() {
+        InteractionManager.runAfterInteractions(() => {
+            this.loadAccounts();
+            this.checkMigrationRequired();
+        });
+    }
+
+    loadAccounts = () => {
         const accounts = AccountRepository.getAccounts().sorted([['order', false]]);
 
         this.setState({
@@ -91,9 +98,9 @@ class AccountListView extends Component<Props, State> {
             dataSource: [...accounts],
             signableAccount: AccountRepository.getSignableAccounts(),
         });
-    }
+    };
 
-    checkMigrationRequired = async () => {
+    checkMigrationRequired = () => {
         const { accounts } = this.state;
 
         let isMigrationRequired = false;
@@ -187,23 +194,23 @@ class AccountListView extends Component<Props, State> {
         }
 
         return (
-            <View style={[styles.rowContainer]}>
+            <View style={styles.rowContainer}>
                 <View style={[AppStyles.row, styles.rowHeader, AppStyles.centerContent]}>
                     <View style={[AppStyles.flex6]}>
                         <Text style={[styles.accountLabel]}>{item.label}</Text>
                         <View style={[styles.accessLevelContainer]}>
                             <Icon size={13} name={accessLevelIcon} style={AppStyles.imgColorGrey} />
-                            <Text style={[styles.accessLevelLabel]}>{accessLevelLabel}</Text>
+                            <Text style={styles.accessLevelLabel}>{accessLevelLabel}</Text>
                             {item.hidden && (
                                 <>
-                                    <Text style={[styles.accessLevelLabel]}> </Text>
+                                    <Text style={styles.accessLevelLabel}> </Text>
                                     <Icon size={13} name="IconEyeOff" style={AppStyles.imgColorGrey} />
-                                    <Text style={[styles.accessLevelLabel]}>{Localize.t('global.hidden')}</Text>
+                                    <Text style={styles.accessLevelLabel}>{Localize.t('global.hidden')}</Text>
                                 </>
                             )}
                         </View>
                     </View>
-                    <View style={[AppStyles.flex2]}>
+                    <View style={AppStyles.flex2}>
                         {reorderEnabled ? (
                             <View style={AppStyles.rightAligned}>
                                 <Icon size={20} name="IconReorderHandle" style={AppStyles.imgColorGrey} />
@@ -213,7 +220,7 @@ class AccountListView extends Component<Props, State> {
                                 light
                                 roundedSmall
                                 icon="IconEdit"
-                                iconStyle={[styles.rowIcon]}
+                                iconStyle={styles.rowIcon}
                                 iconSize={15}
                                 textStyle={styles.buttonEditText}
                                 label={Localize.t('global.edit')}
@@ -240,7 +247,7 @@ class AccountListView extends Component<Props, State> {
         const { accounts, dataSource, reorderEnabled, isMigrationRequired } = this.state;
 
         return (
-            <View testID="accounts-list-screen" style={[AppStyles.container]}>
+            <View testID="accounts-list-screen" style={AppStyles.container}>
                 <Header
                     centerComponent={{ text: Localize.t('global.accounts') }}
                     leftComponent={{
@@ -272,12 +279,12 @@ class AccountListView extends Component<Props, State> {
                         imageStyle={AppStyles.BackgroundShapes}
                         style={[AppStyles.contentContainer, AppStyles.padding]}
                     >
-                        <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageFirstAccount')} />
-                        <Text style={[AppStyles.emptyText]}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
+                        <Image style={AppStyles.emptyIcon} source={StyleService.getImage('ImageFirstAccount')} />
+                        <Text style={AppStyles.emptyText}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
                         <Button
                             label={Localize.t('home.addAccount')}
                             icon="IconPlus"
-                            iconStyle={[AppStyles.imgColorWhite]}
+                            iconStyle={AppStyles.imgColorWhite}
                             rounded
                             onPress={() => {
                                 Navigator.push(AppScreens.Account.Add);
@@ -287,12 +294,12 @@ class AccountListView extends Component<Props, State> {
                 ) : (
                     <View style={AppStyles.flex1}>
                         {isMigrationRequired && !reorderEnabled ? (
-                            <View style={[styles.rowMigrationContainer]}>
+                            <View style={styles.rowMigrationContainer}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold]}>
                                     {Localize.t('account.newEncryptionMethodAvailable')}
                                 </Text>
                                 <Spacer />
-                                <Text style={[AppStyles.subtext]}>
+                                <Text style={AppStyles.subtext}>
                                     {Localize.t('account.checkWhichAccountsNeedBetterEncryption')}
                                 </Text>
                                 <Spacer size={20} />
@@ -308,8 +315,8 @@ class AccountListView extends Component<Props, State> {
                                 />
                             </View>
                         ) : reorderEnabled ? (
-                            <View style={[styles.rowAddContainer]}>
-                                <View style={[AppStyles.paddingHorizontalSml]}>
+                            <View style={styles.rowAddContainer}>
+                                <View style={AppStyles.paddingHorizontalSml}>
                                     <Text
                                         adjustsFontSizeToFit
                                         numberOfLines={2}
@@ -320,7 +327,7 @@ class AccountListView extends Component<Props, State> {
                                 </View>
                             </View>
                         ) : (
-                            <View style={[styles.rowAddContainer]}>
+                            <View style={styles.rowAddContainer}>
                                 <Button
                                     testID="add-account-button"
                                     label={Localize.t('home.addAccount')}
