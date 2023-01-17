@@ -2,7 +2,7 @@
  * Base Ledger transaction parser
  */
 import BigNumber from 'bignumber.js';
-import { find, flatMap, get, has, isUndefined, set } from 'lodash';
+import { find, filter, flatMap, get, has, isUndefined, set, size, remove } from 'lodash';
 
 import LedgerService from '@services/LedgerService';
 
@@ -359,6 +359,14 @@ class BaseTransaction {
         }
 
         const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
+
+        // if cross currency remove fee from changes
+        if (size(filter(balanceChanges, { action: 'DEC' })) > 1) {
+            const decreaseXRP = find(balanceChanges, { action: 'DEC', currency: 'XRP' });
+            if (decreaseXRP.value === this.Fee) {
+                remove(balanceChanges, { action: 'DEC', currency: 'XRP' });
+            }
+        }
 
         const changes = {
             sent: find(balanceChanges, (o) => o.action === 'DEC'),
