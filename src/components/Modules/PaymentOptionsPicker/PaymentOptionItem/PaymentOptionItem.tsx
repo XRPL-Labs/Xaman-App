@@ -29,11 +29,13 @@ interface Props {
 /* Component ==================================================================== */
 class PaymentOptionItem extends Component<Props> {
     private readonly animatedFade: Animated.Value;
+    private readonly animatedPlaceholder: Animated.Value;
 
     constructor(props: Props) {
         super(props);
 
-        this.animatedFade = new Animated.Value(1);
+        this.animatedFade = new Animated.Value(0);
+        this.animatedPlaceholder = new Animated.Value(1);
     }
 
     shouldComponentUpdate(nextProps: Readonly<Props>): boolean {
@@ -47,6 +49,8 @@ class PaymentOptionItem extends Component<Props> {
         // if no item present start placeholder animation
         if (!item) {
             setTimeout(this.startPlaceholderAnimation, index * 400);
+        } else {
+            this.startFadeInAnimation();
         }
     }
 
@@ -54,9 +58,24 @@ class PaymentOptionItem extends Component<Props> {
         const { item, index } = this.props;
 
         if (prevProps.item && !item) {
+            // set animated fade value to zero
+            this.animatedFade.setValue(0);
+
+            // start placeholder animation
             setTimeout(this.startPlaceholderAnimation, index * 400);
+        } else if (!prevProps.item && item) {
+            // show the element with animation
+            this.startFadeInAnimation();
         }
     }
+
+    startFadeInAnimation = () => {
+        Animated.timing(this.animatedFade, {
+            toValue: 1,
+            duration: 600,
+            useNativeDriver: true,
+        }).start();
+    };
 
     startPlaceholderAnimation = () => {
         const { item } = this.props;
@@ -67,12 +86,12 @@ class PaymentOptionItem extends Component<Props> {
         }
 
         Animated.sequence([
-            Animated.timing(this.animatedFade, {
+            Animated.timing(this.animatedPlaceholder, {
                 toValue: 0.3,
                 duration: 1000,
                 useNativeDriver: true,
             }),
-            Animated.timing(this.animatedFade, {
+            Animated.timing(this.animatedPlaceholder, {
                 toValue: 0.8,
                 duration: 1000,
                 useNativeDriver: true,
@@ -89,7 +108,6 @@ class PaymentOptionItem extends Component<Props> {
     };
 
     renderXRP = (item: PathOption) => {
-        const { selected } = this.props;
         const { source_amount } = item;
 
         if (typeof source_amount !== 'string') {
@@ -97,11 +115,7 @@ class PaymentOptionItem extends Component<Props> {
         }
 
         return (
-            <TouchableDebounce
-                activeOpacity={0.8}
-                onPress={this.onPress}
-                style={[styles.container, selected && styles.selected]}
-            >
+            <>
                 <View style={[AppStyles.row, AppStyles.flex3]}>
                     <View style={styles.currencyImageContainer}>
                         <TokenAvatar token="XRP" border size={35} />
@@ -113,12 +127,12 @@ class PaymentOptionItem extends Component<Props> {
                 <View style={[AppStyles.flex3, AppStyles.rightAligned]}>
                     <AmountText style={styles.currencyBalance} value={new Amount(source_amount).dropsToXrp()} />
                 </View>
-            </TouchableDebounce>
+            </>
         );
     };
 
     renderIOU = (item: PathOption) => {
-        const { selected, amount } = this.props;
+        const { amount } = this.props;
         const { source_amount, paths_computed } = item;
 
         if (typeof source_amount !== 'object') {
@@ -154,11 +168,7 @@ class PaymentOptionItem extends Component<Props> {
         }
 
         return (
-            <TouchableDebounce
-                activeOpacity={0.8}
-                onPress={this.onPress}
-                style={[styles.container, selected && styles.selected]}
-            >
+            <>
                 <View style={[AppStyles.row, AppStyles.flex3]}>
                     <View style={styles.currencyImageContainer}>
                         <Avatar
@@ -183,7 +193,7 @@ class PaymentOptionItem extends Component<Props> {
                 <View style={[AppStyles.flex3, AppStyles.rightAligned]}>
                     <AmountText style={styles.currencyBalance} value={source_amount.value} />
                 </View>
-            </TouchableDebounce>
+            </>
         );
     };
 
@@ -191,7 +201,7 @@ class PaymentOptionItem extends Component<Props> {
         return (
             <Animated.View style={styles.container}>
                 <View style={[AppStyles.row, AppStyles.flex3]}>
-                    <Animated.View style={[styles.currencyImageContainer, { opacity: this.animatedFade }]}>
+                    <Animated.View style={[styles.currencyImageContainer, { opacity: this.animatedPlaceholder }]}>
                         <Avatar source={Images.ImageUnknownTrustLineLight} border size={35} />
                     </Animated.View>
                     <View style={AppStyles.centerContent}>
@@ -200,7 +210,7 @@ class PaymentOptionItem extends Component<Props> {
                             style={[
                                 styles.currencyItemLabel,
                                 styles.currencyItemLabelPlaceholder,
-                                { opacity: this.animatedFade },
+                                { opacity: this.animatedPlaceholder },
                             ]}
                         >
                             &nbsp;&nbsp;&nbsp;&nbsp;
@@ -213,7 +223,7 @@ class PaymentOptionItem extends Component<Props> {
                         style={[
                             styles.currencyBalance,
                             styles.currencyBalancePlaceholder,
-                            { opacity: this.animatedFade },
+                            { opacity: this.animatedPlaceholder },
                         ]}
                     >
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -223,12 +233,8 @@ class PaymentOptionItem extends Component<Props> {
         );
     };
 
-    render() {
+    renderContent = () => {
         const { item } = this.props;
-
-        if (!item) {
-            return this.renderPlaceHolder();
-        }
 
         const { source_amount } = item;
 
@@ -240,6 +246,26 @@ class PaymentOptionItem extends Component<Props> {
         }
 
         return null;
+    };
+
+    render() {
+        const { item, selected } = this.props;
+
+        if (!item) {
+            return this.renderPlaceHolder();
+        }
+
+        return (
+            <Animated.View style={{ opacity: this.animatedFade }}>
+                <TouchableDebounce
+                    activeOpacity={0.8}
+                    onPress={this.onPress}
+                    style={[styles.container, selected && styles.selected]}
+                >
+                    {this.renderContent()}
+                </TouchableDebounce>
+            </Animated.View>
+        );
     }
 }
 

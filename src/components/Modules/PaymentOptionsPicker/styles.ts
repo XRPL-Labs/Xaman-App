@@ -18,6 +18,6 @@ export default StyleService.create({
         marginRight: 10,
     },
     newPaymentOptionsButton: {
-        marginBottom: 15,
+        marginTop: 35,
     },
 });

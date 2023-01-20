@@ -1,12 +1,12 @@
 import { isEqual, filter } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, ViewStyle, InteractionManager } from 'react-native';
+import { View, ViewStyle, InteractionManager } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
 
 import { AmountType } from '@common/libs/ledger/parser/types';
 
-import { Button, Icon } from '@components/General';
+import { Button, InfoMessage } from '@components/General';
 import { PaymentOptionItem } from '@components/Modules/PaymentOptionsPicker/PaymentOptionItem';
 import { Amount } from '@common/libs/ledger/parser/common';
 
@@ -15,7 +15,6 @@ import LedgerPathFinding from '@common/libs/ledger/pathFinding';
 
 import Locale from '@locale';
 
-import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -276,80 +275,43 @@ class PaymentOptionsPicker extends Component<Props, State> {
         );
     };
 
-    renderRequestedAmount = () => {
-        const { amount } = this.props;
-        const { selectedItem, localOption } = this.state;
-
-        if (!localOption) {
-            return null;
-        }
-
-        return (
-            <PaymentOptionItem
-                amount={amount}
-                key="requested_amount_item"
-                index={0}
-                onPress={this.onItemSelect}
-                item={localOption}
-                selected={isEqual(localOption, selectedItem)}
-            />
-        );
-    };
-
     render() {
         const { containerStyle } = this.props;
         const { isLoading, isExpired, paymentOptions, localOption } = this.state;
 
         if (isExpired) {
             return (
-                <>
-                    <View style={styles.emptyContainer}>
-                        <View style={AppStyles.row}>
-                            <Icon name="ImageTriangle" style={styles.triangleIconContainer} />
-                            <Text style={[AppStyles.p, AppStyles.strong]}>
-                                {Locale.t('payload.paymentOptionsExpired')}
-                            </Text>
-                        </View>
-                    </View>
+                <View style={styles.emptyContainer}>
+                    <InfoMessage type="neutral" label={Locale.t('payload.paymentOptionsExpired')} />
                     <Button
-                        rounded
-                        secondary
+                        roundedMini
+                        icon="IconRepeat"
+                        iconSize={15}
                         onPress={this.clearAndFetchOptions}
                         label={Locale.t('payload.findNewPaymentOptions')}
                         style={styles.newPaymentOptionsButton}
                     />
-                </>
+                </View>
             );
         }
 
         if (!isLoading && (!localOption || !paymentOptions || paymentOptions.length === 0)) {
             return (
-                <>
-                    <View style={styles.emptyContainer}>
-                        <View style={AppStyles.row}>
-                            <Icon name="ImageTriangle" style={styles.triangleIconContainer} />
-                            <Text style={[AppStyles.p, AppStyles.strong]}>
-                                {Locale.t('payload.noPaymentOptionsFound')}
-                            </Text>
-                        </View>
-                    </View>
+                <View style={styles.emptyContainer}>
+                    <InfoMessage type="neutral" label={Locale.t('payload.noPaymentOptionsFound')} />
                     <Button
-                        rounded
-                        secondary
+                        roundedMini
+                        icon="IconRepeat"
+                        iconSize={15}
                         onPress={this.clearAndFetchOptions}
                         label={Locale.t('payload.findNewPaymentOptions')}
                         style={styles.newPaymentOptionsButton}
                     />
-                </>
+                </View>
             );
         }
 
-        return (
-            <View style={containerStyle}>
-                {this.renderRequestedAmount()}
-                {paymentOptions.map(this.renderItem)}
-            </View>
-        );
+        return <View style={containerStyle}>{[localOption, ...paymentOptions].map(this.renderItem)}</View>;
     }
 }
 
