@@ -685,10 +685,8 @@ class CurrencySettingsModal extends Component<Props, State> {
                                     <TokenAvatar token={trustLine} border size={35} />
                                 </View>
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
-                                    <Text style={[styles.currencyItemLabelSmall]}>
-                                        {trustLine.currency.name
-                                            ? trustLine.currency.name
-                                            : NormalizeCurrencyCode(trustLine.currency.currency)}
+                                    <Text style={styles.currencyItemLabelSmall}>
+                                        {trustLine.currency.name || NormalizeCurrencyCode(trustLine.currency.currency)}
                                     </Text>
                                     <Text style={styles.issuerLabel}>
                                         {trustLine.counterParty.name}{' '}
@@ -727,10 +725,11 @@ class CurrencySettingsModal extends Component<Props, State> {
 
                         <View style={styles.buttonRow}>
                             <RaisedButton
+                                small
                                 isDisabled={!this.canSend()}
                                 containerStyle={styles.sendButton}
                                 icon="IconCornerLeftUp"
-                                iconSize={20}
+                                iconSize={18}
                                 iconStyle={styles.sendButtonIcon}
                                 label={Localize.t('global.send')}
                                 textStyle={styles.sendButtonText}
@@ -738,10 +737,11 @@ class CurrencySettingsModal extends Component<Props, State> {
                             />
                             {trustLine.isNFT ? (
                                 <RaisedButton
+                                    small
                                     containerStyle={styles.infoButton}
                                     icon="IconInfo"
                                     iconSize={20}
-                                    iconPosition="right"
+                                    iconPosition="left"
                                     iconStyle={styles.infoButtonIcon}
                                     label={Localize.t('global.about')}
                                     textStyle={styles.infoButtonText}
@@ -749,11 +749,12 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 />
                             ) : (
                                 <RaisedButton
+                                    small
                                     isDisabled={!this.canExchange()}
                                     containerStyle={styles.exchangeButton}
                                     icon="IconSwitchAccount"
-                                    iconSize={20}
-                                    iconPosition="right"
+                                    iconSize={17}
+                                    iconPosition="left"
                                     iconStyle={styles.exchangeButtonIcon}
                                     label={Localize.t('global.exchange')}
                                     textStyle={styles.exchangeButtonText}
@@ -763,39 +764,53 @@ class CurrencySettingsModal extends Component<Props, State> {
                         </View>
 
                         {hasXAppIdentifier && (
-                            <View style={styles.buttonRow}>
-                                <RaisedButton
-                                    containerStyle={styles.depositButton}
-                                    icon="IconPlus"
-                                    iconSize={20}
-                                    iconStyle={styles.depositButtonIcon}
-                                    label={Localize.t('global.deposit')}
-                                    textStyle={styles.depositButtonText}
-                                    onPress={this.onDepositPress}
-                                />
-                                <RaisedButton
-                                    containerStyle={styles.withdrawButton}
-                                    icon="IconSend"
-                                    iconPosition="right"
-                                    iconSize={20}
-                                    iconStyle={styles.withdrawButtonIcon}
-                                    label={Localize.t('global.withdraw')}
-                                    textStyle={styles.withdrawButtonText}
-                                    onPress={this.onWithdrawPress}
-                                />
-                            </View>
+                            <>
+                                <View style={AppStyles.row}>
+                                    <RaisedButton
+                                        small
+                                        containerStyle={styles.depositButton}
+                                        icon="IconCoins"
+                                        iconSize={22}
+                                        iconStyle={styles.depositButtonIcon}
+                                        label={`${Localize.t('global.deposit')} ${
+                                            trustLine.currency.name ||
+                                            NormalizeCurrencyCode(trustLine.currency.currency)
+                                        }`}
+                                        textStyle={styles.depositButtonText}
+                                        onPress={this.onDepositPress}
+                                    />
+                                </View>
+                                <View style={AppStyles.row}>
+                                    <RaisedButton
+                                        small
+                                        containerStyle={styles.withdrawButton}
+                                        icon="IconWallet"
+                                        iconPosition="left"
+                                        iconSize={22}
+                                        iconStyle={styles.withdrawButtonIcon}
+                                        label={`${Localize.t('global.withdraw')} ${
+                                            trustLine.currency.name ||
+                                            NormalizeCurrencyCode(trustLine.currency.currency)
+                                        }`}
+                                        textStyle={styles.withdrawButtonText}
+                                        onPress={this.onWithdrawPress}
+                                    />
+                                </View>
+                            </>
                         )}
 
                         <View style={styles.removeButtonContainer}>
-                            <RaisedButton
+                            <Button
+                                roundedMini
                                 testID="line-remove-button"
                                 loadingIndicatorStyle="dark"
+                                style={styles.removeButton}
                                 isLoading={isRemoving}
                                 isDisabled={!canRemove}
                                 icon="IconTrash"
-                                iconSize={20}
+                                iconSize={18}
                                 iconStyle={styles.removeButtonIcon}
-                                label={Localize.t('global.remove')}
+                                label={Localize.t('asset.removeAsset')}
                                 textStyle={styles.removeButtonText}
                                 onPress={this.onRemovePress}
                             />

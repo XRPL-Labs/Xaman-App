@@ -150,4 +150,6 @@ export const Images = {
     IconHideZero: buildImageSource('IconHideZero', 'icon_hide_zero'),
     IconShowZero: buildImageSource('IconShowZero', 'icon_show_zero'),
     IconPro: buildImageSource('IconPro', 'icon_pro'),
+    IconCoins: buildImageSource('IconCoins', 'icon_coins'),
+    IconWallet: buildImageSource('IconWallet', 'icon_wallet'),
 };
