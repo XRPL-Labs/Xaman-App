@@ -1,7 +1,8 @@
 import { isEqual, find, flatMap } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Animated } from 'react-native';
 
+import { Images } from '@common/helpers/images';
 import { StyleService } from '@services';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
@@ -18,18 +19,74 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
-    amount: AmountType;
     item: PathOption;
+    index: number;
+    amount: AmountType;
     selected?: boolean;
     onPress?: (item: PathOption) => void;
 }
 
 /* Component ==================================================================== */
-class PathFindingItem extends Component<Props> {
+class PaymentOptionItem extends Component<Props> {
+    private readonly animatedFade: Animated.Value;
+
+    constructor(props: Props) {
+        super(props);
+
+        this.animatedFade = new Animated.Value(1);
+    }
+
     shouldComponentUpdate(nextProps: Readonly<Props>): boolean {
         const { item, selected } = this.props;
         return !isEqual(nextProps.item, item) || !isEqual(nextProps.selected, selected);
     }
+
+    componentDidMount() {
+        const { item, index } = this.props;
+
+        // if no item present start placeholder animation
+        if (!item) {
+            setTimeout(this.startPlaceholderAnimation, index * 400);
+        }
+    }
+
+    componentDidUpdate(prevProps: Readonly<Props>) {
+        const { item, index } = this.props;
+
+        if (prevProps.item && !item) {
+            setTimeout(this.startPlaceholderAnimation, index * 400);
+        }
+    }
+
+    startPlaceholderAnimation = () => {
+        const { item } = this.props;
+
+        // if item provided stop the placeholder animation
+        if (item) {
+            return;
+        }
+
+        Animated.sequence([
+            Animated.timing(this.animatedFade, {
+                toValue: 0.3,
+                duration: 1000,
+                useNativeDriver: true,
+            }),
+            Animated.timing(this.animatedFade, {
+                toValue: 0.8,
+                duration: 1000,
+                useNativeDriver: true,
+            }),
+        ]).start(this.startPlaceholderAnimation);
+    };
+
+    onPress = () => {
+        const { item, onPress } = this.props;
+
+        if (typeof onPress === 'function') {
+            onPress(item);
+        }
+    };
 
     renderXRP = (item: PathOption) => {
         const { selected } = this.props;
@@ -43,13 +100,8 @@ class PathFindingItem extends Component<Props> {
             <TouchableDebounce
                 activeOpacity={0.8}
                 onPress={this.onPress}
-                style={[styles.container, selected && { ...styles.selected }]}
+                style={[styles.container, selected && styles.selected]}
             >
-                <View style={AppStyles.flex1}>
-                    <View style={[styles.dot, selected && styles.dotSelected]}>
-                        {selected && <View style={styles.filled} />}
-                    </View>
-                </View>
                 <View style={[AppStyles.row, AppStyles.flex3]}>
                     <View style={styles.currencyImageContainer}>
                         <TokenAvatar token="XRP" border size={35} />
@@ -63,14 +115,6 @@ class PathFindingItem extends Component<Props> {
                 </View>
             </TouchableDebounce>
         );
-    };
-
-    onPress = () => {
-        const { item, onPress } = this.props;
-
-        if (typeof onPress === 'function') {
-            onPress(item);
-        }
     };
 
     renderIOU = (item: PathOption) => {
@@ -113,13 +157,8 @@ class PathFindingItem extends Component<Props> {
             <TouchableDebounce
                 activeOpacity={0.8}
                 onPress={this.onPress}
-                style={[styles.container, selected && { ...styles.selected }]}
+                style={[styles.container, selected && styles.selected]}
             >
-                <View style={AppStyles.flex1}>
-                    <View style={[styles.dot, selected && styles.dotSelected]}>
-                        {selected && <View style={styles.filled} />}
-                    </View>
-                </View>
                 <View style={[AppStyles.row, AppStyles.flex3]}>
                     <View style={styles.currencyImageContainer}>
                         <Avatar
@@ -136,7 +175,7 @@ class PathFindingItem extends Component<Props> {
                         <Text style={styles.currencyItemLabel}>
                             {NormalizeCurrencyCode(currency?.name || source_amount.currency)}
                         </Text>
-                        <Text style={styles.counterpartyLabel}>
+                        <Text numberOfLines={1} style={styles.counterpartyLabel}>
                             {counterParty?.name} {NormalizeCurrencyCode(source_amount.currency)}
                         </Text>
                     </View>
@@ -148,11 +187,51 @@ class PathFindingItem extends Component<Props> {
         );
     };
 
+    renderPlaceHolder = () => {
+        return (
+            <Animated.View style={styles.container}>
+                <View style={[AppStyles.row, AppStyles.flex3]}>
+                    <Animated.View style={[styles.currencyImageContainer, { opacity: this.animatedFade }]}>
+                        <Avatar source={Images.ImageUnknownTrustLineLight} border size={35} />
+                    </Animated.View>
+                    <View style={AppStyles.centerContent}>
+                        <Animated.Text
+                            numberOfLines={1}
+                            style={[
+                                styles.currencyItemLabel,
+                                styles.currencyItemLabelPlaceholder,
+                                { opacity: this.animatedFade },
+                            ]}
+                        >
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                        </Animated.Text>
+                    </View>
+                </View>
+                <View style={[AppStyles.flex3, AppStyles.rightAligned]}>
+                    <Animated.Text
+                        numberOfLines={1}
+                        style={[
+                            styles.currencyBalance,
+                            styles.currencyBalancePlaceholder,
+                            { opacity: this.animatedFade },
+                        ]}
+                    >
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </Animated.Text>
+                </View>
+            </Animated.View>
+        );
+    };
+
     render() {
         const { item } = this.props;
+
+        if (!item) {
+            return this.renderPlaceHolder();
+        }
+
         const { source_amount } = item;
 
-        // XRP
         if (typeof source_amount === 'string') {
             return this.renderXRP(item);
         }
@@ -164,4 +243,4 @@ class PathFindingItem extends Component<Props> {
     }
 }
 
-export default PathFindingItem;
+export default PaymentOptionItem;

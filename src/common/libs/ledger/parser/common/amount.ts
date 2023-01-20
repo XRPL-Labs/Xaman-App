@@ -50,6 +50,16 @@ class Amount {
         return drops.toString(10);
     }
 
+    withTransferRate(transferRate: number, toNumber = false): any {
+        const withRate = this.amount.plus(this.amount.multipliedBy(transferRate).dividedBy(100));
+
+        if (toNumber) {
+            return withRate.toNumber();
+        }
+
+        return withRate.toString(10);
+    }
+
     toString(toFixed = true): string {
         if (toFixed) {
             return this.amount.toFixed();

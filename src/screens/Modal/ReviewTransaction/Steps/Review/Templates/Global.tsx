@@ -34,6 +34,7 @@ export interface Props {
     transaction: Transactions;
     payload: Payload;
     setLoading: (loading: boolean) => void;
+    setReady: (ready: boolean) => void;
     forceRender: () => void;
 }
 

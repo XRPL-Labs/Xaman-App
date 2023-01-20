@@ -5,18 +5,20 @@ import { AppFonts } from '@theme';
 export default StyleService.create({
     container: {
         width: '100%',
-        borderRadius: 20,
-        paddingHorizontal: 20,
-        paddingVertical: 12,
-        left: 0,
-        right: 0,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+        borderRadius: 20,
         borderColor: '$lightGrey',
-        color: '$silver',
         borderWidth: 3,
-        marginBottom: 15,
+        marginBottom: 10,
+        paddingVertical: 12,
+        paddingLeft: 15,
+        paddingRight: 12,
+    },
+    selected: {
+        backgroundColor: '$tint',
+        borderColor: '$green',
     },
     currencyImageContainer: {
         marginRight: 10,
@@ -34,34 +36,19 @@ export default StyleService.create({
         alignItems: 'flex-start',
         justifyContent: 'center',
         color: '$grey',
+        paddingTop: 2,
+    },
+    currencyItemLabelPlaceholder: {
+        color: StyleService.isDarkMode() ? '$grey' : '$silver',
+        backgroundColor: StyleService.isDarkMode() ? '$grey' : '$silver',
     },
     currencyBalance: {
         fontSize: AppFonts.p.size,
         fontFamily: AppFonts.base.familyMonoBold,
         color: '$textPrimary',
     },
-    dot: {
-        height: 26,
-        width: 26,
-        borderRadius: 12,
-        borderWidth: 2,
-        borderColor: '$grey',
-        marginTop: 4,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    dotSelected: {
-        borderColor: '$green',
-    },
-    filled: {
-        height: 15,
-        width: 15,
-        borderRadius: 8,
-        backgroundColor: '$green',
-        color: '$green',
-    },
-    selected: {
-        backgroundColor: '$tint',
-        borderColor: '$green',
+    currencyBalancePlaceholder: {
+        color: StyleService.isDarkMode() ? '$grey' : '$silver',
+        backgroundColor: StyleService.isDarkMode() ? '$grey' : '$silver',
     },
 });

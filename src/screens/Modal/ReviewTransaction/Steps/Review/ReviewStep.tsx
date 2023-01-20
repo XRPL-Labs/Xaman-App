@@ -170,7 +170,7 @@ class ReviewStep extends Component<Props, State> {
     };
 
     renderDetails = () => {
-        const { payload, transaction, source, setLoading } = this.context;
+        const { payload, transaction, source, setLoading, setReady } = this.context;
 
         // if tx is SignIn ignore to show details
         if (payload.isSignIn()) {
@@ -189,12 +189,14 @@ class ReviewStep extends Component<Props, State> {
                     payload={payload}
                     forceRender={this.forceRender}
                     setLoading={setLoading}
+                    setReady={setReady}
                 />
                 <Global
                     transaction={transaction}
                     payload={payload}
                     forceRender={this.forceRender}
                     setLoading={setLoading}
+                    setReady={setReady}
                 />
             </>
         );
@@ -266,7 +268,7 @@ class ReviewStep extends Component<Props, State> {
     render() {
         const { accounts, canScroll } = this.state;
 
-        const { payload, source, isLoading, setSource, onAccept, onClose, getTransactionLabel } = this.context;
+        const { payload, source, isReady, isLoading, setSource, onAccept, onClose, getTransactionLabel } = this.context;
 
         // no account is available for signing
         if (Array.isArray(accounts) && accounts.length === 0) {
@@ -359,12 +361,13 @@ class ReviewStep extends Component<Props, State> {
                                 testID="accept-button"
                                 color={this.getSwipeButtonColor()}
                                 isLoading={isLoading}
+                                isDisabled={!isReady}
                                 onSwipeSuccess={onAccept}
                                 label={Localize.t('global.slideToAccept')}
                                 accessibilityLabel={Localize.t('global.accept')}
-                                shouldResetAfterSuccess
                                 onPanResponderGrant={this.toggleCanScroll}
                                 onPanResponderRelease={this.toggleCanScroll}
+                                shouldResetAfterSuccess
                             />
                         </View>
                     </View>

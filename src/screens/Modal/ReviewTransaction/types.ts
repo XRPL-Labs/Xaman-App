@@ -29,6 +29,7 @@ export interface State {
     softErrorMessage: string;
     hardErrorMessage: string;
     isLoading: boolean;
+    isReady: boolean;
     isValidPayload: boolean;
 }
 
@@ -36,6 +37,7 @@ export interface ContextProps extends State {
     setSource: (source: AccountSchema) => void;
     setError: (message: string) => void;
     setLoading: (loading: boolean) => void;
+    setReady: (ready: boolean) => void;
     onClose: () => void;
     onAccept: () => void;
     onFinish: () => void;

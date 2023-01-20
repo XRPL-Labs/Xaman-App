@@ -16,6 +16,11 @@ const Styles = StyleService.create({
         backgroundColor: '$green',
         borderColor: '$green',
     },
+    containerDisabled: {
+        opacity: 0.8,
+        backgroundColor: '$silver',
+        borderColor: '$silver',
+    },
     label: {
         alignSelf: 'center',
         position: 'absolute',

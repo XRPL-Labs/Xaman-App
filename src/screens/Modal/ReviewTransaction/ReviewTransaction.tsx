@@ -54,6 +54,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             currentStep: Steps.Review,
             submitResult: undefined,
             isLoading: false,
+            isReady: true,
             isValidPayload: true,
             hasError: false,
             softErrorMessage: '',
@@ -593,6 +594,12 @@ class ReviewTransactionModal extends Component<Props, State> {
         });
     };
 
+    setReady = (ready: boolean) => {
+        this.setState({
+            isReady: ready,
+        });
+    };
+
     submit = async () => {
         const { payload } = this.props;
         const { transaction, coreSettings } = this.state;
@@ -771,6 +778,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                     ...this.state,
                     setError: this.setError,
                     setLoading: this.setLoading,
+                    setReady: this.setReady,
                     setSource: this.setSource,
                     onClose: this.onClose,
                     onAccept: this.onAccept,

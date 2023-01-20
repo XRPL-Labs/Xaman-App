@@ -27,7 +27,7 @@ type RequestPromise = {
 };
 
 /* Constants ==================================================================== */
-const RESOLVE_AFTER_SECS = 10000; // seconds before returning the data
+const RESOLVE_AFTER_SECS = 7000; // seconds before returning the data
 const EXPIRE_AFTER_SECS = 60000; // seconds to expire the options
 
 /* Class ==================================================================== */
