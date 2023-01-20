@@ -164,17 +164,24 @@ class PaymentOptionsPicker extends Component<Props, State> {
                             !sourceLine.freeze_peer &&
                             Number(sourceLine.balance) >= Number(amount.value)
                         ) {
+                            // get issuer transfer rate
                             const transferRate = await LedgerService.getAccountTransferRate(amount.issuer);
 
                             if (transferRate) {
-                                localOption = {
-                                    source_amount: {
-                                        issuer: amount.issuer,
-                                        currency: amount.currency,
-                                        value: new Amount(amount.value, false).withTransferRate(transferRate),
-                                    },
-                                    paths_computed: [],
-                                };
+                                // if transfer rate, check if we still can pay
+                                const withTransferRate = new Amount(amount.value, false).withTransferRate(transferRate);
+
+                                // still can pay after transfer rate applied
+                                if (Number(sourceLine.balance) >= Number(withTransferRate)) {
+                                    localOption = {
+                                        source_amount: {
+                                            issuer: amount.issuer,
+                                            currency: amount.currency,
+                                            value: withTransferRate,
+                                        },
+                                        paths_computed: [],
+                                    };
+                                }
                             } else {
                                 localOption = { source_amount: amount, paths_computed: [] };
                             }
