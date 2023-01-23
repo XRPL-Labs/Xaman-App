@@ -6,7 +6,7 @@ export default StyleService.create({
     currencyItem: {
         justifyContent: 'space-between',
         backgroundColor: '$lightBlue',
-        borderRadius: 15,
+        borderRadius: 10,
         paddingHorizontal: 5,
         paddingVertical: 5,
         marginHorizontal: AppSizes.paddingSml,
