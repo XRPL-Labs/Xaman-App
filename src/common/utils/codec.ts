@@ -1,5 +1,6 @@
+import BigNumber from 'bignumber.js';
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
-import { xAddressToClassicAddress, decodeAccountID } from 'ripple-address-codec';
+import { xAddressToClassicAddress, decodeAccountID, encodeAccountID } from 'ripple-address-codec';
 import { XrplDestination } from 'xumm-string-decode';
 
 import { HexEncoding } from '@common/utils/string';
@@ -29,7 +30,7 @@ const DecodeAccountId = (account: string): string => {
 };
 
 /**
- * Calculate NFT token ID
+ * Encode/Calculate NFT token ID
  * @param account string
  * @param tokenSequence number
  * @param flags number
@@ -71,6 +72,30 @@ const EncodeNFTokenID = (
     }
 
     return HexEncoding.toHex(tokenID).toUpperCase();
+};
+
+/**
+ * Decode NFT token ID
+ * @param nfTokenID string
+ * @returns decoded NFToken object
+ */
+const DecodeNFTokenID = (nfTokenID: string) => {
+    if (nfTokenID.length !== 64) {
+        throw new Error('Invalid nfTokenID, should be 64 bytes hex');
+    }
+
+    const scrambledTaxon = new BigNumber(nfTokenID.substring(48, 56), 16).toNumber();
+    const sequence = new BigNumber(nfTokenID.substring(56, 64), 16).toNumber();
+    const taxon = (scrambledTaxon ^ (384160001 * sequence + 2459)) % 4294967296;
+
+    return {
+        NFTokenID: nfTokenID,
+        Flags: new BigNumber(nfTokenID.substring(0, 4), 16).toNumber(),
+        TransferFee: new BigNumber(nfTokenID.substring(4, 8), 16).toNumber(),
+        Issuer: encodeAccountID(Buffer.from(nfTokenID.substring(8, 48), 'hex')),
+        Taxon: taxon,
+        Sequence: sequence,
+    };
 };
 
 /**
@@ -126,4 +151,11 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination & {
 };
 
 /* Export ==================================================================== */
-export { ConvertCodecAlphabet, NormalizeDestination, EncodeLedgerIndex, EncodeNFTokenID, DecodeAccountId };
+export {
+    ConvertCodecAlphabet,
+    NormalizeDestination,
+    EncodeLedgerIndex,
+    EncodeNFTokenID,
+    DecodeNFTokenID,
+    DecodeAccountId,
+};

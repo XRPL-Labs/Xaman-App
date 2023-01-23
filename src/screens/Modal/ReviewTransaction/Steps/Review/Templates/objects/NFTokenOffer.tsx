@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-one-expression-per-line */
-
 import { isEmpty } from 'lodash';
 
 import React, { Component } from 'react';
@@ -7,7 +5,9 @@ import { View, Text, InteractionManager } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
 
+import { NFTokenMint } from '@common/libs/ledger/transactions';
 import { NFTokenOffer } from '@common/libs/ledger/objects';
+import Flag from '@common/libs/ledger/parser/common/flag';
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
@@ -17,6 +17,7 @@ import { AmountText, LoadingIndicator, InfoMessage } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
 import { FormatDate } from '@common/utils/date';
+import { DecodeNFTokenID } from '@common/utils/codec';
 
 import styles from './styles';
 
@@ -27,6 +28,7 @@ export interface Props {
 
 export interface State {
     object: NFTokenOffer;
+    isTokenBurnable: any;
     isLoading: boolean;
     isLoadingDestinationDetails: boolean;
     isLoadingOwnerDetails: boolean;
@@ -41,6 +43,7 @@ class NFTokenOfferTemplate extends Component<Props, State> {
 
         this.state = {
             object: undefined,
+            isTokenBurnable: false,
             isLoading: true,
             isLoadingDestinationDetails: true,
             isLoadingOwnerDetails: true,
@@ -56,8 +59,12 @@ class NFTokenOfferTemplate extends Component<Props, State> {
     fetchDetails = async () => {
         // fetch the object first
         await this.fetchObject();
+
+        // check if token is burnable
+        this.checkTokenBurnable();
+
         // fetch parties details
-        await this.fetchPartiesDetails();
+        this.fetchPartiesDetails();
     };
 
     fetchObject = () => {
@@ -92,6 +99,27 @@ class NFTokenOfferTemplate extends Component<Props, State> {
                     this.setState({ isLoading: false }, resolve);
                 });
         });
+    };
+
+    checkTokenBurnable = () => {
+        const { object } = this.state;
+
+        if (!object) {
+            return;
+        }
+
+        if (object.NFTokenID) {
+            const { Flags: FlagsInt } = DecodeNFTokenID(object.NFTokenID);
+
+            const flags = new Flag(NFTokenMint.Type, FlagsInt);
+            const parsedFlags = flags.parse();
+
+            if (parsedFlags?.Burnable) {
+                this.setState({
+                    isTokenBurnable: true,
+                });
+            }
+        }
     };
 
     fetchPartiesDetails = () => {
@@ -144,6 +172,7 @@ class NFTokenOfferTemplate extends Component<Props, State> {
     render() {
         const {
             object,
+            isTokenBurnable,
             isLoading,
             isLoadingDestinationDetails,
             isLoadingOwnerDetails,
@@ -228,6 +257,10 @@ class NFTokenOfferTemplate extends Component<Props, State> {
                             <Text style={styles.value}>{FormatDate(object.Expiration)}</Text>
                         </View>
                     </>
+                )}
+
+                {isTokenBurnable && (
+                    <InfoMessage icon="IconInfo" type="info" label={Localize.t('payload.theIssuerCanBurnThisToken')} />
                 )}
             </>
         );

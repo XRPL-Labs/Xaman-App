@@ -16,7 +16,6 @@ export interface Props {
 }
 
 export interface State {}
-
 /* Component ==================================================================== */
 class NFTokenAcceptOfferTemplate extends Component<Props, State> {
     render() {

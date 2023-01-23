@@ -964,6 +964,7 @@
     "paymentOptionsExpired": "Payment options expired",
     "findNewPaymentOptions": "Find new payment options",
     "noPaymentOptionsFound": "No payment options found",
-    "unableToFindTheOfferObject": "Unable to find the offer object!"
+    "unableToFindTheOfferObject": "Unable to find the offer object!",
+    "theIssuerCanBurnThisToken": "Note: The issuer can burn this token."
   }
 }
