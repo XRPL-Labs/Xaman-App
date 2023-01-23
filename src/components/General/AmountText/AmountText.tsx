@@ -59,7 +59,7 @@ class AmountText extends Component<Props, State> {
             localSettings: Localize.getSettings(),
         };
 
-        this.placeHolderAnimation = new Animated.Value(1);
+        this.placeHolderAnimation = new Animated.Value(0.1);
     }
 
     componentDidMount() {
@@ -67,7 +67,7 @@ class AmountText extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        const { value: PropValue, currency, discreet } = this.props;
+        const { value: PropValue, currency, discreet, isLoading } = this.props;
         const { showOriginalValue, value } = this.state;
 
         return (
@@ -75,8 +75,21 @@ class AmountText extends Component<Props, State> {
             nextState.value !== value ||
             nextProps.currency !== currency ||
             nextState.showOriginalValue !== showOriginalValue ||
-            nextProps.discreet !== discreet
+            nextProps.discreet !== discreet ||
+            nextProps.isLoading !== isLoading
         );
+    }
+
+    componentDidUpdate(prevProps: Readonly<Props>) {
+        const { isLoading } = this.props;
+
+        if (!prevProps.isLoading && isLoading) {
+            // set animated fade value to zero
+            this.placeHolderAnimation.setValue(0.1);
+
+            // start placeholder animation
+            this.startPlaceholderAnimation();
+        }
     }
 
     static getDerivedStateFromProps(nextProps: Props, prevState: State) {
@@ -186,12 +199,12 @@ class AmountText extends Component<Props, State> {
         Animated.sequence([
             Animated.timing(this.placeHolderAnimation, {
                 toValue: 0.1,
-                duration: 1000,
+                duration: 800,
                 useNativeDriver: true,
             }),
             Animated.timing(this.placeHolderAnimation, {
                 toValue: 0.3,
-                duration: 1000,
+                duration: 800,
                 useNativeDriver: true,
             }),
         ]).start(this.startPlaceholderAnimation);

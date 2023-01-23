@@ -1,6 +1,6 @@
 import { has } from 'lodash';
 import React, { PureComponent } from 'react';
-import { View, Text, InteractionManager } from 'react-native';
+import { View, Text } from 'react-native';
 
 import { BackendService } from '@services';
 
@@ -54,9 +54,6 @@ class NativeItem extends PureComponent<Props, State> {
     componentDidMount() {
         // add listener for changes on currency and showReservePanel setting
         CoreRepository.on('updateSettings', this.onCoreSettingsUpdate);
-
-        // load the currency rate
-        InteractionManager.runAfterInteractions(this.fetchCurrencyRate);
     }
 
     componentWillUnmount() {
@@ -86,7 +83,13 @@ class NativeItem extends PureComponent<Props, State> {
     };
 
     fetchCurrencyRate = () => {
-        const { currency } = this.state;
+        const { currency, isLoadingRate } = this.state;
+
+        if (!isLoadingRate) {
+            this.setState({
+                isLoadingRate: true,
+            });
+        }
 
         BackendService.getCurrencyRate(currency)
             .then((rate: any) => {
