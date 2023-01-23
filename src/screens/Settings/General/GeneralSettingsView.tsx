@@ -325,7 +325,7 @@ class GeneralSettingsView extends Component<Props, State> {
                     <View style={styles.row}>
                         <View style={[AppStyles.flex3]}>
                             <Text numberOfLines={1} style={styles.label}>
-                                {Localize.t('settings.showReserveFiatValue')}
+                                {Localize.t('settings.showReserveValue')}
                             </Text>
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>

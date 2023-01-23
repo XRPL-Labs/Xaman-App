@@ -602,7 +602,7 @@
     "hapticFeedback": "Haptic feedback",
     "developerMode": "Developer mode",
     "useSystemSeparators": "Use system currency format",
-    "showReserveFiatValue": "Show reserve & fiat value on home screen",
+    "showReserveValue": "Show reserve value on home screen",
     "enterOldPasscode": "Enter your old passcode",
     "enterNewPasscode": "Enter your new passcode",
     "enterNewPasscodeAgain": "Enter your new passcode again",

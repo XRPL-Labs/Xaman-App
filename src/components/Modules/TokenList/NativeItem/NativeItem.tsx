@@ -73,7 +73,7 @@ class NativeItem extends PureComponent<Props, State> {
         }
 
         // show reserve panel changed
-        if (has(changes, 'showReservePanel') && showReservePanel !== changes.showFiatPanel) {
+        if (has(changes, 'showFiatPanel') && showReservePanel !== changes.showFiatPanel) {
             this.setState({
                 showRate: false,
                 currencyRate: undefined,
