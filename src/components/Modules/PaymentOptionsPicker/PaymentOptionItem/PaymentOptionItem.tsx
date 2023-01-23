@@ -11,7 +11,6 @@ import { CurrencyRepository } from '@store/repositories';
 import { AmountText, Avatar, TokenAvatar, TouchableDebounce } from '@components/General';
 import { PathOption } from '@common/libs/ledger/types';
 
-import { Amount } from '@common/libs/ledger/parser/common';
 import { AmountType } from '@common/libs/ledger/parser/types';
 
 import { AppStyles } from '@theme';
@@ -125,7 +124,7 @@ class PaymentOptionItem extends Component<Props> {
                     </View>
                 </View>
                 <View style={[AppStyles.flex3, AppStyles.rightAligned]}>
-                    <AmountText style={styles.currencyBalance} value={new Amount(source_amount).dropsToXrp()} />
+                    <AmountText style={styles.currencyBalance} value={source_amount} />
                 </View>
             </>
         );

@@ -1,4 +1,4 @@
-import { isEqual, filter } from 'lodash';
+import { isEqual, filter, map } from 'lodash';
 import React, { Component } from 'react';
 import { View, ViewStyle, InteractionManager } from 'react-native';
 
@@ -148,7 +148,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
                     const availableBalance = await LedgerService.getAccountAvailableBalance(source);
 
                     if (Number(availableBalance) >= Number(amount.value)) {
-                        localOption = { source_amount: new Amount(amount.value).xrpToDrops(), paths_computed: [] };
+                        localOption = { source_amount: String(availableBalance), paths_computed: [] };
                     }
                 } else {
                     // paying IOU
@@ -221,9 +221,18 @@ class PaymentOptionsPicker extends Component<Props, State> {
                         return Array.isArray(paths_computed) && paths_computed.length > 0;
                     });
 
+                    // if paying with XRP is available in options, turn drops to XRP
+                    const paymentOptions = map(filteredOptions, (item) => {
+                        const { source_amount } = item;
+                        if (typeof source_amount === 'string') {
+                            return Object.assign(item, { source_amount: new Amount(source_amount).dropsToXrp() });
+                        }
+                        return item;
+                    });
+
                     this.setState({
                         isExpired: false,
-                        paymentOptions: filteredOptions,
+                        paymentOptions,
                     });
                 })
                 .catch((error: any) => {
