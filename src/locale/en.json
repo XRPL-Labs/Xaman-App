@@ -410,7 +410,7 @@
     "exchangeAccount": "Exchange Account",
     "exchangeAccountReadonlyExplain": "You cannot deposit directly to your exchange account: you need a destination tag to do so. Please get your destination tag from your exchange, and deposit manually.",
     "viewMoreXApps": "View more xApps",
-    "xrpReserved": "%{reserve} XRP reserved"
+    "xrpReserved": "XRP reserved"
   },
   "events": {
     "eventTypeAll": "All",

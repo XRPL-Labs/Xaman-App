@@ -62,6 +62,12 @@ export default StyleService.create({
         fontFamily: AppFonts.base.familyMonoBold,
         color: '$grey',
     },
+    reserveTextValue: {
+        fontSize: AppFonts.small.size,
+        fontFamily: AppFonts.base.familyMonoBold,
+        color: '$grey',
+        marginRight: 15,
+    },
     reserveInfoIconContainer: {
         paddingLeft: AppSizes.scale(11),
         paddingRight: AppSizes.scale(10),
@@ -71,5 +77,11 @@ export default StyleService.create({
         fontFamily: AppFonts.base.familyMonoBold,
         color: StyleService.isDarkMode() ? '$white' : '$blue',
         marginRight: 5,
+    },
+    rightContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
     },
 });

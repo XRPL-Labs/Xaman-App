@@ -8,7 +8,7 @@
 
 import { isEqual } from 'lodash';
 import React, { Component } from 'react';
-import { Text, Pressable, Alert, TextStyle, ViewStyle, View } from 'react-native';
+import { Text, Pressable, Alert, TextStyle, ViewStyle, View, InteractionManager, Animated } from 'react-native';
 import BigNumber from 'bignumber.js';
 
 import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
@@ -20,6 +20,7 @@ import styles from './styles';
 /* Types ==================================================================== */
 interface Props {
     testID?: string;
+    isLoading?: boolean;
     prefix?: string | (() => React.ReactNode);
     value: number | string;
     currency?: string;
@@ -44,6 +45,8 @@ interface State {
 
 /* Component ==================================================================== */
 class AmountText extends Component<Props, State> {
+    private readonly placeHolderAnimation: Animated.Value;
+
     constructor(props: Props) {
         super(props);
 
@@ -55,6 +58,12 @@ class AmountText extends Component<Props, State> {
             showOriginalValue: false,
             localSettings: Localize.getSettings(),
         };
+
+        this.placeHolderAnimation = new Animated.Value(1);
+    }
+
+    componentDidMount() {
+        InteractionManager.runAfterInteractions(this.startPlaceholderAnimation);
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
@@ -166,6 +175,28 @@ class AmountText extends Component<Props, State> {
         return null;
     }
 
+    startPlaceholderAnimation = () => {
+        const { isLoading } = this.props;
+
+        // if the loading is finished, stop the animation
+        if (!isLoading) {
+            return;
+        }
+
+        Animated.sequence([
+            Animated.timing(this.placeHolderAnimation, {
+                toValue: 0.1,
+                duration: 1000,
+                useNativeDriver: true,
+            }),
+            Animated.timing(this.placeHolderAnimation, {
+                toValue: 0.3,
+                duration: 1000,
+                useNativeDriver: true,
+            }),
+        ]).start(this.startPlaceholderAnimation);
+    };
+
     toggleShowOriginalValue = () => {
         const { showOriginalValue } = this.state;
 
@@ -263,21 +294,40 @@ class AmountText extends Component<Props, State> {
         );
     };
 
+    renderPlaceholder = () => {
+        const { style } = this.props;
+
+        return (
+            <Animated.Text
+                numberOfLines={1}
+                style={[style, styles.placeholder, { opacity: this.placeHolderAnimation }]}
+            >
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </Animated.Text>
+        );
+    };
+
     render() {
-        const { immutable } = this.props;
+        const { immutable, isLoading } = this.props;
         const { truncated } = this.state;
+
+        // if loading show placeholder
+        if (isLoading) {
+            return this.renderPlaceholder();
+        }
 
         // in case of immutable content, we show original values without any change
         if (immutable) {
             return this.renderImmutableContent();
         }
 
-        const ItemComponent = truncated ? Pressable : View;
+        const ContainerComponent = truncated ? Pressable : View;
+
         return (
-            <ItemComponent onPress={this.onPress} style={styles.container}>
+            <ContainerComponent onPress={this.onPress} style={styles.container}>
                 {this.renderValue()}
                 {this.renderCurrency()}
-            </ItemComponent>
+            </ContainerComponent>
         );
     }
 }

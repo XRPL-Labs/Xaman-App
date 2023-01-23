@@ -10,7 +10,7 @@ import { Toast } from '@common/helpers/interface';
 import { CoreRepository } from '@store/repositories';
 import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 
-import { AmountText, Icon, TokenAvatar, TextPlaceholder, TouchableDebounce } from '@components/General';
+import { AmountText, Icon, TokenAvatar, TouchableDebounce } from '@components/General';
 
 import Localize from '@locale';
 
@@ -26,8 +26,9 @@ interface Props {
 }
 
 interface State {
-    showFiatPanel: boolean;
+    showReservePanel: boolean;
     currency: string;
+    showRate: boolean;
     isLoadingRate: boolean;
     currencyRate: any;
 }
@@ -42,15 +43,16 @@ class NativeItem extends PureComponent<Props, State> {
         const coreSettings = CoreRepository.getSettings();
 
         this.state = {
-            showFiatPanel: coreSettings.showFiatPanel,
+            showReservePanel: coreSettings.showFiatPanel,
             currency: coreSettings.currency,
-            isLoadingRate: true,
+            showRate: false,
+            isLoadingRate: false,
             currencyRate: undefined,
         };
     }
 
     componentDidMount() {
-        // add listener for changes on currency and showFiatPanel setting
+        // add listener for changes on currency and showReservePanel setting
         CoreRepository.on('updateSettings', this.onCoreSettingsUpdate);
 
         // load the currency rate
@@ -62,36 +64,29 @@ class NativeItem extends PureComponent<Props, State> {
     }
 
     onCoreSettingsUpdate = (coreSettings: CoreSchema, changes: Partial<CoreSchema>) => {
-        const { currency, showFiatPanel } = this.state;
+        const { currency, showReservePanel } = this.state;
 
         // currency changed
         if (has(changes, 'currency') && currency !== changes.currency) {
-            this.setState(
-                {
-                    currency: coreSettings.currency,
-                },
-                this.fetchCurrencyRate,
-            );
+            this.setState({
+                showRate: false,
+                currencyRate: undefined,
+                currency: coreSettings.currency,
+            });
         }
 
-        // show fiat panel changed
-        if (has(changes, 'showFiatPanel') && showFiatPanel !== changes.showFiatPanel) {
-            this.setState(
-                {
-                    showFiatPanel: coreSettings.showFiatPanel,
-                },
-                this.fetchCurrencyRate,
-            );
+        // show reserve panel changed
+        if (has(changes, 'showReservePanel') && showReservePanel !== changes.showFiatPanel) {
+            this.setState({
+                showRate: false,
+                currencyRate: undefined,
+                showReservePanel: coreSettings.showFiatPanel,
+            });
         }
     };
 
     fetchCurrencyRate = () => {
-        const { showFiatPanel, currency } = this.state;
-
-        // if we are not showing fiat panel return
-        if (!showFiatPanel) {
-            return;
-        }
+        const { currency } = this.state;
 
         BackendService.getCurrencyRate(currency)
             .then((rate: any) => {
@@ -106,6 +101,19 @@ class NativeItem extends PureComponent<Props, State> {
                     isLoadingRate: false,
                 });
             });
+    };
+
+    toggleBalance = () => {
+        const { showRate } = this.state;
+
+        this.setState({
+            showRate: !showRate,
+        });
+
+        // fetch the rate again if show rate is true
+        if (!showRate) {
+            this.fetchCurrencyRate();
+        }
     };
 
     onPress = () => {
@@ -136,8 +144,20 @@ class NativeItem extends PureComponent<Props, State> {
 
     renderBalance = () => {
         const { account, discreetMode } = this.props;
+        const { showRate, currencyRate, isLoadingRate } = this.state;
 
         const availableBalance = CalculateAvailableBalance(account, true);
+
+        let balance: number;
+        let prefix: any;
+
+        if (showRate && currencyRate) {
+            balance = Number(availableBalance) * Number(currencyRate.lastRate);
+            prefix = `${currencyRate.symbol} `;
+        } else {
+            balance = availableBalance;
+            prefix = this.getCurrencyAvatar;
+        }
 
         return (
             <View style={styles.balanceRow}>
@@ -149,53 +169,41 @@ class NativeItem extends PureComponent<Props, State> {
                         </Text>
                     </View>
                 </View>
-                <View
-                    style={[
-                        AppStyles.flex1,
-                        AppStyles.row,
-                        AppStyles.centerContent,
-                        AppStyles.centerAligned,
-                        AppStyles.flexEnd,
-                    ]}
-                >
+                <TouchableDebounce activeOpacity={0.7} onPress={this.toggleBalance} style={styles.rightContainer}>
                     <AmountText
                         testID="account-native-balance"
-                        prefix={this.getCurrencyAvatar}
-                        value={availableBalance}
+                        prefix={prefix}
+                        value={balance}
                         style={styles.balanceText}
                         discreet={discreetMode}
+                        isLoading={isLoadingRate}
                         discreetStyle={AppStyles.colorGrey}
                     />
-                </View>
+                </TouchableDebounce>
             </View>
         );
     };
 
-    renderReserveRate = () => {
+    renderReservePanel = () => {
         const { account, reorderEnabled, discreetMode } = this.props;
-        const { showFiatPanel, currencyRate, isLoadingRate } = this.state;
+        const { showRate, showReservePanel, currencyRate, isLoadingRate } = this.state;
 
         // show fiat panel
-        if (!showFiatPanel || reorderEnabled) {
+        if (!showReservePanel || reorderEnabled) {
             return null;
         }
 
-        let totalReserve = '0';
-        let balanceFiat = '0';
+        let totalReserve: number;
+        let prefix: string;
 
-        if (discreetMode) {
-            balanceFiat = '••••••••';
-            totalReserve = '••';
+        const accountReserve = CalculateTotalReserve(account);
+
+        if (showRate && currencyRate) {
+            totalReserve = Number(accountReserve) * Number(currencyRate.lastRate);
+            prefix = `${currencyRate.symbol} `;
         } else {
-            totalReserve = String(CalculateTotalReserve(account));
-
-            if (currencyRate) {
-                const availableBalance = CalculateAvailableBalance(account, false);
-                balanceFiat = `${currencyRate.symbol} ${Localize.formatNumber(
-                    Number(availableBalance) * Number(currencyRate.lastRate),
-                    2,
-                )}`;
-            }
+            totalReserve = accountReserve;
+            prefix = 'x ';
         }
 
         return (
@@ -206,23 +214,19 @@ class NativeItem extends PureComponent<Props, State> {
                     </View>
                     <View style={styles.reserveTextContainer}>
                         <Text numberOfLines={1} style={styles.reserveTextLabel}>
-                            {Localize.t('home.xrpReserved', { reserve: totalReserve })}
+                            {Localize.t('home.xrpReserved')}
                         </Text>
                     </View>
                 </View>
-                <View
-                    style={[
-                        AppStyles.flex1,
-                        AppStyles.row,
-                        AppStyles.centerContent,
-                        AppStyles.centerAligned,
-                        AppStyles.flexEnd,
-                    ]}
-                >
-                    <TextPlaceholder isLoading={isLoadingRate} style={styles.fiatAmountText}>
-                        {balanceFiat}
-                    </TextPlaceholder>
-                </View>
+                <TouchableDebounce activeOpacity={0.7} style={styles.rightContainer} onPress={this.toggleBalance}>
+                    <AmountText
+                        discreet={discreetMode}
+                        value={totalReserve}
+                        prefix={prefix}
+                        isLoading={isLoadingRate}
+                        style={styles.reserveTextValue}
+                    />
+                </TouchableDebounce>
             </View>
         );
     };
@@ -236,7 +240,7 @@ class NativeItem extends PureComponent<Props, State> {
                 activeOpacity={0.7}
             >
                 {this.renderBalance()}
-                {this.renderReserveRate()}
+                {this.renderReservePanel()}
             </TouchableDebounce>
         );
     }
