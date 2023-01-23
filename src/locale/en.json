@@ -317,6 +317,8 @@
     "moreInfo": "More Info",
     "loading": "Loading",
     "verify": "Verify",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
     "xAppWantsToOpenURLNotice": "'%{xapp}' xApp wants to open this URL:\r\n\r\n%{url}",
     "customNodeSuccessfullyAddedToXUMM": "Custom node successfully added to XUMM. Do you want to switch to the added node?",
     "addingCustomNodeWarning": "You are adding a custom node to XUMM, do you want to continue?",
@@ -325,9 +327,8 @@
     "createPaymentRequestLink": "Create Payment Request link",
     "transactionFeeIsNotSet": "Transaction fee is not set, please wait until transaction fee is set and try again!",
     "unableToSetAccountSequence": "Unable to set account Sequence, please check that you are connected to the internet.",
-    "unableToGetLastClosedLedger": "Unable to get last closed ledger, please check you are connected to the internet.",
-    "deposit": "Deposit",
-    "withdraw": "Withdraw"
+    "unableToGetLastClosedLedger": "Unable to get last closed ledger, please check you are connected to the internet."
+
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",
@@ -962,6 +963,7 @@
     "findingPaymentOptions": "Finding payment options",
     "paymentOptionsExpired": "Payment options expired",
     "findNewPaymentOptions": "Find new payment options",
-    "noPaymentOptionsFound": "No payment options found"
+    "noPaymentOptionsFound": "No payment options found",
+    "unableToFindTheOfferObject": "Unable to find the offer object!"
   }
 }
