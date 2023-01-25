@@ -267,8 +267,8 @@ class AuthenticationService {
     };
     /**
      * Authenticate with passcode
-     * @param  {string} passcode clear string passcode
-     * @returns string encrypted passcode
+     * @param  {string} passcode clear passcode
+     * @returns string hashed passcode
      */
     authenticatePasscode = (passcode: string): Promise<string> => {
         /* eslint-disable-next-line */
@@ -285,15 +285,15 @@ class AuthenticationService {
                 return;
             }
 
-            // get encrypted passcode from clear passcode
-            const encryptedPasscode = await CoreRepository.encryptPasscode(passcode);
+            // calculate quick hash to compare passcode's
+            const hashedPasscode = await CoreRepository.hashPasscode(passcode);
 
-            // check if passcode is correct
-            if (encryptedPasscode === coreSettings.passcode) {
+            // check if entered passcode is correct
+            if (hashedPasscode === coreSettings.passcode) {
                 // reset block timers and set status to unlocked
                 await this.onSuccessAuthentication(realTime);
                 // resolve
-                resolve(encryptedPasscode);
+                resolve(hashedPasscode);
                 return;
             }
 

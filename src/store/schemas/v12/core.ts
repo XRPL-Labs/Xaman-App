@@ -10,7 +10,7 @@ class Core extends Realm.Object {
         name: 'Core',
         properties: {
             initialized: { type: 'bool', default: false }, // user initialized the app
-            passcode: 'string?', // encrypted passcode
+            passcode: 'string?', // hashed passcode
             minutesAutoLock: { type: 'int', default: 1 }, // auto lock time in minutes
             lastPasscodeFailedTimestamp: 'int?', // last time when passcode failed attempt
             passcodeFailedAttempts: { type: 'int', default: 0 }, // number of passcode failed attempts

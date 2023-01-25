@@ -118,7 +118,7 @@ class CoreRepository extends BaseRepository {
         return undefined;
     };
 
-    encryptPasscode = async (passcode: string): Promise<string> => {
+    hashPasscode = async (passcode: string): Promise<string> => {
         try {
             // for better security we mix passcode with device unique id
             let deviceUniqueId = GetDeviceUniqueId();
@@ -141,10 +141,10 @@ class CoreRepository extends BaseRepository {
             }
 
             // hash the passcode
-            const hashPasscode = await SHA512(passcode);
-            const encPasscode = await HMAC256(hashPasscode, deviceUniqueId);
+            const sha512Passcode = await SHA512(passcode);
+            const hashPasscode = await HMAC256(sha512Passcode, deviceUniqueId);
 
-            return encPasscode;
+            return hashPasscode;
         } catch (e) {
             return '';
         }
@@ -152,17 +152,17 @@ class CoreRepository extends BaseRepository {
 
     setPasscode = async (passcode: string): Promise<string> => {
         try {
-            const encryptedPasscode = await this.encryptPasscode(passcode);
+            const hashedPasscode = await this.hashPasscode(passcode);
 
-            // unable to encrypt passcode
-            if (!encryptedPasscode) {
+            // unable to hash the passcode
+            if (!hashedPasscode) {
                 return '';
             }
 
             // save in the store
-            this.saveSettings({ passcode: encryptedPasscode });
+            this.saveSettings({ passcode: hashedPasscode });
 
-            return encryptedPasscode;
+            return hashedPasscode;
         } catch (e) {
             return '';
         }

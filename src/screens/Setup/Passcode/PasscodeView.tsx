@@ -76,14 +76,14 @@ class PasscodeSetupView extends Component<Props, State> {
                 isLoading: true,
             });
 
-            // encrypt/save passcode
-            const encryptedPasscode = await CoreRepository.setPasscode(passcode);
+            // hash/save passcode
+            const hashedPasscode = await CoreRepository.setPasscode(passcode);
 
             // reload the core settings
             const coreSettings = CoreRepository.getSettings();
 
             // check if passcode is saved correctly
-            if (!encryptedPasscode || !coreSettings || coreSettings.passcode !== encryptedPasscode) {
+            if (!hashedPasscode || !coreSettings || coreSettings.passcode !== hashedPasscode) {
                 Alert.alert(Localize.t('global.error'), Localize.t('setupPasscode.UnableToStoreThePasscode'));
                 return;
             }

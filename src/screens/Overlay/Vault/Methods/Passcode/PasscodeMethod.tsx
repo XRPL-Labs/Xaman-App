@@ -140,10 +140,10 @@ class PasscodeMethod extends Component<Props, State> {
         sign(AuthMethods.BIOMETRIC, { encryptionKey: passcode });
     };
 
-    onSuccessPasscodeAuthenticate = (encryptedPasscode: string) => {
+    onSuccessPasscodeAuthenticate = (hashedPasscode: string) => {
         const { sign } = this.context;
 
-        sign(AuthMethods.PIN, { encryptionKey: encryptedPasscode });
+        sign(AuthMethods.PIN, { encryptionKey: hashedPasscode });
     };
 
     requestBiometricAuthenticate = (system?: boolean) => {
