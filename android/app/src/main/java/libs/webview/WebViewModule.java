@@ -10,7 +10,6 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.util.Pair;
@@ -204,7 +203,7 @@ public class WebViewModule extends ReactContextBaseJavaModule implements Activit
         }
 
         // we have one file selected
-        if (data.getData() != null && resultCode == RESULT_OK && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (data.getData() != null && resultCode == RESULT_OK) {
             return WebChromeClient.FileChooserParams.parseResult(resultCode, data);
         }
 
@@ -239,7 +238,6 @@ public class WebViewModule extends ReactContextBaseJavaModule implements Activit
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean startPhotoPickerIntent(final ValueCallback<Uri[]> callback, final String[] acceptTypes, final boolean allowMultiple) {
         filePathCallback = callback;
 

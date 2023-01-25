@@ -1,7 +1,6 @@
 package libs.webview;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,7 +11,6 @@ import android.graphics.Bitmap;
 
 import android.net.http.SslError;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
@@ -45,7 +43,6 @@ import android.webkit.WebViewClient;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 
@@ -94,7 +91,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -180,7 +176,6 @@ public class WebViewManager extends SimpleViewManager<WebView> {
         return new RNCWebView(reactContext);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected WebView createViewInstance(ThemedReactContext reactContext) {
         RNCWebView webView = createRNCWebViewInstance(reactContext);
@@ -207,7 +202,10 @@ public class WebViewManager extends SimpleViewManager<WebView> {
         settings.setLoadWithOverviewMode(true);
         settings.setMediaPlaybackRequiresUserGesture(true);
 
+        // disable mix content
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+
+        // disable cache
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
         // enable cookie for third party website
@@ -219,10 +217,9 @@ public class WebViewManager extends SimpleViewManager<WebView> {
         // Fixes broken full-screen modals/galleries due to body height being 0.
         webView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-        // enable debug when build is debug
-        if (ReactBuildConfig.DEBUG) {
-            WebView.setWebContentsDebuggingEnabled(true);
-        }
+        // Clear cache and history in case of not been cleared
+        webView.clearCache(true);
+        webView.clearHistory();
 
         return webView;
     }
@@ -438,7 +435,7 @@ public class WebViewManager extends SimpleViewManager<WebView> {
     public void onDropViewInstance(WebView webView) {
         super.onDropViewInstance(webView);
         ((ThemedReactContext) webView.getContext()).removeLifecycleEventListener((RNCWebView) webView);
-        ((RNCWebView) webView).cleanupCallbacksAndDestroy();
+        ((RNCWebView) webView).cleanupAndDestroy();
         mWebChromeClient = null;
     }
 
@@ -578,7 +575,6 @@ public class WebViewManager extends SimpleViewManager<WebView> {
             }
         }
 
-        @TargetApi(Build.VERSION_CODES.N)
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             final String url = request.getUrl().toString();
@@ -651,8 +647,7 @@ public class WebViewManager extends SimpleViewManager<WebView> {
                 String description,
                 String failingUrl) {
 
-            if (ignoreErrFailedForThisURL != null
-                    && failingUrl.equals(ignoreErrFailedForThisURL)
+            if (failingUrl.equals(ignoreErrFailedForThisURL)
                     && errorCode == -1
                     && description.equals("net::ERR_FAILED")) {
 
@@ -681,7 +676,6 @@ public class WebViewManager extends SimpleViewManager<WebView> {
                     new TopLoadingErrorEvent(webView.getId(), eventData));
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onReceivedHttpError(
                 WebView webView,
@@ -700,13 +694,9 @@ public class WebViewManager extends SimpleViewManager<WebView> {
             }
         }
 
-        @TargetApi(Build.VERSION_CODES.O)
         @Override
         public boolean onRenderProcessGone(WebView webView, RenderProcessGoneDetail detail) {
             // WebViewClient.onRenderProcessGone was added in O.
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                return false;
-            }
             super.onRenderProcessGone(webView, detail);
 
             if (detail.didCrash()) {
@@ -761,7 +751,6 @@ public class WebViewManager extends SimpleViewManager<WebView> {
     }
 
     protected static class RNCWebChromeClient extends WebChromeClient implements LifecycleEventListener {
-        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         protected static final int FULLSCREEN_SYSTEM_UI_VISIBILITY = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
@@ -841,7 +830,6 @@ public class WebViewManager extends SimpleViewManager<WebView> {
                             event));
         }
 
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onPermissionRequest(final PermissionRequest request) {
 
@@ -962,7 +950,6 @@ public class WebViewManager extends SimpleViewManager<WebView> {
             pendingPermissions.clear();
         }
 
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         private PermissionListener webviewPermissionsListener = (requestCode, permissions, grantResults) -> {
 
             permissionsRequestShown = false;
@@ -1021,7 +1008,6 @@ public class WebViewManager extends SimpleViewManager<WebView> {
             getModule(mReactContext).startPhotoPickerIntent(filePathCallback, acceptType);
         }
 
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
             String[] acceptTypes = fileChooserParams.getAcceptTypes();
@@ -1080,7 +1066,6 @@ public class WebViewManager extends SimpleViewManager<WebView> {
      * to call {@link WebView#destroy} on activity destroy event and also to clear the client
      */
     protected static class RNCWebView extends WebView implements LifecycleEventListener {
-        protected boolean messagingEnabled = false;
         protected @Nullable String messagingModuleName;
         protected @Nullable RNCWebViewClient mRNCWebViewClient;
         protected @Nullable WebChromeClient mWebChromeClient;
@@ -1090,7 +1075,6 @@ public class WebViewManager extends SimpleViewManager<WebView> {
         protected boolean hasScrollEvent = false;
         protected boolean nestedScrollEnabled = false;
         protected ProgressChangedFilter progressChangedFilter;
-        private static final int IME_FLAG_NO_PERSONALIZED_LEARNING = 0x1000000;
 
         /**
          * WebView must be created with an context of the current activity
@@ -1121,12 +1105,7 @@ public class WebViewManager extends SimpleViewManager<WebView> {
                 inputConnection = super.onCreateInputConnection(outAttrs);
             } else {
                 inputConnection = new BaseInputConnection(this, false);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    outAttrs.imeOptions = EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING;
-                } else {
-                    // Cover OS versions below Oreo
-                    outAttrs.imeOptions = IME_FLAG_NO_PERSONALIZED_LEARNING;
-                }
+                outAttrs.imeOptions = EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING;
             }
 
             return inputConnection;
@@ -1163,7 +1142,7 @@ public class WebViewManager extends SimpleViewManager<WebView> {
 
         @Override
         public void onHostDestroy() {
-            cleanupCallbacksAndDestroy();
+            cleanupAndDestroy();
         }
 
         @Override
@@ -1236,25 +1215,21 @@ public class WebViewManager extends SimpleViewManager<WebView> {
         }
 
         public void onMessage(String message) {
-            ReactContext reactContext = (ReactContext) this.getContext();
             RNCWebView mContext = this;
 
             if (mRNCWebViewClient != null) {
                 WebView webView = this;
-                webView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mRNCWebViewClient == null) {
-                            return;
-                        }
-                        WritableMap data = mRNCWebViewClient.createWebViewEvent(webView, webView.getUrl());
-                        data.putString("data", message);
+                webView.post(() -> {
+                    if (mRNCWebViewClient == null) {
+                        return;
+                    }
+                    WritableMap data = mRNCWebViewClient.createWebViewEvent(webView, webView.getUrl());
+                    data.putString("data", message);
 
-                        if (mCatalystInstance != null) {
-                            mContext.sendDirectMessage("onMessage", data);
-                        } else {
-                            dispatchEvent(webView, new TopMessageEvent(webView.getId(), data));
-                        }
+                    if (mCatalystInstance != null) {
+                        mContext.sendDirectMessage("onMessage", data);
+                    } else {
+                        dispatchEvent(webView, new TopMessageEvent(webView.getId(), data));
                     }
                 });
             } else {
@@ -1314,8 +1289,15 @@ public class WebViewManager extends SimpleViewManager<WebView> {
             eventDispatcher.dispatchEvent(event);
         }
 
-        protected void cleanupCallbacksAndDestroy() {
+        protected void cleanupAndDestroy() {
+            // clear cache and history
+            clearCache(true);
+            clearHistory();
+
+            // clear clients
             setWebViewClient(null);
+
+            // destroy
             destroy();
         }
 
