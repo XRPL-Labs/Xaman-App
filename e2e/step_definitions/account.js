@@ -1,6 +1,6 @@
 const assert = require('assert');
 const { Given, Then } = require('cucumber');
-const { element, by } = require('detox');
+const { element, by, waitFor } = require('detox');
 
 const {
     activateAccount,
@@ -104,8 +104,24 @@ Then('I enter my mnemonic', async () => {
 });
 
 Then('I tap my account in the list', async () => {
-    await waitFor(element(by.id(`account-${this.address}`)))
-        .toBeVisible()
-        .withTimeout(5000);
+    // swipe up until we see the account in the list
+    let isElementVisible = false;
+
+    while (!isElementVisible) {
+        try {
+            await waitFor(element(by.id(`account-${this.address}`)))
+                .toBeVisible()
+                .withTimeout(200);
+
+            isElementVisible = true;
+        } catch {
+            // ignore
+        }
+
+        if (!isElementVisible) {
+            await element(by.id('account-list-scroll')).swipe('up', 'slow', 0.2);
+        }
+    }
+
     await element(by.id(`account-${this.address}`)).tap();
 });

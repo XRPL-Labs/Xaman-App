@@ -109,7 +109,7 @@ Then('I wait {int} sec and then bring the app to foreground', async (delay) => {
 });
 
 Then('I launch the app with url {string}', async (url) => {
-    await device.relaunchApp({ url });
+    await device.launchApp({ newInstance: true, url });
 });
 
 Then('I open the url {string}', async (url) => {

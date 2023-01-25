@@ -28,7 +28,6 @@ Feature: Upgrade Account
         Given I should have 'settings-tab-screen'
         Then I tap 'accounts-button'
         Given I should have 'accounts-list-screen'
-        Then I scroll 'account-list-scroll' to bottom
         Then I tap my account in the list
         Given I should have 'account-settings-screen'
         Then I tap 'account-access-level-button'
@@ -54,6 +53,7 @@ Feature: Upgrade Account
     Scenario: Add a asset
         Then I tap 'add-token-button'
         Given I should have 'add-asset-overlay'
+        Then I tap 'counterParty-Bitstamp'
         Given I should wait 10 sec to see 'add-and-sign-button'
         Then I tap 'add-and-sign-button'
         Given I should have 'review-transaction-modal'
@@ -74,7 +74,6 @@ Feature: Upgrade Account
         Given I should have 'settings-tab-screen'
         Then I tap 'accounts-button'
         Given I should have 'accounts-list-screen'
-        Then I scroll 'account-list-scroll' to bottom
         Then I tap my account in the list
         Given I should have 'account-settings-screen'
         Then I tap 'account-access-level-button'
@@ -85,11 +84,10 @@ Feature: Upgrade Account
         Given I should see 'Read only' in 'account-access-level-value'
         Then I tap 'back-button'
         Given I should have 'accounts-list-screen'
-        Then I scroll 'account-list-scroll' to top
         Given I should see 'add-account-button'
         Then I tap 'add-account-button'
         Given I should see 'account-add-screen'
-        
+
         Then I tap 'account-import-button'
         Given I should see 'account-import-access-level-view'
         Then I tap 'next-button'

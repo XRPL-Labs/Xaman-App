@@ -194,8 +194,6 @@ class CellComponent extends PureComponent<Props> {
         return (
             <Animated.View
                 ref={this.itemRef}
-                /* eslint-disable-next-line react/jsx-props-no-spreading */
-                {...this.props}
                 style={[
                     styles.item,
                     {

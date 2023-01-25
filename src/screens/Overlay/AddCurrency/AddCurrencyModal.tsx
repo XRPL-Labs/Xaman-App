@@ -248,6 +248,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
             return (
                 <TouchableDebounce
+                    testID={`counterParty-${c.name}`}
                     key={index}
                     style={[styles.listItem, selected && styles.selectedRow]}
                     onPress={() => {

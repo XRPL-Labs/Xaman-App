@@ -67,8 +67,8 @@
     "babel-plugin-rewrite-require": "1.14.5",
     "babel-plugin-transform-remove-console": "6.9.4",
     "coveralls": "3.1.1",
-    "cucumber": "6.0.5",
-    "detox": "19.7.1",
+    "cucumber": "6.0.7",
+    "detox": "20.1.2",
     "eslint": "8.10.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-airbnb-base": "15.0.0",
@@ -92,39 +92,5 @@
     "react-test-renderer": "18.1.0",
     "ts-jest": "29.0.3",
     "typescript": "4.8.4"
-  },
-  "detox": {
-    "configurations": {
-      "ios.sim.debug": {
-        "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/XUMM.app",
-        "build": "xcodebuild -workspace ios/XUMM.xcworkspace -scheme XUMM -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build",
-        "type": "ios.simulator",
-        "device": {
-          "type": "iPhone 13 Pro Max",
-          "os": "iOS 15.4"
-        }
-      },
-      "ios.sim.release": {
-        "binaryPath": "ios/build/Build/Products/Release-iphonesimulator/XUMM.app",
-        "build": "xcodebuild -workspace ios/XUMM.xcworkspace -scheme XUMM -configuration Release -sdk iphonesimulator -derivedDataPath ios/build",
-        "type": "ios.simulator",
-        "device": {
-          "type": "iPhone 13 Pro Max",
-          "os": "iOS 15.4"
-        }
-      },
-      "android.emu.debug": {
-        "binaryPath": "android/app/build/outputs/apk/debug/app-debug.apk",
-        "build": "cd android && ./gradlew app:assembleDebug app:assembleAndroidTest -DtestBuildType=debug && cd ..",
-        "type": "android.emulator",
-        "name": "Nexus_5X_API_28"
-      },
-      "android.emu.release": {
-        "binaryPath": "android/app/build/outputs/apk/release/app-release.apk",
-        "build": "cd android && ./gradlew app:assembleRelease app:assembleAndroidTest -DtestBuildType=release && cd ..",
-        "type": "android.emulator",
-        "name": "Nexus_5X_API_28"
-      }
-    }
   }
 }

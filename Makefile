@@ -161,7 +161,7 @@ test: | pre-run validate-style ## Runs tests
 test-e2e: ## Runs e2e tests
 	@yarn detox clean-framework-cache
 	@yarn detox build-framework-cache
-	@yarn cucumber-js ./e2e --configuration ios.sim.debug --cleanup
+	@yarn cucumber-js ./e2e --configuration ios.sim.debug
 
 generate-locales: ## Generates app locales
 	@node scripts/generate-locales.js
