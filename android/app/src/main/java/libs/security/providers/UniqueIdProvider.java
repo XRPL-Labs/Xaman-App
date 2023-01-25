@@ -9,20 +9,25 @@ import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 
+import java.util.Map;
+import java.util.Objects;
+
 import libs.security.crypto.Crypto;
+import libs.security.vault.storage.Keychain;
 
 public class UniqueIdProvider {
-    private static final String UNIQUE_DEVICE_ID_KEY = "device_unique_id";
-    private static final String UNIQUE_ID_KEY = "unique_id";
+    private static final String UNIQUE_DEVICE_ID_KEY = "device-unique-id";
 
-    private Context reactContext;
+    private Context applicationContent;
+    private Keychain keychain;
 
     public synchronized UniqueIdProvider init(final ReactApplicationContext context) {
         if (context == null) {
             throw new IllegalArgumentException("Context is required");
         }
 
-        reactContext = context.getApplicationContext();
+        applicationContent = context.getApplicationContext();
+        keychain = new Keychain(context);
 
         return this;
     }
@@ -42,17 +47,26 @@ public class UniqueIdProvider {
     }
 
 
-    private static void saveDeviceUniqueId(Context context, String unique_id) {
-        context.getSharedPreferences(UNIQUE_DEVICE_ID_KEY, Context.MODE_PRIVATE)
-                .edit()
-                .putString(UNIQUE_ID_KEY, unique_id)
-                .apply();
+    private void saveDeviceUniqueId(String unique_id) {
+        try{
+            keychain.setItem(UNIQUE_DEVICE_ID_KEY, "", unique_id);
+        } catch (Exception e) {
+            // ignore
+        }
     }
 
     @Nullable
-    private static String loadDeviceUniqueId(Context context) {
-        return context.getSharedPreferences(UNIQUE_DEVICE_ID_KEY, Context.MODE_PRIVATE)
-                .getString(UNIQUE_ID_KEY, null);
+    private  String loadDeviceUniqueId() {
+        try{
+            Map<String, String> item = keychain.getItem(UNIQUE_DEVICE_ID_KEY);
+
+            if (item != null) {
+                return Objects.requireNonNull(item.get("password"));
+            }
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Nullable
@@ -78,16 +92,16 @@ public class UniqueIdProvider {
     @Nullable
     public synchronized String getDeviceUniqueId() {
         // check if context is already initiated
-        if (reactContext == null) {
+        if (applicationContent == null) {
             throw new RuntimeException("Context is required");
         }
 
-        // look for device unique id in the SharedPreferences
-        String unique_id = loadDeviceUniqueId(reactContext);
+        // look for device unique id in the Keychain
+        String unique_id = loadDeviceUniqueId();
 
-        // if empty then get the unique id from Settings.Secure.ANDROID_ID and save
+        // if empty then get the unique id from Settings.Secure.ANDROID_ID and store in keychain
         if (TextUtils.isEmpty(unique_id)) {
-            unique_id = getAndroidId(reactContext);
+            unique_id = getAndroidId(applicationContent);
 
             // check we got the right values
             if (unique_id == null || unique_id.equalsIgnoreCase("android_id")) {
@@ -95,7 +109,7 @@ public class UniqueIdProvider {
             }
 
             // store the android_id in SharedPreferences
-            saveDeviceUniqueId(reactContext, unique_id);
+            saveDeviceUniqueId(unique_id);
         }
 
        return unique_id;
