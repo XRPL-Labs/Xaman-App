@@ -23,6 +23,7 @@
 		A22A151E28C20014001A632E /* V2+AesGcm.m in Sources */ = {isa = PBXBuildFile; fileRef = A22A151D28C20014001A632E /* V2+AesGcm.m */; };
 		A22A152028C61E97001A632E /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = A22A151F28C61E97001A632E /* Crypto.swift */; };
 		A248635D28229379004633C9 /* BiometricModule.m in Sources */ = {isa = PBXBuildFile; fileRef = A248635C28229379004633C9 /* BiometricModule.m */; };
+		A2771FC229828E33008A95E3 /* security.txt in Resources */ = {isa = PBXBuildFile; fileRef = A2771FC129828E33008A95E3 /* security.txt */; };
 		A2805CE224D1982400B5552E /* LocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = A2805CE124D1982400B5552E /* LocalNotification.m */; };
 		A28BA8A6282409B600109CC8 /* SecurityProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = A28BA8A5282409B600109CC8 /* SecurityProvider.m */; };
 		A2A9F31428858F45009AE778 /* BlurViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2A9F31328858F45009AE778 /* BlurViewManager.m */; };
@@ -108,6 +109,7 @@
 		A22A151F28C61E97001A632E /* Crypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Crypto.swift; sourceTree = "<group>"; };
 		A248635C28229379004633C9 /* BiometricModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BiometricModule.m; sourceTree = "<group>"; };
 		A248635E2822939E004633C9 /* BiometricModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BiometricModule.h; sourceTree = "<group>"; };
+		A2771FC129828E33008A95E3 /* security.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = security.txt; sourceTree = "<group>"; };
 		A2805CE124D1982400B5552E /* LocalNotification.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocalNotification.m; sourceTree = "<group>"; };
 		A2805CE324D1984700B5552E /* LocalNotification.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocalNotification.h; sourceTree = "<group>"; };
 		A28BA8A5282409B600109CC8 /* SecurityProvider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SecurityProvider.m; sourceTree = "<group>"; };
@@ -225,6 +227,7 @@
 		13B07FAE1A68108700A75B9A /* XUMM */ = {
 			isa = PBXGroup;
 			children = (
+				A2771FC129828E33008A95E3 /* security.txt */,
 				A2B145CC243F734600E952B6 /* XUMM.entitlements */,
 				A2AFF109243E79C30007005E /* Fonts */,
 				A2AFF116243E79C30007005E /* GoogleService-Info.plist */,
@@ -639,6 +642,7 @@
 			files = (
 				A2AFF12E243E79C30007005E /* Proxima Nova Alt Thin.otf in Resources */,
 				A2AFF132243E79C30007005E /* UbuntuMono-RegularItalic.ttf in Resources */,
+				A2771FC229828E33008A95E3 /* security.txt in Resources */,
 				A2AFF13A243E79C30007005E /* GoogleService-Info.plist in Resources */,
 				A2B145CB243E935F00E952B6 /* LaunchScreen.storyboard in Resources */,
 				A2AFF133243E79C30007005E /* Proxima Nova Extrabold.otf in Resources */,

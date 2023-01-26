@@ -1,0 +1,4 @@
+Contact: https://support.xumm.app/hc/en-us/requests/new
+Expires: 2025-01-26T21:00:00.000Z
+Preferred-Languages: en
+Policy: https://github.com/XRPL-Labs/XUMM-Issue-Tracker/blob/master/RESPONSIBLE-DISCLOSURE.md
