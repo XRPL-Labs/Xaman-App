@@ -186,6 +186,7 @@ public class WebViewManager extends SimpleViewManager<WebView> {
         WebSettings settings = webView.getSettings();
 
         settings.setSaveFormData(false);
+        settings.setSavePassword(false);
         settings.setAllowFileAccess(false);
         settings.setGeolocationEnabled(false);
         settings.setAllowContentAccess(false);
@@ -217,9 +218,13 @@ public class WebViewManager extends SimpleViewManager<WebView> {
         // Fixes broken full-screen modals/galleries due to body height being 0.
         webView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-        // Clear cache and history in case of not been cleared
+        // clear cache / history / form data in case of not being cleared
         webView.clearCache(true);
         webView.clearHistory();
+        webView.clearFormData();
+
+        // Clear all stored cookies
+        CookieManager.getInstance().removeAllCookies(null);
 
         return webView;
     }
@@ -1290,9 +1295,13 @@ public class WebViewManager extends SimpleViewManager<WebView> {
         }
 
         protected void cleanupAndDestroy() {
-            // clear cache and history
+            // clear cache / history / form data
             clearCache(true);
             clearHistory();
+            clearFormData();
+
+            // clear all stored cookies
+            CookieManager.getInstance().removeAllCookies(null);
 
             // clear clients
             setWebViewClient(null);
