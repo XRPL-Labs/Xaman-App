@@ -152,17 +152,19 @@ class ThirdPartyAppsView extends Component<Props, State> {
             <ImageBackground
                 source={StyleService.getImage('BackgroundShapes')}
                 imageStyle={AppStyles.BackgroundShapes}
-                style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerAligned]}
+                style={[AppStyles.flex1, AppStyles.centerContent]}
             >
-                <Icon size={130} name="IconInfo" style={{ tintColor: StyleService.value('$silver') }} />
-                <Spacer size={50} />
-                <Text style={[AppStyles.pbold, AppStyles.textCenterAligned]}>
-                    {Localize.t('settings.noAuthorizedThirdPartyApp')}
-                </Text>
-                <Spacer />
-                <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
-                    {Localize.t('settings.onceYouAuthorizedAppYouWillSeeItHere')}
-                </Text>
+                <View style={[AppStyles.centerAligned, AppStyles.paddingSml]}>
+                    <Icon size={130} name="IconInfo" style={{ tintColor: StyleService.value('$silver') }} />
+                    <Spacer size={50} />
+                    <Text style={[AppStyles.pbold, AppStyles.textCenterAligned]}>
+                        {Localize.t('settings.noAuthorizedThirdPartyApp')}
+                    </Text>
+                    <Spacer />
+                    <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
+                        {Localize.t('settings.onceYouAuthorizedAppYouWillSeeItHere')}
+                    </Text>
+                </View>
             </ImageBackground>
         );
     };
@@ -181,7 +183,7 @@ class ThirdPartyAppsView extends Component<Props, State> {
                 />
                 <FlatList
                     style={[AppStyles.flex1, AppStyles.stretchSelf]}
-                    contentContainerStyle={[AppStyles.flex1, AppStyles.paddingRight, AppStyles.paddingLeft]}
+                    contentContainerStyle={styles.scrollContainer}
                     data={thirdPartyApps}
                     refreshing={isLoading}
                     renderItem={this.renderItem}

@@ -5,12 +5,16 @@ import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    scrollContainer: {
+        flexGrow: 1,
+        paddingBottom: AppSizes.padding,
+    },
     rowContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: AppSizes.paddingExtraSml,
-        paddingBottom: AppSizes.paddingExtraSml,
+        paddingVertical: AppSizes.paddingExtraSml,
+        paddingHorizontal: AppSizes.padding,
     },
     rowLabel: {
         fontFamily: AppFonts.base.familyBold,
