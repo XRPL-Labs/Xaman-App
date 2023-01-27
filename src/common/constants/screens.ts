@@ -82,6 +82,10 @@ const screens = {
         Node: {
             List: 'app.Settings.Node.List',
         },
+        ThirdPartyApps: {
+            List: 'app.Settings.ThirdPartyApps.List',
+            Edit: 'app.Settings.ThirdPartyApps.Edit',
+        },
         SessionLog: 'app.Settings.SessionLog',
         General: 'app.Settings.General',
         Advanced: 'app.Settings.Advanced',

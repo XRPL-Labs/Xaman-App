@@ -282,6 +282,20 @@ class BackendService {
     };
 
     /*
+    Get list of third party apps permissions
+    */
+    getThirdPartyApps = () => {
+        return ApiService.thirdPartyApps.get();
+    };
+
+    /*
+    Revoke third party app permission
+    */
+    revokeThirdPartyPermission = (appId: string) => {
+        return ApiService.thirdPartyApp.delete({ appId });
+    };
+
+    /*
     Report submitted transaction for security checks
     */
     addTransaction = (hash: string, node: string, nodeType: string) => {

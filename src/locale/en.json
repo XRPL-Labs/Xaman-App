@@ -110,6 +110,7 @@
     "hour": "hour",
     "hours": "hours",
     "day": "day",
+    "days": "days",
     "week": "week",
     "autoLock": "Auto lock",
     "suggested": "Suggested",
@@ -319,6 +320,12 @@
     "verify": "Verify",
     "deposit": "Deposit",
     "withdraw": "Withdraw",
+    "permission": "Permission",
+    "grants": "Grants",
+    "website": "Website",
+    "privacyPolicy": "Privacy policy",
+    "termsAndConditions": "Terms & conditions",
+    "support": "Support",
     "xAppWantsToOpenURLNotice": "'%{xapp}' xApp wants to open this URL:\r\n\r\n%{url}",
     "customNodeSuccessfullyAddedToXUMM": "Custom node successfully added to XUMM. Do you want to switch to the added node?",
     "addingCustomNodeWarning": "You are adding a custom node to XUMM, do you want to continue?",
@@ -327,7 +334,8 @@
     "createPaymentRequestLink": "Create Payment Request link",
     "transactionFeeIsNotSet": "Transaction fee is not set, please wait until transaction fee is set and try again!",
     "unableToSetAccountSequence": "Unable to set account Sequence, please check that you are connected to the internet.",
-    "unableToGetLastClosedLedger": "Unable to get last closed ledger, please check you are connected to the internet."
+    "unableToGetLastClosedLedger": "Unable to get last closed ledger, please check you are connected to the internet.",
+    "unableToOpenUrl": "Unable to open URL: %{url}"
 
   },
   "onboarding": {
@@ -626,7 +634,19 @@
     "lightThemeDescription": "Fresh and bright",
     "darkThemeDescription": "Deep dark",
     "moonlightThemeDescription": "A touch of moon",
-    "royalThemeDescription": "Royal blue"
+    "royalThemeDescription": "Royal blue",
+    "thirdPartyApps": "Third party apps",
+    "accessExpires": "Access expires",
+    "accessDuration": "Access duration",
+    "accessGranted": "Access granted",
+    "seeAddress": "See r-address",
+    "sendPushNotifications": "Send push notifications (through Xumm)",
+    "developerInformation": "Developer information",
+    "revokeAccess": "Revoke access",
+    "areYouSureYouWantRevokeAccess": "Are you sure you want to revoke access to %{appName}",
+    "unableToRevokeAppAccess": "An unexpected error occurred! Unable to revoke app access.",
+    "noAuthorizedThirdPartyApp": "No authorized third party app!",
+    "onceYouAuthorizedAppYouWillSeeItHere": "Once you authorize access to a third party app you'll see them here."
   },
   "account": {
     "addAccount": "Add an account",

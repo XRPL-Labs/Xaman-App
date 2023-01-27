@@ -152,4 +152,5 @@ export const Images = {
     IconPro: buildImageSource('IconPro', 'icon_pro'),
     IconCoins: buildImageSource('IconCoins', 'icon_coins'),
     IconWallet: buildImageSource('IconWallet', 'icon_wallet'),
+    IconToggleRight: buildImageSource('IconToggleRight', 'icon_toggle_right'),
 };

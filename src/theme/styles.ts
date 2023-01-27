@@ -473,8 +473,6 @@ export default StyleService.create({
 
     // Empty view
     emptyIcon: {
-        // width: Sizes.screen.width * 0.3,
-        // height: Sizes.screen.width * 0.3,
         resizeMode: 'contain',
         width: Sizes.scale(140),
         height: Sizes.scale(140),

@@ -71,6 +71,10 @@ import EditContact from './Settings/AddressBook/Edit';
 // node
 import NodeList from './Settings/Advanced/Node';
 
+// third party apps
+import ThirdPartyAppsList from './Settings/ThirdPartyApps';
+import EditThirdPartyApp from './Settings/ThirdPartyApps/Edit';
+
 // settings
 import GeneralSettings from './Settings/General';
 import AdvancedSettings from './Settings/Advanced';
@@ -159,8 +163,11 @@ export {
     SecuritySettings,
     TermOfUse,
     Credits,
-    //
+    // change passcode
     ChangePasscode,
+    // third party apps
+    ThirdPartyAppsList,
+    EditThirdPartyApp,
     // nodes
     NodeList,
     // session logs

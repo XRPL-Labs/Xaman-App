@@ -33,5 +33,7 @@ export default {
         ['auditTrail', '/v1/app/audit-trail/{destination}'],
         ['addAccount', '/v1/app/add-account'],
         ['addTransaction', '/v1/app/add-tx'],
+        ['thirdPartyApps', '/v1/app/third-party-permissions'],
+        ['thirdPartyApp', '/v1/app/third-party-permissions/{appId}'],
     ]),
 };
