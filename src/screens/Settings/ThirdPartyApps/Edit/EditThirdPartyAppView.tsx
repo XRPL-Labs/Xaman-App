@@ -72,6 +72,9 @@ class EditThirdPartyAppView extends Component<Props, State> {
                         AppScreens.Modal.XAppBrowser,
                         {
                             identifier: report,
+                            params: {
+                                appId: app.id,
+                            },
                         },
                         {
                             modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
