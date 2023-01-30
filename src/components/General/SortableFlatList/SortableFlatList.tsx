@@ -48,7 +48,7 @@ export default class SortableFlatList extends Component<Props, State> {
     private activeItem: CellComponent;
     private listRef: React.RefObject<FlatList>;
 
-    private scaleRecoveryTimeout: NodeJS.Timeout;
+    private scaleRecoveryTimeout: ReturnType<typeof setTimeout>;
     private panResponder: PanResponderInstance;
     private isMovePanResponder: boolean;
     private isActiveItemMoved: boolean;
@@ -57,7 +57,7 @@ export default class SortableFlatList extends Component<Props, State> {
     private currentScrollOffset: number;
     private currentAutoScrollDy: number;
     private currentAutoScrollChanges: number;
-    private autoScrollInterval: NodeJS.Timeout;
+    private autoScrollInterval: ReturnType<typeof setTimeout>;
     private currentAutoScrollState: AutoScrollState;
 
     static defaultProps = {

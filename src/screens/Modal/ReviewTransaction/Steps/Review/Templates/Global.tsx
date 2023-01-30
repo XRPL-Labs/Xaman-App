@@ -11,12 +11,9 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { Capitalize } from '@common/utils/string';
 
-import { Payload } from '@common/libs/payload';
-
 import { TransactionTypes } from '@common/libs/ledger/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import { Amount } from '@common/libs/ledger/parser/common';
-import { Transactions } from '@common/libs/ledger/transactions/types';
 
 import { AccountRepository } from '@store/repositories';
 
@@ -29,14 +26,9 @@ import Localize from '@locale';
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+import { TemplateProps } from './types';
 /* types ==================================================================== */
-export interface Props {
-    transaction: Transactions;
-    payload: Payload;
-    setLoading: (loading: boolean) => void;
-    setReady: (ready: boolean) => void;
-    forceRender: () => void;
-}
+export interface Props extends TemplateProps {}
 
 export interface State {
     availableFees: FeeItem[];

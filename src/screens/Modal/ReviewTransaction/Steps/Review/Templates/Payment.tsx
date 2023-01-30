@@ -5,10 +5,7 @@ import { View, Alert, Text, TouchableOpacity, InteractionManager } from 'react-n
 
 import { BackendService, LedgerService, StyleService } from '@services';
 
-import { AccountSchema } from '@store/schemas/latest';
 import { CoreRepository } from '@store/repositories';
-
-import { Payload } from '@common/libs/payload';
 
 import LedgerExchange, { MarketDirection } from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
@@ -29,14 +26,11 @@ import Localize from '@locale';
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+import { TemplateProps } from './types';
+
 /* types ==================================================================== */
-export interface Props {
-    source: AccountSchema;
-    payload: Payload;
+export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: Payment;
-    setLoading: (loading: boolean) => void;
-    setReady: (ready: boolean) => void;
-    forceRender: () => void;
 }
 
 export interface State {

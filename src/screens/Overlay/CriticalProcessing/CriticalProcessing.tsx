@@ -35,7 +35,7 @@ const LONG_LAST_TASK_TIMEOUT_SEC = 5000; // set long lasting process after five 
 class CriticalProcessing extends Component<Props, State> {
     static screenName = AppScreens.Overlay.CriticalProcessing;
 
-    private longTaskTimeout: NodeJS.Timeout;
+    private longTaskTimeout: ReturnType<typeof setTimeout>;
     private backHandler: NativeEventSubscription;
     private animateScale: Animated.Value;
     private animateFade: Animated.Value;

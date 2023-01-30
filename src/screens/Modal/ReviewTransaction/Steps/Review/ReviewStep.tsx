@@ -172,17 +172,19 @@ class ReviewStep extends Component<Props, State> {
     renderDetails = () => {
         const { payload, transaction, source, setLoading, setReady } = this.context;
 
-        // if tx is SignIn ignore to show details
+        // if it's a  SignIn payload ignore to show details as it's a pseudo transaction
         if (payload.isSignIn()) {
             return null;
         }
 
-        const Template = get(Templates, payload.getTransactionType(), View);
+        // TODO: better typescript handling
+        const Template = get(Templates, payload.getTransactionType());
         const Global = get(Templates, 'Global');
 
         // render transaction details and global variables
         return (
             <>
+                {/* @ts-ignore */}
                 <Template
                     source={source}
                     transaction={transaction}
@@ -192,6 +194,7 @@ class ReviewStep extends Component<Props, State> {
                     setReady={setReady}
                 />
                 <Global
+                    source={source}
                     transaction={transaction}
                     payload={payload}
                     forceRender={this.forceRender}

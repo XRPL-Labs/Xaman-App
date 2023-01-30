@@ -6,8 +6,6 @@ import {
     ViewProps,
     StyleProp,
     ViewStyle,
-    NativeMethodsMixin,
-    Constructor,
     UIManagerStatic,
     NativeScrollEvent,
 } from 'react-native';
@@ -53,12 +51,12 @@ export type State = NormalState | ErrorState;
 
 // eslint-disable-next-line react/prefer-stateless-function
 declare class NativeWebViewIOSComponent extends Component<IOSNativeWebViewProps> {}
-declare const NativeWebViewIOSBase: Constructor<NativeMethodsMixin> & typeof NativeWebViewIOSComponent;
+declare const NativeWebViewIOSBase: typeof NativeWebViewIOSComponent;
 export class NativeWebViewIOS extends NativeWebViewIOSBase {}
 
 // eslint-disable-next-line react/prefer-stateless-function
 declare class NativeWebViewAndroidComponent extends Component<AndroidNativeWebViewProps> {}
-declare const NativeWebViewAndroidBase: Constructor<NativeMethodsMixin> & typeof NativeWebViewAndroidComponent;
+declare const NativeWebViewAndroidBase: typeof NativeWebViewAndroidComponent;
 export class NativeWebViewAndroid extends NativeWebViewAndroidBase {}
 
 export interface WebViewNativeEvent {

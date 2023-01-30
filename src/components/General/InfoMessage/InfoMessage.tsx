@@ -20,6 +20,7 @@ import styles from './styles';
 /* Types ==================================================================== */
 
 interface Props {
+    children?: React.ReactNode;
     containerStyle?: ViewStyle | ViewStyle[];
     labelStyle?: TextStyle | TextStyle[];
     icon?: Extract<keyof typeof Images, string>;

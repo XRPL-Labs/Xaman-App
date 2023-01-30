@@ -3,7 +3,6 @@ import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo
 import { Image, View, NativeModules, ImageSourcePropType } from 'react-native';
 
 import BatchedBridge from 'react-native/Libraries/BatchedBridge/BatchedBridge';
-// @ts-expect-error react-native doesn't have this type
 import codegenNativeCommandsUntyped from 'react-native/Libraries/Utilities/codegenNativeCommands';
 
 import invariant from './invariant';
@@ -14,6 +13,7 @@ import { AndroidWebViewProps, NativeWebViewAndroid } from './WebViewTypes';
 
 import styles from './styles';
 
+// @ts-expect-error react-native doesn't have this type
 const codegenNativeCommands = codegenNativeCommandsUntyped as <T extends {}>(options: {
     supportedCommands: (keyof T)[];
 }) => T;

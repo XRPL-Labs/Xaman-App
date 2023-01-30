@@ -6,6 +6,7 @@ import { TouchableDebounce } from '@components/General/TouchableDebounce';
 import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
+    children: React.ReactNode;
     isLoading: boolean;
     style: TextStyle | TextStyle[];
     onPress?: () => void;

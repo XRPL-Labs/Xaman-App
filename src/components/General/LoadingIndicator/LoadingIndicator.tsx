@@ -17,7 +17,7 @@ interface Props {
 }
 
 /* Component ==================================================================== */
-const LoadingIndicator: React.SFC<Props> = ({ color = 'default', size = 'small', style }) => (
+const LoadingIndicator: React.FC<Props> = ({ color = 'default', size = 'small', style }) => (
     <ActivityIndicator
         size={size}
         animating

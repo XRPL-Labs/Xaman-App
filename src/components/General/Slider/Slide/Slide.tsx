@@ -6,6 +6,7 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
+    children: React.ReactNode;
     progress?: Animated.Value;
 }
 

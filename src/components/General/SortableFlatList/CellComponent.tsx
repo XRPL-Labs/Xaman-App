@@ -10,6 +10,7 @@ const LONG_PRESS_DELAY = 400;
 
 /* Types ==================================================================== */
 export interface Props {
+    children: React.ReactNode;
     testID: string;
     cellHeight: number;
     separatorHeight: number;

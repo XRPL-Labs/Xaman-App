@@ -10,8 +10,10 @@ import Localize from '@locale';
 import NFTokenOfferTemplate from './objects/NFTokenOffer';
 
 import styles from './styles';
+
+import { TemplateProps } from './types';
 /* types ==================================================================== */
-export interface Props {
+export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: NFTokenAcceptOffer;
 }
 

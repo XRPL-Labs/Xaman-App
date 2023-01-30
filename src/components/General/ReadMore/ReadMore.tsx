@@ -17,6 +17,7 @@ import styles from './styles';
 /* Types ==================================================================== */
 
 interface Props {
+    children: React.ReactNode;
     numberOfLines: number;
     textStyle: TextStyle | Array<TextStyle>;
 }

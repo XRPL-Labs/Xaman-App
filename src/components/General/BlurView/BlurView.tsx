@@ -5,6 +5,7 @@ const NativeBlurView: any = requireNativeComponent('BlurView');
 
 /* Types ==================================================================== */
 interface Props {
+    children: React.ReactNode;
     blurType?: 'xlight' | 'light' | 'dark';
     blurAmount?: number;
     style?: ViewStyle | ViewStyle[];

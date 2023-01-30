@@ -32,8 +32,8 @@ const EXPIRE_AFTER_SECS = 60000; // seconds to expire the options
 
 /* Class ==================================================================== */
 class LedgerPathFinding extends EventEmitter {
-    private resolveTimeout: NodeJS.Timeout;
-    private expireTimeout: NodeJS.Timeout;
+    private resolveTimeout: ReturnType<typeof setTimeout>;
+    private expireTimeout: ReturnType<typeof setTimeout>;
 
     private requestId: string;
     private requestPromise: RequestPromise;

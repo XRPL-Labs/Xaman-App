@@ -217,11 +217,14 @@ class SecretNumberInput extends Component<Props, State> {
         if (currentRow === rowsNumber) return;
 
         const currentValue = get(secretNumbers, `[${currentRow}][${currentColumn}]`);
-        if (currentValue + 1 > 9) {
-            // loop
-            this.setValue(currentRow, currentColumn, 0);
-        } else {
-            this.setValue(currentRow, currentColumn, currentValue + 1);
+
+        if (typeof currentValue !== 'undefined') {
+            if (currentValue + 1 > 9) {
+                // loop
+                this.setValue(currentRow, currentColumn, 0);
+            } else {
+                this.setValue(currentRow, currentColumn, currentValue + 1);
+            }
         }
     };
 
@@ -231,11 +234,14 @@ class SecretNumberInput extends Component<Props, State> {
         if (currentRow === rowsNumber) return;
 
         const currentValue = get(secretNumbers, `[${currentRow}][${currentColumn}]`);
-        if (currentValue - 1 < 0) {
-            // loop
-            this.setValue(currentRow, currentColumn, 9);
-        } else {
-            this.setValue(currentRow, currentColumn, currentValue - 1);
+
+        if (typeof currentValue !== 'undefined') {
+            if (currentValue - 1 < 0) {
+                // loop
+                this.setValue(currentRow, currentColumn, 9);
+            } else {
+                this.setValue(currentRow, currentColumn, currentValue - 1);
+            }
         }
     };
 

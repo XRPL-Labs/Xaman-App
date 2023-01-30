@@ -30,7 +30,7 @@ const getInitials = (label: string) => {
     return avatarName;
 };
 /* Component ==================================================================== */
-const TextAvatar: React.SFC<Props> = ({ label }) => (
+const TextAvatar: React.FC<Props> = ({ label }) => (
     <View style={[styles.container]}>
         <Text style={[styles.text]}>{getInitials(label)}</Text>
     </View>

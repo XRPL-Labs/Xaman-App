@@ -1,7 +1,6 @@
 import React, { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 import { Image, View, NativeModules, ImageSourcePropType } from 'react-native';
 
-// @ts-expect-error react-native doesn't have this type
 import codegenNativeCommandsUntyped from 'react-native/Libraries/Utilities/codegenNativeCommands';
 
 import invariant from './invariant';
@@ -11,6 +10,7 @@ import { IOSWebViewProps, NativeWebViewIOS, ViewManager } from './WebViewTypes';
 
 import styles from './styles';
 
+// @ts-expect-error react-native doesn't have this type
 const codegenNativeCommands = codegenNativeCommandsUntyped as <T extends {}>(options: {
     supportedCommands: (keyof T)[];
 }) => T;

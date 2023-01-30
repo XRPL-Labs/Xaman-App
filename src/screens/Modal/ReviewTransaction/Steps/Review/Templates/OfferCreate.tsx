@@ -22,8 +22,9 @@ import Localize from '@locale';
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+import { TemplateProps } from './types';
 /* types ==================================================================== */
-export interface Props {
+export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: OfferCreate;
     source: AccountSchema;
 }
