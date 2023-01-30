@@ -1,8 +1,6 @@
 #import "AppDelegate.h"
 
-#import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
-#import <React/RCTRootView.h>
 #import <React/RCTLinkingManager.h>
 
 #import <Firebase.h>
@@ -33,17 +31,17 @@
   // bootstrap rnn
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   [ReactNativeNavigation bootstrapWithBridge:bridge];
-  
+
   // init firebase app
   if ([FIRApp defaultApp] == nil) {
     [FIRApp configure];
   }
-  
+
   // bootstrap local notification and Biometric module
   [LocalNotificationModule initialise];
   [BiometricModule initialise];
-  
-  
+
+
   return YES;
 }
 
@@ -62,31 +60,31 @@
 
 // hide snapshot in task switcher
 - (void)applicationWillResignActive:(UIApplication *)application {
-  
-  
+
+
   // ignore if user is authenticating with biometric
   if([BiometricModule isUserAuthenticating]){
     return;
   }
 
-  
+
   NSPredicate *isKeyWindow = [NSPredicate predicateWithFormat:@"isKeyWindow == YES"];
   UIWindow *topWindow = [[[UIApplication sharedApplication] windows] filteredArrayUsingPredicate:isKeyWindow].firstObject;
-  
+
   UIViewController *rootViewController = topWindow.rootViewController;
   UIViewController *currentViewController = rootViewController;
-  
+
   if ([rootViewController presentedViewController]) {
     currentViewController = [rootViewController presentedViewController];
   }
-  
+
   if(![NSStringFromClass([currentViewController class]) hasPrefix:@"RNN"]){
     return;
   }
-  
+
   UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
   UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-  
+
   blurEffectView.frame = topWindow.frame;
   blurEffectView.tag = 0xDEADBEEF;
   blurEffectView.alpha = 0;

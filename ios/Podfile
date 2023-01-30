@@ -2,11 +2,18 @@ require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 platform :ios, '13.0'
-install! 'cocoapods', :deterministic_uuids => false
+prepare_react_native_project!
 
 # no-ad-tracking Analytics subspec as we do not use it at all
 $RNFirebaseAnalyticsWithoutAdIdSupport = true
 $RNFirebaseAsStaticFramework = true
+
+
+linkage = ENV['USE_FRAMEWORKS']
+if linkage != nil
+  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+  use_frameworks! :linkage => linkage.to_sym
+end
 
 target 'XUMM' do
   config = use_native_modules!
