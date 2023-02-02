@@ -155,7 +155,10 @@ class ResultStep extends Component<Props, State> {
                         {payload.isSignIn() ? (
                             <View key="applicationDetails" style={[AppStyles.centerAligned, AppStyles.paddingVertical]}>
                                 <Avatar size={70} border source={{ uri: payload.getApplicationIcon() }} />
-                                <Text style={styles.appTitle}>{payload.getApplicationName()}</Text>
+                                {/* eslint-disable-next-line react-native/no-inline-styles */}
+                                <Text style={[styles.appTitle, { marginBottom: 0 }]}>
+                                    {payload.getApplicationName()}
+                                </Text>
                             </View>
                         ) : (
                             transaction.Hash && (
