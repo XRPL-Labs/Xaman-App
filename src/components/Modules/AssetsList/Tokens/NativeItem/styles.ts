@@ -52,6 +52,11 @@ export default StyleService.create({
         alignItems: 'center',
         paddingRight: 10,
     },
+    reserveCurrencyAvatarContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingRight: 7,
+    },
     reserveTextContainer: {
         flexDirection: 'column',
         justifyContent: 'center',

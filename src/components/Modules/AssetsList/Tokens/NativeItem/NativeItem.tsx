@@ -145,6 +145,14 @@ class NativeItem extends PureComponent<Props, State> {
         );
     };
 
+    getReserveCurrencyAvatar = () => {
+        return (
+            <View style={styles.reserveCurrencyAvatarContainer}>
+                <Icon size={8} style={AppStyles.imgColorGrey} name="IconXrp" />
+            </View>
+        );
+    };
+
     renderBalance = () => {
         const { account, discreetMode } = this.props;
         const { showRate, currencyRate, isLoadingRate } = this.state;
@@ -197,7 +205,7 @@ class NativeItem extends PureComponent<Props, State> {
         }
 
         let totalReserve: number;
-        let prefix: string;
+        let prefix: any;
 
         const accountReserve = CalculateTotalReserve(account);
 
@@ -206,7 +214,7 @@ class NativeItem extends PureComponent<Props, State> {
             prefix = `${currencyRate.symbol} `;
         } else {
             totalReserve = accountReserve;
-            prefix = 'x ';
+            prefix = this.getReserveCurrencyAvatar;
         }
 
         return (
