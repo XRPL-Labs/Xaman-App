@@ -363,6 +363,10 @@ class BackendService {
         return ApiService.translation.get({ uuid });
     };
 
+    getXLS20Details = (account: string, tokens: string[]) => {
+        return ApiService.xls20Details.post(null, { account, tokens });
+    };
+
     getCurrencyRate = (currency: string) => {
         return new Promise((resolve, reject) => {
             // prevent unnecessary requests

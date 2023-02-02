@@ -35,5 +35,6 @@ export default {
         ['addTransaction', '/v1/app/add-tx'],
         ['thirdPartyApps', '/v1/app/third-party-permissions'],
         ['thirdPartyApp', '/v1/app/third-party-permissions/{appId}'],
+        ['xls20Details', '/v1/app/xls20-details'],
     ]),
 };

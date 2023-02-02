@@ -56,6 +56,7 @@ import SelectCurrency from './Overlay/SelectCurrency';
 import SelectFee from './Overlay/SelectFee';
 import HomeActions from './Overlay/HomeActions';
 import PassphraseAuthentication from './Overlay/PassphraseAuthentication';
+import SwitchAssetCategory from './Overlay/SwitchAssetCategory';
 
 // Transaction
 import Send from './Send';
@@ -148,6 +149,7 @@ export {
     SelectFee,
     HomeActions,
     PassphraseAuthentication,
+    SwitchAssetCategory,
     // transaction
     Send,
     Request,

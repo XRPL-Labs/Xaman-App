@@ -160,6 +160,19 @@ export interface LedgerTrustline {
 }
 
 /**
+ * Ledger nft type
+ */
+export interface LedgerNFToken {
+    Flags: number;
+    Issuer: string;
+    NFTokenID: string;
+    NFTokenTaxon: number;
+    TransferFee: number;
+    URI: string;
+    nft_serial: number;
+}
+
+/**
  * Ledger account_lines response
  */
 export type AccountLinesResponse = {
@@ -170,6 +183,14 @@ export type AccountLinesResponse = {
     ledger_hash?: string;
     marker?: string;
 };
+
+export interface AccountNFTsResponse {
+    account: string;
+    account_nfts: LedgerNFToken[];
+    ledger_hash?: string;
+    ledger_index?: number;
+    marker?: string;
+}
 
 /**
  * Ledger gateway_balances response

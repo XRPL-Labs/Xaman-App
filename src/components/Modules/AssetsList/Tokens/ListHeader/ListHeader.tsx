@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { View, Text } from 'react-native';
 
-import { Button } from '@components/General';
+import { Button, TouchableDebounce, Icon } from '@components/General';
 
 import Localize from '@locale';
 
@@ -11,18 +11,23 @@ import styles from './styles';
 /* Types ==================================================================== */
 interface Props {
     reorderEnabled: boolean;
-    showAddButton: boolean;
-    onAddPress: () => void;
+    showTokenAddButton: boolean;
+    onTokenAddPress: () => void;
     onReorderSavePress: () => void;
+    onTitlePress: () => void;
 }
+
+// interface State {
+//     category:
+// }
 
 /* Component ==================================================================== */
 class ListHeader extends PureComponent<Props> {
     onAddPress = () => {
-        const { onAddPress } = this.props;
+        const { onTokenAddPress } = this.props;
 
-        if (typeof onAddPress === 'function') {
-            onAddPress();
+        if (typeof onTokenAddPress === 'function') {
+            onTokenAddPress();
         }
     };
 
@@ -34,8 +39,16 @@ class ListHeader extends PureComponent<Props> {
         }
     };
 
+    onTitlePress = () => {
+        const { onTitlePress } = this.props;
+
+        if (typeof onTitlePress === 'function') {
+            onTitlePress();
+        }
+    };
+
     renderButtons = () => {
-        const { showAddButton, reorderEnabled } = this.props;
+        const { showTokenAddButton, reorderEnabled } = this.props;
 
         if (reorderEnabled) {
             return (
@@ -47,12 +60,12 @@ class ListHeader extends PureComponent<Props> {
                     onPress={this.onReorderSavePress}
                     icon="IconCheck"
                     iconSize={19}
-                    style={[AppStyles.rightSelf]}
+                    style={AppStyles.rightSelf}
                 />
             );
         }
 
-        if (showAddButton) {
+        if (showTokenAddButton) {
             return (
                 <Button
                     secondary
@@ -63,7 +76,7 @@ class ListHeader extends PureComponent<Props> {
                     onPress={this.onAddPress}
                     icon="IconPlus"
                     iconSize={19}
-                    style={[AppStyles.rightSelf]}
+                    style={AppStyles.rightSelf}
                 />
             );
         }
@@ -71,16 +84,25 @@ class ListHeader extends PureComponent<Props> {
         return null;
     };
 
+    renderTitle = () => {
+        return (
+            <TouchableDebounce
+                style={[AppStyles.row, AppStyles.flex5, AppStyles.centerAligned]}
+                onPress={this.onTitlePress}
+            >
+                <Text numberOfLines={1} style={styles.tokenText}>
+                    {Localize.t('global.assets')}
+                </Text>
+                <Icon name="IconChevronDown" size={22} style={styles.pickerIcon} />
+            </TouchableDebounce>
+        );
+    };
+
     render() {
         return (
-            <View style={[styles.container]}>
-                <View style={[AppStyles.row, AppStyles.flex5, AppStyles.centerAligned]}>
-                    <Text numberOfLines={1} style={[styles.tokenText]}>
-                        {Localize.t('global.assets')}
-                    </Text>
-                </View>
-
-                <View style={[AppStyles.flex5]}>{this.renderButtons()}</View>
+            <View style={styles.container}>
+                {this.renderTitle()}
+                <View style={AppStyles.flex5}>{this.renderButtons()}</View>
             </View>
         );
     }

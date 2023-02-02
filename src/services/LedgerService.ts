@@ -22,6 +22,8 @@ import {
     LedgerEntryResponse,
     RippleStateLedgerEntry,
     LedgerEntriesTypes,
+    AccountNFTsResponse,
+    LedgerNFToken,
 } from '@common/libs/ledger/types';
 
 import { Issuer } from '@common/libs/ledger/parser/types';
@@ -202,18 +204,23 @@ class LedgerService extends EventEmitter {
     };
 
     /**
-     * Get account NFTs
+     * Get account XLS20 NFTs
      */
-    getAccountNFTs = (account: string, marker?: string, limit?: number) => {
+    getAccountNFTs = (account: string, marker?: string, combined = [] as LedgerNFToken[]): Promise<LedgerNFToken[]> => {
         const request = {
             command: 'account_nfts',
             account,
-            limit: limit || 200,
         };
         if (marker) {
             Object.assign(request, { marker });
         }
-        return SocketService.send(request);
+        return SocketService.send(request).then((resp: AccountNFTsResponse) => {
+            const { account_nfts, marker: _marker } = resp;
+            if (_marker && _marker !== marker) {
+                return this.getAccountNFTs(account, _marker, account_nfts.concat(combined));
+            }
+            return account_nfts.concat(combined);
+        });
     };
 
     /**

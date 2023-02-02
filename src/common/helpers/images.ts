@@ -52,6 +52,8 @@ export const Images = {
     ImageSuccessCheckMark: buildImageSource('ImageSuccessCheckMark', 'image_success_check_mark'),
     ImageProfilePro: buildImageSource('ImageProfilePro', 'image_profile_pro'),
     ImageEncryptionMigration: buildImageSource('ImageEncryptionMigration', 'image_encryption_migration'),
+    ImageBlankNFT: buildImageSource('ImageBlankNFT', 'image_blank_nft'),
+    ImageBlankNFTLight: buildImageSource('ImageBlankNFTLight', 'image_blank_nft_light'),
     // Xumm
     XummLogo: buildImageSource('XummLogo', 'xumm_logo'),
     XummLogoLight: buildImageSource('XummLogoLight', 'xumm_logo_light'),
@@ -124,6 +126,7 @@ export const Images = {
     IconFingerprint: buildImageSource('IconFingerprint', 'icon_fingerprint'),
     IconThumbsUp: buildImageSource('IconThumbsUp', 'icon_thumbs_up'),
     IconLink: buildImageSource('IconLink', 'icon_link'),
+    IconExternalLink: buildImageSource('IconExternalLink', 'icon_external_link'),
     IconHelpCircle: buildImageSource('IconHelpCircle', 'icon_help_circle'),
     IconSend: buildImageSource('IconSend', 'icon_send'),
     IconStar: buildImageSource('IconStar', 'icon_star'),

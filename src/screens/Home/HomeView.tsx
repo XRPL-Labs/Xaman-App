@@ -7,12 +7,12 @@ import { find, has } from 'lodash';
 import React, { Component, Fragment } from 'react';
 import { View, Text, Image, ImageBackground, InteractionManager, Alert } from 'react-native';
 
-import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
+import { Navigation } from 'react-native-navigation';
 
 import { AccountService, SocketService, StyleService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
+import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 
 // constants
 import { AppScreens } from '@common/constants';
@@ -24,7 +24,7 @@ import Localize from '@locale';
 
 // components
 import { TouchableDebounce, Button, RaisedButton, Icon, Badge } from '@components/General';
-import { ProBadge, InactiveAccount, TokenList } from '@components/Modules';
+import { ProBadge, InactiveAccount, AssetsList } from '@components/Modules';
 
 // style
 import { AppStyles, AppFonts } from '@theme';
@@ -218,40 +218,6 @@ class HomeView extends Component<Props, State> {
         }
     };
 
-    showCurrencyOptions = (trustLine: TrustLineSchema) => {
-        const { account } = this.state;
-
-        Navigator.showOverlay(
-            AppScreens.Overlay.CurrencySettings,
-            { trustLine, account },
-            {
-                overlay: {
-                    interceptTouchOutside: false,
-                },
-            },
-        );
-    };
-
-    showNFTDetails = (trustLine: TrustLineSchema) => {
-        const { account } = this.state;
-
-        Navigator.showModal(
-            AppScreens.Modal.XAppBrowser,
-            {
-                identifier: 'xumm.nft-info',
-                account,
-                params: {
-                    issuer: trustLine.currency.issuer,
-                    token: trustLine.currency.currency,
-                },
-            },
-            {
-                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-            },
-        );
-    };
-
     toggleDiscreetMode = () => {
         const { discreetMode } = this.state;
 
@@ -299,20 +265,6 @@ class HomeView extends Component<Props, State> {
 
     pushSendScreen = () => {
         Navigator.push(AppScreens.Transaction.Payment);
-    };
-
-    onTokenPress = (line: TrustLineSchema) => {
-        const { isSpendable } = this.state;
-
-        if (!line) {
-            return;
-        }
-
-        if (isSpendable) {
-            this.showCurrencyOptions(line);
-        } else if (line.isNFT) {
-            this.showNFTDetails(line);
-        }
     };
 
     onSwitchButtonPress = () => {
@@ -373,14 +325,12 @@ class HomeView extends Component<Props, State> {
         }
 
         return (
-            <TokenList
-                key={`TokenList_${timestamp}`}
-                testID="token-list-container"
-                style={styles.tokenListContainer}
+            <AssetsList
                 account={account}
-                onTokenPress={this.onTokenPress}
                 discreetMode={discreetMode}
-                readonly={!isSpendable}
+                spendable={isSpendable}
+                timestamp={timestamp}
+                style={styles.tokenListContainer}
             />
         );
     };

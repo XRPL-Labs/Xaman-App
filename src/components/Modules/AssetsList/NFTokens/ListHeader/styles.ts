@@ -10,22 +10,15 @@ export default StyleService.create({
         paddingHorizontal: AppSizes.paddingSml,
         backgroundColor: '$background',
     },
-    explainContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingLeft: 6,
-    },
-    explainText: {
-        fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.subtext.size * 0.9,
-        color: '$grey',
-        textAlign: 'center',
-        paddingLeft: 3,
-    },
     tokenText: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.h5.size,
         color: '$textPrimary',
         textAlign: 'center',
+    },
+    pickerIcon: {
+        tintColor: '$contrast',
+        marginLeft: 3,
+        marginTop: 4,
     },
 });

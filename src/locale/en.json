@@ -46,6 +46,7 @@
     "continue": "Continue",
     "code": "Code",
     "copy": "Copy",
+    "select": "Select",
     "selected": "Selected",
     "share": "Share",
     "status": "Status",
@@ -326,6 +327,7 @@
     "privacyPolicy": "Privacy policy",
     "termsAndConditions": "Terms & conditions",
     "support": "Support",
+    "nft": "NFT",
     "xAppWantsToOpenURLNotice": "'%{xapp}' xApp wants to open this URL:\r\n\r\n%{url}",
     "customNodeSuccessfullyAddedToXUMM": "Custom node successfully added to XUMM. Do you want to switch to the added node?",
     "addingCustomNodeWarning": "You are adding a custom node to XUMM, do you want to continue?",
@@ -403,6 +405,7 @@
     "whatAreOtherAssets": "What are other (non-XRP) tokens?",
     "otherAssets": "Other tokens",
     "youDonNotHaveOtherAssets": "You have no other (non-XRP) tokens",
+    "youDonNotHaveNFTokens": "You have no NFT tokens",
     "activateYourAccount": "Activate your account",
     "howActivateMyAccount": "How can I activate my account?",
     "howActivateMyAccountDesc": "To prevent spam account creation, the XRP Ledger requires at least %{baseReserve} XRP to be deposited into an account to activate it. The %{baseReserve} XRP is not lost: it will remain in your account, but you cannot spend it. To start using your account, make sure a deposit greater than %{baseReserve} XRP is made to your account.",
@@ -827,7 +830,8 @@
     "updateEncryption": "Update encryption",
     "whyUseThisNewEncryptionMethod": "Why use this new encryption method?",
     "newEncryptionExplain": "Our encryption & security is enhanced to new standards AES512 GCM. You should encrypt your account with this new method to be extra safe. Although you are already safe, it can't hurt to upgrade to the new standards.",
-    "doNotTurnOffYourPhoneOrQuiteWhileMigration": "Don't turn off your phone or quit the app while doing the encryption."
+    "doNotTurnOffYourPhoneOrQuiteWhileMigration": "Don't turn off your phone or quit the app while doing the encryption.",
+    "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
     "amountIsBiggerThanYourSpend": "This amount is bigger than what you can spend (%{spendable})",

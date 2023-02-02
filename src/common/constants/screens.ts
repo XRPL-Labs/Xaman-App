@@ -66,6 +66,7 @@ const screens = {
         HomeActions: 'overlay.HomeActions',
         CriticalProcessing: 'overlay.CriticalProcessing',
         PassphraseAuthentication: 'overlay.PassphraseAuthentication',
+        SwitchAssetCategory: 'overlay.SwitchAssetCategory',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',

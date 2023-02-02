@@ -12,22 +12,22 @@ import { Navigator } from '@common/helpers/navigator';
 import { TrustLineRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
-import { TokenItem } from '@components/Modules/TokenList/TokenItem';
-import { NativeItem } from '@components/Modules/TokenList/NativeItem';
-import { ListHeader } from '@components/Modules/TokenList/ListHeader';
-import { ListEmpty } from '@components/Modules/TokenList/ListEmpty';
-import { ListFilter, FiltersType } from '@components/Modules/TokenList/ListFilter';
-
 import { SortableFlatList } from '@components/General';
+
+import { TokenItem } from '@components/Modules/AssetsList/Tokens/TokenItem';
+import { NativeItem } from '@components/Modules/AssetsList/Tokens/NativeItem';
+import { ListHeader } from '@components/Modules/AssetsList/Tokens/ListHeader';
+import { ListEmpty } from '@components/Modules/AssetsList/Tokens/ListEmpty';
+import { ListFilter, FiltersType } from '@components/Modules/AssetsList/Tokens/ListFilter';
 
 /* Types ==================================================================== */
 interface Props {
-    testID?: string;
-    style: ViewStyle | ViewStyle[];
+    style?: ViewStyle | ViewStyle[];
     account: AccountSchema;
     discreetMode: boolean;
-    readonly?: boolean;
-    onTokenPress: (token: TrustLineSchema) => void;
+    spendable: boolean;
+
+    onChangeCategoryPress: () => void;
 }
 
 interface State {
@@ -40,17 +40,19 @@ interface State {
 }
 
 /* Component ==================================================================== */
-class TokenList extends Component<Props, State> {
+class TokensList extends Component<Props, State> {
     private readonly dragSortableRef: React.RefObject<SortableFlatList>;
 
     constructor(props: Props) {
         super(props);
 
-        const tokens = props.account.lines.sorted([['order', false]]);
+        const { account } = props;
+        const tokens = [...account.lines.sorted([['order', false]])];
+        const accountStateHash = TokensList.getAccountStateHash(account);
 
         this.state = {
-            accountStateHash: TokenList.getAccountStateHash(props.account),
-            account: props.account,
+            accountStateHash,
+            account,
             tokens,
             dataSource: tokens,
             filters: undefined,
@@ -72,11 +74,11 @@ class TokenList extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
-        const { discreetMode, readonly } = this.props;
+        const { discreetMode, spendable } = this.props;
         const { accountStateHash, reorderEnabled, filters } = this.state;
 
         return (
-            !isEqual(nextProps.readonly, readonly) ||
+            !isEqual(nextProps.spendable, spendable) ||
             !isEqual(nextProps.discreetMode, discreetMode) ||
             !isEqual(nextState.accountStateHash, accountStateHash) ||
             !isEqual(nextState.reorderEnabled, reorderEnabled) ||
@@ -97,7 +99,7 @@ class TokenList extends Component<Props, State> {
 
     static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
         // calculate account state hash
-        const accountStateHash = TokenList.getAccountStateHash(nextProps.account);
+        const accountStateHash = TokensList.getAccountStateHash(nextProps.account);
 
         // on switch account or data update replace the dataSource and account
         // check if prev account is not valid anymore
@@ -121,8 +123,8 @@ class TokenList extends Component<Props, State> {
             const { filters, reorderEnabled } = filtersState;
 
             // update tokens and dataSource
-            const tokens = nextProps.account.lines.sorted([['order', false]]);
-            let dataSource = filters ? TokenList.getFilteredList(tokens, filters) : tokens;
+            const tokens = [...nextProps.account.lines.sorted([['order', false]])];
+            let dataSource = filters ? TokensList.getFilteredList(tokens, filters) : tokens;
 
             // if reorder already enabled, keep the sorting in the dataSource and update the list
             if (reorderEnabled) {
@@ -187,17 +189,30 @@ class TokenList extends Component<Props, State> {
         }
     };
 
+    onTokenAddButtonPress = () => {
+        const { account } = this.state;
+        Navigator.showOverlay(AppScreens.Overlay.AddCurrency, { account });
+    };
+
     onTokenItemPress = (token: TrustLineSchema) => {
-        const { onTokenPress } = this.props;
-        const { reorderEnabled } = this.state;
+        const { spendable } = this.props;
+        const { account, reorderEnabled } = this.state;
 
         // ignore if reordering is enabled
-        if (reorderEnabled) {
+        if (!token || reorderEnabled) {
             return;
         }
 
-        if (onTokenPress && typeof onTokenPress === 'function') {
-            onTokenPress(token);
+        if (spendable) {
+            Navigator.showOverlay(
+                AppScreens.Overlay.CurrencySettings,
+                { trustLine: token, account },
+                {
+                    overlay: {
+                        interceptTouchOutside: false,
+                    },
+                },
+            );
         }
     };
 
@@ -206,9 +221,12 @@ class TokenList extends Component<Props, State> {
         Navigator.showOverlay(AppScreens.Overlay.ExplainBalance, { account });
     };
 
-    onAddButtonPress = () => {
-        const { account } = this.state;
-        Navigator.showOverlay(AppScreens.Overlay.AddCurrency, { account });
+    onCategoryChangePress = () => {
+        const { onChangeCategoryPress } = this.props;
+
+        if (typeof onChangeCategoryPress === 'function') {
+            onChangeCategoryPress();
+        }
     };
 
     toggleReordering = () => {
@@ -282,7 +300,7 @@ class TokenList extends Component<Props, State> {
 
         // sort and update dataSource
         this.setState({
-            dataSource: TokenList.getFilteredList(tokens, filters),
+            dataSource: TokensList.getFilteredList(tokens, filters),
             filters,
         });
     };
@@ -320,16 +338,17 @@ class TokenList extends Component<Props, State> {
     };
 
     render() {
-        const { account, testID, style, readonly, discreetMode } = this.props;
+        const { account, style, spendable, discreetMode } = this.props;
         const { dataSource, reorderEnabled, filters } = this.state;
 
         return (
-            <View testID={testID} style={style}>
+            <View testID="token-list-container" style={style}>
                 <ListHeader
                     reorderEnabled={reorderEnabled}
-                    showAddButton={!readonly}
+                    showTokenAddButton={spendable}
                     onReorderSavePress={this.saveTokensOrder}
-                    onAddPress={this.onAddButtonPress}
+                    onTokenAddPress={this.onTokenAddButtonPress}
+                    onTitlePress={this.onCategoryChangePress}
                 />
                 <ListFilter
                     filters={filters}
@@ -359,4 +378,4 @@ class TokenList extends Component<Props, State> {
     }
 }
 
-export default TokenList;
+export default TokensList;
