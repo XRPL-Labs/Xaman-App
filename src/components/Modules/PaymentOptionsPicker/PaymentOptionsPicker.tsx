@@ -304,7 +304,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
             );
         }
 
-        if (!isLoading && (!localOption || !paymentOptions || paymentOptions.length === 0)) {
+        if (!isLoading && !localOption && (!paymentOptions || paymentOptions.length === 0)) {
             return (
                 <View style={styles.emptyContainer}>
                     <InfoMessage type="neutral" label={Locale.t('payload.noPaymentOptionsFound')} />
