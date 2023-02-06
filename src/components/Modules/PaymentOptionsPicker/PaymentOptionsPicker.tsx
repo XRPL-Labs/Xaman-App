@@ -105,7 +105,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
 
         this.setState({
             isExpired: true,
-            paymentOptions: undefined,
+            paymentOptions: [],
         });
 
         this.onItemSelect(undefined);
@@ -148,7 +148,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
                     const availableBalance = await LedgerService.getAccountAvailableBalance(source);
 
                     if (Number(availableBalance) >= Number(amount.value)) {
-                        localOption = { source_amount: String(availableBalance), paths_computed: [] };
+                        localOption = { source_amount: String(amount.value), paths_computed: [] };
                     }
                 } else {
                     // paying IOU
@@ -238,7 +238,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
                 .catch((error: any) => {
                     if (error.message !== 'CANCELED') {
                         this.setState({
-                            paymentOptions: undefined,
+                            paymentOptions: [],
                         });
                     }
                 })
