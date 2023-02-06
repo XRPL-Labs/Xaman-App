@@ -95,7 +95,7 @@ class EventsView extends Component<Props, State> {
             canLoadMore: true,
             searchText: undefined,
             filters: undefined,
-            sectionIndex: 1,
+            sectionIndex: 0,
             lastMarker: undefined,
             account: AccountRepository.getDefaultAccount(),
             transactions: [],

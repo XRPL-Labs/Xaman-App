@@ -189,6 +189,7 @@ class NativeItem extends PureComponent<Props, State> {
                         discreet={discreetMode}
                         isLoading={isLoadingRate}
                         discreetStyle={AppStyles.colorGrey}
+                        toggleDisabled
                     />
                 </TouchableDebounce>
             </View>
@@ -236,6 +237,7 @@ class NativeItem extends PureComponent<Props, State> {
                         prefix={prefix}
                         isLoading={isLoadingRate}
                         style={styles.reserveTextValue}
+                        toggleDisabled
                     />
                 </TouchableDebounce>
             </View>

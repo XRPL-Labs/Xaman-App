@@ -31,6 +31,7 @@ interface Props {
     discreet?: boolean;
     discreetStyle?: TextStyle | TextStyle[];
     immutable?: boolean;
+    toggleDisabled?: boolean;
     numberOfLines?: number;
 }
 
@@ -321,7 +322,7 @@ class AmountText extends Component<Props, State> {
     };
 
     render() {
-        const { immutable, isLoading } = this.props;
+        const { immutable, isLoading, toggleDisabled } = this.props;
         const { truncated } = this.state;
 
         // if loading show placeholder
@@ -334,7 +335,7 @@ class AmountText extends Component<Props, State> {
             return this.renderImmutableContent();
         }
 
-        const ContainerComponent = truncated ? Pressable : View;
+        const ContainerComponent = truncated && !toggleDisabled ? Pressable : View;
 
         return (
             <ContainerComponent onPress={this.onPress} style={styles.container}>
