@@ -646,6 +646,8 @@
     "accessGranted": "Access granted",
     "seeAddress": "See r-address",
     "sendPushNotifications": "Send push notifications (through Xumm)",
+    "accessBalances": "Access balances",
+    "signOnYourBehalf": "Sign on your behalf",
     "developerInformation": "Developer information",
     "revokeAccess": "Revoke access",
     "areYouSureYouWantRevokeAccess": "Are you sure you want to revoke access to %{appName}",

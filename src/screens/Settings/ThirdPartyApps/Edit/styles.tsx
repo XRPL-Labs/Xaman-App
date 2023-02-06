@@ -15,10 +15,14 @@ const styles = StyleService.create({
     infoRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: AppSizes.paddingExtraSml,
+        paddingVertical: 5,
     },
     checkIcon: {
         tintColor: '$contrast',
+        marginRight: AppSizes.paddingSml,
+    },
+    xIcon: {
+        tintColor: '$red',
         marginRight: AppSizes.paddingSml,
     },
     revokeAccessButton: {

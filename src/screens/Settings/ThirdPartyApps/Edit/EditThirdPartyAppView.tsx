@@ -197,6 +197,14 @@ class EditThirdPartyAppView extends Component<Props, State> {
                         <Icon name="IconCheck" style={styles.checkIcon} />
                         <Text style={AppStyles.subtext}>{Localize.t('settings.sendPushNotifications')}</Text>
                     </View>
+                    <View style={styles.infoRow}>
+                        <Icon name="IconX" style={styles.xIcon} />
+                        <Text style={AppStyles.subtext}>{Localize.t('settings.accessBalances')}</Text>
+                    </View>
+                    <View style={styles.infoRow}>
+                        <Icon name="IconX" style={styles.xIcon} />
+                        <Text style={AppStyles.subtext}>{Localize.t('settings.signOnYourBehalf')}</Text>
+                    </View>
                 </View>
             </>
         );
@@ -297,8 +305,8 @@ class EditThirdPartyAppView extends Component<Props, State> {
                 />
                 <ScrollView style={[AppStyles.flex1, AppStyles.stretchSelf]}>
                     {this.renderDetails()}
-                    {this.renderPermissions()}
                     {this.renderGrants()}
+                    {this.renderPermissions()}
                     {this.renderDeveloperInformation()}
                     {this.renderFooter()}
                 </ScrollView>
