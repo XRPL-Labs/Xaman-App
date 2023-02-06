@@ -409,8 +409,13 @@ class ReviewTransactionModal extends Component<Props, State> {
 
             // show alert if user adding a new trustline
             if (transaction.Type === TransactionTypes.TrustSet) {
-                // check if user is adding the trustline
+                // if the token is not in the vetted list and user is creating new trust line
+                // show the warning
                 if (
+                    !CurrencyRepository.isVettedCurrency({
+                        issuer: transaction.Issuer,
+                        currency: transaction.Currency,
+                    }) &&
                     !AccountRepository.hasCurrency(source, {
                         issuer: transaction.Issuer,
                         currency: transaction.Currency,
