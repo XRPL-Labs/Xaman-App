@@ -566,7 +566,9 @@
     "itRemovesTheAccountRegularKey": "It removes the account regular key",
     "itSetsAccountRegularKeyTo": "It sets the account regular key to %{regularKey}",
     "thisTransactionDoesNotEffectAnyAccountSettings": "This transaction doesn't affect any account settings.",
-    "thisTransactionClearTicket": "This transaction clears (consumes & removes) ticket #%{ticketSequence}"
+    "thisTransactionClearTicket": "This transaction clears (consumes & removes) ticket #%{ticketSequence}",
+    "sellNFToken": "Sell NFT token",
+    "buyNFToken": "Buy NFT token"
   },
   "pro": {
     "proBeta": "Pro Beta",

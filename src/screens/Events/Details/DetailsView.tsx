@@ -106,7 +106,7 @@ class TransactionDetailsView extends Component<Props, State> {
             },
             spendableAccounts: AccountRepository.getSpendableAccounts(),
             balanceChanges: undefined,
-            incomingTx: props.tx?.Account?.address !== props.account.address,
+            incomingTx: props.tx?.Account && props.tx?.Account?.address !== props.account.address,
             scamAlert: false,
             showMemo: true,
             isLoading: !props.tx,
@@ -363,6 +363,11 @@ class TransactionDetailsView extends Component<Props, State> {
                     address = tx.Offer.Owner;
                 }
                 break;
+            case LedgerObjectTypes.NFTokenOffer:
+                if (tx.Destination) {
+                    address = tx.Destination.address;
+                }
+                break;
             default:
                 break;
         }
@@ -539,7 +544,13 @@ class TransactionDetailsView extends Component<Props, State> {
                 return Localize.t('global.check');
             case LedgerObjectTypes.Ticket:
                 return Localize.t('global.ticket');
+            case LedgerObjectTypes.NFTokenOffer:
+                if (tx.Flags?.SellToken) {
+                    return Localize.t('events.sellNFToken');
+                }
+                return Localize.t('events.buyNFToken');
             default:
+                // @ts-ignore
                 return tx.Type;
         }
     };
@@ -636,6 +647,13 @@ class TransactionDetailsView extends Component<Props, State> {
                 Object.assign(transaction, {
                     TransactionType: 'OfferCancel',
                     OfferSequence: tx.Sequence,
+                });
+                break;
+            case 'NFTokenCancelOffer':
+                Object.assign(transaction, {
+                    TransactionType: 'NFTokenCancelOffer',
+                    // @ts-ignore
+                    NFTokenOffers: [tx.Index],
                 });
                 break;
             case 'CheckCancel':
@@ -1173,6 +1191,40 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
+    renderNFTokenOffer = (tx: Extract<LedgerObjects, { Type: LedgerObjectTypes.NFTokenOffer }>): string => {
+        let content = '';
+
+        if (tx.Flags.SellToken) {
+            content += Localize.t('events.nftOfferSellExplain', {
+                address: tx.Owner,
+                tokenID: tx.NFTokenID,
+                amount: tx.Amount.value,
+                currency: NormalizeCurrencyCode(tx.Amount.currency),
+            });
+        } else {
+            content += Localize.t('events.nftOfferBuyExplain', {
+                address: tx.Owner,
+                tokenID: tx.NFTokenID,
+                amount: tx.Amount.value,
+                currency: NormalizeCurrencyCode(tx.Amount.currency),
+            });
+        }
+
+        if (tx.Destination) {
+            content += '\n';
+            content += Localize.t('events.thisNftOfferMayOnlyBeAcceptedBy', { address: tx.Destination.address });
+        }
+
+        if (tx.Expiration) {
+            content += '\n';
+            content += Localize.t('events.theOfferExpiresAtUnlessCanceledOrAccepted', {
+                expiration: moment(tx.Expiration).format('LLLL'),
+            });
+        }
+
+        return content;
+    };
+
     renderNFTokenCancelOffer = (tx: Extract<Transactions, { Type: TransactionTypes.NFTokenCancelOffer }>): string => {
         let content = '';
 
@@ -1298,6 +1350,9 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             case TransactionTypes.NFTokenCreateOffer:
                 content += this.renderNFTokenCreateOffer(tx);
+                break;
+            case LedgerObjectTypes.NFTokenOffer:
+                content += this.renderNFTokenOffer(tx);
                 break;
             case TransactionTypes.NFTokenCancelOffer:
                 content += this.renderNFTokenCancelOffer(tx);
@@ -1921,6 +1976,13 @@ class TransactionDetailsView extends Component<Props, State> {
                     secondary: true,
                 });
                 break;
+            case LedgerObjectTypes.NFTokenOffer:
+                actionButtons.push({
+                    label: Localize.t('events.cancelOffer'),
+                    type: 'NFTokenCancelOffer',
+                    secondary: true,
+                });
+                break;
             case LedgerObjectTypes.Escrow:
                 if (tx.isExpired) {
                     actionButtons.push({
@@ -1993,7 +2055,8 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx, partiesDetails, incomingTx, balanceChanges } = this.state;
 
         let from = {
-            address: tx.Account.address,
+            // @ts-ignore
+            address: tx.Account?.address || tx.Owner,
         } as any;
         let to = {
             // @ts-ignore
@@ -2045,6 +2108,21 @@ class TransactionDetailsView extends Component<Props, State> {
                     address: account.address,
                     name: account.label,
                     source: 'accounts',
+                };
+            }
+        }
+
+        if (tx.Type === LedgerObjectTypes.NFTokenOffer) {
+            from = {
+                address: account.address,
+                name: account.label,
+                source: 'accounts',
+            };
+
+            if (tx.Destination) {
+                to = {
+                    address: tx.Destination.address,
+                    ...partiesDetails,
                 };
             }
         }

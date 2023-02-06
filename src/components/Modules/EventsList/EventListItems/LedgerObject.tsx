@@ -85,12 +85,14 @@ class LedgerObjectTemplate extends Component<Props, State> {
                     address: item.Destination.address,
                     tag: item.Destination.tag,
                 };
+            case LedgerObjectTypes.NFTokenOffer:
             case LedgerObjectTypes.Offer:
             case LedgerObjectTypes.Ticket:
                 return {
                     address: account.address,
                     name: account.label,
                 };
+
             default:
                 return {};
         }
@@ -157,6 +159,10 @@ class LedgerObjectTemplate extends Component<Props, State> {
             )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
         }
 
+        if (item.Type === LedgerObjectTypes.NFTokenOffer) {
+            return item.NFTokenID;
+        }
+
         if (name) return name;
         if (address) return address;
 
@@ -171,11 +177,17 @@ class LedgerObjectTemplate extends Component<Props, State> {
                 return Localize.t('global.escrow');
             case LedgerObjectTypes.Offer:
                 return Localize.t('global.offer');
+            case LedgerObjectTypes.NFTokenOffer:
+                if (item.Flags.SellToken) {
+                    return Localize.t('events.sellNFToken');
+                }
+                return Localize.t('events.buyNFToken');
             case LedgerObjectTypes.Check:
                 return Localize.t('global.check');
             case LedgerObjectTypes.Ticket:
                 return `${Localize.t('global.ticket')} #${item.TicketSequence}`;
             default:
+                // @ts-ignore
                 return item.Type;
         }
     };
@@ -216,6 +228,19 @@ class LedgerObjectTemplate extends Component<Props, State> {
                 <AmountText
                     value={item.TakerPays.value}
                     currency={item.TakerPays.currency}
+                    style={[styles.amount, styles.naturalColor]}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
+                />
+            );
+        }
+
+        if (item.Type === LedgerObjectTypes.NFTokenOffer) {
+            return (
+                <AmountText
+                    value={item.Amount.value}
+                    currency={item.Amount.currency}
                     style={[styles.amount, styles.naturalColor]}
                     currencyStyle={styles.currency}
                     valueContainerStyle={styles.amountValueContainer}

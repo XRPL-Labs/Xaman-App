@@ -70,7 +70,7 @@ class BaseLedgerObject {
     }
 
     get Flags(): any {
-        const intFlags = get(this, ['tx', 'Flags'], undefined);
+        const intFlags = get(this, ['object', 'Flags'], undefined);
         const flagParser = new Flag(this.LedgerEntryType, intFlags);
         return flagParser.parse();
     }

@@ -95,7 +95,7 @@ class EventsView extends Component<Props, State> {
             canLoadMore: true,
             searchText: undefined,
             filters: undefined,
-            sectionIndex: 0,
+            sectionIndex: 1,
             lastMarker: undefined,
             account: AccountRepository.getDefaultAccount(),
             transactions: [],
@@ -220,7 +220,7 @@ class EventsView extends Component<Props, State> {
             }
 
             // account objects we are interested in
-            const objectTypes = ['check', 'escrow', 'offer', 'ticket'];
+            const objectTypes = ['check', 'escrow', 'offer', 'nft_offer', 'ticket'];
             let objects = [] as LedgerEntriesTypes[];
 
             objectTypes
@@ -336,7 +336,12 @@ class EventsView extends Component<Props, State> {
         if (sectionIndex === 1) {
             const open = orderBy(
                 filter(plannedTransactions, (p) =>
-                    [LedgerObjectTypes.Offer, LedgerObjectTypes.Check, LedgerObjectTypes.Ticket].includes(p.Type),
+                    [
+                        LedgerObjectTypes.Offer,
+                        LedgerObjectTypes.NFTokenOffer,
+                        LedgerObjectTypes.Check,
+                        LedgerObjectTypes.Ticket,
+                    ].includes(p.Type),
                 ),
                 ['Date'],
             );
@@ -645,6 +650,8 @@ class EventsView extends Component<Props, State> {
                 'Destination.tag',
                 'Amount.value',
                 'Amount.currency',
+                'Owner',
+                'NFTokenID',
                 'Hash',
             ],
             shouldSort: false,
