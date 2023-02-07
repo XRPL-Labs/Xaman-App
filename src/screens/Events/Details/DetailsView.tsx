@@ -53,7 +53,7 @@ import {
     Spacer,
     TouchableDebounce,
 } from '@components/General';
-import { RecipientElement } from '@components/Modules';
+import { NFTokenElement, RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -352,7 +352,9 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             case TransactionTypes.NFTokenCreateOffer:
-                if (tx.Destination) {
+                if (incomingTx) {
+                    address = tx.Account.address;
+                } else if (tx.Destination) {
                     address = tx.Destination.address;
                 }
                 break;
@@ -1768,10 +1770,17 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             }
+            case LedgerObjectTypes.NFTokenOffer:
             case TransactionTypes.NFTokenCreateOffer: {
+                let icon;
+                if (incomingTx) {
+                    icon = tx.Flags.SellToken ? 'IconCornerRightUp' : 'IconCornerRightDown';
+                } else {
+                    icon = tx.Flags.SellToken ? 'IconCornerRightDown' : 'IconCornerRightUp';
+                }
                 Object.assign(props, {
                     color: styles.naturalColor,
-                    icon: tx.Flags.SellToken ? 'IconCornerRightDown' : 'IconCornerRightUp',
+                    icon,
                     value: tx.Amount.value,
                     currency: tx.Amount.currency,
                 });
@@ -1790,7 +1799,14 @@ class TransactionDetailsView extends Component<Props, State> {
                         currency: amount.currency,
                     });
                 } else {
-                    shouldShowAmount = false;
+                    // free NFT transfer
+                    Object.assign(props, {
+                        icon: undefined,
+                        color: styles.naturalColor,
+                        prefix: '',
+                        value: tx.Offer.Amount.value,
+                        currency: tx.Offer.Amount.currency,
+                    });
                 }
                 break;
             }
@@ -1914,6 +1930,38 @@ class TransactionDetailsView extends Component<Props, State> {
                     );
                 }
             }
+        }
+
+        if (
+            tx.Type === LedgerObjectTypes.NFTokenOffer ||
+            tx.Type === TransactionTypes.NFTokenCreateOffer ||
+            tx.Type === TransactionTypes.NFTokenAcceptOffer
+        ) {
+            const tokenId = tx.Type === TransactionTypes.NFTokenAcceptOffer ? tx.Offer?.NFTokenID : tx.NFTokenID;
+
+            return (
+                <View style={styles.amountHeaderContainer}>
+                    <View style={[AppStyles.row, styles.nfTokenContainer]}>
+                        <NFTokenElement account={account.address} nfTokenId={tokenId} />
+                    </View>
+
+                    <Spacer />
+                    <Icon size={20} style={AppStyles.imgColorGrey} name="IconSwitchAccount" />
+                    <Spacer />
+                    <View style={[AppStyles.row, styles.amountContainer]}>
+                        {props.icon && (
+                            // @ts-ignore
+                            <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                        )}
+                        <AmountText
+                            value={props.value}
+                            currency={props.currency}
+                            prefix={props.prefix}
+                            style={[styles.amountText, props.color]}
+                        />
+                    </View>
+                </View>
+            );
         }
 
         return (

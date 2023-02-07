@@ -11,3 +11,4 @@ export * from './XAppList';
 export * from './ProBadge';
 export * from './PaymentOptionsPicker';
 export * from './InactiveAccount';
+export * from './NFTokenElement';

@@ -61,6 +61,14 @@ const styles = StyleService.create({
         paddingHorizontal: 30,
         borderRadius: 50,
     },
+    nfTokenContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '$tint',
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        borderRadius: 50,
+    },
     amountContainerSmall: {
         justifyContent: 'center',
         alignItems: 'center',

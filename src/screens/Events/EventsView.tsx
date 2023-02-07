@@ -509,6 +509,16 @@ class EventsView extends Component<Props, State> {
                         LedgerObjectTypes.Check,
                     ];
                     break;
+                case 'NFT':
+                    includeTypes = [
+                        TransactionTypes.NFTokenMint,
+                        TransactionTypes.NFTokenBurn,
+                        TransactionTypes.NFTokenCreateOffer,
+                        TransactionTypes.NFTokenAcceptOffer,
+                        TransactionTypes.NFTokenCancelOffer,
+                        LedgerObjectTypes.NFTokenOffer,
+                    ];
+                    break;
                 case 'Other':
                     includeTypes = [
                         TransactionTypes.AccountSet,

@@ -1,12 +1,16 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { View, Text } from 'react-native';
 
 import { NFTokenCancelOffer } from '@common/libs/ledger/transactions';
+
+import { ExpandableView } from '@components/General';
 
 import Localize from '@locale';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
+
+import NFTokenOfferTemplate from './objects/NFTokenOffer';
 
 import { TemplateProps } from './types';
 /* types ==================================================================== */
@@ -33,10 +37,17 @@ class NFTokenCancelOfferTemplate extends Component<Props, State> {
                         {Localize.t('global.tokenOffers')}
                     </Text>
                 </View>
-                {transaction.NFTokenOffers?.map((token: string) => (
-                    <View key={`${token}`} style={[styles.contentBox]}>
-                        <Text style={styles.value}>{token}</Text>
-                    </View>
+                {transaction.NFTokenOffers?.map((tokenOffer: string) => (
+                    <ExpandableView
+                        key={tokenOffer}
+                        expanded={transaction.NFTokenOffers?.length === 1}
+                        title={tokenOffer}
+                        titleStyle={styles.value}
+                        containerStyle={styles.objectTemplateContainer}
+                        contentContainerStyle={styles.objectTemplateChildContainer}
+                    >
+                        <NFTokenOfferTemplate nfTokenOffer={tokenOffer} />
+                    </ExpandableView>
                 ))}
             </>
         );
