@@ -280,9 +280,12 @@ class NFTokensList extends Component<Props, State> {
                     refreshing={isLoading}
                     indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
                     refreshControl={
-                        <RefreshControl refreshing={isLoading} tintColor={StyleService.value('$contrast')} />
+                        <RefreshControl
+                            refreshing={isLoading}
+                            onRefresh={this.fetchNFTokens}
+                            tintColor={StyleService.value('$contrast')}
+                        />
                     }
-                    onRefresh={this.fetchNFTokens}
                 />
             </View>
         );

@@ -22,7 +22,7 @@ const styles = StyleService.create({
     buttonsContainer: {
         width: '100%',
         marginTop: AppSizes.padding,
-        marginBottom: AppSizes.paddingSml,
+        marginBottom: AppSizes.paddingExtraSml,
     },
     selectedButton: {
         borderWidth: 2,
