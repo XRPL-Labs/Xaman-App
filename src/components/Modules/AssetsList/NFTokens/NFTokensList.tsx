@@ -18,7 +18,7 @@ import AccountService from '@services/AccountService';
 import LedgerService from '@services/LedgerService';
 import StyleService from '@services/StyleService';
 
-import { SearchBar } from '@components/General';
+import { LoadingIndicator, SearchBar } from '@components/General';
 
 import Localize from '@locale';
 
@@ -43,6 +43,7 @@ interface State {
     dataSource: NFTokenData[];
     filterText: string;
     isLoading: boolean;
+    isRefreshing: boolean;
 }
 
 /* Component ==================================================================== */
@@ -57,6 +58,7 @@ class NFTokensList extends Component<Props, State> {
             dataSource: [],
             filterText: undefined,
             isLoading: true,
+            isRefreshing: false,
         };
 
         this.searchInputRef = React.createRef();
@@ -95,12 +97,12 @@ class NFTokensList extends Component<Props, State> {
         }
     };
 
-    fetchNFTokens = async () => {
+    fetchNFTokens = async (isRefreshing = false) => {
         const { account } = this.props;
 
         this.setState({
-            isLoading: true,
-        });
+            [isRefreshing ? 'isRefreshing' : 'isLoading']: true,
+        } as unknown as Pick<State, keyof State>);
 
         let nfTokenIds = undefined as string[];
 
@@ -127,8 +129,8 @@ class NFTokensList extends Component<Props, State> {
         this.setState({
             nfTokens: tempNFTokens,
             dataSource: tempNFTokens,
-            isLoading: false,
-        });
+            [isRefreshing ? 'isRefreshing' : 'isLoading']: false,
+        } as unknown as Pick<State, keyof State>);
 
         // account doesn't have any token
         if (isEmpty(nfTokenIds)) {
@@ -152,6 +154,10 @@ class NFTokensList extends Component<Props, State> {
             .catch(() => {
                 // ignore
             });
+    };
+
+    onRefresh = () => {
+        this.fetchNFTokens(true);
     };
 
     onCategoryChangePress = () => {
@@ -242,7 +248,7 @@ class NFTokensList extends Component<Props, State> {
         const { isLoading } = this.state;
 
         if (isLoading) {
-            return null;
+            return <LoadingIndicator style={styles.loadingContainer} />;
         }
 
         return <ListEmpty />;
@@ -254,7 +260,7 @@ class NFTokensList extends Component<Props, State> {
 
     render() {
         const { style } = this.props;
-        const { isLoading, dataSource } = this.state;
+        const { dataSource, isRefreshing } = this.state;
 
         return (
             <View testID="nft-list-container" style={style}>
@@ -277,12 +283,11 @@ class NFTokensList extends Component<Props, State> {
                     renderItem={this.renderItem}
                     ListEmptyComponent={this.renderEmptyList}
                     keyExtractor={this.keyExtractor}
-                    refreshing={isLoading}
                     indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
                     refreshControl={
                         <RefreshControl
-                            refreshing={isLoading}
-                            onRefresh={this.fetchNFTokens}
+                            refreshing={isRefreshing}
+                            onRefresh={this.onRefresh}
                             tintColor={StyleService.value('$contrast')}
                         />
                     }

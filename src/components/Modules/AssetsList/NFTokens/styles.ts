@@ -19,4 +19,10 @@ export default StyleService.create({
     searchBarIcon: {
         left: 8,
     },
+    loadingContainer: {
+        flex: 1,
+        paddingVertical: AppSizes.padding,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 });

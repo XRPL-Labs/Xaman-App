@@ -6,7 +6,6 @@ import StyleService from '@services/StyleService';
 import { Avatar, TouchableDebounce } from '@components/General';
 
 import { Images } from '@common/helpers/images';
-import { Truncate } from '@common/utils/string';
 
 import Localize from '@locale';
 
@@ -65,6 +64,10 @@ class NFTokenItem extends PureComponent<Props, State> {
             // show the element with animation
             setTimeout(this.startFadeInAnimation, index * 10);
         }
+
+        if (prevProps.name !== undefined && name === undefined) {
+            setTimeout(this.startPlaceholderAnimation, index * 400);
+        }
     }
 
     startPlaceholderAnimation = () => {
@@ -112,14 +115,14 @@ class NFTokenItem extends PureComponent<Props, State> {
         }
     };
 
-    getShortTokenId = () => {
+    getTokenId = () => {
         const { token } = this.props;
 
         if (!token) {
             return '';
         }
 
-        return Truncate(token, 32);
+        return token;
     };
 
     getTokenName = () => {
@@ -192,8 +195,8 @@ class NFTokenItem extends PureComponent<Props, State> {
                         <Text style={styles.label} numberOfLines={1}>
                             {this.getTokenName()}
                         </Text>
-                        <Text style={styles.description} numberOfLines={1}>
-                            {this.getShortTokenId()}
+                        <Text ellipsizeMode="middle" style={styles.description} numberOfLines={1}>
+                            {this.getTokenId()}
                         </Text>
                     </View>
                 </TouchableDebounce>
