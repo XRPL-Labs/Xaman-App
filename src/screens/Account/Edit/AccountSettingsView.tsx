@@ -125,7 +125,7 @@ class AccountSettingsView extends Component<Props, State> {
     onAccountDowngradeRequest = () => {
         const { account } = this.state;
 
-        // auth with passcode for Physical and accounts with Passcode as encryption level
+        // auth with passcode for accounts with Passcode as encryption level
         if (account.encryptionLevel === EncryptionLevels.Passcode) {
             Navigator.showOverlay(AppScreens.Overlay.Auth, {
                 canAuthorizeBiometrics: false,
