@@ -187,12 +187,12 @@ class TokenItem extends PureComponent<Props, State> {
         return (
             <View testID={`${token.currency.id}`} style={[styles.currencyItem, { height: TokenItem.Height }]}>
                 <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
-                    <View style={[styles.brandAvatarContainer]}>{this.getAvatar()}</View>
+                    <View style={styles.brandAvatarContainer}>{this.getAvatar()}</View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
-                        <Text numberOfLines={1} style={[styles.currencyLabel]}>
+                        <Text numberOfLines={1} style={styles.currencyLabel}>
                             {this.getCurrencyName()}
                         </Text>
-                        <Text numberOfLines={1} style={[styles.issuerLabel]}>
+                        <Text numberOfLines={1} style={styles.issuerLabel}>
                             {this.getIssuerLabel()}
                         </Text>
                     </View>

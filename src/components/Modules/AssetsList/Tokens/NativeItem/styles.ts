@@ -64,14 +64,14 @@ export default StyleService.create({
     },
     reserveTextLabel: {
         fontSize: AppFonts.small.size,
-        fontFamily: AppFonts.base.familyMonoBold,
+        fontFamily: AppFonts.base.family,
         color: '$grey',
     },
     reserveTextValue: {
         fontSize: AppFonts.small.size,
         fontFamily: AppFonts.base.familyMonoBold,
         color: '$grey',
-        marginRight: 15,
+        marginRight: 5,
     },
     reserveInfoIconContainer: {
         paddingLeft: AppSizes.scale(11),

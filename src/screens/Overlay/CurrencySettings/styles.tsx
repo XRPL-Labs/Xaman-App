@@ -42,7 +42,7 @@ const styles = StyleService.create({
     },
     currencyItemLabelSmall: {
         fontSize: AppFonts.p.size,
-        fontFamily: AppFonts.base.familyMono,
+        fontFamily: AppFonts.base.familyBold,
         alignItems: 'flex-start',
         justifyContent: 'center',
         marginRight: 10,
@@ -50,8 +50,8 @@ const styles = StyleService.create({
         color: '$textPrimary',
     },
     issuerLabel: {
-        fontSize: AppFonts.subtext.size,
-        fontFamily: AppFonts.base.familyMono,
+        fontSize: AppFonts.subtext.size * 0.9,
+        fontFamily: AppFonts.base.family,
         color: '$grey',
     },
     currencyAvatar: {

@@ -16,7 +16,7 @@ export default StyleService.create({
         flexWrap: 'wrap',
         flexShrink: 1,
         fontSize: AppFonts.subtext.size,
-        fontFamily: AppFonts.base.familyMono,
+        fontFamily: AppFonts.base.familyBold,
         color: '$textPrimary',
         marginBottom: 3,
     },
@@ -27,7 +27,7 @@ export default StyleService.create({
     description: {
         flexWrap: 'wrap',
         flexShrink: 1,
-        fontFamily: AppFonts.base.familyMonoBold,
+        fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.small.size,
         color: '$silver',
     },

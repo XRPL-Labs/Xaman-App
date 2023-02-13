@@ -10,8 +10,8 @@ export default StyleService.create({
         paddingHorizontal: AppSizes.paddingSml,
     },
     currencyLabel: {
-        fontSize: AppFonts.p.size,
-        fontFamily: AppFonts.base.familyMono,
+        fontSize: AppFonts.subtext.size,
+        fontFamily: AppFonts.base.familyBold,
         color: '$textPrimary',
         alignItems: 'flex-start',
         justifyContent: 'center',
@@ -19,8 +19,8 @@ export default StyleService.create({
         marginBottom: 3,
     },
     issuerLabel: {
-        fontSize: AppFonts.subtext.size,
-        fontFamily: AppFonts.base.familyMono,
+        fontSize: AppFonts.subtext.size * 0.9,
+        fontFamily: AppFonts.base.family,
         color: '$grey',
     },
     balanceContainer: {

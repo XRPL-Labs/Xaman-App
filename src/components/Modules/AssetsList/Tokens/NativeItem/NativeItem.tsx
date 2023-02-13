@@ -226,7 +226,7 @@ class NativeItem extends PureComponent<Props, State> {
                     </View>
                     <View style={styles.reserveTextContainer}>
                         <Text numberOfLines={1} style={styles.reserveTextLabel}>
-                            {Localize.t('home.xrpReserved')}
+                            {Localize.t('global.reserved')}
                         </Text>
                     </View>
                 </View>
