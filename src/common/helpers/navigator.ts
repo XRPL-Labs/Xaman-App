@@ -2,7 +2,7 @@ import { get, assign } from 'lodash';
 import { Platform, InteractionManager } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 
-import { GetBottomTabScale } from '@common/helpers/device';
+import { GetBottomTabScale, HasBottomNotch } from '@common/helpers/device';
 
 import { AppScreens } from '@common/constants';
 
@@ -37,11 +37,16 @@ const getDefaultOptions = () => {
         bottomTabs: {
             backgroundColor: '$background',
             translucent: false,
-            hideShadow: true,
             animate: true,
             drawBehind: true,
             tabsAttachMode: 'onSwitchToTab' as any,
             titleDisplayMode: 'alwaysShow' as any,
+            hideShadow: false,
+            shadow: {
+                opacity: StyleService.isDarkMode() ? 0.13 : 0.07,
+                color: StyleService.isDarkMode() ? 'white' : 'black',
+                radius: StyleService.isDarkMode() ? 12 : 8,
+            },
         },
         animations: {
             pop: {
@@ -91,11 +96,12 @@ const Navigator = {
         Navigation.setDefaultOptions(defaultOptions);
 
         const bottomTabStyles = StyleService.applyTheme({
-            // iconColor: '$greyDark',
-            // selectedIconColor: '$black',
             textColor: '$grey',
             selectedTextColor: '$textPrimary',
             fontFamily: AppFonts.base.familyExtraBold,
+            iconInsets: {
+                top: HasBottomNotch() ? 4 : 1,
+            },
         });
 
         const TabBarIcons = getTabBarIcons();
