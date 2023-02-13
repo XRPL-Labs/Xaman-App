@@ -1,5 +1,3 @@
-/* eslint-disable no-lonely-if */
-import BigNumber from 'bignumber.js';
 import { get, set, has, isUndefined, isNumber, toInteger } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
@@ -103,7 +101,7 @@ class Payment extends BaseTransaction {
 
         return {
             currency: deliveredAmount.currency,
-            value: deliveredAmount.value && new Amount(deliveredAmount.value, false).toString(),
+            value: deliveredAmount.value,
             issuer: deliveredAmount.issuer,
         };
     }
@@ -125,7 +123,7 @@ class Payment extends BaseTransaction {
 
         return {
             currency: amount.currency,
-            value: amount.value && new Amount(amount.value, false).toString(),
+            value: amount.value,
             issuer: amount.issuer,
         };
     }
@@ -138,11 +136,9 @@ class Payment extends BaseTransaction {
         }
 
         if (typeof input === 'object') {
-            const value = new BigNumber(input.value);
-
             set(this, 'tx.Amount', {
                 currency: input.currency,
-                value: value.toNumber().toString(10),
+                value: input.value,
                 issuer: input.issuer,
             });
         }
@@ -165,7 +161,7 @@ class Payment extends BaseTransaction {
 
         return {
             currency: sendMax.currency,
-            value: sendMax.value && new Amount(sendMax.value, false).toString(),
+            value: sendMax.value,
             issuer: sendMax.issuer,
         };
     }
@@ -203,7 +199,7 @@ class Payment extends BaseTransaction {
 
         set(this, 'tx.DeliverMin', {
             currency: input.currency,
-            value: new BigNumber(input.value).toNumber().toString(10),
+            value: input.value,
             issuer: input.issuer,
         });
     }
@@ -224,7 +220,7 @@ class Payment extends BaseTransaction {
 
         return {
             currency: deliverMin.currency,
-            value: deliverMin.value && new Amount(deliverMin.value, false).toString(),
+            value: deliverMin.value,
             issuer: deliverMin.issuer,
         };
     }

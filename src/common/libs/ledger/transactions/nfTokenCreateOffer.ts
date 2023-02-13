@@ -42,7 +42,7 @@ class NFTokenCreateOffer extends BaseTransaction {
 
         return {
             currency: amount.currency,
-            value: amount.value && new Amount(amount.value, false).toString(),
+            value: amount.value,
             issuer: amount.issuer,
         };
     }

@@ -45,7 +45,7 @@ class CheckCash extends BaseTransaction {
 
         return {
             currency: amount.currency,
-            value: amount.value && new Amount(amount.value, false).toString(),
+            value: amount.value,
             issuer: amount.issuer,
         };
     }
@@ -85,7 +85,7 @@ class CheckCash extends BaseTransaction {
 
         return {
             currency: deliverMin.currency,
-            value: deliverMin.value && new Amount(deliverMin.value, false).toString(),
+            value: deliverMin.value,
             issuer: deliverMin.issuer,
         };
     }
