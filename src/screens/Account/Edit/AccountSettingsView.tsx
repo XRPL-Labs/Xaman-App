@@ -122,18 +122,29 @@ class AccountSettingsView extends Component<Props, State> {
         });
     };
 
+    onAccountDowngradeRequest = () => {
+        const { account } = this.state;
+
+        // auth with passcode for Physical and accounts with Passcode as encryption level
+        if (account.encryptionLevel === EncryptionLevels.Passcode) {
+            Navigator.showOverlay(AppScreens.Overlay.Auth, {
+                canAuthorizeBiometrics: false,
+                onSuccess: this.downgradeAccountAccessLevel,
+            });
+            // for accounts with passphrase auth with passphrase
+        } else if (account.encryptionLevel === EncryptionLevels.Passphrase) {
+            Navigator.showOverlay(AppScreens.Overlay.PassphraseAuthentication, {
+                account,
+                onSuccess: this.downgradeAccountAccessLevel,
+            });
+        }
+    };
+
     downgradeAccountAccessLevel = () => {
         const { account } = this.state;
 
         // downgrade the access level
         AccountRepository.downgrade(account);
-    };
-
-    onAccountDowngradeRequest = () => {
-        Navigator.showOverlay(AppScreens.Overlay.Auth, {
-            canAuthorizeBiometrics: false,
-            onSuccess: this.downgradeAccountAccessLevel,
-        });
     };
 
     onAccessLevelSelected = (item: any) => {
