@@ -264,7 +264,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         // close modal
         Navigator.dismissModal().then(() => {
             if (typeof onDecline === 'function') {
-                onDecline();
+                onDecline(payload);
             }
         });
     };
@@ -717,7 +717,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         }
         Navigator.dismissModal().then(() => {
             if (typeof onResolve === 'function') {
-                onResolve(transaction);
+                onResolve(transaction, payload);
             }
         });
     };

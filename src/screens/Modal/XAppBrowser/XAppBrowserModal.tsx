@@ -185,12 +185,12 @@ class XAppBrowserModal extends Component<Props, State> {
         }
     };
 
-    onPayloadResolve = () => {
-        this.sendEvent({ method: XAppMethods.PayloadResolved, reason: 'SIGNED' });
+    onPayloadResolve = (transaction: any, payload: Payload) => {
+        this.sendEvent({ method: XAppMethods.PayloadResolved, reason: 'SIGNED', uuid: payload.getPayloadUUID() });
     };
 
-    onPayloadDecline = () => {
-        this.sendEvent({ method: XAppMethods.PayloadResolved, reason: 'DECLINED' });
+    onPayloadDecline = (payload: Payload) => {
+        this.sendEvent({ method: XAppMethods.PayloadResolved, reason: 'DECLINED', uuid: payload.getPayloadUUID() });
     };
 
     onScannerRead = (data: string) => {

@@ -13,8 +13,8 @@ export enum Steps {
 
 export interface Props {
     payload: Payload;
-    onResolve?: (transaction: Transactions) => void;
-    onDecline?: () => void;
+    onResolve?: (transaction: Transactions, payload: Payload) => void;
+    onDecline?: (payload: Payload) => void;
     onClose?: () => void;
 }
 
