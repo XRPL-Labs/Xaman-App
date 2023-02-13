@@ -116,7 +116,7 @@ class BackendService {
                                     name: c.name,
                                     avatar: c.avatar || '',
                                     shortlist: c.shortlist === 1,
-                                    xapp_identifier: c.xapp_identifier,
+                                    xapp_identifier: c.xapp_identifier || '',
                                 });
 
                                 currenciesList.push(currency);
