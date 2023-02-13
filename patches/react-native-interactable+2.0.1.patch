@@ -1,3 +1,65 @@
+diff --git a/node_modules/react-native-interactable/lib/android/src/androidTest/java/com/wix/interactable/ExampleInstrumentedTest.java b/node_modules/react-native-interactable/lib/android/src/androidTest/java/com/wix/interactable/ExampleInstrumentedTest.java
+index 0411aac..8180a57 100644
+--- a/node_modules/react-native-interactable/lib/android/src/androidTest/java/com/wix/interactable/ExampleInstrumentedTest.java
++++ b/node_modules/react-native-interactable/lib/android/src/androidTest/java/com/wix/interactable/ExampleInstrumentedTest.java
+@@ -1,8 +1,8 @@
+ package com.wix.interactable;
+ 
+ import android.content.Context;
+-import android.support.test.InstrumentationRegistry;
+-import android.support.test.runner.AndroidJUnit4;
++import androidx.test.InstrumentationRegistry;
++import androidx.test.runner.AndroidJUnit4;
+ 
+ import org.junit.Test;
+ import org.junit.runner.RunWith;
+diff --git a/node_modules/react-native-interactable/lib/android/src/main/java/com/wix/interactable/Events.java b/node_modules/react-native-interactable/lib/android/src/main/java/com/wix/interactable/Events.java
+index 733c4ed..1f2bdac 100644
+--- a/node_modules/react-native-interactable/lib/android/src/main/java/com/wix/interactable/Events.java
++++ b/node_modules/react-native-interactable/lib/android/src/main/java/com/wix/interactable/Events.java
+@@ -1,5 +1,7 @@
+ package com.wix.interactable;
+ 
++import android.util.Log;
++
+ import com.facebook.react.bridge.Arguments;
+ import com.facebook.react.bridge.WritableMap;
+ import com.facebook.react.uimanager.PixelUtil;
+@@ -69,7 +71,7 @@ public class Events {
+ 
+         @Override
+         public String getEventName() {
+-            return "onAnimatedEvent";
++            return "OnAnimatedEvent";
+         }
+ 
+         @Override
+diff --git a/node_modules/react-native-interactable/lib/android/src/main/java/com/wix/interactable/InteractableViewManager.java b/node_modules/react-native-interactable/lib/android/src/main/java/com/wix/interactable/InteractableViewManager.java
+index db4a647..9b7ec5e 100644
+--- a/node_modules/react-native-interactable/lib/android/src/main/java/com/wix/interactable/InteractableViewManager.java
++++ b/node_modules/react-native-interactable/lib/android/src/main/java/com/wix/interactable/InteractableViewManager.java
+@@ -160,7 +160,7 @@ public class InteractableViewManager extends ViewGroupManager<InteractableView>
+                 .put("onSnap", MapBuilder.of("registrationName", "onSnap"))
+                 .put("onSnapStart", MapBuilder.of("registrationName", "onSnapStart"))
+                 .put("onAlert", MapBuilder.of("registrationName", "onAlert"))
+-                .put("onAnimatedEvent", MapBuilder.of("registrationName", "onAnimatedEvent"))
++                .put("OnAnimatedEvent", MapBuilder.of("registrationName", "OnAnimatedEvent"))
+                 .put("onDrag", MapBuilder.of("registrationName", "onDrag"))
+                 .put("onStop", MapBuilder.of("registrationName", "onStop"))
+                 .build();
+diff --git a/node_modules/react-native-interactable/lib/src/InteractableView.js b/node_modules/react-native-interactable/lib/src/InteractableView.js
+index 7b65a1b..793e6ab 100644
+--- a/node_modules/react-native-interactable/lib/src/InteractableView.js
++++ b/node_modules/react-native-interactable/lib/src/InteractableView.js
+@@ -59,7 +59,7 @@ class WrappedAnimatedInteractableView extends Component {
+         {...this.props}
+         animatedValueX={undefined}
+         animatedValueY={undefined}
+-        onAnimatedEvent={this._animatedEvent}
++        {...{[Platform.OS === 'android' ? 'OnAnimatedEvent': 'onAnimatedEvent']: this._animatedEvent }}
+         reportOnAnimatedEvents={!!this._animatedEvent}
+       />
+     );
 diff --git a/node_modules/react-native-interactable/react-native.config.js b/node_modules/react-native-interactable/react-native.config.js
 new file mode 100644
 index 0000000..e24ea7d
