@@ -64,10 +64,10 @@ export interface Trustline {
 /**
  * Transaction Memo format
  */
-export type Memo = {
-    type?: string;
-    format?: string;
-    data?: string;
+export type MemoType = {
+    MemoData?: string;
+    MemoFormat?: string;
+    MemoType?: string;
 };
 
 export type Account = {

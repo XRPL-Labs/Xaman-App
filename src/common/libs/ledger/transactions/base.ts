@@ -11,7 +11,6 @@ import { AccountSchema } from '@store/schemas/latest';
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
-import { HexEncoding } from '@common/utils/string';
 import {
     SignedObjectType,
     SubmitResultType,
@@ -26,9 +25,10 @@ import Meta from '../parser/meta';
 import LedgerDate from '../parser/common/date';
 import Amount from '../parser/common/amount';
 import Flag from '../parser/common/flag';
+import Memo from '../parser/common/memo';
 
 /* Types ==================================================================== */
-import { Account, AmountType, Memo, TransactionResult } from '../parser/types';
+import { Account, AmountType, MemoType, TransactionResult } from '../parser/types';
 
 /* Class ==================================================================== */
 class BaseTransaction {
@@ -336,8 +336,8 @@ class BaseTransaction {
         if (!memos) return undefined;
 
         for (const memo of memos) {
-            if (memo.type === 'xumm/xapp' && memo.data) {
-                return memo.data;
+            if (memo.MemoType === 'xumm/xapp' && memo.MemoData) {
+                return memo.MemoData;
             }
         }
 
@@ -461,7 +461,7 @@ class BaseTransaction {
         }
     }
 
-    get Memos(): Array<Memo> | undefined {
+    get Memos(): Array<MemoType> | undefined {
         const memos = get(this, ['tx', 'Memos'], undefined);
 
         if (isUndefined(memos)) return undefined;
@@ -469,31 +469,18 @@ class BaseTransaction {
         if (!Array.isArray(memos) || memos.length === 0) {
             return undefined;
         }
-        return memos.map((m: any) => {
-            return {
-                type: HexEncoding.toUTF8(m.Memo.MemoType),
-                format: HexEncoding.toUTF8(m.Memo.MemoFormat),
-                data: HexEncoding.toUTF8(m.Memo.MemoData),
-            };
-        });
+
+        return memos.map((m) => Memo.Decode(m.Memo));
     }
 
-    set Memos(memos: Array<Memo>) {
-        let encodedMemos;
+    set Memos(memos: Array<MemoType>) {
+        const encodedMemos = memos.map((m) => {
+            return {
+                Memo: m,
+            };
+        });
 
-        if (memos.length > 0) {
-            encodedMemos = memos.map((m: any) => {
-                return {
-                    Memo: {
-                        MemoType: m.type && HexEncoding.toHex(m.type).toUpperCase(),
-                        MemoFormat: m.format && HexEncoding.toHex(m.format).toUpperCase(),
-                        MemoData: m.data && HexEncoding.toHex(m.data).toUpperCase(),
-                    },
-                };
-            });
-        }
-
-        set(this, ['tx', 'Memos'], encodedMemos || []);
+        set(this, ['tx', 'Memos'], encodedMemos);
     }
 
     get Flags(): any {

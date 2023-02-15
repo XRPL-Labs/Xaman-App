@@ -1406,9 +1406,9 @@ class TransactionDetailsView extends Component<Props, State> {
 
         return (
             <View style={styles.memoContainer}>
-                <View style={[AppStyles.row]}>
+                <View style={AppStyles.row}>
                     <Icon name="IconFileText" size={18} style={AppStyles.imgColorPrimary} />
-                    <Text style={[styles.labelText]}> {Localize.t('global.memo')}</Text>
+                    <Text style={styles.labelText}> {Localize.t('global.memo')}</Text>
                 </View>
 
                 {showMemo ? (
@@ -1417,11 +1417,10 @@ class TransactionDetailsView extends Component<Props, State> {
                         textStyle={[styles.memoText, AppStyles.textCenterAligned, scamAlert && AppStyles.colorRed]}
                     >
                         {tx.Memos.map((m) => {
-                            if (m.type === 'text/plain' || !m.type) {
-                                return m.data;
+                            if (m.MemoType === 'text/plain' || !m.MemoType) {
+                                return m.MemoData;
                             }
-
-                            return `${m.type}: ${m.data}`;
+                            return `${m.MemoType}: ${m.MemoData}`;
                         })}
                     </ReadMore>
                 ) : (

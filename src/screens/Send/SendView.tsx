@@ -19,8 +19,10 @@ import { Amount } from '@common/libs/ledger/parser/common';
 import { Payment } from '@common/libs/ledger/transactions';
 import { Destination } from '@common/libs/ledger/parser/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
+import Memo from '@common/libs/ledger/parser/common/memo';
 
 import { NFTValueToXRPL, XRPLValueToNFT } from '@common/utils/amount';
+
 // components
 import { Header } from '@components/General';
 
@@ -68,6 +70,7 @@ class SendView extends Component<Props, State> {
             currency,
             sendingNFT,
             amount,
+            memo: undefined,
             availableFees: undefined,
             selectedFee: undefined,
             issuerFee: undefined,
@@ -142,6 +145,10 @@ class SendView extends Component<Props, State> {
         this.setState({ destinationInfo: info });
     };
 
+    setMemo = (memo: string) => {
+        this.setState({ memo });
+    };
+
     setScanResult = (result: any) => {
         this.setState({ scanResult: result });
     };
@@ -199,17 +206,32 @@ class SendView extends Component<Props, State> {
     };
 
     send = async () => {
-        const { currency, amount, selectedFee, issuerFee, destination, source, payment, sendingNFT } = this.state;
+        const { currency, amount, selectedFee, issuerFee, destination, source, payment, sendingNFT, memo } = this.state;
 
         this.setState({
             isLoading: true,
         });
 
         try {
-            // XRP
+            // set values tho the payment transaction
+
+            // set source account
+            payment.Account = {
+                address: source.address,
+            };
+
+            // set the destination
+            payment.Destination = {
+                address: destination.address,
+                tag: destination.tag,
+            };
+
+            // set the amount
             if (typeof currency === 'string') {
+                // XRP
                 payment.Amount = amount;
             } else {
+                // IOU
                 // if issuer has transfer fee and sender/destination is not issuer, add partial payment flag
                 if (
                     issuerFee &&
@@ -227,24 +249,20 @@ class SendView extends Component<Props, State> {
                 };
             }
 
-            // set the calculated fee
+            // set the calculated and selected fee
             payment.Fee = new Amount(selectedFee.value).dropsToXrp();
 
-            // set the destination
-            payment.Destination = {
-                address: destination.address,
-                tag: destination.tag,
-            };
-
-            // set source account
-            payment.Account = {
-                address: source.address,
-            };
+            // set memo if any
+            if (memo) {
+                payment.Memos = [Memo.Encode(memo)];
+            } else if (payment.Memos) {
+                payment.Memos = [];
+            }
 
             // validate payment for all possible mistakes
             await payment.validate();
 
-            // sign the transaction
+            // sign the transaction and then submit
             await payment.sign(source).then(this.submit);
         } catch (e: any) {
             if (e) {
@@ -342,6 +360,7 @@ class SendView extends Component<Props, State> {
                     setAmount: this.setAmount,
                     setCurrency: this.setCurrency,
                     setFee: this.setFee,
+                    setMemo: this.setMemo,
                     setAvailableFees: this.setAvailableFees,
                     setIssuerFee: this.setIssuerFee,
                     setSource: this.setSource,
