@@ -4,6 +4,8 @@
 import LedgerService from '@services/LedgerService';
 import BaseTransaction from '../base';
 
+import Memo from '../../parser/common/memo';
+
 import txTemplates from './templates/BaseTx.json';
 import paymentTemplates from './templates/PaymentTx.json';
 
@@ -18,7 +20,9 @@ describe('BaseTransaction tx', () => {
             address: tx.Account,
         });
 
-        expect(instance.Memos).toStrictEqual([{ data: 'XRP Tip Bot', format: undefined, type: 'XrpTipBotNote' }]);
+        expect(instance.Memos).toStrictEqual([
+            { MemoData: 'XRP Tip Bot', MemoFormat: undefined, MemoType: 'XrpTipBotNote' },
+        ]);
 
         expect(instance.Fee).toBe('0.000012');
 
@@ -50,8 +54,10 @@ describe('BaseTransaction tx', () => {
             address: 'rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY',
         });
 
-        instance.Memos = [{ data: 'XRP Tip Bot', format: 'text/plain', type: 'XrpTipBotNote' }];
-        expect(instance.Memos).toStrictEqual([{ data: 'XRP Tip Bot', format: 'text/plain', type: 'XrpTipBotNote' }]);
+        instance.Memos = [Memo.Encode('Memo Description')];
+        expect(instance.Memos).toStrictEqual([
+            { MemoData: 'Memo Description', MemoFormat: 'text/plain', MemoType: 'Description' },
+        ]);
 
         instance.Fee = '0.000012';
         expect(instance.Fee).toBe('0.000012');
