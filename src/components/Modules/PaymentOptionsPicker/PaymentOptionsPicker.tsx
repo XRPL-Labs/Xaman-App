@@ -288,6 +288,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
         const { containerStyle } = this.props;
         const { isLoading, isExpired, paymentOptions, localOption } = this.state;
 
+        // payment options are expired
         if (isExpired) {
             return (
                 <View style={styles.emptyContainer}>
@@ -304,6 +305,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
             );
         }
 
+        // no payment option is available
         if (!isLoading && !localOption && (!paymentOptions || paymentOptions.length === 0)) {
             return (
                 <View style={styles.emptyContainer}>
@@ -320,7 +322,10 @@ class PaymentOptionsPicker extends Component<Props, State> {
             );
         }
 
-        return <View style={containerStyle}>{[localOption, ...paymentOptions].map(this.renderItem)}</View>;
+        // render payment options
+        const options = localOption ? [localOption, ...paymentOptions] : paymentOptions;
+
+        return <View style={containerStyle}>{options.map(this.renderItem)}</View>;
     }
 }
 
