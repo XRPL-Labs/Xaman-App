@@ -1,4 +1,4 @@
-import { toLower, filter, sortBy, isEqual, has, findIndex } from 'lodash';
+import { toLower, map, filter, sortBy, isEqual, has, findIndex } from 'lodash';
 import React, { Component } from 'react';
 import { View, ViewStyle } from 'react-native';
 
@@ -75,14 +75,15 @@ class TokensList extends Component<Props, State> {
 
     shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
         const { discreetMode, spendable } = this.props;
-        const { accountStateHash, reorderEnabled, filters } = this.state;
+        const { dataSource, accountStateHash, reorderEnabled, filters } = this.state;
 
         return (
             !isEqual(nextProps.spendable, spendable) ||
             !isEqual(nextProps.discreetMode, discreetMode) ||
             !isEqual(nextState.accountStateHash, accountStateHash) ||
             !isEqual(nextState.reorderEnabled, reorderEnabled) ||
-            !isEqual(nextState.filters, filters)
+            !isEqual(nextState.filters, filters) ||
+            !isEqual(map(nextState.dataSource, 'id').join(), map(dataSource, 'id').join())
         );
     }
 
