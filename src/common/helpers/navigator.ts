@@ -37,16 +37,20 @@ const getDefaultOptions = () => {
         bottomTabs: {
             backgroundColor: '$background',
             translucent: false,
-            animate: true,
-            drawBehind: true,
+            animate: false,
+            drawBehind: false,
             tabsAttachMode: 'onSwitchToTab' as any,
             titleDisplayMode: 'alwaysShow' as any,
-            hideShadow: false,
-            shadow: {
-                opacity: StyleService.isDarkMode() ? 0.13 : 0.07,
-                color: StyleService.isDarkMode() ? 'white' : 'black',
-                radius: StyleService.isDarkMode() ? 12 : 8,
-            },
+            elevation: 10,
+            hideShadow: Platform.OS === 'android',
+            shadow: Platform.select({
+                android: undefined,
+                ios: {
+                    opacity: StyleService.isDarkMode() ? 0.13 : 0.07,
+                    color: StyleService.isDarkMode() ? 'white' : 'black',
+                    radius: StyleService.isDarkMode() ? 12 : 8,
+                },
+            }),
         },
         animations: {
             pop: {

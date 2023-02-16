@@ -26,7 +26,6 @@ export default StyleService.create({
         justifyContent: 'center',
         alignItems: 'center',
         alignContent: 'stretch',
-        marginBottom: Sizes.tabbarHeight,
         paddingTop: Sizes.safeAreaTopInset,
         backgroundColor: '$background',
     },
