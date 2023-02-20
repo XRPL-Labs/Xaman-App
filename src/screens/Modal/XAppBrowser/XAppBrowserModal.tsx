@@ -608,6 +608,7 @@ class XAppBrowserModal extends Component<Props, State> {
             <WebView
                 ref={this.webView}
                 containerStyle={styles.webViewContainer}
+                style={styles.webView}
                 startInLoadingState
                 renderLoading={this.renderLoading}
                 source={{ uri: this.getUrl() }}

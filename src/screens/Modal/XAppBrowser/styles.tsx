@@ -10,6 +10,9 @@ const styles = StyleService.create({
         flex: 1,
         backgroundColor: '$background',
     },
+    webView: {
+        backgroundColor: '$background',
+    },
     errorContainer: {
         flex: 1,
         alignItems: 'center',
