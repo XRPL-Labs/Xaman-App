@@ -191,9 +191,12 @@ class ThirdPartyAppsView extends Component<Props, State> {
                     ItemSeparatorComponent={this.renderSeparator}
                     indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
                     refreshControl={
-                        <RefreshControl refreshing={isLoading} tintColor={StyleService.value('$contrast')} />
+                        <RefreshControl
+                            onRefresh={this.fetchThirdPartyApps}
+                            refreshing={isLoading}
+                            tintColor={StyleService.value('$contrast')}
+                        />
                     }
-                    onRefresh={this.fetchThirdPartyApps}
                 />
             </View>
         );
