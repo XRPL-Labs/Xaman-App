@@ -24,14 +24,7 @@ import {
     IsDeviceRooted,
 } from '@common/helpers/device';
 
-import {
-    SetFlagSecure,
-    ExitApp,
-    RestartBundle,
-    GetAppVersionCode,
-    GetAppBuildNumber,
-    IsDebugBuild,
-} from '@common/helpers/app';
+import { SetFlagSecure, ExitApp, GetAppVersionCode, GetAppBuildNumber, IsDebugBuild } from '@common/helpers/app';
 
 import Vault from '@common/libs/vault';
 
@@ -145,7 +138,7 @@ class Application {
                     style: 'destructive',
                     onPress: () => {
                         DataStorage.wipe();
-                        RestartBundle();
+                        ExitApp();
                     },
                 },
             ],

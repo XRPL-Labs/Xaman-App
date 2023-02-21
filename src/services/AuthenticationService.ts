@@ -5,7 +5,7 @@ import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetElapsedRealtime } from '@common/helpers/device';
-import { RestartBundle } from '@common/helpers/app';
+import { ExitApp } from '@common/helpers/app';
 
 import { Biometric, BiometricErrors } from '@common/libs/biometric';
 import Vault from '@common/libs/vault';
@@ -128,8 +128,8 @@ class AuthenticationService {
         // wipe storage
         DataStorage.wipe();
 
-        // restart bundle, this will navigate user to onBoarding
-        RestartBundle();
+        // exit the app
+        ExitApp();
     };
 
     /**

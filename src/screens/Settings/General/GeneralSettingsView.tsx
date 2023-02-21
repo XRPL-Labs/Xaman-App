@@ -9,7 +9,7 @@ import { View, Text, ScrollView } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetDeviceLocaleSettings } from '@common/helpers/device';
-import { RestartBundle } from '@common/helpers/app';
+import { ExitApp } from '@common/helpers/app';
 import { Prompt } from '@common/helpers/interface';
 
 import { AppScreens } from '@common/constants';
@@ -153,8 +153,8 @@ class GeneralSettingsView extends Component<Props, State> {
         // save in store
         CoreRepository.saveSettings({ theme });
 
-        // restart app
-        RestartBundle();
+        // exit the app
+        ExitApp();
     };
 
     onThemeSelect = (selected: Themes) => {
@@ -164,7 +164,7 @@ class GeneralSettingsView extends Component<Props, State> {
             [
                 { text: Localize.t('global.cancel') },
                 {
-                    text: Localize.t('global.doIt'),
+                    text: Localize.t('global.quitApp'),
                     onPress: () => {
                         this.changeTheme(selected);
                     },
