@@ -19,6 +19,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { LedgerObjectFactory, TransactionFactory } from '@common/libs/ledger/factory';
 import { LedgerEntriesTypes, LedgerMarker, LedgerObjectTypes, TransactionTypes } from '@common/libs/ledger/types';
 import { Transactions } from '@common/libs/ledger/transactions/types';
+import { NFTokenOffer } from '@common/libs/ledger/objects';
 import { LedgerObjects } from '@common/libs/ledger/objects/types';
 import { Payload } from '@common/libs/payload';
 
@@ -63,7 +64,7 @@ export interface State {
     account: AccountSchema;
     transactions: Array<Transactions>;
     plannedTransactions: Array<LedgerObjects>;
-    pendingRequests: Array<Payload>;
+    pendingRequests: Array<Payload | NFTokenOffer>;
     dataSource: Array<Transactions | LedgerObjects | Payload>;
 }
 
@@ -251,17 +252,22 @@ class EventsView extends Component<Props, State> {
     };
 
     loadPendingRequests = () => {
+        const { account, sectionIndex } = this.state;
+
         return new Promise((resolve) => {
-            BackendService.getPendingPayloads()
-                .then((payloads) => {
-                    this.setState({ pendingRequests: payloads }, () => {
-                        resolve(payloads);
-                    });
-                })
-                .catch(() => {
-                    Toast(Localize.t('events.canNotFetchSignRequests'));
-                    resolve([]);
+            const promises = [BackendService.getPendingPayloads()] as any;
+
+            // only load XLS20 offers on requests section
+            if (sectionIndex === 2) {
+                promises.push(BackendService.getXLS20Offered(account.address));
+            }
+
+            Promise.all(promises).then((result) => {
+                const combined = [].concat(...result);
+                this.setState({ pendingRequests: combined }, () => {
+                    resolve(combined);
                 });
+            });
         });
     };
 

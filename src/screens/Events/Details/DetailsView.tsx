@@ -366,7 +366,9 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             case LedgerObjectTypes.NFTokenOffer:
-                if (tx.Destination) {
+                if (tx.Owner !== account.address) {
+                    address = tx.Owner;
+                } else if (tx.Destination && tx.Destination.address !== account.address) {
                     address = tx.Destination.address;
                 }
                 break;
@@ -657,6 +659,22 @@ class TransactionDetailsView extends Component<Props, State> {
                     // @ts-ignore
                     NFTokenOffers: [tx.Index],
                 });
+                break;
+            case 'NFTokenAcceptOffer':
+                Object.assign(transaction, {
+                    TransactionType: 'NFTokenAcceptOffer',
+                });
+                if (tx.Flags.SellToken) {
+                    Object.assign(transaction, {
+                        // @ts-ignore
+                        NFTokenSellOffer: tx.Index,
+                    });
+                } else {
+                    Object.assign(transaction, {
+                        // @ts-ignore
+                        NFTokenBuyOffer: tx.Index,
+                    });
+                }
                 break;
             case 'CheckCancel':
                 if (tx.Type === LedgerObjectTypes.Check) {
@@ -1441,8 +1459,13 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx } = this.state;
 
         let changes;
+
         // ledger objects always have reserve change increase
         if (tx.ClassName === 'LedgerObject') {
+            // ignore for incoming NFTokenOffers
+            if (tx.Type === LedgerObjectTypes.NFTokenOffer && tx.Owner !== account.address) {
+                return null;
+            }
             changes = {
                 address: account.address,
                 value: 1,
@@ -1458,13 +1481,13 @@ class TransactionDetailsView extends Component<Props, State> {
 
         return (
             <View style={styles.reserveContainer}>
-                <View style={[AppStyles.row]}>
+                <View style={AppStyles.row}>
                     <Icon
                         name={changes.action === 'INC' ? 'IconLock' : 'IconUnlock'}
                         size={18}
                         style={AppStyles.imgColorPrimary}
                     />
-                    <Text style={[styles.labelText]}> {Localize.t('global.reserve')}</Text>
+                    <Text style={styles.labelText}> {Localize.t('global.reserve')}</Text>
                 </View>
 
                 <View style={[AppStyles.paddingBottomSml]}>
@@ -2024,11 +2047,19 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
                 break;
             case LedgerObjectTypes.NFTokenOffer:
-                actionButtons.push({
-                    label: Localize.t('events.cancelOffer'),
-                    type: 'NFTokenCancelOffer',
-                    secondary: true,
-                });
+                if (tx.Owner === account.address) {
+                    actionButtons.push({
+                        label: Localize.t('events.cancelOffer'),
+                        type: 'NFTokenCancelOffer',
+                        secondary: true,
+                    });
+                } else {
+                    actionButtons.push({
+                        label: Localize.t('events.acceptOffer'),
+                        type: 'NFTokenAcceptOffer',
+                        secondary: true,
+                    });
+                }
                 break;
             case LedgerObjectTypes.Escrow:
                 if (tx.isExpired) {
@@ -2160,16 +2191,34 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         if (tx.Type === LedgerObjectTypes.NFTokenOffer) {
-            from = {
-                address: account.address,
-                name: account.label,
-                source: 'accounts',
-            };
+            if (tx.Owner === account.address) {
+                from = {
+                    address: account.address,
+                    name: account.label,
+                    source: 'accounts',
+                };
+            } else {
+                from = {
+                    address: tx.Owner,
+                    ...partiesDetails,
+                };
+            }
 
             if (tx.Destination) {
+                if (tx.Destination.address === account.address) {
+                    to = {
+                        address: account.address,
+                        name: account.label,
+                        source: 'accounts',
+                    };
+                } else {
+                    to = {
+                        ...partiesDetails,
+                    };
+                }
+            } else {
                 to = {
-                    address: tx.Destination.address,
-                    ...partiesDetails,
+                    address: undefined,
                 };
             }
         }

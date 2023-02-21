@@ -86,6 +86,9 @@ class LedgerObjectTemplate extends Component<Props, State> {
                     tag: item.Destination.tag,
                 };
             case LedgerObjectTypes.NFTokenOffer:
+                return {
+                    address: item.Owner,
+                };
             case LedgerObjectTypes.Offer:
             case LedgerObjectTypes.Ticket:
                 return {
@@ -144,7 +147,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
 
         return (
             <View style={styles.iconContainer}>
-                <Icon size={20} style={[styles.icon]} name={iconName} />
+                <Icon size={20} style={styles.icon} name={iconName} />
             </View>
         );
     };

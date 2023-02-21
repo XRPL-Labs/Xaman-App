@@ -452,6 +452,7 @@
     "updateAccountAssets": "Update account tokens",
     "createOffer": "Create offer",
     "cancelOffer": "Cancel offer",
+    "acceptOffer": "Accept offer",
     "createEscrow": "Create escrow",
     "finishEscrow": "Finish escrow",
     "cancelEscrow": "Cancel escrow",

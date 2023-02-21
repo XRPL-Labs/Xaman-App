@@ -3,7 +3,7 @@
  * Interact with XUMM backend
  */
 
-import { map, isEmpty, flatMap, get, reduce } from 'lodash';
+import { map, isEmpty, flatMap, get, reduce, compact } from 'lodash';
 import moment from 'moment-timezone';
 
 import { Platform } from 'react-native';
@@ -22,6 +22,9 @@ import CounterPartyRepository from '@store/repositories/counterParty';
 import CurrencyRepository from '@store/repositories/currency';
 
 import { Payload, PayloadType } from '@common/libs/payload';
+
+import { LedgerObjectFactory } from '@common/libs/ledger/factory';
+import { NFTokenOffer } from '@common/libs/ledger/objects';
 
 // services
 import PushNotificationsService from '@services/PushNotificationsService';
@@ -364,7 +367,44 @@ class BackendService {
     };
 
     getXLS20Details = (account: string, tokens: string[]) => {
-        return ApiService.xls20Details.post(null, { account, tokens });
+        return ApiService.xls20Details.post(null, { account, tokens }, { 'X-XummNet': SocketService.chain });
+    };
+
+    getXLS20Offered = (account: string): Array<NFTokenOffer> => {
+        return ApiService.xls20Offered
+            .get({ account }, null, { 'X-XummNet': SocketService.chain })
+            .then(async (res: Array<any>) => {
+                if (isEmpty(res)) {
+                    return [];
+                }
+
+                // fetch the offer objects from ledger
+                const ledgerOffers = await Promise.all(
+                    flatMap(res, (offer) => {
+                        const { OfferID } = offer;
+                        return LedgerService.getLedgerEntry({ index: OfferID })
+                            .then((resp) => {
+                                const { node } = resp;
+                                if (
+                                    node?.LedgerEntryType === 'NFTokenOffer' &&
+                                    (node?.Owner === account || node?.Destination === account)
+                                ) {
+                                    return resp.node;
+                                }
+                                return null;
+                            })
+                            .catch(() => {
+                                return null;
+                            });
+                    }),
+                );
+
+                return compact(flatMap(ledgerOffers, LedgerObjectFactory.fromLedger));
+            })
+            .catch((error: string): any => {
+                this.logger.error('Fetch XLS20 offered Error: ', error);
+                return [];
+            });
     };
 
     getCurrencyRate = (currency: string) => {

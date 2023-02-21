@@ -36,5 +36,6 @@ export default {
         ['thirdPartyApps', '/v1/app/third-party-permissions'],
         ['thirdPartyApp', '/v1/app/third-party-permissions/{appId}'],
         ['xls20Details', '/v1/app/xls20-details'],
+        ['xls20Offered', '/v1/app/xls20-offered/{account}'],
     ]),
 };
