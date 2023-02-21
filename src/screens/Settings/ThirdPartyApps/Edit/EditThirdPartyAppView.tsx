@@ -270,7 +270,7 @@ class EditThirdPartyAppView extends Component<Props, State> {
                 <Spacer />
                 <Text style={AppStyles.pbold}>{Localize.t('global.details')}:</Text>
                 <Spacer />
-                <Text style={[AppStyles.baseText, AppStyles.mono, AppStyles.textCenterAligned]}>{app.description}</Text>
+                <Text style={[AppStyles.baseText, AppStyles.textCenterAligned]}>{app.description}</Text>
             </View>
         );
     };
