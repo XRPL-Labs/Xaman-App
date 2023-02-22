@@ -391,6 +391,16 @@ class BaseTransaction {
             const afterFee = new BigNumber(changes[feeFieldKey].value).minus(new BigNumber(this.Fee));
             if (afterFee.isZero()) {
                 set(changes, feeFieldKey, undefined);
+            } else if (
+                afterFee.isNegative() &&
+                this.TransactionType === TransactionTypes.NFTokenAcceptOffer &&
+                feeFieldKey === 'sent'
+            ) {
+                set(changes, 'sent', undefined);
+                set(changes, 'received', {
+                    currency: 'XRP',
+                    value: afterFee.absoluteValue().decimalPlaces(8).toString(10),
+                });
             } else {
                 set(changes, [feeFieldKey, 'value'], afterFee.decimalPlaces(8).toString(10));
             }
