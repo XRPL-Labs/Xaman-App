@@ -385,10 +385,7 @@ class BackendService {
                         return LedgerService.getLedgerEntry({ index: OfferID })
                             .then((resp) => {
                                 const { node } = resp;
-                                if (
-                                    node?.LedgerEntryType === 'NFTokenOffer' &&
-                                    (node?.Owner === account || node?.Destination === account)
-                                ) {
+                                if (node?.LedgerEntryType === 'NFTokenOffer') {
                                     return resp.node;
                                 }
                                 return null;

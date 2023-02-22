@@ -1610,7 +1610,14 @@ class TransactionDetailsView extends Component<Props, State> {
         let badgeType: any;
 
         if (tx.ClassName === 'LedgerObject') {
-            if ([LedgerObjectTypes.Offer, LedgerObjectTypes.Check, LedgerObjectTypes.Ticket].includes(tx.Type)) {
+            if (
+                [
+                    LedgerObjectTypes.Offer,
+                    LedgerObjectTypes.NFTokenOffer,
+                    LedgerObjectTypes.Check,
+                    LedgerObjectTypes.Ticket,
+                ].includes(tx.Type)
+            ) {
                 badgeType = 'open';
             } else {
                 badgeType = 'planned';
@@ -2204,23 +2211,9 @@ class TransactionDetailsView extends Component<Props, State> {
                 };
             }
 
-            if (tx.Destination) {
-                if (tx.Destination.address === account.address) {
-                    to = {
-                        address: account.address,
-                        name: account.label,
-                        source: 'accounts',
-                    };
-                } else {
-                    to = {
-                        ...partiesDetails,
-                    };
-                }
-            } else {
-                to = {
-                    address: undefined,
-                };
-            }
+            to = {
+                address: undefined,
+            };
         }
 
         // Accepted NFT offer
