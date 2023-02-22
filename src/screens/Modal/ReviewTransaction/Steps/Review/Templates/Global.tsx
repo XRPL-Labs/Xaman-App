@@ -34,6 +34,7 @@ export interface State {
     availableFees: FeeItem[];
     selectedFee: FeeItem;
     signers: AccountNameType[];
+    warnings: Array<string>;
     isLoadingFee: boolean;
     isLoadingSigners: boolean;
 }
@@ -53,6 +54,7 @@ class GlobalTemplate extends Component<Props, State> {
             availableFees: undefined,
             selectedFee: undefined,
             signers: undefined,
+            warnings: undefined,
             isLoadingFee: true,
             isLoadingSigners: true,
         };
@@ -61,6 +63,7 @@ class GlobalTemplate extends Component<Props, State> {
     componentDidMount() {
         this.loadTransactionFee();
         this.fetchSignersDetails();
+        this.setWarnings();
     }
 
     fetchSignersDetails = async () => {
@@ -140,6 +143,26 @@ class GlobalTemplate extends Component<Props, State> {
         } finally {
             this.setState({
                 isLoadingFee: false,
+            });
+        }
+    };
+
+    setWarnings = async () => {
+        const { transaction } = this.props;
+
+        const warnings = [];
+
+        // AccountDelete
+        // check if destination account is already imported in XUMM and can be signed
+        if (transaction.Type === TransactionTypes.AccountDelete) {
+            if (!find(AccountRepository.getSignableAccounts(), (o) => o.address === transaction.Destination?.address)) {
+                warnings.push(Localize.t('payload.accountDeleteExchangeSupportWarning'));
+            }
+        }
+
+        if (warnings.length > 0) {
+            this.setState({
+                warnings,
             });
         }
     };
@@ -261,13 +284,12 @@ class GlobalTemplate extends Component<Props, State> {
     };
 
     renderWarnings = () => {
-        const { transaction } = this.props;
+        const { warnings } = this.state;
 
-        if (transaction.Type === TransactionTypes.AccountDelete) {
-            // check if destination account is already imported in XUMM and can be signed
-            if (!find(AccountRepository.getSignableAccounts(), (o) => o.address === transaction.Destination?.address)) {
-                return <InfoMessage type="error" label={Localize.t('payload.accountDeleteExchangeSupportWarning')} />;
-            }
+        if (Array.isArray(warnings) && warnings.length > 0) {
+            return warnings.map((warning, index) => {
+                return <InfoMessage key={index} type="error" label={warning} />;
+            });
         }
 
         return null;
