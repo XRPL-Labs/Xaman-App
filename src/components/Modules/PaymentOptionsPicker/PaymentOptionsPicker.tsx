@@ -210,12 +210,12 @@ class PaymentOptionsPicker extends Component<Props, State> {
         return new Promise((resolve) => {
             this.pathFinding
                 .request(
-                    amount.currency === 'XRP' ? new Amount(amount.value).xrpToDrops() : amount,
+                    amount.currency === 'XRP' ? new Amount(amount.value, false).xrpToDrops() : amount,
                     source,
                     destination,
                 )
                 .then((options) => {
-                    // remove the IOU option from options as we include it by default
+                    // remove local option from options as we include it by default
                     const filteredOptions = filter(options, (item) => {
                         const { paths_computed } = item;
                         return Array.isArray(paths_computed) && paths_computed.length > 0;
