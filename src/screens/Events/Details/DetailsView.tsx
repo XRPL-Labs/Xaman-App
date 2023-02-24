@@ -549,7 +549,13 @@ class TransactionDetailsView extends Component<Props, State> {
             case LedgerObjectTypes.Ticket:
                 return Localize.t('global.ticket');
             case LedgerObjectTypes.NFTokenOffer:
-                if (tx.Flags?.SellToken) {
+                if (tx.Owner !== account.address) {
+                    if (tx.Flags.SellToken) {
+                        return Localize.t('events.nftOfferedToYou');
+                    }
+                    return Localize.t('events.offerOnYouNFT');
+                }
+                if (tx.Flags.SellToken) {
                     return Localize.t('events.sellNFToken');
                 }
                 return Localize.t('events.buyNFToken');
@@ -1799,7 +1805,21 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             }
-            case LedgerObjectTypes.NFTokenOffer:
+            case LedgerObjectTypes.NFTokenOffer: {
+                let icon;
+                if (tx.Owner !== account.address) {
+                    icon = tx.Flags.SellToken ? 'IconCornerRightUp' : 'IconCornerRightDown';
+                } else {
+                    icon = tx.Flags.SellToken ? 'IconCornerRightDown' : 'IconCornerRightUp';
+                }
+                Object.assign(props, {
+                    color: styles.naturalColor,
+                    icon,
+                    value: tx.Amount.value,
+                    currency: tx.Amount.currency,
+                });
+                break;
+            }
             case TransactionTypes.NFTokenCreateOffer: {
                 let icon;
                 if (incomingTx) {
@@ -2061,8 +2081,15 @@ class TransactionDetailsView extends Component<Props, State> {
                         secondary: true,
                     });
                 } else {
+                    if (tx.Flags.SellToken) {
+                        actionButtons.push({
+                            label: Localize.t('events.acceptOffer'),
+                            type: 'NFTokenAcceptOffer',
+                            secondary: true,
+                        });
+                    }
                     actionButtons.push({
-                        label: Localize.t('events.acceptOffer'),
+                        label: Localize.t('events.sellMyNFT'),
                         type: 'NFTokenAcceptOffer',
                         secondary: true,
                     });

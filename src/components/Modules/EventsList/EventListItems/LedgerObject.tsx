@@ -173,7 +173,7 @@ class LedgerObjectTemplate extends Component<Props, State> {
     };
 
     getDescription = () => {
-        const { item } = this.props;
+        const { item, account } = this.props;
 
         switch (item.Type) {
             case LedgerObjectTypes.Escrow:
@@ -181,6 +181,14 @@ class LedgerObjectTemplate extends Component<Props, State> {
             case LedgerObjectTypes.Offer:
                 return Localize.t('global.offer');
             case LedgerObjectTypes.NFTokenOffer:
+                // incoming offers
+                if (item.Owner !== account.address) {
+                    if (item.Flags.SellToken) {
+                        return Localize.t('events.nftOfferedToYou');
+                    }
+                    return Localize.t('events.offerOnYouNFT');
+                }
+                // outgoing offers
                 if (item.Flags.SellToken) {
                     return Localize.t('events.sellNFToken');
                 }

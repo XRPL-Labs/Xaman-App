@@ -570,7 +570,10 @@
     "thisTransactionDoesNotEffectAnyAccountSettings": "This transaction doesn't affect any account settings.",
     "thisTransactionClearTicket": "This transaction clears (consumes & removes) ticket #%{ticketSequence}",
     "sellNFToken": "Sell NFT token",
-    "buyNFToken": "Buy NFT token"
+    "nftOfferedToYou": "NFT offered to you",
+    "buyNFToken": "Buy NFT token",
+    "offerOnYouNFT": "Offer on your NFT",
+    "sellMyNFT": "Sell my NFT"
   },
   "pro": {
     "proBeta": "Pro Beta",
