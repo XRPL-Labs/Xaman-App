@@ -78,13 +78,9 @@ class ReviewTransactionModal extends Component<Props, State> {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress);
 
         // set transaction
-        try {
-            this.setState({
-                transaction: payload.getTransaction(),
-            });
-        } catch (e: any) {
-            this.setError(e?.message);
-        }
+        this.setState({
+            transaction: payload.getTransaction(),
+        });
     }
 
     componentWillUnmount() {
@@ -250,11 +246,10 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     onDecline = () => {
         const { onDecline, payload } = this.props;
-
-        const { hasError, hardErrorMessage, softErrorMessage } = this.state;
+        const { hardErrorMessage, softErrorMessage } = this.state;
 
         // reject the payload
-        payload.reject(hasError ? 'XUMM' : 'USER', hardErrorMessage || softErrorMessage);
+        payload.reject(hardErrorMessage ? 'XUMM' : 'USER', hardErrorMessage || softErrorMessage);
 
         // emit sign requests update
         setTimeout(() => {
@@ -722,6 +717,17 @@ class ReviewTransactionModal extends Component<Props, State> {
         });
     };
 
+    onErrorBackPress = () => {
+        const { hardErrorMessage } = this.state;
+
+        // in case of hard error decline the payload
+        if (hardErrorMessage) {
+            this.onDecline();
+        } else {
+            this.onClose();
+        }
+    };
+
     renderError = () => {
         const { softErrorMessage } = this.state;
 
@@ -745,7 +751,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                     label={softErrorMessage || Localize.t('payload.unexpectedPayloadErrorOccurred')}
                 />
                 <Spacer size={40} />
-                <Button testID="back-button" label={Localize.t('global.back')} onPress={this.onDecline} />
+                <Button testID="back-button" label={Localize.t('global.back')} onPress={this.onErrorBackPress} />
             </View>
         );
     };
