@@ -266,6 +266,15 @@ class AccountImportView extends Component<Props, State> {
                     account.accessLevel === AccessLevels.Readonly ||
                     account.type === AccountTypes.Tangem
                 ) {
+                    // alert the r address in case of importing full access
+                    if (account.accessLevel === AccessLevels.Full && account.type === AccountTypes.Regular) {
+                        Alert.alert(
+                            Localize.t('global.error'),
+                            Localize.t('account.importingSecretAccountExist', { address: importedAccount.address }),
+                        );
+                        return;
+                    }
+
                     Alert.alert(Localize.t('global.error'), Localize.t('account.accountAlreadyExist'));
                     return;
                 }
