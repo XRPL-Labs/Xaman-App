@@ -377,7 +377,6 @@ class BackendService {
                 if (isEmpty(res)) {
                     return [];
                 }
-
                 // fetch the offer objects from ledger
                 const ledgerOffers = await Promise.all(
                     flatMap(res, (offer) => {
@@ -386,7 +385,10 @@ class BackendService {
                             .then((resp) => {
                                 const { node } = resp;
                                 if (node?.LedgerEntryType === 'NFTokenOffer') {
-                                    return resp.node;
+                                    // combine ledger time with the object
+                                    return Object.assign(resp.node, {
+                                        LedgerTime: get(offer, 'ledger_close_time'),
+                                    });
                                 }
                                 return null;
                             })

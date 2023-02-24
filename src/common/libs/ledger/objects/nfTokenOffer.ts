@@ -52,19 +52,26 @@ class NFTokenOffer extends BaseLedgerObject {
 
         return {
             currency: amount.currency,
-            value: new Amount(amount.value, false).toString(),
+            value: amount.value,
             issuer: amount.issuer,
         };
     }
 
     get Date(): any {
-        return this.Expiration;
+        return this.LedgerTime || this.Expiration;
     }
 
     get Expiration(): string {
         const date = get(this, ['object', 'Expiration'], undefined);
         if (isUndefined(date)) return undefined;
         const ledgerDate = new LedgerDate(date);
+        return ledgerDate.toISO8601();
+    }
+
+    get LedgerTime(): string {
+        const ledgerTime = get(this, ['object', 'LedgerTime'], undefined);
+        if (isUndefined(ledgerTime)) return undefined;
+        const ledgerDate = new LedgerDate(ledgerTime);
         return ledgerDate.toISO8601();
     }
 }
