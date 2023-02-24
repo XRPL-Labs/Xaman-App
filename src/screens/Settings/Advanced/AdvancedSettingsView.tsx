@@ -79,7 +79,7 @@ class AdvancedSettingsView extends Component<Props, State> {
 
         const explorer = find(AppConfig.explorer, { value: defaultExplorer });
 
-        return explorer.title;
+        return explorer?.title || defaultExplorer;
     };
 
     changeDefaultExplorer = (selected: any) => {

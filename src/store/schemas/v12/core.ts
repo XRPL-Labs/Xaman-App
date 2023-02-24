@@ -62,10 +62,12 @@ class Core extends Realm.Object {
         const newObjects = newRealm.objects('Core') as Core[];
 
         for (let i = 0; i < newObjects.length; i++) {
+            // by default show reserve fiat panel in home screen
             newObjects[i].showFiatPanel = true;
-            // replace xrplorer with bithomp as it's been removed
-            if (newObjects[i].defaultExplorer === 'xrplorer') {
-                newObjects[i].defaultExplorer = 'bithomp';
+
+            // replace deprecated "xrplorer" and "xrpintel" with "bithomp"
+            if (newObjects[i].defaultExplorer === 'xrplorer' || newObjects[i].defaultExplorer === 'xrpintel') {
+                newObjects[i].defaultExplorer = AppConfig.fallbackExplorer;
             }
         }
     }

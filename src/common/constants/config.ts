@@ -71,21 +71,8 @@ export default {
                 dev: 'https://devnet.xrpl.org/accounts/',
             },
         },
-        {
-            value: 'xrpintel',
-            title: 'xrpintel',
-            tx: {
-                main: 'https://xrpintel.com/tx/',
-                test: 'https://test.bithomp.com/explorer/',
-                dev: 'https://devnet.xrpl.org/transactions/',
-            },
-            account: {
-                main: 'https://xrpintel.com/account/',
-                test: 'https://test.bithomp.com/explorer/',
-                dev: 'https://devnet.xrpl.org/accounts/',
-            },
-        },
     ],
+    fallbackExplorer: 'bithomp',
 
     // default network base and owner reserve
     network: {
