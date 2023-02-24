@@ -24,9 +24,17 @@ class Escrow extends BaseLedgerObject {
 
         if (isUndefined(amount)) return undefined;
 
+        if (typeof amount === 'string') {
+            return {
+                currency: 'XRP',
+                value: new Amount(amount).dropsToXrp(),
+            };
+        }
+
         return {
-            currency: 'XRP',
-            value: new Amount(amount).dropsToXrp(),
+            currency: amount.currency,
+            value: amount.value,
+            issuer: amount.issuer,
         };
     }
 
