@@ -48,6 +48,7 @@ import {
     Button,
     Header,
     Icon,
+    InfoMessage,
     LoadingIndicator,
     ReadMore,
     Spacer,
@@ -2080,19 +2081,20 @@ class TransactionDetailsView extends Component<Props, State> {
                         type: 'NFTokenCancelOffer',
                         secondary: true,
                     });
-                } else {
+                } else if (!tx.Destination || tx.Destination.address === account.address) {
                     if (tx.Flags.SellToken) {
                         actionButtons.push({
                             label: Localize.t('events.acceptOffer'),
                             type: 'NFTokenAcceptOffer',
                             secondary: true,
                         });
+                    } else {
+                        actionButtons.push({
+                            label: Localize.t('events.sellMyNFT'),
+                            type: 'NFTokenAcceptOffer',
+                            secondary: true,
+                        });
                     }
-                    actionButtons.push({
-                        label: Localize.t('events.sellMyNFT'),
-                        type: 'NFTokenAcceptOffer',
-                        secondary: true,
-                    });
                 }
                 break;
             case LedgerObjectTypes.Escrow:
@@ -2155,6 +2157,32 @@ class TransactionDetailsView extends Component<Props, State> {
                             <Spacer size={i + 1 < actionButtons.length ? 15 : 0} />
                         </Fragment>
                     ))}
+                </View>
+            );
+        }
+
+        return null;
+    };
+
+    renderWarnings = () => {
+        const { account } = this.props;
+        const { tx } = this.state;
+
+        const warnings = [] as Array<string>;
+
+        if (tx.Type === LedgerObjectTypes.NFTokenOffer) {
+            // incoming offer with destination set other than
+            if (tx.Owner !== account.address && tx.Destination.address !== account.address) {
+                warnings.push(Localize.t('events.thisOfferCanOnlyBeAcceptedByThirdParty'));
+            }
+        }
+
+        if (warnings.length > 0) {
+            return (
+                <View style={styles.warningsContainer}>
+                    {warnings.map((warning) => {
+                        return <InfoMessage type="error" label={warning} />;
+                    })}
                 </View>
             );
         }
@@ -2387,6 +2415,7 @@ class TransactionDetailsView extends Component<Props, State> {
                             {this.renderReserveChange()}
                             {this.renderSourceDestination()}
                             {this.renderActionButtons()}
+                            {this.renderWarnings()}
                             <View style={styles.detailsContainer}>
                                 {this.renderTransactionId()}
                                 {this.renderDescription()}

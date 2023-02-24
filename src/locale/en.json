@@ -573,7 +573,8 @@
     "nftOfferedToYou": "NFT offered to you",
     "buyNFToken": "Buy NFT token",
     "offerOnYouNFT": "Offer on your NFT",
-    "sellMyNFT": "Sell my NFT"
+    "sellMyNFT": "Sell my NFT",
+    "thisOfferCanOnlyBeAcceptedByThirdParty": "This offer has a third party (e.g. a Broker) set as a destination. Only this account can accept the offer."
   },
   "pro": {
     "proBeta": "Pro Beta",

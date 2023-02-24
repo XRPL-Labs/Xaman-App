@@ -47,6 +47,10 @@ const styles = StyleService.create({
         paddingHorizontal: 25,
         paddingBottom: 25,
     },
+    warningsContainer: {
+        paddingHorizontal: 25,
+        paddingBottom: 25,
+    },
     detailsContainer: {
         borderTopColor: '$tint',
         borderTopWidth: 1,
