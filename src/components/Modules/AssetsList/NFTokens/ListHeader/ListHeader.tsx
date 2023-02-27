@@ -30,7 +30,7 @@ class ListHeader extends PureComponent<Props> {
                 onPress={this.onTitlePress}
             >
                 <Text numberOfLines={1} style={styles.tokenText}>
-                    {Localize.t('global.nft')}
+                    {Localize.t('global.nfts')}
                 </Text>
                 <Icon name="IconChevronDown" size={22} style={styles.pickerIcon} />
             </TouchableDebounce>

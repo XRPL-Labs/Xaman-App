@@ -112,7 +112,7 @@ class SwitchAssetCategoryModal extends Component<Props, State> {
                         <Spacer />
                         <Button
                             light
-                            label={Localize.t('global.nft')}
+                            label={Localize.t('global.nfts')}
                             style={selected === ASSETS_CATEGORY.NFTokens && styles.selectedButton}
                             /* eslint-disable-next-line react/jsx-no-bind */
                             onPress={this.onAssetPress.bind(null, ASSETS_CATEGORY.NFTokens)}

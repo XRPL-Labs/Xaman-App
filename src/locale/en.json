@@ -328,7 +328,7 @@
     "privacyPolicy": "Privacy policy",
     "termsAndConditions": "Terms & conditions",
     "support": "Support",
-    "nft": "NFT",
+    "nfts": "NFTs",
     "xAppWantsToOpenURLNotice": "'%{xapp}' xApp wants to open this URL:\r\n\r\n%{url}",
     "customNodeSuccessfullyAddedToXUMM": "Custom node successfully added to XUMM. Do you want to switch to the added node?",
     "addingCustomNodeWarning": "You are adding a custom node to XUMM, do you want to continue?",
