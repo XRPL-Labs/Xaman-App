@@ -341,25 +341,15 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     shareContent = (data: any) => {
-        const title = get(data, 'title');
         const text = get(data, 'text');
-        const url = get(data, 'url');
 
-        // at least one of URL and message is required
-        if (isEmpty(text) && isEmpty(url)) {
-            return;
-        }
-
-        // check if url is a safe url if present
-        if (url && !StringTypeCheck.isValidURL(url)) {
+        if (typeof text !== 'string' || isEmpty(text)) {
             return;
         }
 
         // show share dialog
         Share.share({
-            title,
             message: text,
-            url,
         }).catch(() => {});
     };
 
