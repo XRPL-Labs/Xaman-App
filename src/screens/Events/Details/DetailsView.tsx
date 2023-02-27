@@ -2172,7 +2172,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
         if (tx.Type === LedgerObjectTypes.NFTokenOffer) {
             // incoming offer with destination set other than
-            if (tx.Owner !== account.address && tx.Destination.address !== account.address) {
+            if (tx.Owner !== account.address && tx.Destination && tx.Destination.address !== account.address) {
                 warnings.push(Localize.t('events.thisOfferCanOnlyBeAcceptedByThirdParty'));
             }
         }
