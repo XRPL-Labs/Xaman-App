@@ -95,7 +95,9 @@ class Application {
 
     // handle errors in app startup
     handleError = (exception: Error) => {
+        // normalize error message
         const message = services.LoggerService.normalizeError(exception);
+
         if (message) {
             if (
                 message.indexOf('Realm file decryption failed') > -1 ||
@@ -122,7 +124,10 @@ class Application {
             Alert.alert('Error', 'Unexpected error happened');
         }
 
-        services.LoggerService.recordError('APP_STARTUP_ERROR', exception);
+        // if error is not caused from device being jail-broken or rooted then report error to the crashlytics
+        if (![ErrorMessages.runningOnRootedDevice, ErrorMessages.runningOnJailBrokenDevice].includes(message)) {
+            services.LoggerService.logError('APP_STARTUP_ERROR', exception);
+        }
     };
 
     wipeStorage = () => {
