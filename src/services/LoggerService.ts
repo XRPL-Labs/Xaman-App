@@ -5,9 +5,16 @@
  */
 
 import { ErrorMessages } from '@common/constants';
+
 import crashlytics from '@react-native-firebase/crashlytics';
+import analytics from '@react-native-firebase/analytics';
 
 /* Types  ==================================================================== */
+export enum LogEvents {
+    EncryptionMigrationSuccess = 'encryption_migration_success',
+    EncryptionMigrationException = 'encryption_migration_exception',
+}
+
 type levels = 'debug' | 'warn' | 'error';
 
 type methods = {
@@ -20,12 +27,12 @@ type methods = {
 class LoggerService {
     entries: any[];
     isDEV: boolean;
-    MAX_LOG_SIZE: number;
     levels: any;
+
+    static MAX_LOG_SIZE = 500;
 
     constructor() {
         this.entries = [];
-        this.MAX_LOG_SIZE = 500;
         this.isDEV = !!__DEV__;
         this.levels = {
             debug: { priority: 20 },
@@ -35,9 +42,9 @@ class LoggerService {
     }
 
     /**
-     * record a error in firebase crashlytics
+     * log error in firebase crashlytics
      */
-    recordError = (message: string, exception: any) => {
+    logError = (message: string, exception: any) => {
         if (message) {
             crashlytics().log(message);
         }
@@ -47,11 +54,18 @@ class LoggerService {
     };
 
     /**
+     * log an event in firebase analytics
+     */
+    logEvent = (event: LogEvents) => {
+        analytics().logEvent(event);
+    };
+
+    /**
      * log error in session logs
      */
-    logError = (msg: string, e: any) => {
-        const data = this.normalizeError(e);
-        this.addLogMessage('error', msg, data);
+    recordError = (message: string, exception: any) => {
+        const data = this.normalizeError(exception);
+        this.addLogMessage('error', message, data);
     };
 
     /**
@@ -131,7 +145,7 @@ class LoggerService {
             data,
         });
 
-        if (this.entries.length > this.MAX_LOG_SIZE) {
+        if (this.entries.length > LoggerService.MAX_LOG_SIZE) {
             this.entries.shift();
         }
     }

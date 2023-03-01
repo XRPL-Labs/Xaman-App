@@ -180,7 +180,7 @@ class VaultModal extends Component<Props, State> {
 
     onSignError = (method: AuthMethods, e: Error) => {
         // log
-        LoggerService.logError(`Unexpected error in sign process [${method}]`, e);
+        LoggerService.recordError(`Unexpected error in sign process [${method}]`, e);
         // show alert
         Prompt(
             Localize.t('global.unexpectedErrorOccurred'),

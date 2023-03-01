@@ -23,7 +23,7 @@ export interface Props {
     testID?: string;
     task: () => Promise<void>;
     onSuccess: () => void;
-    onError: () => void;
+    onError: (exception: any) => void;
 }
 
 export interface State {}
@@ -87,32 +87,39 @@ class CriticalProcessing extends Component<Props, State> {
         }
     }
 
-    dismiss = (callback: () => void) => {
-        Animated.timing(this.animatedOpacity, {
-            toValue: 0,
-            duration: 200,
-            useNativeDriver: true,
-        }).start(async () => {
-            await Navigator.dismissOverlay();
-
-            if (typeof callback === 'function') {
-                callback();
-            }
+    dismiss = () => {
+        return new Promise<void>((resolve) => {
+            Animated.timing(this.animatedOpacity, {
+                toValue: 0,
+                duration: 200,
+                useNativeDriver: true,
+            }).start(async () => {
+                await Navigator.dismissOverlay();
+                resolve();
+            });
         });
     };
 
-    onTaskSuccess = () => {
+    onTaskSuccess = async () => {
         const { onSuccess } = this.props;
 
-        // close the overlay with callback
-        this.dismiss(onSuccess);
+        // wait for the overlay to be closed
+        await this.dismiss();
+
+        if (typeof onSuccess === 'function') {
+            onSuccess();
+        }
     };
 
-    onTaskError = () => {
+    onTaskError = async (exception: any) => {
         const { onError } = this.props;
 
         // close the overlay with callback
-        this.dismiss(onError);
+        await this.dismiss();
+
+        if (typeof onError === 'function') {
+            onError(exception);
+        }
     };
 
     runTask = async () => {

@@ -7,6 +7,9 @@ import { Alert, InteractionManager, SectionList, Text, View } from 'react-native
 
 import { AppScreens } from '@common/constants';
 
+// service
+import LoggerService, { LogEvents } from '@services/LoggerService';
+
 // helpers
 import { Navigator } from '@common/helpers/navigator';
 import Screens from '@common/constants/screens';
@@ -86,12 +89,25 @@ class CipherMigrationView extends Component<Props, State> {
     };
 
     onMigrationSuccess = () => {
+        // log the success event
+        LoggerService.logEvent(LogEvents.EncryptionMigrationSuccess);
+
         // update the list
         this.setDataSource();
     };
 
-    onMigrationError = () => {
-        Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+    onMigrationError = (exception: any) => {
+        // record the error in the session logs
+        LoggerService.recordError('Encryption migration error', exception);
+
+        // log the event
+        LoggerService.logEvent(LogEvents.EncryptionMigrationException);
+
+        // show alert
+        Alert.alert(
+            Localize.t('global.unexpectedErrorOccurred'),
+            Localize.t('global.pleaseCheckSessionLogForMoreInfo'),
+        );
     };
 
     processMigrateAccount = async (account: AccountSchema, key: string) => {

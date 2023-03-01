@@ -121,7 +121,7 @@ class AccountAddView extends Component<Props, State> {
 
             this.goToImport({ tangemCard: card });
         } catch (e) {
-            LoggerService.logError('Unexpected error in importing tangem wallet', e);
+            LoggerService.recordError('Unexpected error in importing tangem wallet', e);
             Alert.alert(
                 Localize.t('global.unexpectedErrorOccurred'),
                 Localize.t('global.pleaseCheckSessionLogForMoreInfo'),
@@ -158,7 +158,7 @@ class AccountAddView extends Component<Props, State> {
             if (e?.message && e?.message === 'The user cancelled the operation') {
                 return;
             }
-            LoggerService.logError('Unexpected error in creating tangem wallet', e);
+            LoggerService.recordError('Unexpected error in creating tangem wallet', e);
             Alert.alert(
                 Localize.t('global.unexpectedErrorOccurred'),
                 Localize.t('global.pleaseCheckSessionLogForMoreInfo'),
@@ -203,7 +203,7 @@ class AccountAddView extends Component<Props, State> {
             if (e?.message && e?.message === 'The user cancelled the operation') {
                 return;
             }
-            LoggerService.logError('Unexpected error in scanning tangem card', e);
+            LoggerService.recordError('Unexpected error in scanning tangem card', e);
             Alert.alert(
                 Localize.t('global.unexpectedErrorOccurred'),
                 Localize.t('global.pleaseCheckSessionLogForMoreInfo'),
@@ -224,7 +224,7 @@ class AccountAddView extends Component<Props, State> {
             attestationMode: 'offline',
             defaultDerivationPaths: DefaultDerivationPaths,
         }).catch((e) => {
-            LoggerService.logError('Unexpected error in startSession TangemSDK', e);
+            LoggerService.recordError('Unexpected error in startSession TangemSDK', e);
         });
 
         if (NFCEnabled) {
