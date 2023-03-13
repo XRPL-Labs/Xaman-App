@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: AppSizes.paddingSml,
-        marginBottom: AppSizes.bottomStableInset,
+        marginBottom: AppSizes.safeAreaBottomInset,
     },
     logo: {
         width: AppSizes.scale(120),

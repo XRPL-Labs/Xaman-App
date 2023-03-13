@@ -735,6 +735,7 @@ class RecipientStep extends Component<Props, State> {
     };
 
     renderItem = (row: any) => {
+        const { isLoading } = this.state;
         const { destination, setDestination } = this.context;
         const { item } = row;
 
@@ -751,6 +752,9 @@ class RecipientStep extends Component<Props, State> {
                 showTag={false}
                 showSource
                 onPress={() => {
+                    if (isLoading) {
+                        return;
+                    }
                     if (!selected) {
                         setDestination({
                             name: item.name,

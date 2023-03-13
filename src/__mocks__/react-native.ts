@@ -12,25 +12,6 @@ ReactNative.NativeModules.CryptoModule = {
     hmac256: jest.fn((value, key) =>
         Promise.resolve(crypto.createHmac('sha256', Buffer.from(key, 'hex')).update(value).digest('hex')),
     ),
-    encrypt: jest.fn((entry, key) => {
-        const ivHex = crypto.randomBytes(16).toString('hex').toUpperCase();
-        const keyEnc = crypto.createHash('sha256').update(key).digest();
-
-        const iv = Buffer.from(ivHex, 'hex');
-        const cipher = crypto.createCipheriv('aes-256-cbc', keyEnc, iv);
-        entry = Buffer.from(entry);
-        let crypted = cipher.update(entry, 'utf-8', 'base64');
-        crypted += cipher.final('base64');
-        return Promise.resolve({ cipher: crypted, iv: ivHex });
-    }),
-    decrypt: jest.fn((entry, key, iv) => {
-        const keyEnc = crypto.createHash('sha256').update(key).digest();
-        iv = Buffer.from(iv, 'hex');
-        const decipher = crypto.createDecipheriv('aes-256-cbc', keyEnc, iv);
-        let decrypted = decipher.update(entry, 'base64');
-        decrypted += decipher.final();
-        return Promise.resolve(decrypted);
-    }),
 };
 
 ReactNative.NativeModules.UtilsModule = {
@@ -66,9 +47,50 @@ ReactNative.NativeModules.Toast = {
     showWithGravity: jest.fn((message: string, duration: any, gravity: number) => true),
 };
 
-ReactNative.NativeModules.DimensionModule = {
+ReactNative.NativeModules.DeviceUtilsModule = {
     layoutInsets: { top: 0, bottom: 0 },
-    getLayoutInsets: jest.fn(() => Promise.resolve({ top: 0, bottom: 0 })),
+    brand: 'Apple',
+    model: 'iPhone13,4',
+    osVersion: '15,5',
+    getElapsedRealtime: jest.fn(() => Promise.resolve(0)),
+    isJailBroken: jest.fn(() => Promise.resolve(false)),
+    isRooted: jest.fn(() => Promise.resolve(false)),
+    getTimeZone: jest.fn(() => Promise.resolve('Europe/Amsterdam')),
+    getLocalSetting: jest.fn(() =>
+        Promise.resolve({ delimiter: ',', languageCode: 'en', locale: 'en_US', separator: '.' }),
+    ),
+};
+
+ReactNative.NativeModules.AppUtilsModule = {
+    appVersion: '0.0.1',
+    buildNumber: '1',
+    isDebug: false,
+    isFlagSecure: jest.fn(() => Promise.resolve(false)),
+    setFlagSecure: jest.fn((value) => {}),
+    restartBundle: jest.fn(() => {}),
+    exitApp: jest.fn(() => {}),
+    timeoutEvent: jest.fn((key, delay) => {}),
+};
+
+ReactNative.NativeModules.UniqueIdProviderModule = {
+    getDeviceUniqueId: jest.fn(() => 'e988b7a9-f685-4674-87bc-0ad52a52faa5'),
+};
+
+ReactNative.NativeModules.HapticFeedbackModule = {
+    trigger: jest.fn((type) => {}),
+};
+
+ReactNative.NativeModules.VaultManagerModule = {
+    getStorageEncryptionKey: jest.fn(() =>
+        Promise.resolve(
+            '1567F58A794600717029077C34A8FAAB9B16B9FFAB174248DD296DA82084EE7921E51DC5757CA655271AF4928263FEC4A36D2139AD02F9CB1BC70F8FD7D38796',
+        ),
+    ),
+    isStorageEncryptionKeyExist: jest.fn(() => Promise.resolve(true)),
+    createVault: jest.fn((vaultName: string, entry: string, key: string) => Promise.resolve(true)),
+    openVault: jest.fn((vaultName: string, key: string) => Promise.resolve('clearText')),
+    vaultExist: jest.fn((vaultName: string) => Promise.resolve(true)),
+    purgeVault: jest.fn((vaultName: string) => Promise.resolve(true)),
 };
 
 module.exports = ReactNative;

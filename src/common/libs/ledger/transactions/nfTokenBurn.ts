@@ -18,11 +18,15 @@ class NFTokenBurn extends BaseTransaction {
             this.TransactionType = NFTokenBurn.Type;
         }
 
-        this.fields = this.fields.concat(['NFTokenID']);
+        this.fields = this.fields.concat(['NFTokenID', 'Owner']);
     }
 
     get NFTokenID(): string {
         return get(this, ['tx', 'NFTokenID']);
+    }
+
+    get Owner(): string {
+        return get(this, ['tx', 'Owner']);
     }
 }
 

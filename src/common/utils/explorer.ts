@@ -1,4 +1,5 @@
 import { get, find } from 'lodash';
+
 import { AppConfig } from '@common/constants';
 
 import { CoreRepository, CustomNodeRepository } from '@store/repositories';
@@ -28,10 +29,15 @@ const GetExplorer = (): ExplorerDetails => {
     const net = connectedChain.replace('net', '').toLowerCase();
 
     // get explorer object
-    const explorer = find(AppConfig.explorer, { value: coreSettings.defaultExplorer });
+    let explorer = find(AppConfig.explorer, { value: coreSettings.defaultExplorer });
+
+    // if no explorer found then fallback to bithomp
+    if (!explorer) {
+        explorer = find(AppConfig.explorer, { value: AppConfig.fallbackExplorer });
+    }
 
     return {
-        title: get(explorer, 'title', ''),
+        title: get(explorer, 'title', 'Explorer'),
         tx: get(explorer.tx, net, '#'),
         account: get(explorer.account, net, '#'),
     };

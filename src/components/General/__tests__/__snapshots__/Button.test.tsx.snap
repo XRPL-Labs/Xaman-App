@@ -3,6 +3,23 @@
 exports[`Button Component should have TouchableNativeFeedback on android  1`] = `
 <View
   accessibilityRole="button"
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
   accessible={true}
   collapsable={false}
   focusable={true}
@@ -14,7 +31,7 @@ exports[`Button Component should have TouchableNativeFeedback on android  1`] = 
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
   style={
-    Object {
+    {
       "alignSelf": "stretch",
       "backgroundColor": "#0030CF",
       "borderColor": "transparent",
@@ -30,8 +47,8 @@ exports[`Button Component should have TouchableNativeFeedback on android  1`] = 
 >
   <View
     style={
-      Array [
-        Object {
+      [
+        {
           "alignItems": "center",
           "flexDirection": "row",
         },
@@ -44,6 +61,23 @@ exports[`Button Component should have TouchableNativeFeedback on android  1`] = 
 exports[`Button Component should render with icon  1`] = `
 <View
   accessibilityRole="button"
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
   accessible={true}
   collapsable={false}
   focusable={true}
@@ -55,7 +89,7 @@ exports[`Button Component should render with icon  1`] = `
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
   style={
-    Object {
+    {
       "alignSelf": "stretch",
       "backgroundColor": "#0030CF",
       "borderColor": "transparent",
@@ -71,8 +105,8 @@ exports[`Button Component should render with icon  1`] = `
 >
   <View
     style={
-      Array [
-        Object {
+      [
+        {
           "alignItems": "center",
           "flexDirection": "row",
         },
@@ -82,18 +116,18 @@ exports[`Button Component should render with icon  1`] = `
     <Image
       resizeMode="contain"
       source={
-        Object {
+        {
           "uri": "IconChevronDown",
         }
       }
       style={
-        Array [
-          Object {
+        [
+          {
             "height": 31.428571428571427,
             "width": 31.428571428571427,
           },
-          Array [
-            Object {
+          [
+            {
               "marginRight": 3,
               "tintColor": "#ffffff",
             },
@@ -111,8 +145,8 @@ exports[`Button Component should render with icon  1`] = `
 exports[`Button Component should render with isDisabled 1`] = `
 <View
   style={
-    Array [
-      Object {
+    [
+      {
         "alignSelf": "stretch",
         "backgroundColor": "#0030CF",
         "borderColor": "transparent",
@@ -129,7 +163,7 @@ exports[`Button Component should render with isDisabled 1`] = `
       undefined,
       undefined,
       undefined,
-      Object {
+      {
         "opacity": 0.4,
       },
       undefined,
@@ -138,8 +172,8 @@ exports[`Button Component should render with isDisabled 1`] = `
 >
   <View
     style={
-      Array [
-        Object {
+      [
+        {
           "alignItems": "center",
           "flexDirection": "row",
         },
@@ -152,6 +186,23 @@ exports[`Button Component should render with isDisabled 1`] = `
 exports[`Button Component should render with label 1`] = `
 <View
   accessibilityRole="button"
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
   accessible={true}
   collapsable={false}
   focusable={true}
@@ -163,7 +214,7 @@ exports[`Button Component should render with label 1`] = `
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
   style={
-    Object {
+    {
       "alignSelf": "stretch",
       "backgroundColor": "#0030CF",
       "borderColor": "transparent",
@@ -179,8 +230,8 @@ exports[`Button Component should render with label 1`] = `
 >
   <View
     style={
-      Array [
-        Object {
+      [
+        {
           "alignItems": "center",
           "flexDirection": "row",
         },
@@ -192,8 +243,8 @@ exports[`Button Component should render with label 1`] = `
       allowFontScaling={false}
       numberOfLines={2}
       style={
-        Array [
-          Object {
+        [
+          {
             "color": "#ffffff",
             "fontFamily": "ProximaNova-Bold",
             "fontSize": 35.357142857142854,
@@ -221,6 +272,23 @@ exports[`Button Component should render with label 1`] = `
 exports[`Button Component should render with loading 1`] = `
 <View
   accessibilityRole="button"
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
   accessible={true}
   collapsable={false}
   focusable={true}
@@ -232,7 +300,7 @@ exports[`Button Component should render with loading 1`] = `
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
   style={
-    Object {
+    {
       "alignSelf": "stretch",
       "backgroundColor": "#0030CF",
       "borderColor": "transparent",
@@ -251,7 +319,7 @@ exports[`Button Component should render with loading 1`] = `
     color="#ffffff"
     size="small"
     style={
-      Object {
+      {
         "alignSelf": "center",
         "flex": 1,
       }
@@ -263,6 +331,23 @@ exports[`Button Component should render with loading 1`] = `
 exports[`Button Component should render without issues 1`] = `
 <View
   accessibilityRole="button"
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
   accessible={true}
   collapsable={false}
   focusable={true}
@@ -274,7 +359,7 @@ exports[`Button Component should render without issues 1`] = `
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
   style={
-    Object {
+    {
       "alignSelf": "stretch",
       "backgroundColor": "#0030CF",
       "borderColor": "transparent",
@@ -290,8 +375,8 @@ exports[`Button Component should render without issues 1`] = `
 >
   <View
     style={
-      Array [
-        Object {
+      [
+        {
           "alignItems": "center",
           "flexDirection": "row",
         },

@@ -2,6 +2,23 @@
 
 exports[`[SearchBar] renders correctly 1`] = `
 <View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
   accessible={true}
   collapsable={false}
   focusable={true}
@@ -13,7 +30,7 @@ exports[`[SearchBar] renders correctly 1`] = `
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
   style={
-    Object {
+    {
       "backgroundColor": "#F3F6FA",
       "borderRadius": 18.375,
       "flexDirection": "row",
@@ -25,7 +42,7 @@ exports[`[SearchBar] renders correctly 1`] = `
   <View
     collapsable={false}
     style={
-      Object {
+      {
         "alignItems": "center",
         "alignSelf": "center",
         "flexDirection": "column",
@@ -38,17 +55,17 @@ exports[`[SearchBar] renders correctly 1`] = `
     <Image
       resizeMode="contain"
       source={
-        Object {
+        {
           "uri": "IconSearch",
         }
       }
       style={
-        Array [
-          Object {
+        [
+          {
             "height": 31.428571428571427,
             "width": 31.428571428571427,
           },
-          Object {
+          {
             "tintColor": "#000000",
           },
         ]
@@ -57,7 +74,7 @@ exports[`[SearchBar] renders correctly 1`] = `
   </View>
   <View
     style={
-      Object {
+      {
         "flex": 1,
       }
     }
@@ -71,8 +88,8 @@ exports[`[SearchBar] renders correctly 1`] = `
       placeholder="Please type ..."
       placeholderTextColor="#606885"
       style={
-        Array [
-          Object {
+        [
+          {
             "color": "#000000",
             "fontFamily": "UbuntuMono-Bold",
             "fontSize": 34.285714285714285,
@@ -82,7 +99,7 @@ exports[`[SearchBar] renders correctly 1`] = `
             "paddingRight": 50,
             "paddingVertical": 0,
           },
-          Object {
+          {
             "height": 73.5,
           },
           undefined,
@@ -97,6 +114,23 @@ exports[`[SearchBar] renders correctly 1`] = `
 
 exports[`[SearchBar] should clear text 1`] = `
 <View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
   accessible={true}
   collapsable={false}
   focusable={true}
@@ -108,7 +142,7 @@ exports[`[SearchBar] should clear text 1`] = `
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
   style={
-    Object {
+    {
       "backgroundColor": "#F3F6FA",
       "borderRadius": 18.375,
       "flexDirection": "row",
@@ -120,7 +154,7 @@ exports[`[SearchBar] should clear text 1`] = `
   <View
     collapsable={false}
     style={
-      Object {
+      {
         "alignItems": "center",
         "alignSelf": "center",
         "flexDirection": "column",
@@ -133,17 +167,17 @@ exports[`[SearchBar] should clear text 1`] = `
     <Image
       resizeMode="contain"
       source={
-        Object {
+        {
           "uri": "IconSearch",
         }
       }
       style={
-        Array [
-          Object {
+        [
+          {
             "height": 31.428571428571427,
             "width": 31.428571428571427,
           },
-          Object {
+          {
             "tintColor": "#000000",
           },
         ]
@@ -152,7 +186,7 @@ exports[`[SearchBar] should clear text 1`] = `
   </View>
   <View
     style={
-      Object {
+      {
         "flex": 1,
       }
     }
@@ -166,8 +200,8 @@ exports[`[SearchBar] should clear text 1`] = `
       placeholder="Please type ..."
       placeholderTextColor="#606885"
       style={
-        Array [
-          Object {
+        [
+          {
             "color": "#000000",
             "fontFamily": "UbuntuMono-Bold",
             "fontSize": 34.285714285714285,
@@ -177,7 +211,7 @@ exports[`[SearchBar] should clear text 1`] = `
             "paddingRight": 50,
             "paddingVertical": 0,
           },
-          Object {
+          {
             "height": 73.5,
           },
           undefined,
@@ -192,6 +226,23 @@ exports[`[SearchBar] should clear text 1`] = `
 
 exports[`[SearchBar] should show clear button on text enter 1`] = `
 <View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
   accessible={true}
   collapsable={false}
   focusable={true}
@@ -203,7 +254,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
   style={
-    Object {
+    {
       "backgroundColor": "#F3F6FA",
       "borderRadius": 18.375,
       "flexDirection": "row",
@@ -215,7 +266,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
   <View
     collapsable={false}
     style={
-      Object {
+      {
         "alignItems": "center",
         "alignSelf": "center",
         "flexDirection": "column",
@@ -228,17 +279,17 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
     <Image
       resizeMode="contain"
       source={
-        Object {
+        {
           "uri": "IconSearch",
         }
       }
       style={
-        Array [
-          Object {
+        [
+          {
             "height": 31.428571428571427,
             "width": 31.428571428571427,
           },
-          Object {
+          {
             "tintColor": "#000000",
           },
         ]
@@ -247,7 +298,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
   </View>
   <View
     style={
-      Object {
+      {
         "flex": 1,
       }
     }
@@ -261,8 +312,8 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
       placeholder="Please type ..."
       placeholderTextColor="#606885"
       style={
-        Array [
-          Object {
+        [
+          {
             "color": "#000000",
             "fontFamily": "UbuntuMono-Bold",
             "fontSize": 34.285714285714285,
@@ -272,7 +323,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
             "paddingRight": 50,
             "paddingVertical": 0,
           },
-          Object {
+          {
             "height": 73.5,
           },
           undefined,
@@ -283,6 +334,23 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
     />
   </View>
   <View
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
     accessible={true}
     collapsable={false}
     focusable={true}
@@ -294,7 +362,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
     style={
-      Object {
+      {
         "flexDirection": "row",
         "height": "100%",
         "justifyContent": "center",
@@ -309,7 +377,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
     <View
       collapsable={false}
       style={
-        Object {
+        {
           "alignSelf": "center",
           "opacity": 1,
         }
@@ -318,17 +386,17 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
       <Image
         resizeMode="contain"
         source={
-          Object {
+          {
             "uri": "IconX",
           }
         }
         style={
-          Array [
-            Object {
+          [
+            {
               "height": 31.428571428571427,
               "width": 31.428571428571427,
             },
-            Object {
+            {
               "tintColor": "#000000",
             },
           ]

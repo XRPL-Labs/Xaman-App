@@ -23,17 +23,40 @@ import { StepsContext } from '../../Context';
 /* types ==================================================================== */
 export interface Props {}
 
-export interface State {}
+export interface State {
+    isLoading: boolean;
+}
 
 /* Component ==================================================================== */
 class FinishStep extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
-    render() {
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            isLoading: false,
+        };
+    }
+
+    onFinishPress = () => {
         const { goNext } = this.context;
+
+        // set is loading true as operation can take some time
+        this.setState({ isLoading: true }, () => {
+            // triggering goNext in the latest phase will store the account and dismiss the screen
+            requestAnimationFrame(() => {
+                goNext();
+            });
+        });
+    };
+
+    render() {
+        const { isLoading } = this.state;
+
         return (
-            <SafeAreaView style={[AppStyles.container]}>
+            <SafeAreaView style={AppStyles.container}>
                 <ImageBackground
                     testID="account-import-finish-view"
                     source={StyleService.getImage('BackgroundPattern')}
@@ -56,7 +79,12 @@ class FinishStep extends Component<Props, State> {
                     </View>
 
                     <Footer>
-                        <Button testID="finish-button" label={Localize.t('account.yeahLetsGo')} onPress={goNext} />
+                        <Button
+                            testID="finish-button"
+                            isLoading={isLoading}
+                            label={Localize.t('account.yeahLetsGo')}
+                            onPress={this.onFinishPress}
+                        />
                     </Footer>
                 </ImageBackground>
             </SafeAreaView>

@@ -1,20 +1,30 @@
+// WARNING: THE FUNCTIONALITY OF THIS MODULE HAS NOT BEEN TESTED YET
+
 package libs.common;
 
-
-import android.util.Log;
-
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.List;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ArrayList;
 
+import android.util.Log;
+
+import com.android.billingclient.api.ProductDetails;
+import com.android.billingclient.api.ProductDetailsResponseListener;
+import com.android.billingclient.api.PurchasesResponseListener;
+import com.android.billingclient.api.QueryProductDetailsParams;
+import com.android.billingclient.api.QueryPurchasesParams;
+import com.facebook.common.internal.ImmutableList;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.module.annotations.ReactModule;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import com.android.billingclient.api.AcknowledgePurchaseParams;
 import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
@@ -24,19 +34,17 @@ import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
-import com.android.billingclient.api.SkuDetails;
-import com.android.billingclient.api.SkuDetailsParams;
-import com.android.billingclient.api.SkuDetailsResponseListener;
 
 
+@ReactModule(name = InAppPurchaseModule.NAME)
 public class InAppPurchaseModule extends ReactContextBaseJavaModule implements PurchasesUpdatedListener {
 
     private static final String TAG = "InAppPurchaseModule";
 
     private static final String XUMMProProductIdentifier = "com.xrpllabs.xumm.pro.test";
-    private static final String XUMMProProductType = BillingClient.SkuType.SUBS;
 
     private static final String E_UNABLE_TO_INIT_MODULE = "E_UNABLE_TO_INIT_MODULE";
+    private static final String E_PLAYSERVICE_NO_AVAILABLE = "E_UNABLE_TO_INIT_MODULE";
     private static final String E_CLIENT_IS_NOT_READY = "E_CLIENT_IS_NOT_READY";
     private static final String E_PRODUCT_IS_NOT_AVAILABLE = "E_PRODUCT_IS_NOT_AVAILABLE";
     private static final String E_PURCHAES_CANCELED = "E_PURCHAES_CANCELED";
@@ -48,25 +56,26 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     private static ReactApplicationContext reactContext;
     private HashMap<String, ArrayList<Promise>> promises = new HashMap<>();
 
+    private final GoogleApiAvailability googleApiAvailability;
+
+    private BillingClient.Builder mBillingClientBuilder;
     private BillingClient mBillingClient;
-    private HashMap<String, SkuDetails> skuDetailsHashMap = new HashMap<>();
+    private HashMap<String, ProductDetails> productDetailsHashMap = new HashMap<>();
 
     InAppPurchaseModule(ReactApplicationContext context) {
         super(context);
-
         reactContext = context;
 
-        mBillingClient = BillingClient.newBuilder(context)
-                .enablePendingPurchases()
-                .setListener(this)
-                .build();
-
-
+        mBillingClientBuilder = BillingClient.newBuilder(context).enablePendingPurchases();
+        googleApiAvailability = GoogleApiAvailability.getInstance();
     }
 
+    public static final String NAME = "InAppPurchaseModule";
+
+    @NonNull
     @Override
     public String getName() {
-        return "InAppPurchaseModule";
+        return NAME;
     }
 
 
@@ -77,6 +86,14 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
             promise.resolve(true);
             return;
         }
+
+        if (googleApiAvailability.isGooglePlayServicesAvailable(reactContext) != ConnectionResult.SUCCESS) {
+            promise.reject(E_PLAYSERVICE_NO_AVAILABLE, "google play service is not available!");
+            return;
+        }
+
+        mBillingClient = mBillingClientBuilder.setListener(this).build();
+
         mBillingClient.startConnection(new BillingClientStateListener() {
             @Override
             public void onBillingSetupFinished(BillingResult billingResult) {
@@ -85,8 +102,8 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
                     int billingResponseCode = billingResult.getResponseCode();
                     if (billingResponseCode == BillingClient.BillingResponseCode.OK) {
                         addCallback("INIT_PROMISE", promise);
-                        // load SKU details
-                        getSKUDetails();
+                        // load product details
+                        loadProductDetails();
                     } else {
                         promise.reject(E_UNABLE_TO_INIT_MODULE, "Unable to initialize billing client");
                     }
@@ -106,56 +123,85 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
         });
     }
 
+
     @ReactMethod
     public void restorePurchase(Promise promise) {
-        if (mBillingClient.isReady()) {
-            Purchase.PurchasesResult purchasesResult = mBillingClient.queryPurchases(XUMMProProductType);
+        if (mBillingClient == null || !mBillingClient.isReady()) {
+            promise.reject(E_CLIENT_IS_NOT_READY, "Client is not ready, forgot to initialize?");
+            return;
+        }
 
-            List<Purchase> purchasedItems = purchasesResult.getPurchasesList();
+        mBillingClient.queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.SUBS).build(),
+                new PurchasesResponseListener() {
+                    public void onQueryPurchasesResponse(
+                            BillingResult billingResult,
+                            List<Purchase> purchases) {
 
-            String purchaseToken = null;
+                        String purchaseToken = null;
 
-            if (purchasedItems != null) {
-                for (Purchase purchase : purchasedItems) {
-                    if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-                        purchaseToken = purchase.getPurchaseToken();
+                        if (purchases != null) {
+                            for (Purchase purchase : purchases) {
+                                if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+                                    purchaseToken = purchase.getPurchaseToken();
+                                }
+                            }
+                            if (purchaseToken != null) {
+                                promise.resolve(purchaseToken);
+                            } else {
+                                promise.reject(E_NO_PURCHASE_HISTORY, "No purchase token is available, unable to verify!");
+                            }
+                        } else {
+                            promise.reject(E_NO_PURCHASE_HISTORY, "No purchase history available");
+                        }
                     }
                 }
-                if (purchaseToken != null) {
-                    promise.resolve(purchaseToken);
-                } else {
-                    promise.reject(E_NO_PURCHASE_HISTORY, "No purchase token is availabel, cannot verify!");
-                }
-            } else {
-                promise.reject(E_NO_PURCHASE_HISTORY, "No purchase history available");
-            }
+        );
 
-        } else {
-            promise.reject(E_CLIENT_IS_NOT_READY, "Client is not ready, forgot to initialize?");
-        }
+
     }
 
 
     @ReactMethod
     public void purchase(Promise promise) {
-        try {
-            if (mBillingClient.isReady()) {
-                SkuDetails skuDetails = skuDetailsHashMap.get(XUMMProProductIdentifier);
-
-
-                BillingFlowParams mBillingFlowParams = BillingFlowParams.newBuilder()
-                        .setSkuDetails(skuDetails)
-                        .build();
-                mBillingClient.launchBillingFlow(reactContext.getCurrentActivity(), mBillingFlowParams);
-
-                addCallback("PURCHASE_PROMISE", promise);
-            } else {
-                promise.reject(E_CLIENT_IS_NOT_READY, "Client is not ready, forgot to initialize?");
-            }
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+        if (mBillingClient == null || !mBillingClient.isReady()) {
+            promise.reject(E_CLIENT_IS_NOT_READY, "Client is not ready, forgot to initialize?");
+            return;
         }
+
+        ProductDetails productDetails = productDetailsHashMap.get(XUMMProProductIdentifier);
+
+        if (productDetails == null) {
+            promise.reject(E_PRODUCT_IS_NOT_AVAILABLE, "");
+            return;
+        }
+
+        String offerToken = productDetails
+                .getSubscriptionOfferDetails()
+                .get(0)
+                .getOfferToken();
+
+        ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
+                ImmutableList.of(
+                        BillingFlowParams.ProductDetailsParams.newBuilder()
+                                .setProductDetails(productDetails)
+                                .setOfferToken(offerToken)
+                                .build()
+                );
+
+
+        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+                .setProductDetailsParamsList(productDetailsParamsList)
+                .build();
+
+
+        // Launch the billing flow
+        BillingResult billingResult = mBillingClient.launchBillingFlow(reactContext.getCurrentActivity(), billingFlowParams);
+
+        addCallback("PURCHASE_PROMISE", promise);
     }
+
+
 
     @ReactMethod
     public void close(Promise promise) {
@@ -172,21 +218,31 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     }
 
 
-    public void getSKUDetails() {
-        SkuDetailsParams skuParams = SkuDetailsParams.newBuilder().setType(XUMMProProductType).setSkusList(Arrays.asList(XUMMProProductIdentifier)).build();
-        mBillingClient.querySkuDetailsAsync(skuParams, new SkuDetailsResponseListener() {
-            @Override
-            public void onSkuDetailsResponse(BillingResult billingResult, List<SkuDetails> skuDetailsList) {
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && skuDetailsList != null && skuDetailsList.size() > 0) {
-                    for (SkuDetails skuDetails : skuDetailsList) {
-                        skuDetailsHashMap.put(skuDetails.getSku(), skuDetails);
+    public void loadProductDetails() {
+        ImmutableList<QueryProductDetailsParams.Product> productList = ImmutableList.of(QueryProductDetailsParams.Product.newBuilder()
+                .setProductId(XUMMProProductIdentifier)
+                .setProductType(BillingClient.ProductType.SUBS)
+                .build());
+
+        QueryProductDetailsParams params = QueryProductDetailsParams.newBuilder()
+                .setProductList(productList)
+                .build();
+
+        mBillingClient.queryProductDetailsAsync(
+                params,
+                new ProductDetailsResponseListener() {
+                    public void onProductDetailsResponse(BillingResult billingResult, List<ProductDetails> productDetailsList) {
+                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && productDetailsList != null && productDetailsList.size() > 0) {
+                            for (ProductDetails productDetails : productDetailsList) {
+                                productDetailsHashMap.put(productDetails.getProductId(), productDetails);
+                            }
+                            resolveForKey("INIT_PROMISE", true);
+                        } else {
+                            rejectForKey("INIT_PROMISE", E_PRODUCT_IS_NOT_AVAILABLE, "Unable to load product list", null);
+                        }
                     }
-                    resolveForKey("INIT_PROMISE", true);
-                } else {
-                    rejectForKey("INIT_PROMISE", E_PRODUCT_IS_NOT_AVAILABLE, "Unable to load product list", null);
                 }
-            }
-        });
+        );
     }
 
     @Override
@@ -213,7 +269,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     public void acknowledgePurchase(Purchase purchase) {
         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
             resolveForKey("PURCHASE_PROMISE", purchase.getPurchaseToken());
-            if(!purchase.isAcknowledged()){
+            if (!purchase.isAcknowledged()) {
                 AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
                         .setPurchaseToken(purchase.getPurchaseToken())
                         .build();

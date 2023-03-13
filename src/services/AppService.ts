@@ -12,7 +12,7 @@ import Localize from '@locale';
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
-import { GetAppVersionCode } from '@common/helpers/device';
+import { GetAppVersionCode } from '@common/helpers/app';
 
 import Preferences from '@common/libs/preferences';
 import { VersionDiff } from '@common/utils/version';
@@ -20,9 +20,9 @@ import { VersionDiff } from '@common/utils/version';
 import LoggerService from '@services/LoggerService';
 
 /* Constants  ==================================================================== */
-const { UtilsModule, AppUpdateModule } = NativeModules;
+const { AppUtilsModule, AppUpdateModule } = NativeModules;
 
-const Emitter = new NativeEventEmitter(UtilsModule);
+const Emitter = new NativeEventEmitter(AppUtilsModule);
 
 /* Types  ==================================================================== */
 export enum NetStateStatus {
@@ -94,42 +94,42 @@ class AppService extends EventEmitter {
     checkAppUpdate = async () => {
         AppUpdateModule.checkUpdate()
             .then(async (versionCode: number) => {
-                // if update available
-                if (versionCode) {
-                    const ignoredVersionCode = await Preferences.get(Preferences.keys.UPDATE_IGNORE_VERSION_CODE);
+                // no new version is available
+                if (!versionCode) return;
 
-                    // user already ignored this update
-                    if (`${versionCode}` === `${ignoredVersionCode}`) {
-                        return;
-                    }
+                const ignoredVersionCode = await Preferences.get(Preferences.keys.UPDATE_IGNORE_VERSION_CODE);
 
-                    // this method only works on android
-                    if (Platform.OS === 'android') {
-                        AppUpdateModule.startUpdate().catch((e: any) => {
-                            // user canceled this update
-                            if (e.code === 'E_UPDATE_CANCELLED') {
-                                Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`);
-                            }
-                        });
-                    } else {
-                        Alert.alert(
-                            Localize.t('global.newVersion'),
-                            Localize.t('global.versionNumberIsAvailableOnTheAppStore', { versionCode }),
-                            [
-                                {
-                                    text: Localize.t('global.notNow'),
-                                    onPress: () =>
-                                        Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`),
-                                    style: 'destructive',
-                                },
-                                {
-                                    text: Localize.t('global.update'),
-                                    onPress: () => Linking.openURL('https://apps.apple.com/us/app/id1492302343'),
-                                },
-                            ],
-                            { cancelable: true },
-                        );
-                    }
+                // user already ignored this update
+                if (ignoredVersionCode && `${versionCode}` === `${ignoredVersionCode}`) {
+                    return;
+                }
+
+                // this method only works on android
+                if (Platform.OS === 'android') {
+                    AppUpdateModule.startUpdate().catch((e: any) => {
+                        // user canceled this update
+                        if (e.code === 'E_UPDATE_CANCELLED') {
+                            Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`);
+                        }
+                    });
+                } else {
+                    Alert.alert(
+                        Localize.t('global.newVersion'),
+                        Localize.t('global.versionNumberIsAvailableOnTheAppStore', { versionCode }),
+                        [
+                            {
+                                text: Localize.t('global.notNow'),
+                                onPress: () =>
+                                    Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`),
+                                style: 'destructive',
+                            },
+                            {
+                                text: Localize.t('global.update'),
+                                onPress: () => Linking.openURL('https://apps.apple.com/us/app/id1492302343'),
+                            },
+                        ],
+                        { cancelable: true },
+                    );
                 }
             })
             .catch(() => {
@@ -194,7 +194,7 @@ class AppService extends EventEmitter {
         }
 
         // start timeout timer
-        UtilsModule.timeoutEvent('timeout_event', 15000);
+        AppUtilsModule.timeoutEvent('timeout_event', 15000);
 
         // add event listener for timer
         this.inactivityTimeout = Emitter.addListener('Utils.timeout', this.onInactivityTimeout);

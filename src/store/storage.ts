@@ -1,7 +1,7 @@
 /**
  * Storage
  *
- * Store storage back end
+ * Secure encrypted datastore for storing non-critical data
  *
  */
 
@@ -12,22 +12,18 @@ import Vault from '@common/libs/vault';
 
 import { AppConfig } from '@common/constants';
 
-import { LoggerService } from '@services';
+import LoggerService from '@services/LoggerService';
 
 import * as repositories from './repositories';
 import schemas from './schemas';
 
 /* Module ==================================================================== */
 export default class Storage {
-    keyName: string;
-    path: string;
     compactionThreshold: number;
     db: Realm;
     logger: any;
 
-    constructor(path?: string) {
-        this.keyName = AppConfig.storage.keyName;
-        this.path = path || AppConfig.storage.path;
+    constructor() {
         this.compactionThreshold = 30;
         this.db = undefined;
         this.logger = LoggerService.createLogger('Storage');
@@ -105,7 +101,7 @@ export default class Storage {
                 ...config,
                 schema: values(omit(current.schema, ['migration'])),
                 schemaVersion: current.schemaVersion,
-                migration: current.migration,
+                onMigration: current.migration,
             });
 
             this.logger.warn(`Successfully migrate to v${current.schemaVersion}`);
@@ -129,11 +125,18 @@ export default class Storage {
     };
 
     /**
-     * WIPTE everything
+     * WIPE everything
      * WARNING: This will delete all objects in the Realm!
      */
-    wipe = (): void => {
-        Realm.deleteFile({ path: this.path });
+    static wipe = (): void => {
+        Realm.deleteFile({ path: AppConfig.storage.path });
+    };
+
+    /**
+     * check if data store file exist
+     */
+    static isDataStoreFileExist = () => {
+        return Realm.exists({ path: AppConfig.storage.path });
     };
 
     /**
@@ -177,8 +180,8 @@ export default class Storage {
      */
     configure = async (): Promise<Realm.Configuration> => {
         // check if we need to start a clean realm
-        const encryptionKeyExist = await Vault.exist(this.keyName);
-        const dbFileExist = Realm.exists({ path: this.path });
+        const encryptionKeyExist = await Vault.isStorageEncryptionKeyExist();
+        const dbFileExist = Storage.isDataStoreFileExist();
 
         // if the database file exist but we cannot get the encryption key then throw an error
         if (!encryptionKeyExist && dbFileExist) {
@@ -186,11 +189,11 @@ export default class Storage {
         }
 
         // set encryption key
-        return Vault.getStorageEncryptionKey(this.keyName).then((key: Buffer) => {
+        return Vault.getStorageEncryptionKey().then((key: Buffer) => {
             return {
                 encryptionKey: key,
-                path: this.path,
-                shouldCompactOnLaunch: this.shouldCompactOnLaunch,
+                path: AppConfig.storage.path,
+                shouldCompact: this.shouldCompactOnLaunch,
             };
         });
     };

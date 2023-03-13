@@ -12,6 +12,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 interface Props {
+    children: React.ReactNode;
     height: number;
     offset?: number;
     extraBottomInset?: boolean;
@@ -69,7 +70,7 @@ class ActionPanel extends Component<Props, State> {
         let panelHeight = height;
 
         if (extraBottomInset) {
-            panelHeight += AppSizes.bottomStableInset * 0.5;
+            panelHeight += AppSizes.safeAreaBottomInset * 0.5;
         }
 
         const snapPoints = [{ y: screenHeight }, { y: screenHeight - panelHeight }];
@@ -186,7 +187,6 @@ class ActionPanel extends Component<Props, State> {
                         <View style={styles.panelHeader}>
                             <View style={styles.panelHandle} />
                         </View>
-
                         {children}
                     </View>
                 </Interactable.View>

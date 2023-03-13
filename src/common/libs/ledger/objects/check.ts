@@ -36,7 +36,7 @@ class Check extends BaseLedgerObject {
 
         return {
             currency: sendMax.currency,
-            value: sendMax.value && new Amount(sendMax.value, false).toString(),
+            value: sendMax.value,
             issuer: sendMax.issuer,
         };
     }

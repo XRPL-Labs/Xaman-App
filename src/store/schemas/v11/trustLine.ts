@@ -53,11 +53,6 @@ class TrustLine extends Realm.Object {
     public order?: number;
     public favorite?: boolean;
 
-    constructor(obj: Partial<TrustLine>) {
-        super();
-        Object.assign(this, obj);
-    }
-
     get counterParty() {
         const counterParty = this.currency.linkingObjects('CounterParty', 'currencies');
         if (!counterParty.isEmpty()) {

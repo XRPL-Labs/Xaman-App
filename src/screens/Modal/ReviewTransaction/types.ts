@@ -13,8 +13,8 @@ export enum Steps {
 
 export interface Props {
     payload: Payload;
-    onResolve?: (transaction: Transactions) => void;
-    onDecline?: () => void;
+    onResolve?: (transaction: Transactions, payload: Payload) => void;
+    onDecline?: (payload: Payload) => void;
     onClose?: () => void;
 }
 
@@ -28,14 +28,16 @@ export interface State {
     hasError: boolean;
     softErrorMessage: string;
     hardErrorMessage: string;
-    isPreparing: boolean;
-    isValidating: boolean;
+    isLoading: boolean;
+    isReady: boolean;
     isValidPayload: boolean;
 }
 
 export interface ContextProps extends State {
     setSource: (source: AccountSchema) => void;
     setError: (message: string) => void;
+    setLoading: (loading: boolean) => void;
+    setReady: (ready: boolean) => void;
     onClose: () => void;
     onAccept: () => void;
     onFinish: () => void;

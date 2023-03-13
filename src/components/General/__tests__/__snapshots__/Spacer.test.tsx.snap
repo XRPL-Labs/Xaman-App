@@ -3,13 +3,13 @@
 exports[`[Spacer] renders correctly 1`] = `
 <View
   style={
-    Array [
-      Object {
+    [
+      {
         "height": 1,
         "left": 0,
         "right": 0,
       },
-      Object {
+      {
         "marginTop": 10,
       },
     ]
@@ -20,13 +20,13 @@ exports[`[Spacer] renders correctly 1`] = `
 exports[`[Spacer] renders with given size 1`] = `
 <View
   style={
-    Array [
-      Object {
+    [
+      {
         "height": 1,
         "left": 0,
         "right": 0,
       },
-      Object {
+      {
         "marginTop": 20,
       },
     ]

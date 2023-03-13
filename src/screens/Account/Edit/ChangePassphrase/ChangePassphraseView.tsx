@@ -57,39 +57,65 @@ class ChangePassphraseView extends Component<Props, State> {
         };
     }
 
-    savePassphrase = async () => {
+    processChangePassphrase = (): Promise<boolean> => {
+        const { account } = this.props;
+        const { currentPassphrase, passphrase } = this.state;
+
+        return new Promise((resolve, reject) => {
+            // reKey the account with new passphrase
+            Vault.reKey(account.publicKey, currentPassphrase, passphrase.value).then(resolve).catch(reject);
+        });
+    };
+
+    onChangePassphraseSuccess = async () => {
+        // close the screen
+        await Navigator.pop();
+
+        // show success message
+        Alert.alert(Localize.t('global.success'), Localize.t('account.yourAccountPasswordChangedSuccessfully'));
+    };
+
+    onChangePassphraseError = () => {
+        Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+    };
+
+    onSavePress = async () => {
         const { account } = this.props;
         const { currentPassphrase, passphrase, passphrase_confirmation } = this.state;
 
-        if (!currentPassphrase) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.currentPasswordShouldNotBeEmpty'));
-            return;
+        try {
+            if (!currentPassphrase) {
+                Alert.alert(Localize.t('global.error'), Localize.t('account.currentPasswordShouldNotBeEmpty'));
+                return;
+            }
+
+            if (!passphrase.isValid) {
+                Alert.alert(Localize.t('global.error'), Localize.t('account.enterValidPassword'));
+                return;
+            }
+
+            if (passphrase.value !== passphrase_confirmation) {
+                Alert.alert(Localize.t('global.error'), Localize.t('account.passwordConfirmNotMatch'));
+                return;
+            }
+
+            // try to open vault with given passphrase
+            const privateKey = await Vault.open(account.publicKey, currentPassphrase);
+
+            if (!privateKey) {
+                Alert.alert(Localize.t('global.error'), Localize.t('account.enteredCurrentPasswordIsInvalid'));
+                return;
+            }
+
+            // show critical processing overlay
+            Navigator.showOverlay(AppScreens.Overlay.CriticalProcessing, {
+                task: this.processChangePassphrase,
+                onSuccess: this.onChangePassphraseSuccess,
+                onError: this.onChangePassphraseError,
+            });
+        } catch {
+            Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
         }
-
-        if (!passphrase.isValid) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.enterValidPassword'));
-            return;
-        }
-
-        if (passphrase.value !== passphrase_confirmation) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.passwordConfirmNotMatch'));
-            return;
-        }
-
-        // try to open vault with given passphrase
-        const privateKey = await Vault.open(account.publicKey, currentPassphrase);
-
-        if (!privateKey) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.enteredCurrentPasswordIsInvalid'));
-            return;
-        }
-
-        // reKey the account with new passphrase
-        await Vault.reKey(account.publicKey, currentPassphrase, passphrase.value);
-
-        Navigator.pop();
-
-        Alert.alert(Localize.t('global.success'), Localize.t('account.yourAccountPasswordChangedSuccessfully'));
     };
 
     onHeaderBackPress = () => {
@@ -163,7 +189,7 @@ class ChangePassphraseView extends Component<Props, State> {
                         numberOfLines={1}
                         testID="save-button"
                         label={Localize.t('global.save')}
-                        onPress={this.savePassphrase}
+                        onPress={this.onSavePress}
                     />
                 </Footer>
             </View>

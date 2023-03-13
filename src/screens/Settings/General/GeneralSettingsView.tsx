@@ -8,7 +8,8 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
-import { GetDeviceLocaleSettings, RestartBundle } from '@common/helpers/device';
+import { GetDeviceLocaleSettings } from '@common/helpers/device';
+import { ExitApp } from '@common/helpers/app';
 import { Prompt } from '@common/helpers/interface';
 
 import { AppScreens } from '@common/constants';
@@ -134,6 +135,12 @@ class GeneralSettingsView extends Component<Props, State> {
         });
     };
 
+    onShowFiatPanelChange = (value: boolean) => {
+        CoreRepository.saveSettings({
+            showFiatPanel: value,
+        });
+    };
+
     getLanguageTitle = (): string => {
         const { coreSettings, locales } = this.state;
 
@@ -146,8 +153,8 @@ class GeneralSettingsView extends Component<Props, State> {
         // save in store
         CoreRepository.saveSettings({ theme });
 
-        // restart app
-        RestartBundle();
+        // exit the app
+        ExitApp();
     };
 
     onThemeSelect = (selected: Themes) => {
@@ -157,7 +164,7 @@ class GeneralSettingsView extends Component<Props, State> {
             [
                 { text: Localize.t('global.cancel') },
                 {
-                    text: Localize.t('global.doIt'),
+                    text: Localize.t('global.quitApp'),
                     onPress: () => {
                         this.changeTheme(selected);
                     },
@@ -245,13 +252,11 @@ class GeneralSettingsView extends Component<Props, State> {
         };
 
         return (
-            <View testID="general-settings-view" style={[styles.container]}>
+            <View testID="general-settings-view" style={styles.container}>
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: () => {
-                            Navigator.pop();
-                        },
+                        onPress: Navigator.pop,
                     }}
                     centerComponent={{ text: Localize.t('settings.generalSettings') }}
                 />
@@ -314,6 +319,17 @@ class GeneralSettingsView extends Component<Props, State> {
                                 checked={coreSettings.useSystemSeparators}
                                 onChange={this.onSystemSeparatorChange}
                             />
+                        </View>
+                    </View>
+
+                    <View style={styles.row}>
+                        <View style={[AppStyles.flex3]}>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.showReserveValue')}
+                            </Text>
+                        </View>
+                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Switch checked={coreSettings.showFiatPanel} onChange={this.onShowFiatPanelChange} />
                         </View>
                     </View>
                 </ScrollView>

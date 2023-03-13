@@ -89,7 +89,7 @@ class SettingsView extends Component<Props, State> {
                     }}
                 />
 
-                <View style={[AppStyles.contentContainer]}>
+                <View style={AppStyles.contentContainer}>
                     <ScrollView
                         style={AppStyles.flex1}
                         contentContainerStyle={[AppStyles.paddingRight, AppStyles.paddingLeft]}
@@ -119,6 +119,12 @@ class SettingsView extends Component<Props, State> {
                             Localize.t('global.security'),
                             AppScreens.Settings.Security,
                             'security-button',
+                        )}
+                        {this.renderRow(
+                            'IconToggleRight',
+                            Localize.t('settings.thirdPartyApps'),
+                            AppScreens.Settings.ThirdPartyApps.List,
+                            'third_party-apps-button',
                         )}
                         {this.renderRow(
                             'IconActivity',

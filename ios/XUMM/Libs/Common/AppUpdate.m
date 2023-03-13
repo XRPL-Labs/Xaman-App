@@ -8,7 +8,7 @@ RCT_EXPORT_METHOD(checkUpdate: (RCTPromiseResolveBlock)resolve rejecter:(RCTProm
   @try {
     NSDictionary* infoDictionary = [[NSBundle mainBundle] infoDictionary];
     NSString* appID = infoDictionary[@"CFBundleIdentifier"];
-    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://itunes.apple.com/lookup?bundleId=%@", appID]];
+    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"https://itunes.apple.com/lookup?bundleId=%@", appID]];
     NSData* data = [NSData dataWithContentsOfURL:url];
     
     if( data == nil){
@@ -18,11 +18,26 @@ RCT_EXPORT_METHOD(checkUpdate: (RCTPromiseResolveBlock)resolve rejecter:(RCTProm
     NSDictionary* lookup = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     if ([lookup[@"resultCount"] integerValue] == 1){
-      NSString* appStoreVersion = lookup[@"results"][0][@"version"];
-      NSString* currentVersion = infoDictionary[@"CFBundleShortVersionString"];
-      if ([appStoreVersion intValue] > [currentVersion intValue]){
-        NSLog(@"Need to update [%@ != %@]", appStoreVersion, currentVersion);
-        return resolve(appStoreVersion);
+      NSString *appStoreVersion = [[lookup objectForKey:@"results"][0] objectForKey:@"version"];
+      NSString *minimumSupportedOSVersion = [[lookup objectForKey:@"results"][0] objectForKey:@"minimumOsVersion"];
+      NSString *currentVersion = infoDictionary[@"CFBundleShortVersionString"];
+      
+      if(appStoreVersion != nil && minimumSupportedOSVersion != nil){
+        NSString *systemVersion = [UIDevice currentDevice].systemVersion;
+        
+        // check if minimum OS version is supported in this device
+        BOOL osVersionSupported = ([systemVersion compare:minimumSupportedOSVersion options:NSNumericSearch] != NSOrderedAscending);
+        if (!osVersionSupported)
+        {
+          return resolve(@NO);
+        }
+        
+        // if update vailable resolve the new version
+        BOOL isUpdateAvailable = [appStoreVersion compare:currentVersion options:NSNumericSearch] == NSOrderedDescending;
+        if (isUpdateAvailable){
+          // new update is available
+          return resolve(appStoreVersion);
+        }
       }
     }
     

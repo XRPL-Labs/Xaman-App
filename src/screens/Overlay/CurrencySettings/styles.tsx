@@ -42,7 +42,7 @@ const styles = StyleService.create({
     },
     currencyItemLabelSmall: {
         fontSize: AppFonts.p.size,
-        fontFamily: AppFonts.base.familyMono,
+        fontFamily: AppFonts.base.familyBold,
         alignItems: 'flex-start',
         justifyContent: 'center',
         marginRight: 10,
@@ -50,8 +50,8 @@ const styles = StyleService.create({
         color: '$textPrimary',
     },
     issuerLabel: {
-        fontSize: AppFonts.subtext.size,
-        fontFamily: AppFonts.base.familyMono,
+        fontSize: AppFonts.subtext.size * 0.9,
+        fontFamily: AppFonts.base.family,
         color: '$grey',
     },
     currencyAvatar: {
@@ -63,35 +63,51 @@ const styles = StyleService.create({
     },
     buttonRow: {
         flexDirection: 'row',
-        marginTop: 12,
-        marginBottom: 3,
+        marginTop: 15,
+        marginBottom: 15,
     },
+
+    // send Button
     sendButton: {
-        marginRight: 1.5,
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
-        backgroundColor: StyleService.isDarkMode() ? '$blue' : '$white',
+        marginRight: 5,
+        backgroundColor: '$blue',
     },
-    sendButtonIcon: { marginRight: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$blue' },
-    sendButtonText: { color: StyleService.isDarkMode() ? '$white' : '$blue' },
+    sendButtonIcon: { tintColor: '$white' },
+    sendButtonText: { fontSize: AppFonts.subtext.size, color: '$white' },
+
+    // exchange Button
     exchangeButton: {
-        // marginLeft: 1.5,
-        borderTopLeftRadius: 0,
-        borderBottomLeftRadius: 0,
-        backgroundColor: StyleService.isDarkMode() ? '$grey' : '$white',
+        marginLeft: 5,
+        backgroundColor: StyleService.isDarkMode() ? '$grey' : '$black',
     },
-    exchangeButtonIcon: { marginLeft: 5, tintColor: StyleService.isDarkMode() ? '$white' : '$black' },
-    exchangeButtonText: { color: StyleService.isDarkMode() ? '$white' : '$black' },
+    exchangeButtonIcon: { tintColor: '$white' },
+    exchangeButtonText: { fontSize: AppFonts.subtext.size, color: '$white' },
 
+    // withdraw Button
+    withdrawButton: { marginTop: 10, marginBottom: 5, backgroundColor: '$white' },
+    withdrawButtonIcon: { tintColor: '$black' },
+    withdrawButtonText: { fontSize: AppFonts.subtext.size, color: '$black' },
+
+    // deposit Button
+    depositButton: { marginTop: 10, backgroundColor: '$white' },
+    depositButtonIcon: { tintColor: '$black' },
+    depositButtonText: { fontSize: AppFonts.subtext.size, color: '$black' },
+
+    // info Button
     infoButton: {
-        borderTopLeftRadius: 0,
-        borderBottomLeftRadius: 0,
+        marginLeft: 5,
     },
-    infoButtonIcon: { marginLeft: 5 },
-    infoButtonText: { color: '$black' },
+    infoButtonIcon: {},
+    infoButtonText: {
+        fontSize: AppFonts.subtext.size,
+        color: '$black',
+    },
 
-    removeButtonIcon: { marginLeft: 5, tintColor: '$red' },
+    // remove Button
+    removeButton: { backgroundColor: '$lightRed' },
+    removeButtonIcon: { tintColor: '$red' },
     removeButtonText: { color: '$red' },
+
     infoContainer: {
         backgroundColor: '$blue',
     },
@@ -100,7 +116,8 @@ const styles = StyleService.create({
     },
     removeButtonContainer: {
         flexDirection: 'row',
-        paddingTop: 10,
+        justifyContent: 'center',
+        paddingTop: 15,
     },
     favoriteContainer: {
         flex: 1,

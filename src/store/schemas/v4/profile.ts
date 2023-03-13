@@ -31,11 +31,6 @@ class Profile extends Realm.Object {
     public registerAt?: Date;
     public lastSync?: Date;
 
-    constructor(obj: Partial<Profile>) {
-        super();
-        Object.assign(this, obj);
-    }
-
     public static migration(oldRealm: any, newRealm: any) {
         /*  eslint-disable-next-line */
         console.log('migrating Profile model to v4');

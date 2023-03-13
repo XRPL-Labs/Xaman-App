@@ -49,11 +49,6 @@ class TrustLine extends Realm.Object {
     public freeze_peer?: boolean;
     public obligation?: boolean;
 
-    constructor(obj: Partial<TrustLine>) {
-        super();
-        Object.assign(this, obj);
-    }
-
     public static migration(oldRealm: any, newRealm: any) {
         /*  eslint-disable-next-line */
         console.log('migrating TrustLine model to v9');

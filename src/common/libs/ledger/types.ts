@@ -1,4 +1,4 @@
-import { AmountType } from './parser/types';
+import { AmountType, LedgerAmount } from './parser/types';
 
 export enum TransactionTypes {
     Payment = 'Payment',
@@ -71,7 +71,7 @@ export interface LedgerTransactionType {
  * Transaction Signed Type
  */
 export type SignedObjectType = {
-    type?: 'SignedTx' | 'MultiSignedTx';
+    type?: 'SignedTx' | 'MultiSignedTx' | 'SignedPayChanAuth';
     id?: string;
     signedTransaction: string;
     txJson?: Object;
@@ -84,11 +84,11 @@ export type SignedObjectType = {
  */
 export type SubmitResultType = {
     success: boolean;
-    engineResult?: string;
+    engineResult: string;
     message: string;
-    transactionId?: string;
-    node?: string;
-    nodeType?: string;
+    hash?: string;
+    node: string;
+    nodeType: string;
 };
 
 /**
@@ -160,6 +160,19 @@ export interface LedgerTrustline {
 }
 
 /**
+ * Ledger nft type
+ */
+export interface LedgerNFToken {
+    Flags: number;
+    Issuer: string;
+    NFTokenID: string;
+    NFTokenTaxon: number;
+    TransferFee: number;
+    URI: string;
+    nft_serial: number;
+}
+
+/**
  * Ledger account_lines response
  */
 export type AccountLinesResponse = {
@@ -170,6 +183,14 @@ export type AccountLinesResponse = {
     ledger_hash?: string;
     marker?: string;
 };
+
+export interface AccountNFTsResponse {
+    account: string;
+    account_nfts: LedgerNFToken[];
+    ledger_hash?: string;
+    ledger_index?: number;
+    marker?: string;
+}
 
 /**
  * Ledger gateway_balances response
@@ -322,4 +343,34 @@ export interface NFTokenOfferLedgerEntry {
     NFTokenOfferNode: string;
     PreviousTxnID: string;
     PreviousTxnLgrSeq: number;
+}
+
+interface PathStep {
+    account?: string;
+    currency?: string;
+    issuer?: string;
+    type?: number;
+}
+
+export type Path = PathStep[];
+
+export interface PathOption {
+    paths_computed: Path[];
+    source_amount: LedgerAmount;
+}
+
+export interface RipplePathFindResponse {
+    id?: any;
+    error?: string;
+    result: {
+        id?: number | string;
+        alternatives: PathOption[];
+        destination_account: string;
+        destination_currencies: string[];
+        destination_amount: LedgerAmount;
+        full_reply?: boolean;
+        ledger_current_index?: number;
+        source_account: string;
+        validated: boolean;
+    };
 }

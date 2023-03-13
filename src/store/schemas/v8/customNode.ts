@@ -21,11 +21,6 @@ class CustomNode extends Realm.Object {
     public explorerAccount: string;
     public registerAt?: Date;
     public updatedAt?: Date;
-
-    constructor(obj: Partial<CustomNode>) {
-        super();
-        Object.assign(this, obj);
-    }
 }
 
 export default CustomNode;

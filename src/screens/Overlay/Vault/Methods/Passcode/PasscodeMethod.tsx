@@ -38,10 +38,10 @@ class PasscodeMethod extends Component<Props, State> {
     static contextType = MethodsContext;
     context: React.ContextType<typeof MethodsContext>;
 
-    private contentView: View;
+    private contentViewRef: React.RefObject<View>;
     private animatedColor: Animated.Value;
     private mounted: boolean;
-    private securePinInput: React.RefObject<SecurePinInput>;
+    private securePinInputRef: React.RefObject<SecurePinInput>;
 
     constructor(props: Props, context: React.ContextType<typeof MethodsContext>) {
         super(props);
@@ -56,7 +56,8 @@ class PasscodeMethod extends Component<Props, State> {
         };
 
         this.animatedColor = new Animated.Value(0);
-        this.securePinInput = React.createRef();
+        this.securePinInputRef = React.createRef();
+        this.contentViewRef = React.createRef();
     }
 
     componentDidMount() {
@@ -88,8 +89,8 @@ class PasscodeMethod extends Component<Props, State> {
     }
 
     onKeyboardShow = (e: KeyboardEvent) => {
-        if (this.contentView && this.mounted) {
-            this.contentView.measure((x, y, width, height) => {
+        if (this.contentViewRef.current && this.mounted) {
+            this.contentViewRef.current.measure((x, y, width, height) => {
                 const bottomView = (AppSizes.screen.height - height) / 2;
                 const KeyboardHeight = e.endCoordinates.height + 100;
 
@@ -126,9 +127,9 @@ class PasscodeMethod extends Component<Props, State> {
 
         if (isBiometricAvailable) {
             this.requestBiometricAuthenticate(true);
-        } else if (this.securePinInput.current) {
+        } else if (this.securePinInputRef.current) {
             // focus the input
-            this.securePinInput.current.focus();
+            this.securePinInputRef.current.focus();
         }
     };
 
@@ -139,10 +140,10 @@ class PasscodeMethod extends Component<Props, State> {
         sign(AuthMethods.BIOMETRIC, { encryptionKey: passcode });
     };
 
-    onSuccessPasscodeAuthenticate = (encryptedPasscode: string) => {
+    onSuccessPasscodeAuthenticate = (hashedPasscode: string) => {
         const { sign } = this.context;
 
-        sign(AuthMethods.PIN, { encryptionKey: encryptedPasscode });
+        sign(AuthMethods.PIN, { encryptionKey: hashedPasscode });
     };
 
     requestBiometricAuthenticate = (system?: boolean) => {
@@ -176,8 +177,8 @@ class PasscodeMethod extends Component<Props, State> {
         AuthenticationService.authenticatePasscode(passcode)
             .then(this.onSuccessPasscodeAuthenticate)
             .catch((e) => {
-                if (this.securePinInput.current) {
-                    this.securePinInput.current.clearInput();
+                if (this.securePinInputRef.current) {
+                    this.securePinInputRef.current.clearInput();
                 }
                 if (e?.message === Localize.t('global.invalidPasscode')) {
                     onInvalidAuth(AuthMethods.PIN);
@@ -188,7 +189,7 @@ class PasscodeMethod extends Component<Props, State> {
     };
 
     render() {
-        const { dismiss } = this.context;
+        const { dismiss, isSigning } = this.context;
         const { offsetBottom, hapticFeedback, biometricMethod, isBiometricAvailable } = this.state;
 
         const interpolateColor = this.animatedColor.interpolate({
@@ -201,12 +202,7 @@ class PasscodeMethod extends Component<Props, State> {
                 onStartShouldSetResponder={() => true}
                 style={[styles.container, { backgroundColor: interpolateColor }]}
             >
-                <View
-                    ref={(r) => {
-                        this.contentView = r;
-                    }}
-                    style={[styles.visibleContent, { marginBottom: offsetBottom }]}
-                >
+                <View ref={this.contentViewRef} style={[styles.visibleContent, { marginBottom: offsetBottom }]}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
                         <View style={[AppStyles.flex1, AppStyles.paddingLeftSml, AppStyles.paddingRightSml]}>
                             <Text numberOfLines={1} style={[AppStyles.p, AppStyles.bold]}>
@@ -237,10 +233,11 @@ class PasscodeMethod extends Component<Props, State> {
                             </Text>
 
                             <SecurePinInput
-                                ref={this.securePinInput}
-                                onInputFinish={this.onPasscodeEntered}
+                                ref={this.securePinInputRef}
+                                isLoading={isSigning}
                                 length={6}
                                 enableHapticFeedback={hapticFeedback}
+                                onInputFinish={this.onPasscodeEntered}
                             />
 
                             {isBiometricAvailable && (
@@ -250,7 +247,7 @@ class PasscodeMethod extends Component<Props, State> {
                                         icon="IconFingerprint"
                                         roundedSmall
                                         secondary
-                                        isDisabled={false}
+                                        isDisabled={isSigning}
                                         onPress={this.requestBiometricAuthenticate}
                                     />
                                 </View>

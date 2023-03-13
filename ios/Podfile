@@ -2,17 +2,36 @@ require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 platform :ios, '13.0'
+prepare_react_native_project!
+
+# no-ad-tracking Analytics subspec as we do not use it at all
+$RNFirebaseAnalyticsWithoutAdIdSupport = true
+$RNFirebaseAsStaticFramework = true
+
+
+linkage = ENV['USE_FRAMEWORKS']
+if linkage != nil
+  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+  use_frameworks! :linkage => linkage.to_sym
+end
 
 target 'XUMM' do
   config = use_native_modules!
 
-  # no-ad-tracking Analytics subspec as we do not use it at all
-  $RNFirebaseAnalyticsWithoutAdIdSupport = true
+  # fix for FirebaseCoreInternal pod install
+  pod 'Firebase', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
+
+  # Flags change depending on the env values.
+  flags = get_default_flags()
 
   use_react_native!(
     :path => config[:reactNativePath],
     # to enable hermes on iOS, change `false` to `true` and then install pods
-    :hermes_enabled => false
+    :hermes_enabled => true,
+    :fabric_enabled => flags[:fabric_enabled],
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
   target 'XUMMTests' do

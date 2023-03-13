@@ -48,7 +48,7 @@ class OfferCreate extends BaseTransaction {
 
         return {
             currency: gets.currency,
-            value: new Amount(gets.value, false).toString(),
+            value: gets.value,
             issuer: gets.issuer,
         };
     }
@@ -61,7 +61,7 @@ class OfferCreate extends BaseTransaction {
 
         set(this, 'tx.TakerGets', {
             currency: gets.currency,
-            value: new Amount(gets.value, false).toString(),
+            value: gets.value,
             issuer: gets.issuer,
         });
     }
@@ -80,7 +80,7 @@ class OfferCreate extends BaseTransaction {
 
         return {
             currency: pays.currency,
-            value: new Amount(pays.value, false).toString(),
+            value: pays.value,
             issuer: pays.issuer,
         };
     }
@@ -93,7 +93,7 @@ class OfferCreate extends BaseTransaction {
 
         set(this, 'tx.TakerPays', {
             currency: pays.currency,
-            value: new Amount(pays.value, false).toString(),
+            value: pays.value,
             issuer: pays.issuer,
         });
     }

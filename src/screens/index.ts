@@ -20,6 +20,7 @@ import AccountList from './Account/List';
 import AccountEdit from './Account/Edit';
 import AccountChangePassphrase from './Account/Edit/ChangePassphrase';
 import AccountChangeTangemSecurity from './Account/Edit/ChangeTangemSecurity';
+import AccountCipherMigrationView from './Account/Migration/CipherMigration';
 
 // Modals
 import ReviewTransaction from './Modal/ReviewTransaction';
@@ -27,6 +28,7 @@ import Scan from './Modal/Scan';
 import Submit from './Modal/Submit';
 import FilterEvents from './Modal/FilterEvents';
 import Help from './Modal/Help';
+import MigrationExplain from './Modal/MigrationExplain';
 import XAppBrowser from './Modal/XAppBrowser';
 import CurrencyPicker from './Modal/CurrencyPicker';
 import DestinationPicker from './Modal/DestinationPicker';
@@ -40,6 +42,7 @@ import Auth from './Overlay/Authenticate';
 import Lock from './Overlay/Lock';
 import CurrencySettings from './Overlay/CurrencySettings';
 import Alert from './Overlay/Alert';
+import CriticalProcessing from './Overlay/CriticalProcessing';
 import FlaggedDestination from './Overlay/FlaggedDestination';
 import RequestDecline from './Overlay/RequestDecline';
 import EnterDestinationTag from './Overlay/EnterDestinationTag';
@@ -52,6 +55,8 @@ import SelectAccount from './Overlay/SelectAccount';
 import SelectCurrency from './Overlay/SelectCurrency';
 import SelectFee from './Overlay/SelectFee';
 import HomeActions from './Overlay/HomeActions';
+import PassphraseAuthentication from './Overlay/PassphraseAuthentication';
+import SwitchAssetCategory from './Overlay/SwitchAssetCategory';
 
 // Transaction
 import Send from './Send';
@@ -66,6 +71,10 @@ import EditContact from './Settings/AddressBook/Edit';
 
 // node
 import NodeList from './Settings/Advanced/Node';
+
+// third party apps
+import ThirdPartyAppsList from './Settings/ThirdPartyApps';
+import EditThirdPartyApp from './Settings/ThirdPartyApps/Edit';
 
 // settings
 import GeneralSettings from './Settings/General';
@@ -106,12 +115,14 @@ export {
     AccountChangeTangemSecurity,
     AccountImport,
     AccountGenerate,
+    AccountCipherMigrationView,
     // Modals
     ReviewTransaction,
     Scan,
     Submit,
     FilterEvents,
     Help,
+    MigrationExplain,
     XAppBrowser,
     CurrencyPicker,
     DestinationPicker,
@@ -124,6 +135,7 @@ export {
     Lock,
     CurrencySettings,
     Alert,
+    CriticalProcessing,
     FlaggedDestination,
     RequestDecline,
     EnterDestinationTag,
@@ -136,6 +148,8 @@ export {
     SelectCurrency,
     SelectFee,
     HomeActions,
+    PassphraseAuthentication,
+    SwitchAssetCategory,
     // transaction
     Send,
     Request,
@@ -151,8 +165,11 @@ export {
     SecuritySettings,
     TermOfUse,
     Credits,
-    //
+    // change passcode
     ChangePasscode,
+    // third party apps
+    ThirdPartyAppsList,
+    EditThirdPartyApp,
     // nodes
     NodeList,
     // session logs

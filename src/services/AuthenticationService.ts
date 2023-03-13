@@ -5,12 +5,14 @@ import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetElapsedRealtime } from '@common/helpers/device';
+import { ExitApp } from '@common/helpers/app';
 
 import { Biometric, BiometricErrors } from '@common/libs/biometric';
+import Vault from '@common/libs/vault';
 
+import DataStorage from '@store/storage';
 import { BiometryType } from '@store/types';
 import CoreRepository from '@store/repositories/core';
-import AccountRepository from '@store/repositories/account';
 
 import AppService, { AppStateStatus } from '@services/AppService';
 import NavigationService, { RootType } from '@services/NavigationService';
@@ -119,19 +121,15 @@ class AuthenticationService {
      * reset the entire app
      * WARNING: this action is irreversible, USED CAREFULLY
      */
-    resetApp = () => {
+    resetApp = async () => {
         // purge all account private keys
-        AccountRepository.purgePrivateKeys();
+        await Vault.clearStorage();
 
-        // clear the storage
-        CoreRepository.purge();
+        // wipe storage
+        DataStorage.wipe();
 
-        // dismiss any modal or overlay
-        Navigator.dismissModal();
-        Navigator.dismissOverlay();
-
-        // go to onboarding
-        Navigator.startOnboarding();
+        // exit the app
+        ExitApp();
     };
 
     /**
@@ -203,12 +201,14 @@ class AuthenticationService {
         if (!ts) {
             ts = await GetElapsedRealtime();
         }
-        // TODO: check for purge on too many failed attempt
+
+        // increase failed attempt
         CoreRepository.saveSettings({
             passcodeFailedAttempts: coreSettings.passcodeFailedAttempts + 1,
             lastPasscodeFailedTimestamp: ts,
         });
 
+        // check for purge on too many attempts
         if (coreSettings.purgeOnBruteForce) {
             // alert user next attempt will wipe the entire app
             if (coreSettings.passcodeFailedAttempts + 1 === 10) {
@@ -229,7 +229,7 @@ class AuthenticationService {
 
             if (coreSettings.passcodeFailedAttempts + 1 > 10) {
                 // wipe/reset the app
-                this.resetApp();
+                await this.resetApp();
             }
         }
     };
@@ -267,8 +267,8 @@ class AuthenticationService {
     };
     /**
      * Authenticate with passcode
-     * @param  {string} passcode clear string passcode
-     * @returns string encrypted passcode
+     * @param  {string} passcode clear passcode
+     * @returns string hashed passcode
      */
     authenticatePasscode = (passcode: string): Promise<string> => {
         /* eslint-disable-next-line */
@@ -285,15 +285,15 @@ class AuthenticationService {
                 return;
             }
 
-            // get encrypted passcode from clear passcode
-            const encryptedPasscode = await CoreRepository.encryptPasscode(passcode);
+            // calculate quick hash to compare passcode's
+            const hashedPasscode = await CoreRepository.hashPasscode(passcode);
 
-            // check if passcode is correct
-            if (encryptedPasscode === coreSettings.passcode) {
+            // check if entered passcode is correct
+            if (hashedPasscode === coreSettings.passcode) {
                 // reset block timers and set status to unlocked
                 await this.onSuccessAuthentication(realTime);
                 // resolve
-                resolve(encryptedPasscode);
+                resolve(hashedPasscode);
                 return;
             }
 

@@ -9,7 +9,7 @@ import CoreRepository from '@store/repositories/core';
 import { NodeChain } from '@store/types';
 
 import { Navigator } from '@common/helpers/navigator';
-import { GetAppReadableVersion } from '@common/helpers/device';
+import { GetAppReadableVersion } from '@common/helpers/app';
 
 import { AppConfig, AppScreens } from '@common/constants';
 
@@ -23,7 +23,6 @@ enum SocketStateStatus {
     Disconnected = 'Disconnected',
 }
 
-// events
 declare interface SocketService {
     on(event: 'connect', listener: () => void): this;
     on(event: string, listener: Function): this;

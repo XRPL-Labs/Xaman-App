@@ -91,28 +91,18 @@ class SummaryStep extends Component<Props, State> {
             });
     };
 
-    onDescriptionChange = (text: string) => {
-        const { payment } = this.context;
+    onPaymentDescriptionChange = (text: string) => {
+        const { setMemo } = this.context;
 
-        if (text) {
-            payment.Memos = [
-                {
-                    data: text,
-                    format: 'text/plain',
-                    type: 'Description',
-                },
-            ];
-        } else {
-            payment.Memos = [];
-        }
+        setMemo(text);
     };
 
     showMemoAlert = async () => {
-        const { payment } = this.context;
+        const { memo } = this.context;
 
         const displayedMemoAlert = await Preferences.get(Preferences.keys.DISPLAYED_MEMO_ALERT);
 
-        if (!displayedMemoAlert && payment.Memos) {
+        if (!displayedMemoAlert && memo) {
             Prompt(
                 Localize.t('global.pleaseNote'),
                 Localize.t('send.memoPublicWarning'),
@@ -494,7 +484,7 @@ class SummaryStep extends Component<Props, State> {
                         <Spacer size={15} />
                         <TextInput
                             onBlur={this.showMemoAlert}
-                            onChangeText={this.onDescriptionChange}
+                            onChangeText={this.onPaymentDescriptionChange}
                             placeholder={Localize.t('send.enterPublicMemo')}
                             inputStyle={styles.inputStyle}
                             maxLength={300}

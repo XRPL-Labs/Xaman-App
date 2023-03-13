@@ -31,8 +31,8 @@ class PassphraseMethod extends Component<Props, State> {
     static contextType = MethodsContext;
     context: React.ContextType<typeof MethodsContext>;
 
-    private contentView: View;
-    private passwordInput: PasswordInput;
+    private contentViewRef: React.RefObject<View>;
+    private passwordInputRef: React.RefObject<PasswordInput>;
     private animatedColor: Animated.Value;
     private mounted: boolean;
 
@@ -45,6 +45,8 @@ class PassphraseMethod extends Component<Props, State> {
         };
 
         this.animatedColor = new Animated.Value(0);
+        this.contentViewRef = React.createRef();
+        this.passwordInputRef = React.createRef();
     }
 
     componentDidMount() {
@@ -75,14 +77,14 @@ class PassphraseMethod extends Component<Props, State> {
 
     startAuthentication = () => {
         // focus the input
-        if (this.passwordInput) {
-            this.passwordInput.focus();
+        if (this.passwordInputRef.current) {
+            this.passwordInputRef.current.focus();
         }
     };
 
     onKeyboardShow = (e: KeyboardEvent) => {
-        if (this.contentView && this.mounted) {
-            this.contentView.measure((x, y, width, height) => {
+        if (this.contentViewRef.current && this.mounted) {
+            this.contentViewRef.current.measure((x, y, width, height) => {
                 const bottomView = (AppSizes.screen.height - height) / 2;
                 const KeyboardHeight = e.endCoordinates.height + 100;
 
@@ -110,8 +112,8 @@ class PassphraseMethod extends Component<Props, State> {
         const { passphrase } = this.state;
 
         // blur the input if android
-        if (Platform.OS === 'android' && this.passwordInput) {
-            this.passwordInput.blur();
+        if (Platform.OS === 'android' && this.passwordInputRef.current) {
+            this.passwordInputRef.current.blur();
         }
 
         setTimeout(() => {
@@ -120,7 +122,7 @@ class PassphraseMethod extends Component<Props, State> {
     };
 
     render() {
-        const { dismiss, signer } = this.context;
+        const { dismiss, signer, isSigning } = this.context;
         const { offsetBottom, passphrase } = this.state;
 
         const interpolateColor = this.animatedColor.interpolate({
@@ -133,12 +135,7 @@ class PassphraseMethod extends Component<Props, State> {
                 onStartShouldSetResponder={() => true}
                 style={[styles.container, { backgroundColor: interpolateColor }]}
             >
-                <View
-                    ref={(r) => {
-                        this.contentView = r;
-                    }}
-                    style={[styles.visibleContent, { marginBottom: offsetBottom }]}
-                >
+                <View ref={this.contentViewRef} style={[styles.visibleContent, { marginBottom: offsetBottom }]}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
                         <View style={[AppStyles.flex1, AppStyles.paddingLeftSml, AppStyles.paddingRightSml]}>
                             <Text numberOfLines={1} style={[AppStyles.p, AppStyles.bold]}>
@@ -173,10 +170,9 @@ class PassphraseMethod extends Component<Props, State> {
 
                             <PasswordInput
                                 testID="passphrase-input"
-                                ref={(r) => {
-                                    this.passwordInput = r;
-                                }}
+                                ref={this.passwordInputRef}
                                 placeholder={Localize.t('account.enterPassword')}
+                                editable={!isSigning}
                                 onChange={this.onPassphraseChange}
                                 autoFocus
                             />
@@ -186,6 +182,7 @@ class PassphraseMethod extends Component<Props, State> {
                             <Button
                                 testID="sign-button"
                                 isDisabled={!passphrase}
+                                isLoading={isSigning}
                                 label={Localize.t('global.sign')}
                                 onPress={this.onSignPress}
                             />

@@ -11,7 +11,7 @@ jobs:
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1.1
         with:
-          xcode-version: 13.0	
+          xcode-version: latest-stable
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -21,7 +21,7 @@ jobs:
       - name: Node
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 16.x
 
       - run: node --version
 
@@ -58,9 +58,9 @@ jobs:
           make build-env
           make generate-locales
           mv src/app.tsx src/app.tsx.old && cat src/app.tsx.old|perl -pe'BEGIN{undef $/;} s/if \(isJailBroken.+?}/\/\/ No root or jailbreak detection/gms' > src/app.tsx
-    
+
       - run: yarn detox build e2e --configuration ios.sim.release
-      - run: yarn cucumber-js ./e2e --configuration ios.sim.release --cleanup --loglevel trace
+      - run: yarn cucumber-js ./e2e --configuration ios.sim.release
 
       - name: Upload artifact files
         if: ${{ always() }}

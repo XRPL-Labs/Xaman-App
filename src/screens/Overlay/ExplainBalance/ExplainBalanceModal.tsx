@@ -2,7 +2,7 @@
  * Add Currency Screen
  */
 
-import { sortBy, filter, countBy } from 'lodash';
+import { sortBy, filter, countBy, forEach } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, ScrollView, InteractionManager } from 'react-native';
 
@@ -18,6 +18,7 @@ import LedgerService from '@services/LedgerService';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
+import { DecodeAccountId } from '@common/utils/codec';
 
 // components
 import { Button, Icon, Spacer, LoadingIndicator, ActionPanel, TokenAvatar } from '@components/General';
@@ -36,6 +37,7 @@ export interface Props {
 export interface State {
     isLoading: boolean;
     accountObjects: any;
+    nfTokenPageCount: number;
     networkReserve: any;
 }
 
@@ -63,12 +65,13 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         this.state = {
             isLoading: true,
             accountObjects: [],
+            nfTokenPageCount: 0,
             networkReserve: LedgerService.getNetworkReserve(),
         };
     }
 
     componentDidMount() {
-        InteractionManager.runAfterInteractions(this.setAccountObjects);
+        InteractionManager.runAfterInteractions(this.setAccountObjectsState);
     }
 
     loadAccountObjects = (
@@ -76,13 +79,15 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         marker?: string,
         combined = [] as LedgerEntriesTypes[],
     ): Promise<LedgerEntriesTypes[]> => {
-        return LedgerService.getAccountObjects(account).then((resp) => {
+        return LedgerService.getAccountObjects(account, { marker }).then((resp) => {
             const { account_objects, marker: _marker } = resp;
             // ignore TrustLines as we handle them in better way
             // ignore incoming objects
             const filtered = filter(account_objects, (o) => {
                 return (
                     o.LedgerEntryType !== 'RippleState' &&
+                    // @ts-ignore
+                    o.LedgerEntryType !== 'NFTokenPage' &&
                     // @ts-ignore
                     (o.Account === account || o.Owner === account)
                 );
@@ -96,23 +101,60 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         });
     };
 
-    setAccountObjects = async () => {
+    loadNFTokenPageCount = (account: string, marker?: string, count = 0): Promise<number> => {
+        // calculate first marker
+        if (!marker) {
+            marker = `${DecodeAccountId(account)}${'0'.repeat(24)}`;
+        }
+        return LedgerService.getLedgerData(marker, 10).then((resp: any) => {
+            const { state, marker: _marker } = resp;
+
+            let tokenPageCount = count;
+            let endOfPage = false;
+
+            forEach(state, (entry: any) => {
+                const { LedgerEntryType } = entry;
+
+                if (endOfPage) {
+                    return;
+                }
+
+                if (LedgerEntryType === 'NFTokenPage') {
+                    tokenPageCount += 1;
+                } else {
+                    endOfPage = true;
+                }
+            });
+
+            if (!endOfPage && _marker && _marker !== marker && _marker.slice(0, 40) === marker.slice(0, 40)) {
+                return this.loadNFTokenPageCount(account, _marker, tokenPageCount);
+            }
+            return tokenPageCount;
+        });
+    };
+
+    setAccountObjectsState = async () => {
         const { account } = this.props;
 
-        this.loadAccountObjects(account.address)
-            .then((accountObjects) => {
+        try {
+            await this.loadAccountObjects(account.address).then((accountObjects) => {
                 this.setState({
                     accountObjects: sortBy(accountObjects, 'LedgerEntryType'),
                 });
-            })
-            .catch(() => {
-                Toast(Localize.t('account.unableToCheckAccountObjects'));
-            })
-            .finally(() => {
+            });
+
+            await this.loadNFTokenPageCount(account.address).then((nfTokenPageCount) => {
                 this.setState({
-                    isLoading: false,
+                    nfTokenPageCount,
                 });
             });
+        } catch {
+            Toast(Localize.t('account.unableToCheckAccountObjects'));
+        } finally {
+            this.setState({
+                isLoading: false,
+            });
+        }
     };
 
     renderAccountObjects = () => {
@@ -181,13 +223,36 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         );
     };
 
+    renderNFTokenPages = () => {
+        const { nfTokenPageCount, networkReserve } = this.state;
+
+        if (nfTokenPageCount) {
+            const label = nfTokenPageCount > 1 ? `NFTokenPages (${nfTokenPageCount})` : 'NFTokenPages';
+
+            return (
+                <View style={[styles.objectItemCard]}>
+                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                        <View style={[styles.iconContainer]}>
+                            <Icon name="IconInfo" size={15} style={[AppStyles.imgColorGrey]} />
+                        </View>
+                        <Text style={[styles.rowLabel]}>{label}</Text>
+                    </View>
+                    <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
+                        <Text style={[styles.reserveAmount]}>{nfTokenPageCount * networkReserve.OwnerReserve} XRP</Text>
+                    </View>
+                </View>
+            );
+        }
+        return null;
+    };
+
     renderUnknownObjects = () => {
         const { account } = this.props;
-        const { accountObjects, networkReserve } = this.state;
+        const { accountObjects, nfTokenPageCount, networkReserve } = this.state;
 
-        if (account.ownerCount > accountObjects.length + account.lines.length) {
-            const remainingOwner = account.ownerCount - (accountObjects.length + account.lines.length);
+        const remainingOwner = account.ownerCount - (accountObjects.length + nfTokenPageCount + account.lines.length);
 
+        if (remainingOwner > 0) {
             return (
                 <View style={[styles.objectItemCard]}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
@@ -249,6 +314,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
                 {this.renderAccountLines()}
                 {this.renderAccountObjects()}
+                {this.renderNFTokenPages()}
                 {this.renderUnknownObjects()}
 
                 <Spacer size={50} />

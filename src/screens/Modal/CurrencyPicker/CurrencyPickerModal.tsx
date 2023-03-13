@@ -187,13 +187,11 @@ class CurrencyPickerModal extends Component<Props, State> {
         const { isLoading, error, dataSource } = this.state;
 
         return (
-            <View testID="currency-picker-modal" style={[styles.container]}>
+            <View testID="currency-picker-modal" style={styles.container}>
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: () => {
-                            Navigator.pop();
-                        },
+                        onPress: Navigator.pop,
                     }}
                     centerComponent={{ text: Localize.t('global.currencies') }}
                 />
@@ -227,21 +225,19 @@ class CurrencyPickerModal extends Component<Props, State> {
                     </View>
                 ) : (
                     <SectionList
-                        style={[AppStyles.paddingHorizontalSml]}
+                        style={AppStyles.paddingHorizontalSml}
                         refreshing={isLoading}
                         sections={dataSource}
                         renderItem={this.renderItem}
                         renderSectionHeader={this.renderSectionHeader}
                         keyExtractor={(item, index) => `${index}`}
                         ListEmptyComponent={this.renderListEmptyComponent}
-                        windowSize={30}
-                        removeClippedSubviews
-                        maxToRenderPerBatch={60}
-                        onRefresh={this.fetchCurrencies}
                         refreshControl={
                             <RefreshControl refreshing={isLoading} tintColor={StyleService.value('$contrast')} />
                         }
                         indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
+                        bounces={false}
+                        initialNumToRender={50}
                     />
                 )}
             </View>

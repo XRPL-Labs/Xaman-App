@@ -5,7 +5,7 @@ import Fuse from 'fuse.js';
 import moment from 'moment-timezone';
 import { filter, flatMap, get, groupBy, isEmpty, isEqual, isUndefined, map, orderBy, uniqBy, without } from 'lodash';
 import React, { Component } from 'react';
-import { Image, ImageBackground, InteractionManager, View, Text } from 'react-native';
+import { Image, ImageBackground, InteractionManager, Text, View } from 'react-native';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -19,6 +19,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { LedgerObjectFactory, TransactionFactory } from '@common/libs/ledger/factory';
 import { LedgerEntriesTypes, LedgerMarker, LedgerObjectTypes, TransactionTypes } from '@common/libs/ledger/types';
 import { Transactions } from '@common/libs/ledger/transactions/types';
+import { NFTokenOffer } from '@common/libs/ledger/objects';
 import { LedgerObjects } from '@common/libs/ledger/objects/types';
 import { Payload } from '@common/libs/payload';
 
@@ -26,7 +27,15 @@ import { Payload } from '@common/libs/payload';
 import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterView';
 
 // Services
-import { AccountService, BackendService, LedgerService, PushNotificationsService, StyleService } from '@services';
+import {
+    AccountService,
+    AppService,
+    BackendService,
+    LedgerService,
+    PushNotificationsService,
+    StyleService,
+} from '@services';
+import { AppStateStatus } from '@services/AppService';
 
 // Components
 import { Button, Header, SearchBar, SegmentButton } from '@components/General';
@@ -55,7 +64,7 @@ export interface State {
     account: AccountSchema;
     transactions: Array<Transactions>;
     plannedTransactions: Array<LedgerObjects>;
-    pendingRequests: Array<Payload>;
+    pendingRequests: Array<Payload | NFTokenOffer>;
     dataSource: Array<Transactions | LedgerObjects | Payload>;
 }
 
@@ -120,6 +129,8 @@ class EventsView extends Component<Props, State> {
         AccountService.on('transaction', this.onTransactionReceived);
         // update list on sign request received
         PushNotificationsService.on('signRequestUpdate', this.onSignRequestReceived);
+        // update the payload list when coming from background
+        AppService.on('appStateChange', this.onAppStateChange);
 
         // update data source after component mount
         InteractionManager.runAfterInteractions(() => {
@@ -134,6 +145,7 @@ class EventsView extends Component<Props, State> {
         AccountRepository.off('changeDefaultAccount', this.onDefaultAccountChange);
         AccountService.off('transaction', this.onTransactionReceived);
         PushNotificationsService.off('signRequestUpdate', this.onSignRequestReceived);
+        AppService.off('appStateChange', this.onAppStateChange);
     }
 
     onDefaultAccountChange = (account: AccountSchema) => {
@@ -169,6 +181,15 @@ class EventsView extends Component<Props, State> {
         }
     };
 
+    onAppStateChange = (status: AppStateStatus, prevStatus: AppStateStatus) => {
+        if (
+            status === AppStateStatus.Active &&
+            [AppStateStatus.Background, AppStateStatus.Inactive].includes(prevStatus)
+        ) {
+            this.onSignRequestReceived();
+        }
+    };
+
     fetchPlannedObjects = (
         account: string,
         type: string,
@@ -200,7 +221,7 @@ class EventsView extends Component<Props, State> {
             }
 
             // account objects we are interested in
-            const objectTypes = ['check', 'escrow', 'offer', 'ticket'];
+            const objectTypes = ['check', 'escrow', 'offer', 'nft_offer', 'ticket'];
             let objects = [] as LedgerEntriesTypes[];
 
             objectTypes
@@ -231,17 +252,22 @@ class EventsView extends Component<Props, State> {
     };
 
     loadPendingRequests = () => {
+        const { account, sectionIndex } = this.state;
+
         return new Promise((resolve) => {
-            BackendService.getPendingPayloads()
-                .then((payloads) => {
-                    this.setState({ pendingRequests: payloads }, () => {
-                        resolve(payloads);
-                    });
-                })
-                .catch(() => {
-                    Toast(Localize.t('events.canNotFetchSignRequests'));
-                    resolve([]);
+            const promises = [BackendService.getPendingPayloads()] as any;
+
+            // only load XLS20 offers on requests section
+            if (sectionIndex === 2) {
+                promises.push(BackendService.getXLS20Offered(account.address));
+            }
+
+            Promise.all(promises).then((result) => {
+                const combined = [].concat(...result);
+                this.setState({ pendingRequests: combined }, () => {
+                    resolve(combined);
                 });
+            });
         });
     };
 
@@ -316,7 +342,12 @@ class EventsView extends Component<Props, State> {
         if (sectionIndex === 1) {
             const open = orderBy(
                 filter(plannedTransactions, (p) =>
-                    [LedgerObjectTypes.Offer, LedgerObjectTypes.Check, LedgerObjectTypes.Ticket].includes(p.Type),
+                    [
+                        LedgerObjectTypes.Offer,
+                        LedgerObjectTypes.NFTokenOffer,
+                        LedgerObjectTypes.Check,
+                        LedgerObjectTypes.Ticket,
+                    ].includes(p.Type),
                 ),
                 ['Date'],
             );
@@ -484,6 +515,16 @@ class EventsView extends Component<Props, State> {
                         LedgerObjectTypes.Check,
                     ];
                     break;
+                case 'NFT':
+                    includeTypes = [
+                        TransactionTypes.NFTokenMint,
+                        TransactionTypes.NFTokenBurn,
+                        TransactionTypes.NFTokenCreateOffer,
+                        TransactionTypes.NFTokenAcceptOffer,
+                        TransactionTypes.NFTokenCancelOffer,
+                        LedgerObjectTypes.NFTokenOffer,
+                    ];
+                    break;
                 case 'Other':
                     includeTypes = [
                         TransactionTypes.AccountSet,
@@ -625,6 +666,8 @@ class EventsView extends Component<Props, State> {
                 'Destination.tag',
                 'Amount.value',
                 'Amount.currency',
+                'Owner',
+                'NFTokenID',
                 'Hash',
             ],
             shouldSort: false,

@@ -17,17 +17,16 @@ import com.xrpllabs.xumm.R;
 import javax.annotation.Nullable;
 
 public class PromptFragment extends DialogFragment implements DialogInterface.OnClickListener {
-
-    /* package */ static final String ARG_TITLE = "title";
-    /* package */ static final String ARG_MESSAGE = "message";
-    /* package */ static final String ARG_BUTTON_POSITIVE = "button_positive";
-    /* package */ static final String ARG_BUTTON_NEGATIVE = "button_negative";
-    /* package */ static final String ARG_BUTTON_NEUTRAL = "button_neutral";
-    /* package */ static final String ARG_ITEMS = "items";
-    /* package */ static final String ARG_TYPE = "type";
-    /* package */ static final String ARG_STYLE = "style";
-    /* package */ static final String ARG_DEFAULT_VALUE = "defaultValue";
-    /* package */ static final String ARG_PLACEHOLDER = "placeholder";
+     static final String ARG_TITLE = "title";
+     static final String ARG_MESSAGE = "message";
+     static final String ARG_BUTTON_POSITIVE = "button_positive";
+     static final String ARG_BUTTON_NEGATIVE = "button_negative";
+     static final String ARG_BUTTON_NEUTRAL = "button_neutral";
+     static final String ARG_ITEMS = "items";
+     static final String ARG_TYPE = "type";
+     static final String ARG_STYLE = "style";
+     static final String ARG_DEFAULT_VALUE = "defaultValue";
+     static final String ARG_PLACEHOLDER = "placeholder";
 
     private EditText mInputText;
 

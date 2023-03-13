@@ -122,10 +122,10 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
 
         try {
             // get account risk level
-            const accountRisk = await BackendService.getAccountRisk(address);
+            const accountAdvisory = await BackendService.getAccountAdvisory(address);
 
-            if (has(accountRisk, 'danger')) {
-                assign(info, { risk: accountRisk.danger });
+            if (has(accountAdvisory, 'danger')) {
+                assign(info, { risk: accountAdvisory.danger });
             } else {
                 reject();
                 return;
@@ -152,60 +152,65 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                 }
             }
 
-            // check for account flags
+            // parse account flags
+            let accountFlags = {} as any;
             if (has(account_data, ['Flags'])) {
-                const accountFlags = new Flag('Account', account_data.Flags).parse();
+                accountFlags = new Flag('Account', account_data.Flags).parse();
+            }
 
-                // check for black hole
-                if (has(account_data, ['RegularKey'])) {
-                    if (
-                        accountFlags.disableMasterKey &&
-                        ['rrrrrrrrrrrrrrrrrrrrrhoLvTp', 'rrrrrrrrrrrrrrrrrrrrBZbvji'].indexOf(account_data.RegularKey) >
-                            -1
-                    ) {
-                        assign(info, { blackHole: true });
-                    }
+            // check for black hole
+            if (has(account_data, ['RegularKey'])) {
+                if (
+                    accountFlags.disableMasterKey &&
+                    ['rrrrrrrrrrrrrrrrrrrrrhoLvTp', 'rrrrrrrrrrrrrrrrrrrrBZbvji'].indexOf(account_data.RegularKey) > -1
+                ) {
+                    assign(info, { blackHole: true });
                 }
+            }
 
-                if (accountFlags.disallowIncomingXRP) {
-                    assign(info, { disallowIncomingXRP: true });
-                }
+            // check for disallow incoming XRP
+            if (accountFlags.disallowIncomingXRP) {
+                assign(info, { disallowIncomingXRP: true });
+            }
 
-                // flag is set
-                if (accountFlags.requireDestinationTag) {
-                    assign(info, { requireDestinationTag: true, possibleExchange: true });
-                } else {
-                    const accountTXS = await LedgerService.getTransactions(address, undefined, 200);
-                    if (
-                        typeof accountTXS.transactions !== 'undefined' &&
-                        accountTXS.transactions &&
-                        accountTXS.transactions.length > 0
-                    ) {
-                        const incomingTXS = accountTXS.transactions.filter((tx) => {
-                            return tx.tx.Destination === address;
-                        });
+            if (get(accountAdvisory, 'force_dtag')) {
+                // first check on account advisory
+                assign(info, { requireDestinationTag: true, possibleExchange: true });
+            } else if (accountFlags.requireDestinationTag) {
+                // check if account have the required destination tag flag set
+                assign(info, { requireDestinationTag: true, possibleExchange: true });
+            } else {
+                // scan the most recent transactions of the account for the destination tags
+                const accountTXS = await LedgerService.getTransactions(address, undefined, 200);
+                if (
+                    typeof accountTXS.transactions !== 'undefined' &&
+                    accountTXS.transactions &&
+                    accountTXS.transactions.length > 0
+                ) {
+                    const incomingTXS = accountTXS.transactions.filter((tx) => {
+                        return tx.tx.Destination === address;
+                    });
 
-                        const incomingTxCountWithTag = incomingTXS.filter((tx) => {
-                            return (
-                                typeof tx.tx.TransactionType === 'string' &&
-                                typeof tx.tx.DestinationTag !== 'undefined' &&
-                                tx.tx.DestinationTag > 9999
-                            );
-                        }).length;
+                    const incomingTxCountWithTag = incomingTXS.filter((tx) => {
+                        return (
+                            typeof tx.tx.TransactionType === 'string' &&
+                            typeof tx.tx.DestinationTag !== 'undefined' &&
+                            tx.tx.DestinationTag > 9999
+                        );
+                    }).length;
 
-                        const senders = accountTXS.transactions.map((tx) => {
-                            return tx.tx.Account || '';
-                        });
+                    const senders = accountTXS.transactions.map((tx) => {
+                        return tx.tx.Account || '';
+                    });
 
-                        const uniqueSenders = senders.filter((elem, pos) => {
-                            return senders.indexOf(elem) === pos;
-                        }).length;
+                    const uniqueSenders = senders.filter((elem, pos) => {
+                        return senders.indexOf(elem) === pos;
+                    }).length;
 
-                        const percentageTag = (incomingTxCountWithTag / incomingTXS.length) * 100;
+                    const percentageTag = (incomingTxCountWithTag / incomingTXS.length) * 100;
 
-                        if (uniqueSenders >= 10 && percentageTag > 50) {
-                            assign(info, { requireDestinationTag: true, possibleExchange: true });
-                        }
+                    if (uniqueSenders >= 10 && percentageTag > 50) {
+                        assign(info, { requireDestinationTag: true, possibleExchange: true });
                     }
                 }
             }

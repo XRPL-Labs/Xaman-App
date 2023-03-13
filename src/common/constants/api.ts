@@ -31,5 +31,11 @@ export default {
         ['rates', '/v1/app/rates/{currency}'],
         ['validEndpoints', '/v1/app/valid-endpoints/{hash}'],
         ['auditTrail', '/v1/app/audit-trail/{destination}'],
+        ['addAccount', '/v1/app/add-account'],
+        ['addTransaction', '/v1/app/add-tx'],
+        ['thirdPartyApps', '/v1/app/third-party-permissions'],
+        ['thirdPartyApp', '/v1/app/third-party-permissions/{appId}'],
+        ['xls20Details', '/v1/app/xls20-details'],
+        ['xls20Offered', '/v1/app/xls20-offered/{account}'],
     ]),
 };

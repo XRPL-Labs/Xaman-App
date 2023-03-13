@@ -5,8 +5,6 @@
 import React, { Component } from 'react';
 import { View, Text, SafeAreaView, Image, Platform, Keyboard, InteractionManager } from 'react-native';
 
-import { BlurView } from '@react-native-community/blur';
-
 import { CoreRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 
@@ -19,7 +17,7 @@ import { Prompt, VibrateHapticFeedback } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
 // components
-import { SecurePinInput } from '@components/General';
+import { SecurePinInput, BlurView } from '@components/General';
 
 import Localize from '@locale';
 

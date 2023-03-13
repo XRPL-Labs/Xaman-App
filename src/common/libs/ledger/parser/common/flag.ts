@@ -50,6 +50,7 @@ class Flag {
                 flagsList = txFlags.NFTokenMint;
                 break;
             case 'NFTokenCreateOffer':
+            case 'NFTokenOffer':
                 flagsList = txFlags.NFTokenCreateOffer;
                 break;
             default:

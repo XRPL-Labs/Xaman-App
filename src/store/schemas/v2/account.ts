@@ -4,9 +4,6 @@
 
 import Realm from 'realm';
 
-import CurrencySchema from '@store/schemas/v1/currency';
-import TrustLineSchema from '@store/schemas/v1/trustLine';
-
 import { EncryptionLevels, AccessLevels } from '@store/types';
 
 class Account extends Realm.Object {
@@ -48,26 +45,6 @@ class Account extends Realm.Object {
     public updatedAt?: Date;
 
     [index: string]: any;
-
-    constructor(obj: Partial<Account>) {
-        super();
-        Object.assign(this, obj);
-    }
-
-    /**
-     * check if account have specific trustline
-     */
-    hasCurrency = (currency: CurrencySchema): boolean => {
-        let found = false;
-
-        this.lines.forEach((t: TrustLineSchema) => {
-            if (t.currency.issuer === currency.issuer && t.currency.currency === currency.currency) {
-                found = true;
-            }
-        });
-
-        return found;
-    };
 
     public static migration(oldRealm: any, newRealm: any) {
         /*  eslint-disable-next-line */

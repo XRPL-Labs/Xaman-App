@@ -1,6 +1,5 @@
 /* eslint-disable  */
 
-// @ts-ignore
 import fetch from 'fetch-mock';
 
 import { ApiService } from '../';
@@ -38,47 +37,40 @@ describe('API', () => {
         describe(method.toUpperCase(), () => {
             if (method === 'put' || method === 'post') {
                 it(`should ${method} given data`, async () => {
-                    // @ts-ignore
                     await ApiService['ping'][method](undefined, POST_BODY);
                     expect(fetch.lastOptions().body).toBe(JSON.stringify(body));
                 });
 
                 it(`should ${method} given data with URL params`, async () => {
-                    // @ts-ignore
                     await ApiService['ping'][method](URL_PARAMS, POST_BODY);
                     expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT_WITH_PARAM}`);
                     expect(fetch.lastOptions().body).toBe(JSON.stringify(body));
                 });
 
                 it(`should ${method} given body in string`, async () => {
-                    // @ts-ignore
                     await ApiService['ping'][method](undefined, 'body');
                     expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT}`);
                     expect(fetch.lastOptions().body).toBe('body');
                 });
 
                 it(`should ${method} with action`, async () => {
-                    // @ts-ignore
                     await ApiService['ping'][method]({ action: 'update' });
                     expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT_WITH_ACTION}`);
                 });
 
                 it(`${method} with invalid json response`, async () => {
-                    // @ts-ignore
-                    expect(ApiService['ping'][method]({ action: 'invalid_json' })).rejects.toMatch(
+                    await expect(ApiService['ping'][method]({ action: 'invalid_json' })).rejects.toMatch(
                         'Response returned is not valid JSON',
                     );
                 });
             } else {
                 it(`${method} with URL params`, async () => {
-                    // @ts-ignore
                     await ApiService['ping'][method](URL_PARAMS, POST_BODY);
                     expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT_WITH_PARAM}`);
                     expect(fetch.lastOptions().body).toBe(JSON.stringify(body));
                 });
 
                 it(`${method} with id`, async () => {
-                    // @ts-ignore
                     await ApiService['ping'][method]({ id: 1 });
                     expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT_WITH_ID}`);
 
@@ -87,9 +79,8 @@ describe('API', () => {
                 });
 
                 it(`${method} with http error code`, async () => {
-                    // @ts-ignore
-                    expect(ApiService['ping'][method]({ action: '400' })).rejects.toMatch(
-                        'Response returned is not valid JSON',
+                    await expect(ApiService['ping'][method]({ action: '400' })).rejects.toEqual(
+                        expect.objectContaining(POST_BODY),
                     );
                 });
             }

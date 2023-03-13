@@ -117,8 +117,8 @@ const VibrateHapticFeedback = (
         | 'notificationWarning'
         | 'notificationError',
 ) => {
-    const { UtilsModule } = NativeModules;
-    UtilsModule.hapticFeedback(type);
+    const { HapticFeedbackModule } = NativeModules;
+    HapticFeedbackModule.trigger(type);
 };
 
 /* Export ==================================================================== */

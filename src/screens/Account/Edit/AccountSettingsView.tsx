@@ -3,20 +3,20 @@
  */
 
 import React, { Component, Fragment } from 'react';
-import { Alert, View, Text, ScrollView } from 'react-native';
+import { Alert, ScrollView, Text, View } from 'react-native';
 
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
 
-import { GetCardPasscodeStatus, GetCardId } from '@common/utils/tangem';
+import { GetCardEnforcedSecurity, GetCardId, TangemSecurity } from '@common/utils/tangem';
 import { AppScreens } from '@common/constants';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
-import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
+import { AccessLevels, AccountTypes, EncryptionLevels } from '@store/types';
 
-import { TouchableDebounce, Header, Spacer, Icon, Button, Switch } from '@components/General';
+import { Button, Header, Icon, Spacer, Switch, TouchableDebounce } from '@components/General';
 
 import Localize from '@locale';
 
@@ -122,18 +122,29 @@ class AccountSettingsView extends Component<Props, State> {
         });
     };
 
+    onAccountDowngradeRequest = () => {
+        const { account } = this.state;
+
+        // auth with passcode for accounts with Passcode as encryption level
+        if (account.encryptionLevel === EncryptionLevels.Passcode) {
+            Navigator.showOverlay(AppScreens.Overlay.Auth, {
+                canAuthorizeBiometrics: false,
+                onSuccess: this.downgradeAccountAccessLevel,
+            });
+            // for accounts with passphrase auth with passphrase
+        } else if (account.encryptionLevel === EncryptionLevels.Passphrase) {
+            Navigator.showOverlay(AppScreens.Overlay.PassphraseAuthentication, {
+                account,
+                onSuccess: this.downgradeAccountAccessLevel,
+            });
+        }
+    };
+
     downgradeAccountAccessLevel = () => {
         const { account } = this.state;
 
         // downgrade the access level
         AccountRepository.downgrade(account);
-    };
-
-    onAccountDowngradeRequest = () => {
-        Navigator.showOverlay(AppScreens.Overlay.Auth, {
-            canAuthorizeBiometrics: false,
-            onSuccess: this.downgradeAccountAccessLevel,
-        });
     };
 
     onAccessLevelSelected = (item: any) => {
@@ -202,14 +213,25 @@ class AccountSettingsView extends Component<Props, State> {
     onAccountRemoveRequest = () => {
         const { account } = this.state;
 
-        // if full access auth before remove
-        if (account.accessLevel === AccessLevels.Full) {
+        // for readonly accounts just remove without any auth
+        if (account.accessLevel === AccessLevels.Readonly) {
+            this.removeAccount();
+            return;
+        }
+
+        // auth with passcode for Physical and accounts with Passcode as encryption level
+        if ([EncryptionLevels.Passcode, EncryptionLevels.Physical].includes(account.encryptionLevel)) {
             Navigator.showOverlay(AppScreens.Overlay.Auth, {
                 canAuthorizeBiometrics: false,
                 onSuccess: this.removeAccount,
             });
-        } else {
-            this.removeAccount();
+
+            // for accounts with passphrase auth with passphrase
+        } else if (account.encryptionLevel === EncryptionLevels.Passphrase) {
+            Navigator.showOverlay(AppScreens.Overlay.PassphraseAuthentication, {
+                account,
+                onSuccess: this.removeAccount,
+            });
         }
     };
 
@@ -375,12 +397,19 @@ class AccountSettingsView extends Component<Props, State> {
                                 </View>
 
                                 <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                                    <Text style={[styles.value]}>
-                                        {/*
-                                         // @ts-ignore */}
-                                        {GetCardPasscodeStatus(account.additionalInfo)
-                                            ? Localize.t('global.passcode')
-                                            : Localize.t('global.longTap')}
+                                    <Text style={styles.value}>
+                                        {(() => {
+                                            switch (GetCardEnforcedSecurity(account.additionalInfo)) {
+                                                case TangemSecurity.Passcode:
+                                                    return Localize.t('global.passcode');
+                                                case TangemSecurity.AccessCode:
+                                                    return Localize.t('global.accessCode');
+                                                case TangemSecurity.LongTap:
+                                                    return Localize.t('global.longTap');
+                                                default:
+                                                    return null;
+                                            }
+                                        })()}
                                     </Text>
                                 </View>
                                 <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />

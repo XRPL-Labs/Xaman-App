@@ -1,4 +1,4 @@
-const detox = require('detox');
+const detox = require('detox/internals');
 
 class DetoxCucumberAdapter {
     constructor(d) {
@@ -6,16 +6,16 @@ class DetoxCucumberAdapter {
     }
 
     async beforeEach(context) {
-        await this.detox.beforeEach({
-            title: context.pickle.name,
+        await this.detox.onTestStart({
+            title: context.pickle.uri,
             fullName: context.pickle.name,
             status: 'running',
         });
     }
 
     async afterEach(context) {
-        await this.detox.afterEach({
-            title: context.pickle.name,
+        await this.detox.onTestDone({
+            title: context.pickle.uri,
             fullName: context.pickle.name,
             status: this.mapStatus(context, true),
             timedOut: context.result.duration,

@@ -10,6 +10,7 @@ const LONG_PRESS_DELAY = 400;
 
 /* Types ==================================================================== */
 export interface Props {
+    children: React.ReactNode;
     testID: string;
     cellHeight: number;
     separatorHeight: number;
@@ -194,8 +195,6 @@ class CellComponent extends PureComponent<Props> {
         return (
             <Animated.View
                 ref={this.itemRef}
-                /* eslint-disable-next-line react/jsx-props-no-spreading */
-                {...this.props}
                 style={[
                     styles.item,
                     {

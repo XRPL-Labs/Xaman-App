@@ -31,11 +31,6 @@ class TrustLine extends Realm.Object {
     public quality_in?: number;
     public quality_out?: number;
 
-    constructor(obj: Partial<TrustLine>) {
-        super();
-        Object.assign(this, obj);
-    }
-
     get counterParty() {
         // return new Promise((resolve, reject) => {
         //     const counterParty = this.currency.linkingObjects('CounterParty', 'currencies');

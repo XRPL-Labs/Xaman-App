@@ -9,7 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import com.reactnativenavigation.react.CommandListenerAdapter;
 
-import libs.authentication.Biometric.BiometricModule;
+import libs.security.authentication.Biometric.BiometricModule;
 
 import java.util.Locale;
 

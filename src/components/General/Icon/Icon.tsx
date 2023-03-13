@@ -19,7 +19,7 @@ interface Props {
 }
 
 /* Component ==================================================================== */
-const Icon: React.SFC<Props> = ({ name, size = 25, style }) => (
+const Icon: React.FC<Props> = ({ name, size = 25, style }) => (
     <Image
         resizeMode="contain"
         source={Images[name]}

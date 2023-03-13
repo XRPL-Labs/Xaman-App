@@ -5,10 +5,9 @@ import { flatMap, toString } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, FlatList, Platform, Linking, Alert } from 'react-native';
 
-import Clipboard from '@react-native-community/clipboard';
-
 import { ActionSheet, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+import { Clipboard } from '@common/helpers/clipboard';
 
 import { AppScreens, AppConfig } from '@common/constants';
 

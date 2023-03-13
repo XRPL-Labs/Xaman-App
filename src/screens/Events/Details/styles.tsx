@@ -47,6 +47,10 @@ const styles = StyleService.create({
         paddingHorizontal: 25,
         paddingBottom: 25,
     },
+    warningsContainer: {
+        paddingHorizontal: 25,
+        paddingBottom: 25,
+    },
     detailsContainer: {
         borderTopColor: '$tint',
         borderTopWidth: 1,
@@ -59,6 +63,14 @@ const styles = StyleService.create({
         backgroundColor: '$tint',
         paddingVertical: 20,
         paddingHorizontal: 30,
+        borderRadius: 50,
+    },
+    nfTokenContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '$tint',
+        paddingVertical: 10,
+        paddingHorizontal: 10,
         borderRadius: 50,
     },
     amountContainerSmall: {

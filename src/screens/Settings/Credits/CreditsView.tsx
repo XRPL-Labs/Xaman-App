@@ -3,17 +3,16 @@
  */
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { WebView } from 'react-native-webview';
 
 import { Navigator } from '@common/helpers/navigator';
-import { hasNotch } from '@common/helpers/device';
+import { HasBottomNotch } from '@common/helpers/device';
 
 import { AppScreens, AppConfig } from '@common/constants';
 
 import { CoreSchema } from '@store/schemas/latest';
 import { CoreRepository } from '@store/repositories';
 
-import { Header, LoadingIndicator } from '@components/General';
+import { WebView, Header, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
@@ -43,7 +42,7 @@ class CreditsView extends Component<Props, State> {
         super(props);
 
         this.state = {
-            paddingBottom: hasNotch() ? 20 : 0,
+            paddingBottom: HasBottomNotch() ? 20 : 0,
             coreSettings: CoreRepository.getSettings(),
         };
     }
@@ -79,7 +78,6 @@ class CreditsView extends Component<Props, State> {
                     startInLoadingState
                     renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                     source={{ uri: this.getURI(), headers: this.getHeaders() }}
-                    androidHardwareAccelerationDisabled={false}
                 />
             </View>
         );

@@ -15,11 +15,11 @@ import {
     NativeEventSubscription,
 } from 'react-native';
 
-import Clipboard from '@react-native-community/clipboard';
+import { AppScreens } from '@common/constants';
 
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-import { AppScreens } from '@common/constants';
+import { Clipboard } from '@common/helpers/clipboard';
 
 import { LedgerService, StyleService } from '@services';
 import { SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
@@ -91,7 +91,7 @@ class SubmitModal extends Component<Props, State> {
         if (submitResult.success) {
             this.setState({ step: 'verifying', submitResult });
 
-            const verifyResult = await LedgerService.verifyTransaction(submitResult.transactionId);
+            const verifyResult = await LedgerService.verifyTransaction(submitResult.hash);
 
             this.setState({
                 step: 'result',

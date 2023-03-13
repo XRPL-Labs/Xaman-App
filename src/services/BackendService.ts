@@ -3,7 +3,7 @@
  * Interact with XUMM backend
  */
 
-import { map, isEmpty, flatMap, get, reduce } from 'lodash';
+import { map, isEmpty, flatMap, get, reduce, compact } from 'lodash';
 import moment from 'moment-timezone';
 
 import { Platform } from 'react-native';
@@ -11,7 +11,8 @@ import { Platform } from 'react-native';
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
-import { GetAppReadableVersion, GetDeviceUniqueId } from '@common/helpers/device';
+import { GetDeviceUniqueId } from '@common/helpers/device';
+import { GetAppReadableVersion } from '@common/helpers/app';
 
 import { CurrencySchema } from '@store/schemas/latest';
 
@@ -22,12 +23,16 @@ import CurrencyRepository from '@store/repositories/currency';
 
 import { Payload, PayloadType } from '@common/libs/payload';
 
+import { LedgerObjectFactory } from '@common/libs/ledger/factory';
+import { NFTokenOffer } from '@common/libs/ledger/objects';
+
 // services
 import PushNotificationsService from '@services/PushNotificationsService';
 import NavigationService, { RootType } from '@services/NavigationService';
 import ApiService from '@services/ApiService';
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
+import LedgerService from '@services/LedgerService';
 
 // Locale
 import Localize from '@locale';
@@ -49,6 +54,9 @@ class BackendService {
                 // sync the details after moving to default stack
                 NavigationService.on('setRoot', this.onRootChange);
 
+                // listen for ledger transaction submit
+                LedgerService.on('submitTransaction', this.onLedgerTransactionSubmit);
+
                 // resolve
                 resolve();
             } catch (e) {
@@ -59,11 +67,24 @@ class BackendService {
 
     /*
     On navigation root changed
-     */
+    */
     onRootChange = (root: RootType) => {
         if (root === RootType.DefaultRoot) {
             this.sync();
         }
+    };
+
+    /*
+    On Ledger submit transaction
+    */
+    onLedgerTransactionSubmit = ({ hash, node, nodeType }: { hash: string; node: string; nodeType: string }) => {
+        // only if hash is provided
+        if (!hash) {
+            return;
+        }
+        this.addTransaction(hash, node, nodeType).catch((e: any) => {
+            this.logger.error('Add transaction error: ', e);
+        });
     };
 
     /*
@@ -98,6 +119,7 @@ class BackendService {
                                     name: c.name,
                                     avatar: c.avatar || '',
                                     shortlist: c.shortlist === 1,
+                                    xapp_identifier: c.xapp_identifier || '',
                                 });
 
                                 currenciesList.push(currency);
@@ -253,13 +275,49 @@ class BackendService {
                     }
                 }
 
-                if (badge) {
+                if (typeof badge !== 'undefined') {
                     PushNotificationsService.updateBadge(badge);
                 }
             })
             .catch((e: any) => {
                 this.logger.error('Ping Backend Error: ', e);
             });
+    };
+
+    /*
+    Get list of third party apps permissions
+    */
+    getThirdPartyApps = () => {
+        return ApiService.thirdPartyApps.get();
+    };
+
+    /*
+    Revoke third party app permission
+    */
+    revokeThirdPartyPermission = (appId: string) => {
+        return ApiService.thirdPartyApp.delete({ appId });
+    };
+
+    /*
+    Report submitted transaction for security checks
+    */
+    addTransaction = (hash: string, node: string, nodeType: string) => {
+        return ApiService.addTransaction.post(null, {
+            hash,
+            node,
+            nodeType,
+        });
+    };
+
+    /*
+    Report added account for security checks
+    */
+    addAccount = (account: string, txblob: string, cid?: string) => {
+        return ApiService.addAccount.post(null, {
+            account,
+            txblob,
+            cid,
+        });
     };
 
     /*
@@ -277,9 +335,9 @@ class BackendService {
     };
 
     /*
-    get account risk on account advisory
+    get account risks on account advisory
     */
-    getAccountRisk = (address: string) => {
+    getAccountAdvisory = (address: string) => {
         return ApiService.accountAdvisory.get(address);
     };
 
@@ -306,6 +364,46 @@ class BackendService {
 
     getTranslation = (uuid: string) => {
         return ApiService.translation.get({ uuid });
+    };
+
+    getXLS20Details = (account: string, tokens: string[]) => {
+        return ApiService.xls20Details.post(null, { account, tokens }, { 'X-XummNet': SocketService.chain });
+    };
+
+    getXLS20Offered = (account: string): Array<NFTokenOffer> => {
+        return ApiService.xls20Offered
+            .get({ account }, null, { 'X-XummNet': SocketService.chain })
+            .then(async (res: Array<any>) => {
+                if (isEmpty(res)) {
+                    return [];
+                }
+                // fetch the offer objects from ledger
+                const ledgerOffers = await Promise.all(
+                    flatMap(res, (offer) => {
+                        const { OfferID } = offer;
+                        return LedgerService.getLedgerEntry({ index: OfferID })
+                            .then((resp) => {
+                                const { node } = resp;
+                                if (node?.LedgerEntryType === 'NFTokenOffer') {
+                                    // combine ledger time with the object
+                                    return Object.assign(resp.node, {
+                                        LedgerTime: get(offer, 'ledger_close_time'),
+                                    });
+                                }
+                                return null;
+                            })
+                            .catch(() => {
+                                return null;
+                            });
+                    }),
+                );
+
+                return compact(flatMap(ledgerOffers, LedgerObjectFactory.fromLedger));
+            })
+            .catch((error: string): any => {
+                this.logger.error('Fetch XLS20 offered Error: ', error);
+                return [];
+            });
     };
 
     getCurrencyRate = (currency: string) => {

@@ -10,7 +10,7 @@ class Core extends Realm.Object {
         name: 'Core',
         properties: {
             initialized: { type: 'bool', default: false }, // user initialized the app
-            passcode: 'string?', // encrypted passcode
+            passcode: 'string?', // hashed passcode
             minutesAutoLock: { type: 'int', default: 1 }, // auto lock time in minutes
             timePassLocked: 'int?', // time locked app in unix timestamp
             passcodeAttempts: { type: 'int', default: 0 }, // number of passcode attempts
@@ -18,7 +18,7 @@ class Core extends Realm.Object {
             biometricMethod: 'string?', // biometric auth method
             passcodeFallback: { type: 'bool', default: false }, // fallback to passcode in case of biometric fail
             language: { type: 'string', default: AppConfig.defaultLanguage }, // default app language
-            defaultNode: { type: 'string', default: __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0] },
+            defaultNode: { type: 'string', default: AppConfig.nodes.main[0] },
             showMemoAlert: { type: 'bool', default: true }, // show memo alert
         },
     };
@@ -34,11 +34,6 @@ class Core extends Realm.Object {
     public language: string;
     public defaultNode: string;
     public showMemoAlert: boolean;
-
-    constructor(obj: Partial<Core>) {
-        super();
-        Object.assign(this, obj);
-    }
 }
 
 export default Core;

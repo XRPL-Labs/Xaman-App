@@ -6,7 +6,6 @@ import { isNumber } from 'lodash';
 import React, { Component } from 'react';
 
 import { View, SafeAreaView, Image, Alert } from 'react-native';
-import { WebView } from 'react-native-webview';
 
 import { CoreRepository, ProfileRepository } from '@store/repositories';
 import { Navigator } from '@common/helpers/navigator';
@@ -17,7 +16,7 @@ import { BackendService, AuthenticationService, StyleService } from '@services';
 import Localize from '@locale';
 
 // component
-import { Button, Footer, LoadingIndicator } from '@components/General';
+import { WebView, Button, Footer, LoadingIndicator } from '@components/General';
 
 // style
 import { AppStyles } from '@theme';
@@ -142,7 +141,6 @@ class FinishView extends Component<Props, State> {
                         renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                         source={{ uri: this.getURI(), headers: this.getHeaders() }}
                         style={styles.webView}
-                        androidHardwareAccelerationDisabled={false}
                     />
                 </View>
 

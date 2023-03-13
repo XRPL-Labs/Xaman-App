@@ -26,8 +26,7 @@ export default StyleService.create({
         justifyContent: 'center',
         alignItems: 'center',
         alignContent: 'stretch',
-        marginBottom: Sizes.tabbarHeight,
-        paddingTop: Sizes.bottomTabsSafeAreaInset,
+        paddingTop: Sizes.safeAreaTopInset,
         backgroundColor: '$background',
     },
     headerContainer: {
@@ -473,8 +472,6 @@ export default StyleService.create({
 
     // Empty view
     emptyIcon: {
-        // width: Sizes.screen.width * 0.3,
-        // height: Sizes.screen.width * 0.3,
         resizeMode: 'contain',
         width: Sizes.scale(140),
         height: Sizes.scale(140),

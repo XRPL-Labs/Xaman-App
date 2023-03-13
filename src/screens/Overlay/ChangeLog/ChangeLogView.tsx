@@ -3,7 +3,6 @@
  */
 import React, { Component } from 'react';
 import { View, Text, Animated } from 'react-native';
-import { WebView } from 'react-native-webview';
 
 import { CoreSchema } from '@store/schemas/latest';
 import { CoreRepository } from '@store/repositories';
@@ -11,7 +10,7 @@ import { CoreRepository } from '@store/repositories';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens, AppConfig } from '@common/constants';
 
-import { Button, LoadingIndicator } from '@components/General';
+import { WebView, Button, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
@@ -120,7 +119,6 @@ class ChangeLogModalView extends Component<Props, State> {
                             startInLoadingState
                             renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                             source={{ uri: this.getURI(), headers: this.getHeaders() }}
-                            androidHardwareAccelerationDisabled={false}
                         />
                     </View>
                 </Animated.View>

@@ -7,8 +7,7 @@ let storage: StorageBackend;
 describe('Storage', () => {
     describe('Integration', () => {
         beforeAll(() => {
-            const path = '.jest/cache/INTEGRATION_TEST.realm';
-            storage = new StorageBackend(path);
+            storage = new StorageBackend();
         });
 
         it('should initialize properly', async () => {
@@ -17,7 +16,7 @@ describe('Storage', () => {
         });
 
         afterAll(() => {
-            storage.wipe();
+            StorageBackend.wipe();
             storage.close();
         });
     });

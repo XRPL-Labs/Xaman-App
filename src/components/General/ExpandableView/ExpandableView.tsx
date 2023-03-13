@@ -8,6 +8,7 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
+    children: React.ReactNode;
     title: string;
     titleStyle: TextStyle | TextStyle[];
     expanded?: boolean;

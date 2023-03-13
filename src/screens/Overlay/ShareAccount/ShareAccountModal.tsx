@@ -4,11 +4,11 @@
 import React, { Component } from 'react';
 import { View, Text, Share } from 'react-native';
 
-import Clipboard from '@react-native-community/clipboard';
+import { AppScreens } from '@common/constants';
 
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-import { AppScreens } from '@common/constants';
+import { Clipboard } from '@common/helpers/clipboard';
 
 import { AccountSchema } from '@store/schemas/latest';
 

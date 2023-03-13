@@ -4,7 +4,7 @@ import StyleService from '@services/StyleService';
 
 import { AppSizes, AppFonts } from '@theme';
 
-import { hasNotch } from '@common/helpers/device';
+import { HasBottomNotch, HasTopNotch } from '@common/helpers/device';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     container: {
@@ -74,7 +74,7 @@ const styles = StyleService.create({
     headerContainer: {
         backgroundColor: '$background',
         alignItems: 'center',
-        paddingTop: hasNotch() ? 50 : Platform.OS === 'android' ? 10 : 30,
+        paddingTop: HasTopNotch() ? 50 : Platform.OS === 'android' ? 10 : 30,
         paddingHorizontal: AppSizes.paddingSml,
         paddingBottom: 10,
     },
@@ -82,7 +82,7 @@ const styles = StyleService.create({
         flex: 1,
         justifyContent: 'flex-end',
         paddingTop: AppSizes.paddingSml,
-        paddingBottom: hasNotch() ? 20 : 0,
+        paddingBottom: HasBottomNotch() ? 20 : 0,
     },
     keyboardAvoidContainerStyle: {
         flexGrow: 1,

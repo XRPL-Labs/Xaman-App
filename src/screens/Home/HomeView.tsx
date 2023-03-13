@@ -7,12 +7,12 @@ import { find, has } from 'lodash';
 import React, { Component, Fragment } from 'react';
 import { View, Text, Image, ImageBackground, InteractionManager, Alert } from 'react-native';
 
-import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
+import { Navigation } from 'react-native-navigation';
 
-import { AccountService, SocketService, StyleService, LedgerService } from '@services';
+import { AccountService, SocketService, StyleService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccountSchema, TrustLineSchema, CoreSchema } from '@store/schemas/latest';
+import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 
 // constants
 import { AppScreens } from '@common/constants';
@@ -23,8 +23,8 @@ import { Prompt } from '@common/helpers/interface';
 import Localize from '@locale';
 
 // components
-import { TouchableDebounce, Button, RaisedButton, InfoMessage, Spacer, Icon, Badge } from '@components/General';
-import { ProBadge, TokenList } from '@components/Modules';
+import { TouchableDebounce, Button, RaisedButton, Icon, Badge } from '@components/General';
+import { ProBadge, InactiveAccount, AssetsList } from '@components/Modules';
 
 // style
 import { AppStyles, AppFonts } from '@theme';
@@ -40,6 +40,7 @@ export interface State {
     accountsCount: number;
     account: AccountSchema;
     isSpendable: boolean;
+    isSignable: boolean;
     defaultNode: string;
     developerMode: boolean;
     discreetMode: boolean;
@@ -60,6 +61,7 @@ class HomeView extends Component<Props, State> {
             accountsCount: undefined,
             account: undefined,
             isSpendable: false,
+            isSignable: false,
             defaultNode: coreSettings.defaultNode,
             developerMode: coreSettings.developerMode,
             discreetMode: coreSettings.discreetMode,
@@ -152,7 +154,7 @@ class HomeView extends Component<Props, State> {
                     account: updatedAccount,
                 },
                 // when account balance changed update spendable accounts
-                this.updateSpendableStatus,
+                this.updateAccountStatus,
             );
         }
     };
@@ -164,7 +166,7 @@ class HomeView extends Component<Props, State> {
                 accountsCount: AccountRepository.getVisibleAccountCount(),
             },
             // when account balance changed update spendable accounts
-            this.updateSpendableStatus,
+            this.updateAccountStatus,
         );
     };
 
@@ -201,59 +203,19 @@ class HomeView extends Component<Props, State> {
         }
     };
 
-    // eslint-disable-next-line react/destructuring-assignment
-    updateSpendableStatus = (account = this.state.account) => {
+    updateAccountStatus = () => {
+        const { account } = this.state;
+
         if (account?.isValid()) {
             const spendableAccounts = AccountRepository.getSpendableAccounts();
+            const isSignable = AccountRepository.isSignable(account);
 
             this.setState({
                 account,
+                isSignable,
                 isSpendable: !!find(spendableAccounts, { address: account.address }),
             });
         }
-    };
-
-    openActiveAccountDescription = () => {
-        Navigator.showModal(AppScreens.Modal.Help, {
-            title: Localize.t('home.howActivateMyAccount'),
-            content: Localize.t('home.howActivateMyAccountDesc', {
-                baseReserve: LedgerService.getNetworkReserve().BaseReserve,
-            }),
-        });
-    };
-
-    showCurrencyOptions = (trustLine: TrustLineSchema) => {
-        const { account } = this.state;
-
-        Navigator.showOverlay(
-            AppScreens.Overlay.CurrencySettings,
-            { trustLine, account },
-            {
-                overlay: {
-                    interceptTouchOutside: false,
-                },
-            },
-        );
-    };
-
-    showNFTDetails = (trustLine: TrustLineSchema) => {
-        const { account } = this.state;
-
-        Navigator.showModal(
-            AppScreens.Modal.XAppBrowser,
-            {
-                identifier: 'xumm.nft-info',
-                account,
-                params: {
-                    issuer: trustLine.currency.issuer,
-                    token: trustLine.currency.currency,
-                },
-            },
-            {
-                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-            },
-        );
     };
 
     toggleDiscreetMode = () => {
@@ -269,9 +231,7 @@ class HomeView extends Component<Props, State> {
     };
 
     onShowAccountQRPress = () => {
-        const { account } = this.state;
-
-        const isSignable = AccountRepository.isSignable(account);
+        const { isSignable } = this.state;
 
         if (isSignable) {
             this.showShareOverlay();
@@ -307,22 +267,8 @@ class HomeView extends Component<Props, State> {
         Navigator.push(AppScreens.Transaction.Payment);
     };
 
-    onTokenPress = (line: TrustLineSchema) => {
-        const { isSpendable } = this.state;
-
-        if (!line) {
-            return;
-        }
-
-        if (isSpendable) {
-            this.showCurrencyOptions(line);
-        } else if (line.isNFT) {
-            this.showNFTDetails(line);
-        }
-    };
-
     onSwitchButtonPress = () => {
-        const { accountsCount } = this.state;
+        const { accountsCount, discreetMode } = this.state;
 
         // if account count is zero or 1 then show add account
         if (accountsCount === 1) {
@@ -330,7 +276,7 @@ class HomeView extends Component<Props, State> {
             return;
         }
 
-        Navigator.showOverlay(AppScreens.Overlay.SwitchAccount);
+        Navigator.showOverlay(AppScreens.Overlay.SwitchAccount, { discreetMode });
     };
 
     renderHeader = () => {
@@ -375,77 +321,16 @@ class HomeView extends Component<Props, State> {
 
         // accounts is not activated
         if (account.balance === 0) {
-            // check if account is a regular key to one of xumm accounts
-            const isRegularKey = AccountRepository.isRegularKey(account.address);
-
-            if (isRegularKey) {
-                const keysForAccounts = AccountRepository.findBy('regularKey', account.address);
-
-                return (
-                    <View style={[AppStyles.flex6, AppStyles.paddingHorizontalSml]}>
-                        <InfoMessage icon="IconKey" type="info" label={Localize.t('account.regularKeyFor')} />
-                        <Spacer />
-                        {keysForAccounts.map((a, index) => {
-                            return (
-                                <TouchableDebounce
-                                    key={index}
-                                    style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow]}
-                                    onPress={() => {
-                                        AccountRepository.setDefaultAccount(a.address);
-                                    }}
-                                    activeOpacity={0.9}
-                                >
-                                    <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
-                                        <Icon size={25} style={[styles.iconAccount]} name="IconAccount" />
-                                        <View>
-                                            <Text style={[AppStyles.pbold]}>{a.label}</Text>
-                                            <Text style={[AppStyles.subtext, AppStyles.mono, AppStyles.colorBlue]}>
-                                                {a.address}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                </TouchableDebounce>
-                            );
-                        })}
-                    </View>
-                );
-            }
-
-            return (
-                <View
-                    style={[AppStyles.flex6, AppStyles.paddingHorizontalSml]}
-                    testID="not-activated-account-container"
-                >
-                    <InfoMessage type="error" label={Localize.t('account.yourAccountIsNotActivated')} />
-                    <TouchableDebounce
-                        style={[AppStyles.row, AppStyles.centerContent, AppStyles.marginTopSml]}
-                        onPress={this.openActiveAccountDescription}
-                    >
-                        <Icon name="IconInfo" size={20} style={[styles.trustLineInfoIcon]} />
-                        <Text
-                            style={[
-                                AppStyles.subtext,
-                                AppStyles.textCenterAligned,
-                                AppStyles.link,
-                                AppStyles.colorGrey,
-                            ]}
-                        >
-                            {Localize.t('home.howActivateMyAccount')}
-                        </Text>
-                    </TouchableDebounce>
-                </View>
-            );
+            return <InactiveAccount account={account} />;
         }
 
         return (
-            <TokenList
-                timestamp={timestamp}
-                testID="token-list-container"
-                style={styles.tokenListContainer}
+            <AssetsList
                 account={account}
-                onTokenPress={this.onTokenPress}
                 discreetMode={discreetMode}
-                readonly={!isSpendable}
+                spendable={isSpendable}
+                timestamp={timestamp}
+                style={styles.tokenListContainer}
             />
         );
     };

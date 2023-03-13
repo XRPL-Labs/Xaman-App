@@ -10,9 +10,6 @@ export default {
     creditsURL: 'https://xumm.app/app/webviews/credits/',
     changeLogURL: 'https://xumm.app/app/webviews/update/en/?update=',
 
-    // Build Configuration - Debug or Release?
-    DEV: __DEV__,
-
     // persist storage config
     storage: {
         keyName: 'xumm-realm-key',
@@ -74,35 +71,8 @@ export default {
                 dev: 'https://devnet.xrpl.org/accounts/',
             },
         },
-        {
-            value: 'xrplorer',
-            title: 'XRPlorer',
-            tx: {
-                main: 'https://xrplorer.com/transaction/',
-                test: 'https://test.bithomp.com/explorer/',
-                dev: 'https://devnet.xrpl.org/transactions/',
-            },
-            account: {
-                main: 'https://xrplorer.com/account/',
-                test: 'https://test.bithomp.com/explorer/',
-                dev: 'https://devnet.xrpl.org/accounts/',
-            },
-        },
-        {
-            value: 'xrpintel',
-            title: 'xrpintel',
-            tx: {
-                main: 'https://xrpintel.com/tx/',
-                test: 'https://test.bithomp.com/explorer/',
-                dev: 'https://devnet.xrpl.org/transactions/',
-            },
-            account: {
-                main: 'https://xrpintel.com/account/',
-                test: 'https://test.bithomp.com/explorer/',
-                dev: 'https://devnet.xrpl.org/accounts/',
-            },
-        },
     ],
+    fallbackExplorer: 'bithomp',
 
     // default network base and owner reserve
     network: {

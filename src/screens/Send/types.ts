@@ -34,6 +34,7 @@ export interface State {
     currency: TrustLineSchema | string;
     sendingNFT: boolean;
     amount: string;
+    memo: string;
     availableFees: FeeItem[];
     selectedFee: FeeItem;
     issuerFee: number;
@@ -53,6 +54,7 @@ export interface ContextProps extends State {
     setIssuerFee: (issuerFee: number) => void;
     setFee: (fee: FeeItem) => void;
     setAvailableFees: (availableFees: FeeItem[]) => void;
+    setMemo: (memo: string) => void;
     goNext: () => void;
     goBack: () => void;
 }

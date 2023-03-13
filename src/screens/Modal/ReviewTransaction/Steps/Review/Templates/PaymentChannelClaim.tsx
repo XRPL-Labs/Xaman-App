@@ -9,8 +9,9 @@ import Localize from '@locale';
 
 import styles from './styles';
 
+import { TemplateProps } from './types';
 /* types ==================================================================== */
-export interface Props {
+export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: PaymentChannelClaim;
 }
 

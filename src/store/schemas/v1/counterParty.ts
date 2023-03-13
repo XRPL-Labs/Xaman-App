@@ -26,11 +26,6 @@ class CounterParty extends Realm.Object {
     public registerAt?: Date;
     public updatedAt?: Date;
     public currencies?: CurrencySchema[];
-
-    constructor(obj: Partial<CounterParty>) {
-        super();
-        Object.assign(this, obj);
-    }
 }
 
 export default CounterParty;

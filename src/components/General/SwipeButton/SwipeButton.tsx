@@ -32,6 +32,7 @@ interface Props {
     label?: string;
     accessibilityLabel?: string;
     isLoading?: boolean;
+    isDisabled?: boolean;
     secondary?: boolean;
     onSwipeSuccess: () => void;
     onPanResponderGrant?: () => void;
@@ -145,6 +146,12 @@ class SwipeButton extends Component<Props, State> {
     };
 
     onPanResponderMove = (event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
+        const { isDisabled } = this.props;
+
+        if (isDisabled) {
+            return;
+        }
+
         const newWidth = this.defaultContainerWidth + gestureState.dx;
 
         if (newWidth < this.defaultContainerWidth) {
@@ -163,7 +170,11 @@ class SwipeButton extends Component<Props, State> {
     };
 
     onPanResponderRelease = (event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
-        const { onPanResponderRelease } = this.props;
+        const { isDisabled, onPanResponderRelease } = this.props;
+
+        if (isDisabled) {
+            return;
+        }
 
         if (typeof onPanResponderRelease === 'function') {
             onPanResponderRelease();
@@ -202,7 +213,8 @@ class SwipeButton extends Component<Props, State> {
 
     render() {
         const { screenReaderEnabled } = this.state;
-        const { label, accessibilityLabel, isLoading, secondary, testID, style, color, onSwipeSuccess } = this.props;
+        const { label, accessibilityLabel, isDisabled, isLoading, secondary, testID, style, color, onSwipeSuccess } =
+            this.props;
 
         if (isLoading) {
             return (
@@ -245,10 +257,11 @@ class SwipeButton extends Component<Props, State> {
                     secondary && styles.containerSecondary,
                     style,
                     color && { backgroundColor: color, borderColor: color },
+                    isDisabled && styles.containerDisabled,
                 ]}
                 onLayout={this.onLayoutChange}
             >
-                <Text style={[styles.label]}>{label}</Text>
+                <Text style={styles.label}>{label}</Text>
                 <Animated.View
                     testID={testID}
                     style={[styles.thumpContainer, { width: this.animatedWidth }]}

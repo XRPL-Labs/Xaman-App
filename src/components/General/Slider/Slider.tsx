@@ -17,6 +17,7 @@ function equal(a: number, b: number) {
 
 /* Types ==================================================================== */
 interface Props {
+    children: React.ReactNode;
     style?: ViewStyle;
     pagingEnabled?: boolean;
     showsHorizontalScrollIndicator?: boolean;

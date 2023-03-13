@@ -1,7 +1,7 @@
 /**
  * Transaction Details screen
  */
-import { find, get, isEmpty } from 'lodash';
+import { find, get, isEmpty, isUndefined } from 'lodash';
 import moment from 'moment-timezone';
 import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
@@ -48,12 +48,13 @@ import {
     Button,
     Header,
     Icon,
+    InfoMessage,
     LoadingIndicator,
     ReadMore,
     Spacer,
     TouchableDebounce,
 } from '@components/General';
-import { RecipientElement } from '@components/Modules';
+import { NFTokenElement, RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -106,7 +107,7 @@ class TransactionDetailsView extends Component<Props, State> {
             },
             spendableAccounts: AccountRepository.getSpendableAccounts(),
             balanceChanges: undefined,
-            incomingTx: props.tx?.Account?.address !== props.account.address,
+            incomingTx: props.tx?.Account && props.tx?.Account?.address !== props.account.address,
             scamAlert: false,
             showMemo: true,
             isLoading: !props.tx,
@@ -228,9 +229,9 @@ class TransactionDetailsView extends Component<Props, State> {
         const { incomingTx, tx } = this.state;
 
         if (incomingTx) {
-            BackendService.getAccountRisk(tx.Account.address)
-                .then((accountRisk: any) => {
-                    if (accountRisk && accountRisk.danger !== 'UNKNOWN') {
+            BackendService.getAccountAdvisory(tx.Account.address)
+                .then((accountAdvisory: any) => {
+                    if (accountAdvisory && accountAdvisory.danger !== 'UNKNOWN') {
                         this.setState({
                             scamAlert: true,
                             showMemo: false,
@@ -352,7 +353,9 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             case TransactionTypes.NFTokenCreateOffer:
-                if (tx.Destination) {
+                if (incomingTx) {
+                    address = tx.Account.address;
+                } else if (tx.Destination) {
                     address = tx.Destination.address;
                 }
                 break;
@@ -361,6 +364,13 @@ class TransactionDetailsView extends Component<Props, State> {
                     address = tx.Account.address;
                 } else if (tx.Offer) {
                     address = tx.Offer.Owner;
+                }
+                break;
+            case LedgerObjectTypes.NFTokenOffer:
+                if (tx.Owner !== account.address) {
+                    address = tx.Owner;
+                } else if (tx.Destination && tx.Destination.address !== account.address) {
+                    address = tx.Destination.address;
                 }
                 break;
             default:
@@ -539,7 +549,19 @@ class TransactionDetailsView extends Component<Props, State> {
                 return Localize.t('global.check');
             case LedgerObjectTypes.Ticket:
                 return Localize.t('global.ticket');
+            case LedgerObjectTypes.NFTokenOffer:
+                if (tx.Owner !== account.address) {
+                    if (tx.Flags.SellToken) {
+                        return Localize.t('events.nftOfferedToYou');
+                    }
+                    return Localize.t('events.offerOnYouNFT');
+                }
+                if (tx.Flags.SellToken) {
+                    return Localize.t('events.sellNFToken');
+                }
+                return Localize.t('events.buyNFToken');
             default:
+                // @ts-ignore
                 return tx.Type;
         }
     };
@@ -548,9 +570,9 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx, incomingTx } = this.state;
         const { account, asModal } = this.props;
 
-        // if details page is opened as modal the close it before doing any other action
+        // no action button show be available when opening details as modal
         if (asModal) {
-            await Navigator.dismissModal();
+            return;
         }
 
         // open the XApp
@@ -637,6 +659,29 @@ class TransactionDetailsView extends Component<Props, State> {
                     TransactionType: 'OfferCancel',
                     OfferSequence: tx.Sequence,
                 });
+                break;
+            case 'NFTokenCancelOffer':
+                Object.assign(transaction, {
+                    TransactionType: 'NFTokenCancelOffer',
+                    // @ts-ignore
+                    NFTokenOffers: [tx.Index],
+                });
+                break;
+            case 'NFTokenAcceptOffer':
+                Object.assign(transaction, {
+                    TransactionType: 'NFTokenAcceptOffer',
+                });
+                if (tx.Flags.SellToken) {
+                    Object.assign(transaction, {
+                        // @ts-ignore
+                        NFTokenSellOffer: tx.Index,
+                    });
+                } else {
+                    Object.assign(transaction, {
+                        // @ts-ignore
+                        NFTokenBuyOffer: tx.Index,
+                    });
+                }
                 break;
             case 'CheckCancel':
                 if (tx.Type === LedgerObjectTypes.Check) {
@@ -1173,6 +1218,40 @@ class TransactionDetailsView extends Component<Props, State> {
         return content;
     };
 
+    renderNFTokenOffer = (tx: Extract<LedgerObjects, { Type: LedgerObjectTypes.NFTokenOffer }>): string => {
+        let content = '';
+
+        if (tx.Flags.SellToken) {
+            content += Localize.t('events.nftOfferSellExplain', {
+                address: tx.Owner,
+                tokenID: tx.NFTokenID,
+                amount: tx.Amount.value,
+                currency: NormalizeCurrencyCode(tx.Amount.currency),
+            });
+        } else {
+            content += Localize.t('events.nftOfferBuyExplain', {
+                address: tx.Owner,
+                tokenID: tx.NFTokenID,
+                amount: tx.Amount.value,
+                currency: NormalizeCurrencyCode(tx.Amount.currency),
+            });
+        }
+
+        if (tx.Destination) {
+            content += '\n';
+            content += Localize.t('events.thisNftOfferMayOnlyBeAcceptedBy', { address: tx.Destination.address });
+        }
+
+        if (tx.Expiration) {
+            content += '\n';
+            content += Localize.t('events.theOfferExpiresAtUnlessCanceledOrAccepted', {
+                expiration: moment(tx.Expiration).format('LLLL'),
+            });
+        }
+
+        return content;
+    };
+
     renderNFTokenCancelOffer = (tx: Extract<Transactions, { Type: TransactionTypes.NFTokenCancelOffer }>): string => {
         let content = '';
 
@@ -1299,6 +1378,9 @@ class TransactionDetailsView extends Component<Props, State> {
             case TransactionTypes.NFTokenCreateOffer:
                 content += this.renderNFTokenCreateOffer(tx);
                 break;
+            case LedgerObjectTypes.NFTokenOffer:
+                content += this.renderNFTokenOffer(tx);
+                break;
             case TransactionTypes.NFTokenCancelOffer:
                 content += this.renderNFTokenCancelOffer(tx);
                 break;
@@ -1315,7 +1397,7 @@ class TransactionDetailsView extends Component<Props, State> {
         return (
             <View style={styles.detailContainer}>
                 <Text style={[styles.labelText]}>{Localize.t('global.description')}</Text>
-                <Text selectable style={[styles.contentText]}>
+                <Text selectable style={styles.contentText}>
                     {content}
                 </Text>
             </View>
@@ -1323,8 +1405,8 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderMemos = () => {
-        const { tx } = this.state;
-        const { showMemo, scamAlert } = this.state;
+        const { asModal } = this.props;
+        const { tx, showMemo, scamAlert } = this.state;
 
         // if ledger object or no Memo return null
         if (tx.ClassName !== 'Transaction' || !tx.Memos) return null;
@@ -1332,7 +1414,7 @@ class TransactionDetailsView extends Component<Props, State> {
         // check for xapp memo
         if (!scamAlert) {
             const xAppIdentifier = tx.getXappIdentifier();
-            if (xAppIdentifier) {
+            if (xAppIdentifier && !asModal) {
                 return (
                     <View style={styles.memoContainer}>
                         <Button
@@ -1349,9 +1431,9 @@ class TransactionDetailsView extends Component<Props, State> {
 
         return (
             <View style={styles.memoContainer}>
-                <View style={[AppStyles.row]}>
+                <View style={AppStyles.row}>
                     <Icon name="IconFileText" size={18} style={AppStyles.imgColorPrimary} />
-                    <Text style={[styles.labelText]}> {Localize.t('global.memo')}</Text>
+                    <Text style={styles.labelText}> {Localize.t('global.memo')}</Text>
                 </View>
 
                 {showMemo ? (
@@ -1360,11 +1442,10 @@ class TransactionDetailsView extends Component<Props, State> {
                         textStyle={[styles.memoText, AppStyles.textCenterAligned, scamAlert && AppStyles.colorRed]}
                     >
                         {tx.Memos.map((m) => {
-                            if (m.type === 'text/plain' || !m.type) {
-                                return m.data;
+                            if (m.MemoType === 'text/plain' || !m.MemoType) {
+                                return m.MemoData;
                             }
-
-                            return `${m.type}: ${m.data}`;
+                            return `${m.MemoType}: ${m.MemoData}`;
                         })}
                     </ReadMore>
                 ) : (
@@ -1385,8 +1466,13 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx } = this.state;
 
         let changes;
+
         // ledger objects always have reserve change increase
         if (tx.ClassName === 'LedgerObject') {
+            // ignore for incoming NFTokenOffers
+            if (tx.Type === LedgerObjectTypes.NFTokenOffer && tx.Owner !== account.address) {
+                return null;
+            }
             changes = {
                 address: account.address,
                 value: 1,
@@ -1402,13 +1488,13 @@ class TransactionDetailsView extends Component<Props, State> {
 
         return (
             <View style={styles.reserveContainer}>
-                <View style={[AppStyles.row]}>
+                <View style={AppStyles.row}>
                     <Icon
                         name={changes.action === 'INC' ? 'IconLock' : 'IconUnlock'}
                         size={18}
                         style={AppStyles.imgColorPrimary}
                     />
-                    <Text style={[styles.labelText]}> {Localize.t('global.reserve')}</Text>
+                    <Text style={styles.labelText}> {Localize.t('global.reserve')}</Text>
                 </View>
 
                 <View style={[AppStyles.paddingBottomSml]}>
@@ -1441,6 +1527,31 @@ class TransactionDetailsView extends Component<Props, State> {
                 <Text style={[styles.labelText]}>{Localize.t('events.transactionCost')}</Text>
                 <Text style={[styles.contentText]}>
                     {Localize.t('events.sendingThisTransactionConsumed', { fee: tx.Fee })}
+                </Text>
+            </View>
+        );
+    };
+
+    renderInvoiceId = () => {
+        const { tx } = this.state;
+
+        // InvoiceID only exist in Payment and CheckCreate transactions and Check objects
+        if (
+            !(
+                tx.Type === TransactionTypes.Payment ||
+                tx.Type === TransactionTypes.CheckCreate ||
+                tx.Type === LedgerObjectTypes.Check
+            ) ||
+            isUndefined(tx.InvoiceID)
+        ) {
+            return null;
+        }
+
+        return (
+            <View style={styles.detailContainer}>
+                <Text style={[styles.labelText]}>{Localize.t('global.invoiceID')}</Text>
+                <Text selectable style={styles.hashText}>
+                    {tx.InvoiceID}
                 </Text>
             </View>
         );
@@ -1506,7 +1617,14 @@ class TransactionDetailsView extends Component<Props, State> {
         let badgeType: any;
 
         if (tx.ClassName === 'LedgerObject') {
-            if ([LedgerObjectTypes.Offer, LedgerObjectTypes.Check, LedgerObjectTypes.Ticket].includes(tx.Type)) {
+            if (
+                [
+                    LedgerObjectTypes.Offer,
+                    LedgerObjectTypes.NFTokenOffer,
+                    LedgerObjectTypes.Check,
+                    LedgerObjectTypes.Ticket,
+                ].includes(tx.Type)
+            ) {
                 badgeType = 'open';
             } else {
                 badgeType = 'planned';
@@ -1688,10 +1806,31 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             }
-            case TransactionTypes.NFTokenCreateOffer: {
+            case LedgerObjectTypes.NFTokenOffer: {
+                let icon;
+                if (tx.Owner !== account.address) {
+                    icon = tx.Flags.SellToken ? 'IconCornerRightUp' : 'IconCornerRightDown';
+                } else {
+                    icon = tx.Flags.SellToken ? 'IconCornerRightDown' : 'IconCornerRightUp';
+                }
                 Object.assign(props, {
                     color: styles.naturalColor,
-                    icon: tx.Flags.SellToken ? 'IconCornerRightDown' : 'IconCornerRightUp',
+                    icon,
+                    value: tx.Amount.value,
+                    currency: tx.Amount.currency,
+                });
+                break;
+            }
+            case TransactionTypes.NFTokenCreateOffer: {
+                let icon;
+                if (incomingTx) {
+                    icon = tx.Flags.SellToken ? 'IconCornerRightUp' : 'IconCornerRightDown';
+                } else {
+                    icon = tx.Flags.SellToken ? 'IconCornerRightDown' : 'IconCornerRightUp';
+                }
+                Object.assign(props, {
+                    color: styles.naturalColor,
+                    icon,
                     value: tx.Amount.value,
                     currency: tx.Amount.currency,
                 });
@@ -1710,7 +1849,14 @@ class TransactionDetailsView extends Component<Props, State> {
                         currency: amount.currency,
                     });
                 } else {
-                    shouldShowAmount = false;
+                    // free NFT transfer
+                    Object.assign(props, {
+                        icon: undefined,
+                        color: styles.naturalColor,
+                        prefix: '',
+                        value: tx.Offer.Amount.value,
+                        currency: tx.Offer.Amount.currency,
+                    });
                 }
                 break;
             }
@@ -1836,6 +1982,38 @@ class TransactionDetailsView extends Component<Props, State> {
             }
         }
 
+        if (
+            tx.Type === LedgerObjectTypes.NFTokenOffer ||
+            tx.Type === TransactionTypes.NFTokenCreateOffer ||
+            tx.Type === TransactionTypes.NFTokenAcceptOffer
+        ) {
+            const tokenId = tx.Type === TransactionTypes.NFTokenAcceptOffer ? tx.Offer?.NFTokenID : tx.NFTokenID;
+
+            return (
+                <View style={styles.amountHeaderContainer}>
+                    <View style={[AppStyles.row, styles.nfTokenContainer]}>
+                        <NFTokenElement account={account.address} nfTokenId={tokenId} />
+                    </View>
+
+                    <Spacer />
+                    <Icon size={20} style={AppStyles.imgColorGrey} name="IconSwitchAccount" />
+                    <Spacer />
+                    <View style={[AppStyles.row, styles.amountContainer]}>
+                        {props.icon && (
+                            // @ts-ignore
+                            <Icon name={props.icon} size={27} style={[props.color, AppStyles.marginRightSml]} />
+                        )}
+                        <AmountText
+                            value={props.value}
+                            currency={props.currency}
+                            prefix={props.prefix}
+                            style={[styles.amountText, props.color]}
+                        />
+                    </View>
+                </View>
+            );
+        }
+
         return (
             <View style={styles.amountHeaderContainer}>
                 <View style={[AppStyles.row, styles.amountContainer]}>
@@ -1855,11 +2033,11 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderActionButtons = () => {
-        const { account } = this.props;
+        const { account, asModal } = this.props;
         const { tx, spendableAccounts } = this.state;
 
-        // just return as the account is not a spendable account
-        if (!find(spendableAccounts, { address: account.address })) {
+        // just return as the account is not a spendable account or details presented as modal
+        if (!find(spendableAccounts, { address: account.address }) || asModal) {
             return null;
         }
 
@@ -1895,6 +2073,29 @@ class TransactionDetailsView extends Component<Props, State> {
                     type: 'OfferCancel',
                     secondary: true,
                 });
+                break;
+            case LedgerObjectTypes.NFTokenOffer:
+                if (tx.Owner === account.address) {
+                    actionButtons.push({
+                        label: Localize.t('events.cancelOffer'),
+                        type: 'NFTokenCancelOffer',
+                        secondary: true,
+                    });
+                } else if (!tx.Destination || tx.Destination.address === account.address) {
+                    if (tx.Flags.SellToken) {
+                        actionButtons.push({
+                            label: Localize.t('events.acceptOffer'),
+                            type: 'NFTokenAcceptOffer',
+                            secondary: true,
+                        });
+                    } else {
+                        actionButtons.push({
+                            label: Localize.t('events.sellMyNFT'),
+                            type: 'NFTokenAcceptOffer',
+                            secondary: true,
+                        });
+                    }
+                }
                 break;
             case LedgerObjectTypes.Escrow:
                 if (tx.isExpired) {
@@ -1963,12 +2164,39 @@ class TransactionDetailsView extends Component<Props, State> {
         return null;
     };
 
+    renderWarnings = () => {
+        const { account } = this.props;
+        const { tx } = this.state;
+
+        const warnings = [] as Array<string>;
+
+        if (tx.Type === LedgerObjectTypes.NFTokenOffer) {
+            // incoming offer with destination set other than
+            if (tx.Owner !== account.address && tx.Destination && tx.Destination.address !== account.address) {
+                warnings.push(Localize.t('events.thisOfferCanOnlyBeAcceptedByThirdParty'));
+            }
+        }
+
+        if (warnings.length > 0) {
+            return (
+                <View style={styles.warningsContainer}>
+                    {warnings.map((warning) => {
+                        return <InfoMessage type="error" label={warning} />;
+                    })}
+                </View>
+            );
+        }
+
+        return null;
+    };
+
     renderSourceDestination = () => {
         const { account } = this.props;
         const { tx, partiesDetails, incomingTx, balanceChanges } = this.state;
 
         let from = {
-            address: tx.Account.address,
+            // @ts-ignore
+            address: tx.Account?.address || tx.Owner,
         } as any;
         let to = {
             // @ts-ignore
@@ -2022,6 +2250,25 @@ class TransactionDetailsView extends Component<Props, State> {
                     source: 'accounts',
                 };
             }
+        }
+
+        if (tx.Type === LedgerObjectTypes.NFTokenOffer) {
+            if (tx.Owner === account.address) {
+                from = {
+                    address: account.address,
+                    name: account.label,
+                    source: 'accounts',
+                };
+            } else {
+                from = {
+                    address: tx.Owner,
+                    ...partiesDetails,
+                };
+            }
+
+            to = {
+                address: undefined,
+            };
         }
 
         // Accepted NFT offer
@@ -2151,7 +2398,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         {scamAlert && (
                             <View style={styles.dangerHeader}>
                                 <Text style={[AppStyles.h4, AppStyles.colorWhite]}>
-                                    {Localize.t('global.fraudAlert')}
+                                    {Localize.t('global.alertDanger')}
                                 </Text>
                                 <Text style={[AppStyles.subtext, AppStyles.textCenterAligned, AppStyles.colorWhite]}>
                                     {Localize.t(
@@ -2168,10 +2415,12 @@ class TransactionDetailsView extends Component<Props, State> {
                             {this.renderReserveChange()}
                             {this.renderSourceDestination()}
                             {this.renderActionButtons()}
+                            {this.renderWarnings()}
                             <View style={styles.detailsContainer}>
                                 {this.renderTransactionId()}
                                 {this.renderDescription()}
                                 {this.renderFlags()}
+                                {this.renderInvoiceId()}
                                 {this.renderFee()}
                                 {this.renderStatus()}
                             </View>

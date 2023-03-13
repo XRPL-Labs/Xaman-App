@@ -60,6 +60,7 @@ class VaultModal extends Component<Props, State> {
             signer: undefined,
             alternativeSigner: undefined,
             coreSettings: CoreRepository.getSettings(),
+            isSigning: false,
         };
     }
 
@@ -179,7 +180,7 @@ class VaultModal extends Component<Props, State> {
 
     onSignError = (method: AuthMethods, e: Error) => {
         // log
-        LoggerService.logError(`Unexpected error in sign process [${method}]`, e);
+        LoggerService.recordError(`Unexpected error in sign process [${method}]`, e);
         // show alert
         Prompt(
             Localize.t('global.unexpectedErrorOccurred'),
@@ -201,7 +202,13 @@ class VaultModal extends Component<Props, State> {
             case AuthMethods.BIOMETRIC:
             case AuthMethods.PIN:
             case AuthMethods.PASSPHRASE:
-                this.signWithPrivateKey(method, options);
+                // set is loading true as operation can take some time
+                this.setState({ isSigning: true }, () => {
+                    // triggering goNext in the latest phase will store the account and dismiss the screen
+                    requestAnimationFrame(() => {
+                        this.signWithPrivateKey(method, options);
+                    });
+                });
                 break;
             case AuthMethods.TANGEM:
                 this.signWithTangemCard(options);
@@ -249,6 +256,10 @@ class VaultModal extends Component<Props, State> {
             this.onSign(signedObject);
         } catch (e: any) {
             this.onSignError(method, e);
+        } finally {
+            this.setState({
+                isSigning: false,
+            });
         }
     };
 

@@ -10,7 +10,7 @@ class Core extends Realm.Object {
         name: 'Core',
         properties: {
             initialized: { type: 'bool', default: false }, // user initialized the app
-            passcode: 'string?', // encrypted passcode
+            passcode: 'string?', // hashed passcode
             minutesAutoLock: { type: 'int', default: 1 }, // auto lock time in minutes
             lastPasscodeFailedTimestamp: 'int?', // last time when passcode failed attempt
             passcodeFailedAttempts: { type: 'int', default: 0 }, // number of passcode failed attempts
@@ -19,7 +19,7 @@ class Core extends Realm.Object {
             biometricMethod: 'string?', // biometric auth method
             passcodeFallback: { type: 'bool', default: false }, // fallback to passcode in case of biometric fail
             language: { type: 'string', default: AppConfig.defaultLanguage }, // default app language
-            defaultNode: { type: 'string', default: __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0] },
+            defaultNode: { type: 'string', default: AppConfig.nodes.main[0] },
             defaultExplorer: { type: 'string', default: AppConfig.explorer[0].value }, // default explorer
             hapticFeedback: { type: 'bool', default: true }, // enable haptic feedback
             theme: { type: 'string', default: AppConfig.defaultTheme }, // app theme
@@ -40,11 +40,6 @@ class Core extends Realm.Object {
     public defaultExplorer: string;
     public hapticFeedback: boolean;
     public theme: string;
-
-    constructor(obj: Partial<Core>) {
-        super();
-        Object.assign(this, obj);
-    }
 
     public static migration(oldRealm: any, newRealm: any) {
         /*  eslint-disable-next-line */

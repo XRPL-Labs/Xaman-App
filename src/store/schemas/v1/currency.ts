@@ -22,11 +22,6 @@ class Currency extends Realm.Object {
     public currency: string;
     public name: string;
     public avatar: string;
-
-    constructor(obj: Partial<Currency>) {
-        super();
-        Object.assign(this, obj);
-    }
 }
 
 export default Currency;

@@ -1,5 +1,6 @@
 package libs.common;
 
+import com.facebook.react.module.annotations.ReactModule;
 import com.xrpllabs.xumm.R;
 
 import android.app.Activity;
@@ -35,11 +36,12 @@ import com.google.android.play.core.install.model.ActivityResult;
 
 import com.google.android.play.core.tasks.Task;
 
-public class AppUpdateModule extends ReactContextBaseJavaModule implements InstallStateUpdatedListener, LifecycleEventListener {
 
+@ReactModule(name = AppUpdateModule.NAME)
+public class AppUpdateModule extends ReactContextBaseJavaModule implements InstallStateUpdatedListener, LifecycleEventListener {
     private static ReactApplicationContext reactContext;
 
-    private AppUpdateManager appUpdateManager;
+    private final AppUpdateManager appUpdateManager;
     private AppUpdateInfo appUpdateInfo;
 
     private static final int UPDATE_REQUEST = 0;
@@ -47,7 +49,6 @@ public class AppUpdateModule extends ReactContextBaseJavaModule implements Insta
     private static final String E_UPDATE_CANCELLED = "E_UPDATE_CANCELLED";
 
     private Promise updatePromise;
-
 
     AppUpdateModule(ReactApplicationContext context) {
         super(context);
@@ -60,10 +61,12 @@ public class AppUpdateModule extends ReactContextBaseJavaModule implements Insta
         appUpdateManager.registerListener(this);
     }
 
+    public static final String NAME = "AppUpdateModule";
+
     @NonNull
     @Override
     public String getName() {
-        return "AppUpdateModule";
+        return NAME;
     }
 
 

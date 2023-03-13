@@ -3,7 +3,7 @@
 exports[`[Switch] renders correctly 1`] = `
 <View
   style={
-    Object {
+    {
       "alignItems": "center",
       "flex": 1,
       "flexDirection": "row",
@@ -13,7 +13,7 @@ exports[`[Switch] renders correctly 1`] = `
 >
   <View
     style={
-      Object {
+      {
         "alignSelf": "center",
       }
     }
@@ -25,16 +25,16 @@ exports[`[Switch] renders correctly 1`] = `
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
         style={
-          Array [
-            Object {
+          [
+            {
               "height": 31,
               "width": 51,
             },
-            Array [
-              Object {
+            [
+              {
                 "alignSelf": "center",
               },
-              Object {
+              {
                 "opacity": 1,
               },
             ],
@@ -50,7 +50,7 @@ exports[`[Switch] renders correctly 1`] = `
 exports[`[Switch] renders with given label 1`] = `
 <View
   style={
-    Object {
+    {
       "alignItems": "center",
       "flex": 1,
       "flexDirection": "row",
@@ -60,7 +60,7 @@ exports[`[Switch] renders with given label 1`] = `
 >
   <View
     style={
-      Object {
+      {
         "alignSelf": "center",
       }
     }
@@ -72,16 +72,16 @@ exports[`[Switch] renders with given label 1`] = `
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
         style={
-          Array [
-            Object {
+          [
+            {
               "height": 31,
               "width": 51,
             },
-            Array [
-              Object {
+            [
+              {
                 "alignSelf": "center",
               },
-              Object {
+              {
                 "opacity": 1,
               },
             ],
@@ -93,7 +93,7 @@ exports[`[Switch] renders with given label 1`] = `
   </View>
   <Text
     style={
-      Object {
+      {
         "fontSize": 32.14285714285714,
         "marginLeft": 10,
         "marginRight": 10,

@@ -1,5 +1,5 @@
 import StyleService from '@services/StyleService';
-import { AppSizes } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
@@ -36,6 +36,13 @@ const styles = StyleService.create({
         shadowRadius: 15,
         shadowOpacity: 0.2,
         padding: 20,
+    },
+    appTitle: {
+        fontSize: AppFonts.pb.size,
+        fontFamily: AppFonts.pb.family,
+        marginTop: 15,
+        marginBottom: 15,
+        color: '$textPrimary',
     },
 });
 

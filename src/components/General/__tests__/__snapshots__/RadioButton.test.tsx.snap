@@ -2,6 +2,23 @@
 
 exports[`[RadioButton] renders checked correctly 1`] = `
 <View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
   accessible={true}
   collapsable={false}
   focusable={true}
@@ -13,7 +30,7 @@ exports[`[RadioButton] renders checked correctly 1`] = `
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
   style={
-    Object {
+    {
       "alignItems": "center",
       "backgroundColor": "#F3F6FA",
       "borderColor": "#0030CF",
@@ -33,15 +50,15 @@ exports[`[RadioButton] renders checked correctly 1`] = `
 >
   <View
     style={
-      Object {
+      {
         "flex": 1,
       }
     }
   >
     <View
       style={
-        Array [
-          Object {
+        [
+          {
             "alignItems": "center",
             "borderColor": "#606885",
             "borderRadius": 12,
@@ -51,7 +68,7 @@ exports[`[RadioButton] renders checked correctly 1`] = `
             "marginTop": 4,
             "width": 26,
           },
-          Object {
+          {
             "borderColor": "#0030CF",
           },
         ]
@@ -59,7 +76,7 @@ exports[`[RadioButton] renders checked correctly 1`] = `
     >
       <View
         style={
-          Object {
+          {
             "backgroundColor": "#0030CF",
             "borderRadius": 8,
             "color": "#0030CF",
@@ -72,23 +89,23 @@ exports[`[RadioButton] renders checked correctly 1`] = `
   </View>
   <View
     style={
-      Object {
+      {
         "flex": 6,
       }
     }
   >
     <Text
       style={
-        Array [
-          Object {
+        [
+          {
             "color": "#000000",
             "fontFamily": "ProximaNova-Regular",
             "fontSize": 34.285714285714285,
           },
-          Object {
+          {
             "fontFamily": "ProximaNova-Extrabld",
           },
-          Object {
+          {
             "color": "#000000",
           },
         ]
@@ -98,12 +115,12 @@ exports[`[RadioButton] renders checked correctly 1`] = `
     </Text>
     <Text
       style={
-        Array [
-          Object {
+        [
+          {
             "fontFamily": "ProximaNova-Bold",
             "fontSize": 30,
           },
-          Object {
+          {
             "color": "#000000",
           },
         ]
@@ -113,16 +130,16 @@ exports[`[RadioButton] renders checked correctly 1`] = `
     </Text>
     <Text
       style={
-        Array [
-          Object {
+        [
+          {
             "color": "#000000",
             "fontFamily": "ProximaNova-Regular",
             "fontSize": 30,
           },
-          Object {
+          {
             "marginTop": 4,
           },
-          Object {
+          {
             "color": "#000000",
           },
         ]
@@ -136,6 +153,23 @@ exports[`[RadioButton] renders checked correctly 1`] = `
 
 exports[`[RadioButton] renders correctly 1`] = `
 <View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
   accessible={true}
   collapsable={false}
   focusable={true}
@@ -147,7 +181,7 @@ exports[`[RadioButton] renders correctly 1`] = `
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
   style={
-    Object {
+    {
       "alignItems": "center",
       "backgroundColor": "rgba(96,104,133,0.06)",
       "borderColor": "rgba(96,104,133,0.06)",
@@ -167,15 +201,15 @@ exports[`[RadioButton] renders correctly 1`] = `
 >
   <View
     style={
-      Object {
+      {
         "flex": 1,
       }
     }
   >
     <View
       style={
-        Array [
-          Object {
+        [
+          {
             "alignItems": "center",
             "borderColor": "#606885",
             "borderRadius": 12,
@@ -185,30 +219,30 @@ exports[`[RadioButton] renders correctly 1`] = `
             "marginTop": 4,
             "width": 26,
           },
-          null,
+          false,
         ]
       }
     />
   </View>
   <View
     style={
-      Object {
+      {
         "flex": 6,
       }
     }
   >
     <Text
       style={
-        Array [
-          Object {
+        [
+          {
             "color": "#000000",
             "fontFamily": "ProximaNova-Regular",
             "fontSize": 34.285714285714285,
           },
-          Object {
+          {
             "fontFamily": "ProximaNova-Extrabld",
           },
-          Object {
+          {
             "color": "#606885",
           },
         ]
@@ -218,12 +252,12 @@ exports[`[RadioButton] renders correctly 1`] = `
     </Text>
     <Text
       style={
-        Array [
-          Object {
+        [
+          {
             "fontFamily": "ProximaNova-Bold",
             "fontSize": 30,
           },
-          Object {
+          {
             "color": "#606885",
           },
         ]
@@ -233,16 +267,16 @@ exports[`[RadioButton] renders correctly 1`] = `
     </Text>
     <Text
       style={
-        Array [
-          Object {
+        [
+          {
             "color": "#000000",
             "fontFamily": "ProximaNova-Regular",
             "fontSize": 30,
           },
-          Object {
+          {
             "marginTop": 4,
           },
-          Object {
+          {
             "color": "#606885",
           },
         ]

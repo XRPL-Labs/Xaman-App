@@ -2,18 +2,25 @@
  * XApp Browser modal
  */
 
-import { has, get, assign, toUpper } from 'lodash';
+import { has, get, assign, toUpper, isEmpty } from 'lodash';
 import moment from 'moment-timezone';
 import React, { Component } from 'react';
-import { View, Text, BackHandler, Alert, InteractionManager, Linking, NativeEventSubscription } from 'react-native';
+import {
+    View,
+    Text,
+    BackHandler,
+    Alert,
+    InteractionManager,
+    Linking,
+    Share,
+    NativeEventSubscription,
+} from 'react-native';
 import VeriffSdk from '@veriff/react-native-sdk';
-import { WebView } from 'react-native-webview';
 import { StringType } from 'xumm-string-decode';
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
 
 import { Navigator } from '@common/helpers/navigator';
-import { GetAppVersionCode } from '@common/helpers/device';
-import { Prompt } from '@common/helpers/interface';
+import { GetAppVersionCode } from '@common/helpers/app';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { Destination } from '@common/libs/ledger/parser/types';
@@ -29,7 +36,7 @@ import { AccessLevels, NodeChain } from '@store/types';
 
 import { SocketService, BackendService, PushNotificationsService, NavigationService } from '@services';
 
-import { Button, Spacer, LoadingIndicator } from '@components/General';
+import { WebView, Button, Spacer, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
@@ -52,8 +59,9 @@ export interface State {
     identifier: string;
     account: AccountSchema;
     ott: string;
-    isLoading: boolean;
     error: string;
+    permissions: any;
+    isLoading: boolean;
     coreSettings: CoreSchema;
     appVersionCode: string;
 }
@@ -67,16 +75,22 @@ export enum XAppMethods {
     TxDetails = 'txDetails',
     KycVeriff = 'kycVeriff',
     ScanQr = 'scanQr',
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    Share = 'share',
     Close = 'close',
+}
+
+export enum XAppSpecialPermissions {
+    UrlLaunchNoConfirmation = 'URL_LAUNCH_NO_CONFIRMATION',
 }
 
 /* Component ==================================================================== */
 class XAppBrowserModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.XAppBrowser;
 
-    private webView: WebView;
     private backHandler: NativeEventSubscription;
     private lastMessageReceived: number;
+    private readonly webView: React.RefObject<WebView>;
 
     static options() {
         return {
@@ -93,10 +107,13 @@ class XAppBrowserModal extends Component<Props, State> {
             account: props.account || AccountRepository.getDefaultAccount(),
             ott: undefined,
             error: undefined,
+            permissions: undefined,
             isLoading: true,
             coreSettings: CoreRepository.getSettings(),
             appVersionCode: GetAppVersionCode(),
         };
+
+        this.webView = React.createRef();
 
         this.backHandler = undefined;
 
@@ -134,8 +151,8 @@ class XAppBrowserModal extends Component<Props, State> {
 
     sendEvent = (event: any) => {
         setTimeout(() => {
-            if (this.webView) {
-                this.webView.postMessage(JSON.stringify(event));
+            if (this.webView.current) {
+                this.webView.current.postMessage(JSON.stringify(event));
             }
         }, 250);
     };
@@ -168,12 +185,12 @@ class XAppBrowserModal extends Component<Props, State> {
         }
     };
 
-    onPayloadResolve = () => {
-        this.sendEvent({ method: XAppMethods.PayloadResolved, reason: 'SIGNED' });
+    onPayloadResolve = (transaction: any, payload: Payload) => {
+        this.sendEvent({ method: XAppMethods.PayloadResolved, reason: 'SIGNED', uuid: payload.getPayloadUUID() });
     };
 
-    onPayloadDecline = () => {
-        this.sendEvent({ method: XAppMethods.PayloadResolved, reason: 'DECLINED' });
+    onPayloadDecline = (payload: Payload) => {
+        this.sendEvent({ method: XAppMethods.PayloadResolved, reason: 'DECLINED', uuid: payload.getPayloadUUID() });
     };
 
     onScannerRead = (data: string) => {
@@ -257,7 +274,7 @@ class XAppBrowserModal extends Component<Props, State> {
         );
     };
 
-    openBrowserLink = (data: any) => {
+    openBrowserLink = (data: any, launchDirectly: boolean) => {
         const { title } = this.state;
 
         const url = get(data, 'url', undefined);
@@ -267,23 +284,36 @@ class XAppBrowserModal extends Component<Props, State> {
             return;
         }
 
-        Prompt(
-            Localize.t('global.notice'),
-            Localize.t('global.xAppWantsToOpenURLNotice', { xapp: title, url }),
-            [
-                { text: Localize.t('global.cancel') },
+        // xApp have the permission to launch the link directly without showing Alert
+        if (launchDirectly) {
+            Linking.openURL(url).catch(() => {
+                Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
+            });
+            return;
+        }
+
+        Navigator.showAlertModal({
+            type: 'warning',
+            title: Localize.t('global.notice'),
+            text: Localize.t('global.xAppWantsToOpenURLNotice', { xapp: title, url }),
+            buttons: [
                 {
-                    text: 'Open',
+                    text: Localize.t('global.cancel'),
+                    onPress: () => {},
+                    type: 'dismiss',
+                    light: true,
+                },
+                {
+                    text: Localize.t('global.continue'),
                     onPress: () => {
                         Linking.openURL(url).catch(() => {
                             Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
                         });
                     },
-                    style: 'destructive',
+                    light: false,
                 },
             ],
-            { type: 'default' },
-        );
+        });
     };
 
     openTxDetails = async (data: any) => {
@@ -310,9 +340,37 @@ class XAppBrowserModal extends Component<Props, State> {
         }, delay);
     };
 
-    handleCommand = (parsedData: any) => {
+    shareContent = (data: any) => {
+        const text = get(data, 'text');
+
+        if (typeof text !== 'string' || isEmpty(text)) {
+            return;
+        }
+
+        // show share dialog
+        Share.share({
+            message: text,
+        }).catch(() => {});
+    };
+
+    handleCommand = (command: XAppMethods, parsedData: any) => {
+        const { permissions } = this.state;
+
+        // when there is no permission available just do not run any command
+        if (!permissions || isEmpty(get(permissions, 'commands'))) {
+            return;
+        }
+
+        // check if the xApp have the permission to run this command
+        const { commands: AllowedCommands, special: SpecialPermissions } = permissions;
+
+        // xApp doesn't have the permission to run this command
+        if (!AllowedCommands.includes(command.toUpperCase())) {
+            return;
+        }
+
         // record the command in active methods
-        switch (get(parsedData, 'command')) {
+        switch (command) {
             case XAppMethods.XAppNavigate:
                 this.navigateTo(parsedData);
                 break;
@@ -332,10 +390,16 @@ class XAppBrowserModal extends Component<Props, State> {
                 this.onClose(parsedData);
                 break;
             case XAppMethods.OpenBrowser:
-                this.openBrowserLink(parsedData);
+                this.openBrowserLink(
+                    parsedData,
+                    SpecialPermissions.includes(XAppSpecialPermissions.UrlLaunchNoConfirmation),
+                );
                 break;
             case XAppMethods.TxDetails:
                 this.openTxDetails(parsedData);
+                break;
+            case XAppMethods.Share:
+                this.shareContent(parsedData);
                 break;
             default:
                 break;
@@ -353,12 +417,15 @@ class XAppBrowserModal extends Component<Props, State> {
         // record last message received
         this.lastMessageReceived = moment().unix();
 
+        // check if any data is passed
         if (!event || typeof event !== 'object' || !event?.nativeEvent) {
             return;
         }
+
         // get passed data
         const data = get(event, 'nativeEvent.data');
 
+        // check type of passed data
         if (!data || typeof data !== 'string') {
             return;
         }
@@ -373,14 +440,25 @@ class XAppBrowserModal extends Component<Props, State> {
 
         // ignore if no command present or the command is not in expected commands or already is the active method
         if (has(parsedData, 'command') && Object.values(XAppMethods).includes(get(parsedData, 'command'))) {
-            // everything seems fine pass the data to the handlers
-            this.handleCommand(parsedData);
+            const { command } = parsedData;
+            this.handleCommand(command, parsedData);
         }
     };
 
     fetchOTT = (xAppNavigateData?: any) => {
         const { origin, originData, params } = this.props;
         const { identifier, appVersionCode, account, title, coreSettings, isLoading } = this.state;
+
+        // check if identifier have a valid value
+        if (!StringTypeCheck.isValidXAppIdentifier(identifier)) {
+            this.setState({
+                ott: undefined,
+                permissions: undefined,
+                isLoading: false,
+                error: 'Provided xApp identifier is not valid!',
+            });
+            return;
+        }
 
         if (!isLoading) {
             this.setState({
@@ -434,24 +512,40 @@ class XAppBrowserModal extends Component<Props, State> {
 
         BackendService.getXAppLaunchToken(identifier, data)
             .then((res: any) => {
-                const { error, ott, xappTitle } = res;
+                const { error, ott, xappTitle, permissions } = res;
 
+                // check if the ott is a valid uuid v4
+                if (!StringTypeCheck.isValidUUID(ott)) {
+                    this.setState({
+                        ott: undefined,
+                        permissions: undefined,
+                        error: 'Provided ott is not valid!',
+                    });
+                    return;
+                }
+
+                // an error reported from backend
                 if (error) {
                     this.setState({
                         ott: undefined,
+                        permissions: undefined,
                         error,
                     });
-                } else {
-                    this.setState({
-                        ott,
-                        title: xappTitle || title,
-                        error: undefined,
-                    });
+                    return;
                 }
+
+                // everything is fine
+                this.setState({
+                    ott,
+                    title: xappTitle || title,
+                    permissions,
+                    error: undefined,
+                });
             })
             .catch(() => {
                 this.setState({
                     ott: undefined,
+                    permissions: undefined,
                     error: 'FETCH_OTT_FAILED',
                 });
             })
@@ -465,11 +559,7 @@ class XAppBrowserModal extends Component<Props, State> {
     getUrl = () => {
         const { identifier, ott, coreSettings } = this.state;
 
-        const uri = `https://xumm.app/detect/xapp:${identifier}?xAppToken=${ott}&xAppStyle=${toUpper(
-            coreSettings.theme,
-        )}`;
-
-        return uri;
+        return `https://xumm.app/detect/xapp:${identifier}?xAppToken=${ott}&xAppStyle=${toUpper(coreSettings.theme)}`;
     };
 
     getUserAgent = () => {
@@ -486,14 +576,7 @@ class XAppBrowserModal extends Component<Props, State> {
         const { error } = this.state;
 
         return (
-            <View
-                style={[
-                    AppStyles.flex1,
-                    AppStyles.centerAligned,
-                    AppStyles.centerContent,
-                    AppStyles.paddingHorizontalSml,
-                ]}
-            >
+            <View style={styles.errorContainer}>
                 <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.unableToLoadXApp')}</Text>
                 <Spacer size={20} />
                 <Text style={[AppStyles.monoSubText]}>{error}</Text>
@@ -513,17 +596,14 @@ class XAppBrowserModal extends Component<Props, State> {
     renderXApp = () => {
         return (
             <WebView
-                ref={(r) => {
-                    this.webView = r;
-                }}
+                ref={this.webView}
                 containerStyle={styles.webViewContainer}
+                style={styles.webView}
                 startInLoadingState
                 renderLoading={this.renderLoading}
                 source={{ uri: this.getUrl() }}
                 onMessage={this.onMessage}
                 userAgent={this.getUserAgent()}
-                androidHardwareAccelerationDisabled={false}
-                cacheMode="LOAD_NO_CACHE"
             />
         );
     };
@@ -546,20 +626,13 @@ class XAppBrowserModal extends Component<Props, State> {
         const { title } = this.state;
 
         return (
-            <View style={[styles.headerContainer]}>
-                <View
-                    style={[
-                        AppStyles.flex1,
-                        AppStyles.paddingLeftSml,
-                        AppStyles.paddingRightSml,
-                        AppStyles.centerContent,
-                    ]}
-                >
+            <View style={styles.headerContainer}>
+                <View style={styles.headerTitle}>
                     <Text numberOfLines={1} style={AppStyles.h5}>
                         {title || 'XAPP'}
                     </Text>
                 </View>
-                <View style={[AppStyles.paddingRightSml, AppStyles.rightAligned, AppStyles.centerContent]}>
+                <View style={styles.headerButton}>
                     <Button
                         contrast
                         testID="close-button"
@@ -575,7 +648,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
     render() {
         return (
-            <View testID="xapp-browser-modal" style={[styles.container]}>
+            <View testID="xapp-browser-modal" style={styles.container}>
                 {this.renderHeader()}
                 {this.renderContent()}
             </View>

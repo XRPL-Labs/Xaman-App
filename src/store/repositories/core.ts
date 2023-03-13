@@ -5,6 +5,7 @@ import Realm, { ObjectSchema, Results } from 'realm';
 import { AppConfig } from '@common/constants';
 import { GetDeviceUniqueId } from '@common/helpers/device';
 import { SHA512, HMAC256 } from '@common/libs/crypto';
+import { UUIDEncoding } from '@common/utils/string';
 
 import { CoreSchema } from '@store/schemas/latest';
 import { NodeChain } from '@store/types';
@@ -71,7 +72,7 @@ class CoreRepository extends BaseRepository {
     };
 
     getDefaultNode = () => {
-        let defaultNode = __DEV__ ? AppConfig.nodes.test[0] : AppConfig.nodes.main[0];
+        let defaultNode = AppConfig.nodes.main[0];
 
         const settings = this.getSettings();
 
@@ -110,13 +111,14 @@ class CoreRepository extends BaseRepository {
             if (plain) {
                 return result[0];
             }
+            // @ts-ignore
             return result[0].toJSON();
         }
 
         return undefined;
     };
 
-    encryptPasscode = async (passcode: string): Promise<string> => {
+    hashPasscode = async (passcode: string): Promise<string> => {
         try {
             // for better security we mix passcode with device unique id
             let deviceUniqueId = GetDeviceUniqueId();
@@ -133,11 +135,16 @@ class CoreRepository extends BaseRepository {
                 }
             }
 
-            // hash the passcode
-            const hashPasscode = await SHA512(passcode);
-            const encPasscode = await HMAC256(hashPasscode, deviceUniqueId);
+            // we need to normalize the UUID value to hex before passing to HMAC256 function
+            if (Platform.OS === 'ios') {
+                deviceUniqueId = UUIDEncoding.toHex(deviceUniqueId);
+            }
 
-            return encPasscode;
+            // hash the passcode
+            const sha512Passcode = await SHA512(passcode);
+            const hashPasscode = await HMAC256(sha512Passcode, deviceUniqueId);
+
+            return hashPasscode;
         } catch (e) {
             return '';
         }
@@ -145,17 +152,17 @@ class CoreRepository extends BaseRepository {
 
     setPasscode = async (passcode: string): Promise<string> => {
         try {
-            const encryptedPasscode = await this.encryptPasscode(passcode);
+            const hashedPasscode = await this.hashPasscode(passcode);
 
-            // unable to encrypt passcode
-            if (!encryptedPasscode) {
+            // unable to hash the passcode
+            if (!hashedPasscode) {
                 return '';
             }
 
             // save in the store
-            this.saveSettings({ passcode: encryptedPasscode });
+            this.saveSettings({ passcode: hashedPasscode });
 
-            return encryptedPasscode;
+            return hashedPasscode;
         } catch (e) {
             return '';
         }

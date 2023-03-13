@@ -22,6 +22,8 @@ import {
     LedgerEntryResponse,
     RippleStateLedgerEntry,
     LedgerEntriesTypes,
+    AccountNFTsResponse,
+    LedgerNFToken,
 } from '@common/libs/ledger/types';
 
 import { Issuer } from '@common/libs/ledger/parser/types';
@@ -33,16 +35,30 @@ import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/objec
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
 import { AppConfig } from '@common/constants';
+import EventEmitter from 'events';
+
+/* Types  ==================================================================== */
+declare interface LedgerService {
+    on(
+        event: 'submitTransaction',
+        listener: (blob: string, hash: string, node: string, nodeType: string) => void,
+    ): this;
+    on(event: string, listener: Function): this;
+}
 
 /* Service  ==================================================================== */
-class LedgerService {
+class LedgerService extends EventEmitter {
     networkReserve: any;
     logger: any;
     ledgerListener: any;
 
     constructor() {
+        super();
+
+        // cache network reserve
         this.networkReserve = undefined;
 
+        // create logger
         this.logger = LoggerService.createLogger('Ledger');
     }
 
@@ -188,13 +204,32 @@ class LedgerService {
     };
 
     /**
-     * Get account NFTs
+     * Get account XLS20 NFTs
      */
-    getAccountNFTs = (account: string, marker?: string, limit?: number) => {
+    getAccountNFTs = (account: string, marker?: string, combined = [] as LedgerNFToken[]): Promise<LedgerNFToken[]> => {
         const request = {
             command: 'account_nfts',
             account,
-            limit: limit || 200,
+        };
+        if (marker) {
+            Object.assign(request, { marker });
+        }
+        return SocketService.send(request).then((resp: AccountNFTsResponse) => {
+            const { account_nfts, marker: _marker } = resp;
+            if (_marker && _marker !== marker) {
+                return this.getAccountNFTs(account, _marker, account_nfts.concat(combined));
+            }
+            return account_nfts.concat(combined);
+        });
+    };
+
+    /**
+     * Get ledger data
+     */
+    getLedgerData = (marker: string, limit?: number) => {
+        const request = {
+            command: 'ledger_data',
+            limit: limit || 50,
         };
         if (marker) {
             Object.assign(request, { marker });
@@ -522,12 +557,21 @@ class LedgerService {
     /**
      * Submit signed transaction to the XRP Ledger
      */
-    submitTransaction = async (tx_blob: string, fail_hard = false): Promise<SubmitResultType> => {
+    submitTransaction = async (txBlob: string, txHash?: string, failHard = false): Promise<SubmitResultType> => {
         try {
+            // send event about we are about to submit the transaction
+            this.emit('submitTransaction', {
+                blob: txBlob,
+                hash: txHash,
+                node: SocketService.node,
+                nodeType: SocketService.chain,
+            });
+
+            // submit the tx blob to the ledger
             const submitResult = await SocketService.send({
                 command: 'submit',
-                tx_blob,
-                fail_hard,
+                tx_blob: txBlob,
+                fail_hard: failHard,
             });
 
             const { error, error_message, error_exception, engine_result, tx_json, engine_result_message } =
@@ -535,9 +579,11 @@ class LedgerService {
 
             this.logger.debug('Submit Result TX:', submitResult);
 
+            // assign hash we received from submitting the transaction
+            // this is necessary for verifying the transaction in case of only tx_blob is available
             // create default result
             const result = {
-                transactionId: tx_json?.hash,
+                hash: tx_json?.hash,
                 node: SocketService.node,
                 nodeType: SocketService.chain,
             };
@@ -554,7 +600,7 @@ class LedgerService {
 
             // Immediate rejection
             if (startsWith(engine_result, 'tem')) {
-                return Object.assign(result, {
+                return assign(result, {
                     success: false,
                     engineResult: engine_result,
                     message: engine_result_message,

@@ -1,5 +1,3 @@
-/* eslint-disable no-lonely-if */
-import BigNumber from 'bignumber.js';
 import { get, set, has, isUndefined, isNumber, toInteger } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
@@ -103,7 +101,7 @@ class Payment extends BaseTransaction {
 
         return {
             currency: deliveredAmount.currency,
-            value: deliveredAmount.value && new Amount(deliveredAmount.value, false).toString(),
+            value: deliveredAmount.value,
             issuer: deliveredAmount.issuer,
         };
     }
@@ -125,7 +123,7 @@ class Payment extends BaseTransaction {
 
         return {
             currency: amount.currency,
-            value: amount.value && new Amount(amount.value, false).toString(),
+            value: amount.value,
             issuer: amount.issuer,
         };
     }
@@ -138,16 +136,15 @@ class Payment extends BaseTransaction {
         }
 
         if (typeof input === 'object') {
-            const value = new BigNumber(input.value);
-
             set(this, 'tx.Amount', {
                 currency: input.currency,
-                value: value.toNumber().toString(10),
+                value: input.value,
                 issuer: input.issuer,
             });
         }
     }
 
+    // @ts-ignore
     get SendMax(): AmountType {
         const sendMax = get(this, ['tx', 'SendMax'], undefined);
 
@@ -164,12 +161,12 @@ class Payment extends BaseTransaction {
 
         return {
             currency: sendMax.currency,
-            value: sendMax.value && new Amount(sendMax.value, false).toString(),
+            value: sendMax.value,
             issuer: sendMax.issuer,
         };
     }
 
-    set SendMax(input: AmountType | undefined) {
+    set SendMax(input: LedgerAmount) {
         if (typeof input === 'undefined') {
             set(this, 'tx.SendMax', undefined);
             return;
@@ -202,7 +199,7 @@ class Payment extends BaseTransaction {
 
         set(this, 'tx.DeliverMin', {
             currency: input.currency,
-            value: new BigNumber(input.value).toNumber().toString(10),
+            value: input.value,
             issuer: input.issuer,
         });
     }
@@ -223,19 +220,13 @@ class Payment extends BaseTransaction {
 
         return {
             currency: deliverMin.currency,
-            value: deliverMin.value && new Amount(deliverMin.value, false).toString(),
+            value: deliverMin.value,
             issuer: deliverMin.issuer,
         };
     }
 
     get InvoiceID(): string {
-        const invoiceID = get(this, 'tx.InvoiceID', undefined);
-
-        if (!invoiceID) {
-            return undefined;
-        }
-
-        return invoiceID;
+        return get(this, 'tx.InvoiceID', undefined);
     }
 
     set InvoiceID(invoiceId: string) {
@@ -244,6 +235,10 @@ class Payment extends BaseTransaction {
 
     get Paths(): Array<any> {
         return get(this, 'tx.Paths', undefined);
+    }
+
+    set Paths(path: Array<any>) {
+        set(this, 'tx.Paths', path);
     }
 
     validate = (): Promise<void> => {
@@ -330,6 +325,18 @@ class Payment extends BaseTransaction {
                         // TODO: show proper error message
                         if (!sourceLine) {
                             resolve();
+                            return;
+                        }
+
+                        // check if asset is frozen by issuer
+                        if (sourceLine.freeze_peer) {
+                            reject(
+                                new Error(
+                                    Localize.t('send.trustLineIsFrozenByIssuer', {
+                                        currency: NormalizeCurrencyCode(sourceLine.currency),
+                                    }),
+                                ),
+                            );
                             return;
                         }
 

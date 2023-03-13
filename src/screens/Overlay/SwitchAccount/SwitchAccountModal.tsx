@@ -27,7 +27,9 @@ import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {}
+export interface Props {
+    discreetMode: boolean;
+}
 
 export interface State {
     accounts: Results<AccountSchema>;
@@ -125,7 +127,9 @@ class SwitchAccountOverlay extends Component<Props, State> {
     };
 
     renderRow = (account: AccountSchema) => {
+        const { discreetMode } = this.props;
         const { signableAccount } = this.state;
+
         // default full access
         let accessLevelLabel = Localize.t('account.fullAccess');
         let accessLevelIcon = 'IconCornerLeftUp' as Extract<keyof typeof Images, string>;
@@ -165,7 +169,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
                         <View style={[AppStyles.flex3]}>
                             <Text style={[styles.accountLabel, styles.accountLabelSelected]}>{account.label}</Text>
                             <Text style={[styles.accountAddress, styles.accountAddressSelected]}>
-                                {account.address}
+                                {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
                             </Text>
                             <View style={[styles.accessLevelBadge, styles.accessLevelBadgeSelected]}>
                                 <Icon size={11} name={accessLevelIcon} style={[AppStyles.imgColorPrimary]} />
@@ -193,7 +197,9 @@ class SwitchAccountOverlay extends Component<Props, State> {
                 <View style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow, { height: ROW_ITEM_HEIGHT }]}>
                     <View style={[AppStyles.flex3]}>
                         <Text style={[styles.accountLabel]}>{account.label}</Text>
-                        <Text style={[styles.accountAddress]}>{account.address}</Text>
+                        <Text style={[styles.accountAddress]}>
+                            {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
+                        </Text>
                         <View style={[styles.accessLevelBadge]}>
                             <Icon
                                 size={11}

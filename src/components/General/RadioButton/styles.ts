@@ -5,7 +5,6 @@ import { AppFonts } from '@theme';
 /* Styles ==================================================================== */
 export default StyleService.create({
     content: {
-        // minHeight: AppSizes.screen.height * 0.12,
         width: '100%',
         borderRadius: 20,
         padding: 20,
@@ -40,7 +39,13 @@ export default StyleService.create({
         backgroundColor: '$blue',
         color: '$blue',
     },
-
+    disabled: {
+        opacity: 0.6,
+    },
+    selectedDisabled: {
+        opacity: 0.6,
+        borderColor: '$lightBlue',
+    },
     selected: {
         backgroundColor: '$tint',
         borderColor: '$blue',

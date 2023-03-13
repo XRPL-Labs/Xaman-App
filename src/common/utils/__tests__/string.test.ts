@@ -1,5 +1,5 @@
 /* eslint-disable spellcheck/spell-checker */
-import { Truncate, HexEncoding, Capitalize, StringTypeCheck } from '../string';
+import { Truncate, HexEncoding, Capitalize, StringTypeCheck, UUIDEncoding } from '../string';
 
 describe('Utils.String', () => {
     // truncate
@@ -18,6 +18,14 @@ describe('Utils.String', () => {
         it('should return full text', () => {
             const resultText = Truncate(longText, 22);
             expect(resultText).toEqual(longText);
+        });
+    });
+
+    describe('UUIDEncoding', () => {
+        it('should turn uuid to hex in right format', () => {
+            expect(UUIDEncoding.toHex('068196C5-E4D9-4445-B6A8-E1703B519B97')).toStrictEqual(
+                '068196c5f24d094445f56a08e1703b519b97',
+            );
         });
     });
 
@@ -123,6 +131,15 @@ describe('Utils.String', () => {
             expect(
                 StringTypeCheck.isValidHash('1CE80FF3298223CDF8BE80BF007A857F24C09843FCA24359DFA3E035D5C02188'),
             ).toBe(true);
+        });
+
+        it('should check if string is valid xApp Identifier', () => {
+            // @ts-ignore
+            expect(StringTypeCheck.isValidXAppIdentifier({ someting: true })).toBe(false);
+            expect(StringTypeCheck.isValidXAppIdentifier(undefined)).toBe(false);
+            expect(StringTypeCheck.isValidXAppIdentifier('something.@test')).toBe(false);
+            expect(StringTypeCheck.isValidXAppIdentifier('somethings_.test/')).toBe(false);
+            expect(StringTypeCheck.isValidXAppIdentifier('xumm.app_TEST28-z_identifier')).toBe(true);
         });
     });
 });

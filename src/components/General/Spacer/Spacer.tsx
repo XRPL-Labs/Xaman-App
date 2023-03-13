@@ -16,7 +16,7 @@ interface Props {
 }
 
 /* Component ==================================================================== */
-const Spacer: React.SFC<Props> = ({ size = 10 }) => <View style={[styles.container, { marginTop: size }]} />;
+const Spacer: React.FC<Props> = ({ size = 10 }) => <View style={[styles.container, { marginTop: size }]} />;
 
 /* Export Component ==================================================================== */
 export default Spacer;

@@ -1,15 +1,15 @@
 import StyleService from '@services/StyleService';
 
-import { hasNotch } from '@common/helpers/device';
+import { HasBottomNotch } from '@common/helpers/device';
 
 const styles = StyleService.create({
     container: {
         flex: 1,
         backgroundColor: '$transparent',
-        height: hasNotch() ? 75 : 45,
+        height: HasBottomNotch() ? 75 : 45,
         alignItems: 'center',
         flexDirection: 'row',
-        marginBottom: hasNotch() ? 0 : 12,
+        marginBottom: HasBottomNotch() ? 0 : 12,
     },
     leftContent: {
         flex: 1,

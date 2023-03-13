@@ -6,19 +6,13 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.modules.network.OkHttpClientProvider;
 
 // Local Libs
-import libs.crypto.modules.CryptoPackage;
-import libs.authentication.Biometric.BiometricPackage;
-import libs.ui.KeyboardPackage;
-import libs.ui.ActionSheetPackage;
-import libs.ui.PromptPackage;
-import libs.ui.QRCodePackage;
-import libs.ui.DimensionPackage;
+import libs.security.SecurityPackage;
 import libs.notification.LocalNotificationPackage;
-import libs.common.SharedPreferencesPackage;
-import libs.common.AppUpdatePackage;
-import libs.common.InAppPurchasePackage;
+import libs.common.CommonPackage;
 import libs.common.HTTPClientFactory;
+import libs.webview.WebViewPackage;
 import libs.utils.UtilsPackage;
+import libs.ui.UIPackage;
 
 // External Dependencies
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -51,17 +45,11 @@ public class MainApplication extends NavigationApplication {
                     List<ReactPackage> packages = new PackageList(this).getPackages();
                     // Local Libs
                     packages.add(new UtilsPackage());
-                    packages.add(new KeyboardPackage());
-                    packages.add(new CryptoPackage());
-                    packages.add(new ActionSheetPackage());
-                    packages.add(new PromptPackage());
-                    packages.add(new QRCodePackage());
-                    packages.add(new SharedPreferencesPackage());
+                    packages.add(new UIPackage());
                     packages.add(new LocalNotificationPackage());
-                    packages.add(new AppUpdatePackage());
-                    packages.add(new InAppPurchasePackage());
-                    packages.add(new DimensionPackage());
-                    packages.add(new BiometricPackage());
+                    packages.add(new CommonPackage());
+                    packages.add(new SecurityPackage());
+                    packages.add(new WebViewPackage());
                     return packages;
                 }
             };

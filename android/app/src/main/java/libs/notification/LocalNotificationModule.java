@@ -20,6 +20,7 @@ import com.facebook.react.bridge.Promise;
 
 import com.google.firebase.messaging.RemoteMessage;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
@@ -37,12 +38,15 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule {
         this.context = context;
 
         sharedPreferences = context.getSharedPreferences(BADGE_FILE, Context.MODE_PRIVATE);
-
     }
 
+
+    public static final String NAME = "LocalNotificationModule";
+
+    @NonNull
     @Override
     public String getName() {
-        return "LocalNotificationModule";
+        return NAME;
     }
 
 

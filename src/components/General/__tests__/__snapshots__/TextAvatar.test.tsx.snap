@@ -3,8 +3,8 @@
 exports[`[TextAvatar] renders correctly 1`] = `
 <View
   style={
-    Array [
-      Object {
+    [
+      {
         "alignItems": "center",
         "backgroundColor": "#3BDC96",
         "borderRadius": 66.5,
@@ -17,8 +17,8 @@ exports[`[TextAvatar] renders correctly 1`] = `
 >
   <Text
     style={
-      Array [
-        Object {
+      [
+        {
           "color": "#ffffff",
           "fontFamily": "UbuntuMono-Regular",
           "fontSize": 42.857142857142854,
@@ -35,8 +35,8 @@ exports[`[TextAvatar] renders correctly 1`] = `
 exports[`[TextAvatar] should render label correctly 1`] = `
 <View
   style={
-    Array [
-      Object {
+    [
+      {
         "alignItems": "center",
         "backgroundColor": "#3BDC96",
         "borderRadius": 66.5,
@@ -49,8 +49,8 @@ exports[`[TextAvatar] should render label correctly 1`] = `
 >
   <Text
     style={
-      Array [
-        Object {
+      [
+        {
           "color": "#ffffff",
           "fontFamily": "UbuntuMono-Regular",
           "fontSize": 42.857142857142854,
@@ -67,8 +67,8 @@ exports[`[TextAvatar] should render label correctly 1`] = `
 exports[`[TextAvatar] should render two label correctly 1`] = `
 <View
   style={
-    Array [
-      Object {
+    [
+      {
         "alignItems": "center",
         "backgroundColor": "#3BDC96",
         "borderRadius": 66.5,
@@ -81,8 +81,8 @@ exports[`[TextAvatar] should render two label correctly 1`] = `
 >
   <Text
     style={
-      Array [
-        Object {
+      [
+        {
           "color": "#ffffff",
           "fontFamily": "UbuntuMono-Regular",
           "fontSize": 42.857142857142854,

@@ -63,9 +63,7 @@ class DisclaimersView extends Component<Props, State> {
             agreed: false,
         });
 
-        const waitTime = __DEV__ ? 1000 : 10000;
-
-        this.progressBar.fill(waitTime, () => {
+        this.progressBar.fill(10000, () => {
             this.setState({
                 isProgressing: false,
             });

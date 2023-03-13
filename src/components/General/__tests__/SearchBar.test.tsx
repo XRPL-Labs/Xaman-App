@@ -1,13 +1,11 @@
-/**
- * @format
- */
-
 import React from 'react';
 // Note: test renderer must be required after react-native.
 
 import renderer from 'react-test-renderer';
 
 import { SearchBar } from '..';
+
+jest.useFakeTimers();
 
 describe('[SearchBar]', () => {
     it('renders correctly', () => {
@@ -22,7 +20,7 @@ describe('[SearchBar]', () => {
 
         expect(instance.state.value).toBe('searched text');
 
-        jest.runTimersToTime(1000);
+        jest.advanceTimersByTime(1000);
 
         expect(tree.toJSON()).toMatchSnapshot();
     });
@@ -33,7 +31,7 @@ describe('[SearchBar]', () => {
 
         instance.onClearPress();
 
-        jest.runTimersToTime(1000);
+        jest.advanceTimersByTime(1000);
 
         expect(instance.state.value).toBe('');
         expect(tree.toJSON()).toMatchSnapshot();

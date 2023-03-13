@@ -18,7 +18,7 @@ interface Props {
 }
 
 /* Component ==================================================================== */
-const HorizontalLine: React.SFC<Props> = ({
+const HorizontalLine: React.FC<Props> = ({
     width = '100%',
     height = 2,
     color = StyleService.value('$lightGrey'),

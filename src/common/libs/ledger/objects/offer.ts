@@ -39,7 +39,7 @@ class Offer extends BaseLedgerObject {
 
         return {
             currency: pays.currency,
-            value: new Amount(pays.value, false).toString(),
+            value: pays.value,
             issuer: pays.issuer,
         };
     }
@@ -58,7 +58,7 @@ class Offer extends BaseLedgerObject {
 
         return {
             currency: gets.currency,
-            value: new Amount(gets.value, false).toString(),
+            value: gets.value,
             issuer: gets.issuer,
         };
     }

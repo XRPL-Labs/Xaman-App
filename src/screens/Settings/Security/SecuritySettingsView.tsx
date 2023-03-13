@@ -14,7 +14,7 @@ import { BiometryType } from '@store/types';
 import { Biometric, BiometricErrors } from '@common/libs/biometric';
 
 import { Navigator } from '@common/helpers/navigator';
-import { IsFlagSecure, FlagSecure } from '@common/helpers/device';
+import { IsFlagSecure, SetFlagSecure } from '@common/helpers/app';
 
 import { TouchableDebounce, Header, Switch, Icon, InfoMessage } from '@components/General';
 
@@ -201,7 +201,7 @@ class SecuritySettingsView extends Component<Props, State> {
 
     onFlagSecureToggle = (value: boolean) => {
         // apply to the current activity
-        FlagSecure(value);
+        SetFlagSecure(value);
 
         // update the state
         this.setState({

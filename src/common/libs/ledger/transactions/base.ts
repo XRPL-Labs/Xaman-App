@@ -2,7 +2,7 @@
  * Base Ledger transaction parser
  */
 import BigNumber from 'bignumber.js';
-import { find, flatMap, get, has, isUndefined, set } from 'lodash';
+import { find, filter, flatMap, get, has, isUndefined, set, size, remove } from 'lodash';
 
 import LedgerService from '@services/LedgerService';
 
@@ -11,7 +11,6 @@ import { AccountSchema } from '@store/schemas/latest';
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
-import { HexEncoding } from '@common/utils/string';
 import {
     SignedObjectType,
     SubmitResultType,
@@ -26,9 +25,10 @@ import Meta from '../parser/meta';
 import LedgerDate from '../parser/common/date';
 import Amount from '../parser/common/amount';
 import Flag from '../parser/common/flag';
+import Memo from '../parser/common/memo';
 
 /* Types ==================================================================== */
-import { Account, AmountType, Memo, TransactionResult } from '../parser/types';
+import { Account, AmountType, MemoType, TransactionResult } from '../parser/types';
 
 /* Class ==================================================================== */
 class BaseTransaction {
@@ -45,6 +45,7 @@ class BaseTransaction {
     private balanceChanges: Map<string, any>;
     private ownerCountChanges: Map<string, any>;
 
+    public SignedBlob: string;
     public SignMethod: 'PIN' | 'BIOMETRIC' | 'PASSPHRASE' | 'TANGEM' | 'OTHER';
     public SignerAccount: any;
 
@@ -154,7 +155,7 @@ class BaseTransaction {
                     return;
                 }
 
-                if (this.TxnSignature) {
+                if (this.SignedBlob) {
                     reject(new Error('Transaction already signed!'));
                     return;
                 }
@@ -191,14 +192,14 @@ class BaseTransaction {
                         }
 
                         this.Hash = signedObject.id;
-                        this.TxnSignature = signedObject.signedTransaction;
+                        this.SignedBlob = signedObject.signedTransaction;
                         this.SignMethod = signedObject.signMethod || 'OTHER';
 
                         if (Array.isArray(signers) && signers.length > 0) {
                             [this.SignerAccount] = signers;
                         }
 
-                        resolve(this.TxnSignature);
+                        resolve(this.SignedBlob);
                     },
                     onDismissed: () => {
                         reject();
@@ -236,7 +237,7 @@ class BaseTransaction {
     submit = async (): Promise<SubmitResultType> => {
         try {
             // if transaction is not signed exit
-            if (!this.TxnSignature) {
+            if (!this.SignedBlob) {
                 throw new Error('transaction is not signed!');
             }
 
@@ -259,13 +260,7 @@ class BaseTransaction {
             const shouldFailHard = this.TransactionType === TransactionTypes.AccountDelete;
 
             // Submit signed transaction to the XRPL
-            const submitResult = await LedgerService.submitTransaction(this.TxnSignature, shouldFailHard);
-
-            // update transaction hash base on submit result
-            const { transactionId } = submitResult;
-            if (transactionId) {
-                this.Hash = transactionId;
-            }
+            const submitResult = await LedgerService.submitTransaction(this.SignedBlob, this.Hash, shouldFailHard);
 
             // set submit result
             this.SubmitResult = submitResult;
@@ -277,7 +272,9 @@ class BaseTransaction {
                 success: false,
                 engineResult: 'telFAILED',
                 message: e?.message,
-            };
+                node: undefined,
+                nodeType: undefined,
+            } as SubmitResultType;
 
             // set submit result
             this.SubmitResult = result;
@@ -339,8 +336,8 @@ class BaseTransaction {
         if (!memos) return undefined;
 
         for (const memo of memos) {
-            if (memo.type === 'xumm/xapp' && memo.data) {
-                return memo.data;
+            if (memo.MemoType === 'xumm/xapp' && memo.MemoData) {
+                return memo.MemoData;
             }
         }
 
@@ -362,6 +359,14 @@ class BaseTransaction {
         }
 
         const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
+
+        // if cross currency remove fee from changes
+        if (size(filter(balanceChanges, { action: 'DEC' })) > 1) {
+            const decreaseXRP = find(balanceChanges, { action: 'DEC', currency: 'XRP' });
+            if (decreaseXRP.value === this.Fee) {
+                remove(balanceChanges, { action: 'DEC', currency: 'XRP' });
+            }
+        }
 
         const changes = {
             sent: find(balanceChanges, (o) => o.action === 'DEC'),
@@ -386,6 +391,16 @@ class BaseTransaction {
             const afterFee = new BigNumber(changes[feeFieldKey].value).minus(new BigNumber(this.Fee));
             if (afterFee.isZero()) {
                 set(changes, feeFieldKey, undefined);
+            } else if (
+                afterFee.isNegative() &&
+                this.TransactionType === TransactionTypes.NFTokenAcceptOffer &&
+                feeFieldKey === 'sent'
+            ) {
+                set(changes, 'sent', undefined);
+                set(changes, 'received', {
+                    currency: 'XRP',
+                    value: afterFee.absoluteValue().decimalPlaces(8).toString(10),
+                });
             } else {
                 set(changes, [feeFieldKey, 'value'], afterFee.decimalPlaces(8).toString(10));
             }
@@ -456,7 +471,7 @@ class BaseTransaction {
         }
     }
 
-    get Memos(): Array<Memo> | undefined {
+    get Memos(): Array<MemoType> | undefined {
         const memos = get(this, ['tx', 'Memos'], undefined);
 
         if (isUndefined(memos)) return undefined;
@@ -464,31 +479,18 @@ class BaseTransaction {
         if (!Array.isArray(memos) || memos.length === 0) {
             return undefined;
         }
-        return memos.map((m: any) => {
-            return {
-                type: HexEncoding.toUTF8(m.Memo.MemoType),
-                format: HexEncoding.toUTF8(m.Memo.MemoFormat),
-                data: HexEncoding.toUTF8(m.Memo.MemoData),
-            };
-        });
+
+        return memos.map((m) => Memo.Decode(m.Memo));
     }
 
-    set Memos(memos: Array<Memo>) {
-        let encodedMemos;
+    set Memos(memos: Array<MemoType>) {
+        const encodedMemos = memos.map((m) => {
+            return {
+                Memo: m,
+            };
+        });
 
-        if (memos.length > 0) {
-            encodedMemos = memos.map((m: any) => {
-                return {
-                    Memo: {
-                        MemoType: m.type && HexEncoding.toHex(m.type).toUpperCase(),
-                        MemoFormat: m.format && HexEncoding.toHex(m.format).toUpperCase(),
-                        MemoData: m.data && HexEncoding.toHex(m.data).toUpperCase(),
-                    },
-                };
-            });
-        }
-
-        set(this, ['tx', 'Memos'], encodedMemos || []);
+        set(this, ['tx', 'Memos'], encodedMemos);
     }
 
     get Flags(): any {
@@ -581,8 +583,8 @@ class BaseTransaction {
         return get(this, ['tx', 'hash']);
     }
 
-    set Hash(transactionId: string) {
-        set(this, ['tx', 'hash'], transactionId);
+    set Hash(hash: string) {
+        set(this, ['tx', 'hash'], hash);
     }
 
     get LedgerIndex(): number {

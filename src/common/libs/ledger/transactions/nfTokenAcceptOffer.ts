@@ -75,7 +75,7 @@ class NFTokenAcceptOffer extends BaseTransaction {
 
         return {
             currency: brokerFee.currency,
-            value: brokerFee.value && new Amount(brokerFee.value, false).toString(),
+            value: brokerFee.value,
             issuer: brokerFee.issuer,
         };
     }

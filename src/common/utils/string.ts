@@ -1,4 +1,36 @@
-/* Hex Encoding  ==================================================================== */
+/**
+ * UUID encoding
+ */
+const UUIDEncoding = {
+    toHex: (uuid: string): string => {
+        if (uuid.length % 2 !== 0) {
+            throw new Error('Must have an even number to convert to bytes');
+        }
+        const numBytes = uuid.length / 2;
+        const byteArray = new Uint8Array(numBytes);
+        for (let i = 0; i < numBytes; i++) {
+            let byte;
+            const byteChar = uuid.substr(i * 2, 2);
+
+            if (byteChar[0] === '-') {
+                byte = (parseInt(`0${byteChar[1]}`, 16) * -1) & 0xff;
+            } else if (byteChar[1] === '-') {
+                byte = parseInt(byteChar[0], 16);
+            } else {
+                byte = parseInt(byteChar, 16);
+            }
+            byteArray[i] = byte;
+        }
+
+        return Array.from(byteArray, (byte) => {
+            return `0${(byte & 0xff).toString(16)}`.slice(-2);
+        }).join('');
+    },
+};
+
+/**
+ * Hex encoding/decoding
+ */
 const HexEncoding = {
     toBinary: (hex: string): Buffer => {
         return hex ? Buffer.from(hex, 'hex') : undefined;
@@ -104,7 +136,35 @@ const StringTypeCheck = {
         const hashRegExp = new RegExp('^[A-F0-9]{64}$', 'i');
         return hashRegExp.test(input);
     },
+
+    isValidXAppIdentifier: (input: string): boolean => {
+        if (typeof input !== 'string') {
+            return false;
+        }
+
+        // TODO: fix eslint error
+        // eslint-disable-next-line prefer-regex-literals,no-control-regex
+        const identifier = new RegExp('^[A-Z0-9._-]+$', 'i');
+        return identifier.test(input);
+    },
+};
+
+/**
+ * Create identifier crc32 from string
+ * @param str value in string
+ * @returns identifier version of string
+ */
+const StringIdentifier = (str: String): number => {
+    let crc = 0xffffffff;
+    for (let i = 0; i < str.length; i++) {
+        crc ^= str.charCodeAt(i);
+        for (let bit = 0; bit < 8; bit++) {
+            if ((crc & 1) !== 0) crc = (crc >>> 1) ^ 0xedb88320;
+            else crc >>>= 1;
+        }
+    }
+    return ~crc;
 };
 
 /* Export ==================================================================== */
-export { HexEncoding, Truncate, Capitalize, StringTypeCheck };
+export { HexEncoding, UUIDEncoding, Truncate, Capitalize, StringTypeCheck, StringIdentifier };

@@ -16,17 +16,17 @@ import { ErrorMessages } from '@common/constants';
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import {
-    GetAppReadableVersion,
     GetDeviceTimeZone,
     GetDeviceLocaleSettings,
-    GetDeviceName,
-    GetSystemVersion,
-    FlagSecure,
+    GetDeviceBrand,
+    GetDeviceOSVersion,
     IsDeviceJailBroken,
     IsDeviceRooted,
-    ExitApp,
-    RestartBundle,
 } from '@common/helpers/device';
+
+import { SetFlagSecure, ExitApp, GetAppVersionCode, GetAppBuildNumber, IsDebugBuild } from '@common/helpers/app';
+
+import Vault from '@common/libs/vault';
 
 // Storage
 import { CoreRepository } from '@store/repositories';
@@ -56,8 +56,10 @@ class Application {
         // Listen for app launched event
         Navigation.events().registerAppLaunchedListener(() => {
             // start the app
-            this.logger.debug(`XUMM version ${GetAppReadableVersion()}`);
-            this.logger.debug(`Device ${GetDeviceName()} - OS Version ${GetSystemVersion()}`);
+            this.logger.debug(
+                `XUMM version ${GetAppVersionCode()}_${GetAppBuildNumber()}_${IsDebugBuild() ? 'D' : 'R'}`,
+            );
+            this.logger.debug(`Device ${GetDeviceBrand()} - OS Version ${GetDeviceOSVersion()}`);
 
             // tasks need to run before booting the app
             let tasks = [];
@@ -68,6 +70,7 @@ class Application {
                 tasks = [this.configure, this.loadAppLocale, this.reinstateServices];
             } else {
                 tasks = [
+                    this.checkup,
                     this.configure,
                     this.initializeStorage,
                     this.loadAppLocale,
@@ -92,7 +95,9 @@ class Application {
 
     // handle errors in app startup
     handleError = (exception: Error) => {
+        // normalize error message
         const message = services.LoggerService.normalizeError(exception);
+
         if (message) {
             if (
                 message.indexOf('Realm file decryption failed') > -1 ||
@@ -119,7 +124,10 @@ class Application {
             Alert.alert('Error', 'Unexpected error happened');
         }
 
-        services.LoggerService.recordError('APP_STARTUP_ERROR', exception);
+        // if error is not caused from device being jail-broken or rooted then report error to the crashlytics
+        if (![ErrorMessages.runningOnRootedDevice, ErrorMessages.runningOnJailBrokenDevice].includes(message)) {
+            services.LoggerService.logError('APP_STARTUP_ERROR', exception);
+        }
     };
 
     wipeStorage = () => {
@@ -134,8 +142,8 @@ class Application {
                     text: 'Yes',
                     style: 'destructive',
                     onPress: () => {
-                        this.storage.wipe();
-                        RestartBundle();
+                        DataStorage.wipe();
+                        ExitApp();
                     },
                 },
             ],
@@ -263,37 +271,57 @@ class Application {
         });
     };
 
+    // pre run code that needs to be run before app initialization
+    checkup = () => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise<void>(async (resolve, reject) => {
+            try {
+                //  ====== check for device root or jailBroken ======
+                if (Platform.OS === 'android') {
+                    const isRooted = await IsDeviceRooted();
+                    if (isRooted) {
+                        reject(new Error(ErrorMessages.runningOnRootedDevice));
+                        return;
+                    }
+                } else if (Platform.OS === 'ios') {
+                    const isJailBroken = await IsDeviceJailBroken();
+                    if (isJailBroken) {
+                        reject(new Error(ErrorMessages.runningOnJailBrokenDevice));
+                        return;
+                    }
+                }
+
+                //  ====== check if we need to clean up the vault ======
+                // NOTE: this is needed in case of app reinstall for iOS
+                if (Platform.OS === 'ios' && !DataStorage.isDataStoreFileExist()) {
+                    const storageEncryptionKeyExist = await Vault.isStorageEncryptionKeyExist();
+                    // if data storage file doesn't exist, and we could find the storage encryption key in the vault
+                    // we need to clear the vault
+                    if (storageEncryptionKeyExist) {
+                        await Vault.clearStorage();
+                    }
+                }
+
+                resolve();
+            } catch (e) {
+                reject(e);
+            }
+        });
+    };
+
     // configure app settings
     configure = () => {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise<void>(async (resolve, reject) => {
             try {
                 if (Platform.OS === 'android') {
-                    // check for device root
-                    await IsDeviceRooted().then((rooted: boolean) => {
-                        if (rooted && !__DEV__) {
-                            return reject(new Error(ErrorMessages.runningOnRootedDevice));
-                        }
+                    // set secure flag for the app by default
+                    SetFlagSecure(true);
 
-                        // set secure flag for the app by default
-                        FlagSecure(true);
-
-                        // enable layout animation
-                        if (UIManager.setLayoutAnimationEnabledExperimental) {
-                            UIManager.setLayoutAnimationEnabledExperimental(true);
-                        }
-
-                        return true;
-                    });
-                } else if (Platform.OS === 'ios') {
-                    // check for device root
-                    await IsDeviceJailBroken().then((isJailBroken: boolean) => {
-                        if (isJailBroken && !__DEV__) {
-                            return reject(new Error(ErrorMessages.runningOnJailBrokenDevice));
-                        }
-
-                        return true;
-                    });
+                    // enable layout animation
+                    if (UIManager.setLayoutAnimationEnabledExperimental) {
+                        UIManager.setLayoutAnimationEnabledExperimental(true);
+                    }
                 }
 
                 // disable RTL as we don't support it right now

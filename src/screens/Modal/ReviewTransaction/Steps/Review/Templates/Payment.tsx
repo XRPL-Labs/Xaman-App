@@ -10,13 +10,14 @@ import { CoreRepository } from '@store/repositories';
 import LedgerExchange, { MarketDirection } from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
+import { PathOption } from '@common/libs/ledger/types';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { AmountInput, AmountText, Button, InfoMessage, Spacer } from '@components/General';
 import { AmountValueType } from '@components/General/AmountInput';
-import { RecipientElement } from '@components/Modules';
+import { RecipientElement, PaymentOptionsPicker } from '@components/Modules';
 
 import { Toast } from '@common/helpers/interface';
 
@@ -25,11 +26,11 @@ import Localize from '@locale';
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+import { TemplateProps } from './types';
+
 /* types ==================================================================== */
-export interface Props {
+export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: Payment;
-    canOverride: boolean;
-    forceRender: () => void;
 }
 
 export interface State {
@@ -48,6 +49,7 @@ export interface State {
     shouldShowIssuerFee: boolean;
     isLoadingIssuerFee: boolean;
     issuerFee: number;
+    selectedPath: PathOption;
 }
 
 /* Component ==================================================================== */
@@ -67,7 +69,8 @@ class PaymentTemplate extends Component<Props, State> {
             currencyName: transaction.Amount?.currency ? NormalizeCurrencyCode(transaction.Amount.currency) : 'XRP',
             destinationDetails: undefined,
             isPartialPayment: false,
-            shouldCheckForConversation: !transaction.SendMax && props.canOverride,
+            shouldCheckForConversation:
+                !transaction.SendMax && !props.payload.isMultiSign() && !props.payload.isPathFinding(),
             exchangeRate: undefined,
             xrpRoundedUp: undefined,
             currencyRate: undefined,
@@ -75,6 +78,7 @@ class PaymentTemplate extends Component<Props, State> {
             shouldShowIssuerFee: false,
             isLoadingIssuerFee: false,
             issuerFee: 0,
+            selectedPath: undefined,
         };
 
         this.amountInput = React.createRef();
@@ -92,11 +96,14 @@ class PaymentTemplate extends Component<Props, State> {
 
         // check issuer fee if IOU payment
         this.fetchIssuerFee();
+
+        // set isReady to false if payment options are required
+        this.setIsReady();
     }
 
     static getDerivedStateFromProps(nextProps: Props, prevState: State) {
-        if (nextProps.transaction.Account?.address !== prevState.account) {
-            return { account: nextProps.transaction.Account.address };
+        if (nextProps.source?.address !== prevState.account) {
+            return { account: nextProps.source?.address };
         }
         return null;
     }
@@ -108,6 +115,15 @@ class PaymentTemplate extends Component<Props, State> {
             InteractionManager.runAfterInteractions(this.checkForPartialPaymentRequired);
         }
     }
+
+    setIsReady = () => {
+        const { payload, setReady } = this.props;
+
+        // disable ready until user selects a payment option
+        if (payload.isPathFinding()) {
+            setReady(false);
+        }
+    };
 
     fetchIssuerFee = () => {
         const { transaction } = this.props;
@@ -319,6 +335,36 @@ class PaymentTemplate extends Component<Props, State> {
         }
     };
 
+    onPathSelect = (path: PathOption) => {
+        const { transaction, setReady } = this.props;
+
+        if (path) {
+            // set the amount on SendMax
+            transaction.SendMax = path.source_amount;
+
+            // set the transaction path
+            if (path.paths_computed.length === 0) {
+                transaction.Paths = undefined;
+            } else {
+                transaction.Paths = path.paths_computed;
+            }
+
+            // user can continue signing the transaction
+            setReady(true);
+        } else {
+            // clear any set value
+            transaction.SendMax = undefined;
+            transaction.Paths = undefined;
+
+            // user cannot continue
+            setReady(false);
+        }
+
+        this.setState({
+            selectedPath: path,
+        });
+    };
+
     renderAmountRate = () => {
         const { amount, isLoadingRate, currencyRate } = this.state;
 
@@ -348,8 +394,9 @@ class PaymentTemplate extends Component<Props, State> {
     };
 
     render() {
-        const { transaction } = this.props;
+        const { transaction, payload } = this.props;
         const {
+            account,
             isLoading,
             isPartialPayment,
             exchangeRate,
@@ -361,6 +408,7 @@ class PaymentTemplate extends Component<Props, State> {
             shouldShowIssuerFee,
             isLoadingIssuerFee,
             issuerFee,
+            selectedPath,
         } = this.state;
 
         return (
@@ -382,83 +430,85 @@ class PaymentTemplate extends Component<Props, State> {
                 />
 
                 {/* Amount */}
-                <Text style={[styles.label]}>{Localize.t('global.amount')}</Text>
 
-                <View style={[styles.contentBox]}>
-                    <TouchableOpacity
-                        activeOpacity={1}
-                        style={[AppStyles.row]}
-                        onPress={() => {
-                            if (editableAmount && this.amountInput) {
-                                this.amountInput.current?.focus();
-                            }
-                        }}
-                    >
-                        {editableAmount ? (
-                            <>
-                                <View style={[AppStyles.row, AppStyles.flex1]}>
-                                    <AmountInput
-                                        ref={this.amountInput}
-                                        valueType={currencyName === 'XRP' ? AmountValueType.XRP : AmountValueType.IOU}
-                                        onChange={this.onAmountChange}
-                                        style={[styles.amountInput]}
-                                        value={amount}
-                                        editable={editableAmount}
-                                        placeholderTextColor={StyleService.value('$textSecondary')}
-                                    />
-                                    <Text style={[styles.amountInput]}> {currencyName}</Text>
-                                </View>
-                                <Button
-                                    onPress={() => {
-                                        if (this.amountInput) {
+                <>
+                    <Text style={styles.label}>{Localize.t('global.amount')}</Text>
+                    <View style={styles.contentBox}>
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            style={[AppStyles.row]}
+                            onPress={() => {
+                                if (editableAmount) {
+                                    this.amountInput.current?.focus();
+                                }
+                            }}
+                        >
+                            {editableAmount ? (
+                                <>
+                                    <View style={[AppStyles.row, AppStyles.flex1]}>
+                                        <AmountInput
+                                            ref={this.amountInput}
+                                            valueType={
+                                                currencyName === 'XRP' ? AmountValueType.XRP : AmountValueType.IOU
+                                            }
+                                            onChange={this.onAmountChange}
+                                            style={styles.amountInput}
+                                            value={amount}
+                                            editable={editableAmount}
+                                            placeholderTextColor={StyleService.value('$textSecondary')}
+                                        />
+                                        <Text style={styles.amountInput}> {currencyName}</Text>
+                                    </View>
+                                    <Button
+                                        onPress={() => {
                                             this.amountInput.current?.focus();
-                                        }
-                                    }}
-                                    style={styles.editButton}
-                                    roundedSmall
-                                    icon="IconEdit"
-                                    iconSize={13}
-                                    light
+                                        }}
+                                        style={styles.editButton}
+                                        roundedSmall
+                                        icon="IconEdit"
+                                        iconSize={13}
+                                        light
+                                    />
+                                </>
+                            ) : (
+                                <AmountText
+                                    value={amount}
+                                    currency={transaction.Amount.currency}
+                                    style={styles.amountInput}
+                                    immutable
                                 />
-                            </>
-                        ) : (
-                            <AmountText
-                                value={amount}
-                                currency={transaction.Amount.currency}
-                                style={styles.amountInput}
-                                immutable
-                            />
-                        )}
-                    </TouchableOpacity>
-                    {isPartialPayment &&
-                        (exchangeRate ? (
-                            <>
-                                <Spacer size={15} />
-                                <InfoMessage
-                                    label={Localize.t('payload.payingWithXRPExchangeRate', {
-                                        xrpRoundedUp,
-                                        exchangeRate,
-                                    })}
-                                    type="info"
-                                />
-                            </>
-                        ) : (
-                            <>
-                                <Spacer size={15} />
-                                <InfoMessage
-                                    label={Localize.t('payload.notEnoughLiquidityToSendThisPayment')}
-                                    type="error"
-                                />
-                            </>
-                        ))}
+                            )}
+                        </TouchableOpacity>
+                        {isPartialPayment &&
+                            (exchangeRate ? (
+                                <>
+                                    <Spacer size={15} />
+                                    <InfoMessage
+                                        label={Localize.t('payload.payingWithXRPExchangeRate', {
+                                            xrpRoundedUp,
+                                            exchangeRate,
+                                        })}
+                                        type="info"
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    <Spacer size={15} />
+                                    <InfoMessage
+                                        label={Localize.t('payload.notEnoughLiquidityToSendThisPayment')}
+                                        type="error"
+                                    />
+                                </>
+                            ))}
 
-                    {this.renderAmountRate()}
-                </View>
+                        {this.renderAmountRate()}
+                    </View>
+                </>
 
-                {transaction.SendMax && !isPartialPayment && (
+                {transaction.SendMax && !isPartialPayment && !selectedPath && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.sendMax')}</Text>
-                        <View style={[styles.contentBox]}>
+                        <Text style={styles.label}>{Localize.t('global.sendMax')}</Text>
+                        <View style={styles.contentBox}>
                             <AmountText
                                 value={transaction.SendMax.value}
                                 currency={transaction.SendMax.currency}
@@ -471,8 +521,8 @@ class PaymentTemplate extends Component<Props, State> {
 
                 {transaction.DeliverMin && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.deliverMin')}</Text>
-                        <View style={[styles.contentBox]}>
+                        <Text style={styles.label}>{Localize.t('global.deliverMin')}</Text>
+                        <View style={styles.contentBox}>
                             <AmountText
                                 value={transaction.DeliverMin.value}
                                 currency={transaction.DeliverMin.currency}
@@ -485,19 +535,32 @@ class PaymentTemplate extends Component<Props, State> {
 
                 {shouldShowIssuerFee && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.issuerFee')}</Text>
-                        <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{isLoadingIssuerFee ? 'Loading...' : `${issuerFee}%`}</Text>
+                        <Text style={styles.label}>{Localize.t('global.issuerFee')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{isLoadingIssuerFee ? 'Loading...' : `${issuerFee}%`}</Text>
                         </View>
                     </>
                 )}
 
                 {transaction.InvoiceID && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.invoiceID')}</Text>
-                        <View style={[styles.contentBox]}>
+                        <Text style={styles.label}>{Localize.t('global.invoiceID')}</Text>
+                        <View style={styles.contentBox}>
                             <Text style={styles.value}>{transaction.InvoiceID}</Text>
                         </View>
+                    </>
+                )}
+
+                {payload.isPathFinding() && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('global.payWith')}</Text>
+                        <PaymentOptionsPicker
+                            source={account}
+                            destination={transaction.Destination.address}
+                            amount={transaction.Amount}
+                            containerStyle={AppStyles.paddingBottomSml}
+                            onSelect={this.onPathSelect}
+                        />
                     </>
                 )}
             </>

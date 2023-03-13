@@ -1,6 +1,8 @@
 /**
  * App Localization
  */
+
+import { I18n } from 'i18n-js';
 import BigNumber from 'bignumber.js';
 
 /* Types ==================================================================== */
@@ -23,12 +25,12 @@ class Localize {
     settings: LocalizeSettings;
 
     constructor() {
-        this.instance = require('i18n-js');
+        this.instance = new I18n();
         this.moment = require('moment-timezone');
         this.meta = require('./meta.json');
 
         // set default values
-        this.instance.fallbacks = true;
+        this.instance.enableFallback = true;
         this.instance.defaultLocale = 'en';
         this.settings = undefined;
     }

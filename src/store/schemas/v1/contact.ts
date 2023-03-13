@@ -22,11 +22,6 @@ class Contact extends Realm.Object {
     public destinationTag: string;
     public registerAt?: Date;
     public updatedAt?: Date;
-
-    constructor(obj: Partial<Contact>) {
-        super();
-        Object.assign(this, obj);
-    }
 }
 
 export default Contact;

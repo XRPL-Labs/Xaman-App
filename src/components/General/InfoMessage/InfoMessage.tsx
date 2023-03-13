@@ -20,6 +20,7 @@ import styles from './styles';
 /* Types ==================================================================== */
 
 interface Props {
+    children?: React.ReactNode;
     containerStyle?: ViewStyle | ViewStyle[];
     labelStyle?: TextStyle | TextStyle[];
     icon?: Extract<keyof typeof Images, string>;
@@ -28,6 +29,7 @@ interface Props {
     type: 'info' | 'warning' | 'error' | 'success' | 'neutral';
     flat?: boolean;
     moreButtonLabel?: string;
+    moreButtonIcon?: Extract<keyof typeof Images, string>;
     onMoreButtonPress?: () => void;
     isMoreButtonLoading?: boolean;
 }
@@ -138,14 +140,14 @@ class InfoMessage extends PureComponent<Props> {
     };
 
     renderFooter = () => {
-        const { onMoreButtonPress, moreButtonLabel, isMoreButtonLoading } = this.props;
+        const { onMoreButtonPress, moreButtonLabel, moreButtonIcon, isMoreButtonLoading } = this.props;
 
         if (typeof onMoreButtonPress === 'function') {
             return (
                 <Button
                     onPress={onMoreButtonPress}
                     style={styles.moreInfoButton}
-                    icon="IconInfo"
+                    icon={moreButtonIcon || 'IconInfo'}
                     label={moreButtonLabel || Localize.t('global.moreInfo')}
                     isLoading={isMoreButtonLoading}
                     light

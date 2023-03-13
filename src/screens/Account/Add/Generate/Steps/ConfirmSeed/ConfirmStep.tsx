@@ -45,11 +45,6 @@ class ConfirmStep extends Component<Props, State> {
 
         const secretNumber = this.secretNumberInput.getNumbers();
 
-        if (__DEV__) {
-            goNext('ViewPublicKey');
-            return;
-        }
-
         if (isEqual(generatedAccount.secret.secretNumbers, secretNumber)) {
             goNext('ViewPublicKey');
         } else {
@@ -137,7 +132,7 @@ class ConfirmStep extends Component<Props, State> {
                     <View style={[AppStyles.flex5]}>
                         <Button
                             testID="next-button"
-                            isDisabled={!__DEV__ && !allFilled}
+                            isDisabled={!allFilled}
                             label={Localize.t('global.next')}
                             onPress={this.goNext}
                             textStyle={AppStyles.strong}

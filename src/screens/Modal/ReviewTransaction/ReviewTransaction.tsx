@@ -9,11 +9,11 @@ import { AppScreens } from '@common/constants';
 
 import { LedgerService, SocketService, PushNotificationsService, StyleService } from '@services';
 
-import { CoreRepository, CurrencyRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
 import { TransactionTypes } from '@common/libs/ledger/types';
-import { PayloadOrigin } from '@common/libs/payload';
+import { PatchSuccessType, PayloadOrigin } from '@common/libs/payload';
 
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
@@ -53,8 +53,8 @@ class ReviewTransactionModal extends Component<Props, State> {
             source: undefined,
             currentStep: Steps.Review,
             submitResult: undefined,
-            isPreparing: false,
-            isValidating: false,
+            isLoading: false,
+            isReady: true,
             isValidPayload: true,
             hasError: false,
             softErrorMessage: '',
@@ -78,13 +78,9 @@ class ReviewTransactionModal extends Component<Props, State> {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress);
 
         // set transaction
-        try {
-            this.setState({
-                transaction: payload.getTransaction(),
-            });
-        } catch (e: any) {
-            this.setError(e?.message);
-        }
+        this.setState({
+            transaction: payload.getTransaction(),
+        });
     }
 
     componentWillUnmount() {
@@ -224,7 +220,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         }
 
         this.setState({
-            isPreparing: true,
+            isLoading: true,
         });
 
         await transaction
@@ -242,7 +238,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
                     this.setState({
                         currentStep: Steps.Review,
-                        isPreparing: false,
+                        isLoading: false,
                     });
                 }
             });
@@ -250,11 +246,10 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     onDecline = () => {
         const { onDecline, payload } = this.props;
-
-        const { hasError, hardErrorMessage, softErrorMessage } = this.state;
+        const { hardErrorMessage, softErrorMessage } = this.state;
 
         // reject the payload
-        payload.reject(hasError ? 'XUMM' : 'USER', hardErrorMessage || softErrorMessage);
+        payload.reject(hardErrorMessage ? 'XUMM' : 'USER', hardErrorMessage || softErrorMessage);
 
         // emit sign requests update
         setTimeout(() => {
@@ -264,7 +259,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         // close modal
         Navigator.dismissModal().then(() => {
             if (typeof onDecline === 'function') {
-                onDecline();
+                onDecline(payload);
             }
         });
     };
@@ -312,7 +307,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         try {
             // set loading
-            this.setState({ isValidating: true });
+            this.setState({ isLoading: true });
 
             // validate payload by fetching it again
             try {
@@ -409,9 +404,14 @@ class ReviewTransactionModal extends Component<Props, State> {
 
             // show alert if user adding a new trustline
             if (transaction.Type === TransactionTypes.TrustSet) {
-                // check if user is adding the trustline
+                // if the token is not in the vetted list and user is creating new trust line
+                // show the warning
                 if (
-                    !source.hasCurrency({
+                    !CurrencyRepository.isVettedCurrency({
+                        issuer: transaction.Issuer,
+                        currency: transaction.Currency,
+                    }) &&
+                    !AccountRepository.hasCurrency(source, {
                         issuer: transaction.Issuer,
                         currency: transaction.Currency,
                     })
@@ -559,7 +559,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         } finally {
             if (this.mounted) {
                 this.setState({
-                    isValidating: false,
+                    isLoading: false,
                 });
             }
         }
@@ -588,6 +588,18 @@ class ReviewTransactionModal extends Component<Props, State> {
         });
     };
 
+    setLoading = (loading: boolean) => {
+        this.setState({
+            isLoading: loading,
+        });
+    };
+
+    setReady = (ready: boolean) => {
+        this.setState({
+            isReady: ready,
+        });
+    };
+
     submit = async () => {
         const { payload } = this.props;
         const { transaction, coreSettings } = this.state;
@@ -602,7 +614,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         try {
             // create patch object
             const payloadPatch = {
-                signed_blob: transaction.TxnSignature,
+                signed_blob: transaction.SignedBlob,
                 tx_id: transaction.Hash,
                 signmethod: transaction.SignMethod,
                 multisigned: payload.isMultiSign() ? transaction.SignerAccount : '',
@@ -610,7 +622,10 @@ class ReviewTransactionModal extends Component<Props, State> {
                     nodeuri: SocketService.node,
                     nodetype: SocketService.chain,
                 },
-            };
+            } as PatchSuccessType;
+
+            // patch the payload, before submitting (if necessary)
+            payload.patch(payloadPatch);
 
             // check if we need to submit the payload to the XRP Ledger
             if (payload.shouldSubmit()) {
@@ -648,8 +663,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                     VibrateHapticFeedback('notificationError');
                 }
 
-                // include submit result in the payload patch
-                Object.assign(payloadPatch, {
+                // patch the payload again with submit result
+                payload.patch({
                     dispatched: {
                         to: submitResult.node,
                         nodetype: submitResult.nodeType,
@@ -661,9 +676,6 @@ class ReviewTransactionModal extends Component<Props, State> {
                     submitResult,
                 });
             }
-
-            // patch the payload
-            payload.patch(payloadPatch);
 
             // emit sign requests update
             setTimeout(() => {
@@ -700,9 +712,20 @@ class ReviewTransactionModal extends Component<Props, State> {
         }
         Navigator.dismissModal().then(() => {
             if (typeof onResolve === 'function') {
-                onResolve(transaction);
+                onResolve(transaction, payload);
             }
         });
+    };
+
+    onErrorBackPress = () => {
+        const { hardErrorMessage } = this.state;
+
+        // in case of hard error decline the payload
+        if (hardErrorMessage) {
+            this.onDecline();
+        } else {
+            this.onClose();
+        }
     };
 
     renderError = () => {
@@ -728,7 +751,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                     label={softErrorMessage || Localize.t('payload.unexpectedPayloadErrorOccurred')}
                 />
                 <Spacer size={40} />
-                <Button testID="back-button" label={Localize.t('global.back')} onPress={this.onDecline} />
+                <Button testID="back-button" label={Localize.t('global.back')} onPress={this.onErrorBackPress} />
             </View>
         );
     };
@@ -765,6 +788,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                 value={{
                     ...this.state,
                     setError: this.setError,
+                    setLoading: this.setLoading,
+                    setReady: this.setReady,
                     setSource: this.setSource,
                     onClose: this.onClose,
                     onAccept: this.onAccept,

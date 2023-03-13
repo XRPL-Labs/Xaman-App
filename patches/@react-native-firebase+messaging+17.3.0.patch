@@ -1,0 +1,13 @@
+diff --git a/node_modules/@react-native-firebase/messaging/ios/RNFBMessaging/RNFBMessaging+UNUserNotificationCenter.m b/node_modules/@react-native-firebase/messaging/ios/RNFBMessaging/RNFBMessaging+UNUserNotificationCenter.m
+index d5bd81f..ff6b711 100644
+--- a/node_modules/@react-native-firebase/messaging/ios/RNFBMessaging/RNFBMessaging+UNUserNotificationCenter.m
++++ b/node_modules/@react-native-firebase/messaging/ios/RNFBMessaging/RNFBMessaging+UNUserNotificationCenter.m
+@@ -136,7 +136,7 @@ - (void)userNotificationCenter:(UNUserNotificationCenter *)center
+       [[RNFBRCTEventEmitter shared] sendEventWithName:@"messaging_message_received"
+                                                  body:notificationDict];
+     }
+-    completionHandler(presentationOptions);
++//     completionHandler(presentationOptions);
+   }
+ 
+   if (_originalDelegate != nil && originalDelegateRespondsTo.willPresentNotification) {

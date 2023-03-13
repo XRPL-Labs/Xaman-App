@@ -203,7 +203,7 @@ class RequestView extends Component<Props, State> {
 
     calcKeyboardAwareExtraOffset = (input: any, inputHeight: number) => {
         if (input === this.amountInput.current) {
-            return inputHeight + Platform.select({ ios: 10, android: AppSizes.bottomStableInset });
+            return inputHeight + Platform.select({ ios: 10, android: AppSizes.safeAreaBottomInset });
         }
         return 0;
     };

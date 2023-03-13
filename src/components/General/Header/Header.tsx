@@ -50,7 +50,7 @@ const Children = ({
     placement: placementType;
     children: ChildrenProps;
 }) => {
-    if (children == null || children === false) {
+    if (!children) {
         return (
             <View
                 style={[

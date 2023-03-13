@@ -11,7 +11,8 @@ import { View, Text, Alert, InteractionManager, Platform } from 'react-native';
 
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
-import { BackendService } from '@services';
+import LedgerService from '@services/LedgerService';
+import BackendService from '@services/BackendService';
 
 import { Prompt, Toast } from '@common/helpers/interface';
 
@@ -34,6 +35,8 @@ import { StepsContext } from '../../Context';
 interface Props {}
 
 interface State {
+    isLoadingAvailableBalance: boolean;
+    isCheckingBalance: boolean;
     currencyRate: any;
     amountRate: string;
 }
@@ -50,6 +53,8 @@ class DetailsStep extends Component<Props, State> {
         super(props);
 
         this.state = {
+            isLoadingAvailableBalance: false,
+            isCheckingBalance: false,
             currencyRate: undefined,
             amountRate: '',
         };
@@ -68,10 +73,10 @@ class DetailsStep extends Component<Props, State> {
         const { currency } = coreSettings;
 
         BackendService.getCurrencyRate(currency)
-            .then((r) => {
+            .then((rate) => {
                 this.setState(
                     {
-                        currencyRate: r,
+                        currencyRate: rate,
                     },
                     this.onUpdateRate,
                 );
@@ -81,66 +86,81 @@ class DetailsStep extends Component<Props, State> {
             });
     };
 
-    getAvailableBalance = () => {
-        const { currency, source, sendingNFT } = this.context;
+    getAvailableBalance = (): Promise<number | string> => {
+        const { source, currency, sendingNFT } = this.context;
 
-        let availableBalance;
-
-        // XRP
-        if (typeof currency === 'string') {
-            availableBalance = CalculateAvailableBalance(source);
-        } else if (sendingNFT) {
-            availableBalance = XRPLValueToNFT(currency.balance);
-        } else {
-            availableBalance = currency.balance;
-        }
-
-        return availableBalance;
+        return new Promise((resolve) => {
+            if (typeof currency === 'string') {
+                // XRP
+                resolve(CalculateAvailableBalance(source));
+            } else if (sendingNFT) {
+                // XLS14d
+                // @ts-ignore
+                resolve(XRPLValueToNFT(currency.balance));
+            } else {
+                // IOU
+                // we fetch the IOU directly from Ledger
+                LedgerService.getFilteredAccountLine(source.address, {
+                    issuer: currency.currency.issuer,
+                    currency: currency.currency.currency,
+                })
+                    .then((line) => {
+                        resolve(line.balance);
+                    })
+                    .catch(() => {
+                        // in case of error just return IOU cached balance
+                        resolve(currency.balance);
+                    });
+            }
+        });
     };
 
-    goNext = () => {
+    goNext = async () => {
         const { goNext, currency, source, amount, setAmount } = this.context;
 
-        const bAmount = new BigNumber(amount);
-
         // check if account is activated
+        // if not just show an alert an return
         if (source.balance === 0) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.accountIsNotActivated'));
             return;
         }
 
-        const isXRP = typeof currency === 'string';
-
         // check for exceed amount
-        // if IOU and obligation can send unlimited
+        // if sending IOU and obligation can send unlimited
         if (typeof currency !== 'string' && currency.obligation) {
-            // last set amount parsed by bignumber
-            setAmount(bAmount.toString(10));
             // go to next screen
             goNext();
             return;
         }
 
-        // @ts-ignore
-        const availableBalance = new BigNumber(this.getAvailableBalance());
+        this.setState({
+            isCheckingBalance: true,
+        });
+
+        const availableBalance = await this.getAvailableBalance();
+
+        this.setState({
+            isCheckingBalance: false,
+        });
 
         // check if amount is bigger than what user can spend
-        if (bAmount.isGreaterThan(availableBalance)) {
+        // show an alert and let user be able to set max amount
+        if (new BigNumber(amount).isGreaterThan(availableBalance)) {
             Prompt(
                 Localize.t('global.error'),
                 Localize.t('send.theMaxAmountYouCanSendIs', {
-                    spendable: Localize.formatNumber(availableBalance.toNumber()),
+                    spendable: Localize.formatNumber(Number(availableBalance)),
                     currency: this.getCurrencyName(),
                 }),
                 [
                     { text: Localize.t('global.cancel') },
                     {
-                        text: isXRP ? Localize.t('global.update') : Localize.t('global.next'),
+                        text: typeof currency === 'string' ? Localize.t('global.update') : Localize.t('global.next'),
                         onPress: () => {
-                            if (isXRP) {
-                                this.onAmountChange(availableBalance.toString());
+                            if (typeof currency === 'string') {
+                                this.onAmountChange(String(availableBalance));
                             } else {
-                                setAmount(availableBalance.toString());
+                                setAmount(String(availableBalance));
                                 // go to next screen
                                 goNext();
                             }
@@ -151,9 +171,6 @@ class DetailsStep extends Component<Props, State> {
             );
             return;
         }
-
-        // last set amount parsed by bignumber
-        setAmount(bAmount.toString());
 
         // go to next screen
         goNext();
@@ -170,15 +187,22 @@ class DetailsStep extends Component<Props, State> {
         return NormalizeCurrencyCode(currency.currency.currency);
     };
 
-    applyAllBalance = () => {
-        // @ts-ignore
-        const availableBalance = new BigNumber(this.getAvailableBalance());
+    applyAllBalance = async () => {
+        this.setState({
+            isLoadingAvailableBalance: true,
+        });
 
-        if (availableBalance.isLessThan(0.00000001)) {
+        const availableBalance = await this.getAvailableBalance();
+
+        this.setState({
+            isLoadingAvailableBalance: false,
+        });
+
+        if (new BigNumber(availableBalance).isLessThan(0.00000001)) {
             return;
         }
 
-        this.onAmountChange(availableBalance.toString());
+        this.onAmountChange(String(availableBalance));
     };
 
     onUpdateRate = () => {
@@ -195,7 +219,7 @@ class DetailsStep extends Component<Props, State> {
 
     onAmountChange = (amount: string) => {
         const { currencyRate } = this.state;
-        const { setAmount } = this.context;
+        const { currency, setAmount } = this.context;
 
         setAmount(amount);
 
@@ -207,7 +231,7 @@ class DetailsStep extends Component<Props, State> {
             return;
         }
 
-        if (currencyRate) {
+        if (typeof currency === 'string' && currencyRate) {
             const inRate = new BigNumber(amount).multipliedBy(currencyRate.lastRate).decimalPlaces(8).toFixed();
             this.setState({
                 amountRate: inRate,
@@ -266,24 +290,24 @@ class DetailsStep extends Component<Props, State> {
         const { currency } = this.context;
 
         if (input === this.amountInput.current && typeof currency === 'string') {
-            return inputHeight + Platform.select({ ios: 10, android: AppSizes.bottomStableInset });
+            return inputHeight + Platform.select({ ios: 10, android: AppSizes.safeAreaBottomInset });
         }
         return 0;
     };
 
     render() {
-        const { amountRate, currencyRate } = this.state;
+        const { amountRate, currencyRate, isLoadingAvailableBalance, isCheckingBalance } = this.state;
         const { goBack, accounts, source, currency, amount, sendingNFT, coreSettings } = this.context;
 
         return (
-            <View testID="send-details-view" style={[styles.container]}>
+            <View testID="send-details-view" style={styles.container}>
                 <KeyboardAwareScrollView
                     style={[AppStyles.flex1, AppStyles.stretchSelf]}
                     calculateExtraOffset={this.calcKeyboardAwareExtraOffset}
                 >
                     {/* Source Account */}
-                    <View style={[styles.rowItem]}>
-                        <View style={[styles.rowTitle]}>
+                    <View style={styles.rowItem}>
+                        <View style={styles.rowTitle}>
                             <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                                 {Localize.t('global.from')}
                             </Text>
@@ -291,8 +315,8 @@ class DetailsStep extends Component<Props, State> {
                         <AccountPicker onSelect={this.onAccountChange} accounts={accounts} selectedItem={source} />
                     </View>
                     {/* Currency */}
-                    <View style={[styles.rowItem]}>
-                        <View style={[styles.rowTitle]}>
+                    <View style={styles.rowItem}>
+                        <View style={styles.rowTitle}>
                             <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                                 {Localize.t('global.asset')}
                             </Text>
@@ -316,7 +340,7 @@ class DetailsStep extends Component<Props, State> {
                     </View>
 
                     {/* Amount */}
-                    <View style={[styles.rowItem]}>
+                    <View style={styles.rowItem}>
                         <View style={[styles.rowTitle, { paddingBottom: 0 }]}>
                             <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
@@ -328,6 +352,7 @@ class DetailsStep extends Component<Props, State> {
                                 <Button
                                     light
                                     roundedSmall
+                                    isLoading={isLoadingAvailableBalance}
                                     onPress={this.applyAllBalance}
                                     label={Localize.t('global.all')}
                                     icon="IconArrowDown"
@@ -335,7 +360,7 @@ class DetailsStep extends Component<Props, State> {
                                 />
                             </View>
                         </View>
-                        <View style={[styles.amountContainer]}>
+                        <View style={styles.amountContainer}>
                             <View style={AppStyles.flex1}>
                                 <AmountInput
                                     ref={this.amountInput}
@@ -363,9 +388,9 @@ class DetailsStep extends Component<Props, State> {
                         </View>
                         {/* only show rate for XRP payments */}
                         {typeof currency === 'string' && (
-                            <View style={[styles.amountRateContainer]}>
+                            <View style={styles.amountRateContainer}>
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={[styles.amountRateInput]}>~ </Text>
+                                    <Text style={styles.amountRateInput}>~ </Text>
                                 </View>
                                 <View style={AppStyles.flex1}>
                                     <AmountInput
@@ -389,7 +414,7 @@ class DetailsStep extends Component<Props, State> {
                 </KeyboardAwareScrollView>
 
                 {/* Bottom Bar */}
-                <Footer style={[AppStyles.row]} safeArea>
+                <Footer style={AppStyles.row} safeArea>
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
@@ -399,7 +424,7 @@ class DetailsStep extends Component<Props, State> {
                             onPress={goBack}
                         />
                     </View>
-                    <View style={[AppStyles.flex2]}>
+                    <View style={AppStyles.flex2}>
                         <Button
                             testID="next-button"
                             textStyle={AppStyles.strong}
@@ -409,6 +434,7 @@ class DetailsStep extends Component<Props, State> {
                             iconPosition="right"
                             iconStyle={AppStyles.imgColorWhite}
                             onPress={this.goNext}
+                            isLoading={isCheckingBalance}
                         />
                     </View>
                 </Footer>

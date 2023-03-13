@@ -3,8 +3,8 @@
 exports[`[TextInput] renders correctly 1`] = `
 <View
   style={
-    Array [
-      Object {
+    [
+      {
         "flexDirection": "row",
         "left": 0,
         "right": 0,
@@ -14,8 +14,8 @@ exports[`[TextInput] renders correctly 1`] = `
 >
   <View
     style={
-      Array [
-        Object {
+      [
+        {
           "alignItems": "stretch",
           "alignSelf": "stretch",
           "backgroundColor": "#F3F6FA",
@@ -42,15 +42,15 @@ exports[`[TextInput] renders correctly 1`] = `
       onFocus={[Function]}
       placeholderTextColor="#606885"
       style={
-        Array [
-          Object {
+        [
+          {
             "color": "#0030CF",
             "flex": 1,
             "fontFamily": "UbuntuMono-Bold",
             "fontSize": 32.14285714285714,
             "fontWeight": "600",
           },
-          Object {
+          {
             "paddingRight": 0,
           },
           undefined,

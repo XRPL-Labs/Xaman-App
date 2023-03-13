@@ -14,7 +14,8 @@ import { Capitalize } from '@common/utils/string';
 import { TransactionTypes } from '@common/libs/ledger/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import { Amount } from '@common/libs/ledger/parser/common';
-import { Transactions } from '@common/libs/ledger/transactions/types';
+
+import { AccountRepository } from '@store/repositories';
 
 // components
 import { Badge, Button, InfoMessage, LoadingIndicator, TouchableDebounce } from '@components/General';
@@ -25,25 +26,23 @@ import Localize from '@locale';
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+import { TemplateProps } from './types';
 /* types ==================================================================== */
-export interface FeeItem {
-    type: string;
-    value: number;
-    suggested?: boolean;
-}
-
-export interface Props {
-    transaction: Transactions;
-    canOverride: boolean;
-    forceRender: () => void;
-}
+export interface Props extends TemplateProps {}
 
 export interface State {
     availableFees: FeeItem[];
     selectedFee: FeeItem;
     signers: AccountNameType[];
+    warnings: Array<string>;
     isLoadingFee: boolean;
     isLoadingSigners: boolean;
+}
+
+export interface FeeItem {
+    type: string;
+    value: number;
+    suggested?: boolean;
 }
 
 /* Component ==================================================================== */
@@ -55,6 +54,7 @@ class GlobalTemplate extends Component<Props, State> {
             availableFees: undefined,
             selectedFee: undefined,
             signers: undefined,
+            warnings: undefined,
             isLoadingFee: true,
             isLoadingSigners: true,
         };
@@ -63,6 +63,7 @@ class GlobalTemplate extends Component<Props, State> {
     componentDidMount() {
         this.loadTransactionFee();
         this.fetchSignersDetails();
+        this.setWarnings();
     }
 
     fetchSignersDetails = async () => {
@@ -98,11 +99,11 @@ class GlobalTemplate extends Component<Props, State> {
     };
 
     loadTransactionFee = async () => {
-        const { transaction, canOverride } = this.props;
+        const { transaction, payload } = this.props;
 
         try {
-            // set the fee if not set and canOverride the details of transaction
-            const shouldOverrideFee = typeof transaction.Fee === 'undefined' && canOverride;
+            // set the fee if not set and can override the details of transaction
+            const shouldOverrideFee = typeof transaction.Fee === 'undefined' && !payload.isMultiSign();
 
             if (shouldOverrideFee) {
                 // calculate and persist the transaction fees
@@ -142,6 +143,26 @@ class GlobalTemplate extends Component<Props, State> {
         } finally {
             this.setState({
                 isLoadingFee: false,
+            });
+        }
+    };
+
+    setWarnings = async () => {
+        const { transaction } = this.props;
+
+        const warnings = [];
+
+        // AccountDelete
+        // check if destination account is already imported in XUMM and can be signed
+        if (transaction.Type === TransactionTypes.AccountDelete) {
+            if (!find(AccountRepository.getSignableAccounts(), (o) => o.address === transaction.Destination?.address)) {
+                warnings.push(Localize.t('payload.accountDeleteExchangeSupportWarning'));
+            }
+        }
+
+        if (warnings.length > 0) {
+            this.setState({
+                warnings,
             });
         }
     };
@@ -203,9 +224,9 @@ class GlobalTemplate extends Component<Props, State> {
         if (isLoadingFee || !selectedFee) {
             return (
                 <>
-                    <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
+                    <Text style={styles.label}>{Localize.t('global.fee')}</Text>
                     <View style={styles.contentBox}>
-                        <Text style={[styles.value]}>Loading ...</Text>
+                        <Text style={styles.value}>Loading ...</Text>
                     </View>
                 </>
             );
@@ -216,22 +237,22 @@ class GlobalTemplate extends Component<Props, State> {
         if (selectedFee.type === 'unknown') {
             return (
                 <>
-                    <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
+                    <Text style={styles.label}>{Localize.t('global.fee')}</Text>
                     <View style={styles.contentBox}>
-                        <Text style={[styles.feeText]}>{selectedFee.value} XRP</Text>
+                        <Text style={styles.feeText}>{selectedFee.value} XRP</Text>
                     </View>
                 </>
             );
         }
 
         // AccountDelete transaction have fixed fee value
-        // NOTE: this may change in future, we may need to let user to select higher fees
+        // NOTE: this may change in the future, we may need to let user select higher fees
         if (transaction.Type === TransactionTypes.AccountDelete) {
             return (
                 <>
-                    <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
+                    <Text style={styles.label}>{Localize.t('global.fee')}</Text>
                     <View style={styles.contentBox}>
-                        <Text style={[styles.feeText]}>{this.getNormalizedFee()} XRP</Text>
+                        <Text style={styles.feeText}>{this.getNormalizedFee()} XRP</Text>
                     </View>
                 </>
             );
@@ -239,14 +260,14 @@ class GlobalTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.fee')}</Text>
+                <Text style={styles.label}>{Localize.t('global.fee')}</Text>
                 <TouchableDebounce
                     activeOpacity={0.8}
                     style={[styles.contentBox, AppStyles.row]}
                     onPress={this.showFeeSelectOverlay}
                 >
                     <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
-                        <Text style={[styles.feeText]}>{this.getNormalizedFee()} XRP</Text>
+                        <Text style={styles.feeText}>{this.getNormalizedFee()} XRP</Text>
                         <Badge label={Capitalize(selectedFee.type)} size="medium" color={this.getFeeColor()} />
                     </View>
                     <Button
@@ -263,10 +284,12 @@ class GlobalTemplate extends Component<Props, State> {
     };
 
     renderWarnings = () => {
-        const { transaction } = this.props;
+        const { warnings } = this.state;
 
-        if (transaction.Type === TransactionTypes.AccountDelete) {
-            return <InfoMessage type="error" label={Localize.t('payload.accountDeleteExchangeSupportWarning')} />;
+        if (Array.isArray(warnings) && warnings.length > 0) {
+            return warnings.map((warning, index) => {
+                return <InfoMessage key={index} type="error" label={warning} />;
+            });
         }
 
         return null;
@@ -294,8 +317,8 @@ class GlobalTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.flags')}</Text>
-                <View style={[styles.contentBox]}>{flags}</View>
+                <Text style={styles.label}>{Localize.t('global.flags')}</Text>
+                <View style={styles.contentBox}>{flags}</View>
             </>
         );
     };
@@ -314,7 +337,7 @@ class GlobalTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.signers')}</Text>
+                <Text style={styles.label}>{Localize.t('global.signers')}</Text>
                 <View style={styles.signersContainer}>
                     {signers.map((signer) => {
                         return <RecipientElement key={`${signer.address}`} recipient={signer} />;
@@ -333,8 +356,8 @@ class GlobalTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.sequence')}</Text>
-                <View style={[styles.contentBox]}>
+                <Text style={styles.label}>{Localize.t('global.sequence')}</Text>
+                <View style={styles.contentBox}>
                     <Text style={styles.value}>{transaction.Sequence}</Text>
                 </View>
             </>
@@ -350,8 +373,8 @@ class GlobalTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.ticketSequence')}</Text>
-                <View style={[styles.contentBox]}>
+                <Text style={styles.label}>{Localize.t('global.ticketSequence')}</Text>
+                <View style={styles.contentBox}>
                     <Text style={styles.value}>{transaction.TicketSequence}</Text>
                 </View>
             </>
@@ -367,13 +390,13 @@ class GlobalTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.memo')}</Text>
-                <View style={[styles.contentBox]}>
-                    {transaction.Memos.map((m: any, index: number) => {
+                <Text style={styles.label}>{Localize.t('global.memo')}</Text>
+                <View style={styles.contentBox}>
+                    {transaction.Memos.map((m, index: number) => {
                         let memo = '';
-                        memo += m.type ? `${m.type}\n` : '';
-                        memo += m.format ? `${m.format}\n` : '';
-                        memo += m.data ? `${m.data}` : '';
+                        memo += m.MemoType ? `${m.MemoType}\n` : '';
+                        memo += m.MemoFormat ? `${m.MemoFormat}\n` : '';
+                        memo += m.MemoData ? `${m.MemoData}` : '';
                         return (
                             <Text key={`memo-${index}`} style={styles.value}>
                                 {memo}

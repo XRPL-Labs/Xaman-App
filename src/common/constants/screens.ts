@@ -28,6 +28,9 @@ const screens = {
             ChangePassphrase: 'app.Account.ChangePassphrase',
             ChangeTangemSecurityEnforce: 'app.Account.ChangeTangemSecurityEnforce',
         },
+        Migration: {
+            CipherMigration: 'app.Account.Migration.CipherMigration',
+        },
     },
     Modal: {
         ReviewTransaction: 'modal.ReviewTransaction',
@@ -36,6 +39,7 @@ const screens = {
         Submit: 'modal.Submit',
         CurrencyPicker: 'modal.CurrencyPickerModal',
         Help: 'modal.Help',
+        MigrationExplain: 'modal.MigrationExplain',
         XAppBrowser: 'modal.XAppBrowser',
         DestinationPicker: 'modal.DestinationPicker',
     },
@@ -60,6 +64,9 @@ const screens = {
         SelectCurrency: 'overlay.SelectCurrency',
         SelectFee: 'overlay.SelectFee',
         HomeActions: 'overlay.HomeActions',
+        CriticalProcessing: 'overlay.CriticalProcessing',
+        PassphraseAuthentication: 'overlay.PassphraseAuthentication',
+        SwitchAssetCategory: 'overlay.SwitchAssetCategory',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',
@@ -75,6 +82,10 @@ const screens = {
         },
         Node: {
             List: 'app.Settings.Node.List',
+        },
+        ThirdPartyApps: {
+            List: 'app.Settings.ThirdPartyApps.List',
+            Edit: 'app.Settings.ThirdPartyApps.Edit',
         },
         SessionLog: 'app.Settings.SessionLog',
         General: 'app.Settings.General',

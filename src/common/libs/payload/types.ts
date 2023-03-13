@@ -39,6 +39,7 @@ export interface MetaType {
     return_url_web?: string;
     custom_instruction?: string;
     signers?: string[];
+    pathfinding?: boolean;
 }
 
 export interface PayloadReferenceType {
@@ -65,9 +66,12 @@ export interface PatchSuccessType {
     signed_blob: string;
     tx_id: string;
     multisigned: string;
-    dispatched?: Dispatched;
     permission?: Permission;
     origintype?: PayloadOrigin;
+}
+
+export interface PatchSubmitType {
+    dispatched?: Dispatched;
 }
 
 export interface PatchRejectType {
@@ -76,6 +80,7 @@ export interface PatchRejectType {
 
 export interface Dispatched {
     to: string;
+    nodetype: string;
     result: string;
 }
 
