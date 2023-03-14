@@ -56,7 +56,7 @@ subprojects { subproject ->
         versionMajor = npmVersion[0]
         versionMinor = npmVersion[1]
         versionPatch = npmVersion[2]
-        buildNumber = 14
+        buildNumber = 1
     }
 }
 
