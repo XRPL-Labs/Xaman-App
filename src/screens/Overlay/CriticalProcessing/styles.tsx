@@ -6,7 +6,6 @@ import { AppStyles, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     visibleContent: {
         width: AppSizes.screen.width * 0.8,
         backgroundColor: '$contrast',
@@ -18,12 +17,6 @@ const styles = StyleService.create({
         ...AppStyles.paddingSml,
     },
     blurView: {
-        zIndex: 99999,
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0,
         width: AppSizes.screen.width,
         height: AppSizes.screen.height,
         justifyContent: 'center',
