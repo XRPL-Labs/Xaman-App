@@ -64,6 +64,7 @@
     "escrow": "Escrow",
     "offer": "Offer",
     "check": "Check",
+    "nft": "NFT",
     "other": "Other",
     "filter": "Filter",
     "favorite": "Favorite",
