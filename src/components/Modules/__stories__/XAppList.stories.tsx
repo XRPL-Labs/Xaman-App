@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react-native';
 
 import { withContainer } from '../../../../storybook/decoration';
 
-import { XAppList } from '../XAppList';
+import { XAppShortList } from '../XAppShortList';
 
 const apps = [
     {
@@ -35,4 +35,4 @@ const apps = [
 
 storiesOf('XAppList', module)
     .addDecorator(withContainer)
-    .add('default', () => <XAppList apps={apps} />);
+    .add('default', () => <XAppShortList apps={apps} />);

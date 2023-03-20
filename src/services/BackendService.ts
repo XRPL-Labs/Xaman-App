@@ -341,6 +341,9 @@ class BackendService {
         return ApiService.accountAdvisory.get(address);
     };
 
+    getXAppStoreListings = (category: string) => {
+        return ApiService.xAppsStore.get({ category });
+    };
     getXAppShortList = () => {
         return ApiService.xAppsShortList.get({ featured: true });
     };

@@ -7,7 +7,7 @@ export * from './CurrencyPicker';
 export * from './AssetsList';
 export * from './NodeList';
 export * from './FeeList';
-export * from './XAppList';
+export * from './XAppShortList';
 export * from './ProBadge';
 export * from './PaymentOptionsPicker';
 export * from './InactiveAccount';

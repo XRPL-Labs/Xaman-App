@@ -84,6 +84,9 @@ export const Images = {
     ),
     IconTabBarActions: buildImageSource('IconTabBarActions', 'icon_tabbar_actions'),
     IconTabBarActionsLight: buildImageSource('IconTabBarActionsLight', 'icon_tabbar_actions_light'),
+    IconTabBarXapp: buildImageSource('IconTabBarXapp', 'icon_tabbar_xapp'),
+    IconTabBarXappSelected: buildImageSource('IconTabBarXappSelected', 'icon_tabbar_xapp_selected'),
+    IconTabBarXappSelectedLight: buildImageSource('IconTabBarXappSelectedLight', 'icon_tabbar_xapp_selected_light'),
 
     IconLock: buildImageSource('IconLock', 'icon_lock'),
     IconUnlock: buildImageSource('IconUnlock', 'icon_unlock'),

@@ -24,6 +24,7 @@
     "events": "Events",
     "profile": "Profile",
     "pro": "Pro Beta",
+    "xapps": "xApps",
     "settings": "Settings",
     "search": "Search",
     "send": "Send",
@@ -581,6 +582,11 @@
     "openProBeta": "Open Pro Beta",
     "xummProBeta": "Xumm Pro Beta",
     "xummProBetaDescription": "Support Xumm & unlock more features like transaction push notifications. More features will be added over time, with early access for Pro Beta subscribers."
+  },
+  "xapp": {
+    "popular": "Popular",
+    "recentlyUsed": "Recently used",
+    "all": "All"
   },
   "settings": {
     "generalSettings": "General",

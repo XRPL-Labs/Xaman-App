@@ -2,7 +2,7 @@ import { isEqual } from 'lodash';
 import React, { Component } from 'react';
 import { View, ViewStyle } from 'react-native';
 
-import { XAppItem } from '@components/Modules/XAppList/AppItem';
+import { XAppItem } from '@components/Modules/XAppShortList/XAppItem';
 
 import styles from './styles';
 /* Types ==================================================================== */
@@ -18,7 +18,7 @@ interface State {
 }
 
 /* Component ==================================================================== */
-class XAppList extends Component<Props, State> {
+class XAppShortList extends Component<Props, State> {
     static defaultProps = {
         size: 4,
     };
@@ -59,4 +59,4 @@ class XAppList extends Component<Props, State> {
     }
 }
 
-export default XAppList;
+export default XAppShortList;

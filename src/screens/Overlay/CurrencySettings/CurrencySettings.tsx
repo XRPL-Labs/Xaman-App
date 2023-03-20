@@ -11,7 +11,7 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 import { TrustLineRepository } from '@store/repositories';
 import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 
-import { Payload } from '@common/libs/payload';
+import { Payload, XAppOrigin } from '@common/libs/payload';
 
 import { TrustSet, Payment } from '@common/libs/ledger/transactions';
 
@@ -457,6 +457,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                         asset: trustLine.currency.currency,
                         action: 'DEPOSIT',
                     },
+                    origin: XAppOrigin.XUMM,
                 },
                 {
                     modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
@@ -479,6 +480,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                         asset: trustLine.currency.currency,
                         action: 'WITHDRAW',
                     },
+                    origin: XAppOrigin.XUMM,
                 },
                 {
                     modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
@@ -589,6 +591,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                         issuer: trustLine.currency.issuer,
                         token: trustLine.currency.currency,
                     },
+                    origin: XAppOrigin.XUMM,
                 },
                 {
                     modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,

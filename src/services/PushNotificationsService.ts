@@ -15,7 +15,7 @@ import { AccountRepository } from '@store/repositories';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-import { Payload, PayloadOrigin } from '@common/libs/payload';
+import { Payload, PayloadOrigin, XAppOrigin } from '@common/libs/payload';
 
 import LoggerService from '@services/LoggerService';
 import NavigationService, { ComponentTypes } from '@services/NavigationService';
@@ -266,7 +266,7 @@ class PushNotificationsService extends EventEmitter {
                 {
                     identifier: xappIdentifier,
                     title: xappTitle,
-                    origin: PayloadOrigin.PUSH_NOTIFICATION,
+                    origin: XAppOrigin.PUSH_NOTIFICATION,
                     originData: get(notification, 'data'),
                 },
                 {

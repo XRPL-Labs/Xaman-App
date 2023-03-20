@@ -9,7 +9,7 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 
 import * as AccountLib from 'xrpl-accountlib';
 
-import { PayloadOrigin } from '@common/libs/payload';
+import { XAppOrigin } from '@common/libs/payload';
 import { Toast } from '@common/helpers/interface';
 import { getAccountName } from '@common/helpers/resolver';
 import { Navigator } from '@common/helpers/navigator';
@@ -432,7 +432,7 @@ class AccountImportView extends Component<Props, State> {
                         {
                             account: createdAccount,
                             identifier: xappIdentifier,
-                            origin: PayloadOrigin.IMPORT_ACCOUNT,
+                            origin: XAppOrigin.IMPORT_ACCOUNT,
                             originData: alternativeSeedAlphabet,
                         },
                         {

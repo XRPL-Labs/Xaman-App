@@ -25,6 +25,7 @@ export default {
         ['accountAdvisory', '/v1/app/account-advisory'],
         ['liquidityBoundaries', '/v1/app/liquidity-boundaries/{issuer}/{currency}'],
         ['translation', '/v1/app/translation/{uuid}'],
+        ['xAppsStore', '/v1/app/xapp/store/v1/{category}'],
         ['xAppsShortList', '/v1/app/xapp/shortlist'],
         ['xAppLaunch', '/v1/app/xapp/launch/{xAppId}'],
         ['currencies', '/v1/app/currencies/{locale}'],

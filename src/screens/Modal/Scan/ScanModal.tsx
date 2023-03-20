@@ -27,7 +27,7 @@ import { Clipboard } from '@common/helpers/clipboard';
 import { NormalizeDestination } from '@common/utils/codec';
 import { StringTypeCheck } from '@common/utils/string';
 
-import { Payload, PayloadOrigin } from '@common/libs/payload';
+import { Payload, PayloadOrigin, XAppOrigin } from '@common/libs/payload';
 
 import Localize from '@locale';
 
@@ -389,7 +389,7 @@ class ScanView extends Component<Props, State> {
             AppScreens.Modal.XAppBrowser,
             {
                 identifier: parsed.xapp,
-                origin: PayloadOrigin.QR,
+                origin: XAppOrigin.QR,
                 originData: { content },
                 path: parsed.path,
                 params: parsed.params,

@@ -4,7 +4,7 @@ import { View, Text } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { AccountSchema } from '@store/schemas/latest';
-import { Payload, PayloadOrigin } from '@common/libs/payload';
+import { Payload, PayloadOrigin, XAppOrigin } from '@common/libs/payload';
 
 import { Navigator } from '@common/helpers/navigator';
 
@@ -45,7 +45,7 @@ class RequestTemplate extends Component<Props, State> {
                 {
                     title,
                     identifier: xappIdentifier,
-                    origin: PayloadOrigin.EVENT_LIST,
+                    origin: XAppOrigin.EVENT_LIST,
                     originData,
                 },
                 {

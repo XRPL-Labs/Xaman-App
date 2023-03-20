@@ -15,9 +15,11 @@ import { BackendService, StyleService } from '@services';
 
 import { AppScreens } from '@common/constants';
 
+import { XAppOrigin } from '@common/libs/payload';
+
 // components
 import { Button, ActionPanel } from '@components/General';
-import { XAppList } from '@components/Modules';
+import { XAppShortList } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -136,6 +138,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                     identifier,
                     title,
                     account,
+                    origin: XAppOrigin.XAPP_SHORT_LIST,
                 },
                 {
                     modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
@@ -184,8 +187,8 @@ class HomeActionsOverlay extends Component<Props, State> {
                     </View>
                 </View>
 
-                <XAppList apps={apps} onAppPress={this.onAppPress} containerStyle={[styles.rowListContainer]} />
-                <XAppList apps={featured} onAppPress={this.onAppPress} containerStyle={[styles.rowListContainer]} />
+                <XAppShortList apps={apps} onAppPress={this.onAppPress} containerStyle={styles.rowListContainer} />
+                <XAppShortList apps={featured} onAppPress={this.onAppPress} containerStyle={styles.rowListContainer} />
 
                 <View style={styles.actionButtonContainer}>
                     <Button

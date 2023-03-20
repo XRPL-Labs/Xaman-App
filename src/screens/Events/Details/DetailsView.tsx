@@ -23,7 +23,7 @@ import { BackendService, LedgerService, StyleService } from '@services';
 import { AccountSchema } from '@store/schemas/latest';
 import AccountRepository from '@store/repositories/account';
 
-import { Payload, PayloadOrigin } from '@common/libs/payload';
+import { Payload, XAppOrigin } from '@common/libs/payload';
 
 import { LedgerObjectTypes, TransactionTypes } from '@common/libs/ledger/types';
 import { Transactions } from '@common/libs/ledger/transactions/types';
@@ -581,7 +581,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 AppScreens.Modal.XAppBrowser,
                 {
                     identifier: tx.getXappIdentifier(),
-                    origin: PayloadOrigin.TRANSACTION_MEMO,
+                    origin: XAppOrigin.TRANSACTION_MEMO,
                     originData: { txid: tx.Hash },
                 },
                 {

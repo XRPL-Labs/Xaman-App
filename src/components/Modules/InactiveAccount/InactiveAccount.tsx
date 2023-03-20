@@ -5,6 +5,8 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 
 import { AppScreens } from '@common/constants';
 
+import { XAppOrigin } from '@common/libs/payload';
+
 import { GetCardId } from '@common/utils/tangem';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -42,6 +44,7 @@ class InactiveAccount extends PureComponent<Props, State> {
                 account,
                 params,
                 identifier: 'xumm.activateacc',
+                origin: XAppOrigin.XUMM,
             },
             {
                 modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,

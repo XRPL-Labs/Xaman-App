@@ -6,6 +6,8 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
+import { XAppOrigin } from '@common/libs/payload';
+
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
@@ -41,6 +43,7 @@ class SettingsView extends Component<Props, State> {
                 AppScreens.Modal.XAppBrowser,
                 {
                     identifier: 'xumm.support',
+                    origin: XAppOrigin.XUMM,
                 },
                 {
                     modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,

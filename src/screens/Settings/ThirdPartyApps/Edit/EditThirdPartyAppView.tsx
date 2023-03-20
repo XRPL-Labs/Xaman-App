@@ -8,6 +8,8 @@ import React, { Component } from 'react';
 import { View, Text, Alert, ScrollView, Linking } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
+import { XAppOrigin } from '@common/libs/payload';
+
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 import { StringTypeCheck } from '@common/utils/string';
@@ -25,7 +27,6 @@ import { ThirdPartyAppType } from '@screens/Settings/ThirdPartyApps/ThirdPartyAp
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
-
 /* types ==================================================================== */
 export interface Props {
     thirdPartyApp: ThirdPartyAppType;
@@ -75,6 +76,7 @@ class EditThirdPartyAppView extends Component<Props, State> {
                             params: {
                                 appId: app.id,
                             },
+                            origin: XAppOrigin.XUMM,
                         },
                         {
                             modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
