@@ -56,8 +56,8 @@ class LoggerService {
     /**
      * log an event in firebase analytics
      */
-    logEvent = (event: LogEvents) => {
-        analytics().logEvent(event);
+    logEvent = (event: LogEvents, params?: { [key: string]: any }) => {
+        analytics().logEvent(event, params);
     };
 
     /**
