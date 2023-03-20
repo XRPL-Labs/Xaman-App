@@ -388,4 +388,13 @@ export class Payload {
 
         return undefined;
     };
+
+    /**
+     * Return forced network if any
+     */
+    getForcedNetwork = (): string => {
+        const { force_network } = this.meta;
+
+        return force_network;
+    };
 }

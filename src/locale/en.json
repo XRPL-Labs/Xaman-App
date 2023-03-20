@@ -1007,6 +1007,7 @@
     "findNewPaymentOptions": "Find new payment options",
     "noPaymentOptionsFound": "No payment options found",
     "unableToFindTheOfferObject": "Unable to find the offer object!",
-    "theIssuerCanBurnThisToken": "Note: The issuer can burn this token."
+    "theIssuerCanBurnThisToken": "Note: The issuer can burn this token.",
+    "payloadForceNetworkError": "This payload is not valid on the network you are connected with."
   }
 }

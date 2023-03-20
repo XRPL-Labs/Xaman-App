@@ -40,6 +40,8 @@ export interface MetaType {
     custom_instruction?: string;
     signers?: string[];
     pathfinding?: boolean;
+    pathfinding_fallback?: boolean;
+    force_network?: string;
 }
 
 export interface PayloadReferenceType {

@@ -77,6 +77,12 @@ class ReviewTransactionModal extends Component<Props, State> {
         // back handler listener on android
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress);
 
+        // check if any forced network applied
+        const forcedNetwork = payload.getForcedNetwork();
+        if (forcedNetwork && SocketService.chain?.toUpperCase() !== forcedNetwork) {
+            this.setError(Localize.t('payload.payloadForceNetworkError'));
+        }
+
         // set transaction
         this.setState({
             transaction: payload.getTransaction(),
