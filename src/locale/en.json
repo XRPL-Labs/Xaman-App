@@ -587,6 +587,7 @@
   "xapp": {
     "popular": "Popular",
     "recentlyUsed": "Recently used",
+    "ourSuggestions": "Our suggestions",
     "all": "All"
   },
   "settings": {

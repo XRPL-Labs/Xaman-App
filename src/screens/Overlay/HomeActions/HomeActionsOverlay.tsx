@@ -2,7 +2,7 @@
  * home actions overlay
  */
 import React, { Component } from 'react';
-import { View, Text, Image, InteractionManager } from 'react-native';
+import { View, Text, InteractionManager } from 'react-native';
 
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
@@ -11,14 +11,14 @@ import { Navigator } from '@common/helpers/navigator';
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
-import { BackendService, StyleService } from '@services';
+import { BackendService } from '@services';
 
 import { AppScreens } from '@common/constants';
 
 import { XAppOrigin } from '@common/libs/payload';
 
 // components
-import { Button, ActionPanel } from '@components/General';
+import { Button, ActionPanel, Spacer } from '@components/General';
 import { XAppShortList } from '@components/Modules';
 
 import Localize from '@locale';
@@ -153,42 +153,22 @@ class HomeActionsOverlay extends Component<Props, State> {
 
         return (
             <ActionPanel
-                height={AppSizes.moderateScale(470)}
+                height={AppSizes.moderateScale(440)}
                 onSlideDown={Navigator.dismissOverlay}
                 extraBottomInset
                 ref={this.actionPanel}
             >
-                <View style={[AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
-                    <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
-                        {Localize.t('payload.whatDoYouWantToDo')}
-                    </Text>
-                </View>
+                <Text numberOfLines={1} style={[styles.rowTitle, styles.rowTitleFirst]}>
+                    {Localize.t('xapp.recentlyUsed')}
+                </Text>
+                <XAppShortList apps={apps} onAppPress={this.onAppPress} />
 
-                <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                    <View style={[AppStyles.flex1]}>
-                        <Image
-                            source={StyleService.getImage('IconXApps')}
-                            resizeMode="contain"
-                            style={styles.xAppsIcon}
-                        />
-                    </View>
-                    <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
-                        <Button
-                            numberOfLines={1}
-                            label={Localize.t('home.viewMoreXApps')}
-                            icon="IconApps"
-                            iconStyle={[AppStyles.imgColorBlue]}
-                            iconSize={17}
-                            roundedSmall
-                            light
-                            isDisabled={false}
-                            onPress={this.onViewMoreAppsPress}
-                        />
-                    </View>
-                </View>
+                <Spacer size={15} />
 
-                <XAppShortList apps={apps} onAppPress={this.onAppPress} containerStyle={styles.rowListContainer} />
-                <XAppShortList apps={featured} onAppPress={this.onAppPress} containerStyle={styles.rowListContainer} />
+                <Text numberOfLines={1} style={styles.rowTitle}>
+                    {Localize.t('xapp.ourSuggestions')}
+                </Text>
+                <XAppShortList apps={featured} onAppPress={this.onAppPress} />
 
                 <View style={styles.actionButtonContainer}>
                     <Button
@@ -197,7 +177,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                         label={Localize.t('global.scanAQRCode')}
                         onPress={this.onScanButtonPress}
                         icon="IconScan"
-                        style={[AppStyles.flex1]}
+                        style={AppStyles.flex1}
                     />
                 </View>
             </ActionPanel>
