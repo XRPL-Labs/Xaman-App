@@ -472,33 +472,33 @@ class ExchangeView extends Component<Props, State> {
 
         return (
             <>
-                <View style={[styles.detailsContainer]}>
-                    <View style={[styles.detailsRow]}>
-                        <Text style={styles.subLabel}>Exchange rate</Text>
+                <View style={styles.detailsContainer}>
+                    <View style={styles.detailsRow}>
+                        <Text style={styles.detailsLabel}>{Localize.t('exchange.exchangeRate')}</Text>
                         <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
                             <AmountText
                                 value={exchangeRate}
                                 currency={`${NormalizeCurrencyCode(trustLine.currency.currency)}/XRP`}
-                                style={[styles.subLabel, AppStyles.textRightAligned]}
+                                style={[styles.detailsValue, AppStyles.textRightAligned]}
                                 immutable
                             />
                         </View>
                     </View>
-                    <View style={[styles.detailsRow]}>
-                        <Text style={styles.subLabel}>Minimum received</Text>
+                    <View style={styles.detailsRow}>
+                        <Text style={styles.detailsLabel}>{Localize.t('exchange.minimumReceived')}</Text>
                         <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
                             <AmountText
                                 value={minimumOutcome}
                                 currency={direction === MarketDirection.SELL ? trustLine.currency.currency : 'XRP'}
-                                style={[styles.subLabel, AppStyles.textRightAligned, AppStyles.colorRed]}
+                                style={[styles.detailsValue, AppStyles.textRightAligned, AppStyles.colorRed]}
                                 immutable
                             />
                         </View>
                     </View>
-                    <View style={[styles.detailsRow]}>
-                        <Text style={styles.subLabel}>Slippage tolerance</Text>
+                    <View style={styles.detailsRow}>
+                        <Text style={styles.detailsLabel}>{Localize.t('exchange.slippageTolerance')}</Text>
                         <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
-                            <Text style={[styles.subLabel, AppStyles.textCenterAligned]}>
+                            <Text style={[styles.detailsValue, AppStyles.textCenterAligned]}>
                                 {`${maxSlippagePercentage}%`}
                             </Text>
                         </View>
@@ -541,7 +541,7 @@ class ExchangeView extends Component<Props, State> {
                     <View style={styles.fromContainer}>
                         <View style={AppStyles.row}>
                             <View style={[AppStyles.row, AppStyles.flex1]}>
-                                <View style={[styles.currencyImageContainer]}>
+                                <View style={styles.currencyImageContainer}>
                                     <TokenAvatar
                                         token={direction === MarketDirection.SELL ? 'XRP' : trustLine}
                                         border
@@ -550,13 +550,13 @@ class ExchangeView extends Component<Props, State> {
                                 </View>
 
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
-                                    <Text style={[styles.currencyLabel]}>
+                                    <Text style={styles.currencyLabel}>
                                         {direction === MarketDirection.SELL
                                             ? 'XRP'
                                             : trustLine.currency.name ||
                                               NormalizeCurrencyCode(trustLine.currency.currency)}
                                     </Text>
-                                    <Text style={[styles.subLabel]}>
+                                    <Text style={styles.subLabel}>
                                         {Localize.t('global.spendable')}:{' '}
                                         {Localize.formatNumber(this.getAvailableBalance())}
                                     </Text>
@@ -575,8 +575,8 @@ class ExchangeView extends Component<Props, State> {
                         </View>
                         <Spacer />
 
-                        <View style={[styles.inputContainer]}>
-                            <Text style={[styles.fromAmount]}>-</Text>
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.fromAmount}>-</Text>
                             <View style={AppStyles.flex1}>
                                 <AmountInput
                                     ref={this.amountInput}
@@ -608,9 +608,9 @@ class ExchangeView extends Component<Props, State> {
 
                     {/* to part */}
                     <View style={styles.toContainer}>
-                        <View style={[AppStyles.row]}>
+                        <View style={AppStyles.row}>
                             <View style={[AppStyles.row, AppStyles.flex1]}>
-                                <View style={[styles.currencyImageContainer]}>
+                                <View style={styles.currencyImageContainer}>
                                     <TokenAvatar
                                         token={direction === MarketDirection.BUY ? 'XRP' : trustLine}
                                         border
@@ -618,14 +618,14 @@ class ExchangeView extends Component<Props, State> {
                                     />
                                 </View>
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
-                                    <Text style={[styles.currencyLabel]}>
+                                    <Text style={styles.currencyLabel}>
                                         {direction === MarketDirection.BUY
                                             ? 'XRP'
                                             : trustLine.currency.name ||
                                               NormalizeCurrencyCode(trustLine.currency.currency)}
                                     </Text>
                                     {direction === MarketDirection.SELL && (
-                                        <Text style={[styles.subLabel]}>
+                                        <Text style={styles.subLabel}>
                                             {trustLine.counterParty.name}{' '}
                                             {NormalizeCurrencyCode(trustLine.currency.currency)}
                                         </Text>

@@ -938,7 +938,6 @@
   },
   "exchange": {
     "exchanging": "Exchanging",
-    "exchangeRate": "Exchange rate (%{exchangeRate} XRP)",
     "exchangeRateInToken": "Exchange rate: 1 XRP = %{exchangeRate} %{currency}",
     "doYouWantToExchange": "Are you sure you want to exchange %{payAmount} %{payCurrency} for %{getAmount} %{getCurrency}?",
     "successfullyExchanged": "Hooray, successfully exchanged %{payAmount} %{payCurrency} for %{getAmount} %{getCurrency}.",
@@ -954,7 +953,10 @@
     "maxSlippageExceeded": "The exchange rate will be bad as there are not enough (good) offers on the Decentralized Exchange.",
     "maxReverseSlippageExceeded": "The exchange rate will be bad if you would try to exchange back, as there are not enough (good) offers on the Decentralized Exchange.",
     "slippageSpreadWarning": "The exchange rate displayed is an estimate based on the current offers available on the XRP Ledger Decentralized Exchange.\nWhen you execute this trade and the liquidity changed while executing your transaction, you may get an up to %{slippage}% worse exchange rate. Please only continue if you accept this",
-    "iAcceptExchange": "I accept, exchange"
+    "iAcceptExchange": "I accept, exchange",
+    "exchangeRate": "Exchange rate",
+    "minimumReceived": "Minimum received",
+    "slippageTolerance": "Slippage tolerance"
   },
   "scan": {
     "aimAtTheCode": "Aim at the QR code",
