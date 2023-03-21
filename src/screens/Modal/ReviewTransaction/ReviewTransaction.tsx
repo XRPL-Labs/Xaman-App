@@ -80,7 +80,8 @@ class ReviewTransactionModal extends Component<Props, State> {
         // check if any forced network applied
         const forcedNetwork = payload.getForcedNetwork();
         if (forcedNetwork && SocketService.chain?.toUpperCase() !== forcedNetwork) {
-            this.setError(Localize.t('payload.payloadForceNetworkError'));
+            this.setError(Localize.t('payload.payloadForceNetworkError', { network: forcedNetwork }));
+            return;
         }
 
         // set transaction
