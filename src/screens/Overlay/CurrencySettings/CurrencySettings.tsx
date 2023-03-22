@@ -20,8 +20,9 @@ import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 
-import { Prompt } from '@common/helpers/interface';
+import { Prompt, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+import { Clipboard } from '@common/helpers/clipboard';
 
 import { AppScreens } from '@common/constants';
 
@@ -636,6 +637,13 @@ class CurrencySettingsModal extends Component<Props, State> {
         });
     };
 
+    copyIssuerAddress = () => {
+        const { trustLine } = this.props;
+
+        Clipboard.setString(trustLine.currency.issuer);
+        Toast(Localize.t('asset.issuerAddressCopiedToClipboard'));
+    };
+
     canSend = () => {
         const { trustLine } = this.props;
         return trustLine.isNFT || trustLine.balance >= 0.00000001 || trustLine.obligation;
@@ -691,12 +699,19 @@ class CurrencySettingsModal extends Component<Props, State> {
                                     <Text style={styles.currencyItemLabelSmall}>
                                         {trustLine.currency.name || NormalizeCurrencyCode(trustLine.currency.currency)}
                                     </Text>
-                                    <Text style={styles.issuerLabel}>
-                                        {trustLine.counterParty.name}{' '}
-                                        {trustLine.currency.name
-                                            ? NormalizeCurrencyCode(trustLine.currency.currency)
-                                            : ''}
-                                    </Text>
+                                    <TouchableDebounce
+                                        onPress={this.copyIssuerAddress}
+                                        style={AppStyles.row}
+                                        activeOpacity={1}
+                                    >
+                                        <Text style={styles.issuerLabel}>
+                                            {trustLine.counterParty.name}{' '}
+                                            {trustLine.currency.name
+                                                ? NormalizeCurrencyCode(trustLine.currency.currency)
+                                                : ''}
+                                        </Text>
+                                        <Icon style={styles.copyIcon} name="IconCopy" size={15} />
+                                    </TouchableDebounce>
                                 </View>
                             </View>
                             <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
