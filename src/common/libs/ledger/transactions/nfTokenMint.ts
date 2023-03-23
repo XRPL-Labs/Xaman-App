@@ -53,6 +53,9 @@ class NFTokenMint extends BaseTransaction {
             return tokenID;
         }
 
+        // which account issued this token
+        const Issuer = this.Issuer || this.Account.address;
+
         // Fetch minted token sequence
         let tokenSequence;
         let nextTokenSequence;
@@ -60,7 +63,7 @@ class NFTokenMint extends BaseTransaction {
         this.meta.AffectedNodes.forEach((node: any) => {
             if (node.ModifiedNode && node.ModifiedNode.LedgerEntryType === 'AccountRoot') {
                 const { PreviousFields, FinalFields } = node.ModifiedNode;
-                if (PreviousFields && FinalFields && FinalFields.Account === this.Account.address) {
+                if (PreviousFields && FinalFields && FinalFields.Account === Issuer) {
                     tokenSequence = PreviousFields.MintedNFTokens;
                     nextTokenSequence = FinalFields.MintedNFTokens;
                 }
@@ -78,7 +81,8 @@ class NFTokenMint extends BaseTransaction {
         }
 
         const intFlags = get(this, ['tx', 'Flags'], undefined);
-        tokenID = EncodeNFTokenID(this.Account.address, tokenSequence, intFlags, this.TransferFee, this.NFTokenTaxon);
+
+        tokenID = EncodeNFTokenID(Issuer, tokenSequence, intFlags, this.TransferFee, this.NFTokenTaxon);
 
         // store the token id
         this.NFTokenID = tokenID;
